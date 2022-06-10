@@ -857,14 +857,14 @@ void _EditorState::Render(double BlendFactor) {
 	Graphics.EnableVBO(VBO_CIRCLE);
 	for(auto Iterator : SelectedObjects) {
 		Vector2 Position = GetMoveDeltaPosition(Iterator->Position);
-		Graphics.DrawCircle(Position[0], Position[1], ITEM_Z + 0.05f, EDITOR_OBJECTRADIUS, COLOR_WHITE);
+		Graphics.DrawCircle(Position.X, Position.Y, ITEM_Z + 0.05f, EDITOR_OBJECTRADIUS, COLOR_WHITE);
 	}
 	Graphics.DisableVBO(VBO_CIRCLE);
 
 	// Draw faded items while moving
 	Graphics.EnableVBO(VBO_QUAD);
 	for(auto Iterator : SelectedObjects) {
-		DrawObject(MoveDelta[0], MoveDelta[1], Iterator, 0.5f);
+		DrawObject(MoveDelta.X, MoveDelta.Y, Iterator, 0.5f);
 	}
 	Graphics.DisableVBO(VBO_QUAD);
 	Graphics.SetDepthMask(true);
@@ -918,7 +918,7 @@ void _EditorState::Render(double BlendFactor) {
 
 	// Dragging a box around object
 	if(DraggingBox)
-		Graphics.DrawRectangle(ClickedPosition[0], ClickedPosition[1], WorldCursor[0], WorldCursor[1], COLOR_WHITE);
+		Graphics.DrawRectangle(ClickedPosition.X, ClickedPosition.Y, WorldCursor.X, WorldCursor.Y, COLOR_WHITE);
 
 	// Draw a block
 	if(IsDrawing)
@@ -946,7 +946,7 @@ void _EditorState::Render(double BlendFactor) {
 	// Draw cursor position
 	int X = 16;
 	int Y = Graphics.GetViewportHeight() - 25;
-	Buffer << std::fixed << WorldCursor[0] << ", " << WorldCursor[1];
+	Buffer << std::fixed << WorldCursor.X << ", " << WorldCursor.Y;
 	MainFont->DrawText(Buffer.str(), X, Y);
 	Buffer.str("");
 
@@ -1281,14 +1281,14 @@ void _EditorState::DrawObject(float OffsetX, float OffsetY, const _ObjectSpawn *
 		} break;
 	}
 
-	Vector2 DrawPosition(Object->Position[0] + OffsetX, Object->Position[1] + OffsetY);
+	Vector2 DrawPosition(Object->Position.X + OffsetX, Object->Position.Y + OffsetY);
 	if(!Camera->IsCircleInView(DrawPosition, Scale)) {
 		return;
 	}
 
 	Color.Alpha *= Alpha;
 	if(Texture != nullptr)
-		Graphics.DrawTexture(DrawPosition[0], DrawPosition[1], Depth, Texture, Color, 0.0f, Scale, Scale);
+		Graphics.DrawTexture(DrawPosition.X, DrawPosition.Y, Depth, Texture, Color, 0.0f, Scale, Scale);
 }
 
 // Converts an editor mode to an object type
@@ -1595,19 +1595,19 @@ std::string _EditorState::GetEventIdentifier(int Type) {
 Vector2 _EditorState::GetValidObjectPosition(const Vector2 &Position) const {
 	Vector2 NewPosition;
 
-	if(Position[0] < 0)
-		NewPosition[0] = 0;
-	else if(Position[0] >= Map->GetWidth())
-		NewPosition[0] = (float)Map->GetWidth();
+	if(Position.X < 0)
+		NewPosition.X = 0;
+	else if(Position.X >= Map->GetWidth())
+		NewPosition.X = (float)Map->GetWidth();
 	else
-		NewPosition[0] = Position[0];
+		NewPosition.X = Position.X;
 
-	if(Position[1] < 0)
-		NewPosition[1] = 0;
-	else if(Position[1] >= Map->GetHeight())
-		NewPosition[1] = (float)Map->GetHeight();
+	if(Position.Y < 0)
+		NewPosition.Y = 0;
+	else if(Position.Y >= Map->GetHeight())
+		NewPosition.Y = (float)Map->GetHeight();
 	else
-		NewPosition[1] = Position[1];
+		NewPosition.Y = Position.Y;
 
 	return NewPosition;
 }

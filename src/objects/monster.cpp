@@ -212,7 +212,7 @@ void _Monster::Update(double FrameTime, _Player *Player) {
 			if(Actions & MONSTER_MOVE) {
 				if(MovePath()) {
 					BehaviorList.pop_front();
-					ReturnPosition[0] = ReturnPosition[1] = -1;
+					ReturnPosition.X = ReturnPosition.Y = -1;
 					CurrentActions &= ~(AI_MOVING | AI_FOLLOWING_PATH);
 					SetMoveState(MOVE_NONE);
 				}
@@ -320,7 +320,7 @@ bool _Monster::VisiblePath(const Vector2 &Goal) {
 	if(Visible) {
 		SetMoveState(MOVE_DIRECTION);
 		MoveDirection = Goal - Position;
-		if(MoveDirection[0] != 0 || MoveDirection[1] != 0)
+		if(MoveDirection.X != 0 || MoveDirection.Y != 0)
 			MoveDirection = MoveDirection.UnitVector();
 
 		Goals.clear();
@@ -346,7 +346,7 @@ bool _Monster::InRange(const Vector2 &Pos) {
 }
 
 bool _Monster::IsVisible(const Vector2 &TargetPosition) {
-	float PlayerDirection = atan2(TargetPosition[1] - Position[1], TargetPosition[0] - Position[0]) * DEGREES_IN_RADIAN + 90;
+	float PlayerDirection = atan2(TargetPosition.Y - Position.Y, TargetPosition.X - Position.X) * DEGREES_IN_RADIAN + 90;
 	if(PlayerDirection < 0) PlayerDirection += 360;
 
 	// 65 - 100 right side
@@ -381,7 +381,7 @@ bool _Monster::Investigate(_Player *Player, bool PlayerVisible) {
 	// Find path to player if he/she is visible.
 	if(PlayerVisible) {
 		VisiblePath(Player->GetPosition());
-		if(ReturnPosition[0] < 0)
+		if(ReturnPosition.X < 0)
 			ReturnPosition = Position;
 		CurrentActions |= AI_INVESTIGATING | AI_FOLLOWING_PLAYER | AI_FOLLOWING_PATH;
 	}
@@ -421,19 +421,19 @@ void _Monster::Wander() {
 		if(!Stop)
 			SetMoveState(MOVE_NONE);
 		else {
-			MoveDirection[0] = Random.GenerateRange(-1.0f, 1.0f);
-			MoveDirection[1] = Random.GenerateRange(-1.0f, 1.0f);
+			MoveDirection.X = Random.GenerateRange(-1.0f, 1.0f);
+			MoveDirection.Y = Random.GenerateRange(-1.0f, 1.0f);
 			if(WallState) {
-				if(WallState & WALL_RIGHT && MoveDirection[0] > 0)
-					MoveDirection[0] = 0;
-				if(WallState & WALL_LEFT && MoveDirection[0] < 0)
-					MoveDirection[0] = 0;
-				if(WallState & WALL_TOP && MoveDirection[1] < 0)
-					MoveDirection[1] = 0;
-				if(WallState & WALL_BOTTOM && MoveDirection[1] > 0)
-					MoveDirection[1] = 0;
+				if(WallState & WALL_RIGHT && MoveDirection.X > 0)
+					MoveDirection.X = 0;
+				if(WallState & WALL_LEFT && MoveDirection.X < 0)
+					MoveDirection.X = 0;
+				if(WallState & WALL_TOP && MoveDirection.Y < 0)
+					MoveDirection.Y = 0;
+				if(WallState & WALL_BOTTOM && MoveDirection.Y > 0)
+					MoveDirection.Y = 0;
 			}
-			if(MoveDirection[0] != 0 || MoveDirection[1] != 0)
+			if(MoveDirection.X != 0 || MoveDirection.Y != 0)
 				MoveDirection = MoveDirection.UnitVector();
 
 			MoveState = MOVE_DIRECTION;
@@ -449,30 +449,30 @@ void _Monster::Explore() {
 		CurrentActions &= ~(AI_FOLLOWING_PATH | AI_FOLLOWING_PLAYER);
 
 		if(WallState || MoveDirection == Vector2(0, 0)) {
-			if((WallState & WALL_RIGHT && MoveDirection[0] > 0) ||
-					(WallState & WALL_LEFT && MoveDirection[0] < 0) ||
-					(WallState & WALL_TOP && MoveDirection[1] < 0) ||
-					(WallState & WALL_BOTTOM && MoveDirection[1] > 0) ||
+			if((WallState & WALL_RIGHT && MoveDirection.X > 0) ||
+					(WallState & WALL_LEFT && MoveDirection.X < 0) ||
+					(WallState & WALL_TOP && MoveDirection.Y < 0) ||
+					(WallState & WALL_BOTTOM && MoveDirection.Y > 0) ||
 					(MoveDirection == Vector2(0, 0))) {
-				if(MoveDirection[0] != 0 && (WallState & WALL_LEFT || WallState & WALL_RIGHT))
-					MoveDirection[1] = Random.GenerateRange(-1.0f, 1.0f);
-				else if(MoveDirection[1] != 0 && (WallState & WALL_TOP || WallState & WALL_BOTTOM))
-					MoveDirection[0] = Random.GenerateRange(-1.0f, 1.0f);
+				if(MoveDirection.X != 0 && (WallState & WALL_LEFT || WallState & WALL_RIGHT))
+					MoveDirection.Y = Random.GenerateRange(-1.0f, 1.0f);
+				else if(MoveDirection.Y != 0 && (WallState & WALL_TOP || WallState & WALL_BOTTOM))
+					MoveDirection.X = Random.GenerateRange(-1.0f, 1.0f);
 				else {
-					MoveDirection[0] = Random.GenerateRange(-1.0f, 1.0f);
-					MoveDirection[1] = Random.GenerateRange(-1.0f, 1.0f);
+					MoveDirection.X = Random.GenerateRange(-1.0f, 1.0f);
+					MoveDirection.Y = Random.GenerateRange(-1.0f, 1.0f);
 				}
 
-				if(WallState & WALL_RIGHT && MoveDirection[0] > 0)
-					MoveDirection[0] = 0;
-				if(WallState & WALL_LEFT && MoveDirection[0] < 0)
-					MoveDirection[0] = 0;
-				if(WallState & WALL_TOP && MoveDirection[1] < 0)
-					MoveDirection[1] = 0;
-				if(WallState & WALL_BOTTOM && MoveDirection[1] > 0)
-					MoveDirection[1] = 0;
+				if(WallState & WALL_RIGHT && MoveDirection.X > 0)
+					MoveDirection.X = 0;
+				if(WallState & WALL_LEFT && MoveDirection.X < 0)
+					MoveDirection.X = 0;
+				if(WallState & WALL_TOP && MoveDirection.Y < 0)
+					MoveDirection.Y = 0;
+				if(WallState & WALL_BOTTOM && MoveDirection.Y > 0)
+					MoveDirection.Y = 0;
 
-				if(MoveDirection[0] != 0 || MoveDirection[1] != 0)
+				if(MoveDirection.X != 0 || MoveDirection.Y != 0)
 					MoveDirection = MoveDirection.UnitVector();
 			}
 		}
@@ -485,7 +485,7 @@ void _Monster::Explore() {
 
 bool _Monster::MovePath() {
 	if(!(CurrentActions & AI_INVESTIGATING)) {
-		if(Goals.empty() && ReturnPosition[0] >= 0) {
+		if(Goals.empty() && ReturnPosition.X >= 0) {
 			VisiblePath(ReturnPosition);
 			CurrentActions |= AI_MOVING | AI_FOLLOWING_PATH;
 		}
@@ -519,7 +519,7 @@ void _Monster::Look() {
 void _Monster::Retreat(_Player *Player, bool PlayerVisible) {
 	if(PlayerVisible) {
 		MoveDirection = Position - Player->GetPosition();
-		if(MoveDirection[0] != 0 || MoveDirection[1] != 0)
+		if(MoveDirection.X != 0 || MoveDirection.Y != 0)
 			MoveDirection = MoveDirection.UnitVector();
 
 		MoveState = MOVE_DIRECTION;
@@ -527,7 +527,7 @@ void _Monster::Retreat(_Player *Player, bool PlayerVisible) {
 		CurrentActions |= AI_RETREATING;
 	}
 	else {
-		MoveDirection[0] = MoveDirection[1] = 0;
+		MoveDirection.X = MoveDirection.Y = 0;
 		CurrentActions &= ~AI_RETREATING;
 	}
 }

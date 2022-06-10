@@ -1,9 +1,9 @@
 [Desktop Entry]
 Name=emptyclip
-Comment=2D Top-down shooter
+Comment=Top-down shooter RPG
 Exec=emptyclip
 Icon=emptyclip
 Terminal=false
 Type=Application
-Categories=Game;ActionGame;
+Categories=Game;ActionGame;RolePlaying;
 StartupNotify=false

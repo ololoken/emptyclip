@@ -16,7 +16,7 @@ Empty Clip 2.0.0 -
 - Optimized rendering code
 - Updated font system
 - Made player/monster movement smoother
-- Save files are now in ~/.emptyclip for linux
+- Save files are now in ~/.local/share/emptyclip for linux
 - Lots of small fixes and cleanup
 - Fixed rare crash
 - Fixed infinite key bug

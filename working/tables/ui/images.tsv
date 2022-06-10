@@ -13,7 +13,7 @@ experience_bar_full	hud_experience	hud_experience_full		0	0	512	8	0	0	0
 weapon0_icon	hud_mainhand			0	0	32	32	1	0	0
 weapon1_icon	hud_offhand			0	0	32	32	1	0	0
 menu_title_logo	menu_title	menu_title		0	0	512	128	1	0	1
-menu_bg		menu_bg		0	0	1024	768	1	1	0
+menu_bg		menu_bg		0	0	1024	768	1	1	1
 menu_new_player_legs0	menu_new	menu_legs	dark	60	200	64	64	0	0	0
 menu_new_player_torso0	menu_new	menu_torso		60	200	64	64	0	0	0
 menu_new_player_legs1	menu_new	menu_legs	red	130	200	64	64	0	0	0

@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 2.8.12)
 
 # define constants
 add_definitions(-DGAME_VERSION="2.0.0")
@@ -9,33 +9,24 @@ project(emptyclip)
 # add extra find modules
 set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake;${CMAKE_MODULE_PATH}")
 
-# add custom target to generate version.h
-add_custom_target(
-	version
-	${CMAKE_COMMAND}
-	-D SRC=${PROJECT_SOURCE_DIR}/cmake/version.h.in
-	-D DST=${PROJECT_SOURCE_DIR}/src/version.h
-	-P ${PROJECT_SOURCE_DIR}/cmake/version.cmake
-)
-
-#set(EXTRA_LIBS)
-
 # mingw
 if(WIN32)
 	set(EXTRA_LIBS ${EXTRA_LIBS} winmm ws2_32)
-endif()
 
-
-# set default build type
-if(NOT CMAKE_BUILD_TYPE)
-	set(CMAKE_BUILD_TYPE Release)
+	# disable console window
+	set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,-subsystem,windows")
 endif()
 
 # compiler flags
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -msse -mfpmath=sse -Wall -Wextra -Wno-unused-result -Wno-unused-parameter")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Wno-unused-result -Wno-switch -Wno-unused-parameter -pedantic -std=c++11")
+if("${CMAKE_HOST_SYSTEM_PROCESSOR}" STREQUAL "x86_64")
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -msse -mfpmath=sse")
+endif()
 
-# set output path
-set(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin/${CMAKE_BUILD_TYPE})
+# set gl preference
+if(NOT DEFINED OpenGL_GL_PREFERENCE)
+	set(OpenGL_GL_PREFERENCE GLVND)
+endif()
 
 # find libraries
 find_package(OpenGL REQUIRED)
@@ -48,28 +39,39 @@ find_package(Freetype REQUIRED)
 find_package(ZLIB REQUIRED)
 find_package(Threads REQUIRED)
 
-# includes
-include_directories("src/")
+# set include directories
+include_directories("src")
 include_directories(${SDL2_INCLUDE_DIR})
 include_directories(${SDL2_IMAGE_INCLUDE_DIR})
 include_directories(${OPENAL_INCLUDE_DIR})
 include_directories(${VORBIS_INCLUDE_DIR})
 include_directories(${OGG_INCLUDE_DIR})
-include_directories(${ZLIB_INCLUDE_DIRS})
 include_directories(${FREETYPE_INCLUDE_DIRS})
+include_directories(${ZLIB_INCLUDE_DIRS})
 
-# add source files
-file(GLOB MAIN_SRC "src/*.cpp" "src/*.h")
-file(GLOB OBJECTS_SRC "src/objects/*.cpp" "src/objects/*.h")
-file(GLOB UI_SRC "src/ui/*.cpp" "src/ui/*.h")
-file(GLOB STATES_SRC "src/states/*.cpp" "src/states/*.h")
+# add source code
+file(GLOB_RECURSE SRC_ALL
+	src/*.cpp
+	src/*.h
+	deployment/resource.rc
+)
 
-# build executable
-add_executable(${CMAKE_PROJECT_NAME}
-	${MAIN_SRC}
-	${OBJECTS_SRC}
-	${UI_SRC}
-	${STATES_SRC}
+# build binary
+add_executable(${CMAKE_PROJECT_NAME} ${SRC_ALL})
+
+# set output path
+set(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/working/)
+if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+	set_target_properties(${CMAKE_PROJECT_NAME} PROPERTIES OUTPUT_NAME ${CMAKE_PROJECT_NAME}_debug)
+endif()
+
+# add custom target to generate version.h
+add_custom_target(
+	version
+	${CMAKE_COMMAND}
+	-D SRC=${PROJECT_SOURCE_DIR}/cmake/version.h.in
+	-D DST=${PROJECT_SOURCE_DIR}/src/version.h
+	-P ${PROJECT_SOURCE_DIR}/cmake/version.cmake
 )
 add_dependencies(${CMAKE_PROJECT_NAME} version)
 
@@ -88,13 +90,14 @@ target_link_libraries(${CMAKE_PROJECT_NAME}
 	${EXTRA_LIBS}
 )
 
+# install
 if(WIN32)
 else()
 
 	# linux installation
 	install(TARGETS ${CMAKE_PROJECT_NAME} RUNTIME DESTINATION share/games/${CMAKE_PROJECT_NAME})
-	install(DIRECTORY ${PROJECT_SOURCE_DIR}/working/ DESTINATION share/games/${CMAKE_PROJECT_NAME} PATTERN "${PROJECT_SOURCE_DIR}/working/*" )
-	install(FILES ${PROJECT_SOURCE_DIR}/deployment/${CMAKE_PROJECT_NAME}.png DESTINATION share/pixmaps)
+	install(DIRECTORY ${PROJECT_SOURCE_DIR}/working/ DESTINATION share/games/${CMAKE_PROJECT_NAME} PATTERN working/${CMAKE_PROJECT_NAME} EXCLUDE PATTERN "working/*")
+	install(FILES ${PROJECT_SOURCE_DIR}/deployment/${CMAKE_PROJECT_NAME}.png DESTINATION share/icons/hicolor/128x128/apps)
 	install(FILES ${PROJECT_SOURCE_DIR}/deployment/${CMAKE_PROJECT_NAME}.desktop DESTINATION share/applications)
 	install(FILES ${PROJECT_SOURCE_DIR}/CHANGELOG DESTINATION share/doc/${CMAKE_PROJECT_NAME})
 	install(FILES ${PROJECT_SOURCE_DIR}/LICENSE DESTINATION share/doc/${CMAKE_PROJECT_NAME})

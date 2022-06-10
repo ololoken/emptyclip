@@ -51,7 +51,6 @@ void _Graphics::Init(int WindowWidth, int WindowHeight, int Vsync, int MSAA, boo
 	LastColor = COLOR_WHITE;
 	LastTextureEnabled = true;
 
-
 	// Set video flags
 	Uint32 VideoFlags = SDL_WINDOW_OPENGL;
 	if(Fullscreen) {

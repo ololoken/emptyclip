@@ -1,53 +1,86 @@
-Empty Clip - Top-down shooter
+Empty Clip - Top-down shooter RPG
 by Alan Witkowski
 
-Latest version can be found at:
+Home Page:
 https://github.com/jazztickets/emptyclip
 
-Linux dependencies:
-cmake
+----- DOWNLOADING -----
+
+Download and extract the latest emptyclip-*-src.tar.gz from https://github.com/jazztickets/emptyclip/releases
+
+OR
+
+Clone the repository:
+git clone https://github.com/jazztickets/emptyclip.git --recurse-submodule
+
+----- BUILDING ON LINUX -----
+
+-- Dependencies required --
+ninja
+cmake 2.8.12+
 sdl2
 sdl2_image
-freetype
+freetype2
 openal
 libvorbis
 libogg
 zlib
 
-Building:
-mkdir build
-cd build
-cmake ..
-make -j`nproc`
+-- Installing dependencies on Ubuntu 20.04 --
+sudo apt install ninja-build cmake build-essential libsdl2-dev libsdl2-image-dev libopenal-dev libvorbis-dev libfreetype6-dev
 
-Installing:
-run "sudo make install" from the build directory.
+-- Installing dependencies on Arch Linux --
+sudo pacman -S base-devel ninja cmake sdl2 sdl2_image openal libvorbis libogg freetype2
 
-Command-line arguments
--level [.map file]        Test a level
--fullscreen               Run game fullscreen
--window                   Run game in a window
--w [width]                Set screen width
--h [height]               Set screen height
--msaa [samples]           Set MSAA sample count
--vsync [value]            Set V-sync mode (0, 1, -1)
--noaudio                  Disable audio
--editor [level]           Start in the mapeditor
--mod [mod directory]      Use game data from [mod directory]
+-- Build executable --
+./build.sh
 
-Keys
-E                         Move Up
-D                         Move Down
-S                         Move Left
-F                         Move Right
-Space                     Action button / Pickup item
-R                         Reload
-W                         Weapon Switch
-Q                         Use medkit
-C                         Open inventory / Character screen
-Left-click                Attack
-Right-click               Aim mode
-Escape                    Menu (or quit game in test mode)
-F1                        Menu
+-- Running the game without installing --
+cd working && ./emptyclip
 
-Save data is in %APPDATA%/emptyclip for windows and ~/.local/share/emptyclip for linux.
+-- Installing --
+cd build/release
+sudo ninja install
+
+-- Uninstall --
+cd build/release
+cat install_manifest.txt | xargs sudo rm
+
+----- COMMAND-LINE ARGUMENTS -----
+
+Parameters with <> denote required values
+Parameters with [] denote optional values
+
+Test a level
+-level <map file>
+
+Run game fullscreen
+-fullscreen
+
+Run game in a window
+-window
+
+Disable audio
+-noaudio
+
+Start the mapeditor
+-editor [level]
+
+Use game data from a mod directory
+-mod <mod directory>
+
+----- HOW TO PLAY -----
+
+Use ESDF to walk around
+Use Left-click to shoot your gun or swing your melee weapon
+Use Right-click to enter aim mode
+Hit Space to pick up items, open doors, or activate switches
+Hit R to reload your gun
+Hit W to switch weapons
+Hit Q to use a medkit
+Hit C to open your inventory or see character stats
+Hold A to sprint
+Hit Escape to open the game menu or quit the game in test mode
+Hit F1 to open the game menu
+
+Save data is in %APPDATA%/emptyclip for Windows and ~/.local/share/emptyclip for Linux.

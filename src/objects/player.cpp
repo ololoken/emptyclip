@@ -540,8 +540,8 @@ void _Player::AdjustLegDirection(float Destination) {
 void _Player::Render(double BlendFactor) {
 	Vector2 DrawPosition(Position * BlendFactor + LastPosition * (1.0 - BlendFactor));
 
-	Graphics.DrawTexture(DrawPosition[0], DrawPosition[1], PositionZ, LegAnimation->GetCurrentFrame(), Color, LegDirection, Scale, Scale);
-	Graphics.DrawTexture(DrawPosition[0], DrawPosition[1], PositionZ + 0.01f, Animation->GetCurrentFrame(), COLOR_WHITE, Rotation, Scale, Scale);
+	Graphics.DrawTexture(DrawPosition.X, DrawPosition.Y, PositionZ, LegAnimation->GetCurrentFrame(), Color, LegDirection, Scale, Scale);
+	Graphics.DrawTexture(DrawPosition.X, DrawPosition.Y, PositionZ + 0.01f, Animation->GetCurrentFrame(), COLOR_WHITE, Rotation, Scale, Scale);
 }
 
 // Draws the player in screen space

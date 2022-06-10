@@ -251,7 +251,7 @@ void _Audio::SetPosition(const Vector2 &Position) {
 	if(!Enabled)
 		return;
 
-	alListener3f(AL_POSITION, Position[0], 10, Position[1]);
+	alListener3f(AL_POSITION, Position.X, 10, Position.Y);
 }
 
 // Get listener position
@@ -267,7 +267,7 @@ void _Audio::SetDirection(const Vector2 &Direction) {
 	if(!Enabled)
 		return;
 
-	float Orientation[6] = { Direction[0], 0, Direction[1], 0.0f, 1.0f, 0.0f };
+	float Orientation[6] = { Direction.X, 0, Direction.Y, 0.0f, 1.0f, 0.0f };
 	alListenerfv(AL_ORIENTATION, Orientation);
 }
 
@@ -374,7 +374,7 @@ void _AudioSource::SetGain(float Value) {
 // Set position
 void _AudioSource::SetPosition(const Vector2 &Position) {
 	if(Loaded) {
-		alSource3f(ID, AL_POSITION, Position[0], 0, Position[1]);
+		alSource3f(ID, AL_POSITION, Position.X, 0, Position.Y);
 	}
 }
 

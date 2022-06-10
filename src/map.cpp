@@ -611,7 +611,7 @@ int _Map::GetWallState(const Vector2 &Position, float Radius) const {
 
 	// Check left wall
 	int WallState = 0;
-	_Coord TopLeft = GetValidCoord(_Coord((int)(Position[0] - Radius - MAP_EPSILON), (int)(Position[1] - Radius - MAP_EPSILON)));
+	_Coord TopLeft = GetValidCoord(_Coord((int)(Position.X - Radius - MAP_EPSILON), (int)(Position.Y - Radius - MAP_EPSILON)));
 	for(int i = TileBounds.Start.Y; i <= TileBounds.End.Y; i++) {
 		if(!Data[TopLeft.X][i].CanWalk()) {
 			WallState |= WALL_LEFT;
@@ -628,7 +628,7 @@ int _Map::GetWallState(const Vector2 &Position, float Radius) const {
 	}
 
 	// Check right wall
-	_Coord BottomRight = GetValidCoord(_Coord((int)(Position[0] + Radius + MAP_EPSILON), (int)(Position[1] + Radius + MAP_EPSILON)));
+	_Coord BottomRight = GetValidCoord(_Coord((int)(Position.X + Radius + MAP_EPSILON), (int)(Position.Y + Radius + MAP_EPSILON)));
 	for(int i = TileBounds.Start.Y; i <= TileBounds.End.Y; i++) {
 		if(!Data[BottomRight.X][i].CanWalk()) {
 			WallState |= WALL_RIGHT;
@@ -671,14 +671,14 @@ void _Map::CheckBulletCollisions(const Vector2 &Position, const Vector2 &Directi
 		throw std::runtime_error("Tile data uninitialized!");
 
 	// Find slope
-	float Slope = Direction[1] / Direction[0];
+	float Slope = Direction.Y / Direction.X;
 
 	// Find starting tile
-	_Coord TileTracer = GetValidCoord(_Coord(Position[0], Position[1]));
+	_Coord TileTracer = GetValidCoord(_Coord(Position.X, Position.Y));
 
 	// Check x direction
 	int TileIncrementX, FirstBoundaryTileX;
-	if(Direction[0] < 0) {
+	if(Direction.X < 0) {
 		FirstBoundaryTileX = TileTracer.X;
 		TileIncrementX = -1;
 	}
@@ -689,7 +689,7 @@ void _Map::CheckBulletCollisions(const Vector2 &Position, const Vector2 &Directi
 
 	// Check y direction
 	int TileIncrementY, FirstBoundaryTileY;
-	if(Direction[1] < 0) {
+	if(Direction.Y < 0) {
 		FirstBoundaryTileY = TileTracer.Y;
 		TileIncrementY = -1;
 	}
@@ -699,13 +699,13 @@ void _Map::CheckBulletCollisions(const Vector2 &Position, const Vector2 &Directi
 	}
 
 	// Find ray direction ratios
-	Vector2 Ratio(1.0f / Direction[0], 1.0f / Direction[1]);
+	Vector2 Ratio(1.0f / Direction.X, 1.0f / Direction.Y);
 
 	// Calculate increments
-	Vector2 Increment(TileIncrementX * Ratio[0], TileIncrementY * Ratio[1]);
+	Vector2 Increment(TileIncrementX * Ratio.X, TileIncrementY * Ratio.Y);
 
 	// Get starting positions
-	Vector2 Tracer((FirstBoundaryTileX - Position[0]) * Ratio[0], (FirstBoundaryTileY - Position[1]) * Ratio[1]);
+	Vector2 Tracer((FirstBoundaryTileX - Position.X) * Ratio.X, (FirstBoundaryTileY - Position.Y) * Ratio.Y);
 
 	// Traverse tiles
 	if(CheckObjects)
@@ -729,13 +729,13 @@ void _Map::CheckBulletCollisions(const Vector2 &Position, const Vector2 &Directi
 		}
 
 		// Determine which direction needs an update
-		if(Tracer[0] < Tracer[1]) {
-			Tracer[0] += Increment[0];
+		if(Tracer.X < Tracer.Y) {
+			Tracer.X += Increment.X;
 			TileTracer.X += TileIncrementX;
 			EndedOnX = true;
 		}
 		else {
-			Tracer[1] += Increment[1];
+			Tracer.Y += Increment.Y;
 			TileTracer.Y += TileIncrementY;
 			EndedOnX = false;
 		}
@@ -752,22 +752,22 @@ void _Map::CheckBulletCollisions(const Vector2 &Position, const Vector2 &Directi
 	if(EndedOnX) {
 
 		// Get correct side of the wall
-		FirstBoundaryTileX = Direction[0] < 0 ? TileTracer.X+1 : TileTracer.X;
-		WallBoundary[0] = FirstBoundaryTileX - Position[0];
+		FirstBoundaryTileX = Direction.X < 0 ? TileTracer.X+1 : TileTracer.X;
+		WallBoundary.X = FirstBoundaryTileX - Position.X;
 
 		// Determine hit position
-		WallHitPosition[0] = WallBoundary[0];
-		WallHitPosition[1] = WallBoundary[0] * Slope;
+		WallHitPosition.X = WallBoundary.X;
+		WallHitPosition.Y = WallBoundary.X * Slope;
 	}
 	else {
 
 		// Get correct side of the wall
-		FirstBoundaryTileY = Direction[1] < 0 ? TileTracer.Y+1 : TileTracer.Y;
-		WallBoundary[1] = FirstBoundaryTileY - Position[1];
+		FirstBoundaryTileY = Direction.Y < 0 ? TileTracer.Y+1 : TileTracer.Y;
+		WallBoundary.Y = FirstBoundaryTileY - Position.Y;
 
 		// Determine hit position
-		WallHitPosition[0] = WallBoundary[1] / Slope;
-		WallHitPosition[1] = WallBoundary[1];
+		WallHitPosition.X = WallBoundary.Y / Slope;
+		WallHitPosition.Y = WallBoundary.Y;
 	}
 
 	*HitPosition = WallHitPosition + Position;
@@ -820,7 +820,7 @@ bool _Map::IsVisible(const Vector2 &Start, const Vector2 &End) const {
 			return true;
 
 		// Check direction
-		if(Direction[1] < 0) {
+		if(Direction.Y < 0) {
 			for(int i = EndTile.Y; i <= StartTile.Y; i++) {
 				if(!CanShootThrough(StartTile.X, i))
 					return false;
@@ -837,7 +837,7 @@ bool _Map::IsVisible(const Vector2 &Start, const Vector2 &End) const {
 	else if(StartTile.Y == EndTile.Y) {
 
 		// Check direction
-		if(Direction[0] < 0) {
+		if(Direction.X < 0) {
 			for(int i = EndTile.X; i <= StartTile.X; i++) {
 				if(!CanShootThrough(i, StartTile.Y))
 					return false;
@@ -853,7 +853,7 @@ bool _Map::IsVisible(const Vector2 &Start, const Vector2 &End) const {
 	}
 
 	// Check x direction
-	if(Direction[0] < 0) {
+	if(Direction.X < 0) {
 		FirstBoundaryTileX = StartTile.X;
 		TileIncrementX = -1;
 	}
@@ -863,7 +863,7 @@ bool _Map::IsVisible(const Vector2 &Start, const Vector2 &End) const {
 	}
 
 	// Check y direction
-	if(Direction[1] < 0) {
+	if(Direction.Y < 0) {
 		FirstBoundaryTileY = StartTile.Y;
 		TileIncrementY = -1;
 	}
@@ -873,16 +873,16 @@ bool _Map::IsVisible(const Vector2 &Start, const Vector2 &End) const {
 	}
 
 	// Find ray direction ratios
-	Ratio[0] = 1.0f / Direction[0];
-	Ratio[1] = 1.0f / Direction[1];
+	Ratio.X = 1.0f / Direction.X;
+	Ratio.Y = 1.0f / Direction.Y;
 
 	// Calculate increments
-	Increment[0] = TileIncrementX * Ratio[0];
-	Increment[1] = TileIncrementY * Ratio[1];
+	Increment.X = TileIncrementX * Ratio.X;
+	Increment.Y = TileIncrementY * Ratio.Y;
 
 	// Get starting positions
-	Tracer[0] = (FirstBoundaryTileX - Start[0]) * Ratio[0];
-	Tracer[1] = (FirstBoundaryTileY - Start[1]) * Ratio[1];
+	Tracer.X = (FirstBoundaryTileX - Start.X) * Ratio.X;
+	Tracer.Y = (FirstBoundaryTileY - Start.Y) * Ratio.Y;
 
 	// Starting tiles
 	TileTracerX = StartTile.X;
@@ -896,20 +896,20 @@ bool _Map::IsVisible(const Vector2 &Start, const Vector2 &End) const {
 			return false;
 
 		// Determine which direction needs an update
-		if(Tracer[0] < Tracer[1]) {
-			Tracer[0] += Increment[0];
+		if(Tracer.X < Tracer.Y) {
+			Tracer.X += Increment.X;
 			TileTracerX += TileIncrementX;
 		}
 		else {
-			Tracer[1] += Increment[1];
+			Tracer.Y += Increment.Y;
 			TileTracerY += TileIncrementY;
 		}
 
 		// Exit condition
-		if((Direction[0] < 0 && TileTracerX < EndTile.X)
-			|| (Direction[0] > 0 && TileTracerX > EndTile.X)
-			|| (Direction[1] < 0 && TileTracerY < EndTile.Y)
-			|| (Direction[1] > 0 && TileTracerY > EndTile.Y))
+		if((Direction.X < 0 && TileTracerX < EndTile.X)
+			|| (Direction.X > 0 && TileTracerX > EndTile.X)
+			|| (Direction.Y < 0 && TileTracerY < EndTile.Y)
+			|| (Direction.Y > 0 && TileTracerY > EndTile.Y))
 			break;
 	}
 
@@ -921,20 +921,20 @@ bool _Map::IsVisibleWithBounds(const Vector2 &Start, const Vector2 &End, float B
 
 	// Get x components of the starting corners
 	Vector2 LeftStartPosition, RightStartPosition;
-	LeftStartPosition[0] = Start[0] - BoundSize;
-	RightStartPosition[0] = Start[0] + BoundSize;
+	LeftStartPosition.X = Start.X - BoundSize;
+	RightStartPosition.X = Start.X + BoundSize;
 
 	// Get direction
 	Vector2 Direction(End - Start);
 
 	// Get y components of the starting corners
-	if((Direction[0] < 0 && Direction[1] < 0) || (Direction[0] >= 0 && Direction[1] >= 0)) {
-		LeftStartPosition[1] = Start[1] + BoundSize;
-		RightStartPosition[1] = Start[1] - BoundSize;
+	if((Direction.X < 0 && Direction.Y < 0) || (Direction.X >= 0 && Direction.Y >= 0)) {
+		LeftStartPosition.Y = Start.Y + BoundSize;
+		RightStartPosition.Y = Start.Y - BoundSize;
 	}
 	else {
-		LeftStartPosition[1] = Start[1] - BoundSize;
-		RightStartPosition[1] = Start[1] + BoundSize;
+		LeftStartPosition.Y = Start.Y - BoundSize;
+		RightStartPosition.Y = Start.Y + BoundSize;
 	}
 
 	// Get ending positions
@@ -974,27 +974,27 @@ void _Map::GetSelectedObject(const Vector2 &Position, float RadiusSquared, _Obje
 void _Map::GetSelectedObjects(const Vector2 &Start, const Vector2 &End, std::list<_ObjectSpawn *> *SelectedObjects, std::list<size_t> *SelectedObjectIndices) {
 
 	Vector2 StartPoint, EndPoint;
-	if(End[0] < Start[0]) {
-		StartPoint[0] = End[0];
-		EndPoint[0] = Start[0];
+	if(End.X < Start.X) {
+		StartPoint.X = End.X;
+		EndPoint.X = Start.X;
 	}
 	else {
-		StartPoint[0] = Start[0];
-		EndPoint[0] = End[0];
+		StartPoint.X = Start.X;
+		EndPoint.X = End.X;
 	}
 
-	if(End[1] < Start[1]) {
-		StartPoint[1] = End[1];
-		EndPoint[1] = Start[1];
+	if(End.Y < Start.Y) {
+		StartPoint.Y = End.Y;
+		EndPoint.Y = Start.Y;
 	}
 	else {
-		StartPoint[1] = Start[1];
-		EndPoint[1] = End[1];
+		StartPoint.Y = Start.Y;
+		EndPoint.Y = End.Y;
 	}
 
 	for(size_t i = 0; i < ObjectSpawns.size(); i++) {
 
-		if(ObjectSpawns[i]->Position[0] > StartPoint[0] && ObjectSpawns[i]->Position[1] > StartPoint[1] && ObjectSpawns[i]->Position[0] <= EndPoint[0] && ObjectSpawns[i]->Position[1] <= EndPoint[1]) {
+		if(ObjectSpawns[i]->Position.X > StartPoint.X && ObjectSpawns[i]->Position.Y > StartPoint.Y && ObjectSpawns[i]->Position.X <= EndPoint.X && ObjectSpawns[i]->Position.Y <= EndPoint.Y) {
 			SelectedObjects->push_back(ObjectSpawns[i]);
 			SelectedObjectIndices->push_back(i);
 		}
@@ -1200,19 +1200,19 @@ int _Map::GetTotalBlockSize() const {
 Vector2 _Map::GetValidPosition(const Vector2 &Position) const {
 	Vector2 NewPosition;
 
-	if(Position[0] <= 0)
-		NewPosition[0] = 0;
-	else if(Position[0] >= Width - MAP_EPSILON)
-		NewPosition[0] = Width - MAP_EPSILON;
+	if(Position.X <= 0)
+		NewPosition.X = 0;
+	else if(Position.X >= Width - MAP_EPSILON)
+		NewPosition.X = Width - MAP_EPSILON;
 	else
-		NewPosition[0] = Position[0];
+		NewPosition.X = Position.X;
 
-	if(Position[1] <= 0)
-		NewPosition[1] = 0;
-	else if(Position[1] >= Height - MAP_EPSILON)
-		NewPosition[1] = Height - MAP_EPSILON;
+	if(Position.Y <= 0)
+		NewPosition.Y = 0;
+	else if(Position.Y >= Height - MAP_EPSILON)
+		NewPosition.Y = Height - MAP_EPSILON;
 	else
-		NewPosition[1] = Position[1];
+		NewPosition.Y = Position.Y;
 
 	return NewPosition;
 }

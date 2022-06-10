@@ -49,10 +49,6 @@ void _Framework::Init(int ArgumentCount, char **Arguments) {
 
 	bool AudioEnabled = Config.AudioEnabled;
 	bool Fullscreen = Config.Fullscreen;
-	int ScreenWidth = Config.WindowWidth;
-	int ScreenHeight = Config.WindowHeight;
-	int MSAA = Config.MSAA;
-	int Vsync = Config.Vsync;
 
 	// Process arguments
 	std::string Token;
@@ -66,18 +62,6 @@ void _Framework::Init(int ArgumentCount, char **Arguments) {
 		}
 		else if(Token == "-window") {
 			Fullscreen = false;
-		}
-		else if(Token == "-w" && TokensRemaining > 0) {
-			ScreenWidth = atoi(Arguments[++i]);
-		}
-		else if(Token == "-h" && TokensRemaining > 0) {
-			ScreenHeight = atoi(Arguments[++i]);
-		}
-		else if(Token == "-vsync" && TokensRemaining > 0) {
-			Vsync = atoi(Arguments[++i]);
-		}
-		else if(Token == "-msaa" && TokensRemaining > 0) {
-			MSAA = atoi(Arguments[++i]);
 		}
 		else if(Token == "-editor") {
 			State = &EditorState;
@@ -110,7 +94,7 @@ void _Framework::Init(int ArgumentCount, char **Arguments) {
 	}
 
 	// Set up subsystems
-	Graphics.Init(ScreenWidth, ScreenHeight, Vsync, MSAA, Fullscreen);
+	Graphics.Init(Config.WindowWidth, Config.WindowHeight, Config.Vsync, Config.MSAA, Fullscreen);
 	Audio.Init(AudioEnabled);
 	Audio.SetGain(Config.SoundVolume);
 

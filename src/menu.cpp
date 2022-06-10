@@ -87,6 +87,9 @@ void _Menu::InitTitle() {
 	Background = Assets.GetImage("menu_bg");
 	CurrentLayout = Assets.GetElement("menu_title");
 
+	Background->SetWidth(Graphics.GetScreenWidth() * ((float)Background->GetTexture()->GetHeight() / Background->GetTexture()->GetWidth()));
+	Background->SetHeight(Graphics.GetScreenHeight());
+
 	State = STATE_TITLE;
 }
 

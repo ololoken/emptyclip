@@ -1,26 +1,25 @@
 #!/bin/bash
 
-upload_server=$1
-upload_path="/srv/http/files/"
+# includes
+source common.inc
 
-projectdir=`git rev-parse --show-toplevel`
+# get base project dir
+projectdir=$(git rev-parse --show-toplevel)
 if [ -z "$projectdir" ]; then
 	echo "No .git directory found"
 	exit 1
 fi
 
+# build out dir
 outputdir="$projectdir/deployment/out"
-cd "$projectdir"
 mkdir -p "$outputdir"
-
-version=`grep 'GAME_VERSION=".*"' -o CMakeLists.txt | sed -r "s/GAME_VERSION=\"(.*)\"/\1/"`
 
 build() {
 
 	bits=$1
 
 	# get mingw prefix
-	if [ $bits -eq "32" ]; then
+	if [ "$bits" -eq "32" ]; then
 		arch=i686-w64-mingw32
 	else
 		arch=x86_64-w64-mingw32
@@ -29,47 +28,49 @@ build() {
 	# run cmake
 	builddir="$projectdir/build/mingw$bits"
 	mkdir -p "$builddir"
-	cd "$builddir"
-	cmake -DCMAKE_TOOLCHAIN_FILE=../../cmake/mingw${bits}.cmake ../../
+	pushd "$builddir" || exit
+	cmake -GNinja -DCMAKE_TOOLCHAIN_FILE="../../cmake/mingw${bits}.cmake" -DCMAKE_BUILD_TYPE=Release ../../
 
 	# build
-	make -j`nproc`
-
-	if [ $? -ne 0 ]; then
+	if ! ninja; then
 		echo "failed $builddir"
 		exit
 	fi
 
-	cd "$projectdir"
+	# go back to deployment dir
+	popd || exit
 
-	cp /usr/$arch/bin/{OpenAL32.dll,libbz2-1.dll,libfreetype-6.dll,libgcc_*.dll,libstdc++-6.dll,libwinpthread-1.dll,libvorbisfile-3.dll,libvorbis-0.dll,libogg-0.dll,SDL2.dll,SDL2_image.dll,libpng16-16.dll,zlib1.dll} working/
+	# create new working dir
+	archive_base=${project}-${version}-${gitver}-win${bits}
+	archive=${archive_base}.zip
+	rm -rf "${archive_base}"
+	cp -r "${projectdir}/working" "${archive_base}"
+	rm "${projectdir}/working/${project}.exe"
 
-	gitver=`git log --oneline | wc -l`
-	mv bin/Release/emptyclip.exe working/
-	cp README working/
-	echo "emptyclip.exe -editor" > working/run_editor.bat
-	chmod +x working/*.bat
+	# remove linux only files
+	rm -f "${archive_base}"/"${project}"{,_debug}
 
-	archive=emptyclip-${version}r${gitver}-win${bits}.zip
-	zip -r $archive working
+	# copy dlls
+	cp /usr/$arch/bin/{OpenAL32.dll,libbz2-1.dll,libfreetype-6.dll,libssp-0.dll,libgcc_*.dll,libstdc++-6.dll,libwinpthread-1.dll,libvorbisfile-3.dll,libvorbis-0.dll,libogg-0.dll,SDL2.dll,SDL2_image.dll,libpng16-16.dll,zlib1.dll,libbrotlicommon.dll,libbrotlidec.dll} "${archive_base}"/
 
-	rm working/emptyclip.exe
-	rm working/*.dll
-	rm working/README
-	rm working/*.bat
+	# strip exe
+	${arch}-strip "${archive_base}"/${project}.exe
 
-	if [ -n "$upload_server" ]; then
-		scp $archive $upload_server:"$upload_path"
-	fi
+	# copy files
+	cp "${projectdir}"/{README,CHANGELOG} "${archive_base}"/
+	#echo "${project}.exe -editor" > "${archive_base}"/run_editor.bat
+	#chmod +x "${archive_base}"/*.bat
 
-	mv $archive "$outputdir"
+	# zip
+	zip -r "${archive}" "${archive_base}"
+
+	# clean up
+	rm -rf "${archive_base}"
+	mv "$archive" "$outputdir"
 }
 
-if [ -n "$upload_server" ]; then
-	ssh $upload_server rm -f "$upload_path"/emptyclip*.zip
-fi
+# remove old zips
+rm -f "$outputdir"/"${project}-${version}"*.zip
 
-rm -f "$outputdir"/emptyclip*.zip
-
-build 32
+# build project
 build 64

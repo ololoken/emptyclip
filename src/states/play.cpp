@@ -546,9 +546,9 @@ void _PlayState::EntityAttack(_Entity *Attacker, int GridType) {
 				HitInformation.Type = HIT_WALL;
 
 			_ParticleTemplate *Template = Assets.GetParticleTemplate("tracer0");
-			Vector2 ParticleStart = Attacker->GetPosition() + (Vector2(0, -Template->Size[1] * 0.5f) + Attacker->GetWeaponOffset(Attacker->GetWeaponType())).RotateVector(ShotDirection);
+			Vector2 ParticleStart = Attacker->GetPosition() + (Vector2(0, -Template->Size.Y * 0.5f) + Attacker->GetWeaponOffset(Attacker->GetWeaponType())).RotateVector(ShotDirection);
 
-			float Distance = (HitInformation.Position - Attacker->GetPosition()).Magnitude() - Template->Size[1];
+			float Distance = (HitInformation.Position - Attacker->GetPosition()).Magnitude() - Template->Size.Y;
 
 			_Particle *Tracer = new _Particle(_ParticleSpawn(Template, ParticleStart, OBJECT_Z, ShotDirection));
 			Tracer->SetLifetime(Distance * Template->VelocityScale.Y * GAME_FPS);
@@ -856,8 +856,8 @@ void _PlayState::UpdateEvents(double FrameTime) {
 
 					const std::vector<_EventTile> &Tiles = Event->GetTiles();
 					for(size_t i = 0; i < Tiles.size(); i++) {
-						Position[0] = static_cast<float>(Tiles[i].Coord.X) + 0.5f;
-						Position[1] = static_cast<float>(Tiles[i].Coord.Y) + 0.5f;
+						Position.X = static_cast<float>(Tiles[i].Coord.X) + 0.5f;
+						Position.Y = static_cast<float>(Tiles[i].Coord.Y) + 0.5f;
 						AddMonster(Assets.CreateMonster(Event->GetMonsterIdentifier(), Position));
 						Particles->Create(_ParticleSpawn(Assets.GetParticleTemplate(Event->GetParticleIdentifier()), Position, OBJECT_Z, 0));
 					}

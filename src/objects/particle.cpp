@@ -33,11 +33,11 @@ _Particle::_Particle(const _ParticleSpawn &Spawn)
 	ScaleAspect(Spawn.Template->ScaleAspect) {
 
 	// Random
-	this->Rotation = Spawn.RotationAdjust + static_cast<float>(Random.GenerateRange(Spawn.Template->StartDirection[0], Spawn.Template->StartDirection[1]));
-	this->Velocity = Vector2(this->Rotation) * Random.GenerateRange(Spawn.Template->VelocityScale[0], Spawn.Template->VelocityScale[1]);
+	this->Rotation = Spawn.RotationAdjust + static_cast<float>(Random.GenerateRange(Spawn.Template->StartDirection.X, Spawn.Template->StartDirection.Y));
+	this->Velocity = Vector2(this->Rotation) * Random.GenerateRange(Spawn.Template->VelocityScale.X, Spawn.Template->VelocityScale.Y);
 	this->Acceleration = Velocity * Spawn.Template->AccelerationScale;
-	this->TurnSpeed = Random.GenerateRange(Spawn.Template->TurnSpeed[0], Spawn.Template->TurnSpeed[1]);
-	float Size = Random.GenerateRange(Spawn.Template->Size[0], Spawn.Template->Size[1]);
+	this->TurnSpeed = Random.GenerateRange(Spawn.Template->TurnSpeed.X, Spawn.Template->TurnSpeed.Y);
+	float Size = Random.GenerateRange(Spawn.Template->Size.X, Spawn.Template->Size.Y);
 	if(ScaleAspect >= 1.0f) {
 		this->Scale.X = Size;
 		this->Scale.Y = Size / ScaleAspect;

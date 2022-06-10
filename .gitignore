@@ -4,13 +4,14 @@
 *.~lock*
 *.zip
 *.exe
+/*.sh
 CMakeLists.txt.user
-bin/
 build/
 export/
 src/tags
 src/version.h
 working/stats/*.txt
+working/emptyclip*
 assets/tables/temp
 deployment/*.exe
 deployment/*-src

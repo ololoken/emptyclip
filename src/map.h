@@ -25,6 +25,7 @@
 #include <list>
 #include <vector>
 #include <memory>
+#include <stdexcept>
 
 // Types of map layers
 enum MapLayerTypes {

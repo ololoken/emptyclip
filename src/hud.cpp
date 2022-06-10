@@ -346,11 +346,11 @@ void _HUD::RenderCrosshair(const Vector2 &Position) {
 	Graphics.DisableDepthTest();
 
 	Graphics.EnableVBO(VBO_CIRCLE);
-	Graphics.DrawCircle(Position[0], Position[1], 0, CrosshairScale, COLOR_WHITE);
+	Graphics.DrawCircle(Position.X, Position.Y, 0, CrosshairScale, COLOR_WHITE);
 	Graphics.DisableVBO(VBO_CIRCLE);
 
 	Graphics.EnableVBO(VBO_QUAD);
-	Graphics.DrawTexture(Position[0], Position[1], 0, CrosshairID, COLOR_WHITE, 0, 1.0f, 1.0f);
+	Graphics.DrawTexture(Position.X, Position.Y, 0, CrosshairID, COLOR_WHITE, 0, 1.0f, 1.0f);
 	Graphics.DisableVBO(VBO_QUAD);
 
 	Graphics.EnableDepthTest();

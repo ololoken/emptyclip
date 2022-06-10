@@ -446,9 +446,9 @@ void _Assets::LoadParticleTable(const std::string &Filename) {
 		std::string TextureIdentifier = GetTSVText(InputFile);
 		std::string ColorIdentifier = GetTSVText(InputFile);
 
-		InputFile 	>> Particle.Type >> Particle.Count >> Particle.Lifetime >> Particle.StartDirection[0] >> Particle.StartDirection[1] >> Particle.TurnSpeed[0]
-					>> Particle.TurnSpeed[1] >> Particle.VelocityScale[0] >> Particle.VelocityScale[1] >> Particle.AccelerationScale
-					>> Particle.Size[0] >> Particle.Size[1] >> Particle.ScaleAspect >> Particle.AlphaSpeed;
+		InputFile 	>> Particle.Type >> Particle.Count >> Particle.Lifetime >> Particle.StartDirection.X >> Particle.StartDirection.Y >> Particle.TurnSpeed.X
+					>> Particle.TurnSpeed.Y >> Particle.VelocityScale.X >> Particle.VelocityScale.Y >> Particle.AccelerationScale
+					>> Particle.Size.X >> Particle.Size.Y >> Particle.ScaleAspect >> Particle.AlphaSpeed;
 		InputFile.ignore(1024, '\n');
 
 		// Check for duplicates

@@ -30,7 +30,7 @@
 const float DEGREES_IN_RADIAN = 180.0f / M_PI;
 
 // Classes
-union Vector2 {
+class Vector2 {
 
 	public:
 
@@ -40,7 +40,6 @@ union Vector2 {
 		Vector2(float Degrees);
 
 		// Utility functions
-		void Set(float X, float Y) { this->X = X; this->Y = Y; }
 		void SetZero();
 		void Normalize();
 		float Magnitude() const;
@@ -65,17 +64,10 @@ union Vector2 {
 		Vector2 operator*=(const float &Value);
 		Vector2 operator/(const float &Value) const;
 		Vector2 operator/=(const float &Value);
-		float &operator[](int Index) { return Data[Index]; }
-		float operator[](int Index) const { return Data[Index]; }
 
-		struct {
-			float X;
-			float Y;
-		};
+		float X;
+		float Y;
 
-	private:
-
-		float Data[2];
 };
 
 const Vector2 ZERO_VECTOR = Vector2(0.0f, 0.0f);

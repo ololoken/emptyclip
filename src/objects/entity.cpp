@@ -281,7 +281,7 @@ void _Entity::Move() {
 		Vector2 Delta, NewDirection(0.0, 0.0f);
 		switch(MoveState) {
 			case MOVE_DIRECTION:
-				if(MoveDirection[0] != 0 || MoveDirection[1] != 0) {
+				if(MoveDirection.X != 0 || MoveDirection.Y != 0) {
 					Delta = WallInPath(MoveDirection);
 					NewDirection = Delta;
 				}
@@ -297,32 +297,32 @@ void _Entity::Move() {
 				}
 			break;
 			case MOVE_FORWARD:
-				NewDirection[1] = -1;
+				NewDirection.Y = -1;
 			break;
 			case MOVE_BACKWARD:
-				NewDirection[1] = 1;
+				NewDirection.Y = 1;
 			break;
 			case MOVE_LEFT:
-				NewDirection[0] = -1;
+				NewDirection.X = -1;
 			break;
 			case MOVE_RIGHT:
-				NewDirection[0] = 1;
+				NewDirection.X = 1;
 			break;
 			case MOVE_FORWARDLEFT:
-				NewDirection[0] = -M_SQRT1_2;
-				NewDirection[1] = -M_SQRT1_2;
+				NewDirection.X = -M_SQRT1_2;
+				NewDirection.Y = -M_SQRT1_2;
 			break;
 			case MOVE_FORWARDRIGHT:
-				NewDirection[0] = M_SQRT1_2;
-				NewDirection[1] = -M_SQRT1_2;
+				NewDirection.X = M_SQRT1_2;
+				NewDirection.Y = -M_SQRT1_2;
 			break;
 			case MOVE_BACKWARDLEFT:
-				NewDirection[0] = -M_SQRT1_2;
-				NewDirection[1] = M_SQRT1_2;
+				NewDirection.X = -M_SQRT1_2;
+				NewDirection.Y = M_SQRT1_2;
 			break;
 			case MOVE_BACKWARDRIGHT:
-				NewDirection[0] = M_SQRT1_2;
-				NewDirection[1] = M_SQRT1_2;
+				NewDirection.X = M_SQRT1_2;
+				NewDirection.Y = M_SQRT1_2;
 			break;
 			default:
 			break;
@@ -348,8 +348,8 @@ void _Entity::Move() {
 				Vector2 DividingLine;
 
 				// Rotate vector
-				DividingLine[0] = -HitObjectDirection[1];
-				DividingLine[1] = HitObjectDirection[0];
+				DividingLine.X = -HitObjectDirection.Y;
+				DividingLine.Y = HitObjectDirection.X;
 				DividingLine.Normalize();
 
 				// Project the direction onto the dividing line
@@ -403,7 +403,7 @@ void _Entity::Move() {
 void _Entity::Render(double BlendFactor) {
 	Vector2 DrawPosition(Position * BlendFactor + LastPosition * (1.0f - BlendFactor));
 
-	Graphics.DrawTexture(DrawPosition[0], DrawPosition[1], PositionZ, Animation->GetCurrentFrame(), Color, Rotation, Scale, Scale);
+	Graphics.DrawTexture(DrawPosition.X, DrawPosition.Y, PositionZ, Animation->GetCurrentFrame(), Color, Rotation, Scale, Scale);
 }
 
 // Updates the Entity's maximum health
@@ -449,16 +449,16 @@ Vector2 _Entity::WallInPath(const Vector2 &Delta) const {
 		return Delta.UnitVector();
 
 	Vector2 NewDelta = Delta;
-	if((WallState & WALL_RIGHT) && NewDelta[0] > 0)
-		NewDelta[0] = 0;
-	if((WallState & WALL_LEFT) && NewDelta[0] < 0)
-		NewDelta[0] = 0;
-	if((WallState & WALL_TOP) && NewDelta[1] < 0)
-		NewDelta[1] = 0;
-	if((WallState & WALL_BOTTOM) && NewDelta[1] > 0)
-		NewDelta[1] = 0;
+	if((WallState & WALL_RIGHT) && NewDelta.X > 0)
+		NewDelta.X = 0;
+	if((WallState & WALL_LEFT) && NewDelta.X < 0)
+		NewDelta.X = 0;
+	if((WallState & WALL_TOP) && NewDelta.Y < 0)
+		NewDelta.Y = 0;
+	if((WallState & WALL_BOTTOM) && NewDelta.Y > 0)
+		NewDelta.Y = 0;
 
-	if(!(NewDelta[0] == 0 && NewDelta[1] == 0))
+	if(!(NewDelta.X == 0 && NewDelta.Y == 0))
 		NewDelta.Normalize();
 
 	return NewDelta;

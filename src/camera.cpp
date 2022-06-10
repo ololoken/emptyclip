@@ -65,14 +65,14 @@ void _Camera::Set3DProjection(double BlendFactor) const {
 
 // Converts screen space to world space
 void _Camera::ConvertScreenToWorld(const _Point &Point, Vector2 &WorldPosition) {
-	WorldPosition.X = (Point.X / (float)(Graphics.GetViewportWidth()) - 0.5f) * Distance * Graphics.GetAspectRatio() * 2  + Position[0];
-	WorldPosition.Y = (Point.Y / (float)(Graphics.GetViewportHeight()) - 0.5f) * Distance * 2 + Position[1];
+	WorldPosition.X = (Point.X / (float)(Graphics.GetViewportWidth()) - 0.5f) * Distance * Graphics.GetAspectRatio() * 2 + Position.X;
+	WorldPosition.Y = (Point.Y / (float)(Graphics.GetViewportHeight()) - 0.5f) * Distance * 2 + Position.Y;
 }
 
 // Converts world space to screen space
 void _Camera::ConvertWorldToScreen(const Vector2 &WorldPosition, _Point &Point) {
-	Point.X = Graphics.GetViewportWidth() * (0.5f + ((WorldPosition.X - Position[0]) / (Distance * Graphics.GetAspectRatio() * 2)));
-	Point.Y = Graphics.GetViewportHeight() * (0.5f + ((WorldPosition.Y - Position[1]) / (Distance * 2)));
+	Point.X = Graphics.GetViewportWidth() * (0.5f + ((WorldPosition.X - Position.X) / (Distance * Graphics.GetAspectRatio() * 2)));
+	Point.Y = Graphics.GetViewportHeight() * (0.5f + ((WorldPosition.Y - Position.Y) / (Distance * 2)));
 }
 
 // Update camera
@@ -81,10 +81,10 @@ void _Camera::Update(double FrameTime) {
 	LastDistance = Distance;
 
 	Vector2 Delta(TargetPosition - Position);
-	if(std::abs(Delta[0]) > 0.01f)
-		Position[0] += Delta[0] / UpdateDivisor;
-	if(std::abs(Delta[1]) > 0.01f)
-		Position[1] += Delta[1] / UpdateDivisor;
+	if(std::abs(Delta.X) > 0.01f)
+		Position.X += Delta.X / UpdateDivisor;
+	if(std::abs(Delta.Y) > 0.01f)
+		Position.Y += Delta.Y / UpdateDivisor;
 
 	float DeltaZ = TargetDistance - Distance;
 	if(std::abs(DeltaZ) > 0.01f)
@@ -94,10 +94,10 @@ void _Camera::Update(double FrameTime) {
 	float Height = Distance;
 
 	// Get AABB at z=0
-	AABB[0] = -Width + Position[0];
-	AABB[1] = -Height + Position[1];
-	AABB[2] = Width + Position[0];
-	AABB[3] = Height + Position[1];
+	AABB[0] = -Width + Position.X;
+	AABB[1] = -Height + Position.Y;
+	AABB[2] = Width + Position.X;
+	AABB[3] = Height + Position.Y;
 }
 
 // Determines whether a circle is in view
@@ -105,14 +105,14 @@ bool _Camera::IsCircleInView(const Vector2 &Center, float Radius) const {
 
 	// Get closest point on AABB
 	Vector2 Point(Center);
-	if(Point[0] < AABB[0])
-		Point[0] = AABB[0];
-	if(Point[1] < AABB[1])
-		Point[1] = AABB[1];
-	if(Point[0] > AABB[2])
-		Point[0] = AABB[2];
-	if(Point[1] > AABB[3])
-		Point[1] = AABB[3];
+	if(Point.X < AABB[0])
+		Point.X = AABB[0];
+	if(Point.Y < AABB[1])
+		Point.Y = AABB[1];
+	if(Point.X > AABB[2])
+		Point.X = AABB[2];
+	if(Point.Y > AABB[3])
+		Point.Y = AABB[3];
 
 	// Test circle collision with point
 	float DistanceSquared = (Point - Center).MagnitudeSquared();
