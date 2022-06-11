@@ -283,7 +283,7 @@ void _PlayState::Update(double FrameTime) {
 		if(!HUD->GetInventoryOpen()) {
 
 			// Attack again
-			if(Player->IsMeleeAttacking() && Player->GetFireRate(WEAPONATTACK_MAIN) == FIRERATE_AUTO && Actions.GetState(_Actions::FIRE)) {
+			if(!Player->IsMeleeAttacking() && Player->GetFireRate(WEAPONATTACK_MAIN) == FIRERATE_AUTO && Actions.GetState(_Actions::FIRE)) {
 				Player->SetAttackRequested(true);
 				Player->SetAttackRequestType(WEAPONATTACK_MAIN);
 			}
