@@ -55,6 +55,9 @@ editor_paletteprevious			editor_paletteprevious		0
 editor_palettenext			editor_palettenext		0
 editor_palette	black	white			0
 hud_inventory			hud_inventory		0
+hud_inventory_armor			hud_inventory_armor		0
+hud_inventory_gun			hud_inventory_gun		0
+hud_inventory_melee			hud_inventory_melee		0
 hud_skills	skills_bg				0
 hud_plus			hud_plus		0
 hud_plus_hover			hud_plus_hover		0

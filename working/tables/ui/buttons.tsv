@@ -85,10 +85,10 @@ editor_active	editor_events	editor_active	editor_selected0	170	0	32	32	0	0
 editor_itemidentifier	editor_events	editor_itemidentifier	editor_selected0	204	0	32	32	0	0
 editor_monsidentifier	editor_events	editor_monsidentifier	editor_selected0	238	0	32	32	0	0
 editor_partidentifier	editor_events	editor_partidentifier	editor_selected0	272	0	32	32	0	0
-inventory_armor	inventory	hud_inventory		150	210	48	48	0	0
-inventory_mainhand	inventory	hud_inventory		0	210	48	48	0	0
-inventory_offhand	inventory	hud_inventory		50	210	48	48	0	0
-inventory_melee	inventory	hud_inventory		100	210	48	48	0	0
+inventory_armor	inventory	hud_inventory_armor		150	210	48	48	0	0
+inventory_mainhand	inventory	hud_inventory_gun		0	210	48	48	0	0
+inventory_offhand	inventory	hud_inventory_gun		50	210	48	48	0	0
+inventory_melee	inventory	hud_inventory_melee		100	210	48	48	0	0
 inventory_bag0	inventory	hud_inventory		0	0	48	48	0	0
 inventory_bag1	inventory	hud_inventory		50	0	48	48	0	0
 inventory_bag2	inventory	hud_inventory		100	0	48	48	0	0

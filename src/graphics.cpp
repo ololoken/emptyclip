@@ -126,7 +126,7 @@ void _Graphics::ChangeViewport(int Width, int Height) {
 
 // Toggle fullscreen
 void _Graphics::ToggleFullScreen() {
-	if(SDL_SetWindowFullscreen(Window, SDL_GetWindowFlags(Window) ^ SDL_WINDOW_FULLSCREEN) != 0) {
+	if(SDL_SetWindowFullscreen(Window, SDL_GetWindowFlags(Window) ^ SDL_WINDOW_FULLSCREEN_DESKTOP) != 0) {
 		// failed
 	}
 }

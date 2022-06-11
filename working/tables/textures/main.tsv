@@ -1,6 +1,9 @@
 identifier	texture	group	repeat	mipmaps
 hud_crosshair	hud/crosshair0.png	0	0	0
 hud_inventory	hud/inventory0.png	0	0	0
+hud_inventory_armor	hud/inventory_armor.png	0	0	0
+hud_inventory_gun	hud/inventory_gun.png	0	0	0
+hud_inventory_melee	hud/inventory_melee.png	0	0	0
 hud_plus	hud/plus.png	0	0	0
 hud_plus_hover	hud/plus_hover.png	0	0	0
 hud_experience	hud/experience0.png	0	1	0
