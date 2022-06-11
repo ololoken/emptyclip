@@ -193,6 +193,13 @@ void _HUD::MouseEvent(const _MouseEvent &MouseEvent) {
 			}
 		}
 	}
+	else if(MouseEvent.Button == SDL_BUTTON_MIDDLE) {
+		if(MouseEvent.Pressed) {
+			if(HitElement && HitElement->GetID() >= 0) {
+				Player->DropItem(HitElement->GetID());
+			}
+		}
+	}
 
 	HitElement = Elements[ELEMENT_SKILLS]->GetHitElement();
 	if(MouseEvent.Pressed && MouseEvent.Button == SDL_BUTTON_LEFT) {
