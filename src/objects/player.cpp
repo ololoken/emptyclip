@@ -127,7 +127,9 @@ void _Player::Reset() {
 	Action = ACTION_IDLE;
 	MoveSoundDelay = 0;
 	Reloading = SwitchingWeapons = Crouching = Sprinting = AttackRequested = UseRequested = MedkitRequested = false;
-	AttackAllowed = true;
+	for(int i = 0; i < WEAPONATTACK_COUNT; i++) {
+		AttackAllowed[i] = true;
+	}
 	UsePeriod = PLAYER_USEPERIOD;
 	ZoomScale = PLAYER_ZOOMSCALE;
 	LegDirection = 0.0f;
@@ -430,8 +432,9 @@ void _Player::Update(double FrameTime) {
 		Tired = false;
 
 	// Check timer to see if the object can attack
-	if(!AttackAllowed && FireTimer >= FirePeriod) {
-		AttackAllowed = true;
+	for(int i = 0; i < WEAPONATTACK_COUNT; i++) {
+		if(!AttackAllowed[i] && FireTimer[i] >= FirePeriod[i])
+			AttackAllowed[i] = true;
 	}
 
 	// Update states
@@ -542,6 +545,10 @@ void _Player::Render(double BlendFactor) {
 
 	Graphics.DrawTexture(DrawPosition.X, DrawPosition.Y, PositionZ, LegAnimation->GetCurrentFrame(), Color, LegDirection, Scale, Scale);
 	Graphics.DrawTexture(DrawPosition.X, DrawPosition.Y, PositionZ + 0.01f, Animation->GetCurrentFrame(), COLOR_WHITE, Rotation, Scale, Scale);
+
+	//Graphics.EnableVBO(VBO_CIRCLE);
+	//Graphics.DrawCircle(DrawPosition.X, DrawPosition.Y, 0, Radius, COLOR_WHITE);
+	//Graphics.DisableVBO(VBO_CIRCLE);
 }
 
 // Draws the player in screen space
@@ -627,20 +634,33 @@ int _Player::SpentSkillPoints() const {
 int _Player::AddItem(_Item *Item) {
 
 	switch(Item->GetType()) {
-		case _Object::WEAPON:
-			if(!HasMainHand()) {
-				SetMainHand(static_cast<_Weapon *>(Item));
-				RecalculateStats();
-				ResetWeaponAnimation();
-				return 1;
+		case _Object::WEAPON: {
+			_Weapon *WeaponItem = static_cast<_Weapon *>(Item);
+			if(WeaponItem->IsMelee()) {
+				if(!HasMelee()) {
+					SetMelee(WeaponItem);
+					RecalculateStats();
+					ResetWeaponAnimation();
+					return 1;
+				}
+				else
+					return AddInventory(Item);
 			}
-			else if(!HasOffHand()) {
-				SetOffHand(static_cast<_Weapon *>(Item));
-				return 1;
+			else {
+				if(!HasMainHand()) {
+					SetMainHand(WeaponItem);
+					RecalculateStats();
+					ResetWeaponAnimation();
+					return 1;
+				}
+				else if(!HasOffHand()) {
+					SetOffHand(WeaponItem);
+					return 1;
+				}
+				else
+					return AddInventory(Item);
 			}
-			else
-				return AddInventory(Item);
-		break;
+		} break;
 		case _Object::ARMOR: {
 			_Armor *ArmorItem = static_cast<_Armor *>(Item);
 			if(!HasArmor() && Assets.GetSkill(Skills[SKILL_STRENGTH], SKILL_STRENGTH) >= ArmorItem->GetStrengthRequirement()) {
@@ -699,8 +719,17 @@ bool _Player::CanEquipItem(_Item *Item, int Slot) {
 		} break;
 		case INVENTORY_MAINHAND:
 		case INVENTORY_OFFHAND:
-			return Item->GetType() == _Object::WEAPON;
-		break;
+		case INVENTORY_MELEE: {
+			if(Item->GetType() == _Object::WEAPON) {
+				_Weapon *Weapon = (_Weapon *)Item;
+				if(Slot == INVENTORY_MELEE) {
+					if(Weapon->IsMelee())
+						return true;
+				}
+				else
+					return !Weapon->IsMelee();
+			}
+		} break;
 	}
 
 	return false;
@@ -812,6 +841,8 @@ bool _Player::AddComponent(int FromIndex, int ToIndex) {
 		Weapon = GetMainHand();
 	else if(ToIndex == INVENTORY_OFFHAND && HasOffHand())
 		Weapon = GetOffHand();
+	else if(ToIndex == INVENTORY_MELEE && HasOffHand())
+		Weapon = GetOffHand();
 	else
 		return false;
 
@@ -870,10 +901,21 @@ bool _Player::IsRightClip(const _Item *Item) const {
 
 // Checks if the player's weapon has ammo
 bool _Player::HasAmmo() const {
-	if(!HasMainHand() || GetMainHand()->GetAmmoType() == AMMO_NONE)
-		return true;
 
-	return GetMainHand()->GetAmmo() > 0;
+	if(AttackRequestType == WEAPONATTACK_MAIN) {
+		if(!HasMainHand() || GetMainHand()->GetAmmoType() == AMMO_NONE)
+			return true;
+
+		return GetMainHand()->GetAmmo() > 0;
+	}
+	else if(AttackRequestType == WEAPONATTACK_MELEE) {
+		if(!HasMelee() || GetMelee()->GetAmmoType() == AMMO_NONE)
+			return true;
+
+		return GetMelee()->GetAmmo() > 0;
+	}
+
+	return false;
 }
 
 // Checks if the player has ammo for the current weapon
@@ -891,10 +933,10 @@ bool _Player::HasClips() const {
 
 // Reduces the weapons ammo by one
 void _Player::ReduceAmmo() {
-	if(!HasMainHand())
-		return;
-
-	GetMainHand()->ReduceAmmo();
+	if(HasMainHand() && AttackRequestType == WEAPONATTACK_MAIN)
+		GetMainHand()->ReduceAmmo();
+	else if(HasMelee() && AttackRequestType == WEAPONATTACK_MELEE)
+		GetMelee()->ReduceAmmo();
 }
 
 // Uses an item from the player's inventory, return true if a key was used
@@ -929,7 +971,6 @@ bool _Player::UseMedkit(int Index) {
 	if(CanUseMedkit() && HasInventory(Index) && Inventory[Index]->GetType() == _Object::MISCITEM) {
 		_MiscItem *MiscItem = static_cast<_MiscItem *>(Inventory[Index]);
 		if(MiscItem->GetMiscItemType() == MISCITEM_MEDKIT) {
-
 			int Amount = GetMedkitHealAmount(MiscItem->GetLevel());
 			UpdateHealth(Amount);
 			ConsumeInventory(Index);
@@ -939,9 +980,11 @@ bool _Player::UseMedkit(int Index) {
 				std::cout << "***UseMedkit***\n";
 				std::cout << "Amount: " << Amount << '\n' << std::endl;
 			}
+
 			return true;
 		}
 	}
+
 	return false;
 }
 
@@ -1129,7 +1172,7 @@ void _Player::ResetAccuracy(bool CompleteReset) {
 		CurrentAccuracy = MinAccuracyNormal;
 
 	MinAccuracy = MinAccuracyNormal;
-	MaxAccuracy = MaxAccuracyNormal;
+	MaxAccuracy[WEAPONATTACK_MAIN] = MaxAccuracyNormal;
 }
 
 // Consume an item from the inventory
@@ -1145,68 +1188,82 @@ void _Player::ConsumeInventory(int Index, bool Delete) {
 
 // Calculates the player's stats from weapons and skills
 void _Player::RecalculateStats() {
-	_WeaponTemplate Weapon;
-	float DamageMultiplier, LevelPercent;
+	_WeaponTemplate Weapon[WEAPONATTACK_COUNT];
 
 	// See if the player is using a weapon
 	if(HasMainHand()) {
 
 		// Get weapon stats
-		Weapon.MinAccuracy = GetMainHand()->GetMinAccuracy();
-		Weapon.MaxAccuracy = GetMainHand()->GetMaxAccuracy();
-		Weapon.Recoil = GetMainHand()->GetRecoil();
-		Weapon.RecoilRegen = GetMainHand()->GetRecoilRegen();
-		Weapon.Range = GetMainHand()->GetRange();
-		Weapon.FireRate = GetMainHand()->GetFireRate();
-		Weapon.FirePeriod = GetMainHand()->GetFirePeriod();
-		Weapon.MinDamage = GetMainHand()->GetMinDamage();
-		Weapon.MaxDamage = GetMainHand()->GetMaxDamage();
-		Weapon.ReloadPeriod = GetMainHand()->GetReloadPeriod();
-		Weapon.BulletsShot = GetMainHand()->GetBulletsShot();
-		Weapon.ZoomScale = GetMainHand()->GetZoomScale();
-		WeaponType = GetMainHand()->GetWeaponType();
+		Weapon[WEAPONATTACK_MAIN].MinAccuracy = GetMainHand()->GetMinAccuracy();
+		Weapon[WEAPONATTACK_MAIN].MaxAccuracy = GetMainHand()->GetMaxAccuracy();
+		Weapon[WEAPONATTACK_MAIN].Recoil = GetMainHand()->GetRecoil();
+		Weapon[WEAPONATTACK_MAIN].RecoilRegen = GetMainHand()->GetRecoilRegen();
+		Weapon[WEAPONATTACK_MAIN].Range = GetMainHand()->GetRange();
+		Weapon[WEAPONATTACK_MAIN].FireRate = GetMainHand()->GetFireRate();
+		Weapon[WEAPONATTACK_MAIN].FirePeriod = GetMainHand()->GetFirePeriod();
+		Weapon[WEAPONATTACK_MAIN].MinDamage = GetMainHand()->GetMinDamage();
+		Weapon[WEAPONATTACK_MAIN].MaxDamage = GetMainHand()->GetMaxDamage();
+		Weapon[WEAPONATTACK_MAIN].ReloadPeriod = GetMainHand()->GetReloadPeriod();
+		Weapon[WEAPONATTACK_MAIN].BulletsShot = GetMainHand()->GetBulletsShot();
+		Weapon[WEAPONATTACK_MAIN].ZoomScale = GetMainHand()->GetZoomScale();
+		MainWeaponType = GetMainHand()->GetWeaponType();
 	}
 	else
-		WeaponType = WEAPON_MELEE;
+		MainWeaponType = WEAPON_MELEE;
 
-	// Apply skills
-	if(WeaponType == WEAPON_MELEE) {
-		AttackRange = Weapon.Range * 1;
-		CurrentAccuracyNormal = MinAccuracyNormal = Weapon.MinAccuracy;
-		MaxAccuracyNormal = Weapon.MaxAccuracy;
-		DamageMultiplier = 1;
-		Recoil = Weapon.Recoil;
-		RecoilRegen = Weapon.RecoilRegen;
+	// Get stats of melee weapon
+	if(HasMelee()) {
+		Weapon[WEAPONATTACK_MELEE].MinAccuracy = GetMelee()->GetMinAccuracy();
+		Weapon[WEAPONATTACK_MELEE].MaxAccuracy = GetMelee()->GetMaxAccuracy();
+		Weapon[WEAPONATTACK_MELEE].Recoil = GetMelee()->GetRecoil();
+		Weapon[WEAPONATTACK_MELEE].RecoilRegen = GetMelee()->GetRecoilRegen();
+		Weapon[WEAPONATTACK_MELEE].Range = GetMelee()->GetRange();
+		Weapon[WEAPONATTACK_MELEE].FireRate = GetMelee()->GetFireRate();
+		Weapon[WEAPONATTACK_MELEE].FirePeriod = GetMelee()->GetFirePeriod();
+		Weapon[WEAPONATTACK_MELEE].MinDamage = GetMelee()->GetMinDamage();
+		Weapon[WEAPONATTACK_MELEE].MaxDamage = GetMelee()->GetMaxDamage();
+		Weapon[WEAPONATTACK_MELEE].ReloadPeriod = GetMelee()->GetReloadPeriod();
+		Weapon[WEAPONATTACK_MELEE].BulletsShot = GetMelee()->GetBulletsShot();
+		Weapon[WEAPONATTACK_MELEE].ZoomScale = GetMelee()->GetZoomScale();
+	}
+
+	// Set up main stats based on weapon
+	Recoil = 0;
+	RecoilRegen = 0;
+	AttackRange[WEAPONATTACK_MAIN] = Weapon[WEAPONATTACK_MAIN].Range;
+	AttackRange[WEAPONATTACK_MELEE] = Weapon[WEAPONATTACK_MELEE].Range;
+	if(MainWeaponType == WEAPON_MELEE) {
+		CurrentAccuracyNormal = MinAccuracyNormal = Weapon[WEAPONATTACK_MAIN].MinAccuracy;
+		MaxAccuracyNormal = Weapon[WEAPONATTACK_MAIN].MaxAccuracy;
 	}
 	else {
-		AttackRange = Weapon.Range;
 		float AccuracySkillMultiplier = 1.0f / Assets.GetSkill(Skills[SKILL_ACCURACY], SKILL_ACCURACY);
-		CurrentAccuracyNormal = MinAccuracyNormal = Weapon.MinAccuracy * AccuracySkillMultiplier;
-		MaxAccuracyNormal = Weapon.MaxAccuracy * AccuracySkillMultiplier;
-		DamageMultiplier = 1;
-
-		// Recoil bonus is hard coded
-		LevelPercent = 0;
-		Recoil = Weapon.Recoil - Weapon.Recoil * LevelPercent * PLAYER_RECOILSKILLFACTOR;
-		RecoilRegen = Weapon.RecoilRegen + Weapon.RecoilRegen * LevelPercent * PLAYER_RECOILREGENSKILLFACTOR;
+		CurrentAccuracyNormal = MinAccuracyNormal = Weapon[WEAPONATTACK_MAIN].MinAccuracy * AccuracySkillMultiplier;
+		MaxAccuracyNormal = Weapon[WEAPONATTACK_MAIN].MaxAccuracy * AccuracySkillMultiplier;
+		Recoil = Weapon[WEAPONATTACK_MAIN].Recoil;
+		RecoilRegen = Weapon[WEAPONATTACK_MAIN].RecoilRegen;
 	}
+
+	MaxAccuracy[WEAPONATTACK_MELEE] = Weapon[WEAPONATTACK_MELEE].MaxAccuracy;
 
 	// Set accuracy
 	ResetAccuracy(true);
 
 	// Attacking
-	FireRate = Weapon.FireRate;
-	FirePeriod = Weapon.FirePeriod / Assets.GetSkill(Skills[SKILL_ATTACKSPEED], SKILL_ATTACKSPEED);
-	MinDamage = static_cast<int>(Weapon.MinDamage * DamageMultiplier);
-	MaxDamage = static_cast<int>(Weapon.MaxDamage * DamageMultiplier);
-	ReloadPeriod = Weapon.ReloadPeriod / Assets.GetSkill(Skills[SKILL_RELOADSPEED], SKILL_RELOADSPEED);
+	for(int i = 0; i < WEAPONATTACK_COUNT; i++) {
+		FireRate[i] = Weapon[i].FireRate;
+		FirePeriod[i] = Weapon[i].FirePeriod / Assets.GetSkill(Skills[SKILL_ATTACKSPEED], SKILL_ATTACKSPEED);
+		MinDamage[i] = (int)(Weapon[i].MinDamage);
+		MaxDamage[i] = (int)(Weapon[i].MaxDamage);
+	}
+	ReloadPeriod = Weapon[WEAPONATTACK_MAIN].ReloadPeriod / Assets.GetSkill(Skills[SKILL_RELOADSPEED], SKILL_RELOADSPEED);
 	WeaponSwitchPeriod = PLAYER_WEAPONSWITCHPERIOD * 1;
-	BulletsShot = Weapon.BulletsShot;
-	ZoomScale = Weapon.ZoomScale;
+	BulletsShot = Weapon[WEAPONATTACK_MAIN].BulletsShot;
+	ZoomScale = Weapon[WEAPONATTACK_MAIN].ZoomScale;
 
 	// Cap fire period
-	if(FirePeriod < WEAPON_MINFIREPERIOD)
-		FirePeriod = WEAPON_MINFIREPERIOD;
+	if(FirePeriod[WEAPONATTACK_MAIN] < WEAPON_MINFIREPERIOD)
+		FirePeriod[WEAPONATTACK_MAIN] = WEAPON_MINFIREPERIOD;
 
 	MovementSpeed = Assets.GetSkill(Skills[SKILL_MOVESPEED], SKILL_MOVESPEED);
 	DamageResist = Assets.GetSkill(Skills[SKILL_DAMAGERESIST], SKILL_DAMAGERESIST) - 1.0f;
@@ -1227,19 +1284,23 @@ void _Player::RecalculateStats() {
 
 	if(DebugLevel > 1) {
 		std::cout << "Stats for " << Name << std::endl;
-		std::cout << "AttackRange: " << Weapon.Range << " -> " << AttackRange << std::endl;
-		std::cout << "MinAccuracyNormal: " << Weapon.MinAccuracy << " -> " << MinAccuracyNormal << std::endl;
-		std::cout << "MaxAccuracyNormal: " << Weapon.MaxAccuracy << " -> " << MaxAccuracyNormal << std::endl;
-		std::cout << "ZoomScale: " << Weapon.ZoomScale << " -> " << ZoomScale << std::endl;
-		std::cout << "DamageMultiplier: " << DamageMultiplier << std::endl;
-		std::cout << "Recoil: " << Weapon.Recoil << " -> " << Recoil << std::endl;
-		std::cout << "RecoilRegen: " << Weapon.RecoilRegen << " -> " << RecoilRegen << std::endl;
-		std::cout << "FireRate: " << Weapon.FireRate << " -> " << FireRate << std::endl;
-		std::cout << "FirePeriod: " << Weapon.FirePeriod << " -> " << FirePeriod << std::endl;
-		std::cout << "MinDamage: " << Weapon.MinDamage << " -> " << MinDamage << std::endl;
-		std::cout << "MaxDamage: " << Weapon.MaxDamage << " -> " << MaxDamage << std::endl;
-		std::cout << "BulletsShot: " << Weapon.BulletsShot << " -> " << BulletsShot << std::endl;
-		std::cout << "ReloadPeriod: " << Weapon.ReloadPeriod << " -> " << ReloadPeriod << std::endl;
+		std::cout << "MainAttackRange: " << Weapon[WEAPONATTACK_MAIN].Range << " -> " << AttackRange[WEAPONATTACK_MAIN] << std::endl;
+		std::cout << "MeleeAttackRange: " << Weapon[WEAPONATTACK_MELEE].Range << " -> " << AttackRange[WEAPONATTACK_MELEE] << std::endl;
+		std::cout << "MinAccuracyNormal: " << Weapon[WEAPONATTACK_MAIN].MinAccuracy << " -> " << MinAccuracyNormal << std::endl;
+		std::cout << "MaxAccuracyNormal: " << Weapon[WEAPONATTACK_MAIN].MaxAccuracy << " -> " << MaxAccuracyNormal << std::endl;
+		std::cout << "ZoomScale: " << Weapon[WEAPONATTACK_MAIN].ZoomScale << " -> " << ZoomScale << std::endl;
+		std::cout << "Recoil: " << Weapon[WEAPONATTACK_MAIN].Recoil << " -> " << Recoil << std::endl;
+		std::cout << "RecoilRegen: " << Weapon[WEAPONATTACK_MAIN].RecoilRegen << " -> " << RecoilRegen << std::endl;
+		std::cout << "MainFireRate: " << Weapon[WEAPONATTACK_MAIN].FireRate << " -> " << FireRate << std::endl;
+		std::cout << "MainFirePeriod: " << Weapon[WEAPONATTACK_MAIN].FirePeriod << " -> " << FirePeriod << std::endl;
+		std::cout << "MeleeFireRate: " << Weapon[WEAPONATTACK_MELEE].FireRate << " -> " << FireRate << std::endl;
+		std::cout << "MeleeFirePeriod: " << Weapon[WEAPONATTACK_MELEE].FirePeriod << " -> " << FirePeriod << std::endl;
+		std::cout << "MainMinDamage: " << Weapon[WEAPONATTACK_MAIN].MinDamage << " -> " << MinDamage[WEAPONATTACK_MAIN] << std::endl;
+		std::cout << "MainMaxDamage: " << Weapon[WEAPONATTACK_MAIN].MaxDamage << " -> " << MaxDamage[WEAPONATTACK_MAIN] << std::endl;
+		std::cout << "MeleeMinDamage: " << Weapon[WEAPONATTACK_MELEE].MinDamage << " -> " << MinDamage[WEAPONATTACK_MELEE] << std::endl;
+		std::cout << "MeleeMaxDamage: " << Weapon[WEAPONATTACK_MELEE].MaxDamage << " -> " << MaxDamage[WEAPONATTACK_MELEE] << std::endl;
+		std::cout << "BulletsShot: " << Weapon[WEAPONATTACK_MAIN].BulletsShot << " -> " << BulletsShot << std::endl;
+		std::cout << "ReloadPeriod: " << Weapon[WEAPONATTACK_MAIN].ReloadPeriod << " -> " << ReloadPeriod << std::endl;
 		std::cout << "WeaponSwitchPeriod: " << PLAYER_WEAPONSWITCHPERIOD << " -> " << WeaponSwitchPeriod << std::endl;
 		std::cout << "MovementSpeed: " << PLAYER_MOVEMENTSPEED << " -> " << MovementSpeed << std::endl;
 		std::cout << "DamageBlock: " << DamageBlock << std::endl;
@@ -1280,8 +1341,10 @@ void _Player::IncurDeathPenalty() {
 // Returns a sample index
 const std::string &_Player::GetSample(int SampleType) const {
 
-	if(SampleType <= SAMPLE_HIT && HasMainHand())
+	if(AttackRequestType == 0 && SampleType <= SAMPLE_HIT && HasMainHand())
 		return GetMainHand()->GetSample(SampleType);
+	else if(AttackRequestType == 1 && SampleType <= SAMPLE_HIT && HasMelee())
+		return GetMelee()->GetSample(SampleType);
 	else
 		return _Entity::GetSample(SampleType);
 }
@@ -1312,6 +1375,7 @@ bool _Player::IsMelee() const { return GetMainHand() == nullptr || GetMainHand()
 
 void _Player::SetMainHand(_Weapon *Weapon) { Inventory[INVENTORY_MAINHAND] = Weapon; }
 void _Player::SetOffHand(_Weapon *Weapon) { Inventory[INVENTORY_OFFHAND] = Weapon; }
+void _Player::SetMelee(_Weapon *Weapon) { Inventory[INVENTORY_MELEE] = Weapon; }
 void _Player::SetArmor(_Armor *Armor) { Inventory[INVENTORY_ARMOR] = Armor; }
 
 void _Player::SetTorsoAnimation(const _Animation *Animation) { *this->Animation = *Animation; }

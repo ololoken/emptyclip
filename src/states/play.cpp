@@ -143,12 +143,22 @@ bool _PlayState::HandleAction(int InputType, int Action, int Value) {
 					Player->SetSprinting(false);
 				break;
 				case _Actions::FIRE:
-					if(!HUD->GetInventoryOpen()) {
-						if(Player->CanAttack() && !Player->HasAmmo())
+					if(!HUD->GetInventoryOpen() && !Player->IsMeleeAttacking()) {
+						if(Player->CanAttack(WEAPONATTACK_MAIN) && !Player->HasAmmo())
 							Audio.Play(new _AudioSource(Audio.GetBuffer(Player->GetSample(SAMPLE_EMPTY))), Player->GetPosition());
 
-						if(Player->GetFireRate() == FIRERATE_SEMI)
+						if(Player->GetFireRate(WEAPONATTACK_MAIN) == FIRERATE_SEMI) {
 							Player->SetAttackRequested(true);
+							Player->SetAttackRequestType(WEAPONATTACK_MAIN);
+						}
+					}
+				break;
+				case _Actions::MELEE:
+					if(!HUD->GetInventoryOpen()) {
+						if(Player->GetFireRate(WEAPONATTACK_MELEE) == FIRERATE_SEMI) {
+							Player->SetAttackRequested(true);
+							Player->SetAttackRequestType(WEAPONATTACK_MELEE);
+						}
 					}
 				break;
 				case _Actions::RELOAD:
@@ -243,9 +253,6 @@ void _PlayState::Update(double FrameTime) {
 
 	SaveGameTimer += FrameTime;
 
-	// Update world cursor
-	Camera->ConvertScreenToWorld(Input.GetMouse(), WorldCursor);
-
 	// Handle input
 	if(!Player->IsDying()) {
 
@@ -274,10 +281,15 @@ void _PlayState::Update(double FrameTime) {
 
 		// Attack or aim
 		if(!HUD->GetInventoryOpen()) {
-			if(Player->GetFireRate() == FIRERATE_AUTO && Actions.GetState(_Actions::FIRE)) {
 
-				// Attack
+			// Attack again
+			if(Player->IsMeleeAttacking() && Player->GetFireRate(WEAPONATTACK_MAIN) == FIRERATE_AUTO && Actions.GetState(_Actions::FIRE)) {
 				Player->SetAttackRequested(true);
+				Player->SetAttackRequestType(WEAPONATTACK_MAIN);
+			}
+			if(Player->GetFireRate(WEAPONATTACK_MELEE) == FIRERATE_AUTO && Actions.GetState(_Actions::MELEE)) {
+				Player->SetAttackRequested(true);
+				Player->SetAttackRequestType(WEAPONATTACK_MELEE);
 			}
 
 			// Aim
@@ -317,13 +329,8 @@ void _PlayState::Update(double FrameTime) {
 	UpdateEvents(FrameTime);
 
 	// Apply the damage
-	IsFiring = false;
-	if(Player->GetAttackMade()) {
-		IsFiring = true;
-
-		// Execute the attack
+	if(Player->GetAttackMade())
 		EntityAttack(Player, GRID_MONSTER);
-	}
 
 	// Update camera
 	Camera->SetPosition(Player->GetPosition());
@@ -369,6 +376,8 @@ void _PlayState::Update(double FrameTime) {
 void _PlayState::Render(double BlendFactor) {
 	if(IsPaused())
 		BlendFactor = 0;
+	else
+		Camera->ConvertScreenToWorld(Input.GetMouse(), WorldCursor);
 
 	// Setup the viewing matrix
 	Graphics.Setup3DViewport();
@@ -422,26 +431,37 @@ void _PlayState::Render(double BlendFactor) {
 		HUD->RenderCrosshair(WorldCursor);
 	}
 
-	/*
-	// Temp
+	// Debug
 	if(0) {
 		Graphics.DisableDepthTest();
-		// Draw melee stuff (temp)
-		Graphics.DrawCircle(Player->GetPositionX(), Player->GetPositionY(), 0.2f, Player->GetWeaponRange(), COLOR_WHITE);
-		Vector2 t1, t2;
-		t1 = Player->GetPosition() + Vector2(Player->GetDirection() - Player->GetMaxAccuracy() / 2 ) * Player->GetWeaponRange();
-		t2 = Player->GetPosition() + Vector2(Player->GetDirection() + Player->GetMaxAccuracy() / 2 ) * Player->GetWeaponRange();
-		glBegin(GL_LINES);
-		glVertex2f(Player->GetPositionX(), Player->GetPositionY());
-		glVertex2f(t1[0], t1[1]);
-		glEnd();
-		glBegin(GL_LINES);
-		glVertex2f(Player->GetPositionX(), Player->GetPositionY());
-		glVertex2f(t2[0], t2[1]);
-		glEnd();
+
+		// Draw melee hit range
+		for(int i = 0; i < WEAPONATTACK_COUNT; i++) {
+			_Color Color = COLOR_WHITE;
+			if(i == 1)
+				Color = COLOR_GREEN;
+
+			float Range = Player->GetWeaponRange(i);
+			if(Range == 0.0f)
+				Range = 100.0f;
+			Graphics.EnableVBO(VBO_CIRCLE);
+			Graphics.DrawCircle(Player->GetPosition().X, Player->GetPosition().Y, 0.2f, Range, Color);
+			Graphics.DisableVBO(VBO_CIRCLE);
+			Vector2 t1, t2;
+			t1 = Player->GetPosition() + Vector2(Player->GetDirection() - Player->GetMaxAccuracy(i) / 2 ) * Range;
+			t2 = Player->GetPosition() + Vector2(Player->GetDirection() + Player->GetMaxAccuracy(i) / 2 ) * Range;
+			glBegin(GL_LINES);
+			glVertex2f(Player->GetPosition().X, Player->GetPosition().Y);
+			glVertex2f(t1.X, t1.Y);
+			glEnd();
+			glBegin(GL_LINES);
+			glVertex2f(Player->GetPosition().X, Player->GetPosition().Y);
+			glVertex2f(t2.X, t2.Y);
+			glEnd();
+		}
+
 		Graphics.EnableDepthTest();
 	}
-	*/
 
 	// Setup OpenGL for drawing the HUD
 	Graphics.Setup2DProjectionMatrix();
@@ -508,10 +528,12 @@ void _PlayState::EntityAttack(_Entity *Attacker, int GridType) {
 	Attacker->ReduceAmmo();
 
 	// Weapon type specific code
-	int WeaponType = Attacker->GetWeaponType();
-	HitStruct HitInformation;
+	int WeaponType = WEAPON_MELEE;
+	if(Attacker->GetAttackRequestType() == 0)
+		WeaponType = Attacker->GetWeaponType();
 
 	// Play fire sound and generate fire/smoke particles
+	HitStruct HitInformation;
 	if(WeaponType != WEAPON_MELEE) {
 		GenerateBulletEffects(Attacker, -1, HitInformation.Position);
 		Audio.Play(new _AudioSource(Audio.GetBuffer(Attacker->GetSample(SAMPLE_FIRE))), Attacker->GetPosition());
@@ -571,7 +593,7 @@ void _PlayState::EntityAttack(_Entity *Attacker, int GridType) {
 				GenerateBulletEffects(Attacker, HIT_OBJECT, HitInformation.Position);
 
 				// Deal damage
-				int Damage = Attacker->GenerateDamage(HitInformation.Object->GetDamageBlock(), HitInformation.Object->GetDamageResist());
+				int Damage = Attacker->GenerateDamage(Attacker->GetAttackRequestType(), HitInformation.Object->GetDamageBlock(), HitInformation.Object->GetDamageResist());
 
 				HitInformation.Object->UpdateHealth(-Damage);
 				if(HitInformation.Object->IsDying()) {
@@ -628,50 +650,50 @@ void _PlayState::PickupObject() {
 
 // Processes the use key to open doors and hit switches
 void _PlayState::UseObject() {
-	if(Player->CanUse()) {
+	if(!Player->CanUse())
+		return;
 
-		// Pick up an item if available
-		if(Player->CanPickup())
-			PickupObject();
+	// Pick up an item if available
+	if(Player->CanPickup())
+		PickupObject();
 
-		// Open a door if possible
-		_Coord Position;
-		Map->GetAdjacentTile(Player->GetPosition(), Player->GetDirection(), Position);
+	// Open a door if possible
+	_Coord Position;
+	Map->GetAdjacentTile(Player->GetPosition(), Player->GetDirection(), Position);
 
-		// Check for events
-		std::list<_Event *> &Events = Map->GetEventList(Position);
-		for(auto Event : Events) {
+	// Check for events
+	std::list<_Event *> &Events = Map->GetEventList(Position);
+	for(auto Event : Events) {
 
-			// Check for doors or switches
-			if(Event->GetActive() && (Event->GetType() == EVENT_DOOR || Event->GetType() == EVENT_WSWITCH) && Map->CanChangeMapState(Event)) {
+		// Check for doors or switches
+		if(Event->GetActive() && (Event->GetType() == EVENT_DOOR || Event->GetType() == EVENT_WSWITCH) && Map->CanChangeMapState(Event)) {
 
-				// Check for key in inventory and use it
-				if(Event->GetItemIdentifier() != "") {
-					int ItemIndex = Player->FindItem(Event->GetItemIdentifier());
-					if(ItemIndex == -1) {
-						if(Assets.IsMiscItemLoaded(Event->GetItemIdentifier()))
-							HUD->ShowMessageBox("You need a " + Assets.GetMiscItemTemplate(Event->GetItemIdentifier())->Name, HUD_KEYMESSAGETIME);
+			// Check for key in inventory and use it
+			if(Event->GetItemIdentifier() != "") {
+				int ItemIndex = Player->FindItem(Event->GetItemIdentifier());
+				if(ItemIndex == -1) {
+					if(Assets.IsMiscItemLoaded(Event->GetItemIdentifier()))
+						HUD->ShowMessageBox("You need a " + Assets.GetMiscItemTemplate(Event->GetItemIdentifier())->Name, HUD_KEYMESSAGETIME);
 
-						return;
-					}
-
-					if(Player->UseItem(ItemIndex, true)) {
-						HUD->ShowTextMessage("KEY USED", 2.0f);
-					}
+					return;
 				}
 
-				// Change map
-				Map->ChangeMapState(Event);
-
-				// Decrement level
-				if(Event->GetLevel() > 0) {
-					Event->Decrement();
-					if(Event->GetLevel() == 0)
-						Event->SetActive(false);
+				if(Player->UseItem(ItemIndex, true)) {
+					HUD->ShowTextMessage("KEY USED", 2.0f);
 				}
-
-				Player->ResetUseTimer();
 			}
+
+			// Change map
+			Map->ChangeMapState(Event);
+
+			// Decrement level
+			if(Event->GetLevel() > 0) {
+				Event->Decrement();
+				if(Event->GetLevel() == 0)
+					Event->SetActive(false);
+			}
+
+			Player->ResetUseTimer();
 		}
 	}
 }

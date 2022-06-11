@@ -59,12 +59,8 @@ _Monster::_Monster(_MonsterTemplate *Monster, _Animation *Animation, const Vecto
 	MovementSpeed = Monster->MovementSpeed / (Monster->CurrentSpeed / 16.6666f);
 	Radius = Monster->Radius;
 	Scale = Monster->Scale;
-	MinAccuracy = Monster->Accuracy;
-	MaxAccuracy = Monster->Accuracy;
 	Recoil = 0;
 	RecoilRegen = 0;
-	AttackRange = Monster->AttackRange;
-	AttackRange *= AttackRange;
 	Level = Monster->Level;
 	CurrentHealth = MaxHealth = Monster->Health;
 	DamageBlock = Monster->DamageBlock;
@@ -73,10 +69,16 @@ _Monster::_Monster(_MonsterTemplate *Monster, _Animation *Animation, const Vecto
 	ViewRangeBack = Monster->ViewRange * MONSTER_BACKRANGE;
 	ExperienceGiven = Monster->ExperienceGiven;
 	ItemGroupIdentifier = Monster->ItemGroupIdentifier;
-	MinDamage = Monster->MinDamage;
-	MaxDamage = Monster->MaxDamage;
-	FirePeriod = Monster->FirePeriod;
-	WeaponType = Monster->WeaponType;
+	MinAccuracy = Monster->Accuracy;
+	for(int i = 0; i < WEAPONATTACK_COUNT; i++) {
+		MinDamage[i] = Monster->MinDamage;
+		MaxDamage[i] = Monster->MaxDamage;
+		FirePeriod[i] = Monster->FirePeriod;
+		MaxAccuracy[i] = Monster->Accuracy;
+		AttackRange[i] = Monster->AttackRange;
+		AttackRange[i] *= AttackRange[i];
+	}
+	MainWeaponType = Monster->WeaponType;
 	this->Position = LastPosition = Position;
 	*this->Animation = *Animation;
 	WeaponParticles = Monster->WeaponParticles;
@@ -117,8 +119,10 @@ void _Monster::Update(double FrameTime, _Player *Player) {
 		return;
 
 	// Check timer to see if the object can move
-	if(!AttackAllowed && FireTimer >= FirePeriod)
-		AttackAllowed = true;
+	for(int i = 0; i < WEAPONATTACK_COUNT; i++) {
+		if(!AttackAllowed[i] && FireTimer[i] >= FirePeriod[i])
+			AttackAllowed[i] = true;
+	}
 
 	// Update accuracy
 	UpdateRecoil();
@@ -342,7 +346,7 @@ bool _Monster::Passed(const Vector2 &Pos) {
 }
 
 bool _Monster::InRange(const Vector2 &Pos) {
-	return ((Position - Pos).MagnitudeSquared() <= AttackRange);
+	return ((Position - Pos).MagnitudeSquared() <= AttackRange[0]);
 }
 
 bool _Monster::IsVisible(const Vector2 &TargetPosition) {

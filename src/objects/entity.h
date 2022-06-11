@@ -40,7 +40,13 @@ enum MoveType {
 	MOVE_BACKWARDRIGHT,
 	MOVE_BACKWARDLEFT,
 	MOVE_GOAL,
-	MOVE_DIRECTION
+	MOVE_DIRECTION,
+};
+
+enum WeaponAttackType {
+	WEAPONATTACK_MAIN,
+	WEAPONATTACK_MELEE,
+	WEAPONATTACK_COUNT,
 };
 
 // Used for animation
@@ -52,7 +58,7 @@ enum ActionType {
 	ACTION_STARTSHOOT,
 	ACTION_SHOOT,
 	ACTION_STARTDEATH,
-	ACTION_DYING
+	ACTION_DYING,
 };
 
 // Indices into the animation array
@@ -68,7 +74,7 @@ class _Entity : public _Object {
 	public:
 
 		_Entity();
-		~_Entity();
+		~_Entity() override;
 
 		virtual void Update(double FrameTime) override;
 		virtual void Render(double BlendFactor) override;
@@ -77,10 +83,10 @@ class _Entity : public _Object {
 
 		bool StartAttack();
 		float GenerateShotDirection();
-		void ResetAttackAllowed() { AttackAllowed = false; FireTimer = 0; }
+		void ResetAttackAllowed(int AttackType) { AttackAllowed[AttackType] = false; FireTimer[AttackType] = 0; }
 		bool IsMeleeAttacking() const { return Action == ACTION_MELEE || Action == ACTION_STARTMELEE; }
 
-		virtual bool CanAttack() const { return AttackAllowed && !IsMeleeAttacking() && !IsDying(); }
+		virtual bool CanAttack(int AttackType) const { return AttackAllowed[AttackType] && !IsMeleeAttacking() && !IsDying(); }
 		virtual void ReduceAmmo() { }
 		virtual bool HasAmmo() const { return true; }
 
@@ -92,17 +98,19 @@ class _Entity : public _Object {
 		void UpdateMaxHealth(int Adjust);
 		void UpdateHealth(int Adjust);
 		virtual void UpdateSpeed(float Factor) {}
-		int GenerateDamage(int DamageBlock, float DamageResist);
+		int GenerateDamage(int AttackType, int DamageBlock, float DamageResist);
 		bool IsDying() const { return Action == ACTION_DYING || Action == ACTION_STARTDEATH; }
 		bool IsDead() const { return Action == ACTION_DYING && !Active; }
 
 		void SetAttackMade(bool Value) { AttackMade = Value; }
-		void SetAction(const ActionType Type) { Action = Type; }
+		void SetAction(const ActionType Value) { Action = Value; }
 		void SetMoveState(MoveType State);
 		void SetAttackRequested(bool Attack) { AttackRequested = Attack; }
-		void SetSample(int Type, const std::string &Sample) { Samples[Type] = Sample; };
+		void SetAttackRequestType(int AttackType) { AttackRequestType = AttackType; }
+		void SetSample(int Type, const std::string &Sample) { Samples[Type] = Sample; }
 
 		ActionType GetAction() const { return Action; }
+		bool GetAttackRequestType() const { return AttackRequestType; }
 		bool GetAttackMade() const { return AttackMade; }
 		MoveType GetMoveState() const { return MoveState; }
 		int GetDamageBlock() const { return DamageBlock; }
@@ -112,14 +120,14 @@ class _Entity : public _Object {
 		float GetHealthPercentage() const { return (float)CurrentHealth / MaxHealth; }
 		float GetStaminaPercentage() const { return Stamina / MaxStamina; }
 		bool GetAttackRequested() const { return AttackRequested; }
-		int GetWeaponType() const { return WeaponType; }
+		int GetWeaponType() const { return MainWeaponType; }
 		Vector2 GetWeaponOffset(int Type) const { return WeaponParticleOffset[Type]; }
-		float GetWeaponRange() const { return AttackRange; }
+		float GetWeaponRange(int Type) const { return AttackRange[Type]; }
 		float GetCurrentAccuracy() const { return CurrentAccuracy; }
-		float GetMaxAccuracy() const { return MaxAccuracy; }
+		float GetMaxAccuracy(int AttackType) const { return MaxAccuracy[AttackType]; }
 		float GetMovementSpeed() const { return MovementSpeed; }
-		int GetMinDamage() const { return MinDamage; }
-		int GetMaxDamage() const { return MaxDamage; }
+		int GetMinDamage(int Type) const { return MinDamage[Type]; }
+		int GetMaxDamage(int Type) const { return MaxDamage[Type]; }
 		int GetBulletsShot() const { return BulletsShot; }
 		int GetLevel() const { return Level; }
 		bool GetTired() const { return Tired; }
@@ -172,10 +180,11 @@ class _Entity : public _Object {
 		float DamageResist;
 
 		// Attacking attributes
-		float CurrentAccuracy, MinAccuracy, MaxAccuracy, AccuracyModifier, Recoil, RecoilRegen, AttackRange;
-		double FireTimer, FirePeriod;
-		int MinDamage, MaxDamage, BulletsShot, WeaponType;
-		bool AttackRequested, AttackAllowed, AttackMade;
+		float CurrentAccuracy, MinAccuracy, MaxAccuracy[WEAPONATTACK_COUNT], AccuracyModifier, Recoil, RecoilRegen, AttackRange[WEAPONATTACK_COUNT];
+		double FireTimer[WEAPONATTACK_COUNT], FirePeriod[WEAPONATTACK_COUNT];
+		int MinDamage[WEAPONATTACK_COUNT], MaxDamage[WEAPONATTACK_COUNT], BulletsShot, MainWeaponType;
+		bool AttackRequested, AttackAllowed[WEAPONATTACK_COUNT], AttackMade;
+		int AttackRequestType;
 		_AudioSource *TriggerDownAudio;
 
 		std::string Samples[SAMPLE_TYPES];

@@ -38,6 +38,7 @@ void _Actions::LoadActionNames() {
 	Names[INVENTORY] = Assets.GetLabel("label_options_inventory")->GetText();
 	Names[FIRE] = Assets.GetLabel("label_options_fire")->GetText();
 	Names[AIM] = Assets.GetLabel("label_options_aim")->GetText();
+	Names[MELEE] = Assets.GetLabel("label_options_melee")->GetText();
 	Names[RELOAD] = Assets.GetLabel("label_options_reload")->GetText();
 	Names[WEAPONSWITCH] = Assets.GetLabel("label_options_weaponswitch")->GetText();
 	Names[MEDKIT] = Assets.GetLabel("label_options_medkit")->GetText();

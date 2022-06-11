@@ -42,7 +42,7 @@ class _Weapon : public _Item {
 
 		void SetAmmo(int Value);
 		void SetMaxComponents(int Value) { MaxComponents = Value; }
-		void SetSample(int Type, int Sample) { Stats.Samples[Type] = Sample; };
+		void SetSample(int SampleType, int Sample) { Stats.Samples[SampleType] = Sample; }
 		void ReduceAmmo();
 
 		const std::string &GetName() const override { return Stats.Name; }
@@ -66,7 +66,7 @@ class _Weapon : public _Item {
 		int GetAmmo() const { return Ammo; }
 		int GetMaxComponents() const { return MaxComponents; }
 		int GetComponents() const { return static_cast<int>(Upgrades.size()); }
-		const std::string &GetSample(int Type) const { return Stats.Samples[Type]; };
+		const std::string &GetSample(int SampleType) const { return Stats.Samples[SampleType]; };
 		float GetBonus(int Index) const { return Bonus[Index]; }
 		_Upgrade *GetUpgrade(int Index) const;
 		_ParticleTemplate *GetWeaponParticle(int Index);

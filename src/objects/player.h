@@ -43,6 +43,7 @@ enum InventoryTypes {
 	INVENTORY_ARMOR,
 	INVENTORY_MAINHAND,
 	INVENTORY_OFFHAND,
+	INVENTORY_MELEE,
 	INVENTORY_BAGSTART,
 	INVENTORY_BAGEND = INVENTORY_BAGSTART + INVENTORY_BAGSIZE,
 	INVENTORY_SIZE = INVENTORY_BAGEND,
@@ -68,13 +69,13 @@ class _Player : public _Entity {
 		void Render2D(const _Point &Position);
 
 		void Update(double FrameTime) override;
-		void UpdateAnimation(double FrameTime);
-		void UpdateExperience(int64_t ExperienceGained);
+		void UpdateAnimation(double FrameTime) override;
+		void UpdateExperience(int64_t ExperienceGained) override;
 		void UpdateReloading();
 		void UpdateWeaponSwitch();
 		void UpdateSpeed(float Factor) override;
 		void UpdateLevel();
-		void UpdateKillCount(int Value) { MonsterKills += Value; }
+		void UpdateKillCount(int Value) override { MonsterKills += Value; }
 		void UpdateSkill(int Index, int Value);
 		void StartReloading();
 		void CancelReloading();
@@ -97,14 +98,15 @@ class _Player : public _Entity {
 		int FindItem(const std::string &Identifier);
 		void ResetUseTimer() { UseTimer = 0; }
 		void ConsumeInventory(int Index, bool Delete=true);
-		void ReduceAmmo();
-		bool HasAmmo() const;
+		void ReduceAmmo() override;
+		bool HasAmmo() const override;
 		bool HasClips() const;
 		bool HasMainHand() const { return GetMainHand() != nullptr; }
 		bool HasOffHand() const { return GetOffHand() != nullptr; }
+		bool HasMelee() const { return GetMelee() != nullptr; }
 		bool HasArmor() const { return GetArmor() != nullptr; }
 		bool HasInventory(int Index) const { return Index >= 0 && Inventory[Index] != nullptr; }
-		bool CanAttack() const { return AttackAllowed && !IsMeleeAttacking() && !Reloading && !SwitchingWeapons && !IsDying(); }
+		bool CanAttack(int AttackType) const override { return AttackAllowed[AttackType] && !IsMeleeAttacking() && !Reloading && !SwitchingWeapons && !IsDying(); }
 		bool CanPickup() const { return !IsDying() && CanUse(); }
 		bool CanUse() const { return UseTimer > UsePeriod; }
 		bool CanDropItem() const { return !Reloading && !SwitchingWeapons; }
@@ -127,16 +129,18 @@ class _Player : public _Entity {
 		float GetCrosshairRadius(const Vector2 &Cursor);
 		int GetWeaponAmmoType() const;
 		int GetInventoryAmmoType(int Index) const;
-		const _ParticleTemplate *GetWeaponParticle(int Index) const;
+		const _ParticleTemplate *GetWeaponParticle(int Index) const override;
 		void SetMainHand(_Weapon *Weapon);
 		void SetOffHand(_Weapon *Weapon);
+		void SetMelee(_Weapon *Weapon);
 		void SetArmor(_Armor *Armor);
 		_Weapon *GetMainHand() const { return (_Weapon *)Inventory[INVENTORY_MAINHAND]; }
 		_Weapon *GetOffHand() const { return (_Weapon *)Inventory[INVENTORY_OFFHAND]; }
+		_Weapon *GetMelee() const { return (_Weapon *)Inventory[INVENTORY_MELEE]; }
 		_Armor *GetArmor() const  { return (_Armor *)Inventory[INVENTORY_ARMOR]; }
 		_Item *GetInventory(int Index)  { return Inventory[Index]; }
 		float GetZoomScale() const { return ZoomScale; }
-		int GetFireRate() const { return FireRate; }
+		int GetFireRate(int AttackType) const { return FireRate[AttackType]; }
 		int64_t GetExperience() const { return Experience; }
 		int64_t GetExperienceNextLevel() const { return ExperienceNextLevel; }
 		int GetMonsterKills() const { return MonsterKills; }
@@ -220,6 +224,6 @@ class _Player : public _Entity {
 		// Attacking
 		float CurrentAccuracyNormal, MinAccuracyNormal, MaxAccuracyNormal, ZoomScale;
 		double WeaponSwitchTimer, ReloadTimer, UseTimer, MedkitTimer, WeaponSwitchPeriod, ReloadPeriod, UsePeriod;
-		int FireRate;
+		int FireRate[WEAPONATTACK_COUNT];
 		bool Reloading, SwitchingWeapons;
 };

@@ -56,7 +56,7 @@ void _Config::Close() {
 // Set defaults
 void _Config::SetDefaults() {
 
-	Version = 1;
+	Version = CONFIG_VERSION;
 	WindowWidth = DEFAULT_WINDOW_WIDTH;
 	WindowHeight = DEFAULT_WINDOW_HEIGHT;
 	MSAA = 0;
@@ -88,6 +88,7 @@ void _Config::LoadDefaultInputBindings() {
 	Actions.AddInputMap(_Input::KEYBOARD, DEFAULT_KEYINVENTORY, _Actions::INVENTORY);
 	Actions.AddInputMap(_Input::MOUSE_BUTTON, DEFAULT_BUTTONFIRE, _Actions::FIRE);
 	Actions.AddInputMap(_Input::MOUSE_BUTTON, DEFAULT_BUTTONAIM, _Actions::AIM);
+	Actions.AddInputMap(_Input::KEYBOARD, DEFAULT_KEYMELEE, _Actions::MELEE);
 	Actions.AddInputMap(_Input::KEYBOARD, DEFAULT_KEYRELOAD, _Actions::RELOAD);
 	Actions.AddInputMap(_Input::KEYBOARD, DEFAULT_KEYWEAPONSWITCH, _Actions::WEAPONSWITCH);
 	Actions.AddInputMap(_Input::KEYBOARD, DEFAULT_KEYMEDKIT, _Actions::MEDKIT);

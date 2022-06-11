@@ -40,6 +40,7 @@ class _Actions {
 			SPRINT,
 			FIRE,
 			AIM,
+			MELEE,
 			RELOAD,
 			WEAPONSWITCH,
 			MEDKIT,

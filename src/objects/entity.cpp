@@ -50,17 +50,18 @@ _Entity::_Entity()
 	DamageResist(0.0f),
 	CurrentAccuracy(0),
 	MinAccuracy(0),
-	MaxAccuracy(0),
+	MaxAccuracy{0, 0},
 	AccuracyModifier(1.0f),
 	Recoil(0),
 	RecoilRegen(0),
-	AttackRange(0),
-	FireTimer(0),
-	FirePeriod(0),
+	AttackRange{0, 0},
+	FireTimer{0, 0},
+	FirePeriod{0,0},
 	BulletsShot(1),
 	AttackRequested(false),
-	AttackAllowed(true),
+	AttackAllowed{true, true},
 	AttackMade(false),
+	AttackRequestType(0),
 	TriggerDownAudio(nullptr) {
 
 	Animation = new _Animation();
@@ -101,15 +102,15 @@ float _Entity::GenerateShotDirection() {
 
 	// Update accuracy based on the weapon's recoil
 	CurrentAccuracy += Recoil;
-	if(CurrentAccuracy > MaxAccuracy)
-		CurrentAccuracy = MaxAccuracy;
+	if(CurrentAccuracy > MaxAccuracy[WEAPONATTACK_MAIN])
+		CurrentAccuracy = MaxAccuracy[WEAPONATTACK_MAIN];
 
 	return NewDirection;
 }
 
 // Generates damage after defenses
-int _Entity::GenerateDamage(int DamageBlock, float DamageResist) {
-	int Damage = Random.GenerateRange(MinDamage, MaxDamage);
+int _Entity::GenerateDamage(int AttackType, int DamageBlock, float DamageResist) {
+	int Damage = Random.GenerateRange(MinDamage[AttackType], MaxDamage[AttackType]);
 	Damage -= (int)(Damage * DamageResist);
 	Damage -= DamageBlock;
 
@@ -131,7 +132,7 @@ void _Entity::SetMoveState(MoveType State) {
 bool _Entity::StartAttack() {
 
 	// Make sure object is allowed to attack
-	if(!CanAttack())
+	if(!CanAttack(AttackRequestType))
 		return false;
 
 	// Check ammo
@@ -139,7 +140,7 @@ bool _Entity::StartAttack() {
 		return false;
 
 	// Set animation
-	if(GetWeaponType() == WEAPON_MELEE) {
+	if(AttackRequestType == WEAPONATTACK_MELEE || GetWeaponType() == WEAPON_MELEE) {
 		Action = ACTION_STARTMELEE;
 
 		// Melee fire sound
@@ -148,7 +149,8 @@ bool _Entity::StartAttack() {
 	else
 		Action = ACTION_STARTSHOOT;
 
-	ResetAttackAllowed();
+	ResetAttackAllowed(AttackRequestType);
+
 	return true;
 }
 
@@ -172,7 +174,8 @@ void _Entity::Update(double FrameTime) {
 	LastPosition = Position;
 
 	MoveSoundTimer += FrameTime;
-	FireTimer += FrameTime;
+	for(int i = 0; i < WEAPONATTACK_COUNT; i++)
+		FireTimer[i] += FrameTime;
 }
 
 // Updates the animation
@@ -204,7 +207,7 @@ void _Entity::UpdateAnimation(double FrameTime) {
 			Action = ACTION_MELEE;
 			Animation->ChangeReel(MeleeAnimation);
 			if(Type == _Object::PLAYER)
-				Animation->SetFramePeriod(FirePeriod);
+				Animation->SetFramePeriod(FirePeriod[WEAPONATTACK_MELEE]);
 			Animation->SetPlayMode(PLAYING);
 			SetLegAnimationPlayMode(STOPPED);
 			MoveState = MOVE_NONE;
@@ -404,6 +407,10 @@ void _Entity::Render(double BlendFactor) {
 	Vector2 DrawPosition(Position * BlendFactor + LastPosition * (1.0f - BlendFactor));
 
 	Graphics.DrawTexture(DrawPosition.X, DrawPosition.Y, PositionZ, Animation->GetCurrentFrame(), Color, Rotation, Scale, Scale);
+
+	//Graphics.EnableVBO(VBO_CIRCLE);
+	//Graphics.DrawCircle(DrawPosition.X, DrawPosition.Y, 0, Radius, COLOR_WHITE);
+	//Graphics.DisableVBO(VBO_CIRCLE);
 }
 
 // Updates the Entity's maximum health

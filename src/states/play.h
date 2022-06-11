@@ -130,7 +130,6 @@ class _PlayState : public _State {
 
 		// Particles
 		_Particles *Particles;
-		bool IsFiring;
 
 		// Camera
 		_Camera *Camera;

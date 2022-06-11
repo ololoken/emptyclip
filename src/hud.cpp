@@ -111,6 +111,7 @@ _HUD::_HUD(_Player *Player) {
 	Labels[LABEL_SKILL8] = Assets.GetLabel("hud_skill8_value");
 
 	Labels[LABEL_DAMAGE] = Assets.GetLabel("hud_player_damage_value");
+	Labels[LABEL_MELEEDAMAGE] = Assets.GetLabel("hud_player_meleedamage_value");
 	Labels[LABEL_DAMAGEBLOCK] = Assets.GetLabel("hud_player_damageblock_value");
 	Labels[LABEL_DAMAGERESIST] = Assets.GetLabel("hud_player_damageresist_value");
 	Labels[LABEL_MOVEMENTSPEED] = Assets.GetLabel("hud_player_movementspeed_value");
@@ -150,9 +151,7 @@ void _HUD::MouseEvent(const _MouseEvent &MouseEvent) {
 	if(!GetInventoryOpen())
 		return;
 
-	_Element *HitElement;
-
-	HitElement = Elements[ELEMENT_INVENTORY]->GetHitElement();
+	_Element *HitElement = Elements[ELEMENT_INVENTORY]->GetHitElement();
 	if(MouseEvent.Button == SDL_BUTTON_LEFT) {
 
 		// Start dragging an item
@@ -189,7 +188,8 @@ void _HUD::MouseEvent(const _MouseEvent &MouseEvent) {
 		if(MouseEvent.Pressed) {
 			if(HitElement && HitElement->GetID() >= 0) {
 				Player->UseMedkit(HitElement->GetID());
-				CursorOverItem = nullptr;
+				if(!Player->HasInventory(HitElement->GetID()))
+					CursorOverItem = nullptr;
 			}
 		}
 	}
@@ -329,6 +329,7 @@ void _HUD::Render() {
 	// Draw character screen
 	RenderCharacterScreen();
 
+	// Draw item tooltip
 	if(CursorOverItem && CursorItem != CursorOverItem) {
 		RenderItemInfo(CursorOverItem, Input.GetMouse().X, Input.GetMouse().Y);
 		if(CursorOverItem->GetType() == _Object::WEAPON && CursorOverItem != Player->GetMainHand())
@@ -414,8 +415,12 @@ void _HUD::RenderCharacterScreen() {
 		Buffer.str("");
 	}
 
-	Buffer << Player->GetMinDamage() << " - " << Player->GetMaxDamage();
+	Buffer << Player->GetMinDamage(WEAPONATTACK_MAIN) << " - " << Player->GetMaxDamage(WEAPONATTACK_MAIN);
 	Labels[LABEL_DAMAGE]->SetText(Buffer.str());
+	Buffer.str("");
+
+	Buffer << Player->GetMinDamage(WEAPONATTACK_MELEE) << " - " << Player->GetMaxDamage(WEAPONATTACK_MELEE);
+	Labels[LABEL_MELEEDAMAGE]->SetText(Buffer.str());
 	Buffer.str("");
 
 	Buffer << Player->GetDamageBlock();

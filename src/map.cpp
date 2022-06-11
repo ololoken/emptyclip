@@ -571,21 +571,21 @@ _Entity *_Map::CheckMeleeCollisions(_Entity *Attacker, const Vector2 &Direction,
 
 	// Get the object's bounding rectangle
 	_TileBounds TileBounds;
-	GetTileBounds(Attacker->GetPosition(), Attacker->GetWeaponRange(), TileBounds);
+	GetTileBounds(Attacker->GetPosition(), Attacker->GetWeaponRange(Attacker->GetAttackRequestType()), TileBounds);
 	for(int i = TileBounds.Start.X; i <= TileBounds.End.X; i++) {
 		for(int j = TileBounds.Start.Y; j <= TileBounds.End.Y; j++) {
 			for(auto Iterator = Data[i][j].Objects[GridType].begin(); Iterator != Data[i][j].Objects[GridType].end(); ++Iterator) {
 				_Entity *Entity = static_cast<_Entity *>(*Iterator);
 				if(!Entity->IsDying()) {
 					float DistanceSquared = (Entity->GetPosition() - Attacker->GetPosition()).MagnitudeSquared();
-					float RadiiSum = Entity->GetRadius() + Attacker->GetWeaponRange();
+					float RadiiSum = Entity->GetRadius() + Attacker->GetWeaponRange(Attacker->GetAttackRequestType());
 
 					// Check circle intersection
 					if(DistanceSquared < RadiiSum * RadiiSum) {
 						Vector2 ObjectDirection((Entity->GetPosition() - Attacker->GetPosition()).UnitVector());
 
 						// Compare angles
-						if((Direction * ObjectDirection) > cosf(Attacker->GetMaxAccuracy() * 0.5f / DEGREES_IN_RADIAN)) {
+						if((Direction * ObjectDirection) > cosf(Attacker->GetMaxAccuracy(Attacker->GetAttackRequestType()) * 0.5f / DEGREES_IN_RADIAN)) {
 
 							// Check for walls
 							if(IsVisible(Attacker->GetPosition(), Entity->GetPosition()))
