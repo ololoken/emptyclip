@@ -210,7 +210,7 @@ void _Framework::Update() {
 
 	Audio.Update(FrameTime);
 	Graphics.Flip(FrameTime);
-	if(!Config.Vsync)
+	if(FrameLimit && !Config.Vsync)
 		FrameLimit->Update();
 }
 
