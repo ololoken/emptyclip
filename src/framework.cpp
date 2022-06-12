@@ -93,8 +93,17 @@ void _Framework::Init(int ArgumentCount, char **Arguments) {
 		throw std::runtime_error("Failed to initialize SDL");
 	}
 
+	// Get window settings
+	_WindowSettings WindowSettings;
+	WindowSettings.WindowTitle = GAME_WINDOWTITLE;
+	WindowSettings.Fullscreen = Fullscreen;
+	WindowSettings.Vsync = Config.Vsync;
+	WindowSettings.Size = Config.WindowSize;
+	WindowSettings.MSAA = Config.MSAA;
+	WindowSettings.Position = glm::ivec2(SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED);
+
 	// Set up subsystems
-	Graphics.Init(Config.WindowWidth, Config.WindowHeight, Config.Vsync, Config.MSAA, Fullscreen);
+	Graphics.Init(WindowSettings);
 	Audio.Init(AudioEnabled);
 	Audio.SetGain(Config.SoundVolume);
 

@@ -20,6 +20,7 @@
 // Libraries
 #include <string>
 #include <map>
+#include <glm/vec2.hpp>
 
 // Load/save config file
 class _Config {
@@ -40,8 +41,7 @@ class _Config {
 		int Version;
 
 		// Graphics
-		int WindowWidth;
-		int WindowHeight;
+		glm::ivec2 WindowSize;
 		double MaxFPS;
 		int Vsync;
 		int MSAA;

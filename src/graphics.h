@@ -23,6 +23,7 @@
 #include <SDL_opengl.h>
 #include <glm/vec2.hpp>
 #include <glm/vec3.hpp>
+#include <string>
 
 // Forward Declarations
 class _Texture;
@@ -36,6 +37,16 @@ enum VertexBufferType {
 	VBO_COUNT
 };
 
+struct _WindowSettings {
+	_WindowSettings() : Size(0), Position(0), MSAA(0), Fullscreen(false), Vsync(false) { }
+	std::string WindowTitle;
+	glm::ivec2 Size;
+	glm::ivec2 Position;
+	int MSAA;
+	bool Fullscreen;
+	bool Vsync;
+};
+
 // Classes
 class _Graphics {
 
@@ -43,7 +54,7 @@ class _Graphics {
 
 		_Graphics() { Enabled = false; }
 
-		void Init(int WindowWidth, int WindowHeight, int Vsync, int MSAA, bool Fullscreen);
+		void Init(const _WindowSettings &WindowSettings);
 		void Close();
 
 		void ToggleFullScreen();

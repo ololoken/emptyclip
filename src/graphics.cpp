@@ -36,9 +36,8 @@ PFNGLDELETEBUFFERSPROC glDeleteBuffers;
 _Graphics Graphics;
 
 // Initialize
-void _Graphics::Init(int WindowWidth, int WindowHeight, int Vsync, int MSAA, bool Fullscreen) {
-	CurrentSize.x = WindowWidth;
-	CurrentSize.y = WindowHeight;
+void _Graphics::Init(const _WindowSettings &WindowSettings) {
+	CurrentSize = WindowSettings.Size;
 	FramesPerSecond = 0;
 	FrameCount = 0;
 	FrameRateTimer = 0;
@@ -52,7 +51,7 @@ void _Graphics::Init(int WindowWidth, int WindowHeight, int Vsync, int MSAA, boo
 
 	// Set video flags
 	Uint32 VideoFlags = SDL_WINDOW_OPENGL;
-	if(Fullscreen) {
+	if(WindowSettings.Fullscreen) {
 		VideoFlags |= SDL_WINDOW_FULLSCREEN_DESKTOP;
 
 		SDL_DisplayMode DisplayMode;
@@ -66,13 +65,13 @@ void _Graphics::Init(int WindowWidth, int WindowHeight, int Vsync, int MSAA, boo
 	// Set opengl attributes
 	SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 1);
 	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
-	if(MSAA > 0) {
+	if(WindowSettings.MSAA > 0) {
 		SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 1);
-		SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, MSAA);
+		SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, WindowSettings.MSAA);
 	}
 
 	// Set video mode
-	Window = SDL_CreateWindow(GAME_WINDOWTITLE.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, CurrentSize.x, CurrentSize.y, VideoFlags);
+	Window = SDL_CreateWindow(WindowSettings.WindowTitle.c_str(), WindowSettings.Position.x, WindowSettings.Position.y, CurrentSize.x, CurrentSize.y, VideoFlags);
 	if(Window == nullptr)
 		throw std::runtime_error("SDL_CreateWindow failed");
 
@@ -82,7 +81,7 @@ void _Graphics::Init(int WindowWidth, int WindowHeight, int Vsync, int MSAA, boo
 		throw std::runtime_error("SDL_GL_CreateContext failed");
 
 	// Set vsync
-	SDL_GL_SetSwapInterval(Vsync);
+	SDL_GL_SetSwapInterval(WindowSettings.Vsync);
 
 	// Set up OpenGL
 	SetupOpenGL();
