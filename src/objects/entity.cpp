@@ -63,7 +63,8 @@ _Entity::_Entity() :
 	AttackRequested(false),
 	AttackAllowed{true, true},
 	AttackMade(false),
-	AttackRequestType(0) {
+	AttackRequestType(0),
+	ExperienceGiven(0) {
 
 	Animation = new _Animation();
 	Map = nullptr;

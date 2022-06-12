@@ -108,9 +108,6 @@ class _Monster : public _Entity {
 		float AITimer;
 		float WaitTime;
 
-		int64_t ExperienceGiven;
-		std::string ItemGroupIdentifier;
-
 		int PersonalityType;
 		std::list<int> BehaviorList;
 		std::list<float> BehaviorWait;

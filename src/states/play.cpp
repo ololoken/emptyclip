@@ -616,7 +616,7 @@ void _PlayState::EntityAttack(_Entity *Attacker, int GridType) {
 				// Update health
 				HitInformation.Object->UpdateHealth(-Damage);
 				if(HitInformation.Object->IsDying()) {
-					Attacker->UpdateExperience(HitInformation.Object->GetExperienceGiven());
+					Attacker->UpdateExperience(HitInformation.Object->ExperienceGiven);
 					CreateItemDrop(HitInformation.Object);
 
 					// Dying sound
@@ -719,10 +719,10 @@ void _PlayState::UseObject() {
 
 // Creates a random item from an entity
 void _PlayState::CreateItemDrop(const _Entity *Entity) {
-	if(Entity->GetItemGroupIdentifier() == "")
+	if(Entity->ItemGroupIdentifier == "")
 		return;
 
-	_ItemGroup *ItemGroup = Assets.GetItemGroup(Entity->GetItemGroupIdentifier());
+	_ItemGroup *ItemGroup = Assets.GetItemGroup(Entity->ItemGroupIdentifier);
 	for(int i = 0; i < ItemGroup->Quantity; i++) {
 
 		// Spawn random item

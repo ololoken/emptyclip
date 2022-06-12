@@ -112,8 +112,6 @@ class _Entity : public _Object {
 		int GetMinDamage(int Type) const { return MinDamage[Type]; }
 		int GetMaxDamage(int Type) const { return MaxDamage[Type]; }
 		virtual glm::vec2 GetGoal() const;
-		virtual int64_t GetExperienceGiven() const { return 0; }
-		virtual std::string GetItemGroupIdentifier() const { return ""; }
 		virtual const _ParticleTemplate *GetWeaponParticle(int Index) const { return nullptr; }
 
 		void AddGoal(const glm::vec2 &Goal) { Goals.push_front(Goal); }
@@ -179,6 +177,10 @@ class _Entity : public _Object {
 		bool AttackAllowed[WEAPONATTACK_COUNT];
 		bool AttackMade;
 		int AttackRequestType;
+
+		// Monsters
+		std::string ItemGroupIdentifier;
+		int64_t ExperienceGiven;
 
 	protected:
 
