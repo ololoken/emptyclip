@@ -20,7 +20,7 @@ tar --transform "s|^|$base/|" -czvf "out/$pkg" -C ../ \
 --exclude=working/"$project"* \
 src/ \
 working/ \
-deployment/emptyclip{,.desktop,.png} \
+deployment/emptyclip{,.desktop,.png,.xml} \
 cmake/ \
 build.sh \
 CMakeLists.txt \

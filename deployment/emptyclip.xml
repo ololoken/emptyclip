@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop-application">
+	<id>io.github.jazztickets.emptyclip</id>
+	<name>Empty Clip</name>
+	<summary>Empty Clip is a top-down shooter action RPG.</summary>
+	<description>
+		<p>Travel through mansions, dungeons, forests, caves, cities, skyscrapers, hell, and alien worlds.</p>
+	</description>
+	<categories>
+		<category>Game</category>
+		<category>Arcade</category>
+		<category>RolePlaying</category>
+	</categories>
+	<content_rating type="oars-1.1" />
+	<url type="homepage">https://github.com/jazztickets/emptyclip</url>
+	<url type="help">https://jazztickets.github.io/docs/emptyclip/</url>
+	<url type="bugtracker">https://github.com/jazztickets/emptyclip/issues</url>
+	<project_license>GPL-3.0-only</project_license>
+	<screenshots>
+		<screenshot type="default">
+			<caption></caption>
+			<image type="source" width="1920" height="1080">https://jazztickets.github.io/docs/emptyclip/img/s_0.jpg</image>
+		</screenshot>
+		<screenshot>
+			<caption></caption>
+			<image type="source" width="1920" height="1080">https://jazztickets.github.io/docs/emptyclip/img/s_1.jpg</image>
+		</screenshot>
+	</screenshots>
+	<metadata_license>CC0-1.0</metadata_license>
+	<releases>
+		<release version="1.0.3" date="2008-04-06"/>
+		<release version="1.0.2" date="2006-06-08"/>
+		<release version="1.0.1" date="2006-05-28"/>
+		<release version="1.0.0" date="2006-05-19"/>
+	</releases>
+</component>
