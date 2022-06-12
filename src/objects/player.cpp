@@ -545,8 +545,8 @@ void _Player::AdjustLegDirection(float Destination) {
 void _Player::Render(double BlendFactor) {
 	glm::vec2 DrawPosition(Position * (float)BlendFactor + LastPosition * (float)(1.0 - BlendFactor));
 
-	Graphics.DrawTexture(DrawPosition.x, DrawPosition.y, PositionZ, LegAnimation->GetCurrentFrame(), Color, LegDirection, Scale, Scale);
-	Graphics.DrawTexture(DrawPosition.x, DrawPosition.y, PositionZ + 0.01f, Animation->GetCurrentFrame(), COLOR_WHITE, Rotation, Scale, Scale);
+	Graphics.DrawTexture(glm::vec3(DrawPosition, PositionZ), LegAnimation->GetCurrentFrame(), Color, LegDirection, glm::vec2(Scale));
+	Graphics.DrawTexture(glm::vec3(DrawPosition, PositionZ + 0.01f), Animation->GetCurrentFrame(), COLOR_WHITE, Rotation, glm::vec2(Scale));
 
 	//Graphics.EnableVBO(VBO_CIRCLE);
 	//Graphics.DrawCircle(DrawPosition.x, DrawPosition.y, 0, Radius, COLOR_WHITE);
@@ -555,8 +555,8 @@ void _Player::Render(double BlendFactor) {
 
 // Draws the player in screen space
 void _Player::Render2D(const glm::ivec2 &Position) {
-	Graphics.DrawTexture(Position.x, Position.y, 0, LegAnimation->GetCurrentFrame(), Color, Rotation, LegAnimation->GetCurrentFrame()->GetWidth(), LegAnimation->GetCurrentFrame()->GetHeight());
-	Graphics.DrawTexture(Position.x, Position.y, 0 + 0.01f, Animation->GetCurrentFrame(), COLOR_WHITE, Rotation, Animation->GetCurrentFrame()->GetWidth(), Animation->GetCurrentFrame()->GetHeight());
+	Graphics.DrawTexture(glm::vec3(Position, 0), LegAnimation->GetCurrentFrame(), Color, Rotation, glm::vec2(LegAnimation->GetCurrentFrame()->GetWidth(), LegAnimation->GetCurrentFrame()->GetHeight()));
+	Graphics.DrawTexture(glm::vec3(Position, 0.01f), Animation->GetCurrentFrame(), COLOR_WHITE, Rotation, glm::vec2(Animation->GetCurrentFrame()->GetWidth(), Animation->GetCurrentFrame()->GetHeight()));
 }
 
 // Updates the player's experience, leveling up if needed

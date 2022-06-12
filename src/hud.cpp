@@ -354,11 +354,11 @@ void _HUD::RenderCrosshair(const glm::vec2 &Position) {
 	Graphics.DisableDepthTest();
 
 	Graphics.EnableVBO(VBO_CIRCLE);
-	Graphics.DrawCircle(Position.x, Position.y, 0, CrosshairScale, COLOR_WHITE);
+	Graphics.DrawCircle(glm::vec3(Position, 0.0f), CrosshairScale);
 	Graphics.DisableVBO(VBO_CIRCLE);
 
 	Graphics.EnableVBO(VBO_QUAD);
-	Graphics.DrawTexture(Position.x, Position.y, 0, CrosshairID, COLOR_WHITE, 0, 1.0f, 1.0f);
+	Graphics.DrawTexture(glm::vec3(Position, 0.0f), CrosshairID, COLOR_WHITE, 0);
 	Graphics.DisableVBO(VBO_QUAD);
 
 	Graphics.EnableDepthTest();
@@ -532,7 +532,7 @@ void _HUD::RenderItemInfo(_Item *Item, int DrawX, int DrawY) {
 		DrawX = Graphics.CurrentSize.x - MinPadding - Width;
 	if(DrawY > Graphics.CurrentSize.y - MinPadding - Height)
 		DrawY = Graphics.CurrentSize.y - MinPadding - Height;
-	Graphics.DrawRectangle(DrawX, DrawY, DrawX + Width, DrawY + Height, _Color(0, 0, 0, 0.8f), true);
+	Graphics.DrawRectangle(glm::vec2(DrawX, DrawY), glm::vec2(DrawX + Width, DrawY + Height), _Color(0, 0, 0, 0.8f), true);
 
 	DrawY += 25;
 	DrawX += Width/2;

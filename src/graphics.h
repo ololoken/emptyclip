@@ -22,6 +22,7 @@
 #include <SDL_video.h>
 #include <SDL_opengl.h>
 #include <glm/vec2.hpp>
+#include <glm/vec3.hpp>
 
 // Forward Declarations
 class _Texture;
@@ -59,13 +60,13 @@ class _Graphics {
 		void DrawRectangle(const _Bounds &Bounds, const _Color &Color, bool Filled=false);
 		void DrawMask(const _Bounds &Bounds);
 
-		void DrawTexture(float X, float Y, float Z, const _Texture *Texture, const _Color &Color, float Rotation=0.0f, float ScaleX=1.0f, float ScaleY=1.0f);
-		void DrawRepeatable(float StartX, float StartY, float StartZ, float EndX, float EndY, float EndZ, const _Texture *Texture, float Rotation, float ScaleX);
-		void DrawCube(float StartX, float StartY, float StartZ, float ScaleX, float ScaleY, float ScaleZ, const _Texture *Texture);
-		void DrawWall(float StartX, float StartY, float StartZ, float ScaleX, float ScaleY, float ScaleZ, float Rotation, const _Texture *Texture);
-		void DrawRectangle(float StartX, float StartY, float EndX, float EndY, const _Color &Color, bool Filled=false);
-		void DrawLine(float StartX, float StartY, float EndX, float EndY, const _Color &Color, float Z=0.0f);
-		void DrawCircle(float X, float Y, float Z, float Radius, const _Color &Color);
+		void DrawTexture(const glm::vec3 &Position, const _Texture *Texture, const _Color &Color, float Rotation=0.0f, const glm::vec2 &Scale=glm::vec2(1.0f));
+		void DrawRepeatable(const glm::vec3 &Start, const glm::vec3 &End, const _Texture *Texture, float Rotation, float ScaleX);
+		void DrawCube(const glm::vec3 &Position, const glm::vec3 &Scale, const _Texture *Texture);
+		void DrawWall(const glm::vec3 &Position, const glm::vec3 &Scale, float Rotation, const _Texture *Texture);
+		void DrawRectangle(const glm::vec2 &Start, const glm::vec2 &End, const _Color &Color, bool Filled=false);
+		void DrawLine(const glm::vec2 &Start, const glm::vec2 &End);
+		void DrawCircle(const glm::vec3 &Position, float Radius);
 
 		_Element *GetElement();
 

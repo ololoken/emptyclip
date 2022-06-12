@@ -144,7 +144,7 @@ void _Monster::UpdateMonster(double FrameTime, _Player *Player) {
 
 	if(!(CurrentActions & AI_LOOKING) && PersonalityType != PERSONALITY_TREASURE && !IsDying()) {
 		if(MoveState == MOVE_DIRECTION)
-			FacePosition(MoveDirection+Position);
+			FacePosition(MoveDirection + Position);
 		else if(PlayerVisibleWithBounds)
 			FacePosition(Player->Position);
 		else if(MoveState == MOVE_GOAL)

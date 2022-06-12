@@ -29,8 +29,8 @@ _Object::_Object() :
 	TileChanged(false),
 	Radius(0.25f),
 	WallState(0),
-	Position({0, 0}),
-	LastPosition({0, 0}),
+	Position(0, 0),
+	LastPosition(0, 0),
 	Direction(0.0, 1.0f),
 	Color(COLOR_WHITE),
 	Rotation(0.0f),
@@ -58,8 +58,8 @@ void _Object::FacePosition(const glm::vec2 &Cursor) {
 }
 
 // Force position of object
-void _Object::SetPosition(const glm::vec2 &Position) {
-	this->LastPosition = this->Position = Position;
+void _Object::SetPosition(const glm::vec2 &NewPosition) {
+	LastPosition = Position = NewPosition;
 }
 
 // Get direction of object as a unit vector

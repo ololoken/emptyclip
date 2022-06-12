@@ -18,9 +18,9 @@
 #pragma once
 
 // Libraries
-#include <glm/vec2.hpp>
 #include <color.h>
 #include <string>
+#include <glm/vec2.hpp>
 
 // Forward Declarations
 class _Font;

@@ -77,7 +77,7 @@ void _Particle::Update(double FrameTime) {
 void _Particle::Render() {
 
 	if(Texture)
-		Graphics.DrawTexture(Position.x, Position.y, PositionZ, Texture, Color, Rotation, Scale.x, Scale.y);
+		Graphics.DrawTexture(glm::vec3(Position, PositionZ), Texture, Color, Rotation, Scale);
 
 	if(Font && Text != "")
 		Font->DrawText(Text.c_str(), Position.x, Position.y, Color, CENTER_BASELINE, 1/64.0f);

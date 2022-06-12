@@ -240,19 +240,19 @@ void _Graphics::EnableVBO(int Type) {
 			glEnableClientState(GL_VERTEX_ARRAY);
 			glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 			glEnableClientState(GL_NORMAL_ARRAY);
-			glVertexPointer(3, GL_FLOAT, sizeof(float) * 8, 0);
+			glVertexPointer(3, GL_FLOAT, sizeof(float) * 8, nullptr);
 			glTexCoordPointer(2, GL_FLOAT, sizeof(float) * 8, (GLvoid *)(sizeof(float) * 3));
 			glNormalPointer(GL_FLOAT, sizeof(float) * 8, (GLvoid *)(sizeof(float) * 5));
 		break;
 		case VBO_QUAD:
 			glEnableClientState(GL_VERTEX_ARRAY);
 			glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-			glVertexPointer(2, GL_FLOAT, sizeof(float) * 4, 0);
+			glVertexPointer(2, GL_FLOAT, sizeof(float) * 4, nullptr);
 			glTexCoordPointer(2, GL_FLOAT, sizeof(float) * 4, (GLvoid *)(sizeof(float) * 2));
 		break;
 		case VBO_CIRCLE:
 			glEnableClientState(GL_VERTEX_ARRAY);
-			glVertexPointer(2, GL_FLOAT, sizeof(float) * 2, 0);
+			glVertexPointer(2, GL_FLOAT, sizeof(float) * 2, nullptr);
 		break;
 	}
 }
@@ -305,7 +305,7 @@ void _Graphics::Setup2DProjectionMatrix() {
 
 // Fade the screen
 void _Graphics::FadeScreen(float Amount) {
-	Graphics.DrawRectangle(0, 0, CurrentSize.x, CurrentSize.y, _Color(0.0f, 0.0f, 0.0f, Amount), true);
+	Graphics.DrawRectangle(glm::vec2(0), CurrentSize, _Color(0.0f, 0.0f, 0.0f, Amount), true);
 }
 
 // Draw centered image in screen space
@@ -435,7 +435,7 @@ void _Graphics::DrawMask(const _Bounds &Bounds) {
 }
 
 // Draw 3d sprite
-void _Graphics::DrawTexture(float X, float Y, float Z, const _Texture *Texture, const _Color &Color, float Rotation, float ScaleX, float ScaleY) {
+void _Graphics::DrawTexture(const glm::vec3 &Position, const _Texture *Texture, const _Color &Color, float Rotation, const glm::vec2 &Scale) {
 	SetTextureEnabled(true);
 	SetColor(Color);
 	SetTextureID(Texture->GetID());
@@ -443,12 +443,12 @@ void _Graphics::DrawTexture(float X, float Y, float Z, const _Texture *Texture, 
 	glPushMatrix();
 
 		// Apply translation, rotation, and scale transforms
-		glTranslatef(X, Y, Z);
+		glTranslatef(Position.x, Position.y, Position.z);
 		if(Rotation != 0.0f)
 			glRotatef(Rotation, 0.0f, 0.0f, 1.0f);
 
 		// Set scale
-		glScalef(ScaleX, ScaleY, 1.0f);
+		glScalef(Scale.x, Scale.y, 1.0f);
 
 		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 
@@ -458,7 +458,7 @@ void _Graphics::DrawTexture(float X, float Y, float Z, const _Texture *Texture, 
 }
 
 // Draw 3d wall
-void _Graphics::DrawCube(float StartX, float StartY, float StartZ, float ScaleX, float ScaleY, float ScaleZ, const _Texture *Texture) {
+void _Graphics::DrawCube(const glm::vec3 &Position, const glm::vec3 &Scale, const _Texture *Texture) {
 	SetTextureEnabled(true);
 	SetColor(COLOR_WHITE);
 	SetTextureID(Texture->GetID());
@@ -468,34 +468,34 @@ void _Graphics::DrawCube(float StartX, float StartY, float StartZ, float ScaleX,
 	glPushMatrix();
 
 		// Position cube
-		glTranslatef(StartX, StartY, StartZ);
-		glScalef(ScaleX, ScaleY, ScaleZ);
+		glTranslatef(Position.x, Position.y, Position.z);
+		glScalef(Scale.x, Scale.y, Scale.z);
 
 		// Change texture
 		glMatrixMode(GL_TEXTURE);
 
 		// Draw top
-		glScalef(ScaleX, ScaleY, 1);
+		glScalef(Scale.x, Scale.y, 1);
 		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 		glLoadIdentity();
 
 		// Draw front
-		glScalef(ScaleX, ScaleZ, 1);
+		glScalef(Scale.x, Scale.z, 1);
 		glDrawArrays(GL_TRIANGLE_STRIP, 4, 4);
 		glLoadIdentity();
 
 		// Draw left
-		glScalef(ScaleY, ScaleZ, 1);
+		glScalef(Scale.y, Scale.z, 1);
 		glDrawArrays(GL_TRIANGLE_STRIP, 8, 4);
 		glLoadIdentity();
 
 		// Draw back
-		glScalef(ScaleX, ScaleZ, 1);
+		glScalef(Scale.x, Scale.z, 1);
 		glDrawArrays(GL_TRIANGLE_STRIP, 12, 4);
 		glLoadIdentity();
 
 		// Draw right
-		glScalef(ScaleY, ScaleZ, 1);
+		glScalef(Scale.y, Scale.z, 1);
 		glDrawArrays(GL_TRIANGLE_STRIP, 16, 4);
 		glLoadIdentity();
 
@@ -509,7 +509,7 @@ void _Graphics::DrawCube(float StartX, float StartY, float StartZ, float ScaleX,
 }
 
 // Draw double-sided flat wall
-void _Graphics::DrawWall(float StartX, float StartY, float StartZ, float ScaleX, float ScaleY, float ScaleZ, float Rotation, const _Texture *Texture) {
+void _Graphics::DrawWall(const glm::vec3 &Position, const glm::vec3 &Scale, float Rotation, const _Texture *Texture) {
 	SetTextureEnabled(true);
 	SetTextureID(Texture->GetID());
 	SetColor(COLOR_WHITE);
@@ -518,20 +518,20 @@ void _Graphics::DrawWall(float StartX, float StartY, float StartZ, float ScaleX,
 
 	if(Rotation == 0) {
 
-		glTranslatef(StartX, StartY + 0.5f, StartZ);
-		glScalef(ScaleX, ScaleY, ScaleZ);
+		glTranslatef(Position.x, Position.y + 0.5f, Position.z);
+		glScalef(Scale.x, Scale.y, Scale.z);
 
 		glMatrixMode(GL_TEXTURE);
-		glScalef(ScaleX, ScaleZ, 1);
+		glScalef(Scale.x, Scale.z, 1);
 		glDrawArrays(GL_TRIANGLE_STRIP, 12, 4);
 	}
 	else {
 
-		glTranslatef(StartX + 0.5f, StartY, StartZ);
-		glScalef(ScaleX, ScaleY, ScaleZ);
+		glTranslatef(Position.x + 0.5f, Position.y, Position.z);
+		glScalef(Scale.x, Scale.y, Scale.z);
 
 		glMatrixMode(GL_TEXTURE);
-		glScalef(ScaleY, ScaleZ, 1);
+		glScalef(Scale.y, Scale.z, 1);
 		glDrawArrays(GL_TRIANGLE_STRIP, 8, 4);
 	}
 
@@ -544,14 +544,14 @@ void _Graphics::DrawWall(float StartX, float StartY, float StartZ, float ScaleX,
 }
 
 // Draw quad with repeated textures
-void _Graphics::DrawRepeatable(float StartX, float StartY, float StartZ, float EndX, float EndY, float EndZ, const _Texture *Texture, float Rotation, float ScaleX) {
+void _Graphics::DrawRepeatable(const glm::vec3 &Start, const glm::vec3 &End, const _Texture *Texture, float Rotation, float ScaleX) {
 	SetTextureEnabled(true);
 	SetTextureID(Texture->GetID());
 	SetColor(COLOR_WHITE);
 
 	// Get textureID and properties
-	float Width = EndX - StartX;
-	float Height = EndY - StartY;
+	float Width = End.x - Start.x;
+	float Height = End.y - Start.y;
 
 	// Set texture mode
 	glMatrixMode(GL_TEXTURE);
@@ -566,19 +566,19 @@ void _Graphics::DrawRepeatable(float StartX, float StartY, float StartZ, float E
 
 			// Top right
 			glTexCoord2f(Width, 0.0f);
-			glVertex3f(EndX, StartY, StartZ);
+			glVertex3f(End.x, Start.y, Start.z);
 
 			// Top left
 			glTexCoord2f(0.0f, 0.0f);
-			glVertex3f(StartX, StartY, StartZ);
+			glVertex3f(Start.x, Start.y, Start.z);
 
 			// Bottom right
 			glTexCoord2f(Width, Height);
-			glVertex3f(EndX, EndY, EndZ);
+			glVertex3f(End.x, End.y, End.z);
 
 			// Bottom left
 			glTexCoord2f(0.0f, Height);
-			glVertex3f(StartX, EndY, EndZ);
+			glVertex3f(Start.x, End.y, End.z);
 
 		glEnd();
 
@@ -591,7 +591,7 @@ void _Graphics::DrawRepeatable(float StartX, float StartY, float StartZ, float E
 }
 
 // Draw rectangle in 3d space
-void _Graphics::DrawRectangle(float StartX, float StartY, float EndX, float EndY, const _Color &Color, bool Filled) {
+void _Graphics::DrawRectangle(const glm::vec2 &Start, const glm::vec2 &End, const _Color &Color, bool Filled) {
 	SetTextureEnabled(false);
 	SetColor(Color);
 
@@ -601,16 +601,16 @@ void _Graphics::DrawRectangle(float StartX, float StartY, float EndX, float EndY
 		glBegin(GL_LINE_LOOP);
 
 	// Top left
-	glVertex2f(StartX, StartY);
+	glVertex2f(Start.x, Start.y);
 
 	// Top right
-	glVertex2f(EndX, StartY);
+	glVertex2f(End.x, Start.y);
 
 	// Bottom right
-	glVertex2f(EndX, EndY);
+	glVertex2f(End.x, End.y);
 
 	// Bottom left
-	glVertex2f(StartX, EndY);
+	glVertex2f(Start.x, End.y);
 
 	glEnd();
 
@@ -618,20 +618,17 @@ void _Graphics::DrawRectangle(float StartX, float StartY, float EndX, float EndY
 }
 
 // Draws line
-void _Graphics::DrawLine(float StartX, float StartY, float EndX, float EndY, const _Color &Color, float Z) {
+void _Graphics::DrawLine(const glm::vec2 &Start, const glm::vec2 &End) {
 	SetTextureEnabled(false);
 
 	glPushMatrix();
 
-		glTranslatef(0.0f, 0.0f, Z);
-
-		// Set color
-		SetColor(Color);
+		glTranslatef(0.0f, 0.0f, 0.0f);
 
 		glBegin(GL_LINES);
 
-			glVertex2f(StartX, StartY);
-			glVertex2f(EndX, EndY);
+			glVertex2f(Start.x, Start.y);
+			glVertex2f(End.x, End.y);
 
 		glEnd();
 
@@ -639,14 +636,14 @@ void _Graphics::DrawLine(float StartX, float StartY, float EndX, float EndY, con
 }
 
 // Draw circle
-void _Graphics::DrawCircle(float X, float Y, float Z, float Radius, const _Color &Color) {
+void _Graphics::DrawCircle(const glm::vec3 &Position, float Radius) {
 	SetTextureEnabled(false);
-	SetColor(Color);
+	SetColor(COLOR_WHITE);
 
 	glPushMatrix();
 
 		// Apply translation and scale transforms
-		glTranslatef(X, Y, Z);
+		glTranslatef(Position.x, Position.y, Position.z);
 		glScalef(Radius, Radius, 0.0f);
 
 		glDrawArrays(GL_LINE_LOOP, 0, GRAPHICS_CIRCLE_VERTICES);

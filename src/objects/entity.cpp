@@ -283,7 +283,8 @@ void _Entity::Move() {
 
 		// Get direction
 		glm::vec2 Goal = GetGoal();
-		glm::vec2 Delta, NewDirection(0.0, 0.0f);
+		glm::vec2 NewDirection(0);
+		glm::vec2 Delta;
 		switch(MoveState) {
 			case MOVE_DIRECTION:
 				if(MoveDirection.x != 0 || MoveDirection.y != 0) {
@@ -408,7 +409,7 @@ void _Entity::Move() {
 void _Entity::Render(double BlendFactor) {
 	glm::vec2 DrawPosition(Position * (float)BlendFactor + LastPosition * (float)(1.0f - BlendFactor));
 
-	Graphics.DrawTexture(DrawPosition.x, DrawPosition.y, PositionZ, Animation->GetCurrentFrame(), Color, Rotation, Scale, Scale);
+	Graphics.DrawTexture(glm::vec3(DrawPosition, PositionZ), Animation->GetCurrentFrame(), Color, Rotation, glm::vec2(Scale));
 
 	//Graphics.EnableVBO(VBO_CIRCLE);
 	//Graphics.DrawCircle(DrawPosition.x, DrawPosition.y, 0, Radius, COLOR_WHITE);

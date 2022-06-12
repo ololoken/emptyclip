@@ -18,10 +18,10 @@
 #pragma once
 
 // Libraries
-#include <glm/vec2.hpp>
 #include <list>
 #include <vector>
 #include <string>
+#include <glm/vec2.hpp>
 
 // Forward Declarations
 class _Camera;

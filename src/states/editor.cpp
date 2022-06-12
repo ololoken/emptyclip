@@ -819,24 +819,24 @@ void _EditorState::Render(double BlendFactor) {
 		if(Brush[CurrentPalette]) {
 			if(CurrentPalette == EDITMODE_EVENTS) {
 				Graphics.DisableDepthTest();
-				Graphics.DrawRepeatable((float)DrawStart.x, (float)DrawStart.y, MAP_LAYEROFFSET, (float)DrawEnd.x, (float)DrawEnd.y, MAP_LAYEROFFSET, Brush[CurrentPalette]->GetStyle()->Texture, 0, 1.0f);
+				Graphics.DrawRepeatable(glm::vec3(DrawStart.x, DrawStart.y, MAP_LAYEROFFSET), glm::vec3(DrawEnd.x, DrawEnd.y, MAP_LAYEROFFSET), Brush[CurrentPalette]->GetStyle()->Texture, 0, 1.0f);
 				Graphics.EnableDepthTest();
 			}
 			else {
 				if(CurrentLayer == MAPLAYER_FORE)
-					Graphics.DrawRepeatable((float)DrawStart.x, (float)DrawStart.y, (float)MaxZ + MAP_LAYEROFFSET * CurrentLayer, (float)DrawEnd.x, (float)DrawEnd.y, (float)MaxZ + MAP_LAYEROFFSET * CurrentLayer, Brush[CurrentPalette]->GetStyle()->Texture, Rotation, ScaleX);
+					Graphics.DrawRepeatable(glm::vec3(DrawStart.x, DrawStart.y, MaxZ + MAP_LAYEROFFSET * CurrentLayer), glm::vec3(DrawEnd.x, DrawEnd.y, MaxZ + MAP_LAYEROFFSET * CurrentLayer), Brush[CurrentPalette]->GetStyle()->Texture, Rotation, ScaleX);
 				else if(CurrentLayer == MAPLAYER_FLAT) {
 					Graphics.EnableVBO(VBO_CUBE);
-					Graphics.DrawWall((float)DrawStart.x, (float)DrawStart.y, (float)MinZ, (float)DrawEnd.x - DrawStart.x, (float)DrawEnd.y - DrawStart.y, MaxZ - MinZ, Rotation, Brush[CurrentPalette]->GetStyle()->Texture);
+					Graphics.DrawWall(glm::vec3(DrawStart.x, DrawStart.y, MinZ), glm::vec3(DrawEnd.x - DrawStart.x, DrawEnd.y - DrawStart.y, MaxZ - MinZ), Rotation, Brush[CurrentPalette]->GetStyle()->Texture);
 					Graphics.DisableVBO(VBO_CUBE);
 				}
 				else {
 					if(MaxZ == MinZ) {
-						Graphics.DrawRepeatable((float)DrawStart.x, (float)DrawStart.y, (float)MinZ + MAP_LAYEROFFSET * CurrentLayer, (float)DrawEnd.x, (float)DrawEnd.y, (float)MinZ + MAP_LAYEROFFSET * CurrentLayer, Brush[CurrentPalette]->GetStyle()->Texture, Rotation, ScaleX);
+						Graphics.DrawRepeatable(glm::vec3(DrawStart.x, DrawStart.y, MinZ + MAP_LAYEROFFSET * CurrentLayer), glm::vec3(DrawEnd.x, DrawEnd.y, MinZ + MAP_LAYEROFFSET * CurrentLayer), Brush[CurrentPalette]->GetStyle()->Texture, Rotation, ScaleX);
 					}
 					else {
 						Graphics.EnableVBO(VBO_CUBE);
-						Graphics.DrawCube((float)DrawStart.x, (float)DrawStart.y, (float)MinZ, (float)DrawEnd.x - DrawStart.x, (float)DrawEnd.y - DrawStart.y, (float)MaxZ - MinZ, Brush[CurrentPalette]->GetStyle()->Texture);
+						Graphics.DrawCube(glm::vec3(DrawStart.x, DrawStart.y, MinZ), glm::vec3(DrawEnd.x - DrawStart.x, DrawEnd.y - DrawStart.y, MaxZ - MinZ), Brush[CurrentPalette]->GetStyle()->Texture);
 						Graphics.DisableVBO(VBO_CUBE);
 					}
 				}
@@ -857,7 +857,7 @@ void _EditorState::Render(double BlendFactor) {
 	Graphics.EnableVBO(VBO_CIRCLE);
 	for(auto Iterator : SelectedObjects) {
 		glm::vec2 Position = GetMoveDeltaPosition(Iterator->Position);
-		Graphics.DrawCircle(Position.x, Position.y, ITEM_Z + 0.05f, EDITOR_OBJECTRADIUS, COLOR_WHITE);
+		Graphics.DrawCircle(glm::vec3(Position, ITEM_Z + 0.05f), EDITOR_OBJECTRADIUS);
 	}
 	Graphics.DisableVBO(VBO_CIRCLE);
 
@@ -881,7 +881,7 @@ void _EditorState::Render(double BlendFactor) {
 	Graphics.DisableDepthTest();
 
 	// Draw map boundaries
-	Graphics.DrawRectangle(-0.01f, -0.01f, Map->GetWidth() + 0.01f, Map->GetHeight() + 0.01f, COLOR_RED);
+	Graphics.DrawRectangle(glm::vec2(-0.01f, -0.01f), glm::vec2(Map->GetWidth() + 0.01f, Map->GetHeight() + 0.01f), COLOR_RED);
 
 	// Draw grid
 	Map->RenderGrid(GridMode);
@@ -892,25 +892,25 @@ void _EditorState::Render(double BlendFactor) {
 
 	// Outline selected block
 	if(BlockSelected())
-		Graphics.DrawRectangle((float)SelectedBlock->Start.x, (float)SelectedBlock->Start.y, (float)SelectedBlock->End.x + 1.0f, (float)SelectedBlock->End.y + 1.0f, COLOR_WHITE);
+		Graphics.DrawRectangle(glm::vec2(SelectedBlock->Start.x, SelectedBlock->Start.y), glm::vec2(SelectedBlock->End.x + 1.0f, SelectedBlock->End.y + 1.0f), COLOR_WHITE);
 
 	// Outline selected event
 	if(EventSelected()) {
-		Graphics.DrawRectangle((float)SelectedEvent->Start.x + 0.02f, (float)SelectedEvent->Start.y + 0.02f, (float)SelectedEvent->End.x + 0.98f, (float)SelectedEvent->End.y + 0.98f, COLOR_CYAN);
+		Graphics.DrawRectangle(glm::vec2(SelectedEvent->Start.x + 0.02f, SelectedEvent->Start.y + 0.02f), glm::vec2(SelectedEvent->End.x + 0.98f, SelectedEvent->End.y + 0.98f), COLOR_CYAN);
 
 		// Outline affected tiles and blocks
 		const std::vector<_EventTile> &Tiles = SelectedEvent->Tiles;
 		for(size_t i = 0; i < Tiles.size(); i++) {
-			Graphics.DrawRectangle(Tiles[i].Coord.x + 0.2f, Tiles[i].Coord.y + 0.2f, Tiles[i].Coord.x + 0.8f, Tiles[i].Coord.y + 0.8f, COLOR_RED);
+			Graphics.DrawRectangle(glm::vec2(Tiles[i].Coord.x + 0.2f, Tiles[i].Coord.y + 0.2f), glm::vec2(Tiles[i].Coord.x + 0.8f, Tiles[i].Coord.y + 0.8f), COLOR_RED);
 
 			if(Tiles[i].BlockID != -1) {
 				if(SelectedEvent->Type == EVENT_ENABLE) {
 					const _Event *Event = Map->GetEvent(Tiles[i].BlockID);
-					Graphics.DrawRectangle((float)Event->Start.x, (float)Event->Start.y, (float)Event->End.x + 1.0f, (float)Event->End.y + 1.0f, COLOR_YELLOW);
+					Graphics.DrawRectangle(glm::vec2(Event->Start.x, Event->Start.y), glm::vec2(Event->End.x + 1.0f, Event->End.y + 1.0f), COLOR_YELLOW);
 				}
 				else {
 					const _Block *Block = Map->GetBlock(Tiles[i].Layer, Tiles[i].BlockID);
-					Graphics.DrawRectangle((float)Block->Start.x, (float)Block->Start.y, (float)Block->End.x + 1.0f, (float)Block->End.y + 1.0f, COLOR_GREEN);
+					Graphics.DrawRectangle(glm::vec2(Block->Start.x, Block->Start.y), glm::vec2(Block->End.x + 1.0f, Block->End.y + 1.0f), COLOR_GREEN);
 				}
 			}
 		}
@@ -918,11 +918,11 @@ void _EditorState::Render(double BlendFactor) {
 
 	// Dragging a box around object
 	if(DraggingBox)
-		Graphics.DrawRectangle(ClickedPosition.x, ClickedPosition.y, WorldCursor.x, WorldCursor.y, COLOR_WHITE);
+		Graphics.DrawRectangle(ClickedPosition, WorldCursor, COLOR_WHITE);
 
 	// Draw a block
 	if(IsDrawing)
-		Graphics.DrawRectangle((float)DrawStart.x, (float)DrawStart.y, (float)DrawEnd.x, (float)DrawEnd.y, COLOR_GREEN);
+		Graphics.DrawRectangle(glm::vec2(DrawStart.x, DrawStart.y), glm::vec2(DrawEnd.x, DrawEnd.y), COLOR_GREEN);
 
 	Graphics.EnableDepthTest();
 
@@ -931,7 +931,7 @@ void _EditorState::Render(double BlendFactor) {
 	std::ostringstream Buffer;
 
 	// Draw viewport outline
-	Graphics.DrawRectangle(0, 0, Graphics.ViewportSize.x, Graphics.ViewportSize.y, COLOR_DARK);
+	Graphics.DrawRectangle(glm::vec2(0, 0), Graphics.ViewportSize, COLOR_DARK);
 
 	// Draw text
 	if(EditorInput != -1) {
@@ -1236,7 +1236,7 @@ void _EditorState::DrawBrush() {
 
 	if(IconTexture) {
 		Graphics.EnableVBO(VBO_QUAD);
-		Graphics.DrawTexture((float)Graphics.CurrentSize.x - 112, (float)Graphics.CurrentSize.y - 84, 0.0f, IconTexture, IconColor, IconRotation, IconScaleX * EDITOR_PALETTE_SELECTEDSIZE * 2, EDITOR_PALETTE_SELECTEDSIZE * 2);
+		Graphics.DrawTexture(glm::vec3((float)Graphics.CurrentSize.x - 112, (float)Graphics.CurrentSize.y - 84, 0.0f), IconTexture, IconColor, IconRotation, glm::vec2(IconScaleX * EDITOR_PALETTE_SELECTEDSIZE * 2, EDITOR_PALETTE_SELECTEDSIZE * 2));
 	}
 }
 
@@ -1288,7 +1288,7 @@ void _EditorState::DrawObject(float OffsetX, float OffsetY, const _ObjectSpawn *
 
 	Color.Alpha *= Alpha;
 	if(Texture != nullptr)
-		Graphics.DrawTexture(DrawPosition.x, DrawPosition.y, Depth, Texture, Color, 0.0f, Scale, Scale);
+		Graphics.DrawTexture(glm::vec3(DrawPosition, Depth), Texture, Color, 0.0f, glm::vec2(Scale));
 }
 
 // Converts an editor mode to an object type

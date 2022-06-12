@@ -19,8 +19,8 @@
 
 // Includes
 #include <string>
-#include <glm/vec2.hpp>
 #include <SDL_keycode.h>
+#include <glm/vec2.hpp>
 
 //     Config
 const  int          DEFAULT_WINDOW_WIDTH           =  1440;

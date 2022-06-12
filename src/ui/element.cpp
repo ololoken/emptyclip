@@ -202,7 +202,7 @@ void _Element::Render() const {
 		Graphics.DisableStencilTest();
 
 	if(Debug && Debug-1 < DebugColorCount) {
-		Graphics.DrawRectangle(Bounds.Start.x, Bounds.Start.y, Bounds.End.x, Bounds.End.y, DebugColors[1]);
+		Graphics.DrawRectangle(Bounds.Start, Bounds.End, DebugColors[1]);
 	}
 }
 

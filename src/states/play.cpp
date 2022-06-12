@@ -440,6 +440,7 @@ void _PlayState::Render(double BlendFactor) {
 		HUD->RenderCrosshair(WorldCursor * (float)BlendFactor + PreviousWorldCursor * (float)(1.0f - BlendFactor));
 
 	// Debug
+	/*
 	if(0) {
 		Graphics.DisableDepthTest();
 
@@ -470,6 +471,7 @@ void _PlayState::Render(double BlendFactor) {
 
 		Graphics.EnableDepthTest();
 	}
+	*/
 
 	// Setup OpenGL for drawing the HUD
 	Graphics.Setup2DProjectionMatrix();
@@ -500,7 +502,7 @@ void _PlayState::Render(double BlendFactor) {
 	HUD->Render();
 
 	if(IsPaused() || (Player && Player->IsDead()))
-		Graphics.DrawRectangle(0, 0, Graphics.CurrentSize.x, Graphics.CurrentSize.y, _Color(0, 0, 0, GAME_PAUSE_FADEAMOUNT), true);
+		Graphics.DrawRectangle(glm::vec2(0), Graphics.CurrentSize, _Color(0, 0, 0, GAME_PAUSE_FADEAMOUNT), true);
 
 	// Draw in-game menu
 	if(IsPaused()) {

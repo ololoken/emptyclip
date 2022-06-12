@@ -40,5 +40,5 @@ void _Item::Serialize(_Buffer &Buffer) {
 
 // Draws the object
 void _Item::Render(double BlendFactor) {
-	Graphics.DrawTexture(Position.x, Position.y, PositionZ, Texture, Color, Rotation, ITEM_SCALE, ITEM_SCALE);
+	Graphics.DrawTexture(glm::vec3(Position, PositionZ), Texture, Color, Rotation, glm::vec2(ITEM_SCALE));
 }

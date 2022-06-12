@@ -1161,22 +1161,23 @@ void _Map::ChangeLayer(int OldLayer, int NewLayer, int Index) {
 
 // Draws a grid on the map
 void _Map::RenderGrid(int Mode) {
-	if(Mode > 0) {
+	if(Mode <= 0)
+		return;
 
-		// Draw vertical lines
-		for(int i = Mode; i < Width; i += Mode)
-			Graphics.DrawLine((float)i, 0, (float)i, (float)Height, COLOR_TWHITE);
+	// Draw vertical lines
+	Graphics.SetColor(COLOR_TWHITE);
+	for(int i = Mode; i < Width; i += Mode)
+		Graphics.DrawLine(glm::vec2(i, 0), glm::vec2(i, Height));
 
-		// Draw horizontal lines
-		for(int i = Mode; i < Height; i += Mode)
-			Graphics.DrawLine(0, (float)i, (float)Width, (float)i, COLOR_TWHITE);
-	}
+	// Draw horizontal lines
+	for(int i = Mode; i < Height; i += Mode)
+		Graphics.DrawLine(glm::vec2(0, i), glm::vec2(Width, i));
 }
 
 // Draws rectangles around all the blocks
 void _Map::HighlightBlocks(int Layer) {
 	for(int i = 0; i < static_cast<int>(Blocks[Layer].size()); i++) {
-		Graphics.DrawRectangle((float)Blocks[Layer][i].Start.x, (float)Blocks[Layer][i].Start.y, (float)Blocks[Layer][i].End.x + 1.0f, (float)Blocks[Layer][i].End.y + 1.0f, COLOR_MAGENTA);
+		Graphics.DrawRectangle(glm::vec2(Blocks[Layer][i].Start.x, Blocks[Layer][i].Start.y), glm::vec2(Blocks[Layer][i].End.x + 1.0f, Blocks[Layer][i].End.y + 1.0f), COLOR_MAGENTA);
 	}
 }
 
@@ -1284,7 +1285,7 @@ void _Map::RenderFloors() {
 		}
 
 		if(Draw)
-			Graphics.DrawRepeatable((float)Block->Start.x, (float)Block->Start.y, (float)Block->MinZ + MAP_LAYEROFFSET * i, (float)Block->End.x + 1.0f, (float)Block->End.y + 1.0f, Block->MinZ + MAP_LAYEROFFSET * i, Block->Texture, Block->Rotation, Block->ScaleX);
+			Graphics.DrawRepeatable(glm::vec3(Block->Start.x, Block->Start.y, Block->MinZ + MAP_LAYEROFFSET * i), glm::vec3(Block->End.x + 1.0f, Block->End.y + 1.0f, Block->MinZ + MAP_LAYEROFFSET * i), Block->Texture, Block->Rotation, Block->ScaleX);
 	}
 	Graphics.SetDepthMask(true);
 
@@ -1303,18 +1304,11 @@ void _Map::RenderFloors() {
 				}
 
 				if(Draw)
-					Graphics.DrawRepeatable((float)Block->Start.x, (float)Block->Start.y, (float)Block->MinZ + MAP_LAYEROFFSET * i, (float)Block->End.x + 1.0f, (float)Block->End.y + 1.0f, Block->MinZ + MAP_LAYEROFFSET * i, Block->Texture, Block->Rotation, Block->ScaleX);
+					Graphics.DrawRepeatable(glm::vec3(Block->Start.x, Block->Start.y, Block->MinZ + MAP_LAYEROFFSET * i), glm::vec3(Block->End.x + 1.0f, Block->End.y + 1.0f, Block->MinZ + MAP_LAYEROFFSET * i), Block->Texture, Block->Rotation, Block->ScaleX);
 			}
 			else {
 				Graphics.EnableVBO(VBO_CUBE);
-				Graphics.DrawCube(
-					(float)Block->Start.x,
-					(float)Block->Start.y,
-					(float)Block->MinZ,
-					(float)Block->End.x - Block->Start.x + 1.0f,
-					(float)Block->End.y - Block->Start.y + 1.0f,
-					(float)Block->MaxZ - Block->MinZ,
-					Block->Texture);
+				Graphics.DrawCube(glm::vec3(Block->Start.x, Block->Start.y, Block->MinZ), glm::vec3(Block->End.x - Block->Start.x + 1.0f, Block->End.y - Block->Start.y + 1.0f, Block->MaxZ - Block->MinZ), Block->Texture);
 				Graphics.DisableVBO(VBO_CUBE);
 			}
 		}
@@ -1329,7 +1323,7 @@ void _Map::RenderWalls() {
 	Graphics.EnableVBO(VBO_CUBE);
 
 	// Draw walls
-	for(int i = 0; i < static_cast<int>(Blocks[5].size()); i++) {
+	for(std::size_t i = 0; i < Blocks[5].size(); i++) {
 		_Block *Block = &Blocks[5][i];
 
 		bool Draw = true;
@@ -1338,12 +1332,12 @@ void _Map::RenderWalls() {
 			Draw = Camera->IsAABBInView(Bounds);
 		}
 		if(Draw)
-			Graphics.DrawCube((float)Block->Start.x, (float)Block->Start.y, (float)Block->MinZ, (float)Block->End.x - Block->Start.x + 1.0f, (float)Block->End.y - Block->Start.y + 1.0f, Block->MaxZ - Block->MinZ, Block->Texture);
+			Graphics.DrawCube(glm::vec3(Block->Start.x, Block->Start.y, Block->MinZ), glm::vec3(Block->End.x - Block->Start.x + 1.0f, Block->End.y - Block->Start.y + 1.0f, Block->MaxZ - Block->MinZ), Block->Texture);
 	}
 
 	// Draw flat walls
 	Graphics.SetDepthMask(false);
-	for(int i = 0; i < static_cast<int>(Blocks[4].size()); i++) {
+	for(size_t i = 0; i < Blocks[4].size(); i++) {
 		_Block *Block = &Blocks[4][i];
 		bool Draw = true;
 		if(Block->MinZ >= 0) {
@@ -1352,7 +1346,7 @@ void _Map::RenderWalls() {
 		}
 
 		if(Draw)
-			Graphics.DrawWall((float)Block->Start.x, (float)Block->Start.y, (float)Block->MinZ, (float)Block->End.x - Block->Start.x + 1.0f, (float)Block->End.y - Block->Start.y + 1.0f, Block->MaxZ - Block->MinZ, Block->Rotation, Block->Texture);
+			Graphics.DrawWall(glm::vec3(Block->Start.x, Block->Start.y, Block->MinZ), glm::vec3(Block->End.x - Block->Start.x + 1.0f, Block->End.y - Block->Start.y + 1.0f, Block->MaxZ - Block->MinZ), Block->Rotation, Block->Texture);
 	}
 	Graphics.SetDepthMask(true);
 
@@ -1370,7 +1364,7 @@ void _Map::RenderEvents(std::vector<_Texture *> &Textures) {
 	for(size_t i = 0; i < Events.size(); i++) {
 		float Bounds[4] = { (float)Events[i]->Start.x,(float) Events[i]->Start.y, (float)Events[i]->End.x + 1.0f, (float)Events[i]->End.y + 1.0f };
 		if(Camera->IsAABBInView(Bounds))
-			Graphics.DrawRepeatable((float)Events[i]->Start.x, (float)Events[i]->Start.y, MAP_LAYEROFFSET, (float)Events[i]->End.x + 1.0f, (float)Events[i]->End.y + 1.0f, MAP_LAYEROFFSET, Textures[Events[i]->Type], 0, 1.0f);
+			Graphics.DrawRepeatable(glm::vec3(Events[i]->Start.x, Events[i]->Start.y, MAP_LAYEROFFSET), glm::vec3(Events[i]->End.x + 1.0f, Events[i]->End.y + 1.0f, MAP_LAYEROFFSET), Textures[Events[i]->Type], 0, 1.0f);
 	}
 
 	Graphics.EnableDepthTest();
@@ -1382,7 +1376,7 @@ void _Map::RenderForeground() {
 		return;
 
 	// Draw foreground
-	for(int i = 0; i < static_cast<int>(Blocks[6].size()); i++) {
+	for(std::size_t i = 0; i < Blocks[6].size(); i++) {
 		_Block *Block = &Blocks[6][i];
 		bool Draw = true;
 		if(Block->MinZ >= 0) {
@@ -1391,7 +1385,7 @@ void _Map::RenderForeground() {
 		}
 
 		if(Draw)
-			Graphics.DrawRepeatable((float)Block->Start.x, (float)Block->Start.y, (float)Block->MaxZ + 0.01f * i, (float)Block->End.x + 1.0f, (float)Block->End.y + 1.0f, Block->MaxZ + 0.01f * i, Block->Texture, Block->Rotation, Block->ScaleX);
+			Graphics.DrawRepeatable(glm::vec3(Block->Start.x, Block->Start.y, Block->MaxZ + 0.01f * i), glm::vec3(Block->End.x + 1.0f, Block->End.y + 1.0f, Block->MaxZ + 0.01f * i), Block->Texture, Block->Rotation, Block->ScaleX);
 	}
 }
 

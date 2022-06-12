@@ -18,9 +18,9 @@
 #pragma once
 
 // Libraries
-#include <glm/vec2.hpp>
 #include <string>
 #include <ui/ui.h>
+#include <glm/vec2.hpp>
 
 // Forward Declarations
 class _Texture;
