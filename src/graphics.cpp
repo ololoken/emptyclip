@@ -328,19 +328,19 @@ void _Graphics::DrawImage(const _Point &CenterPoint, const _Texture *Texture, co
 
 		// Top right
 		glTexCoord2f(1, 0.0f);
-		glVertex2f(CenterPoint.X + HalfWidth, CenterPoint.Y - HalfHeight);
+		glVertex2f(CenterPoint.x + HalfWidth, CenterPoint.y - HalfHeight);
 
 		// Top left
 		glTexCoord2f(0.0f, 0.0f);
-		glVertex2f(CenterPoint.X - HalfWidth, CenterPoint.Y - HalfHeight);
+		glVertex2f(CenterPoint.x - HalfWidth, CenterPoint.y - HalfHeight);
 
 		// Bottom right
 		glTexCoord2f(1, 1);
-		glVertex2f(CenterPoint.X + HalfWidth, CenterPoint.Y + HalfHeight);
+		glVertex2f(CenterPoint.x + HalfWidth, CenterPoint.y + HalfHeight);
 
 		// Bottom left
 		glTexCoord2f(0.0f, 1);
-		glVertex2f(CenterPoint.X - HalfWidth, CenterPoint.Y + HalfHeight);
+		glVertex2f(CenterPoint.x - HalfWidth, CenterPoint.y + HalfHeight);
 
 	glEnd();
 
@@ -359,27 +359,27 @@ void _Graphics::DrawImage(const _Bounds &Bounds, const _Texture *Texture, const 
 		S = T = 1;
 	}
 	else {
-		S = (Bounds.End.X - Bounds.Start.X) / (float)(Texture->GetWidth());
-		T = (Bounds.End.Y - Bounds.Start.Y) / (float)(Texture->GetHeight());
+		S = (Bounds.End.x - Bounds.Start.x) / (float)(Texture->GetWidth());
+		T = (Bounds.End.y - Bounds.Start.y) / (float)(Texture->GetHeight());
 	}
 
 	glBegin(GL_TRIANGLE_STRIP);
 
 		// Top right
 		glTexCoord2f(S, 0.0f);
-		glVertex2f(Bounds.End.X, Bounds.Start.Y);
+		glVertex2f(Bounds.End.x, Bounds.Start.y);
 
 		// Top left
 		glTexCoord2f(0.0f, 0.0f);
-		glVertex2f(Bounds.Start.X, Bounds.Start.Y);
+		glVertex2f(Bounds.Start.x, Bounds.Start.y);
 
 		// Bottom right
 		glTexCoord2f(S, T);
-		glVertex2f(Bounds.End.X, Bounds.End.Y);
+		glVertex2f(Bounds.End.x, Bounds.End.y);
 
 		// Bottom left
 		glTexCoord2f(0.0f, T);
-		glVertex2f(Bounds.Start.X, Bounds.End.Y);
+		glVertex2f(Bounds.Start.x, Bounds.End.y);
 
 	glEnd();
 
@@ -399,16 +399,16 @@ void _Graphics::DrawRectangle(const _Bounds &Bounds, const _Color &Color, bool F
 		glBegin(GL_LINE_LOOP);
 
 	// Top left
-	glVertex2f(Bounds.Start.X+1, Bounds.Start.Y);
+	glVertex2f(Bounds.Start.x+1, Bounds.Start.y);
 
 	// Top right
-	glVertex2f(Bounds.End.X, Bounds.Start.Y);
+	glVertex2f(Bounds.End.x, Bounds.Start.y);
 
 	// Bottom right
-	glVertex2f(Bounds.End.X, Bounds.End.Y-1);
+	glVertex2f(Bounds.End.x, Bounds.End.y-1);
 
 	// Bottom left
-	glVertex2f(Bounds.Start.X+1, Bounds.End.Y-1);
+	glVertex2f(Bounds.Start.x+1, Bounds.End.y-1);
 
 	glEnd();
 
@@ -427,10 +427,10 @@ void _Graphics::DrawMask(const _Bounds &Bounds) {
 	glStencilFunc(GL_ALWAYS, 0x01, 0x01);
 	glStencilOp(GL_REPLACE, GL_REPLACE, GL_REPLACE);
 	glBegin(GL_TRIANGLE_STRIP);
-		glVertex2f(Bounds.End.X, Bounds.Start.Y);
-		glVertex2f(Bounds.Start.X, Bounds.Start.Y);
-		glVertex2f(Bounds.End.X, Bounds.End.Y);
-		glVertex2f(Bounds.Start.X, Bounds.End.Y);
+		glVertex2f(Bounds.End.x, Bounds.Start.y);
+		glVertex2f(Bounds.Start.x, Bounds.Start.y);
+		glVertex2f(Bounds.End.x, Bounds.End.y);
+		glVertex2f(Bounds.Start.x, Bounds.End.y);
 	glEnd();
 
 	// Then draw element only where stencil is 1
@@ -465,14 +465,14 @@ void _Graphics::DrawTexture(float X, float Y, float Z, const _Texture *Texture, 
 }
 
 // Draw light
-void _Graphics::DrawLight(const Vector2 &Position, const _Texture *Texture, const _Color &Color, float Scale) {
+void _Graphics::DrawLight(const glm::vec2 &Position, const _Texture *Texture, const _Color &Color, float Scale) {
 	SetTextureEnabled(true);
 	SetTextureID(Texture->GetID());
 
 	glPushMatrix();
 
 		// Apply translation, rotation, and scale transforms
-		glTranslatef(Position.X, Position.Y, 0.0f);
+		glTranslatef(Position.x, Position.y, 0.0f);
 
 		glScalef(Scale, Scale, 1.0f);
 

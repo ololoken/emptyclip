@@ -18,7 +18,7 @@
 #pragma once
 
 // Libraries
-#include <vector2.h>
+#include <glm/vec2.hpp>
 #include <map>
 #include <list>
 #include <string>
@@ -50,8 +50,8 @@ class _AudioSource {
 		void Stop();
 		void SetPitch(float Value);
 		void SetGain(float Value);
-		void SetPosition(const Vector2 &Position);
-		Vector2 GetPosition();
+		void SetPosition(const glm::vec2 &Position);
+		glm::vec2 GetPosition();
 		bool IsPlaying();
 		bool IsRelative();
 		ALuint GetID() { return ID; }
@@ -82,13 +82,13 @@ class _Audio {
 		void FreeAllBuffers();
 
 		// 3D Audio
-		void SetPosition(const Vector2 &Position);
-		void SetDirection(const Vector2 &Direction);
+		void SetPosition(const glm::vec2 &Position);
+		void SetDirection(const glm::vec2 &Direction);
 		void SetGain(float Value);
-		Vector2 GetListenerPosition();
+		glm::vec2 GetListenerPosition();
 
 		// Sources
-		void Play(_AudioSource *AudioSource, const Vector2 &Position=ZERO_VECTOR);
+		void Play(_AudioSource *AudioSource, const glm::vec2 &Position=glm::vec2(0, 0));
 		void Update(double FrameTime);
 
 	private:

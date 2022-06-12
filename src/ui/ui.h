@@ -20,21 +20,22 @@
 // Point struct
 struct _Point {
 	_Point() { }
-	_Point(int X, int Y) : X(X), Y(Y) { }
-	void Clear() { X = Y = 0; }
+	_Point(int X, int Y) : x(X), y(Y) { }
+	void Clear() { x = y = 0; }
 
-	void operator+=(const _Point &Point) { X += Point.X; Y += Point.Y; }
-	void operator-=(const _Point &Point) { X -= Point.X; Y -= Point.Y; }
-	_Point operator+(const _Point &Point) const { return _Point(X + Point.X, Y + Point.Y); }
-	_Point operator-(const _Point &Point) const { return _Point(X - Point.X, Y - Point.Y); }
-	_Point operator*(const float Multiplier) const { return _Point(X * Multiplier, Y * Multiplier); }
-	_Point operator/(const float Divisor) const { return _Point(X / Divisor, Y / Divisor); }
-	bool operator>(const _Point &Point) const { return X > Point.X && Y > Point.Y; }
-	bool operator>=(const _Point &Point) const { return X >= Point.X && Y >= Point.Y; }
-	bool operator<(const _Point &Point) const { return X < Point.X && Y < Point.Y; }
-	bool operator<=(const _Point &Point) const { return X <= Point.X && Y <= Point.Y; }
+	void operator+=(const _Point &Point) { x += Point.x; y += Point.y; }
+	void operator-=(const _Point &Point) { x -= Point.x; y -= Point.y; }
+	_Point operator+(const _Point &Point) const { return _Point(x + Point.x, y + Point.y); }
+	_Point operator-(const _Point &Point) const { return _Point(x - Point.x, y - Point.y); }
+	_Point operator*(const float Multiplier) const { return _Point(x * Multiplier, y * Multiplier); }
+	_Point operator/(const float Divisor) const { return _Point(x / Divisor, y / Divisor); }
+	bool operator>(const _Point &Point) const { return x > Point.x && y > Point.y; }
+	bool operator>=(const _Point &Point) const { return x >= Point.x && y >= Point.y; }
+	bool operator<(const _Point &Point) const { return x < Point.x && y < Point.y; }
+	bool operator<=(const _Point &Point) const { return x <= Point.x && y <= Point.y; }
 
-	int X, Y;
+	int x;
+	int y;
 };
 
 // Bounds struct

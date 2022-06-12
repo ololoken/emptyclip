@@ -21,6 +21,8 @@
 #include <map.h>
 #include <animation.h>
 #include <random.h>
+#include <glm/gtx/norm.hpp>
+#include <glm/gtx/rotate_vector.hpp>
 
 int PersonalityBaseBehaviors[PERSONALITY_COUNT] = {
 	MONSTER_ATTACK | MONSTER_INVESTIGATE,
@@ -48,7 +50,7 @@ _Monster::~_Monster() {
 }
 
 // Constructor
-_Monster::_Monster(_MonsterTemplate *Monster, _Animation *Animation, const Vector2 &Position) :
+_Monster::_Monster(_MonsterTemplate *Monster, _Animation *Animation, const glm::vec2 &Position) :
 	_Entity() {
 
 	Type = _Object::MONSTER;
@@ -93,7 +95,7 @@ _Monster::_Monster(_MonsterTemplate *Monster, _Animation *Animation, const Vecto
 	if(PersonalityType != PERSONALITY_TREASURE)
 		Rotation = Random.GenerateRange(0.0f, 359.0f);
 
-	WeaponParticleOffset[0] = ZERO_VECTOR;
+	WeaponParticleOffset[0] = glm::vec2(0, 0);
 	for(int i = 1; i < WEAPON_TYPES; i++)
 		WeaponParticleOffset[i] = MONSTER_WEAPONOFFSET * Scale;
 
@@ -103,9 +105,9 @@ _Monster::_Monster(_MonsterTemplate *Monster, _Animation *Animation, const Vecto
 	BaseBehavior = PersonalityBaseBehaviors[PersonalityType];
 	CurrentActions = 0;
 
-	MoveDirection = Vector2(0, 0);
+	MoveDirection = glm::vec2(0, 0);
 
-	ReturnPosition = Vector2(-1.0f, -1.0f);
+	ReturnPosition = glm::vec2(-1.0f, -1.0f);
 }
 
 // Updates the entity's states
@@ -216,7 +218,7 @@ void _Monster::UpdateMonster(double FrameTime, _Player *Player) {
 			if(Actions & MONSTER_MOVE) {
 				if(MovePath()) {
 					BehaviorList.pop_front();
-					ReturnPosition.X = ReturnPosition.Y = -1;
+					ReturnPosition.x = ReturnPosition.y = -1;
 					CurrentActions &= ~(AI_MOVING | AI_FOLLOWING_PATH);
 					SetMoveState(MOVE_NONE);
 				}
@@ -319,13 +321,13 @@ void _Monster::UpdateMonster(double FrameTime, _Player *Player) {
 	}
 }
 
-bool _Monster::VisiblePath(const Vector2 &Goal) {
+bool _Monster::VisiblePath(const glm::vec2 &Goal) {
 	bool Visible = IsVisible(Goal);
 	if(Visible) {
 		SetMoveState(MOVE_DIRECTION);
 		MoveDirection = Goal - Position;
-		if(MoveDirection.X != 0 || MoveDirection.Y != 0)
-			MoveDirection = MoveDirection.UnitVector();
+		if(MoveDirection.x != 0 || MoveDirection.y != 0)
+			MoveDirection = glm::normalize(MoveDirection);
 
 		Goals.clear();
 
@@ -335,16 +337,16 @@ bool _Monster::VisiblePath(const Vector2 &Goal) {
 	return false;
 }
 
-bool _Monster::Passed(const Vector2 &Pos) {
+bool _Monster::Passed(const glm::vec2 &Pos) {
 	return (Position == Pos);
 }
 
-bool _Monster::InRange(const Vector2 &Pos) {
-	return ((Position - Pos).MagnitudeSquared() <= AttackRange[0]);
+bool _Monster::InRange(const glm::vec2 &Pos) {
+	return (glm::distance2(Position, Pos) <= AttackRange[0]);
 }
 
-bool _Monster::IsVisible(const Vector2 &TargetPosition) {
-	float PlayerDirection = atan2(TargetPosition.Y - Position.Y, TargetPosition.X - Position.X) * DEGREES_IN_RADIAN + 90;
+bool _Monster::IsVisible(const glm::vec2 &TargetPosition) {
+	float PlayerDirection = glm::degrees(atan2(TargetPosition.y - Position.y, TargetPosition.x - Position.x)) + 90;
 	if(PlayerDirection < 0) PlayerDirection += 360;
 
 	// 65 - 100 right side
@@ -354,7 +356,7 @@ bool _Monster::IsVisible(const Vector2 &TargetPosition) {
 	float DegreesDifference = PlayerDirection - Rotation;
 	if(DegreesDifference < 0) DegreesDifference += 360;
 
-	float Distance = (Position - TargetPosition).MagnitudeSquared();
+	float Distance = glm::distance2(Position, TargetPosition);
 	bool InViewRange = false;
 	if(DegreesDifference < 65 || DegreesDifference > 295) {
 		if(Distance <= ViewRangeFront)
@@ -379,7 +381,7 @@ bool _Monster::Investigate(_Player *Player, bool PlayerVisible) {
 	// Find path to player if he/she is visible.
 	if(PlayerVisible) {
 		VisiblePath(Player->Position);
-		if(ReturnPosition.X < 0)
+		if(ReturnPosition.x < 0)
 			ReturnPosition = Position;
 		CurrentActions |= AI_INVESTIGATING | AI_FOLLOWING_PLAYER | AI_FOLLOWING_PATH;
 	}
@@ -419,20 +421,20 @@ void _Monster::Wander() {
 		if(!Stop)
 			SetMoveState(MOVE_NONE);
 		else {
-			MoveDirection.X = Random.GenerateRange(-1.0f, 1.0f);
-			MoveDirection.Y = Random.GenerateRange(-1.0f, 1.0f);
+			MoveDirection.x = Random.GenerateRange(-1.0f, 1.0f);
+			MoveDirection.y = Random.GenerateRange(-1.0f, 1.0f);
 			if(WallState) {
-				if(WallState & WALL_RIGHT && MoveDirection.X > 0)
-					MoveDirection.X = 0;
-				if(WallState & WALL_LEFT && MoveDirection.X < 0)
-					MoveDirection.X = 0;
-				if(WallState & WALL_TOP && MoveDirection.Y < 0)
-					MoveDirection.Y = 0;
-				if(WallState & WALL_BOTTOM && MoveDirection.Y > 0)
-					MoveDirection.Y = 0;
+				if(WallState & WALL_RIGHT && MoveDirection.x > 0)
+					MoveDirection.x = 0;
+				if(WallState & WALL_LEFT && MoveDirection.x < 0)
+					MoveDirection.x = 0;
+				if(WallState & WALL_TOP && MoveDirection.y < 0)
+					MoveDirection.y = 0;
+				if(WallState & WALL_BOTTOM && MoveDirection.y > 0)
+					MoveDirection.y = 0;
 			}
-			if(MoveDirection.X != 0 || MoveDirection.Y != 0)
-				MoveDirection = MoveDirection.UnitVector();
+			if(MoveDirection.x != 0 || MoveDirection.y != 0)
+				MoveDirection = glm::normalize(MoveDirection);
 
 			MoveState = MOVE_DIRECTION;
 		}
@@ -446,32 +448,32 @@ void _Monster::Explore() {
 		CurrentActions |= AI_EXPLORING;
 		CurrentActions &= ~(AI_FOLLOWING_PATH | AI_FOLLOWING_PLAYER);
 
-		if(WallState || MoveDirection == Vector2(0, 0)) {
-			if((WallState & WALL_RIGHT && MoveDirection.X > 0) ||
-					(WallState & WALL_LEFT && MoveDirection.X < 0) ||
-					(WallState & WALL_TOP && MoveDirection.Y < 0) ||
-					(WallState & WALL_BOTTOM && MoveDirection.Y > 0) ||
-					(MoveDirection == Vector2(0, 0))) {
-				if(MoveDirection.X != 0 && (WallState & WALL_LEFT || WallState & WALL_RIGHT))
-					MoveDirection.Y = Random.GenerateRange(-1.0f, 1.0f);
-				else if(MoveDirection.Y != 0 && (WallState & WALL_TOP || WallState & WALL_BOTTOM))
-					MoveDirection.X = Random.GenerateRange(-1.0f, 1.0f);
+		if(WallState || MoveDirection == glm::vec2(0, 0)) {
+			if((WallState & WALL_RIGHT && MoveDirection.x > 0) ||
+					(WallState & WALL_LEFT && MoveDirection.x < 0) ||
+					(WallState & WALL_TOP && MoveDirection.y < 0) ||
+					(WallState & WALL_BOTTOM && MoveDirection.y > 0) ||
+					(MoveDirection == glm::vec2(0, 0))) {
+				if(MoveDirection.x != 0 && (WallState & WALL_LEFT || WallState & WALL_RIGHT))
+					MoveDirection.y = Random.GenerateRange(-1.0f, 1.0f);
+				else if(MoveDirection.y != 0 && (WallState & WALL_TOP || WallState & WALL_BOTTOM))
+					MoveDirection.x = Random.GenerateRange(-1.0f, 1.0f);
 				else {
-					MoveDirection.X = Random.GenerateRange(-1.0f, 1.0f);
-					MoveDirection.Y = Random.GenerateRange(-1.0f, 1.0f);
+					MoveDirection.x = Random.GenerateRange(-1.0f, 1.0f);
+					MoveDirection.y = Random.GenerateRange(-1.0f, 1.0f);
 				}
 
-				if(WallState & WALL_RIGHT && MoveDirection.X > 0)
-					MoveDirection.X = 0;
-				if(WallState & WALL_LEFT && MoveDirection.X < 0)
-					MoveDirection.X = 0;
-				if(WallState & WALL_TOP && MoveDirection.Y < 0)
-					MoveDirection.Y = 0;
-				if(WallState & WALL_BOTTOM && MoveDirection.Y > 0)
-					MoveDirection.Y = 0;
+				if(WallState & WALL_RIGHT && MoveDirection.x > 0)
+					MoveDirection.x = 0;
+				if(WallState & WALL_LEFT && MoveDirection.x < 0)
+					MoveDirection.x = 0;
+				if(WallState & WALL_TOP && MoveDirection.y < 0)
+					MoveDirection.y = 0;
+				if(WallState & WALL_BOTTOM && MoveDirection.y > 0)
+					MoveDirection.y = 0;
 
-				if(MoveDirection.X != 0 || MoveDirection.Y != 0)
-					MoveDirection = MoveDirection.UnitVector();
+				if(MoveDirection.x != 0 || MoveDirection.y != 0)
+					MoveDirection = glm::normalize(MoveDirection);
 			}
 		}
 
@@ -483,7 +485,7 @@ void _Monster::Explore() {
 
 bool _Monster::MovePath() {
 	if(!(CurrentActions & AI_INVESTIGATING)) {
-		if(Goals.empty() && ReturnPosition.X >= 0) {
+		if(Goals.empty() && ReturnPosition.x >= 0) {
 			VisiblePath(ReturnPosition);
 			CurrentActions |= AI_MOVING | AI_FOLLOWING_PATH;
 		}
@@ -507,7 +509,7 @@ void _Monster::Look() {
 			else
 				BehaviorWait.push_front(Random.GenerateRange(0.5, 1.5));
 			BehaviorTime = 0;
-			FacePosition(Position + Vector2(static_cast<float>(Random.GenerateRange(0,360))));
+			FacePosition(Position + glm::rotate(glm::vec2(0.0f, -1.0f), glm::radians((float)Random.GenerateRange(0.0f, 360.0f))));
 		}
 	}
 	else
@@ -517,15 +519,15 @@ void _Monster::Look() {
 void _Monster::Retreat(_Player *Player, bool PlayerVisible) {
 	if(PlayerVisible) {
 		MoveDirection = Position - Player->Position;
-		if(MoveDirection.X != 0 || MoveDirection.Y != 0)
-			MoveDirection = MoveDirection.UnitVector();
+		if(MoveDirection.x != 0 || MoveDirection.y != 0)
+			MoveDirection = glm::normalize(MoveDirection);
 
 		MoveState = MOVE_DIRECTION;
 
 		CurrentActions |= AI_RETREATING;
 	}
 	else {
-		MoveDirection.X = MoveDirection.Y = 0;
+		MoveDirection.x = MoveDirection.y = 0;
 		CurrentActions &= ~AI_RETREATING;
 	}
 }

@@ -54,7 +54,7 @@ void _Particles::Update(double FrameTime) {
 		}
 		else {
 
-			if(Camera->IsCircleInView(Particle->Position, std::max(Particle->Scale.X, Particle->Scale.Y)))
+			if(Camera->IsCircleInView(Particle->Position, std::max(Particle->Scale.x, Particle->Scale.y)))
 				RenderList[Particle->Type].push_back(Particle);
 
 			++Iterator;

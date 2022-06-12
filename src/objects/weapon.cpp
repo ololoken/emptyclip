@@ -22,8 +22,8 @@
 #include <buffer.h>
 
 // Constructor
-_Weapon::_Weapon(const std::string &Identifier, int Count, const Vector2 &Position, const _WeaponTemplate *Weapon, _Texture *Texture, bool Generate)
-:	Ammo(Weapon->RoundSize),
+_Weapon::_Weapon(const std::string &Identifier, int Count, const glm::vec2 &Position, const _WeaponTemplate *Weapon, _Texture *Texture, bool Generate) :
+	Ammo(Weapon->RoundSize),
 	RoundSize(Weapon->RoundSize),
 	MinDamage(Weapon->MinDamage),
 	MaxDamage(Weapon->MaxDamage),

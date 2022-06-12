@@ -18,7 +18,7 @@
 #pragma once
 
 // Libraries
-#include <vector2.h>
+#include <glm/vec2.hpp>
 #include <string>
 #include <ui/ui.h>
 
@@ -120,7 +120,7 @@ class _HUD {
 		void RenderCharacterScreen();
 		void RenderItemInfo(_Item *Item, int DrawX, int DrawY);
 		void UpdateSkillInfo(int Skill, int DrawX, int DrawY);
-		void RenderCrosshair(const Vector2 &Position);
+		void RenderCrosshair(const glm::vec2 &Position);
 		void RenderDeathScreen();
 
 		void SetLastEntityHit(_Entity *Entity);

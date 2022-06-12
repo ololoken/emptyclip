@@ -18,7 +18,7 @@
 #pragma once
 
 #include <color.h>
-#include <vector2.h>
+#include <glm/vec2.hpp>
 #include <stdint.h>
 #include <string>
 
@@ -147,10 +147,10 @@ struct _MiscItemTemplate {
 };
 
 struct _ParticleTemplate {
-	Vector2 StartDirection;
-	Vector2 VelocityScale;
-	Vector2 TurnSpeed;
-	Vector2 Size;
+	glm::vec2 StartDirection;
+	glm::vec2 VelocityScale;
+	glm::vec2 TurnSpeed;
+	glm::vec2 Size;
 	_Color Color;
 	const _Texture *Texture;
 	const _Font *Font;
@@ -241,16 +241,16 @@ struct _ObjectSpawn {
 
 	_ObjectSpawn() :
 		Identifier(""),
-		Position(ZERO_VECTOR),
+		Position{0, 0},
 		Type(-1) { }
 
-	_ObjectSpawn(const std::string &Identifier, const Vector2 &Position, int Type) :
+	_ObjectSpawn(const std::string &Identifier, const glm::vec2 &Position, int Type) :
 		Identifier(Identifier),
 		Position(Position),
 		Type(Type) { }
 
 	std::string Identifier;
-	Vector2 Position;
+	glm::vec2 Position;
 	int Type;
 };
 

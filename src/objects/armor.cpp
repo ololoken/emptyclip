@@ -18,7 +18,7 @@
 #include <objects/armor.h>
 
 // Constructor
-_Armor::_Armor(const std::string &Identifier, int Count, const Vector2 &Position, const _ArmorTemplate *Armor, _Texture *Texture) {
+_Armor::_Armor(const std::string &Identifier, int Count, const glm::vec2 &Position, const _ArmorTemplate *Armor, _Texture *Texture) {
 	this->Type = _Object::ARMOR;
 	this->Identifier = Identifier;
 	this->Count = Count;

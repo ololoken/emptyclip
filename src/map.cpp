@@ -29,10 +29,11 @@
 #include <stdexcept>
 #include <iomanip>
 #include <iostream>
+#include <glm/gtx/norm.hpp>
 
 // Initialize
-_Map::_Map()
-:	MapType(MAPTYPE_SINGLE),
+_Map::_Map() :
+	MapType(MAPTYPE_SINGLE),
 	Width(MAP_WIDTH),
 	Height(MAP_HEIGHT),
 	Filename(""),
@@ -85,7 +86,7 @@ _Map::_Map(const std::string &Filename) : _Map() {
 
 		// Load Data
 		_ObjectSpawn *Object = new _ObjectSpawn();
-		InputFile >> Object->Type >> Object->Identifier >> Object->Position.X >> Object->Position.Y;
+		InputFile >> Object->Type >> Object->Identifier >> Object->Position.x >> Object->Position.y;
 
 		// Check for items
 		switch(Object->Type) {
@@ -129,7 +130,7 @@ _Map::_Map(const std::string &Filename) : _Map() {
 		_Coord EventStart, EventEnd;
 		double EventActivationPeriod;
 		size_t TilesSize;
-		InputFile >> EventType >> EventActive >> EventStart.X >> EventStart.Y >> EventEnd.X >> EventEnd.Y >> EventLevel >> EventActivationPeriod >> TilesSize;
+		InputFile >> EventType >> EventActive >> EventStart.x >> EventStart.y >> EventEnd.x >> EventEnd.y >> EventLevel >> EventActivationPeriod >> TilesSize;
 		std::string EventItemIdentifier = GetCSVText(InputFile);
 		std::string EventMonsterIdentifier = GetCSVText(InputFile);
 		std::string EventParticleIdentifier = GetCSVText(InputFile);
@@ -144,7 +145,7 @@ _Map::_Map(const std::string &Filename) : _Map() {
 		for(size_t j = 0; j < TilesSize; j++) {
 			_Coord Tile;
 			int TileLayer, TileBlockID;
-			InputFile >> Tile.X >> Tile.Y >> TileLayer >> TileBlockID;
+			InputFile >> Tile.x >> Tile.y >> TileLayer >> TileBlockID;
 			Tile = GetValidCoord(Tile);
 			Event->AddTile(_EventTile(Tile, TileLayer, TileBlockID));
 		}
@@ -163,7 +164,7 @@ _Map::_Map(const std::string &Filename) : _Map() {
 	for(size_t i = 0; i < BlockCount; i++) {
 
 		int Layer;
-		InputFile >> Layer >> Block.Start.X >> Block.Start.Y >> Block.End.X >> Block.End.Y >> Block.MinZ >> Block.MaxZ >> Block.Rotation >> Block.ScaleX >> Block.Wall >> Block.Walkable;
+		InputFile >> Layer >> Block.Start.x >> Block.Start.y >> Block.End.x >> Block.End.y >> Block.MinZ >> Block.MaxZ >> Block.Rotation >> Block.ScaleX >> Block.Wall >> Block.Walkable;
 		Block.TextureIdentifier = GetCSVText(InputFile);
 		Block.AltTextureIdentifier = GetCSVText(InputFile);
 
@@ -226,8 +227,8 @@ void _Map::Init() {
 	// Loop through layers and fill out walkable field
 	for(int l = 0; l < MAPLAYER_FORE; l++) {
 		for(size_t k = 0; k < Blocks[l].size(); k++) {
-			for(int i = Blocks[l][k].Start.X; i <= Blocks[l][k].End.X; i++) {
-				for(int j = Blocks[l][k].Start.Y; j <= Blocks[l][k].End.Y; j++) {
+			for(int i = Blocks[l][k].Start.x; i <= Blocks[l][k].End.x; i++) {
+				for(int j = Blocks[l][k].Start.y; j <= Blocks[l][k].End.y; j++) {
 					if(Blocks[l][k].Walkable)
 						Data[i][j].Collision &= ~_Tile::ENTITY;
 					else
@@ -239,8 +240,8 @@ void _Map::Init() {
 
 	// Loop through walls
 	for(size_t k = 0; k < Blocks[5].size(); k++) {
-		for(int i = Blocks[5][k].Start.X; i <= Blocks[5][k].End.X; i++) {
-			for(int j = Blocks[5][k].Start.Y; j <= Blocks[5][k].End.Y; j++) {
+		for(int i = Blocks[5][k].Start.x; i <= Blocks[5][k].End.x; i++) {
+			for(int j = Blocks[5][k].Start.y; j <= Blocks[5][k].End.y; j++) {
 				if(Blocks[5][k].Wall) {
 					if(Blocks[5][k].Walkable)
 						Data[i][j].Collision &= ~_Tile::ENTITY & ~_Tile::BULLET;
@@ -253,8 +254,8 @@ void _Map::Init() {
 
 	// Loop through the events and fill out array
 	for(size_t k = 0; k < Events.size(); k++) {
-		for(int i = Events[k]->Start.X; i <= Events[k]->End.X; i++) {
-			for(int j = Events[k]->Start.Y; j <= Events[k]->End.Y; j++) {
+		for(int i = Events[k]->Start.x; i <= Events[k]->End.x; i++) {
+			for(int j = Events[k]->Start.y; j <= Events[k]->End.y; j++) {
 				Data[i][j].Events.push_back(Events[k]);
 			}
 		}
@@ -280,7 +281,7 @@ bool _Map::SaveLevel(const std::string &String) {
 	// Objects
 	Output << ObjectSpawns.size() << '\n';
 	for(size_t i = 0; i < ObjectSpawns.size(); i++) {
-		Output << ObjectSpawns[i]->Type << " " << ObjectSpawns[i]->Identifier << " " << ObjectSpawns[i]->Position.X << " " << ObjectSpawns[i]->Position.Y << " " << '\n';
+		Output << ObjectSpawns[i]->Type << " " << ObjectSpawns[i]->Identifier << " " << ObjectSpawns[i]->Position.x << " " << ObjectSpawns[i]->Position.y << " " << '\n';
 	}
 
 	// Events
@@ -288,10 +289,10 @@ bool _Map::SaveLevel(const std::string &String) {
 	for(size_t i = 0; i < Events.size(); i++) {
 		Output << Events[i]->Type << " ";
 		Output << Events[i]->Active << " ";
-		Output << Events[i]->Start.X << " ";
-		Output << Events[i]->Start.Y << " ";
-		Output << Events[i]->End.X << " ";
-		Output << Events[i]->End.Y << " ";
+		Output << Events[i]->Start.x << " ";
+		Output << Events[i]->Start.y << " ";
+		Output << Events[i]->End.x << " ";
+		Output << Events[i]->End.y << " ";
 		Output << Events[i]->Level << " ";
 		Output << Events[i]->ActivationPeriod << " ";
 		Output << Events[i]->Tiles.size() << " ";
@@ -301,7 +302,7 @@ bool _Map::SaveLevel(const std::string &String) {
 
 		// Write tiles
 		for(size_t j = 0; j < Events[i]->Tiles.size(); j++)
-			Output << Events[i]->Tiles[j].Coord.X << " " << Events[i]->Tiles[j].Coord.Y << " " << Events[i]->Tiles[j].Layer << " " << Events[i]->Tiles[j].BlockID << '\n';
+			Output << Events[i]->Tiles[j].Coord.x << " " << Events[i]->Tiles[j].Coord.y << " " << Events[i]->Tiles[j].Layer << " " << Events[i]->Tiles[j].BlockID << '\n';
 	}
 
 	// Blocks
@@ -309,10 +310,10 @@ bool _Map::SaveLevel(const std::string &String) {
 	for(int i = 0; i < MAPLAYER_COUNT; i++) {
 		for(size_t j = 0; j < Blocks[i].size(); j++) {
 			Output << i << " ";
-			Output << Blocks[i][j].Start.X << " ";
-			Output << Blocks[i][j].Start.Y << " ";
-			Output << Blocks[i][j].End.X << " ";
-			Output << Blocks[i][j].End.Y << " ";
+			Output << Blocks[i][j].Start.x << " ";
+			Output << Blocks[i][j].Start.y << " ";
+			Output << Blocks[i][j].End.x << " ";
+			Output << Blocks[i][j].End.y << " ";
 			Output << Blocks[i][j].MinZ << " ";
 			Output << Blocks[i][j].MaxZ << " ";
 			Output << Blocks[i][j].Rotation << " ";
@@ -346,8 +347,8 @@ void _Map::AddObjectToGrid(_Object *Object, int Type) {
 	_TileBounds TileBounds;
 	GetTileBounds(Object->Position, Object->Radius, TileBounds);
 
-	for(int i = TileBounds.Start.X; i <= TileBounds.End.X; i++) {
-		for(int j = TileBounds.Start.Y; j <= TileBounds.End.Y; j++) {
+	for(int i = TileBounds.Start.x; i <= TileBounds.End.x; i++) {
+		for(int j = TileBounds.Start.y; j <= TileBounds.End.y; j++) {
 			Data[i][j].Objects[Type].push_front(Object);
 		}
 	}
@@ -362,8 +363,8 @@ void _Map::RemoveObjectFromGrid(_Object *Object, int Type) {
 	_TileBounds TileBounds;
 	GetTileBounds(Object->Position, Object->Radius, TileBounds);
 
-	for(int i = TileBounds.Start.X; i <= TileBounds.End.X; i++) {
-		for(int j = TileBounds.Start.Y; j <= TileBounds.End.Y; j++) {
+	for(int i = TileBounds.Start.x; i <= TileBounds.End.x; i++) {
+		for(int j = TileBounds.Start.y; j <= TileBounds.End.y; j++) {
 			for(auto Iterator = Data[i][j].Objects[Type].begin(); Iterator != Data[i][j].Objects[Type].end(); ++Iterator) {
 				if(*Iterator == Object) {
 					Data[i][j].Objects[Type].erase(Iterator);
@@ -375,32 +376,32 @@ void _Map::RemoveObjectFromGrid(_Object *Object, int Type) {
 }
 
 // Check collision with tiles and resolve
-bool _Map::CheckCollisions(const Vector2 &TargetPosition, float Radius, Vector2 &NewPosition) {
+bool _Map::CheckCollisions(const glm::vec2 &TargetPosition, float Radius, glm::vec2 &NewPosition) {
 	if(!Data)
 		throw std::runtime_error("Tile data uninitialized!");
 
 	NewPosition = TargetPosition;
-	float Left = NewPosition.X - Radius;
-	float Right = NewPosition.X + Radius;
-	float Top = NewPosition.Y - Radius;
-	float Bottom = NewPosition.Y + Radius;
+	float Left = NewPosition.x - Radius;
+	float Right = NewPosition.x + Radius;
+	float Top = NewPosition.y - Radius;
+	float Bottom = NewPosition.y + Radius;
 
 	// Check boundaries
 	bool Hit = false;
 	if(Left < 0) {
-		Left = NewPosition.X = Radius;
+		Left = NewPosition.x = Radius;
 		Hit = true;
 	}
 	if(Top < 0) {
-		Top = NewPosition.Y = Radius;
+		Top = NewPosition.y = Radius;
 		Hit = true;
 	}
 	if(Right >= (float)Width) {
-		Right = NewPosition.X = (float)Width - Radius;
+		Right = NewPosition.x = (float)Width - Radius;
 		Hit = true;
 	}
 	if(Bottom >= (float)Height) {
-		Bottom = NewPosition.Y = (float)Height - Radius;
+		Bottom = NewPosition.y = (float)Height - Radius;
 		Hit = true;
 	}
 
@@ -410,14 +411,14 @@ bool _Map::CheckCollisions(const Vector2 &TargetPosition, float Radius, Vector2 
 	int TopTile = (int)Top;
 	int BottomTile = (int)Bottom;
 
-	std::list<Vector2> Pushes;
+	std::list<glm::vec2> Pushes;
 	bool NoDiag = false;
 	for(int i = LeftTile; i <= RightTile; i++) {
 		for(int j = TopTile; j <= BottomTile; j++) {
 			if(!Data[i][j].CanWalk()) {
 
 				bool DiagonalPush = false;
-				Vector2 Push(0, 0);
+				glm::vec2 Push(0, 0);
 				if(CheckTileCollision(NewPosition, Radius, (float)i, (float)j, true, Push, DiagonalPush)) {
 					Hit = true;
 					Pushes.push_back(Push);
@@ -432,7 +433,7 @@ bool _Map::CheckCollisions(const Vector2 &TargetPosition, float Radius, Vector2 
 
 	// Resolve collision
 	for(const auto &Push : Pushes) {
-		if(!(NoDiag && Push.X != 0 && Push.Y != 0)) {
+		if(!(NoDiag && Push.x != 0 && Push.y != 0)) {
 			NewPosition += Push;
 		}
 	}
@@ -441,31 +442,31 @@ bool _Map::CheckCollisions(const Vector2 &TargetPosition, float Radius, Vector2 
 }
 
 // Resolve collision with a tile
-bool _Map::CheckTileCollision(const Vector2 &Position, float Radius, float X, float Y, bool Resolve, Vector2 &Push, bool &DiagonalPush) {
+bool _Map::CheckTileCollision(const glm::vec2 &Position, float Radius, float X, float Y, bool Resolve, glm::vec2 &Push, bool &DiagonalPush) {
 	float AABB[4] = { X, Y, X + 1, Y + 1 };
 	int ClampCount = 0;
 
 	// Get closest point on AABB
-	Vector2 Point = Position;
-	if(Point.X < AABB[0]) {
-		Point.X = AABB[0];
+	glm::vec2 Point = Position;
+	if(Point.x < AABB[0]) {
+		Point.x = AABB[0];
 		ClampCount++;
 	}
-	if(Point.Y < AABB[1]) {
-		Point.Y = AABB[1];
+	if(Point.y < AABB[1]) {
+		Point.y = AABB[1];
 		ClampCount++;
 	}
-	if(Point.X > AABB[2]) {
-		Point.X = AABB[2];
+	if(Point.x > AABB[2]) {
+		Point.x = AABB[2];
 		ClampCount++;
 	}
-	if(Point.Y > AABB[3]) {
-		Point.Y = AABB[3];
+	if(Point.y > AABB[3]) {
+		Point.y = AABB[3];
 		ClampCount++;
 	}
 
 	// Test circle collision with point
-	float DistanceSquared = (Point - Position).MagnitudeSquared();
+	float DistanceSquared = glm::distance2(Point, Position);
 	bool Hit = DistanceSquared < Radius * Radius;
 
 	// Push object out
@@ -473,11 +474,11 @@ bool _Map::CheckTileCollision(const Vector2 &Position, float Radius, float X, fl
 
 		// Check if object is inside the AABB
 		if(ClampCount == 0) {
-			Vector2 Center(X + 0.5f, Y + 0.5f);
-			if(Position.X <= Center.X)
-				Push.X = -(X - Position.X - Radius);
-			else if(Position.X > Center.X)
-				Push.X = (X - Position.X) + 1 + Radius;
+			glm::vec2 Center(X + 0.5f, Y + 0.5f);
+			if(Position.x <= Center.x)
+				Push.x = -(X - Position.x - Radius);
+			else if(Position.x > Center.x)
+				Push.x = (X - Position.x) + 1 + Radius;
 		}
 		else {
 
@@ -485,10 +486,10 @@ bool _Map::CheckTileCollision(const Vector2 &Position, float Radius, float X, fl
 			Push = Position - Point;
 
 			// Get push amount
-			float Amount = Radius - Push.Magnitude();
+			float Amount = Radius - glm::length(Push);
 
 			// Scale push vector
-			Push.Normalize();
+			Push = glm::normalize(Push);
 			Push *= Amount;
 
 			// Set whether the push is diagnol or not
@@ -500,7 +501,7 @@ bool _Map::CheckTileCollision(const Vector2 &Position, float Radius, float X, fl
 }
 
 // Checks for collisions with an object in the collision grid
-_Object *_Map::CheckCollisionsInGrid(const Vector2 &Position, float Radius, int GridType, const _Object *SkipObject) const {
+_Object *_Map::CheckCollisionsInGrid(const glm::vec2 &Position, float Radius, int GridType, const _Object *SkipObject) const {
 	if(!Data)
 		throw std::runtime_error("Tile data uninitialized!");
 
@@ -510,11 +511,11 @@ _Object *_Map::CheckCollisionsInGrid(const Vector2 &Position, float Radius, int 
 	_TileBounds TileBounds;
 	GetTileBounds(Position, Radius, TileBounds);
 
-	for(int i = TileBounds.Start.X; i <= TileBounds.End.X; i++) {
-		for(int j = TileBounds.Start.Y; j <= TileBounds.End.Y; j++) {
+	for(int i = TileBounds.Start.x; i <= TileBounds.End.x; i++) {
+		for(int j = TileBounds.Start.y; j <= TileBounds.End.y; j++) {
 			for(auto Iterator : Data[i][j].Objects[GridType]) {
 				if(Iterator != SkipObject) {
-					DistanceSquared = (Iterator->Position - Position).MagnitudeSquared();
+					DistanceSquared = glm::distance2(Iterator->Position, Position);
 					RadiiSum = Iterator->Radius + Radius;
 
 					// Check circle intersection
@@ -530,7 +531,7 @@ _Object *_Map::CheckCollisionsInGrid(const Vector2 &Position, float Radius, int 
 }
 
 // Returns a list of entities that an object is colliding with
-void _Map::CheckEntityCollisionsInGrid(const Vector2 &Position, float Radius, const _Object *SkipObject, std::list<_Entity *> &Entities) const {
+void _Map::CheckEntityCollisionsInGrid(const glm::vec2 &Position, float Radius, const _Object *SkipObject, std::list<_Entity *> &Entities) const {
 	if(!Data)
 		throw std::runtime_error("Tile data uninitialized!");
 
@@ -538,13 +539,13 @@ void _Map::CheckEntityCollisionsInGrid(const Vector2 &Position, float Radius, co
 	_TileBounds TileBounds;
 	GetTileBounds(Position, Radius, TileBounds);
 
-	for(int i = TileBounds.Start.X; i <= TileBounds.End.X; i++) {
-		for(int j = TileBounds.Start.Y; j <= TileBounds.End.Y; j++) {
+	for(int i = TileBounds.Start.x; i <= TileBounds.End.x; i++) {
+		for(int j = TileBounds.Start.y; j <= TileBounds.End.y; j++) {
 			for(int k = 0; k < 2; k++) {
 				for(auto Iterator = Data[i][j].Objects[k].begin(); Iterator != Data[i][j].Objects[k].end(); ++Iterator) {
 					_Entity *Entity = static_cast<_Entity *>(*Iterator);
 					if(Entity != SkipObject && !Entity->IsDying()) {
-						float DistanceSquared = (Entity->Position - Position).MagnitudeSquared();
+						float DistanceSquared = glm::distance2(Entity->Position, Position);
 						float RadiiSum = Entity->Radius + Radius;
 
 						// Check circle intersection
@@ -558,27 +559,27 @@ void _Map::CheckEntityCollisionsInGrid(const Vector2 &Position, float Radius, co
 }
 
 // Checks for melee collisions with entities in the collision grid
-_Entity *_Map::CheckMeleeCollisions(_Entity *Attacker, const Vector2 &Direction, int GridType) const {
+_Entity *_Map::CheckMeleeCollisions(_Entity *Attacker, const glm::vec2 &Direction, int GridType) const {
 	if(!Data)
 		throw std::runtime_error("Tile data uninitialized!");
 
 	// Get the object's bounding rectangle
 	_TileBounds TileBounds;
 	GetTileBounds(Attacker->Position, Attacker->GetWeaponRange(Attacker->AttackRequestType), TileBounds);
-	for(int i = TileBounds.Start.X; i <= TileBounds.End.X; i++) {
-		for(int j = TileBounds.Start.Y; j <= TileBounds.End.Y; j++) {
+	for(int i = TileBounds.Start.x; i <= TileBounds.End.x; i++) {
+		for(int j = TileBounds.Start.y; j <= TileBounds.End.y; j++) {
 			for(auto Iterator = Data[i][j].Objects[GridType].begin(); Iterator != Data[i][j].Objects[GridType].end(); ++Iterator) {
 				_Entity *Entity = static_cast<_Entity *>(*Iterator);
 				if(!Entity->IsDying()) {
-					float DistanceSquared = (Entity->Position - Attacker->Position).MagnitudeSquared();
+					float DistanceSquared = glm::distance2(Entity->Position, Attacker->Position);
 					float RadiiSum = Entity->Radius + Attacker->GetWeaponRange(Attacker->AttackRequestType);
 
 					// Check circle intersection
 					if(DistanceSquared < RadiiSum * RadiiSum) {
-						Vector2 ObjectDirection((Entity->Position - Attacker->Position).UnitVector());
+						glm::vec2 ObjectDirection(glm::normalize(Entity->Position - Attacker->Position));
 
 						// Compare angles
-						if((Direction * ObjectDirection) > cosf(Attacker->GetMaxAccuracy(Attacker->AttackRequestType) * 0.5f / DEGREES_IN_RADIAN)) {
+						if(glm::dot(Direction, ObjectDirection) > cosf(glm::radians(Attacker->GetMaxAccuracy(Attacker->AttackRequestType) * 0.5f))) {
 
 							// Check for walls
 							if(IsVisible(Attacker->Position, Entity->Position))
@@ -594,7 +595,7 @@ _Entity *_Map::CheckMeleeCollisions(_Entity *Attacker, const Vector2 &Direction,
 }
 
 // Determines which walls are adjacent to the object
-int _Map::GetWallState(const Vector2 &Position, float Radius) const {
+int _Map::GetWallState(const glm::vec2 &Position, float Radius) const {
 	if(!Data)
 		throw std::runtime_error("Tile data uninitialized!");
 
@@ -604,34 +605,34 @@ int _Map::GetWallState(const Vector2 &Position, float Radius) const {
 
 	// Check left wall
 	int WallState = 0;
-	_Coord TopLeft = GetValidCoord(_Coord((int)(Position.X - Radius - MAP_EPSILON), (int)(Position.Y - Radius - MAP_EPSILON)));
-	for(int i = TileBounds.Start.Y; i <= TileBounds.End.Y; i++) {
-		if(!Data[TopLeft.X][i].CanWalk()) {
+	_Coord TopLeft = GetValidCoord(_Coord((int)(Position.x - Radius - MAP_EPSILON), (int)(Position.y - Radius - MAP_EPSILON)));
+	for(int i = TileBounds.Start.y; i <= TileBounds.End.y; i++) {
+		if(!Data[TopLeft.x][i].CanWalk()) {
 			WallState |= WALL_LEFT;
 			break;
 		}
 	}
 
 	// Check top wall
-	for(int i = TileBounds.Start.X; i <= TileBounds.End.X; i++) {
-		if(!Data[i][TopLeft.Y].CanWalk()) {
+	for(int i = TileBounds.Start.x; i <= TileBounds.End.x; i++) {
+		if(!Data[i][TopLeft.y].CanWalk()) {
 			WallState |= WALL_TOP;
 			break;
 		}
 	}
 
 	// Check right wall
-	_Coord BottomRight = GetValidCoord(_Coord((int)(Position.X + Radius + MAP_EPSILON), (int)(Position.Y + Radius + MAP_EPSILON)));
-	for(int i = TileBounds.Start.Y; i <= TileBounds.End.Y; i++) {
-		if(!Data[BottomRight.X][i].CanWalk()) {
+	_Coord BottomRight = GetValidCoord(_Coord((int)(Position.x + Radius + MAP_EPSILON), (int)(Position.y + Radius + MAP_EPSILON)));
+	for(int i = TileBounds.Start.y; i <= TileBounds.End.y; i++) {
+		if(!Data[BottomRight.x][i].CanWalk()) {
 			WallState |= WALL_RIGHT;
 			break;
 		}
 	}
 
 	// Check bottom wall
-	for(int i = TileBounds.Start.X; i <= TileBounds.End.X; i++) {
-		if(!Data[i][BottomRight.Y].CanWalk()) {
+	for(int i = TileBounds.Start.x; i <= TileBounds.End.x; i++) {
+		if(!Data[i][BottomRight.y].CanWalk()) {
 			WallState |= WALL_BOTTOM;
 			break;
 		}
@@ -641,75 +642,75 @@ int _Map::GetWallState(const Vector2 &Position, float Radius) const {
 }
 
 // Determines what adjacent square the object is facing
-void _Map::GetAdjacentTile(const Vector2 &Position, float Direction, _Coord &Coord) const {
+void _Map::GetAdjacentTile(const glm::vec2 &Position, float Direction, _Coord &Coord) const {
 
 	// Check direction
 	if(Direction > 45.0f && Direction < 135.0f) {
-		Coord = GetValidCoord(_Coord(Position.X + 1.0f, Position.Y));
+		Coord = GetValidCoord(_Coord(Position.x + 1.0f, Position.y));
 	}
 	else if(Direction >= 135.0f && Direction < 225.0f) {
-		Coord = GetValidCoord(_Coord(Position.X, Position.Y + 1.0f));
+		Coord = GetValidCoord(_Coord(Position.x, Position.y + 1.0f));
 	}
 	else if(Direction >= 225.0f && Direction < 315.0f) {
-		Coord = GetValidCoord(_Coord(Position.X - 1.0f, Position.Y));
+		Coord = GetValidCoord(_Coord(Position.x - 1.0f, Position.y));
 	}
 	else {
-		Coord = GetValidCoord(_Coord(Position.X, Position.Y - 1.0f));
+		Coord = GetValidCoord(_Coord(Position.x, Position.y - 1.0f));
 	}
 }
 
 // Checks bullet collisions with objects and walls
-void _Map::CheckBulletCollisions(const Vector2 &Position, const Vector2 &Direction, _Entity **HitEntity, Vector2 *HitPosition, int GridType, bool CheckObjects) const {
+void _Map::CheckBulletCollisions(const glm::vec2 &Position, const glm::vec2 &Direction, _Entity **HitEntity, glm::vec2 *HitPosition, int GridType, bool CheckObjects) const {
 	if(!Data)
 		throw std::runtime_error("Tile data uninitialized!");
 
 	// Find slope
-	float Slope = Direction.Y / Direction.X;
+	float Slope = Direction.y / Direction.x;
 
 	// Find starting tile
-	_Coord TileTracer = GetValidCoord(_Coord(Position.X, Position.Y));
+	_Coord TileTracer = GetValidCoord(_Coord(Position.x, Position.y));
 
 	// Check x direction
 	int TileIncrementX, FirstBoundaryTileX;
-	if(Direction.X < 0) {
-		FirstBoundaryTileX = TileTracer.X;
+	if(Direction.x < 0) {
+		FirstBoundaryTileX = TileTracer.x;
 		TileIncrementX = -1;
 	}
 	else {
-		FirstBoundaryTileX = TileTracer.X + 1;
+		FirstBoundaryTileX = TileTracer.x + 1;
 		TileIncrementX = 1;
 	}
 
 	// Check y direction
 	int TileIncrementY, FirstBoundaryTileY;
-	if(Direction.Y < 0) {
-		FirstBoundaryTileY = TileTracer.Y;
+	if(Direction.y < 0) {
+		FirstBoundaryTileY = TileTracer.y;
 		TileIncrementY = -1;
 	}
 	else {
-		FirstBoundaryTileY = TileTracer.Y + 1;
+		FirstBoundaryTileY = TileTracer.y + 1;
 		TileIncrementY = 1;
 	}
 
 	// Find ray direction ratios
-	Vector2 Ratio(1.0f / Direction.X, 1.0f / Direction.Y);
+	glm::vec2 Ratio(1.0f / Direction.x, 1.0f / Direction.y);
 
 	// Calculate increments
-	Vector2 Increment(TileIncrementX * Ratio.X, TileIncrementY * Ratio.Y);
+	glm::vec2 Increment(TileIncrementX * Ratio.x, TileIncrementY * Ratio.y);
 
 	// Get starting positions
-	Vector2 Tracer((FirstBoundaryTileX - Position.X) * Ratio.X, (FirstBoundaryTileY - Position.Y) * Ratio.Y);
+	glm::vec2 Tracer((FirstBoundaryTileX - Position.x) * Ratio.x, (FirstBoundaryTileY - Position.y) * Ratio.y);
 
 	// Traverse tiles
 	if(CheckObjects)
 		*HitEntity = nullptr;
 	float MinDistance = HUGE_VAL;
 	bool EndedOnX = false;
-	while(TileTracer.X >= 0 && TileTracer.Y >= 0 && TileTracer.X < Width && TileTracer.Y < Height && CanShootThrough(TileTracer.X, TileTracer.Y)) {
+	while(TileTracer.x >= 0 && TileTracer.y >= 0 && TileTracer.x < Width && TileTracer.y < Height && CanShootThrough(TileTracer.x, TileTracer.y)) {
 
 		// Check for object intersections
 		if(CheckObjects) {
-			for(auto Iterator = Data[TileTracer.X][TileTracer.Y].Objects[GridType].begin(); Iterator != Data[TileTracer.X][TileTracer.Y].Objects[GridType].end(); ++Iterator) {
+			for(auto Iterator = Data[TileTracer.x][TileTracer.y].Objects[GridType].begin(); Iterator != Data[TileTracer.x][TileTracer.y].Objects[GridType].end(); ++Iterator) {
 				_Entity *Entity = static_cast<_Entity *>(*Iterator);
 				if(!Entity->IsDying()) {
 					float Distance = RayObjectIntersection(Position, Direction, Entity);
@@ -722,14 +723,14 @@ void _Map::CheckBulletCollisions(const Vector2 &Position, const Vector2 &Directi
 		}
 
 		// Determine which direction needs an update
-		if(Tracer.X < Tracer.Y) {
-			Tracer.X += Increment.X;
-			TileTracer.X += TileIncrementX;
+		if(Tracer.x < Tracer.y) {
+			Tracer.x += Increment.x;
+			TileTracer.x += TileIncrementX;
 			EndedOnX = true;
 		}
 		else {
-			Tracer.Y += Increment.Y;
-			TileTracer.Y += TileIncrementY;
+			Tracer.y += Increment.y;
+			TileTracer.y += TileIncrementY;
 			EndedOnX = false;
 		}
 	}
@@ -741,26 +742,26 @@ void _Map::CheckBulletCollisions(const Vector2 &Position, const Vector2 &Directi
 	}
 
 	// Determine which side has hit
-	Vector2 WallHitPosition, WallBoundary;
+	glm::vec2 WallHitPosition, WallBoundary;
 	if(EndedOnX) {
 
 		// Get correct side of the wall
-		FirstBoundaryTileX = Direction.X < 0 ? TileTracer.X+1 : TileTracer.X;
-		WallBoundary.X = FirstBoundaryTileX - Position.X;
+		FirstBoundaryTileX = Direction.x < 0 ? TileTracer.x+1 : TileTracer.x;
+		WallBoundary.x = FirstBoundaryTileX - Position.x;
 
 		// Determine hit position
-		WallHitPosition.X = WallBoundary.X;
-		WallHitPosition.Y = WallBoundary.X * Slope;
+		WallHitPosition.x = WallBoundary.x;
+		WallHitPosition.y = WallBoundary.x * Slope;
 	}
 	else {
 
 		// Get correct side of the wall
-		FirstBoundaryTileY = Direction.Y < 0 ? TileTracer.Y+1 : TileTracer.Y;
-		WallBoundary.Y = FirstBoundaryTileY - Position.Y;
+		FirstBoundaryTileY = Direction.y < 0 ? TileTracer.y+1 : TileTracer.y;
+		WallBoundary.y = FirstBoundaryTileY - Position.y;
 
 		// Determine hit position
-		WallHitPosition.X = WallBoundary.Y / Slope;
-		WallHitPosition.Y = WallBoundary.Y;
+		WallHitPosition.x = WallBoundary.y / Slope;
+		WallHitPosition.y = WallBoundary.y;
 	}
 
 	*HitPosition = WallHitPosition + Position;
@@ -769,14 +770,14 @@ void _Map::CheckBulletCollisions(const Vector2 &Position, const Vector2 &Directi
 }
 
 // Returns a t value for when a ray intersects a circle
-float _Map::RayObjectIntersection(const Vector2 &Origin, const Vector2 &Direction, const _Object *Object) const {
+float _Map::RayObjectIntersection(const glm::vec2 &Origin, const glm::vec2 &Direction, const _Object *Object) const {
 
-	Vector2 Vector2EMinusC(Origin - Object->Position);
-	float QuantityDDotD = Direction * Direction;
-	float QuantityDDotEMC = Direction * Vector2EMinusC;
-	float Discriminant = QuantityDDotEMC * QuantityDDotEMC - QuantityDDotD * (Vector2EMinusC * Vector2EMinusC - Object->Radius * Object->Radius);
+	glm::vec2 Vector2EMinusC(Origin - Object->Position);
+	float QuantityDDotD = glm::dot(Direction, Direction);
+	float QuantityDDotEMC = glm::dot(Direction, Vector2EMinusC);
+	float Discriminant = QuantityDDotEMC * QuantityDDotEMC - QuantityDDotD * (glm::dot(Vector2EMinusC, Vector2EMinusC) - Object->Radius * Object->Radius);
 	if(Discriminant >= 0) {
-		float ProductRayOMinusC = (Direction * -1) * Vector2EMinusC;
+		float ProductRayOMinusC = glm::dot(Direction * -1.0f, Vector2EMinusC);
 		float SqrtDiscriminant = sqrt(Discriminant);
 
 		float TMinus = (ProductRayOMinusC - SqrtDiscriminant) / QuantityDDotD;
@@ -790,8 +791,8 @@ float _Map::RayObjectIntersection(const Vector2 &Origin, const Vector2 &Directio
 }
 
 // Determines if two positions are mutually visible
-bool _Map::IsVisible(const Vector2 &Start, const Vector2 &End) const {
-	Vector2 Direction, Tracer, Increment, Ratio;
+bool _Map::IsVisible(const glm::vec2 &Start, const glm::vec2 &End) const {
+	glm::vec2 Direction, Tracer, Increment, Ratio;
 	int TileIncrementX, TileIncrementY, FirstBoundaryTileX, FirstBoundaryTileY, TileTracerX, TileTracerY;
 
 	// Find starting and ending tiles
@@ -802,43 +803,43 @@ bool _Map::IsVisible(const Vector2 &Start, const Vector2 &End) const {
 	Direction = End - Start;
 
 	// Check degenerate cases
-	if(!CanShootThrough(StartTile.X, StartTile.Y) || !CanShootThrough(EndTile.X, EndTile.Y))
+	if(!CanShootThrough(StartTile.x, StartTile.y) || !CanShootThrough(EndTile.x, EndTile.y))
 		return false;
 
 	// Only need to check vertical tiles
-	if(StartTile.X == EndTile.X) {
+	if(StartTile.x == EndTile.x) {
 
 		// Check degenerate cases
-		if(StartTile.Y == EndTile.Y)
+		if(StartTile.y == EndTile.y)
 			return true;
 
 		// Check direction
-		if(Direction.Y < 0) {
-			for(int i = EndTile.Y; i <= StartTile.Y; i++) {
-				if(!CanShootThrough(StartTile.X, i))
+		if(Direction.y < 0) {
+			for(int i = EndTile.y; i <= StartTile.y; i++) {
+				if(!CanShootThrough(StartTile.x, i))
 					return false;
 			}
 		}
 		else {
-			for(int i = StartTile.Y; i <= EndTile.Y; i++) {
-				if(!CanShootThrough(StartTile.X, i))
+			for(int i = StartTile.y; i <= EndTile.y; i++) {
+				if(!CanShootThrough(StartTile.x, i))
 					return false;
 			}
 		}
 		return true;
 	}
-	else if(StartTile.Y == EndTile.Y) {
+	else if(StartTile.y == EndTile.y) {
 
 		// Check direction
-		if(Direction.X < 0) {
-			for(int i = EndTile.X; i <= StartTile.X; i++) {
-				if(!CanShootThrough(i, StartTile.Y))
+		if(Direction.x < 0) {
+			for(int i = EndTile.x; i <= StartTile.x; i++) {
+				if(!CanShootThrough(i, StartTile.y))
 					return false;
 			}
 		}
 		else {
-			for(int i = StartTile.X; i <= EndTile.X; i++) {
-				if(!CanShootThrough(i, StartTile.Y))
+			for(int i = StartTile.x; i <= EndTile.x; i++) {
+				if(!CanShootThrough(i, StartTile.y))
 					return false;
 			}
 		}
@@ -846,40 +847,40 @@ bool _Map::IsVisible(const Vector2 &Start, const Vector2 &End) const {
 	}
 
 	// Check x direction
-	if(Direction.X < 0) {
-		FirstBoundaryTileX = StartTile.X;
+	if(Direction.x < 0) {
+		FirstBoundaryTileX = StartTile.x;
 		TileIncrementX = -1;
 	}
 	else {
-		FirstBoundaryTileX = StartTile.X + 1;
+		FirstBoundaryTileX = StartTile.x + 1;
 		TileIncrementX = 1;
 	}
 
 	// Check y direction
-	if(Direction.Y < 0) {
-		FirstBoundaryTileY = StartTile.Y;
+	if(Direction.y < 0) {
+		FirstBoundaryTileY = StartTile.y;
 		TileIncrementY = -1;
 	}
 	else {
-		FirstBoundaryTileY = StartTile.Y + 1;
+		FirstBoundaryTileY = StartTile.y + 1;
 		TileIncrementY = 1;
 	}
 
 	// Find ray direction ratios
-	Ratio.X = 1.0f / Direction.X;
-	Ratio.Y = 1.0f / Direction.Y;
+	Ratio.x = 1.0f / Direction.x;
+	Ratio.y = 1.0f / Direction.y;
 
 	// Calculate increments
-	Increment.X = TileIncrementX * Ratio.X;
-	Increment.Y = TileIncrementY * Ratio.Y;
+	Increment.x = TileIncrementX * Ratio.x;
+	Increment.y = TileIncrementY * Ratio.y;
 
 	// Get starting positions
-	Tracer.X = (FirstBoundaryTileX - Start.X) * Ratio.X;
-	Tracer.Y = (FirstBoundaryTileY - Start.Y) * Ratio.Y;
+	Tracer.x = (FirstBoundaryTileX - Start.x) * Ratio.x;
+	Tracer.y = (FirstBoundaryTileY - Start.y) * Ratio.y;
 
 	// Starting tiles
-	TileTracerX = StartTile.X;
-	TileTracerY = StartTile.Y;
+	TileTracerX = StartTile.x;
+	TileTracerY = StartTile.y;
 
 	// Traverse tiles
 	while(true) {
@@ -889,20 +890,20 @@ bool _Map::IsVisible(const Vector2 &Start, const Vector2 &End) const {
 			return false;
 
 		// Determine which direction needs an update
-		if(Tracer.X < Tracer.Y) {
-			Tracer.X += Increment.X;
+		if(Tracer.x < Tracer.y) {
+			Tracer.x += Increment.x;
 			TileTracerX += TileIncrementX;
 		}
 		else {
-			Tracer.Y += Increment.Y;
+			Tracer.y += Increment.y;
 			TileTracerY += TileIncrementY;
 		}
 
 		// Exit condition
-		if((Direction.X < 0 && TileTracerX < EndTile.X)
-			|| (Direction.X > 0 && TileTracerX > EndTile.X)
-			|| (Direction.Y < 0 && TileTracerY < EndTile.Y)
-			|| (Direction.Y > 0 && TileTracerY > EndTile.Y))
+		if((Direction.x < 0 && TileTracerX < EndTile.x)
+			|| (Direction.x > 0 && TileTracerX > EndTile.x)
+			|| (Direction.y < 0 && TileTracerY < EndTile.y)
+			|| (Direction.y > 0 && TileTracerY > EndTile.y))
 			break;
 	}
 
@@ -910,29 +911,29 @@ bool _Map::IsVisible(const Vector2 &Start, const Vector2 &End) const {
 }
 
 // Determines if a rectangle can travel to a position without hitting a wall
-bool _Map::IsVisibleWithBounds(const Vector2 &Start, const Vector2 &End, float BoundSize) const {
+bool _Map::IsVisibleWithBounds(const glm::vec2 &Start, const glm::vec2 &End, float BoundSize) const {
 
 	// Get x components of the starting corners
-	Vector2 LeftStartPosition, RightStartPosition;
-	LeftStartPosition.X = Start.X - BoundSize;
-	RightStartPosition.X = Start.X + BoundSize;
+	glm::vec2 LeftStartPosition, RightStartPosition;
+	LeftStartPosition.x = Start.x - BoundSize;
+	RightStartPosition.x = Start.x + BoundSize;
 
 	// Get direction
-	Vector2 Direction(End - Start);
+	glm::vec2 Direction(End - Start);
 
 	// Get y components of the starting corners
-	if((Direction.X < 0 && Direction.Y < 0) || (Direction.X >= 0 && Direction.Y >= 0)) {
-		LeftStartPosition.Y = Start.Y + BoundSize;
-		RightStartPosition.Y = Start.Y - BoundSize;
+	if((Direction.x < 0 && Direction.y < 0) || (Direction.x >= 0 && Direction.y >= 0)) {
+		LeftStartPosition.y = Start.y + BoundSize;
+		RightStartPosition.y = Start.y - BoundSize;
 	}
 	else {
-		LeftStartPosition.Y = Start.Y - BoundSize;
-		RightStartPosition.Y = Start.Y + BoundSize;
+		LeftStartPosition.y = Start.y - BoundSize;
+		RightStartPosition.y = Start.y + BoundSize;
 	}
 
 	// Get ending positions
-	Vector2 LeftEndPosition = LeftStartPosition + Direction;
-	Vector2 RightEndPosition = RightStartPosition + Direction;
+	glm::vec2 LeftEndPosition = LeftStartPosition + Direction;
+	glm::vec2 RightEndPosition = RightStartPosition + Direction;
 
 	// Check the first corner
 	if(IsVisible(LeftStartPosition, LeftEndPosition)) {
@@ -948,12 +949,12 @@ bool _Map::IsVisibleWithBounds(const Vector2 &Start, const Vector2 &End, float B
 }
 
 // Return an object at a given position
-void _Map::GetSelectedObject(const Vector2 &Position, float RadiusSquared, _ObjectSpawn **Object, size_t *Index) {
+void _Map::GetSelectedObject(const glm::vec2 &Position, float RadiusSquared, _ObjectSpawn **Object, size_t *Index) {
 
 	for(size_t i = 0; i < ObjectSpawns.size(); i++) {
 
 		// Circle test
-		if((ObjectSpawns[i]->Position - Position).MagnitudeSquared() < RadiusSquared) {
+		if(glm::distance2(ObjectSpawns[i]->Position, Position) < RadiusSquared) {
 			*Object = ObjectSpawns[i];
 			*Index = i;
 			return;
@@ -964,30 +965,30 @@ void _Map::GetSelectedObject(const Vector2 &Position, float RadiusSquared, _Obje
 }
 
 // Returns all the objects that fall inside the rectangle
-void _Map::GetSelectedObjects(const Vector2 &Start, const Vector2 &End, std::list<_ObjectSpawn *> *SelectedObjects, std::list<size_t> *SelectedObjectIndices) {
+void _Map::GetSelectedObjects(const glm::vec2 &Start, const glm::vec2 &End, std::list<_ObjectSpawn *> *SelectedObjects, std::list<size_t> *SelectedObjectIndices) {
 
-	Vector2 StartPoint, EndPoint;
-	if(End.X < Start.X) {
-		StartPoint.X = End.X;
-		EndPoint.X = Start.X;
+	glm::vec2 StartPoint, EndPoint;
+	if(End.x < Start.x) {
+		StartPoint.x = End.x;
+		EndPoint.x = Start.x;
 	}
 	else {
-		StartPoint.X = Start.X;
-		EndPoint.X = End.X;
+		StartPoint.x = Start.x;
+		EndPoint.x = End.x;
 	}
 
-	if(End.Y < Start.Y) {
-		StartPoint.Y = End.Y;
-		EndPoint.Y = Start.Y;
+	if(End.y < Start.y) {
+		StartPoint.y = End.y;
+		EndPoint.y = Start.y;
 	}
 	else {
-		StartPoint.Y = Start.Y;
-		EndPoint.Y = End.Y;
+		StartPoint.y = Start.y;
+		EndPoint.y = End.y;
 	}
 
 	for(size_t i = 0; i < ObjectSpawns.size(); i++) {
 
-		if(ObjectSpawns[i]->Position.X > StartPoint.X && ObjectSpawns[i]->Position.Y > StartPoint.Y && ObjectSpawns[i]->Position.X <= EndPoint.X && ObjectSpawns[i]->Position.Y <= EndPoint.Y) {
+		if(ObjectSpawns[i]->Position.x > StartPoint.x && ObjectSpawns[i]->Position.y > StartPoint.y && ObjectSpawns[i]->Position.x <= EndPoint.x && ObjectSpawns[i]->Position.y <= EndPoint.y) {
 			SelectedObjects->push_back(ObjectSpawns[i]);
 			SelectedObjectIndices->push_back(i);
 		}
@@ -1031,7 +1032,7 @@ void _Map::RemoveObjects(std::list<size_t> &SelectedObjectIndices) {
 int _Map::GetSelectedBlock(int Layer, const _Coord &Index) {
 
 	for(int i = static_cast<int>(Blocks[Layer].size())-1; i >= 0; i--) {
-		if(Index.X >= Blocks[Layer][i].Start.X && Index.Y >= Blocks[Layer][i].Start.Y && Index.X <= Blocks[Layer][i].End.X && Index.Y <= Blocks[Layer][i].End.Y)
+		if(Index.x >= Blocks[Layer][i].Start.x && Index.y >= Blocks[Layer][i].Start.y && Index.x <= Blocks[Layer][i].End.x && Index.y <= Blocks[Layer][i].End.y)
 			return i;
 	}
 
@@ -1095,7 +1096,7 @@ bool _Map::HasEvents(const _Coord &Position) const {
 	if(!Data)
 		throw std::runtime_error("Tile data uninitialized!");
 
-	return Data[Position.X][Position.Y].Events.size() > 0;
+	return Data[Position.x][Position.y].Events.size() > 0;
 }
 
 // Gets a list of event based on a position
@@ -1103,15 +1104,15 @@ std::list<_Event *> &_Map::GetEventList(const _Coord &Position) {
 	if(!Data)
 		throw std::runtime_error("Tile data uninitialized!");
 
-	return Data[Position.X][Position.Y].Events;
+	return Data[Position.x][Position.y].Events;
 }
 
 // Returns a starting position by level and player id
-Vector2 _Map::GetStartingPositionByCheckpoint(int Level) {
+glm::vec2 _Map::GetStartingPositionByCheckpoint(int Level) {
 
 	// Degenerate case
 	if(CheckpointEvents.size() == 0)
-		return Vector2(2.5f, 2.5f);
+		return glm::vec2(2.5f, 2.5f);
 
 	// Look through events
 	for(size_t i = 0; i < CheckpointEvents.size(); i++) {
@@ -1120,13 +1121,13 @@ Vector2 _Map::GetStartingPositionByCheckpoint(int Level) {
 			const std::vector<_EventTile> &Tiles = Event->Tiles;
 
 			if(Tiles.size() == 0)
-				return Vector2(Event->Start.X + 0.5f, Event->Start.Y + 0.5f);
+				return glm::vec2(Event->Start.x + 0.5f, Event->Start.y + 0.5f);
 			else
-				return Vector2(Tiles[0].Coord.X + 0.5f, Tiles[0].Coord.Y + 0.5f);
+				return glm::vec2(Tiles[0].Coord.x + 0.5f, Tiles[0].Coord.y + 0.5f);
 		}
 	}
 
-	return Vector2(2.5f, 2.5f);
+	return glm::vec2(2.5f, 2.5f);
 }
 
 // Return the event at a given position
@@ -1136,7 +1137,7 @@ int _Map::GetSelectedEvent(const _Coord &Index, _Event **ReturnEvent) {
 	for(auto Iterator = Events.rbegin(); Iterator != Events.rend(); ++Iterator) {
 		_Event *Event = *Iterator;
 
-		if(Index.X >= Event->Start.X && Index.Y >=Event->Start.Y && Index.X <= Event->End.X && Index.Y <= Event->End.Y) {
+		if(Index.x >= Event->Start.x && Index.y >=Event->Start.y && Index.x <= Event->End.x && Index.y <= Event->End.y) {
 			*ReturnEvent = Event;
 			return Events.size() - 1 - (Iterator - Events.rbegin());
 		}
@@ -1175,7 +1176,7 @@ void _Map::RenderGrid(int Mode) {
 // Draws rectangles around all the blocks
 void _Map::HighlightBlocks(int Layer) {
 	for(int i = 0; i < static_cast<int>(Blocks[Layer].size()); i++) {
-		Graphics.DrawRectangle((float)Blocks[Layer][i].Start.X, (float)Blocks[Layer][i].Start.Y, (float)Blocks[Layer][i].End.X + 1.0f, (float)Blocks[Layer][i].End.Y + 1.0f, COLOR_MAGENTA);
+		Graphics.DrawRectangle((float)Blocks[Layer][i].Start.x, (float)Blocks[Layer][i].Start.y, (float)Blocks[Layer][i].End.x + 1.0f, (float)Blocks[Layer][i].End.y + 1.0f, COLOR_MAGENTA);
 	}
 }
 
@@ -1190,22 +1191,22 @@ int _Map::GetTotalBlockSize() const {
 }
 
 // Returns a valid position on the map
-Vector2 _Map::GetValidPosition(const Vector2 &Position) const {
-	Vector2 NewPosition;
+glm::vec2 _Map::GetValidPosition(const glm::vec2 &Position) const {
+	glm::vec2 NewPosition;
 
-	if(Position.X <= 0)
-		NewPosition.X = 0;
-	else if(Position.X >= Width - MAP_EPSILON)
-		NewPosition.X = Width - MAP_EPSILON;
+	if(Position.x <= 0)
+		NewPosition.x = 0;
+	else if(Position.x >= Width - MAP_EPSILON)
+		NewPosition.x = Width - MAP_EPSILON;
 	else
-		NewPosition.X = Position.X;
+		NewPosition.x = Position.x;
 
-	if(Position.Y <= 0)
-		NewPosition.Y = 0;
-	else if(Position.Y >= Height - MAP_EPSILON)
-		NewPosition.Y = Height - MAP_EPSILON;
+	if(Position.y <= 0)
+		NewPosition.y = 0;
+	else if(Position.y >= Height - MAP_EPSILON)
+		NewPosition.y = Height - MAP_EPSILON;
 	else
-		NewPosition.Y = Position.Y;
+		NewPosition.y = Position.y;
 
 	return NewPosition;
 }
@@ -1228,7 +1229,7 @@ void _Map::ChangeMapState(const _Event *Event) {
 
 		// Change all the tiles
 		for(size_t i = StartIndex; i < Tiles.size(); i++) {
-			_Tile *Tile = &Data[Tiles[i].Coord.X][Tiles[i].Coord.Y];
+			_Tile *Tile = &Data[Tiles[i].Coord.x][Tiles[i].Coord.y];
 
 			Tile->Collision ^= _Tile::ENTITY;
 
@@ -1248,7 +1249,7 @@ bool _Map::CanChangeMapState(const _Event *Event) {
 
 	// Check for objects in the wall
 	for(size_t i = 0; i < Tiles.size(); i++) {
-		_Tile *Tile = &Data[Tiles[i].Coord.X][Tiles[i].Coord.Y];
+		_Tile *Tile = &Data[Tiles[i].Coord.x][Tiles[i].Coord.y];
 		if(Tile->CanWalk() && (Tile->Objects[GRID_PLAYER].size() > 0 || Tile->Objects[GRID_MONSTER].size() > 0))
 			return false;
 	}
@@ -1278,12 +1279,12 @@ void _Map::RenderFloors() {
 		_Block *Block = &Blocks[0][i];
 		bool Draw = true;
 		if(Block->MinZ >= 0) {
-			float Bounds[4] = { (float)Block->Start.X, (float)Block->Start.Y, (float)Block->End.X + 1.0f, (float)Block->End.Y + 1.0f };
+			float Bounds[4] = { (float)Block->Start.x, (float)Block->Start.y, (float)Block->End.x + 1.0f, (float)Block->End.y + 1.0f };
 			Draw = Camera->IsAABBInView(Bounds);
 		}
 
 		if(Draw)
-			Graphics.DrawRepeatable((float)Block->Start.X, (float)Block->Start.Y, (float)Block->MinZ + MAP_LAYEROFFSET * i, (float)Block->End.X + 1.0f, (float)Block->End.Y + 1.0f, Block->MinZ + MAP_LAYEROFFSET * i, Block->Texture, Block->Rotation, Block->ScaleX);
+			Graphics.DrawRepeatable((float)Block->Start.x, (float)Block->Start.y, (float)Block->MinZ + MAP_LAYEROFFSET * i, (float)Block->End.x + 1.0f, (float)Block->End.y + 1.0f, Block->MinZ + MAP_LAYEROFFSET * i, Block->Texture, Block->Rotation, Block->ScaleX);
 	}
 	Graphics.SetDepthMask(true);
 
@@ -1297,21 +1298,21 @@ void _Map::RenderFloors() {
 
 				bool Draw = true;
 				if(Block->MinZ >= 0) {
-					float Bounds[4] = { (float)Block->Start.X, (float)Block->Start.Y, (float)Block->End.X + 1.0f, (float)Block->End.Y + 1.0f };
+					float Bounds[4] = { (float)Block->Start.x, (float)Block->Start.y, (float)Block->End.x + 1.0f, (float)Block->End.y + 1.0f };
 					Draw = Camera->IsAABBInView(Bounds);
 				}
 
 				if(Draw)
-					Graphics.DrawRepeatable((float)Block->Start.X, (float)Block->Start.Y, (float)Block->MinZ + MAP_LAYEROFFSET * i, (float)Block->End.X + 1.0f, (float)Block->End.Y + 1.0f, Block->MinZ + MAP_LAYEROFFSET * i, Block->Texture, Block->Rotation, Block->ScaleX);
+					Graphics.DrawRepeatable((float)Block->Start.x, (float)Block->Start.y, (float)Block->MinZ + MAP_LAYEROFFSET * i, (float)Block->End.x + 1.0f, (float)Block->End.y + 1.0f, Block->MinZ + MAP_LAYEROFFSET * i, Block->Texture, Block->Rotation, Block->ScaleX);
 			}
 			else {
 				Graphics.EnableVBO(VBO_CUBE);
 				Graphics.DrawCube(
-					(float)Block->Start.X,
-					(float)Block->Start.Y,
+					(float)Block->Start.x,
+					(float)Block->Start.y,
 					(float)Block->MinZ,
-					(float)Block->End.X - Block->Start.X + 1.0f,
-					(float)Block->End.Y - Block->Start.Y + 1.0f,
+					(float)Block->End.x - Block->Start.x + 1.0f,
+					(float)Block->End.y - Block->Start.y + 1.0f,
 					(float)Block->MaxZ - Block->MinZ,
 					Block->Texture);
 				Graphics.DisableVBO(VBO_CUBE);
@@ -1333,11 +1334,11 @@ void _Map::RenderWalls() {
 
 		bool Draw = true;
 		if(Block->MinZ >= 0) {
-			float Bounds[4] = { (float)Block->Start.X, (float)Block->Start.Y, (float)Block->End.X + 1.0f, (float)Block->End.Y + 1.0f };
+			float Bounds[4] = { (float)Block->Start.x, (float)Block->Start.y, (float)Block->End.x + 1.0f, (float)Block->End.y + 1.0f };
 			Draw = Camera->IsAABBInView(Bounds);
 		}
 		if(Draw)
-			Graphics.DrawCube((float)Block->Start.X, (float)Block->Start.Y, (float)Block->MinZ, (float)Block->End.X - Block->Start.X + 1.0f, (float)Block->End.Y - Block->Start.Y + 1.0f, Block->MaxZ - Block->MinZ, Block->Texture);
+			Graphics.DrawCube((float)Block->Start.x, (float)Block->Start.y, (float)Block->MinZ, (float)Block->End.x - Block->Start.x + 1.0f, (float)Block->End.y - Block->Start.y + 1.0f, Block->MaxZ - Block->MinZ, Block->Texture);
 	}
 
 	// Draw flat walls
@@ -1346,12 +1347,12 @@ void _Map::RenderWalls() {
 		_Block *Block = &Blocks[4][i];
 		bool Draw = true;
 		if(Block->MinZ >= 0) {
-			float Bounds[4] = { (float)Block->Start.X, (float)Block->Start.Y + 0.0f, (float)Block->End.X + 1.0f, (float)Block->End.Y + 1.0f };
+			float Bounds[4] = { (float)Block->Start.x, (float)Block->Start.y + 0.0f, (float)Block->End.x + 1.0f, (float)Block->End.y + 1.0f };
 			Draw = Camera->IsAABBInView(Bounds);
 		}
 
 		if(Draw)
-			Graphics.DrawWall((float)Block->Start.X, (float)Block->Start.Y, (float)Block->MinZ, (float)Block->End.X - Block->Start.X + 1.0f, (float)Block->End.Y - Block->Start.Y + 1.0f, Block->MaxZ - Block->MinZ, Block->Rotation, Block->Texture);
+			Graphics.DrawWall((float)Block->Start.x, (float)Block->Start.y, (float)Block->MinZ, (float)Block->End.x - Block->Start.x + 1.0f, (float)Block->End.y - Block->Start.y + 1.0f, Block->MaxZ - Block->MinZ, Block->Rotation, Block->Texture);
 	}
 	Graphics.SetDepthMask(true);
 
@@ -1367,9 +1368,9 @@ void _Map::RenderEvents(std::vector<_Texture *> &Textures) {
 
 	// Draw events
 	for(size_t i = 0; i < Events.size(); i++) {
-		float Bounds[4] = { (float)Events[i]->Start.X,(float) Events[i]->Start.Y, (float)Events[i]->End.X + 1.0f, (float)Events[i]->End.Y + 1.0f };
+		float Bounds[4] = { (float)Events[i]->Start.x,(float) Events[i]->Start.y, (float)Events[i]->End.x + 1.0f, (float)Events[i]->End.y + 1.0f };
 		if(Camera->IsAABBInView(Bounds))
-			Graphics.DrawRepeatable((float)Events[i]->Start.X, (float)Events[i]->Start.Y, MAP_LAYEROFFSET, (float)Events[i]->End.X + 1.0f, (float)Events[i]->End.Y + 1.0f, MAP_LAYEROFFSET, Textures[Events[i]->Type], 0, 1.0f);
+			Graphics.DrawRepeatable((float)Events[i]->Start.x, (float)Events[i]->Start.y, MAP_LAYEROFFSET, (float)Events[i]->End.x + 1.0f, (float)Events[i]->End.y + 1.0f, MAP_LAYEROFFSET, Textures[Events[i]->Type], 0, 1.0f);
 	}
 
 	Graphics.EnableDepthTest();
@@ -1385,12 +1386,12 @@ void _Map::RenderForeground() {
 		_Block *Block = &Blocks[6][i];
 		bool Draw = true;
 		if(Block->MinZ >= 0) {
-			float Bounds[4] = { (float)Block->Start.X, (float)Block->Start.Y, (float)Block->End.X + 1.0f, (float)Block->End.Y + 1.0f };
+			float Bounds[4] = { (float)Block->Start.x, (float)Block->Start.y, (float)Block->End.x + 1.0f, (float)Block->End.y + 1.0f };
 			Draw = Camera->IsAABBInView(Bounds);
 		}
 
 		if(Draw)
-			Graphics.DrawRepeatable((float)Block->Start.X, (float)Block->Start.Y, (float)Block->MaxZ + 0.01f * i, (float)Block->End.X + 1.0f, (float)Block->End.Y + 1.0f, Block->MaxZ + 0.01f * i, Block->Texture, Block->Rotation, Block->ScaleX);
+			Graphics.DrawRepeatable((float)Block->Start.x, (float)Block->Start.y, (float)Block->MaxZ + 0.01f * i, (float)Block->End.x + 1.0f, (float)Block->End.y + 1.0f, Block->MaxZ + 0.01f * i, Block->Texture, Block->Rotation, Block->ScaleX);
 	}
 }
 

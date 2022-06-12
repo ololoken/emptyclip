@@ -35,7 +35,7 @@ class _MiscItem : public _Item {
 
 	public:
 
-		_MiscItem(const std::string &Identifier, int Count, const Vector2 &Position, const _MiscItemTemplate *MiscItem, _Texture *Texture);
+		_MiscItem(const std::string &Identifier, int Count, const glm::vec2 &Position, const _MiscItemTemplate *MiscItem, _Texture *Texture);
 
 		virtual std::string GetTypeAsString() const override;
 

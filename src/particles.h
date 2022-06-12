@@ -18,7 +18,7 @@
 #pragma once
 
 // Libraries
-#include <vector2.h>
+#include <glm/vec2.hpp>
 #include <list>
 #include <vector>
 #include <string>
@@ -29,7 +29,7 @@ class _Particle;
 struct _ParticleTemplate;
 
 struct _ParticleSpawn {
-	_ParticleSpawn(const _ParticleTemplate *Template, const Vector2 &Position, float PositionZ, float RotationAdjust) :
+	_ParticleSpawn(const _ParticleTemplate *Template, const glm::vec2 &Position, float PositionZ, float RotationAdjust) :
 		Template(Template),
 		Position(Position),
 		PositionZ(PositionZ),
@@ -37,7 +37,7 @@ struct _ParticleSpawn {
 
 	const _ParticleTemplate *Template;
 	std::string Text;
-	Vector2 Position;
+	glm::vec2 Position;
 	float PositionZ;
 	float RotationAdjust;
 };

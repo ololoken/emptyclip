@@ -18,7 +18,7 @@
 #pragma once
 
 // Libraries
-#include <vector2.h>
+#include <glm/vec2.hpp>
 #include <vector>
 #include <string>
 #include <coord.h>

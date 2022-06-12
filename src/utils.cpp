@@ -17,6 +17,8 @@
 *******************************************************************************/
 #include <utils.h>
 #include <random.h>
+#include <cmath>
+#include <glm/gtx/rotate_vector.hpp>
 
 // Reads in a string that is CSV formatted
 std::string GetCSVText(std::ifstream &Stream) {
@@ -73,7 +75,7 @@ void WriteChunk(std::ofstream &File, int Type, const char *Data, size_t Size) {
 }
 
 // Generates a random point inside of a circle
-Vector2 GenerateRandomPointInCircle(float Radius) {
+glm::vec2 GenerateRandomPointInCircle(float Radius) {
 
-	return Vector2(Random.Generate() * 360.0) * Radius * sqrt(Random.Generate());
+	return glm::rotate(glm::vec2(0, -1), glm::radians((float)Random.Generate() * 360.0f)) * Radius * (float)sqrt(Random.Generate());
 }

@@ -233,7 +233,7 @@ void _HUD::Update(double FrameTime, float Radius) {
 
 		HitElement = Elements[ELEMENT_SKILLS]->GetHitElement();
 		if(HitElement && HitElement->GetID() >= 0)
-			UpdateSkillInfo(HitElement->GetID(), Input.GetMouse().X, Input.GetMouse().Y);
+			UpdateSkillInfo(HitElement->GetID(), Input.GetMouse().x, Input.GetMouse().y);
 	}
 	else
 		Graphics.ShowCursor(false);
@@ -281,12 +281,12 @@ void _HUD::Render() {
 	// Draw enemy health
 	if(LastEntityHit != nullptr) {
 		Labels[LABEL_ENEMYNAME]->SetText(LastEntityHit->GetName());
-		Images[IMAGE_ENEMYHEALTH]->SetWidth(Elements[ELEMENT_ENEMYINFO]->GetSize().X * LastEntityHit->GetHealthPercentage());
+		Images[IMAGE_ENEMYHEALTH]->SetWidth(Elements[ELEMENT_ENEMYINFO]->GetSize().x * LastEntityHit->GetHealthPercentage());
 		Elements[ELEMENT_ENEMYINFO]->Render();
 	}
 
 	// Draw stamina
-	Images[IMAGE_PLAYERSTAMINA]->SetWidth(Elements[ELEMENT_PLAYERSTAMINA]->GetSize().X * Player->GetStaminaPercentage());
+	Images[IMAGE_PLAYERSTAMINA]->SetWidth(Elements[ELEMENT_PLAYERSTAMINA]->GetSize().x * Player->GetStaminaPercentage());
 	if(Player->Tired)
 		Images[IMAGE_PLAYERSTAMINA]->Color = _Color(1.0f, 0.5f, 0.0f);
 	else
@@ -300,14 +300,14 @@ void _HUD::Render() {
 	Labels[LABEL_PLAYERHEALTH]->SetText(Buffer.str());
 	Buffer.str("");
 
-	Images[IMAGE_PLAYERHEALTH]->SetWidth(Elements[ELEMENT_PLAYERHEALTH]->GetSize().X * Player->GetHealthPercentage());
+	Images[IMAGE_PLAYERHEALTH]->SetWidth(Elements[ELEMENT_PLAYERHEALTH]->GetSize().x * Player->GetHealthPercentage());
 	Elements[ELEMENT_PLAYERHEALTH]->Render();
 
 	// Draw experience bar
 	Buffer << Player->GetExperience() << " / " << Player->GetExperienceNextLevel() << " XP";
 	Labels[LABEL_EXPERIENCE]->SetText(Buffer.str());
 	Buffer.str("");
-	Images[IMAGE_EXPERIENCE]->SetWidth(Elements[ELEMENT_EXPERIENCE]->GetSize().X * Player->GetLevelPercentage());
+	Images[IMAGE_EXPERIENCE]->SetWidth(Elements[ELEMENT_EXPERIENCE]->GetSize().x * Player->GetLevelPercentage());
 	Elements[ELEMENT_EXPERIENCE]->Render();
 
 	// Draw player name and level
@@ -338,7 +338,7 @@ void _HUD::Render() {
 
 	// Draw item tooltip
 	if(CursorOverItem && CursorItem != CursorOverItem) {
-		RenderItemInfo(CursorOverItem, Input.GetMouse().X, Input.GetMouse().Y);
+		RenderItemInfo(CursorOverItem, Input.GetMouse().x, Input.GetMouse().y);
 		if(CursorOverItem->Type == _Object::WEAPON && CursorOverItem != Player->GetMainHand())
 			RenderItemInfo(Player->GetMainHand(), -100, Graphics.GetScreenHeight()/2);
 		else if(CursorOverItem->Type == _Object::ARMOR && CursorOverItem != Player->GetArmor())
@@ -347,18 +347,18 @@ void _HUD::Render() {
 }
 
 // Draws the crosshair
-void _HUD::RenderCrosshair(const Vector2 &Position) {
+void _HUD::RenderCrosshair(const glm::vec2 &Position) {
 	if(InventoryOpen)
 		return;
 
 	Graphics.DisableDepthTest();
 
 	Graphics.EnableVBO(VBO_CIRCLE);
-	Graphics.DrawCircle(Position.X, Position.Y, 0, CrosshairScale, COLOR_WHITE);
+	Graphics.DrawCircle(Position.x, Position.y, 0, CrosshairScale, COLOR_WHITE);
 	Graphics.DisableVBO(VBO_CIRCLE);
 
 	Graphics.EnableVBO(VBO_QUAD);
-	Graphics.DrawTexture(Position.X, Position.Y, 0, CrosshairID, COLOR_WHITE, 0, 1.0f, 1.0f);
+	Graphics.DrawTexture(Position.x, Position.y, 0, CrosshairID, COLOR_WHITE, 0, 1.0f, 1.0f);
 	Graphics.DisableVBO(VBO_QUAD);
 
 	Graphics.EnableDepthTest();
@@ -373,7 +373,7 @@ void _HUD::DrawIndicator(const std::string &String, float Percent, _Texture *Tex
 
 	// Set progress size
 	Images[IMAGE_RELOAD]->Texture = Texture;
-	Images[IMAGE_RELOAD]->SetWidth(Elements[ELEMENT_INDICATOR]->GetSize().X * Percent);
+	Images[IMAGE_RELOAD]->SetWidth(Elements[ELEMENT_INDICATOR]->GetSize().x * Percent);
 	Elements[ELEMENT_INDICATOR]->Render();
 }
 
@@ -456,7 +456,7 @@ void _HUD::RenderCharacterScreen() {
 				if(Button) {
 					Graphics.DrawImage(Button->GetBounds().GetMidPoint(), Player->GetInventory(i)->Texture, Player->GetInventory(i)->Color);
 					if(i >= INVENTORY_BAGSTART && Player->GetInventory(i)->CanStack()) {
-						DrawItemCount(Player->GetInventory(i), Button->GetBounds().End.X - 2, Button->GetBounds().End.Y - 2);
+						DrawItemCount(Player->GetInventory(i), Button->GetBounds().End.x - 2, Button->GetBounds().End.y - 2);
 					}
 				}
 			}
@@ -468,7 +468,7 @@ void _HUD::RenderCharacterScreen() {
 		_Point Position(Input.GetMouse() - ClickOffset);
 		Graphics.DrawImage(Position, CursorItem->Texture, CursorItem->Color);
 		if(CursorItem->CanStack())
-			DrawItemCount(CursorItem, Position.X + 22, Position.Y + 22);
+			DrawItemCount(CursorItem, Position.x + 22, Position.y + 22);
 	}
 
 	// Draw cursor skill
@@ -819,8 +819,8 @@ void _HUD::RenderItemInfo(_Item *Item, int DrawX, int DrawY) {
 void _HUD::UpdateSkillInfo(int Skill, int DrawX, int DrawY) {
 	CursorSkill = Skill;
 
-	DrawX -= Elements[ELEMENT_SKILLINFO]->GetSize().X + 15;
-	DrawY -= Elements[ELEMENT_SKILLINFO]->GetSize().Y + 15;
+	DrawX -= Elements[ELEMENT_SKILLINFO]->GetSize().x + 15;
+	DrawY -= Elements[ELEMENT_SKILLINFO]->GetSize().y + 15;
 	if(DrawX < 10)
 		DrawX = 10;
 	if(DrawY < 10)
@@ -882,7 +882,7 @@ void _HUD::UpdateSkillInfo(int Skill, int DrawX, int DrawY) {
 	}
 
 	// Wrap text
-	Labels[LABEL_SKILLTEXT]->SetWrap(Elements[ELEMENT_SKILLINFO]->GetSize().X - 20);
+	Labels[LABEL_SKILLTEXT]->SetWrap(Elements[ELEMENT_SKILLINFO]->GetSize().x - 20);
 
 	Labels[LABEL_SKILL_LEVEL]->SetText(Buffer.str());
 	if(Player->GetSkill(Skill)+1 > GAME_SKILLLEVELS)
@@ -909,7 +909,7 @@ void _HUD::ShowMessageBox(const std::string &Message, double Time) {
 		return;
 
 	Labels[LABEL_MESSAGEBOX]->SetText(Message);
-	Labels[LABEL_MESSAGEBOX]->SetWrap(Elements[ELEMENT_MESSAGE]->GetSize().X - 25);
+	Labels[LABEL_MESSAGEBOX]->SetWrap(Elements[ELEMENT_MESSAGE]->GetSize().x - 25);
 
 	Elements[ELEMENT_MESSAGE]->SetFade(1.0f);
 	MessageBoxTimer = Time;

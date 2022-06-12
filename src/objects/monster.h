@@ -23,32 +23,32 @@
 #include <vector>
 
 // Constants
-const Vector2 MONSTER_WEAPONOFFSET 	= Vector2(32.0f / 64.0f - 0.5f, -0.5f);
+const glm::vec2 MONSTER_WEAPONOFFSET    = glm::vec2(32.0f / 64.0f - 0.5f, -0.5f);
 
-const float MONSTER_SIDERANGE 		= 0.80f;
-const float MONSTER_BACKRANGE 		= 0.50f;
+const float MONSTER_SIDERANGE 	        = 0.80f;
+const float MONSTER_BACKRANGE 	        = 0.50f;
 
-const int MONSTER_STOP				= 0x1;
-const int MONSTER_MOVE				= 0x2;
-const int MONSTER_RETREAT			= 0x4;
-const int MONSTER_INVESTIGATE		= 0x8;
-const int MONSTER_EXPLORE			= 0x10;
-const int MONSTER_WANDER			= 0x20;
-const int MONSTER_SEARCH			= 0x40;
-const int MONSTER_ATTACK			= 0x80;
-const int MONSTER_FOLLOW			= 0x100;
-const int MONSTER_LOOK				= 0x200;
+const int MONSTER_STOP			        = 0x1;
+const int MONSTER_MOVE			        = 0x2;
+const int MONSTER_RETREAT		        = 0x4;
+const int MONSTER_INVESTIGATE	        = 0x8;
+const int MONSTER_EXPLORE		        = 0x10;
+const int MONSTER_WANDER		        = 0x20;
+const int MONSTER_SEARCH		        = 0x40;
+const int MONSTER_ATTACK		        = 0x80;
+const int MONSTER_FOLLOW		        = 0x100;
+const int MONSTER_LOOK			        = 0x200;
 
-const int AI_STOPPED				= 0x1;
-const int AI_FOLLOWING_PLAYER		= 0x2;
-const int AI_FOLLOWING_PATH			= 0x4;
-const int AI_MOVING					= 0x8;
-const int AI_RETREATING				= 0x10;
-const int AI_INVESTIGATING			= 0x20;
-const int AI_EXPLORING				= 0x40;
-const int AI_WANDERING				= 0x80;
-const int AI_ATTACKING				= 0x100;
-const int AI_LOOKING				= 0x200;
+const int AI_STOPPED			        = 0x1;
+const int AI_FOLLOWING_PLAYER	        = 0x2;
+const int AI_FOLLOWING_PATH		        = 0x4;
+const int AI_MOVING				        = 0x8;
+const int AI_RETREATING			        = 0x10;
+const int AI_INVESTIGATING		        = 0x20;
+const int AI_EXPLORING			        = 0x40;
+const int AI_WANDERING			        = 0x80;
+const int AI_ATTACKING			        = 0x100;
+const int AI_LOOKING			        = 0x200;
 
 struct _MonsterTemplate;
 struct _WeaponParticleTemplate;
@@ -75,16 +75,16 @@ class _Monster : public _Entity {
 	public:
 
 		_Monster();
-		_Monster(_MonsterTemplate *Monster, _Animation *Animation, const Vector2 &Position);
+		_Monster(_MonsterTemplate *Monster, _Animation *Animation, const glm::vec2 &Position);
 		~_Monster();
 
-		bool CalcPath(const Vector2 &Goal);
-		bool VisiblePath(const Vector2 &Goal);
+		bool CalcPath(const glm::vec2 &Goal);
+		bool VisiblePath(const glm::vec2 &Goal);
 
-		bool Passed(const Vector2 &Pos);
+		bool Passed(const glm::vec2 &Pos);
 		void UpdateMonster(double FrameTime, _Player *Player);
-		bool IsVisible(const Vector2 &TargetPosition);
-		bool InRange(const Vector2 &Pos);
+		bool IsVisible(const glm::vec2 &TargetPosition);
+		bool InRange(const glm::vec2 &Pos);
 
 		bool Investigate(_Player *Player, bool PlayerVisible);
 		void Patrol();
@@ -101,7 +101,7 @@ class _Monster : public _Entity {
 		int64_t GetExperienceGiven() const { return ExperienceGiven; }
 		int GetBehavior() { if(BehaviorList.empty()) BehaviorList.push_front(BaseBehavior); return BehaviorList.front(); }
 
-		Vector2 ReturnPosition;
+		glm::vec2 ReturnPosition;
 
 	private:
 

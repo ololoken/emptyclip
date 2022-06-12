@@ -18,7 +18,7 @@
 #pragma once
 
 // Libraries
-#include <vector2.h>
+#include <glm/vec2.hpp>
 #include <color.h>
 #include <string>
 
@@ -48,16 +48,16 @@ class _Particle {
 		const _Font *Font;
 		std::string Text;
 		_Color Color;
-		Vector2 Scale;
+		glm::vec2 Scale;
 		float Rotation;
 		float AlphaSpeed;
 		float PositionZ;
 		float ScaleAspect;
 
 		// Physics
-		Vector2 Position;
-		Vector2 Velocity;
-		Vector2 Acceleration;
+		glm::vec2 Position;
+		glm::vec2 Velocity;
+		glm::vec2 Acceleration;
 		float TurnSpeed;
 
 };

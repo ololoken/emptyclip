@@ -17,27 +17,27 @@
 *******************************************************************************/
 #pragma once
 
-#include <vector2.h>
+#include <glm/vec2.hpp>
 
 // A coordinate for the map
 struct _Coord {
 	_Coord() = default;
-	_Coord(int X, int Y) : X(X), Y(Y) { }
-	_Coord(const Vector2 &Vector) : X(Vector.X), Y(Vector.Y) { }
+	_Coord(int X, int Y) : x(X), y(Y) { }
+	_Coord(const glm::vec2 &Vector) : x(Vector.x), y(Vector.y) { }
 
-	bool operator==(const _Coord &Coord) const { return X == Coord.X && Y == Coord.Y; }
-	bool operator!=(const _Coord &Coord) const { return !(X == Coord.X && Y == Coord.Y); }
-	void operator+=(const _Coord &Coord) { X += Coord.X; Y += Coord.Y; }
-	void operator-=(const _Coord &Coord) { X -= Coord.X; Y -= Coord.Y; }
-	_Coord operator+(const _Coord &Coord) const { return _Coord(X + Coord.X, Y + Coord.Y); }
-	_Coord operator-(const _Coord &Coord) const { return _Coord(X - Coord.X, Y - Coord.Y); }
-	_Coord operator+(const int Value) const { return _Coord(X + Value, Y + Value); }
-	_Coord operator-(const int Value) const { return _Coord(X - Value, Y - Value); }
-	bool operator>(const _Coord &Coord) const { return X > Coord.X && Y > Coord.Y; }
-	bool operator>=(const _Coord &Coord) const { return X >= Coord.X && Y >= Coord.Y; }
-	bool operator<(const _Coord &Coord) const { return X < Coord.X && Y < Coord.Y; }
-	bool operator<=(const _Coord &Coord) const { return X <= Coord.X && Y <= Coord.Y; }
+	bool operator==(const _Coord &Coord) const { return x == Coord.x && y == Coord.y; }
+	bool operator!=(const _Coord &Coord) const { return !(x == Coord.x && y == Coord.y); }
+	void operator+=(const _Coord &Coord) { x += Coord.x; y += Coord.y; }
+	void operator-=(const _Coord &Coord) { x -= Coord.x; y -= Coord.y; }
+	_Coord operator+(const _Coord &Coord) const { return _Coord(x + Coord.x, y + Coord.y); }
+	_Coord operator-(const _Coord &Coord) const { return _Coord(x - Coord.x, y - Coord.y); }
+	_Coord operator+(const int Value) const { return _Coord(x + Value, y + Value); }
+	_Coord operator-(const int Value) const { return _Coord(x - Value, y - Value); }
+	bool operator>(const _Coord &Coord) const { return x > Coord.x && y > Coord.y; }
+	bool operator>=(const _Coord &Coord) const { return x >= Coord.x && y >= Coord.y; }
+	bool operator<(const _Coord &Coord) const { return x < Coord.x && y < Coord.y; }
+	bool operator<=(const _Coord &Coord) const { return x <= Coord.x && y <= Coord.y; }
 
-	int X;
-	int Y;
+	int x;
+	int y;
 };

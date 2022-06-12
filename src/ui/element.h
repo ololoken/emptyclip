@@ -84,8 +84,8 @@ class _Element {
 		void SetUserData(void *UserData) { this->UserData = UserData; }
 		void *GetUserData() { return UserData; }
 
-		void SetWidth(int Width) { Size.X = Width; CalculateBounds(); }
-		void SetHeight(int Height) { Size.Y = Height; CalculateBounds(); }
+		void SetWidth(int Width) { Size.x = Width; CalculateBounds(); }
+		void SetHeight(int Height) { Size.y = Height; CalculateBounds(); }
 
 		void SetFade(float Fade) { this->Fade = Fade; }
 		float GetFade() const { return Fade; }

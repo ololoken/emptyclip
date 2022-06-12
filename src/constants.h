@@ -19,7 +19,7 @@
 
 // Includes
 #include <string>
-#include <vector2.h>
+#include <glm/vec2.hpp>
 #include <SDL_keycode.h>
 
 //     Config
@@ -86,8 +86,8 @@ const  float        PLAYER_MOVEMENTSPEED           =  0.075f;
 const  float        PLAYER_BACKWARDSPEED           =  0.5f;
 const  float        PLAYER_CROUCHINGSPEEDFACTOR    =  0.333333f;
 const  float        PLAYER_SPRINTINGSPEEDFACTOR    =  1.65f;
-const  Vector2      PLAYER_PISTOLOFFSET            =  Vector2(36.0f/64.0f-0.5f,-0.5f);
-const  Vector2      PLAYER_WEAPONOFFSET            =  Vector2(30.0f/64.0f-0.5f,-0.5f);
+const  glm::vec2    PLAYER_PISTOLOFFSET            =  glm::vec2(36.0f/64.0f-0.5f,-0.5f);
+const  glm::vec2    PLAYER_WEAPONOFFSET            =  glm::vec2(30.0f/64.0f-0.5f,-0.5f);
 const  float        PLAYER_STAMINAREGEN            =  0.001f;
 const  float        PLAYER_SPRINTSTAMINA           =  0.005f;
 const  float        PLAYER_TIREDTHRESHOLD          =  0.3f;

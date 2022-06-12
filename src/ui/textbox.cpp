@@ -22,11 +22,10 @@
 #include <SDL_keycode.h>
 
 // Constructor
-_TextBox::_TextBox(const std::string &Identifier, _Element *Parent, const _Point &Offset, const _Point &Size, const _Alignment &Alignment, const _Style *Style, const _Font *Font, size_t MaxLength)
-:	_Element(Identifier, Parent, Offset, Size, Alignment, Style, false) {
+_TextBox::_TextBox(const std::string &Identifier, _Element *Parent, const _Point &Offset, const _Point &Size, const _Alignment &Alignment, const _Style *Style, const _Font *Font, size_t MaxLength) :
+	_Element(Identifier, Parent, Offset, Size, Alignment, Style, false) {
 
 	this->Font = Font;
-	this->Text = Text;
 	this->Focused = false;
 	this->DrawCursor = true;
 	this->MaxLength = MaxLength;
@@ -91,5 +90,5 @@ void _TextBox::Render() const {
 
 	_Element::Render();
 
-	Font->DrawText(RenderText, Bounds.Start.X + 5, Bounds.Start.Y + 20, COLOR_WHITE);
+	Font->DrawText(RenderText, Bounds.Start.x + 5, Bounds.Start.y + 20, COLOR_WHITE);
 }

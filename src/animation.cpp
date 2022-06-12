@@ -18,8 +18,8 @@
 #include <animation.h>
 
 // Constructor
-_Animation::_Animation()
-:	PlayMode(STOPPED),
+_Animation::_Animation() :
+	PlayMode(STOPPED),
 	PlayDirection(1),
 	CurrentReel(0),
 	Position(0),

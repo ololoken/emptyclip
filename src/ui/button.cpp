@@ -22,8 +22,8 @@
 #include <graphics.h>
 
 // Constructor
-_Button::_Button(const std::string &Identifier, _Element *Parent, const _Point &Offset, const _Point &Size, const _Alignment &Alignment, const _Style *Style, const _Style *HoverStyle)
-:	_Element(Identifier, Parent, Offset, Size, Alignment, Style, false) {
+_Button::_Button(const std::string &Identifier, _Element *Parent, const _Point &Offset, const _Point &Size, const _Alignment &Alignment, const _Style *Style, const _Style *HoverStyle) :
+	_Element(Identifier, Parent, Offset, Size, Alignment, Style, false) {
 
 	this->HoverStyle = HoverStyle;
 	this->Enabled = false;

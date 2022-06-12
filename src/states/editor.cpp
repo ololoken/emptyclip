@@ -70,8 +70,8 @@ const int PaletteSizes[EDITMODE_COUNT] = {
 };
 
 // Constructor
-_EditorState::_EditorState()
-:	SavedCameraPosition(ZERO_VECTOR),
+_EditorState::_EditorState() :
+	SavedCameraPosition({0, 0}),
 	SavedCheckpointIndex(-1),
 	MapFilename(""),
 	SavedLayer(-1),
@@ -121,7 +121,7 @@ void _EditorState::Init() {
 	ResetEditorState();
 
 	// Create camera
-	Camera = new _Camera(ZERO_VECTOR, CAMERA_DISTANCE, CAMERA_EDITOR_DIVISOR);
+	Camera = new _Camera(glm::vec2(0, 0), CAMERA_DISTANCE, CAMERA_EDITOR_DIVISOR);
 
 	// Load level
 	if(PlayState.GetFromEditor())
@@ -196,7 +196,7 @@ bool _EditorState::LoadMap(const std::string &File, bool UseSavedCameraPosition)
 }
 
 void _EditorState::ResetEditorState() {
-	WorldCursor = ZERO_VECTOR;
+	WorldCursor = glm::vec2(0, 0);
 	SelectedBlockIndex = -1;
 	SelectedEventIndex = -1;
 	SelectedBlock = nullptr;
@@ -213,9 +213,9 @@ void _EditorState::ResetEditorState() {
 	AltTexture = nullptr;
 	EditorInput = -1;
 	CheckpointIndex = 0;
-	ClickedPosition = ZERO_VECTOR;
-	CopiedPosition = ZERO_VECTOR;
-	MoveDelta = ZERO_VECTOR;
+	ClickedPosition = glm::vec2(0, 0);
+	CopiedPosition = glm::vec2(0, 0);
+	MoveDelta = glm::vec2(0, 0);
 	CurrentLayer = EDITOR_DEFAULT_LAYER;
 	CurrentPalette = EDITMODE_BLOCKS;
 	GridMode = EDITOR_DEFAULT_GRIDMODE;
@@ -234,18 +234,18 @@ void _EditorState::ResetEditorState() {
 	FinishDrawing = false;
 	BlockTextEvent = false;
 
-	WorldCursorIndex.X = 0;
-	WorldCursorIndex.Y = 0;
-	DrawStart.X = 0;
-	DrawStart.Y = 0;
-	DrawEnd.X = 0;
-	DrawEnd.Y = 0;
-	OldStart.X = 0;
-	OldStart.Y = 0;
-	OldEnd.X = 0;
-	OldEnd.Y = 0;
-	SavedIndex.X = 0;
-	SavedIndex.Y = 0;
+	WorldCursorIndex.x = 0;
+	WorldCursorIndex.y = 0;
+	DrawStart.x = 0;
+	DrawStart.y = 0;
+	DrawEnd.x = 0;
+	DrawEnd.y = 0;
+	OldStart.x = 0;
+	OldStart.y = 0;
+	OldEnd.x = 0;
+	OldEnd.y = 0;
+	SavedIndex.x = 0;
+	SavedIndex.y = 0;
 
 	for(int i = 0; i < MAPLAYER_COUNT; i++)
 		UndoNumber[i] = 0;
@@ -533,7 +533,7 @@ void _EditorState::MouseEvent(const _MouseEvent &MouseEvent) {
 	}
 
 	// Distinguish between interface and viewport clicks
-	if(Input.GetMouse().X < Graphics.GetViewportWidth() && Input.GetMouse().Y < Graphics.GetViewportHeight()) {
+	if(Input.GetMouse().x < Graphics.GetViewportWidth() && Input.GetMouse().y < Graphics.GetViewportHeight()) {
 		if(MouseEvent.Pressed) {
 
 			// Mouse press
@@ -643,7 +643,7 @@ void _EditorState::MouseEvent(const _MouseEvent &MouseEvent) {
 					for(auto Iterator : SelectedObjects) {
 						Iterator->Position = GetMoveDeltaPosition(Iterator->Position);
 					}
-					MoveDelta = ZERO_VECTOR;
+					MoveDelta = glm::vec2(0, 0);
 				}
 
 				if(DraggingBox) {
@@ -658,7 +658,7 @@ void _EditorState::MouseEvent(const _MouseEvent &MouseEvent) {
 // Mouse wheel handler
 void _EditorState::MouseWheelEvent(int Direction) {
 
-	if(Input.GetMouse().X < Graphics.GetViewportWidth() && Input.GetMouse().Y < Graphics.GetViewportHeight()) {
+	if(Input.GetMouse().x < Graphics.GetViewportWidth() && Input.GetMouse().y < Graphics.GetViewportHeight()) {
 		float Multiplier = 1.0f * Direction;
 		if(IsShiftDown)
 			Multiplier = 10.0f * Direction;
@@ -710,17 +710,17 @@ void _EditorState::Update(double FrameTime) {
 		DrawEnd = WorldCursorIndex + 1;
 
 		// Reverse X
-		if(DrawEnd.X <= DrawStart.X) {
-			std::swap(DrawStart.X, DrawEnd.X);
-			DrawStart.X--;
-			DrawEnd.X++;
+		if(DrawEnd.x <= DrawStart.x) {
+			std::swap(DrawStart.x, DrawEnd.x);
+			DrawStart.x--;
+			DrawEnd.x++;
 		}
 
 		// Reverse Y
-		if(DrawEnd.Y <= DrawStart.Y) {
-			std::swap(DrawStart.Y, DrawEnd.Y);
-			DrawStart.Y--;
-			DrawEnd.Y++;
+		if(DrawEnd.y <= DrawStart.y) {
+			std::swap(DrawStart.y, DrawEnd.y);
+			DrawStart.y--;
+			DrawEnd.y++;
 		}
 	}
 
@@ -732,23 +732,23 @@ void _EditorState::Update(double FrameTime) {
 		Offset = WorldCursorIndex - SavedIndex;
 
 		// Check x bounds
-		if(Offset.X + OldStart.X < 0)
-			Offset.X = -OldStart.X;
-		else if(Offset.X + OldEnd.X >= Map->GetWidth())
-			Offset.X = Map->GetWidth() - OldEnd.X - 1;
+		if(Offset.x + OldStart.x < 0)
+			Offset.x = -OldStart.x;
+		else if(Offset.x + OldEnd.x >= Map->GetWidth())
+			Offset.x = Map->GetWidth() - OldEnd.x - 1;
 
 		// Check y bounds
-		if(Offset.Y + OldStart.Y < 0)
-			Offset.Y = -OldStart.Y;
-		else if(Offset.Y + OldEnd.Y >= Map->GetHeight())
-			Offset.Y = Map->GetHeight() - OldEnd.Y - 1;
+		if(Offset.y + OldStart.y < 0)
+			Offset.y = -OldStart.y;
+		else if(Offset.y + OldEnd.y >= Map->GetHeight())
+			Offset.y = Map->GetHeight() - OldEnd.y - 1;
 
 		// Get start positions
 		DrawStart = OldStart + Offset;
 
 		// Check bounds
-		DrawEnd.X = OldEnd.X + Offset.X + 1;
-		DrawEnd.Y = OldEnd.Y + Offset.Y + 1;
+		DrawEnd.x = OldEnd.x + Offset.x + 1;
+		DrawEnd.y = OldEnd.y + Offset.y + 1;
 
 	}
 
@@ -819,24 +819,24 @@ void _EditorState::Render(double BlendFactor) {
 		if(Brush[CurrentPalette]) {
 			if(CurrentPalette == EDITMODE_EVENTS) {
 				Graphics.DisableDepthTest();
-				Graphics.DrawRepeatable((float)DrawStart.X, (float)DrawStart.Y, MAP_LAYEROFFSET, (float)DrawEnd.X, (float)DrawEnd.Y, MAP_LAYEROFFSET, Brush[CurrentPalette]->GetStyle()->Texture, 0, 1.0f);
+				Graphics.DrawRepeatable((float)DrawStart.x, (float)DrawStart.y, MAP_LAYEROFFSET, (float)DrawEnd.x, (float)DrawEnd.y, MAP_LAYEROFFSET, Brush[CurrentPalette]->GetStyle()->Texture, 0, 1.0f);
 				Graphics.EnableDepthTest();
 			}
 			else {
 				if(CurrentLayer == MAPLAYER_FORE)
-					Graphics.DrawRepeatable((float)DrawStart.X, (float)DrawStart.Y, (float)MaxZ + MAP_LAYEROFFSET * CurrentLayer, (float)DrawEnd.X, (float)DrawEnd.Y, (float)MaxZ + MAP_LAYEROFFSET * CurrentLayer, Brush[CurrentPalette]->GetStyle()->Texture, Rotation, ScaleX);
+					Graphics.DrawRepeatable((float)DrawStart.x, (float)DrawStart.y, (float)MaxZ + MAP_LAYEROFFSET * CurrentLayer, (float)DrawEnd.x, (float)DrawEnd.y, (float)MaxZ + MAP_LAYEROFFSET * CurrentLayer, Brush[CurrentPalette]->GetStyle()->Texture, Rotation, ScaleX);
 				else if(CurrentLayer == MAPLAYER_FLAT) {
 					Graphics.EnableVBO(VBO_CUBE);
-					Graphics.DrawWall((float)DrawStart.X, (float)DrawStart.Y, (float)MinZ, (float)DrawEnd.X - DrawStart.X, (float)DrawEnd.Y - DrawStart.Y, MaxZ - MinZ, Rotation, Brush[CurrentPalette]->GetStyle()->Texture);
+					Graphics.DrawWall((float)DrawStart.x, (float)DrawStart.y, (float)MinZ, (float)DrawEnd.x - DrawStart.x, (float)DrawEnd.y - DrawStart.y, MaxZ - MinZ, Rotation, Brush[CurrentPalette]->GetStyle()->Texture);
 					Graphics.DisableVBO(VBO_CUBE);
 				}
 				else {
 					if(MaxZ == MinZ) {
-						Graphics.DrawRepeatable((float)DrawStart.X, (float)DrawStart.Y, (float)MinZ + MAP_LAYEROFFSET * CurrentLayer, (float)DrawEnd.X, (float)DrawEnd.Y, (float)MinZ + MAP_LAYEROFFSET * CurrentLayer, Brush[CurrentPalette]->GetStyle()->Texture, Rotation, ScaleX);
+						Graphics.DrawRepeatable((float)DrawStart.x, (float)DrawStart.y, (float)MinZ + MAP_LAYEROFFSET * CurrentLayer, (float)DrawEnd.x, (float)DrawEnd.y, (float)MinZ + MAP_LAYEROFFSET * CurrentLayer, Brush[CurrentPalette]->GetStyle()->Texture, Rotation, ScaleX);
 					}
 					else {
 						Graphics.EnableVBO(VBO_CUBE);
-						Graphics.DrawCube((float)DrawStart.X, (float)DrawStart.Y, (float)MinZ, (float)DrawEnd.X - DrawStart.X, (float)DrawEnd.Y - DrawStart.Y, (float)MaxZ - MinZ, Brush[CurrentPalette]->GetStyle()->Texture);
+						Graphics.DrawCube((float)DrawStart.x, (float)DrawStart.y, (float)MinZ, (float)DrawEnd.x - DrawStart.x, (float)DrawEnd.y - DrawStart.y, (float)MaxZ - MinZ, Brush[CurrentPalette]->GetStyle()->Texture);
 						Graphics.DisableVBO(VBO_CUBE);
 					}
 				}
@@ -856,15 +856,15 @@ void _EditorState::Render(double BlendFactor) {
 	// Outline selected item
 	Graphics.EnableVBO(VBO_CIRCLE);
 	for(auto Iterator : SelectedObjects) {
-		Vector2 Position = GetMoveDeltaPosition(Iterator->Position);
-		Graphics.DrawCircle(Position.X, Position.Y, ITEM_Z + 0.05f, EDITOR_OBJECTRADIUS, COLOR_WHITE);
+		glm::vec2 Position = GetMoveDeltaPosition(Iterator->Position);
+		Graphics.DrawCircle(Position.x, Position.y, ITEM_Z + 0.05f, EDITOR_OBJECTRADIUS, COLOR_WHITE);
 	}
 	Graphics.DisableVBO(VBO_CIRCLE);
 
 	// Draw faded items while moving
 	Graphics.EnableVBO(VBO_QUAD);
 	for(auto Iterator : SelectedObjects) {
-		DrawObject(MoveDelta.X, MoveDelta.Y, Iterator, 0.5f);
+		DrawObject(MoveDelta.x, MoveDelta.y, Iterator, 0.5f);
 	}
 	Graphics.DisableVBO(VBO_QUAD);
 	Graphics.SetDepthMask(true);
@@ -892,25 +892,25 @@ void _EditorState::Render(double BlendFactor) {
 
 	// Outline selected block
 	if(BlockSelected())
-		Graphics.DrawRectangle((float)SelectedBlock->Start.X, (float)SelectedBlock->Start.Y, (float)SelectedBlock->End.X + 1.0f, (float)SelectedBlock->End.Y + 1.0f, COLOR_WHITE);
+		Graphics.DrawRectangle((float)SelectedBlock->Start.x, (float)SelectedBlock->Start.y, (float)SelectedBlock->End.x + 1.0f, (float)SelectedBlock->End.y + 1.0f, COLOR_WHITE);
 
 	// Outline selected event
 	if(EventSelected()) {
-		Graphics.DrawRectangle((float)SelectedEvent->Start.X + 0.02f, (float)SelectedEvent->Start.Y + 0.02f, (float)SelectedEvent->End.X + 0.98f, (float)SelectedEvent->End.Y + 0.98f, COLOR_CYAN);
+		Graphics.DrawRectangle((float)SelectedEvent->Start.x + 0.02f, (float)SelectedEvent->Start.y + 0.02f, (float)SelectedEvent->End.x + 0.98f, (float)SelectedEvent->End.y + 0.98f, COLOR_CYAN);
 
 		// Outline affected tiles and blocks
 		const std::vector<_EventTile> &Tiles = SelectedEvent->Tiles;
 		for(size_t i = 0; i < Tiles.size(); i++) {
-			Graphics.DrawRectangle(Tiles[i].Coord.X + 0.2f, Tiles[i].Coord.Y + 0.2f, Tiles[i].Coord.X + 0.8f, Tiles[i].Coord.Y + 0.8f, COLOR_RED);
+			Graphics.DrawRectangle(Tiles[i].Coord.x + 0.2f, Tiles[i].Coord.y + 0.2f, Tiles[i].Coord.x + 0.8f, Tiles[i].Coord.y + 0.8f, COLOR_RED);
 
 			if(Tiles[i].BlockID != -1) {
 				if(SelectedEvent->Type == EVENT_ENABLE) {
 					const _Event *Event = Map->GetEvent(Tiles[i].BlockID);
-					Graphics.DrawRectangle((float)Event->Start.X, (float)Event->Start.Y, (float)Event->End.X + 1.0f, (float)Event->End.Y + 1.0f, COLOR_YELLOW);
+					Graphics.DrawRectangle((float)Event->Start.x, (float)Event->Start.y, (float)Event->End.x + 1.0f, (float)Event->End.y + 1.0f, COLOR_YELLOW);
 				}
 				else {
 					const _Block *Block = Map->GetBlock(Tiles[i].Layer, Tiles[i].BlockID);
-					Graphics.DrawRectangle((float)Block->Start.X, (float)Block->Start.Y, (float)Block->End.X + 1.0f, (float)Block->End.Y + 1.0f, COLOR_GREEN);
+					Graphics.DrawRectangle((float)Block->Start.x, (float)Block->Start.y, (float)Block->End.x + 1.0f, (float)Block->End.y + 1.0f, COLOR_GREEN);
 				}
 			}
 		}
@@ -918,11 +918,11 @@ void _EditorState::Render(double BlendFactor) {
 
 	// Dragging a box around object
 	if(DraggingBox)
-		Graphics.DrawRectangle(ClickedPosition.X, ClickedPosition.Y, WorldCursor.X, WorldCursor.Y, COLOR_WHITE);
+		Graphics.DrawRectangle(ClickedPosition.x, ClickedPosition.y, WorldCursor.x, WorldCursor.y, COLOR_WHITE);
 
 	// Draw a block
 	if(IsDrawing)
-		Graphics.DrawRectangle((float)DrawStart.X, (float)DrawStart.Y, (float)DrawEnd.X, (float)DrawEnd.Y, COLOR_GREEN);
+		Graphics.DrawRectangle((float)DrawStart.x, (float)DrawStart.y, (float)DrawEnd.x, (float)DrawEnd.y, COLOR_GREEN);
 
 	Graphics.EnableDepthTest();
 
@@ -946,7 +946,7 @@ void _EditorState::Render(double BlendFactor) {
 	// Draw cursor position
 	int X = 16;
 	int Y = Graphics.GetViewportHeight() - 25;
-	Buffer << std::fixed << WorldCursor.X << ", " << WorldCursor.Y;
+	Buffer << std::fixed << WorldCursor.x << ", " << WorldCursor.y;
 	MainFont->DrawText(Buffer.str(), X, Y);
 	Buffer.str("");
 
@@ -1063,7 +1063,7 @@ void _EditorState::LoadPaletteButtons(std::vector<_Brush> &Icons, int Type) {
 
 	// Loop through textures
 	_Point Offset(0, 0);
-	int Width = PaletteElement[Type]->GetSize().X;
+	int Width = PaletteElement[Type]->GetSize().x;
 	for(size_t i = 0; i < Icons.size(); i++) {
 		PaletteElement[Type]->AddChild(new _Button(
 			Icons[i].Identifier,
@@ -1074,10 +1074,10 @@ void _EditorState::LoadPaletteButtons(std::vector<_Brush> &Icons, int Type) {
 			new _Style(Icons[i].Text, false, false, COLOR_WHITE, COLOR_WHITE, Icons[i].Texture, Icons[i].Color, true),
 			Assets.GetStyle("editor_selected0")));
 
-		Offset.X += PaletteSizes[Type];
-		if(Offset.X > Width - PaletteSizes[Type]) {
-			Offset.Y += PaletteSizes[Type];
-			Offset.X = 0;
+		Offset.x += PaletteSizes[Type];
+		if(Offset.x > Width - PaletteSizes[Type]) {
+			Offset.y += PaletteSizes[Type];
+			Offset.x = 0;
 		}
 	}
 }
@@ -1281,14 +1281,14 @@ void _EditorState::DrawObject(float OffsetX, float OffsetY, const _ObjectSpawn *
 		} break;
 	}
 
-	Vector2 DrawPosition(Object->Position.X + OffsetX, Object->Position.Y + OffsetY);
+	glm::vec2 DrawPosition(Object->Position.x + OffsetX, Object->Position.y + OffsetY);
 	if(!Camera->IsCircleInView(DrawPosition, Scale)) {
 		return;
 	}
 
 	Color.Alpha *= Alpha;
 	if(Texture != nullptr)
-		Graphics.DrawTexture(DrawPosition.X, DrawPosition.Y, Depth, Texture, Color, 0.0f, Scale, Scale);
+		Graphics.DrawTexture(DrawPosition.x, DrawPosition.y, Depth, Texture, Color, 0.0f, Scale, Scale);
 }
 
 // Converts an editor mode to an object type
@@ -1483,8 +1483,8 @@ void _EditorState::ProcessEventIcons(int Index, int Type) {
 }
 
 // Adds an object to the list
-void _EditorState::SpawnObject(const Vector2 &Position, int Type, const std::string &Identifier, bool Align) {
-	Vector2 SpawnPosition;
+void _EditorState::SpawnObject(const glm::vec2 &Position, int Type, const std::string &Identifier, bool Align) {
+	glm::vec2 SpawnPosition;
 
 	if(Align)
 		SpawnPosition = AlignToGrid(Position);
@@ -1592,22 +1592,22 @@ std::string _EditorState::GetEventIdentifier(int Type) {
 }
 
 // Returns a valid position for the object
-Vector2 _EditorState::GetValidObjectPosition(const Vector2 &Position) const {
-	Vector2 NewPosition;
+glm::vec2 _EditorState::GetValidObjectPosition(const glm::vec2 &Position) const {
+	glm::vec2 NewPosition;
 
-	if(Position.X < 0)
-		NewPosition.X = 0;
-	else if(Position.X >= Map->GetWidth())
-		NewPosition.X = (float)Map->GetWidth();
+	if(Position.x < 0)
+		NewPosition.x = 0;
+	else if(Position.x >= Map->GetWidth())
+		NewPosition.x = (float)Map->GetWidth();
 	else
-		NewPosition.X = Position.X;
+		NewPosition.x = Position.x;
 
-	if(Position.Y < 0)
-		NewPosition.Y = 0;
-	else if(Position.Y >= Map->GetHeight())
-		NewPosition.Y = (float)Map->GetHeight();
+	if(Position.y < 0)
+		NewPosition.y = 0;
+	else if(Position.y >= Map->GetHeight())
+		NewPosition.y = (float)Map->GetHeight();
 	else
-		NewPosition.Y = Position.Y;
+		NewPosition.y = Position.y;
 
 	return NewPosition;
 }
@@ -1657,7 +1657,7 @@ void _EditorState::ExecuteMirror() {
 void _EditorState::ExecuteToggleTile() {
 
 	if(EventSelected()) {
-		auto Iterator = SelectedEvent->FindTile(WorldCursorIndex.X, WorldCursorIndex.Y);
+		auto Iterator = SelectedEvent->FindTile(WorldCursorIndex.x, WorldCursorIndex.y);
 		if(Iterator != SelectedEvent->Tiles.end()) {
 			SelectedEvent->RemoveTile(Iterator);
 		}
@@ -1835,7 +1835,7 @@ void _EditorState::ExecuteCopy() {
 
 // Executes the paste command
 void _EditorState::ExecutePaste(bool Viewport) {
-	Vector2 StartPosition;
+	glm::vec2 StartPosition;
 
 	if(Viewport)
 		StartPosition = WorldCursor;
@@ -1845,10 +1845,10 @@ void _EditorState::ExecutePaste(bool Viewport) {
 	switch(CurrentPalette) {
 		case EDITMODE_BLOCKS:
 			if(BlockCopied) {
-				int Width = ClipboardBlock.End.X - ClipboardBlock.Start.X;
-				int Height = ClipboardBlock.End.Y - ClipboardBlock.Start.Y;
+				int Width = ClipboardBlock.End.x - ClipboardBlock.Start.x;
+				int Height = ClipboardBlock.End.y - ClipboardBlock.Start.y;
 				ClipboardBlock.Start = Map->GetValidCoord(_Coord(StartPosition));
-				ClipboardBlock.End = Map->GetValidCoord(_Coord(StartPosition.X + Width, StartPosition.Y + Height));
+				ClipboardBlock.End = Map->GetValidCoord(_Coord(StartPosition.x + Width, StartPosition.y + Height));
 
 				UndoNumber[CurrentLayer]++;
 				Map->AddBlock(CurrentLayer, ClipboardBlock);
@@ -2111,42 +2111,42 @@ void _EditorState::ExecuteUpdateBlockLimits(int Direction, bool Expand) {
 		switch(Direction) {
 			case 0:
 				if(Expand)
-					Start.X--;
+					Start.x--;
 				else
-					End.X--;
+					End.x--;
 			break;
 			case 1:
 				if(Expand)
-					Start.Y--;
+					Start.y--;
 				else
-					End.Y--;
+					End.y--;
 			break;
 			case 2:
 				if(Expand)
-					End.X++;
+					End.x++;
 				else
-					Start.X++;
+					Start.x++;
 			break;
 			case 3:
 				if(Expand)
-					End.Y++;
+					End.y++;
 				else
-					Start.Y++;
+					Start.y++;
 			break;
 		}
 
 		// Check limits
-		if(Start.X > End.X)
-			Start.X = End.X;
+		if(Start.x > End.x)
+			Start.x = End.x;
 
-		if(Start.Y > End.Y)
-			Start.Y = End.Y;
+		if(Start.y > End.y)
+			Start.y = End.y;
 
-		if(End.X < Start.X)
-			End.X = Start.X;
+		if(End.x < Start.x)
+			End.x = Start.x;
 
-		if(End.Y < Start.Y)
-			End.Y = Start.Y;
+		if(End.y < Start.y)
+			End.y = Start.y;
 
 		if(CurrentPalette == EDITMODE_BLOCKS && BlockSelected()) {
 			SelectedBlock->Start = Map->GetValidCoord(Start);
@@ -2199,14 +2199,14 @@ void _EditorState::SelectObjects() {
 }
 
 // Aligns an object to the grid
-Vector2 _EditorState::AlignToGrid(const Vector2 &Position) const {
+glm::vec2 _EditorState::AlignToGrid(const glm::vec2 &Position) const {
 
-	return Vector2((int)Position.X + 0.5f, (int)Position.Y + 0.5f);
+	return glm::vec2((int)Position.x + 0.5f, (int)Position.y + 0.5f);
 }
 
 // Get tentative position
-Vector2 _EditorState::GetMoveDeltaPosition(const Vector2 &Position) {
-	Vector2 NewPosition;
+glm::vec2 _EditorState::GetMoveDeltaPosition(const glm::vec2 &Position) {
+	glm::vec2 NewPosition;
 	if(IsShiftDown)
 		NewPosition = AlignToGrid(GetValidObjectPosition(Position + MoveDelta));
 	else

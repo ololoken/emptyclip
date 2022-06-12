@@ -56,7 +56,7 @@ void _Input::Update(double FrameTime) {
 
 	// Update state
 	KeyState = SDL_GetKeyboardState(nullptr);
-	MouseState = SDL_GetMouseState(&Mouse.X, &Mouse.Y);
+	MouseState = SDL_GetMouseState(&Mouse.x, &Mouse.y);
 }
 
 // Returns the name of a key

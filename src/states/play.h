@@ -18,7 +18,7 @@
 #pragma once
 
 #include <state.h>
-#include <vector2.h>
+#include <glm/vec2.hpp>
 #include <color.h>
 #include <list>
 
@@ -46,14 +46,15 @@ enum CollisionType {
 
 // Holds information about a hit entity
 struct HitStruct {
+
 	HitStruct() { }
-	HitStruct(_Entity *Object, const Vector2 &Position, int Type)
-		:	Object(Object),
-		    Position(Position),
-		    Type(Type) { }
+	HitStruct(_Entity *Object, const glm::vec2 &Position, int Type) :
+		Object(Object),
+		Position(Position),
+		Type(Type) { }
 
 	_Entity *Object;
-	Vector2 Position;
+	glm::vec2 Position;
 	int Type;
 };
 
@@ -82,7 +83,7 @@ class _PlayState : public _State {
 		void SetCheckpointIndex(int Value) { CheckpointIndex = Value; }
 		bool GetFromEditor() const { return FromEditor; }
 
-		void GenerateBulletEffects(_Entity *Attacker, const int Type, const Vector2 &Position);
+		void GenerateBulletEffects(_Entity *Attacker, const int Type, const glm::vec2 &Position);
 
 		void SetPlayer(_Player *Player) { this->Player = Player; }
 		_Player *GetPlayer() { return Player; }
@@ -133,8 +134,8 @@ class _PlayState : public _State {
 
 		// Camera
 		_Camera *Camera;
-		Vector2 PreviousWorldCursor;
-		Vector2 WorldCursor;
+		glm::vec2 PreviousWorldCursor;
+		glm::vec2 WorldCursor;
 };
 
 extern _PlayState PlayState;

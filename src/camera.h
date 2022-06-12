@@ -18,7 +18,7 @@
 #pragma once
 
 // Libraries
-#include <vector2.h>
+#include <glm/vec2.hpp>
 
 // Forward Declarations
 class _Point;
@@ -28,27 +28,27 @@ class _Camera {
 
 	public:
 
-		_Camera(const Vector2 &Position, float Distance, float UpdateDivisor);
+		_Camera(const glm::vec2 &Position, float Distance, float UpdateDivisor);
 		~_Camera();
 
 		// Updates
 		void CalculateFrustum(float AspectRatio);
 		void Set3DProjection(double BlendFactor) const;
 		void Update(double FrameTime);
-		void ConvertScreenToWorld(const _Point &Point, Vector2 &WorldPosition);
-		void ConvertWorldToScreen(const Vector2 &WorldPosition, _Point &Point);
+		void ConvertScreenToWorld(const _Point &Point, glm::vec2 &WorldPosition);
+		void ConvertWorldToScreen(const glm::vec2 &WorldPosition, _Point &Point);
 
-		bool IsCircleInView(const Vector2 &Position, float Radius) const;
+		bool IsCircleInView(const glm::vec2 &Position, float Radius) const;
 		bool IsAABBInView(const float *Bounds) const;
 
-		void UpdatePosition(const Vector2 &UpdatePosition) { this->TargetPosition += UpdatePosition; }
-		void ForcePosition(const Vector2 &Position) { this->LastPosition = this->Position = Position; this->TargetPosition = Position; }
+		void UpdatePosition(const glm::vec2 &UpdatePosition) { this->TargetPosition += UpdatePosition; }
+		void ForcePosition(const glm::vec2 &Position) { this->LastPosition = this->Position = Position; this->TargetPosition = Position; }
 
 		void UpdateDistance(float Update) { this->TargetDistance += Update; }
 		void ForceDistance(float Distance) { this->Distance = LastDistance = TargetDistance = Distance; }
 
-		void SetPosition(const Vector2 &Position) { this->TargetPosition = Position; }
-		const Vector2 &GetPosition() const { return Position; }
+		void SetPosition(const glm::vec2 &Position) { this->TargetPosition = Position; }
+		const glm::vec2 &GetPosition() const { return Position; }
 
 		void SetDistance(float Distance) { this->TargetDistance = Distance; }
 		float GetDistance() const { return Distance; }
@@ -61,7 +61,7 @@ class _Camera {
 
 	private:
 
-		Vector2 LastPosition, Position, TargetPosition;
+		glm::vec2 LastPosition, Position, TargetPosition;
 		float LastDistance, Distance, TargetDistance;
 		float Fovy;
 		float UpdateDivisor;

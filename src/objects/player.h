@@ -126,7 +126,7 @@ class _Player : public _Entity {
 		double GetReloadPercent() const { return std::min(1.0, ReloadTimer / ReloadPeriod); }
 		double GetWeaponSwitchPercent() const { return std::min(1.0, WeaponSwitchTimer / WeaponSwitchPeriod); }
 		int GetMedkitHealAmount(int MedkitLevel) const;
-		float GetCrosshairRadius(const Vector2 &Cursor);
+		float GetCrosshairRadius(const glm::vec2 &Cursor);
 		int GetWeaponAmmoType() const;
 		int GetInventoryAmmoType(int Index) const;
 		const _ParticleTemplate *GetWeaponParticle(int Index) const override;

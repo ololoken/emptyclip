@@ -106,28 +106,28 @@ class _Entity : public _Object {
 		float GetHealthPercentage() const { return (float)Health / MaxHealth; }
 		float GetStaminaPercentage() const { return Stamina / MaxStamina; }
 		int GetWeaponType() const { return MainWeaponType; }
-		Vector2 GetWeaponOffset(int WeaponType) const { return WeaponParticleOffset[WeaponType]; }
+		glm::vec2 GetWeaponOffset(int WeaponType) const { return WeaponParticleOffset[WeaponType]; }
 		float GetWeaponRange(int AttackType) const { return AttackRange[AttackType]; }
 		float GetMaxAccuracy(int AttackType) const { return MaxAccuracy[AttackType]; }
 		int GetMinDamage(int Type) const { return MinDamage[Type]; }
 		int GetMaxDamage(int Type) const { return MaxDamage[Type]; }
-		virtual Vector2 GetGoal() const;
+		virtual glm::vec2 GetGoal() const;
 		virtual int64_t GetExperienceGiven() const { return 0; }
 		virtual std::string GetItemGroupIdentifier() const { return ""; }
 		virtual const _ParticleTemplate *GetWeaponParticle(int Index) const { return nullptr; }
 
-		void AddGoal(const Vector2 &Goal) { Goals.push_front(Goal); }
+		void AddGoal(const glm::vec2 &Goal) { Goals.push_front(Goal); }
 		void PopGoal() { if(!Goals.empty()) Goals.pop_front(); }
 
 		virtual const std::string &GetSample(int Type) const { return Samples[Type]; }
-		Vector2 WallInPath(const Vector2 &Delta) const;
+		glm::vec2 WallInPath(const glm::vec2 &Delta) const;
 
 		void StartTriggerDownAudio();
 		void StopAudio();
 
 		// Graphics
 		_Animation *Animation;
-		Vector2 WeaponParticleOffset[WEAPON_TYPES];
+		glm::vec2 WeaponParticleOffset[WEAPON_TYPES];
 
 		// Audio
 		std::string Samples[SAMPLE_TYPES];
@@ -139,7 +139,7 @@ class _Entity : public _Object {
 		double MoveSoundDelay;
 		float MovementSpeed;
 		float MovementModifier;
-		Vector2 MoveDirection;
+		glm::vec2 MoveDirection;
 		bool PositionChanged;
 		float Stamina;
 		float MaxStamina;
@@ -188,6 +188,6 @@ class _Entity : public _Object {
 		void UpdateRecoil();
 
 		// AI
-		std::list<Vector2> Goals;
+		std::list<glm::vec2> Goals;
 
 };

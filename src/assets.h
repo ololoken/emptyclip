@@ -18,7 +18,7 @@
 #pragma once
 
 // Libraries
-#include <vector2.h>
+#include <glm/vec2.hpp>
 #include <objects/templates.h>
 #include <string>
 #include <map>
@@ -229,13 +229,13 @@ class _Assets {
 		_WeaponTemplate *GetWeaponTemplate(const std::string &Identifier);
 		_ArmorTemplate *GetArmorTemplate(const std::string &Identifier);
 		_ItemGroup *GetItemGroup(const std::string &Identifier);
-		_Monster *CreateMonster(const std::string &Identifier, const Vector2 &Position);
-		_MiscItem *CreateMiscItem(const std::string &Identifier, int Count, const Vector2 &Position);
-		_Ammo *CreateAmmoItem(const std::string &Identifier, int Count, const Vector2 &Position);
+		_Monster *CreateMonster(const std::string &Identifier, const glm::vec2 &Position);
+		_MiscItem *CreateMiscItem(const std::string &Identifier, int Count, const glm::vec2 &Position);
+		_Ammo *CreateAmmoItem(const std::string &Identifier, int Count, const glm::vec2 &Position);
 		_Ammo *CreateAmmoItem(int Type);
-		_Upgrade *CreateUpgradeItem(const std::string &Identifier, int Count, const Vector2 &Position);
-		_Weapon *CreateWeapon(const std::string &Identifier, int Count, const Vector2 &Position, bool Generate);
-		_Armor *CreateArmor(const std::string &Identifier, int Count, const Vector2 &Position);
+		_Upgrade *CreateUpgradeItem(const std::string &Identifier, int Count, const glm::vec2 &Position);
+		_Weapon *CreateWeapon(const std::string &Identifier, int Count, const glm::vec2 &Position, bool Generate);
+		_Armor *CreateArmor(const std::string &Identifier, int Count, const glm::vec2 &Position);
 		void GetRandomDrop(const _ItemGroup *ItemGroup, _ObjectSpawn *ObjectSpawn);
 
 		void GetEventList(std::vector<_Brush> &Icons);

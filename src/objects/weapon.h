@@ -32,7 +32,7 @@ class _Weapon : public _Item {
 
 	public:
 
-		_Weapon(const std::string &Identifier, int Count, const Vector2 &Position, const _WeaponTemplate *Weapon, _Texture *Texture, bool Generate);
+		_Weapon(const std::string &Identifier, int Count, const glm::vec2 &Position, const _WeaponTemplate *Weapon, _Texture *Texture, bool Generate);
 		~_Weapon() override;
 
 		void Serialize(_Buffer &Buffer) override;

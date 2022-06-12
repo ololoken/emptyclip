@@ -17,18 +17,20 @@
 *******************************************************************************/
 #include <objects/object.h>
 #include <constants.h>
+#include <glm/geometric.hpp>
+#include <glm/gtx/rotate_vector.hpp>
 
 // Constructor
-_Object::_Object()
-:	Active(true),
+_Object::_Object() :
+	Active(true),
 	Name(""),
 	Type(UNDEFINED),
 	Map(nullptr),
 	TileChanged(false),
 	Radius(0.25f),
 	WallState(0),
-	Position(ZERO_VECTOR),
-	LastPosition(ZERO_VECTOR),
+	Position({0, 0}),
+	LastPosition({0, 0}),
 	Direction(0.0, 1.0f),
 	Color(COLOR_WHITE),
 	Rotation(0.0f),
@@ -42,20 +44,25 @@ _Object::~_Object() {
 }
 
 // Calculates the angle from a slope
-void _Object::FacePosition(const Vector2 &Cursor) {
+void _Object::FacePosition(const glm::vec2 &Cursor) {
 
-	Direction.X = Cursor.X - Position.X;
-	Direction.Y = Cursor.Y - Position.Y;
-	if(Direction.X == 0 && Direction.Y == 0.0f)
-		Direction.Y = 1.0f;
-	Direction.Normalize();
+	Direction.x = Cursor.x - Position.x;
+	Direction.y = Cursor.y - Position.y;
+	if(Direction.x == 0 && Direction.y == 0.0f)
+		Direction.y = 1.0f;
+	Direction = glm::normalize(Direction);
 
-	Rotation = atan2(Direction.Y, Direction.X) * DEGREES_IN_RADIAN + 90.0f;
+	Rotation = glm::degrees(atan2(Direction.y, Direction.x)) + 90.0f;
 	if(Rotation < 0.0f)
 		Rotation += 360.0f;
 }
 
 // Force position of object
-void _Object::SetPosition(const Vector2 &Position) {
+void _Object::SetPosition(const glm::vec2 &Position) {
 	this->LastPosition = this->Position = Position;
+}
+
+// Get direction of object as a unit vector
+glm::vec2 _Object::GetDirectionVector(float RotationOffset) const {
+	return glm::rotate(glm::vec2(0, -1), glm::radians(Rotation + RotationOffset));
 }

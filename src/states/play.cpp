@@ -44,6 +44,8 @@
 #include <stdexcept>
 #include <fstream>
 #include <iostream>
+#include <glm/gtx/norm.hpp>
+#include <glm/gtx/rotate_vector.hpp>
 
 _PlayState PlayState;
 
@@ -347,9 +349,9 @@ void _PlayState::Update(double FrameTime) {
 			Camera->UpdatePosition((WorldCursor - Player->Position) / Player->GetZoomScale());
 		}
 		else {
-			Vector2 Direction = WorldCursor - Player->Position;
+			glm::vec2 Direction = WorldCursor - Player->Position;
 
-			Vector2 NewPosition;
+			glm::vec2 NewPosition;
 			Map->CheckBulletCollisions(Player->Position, Direction, nullptr, &NewPosition, 0, false);
 			Camera->UpdatePosition((NewPosition - Player->Position) / Player->GetZoomScale());
 		}
@@ -435,7 +437,7 @@ void _PlayState::Render(double BlendFactor) {
 
 	// Draw the crosshair
 	if(!Player->IsDying())
-		HUD->RenderCrosshair(WorldCursor * BlendFactor + PreviousWorldCursor * (1.0f - BlendFactor));
+		HUD->RenderCrosshair(WorldCursor * (float)BlendFactor + PreviousWorldCursor * (float)(1.0f - BlendFactor));
 
 	// Debug
 	if(0) {
@@ -451,18 +453,18 @@ void _PlayState::Render(double BlendFactor) {
 			if(Range == 0.0f)
 				Range = 100.0f;
 			Graphics.EnableVBO(VBO_CIRCLE);
-			Graphics.DrawCircle(Player->Position.X, Player->Position.Y, 0.2f, Range, Color);
+			Graphics.DrawCircle(Player->Position.x, Player->Position.y, 0.2f, Range, Color);
 			Graphics.DisableVBO(VBO_CIRCLE);
-			Vector2 t1, t2;
-			t1 = Player->Position + Vector2(Player->GetDirection() - Player->GetMaxAccuracy(i) / 2 ) * Range;
-			t2 = Player->Position + Vector2(Player->GetDirection() + Player->GetMaxAccuracy(i) / 2 ) * Range;
+			glm::vec2 t1, t2;
+			t1 = Player->Position + Player->GetDirectionVector(- Player->GetMaxAccuracy(i) / 2) * Range;
+			t2 = Player->Position + Player->GetDirectionVector(+ Player->GetMaxAccuracy(i) / 2) * Range;
 			glBegin(GL_LINES);
-			glVertex2f(Player->Position.X, Player->Position.Y);
-			glVertex2f(t1.X, t1.Y);
+			glVertex2f(Player->Position.x, Player->Position.y);
+			glVertex2f(t1.x, t1.y);
 			glEnd();
 			glBegin(GL_LINES);
-			glVertex2f(Player->Position.X, Player->Position.Y);
-			glVertex2f(t2.X, t2.Y);
+			glVertex2f(Player->Position.x, Player->Position.y);
+			glVertex2f(t2.x, t2.y);
 			glEnd();
 		}
 
@@ -475,11 +477,11 @@ void _PlayState::Render(double BlendFactor) {
 	_Coord Start(Camera->GetAABB()[0], Camera->GetAABB()[1]);
 	_Coord End(Camera->GetAABB()[2], Camera->GetAABB()[3]);
 
-	for(int X = Start.X; X < End.X; X++) {
-		for(int Y = Start.Y; Y < End.Y; Y++) {
+	for(int X = Start.x; X < End.x; X++) {
+		for(int Y = Start.y; Y < End.y; Y++) {
 			if(X > 0 && Y > 0) {
 				_Point P;
-				Camera->ConvertWorldToScreen(Vector2(X-0.5f, Y-0.5f), P);
+				Camera->ConvertWorldToScreen(glm::vec2(X-0.5f, Y-0.5f), P);
 				std::ostringstream Buffer;
 				size_t Count = 0;
 				std::list<_Event *> &Events = Map->GetEventList(_Coord(X, Y));
@@ -489,7 +491,7 @@ void _PlayState::Render(double BlendFactor) {
 
 				}
 				Buffer << Count << "/" << Events.size();
-				Assets.GetFont("hud_tiny")->DrawText(Buffer.str(), P.X, P.Y);
+				Assets.GetFont("hud_tiny")->DrawText(Buffer.str(), P.x, P.y);
 				Buffer.str("");
 			}
 		}
@@ -555,7 +557,7 @@ void _PlayState::EntityAttack(_Entity *Attacker, int GridType) {
 		// Check weapon type
 		if(WeaponType == WEAPON_MELEE) {
 
-			HitInformation.Object = Map->CheckMeleeCollisions(Attacker, Vector2(Attacker->GetDirection()), GridType);
+			HitInformation.Object = Map->CheckMeleeCollisions(Attacker, Attacker->GetDirectionVector(), GridType);
 			if(HitInformation.Object != nullptr) {
 				HitInformation.Type = HIT_OBJECT;
 				HitInformation.Position = HitInformation.Object->Position;
@@ -567,19 +569,19 @@ void _PlayState::EntityAttack(_Entity *Attacker, int GridType) {
 			float ShotDirection = Attacker->GenerateShotDirection();
 
 			// Check distance to the wall
-			Map->CheckBulletCollisions(Attacker->Position, Vector2(ShotDirection), &HitInformation.Object, &HitInformation.Position, GridType, true);
+			Map->CheckBulletCollisions(Attacker->Position, glm::rotate(glm::vec2(0, -1), glm::radians(ShotDirection)), &HitInformation.Object, &HitInformation.Position, GridType, true);
 			if(HitInformation.Object != nullptr)
 				HitInformation.Type = HIT_OBJECT;
 			else
 				HitInformation.Type = HIT_WALL;
 
 			_ParticleTemplate *Template = Assets.GetParticleTemplate("tracer0");
-			Vector2 ParticleStart = Attacker->Position + (Vector2(0, -Template->Size.Y * 0.5f) + Attacker->GetWeaponOffset(Attacker->GetWeaponType())).RotateVector(ShotDirection);
+			glm::vec2 ParticleStart = Attacker->Position + glm::rotate(glm::vec2(0, -Template->Size.y * 0.5f) + Attacker->GetWeaponOffset(Attacker->GetWeaponType()), glm::radians(ShotDirection));
 
-			float Distance = (HitInformation.Position - Attacker->Position).Magnitude() - Template->Size.Y;
+			float Distance = glm::length(HitInformation.Position - Attacker->Position) - Template->Size.y;
 
 			_Particle *Tracer = new _Particle(_ParticleSpawn(Template, ParticleStart, OBJECT_Z, ShotDirection));
-			Tracer->Lifetime = Distance * Template->VelocityScale.Y * GAME_FPS;
+			Tracer->Lifetime = Distance * Template->VelocityScale.y * GAME_FPS;
 			Particles->Add(Tracer);
 		}
 
@@ -602,7 +604,7 @@ void _PlayState::EntityAttack(_Entity *Attacker, int GridType) {
 				int Damage = Attacker->GenerateDamage(Attacker->AttackRequestType, HitInformation.Object->DamageBlock, HitInformation.Object->DamageResist);
 
 				// Create damage number particles
-				Vector2 DamagePosition = HitInformation.Position;
+				glm::vec2 DamagePosition = HitInformation.Position;
 				if(HitInformation.Object->Type ==  _Object::PLAYER)
 					DamagePosition += GenerateRandomPointInCircle(0.3f);
 				_Particle *DamageParticle = new _Particle(_ParticleSpawn(Assets.GetParticleTemplate("damage0"), DamagePosition, OBJECT_Z, 0));
@@ -646,7 +648,7 @@ void _PlayState::PickupObject() {
 
 	// Loop through the objects
 	_TileBounds TB;
-	Map->GetTileBounds(Vector2(0.8, 0.8), 0.5, TB);
+	Map->GetTileBounds(glm::vec2(0.8, 0.8), 0.5, TB);
 	HitItem = (_Item *)Map->CheckCollisionsInGrid(Player->Position, Player->Radius, GRID_ITEM, nullptr);
 
 	if(HitItem != nullptr) {
@@ -717,20 +719,19 @@ void _PlayState::UseObject() {
 
 // Creates a random item from an entity
 void _PlayState::CreateItemDrop(const _Entity *Entity) {
+	if(Entity->GetItemGroupIdentifier() == "")
+		return;
 
-	if(Entity->GetItemGroupIdentifier() != "") {
-		_ItemGroup *ItemGroup = Assets.GetItemGroup(Entity->GetItemGroupIdentifier());
+	_ItemGroup *ItemGroup = Assets.GetItemGroup(Entity->GetItemGroupIdentifier());
+	for(int i = 0; i < ItemGroup->Quantity; i++) {
 
-		for(int i = 0; i < ItemGroup->Quantity; i++) {
+		// Spawn random item
+		_ObjectSpawn ObjectSpawn;
+		ObjectSpawn.Position = GenerateRandomPointInCircle(PLAYER_RADIUS) + Entity->Position;
 
-			// Spawn random item
-			_ObjectSpawn ObjectSpawn;
-			ObjectSpawn.Position = GenerateRandomPointInCircle(PLAYER_RADIUS) + Entity->Position;
-
-			// Roll for drop
-			Assets.GetRandomDrop(ItemGroup, &ObjectSpawn);
-			SpawnObject(&ObjectSpawn, true);
-		}
+		// Roll for drop
+		Assets.GetRandomDrop(ItemGroup, &ObjectSpawn);
+		SpawnObject(&ObjectSpawn, true);
 	}
 }
 
@@ -855,7 +856,7 @@ void _PlayState::CheckEvents(const _Entity *Entity) {
 					}
 
 					if(Event->Tiles.size() > 0) {
-						Vector2 NewPosition(Event->Tiles[0].Coord.X + 0.5f, Event->Tiles[0].Coord.Y + 0.5f);
+						glm::vec2 NewPosition(Event->Tiles[0].Coord.x + 0.5f, Event->Tiles[0].Coord.y + 0.5f);
 						Particles->Create(_ParticleSpawn(Assets.GetParticleTemplate(Event->ParticleIdentifier), NewPosition, OBJECT_Z, 0));
 
 						Map->RemoveObjectFromGrid(Player, GRID_PLAYER);
@@ -886,15 +887,15 @@ void _PlayState::UpdateEvents(double FrameTime) {
 		Event->Update(FrameTime);
 
 		if(Event->TimerExpired()) {
-			Vector2 Position;
+			glm::vec2 Position;
 			bool Decrement = false;
 			switch(Event->Type) {
 				case EVENT_SPAWN: {
 
 					const std::vector<_EventTile> &Tiles = Event->Tiles;
 					for(size_t i = 0; i < Tiles.size(); i++) {
-						Position.X = static_cast<float>(Tiles[i].Coord.X) + 0.5f;
-						Position.Y = static_cast<float>(Tiles[i].Coord.Y) + 0.5f;
+						Position.x = static_cast<float>(Tiles[i].Coord.x) + 0.5f;
+						Position.y = static_cast<float>(Tiles[i].Coord.y) + 0.5f;
 						AddMonster(Assets.CreateMonster(Event->MonsterIdentifier, Position));
 						Particles->Create(_ParticleSpawn(Assets.GetParticleTemplate(Event->ParticleIdentifier), Position, OBJECT_Z, 0));
 					}
@@ -999,13 +1000,13 @@ void _PlayState::RemoveMonster(_Monster *Monster) {
 	Map->RemoveObjectFromGrid(Monster, GRID_MONSTER);
 }
 
-void _PlayState::GenerateBulletEffects(_Entity *Attacker, const int Type, const Vector2 &Position) {
-	Vector2 ParticlePosition;
+void _PlayState::GenerateBulletEffects(_Entity *Attacker, const int Type, const glm::vec2 &Position) {
+	glm::vec2 ParticlePosition;
 
 	if(Type == -1) {
 
 		// Particle position
-		ParticlePosition = Attacker->Position + Attacker->GetWeaponOffset(Attacker->GetWeaponType()).RotateVector(Attacker->GetDirection());
+		ParticlePosition = Attacker->Position + glm::rotate(Attacker->GetWeaponOffset(Attacker->GetWeaponType()), glm::radians(Attacker->GetDirection()));
 
 		// Particles
 		Particles->Create(_ParticleSpawn(Attacker->GetWeaponParticle(WEAPONPARTICLE_FIRE), ParticlePosition, OBJECT_Z, Attacker->GetDirection()));

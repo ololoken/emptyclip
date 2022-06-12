@@ -21,6 +21,7 @@
 #include <graphics.h>
 #include <font.h>
 #include <random.h>
+#include <glm/gtx/rotate_vector.hpp>
 
 // Constructor
 _Particle::_Particle(const _ParticleSpawn &Spawn) :
@@ -36,18 +37,18 @@ _Particle::_Particle(const _ParticleSpawn &Spawn) :
 	ScaleAspect(Spawn.Template->ScaleAspect) {
 
 	// Random
-	Rotation = Spawn.RotationAdjust + (float)(Random.GenerateRange(Spawn.Template->StartDirection.X, Spawn.Template->StartDirection.Y));
-	Velocity = Vector2(this->Rotation) * Random.GenerateRange(Spawn.Template->VelocityScale.X, Spawn.Template->VelocityScale.Y);
+	Rotation = Spawn.RotationAdjust + (float)(Random.GenerateRange(Spawn.Template->StartDirection.x, Spawn.Template->StartDirection.y));
+	Velocity = glm::rotate(glm::vec2(0, -1), glm::radians(this->Rotation)) * (float)Random.GenerateRange(Spawn.Template->VelocityScale.x, Spawn.Template->VelocityScale.y);
 	Acceleration = Velocity * Spawn.Template->AccelerationScale;
-	TurnSpeed = Random.GenerateRange(Spawn.Template->TurnSpeed.X, Spawn.Template->TurnSpeed.Y);
-	float Size = Random.GenerateRange(Spawn.Template->Size.X, Spawn.Template->Size.Y);
+	TurnSpeed = Random.GenerateRange(Spawn.Template->TurnSpeed.x, Spawn.Template->TurnSpeed.y);
+	float Size = Random.GenerateRange(Spawn.Template->Size.x, Spawn.Template->Size.y);
 	if(ScaleAspect >= 1.0f) {
-		Scale.X = Size;
-		Scale.Y = Size / ScaleAspect;
+		Scale.x = Size;
+		Scale.y = Size / ScaleAspect;
 	}
 	else {
-		Scale.X = Size * ScaleAspect;
-		Scale.Y = Size;
+		Scale.x = Size * ScaleAspect;
+		Scale.y = Size;
 	}
 
 	Position = Spawn.Position;
@@ -76,8 +77,8 @@ void _Particle::Update(double FrameTime) {
 void _Particle::Render() {
 
 	if(Texture)
-		Graphics.DrawTexture(Position.X, Position.Y, PositionZ, Texture, Color, Rotation, Scale.X, Scale.Y);
+		Graphics.DrawTexture(Position.x, Position.y, PositionZ, Texture, Color, Rotation, Scale.x, Scale.y);
 
 	if(Font && Text != "")
-		Font->DrawText(Text.c_str(), Position.X, Position.Y, Color, CENTER_BASELINE, 1/64.0f);
+		Font->DrawText(Text.c_str(), Position.x, Position.y, Color, CENTER_BASELINE, 1/64.0f);
 }

@@ -24,6 +24,7 @@
 #include <random.h>
 #include <constants.h>
 #include <iostream>
+#include <glm/gtx/norm.hpp>
 
 // Constructor
 _Entity::_Entity() :
@@ -68,7 +69,7 @@ _Entity::_Entity() :
 	Map = nullptr;
 
 	for(int i = 0; i < WEAPON_TYPES; i++)
-		WeaponParticleOffset[i] = Vector2(0.0f, 0.0f);
+		WeaponParticleOffset[i] = glm::vec2(0.0f, 0.0f);
 
 	for(int i = 0; i < SAMPLE_TYPES; i++)
 		Samples[i] = -1;
@@ -280,18 +281,18 @@ void _Entity::Move() {
 	if(MoveState != MOVE_NONE) {
 
 		// Get direction
-		Vector2 Goal = GetGoal();
-		Vector2 Delta, NewDirection(0.0, 0.0f);
+		glm::vec2 Goal = GetGoal();
+		glm::vec2 Delta, NewDirection(0.0, 0.0f);
 		switch(MoveState) {
 			case MOVE_DIRECTION:
-				if(MoveDirection.X != 0 || MoveDirection.Y != 0) {
+				if(MoveDirection.x != 0 || MoveDirection.y != 0) {
 					Delta = WallInPath(MoveDirection);
 					NewDirection = Delta;
 				}
 			break;
 			case MOVE_GOAL:
 				Delta = (Goal - Position);
-				if(Delta.MagnitudeSquared() >= 0.01f) {
+				if(glm::distance2(Delta, Delta) >= 0.01f) {
 					Delta = WallInPath(Delta);
 					NewDirection = Delta;
 				}
@@ -300,39 +301,39 @@ void _Entity::Move() {
 				}
 			break;
 			case MOVE_FORWARD:
-				NewDirection.Y = -1;
+				NewDirection.y = -1;
 			break;
 			case MOVE_BACKWARD:
-				NewDirection.Y = 1;
+				NewDirection.y = 1;
 			break;
 			case MOVE_LEFT:
-				NewDirection.X = -1;
+				NewDirection.x = -1;
 			break;
 			case MOVE_RIGHT:
-				NewDirection.X = 1;
+				NewDirection.x = 1;
 			break;
 			case MOVE_FORWARDLEFT:
-				NewDirection.X = -M_SQRT1_2;
-				NewDirection.Y = -M_SQRT1_2;
+				NewDirection.x = -M_SQRT1_2;
+				NewDirection.y = -M_SQRT1_2;
 			break;
 			case MOVE_FORWARDRIGHT:
-				NewDirection.X = M_SQRT1_2;
-				NewDirection.Y = -M_SQRT1_2;
+				NewDirection.x = M_SQRT1_2;
+				NewDirection.y = -M_SQRT1_2;
 			break;
 			case MOVE_BACKWARDLEFT:
-				NewDirection.X = -M_SQRT1_2;
-				NewDirection.Y = M_SQRT1_2;
+				NewDirection.x = -M_SQRT1_2;
+				NewDirection.y = M_SQRT1_2;
 			break;
 			case MOVE_BACKWARDRIGHT:
-				NewDirection.X = M_SQRT1_2;
-				NewDirection.Y = M_SQRT1_2;
+				NewDirection.x = M_SQRT1_2;
+				NewDirection.y = M_SQRT1_2;
 			break;
 			default:
 			break;
 		}
 
 		// Moving backwards
-		if(NewDirection * Direction < 0)
+		if(glm::dot(NewDirection, Direction) < 0)
 			UpdateSpeed(PLAYER_BACKWARDSPEED);
 
 		float Speed = MovementSpeed * MovementModifier;
@@ -344,24 +345,24 @@ void _Entity::Move() {
 
 		// Limit movement
 		for(auto Iterator : HitEntities) {
-			Vector2 HitObjectDirection = Iterator->Position - Position;
+			glm::vec2 HitObjectDirection = Iterator->Position - Position;
 
 			// Determine if we need to clip the direction
-			if(HitObjectDirection * NewDirection > 0) {
-				Vector2 DividingLine;
+			if(glm::dot(HitObjectDirection, NewDirection) > 0) {
+				glm::vec2 DividingLine;
 
 				// Rotate vector
-				DividingLine.X = -HitObjectDirection.Y;
-				DividingLine.Y = HitObjectDirection.X;
-				DividingLine.Normalize();
+				DividingLine.x = -HitObjectDirection.y;
+				DividingLine.y = HitObjectDirection.x;
+				DividingLine = glm::normalize(DividingLine);
 
 				// Project the direction onto the dividing line
-				NewDirection = DividingLine * (NewDirection * DividingLine);
+				NewDirection = DividingLine * glm::dot(NewDirection, DividingLine);
 			}
 		}
 
 		// Check collisions with walls and map boundaries
-		Vector2 NewPosition;
+		glm::vec2 NewPosition;
 		Map->CheckCollisions(Position + NewDirection, Radius, NewPosition);
 
 		// Determine if the object has moved
@@ -404,12 +405,12 @@ void _Entity::Move() {
 
 // Draws the object
 void _Entity::Render(double BlendFactor) {
-	Vector2 DrawPosition(Position * BlendFactor + LastPosition * (1.0f - BlendFactor));
+	glm::vec2 DrawPosition(Position * (float)BlendFactor + LastPosition * (float)(1.0f - BlendFactor));
 
-	Graphics.DrawTexture(DrawPosition.X, DrawPosition.Y, PositionZ, Animation->GetCurrentFrame(), Color, Rotation, Scale, Scale);
+	Graphics.DrawTexture(DrawPosition.x, DrawPosition.y, PositionZ, Animation->GetCurrentFrame(), Color, Rotation, Scale, Scale);
 
 	//Graphics.EnableVBO(VBO_CIRCLE);
-	//Graphics.DrawCircle(DrawPosition.X, DrawPosition.Y, 0, Radius, COLOR_WHITE);
+	//Graphics.DrawCircle(DrawPosition.x, DrawPosition.y, 0, Radius, COLOR_WHITE);
 	//Graphics.DisableVBO(VBO_CIRCLE);
 }
 
@@ -443,30 +444,30 @@ void _Entity::UpdateHealth(int Adjust) {
 	}
 }
 
-Vector2 _Entity::GetGoal() const {
+glm::vec2 _Entity::GetGoal() const {
 	if(Goals.empty())
 		return Position;
 	else
 		return Goals.front();
 }
 
-Vector2 _Entity::WallInPath(const Vector2 &Delta) const {
+glm::vec2 _Entity::WallInPath(const glm::vec2 &Delta) const {
 	int WallState = Map->GetWallState(Position, Radius);
 	if(!WallState)
-		return Delta.UnitVector();
+		return glm::normalize(Delta);
 
-	Vector2 NewDelta = Delta;
-	if((WallState & WALL_RIGHT) && NewDelta.X > 0)
-		NewDelta.X = 0;
-	if((WallState & WALL_LEFT) && NewDelta.X < 0)
-		NewDelta.X = 0;
-	if((WallState & WALL_TOP) && NewDelta.Y < 0)
-		NewDelta.Y = 0;
-	if((WallState & WALL_BOTTOM) && NewDelta.Y > 0)
-		NewDelta.Y = 0;
+	glm::vec2 NewDelta = Delta;
+	if((WallState & WALL_RIGHT) && NewDelta.x > 0)
+		NewDelta.x = 0;
+	if((WallState & WALL_LEFT) && NewDelta.x < 0)
+		NewDelta.x = 0;
+	if((WallState & WALL_TOP) && NewDelta.y < 0)
+		NewDelta.y = 0;
+	if((WallState & WALL_BOTTOM) && NewDelta.y > 0)
+		NewDelta.y = 0;
 
-	if(!(NewDelta.X == 0 && NewDelta.Y == 0))
-		NewDelta.Normalize();
+	if(!(NewDelta.x == 0 && NewDelta.y == 0))
+		NewDelta = glm::normalize(NewDelta);
 
 	return NewDelta;
 }

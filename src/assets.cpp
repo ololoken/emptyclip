@@ -447,9 +447,9 @@ void _Assets::LoadParticleTable(const std::string &Filename) {
 		std::string ColorIdentifier = GetTSVText(InputFile);
 		std::string FontIdentifier = GetTSVText(InputFile);
 
-		InputFile 	>> Particle.Type >> Particle.Count >> Particle.Lifetime >> Particle.StartDirection.X >> Particle.StartDirection.Y >> Particle.TurnSpeed.X
-					>> Particle.TurnSpeed.Y >> Particle.VelocityScale.X >> Particle.VelocityScale.Y >> Particle.AccelerationScale
-					>> Particle.Size.X >> Particle.Size.Y >> Particle.ScaleAspect >> Particle.AlphaSpeed;
+		InputFile 	>> Particle.Type >> Particle.Count >> Particle.Lifetime >> Particle.StartDirection.x >> Particle.StartDirection.y >> Particle.TurnSpeed.x
+					>> Particle.TurnSpeed.y >> Particle.VelocityScale.x >> Particle.VelocityScale.y >> Particle.AccelerationScale
+					>> Particle.Size.x >> Particle.Size.y >> Particle.ScaleAspect >> Particle.AlphaSpeed;
 		InputFile.ignore(1024, '\n');
 
 		// Check for duplicates
@@ -1115,7 +1115,7 @@ void _Assets::LoadElements(const std::string &Filename) {
 		_Point Offset, Size;
 		_Alignment Alignment;
 		bool MaskOutside;
-		InputFile >> Offset.X >> Offset.Y >> Size.X >> Size.Y >> Alignment.Horizontal >> Alignment.Vertical >> MaskOutside;
+		InputFile >> Offset.x >> Offset.y >> Size.x >> Size.y >> Alignment.Horizontal >> Alignment.Vertical >> MaskOutside;
 		InputFile.ignore(1024, '\n');
 
 		// Look for parent
@@ -1176,7 +1176,7 @@ void _Assets::LoadLabels(const std::string &Filename) {
 
 		_Point Offset, Size;
 		_Alignment Alignment;
-		InputFile >> Offset.X >> Offset.Y >> Size.X >> Size.Y >> Alignment.Horizontal >> Alignment.Vertical;
+		InputFile >> Offset.x >> Offset.y >> Size.x >> Size.y >> Alignment.Horizontal >> Alignment.Vertical;
 		InputFile.ignore(1024, '\n');
 
 		// Look for parent
@@ -1237,7 +1237,7 @@ void _Assets::LoadImages(const std::string &Filename) {
 		_Point Offset, Size;
 		_Alignment Alignment;
 		int Stretch;
-		InputFile >> Offset.X >> Offset.Y >> Size.X >> Size.Y >> Alignment.Horizontal >> Alignment.Vertical >> Stretch;
+		InputFile >> Offset.x >> Offset.y >> Size.x >> Size.y >> Alignment.Horizontal >> Alignment.Vertical >> Stretch;
 		InputFile.ignore(1024, '\n');
 
 		// Look for parent
@@ -1294,7 +1294,7 @@ void _Assets::LoadButtons(const std::string &Filename) {
 
 		_Point Offset, Size;
 		_Alignment Alignment;
-		InputFile >> Offset.X >> Offset.Y >> Size.X >> Size.Y >> Alignment.Horizontal >> Alignment.Vertical;
+		InputFile >> Offset.x >> Offset.y >> Size.x >> Size.y >> Alignment.Horizontal >> Alignment.Vertical;
 		InputFile.ignore(1024, '\n');
 
 		// Look for parent
@@ -1350,7 +1350,7 @@ void _Assets::LoadTextBoxes(const std::string &Filename) {
 		_Point Offset, Size;
 		_Alignment Alignment;
 		int MaxLength;
-		InputFile >> Offset.X >> Offset.Y >> Size.X >> Size.Y >> Alignment.Horizontal >> Alignment.Vertical >> MaxLength;
+		InputFile >> Offset.x >> Offset.y >> Size.x >> Size.y >> Alignment.Horizontal >> Alignment.Vertical >> MaxLength;
 		InputFile.ignore(1024, '\n');
 
 		// Look for parent
@@ -1528,7 +1528,7 @@ int _Assets::GetValidSkill(int Level) {
 }
 
 // Creates a monster
-_Monster *_Assets::CreateMonster(const std::string &Identifier, const Vector2 &Position) {
+_Monster *_Assets::CreateMonster(const std::string &Identifier, const glm::vec2 &Position) {
 	_MonsterTemplate *MonsterTemplate;
 	AttackSampleTemplateStruct *AttackSample;
 
@@ -1544,14 +1544,14 @@ _Monster *_Assets::CreateMonster(const std::string &Identifier, const Vector2 &P
 }
 
 // Creates a misc item
-_MiscItem *_Assets::CreateMiscItem(const std::string &Identifier, int Count, const Vector2 &Position) {
+_MiscItem *_Assets::CreateMiscItem(const std::string &Identifier, int Count, const glm::vec2 &Position) {
 	_MiscItemTemplate *MiscItemTemplate = GetMiscItemTemplate(Identifier);
 
 	return new _MiscItem(Identifier, Count, Position, MiscItemTemplate, GetTexture(MiscItemTemplate->IconIdentifier));
 }
 
 // Creates ammo
-_Ammo *_Assets::CreateAmmoItem(const std::string &Identifier, int Count, const Vector2 &Position) {
+_Ammo *_Assets::CreateAmmoItem(const std::string &Identifier, int Count, const glm::vec2 &Position) {
 	_AmmoTemplate *AmmoTemplate = GetAmmoTemplate(Identifier);
 
 	return new _Ammo(Identifier, Count, Position, AmmoTemplate, GetTexture(AmmoTemplate->IconIdentifier));
@@ -1559,11 +1559,11 @@ _Ammo *_Assets::CreateAmmoItem(const std::string &Identifier, int Count, const V
 
 // Creates ammo from an ammo type
 _Ammo *_Assets::CreateAmmoItem(int Type) {
-	return CreateAmmoItem(AmmoTypeIdentifiers[Type], 1, ZERO_VECTOR);
+	return CreateAmmoItem(AmmoTypeIdentifiers[Type], 1, glm::vec2(0, 0));
 }
 
 // Creates a weapon
-_Weapon *_Assets::CreateWeapon(const std::string &Identifier, int Count, const Vector2 &Position, bool Generate) {
+_Weapon *_Assets::CreateWeapon(const std::string &Identifier, int Count, const glm::vec2 &Position, bool Generate) {
 	_WeaponTemplate *WeaponTemplate = GetWeaponTemplate(Identifier);
 	_Weapon *Weapon = new _Weapon(Identifier, Count, Position, WeaponTemplate, GetTexture(WeaponTemplate->IconIdentifier), Generate);
 
@@ -1571,14 +1571,14 @@ _Weapon *_Assets::CreateWeapon(const std::string &Identifier, int Count, const V
 }
 
 // Creates an upgrade item
-_Upgrade *_Assets::CreateUpgradeItem(const std::string &Identifier, int Count, const Vector2 &Position) {
+_Upgrade *_Assets::CreateUpgradeItem(const std::string &Identifier, int Count, const glm::vec2 &Position) {
 	_UpgradeTemplate *UpgradeTemplate = GetUpgradeTemplate(Identifier);
 
 	return new _Upgrade(Identifier, Count, Position, UpgradeTemplate, GetTexture(UpgradeTemplate->IconIdentifier));
 }
 
 // Creates armor
-_Armor *_Assets::CreateArmor(const std::string &Identifier, int Count, const Vector2 &Position) {
+_Armor *_Assets::CreateArmor(const std::string &Identifier, int Count, const glm::vec2 &Position) {
 	_ArmorTemplate *ArmorTemplate = GetArmorTemplate(Identifier);
 
 	return new _Armor(Identifier, Count, Position, ArmorTemplate, GetTexture(ArmorTemplate->IconIdentifier));

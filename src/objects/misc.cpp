@@ -19,7 +19,7 @@
 #include <objects/templates.h>
 
 // Constructor
-_MiscItem::_MiscItem(const std::string &Identifier, int Count, const Vector2 &Position, const _MiscItemTemplate *MiscItem, _Texture *Texture) {
+_MiscItem::_MiscItem(const std::string &Identifier, int Count, const glm::vec2 &Position, const _MiscItemTemplate *MiscItem, _Texture *Texture) {
 	this->Identifier = Identifier;
 	this->Count = Count;
 	this->Texture = Texture;

@@ -19,7 +19,7 @@
 #include <objects/templates.h>
 
 // Constructor
-_Upgrade::_Upgrade(const std::string &Identifier, int Count, const Vector2 &Position, const _UpgradeTemplate *Upgrade, _Texture *Texture) {
+_Upgrade::_Upgrade(const std::string &Identifier, int Count, const glm::vec2 &Position, const _UpgradeTemplate *Upgrade, _Texture *Texture) {
 	this->Type = _Object::UPGRADE;
 	this->Identifier = Identifier;
 	this->Count = Count;

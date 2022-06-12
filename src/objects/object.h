@@ -18,12 +18,12 @@
 #pragma once
 
 // Libraries
-#include <vector2.h>
 #include <coord.h>
 #include <color.h>
 #include <texture.h>
 #include <vector>
 #include <string>
+#include <glm/vec2.hpp>
 
 // Forward Declarations
 class _Buffer;
@@ -53,14 +53,15 @@ class _Object {
 		virtual void Update(double FrameTime) { }
 		virtual void Render(double BlendFactor) { }
 		virtual void Serialize(_Buffer &Buffer) { }
-		void FacePosition(const Vector2 &Cursor);
+		void FacePosition(const glm::vec2 &Cursor);
 
 		void SetName(const std::string &Name) { this->Name = Name; }
 		virtual const std::string &GetName() const { return Name; }
 
-		void SetPosition(const Vector2 &Position);
+		void SetPosition(const glm::vec2 &Position);
 		void SetDirection(float Direction) { this->Rotation = Direction; }
 		float GetDirection() const { return Rotation; }
+		glm::vec2 GetDirectionVector(float RotationOffset = 0.0f) const;
 
 		virtual std::string GetTypeAsString() const { return "Object"; }
 		void SetMap(_Map *Map) { this->Map = Map; }
@@ -79,9 +80,9 @@ class _Object {
 		int WallState;
 
 		// Graphics
-		Vector2 Position;
-		Vector2 LastPosition;
-		Vector2 Direction;
+		glm::vec2 Position;
+		glm::vec2 LastPosition;
+		glm::vec2 Direction;
 		_Color Color;
 		float Rotation;
 		float Scale;

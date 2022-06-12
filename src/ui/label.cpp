@@ -19,8 +19,8 @@
 #include <font.h>
 
 // Constructor
-_Label::_Label(const std::string &Identifier, _Element *Parent, const _Point &Offset, const _Point &Size, const _Alignment &Alignment, const _Font *Font, const _Color &Color, const std::string &Text)
-:	_Element(Identifier, Parent, Offset, Size, Alignment, nullptr, false) {
+_Label::_Label(const std::string &Identifier, _Element *Parent, const _Point &Offset, const _Point &Size, const _Alignment &Alignment, const _Font *Font, const _Color &Color, const std::string &Text) :
+	_Element(Identifier, Parent, Offset, Size, Alignment, nullptr, false) {
 
 	this->Font = Font;
 	this->Color = Color;
@@ -38,15 +38,15 @@ void _Label::Render() const {
 
 		// Center box
 		float LineHeight = Font->GetMaxHeight() + 2;
-		float Y = Bounds.Start.Y - (int)((LineHeight * Texts.size() - LineHeight) / 2);
+		float Y = Bounds.Start.y - (int)((LineHeight * Texts.size() - LineHeight) / 2);
 		for(size_t i = 0; i < Texts.size(); i++) {
-			Font->DrawText(Texts[i], Bounds.Start.X, Y, RenderColor, Alignment);
+			Font->DrawText(Texts[i], Bounds.Start.x, Y, RenderColor, Alignment);
 
 			Y += LineHeight;
 		}
 	}
 	else {
-		Font->DrawText(Text, Bounds.Start.X, Bounds.Start.Y, RenderColor, Alignment);
+		Font->DrawText(Text, Bounds.Start.x, Bounds.Start.y, RenderColor, Alignment);
 	}
 
 	_Element::Render();

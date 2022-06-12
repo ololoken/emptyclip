@@ -20,8 +20,8 @@
 #include <stdexcept>
 
 // Constructor
-_Texture::_Texture()
-:	Name(""),
+_Texture::_Texture() :
+	Name(""),
 	Group(0),
 	ID(0),
 	Width(0),

@@ -18,7 +18,7 @@
 #pragma once
 
 // Libraries
-#include <vector2.h>
+#include <glm/vec2.hpp>
 #include <coord.h>
 #include <color.h>
 #include <string>
@@ -123,14 +123,14 @@ class _Map {
 
 		bool SaveLevel(const std::string &String);
 		bool LoadMonsterSet(const std::string &String);
-		bool CheckCollisions(const Vector2 &TargetPosition, float Radius, Vector2 &NewPosition);
-		void CheckEntityCollisionsInGrid(const Vector2 &Position, float Radius, const _Object *SkipObject, std::list<_Entity *> &Entities) const;
-		_Object *CheckCollisionsInGrid(const Vector2 &Position, float Radius, int GridType, const _Object *SkipObject) const;
-		_Entity *CheckMeleeCollisions(_Entity *Attacker, const Vector2 &Direction, int GridType) const;
-		void CheckBulletCollisions(const Vector2 &Position, const Vector2 &Direction, _Entity **HitEntity, Vector2 *HitPosition, int GridType, bool CheckObjects) const;
-		float RayObjectIntersection(const Vector2 &Origin, const Vector2 &Direction, const _Object *Object) const;
-		bool IsVisible(const Vector2 &Start, const Vector2 &End) const;
-		bool IsVisibleWithBounds(const Vector2 &Start, const Vector2 &End, float BoundSize) const;
+		bool CheckCollisions(const glm::vec2 &TargetPosition, float Radius, glm::vec2 &NewPosition);
+		void CheckEntityCollisionsInGrid(const glm::vec2 &Position, float Radius, const _Object *SkipObject, std::list<_Entity *> &Entities) const;
+		_Object *CheckCollisionsInGrid(const glm::vec2 &Position, float Radius, int GridType, const _Object *SkipObject) const;
+		_Entity *CheckMeleeCollisions(_Entity *Attacker, const glm::vec2 &Direction, int GridType) const;
+		void CheckBulletCollisions(const glm::vec2 &Position, const glm::vec2 &Direction, _Entity **HitEntity, glm::vec2 *HitPosition, int GridType, bool CheckObjects) const;
+		float RayObjectIntersection(const glm::vec2 &Origin, const glm::vec2 &Direction, const _Object *Object) const;
+		bool IsVisible(const glm::vec2 &Start, const glm::vec2 &End) const;
+		bool IsVisibleWithBounds(const glm::vec2 &Start, const glm::vec2 &End, float BoundSize) const;
 		void AddObjectToGrid(_Object *Object, int Type);
 		void RemoveObjectFromGrid(_Object *Object, int Type);
 
@@ -146,7 +146,7 @@ class _Map {
 		void RenderFloors();
 		void RenderWalls();
 		void RenderForeground();
-		void RenderLights(const Vector2 &PlayerPosition);
+		void RenderLights(const glm::vec2 &PlayerPosition);
 		void RenderEvents(std::vector<_Texture *> &Textures);
 		void RenderGrid(int Mode);
 		void HighlightBlocks(int Layer);
@@ -155,8 +155,8 @@ class _Map {
 		void AddEvent(_Event *Event) { Events.push_back(Event); }
 		void AddObject(_ObjectSpawn *Object) { ObjectSpawns.push_back(Object); }
 		const std::vector<_ObjectSpawn *> &GetObjectsList() { return ObjectSpawns; }
-		void GetSelectedObject(const Vector2 &Position, float RadiusSquared, _ObjectSpawn **Object, size_t *Index);
-		void GetSelectedObjects(const Vector2 &Start, const Vector2 &End, std::list<_ObjectSpawn *> *SelectedObjects, std::list<std::size_t> *SelectedObjectIndices);
+		void GetSelectedObject(const glm::vec2 &Position, float RadiusSquared, _ObjectSpawn **Object, size_t *Index);
+		void GetSelectedObjects(const glm::vec2 &Start, const glm::vec2 &End, std::list<_ObjectSpawn *> *SelectedObjects, std::list<std::size_t> *SelectedObjectIndices);
 		int GetSelectedBlock(int Layer, const _Coord &Index, _Block **Block);
 		int GetSelectedBlock(int Layer, const _Coord &Index);
 		int GetSelectedEvent(const _Coord &Index, _Event **Event);
@@ -174,18 +174,18 @@ class _Map {
 		const std::string &GetFilename() const { return Filename; }
 		_Event *GetEvent(int Index) const;
 		std::list<_Event *> &GetEventList(const _Coord &Coord);
-		Vector2 GetStartingPositionByCheckpoint(int Level);
+		glm::vec2 GetStartingPositionByCheckpoint(int Level);
 		int GetTotalBlockSize() const;
 		int GetMapType() const { return MapType; }
 		int GetWidth() const { return Width; }
 		int GetHeight() const { return Height; }
-		int GetWallState(const Vector2 &Position, float Radius) const;
-		void GetAdjacentTile(const Vector2 &Position, float Direction, _Coord &Coord) const;
+		int GetWallState(const glm::vec2 &Position, float Radius) const;
+		void GetAdjacentTile(const glm::vec2 &Position, float Direction, _Coord &Coord) const;
 		_Coord GetValidCoord(const _Coord &Coord) const;
 		bool CanShootThrough(int IndexX, int IndexY) const;
-		void GetTileBounds(const Vector2 &Position, float Radius, _TileBounds &TileBounds) const;
+		void GetTileBounds(const glm::vec2 &Position, float Radius, _TileBounds &TileBounds) const;
 		const _Block *GetBlock(int Layer, const size_t Index) const;
-		Vector2 GetValidPosition(const Vector2 &Position) const;
+		glm::vec2 GetValidPosition(const glm::vec2 &Position) const;
 
 		void RenderObjects(double BlendFactor);
 		void AddItem(_Item *Item);
@@ -198,7 +198,7 @@ class _Map {
 
 	private:
 
-		bool CheckTileCollision(const Vector2 &Position, float Radius, float X, float Y, bool Resolve, Vector2 &Push, bool &DiagonalPush);
+		bool CheckTileCollision(const glm::vec2 &Position, float Radius, float X, float Y, bool Resolve, glm::vec2 &Push, bool &DiagonalPush);
 
 		// Map
 		int MapType;
@@ -233,8 +233,8 @@ class _Map {
 // Returns a coordinate inside the map
 inline _Coord _Map::GetValidCoord(const _Coord &Coord) const {
 	return _Coord(
-		std::max(0, std::min(Coord.X, Width-1)),
-		std::max(0, std::min(Coord.Y, Height-1))
+		std::max(0, std::min(Coord.x, Width-1)),
+		std::max(0, std::min(Coord.y, Height-1))
 	);
 }
 
@@ -247,7 +247,7 @@ inline bool _Map::CanShootThrough(int IndexX, int IndexY) const {
 }
 
 // Returns a bounding rectangle
-inline void _Map::GetTileBounds(const Vector2 &Position, float Radius, _TileBounds &TileBounds) const {
+inline void _Map::GetTileBounds(const glm::vec2 &Position, float Radius, _TileBounds &TileBounds) const {
 
 	// Get tile indices where the bounding rectangle touches
 	TileBounds.Start = GetValidCoord(Position - Radius);

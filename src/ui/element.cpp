@@ -126,13 +126,13 @@ void _Element::CalculateBounds() {
 	switch(Alignment.Horizontal) {
 		case _Alignment::CENTER:
 			if(Parent)
-				Bounds.Start.X += Parent->GetSize().X / 2;
-			Bounds.Start.X -= Size.X / 2;
+				Bounds.Start.x += Parent->GetSize().x / 2;
+			Bounds.Start.x -= Size.x / 2;
 		break;
 		case _Alignment::RIGHT:
 			if(Parent)
-				Bounds.Start.X += Parent->GetSize().X;
-			Bounds.Start.X -= Size.X;
+				Bounds.Start.x += Parent->GetSize().x;
+			Bounds.Start.x -= Size.x;
 		break;
 	}
 
@@ -140,13 +140,13 @@ void _Element::CalculateBounds() {
 	switch(Alignment.Vertical) {
 		case _Alignment::MIDDLE:
 			if(Parent)
-				Bounds.Start.Y += Parent->GetSize().Y / 2;
-			Bounds.Start.Y -= Size.Y / 2;
+				Bounds.Start.y += Parent->GetSize().y / 2;
+			Bounds.Start.y -= Size.y / 2;
 		break;
 		case _Alignment::BOTTOM:
 			if(Parent)
-				Bounds.Start.Y += Parent->GetSize().Y;
-			Bounds.Start.Y -= Size.Y;
+				Bounds.Start.y += Parent->GetSize().y;
+			Bounds.Start.y -= Size.y;
 		break;
 	}
 
@@ -202,7 +202,7 @@ void _Element::Render() const {
 		Graphics.DisableStencilTest();
 
 	if(Debug && Debug-1 < DebugColorCount) {
-		Graphics.DrawRectangle(Bounds.Start.X, Bounds.Start.Y, Bounds.End.X, Bounds.End.Y, DebugColors[1]);
+		Graphics.DrawRectangle(Bounds.Start.x, Bounds.Start.y, Bounds.End.x, Bounds.End.y, DebugColors[1]);
 	}
 }
 

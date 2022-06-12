@@ -20,10 +20,11 @@
 #include <constants.h>
 #include <opengl.h>
 #include <ui/ui.h>
+#include <glm/gtx/norm.hpp>
 
 // Initialize
-_Camera::_Camera(const Vector2 &Position, float Distance, float UpdateDivisor)
-:	LastPosition(Position),
+_Camera::_Camera(const glm::vec2 &Position, float Distance, float UpdateDivisor) :
+	LastPosition(Position),
 	Position(Position),
 	TargetPosition(Position),
 	LastDistance(Distance),
@@ -50,7 +51,7 @@ void _Camera::CalculateFrustum(float AspectRatio) {
 
 // Set up 3d projection matrix
 void _Camera::Set3DProjection(double BlendFactor) const {
-	Vector2 DrawPosition(Position * BlendFactor + LastPosition * (1.0f - BlendFactor));
+	glm::vec2 DrawPosition(Position * (float)BlendFactor + LastPosition * (float)(1.0f - BlendFactor));
 	float DrawDistance = Distance * BlendFactor + LastDistance * (1.0f - BlendFactor);
 
 	// Set projection matrix and frustum
@@ -60,19 +61,19 @@ void _Camera::Set3DProjection(double BlendFactor) const {
 
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
-	glTranslatef(-DrawPosition.X, -DrawPosition.Y, -DrawDistance);
+	glTranslatef(-DrawPosition.x, -DrawPosition.y, -DrawDistance);
 }
 
 // Converts screen space to world space
-void _Camera::ConvertScreenToWorld(const _Point &Point, Vector2 &WorldPosition) {
-	WorldPosition.X = (Point.X / (float)(Graphics.GetViewportWidth()) - 0.5f) * Distance * Graphics.GetAspectRatio() * 2 + Position.X;
-	WorldPosition.Y = (Point.Y / (float)(Graphics.GetViewportHeight()) - 0.5f) * Distance * 2 + Position.Y;
+void _Camera::ConvertScreenToWorld(const _Point &Point, glm::vec2 &WorldPosition) {
+	WorldPosition.x = (Point.x / (float)(Graphics.GetViewportWidth()) - 0.5f) * Distance * Graphics.GetAspectRatio() * 2 + Position.x;
+	WorldPosition.y = (Point.y / (float)(Graphics.GetViewportHeight()) - 0.5f) * Distance * 2 + Position.y;
 }
 
 // Converts world space to screen space
-void _Camera::ConvertWorldToScreen(const Vector2 &WorldPosition, _Point &Point) {
-	Point.X = Graphics.GetViewportWidth() * (0.5f + ((WorldPosition.X - Position.X) / (Distance * Graphics.GetAspectRatio() * 2)));
-	Point.Y = Graphics.GetViewportHeight() * (0.5f + ((WorldPosition.Y - Position.Y) / (Distance * 2)));
+void _Camera::ConvertWorldToScreen(const glm::vec2 &WorldPosition, _Point &Point) {
+	Point.x = Graphics.GetViewportWidth() * (0.5f + ((WorldPosition.x - Position.x) / (Distance * Graphics.GetAspectRatio() * 2)));
+	Point.y = Graphics.GetViewportHeight() * (0.5f + ((WorldPosition.y - Position.y) / (Distance * 2)));
 }
 
 // Update camera
@@ -80,11 +81,11 @@ void _Camera::Update(double FrameTime) {
 	LastPosition = Position;
 	LastDistance = Distance;
 
-	Vector2 Delta(TargetPosition - Position);
-	if(std::abs(Delta.X) > 0.01f)
-		Position.X += Delta.X / UpdateDivisor;
-	if(std::abs(Delta.Y) > 0.01f)
-		Position.Y += Delta.Y / UpdateDivisor;
+	glm::vec2 Delta(TargetPosition - Position);
+	if(std::abs(Delta.x) > 0.01f)
+		Position.x += Delta.x / UpdateDivisor;
+	if(std::abs(Delta.y) > 0.01f)
+		Position.y += Delta.y / UpdateDivisor;
 
 	float DeltaZ = TargetDistance - Distance;
 	if(std::abs(DeltaZ) > 0.01f)
@@ -94,28 +95,28 @@ void _Camera::Update(double FrameTime) {
 	float Height = Distance;
 
 	// Get AABB at z=0
-	AABB[0] = -Width + Position.X;
-	AABB[1] = -Height + Position.Y;
-	AABB[2] = Width + Position.X;
-	AABB[3] = Height + Position.Y;
+	AABB[0] = -Width + Position.x;
+	AABB[1] = -Height + Position.y;
+	AABB[2] = Width + Position.x;
+	AABB[3] = Height + Position.y;
 }
 
 // Determines whether a circle is in view
-bool _Camera::IsCircleInView(const Vector2 &Center, float Radius) const {
+bool _Camera::IsCircleInView(const glm::vec2 &Center, float Radius) const {
 
 	// Get closest point on AABB
-	Vector2 Point(Center);
-	if(Point.X < AABB[0])
-		Point.X = AABB[0];
-	if(Point.Y < AABB[1])
-		Point.Y = AABB[1];
-	if(Point.X > AABB[2])
-		Point.X = AABB[2];
-	if(Point.Y > AABB[3])
-		Point.Y = AABB[3];
+	glm::vec2 Point(Center);
+	if(Point.x < AABB[0])
+		Point.x = AABB[0];
+	if(Point.y < AABB[1])
+		Point.y = AABB[1];
+	if(Point.x > AABB[2])
+		Point.x = AABB[2];
+	if(Point.y > AABB[3])
+		Point.y = AABB[3];
 
 	// Test circle collision with point
-	float DistanceSquared = (Point - Center).MagnitudeSquared();
+	float DistanceSquared = glm::distance2(Point, Center);
 	bool Hit = DistanceSquared < Radius * Radius;
 
 	return Hit;

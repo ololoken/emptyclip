@@ -18,12 +18,12 @@
 #pragma once
 
 // Libraries
-#include <vector2.h>
+#include <glm/vec2.hpp>
 #include <fstream>
 #include <string>
 
 std::string GetCSVText(std::ifstream &Stream);
 std::string GetTSVText(std::ifstream &Stream, bool *EndOfLine=0);
-Vector2 GenerateRandomPointInCircle(float Radius);
+glm::vec2 GenerateRandomPointInCircle(float Radius);
 
 void WriteChunk(std::ofstream &File, int Type, const char *Data, size_t Size);

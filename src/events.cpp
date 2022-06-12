@@ -18,8 +18,8 @@
 #include <events.h>
 
 // Constructor
-_Event::_Event(int Type, int Active, const _Coord &Start, const _Coord &End, int Level, double ActivationPeriod, const std::string &ItemIdentifier, const std::string &MonsterIdentifier, const std::string &ParticleIdentifier)
-:	Type(Type),
+_Event::_Event(int Type, int Active, const _Coord &Start, const _Coord &End, int Level, double ActivationPeriod, const std::string &ItemIdentifier, const std::string &MonsterIdentifier, const std::string &ParticleIdentifier) :
+	Type(Type),
 	Active(Active),
 	Level(Level),
 	Start(Start),
@@ -68,7 +68,7 @@ std::vector<_EventTile>::iterator _Event::FindTile(int X, int Y) {
 
 	// Search for the tile
 	for(auto Iterator = Tiles.begin(); Iterator != Tiles.end(); ++Iterator) {
-		if(Iterator->Coord.X == X && Iterator->Coord.Y == Y)
+		if(Iterator->Coord.x == X && Iterator->Coord.y == Y)
 			return Iterator;
 	}
 

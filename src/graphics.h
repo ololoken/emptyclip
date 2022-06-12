@@ -18,7 +18,7 @@
 #pragma once
 
 // Libraries
-#include <vector2.h>
+#include <glm/vec2.hpp>
 #include <color.h>
 #include <SDL_video.h>
 #include <SDL_opengl.h>
@@ -67,7 +67,7 @@ class _Graphics {
 		void DrawRectangle(float StartX, float StartY, float EndX, float EndY, const _Color &Color, bool Filled=false);
 		void DrawLine(float StartX, float StartY, float EndX, float EndY, const _Color &Color, float Z=0.0f);
 		void DrawCircle(float X, float Y, float Z, float Radius, const _Color &Color);
-		void DrawLight(const Vector2 &Position, const _Texture *Texture, const _Color &Color, float Scale=1.0f);
+		void DrawLight(const glm::vec2 &Position, const _Texture *Texture, const _Color &Color, float Scale=1.0f);
 
 		int GetScreenWidth() const { return ScreenWidth; }
 		int GetScreenHeight() const { return ScreenHeight; }

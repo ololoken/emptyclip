@@ -35,6 +35,8 @@
 #include <fstream>
 #include <iostream>
 #include <stdexcept>
+#include <glm/geometric.hpp>
+#include <glm/trigonometric.hpp>
 
 enum SaveChunkTypes {
 	CHUNK_SAVEVERSION,
@@ -67,7 +69,7 @@ _Player::_Player(const std::string &SavePath) {
 	DyingAnimation = PLAYER_ANIMATIONDYING;
 
 	// Weapon offsets
-	WeaponParticleOffset[0] = ZERO_VECTOR;
+	WeaponParticleOffset[0] = glm::vec2(0, 0);
 	WeaponParticleOffset[1] = PLAYER_PISTOLOFFSET;
 	for(int i = 2; i < WEAPON_TYPES; i++)
 		WeaponParticleOffset[i] = PLAYER_WEAPONOFFSET;
@@ -316,22 +318,22 @@ void _Player::LoadItems(_Buffer &Buffer) {
 		switch(Type) {
 			case _Object::MISCITEM:
 				Identifier = Buffer.ReadString();
-				Inventory[Slot] = Assets.CreateMiscItem(Identifier, Count, ZERO_VECTOR);
+				Inventory[Slot] = Assets.CreateMiscItem(Identifier, Count, glm::vec2(0, 0));
 			break;
 			case _Object::AMMO:
 				Identifier = Buffer.ReadString();
-				Inventory[Slot] = Assets.CreateAmmoItem(Identifier, Count, ZERO_VECTOR);
+				Inventory[Slot] = Assets.CreateAmmoItem(Identifier, Count, glm::vec2(0, 0));
 			break;
 			case _Object::UPGRADE:
 				Identifier = Buffer.ReadString();
-				Inventory[Slot] = Assets.CreateUpgradeItem(Identifier, Count, ZERO_VECTOR);
+				Inventory[Slot] = Assets.CreateUpgradeItem(Identifier, Count, glm::vec2(0, 0));
 			break;
 			case _Object::WEAPON:
 				LoadWeapon(Buffer, Count, Slot);
 			break;
 			case _Object::ARMOR:
 				Identifier = Buffer.ReadString();
-				Inventory[Slot] = Assets.CreateArmor(Identifier, Count, ZERO_VECTOR);
+				Inventory[Slot] = Assets.CreateArmor(Identifier, Count, glm::vec2(0, 0));
 			break;
 		}
 	}
@@ -346,7 +348,7 @@ void _Player::LoadWeapon(_Buffer &Buffer, int Count, int InventoryIndex) {
 	int MaxComponents = Buffer.Read<int>();
 
 	// Create weapon
-	_Weapon *Weapon = Assets.CreateWeapon(Identifier, Count, ZERO_VECTOR, false);
+	_Weapon *Weapon = Assets.CreateWeapon(Identifier, Count, glm::vec2(0, 0), false);
 	Weapon->SetMaxComponents(MaxComponents);
 	LoadUpgrades(Buffer, Weapon);
 	Weapon->RecalculateStats();
@@ -364,7 +366,7 @@ void _Player::LoadUpgrades(_Buffer &Buffer, _Weapon *Weapon) {
 	// Read data
 	for(int i = 0; i < Components; i++) {
 		std::string Identifier = Buffer.ReadString();
-		_Upgrade *Upgrade = Assets.CreateUpgradeItem(Identifier, 1, ZERO_VECTOR);
+		_Upgrade *Upgrade = Assets.CreateUpgradeItem(Identifier, 1, glm::vec2(0, 0));
 		if(!Weapon->AddComponent(Upgrade))
 			delete Upgrade;
 	}
@@ -541,20 +543,20 @@ void _Player::AdjustLegDirection(float Destination) {
 
 // Draws the player
 void _Player::Render(double BlendFactor) {
-	Vector2 DrawPosition(Position * BlendFactor + LastPosition * (1.0 - BlendFactor));
+	glm::vec2 DrawPosition(Position * (float)BlendFactor + LastPosition * (float)(1.0 - BlendFactor));
 
-	Graphics.DrawTexture(DrawPosition.X, DrawPosition.Y, PositionZ, LegAnimation->GetCurrentFrame(), Color, LegDirection, Scale, Scale);
-	Graphics.DrawTexture(DrawPosition.X, DrawPosition.Y, PositionZ + 0.01f, Animation->GetCurrentFrame(), COLOR_WHITE, Rotation, Scale, Scale);
+	Graphics.DrawTexture(DrawPosition.x, DrawPosition.y, PositionZ, LegAnimation->GetCurrentFrame(), Color, LegDirection, Scale, Scale);
+	Graphics.DrawTexture(DrawPosition.x, DrawPosition.y, PositionZ + 0.01f, Animation->GetCurrentFrame(), COLOR_WHITE, Rotation, Scale, Scale);
 
 	//Graphics.EnableVBO(VBO_CIRCLE);
-	//Graphics.DrawCircle(DrawPosition.X, DrawPosition.Y, 0, Radius, COLOR_WHITE);
+	//Graphics.DrawCircle(DrawPosition.x, DrawPosition.y, 0, Radius, COLOR_WHITE);
 	//Graphics.DisableVBO(VBO_CIRCLE);
 }
 
 // Draws the player in screen space
 void _Player::Render2D(const _Point &Position) {
-	Graphics.DrawTexture(Position.X, Position.Y, 0, LegAnimation->GetCurrentFrame(), Color, Rotation, LegAnimation->GetCurrentFrame()->GetWidth(), LegAnimation->GetCurrentFrame()->GetHeight());
-	Graphics.DrawTexture(Position.X, Position.Y, 0 + 0.01f, Animation->GetCurrentFrame(), COLOR_WHITE, Rotation, Animation->GetCurrentFrame()->GetWidth(), Animation->GetCurrentFrame()->GetHeight());
+	Graphics.DrawTexture(Position.x, Position.y, 0, LegAnimation->GetCurrentFrame(), Color, Rotation, LegAnimation->GetCurrentFrame()->GetWidth(), LegAnimation->GetCurrentFrame()->GetHeight());
+	Graphics.DrawTexture(Position.x, Position.y, 0 + 0.01f, Animation->GetCurrentFrame(), COLOR_WHITE, Rotation, Animation->GetCurrentFrame()->GetWidth(), Animation->GetCurrentFrame()->GetHeight());
 }
 
 // Updates the player's experience, leveling up if needed
@@ -857,7 +859,7 @@ bool _Player::AddComponent(int FromIndex, int ToIndex) {
 }
 
 // Calculates the radius of the crosshair
-float _Player::GetCrosshairRadius(const Vector2 &Cursor) {
+float _Player::GetCrosshairRadius(const glm::vec2 &Cursor) {
 	float Distance, Accuracy;
 
 	// Check bounds
@@ -868,9 +870,9 @@ float _Player::GetCrosshairRadius(const Vector2 &Cursor) {
 		Accuracy = PLAYER_MAXACCURACY;
 
 	// Get distance to cursor
-	Distance = (Cursor - Position).Magnitude();
+	Distance = glm::length(Cursor - Position);
 
-	return tan((Accuracy * 0.5f) / DEGREES_IN_RADIAN) * Distance;
+	return tan(glm::radians(Accuracy * 0.5f)) * Distance;
 }
 
 // Determines what type of ammo is required by the weapon the player is using

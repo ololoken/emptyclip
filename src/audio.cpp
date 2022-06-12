@@ -20,6 +20,7 @@
 #include <vector>
 #include <stdexcept>
 #include <constants.h>
+#include <glm/gtx/norm.hpp>
 
 // Globals
 _Audio Audio;
@@ -49,7 +50,7 @@ void _Audio::Init(bool Enabled) {
 	alGetError();
 
 	// Set orientation
-	SetDirection(Vector2(0, -1));
+	SetDirection(glm::vec2(0, -1));
 }
 
 // Closes the audio system
@@ -174,7 +175,7 @@ void _Audio::FreeAllBuffers() {
 }
 
 // Play an audio source and add it to the audio manager
-void _Audio::Play(_AudioSource *AudioSource, const Vector2 &Position) {
+void _Audio::Play(_AudioSource *AudioSource, const glm::vec2 &Position) {
 	if(!Enabled) {
 		delete AudioSource;
 		return;
@@ -185,7 +186,7 @@ void _Audio::Play(_AudioSource *AudioSource, const Vector2 &Position) {
 		return;
 	}
 
-	float DistanceSquared = (Position - GetListenerPosition()).MagnitudeSquared();
+	float DistanceSquared = glm::distance2(Position, GetListenerPosition());
 	if(AudioSource->IsRelative() || DistanceSquared <= MAX_AUDIO_DISTANCE_SQUARED) {
 		SourcesPlaying[AudioSource->GetAudioBuffer()->ID].Count++;
 
@@ -224,7 +225,7 @@ void _Audio::Update(double FrameTime) {
 		}
 		else if(!Source->IsRelative()) {
 
-			float DistanceSquared = (Source->GetPosition() - GetListenerPosition()).MagnitudeSquared();
+			float DistanceSquared = glm::distance2(Source->GetPosition(), GetListenerPosition());
 			if(DistanceSquared > MAX_AUDIO_DISTANCE_SQUARED)
 				NeedsDelete = true;
 		}
@@ -247,27 +248,27 @@ void _Audio::Update(double FrameTime) {
 }
 
 // Set position of listener
-void _Audio::SetPosition(const Vector2 &Position) {
+void _Audio::SetPosition(const glm::vec2 &Position) {
 	if(!Enabled)
 		return;
 
-	alListener3f(AL_POSITION, Position.X, 10, Position.Y);
+	alListener3f(AL_POSITION, Position.x, 10, Position.y);
 }
 
 // Get listener position
-Vector2 _Audio::GetListenerPosition() {
+glm::vec2 _Audio::GetListenerPosition() {
 	float Position[3];
 	alGetListener3f(AL_POSITION, &Position[0], &Position[1], &Position[2]);
 
-	return Vector2(Position[0], Position[2]);
+	return glm::vec2(Position[0], Position[2]);
 }
 
 // Sets the listener direction
-void _Audio::SetDirection(const Vector2 &Direction) {
+void _Audio::SetDirection(const glm::vec2 &Direction) {
 	if(!Enabled)
 		return;
 
-	float Orientation[6] = { Direction.X, 0, Direction.Y, 0.0f, 1.0f, 0.0f };
+	float Orientation[6] = { Direction.x, 0, Direction.y, 0.0f, 1.0f, 0.0f };
 	alListenerfv(AL_ORIENTATION, Orientation);
 }
 
@@ -372,19 +373,19 @@ void _AudioSource::SetGain(float Value) {
 }
 
 // Set position
-void _AudioSource::SetPosition(const Vector2 &Position) {
+void _AudioSource::SetPosition(const glm::vec2 &Position) {
 	if(Loaded) {
-		alSource3f(ID, AL_POSITION, Position.X, 0, Position.Y);
+		alSource3f(ID, AL_POSITION, Position.x, 0, Position.y);
 	}
 }
 
 // Get source position
-Vector2 _AudioSource::GetPosition() {
+glm::vec2 _AudioSource::GetPosition() {
 	if(!Loaded)
-		return ZERO_VECTOR;
+		return glm::vec2(0, 0);
 
 	float Position[3];
 	alGetSource3f(ID, AL_POSITION, &Position[0], &Position[1], &Position[2]);
 
-	return Vector2(Position[0], Position[2]);
+	return glm::vec2(Position[0], Position[2]);
 }

@@ -19,7 +19,7 @@
 
 // Libraries
 #include <state.h>
-#include <vector2.h>
+#include <glm/vec2.hpp>
 #include <map.h>
 #include <string>
 #include <vector>
@@ -158,7 +158,7 @@ class _EditorState : public _State {
 
 		void AddEvent(int Type);
 		void UpdateEventIdentifier(int Type, const std::string &Identifier);
-		void SpawnObject(const Vector2 &Position, int Type, const std::string &Identifier, bool Align);
+		void SpawnObject(const glm::vec2 &Position, int Type, const std::string &Identifier, bool Align);
 		void SelectObject();
 		void SelectObjects();
 		void DeselectBlock() { SelectedBlockIndex = -1, SelectedBlock = nullptr; }
@@ -172,11 +172,11 @@ class _EditorState : public _State {
 		void SetEventProperties(double ActivationPeriod, int Level, int Active, const std::string &ParticleIdentifier);
 		int StateToType(int State);
 		std::string GetEventIdentifier(int Type);
-		Vector2 GetValidObjectPosition(const Vector2 &Position) const;
+		glm::vec2 GetValidObjectPosition(const glm::vec2 &Position) const;
 		bool ObjectInSelectedList(_ObjectSpawn *Object);
-		Vector2 AlignToGrid(const Vector2 &Position) const;
+		glm::vec2 AlignToGrid(const glm::vec2 &Position) const;
 
-		Vector2 GetMoveDeltaPosition(const Vector2 &Position);
+		glm::vec2 GetMoveDeltaPosition(const glm::vec2 &Position);
 
 		void ExecuteWalkable();
 		void ExecuteRotate();
@@ -205,7 +205,7 @@ class _EditorState : public _State {
 		void ExecuteUpdateBlockLimits(int Direction, bool Expand);
 
 		// Parameters
-		Vector2 SavedCameraPosition;
+		glm::vec2 SavedCameraPosition;
 		int CheckpointIndex;
 		int SavedCheckpointIndex;
 		std::string MapFilename;
@@ -215,7 +215,7 @@ class _EditorState : public _State {
 		// Map editing
 		_Camera *Camera;
 		_Map *Map;
-		Vector2 WorldCursor;
+		glm::vec2 WorldCursor;
 		_Coord WorldCursorIndex;
 		int GridMode;
 		int UndoNumber[MAPLAYER_COUNT];
@@ -276,9 +276,9 @@ class _EditorState : public _State {
 		std::list<_ObjectSpawn *> SelectedObjects;
 		std::list<_ObjectSpawn *> ClipboardObjects;
 		std::list<size_t> SelectedObjectIndices;
-		Vector2 ClickedPosition;
-		Vector2 CopiedPosition;
-		Vector2 MoveDelta;
+		glm::vec2 ClickedPosition;
+		glm::vec2 CopiedPosition;
+		glm::vec2 MoveDelta;
 };
 
 extern _EditorState EditorState;
