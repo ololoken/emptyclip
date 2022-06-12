@@ -288,9 +288,9 @@ void _HUD::Render() {
 	// Draw stamina
 	Images[IMAGE_PLAYERSTAMINA]->SetWidth(Elements[ELEMENT_PLAYERSTAMINA]->GetSize().x * Player->GetStaminaPercentage());
 	if(Player->Tired)
-		Images[IMAGE_PLAYERSTAMINA]->Color = _Color(1.0f, 0.5f, 0.0f);
+		Images[IMAGE_PLAYERSTAMINA]->Color = glm::vec4(1.0f, 0.5f, 0.0f, 1.0f);
 	else
-		Images[IMAGE_PLAYERSTAMINA]->Color = _Color(1.0f, 1.0f, 1.0f);
+		Images[IMAGE_PLAYERSTAMINA]->Color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 
 	if(Player->GetStaminaPercentage() < 1.0f)
 		Elements[ELEMENT_PLAYERSTAMINA]->Render();
@@ -532,7 +532,7 @@ void _HUD::RenderItemInfo(_Item *Item, int DrawX, int DrawY) {
 		DrawX = Graphics.CurrentSize.x - MinPadding - Width;
 	if(DrawY > Graphics.CurrentSize.y - MinPadding - Height)
 		DrawY = Graphics.CurrentSize.y - MinPadding - Height;
-	Graphics.DrawRectangle(glm::vec2(DrawX, DrawY), glm::vec2(DrawX + Width, DrawY + Height), _Color(0, 0, 0, 0.8f), true);
+	Graphics.DrawRectangle(glm::vec2(DrawX, DrawY), glm::vec2(DrawX + Width, DrawY + Height), glm::vec4(0, 0, 0, 0.8f), true);
 
 	DrawY += 25;
 	DrawX += Width/2;
@@ -546,7 +546,7 @@ void _HUD::RenderItemInfo(_Item *Item, int DrawX, int DrawY) {
 		case _Object::WEAPON: {
 			std::ostringstream Buffer;
 			_Weapon *Weapon = (_Weapon *)Item;
-			_Color TextColor;
+			glm::vec4 TextColor;
 
 			// Damage
 			TextColor = COLOR_WHITE;
@@ -718,7 +718,7 @@ void _HUD::RenderItemInfo(_Item *Item, int DrawX, int DrawY) {
 		case _Object::ARMOR: {
 			_Armor *Armor = (_Armor *)Item;
 			std::ostringstream Buffer;
-			_Color TextColor;
+			glm::vec4 TextColor;
 
 			DrawX += 40;
 

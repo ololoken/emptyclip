@@ -239,7 +239,7 @@ void _Font::CreateFontTexture(std::string SortedCharacters, int TextureWidth) {
 }
 
 // Draws a string
-void _Font::DrawText(const std::string &Text, float X, float Y, const _Color &Color, const _Alignment &Alignment, float Scale) const {
+void _Font::DrawText(const std::string &Text, float X, float Y, const glm::vec4 &Color, const _Alignment &Alignment, float Scale) const {
 	Graphics.SetTextureEnabled(true);
 	Graphics.SetColor(Color);
 	Graphics.SetTextureID(Texture->GetID());

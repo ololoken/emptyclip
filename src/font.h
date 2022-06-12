@@ -51,7 +51,7 @@ class _Font {
 		_Font(const std::string &FontFile, int FontSize=12, int TextureWidth=256);
 		~_Font();
 
-		void DrawText(const std::string &Text, float X, float Y, const _Color &Color=COLOR_WHITE, const _Alignment &Alignment=LEFT_BASELINE, float Scale=1.0f) const;
+		void DrawText(const std::string &Text, float X, float Y, const glm::vec4 &Color=COLOR_WHITE, const _Alignment &Alignment=LEFT_BASELINE, float Scale=1.0f) const;
 		void DrawFont(float X, float Y);
 		void GetStringDimensions(const std::string &Text, _TextBounds &TestBounds) const;
 		void BreakupString(const std::string &Text, float Width, std::vector<std::string> &Strings) const;

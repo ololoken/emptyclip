@@ -17,43 +17,15 @@
 *******************************************************************************/
 #pragma once
 
-struct _Color {
+#include <glm/vec4.hpp>
 
-	_Color() { }
-	_Color(float Red, float Green, float Blue) :
-		Red(Red),
-		Green(Green),
-		Blue(Blue),
-		Alpha(1.0f) { }
-
-	_Color(float Red, float Green, float Blue, float Alpha) :
-		Red(Red),
-		Green(Green),
-		Blue(Blue),
-		Alpha(Alpha) { }
-
-	_Color operator+(const _Color &Color) const {
-		return _Color(Red + Color.Red, Green + Color.Green, Blue + Color.Blue, Alpha + Color.Alpha);
-	}
-
-	_Color operator*(const float &Value) const {
-		return _Color(Red * Value, Green * Value, Blue * Value, Alpha * Value);
-	}
-
-	bool operator!=(const _Color &Color) const {
-		return !(Red == Color.Red && Green == Color.Green && Blue == Color.Blue && Alpha == Color.Alpha);
-	}
-
-	float Red, Green, Blue, Alpha;
-};
-
-const _Color COLOR_WHITE    = _Color(1.0f, 1.0f, 1.0f, 1.0f);
-const _Color COLOR_TWHITE   = _Color(1.0f, 1.0f, 1.0f, 0.5f);
-const _Color COLOR_DARK     = _Color(0.3f, 0.3f, 0.3f, 1.0f);
-const _Color COLOR_TGRAY    = _Color(1.0f, 1.0f, 1.0f, 0.2f);
-const _Color COLOR_RED      = _Color(1.0f, 0.0f, 0.0f, 1.0f);
-const _Color COLOR_GREEN    = _Color(0.0f, 1.0f, 0.0f, 1.0f);
-const _Color COLOR_BLUE     = _Color(0.0f, 0.0f, 1.0f, 1.0f);
-const _Color COLOR_YELLOW   = _Color(1.0f, 1.0f, 0.0f, 1.0f);
-const _Color COLOR_MAGENTA  = _Color(1.0f, 0.0f, 1.0f, 1.0f);
-const _Color COLOR_CYAN     = _Color(0.0f, 1.0f, 1.0f, 1.0f);
+const glm::vec4 COLOR_WHITE    = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+const glm::vec4 COLOR_TWHITE   = glm::vec4(1.0f, 1.0f, 1.0f, 0.5f);
+const glm::vec4 COLOR_DARK     = glm::vec4(0.3f, 0.3f, 0.3f, 1.0f);
+const glm::vec4 COLOR_TGRAY    = glm::vec4(1.0f, 1.0f, 1.0f, 0.2f);
+const glm::vec4 COLOR_RED      = glm::vec4(1.0f, 0.0f, 0.0f, 1.0f);
+const glm::vec4 COLOR_GREEN    = glm::vec4(0.0f, 1.0f, 0.0f, 1.0f);
+const glm::vec4 COLOR_BLUE     = glm::vec4(0.0f, 0.0f, 1.0f, 1.0f);
+const glm::vec4 COLOR_YELLOW   = glm::vec4(1.0f, 1.0f, 0.0f, 1.0f);
+const glm::vec4 COLOR_MAGENTA  = glm::vec4(1.0f, 0.0f, 1.0f, 1.0f);
+const glm::vec4 COLOR_CYAN     = glm::vec4(0.0f, 1.0f, 1.0f, 1.0f);

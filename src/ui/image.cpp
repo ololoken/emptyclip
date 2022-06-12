@@ -20,7 +20,7 @@
 #include <graphics.h>
 
 // Constructor
-_Image::_Image(const std::string &Identifier, _Element *Parent, const glm::ivec2 &Offset, const glm::ivec2 &Size, const _Alignment &Alignment, const _Texture *Texture, const _Color &Color, bool Stretch) :
+_Image::_Image(const std::string &Identifier, _Element *Parent, const glm::ivec2 &Offset, const glm::ivec2 &Size, const _Alignment &Alignment, const _Texture *Texture, const glm::vec4 &Color, bool Stretch) :
 	_Element(Identifier, Parent, Offset, Size, Alignment, nullptr, false) {
 
 	this->Texture = Texture;

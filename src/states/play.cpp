@@ -446,7 +446,7 @@ void _PlayState::Render(double BlendFactor) {
 
 		// Draw melee hit range
 		for(int i = 0; i < WEAPONATTACK_COUNT; i++) {
-			_Color Color = COLOR_WHITE;
+			glm::vec4 Color = COLOR_WHITE;
 			if(i == 1)
 				Color = COLOR_GREEN;
 
@@ -502,7 +502,7 @@ void _PlayState::Render(double BlendFactor) {
 	HUD->Render();
 
 	if(IsPaused() || (Player && Player->IsDead()))
-		Graphics.DrawRectangle(glm::vec2(0), Graphics.CurrentSize, _Color(0, 0, 0, GAME_PAUSE_FADEAMOUNT), true);
+		Graphics.DrawRectangle(glm::vec2(0), Graphics.CurrentSize, glm::vec4(0, 0, 0, GAME_PAUSE_FADEAMOUNT), true);
 
 	// Draw in-game menu
 	if(IsPaused()) {

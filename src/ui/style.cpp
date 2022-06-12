@@ -18,7 +18,7 @@
 #include <ui/style.h>
 
 // Constructor
-_Style::_Style(const std::string &Identifier, bool HasBackgroundColor, bool HasBorderColor, const _Color &BackgroundColor, const _Color &BorderColor, const _Texture *Texture, const _Color &TextureColor, bool Stretch) {
+_Style::_Style(const std::string &Identifier, bool HasBackgroundColor, bool HasBorderColor, const glm::vec4 &BackgroundColor, const glm::vec4 &BorderColor, const _Texture *Texture, const glm::vec4 &TextureColor, bool Stretch) {
 	this->Identifier = Identifier;
 	this->HasBackgroundColor = HasBackgroundColor;
 	this->HasBorderColor = HasBorderColor;

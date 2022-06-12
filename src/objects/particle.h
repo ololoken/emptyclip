@@ -47,7 +47,7 @@ class _Particle {
 		const _Texture *Texture;
 		const _Font *Font;
 		std::string Text;
-		_Color Color;
+		glm::vec4 Color;
 		glm::vec2 Scale;
 		float Rotation;
 		float AlphaSpeed;

@@ -140,7 +140,7 @@ class _Map {
 		void SwapBlockTextures(int Layer, int Index);
 		bool HasEvents(const _Coord &Position) const;
 
-		void SetAmbientLight(const _Color &Color) { OldAmbientLight = AmbientLight; AmbientLight = Color; }
+		void SetAmbientLight(const glm::vec4 &Color) { OldAmbientLight = AmbientLight; AmbientLight = Color; }
 		void SetAmbientLightChangePeriod(double Value) { AmbientLightPeriod = Value; AmbientLightTimer = AmbientLightBlendFactor = 0.0; }
 
 		void RenderFloors();
@@ -222,8 +222,8 @@ class _Map {
 		std::string MonsterSet;
 
 		// Lights
-		_Color AmbientLight;
-		_Color OldAmbientLight;
+		glm::vec4 AmbientLight;
+		glm::vec4 OldAmbientLight;
 		double AmbientLightBlendFactor;
 		double AmbientLightPeriod;
 		double AmbientLightTimer;

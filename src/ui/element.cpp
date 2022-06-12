@@ -20,8 +20,8 @@
 #include <graphics.h>
 #include <input.h>
 
-const _Color DebugColors[] = { COLOR_CYAN, COLOR_YELLOW, COLOR_RED, COLOR_GREEN, COLOR_BLUE };
-const int DebugColorCount = sizeof(DebugColors) / sizeof(_Color);
+const glm::vec4 DebugColors[] = { COLOR_CYAN, COLOR_YELLOW, COLOR_RED, COLOR_GREEN, COLOR_BLUE };
+const int DebugColorCount = sizeof(DebugColors) / sizeof(glm::vec4);
 
 // Constructor for ui element
 _Element::_Element(const std::string &Identifier, _Element *Parent, const glm::ivec2 &Offset, const glm::ivec2 &Size, const _Alignment &Alignment, const _Style *Style, bool MaskOutside) {
@@ -180,14 +180,14 @@ void _Element::Render() const {
 
 	if(Style) {
 		if(Style->GetHasBackgroundColor()) {
-			_Color RenderColor(Style->GetBackgroundColor());
-			RenderColor.Alpha *= Fade;
+			glm::vec4 RenderColor(Style->GetBackgroundColor());
+			RenderColor.a *= Fade;
 			Graphics.DrawRectangle(Bounds, RenderColor, true);
 		}
 
 		if(Style->GetHasBorderColor()) {
-			_Color RenderColor(Style->GetBorderColor());
-			RenderColor.Alpha *= Fade;
+			glm::vec4 RenderColor(Style->GetBorderColor());
+			RenderColor.a *= Fade;
 			Graphics.DrawRectangle(Bounds, RenderColor, false);
 		}
 	}

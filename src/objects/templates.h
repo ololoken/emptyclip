@@ -126,14 +126,14 @@ enum SkillTypes {
 struct _AmmoTemplate {
 	std::string Name;
 	std::string IconIdentifier;
-	_Color Color;
+	glm::vec4 Color;
 	int AmmoType;
 };
 
 struct _UpgradeTemplate {
 	std::string Name;
 	std::string IconIdentifier;
-	_Color Color;
+	glm::vec4 Color;
 	float Bonus;
 	int WeaponType;
 	int UpgradeType;
@@ -142,7 +142,7 @@ struct _UpgradeTemplate {
 struct _MiscItemTemplate {
 	std::string Name;
 	std::string IconIdentifier;
-	_Color Color;
+	glm::vec4 Color;
 	int Type, Level;
 };
 
@@ -151,7 +151,7 @@ struct _ParticleTemplate {
 	glm::vec2 VelocityScale;
 	glm::vec2 TurnSpeed;
 	glm::vec2 Size;
-	_Color Color;
+	glm::vec4 Color;
 	const _Texture *Texture;
 	const _Font *Font;
 	int Count;
@@ -201,7 +201,7 @@ struct _WeaponTemplate {
 	}
 
 	_WeaponParticleTemplate *WeaponParticles;
-	_Color Color;
+	glm::vec4 Color;
 	std::string Name;
 	std::string IconIdentifier;
 	std::string Samples[SAMPLE_TYPES];
@@ -226,7 +226,7 @@ struct _WeaponTemplate {
 
 // Holds information about a monster
 struct _MonsterTemplate {
-	_Color Color;
+	glm::vec4 Color;
 	_WeaponParticleTemplate *WeaponParticles;
 	std::string Name, AnimationIdentifier, SamplesIdentifier, ItemGroupIdentifier;
 	float Radius, Scale, MovementSpeed, Accuracy, ViewRange, AttackRange;

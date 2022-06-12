@@ -210,7 +210,7 @@ void _Assets::LoadSkills() {
 
 // Loads the color table
 void _Assets::LoadColorTable(const std::string &Filename) {
-	_Color Color;
+	glm::vec4 Color;
 	std::string Identifier;
 
 	// Load file
@@ -227,7 +227,7 @@ void _Assets::LoadColorTable(const std::string &Filename) {
 	while(!InputFile.eof() && InputFile.peek() != EOF) {
 
 		Identifier = GetTSVText(InputFile);
-		InputFile >> Color.Red >> Color.Green >> Color.Blue >> Color.Alpha;
+		InputFile >> Color.r >> Color.g >> Color.b >> Color.a;
 		InputFile.ignore(1024, '\n');
 
 		// Check for duplicates
@@ -1074,9 +1074,9 @@ void _Assets::LoadStyles(const std::string &Filename) {
 		InputFile.ignore(1024, '\n');
 
 		// Get colors
-		_Color BackgroundColor = GetColor(BackgroundColorIdentifier);
-		_Color BorderColor = GetColor(BorderColorIdentifier);
-		_Color TextureColor = GetColor(TextureColorIdentifier);
+		glm::vec4 BackgroundColor = GetColor(BackgroundColorIdentifier);
+		glm::vec4 BorderColor = GetColor(BorderColorIdentifier);
+		glm::vec4 TextureColor = GetColor(TextureColorIdentifier);
 
 		// Get textures
 		_Texture *Texture = GetTexture(TextureIdentifier);
@@ -1195,7 +1195,7 @@ void _Assets::LoadLabels(const std::string &Filename) {
 		}
 
 		// Get color
-		_Color Color = GetColor(ColorIdentifier);
+		glm::vec4 Color = GetColor(ColorIdentifier);
 
 		// Create
 		_Label *Element = new _Label(Identifier, ParentElement, Offset, Size, Alignment, Font, Color, Text);
@@ -1253,7 +1253,7 @@ void _Assets::LoadImages(const std::string &Filename) {
 		_Texture *Texture = GetTexture(TextureIdentifier);
 
 		// Get color
-		_Color Color = GetColor(ColorIdentifier);
+		glm::vec4 Color = GetColor(ColorIdentifier);
 
 		// Create
 		_Image *Element = new _Image(Identifier, ParentElement, Offset, Size, Alignment, Texture, Color, Stretch);
@@ -1733,7 +1733,7 @@ std::string _Assets::GetString(const std::string &Identifier) {
 
 	return StringTable[Identifier];
 }
-const _Color &_Assets::GetColor(const std::string &Identifier) {
+const glm::vec4 &_Assets::GetColor(const std::string &Identifier) {
 	if(ColorTable.find(Identifier) == ColorTable.end())
 		return COLOR_WHITE;
 

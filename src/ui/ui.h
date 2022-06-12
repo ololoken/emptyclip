@@ -18,11 +18,14 @@
 #pragma once
 
 #include <glm/vec2.hpp>
+#include <glm/vec4.hpp>
 
 // Bounds struct
 struct _Bounds {
-	_Bounds() { }
+
+	_Bounds() : Start(0), End(0) { }
 	_Bounds(const glm::ivec2 &Start, const glm::ivec2 &End) : Start(Start), End(End) { }
+	_Bounds(const glm::ivec4 &Bounds) : Start(Bounds[0], Bounds[1]), End(Bounds[2], Bounds[3]) { }
 
 	glm::ivec2 GetMidPoint() const { return (Start + End) / 2; }
 	bool Inside(const glm::ivec2 &Point) { return Point.x >= Start.x && Point.y >= Start.y && Point.x < End.x && Point.y < End.y; }
@@ -47,11 +50,11 @@ struct _Alignment {
 		BASELINE,
 	};
 
-	_Alignment() { }
+	_Alignment() : Horizontal(CENTER), Vertical(MIDDLE) { }
 	_Alignment(int Horizontal, int Vertical) : Horizontal(Horizontal), Vertical(Vertical) { }
-	void Clear() { Horizontal = LEFT; Vertical = TOP; }
 
-	int Horizontal, Vertical;
+	int Horizontal;
+	int Vertical;
 };
 
 const _Alignment LEFT_TOP         = _Alignment(_Alignment::LEFT, _Alignment::TOP);

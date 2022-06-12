@@ -83,7 +83,7 @@ class _Object {
 		glm::vec2 Position;
 		glm::vec2 LastPosition;
 		glm::vec2 Direction;
-		_Color Color;
+		glm::vec4 Color;
 		float Rotation;
 		float Scale;
 		float PositionZ;

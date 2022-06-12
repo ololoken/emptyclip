@@ -29,7 +29,7 @@ class _Style {
 
 	public:
 
-		_Style(const std::string &Identifier, bool HasBackgroundColor, bool HasBorderColor, const _Color &BackgroundColor, const _Color &BorderColor, const _Texture *Texture, const _Color &TextureColor, bool Stretch);
+		_Style(const std::string &Identifier, bool HasBackgroundColor, bool HasBorderColor, const glm::vec4 &BackgroundColor, const glm::vec4 &BorderColor, const _Texture *Texture, const glm::vec4 &TextureColor, bool Stretch);
 		~_Style();
 
 		void SetIdentifier(const std::string &Identifier) { this->Identifier = Identifier; }
@@ -41,25 +41,25 @@ class _Style {
 		void SetHasBorderColor(bool HasBorderColor) { this->HasBorderColor = HasBorderColor; }
 		bool GetHasBorderColor() const { return HasBorderColor; }
 
-		void SetBackgroundColor(const _Color &BackgroundColor) { this->BackgroundColor = BackgroundColor; }
-		const _Color &GetBackgroundColor() const { return BackgroundColor; }
+		void SetBackgroundColor(const glm::vec4 &BackgroundColor) { this->BackgroundColor = BackgroundColor; }
+		const glm::vec4 &GetBackgroundColor() const { return BackgroundColor; }
 
-		void SetBorderColor(const _Color &BorderColor) { this->BorderColor = BorderColor; }
-		const _Color &GetBorderColor() const { return BorderColor; }
+		void SetBorderColor(const glm::vec4 &BorderColor) { this->BorderColor = BorderColor; }
+		const glm::vec4 &GetBorderColor() const { return BorderColor; }
 
 		void SetTexture(_Texture *Texture) { this->Texture = Texture; }
 
-		void SetTextureColor(const _Color &TextureColor) { this->TextureColor = TextureColor; }
-		const _Color &GetTextureColor() const { return TextureColor; }
+		void SetTextureColor(const glm::vec4 &TextureColor) { this->TextureColor = TextureColor; }
+		const glm::vec4 &GetTextureColor() const { return TextureColor; }
 
 		void SetStretch(bool Stretch) { this->Stretch = Stretch; }
 		bool GetStretch() const { return Stretch; }
 
 		std::string Identifier;
 		const _Texture *Texture;
-		_Color BackgroundColor;
-		_Color BorderColor;
-		_Color TextureColor;
+		glm::vec4 BackgroundColor;
+		glm::vec4 BorderColor;
+		glm::vec4 TextureColor;
 		bool HasBackgroundColor;
 		bool HasBorderColor;
 		bool Stretch;

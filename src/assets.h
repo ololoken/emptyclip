@@ -68,7 +68,7 @@ struct AttackSampleTemplateStruct {
 // Used for the map editor
 struct _Brush {
 	_Brush() { }
-	_Brush(const std::string &Identifier, const std::string &Text, _Texture *Texture, const _Color &Color)
+	_Brush(const std::string &Identifier, const std::string &Text, _Texture *Texture, const glm::vec4 &Color)
 		:	Identifier(Identifier),
 			Text(Text),
 			Texture(Texture),
@@ -76,7 +76,7 @@ struct _Brush {
 
 	std::string Identifier, Text;
 	_Texture *Texture;
-	_Color Color;
+	glm::vec4 Color;
 };
 
 // Used for level information
@@ -216,7 +216,7 @@ class _Assets {
 		_TextBox *GetTextBox(const std::string &Identifier);
 		_Texture *GetTexture(const std::string &Identifier);
 		std::string GetString(const std::string &Identifier);
-		const _Color &GetColor(const std::string &Identifier);
+		const glm::vec4 &GetColor(const std::string &Identifier);
 		_Reel *GetReel(const std::string &Identifier);
 		AttackSampleTemplateStruct *GetAttackSampleTemplate(const std::string &Identifier);
 		_Animation *GetAnimation(const std::string &Identifier);
@@ -275,7 +275,7 @@ class _Assets {
 		std::string AmmoTypeIdentifiers[AMMO_TYPES];
 
 		// Data
-		std::map<std::string, _Color> ColorTable;
+		std::map<std::string, glm::vec4> ColorTable;
 		std::map<std::string, _Texture *> Textures;
 		std::map<std::string, _Reel> Reels;
 		std::map<std::string, _Animation *> Animations;

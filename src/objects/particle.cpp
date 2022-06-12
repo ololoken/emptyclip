@@ -63,11 +63,11 @@ void _Particle::Update(double FrameTime) {
 	Position += Velocity;
 	Velocity += Acceleration;
 	Rotation += TurnSpeed;
-	Color.Alpha += AlphaSpeed;
+	Color.a += AlphaSpeed;
 	Lifetime -= FrameTime;
 
-	if(Color.Alpha < 0.0f)
-		Color.Alpha = 0.0f;
+	if(Color.a < 0.0f)
+		Color.a = 0.0f;
 
 	if(Lifetime < 0)
 		Deleted = true;

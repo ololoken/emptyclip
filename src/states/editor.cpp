@@ -1087,7 +1087,7 @@ void _EditorState::DrawBrush() {
 
 	// Get selected palette
 	std::string IconText = "", IconIdentifier = "";
-	_Color IconColor = COLOR_WHITE;
+	glm::vec4 IconColor = COLOR_WHITE;
 	const _Texture *IconTexture = nullptr;
 	if(Brush[CurrentPalette]) {
 		IconIdentifier = Brush[CurrentPalette]->GetIdentifier();
@@ -1244,7 +1244,7 @@ void _EditorState::DrawBrush() {
 void _EditorState::DrawObject(float OffsetX, float OffsetY, const _ObjectSpawn *Object, float Alpha) {
 	float Scale = ITEM_SCALE;
 	float Depth = ITEM_Z;
-	_Color Color;
+	glm::vec4 Color;
 	_Texture *Texture = nullptr;
 	switch(Object->Type) {
 		case _Object::MONSTER: {
@@ -1286,7 +1286,7 @@ void _EditorState::DrawObject(float OffsetX, float OffsetY, const _ObjectSpawn *
 		return;
 	}
 
-	Color.Alpha *= Alpha;
+	Color.a *= Alpha;
 	if(Texture != nullptr)
 		Graphics.DrawTexture(glm::vec3(DrawPosition, Depth), Texture, Color, 0.0f, glm::vec2(Scale));
 }

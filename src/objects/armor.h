@@ -24,7 +24,7 @@
 struct _ArmorTemplate {
 	std::string Name;
 	std::string IconIdentifier;
-	_Color Color;
+	glm::vec4 Color;
 	int StrengthRequirement;
 	int DamageBlock;
 	float DamageResist;

@@ -305,11 +305,11 @@ void _Graphics::Setup2DProjectionMatrix() {
 
 // Fade the screen
 void _Graphics::FadeScreen(float Amount) {
-	Graphics.DrawRectangle(glm::vec2(0), CurrentSize, _Color(0.0f, 0.0f, 0.0f, Amount), true);
+	Graphics.DrawRectangle(glm::vec2(0), CurrentSize, glm::vec4(0.0f, 0.0f, 0.0f, Amount), true);
 }
 
 // Draw centered image in screen space
-void _Graphics::DrawImage(const glm::ivec2 &CenterPoint, const _Texture *Texture, const _Color &Color) {
+void _Graphics::DrawImage(const glm::ivec2 &CenterPoint, const _Texture *Texture, const glm::vec4 &Color) {
 	SetTextureEnabled(true);
 	SetTextureID(Texture->GetID());
 	SetColor(Color);
@@ -341,7 +341,7 @@ void _Graphics::DrawImage(const glm::ivec2 &CenterPoint, const _Texture *Texture
 }
 
 // Draw image in screen space
-void _Graphics::DrawImage(const _Bounds &Bounds, const _Texture *Texture, const _Color &Color, bool Stretch) {
+void _Graphics::DrawImage(const _Bounds &Bounds, const _Texture *Texture, const glm::vec4 &Color, bool Stretch) {
 	SetTextureEnabled(true);
 	SetColor(Color);
 	SetTextureID(Texture->GetID());
@@ -380,7 +380,7 @@ void _Graphics::DrawImage(const _Bounds &Bounds, const _Texture *Texture, const 
 }
 
 // Draw rectangle in screen space
-void _Graphics::DrawRectangle(const _Bounds &Bounds, const _Color &Color, bool Filled) {
+void _Graphics::DrawRectangle(const _Bounds &Bounds, const glm::vec4 &Color, bool Filled) {
 	SetTextureEnabled(false);
 
 	// Set alpha
@@ -435,7 +435,7 @@ void _Graphics::DrawMask(const _Bounds &Bounds) {
 }
 
 // Draw 3d sprite
-void _Graphics::DrawTexture(const glm::vec3 &Position, const _Texture *Texture, const _Color &Color, float Rotation, const glm::vec2 &Scale) {
+void _Graphics::DrawTexture(const glm::vec3 &Position, const _Texture *Texture, const glm::vec4 &Color, float Rotation, const glm::vec2 &Scale) {
 	SetTextureEnabled(true);
 	SetColor(Color);
 	SetTextureID(Texture->GetID());
@@ -591,7 +591,7 @@ void _Graphics::DrawRepeatable(const glm::vec3 &Start, const glm::vec3 &End, con
 }
 
 // Draw rectangle in 3d space
-void _Graphics::DrawRectangle(const glm::vec2 &Start, const glm::vec2 &End, const _Color &Color, bool Filled) {
+void _Graphics::DrawRectangle(const glm::vec2 &Start, const glm::vec2 &End, const glm::vec4 &Color, bool Filled) {
 	SetTextureEnabled(false);
 	SetColor(Color);
 
@@ -675,9 +675,9 @@ void _Graphics::Flip(double FrameTime) {
 }
 
 // Set opengl color
-void _Graphics::SetColor(const _Color &Color) {
+void _Graphics::SetColor(const glm::vec4 &Color) {
 	if(Color != LastColor) {
-		glColor4f(Color.Red, Color.Green, Color.Blue, Color.Alpha);
+		glColor4f(Color.r, Color.g, Color.b, Color.a);
 		LastColor = Color;
 	}
 }
