@@ -27,7 +27,6 @@ class _Item;
 class _Weapon;
 class _Armor;
 class _Buffer;
-struct _Point;
 
 // Enumerations
 enum PlayerAnimationTypes {
@@ -66,7 +65,7 @@ class _Player : public _Entity {
 		bool IsReloading() const { return Reloading; }
 
 		void Render(double BlendFactor) override;
-		void Render2D(const _Point &Position);
+		void Render2D(const glm::ivec2 &Position);
 
 		void Update(double FrameTime) override;
 		void UpdateAnimation(double FrameTime) override;

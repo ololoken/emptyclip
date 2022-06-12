@@ -31,10 +31,10 @@ class _Element {
 
 	public:
 
-		_Element(const std::string &Identifier, _Element *Parent, const _Point &Offset, const _Point &Size, const _Alignment &Alignment, const _Style *Style, bool MaskOutside);
+		_Element(const std::string &Identifier, _Element *Parent, const glm::ivec2 &Offset, const glm::ivec2 &Size, const _Alignment &Alignment, const _Style *Style, bool MaskOutside);
 		virtual ~_Element();
 
-		virtual void Update(double FrameTime, const _Point &Mouse);
+		virtual void Update(double FrameTime, const glm::ivec2 &Mouse);
 
 		virtual void CalculateBounds();
 		virtual void Render() const;
@@ -45,7 +45,7 @@ class _Element {
 
 		void AddChild(_Element *Element) { Children.push_back(Element); Element->SetID(Children.size()-1); }
 		std::vector<_Element *> &GetChildren() { return Children; }
-		void UpdateChildrenOffset(const _Point &Update) { ChildrenOffset += Update; CalculateChildrenBounds(); }
+		void UpdateChildrenOffset(const glm::ivec2 &Update) { ChildrenOffset += Update; CalculateChildrenBounds(); }
 		virtual void CalculateChildrenBounds();
 
 		void SetDebug(int Debug);
@@ -63,17 +63,17 @@ class _Element {
 		void SetIdentifier(const std::string &Identifier) { this->Identifier = Identifier; }
 		const std::string &GetIdentifier() const { return Identifier; }
 
-		void SetOffset(const _Point &Offset) { this->Offset = Offset; CalculateBounds(); }
-		const _Point &GetOffset() const { return Offset; }
+		void SetOffset(const glm::ivec2 &Offset) { this->Offset = Offset; CalculateBounds(); }
+		const glm::ivec2 &GetOffset() const { return Offset; }
 
-		void SetChildrenOffset(const _Point &ChildrenOffset) { this->ChildrenOffset = ChildrenOffset; CalculateChildrenBounds(); }
-		const _Point &GetChildrenOffset() const { return ChildrenOffset; }
+		void SetChildrenOffset(const glm::ivec2 &ChildrenOffset) { this->ChildrenOffset = ChildrenOffset; CalculateChildrenBounds(); }
+		const glm::ivec2 &GetChildrenOffset() const { return ChildrenOffset; }
 
 		void SetParent(_Element *Parent) { this->Parent = Parent; CalculateBounds(); }
 		_Element *GetParent() { return Parent; }
 
-		void SetSize(const _Point &Size) { this->Size = Size; CalculateBounds(); }
-		const _Point &GetSize() const { return Size; }
+		void SetSize(const glm::ivec2 &Size) { this->Size = Size; CalculateBounds(); }
+		const glm::ivec2 &GetSize() const { return Size; }
 
 		void SetHitElement(_Element *HitElement) { this->HitElement = HitElement; }
 		_Element *GetHitElement() { return HitElement; }
@@ -96,13 +96,13 @@ class _Element {
 		std::string Identifier;
 		_Element *Parent;
 		const _Style *Style;
-		_Point ChildrenOffset;
+		glm::ivec2 ChildrenOffset;
 		std::vector<_Element *> Children;
 		void *UserData;
 		int ID;
 
-		_Point Offset;
-		_Point Size;
+		glm::ivec2 Offset;
+		glm::ivec2 Size;
 		_Alignment Alignment;
 		_Bounds Bounds;
 		bool MaskOutside;

@@ -31,7 +31,7 @@ class _Button : public _Element {
 
 	public:
 
-		_Button(const std::string &Identifier, _Element *Parent, const _Point &Offset, const _Point &Size, const _Alignment &Alignment, const _Style *Style, const _Style *HoverStyle);
+		_Button(const std::string &Identifier, _Element *Parent, const glm::ivec2 &Offset, const glm::ivec2 &Size, const _Alignment &Alignment, const _Style *Style, const _Style *HoverStyle);
 		~_Button();
 
 		void HandleInput(bool Pressed);

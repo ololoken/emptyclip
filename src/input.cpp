@@ -47,8 +47,8 @@ const std::string MouseButtonNames[] = {
 };
 
 // Initialize
-_Input::_Input() {
-	Mouse.Clear();
+_Input::_Input() :
+	Mouse(0, 0) {
 }
 
 // Update input state

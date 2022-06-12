@@ -61,7 +61,7 @@ void _Graphics::Init(int WindowWidth, int WindowHeight, int Vsync, int MSAA, boo
 	}
 
 	// Set root element
-	Element = new _Element("screen_element", nullptr, _Point(0, 0), _Point(CurrentSize.x, CurrentSize.y), _Alignment(0, 0), nullptr, false);
+	Element = new _Element("screen_element", nullptr, glm::ivec2(0, 0), glm::ivec2(CurrentSize.x, CurrentSize.y), _Alignment(0, 0), nullptr, false);
 
 	// Set opengl attributes
 	SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 1);
@@ -309,7 +309,7 @@ void _Graphics::FadeScreen(float Amount) {
 }
 
 // Draw centered image in screen space
-void _Graphics::DrawImage(const _Point &CenterPoint, const _Texture *Texture, const _Color &Color) {
+void _Graphics::DrawImage(const glm::ivec2 &CenterPoint, const _Texture *Texture, const _Color &Color) {
 	SetTextureEnabled(true);
 	SetTextureID(Texture->GetID());
 	SetColor(Color);

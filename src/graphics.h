@@ -26,7 +26,6 @@
 // Forward Declarations
 class _Texture;
 class _Element;
-class _Point;
 class _Bounds;
 
 enum VertexBufferType {
@@ -55,7 +54,7 @@ class _Graphics {
 		void Setup3DViewport();
 
 		void FadeScreen(float Amount);
-		void DrawImage(const _Point &CenterPoint, const _Texture *Texture, const _Color &Color);
+		void DrawImage(const glm::ivec2 &CenterPoint, const _Texture *Texture, const _Color &Color);
 		void DrawImage(const _Bounds &Bounds, const _Texture *Texture, const _Color &Color, bool Stretch=false);
 		void DrawRectangle(const _Bounds &Bounds, const _Color &Color, bool Filled=false);
 		void DrawMask(const _Bounds &Bounds);

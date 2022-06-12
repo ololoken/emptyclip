@@ -1112,7 +1112,7 @@ void _Assets::LoadElements(const std::string &Filename) {
 		std::string ParentIdentifier = GetTSVText(InputFile);
 		std::string StyleIdentifier = GetTSVText(InputFile);
 
-		_Point Offset, Size;
+		glm::ivec2 Offset, Size;
 		_Alignment Alignment;
 		bool MaskOutside;
 		InputFile >> Offset.x >> Offset.y >> Size.x >> Size.y >> Alignment.Horizontal >> Alignment.Vertical >> MaskOutside;
@@ -1174,7 +1174,7 @@ void _Assets::LoadLabels(const std::string &Filename) {
 		std::string ColorIdentifier = GetTSVText(InputFile);
 		std::string Text = GetTSVText(InputFile);
 
-		_Point Offset, Size;
+		glm::ivec2 Offset, Size;
 		_Alignment Alignment;
 		InputFile >> Offset.x >> Offset.y >> Size.x >> Size.y >> Alignment.Horizontal >> Alignment.Vertical;
 		InputFile.ignore(1024, '\n');
@@ -1234,7 +1234,7 @@ void _Assets::LoadImages(const std::string &Filename) {
 		std::string TextureIdentifier = GetTSVText(InputFile);
 		std::string ColorIdentifier = GetTSVText(InputFile);
 
-		_Point Offset, Size;
+		glm::ivec2 Offset, Size;
 		_Alignment Alignment;
 		int Stretch;
 		InputFile >> Offset.x >> Offset.y >> Size.x >> Size.y >> Alignment.Horizontal >> Alignment.Vertical >> Stretch;
@@ -1292,7 +1292,7 @@ void _Assets::LoadButtons(const std::string &Filename) {
 		std::string StyleIdentifier = GetTSVText(InputFile);
 		std::string HoverStyleIdentifier = GetTSVText(InputFile);
 
-		_Point Offset, Size;
+		glm::ivec2 Offset, Size;
 		_Alignment Alignment;
 		InputFile >> Offset.x >> Offset.y >> Size.x >> Size.y >> Alignment.Horizontal >> Alignment.Vertical;
 		InputFile.ignore(1024, '\n');
@@ -1347,7 +1347,7 @@ void _Assets::LoadTextBoxes(const std::string &Filename) {
 		std::string StyleIdentifier = GetTSVText(InputFile);
 		std::string FontIdentifier = GetTSVText(InputFile);
 
-		_Point Offset, Size;
+		glm::ivec2 Offset, Size;
 		_Alignment Alignment;
 		int MaxLength;
 		InputFile >> Offset.x >> Offset.y >> Size.x >> Size.y >> Alignment.Horizontal >> Alignment.Vertical >> MaxLength;

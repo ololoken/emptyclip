@@ -17,38 +17,18 @@
 *******************************************************************************/
 #pragma once
 
-// Point struct
-struct _Point {
-	_Point() { }
-	_Point(int X, int Y) : x(X), y(Y) { }
-	void Clear() { x = y = 0; }
-
-	void operator+=(const _Point &Point) { x += Point.x; y += Point.y; }
-	void operator-=(const _Point &Point) { x -= Point.x; y -= Point.y; }
-	_Point operator+(const _Point &Point) const { return _Point(x + Point.x, y + Point.y); }
-	_Point operator-(const _Point &Point) const { return _Point(x - Point.x, y - Point.y); }
-	_Point operator*(const float Multiplier) const { return _Point(x * Multiplier, y * Multiplier); }
-	_Point operator/(const float Divisor) const { return _Point(x / Divisor, y / Divisor); }
-	bool operator>(const _Point &Point) const { return x > Point.x && y > Point.y; }
-	bool operator>=(const _Point &Point) const { return x >= Point.x && y >= Point.y; }
-	bool operator<(const _Point &Point) const { return x < Point.x && y < Point.y; }
-	bool operator<=(const _Point &Point) const { return x <= Point.x && y <= Point.y; }
-
-	int x;
-	int y;
-};
+#include <glm/vec2.hpp>
 
 // Bounds struct
 struct _Bounds {
 	_Bounds() { }
-	_Bounds(const _Point &Start, const _Point &End) : Start(Start), End(End) { }
-	void Clear() { Start.Clear(); End.Clear(); }
-	_Point GetMidPoint() const { return (Start + End) / 2.0f; }
-	_Point GetSize() const { return End - Start; }
-	bool PointInside(const _Point &Point) const { return Point >= Start && Point < End; }
+	_Bounds(const glm::ivec2 &Start, const glm::ivec2 &End) : Start(Start), End(End) { }
 
-	_Point Start;
-	_Point End;
+	glm::ivec2 GetMidPoint() const { return (Start + End) / 2; }
+	bool Inside(const glm::ivec2 &Point) { return Point.x >= Start.x && Point.y >= Start.y && Point.x < End.x && Point.y < End.y; }
+
+	glm::ivec2 Start;
+	glm::ivec2 End;
 };
 
 // Alignment struct

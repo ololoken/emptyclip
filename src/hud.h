@@ -153,7 +153,7 @@ class _HUD {
 		_Image *Images[IMAGE_COUNT];
 		_Element *DragStart;
 		_Item *CursorItem, *CursorOverItem;
-		_Point ClickOffset;
+		glm::ivec2 ClickOffset;
 		int CursorSkill;
 
 		// Displays

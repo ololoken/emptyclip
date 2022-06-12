@@ -554,7 +554,7 @@ void _Player::Render(double BlendFactor) {
 }
 
 // Draws the player in screen space
-void _Player::Render2D(const _Point &Position) {
+void _Player::Render2D(const glm::ivec2 &Position) {
 	Graphics.DrawTexture(Position.x, Position.y, 0, LegAnimation->GetCurrentFrame(), Color, Rotation, LegAnimation->GetCurrentFrame()->GetWidth(), LegAnimation->GetCurrentFrame()->GetHeight());
 	Graphics.DrawTexture(Position.x, Position.y, 0 + 0.01f, Animation->GetCurrentFrame(), COLOR_WHITE, Rotation, Animation->GetCurrentFrame()->GetWidth(), Animation->GetCurrentFrame()->GetHeight());
 }

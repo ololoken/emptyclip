@@ -30,8 +30,8 @@ struct _KeyEvent {
 };
 
 struct _MouseEvent {
-	_MouseEvent(const _Point &Position, int Button, bool Pressed) : Position(Position), Button(Button), Pressed(Pressed) { }
-	_Point Position;
+	_MouseEvent(const glm::ivec2 &Position, int Button, bool Pressed) : Position(Position), Button(Button), Pressed(Pressed) { }
+	glm::ivec2 Position;
 	int Button;
 	bool Pressed;
 };
@@ -58,7 +58,7 @@ class _Input {
 		bool ModKeyDown(int Key);
 		bool MouseDown(Uint32 Button);
 
-		const _Point &GetMouse() { return Mouse; }
+		const glm::ivec2 &GetMouse() { return Mouse; }
 
 		static const char *GetKeyName(int Key);
 		static const std::string &GetMouseButtonName(Uint32 Button);
@@ -68,7 +68,7 @@ class _Input {
 		// States
 		const Uint8 *KeyState;
 		Uint32 MouseState;
-		_Point Mouse;
+		glm::ivec2 Mouse;
 };
 
 extern _Input Input;

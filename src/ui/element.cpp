@@ -24,7 +24,7 @@ const _Color DebugColors[] = { COLOR_CYAN, COLOR_YELLOW, COLOR_RED, COLOR_GREEN,
 const int DebugColorCount = sizeof(DebugColors) / sizeof(_Color);
 
 // Constructor for ui element
-_Element::_Element(const std::string &Identifier, _Element *Parent, const _Point &Offset, const _Point &Size, const _Alignment &Alignment, const _Style *Style, bool MaskOutside) {
+_Element::_Element(const std::string &Identifier, _Element *Parent, const glm::ivec2 &Offset, const glm::ivec2 &Size, const _Alignment &Alignment, const _Style *Style, bool MaskOutside) {
 	if(!Parent)
 		Parent = Graphics.GetElement();
 
@@ -42,7 +42,7 @@ _Element::_Element(const std::string &Identifier, _Element *Parent, const _Point
 	this->HitElement = nullptr;
 	this->PressedElement = nullptr;
 	this->ReleasedElement = nullptr;
-	this->ChildrenOffset.Clear();
+	this->ChildrenOffset = glm::ivec2(0);
 
 	CalculateBounds();
 }
@@ -97,12 +97,12 @@ _Element *_Element::GetClickedElement() {
 }
 
 // Handle mouse movement
-void _Element::Update(double FrameTime, const _Point &Mouse) {
+void _Element::Update(double FrameTime, const glm::ivec2 &Mouse) {
 	HitElement = nullptr;
 	ReleasedElement = nullptr;
 
 	// Test element first
-	if(Bounds.PointInside(Mouse)) {
+	if(Bounds.Inside(Mouse)) {
 		HitElement = this;
 	}
 	else if(MaskOutside) {

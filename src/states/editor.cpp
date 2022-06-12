@@ -670,9 +670,9 @@ void _EditorState::MouseWheelEvent(int Direction) {
 	}
 	else {
 		if(Direction > 0)
-			PaletteElement[CurrentPalette]->UpdateChildrenOffset(_Point(0, PaletteSizes[CurrentPalette]));
+			PaletteElement[CurrentPalette]->UpdateChildrenOffset(glm::ivec2(0, PaletteSizes[CurrentPalette]));
 		else
-			PaletteElement[CurrentPalette]->UpdateChildrenOffset(_Point(0, -PaletteSizes[CurrentPalette]));
+			PaletteElement[CurrentPalette]->UpdateChildrenOffset(glm::ivec2(0, -PaletteSizes[CurrentPalette]));
 	}
 }
 
@@ -1062,14 +1062,14 @@ void _EditorState::LoadPaletteButtons(std::vector<_Brush> &Icons, int Type) {
 	ClearPalette(Type);
 
 	// Loop through textures
-	_Point Offset(0, 0);
+	glm::ivec2 Offset(0, 0);
 	int Width = PaletteElement[Type]->GetSize().x;
 	for(size_t i = 0; i < Icons.size(); i++) {
 		PaletteElement[Type]->AddChild(new _Button(
 			Icons[i].Identifier,
 			PaletteElement[Type],
 			Offset,
-			_Point(PaletteSizes[Type], PaletteSizes[Type]),
+			glm::ivec2(PaletteSizes[Type], PaletteSizes[Type]),
 			LEFT_TOP,
 			new _Style(Icons[i].Text, false, false, COLOR_WHITE, COLOR_WHITE, Icons[i].Texture, Icons[i].Color, true),
 			Assets.GetStyle("editor_selected0")));

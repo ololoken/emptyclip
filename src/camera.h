@@ -20,9 +20,6 @@
 // Libraries
 #include <glm/vec2.hpp>
 
-// Forward Declarations
-class _Point;
-
 // Camera class
 class _Camera {
 
@@ -35,8 +32,8 @@ class _Camera {
 		void CalculateFrustum(float AspectRatio);
 		void Set3DProjection(double BlendFactor) const;
 		void Update(double FrameTime);
-		void ConvertScreenToWorld(const _Point &Point, glm::vec2 &WorldPosition);
-		void ConvertWorldToScreen(const glm::vec2 &WorldPosition, _Point &Point);
+		void ConvertScreenToWorld(const glm::ivec2 &Point, glm::vec2 &WorldPosition);
+		void ConvertWorldToScreen(const glm::vec2 &WorldPosition, glm::ivec2 &Point);
 
 		bool IsCircleInView(const glm::vec2 &Position, float Radius) const;
 		bool IsAABBInView(const float *Bounds) const;

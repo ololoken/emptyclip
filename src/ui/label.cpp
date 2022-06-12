@@ -19,7 +19,7 @@
 #include <font.h>
 
 // Constructor
-_Label::_Label(const std::string &Identifier, _Element *Parent, const _Point &Offset, const _Point &Size, const _Alignment &Alignment, const _Font *Font, const _Color &Color, const std::string &Text) :
+_Label::_Label(const std::string &Identifier, _Element *Parent, const glm::ivec2 &Offset, const glm::ivec2 &Size, const _Alignment &Alignment, const _Font *Font, const _Color &Color, const std::string &Text) :
 	_Element(Identifier, Parent, Offset, Size, Alignment, nullptr, false) {
 
 	this->Font = Font;

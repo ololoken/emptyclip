@@ -480,7 +480,7 @@ void _PlayState::Render(double BlendFactor) {
 	for(int X = Start.x; X < End.x; X++) {
 		for(int Y = Start.y; Y < End.y; Y++) {
 			if(X > 0 && Y > 0) {
-				_Point P;
+				glm::ivec2 P;
 				Camera->ConvertWorldToScreen(glm::vec2(X-0.5f, Y-0.5f), P);
 				std::ostringstream Buffer;
 				size_t Count = 0;

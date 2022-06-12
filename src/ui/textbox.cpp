@@ -22,7 +22,7 @@
 #include <SDL_keycode.h>
 
 // Constructor
-_TextBox::_TextBox(const std::string &Identifier, _Element *Parent, const _Point &Offset, const _Point &Size, const _Alignment &Alignment, const _Style *Style, const _Font *Font, size_t MaxLength) :
+_TextBox::_TextBox(const std::string &Identifier, _Element *Parent, const glm::ivec2 &Offset, const glm::ivec2 &Size, const _Alignment &Alignment, const _Style *Style, const _Font *Font, size_t MaxLength) :
 	_Element(Identifier, Parent, Offset, Size, Alignment, Style, false) {
 
 	this->Font = Font;
@@ -36,7 +36,7 @@ _TextBox::~_TextBox() {
 }
 
 // Update cursor
-void _TextBox::Update(double FrameTime, const _Point &Mouse) {
+void _TextBox::Update(double FrameTime, const glm::ivec2 &Mouse) {
 	_Element::Update(FrameTime, Mouse);
 
 	if(Focused) {

@@ -29,10 +29,10 @@ class _TextBox : public _Element {
 
 	public:
 
-		_TextBox(const std::string &Identifier, _Element *Parent, const _Point &Offset, const _Point &Size, const _Alignment &Alignment, const _Style *Style, const _Font *Font, size_t MaxLength);
+		_TextBox(const std::string &Identifier, _Element *Parent, const glm::ivec2 &Offset, const glm::ivec2 &Size, const _Alignment &Alignment, const _Style *Style, const _Font *Font, size_t MaxLength);
 		~_TextBox();
 
-		void Update(double FrameTime, const _Point &Mouse);
+		void Update(double FrameTime, const glm::ivec2 &Mouse);
 		void HandleKeyEvent(const _KeyEvent &KeyEvent);
 		void HandleTextEvent(const char *Text);
 		void HandleInput(bool Pressed);

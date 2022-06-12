@@ -465,7 +465,7 @@ void _HUD::RenderCharacterScreen() {
 
 	// Draw cursor item
 	if(CursorItem) {
-		_Point Position(Input.GetMouse() - ClickOffset);
+		glm::ivec2 Position(Input.GetMouse() - ClickOffset);
 		Graphics.DrawImage(Position, CursorItem->Texture, CursorItem->Color);
 		if(CursorItem->CanStack())
 			DrawItemCount(CursorItem, Position.x + 22, Position.y + 22);
@@ -827,7 +827,7 @@ void _HUD::UpdateSkillInfo(int Skill, int DrawX, int DrawY) {
 		DrawY = 10;
 
 	// Move window
-	Elements[ELEMENT_SKILLINFO]->SetOffset(_Point(DrawX, DrawY));
+	Elements[ELEMENT_SKILLINFO]->SetOffset(glm::ivec2(DrawX, DrawY));
 
 	// Get skill description
 	std::ostringstream Buffer, BufferNext;
