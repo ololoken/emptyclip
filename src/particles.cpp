@@ -21,8 +21,11 @@
 #include <camera.h>
 
 // Constructor
-_Particles::_Particles()
-:	Camera(nullptr) {
+_Particles::_Particles() :
+	Camera(nullptr) {
+
+	for(int i = 0; i < COUNT; i++)
+		RenderList[i].reserve(5000);
 }
 
 // Destructor

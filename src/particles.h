@@ -20,6 +20,7 @@
 // Libraries
 #include <vector2.h>
 #include <list>
+#include <vector>
 #include <string>
 
 // Forward Declarations
@@ -75,7 +76,7 @@ class _Particles {
 		std::list<_Particle *> Particles;
 
 		// Rendering
-		std::list<_Particle *> RenderList[COUNT];
+		std::vector<_Particle *> RenderList[COUNT];
 
 		// Graphics
 		const _Camera *Camera;

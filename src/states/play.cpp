@@ -420,7 +420,9 @@ void _PlayState::Render(double BlendFactor) {
 	Graphics.DisableParticleBlending();
 	Graphics.DisableVBO(VBO_QUAD);
 
+	Graphics.DisableDepthTest();
 	Particles->Render(_Particles::TEXT);
+	Graphics.EnableDepthTest();
 
 	Graphics.SetDepthMask(true);
 

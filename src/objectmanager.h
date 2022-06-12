@@ -19,6 +19,7 @@
 
 // Libraries
 #include <list>
+#include <vector>
 
 // Forward Declarations
 class _Object;
@@ -49,5 +50,5 @@ class _ObjectManager {
 		std::list<_Object *> Objects;
 
 		// Rendering
-		std::list<_Object *> ItemRenderList[3];
+		std::vector<_Object *> ItemRenderList[3];
 };

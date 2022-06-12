@@ -21,6 +21,9 @@
 
 // Constructor
 _ObjectManager::_ObjectManager() {
+	ItemRenderList[0].reserve(5000);
+	ItemRenderList[1].reserve(5000);
+	ItemRenderList[2].reserve(5000);
 }
 
 // Destructor
