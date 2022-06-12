@@ -20,6 +20,7 @@
 // Libraries
 #include <vector2.h>
 #include <list>
+#include <string>
 
 // Forward Declarations
 class _Camera;
@@ -27,13 +28,14 @@ class _Particle;
 struct _ParticleTemplate;
 
 struct _ParticleSpawn {
-	_ParticleSpawn(const _ParticleTemplate *Template, const Vector2 &Position, float PositionZ, float RotationAdjust)
-		:	Template(Template),
-			Position(Position),
-			PositionZ(PositionZ),
-			RotationAdjust(RotationAdjust) { }
+	_ParticleSpawn(const _ParticleTemplate *Template, const Vector2 &Position, float PositionZ, float RotationAdjust) :
+		Template(Template),
+		Position(Position),
+		PositionZ(PositionZ),
+		RotationAdjust(RotationAdjust) { }
 
 	const _ParticleTemplate *Template;
+	std::string Text;
 	Vector2 Position;
 	float PositionZ;
 	float RotationAdjust;
@@ -48,6 +50,7 @@ class _Particles {
 			NORMAL,
 			FLOOR_DECALS,
 			WALL_DECALS,
+			TEXT,
 			COUNT,
 		};
 

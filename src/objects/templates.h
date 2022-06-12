@@ -23,6 +23,7 @@
 #include <string>
 
 class _Texture;
+class _Font;
 
 // Types of ammo
 enum AmmoType {
@@ -145,6 +146,7 @@ struct _ParticleTemplate {
 	Vector2 StartDirection, VelocityScale, TurnSpeed, Size;
 	_Color Color;
 	const _Texture *Texture;
+	const _Font *Font;
 	int Count;
 	float AccelerationScale;
 	float AlphaSpeed;
@@ -213,14 +215,15 @@ struct _MonsterTemplate {
 
 // Holds information about object spawns
 struct _ObjectSpawn {
-	_ObjectSpawn()
-		:	Identifier(""),
-			Position(ZERO_VECTOR),
-			Type(-1) { }
-	_ObjectSpawn(const std::string &Identifier, const Vector2 &Position, int Type)
-		:	Identifier(Identifier),
-			Position(Position),
-			Type(Type) { }
+	_ObjectSpawn() :
+		Identifier(""),
+		Position(ZERO_VECTOR),
+		Type(-1) { }
+
+	_ObjectSpawn(const std::string &Identifier, const Vector2 &Position, int Type) :
+		Identifier(Identifier),
+		Position(Position),
+		Type(Type) { }
 
 	std::string Identifier;
 	Vector2 Position;

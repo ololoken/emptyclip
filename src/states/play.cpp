@@ -420,6 +420,8 @@ void _PlayState::Render(double BlendFactor) {
 	Graphics.DisableParticleBlending();
 	Graphics.DisableVBO(VBO_QUAD);
 
+	Particles->Render(_Particles::TEXT);
+
 	Graphics.SetDepthMask(true);
 
 	// Draw the foreground tiles
@@ -592,9 +594,20 @@ void _PlayState::EntityAttack(_Entity *Attacker, int GridType) {
 			case HIT_OBJECT:
 				GenerateBulletEffects(Attacker, HIT_OBJECT, HitInformation.Position);
 
-				// Deal damage
+				// Generate damage
 				int Damage = Attacker->GenerateDamage(Attacker->GetAttackRequestType(), HitInformation.Object->GetDamageBlock(), HitInformation.Object->GetDamageResist());
 
+				// Create damage number particles
+				Vector2 DamagePosition = HitInformation.Position;
+				if(HitInformation.Object->GetType() ==  _Object::PLAYER)
+					DamagePosition += GenerateRandomPointInCircle(0.3f);
+				_Particle *DamageParticle = new _Particle(_ParticleSpawn(Assets.GetParticleTemplate("damage0"), DamagePosition, OBJECT_Z, 0));
+				DamageParticle->SetText(std::to_string(Damage));
+				if(HitInformation.Object->GetType() ==  _Object::PLAYER)
+					DamageParticle->SetColor(COLOR_RED);
+				Particles->Add(DamageParticle);
+
+				// Update health
 				HitInformation.Object->UpdateHealth(-Damage);
 				if(HitInformation.Object->IsDying()) {
 					Attacker->UpdateExperience(HitInformation.Object->GetExperienceGiven());

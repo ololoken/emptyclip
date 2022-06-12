@@ -445,6 +445,7 @@ void _Assets::LoadParticleTable(const std::string &Filename) {
 		Identifier = GetTSVText(InputFile);
 		std::string TextureIdentifier = GetTSVText(InputFile);
 		std::string ColorIdentifier = GetTSVText(InputFile);
+		std::string FontIdentifier = GetTSVText(InputFile);
 
 		InputFile 	>> Particle.Type >> Particle.Count >> Particle.Lifetime >> Particle.StartDirection.X >> Particle.StartDirection.Y >> Particle.TurnSpeed.X
 					>> Particle.TurnSpeed.Y >> Particle.VelocityScale.X >> Particle.VelocityScale.Y >> Particle.AccelerationScale
@@ -458,11 +459,16 @@ void _Assets::LoadParticleTable(const std::string &Filename) {
 
 		// Get texture
 		Particle.Texture = Assets.GetTexture(TextureIdentifier);
-		if(!Particle.Texture)
+		if(TextureIdentifier != "" && !Particle.Texture)
 			throw std::runtime_error("Unable to find texture: " + TextureIdentifier);
 
 		// Set color
 		Particle.Color = GetColor(ColorIdentifier);
+
+		// Get font
+		Particle.Font = Assets.GetFont(FontIdentifier);
+		if(FontIdentifier != "" && !Particle.Font)
+			throw std::runtime_error("Unable to find font: " + FontIdentifier);
 
 		ParticleTable.insert(make_pair(Identifier, Particle));
 	}

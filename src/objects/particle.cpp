@@ -19,14 +19,17 @@
 #include <objects/templates.h>
 #include <particles.h>
 #include <graphics.h>
+#include <font.h>
 #include <random.h>
 
 // Constructor
-_Particle::_Particle(const _ParticleSpawn &Spawn)
-:	Type(Spawn.Template->Type),
+_Particle::_Particle(const _ParticleSpawn &Spawn) :
+	Type(Spawn.Template->Type),
 	Lifetime(Spawn.Template->Lifetime),
 	Deleted(false),
 	Texture(Spawn.Template->Texture),
+	Font(Spawn.Template->Font),
+	Text(Spawn.Text),
 	Color(Spawn.Template->Color),
 	AlphaSpeed(Spawn.Template->AlphaSpeed),
 	PositionZ(Spawn.PositionZ),
@@ -47,7 +50,6 @@ _Particle::_Particle(const _ParticleSpawn &Spawn)
 		this->Scale.Y = Size;
 	}
 
-	//this->Scale *= Size;
 	this->Position = Spawn.Position;
 }
 
@@ -75,4 +77,7 @@ void _Particle::Render() {
 
 	if(Texture)
 		Graphics.DrawTexture(Position.X, Position.Y, PositionZ, Texture, Color, Rotation, Scale.X, Scale.Y);
+
+	if(Font && Text != "")
+		Font->DrawText(Text.c_str(), Position.X, Position.Y, Color, CENTER_BASELINE, 1/64.0f);
 }

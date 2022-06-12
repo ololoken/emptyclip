@@ -239,7 +239,7 @@ void _Font::CreateFontTexture(std::string SortedCharacters, int TextureWidth) {
 }
 
 // Draws a string
-void _Font::DrawText(const std::string &Text, float X, float Y, const _Color &Color, const _Alignment &Alignment) const {
+void _Font::DrawText(const std::string &Text, float X, float Y, const _Color &Color, const _Alignment &Alignment, float Scale) const {
 	Graphics.SetTextureEnabled(true);
 	Graphics.SetColor(Color);
 	Graphics.SetTextureID(Texture->GetID());
@@ -256,23 +256,23 @@ void _Font::DrawText(const std::string &Text, float X, float Y, const _Color &Co
 	// Handle horizontal alignment
 	switch(Alignment.Horizontal) {
 		case _Alignment::CENTER:
-			X -= TextBounds.Width >> 1;
+			X -= Scale * (TextBounds.Width >> 1);
 		break;
 		case _Alignment::RIGHT:
-			X -= TextBounds.Width;
+			X -= Scale * TextBounds.Width;
 		break;
 	}
 
 	// Handle vertical alignment
 	switch(Alignment.Vertical) {
 		case _Alignment::TOP:
-			Y += TextBounds.AboveBase;
+			Y += Scale * TextBounds.AboveBase;
 		break;
 		case _Alignment::MIDDLE:
-			Y += (TextBounds.AboveBase - TextBounds.BelowBase) >> 1;
+			Y += Scale * ((TextBounds.AboveBase - TextBounds.BelowBase) >> 1);
 		break;
 		case _Alignment::BOTTOM:
-			Y -= TextBounds.BelowBase;
+			Y -= Scale * TextBounds.BelowBase;
 		break;
 	}
 
@@ -286,14 +286,14 @@ void _Font::DrawText(const std::string &Text, float X, float Y, const _Color &Co
 		if(HasKerning && i) {
 			FT_Vector Delta;
 			FT_Get_Kerning(Face, PreviousGlyphIndex, GlyphIndex, FT_KERNING_DEFAULT, &Delta);
-			X += (float)(Delta.x >> 6);
+			X += Scale * (float)(Delta.x >> 6);
 		}
 		PreviousGlyphIndex = GlyphIndex;
 
 		// Get glyph data
 		const GlyphStruct &Glyph = Glyphs[(FT_Byte)Text[i]];
-		DrawX = X + Glyph.OffsetX;
-		DrawY = Y - Glyph.OffsetY;
+		DrawX = X + Scale * Glyph.OffsetX;
+		DrawY = Y - Scale * Glyph.OffsetY;
 
 		glBegin(GL_QUADS);
 
@@ -303,19 +303,19 @@ void _Font::DrawText(const std::string &Text, float X, float Y, const _Color &Co
 
 			// Top right
 			glTexCoord2f(Glyph.Right, Glyph.Top);
-			glVertex2f(DrawX + Glyph.Width, DrawY);
+			glVertex2f(DrawX + Glyph.Width * Scale, DrawY);
 
 			// Bottom right
 			glTexCoord2f(Glyph.Right, Glyph.Bottom);
-			glVertex2f(DrawX + Glyph.Width, DrawY + Glyph.Height);
+			glVertex2f(DrawX + Glyph.Width * Scale, DrawY + Glyph.Height * Scale);
 
 			// Bottom left
 			glTexCoord2f(Glyph.Left, Glyph.Bottom);
-			glVertex2f(DrawX, DrawY + Glyph.Height);
+			glVertex2f(DrawX, DrawY + Glyph.Height * Scale);
 
 		glEnd();
 
-		X += Glyph.Advance;
+		X += Scale * Glyph.Advance;
 	}
 }
 

@@ -21,8 +21,10 @@
 #include <vector2.h>
 #include <color.h>
 #include <algorithm>
+#include <string>
 
 // Forward Declarations
+class _Font;
 class _Texture;
 struct _ParticleSpawn;
 
@@ -39,6 +41,9 @@ class _Particle {
 
 		bool IsDeleted() const { return Deleted; }
 
+		void SetText(const std::string &Value) { this->Text = Value; }
+		const std::string &GetText() const { return Text; }
+
 		void SetType(int Type) { this->Type = Type; }
 		int GetType() const { return Type; }
 
@@ -54,6 +59,8 @@ class _Particle {
 		void SetVelocity(const Vector2 &Velocity) { this->Velocity = Velocity; }
 		const Vector2 &GetVelocity() const { return Velocity; }
 
+		void SetColor(const _Color &Color) { this->Color = Color; }
+
 	private:
 
 		// Attributes
@@ -63,6 +70,8 @@ class _Particle {
 
 		// Graphics
 		const _Texture *Texture;
+		const _Font *Font;
+		std::string Text;
 		_Color Color;
 		Vector2 Scale;
 		float Rotation, AlphaSpeed, PositionZ, ScaleAspect;

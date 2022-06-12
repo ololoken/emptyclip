@@ -6,6 +6,7 @@ Empty Clip 2.0.0 -
 - Items can be dropped by clicking the middle mouse button
 - Added equipment slot for melee weapons and separate hotkey for melee attacks (Z by default)
 - Updated item tooltip and added equipped item comparison
+- Added damage number particles
 - The game now pauses while menu is open
 - Mouse buttons can now be remapped
 - Removed ammo containers
