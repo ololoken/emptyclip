@@ -257,7 +257,7 @@ void _HUD::Render() {
 
 	// FPS
 	std::ostringstream Buffer;
-	Buffer << Graphics.GetFramesPerSecond() << " FPS";
+	Buffer << Graphics.FramesPerSecond << " FPS";
 	Labels[LABEL_FPS]->SetText(Buffer.str());
 	Labels[LABEL_FPS]->Render();
 	Buffer.str("");
@@ -340,9 +340,9 @@ void _HUD::Render() {
 	if(CursorOverItem && CursorItem != CursorOverItem) {
 		RenderItemInfo(CursorOverItem, Input.GetMouse().x, Input.GetMouse().y);
 		if(CursorOverItem->Type == _Object::WEAPON && CursorOverItem != Player->GetMainHand())
-			RenderItemInfo(Player->GetMainHand(), -100, Graphics.GetScreenHeight()/2);
+			RenderItemInfo(Player->GetMainHand(), -100, Graphics.CurrentSize.y/2);
 		else if(CursorOverItem->Type == _Object::ARMOR && CursorOverItem != Player->GetArmor())
-			RenderItemInfo(Player->GetArmor(), -100, Graphics.GetScreenHeight()/2);
+			RenderItemInfo(Player->GetArmor(), -100, Graphics.CurrentSize.y/2);
 	}
 }
 
@@ -528,10 +528,10 @@ void _HUD::RenderItemInfo(_Item *Item, int DrawX, int DrawY) {
 		DrawX = MinX;
 	if(DrawY < MinPadding)
 		DrawY = MinPadding;
-	if(DrawX > Graphics.GetScreenWidth() - MinPadding - Width)
-		DrawX = Graphics.GetScreenWidth() - MinPadding - Width;
-	if(DrawY > Graphics.GetScreenHeight() - MinPadding - Height)
-		DrawY = Graphics.GetScreenHeight() - MinPadding - Height;
+	if(DrawX > Graphics.CurrentSize.x - MinPadding - Width)
+		DrawX = Graphics.CurrentSize.x - MinPadding - Width;
+	if(DrawY > Graphics.CurrentSize.y - MinPadding - Height)
+		DrawY = Graphics.CurrentSize.y - MinPadding - Height;
 	Graphics.DrawRectangle(DrawX, DrawY, DrawX + Width, DrawY + Height, _Color(0, 0, 0, 0.8f), true);
 
 	DrawY += 25;
@@ -892,8 +892,8 @@ void _HUD::UpdateSkillInfo(int Skill, int DrawX, int DrawY) {
 
 // Draw death message
 void _HUD::RenderDeathScreen() {
-	Fonts[FONT_LARGEST]->DrawText("You Died!", Graphics.GetScreenWidth() / 2, Graphics.GetScreenHeight() / 2 - 200, COLOR_WHITE, CENTER_MIDDLE);
-	Fonts[FONT_LARGE]->DrawText(std::string("Press [") + Actions.GetInputNameForAction(_Actions::USE) + "] to continue", Graphics.GetScreenWidth() / 2, Graphics.GetScreenHeight() / 2 - 150, COLOR_WHITE, CENTER_MIDDLE);
+	Fonts[FONT_LARGEST]->DrawText("You Died!", Graphics.CurrentSize.x / 2, Graphics.CurrentSize.y / 2 - 200, COLOR_WHITE, CENTER_MIDDLE);
+	Fonts[FONT_LARGE]->DrawText(std::string("Press [") + Actions.GetInputNameForAction(_Actions::USE) + "] to continue", Graphics.CurrentSize.x / 2, Graphics.CurrentSize.y / 2 - 150, COLOR_WHITE, CENTER_MIDDLE);
 }
 
 // Show hud message

@@ -130,13 +130,13 @@ void _EditorState::Init() {
 	LoadMap(MapFilename, PlayState.GetFromEditor());
 
 	// Set up graphics
-	Graphics.ChangeViewport(Graphics.GetScreenWidth() - EDITOR_VIEWPORT_OFFSETX, Graphics.GetScreenHeight() - EDITOR_VIEWPORT_OFFSETY);
-	Camera->CalculateFrustum(Graphics.GetAspectRatio());
+	Graphics.ChangeViewport(Graphics.CurrentSize - EDITOR_VIEWPORT_OFFSET);
+	Camera->CalculateFrustum(Graphics.AspectRatio);
 	Graphics.ShowCursor(true);
 
 	// Adjust UI
 	for(int i = 0; i < EDITMODE_COUNT; i++)
-		PaletteElement[i]->SetHeight(Graphics.GetViewportHeight() - 30);
+		PaletteElement[i]->SetHeight(Graphics.ViewportSize.y - 30);
 
 	if(SavedLayer != -1)
 		ExecuteUpdateLayer(SavedLayer, false);
@@ -533,7 +533,7 @@ void _EditorState::MouseEvent(const _MouseEvent &MouseEvent) {
 	}
 
 	// Distinguish between interface and viewport clicks
-	if(Input.GetMouse().x < Graphics.GetViewportWidth() && Input.GetMouse().y < Graphics.GetViewportHeight()) {
+	if(Input.GetMouse().x < Graphics.ViewportSize.x && Input.GetMouse().y < Graphics.ViewportSize.y) {
 		if(MouseEvent.Pressed) {
 
 			// Mouse press
@@ -658,7 +658,7 @@ void _EditorState::MouseEvent(const _MouseEvent &MouseEvent) {
 // Mouse wheel handler
 void _EditorState::MouseWheelEvent(int Direction) {
 
-	if(Input.GetMouse().x < Graphics.GetViewportWidth() && Input.GetMouse().y < Graphics.GetViewportHeight()) {
+	if(Input.GetMouse().x < Graphics.ViewportSize.x && Input.GetMouse().y < Graphics.ViewportSize.y) {
 		float Multiplier = 1.0f * Direction;
 		if(IsShiftDown)
 			Multiplier = 10.0f * Direction;
@@ -931,7 +931,7 @@ void _EditorState::Render(double BlendFactor) {
 	std::ostringstream Buffer;
 
 	// Draw viewport outline
-	Graphics.DrawRectangle(0, 0, Graphics.GetViewportWidth(), Graphics.GetViewportHeight(), COLOR_DARK);
+	Graphics.DrawRectangle(0, 0, Graphics.ViewportSize.x, Graphics.ViewportSize.y, COLOR_DARK);
 
 	// Draw text
 	if(EditorInput != -1) {
@@ -945,15 +945,15 @@ void _EditorState::Render(double BlendFactor) {
 
 	// Draw cursor position
 	int X = 16;
-	int Y = Graphics.GetViewportHeight() - 25;
+	int Y = Graphics.ViewportSize.y - 25;
 	Buffer << std::fixed << WorldCursor.x << ", " << WorldCursor.y;
 	MainFont->DrawText(Buffer.str(), X, Y);
 	Buffer.str("");
 
 	// Draw FPS
-	X = Graphics.GetViewportWidth() - 45;
+	X = Graphics.ViewportSize.x - 45;
 	Y = 25;
-	Buffer << Graphics.GetFramesPerSecond() << " FPS";
+	Buffer << Graphics.FramesPerSecond << " FPS";
 	MainFont->DrawText(Buffer.str(), X, Y, COLOR_WHITE, RIGHT_BASELINE);
 	Buffer.str("");
 
@@ -963,8 +963,8 @@ void _EditorState::Render(double BlendFactor) {
 	Buffer.str("");
 
 	// Draw checkpoint info
-	X = Graphics.GetViewportWidth() - 45;
-	Y = Graphics.GetViewportHeight() - 40;
+	X = Graphics.ViewportSize.x - 45;
+	Y = Graphics.ViewportSize.y - 40;
 	Buffer << CheckpointIndex;
 	MainFont->DrawText("Checkpoint:", X, Y, COLOR_WHITE, RIGHT_BASELINE);
 	MainFont->DrawText(Buffer.str(), X + 5, Y);
@@ -1128,8 +1128,8 @@ void _EditorState::DrawBrush() {
 			}
 			IconIdentifier = "";
 
-			int X = (float)Graphics.GetViewportWidth() + 100;
-			int Y = (float)Graphics.GetViewportHeight() + 5;
+			int X = (float)Graphics.ViewportSize.x + 100;
+			int Y = (float)Graphics.ViewportSize.y + 5;
 			std::ostringstream Buffer;
 			Buffer << IconRotation;
 			MainFont->DrawText("Rotation:", X, Y, COLOR_WHITE, RIGHT_BASELINE);
@@ -1158,7 +1158,7 @@ void _EditorState::DrawBrush() {
 			MainFont->DrawText(Buffer.str(), X + 5, Y);
 			Buffer.str("");
 
-			MainFont->DrawText(BlockAltTextureIdentifier, (float)Graphics.GetViewportWidth() + 112, (float)Graphics.GetViewportHeight() + 145, COLOR_WHITE, CENTER_MIDDLE);
+			MainFont->DrawText(BlockAltTextureIdentifier, (float)Graphics.ViewportSize.x + 112, (float)Graphics.ViewportSize.y + 145, COLOR_WHITE, CENTER_MIDDLE);
 		} break;
 		case EDITMODE_EVENTS: {
 
@@ -1188,8 +1188,8 @@ void _EditorState::DrawBrush() {
 				ActivationPeriod = EventActivationPeriod;
 			}
 
-			int X = Graphics.GetViewportWidth() + 75;
-			int Y = Graphics.GetViewportHeight() - 15;
+			int X = Graphics.ViewportSize.x + 75;
+			int Y = Graphics.ViewportSize.y - 15;
 
 			std::ostringstream Buffer;
 			Buffer << Active;
@@ -1229,14 +1229,14 @@ void _EditorState::DrawBrush() {
 
 	// Bottom information box
 	if(IconText != "")
-		MainFont->DrawText(IconText, (float)Graphics.GetViewportWidth() + 112, (float)Graphics.GetViewportHeight() + 130, COLOR_WHITE, CENTER_MIDDLE);
+		MainFont->DrawText(IconText, (float)Graphics.ViewportSize.x + 112, (float)Graphics.ViewportSize.y + 130, COLOR_WHITE, CENTER_MIDDLE);
 
 	if(IconIdentifier != "")
-		MainFont->DrawText(IconIdentifier, (float)Graphics.GetViewportWidth() + 112, (float)Graphics.GetViewportHeight() + 145, COLOR_WHITE, CENTER_MIDDLE);
+		MainFont->DrawText(IconIdentifier, (float)Graphics.ViewportSize.x + 112, (float)Graphics.ViewportSize.y + 145, COLOR_WHITE, CENTER_MIDDLE);
 
 	if(IconTexture) {
 		Graphics.EnableVBO(VBO_QUAD);
-		Graphics.DrawTexture((float)Graphics.GetScreenWidth() - 112, (float)Graphics.GetScreenHeight() - 84, 0.0f, IconTexture, IconColor, IconRotation, IconScaleX * EDITOR_PALETTE_SELECTEDSIZE * 2, EDITOR_PALETTE_SELECTEDSIZE * 2);
+		Graphics.DrawTexture((float)Graphics.CurrentSize.x - 112, (float)Graphics.CurrentSize.y - 84, 0.0f, IconTexture, IconColor, IconRotation, IconScaleX * EDITOR_PALETTE_SELECTEDSIZE * 2, EDITOR_PALETTE_SELECTEDSIZE * 2);
 	}
 }
 

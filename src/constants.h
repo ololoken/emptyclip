@@ -119,8 +119,7 @@ const  float        EDITOR_OBJECTRADIUS            =  0.4f;
 const  double       EDITOR_PERIODADJUST            =  0.1;
 const  int          EDITOR_DEFAULT_LAYER           =  1;
 const  int          EDITOR_DEFAULT_GRIDMODE        =  5;
-const  int          EDITOR_VIEWPORT_OFFSETX        =  224;
-const  int          EDITOR_VIEWPORT_OFFSETY        =  168;
+const  glm::ivec2   EDITOR_VIEWPORT_OFFSET         =  glm::ivec2(224,168);
 const  int          EDITOR_PALETTE_SELECTEDSIZE    =  32;
 const  int          EDITOR_WALL_LAYER              =  5;
 //     Menu

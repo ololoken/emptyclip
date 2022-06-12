@@ -110,8 +110,8 @@ void _PlayState::Init() {
 	Particles = new _Particles();
 	Particles->SetCamera(Camera);
 
-	Graphics.ChangeViewport(Graphics.GetScreenWidth(), Graphics.GetScreenHeight());
-	Camera->CalculateFrustum(Graphics.GetAspectRatio());
+	Graphics.ChangeViewport(Graphics.CurrentSize);
+	Camera->CalculateFrustum(Graphics.AspectRatio);
 	Graphics.ShowCursor(false);
 
 	Actions.ResetState();
@@ -500,7 +500,7 @@ void _PlayState::Render(double BlendFactor) {
 	HUD->Render();
 
 	if(IsPaused() || (Player && Player->IsDead()))
-		Graphics.DrawRectangle(0, 0, Graphics.GetScreenWidth(), Graphics.GetScreenHeight(), _Color(0, 0, 0, GAME_PAUSE_FADEAMOUNT), true);
+		Graphics.DrawRectangle(0, 0, Graphics.CurrentSize.x, Graphics.CurrentSize.y, _Color(0, 0, 0, GAME_PAUSE_FADEAMOUNT), true);
 
 	// Draw in-game menu
 	if(IsPaused()) {

@@ -37,15 +37,14 @@ _Graphics Graphics;
 
 // Initialize
 void _Graphics::Init(int WindowWidth, int WindowHeight, int Vsync, int MSAA, bool Fullscreen) {
-	this->ScreenWidth = WindowWidth;
-	this->ScreenHeight = WindowHeight;
-	FramesPerSecond = 0;
+	CurrentSize.x = WindowWidth;
+	CurrentSize.y = WindowHeight;
 	FramesPerSecond = 0;
 	FrameCount = 0;
 	FrameRateTimer = 0;
 	TriangleCount = 0;
-	Context = 0;
-	Window = 0;
+	Context = nullptr;
+	Window = nullptr;
 	Enabled = true;
 	LastTextureID = -1;
 	LastColor = COLOR_WHITE;
@@ -57,17 +56,12 @@ void _Graphics::Init(int WindowWidth, int WindowHeight, int Vsync, int MSAA, boo
 		VideoFlags |= SDL_WINDOW_FULLSCREEN_DESKTOP;
 
 		SDL_DisplayMode DisplayMode;
-		if(SDL_GetDesktopDisplayMode(0, &DisplayMode) == 0) {
-			this->ScreenWidth = DisplayMode.w;
-			this->ScreenHeight = DisplayMode.h;
-		}
+		if(SDL_GetDesktopDisplayMode(0, &DisplayMode) == 0)
+			CurrentSize = glm::ivec2(DisplayMode.w, DisplayMode.h);
 	}
 
 	// Set root element
-	Element = new _Element("screen_element", nullptr, _Point(0, 0), _Point(this->ScreenWidth, this->ScreenHeight), _Alignment(0, 0), nullptr, false);
-
-	// Set up viewport
-	ChangeViewport(this->ScreenWidth, this->ScreenHeight);
+	Element = new _Element("screen_element", nullptr, _Point(0, 0), _Point(CurrentSize.x, CurrentSize.y), _Alignment(0, 0), nullptr, false);
 
 	// Set opengl attributes
 	SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 1);
@@ -78,7 +72,7 @@ void _Graphics::Init(int WindowWidth, int WindowHeight, int Vsync, int MSAA, boo
 	}
 
 	// Set video mode
-	Window = SDL_CreateWindow(GAME_WINDOWTITLE.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, this->ScreenWidth, this->ScreenHeight, VideoFlags);
+	Window = SDL_CreateWindow(GAME_WINDOWTITLE.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, CurrentSize.x, CurrentSize.y, VideoFlags);
 	if(Window == nullptr)
 		throw std::runtime_error("SDL_CreateWindow failed");
 
@@ -94,7 +88,7 @@ void _Graphics::Init(int WindowWidth, int WindowHeight, int Vsync, int MSAA, boo
 	SetupOpenGL();
 
 	// Setup viewport
-	ChangeViewport(this->ScreenWidth, this->ScreenHeight);
+	ChangeViewport(CurrentSize);
 }
 
 // Shutdown system
@@ -116,12 +110,11 @@ void _Graphics::Close() {
 }
 
 // Change the viewport
-void _Graphics::ChangeViewport(int Width, int Height) {
-	ViewportWidth = Width;
-	ViewportHeight = Height;
+void _Graphics::ChangeViewport(const glm::ivec2 &Size) {
+	ViewportSize = Size;
 
 	// Calculate aspect ratio
-	AspectRatio = (float)ViewportWidth / ViewportHeight;
+	AspectRatio = (float)ViewportSize.x / ViewportSize.y;
 }
 
 // Toggle fullscreen
@@ -290,19 +283,19 @@ void _Graphics::ClearScreen() {
 
 // Set up modelview matrix
 void _Graphics::Setup3DViewport() {
-	glViewport(0, ScreenHeight - ViewportHeight, ViewportWidth, ViewportHeight);
+	glViewport(0, CurrentSize.y - ViewportSize.y, ViewportSize.x, ViewportSize.y);
 }
 
 // Sets up the projection matrix for drawing 2D objects
 void _Graphics::Setup2DProjectionMatrix() {
 
 	// Set viewport
-	glViewport(0, 0, ScreenWidth, ScreenHeight);
+	glViewport(0, 0, CurrentSize.x, CurrentSize.y);
 
 	// Set projection matrix and frustum
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	glOrtho(0, ScreenWidth, ScreenHeight, 0, -1, 1);
+	glOrtho(0, CurrentSize.x, CurrentSize.y, 0, -1, 1);
 
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
@@ -312,7 +305,7 @@ void _Graphics::Setup2DProjectionMatrix() {
 
 // Fade the screen
 void _Graphics::FadeScreen(float Amount) {
-	Graphics.DrawRectangle(0, 0, GetScreenWidth(), GetScreenHeight(), _Color(0.0f, 0.0f, 0.0f, Amount), true);
+	Graphics.DrawRectangle(0, 0, CurrentSize.x, CurrentSize.y, _Color(0.0f, 0.0f, 0.0f, Amount), true);
 }
 
 // Draw centered image in screen space
@@ -458,46 +451,6 @@ void _Graphics::DrawTexture(float X, float Y, float Z, const _Texture *Texture, 
 		glScalef(ScaleX, ScaleY, 1.0f);
 
 		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-
-	glPopMatrix();
-
-	TriangleCount += 2;
-}
-
-// Draw light
-void _Graphics::DrawLight(const glm::vec2 &Position, const _Texture *Texture, const _Color &Color, float Scale) {
-	SetTextureEnabled(true);
-	SetTextureID(Texture->GetID());
-
-	glPushMatrix();
-
-		// Apply translation, rotation, and scale transforms
-		glTranslatef(Position.x, Position.y, 0.0f);
-
-		glScalef(Scale, Scale, 1.0f);
-
-		SetColor(Color);
-
-		glBegin(GL_TRIANGLE_STRIP);
-		glNormal3f(0.0f, 0.0f, 1.0f);
-
-		// Top right
-		glTexCoord2f(0.0f, 1.0f);
-		glVertex2f(-1.0f, 1.0f);
-
-		// Top left
-		glTexCoord2f(1.0f, 1.0f);
-		glVertex2f(1.0f, 1.0f);
-
-		// Bottom light
-		glTexCoord2f(0.0f, 0.0f);
-		glVertex2f(-1.0f, -1.0f);
-
-		// Bottom left
-		glTexCoord2f(1.0f, 0.0f);
-		glVertex2f(1.0f, -1.0f);
-
-	glEnd();
 
 	glPopMatrix();
 

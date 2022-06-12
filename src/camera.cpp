@@ -66,14 +66,14 @@ void _Camera::Set3DProjection(double BlendFactor) const {
 
 // Converts screen space to world space
 void _Camera::ConvertScreenToWorld(const _Point &Point, glm::vec2 &WorldPosition) {
-	WorldPosition.x = (Point.x / (float)(Graphics.GetViewportWidth()) - 0.5f) * Distance * Graphics.GetAspectRatio() * 2 + Position.x;
-	WorldPosition.y = (Point.y / (float)(Graphics.GetViewportHeight()) - 0.5f) * Distance * 2 + Position.y;
+	WorldPosition.x = (Point.x / (float)(Graphics.ViewportSize.x) - 0.5f) * Distance * Graphics.AspectRatio * 2 + Position.x;
+	WorldPosition.y = (Point.y / (float)(Graphics.ViewportSize.y) - 0.5f) * Distance * 2 + Position.y;
 }
 
 // Converts world space to screen space
 void _Camera::ConvertWorldToScreen(const glm::vec2 &WorldPosition, _Point &Point) {
-	Point.x = Graphics.GetViewportWidth() * (0.5f + ((WorldPosition.x - Position.x) / (Distance * Graphics.GetAspectRatio() * 2)));
-	Point.y = Graphics.GetViewportHeight() * (0.5f + ((WorldPosition.y - Position.y) / (Distance * 2)));
+	Point.x = Graphics.ViewportSize.x * (0.5f + ((WorldPosition.x - Position.x) / (Distance * Graphics.AspectRatio * 2)));
+	Point.y = Graphics.ViewportSize.y * (0.5f + ((WorldPosition.y - Position.y) / (Distance * 2)));
 }
 
 // Update camera
@@ -91,7 +91,7 @@ void _Camera::Update(double FrameTime) {
 	if(std::abs(DeltaZ) > 0.01f)
 		Distance += DeltaZ / UpdateDivisor;
 
-	float Width = Distance * Graphics.GetAspectRatio();
+	float Width = Distance * Graphics.AspectRatio;
 	float Height = Distance;
 
 	// Get AABB at z=0

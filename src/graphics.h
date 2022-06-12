@@ -18,10 +18,10 @@
 #pragma once
 
 // Libraries
-#include <glm/vec2.hpp>
 #include <color.h>
 #include <SDL_video.h>
 #include <SDL_opengl.h>
+#include <glm/vec2.hpp>
 
 // Forward Declarations
 class _Texture;
@@ -50,7 +50,7 @@ class _Graphics {
 		void ShowCursor(bool Show);
 		void BuildVertexBuffers();
 
-		void ChangeViewport(int Width, int Height);
+		void ChangeViewport(const glm::ivec2 &Size);
 		void Setup2DProjectionMatrix();
 		void Setup3DViewport();
 
@@ -67,14 +67,7 @@ class _Graphics {
 		void DrawRectangle(float StartX, float StartY, float EndX, float EndY, const _Color &Color, bool Filled=false);
 		void DrawLine(float StartX, float StartY, float EndX, float EndY, const _Color &Color, float Z=0.0f);
 		void DrawCircle(float X, float Y, float Z, float Radius, const _Color &Color);
-		void DrawLight(const glm::vec2 &Position, const _Texture *Texture, const _Color &Color, float Scale=1.0f);
 
-		int GetScreenWidth() const { return ScreenWidth; }
-		int GetScreenHeight() const { return ScreenHeight; }
-		int GetViewportWidth() const { return ViewportWidth; }
-		int GetViewportHeight() const { return ViewportHeight; }
-		float GetAspectRatio() const { return AspectRatio; }
-		int GetFramesPerSecond() const { return FramesPerSecond; }
 		_Element *GetElement();
 
 		void SetDepthMask(bool Value);
@@ -95,6 +88,14 @@ class _Graphics {
 		void SetTextureEnabled(bool Value);
 		void SetTextureID(GLuint TextureID);
 
+		// Viewport
+		glm::ivec2 CurrentSize;
+		glm::ivec2 ViewportSize;
+		float AspectRatio;
+
+		// Benchmarking
+		int FramesPerSecond;
+
 	private:
 
 		void SetupOpenGL();
@@ -104,13 +105,6 @@ class _Graphics {
 		SDL_Window *Window;
 		SDL_GLContext Context;
 		_Element *Element;
-
-		// Viewport
-		int ScreenWidth;
-		int ScreenHeight;
-		int ViewportWidth;
-		int ViewportHeight;
-		float AspectRatio;
 
 		// Vertex buffers
 		GLuint VertexBuffer[VBO_COUNT];
@@ -122,7 +116,6 @@ class _Graphics {
 
 		// Benchmarking
 		int TriangleCount;
-		int FramesPerSecond;
 		double FrameRateTimer;
 		int FrameCount;
 };
