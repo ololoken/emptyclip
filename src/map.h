@@ -142,7 +142,6 @@ class _Map {
 
 		void SetAmbientLight(const _Color &Color) { OldAmbientLight = AmbientLight; AmbientLight = Color; }
 		void SetAmbientLightChangePeriod(double Value) { AmbientLightPeriod = Value; AmbientLightTimer = AmbientLightBlendFactor = 0.0; }
-		void SetAmbientLightRadius(float Value) { AmbientLightRadius = Value; }
 
 		void RenderFloors();
 		void RenderWalls();
@@ -223,10 +222,8 @@ class _Map {
 		std::string MonsterSet;
 
 		// Lights
-		_Texture *AmbientLightTexture;
 		_Color AmbientLight;
 		_Color OldAmbientLight;
-		float AmbientLightRadius;
 		double AmbientLightBlendFactor;
 		double AmbientLightPeriod;
 		double AmbientLightTimer;

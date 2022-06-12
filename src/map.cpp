@@ -40,10 +40,8 @@ _Map::_Map()
 	ObjectManager(new _ObjectManager()),
 	Camera(nullptr),
 	MonsterSet(MAP_DEFAULTMONSTERSET),
-	AmbientLightTexture(nullptr),
 	AmbientLight(0.0f, 0.0f, 0.0f, 1.0f),
 	OldAmbientLight(0.0f, 0.0f, 0.0f, 1.0f),
-	AmbientLightRadius(100.0f),
 	AmbientLightBlendFactor(1.0),
 	AmbientLightPeriod(0.0),
 	AmbientLightTimer(0.0) {
@@ -185,10 +183,8 @@ _Map::_Map(const std::string &Filename) : _Map() {
 		Block.End = GetValidCoord(Block.End);
 		Blocks[Layer].push_back(Block);
 	}
-	InputFile.close();
 
-	// Get light textures
-	AmbientLightTexture = Assets.GetTexture("light0");
+	InputFile.close();
 }
 
 // Shut down
@@ -1396,27 +1392,6 @@ void _Map::RenderForeground() {
 		if(Draw)
 			Graphics.DrawRepeatable((float)Block->Start.X, (float)Block->Start.Y, (float)Block->MaxZ + 0.01f * i, (float)Block->End.X + 1.0f, (float)Block->End.Y + 1.0f, Block->MaxZ + 0.01f * i, Block->Texture, Block->Rotation, Block->ScaleX);
 	}
-}
-
-// Renders the lights
-void _Map::RenderLights(const Vector2 &PlayerPosition) {
-	Graphics.DisableDepthTest();
-
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	if(AmbientLightTexture) {
-		_Color RenderAmbientLight = AmbientLight * AmbientLightBlendFactor + OldAmbientLight * (1.0 - AmbientLightBlendFactor);
-		RenderAmbientLight.Alpha = 1.0f - RenderAmbientLight.Alpha;
-		Graphics.DrawLight(PlayerPosition, AmbientLightTexture, RenderAmbientLight, AmbientLightRadius);
-	}
-	/*if(IsFiring) {
-		glBlendFunc(GL_DST_COLOR, GL_ONE);
-		Graphics.DrawLight(PlayerPosition, Assets.GetTexture("light1"),  _Color(0.922, 0.792, 0.337, 1), 50.0f);
-		//glBlendFunc(GL_DST_COLOR, GL_ONE);
-		//Graphics.DrawLight(5, 5, 0.0f, Assets.GetTexture("light1"),  _Color(1.0, 1, 1, 1), 5.0f);
-	}*/
-
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	Graphics.EnableDepthTest();
 }
 
 // Update map

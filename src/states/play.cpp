@@ -432,7 +432,6 @@ void _PlayState::Render(double BlendFactor) {
 
 	// Draw the foreground tiles
 	Map->RenderForeground();
-	Map->RenderLights(Player->Position);
 
 	// Draw the crosshair
 	if(!Player->IsDying())
@@ -868,7 +867,6 @@ void _PlayState::CheckEvents(const _Entity *Entity) {
 					if(LastLightEvent != Event) {
 						Map->SetAmbientLight(Assets.GetColor(Event->ItemIdentifier));
 						Map->SetAmbientLightChangePeriod(Event->ActivationPeriod);
-						Map->SetAmbientLightRadius((float)Event->Level);
 						LastLightEvent = Event;
 					}
 				} break;
