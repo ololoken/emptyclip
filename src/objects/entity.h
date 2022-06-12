@@ -90,7 +90,6 @@ class _Entity : public _Object {
 		virtual void ReduceAmmo() { }
 		virtual bool HasAmmo() const { return true; }
 
-		virtual int64_t ExperienceGiven() const { return 0; }
 		virtual void UpdateExperience(int64_t ExperienceGained) { }
 		virtual void UpdateKillCount(int Value) { }
 		virtual void UpdateAnimation(double FrameTime);
@@ -102,35 +101,16 @@ class _Entity : public _Object {
 		bool IsDying() const { return Action == ACTION_DYING || Action == ACTION_STARTDEATH; }
 		bool IsDead() const { return Action == ACTION_DYING && !Active; }
 
-		void SetAttackMade(bool Value) { AttackMade = Value; }
-		void SetAction(const ActionType Value) { Action = Value; }
 		void SetMoveState(MoveType State);
-		void SetAttackRequested(bool Attack) { AttackRequested = Attack; }
-		void SetAttackRequestType(int AttackType) { AttackRequestType = AttackType; }
-		void SetSample(int Type, const std::string &Sample) { Samples[Type] = Sample; }
 
-		ActionType GetAction() const { return Action; }
-		bool GetAttackRequestType() const { return AttackRequestType; }
-		bool GetAttackMade() const { return AttackMade; }
-		MoveType GetMoveState() const { return MoveState; }
-		int GetDamageBlock() const { return DamageBlock; }
-		float GetDamageResist() const { return DamageResist; }
-		int GetMaxHealth() const { return MaxHealth; }
-		int GetHealth() const { return CurrentHealth; }
-		float GetHealthPercentage() const { return (float)CurrentHealth / MaxHealth; }
+		float GetHealthPercentage() const { return (float)Health / MaxHealth; }
 		float GetStaminaPercentage() const { return Stamina / MaxStamina; }
-		bool GetAttackRequested() const { return AttackRequested; }
 		int GetWeaponType() const { return MainWeaponType; }
-		Vector2 GetWeaponOffset(int Type) const { return WeaponParticleOffset[Type]; }
-		float GetWeaponRange(int Type) const { return AttackRange[Type]; }
-		float GetCurrentAccuracy() const { return CurrentAccuracy; }
+		Vector2 GetWeaponOffset(int WeaponType) const { return WeaponParticleOffset[WeaponType]; }
+		float GetWeaponRange(int AttackType) const { return AttackRange[AttackType]; }
 		float GetMaxAccuracy(int AttackType) const { return MaxAccuracy[AttackType]; }
-		float GetMovementSpeed() const { return MovementSpeed; }
 		int GetMinDamage(int Type) const { return MinDamage[Type]; }
 		int GetMaxDamage(int Type) const { return MaxDamage[Type]; }
-		int GetBulletsShot() const { return BulletsShot; }
-		int GetLevel() const { return Level; }
-		bool GetTired() const { return Tired; }
 		virtual Vector2 GetGoal() const;
 		virtual int64_t GetExperienceGiven() const { return 0; }
 		virtual std::string GetItemGroupIdentifier() const { return ""; }
@@ -139,53 +119,75 @@ class _Entity : public _Object {
 		void AddGoal(const Vector2 &Goal) { Goals.push_front(Goal); }
 		void PopGoal() { if(!Goals.empty()) Goals.pop_front(); }
 
-		void SetAnimation(_Animation *Animation) { this->Animation = Animation; }
-		_Animation *GetAnimation() const { return Animation; }
-
-		virtual const std::string &GetSample(int Type) const { return Samples[Type]; };
+		virtual const std::string &GetSample(int Type) const { return Samples[Type]; }
 		Vector2 WallInPath(const Vector2 &Delta) const;
 
-		void SetChangedPosition(bool Value) { PositionChanged = Value; }
 		void StartTriggerDownAudio();
 		void StopAudio();
-
-	protected:
-
-		virtual void IncurDeathPenalty() { }
-		virtual void SetLegAnimationPlayMode(int Type) { }
-		virtual void SetAnimationPlaybackSpeedFactor() { }
-		void UpdateRecoil();
 
 		// Graphics
 		_Animation *Animation;
 		Vector2 WeaponParticleOffset[WEAPON_TYPES];
 
+		// Audio
+		std::string Samples[SAMPLE_TYPES];
+		_AudioSource *TriggerDownAudio;
+
 		// Movement
 		MoveType MoveState;
-		double MoveSoundTimer, MoveSoundDelay;
-		float MovementSpeed, MovementModifier;
+		double MoveSoundTimer;
+		double MoveSoundDelay;
+		float MovementSpeed;
+		float MovementModifier;
 		Vector2 MoveDirection;
 		bool PositionChanged;
-		float Stamina, MaxStamina, StaminaRegenModifier;
+		float Stamina;
+		float MaxStamina;
+		float StaminaRegenModifier;
 		bool Tired;
 
-		std::list<Vector2> Goals;
+		// Stats
+		int Level;
+		int Health;
+		int MaxHealth;
+		int DamageBlock;
+		float DamageResist;
 
 		// States
 		ActionType Action;
-		int WalkingAnimation, MeleeAnimation, ShootingOnehandAnimation, ShootingTwohandAnimation, DyingAnimation;
-
-		// Stats
-		int Level, CurrentHealth, MaxHealth, DamageBlock;
-		float DamageResist;
+		int WalkingAnimation;
+		int MeleeAnimation;
+		int ShootingOnehandAnimation;
+		int ShootingTwohandAnimation;
+		int DyingAnimation;
 
 		// Attacking attributes
-		float CurrentAccuracy, MinAccuracy, MaxAccuracy[WEAPONATTACK_COUNT], AccuracyModifier, Recoil, RecoilRegen, AttackRange[WEAPONATTACK_COUNT];
-		double FireTimer[WEAPONATTACK_COUNT], FirePeriod[WEAPONATTACK_COUNT];
-		int MinDamage[WEAPONATTACK_COUNT], MaxDamage[WEAPONATTACK_COUNT], BulletsShot, MainWeaponType;
-		bool AttackRequested, AttackAllowed[WEAPONATTACK_COUNT], AttackMade;
+		float CurrentAccuracy;
+		float MinAccuracy;
+		float MaxAccuracy[WEAPONATTACK_COUNT];
+		float AccuracyModifier;
+		float Recoil;
+		float RecoilRegen;
+		float AttackRange[WEAPONATTACK_COUNT];
+		double FireTimer[WEAPONATTACK_COUNT];
+		double FirePeriod[WEAPONATTACK_COUNT];
+		int MinDamage[WEAPONATTACK_COUNT];
+		int MaxDamage[WEAPONATTACK_COUNT];
+		int BulletsShot;
+		int MainWeaponType;
+		bool AttackRequested;
+		bool AttackAllowed[WEAPONATTACK_COUNT];
+		bool AttackMade;
 		int AttackRequestType;
-		_AudioSource *TriggerDownAudio;
 
-		std::string Samples[SAMPLE_TYPES];
+	protected:
+
+		virtual void IncurDeathPenalty() { }
+		virtual void SetLegAnimationPlayMode(int Mode) { }
+		virtual void SetAnimationPlaybackSpeedFactor() { }
+		void UpdateRecoil();
+
+		// AI
+		std::list<Vector2> Goals;
+
 };

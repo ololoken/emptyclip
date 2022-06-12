@@ -36,21 +36,21 @@ _Particle::_Particle(const _ParticleSpawn &Spawn) :
 	ScaleAspect(Spawn.Template->ScaleAspect) {
 
 	// Random
-	this->Rotation = Spawn.RotationAdjust + static_cast<float>(Random.GenerateRange(Spawn.Template->StartDirection.X, Spawn.Template->StartDirection.Y));
-	this->Velocity = Vector2(this->Rotation) * Random.GenerateRange(Spawn.Template->VelocityScale.X, Spawn.Template->VelocityScale.Y);
-	this->Acceleration = Velocity * Spawn.Template->AccelerationScale;
-	this->TurnSpeed = Random.GenerateRange(Spawn.Template->TurnSpeed.X, Spawn.Template->TurnSpeed.Y);
+	Rotation = Spawn.RotationAdjust + (float)(Random.GenerateRange(Spawn.Template->StartDirection.X, Spawn.Template->StartDirection.Y));
+	Velocity = Vector2(this->Rotation) * Random.GenerateRange(Spawn.Template->VelocityScale.X, Spawn.Template->VelocityScale.Y);
+	Acceleration = Velocity * Spawn.Template->AccelerationScale;
+	TurnSpeed = Random.GenerateRange(Spawn.Template->TurnSpeed.X, Spawn.Template->TurnSpeed.Y);
 	float Size = Random.GenerateRange(Spawn.Template->Size.X, Spawn.Template->Size.Y);
 	if(ScaleAspect >= 1.0f) {
-		this->Scale.X = Size;
-		this->Scale.Y = Size / ScaleAspect;
+		Scale.X = Size;
+		Scale.Y = Size / ScaleAspect;
 	}
 	else {
-		this->Scale.X = Size * ScaleAspect;
-		this->Scale.Y = Size;
+		Scale.X = Size * ScaleAspect;
+		Scale.Y = Size;
 	}
 
-	this->Position = Spawn.Position;
+	Position = Spawn.Position;
 }
 
 // Destructor

@@ -87,7 +87,7 @@ void _PlayState::Init() {
 
 	// Set starting states
 	Player->SetPosition(Map->GetStartingPositionByCheckpoint(Player->GetCheckpointIndex()));
-	Player->SetTileChanged(true);
+	Player->TileChanged = true;
 	Map->AddObjectToGrid(Player, GRID_PLAYER);
 
 	// Get monster and item list
@@ -102,7 +102,7 @@ void _PlayState::Init() {
 	HUD = new _HUD(Player);
 
 	// Set up graphics
-	Camera = new _Camera(Player->GetPosition(), CAMERA_DISTANCE, CAMERA_DIVISOR);
+	Camera = new _Camera(Player->Position, CAMERA_DISTANCE, CAMERA_DIVISOR);
 	Map->SetCamera(Camera);
 
 	Particles = new _Particles();
@@ -145,19 +145,19 @@ bool _PlayState::HandleAction(int InputType, int Action, int Value) {
 				case _Actions::FIRE:
 					if(!HUD->GetInventoryOpen() && !Player->IsMeleeAttacking()) {
 						if(Player->CanAttack(WEAPONATTACK_MAIN) && !Player->HasAmmo())
-							Audio.Play(new _AudioSource(Audio.GetBuffer(Player->GetSample(SAMPLE_EMPTY))), Player->GetPosition());
+							Audio.Play(new _AudioSource(Audio.GetBuffer(Player->GetSample(SAMPLE_EMPTY))), Player->Position);
 
 						if(Player->GetFireRate(WEAPONATTACK_MAIN) == FIRERATE_SEMI) {
-							Player->SetAttackRequested(true);
-							Player->SetAttackRequestType(WEAPONATTACK_MAIN);
+							Player->AttackRequested = true;
+							Player->AttackRequestType = WEAPONATTACK_MAIN;
 						}
 					}
 				break;
 				case _Actions::MELEE:
 					if(!HUD->GetInventoryOpen()) {
 						if(Player->GetFireRate(WEAPONATTACK_MELEE) == FIRERATE_SEMI) {
-							Player->SetAttackRequested(true);
-							Player->SetAttackRequestType(WEAPONATTACK_MELEE);
+							Player->AttackRequested = true;
+							Player->AttackRequestType = WEAPONATTACK_MELEE;
 						}
 					}
 				break;
@@ -242,6 +242,8 @@ void _PlayState::MouseEvent(const _MouseEvent &MouseEvent) {
 
 // Update
 void _PlayState::Update(double FrameTime) {
+
+	// Handle pause
 	if(IsPaused()) {
 		Menu.Update(FrameTime);
 		Graphics.ShowCursor(true);
@@ -251,6 +253,11 @@ void _PlayState::Update(double FrameTime) {
 		return;
 	}
 
+	// Get world cursor
+	PreviousWorldCursor = WorldCursor;
+	Camera->ConvertScreenToWorld(Input.GetMouse(), WorldCursor);
+
+	// Update save timer
 	SaveGameTimer += FrameTime;
 
 	// Handle input
@@ -284,12 +291,12 @@ void _PlayState::Update(double FrameTime) {
 
 			// Attack again
 			if(!Player->IsMeleeAttacking() && Player->GetFireRate(WEAPONATTACK_MAIN) == FIRERATE_AUTO && Actions.GetState(_Actions::FIRE)) {
-				Player->SetAttackRequested(true);
-				Player->SetAttackRequestType(WEAPONATTACK_MAIN);
+				Player->AttackRequested = true;
+				Player->AttackRequestType = WEAPONATTACK_MAIN;
 			}
 			if(Player->GetFireRate(WEAPONATTACK_MELEE) == FIRERATE_AUTO && Actions.GetState(_Actions::MELEE)) {
-				Player->SetAttackRequested(true);
-				Player->SetAttackRequestType(WEAPONATTACK_MELEE);
+				Player->AttackRequested = true;
+				Player->AttackRequestType = WEAPONATTACK_MELEE;
 			}
 
 			// Aim
@@ -307,10 +314,9 @@ void _PlayState::Update(double FrameTime) {
 	Player->Update(FrameTime);
 
 	// Check for events
-	if(Player->GetTileChanged()) {
+	if(Player->TileChanged)
 		CheckEvents(Player);
-	}
-	Player->SetTileChanged(false);
+	Player->TileChanged = false;
 
 	// Pickup up an object
 	if(Player->GetUseRequested()) {
@@ -329,23 +335,23 @@ void _PlayState::Update(double FrameTime) {
 	UpdateEvents(FrameTime);
 
 	// Apply the damage
-	if(Player->GetAttackMade())
+	if(Player->AttackMade)
 		EntityAttack(Player, GRID_MONSTER);
 
 	// Update camera
-	Camera->SetPosition(Player->GetPosition());
+	Camera->SetPosition(Player->Position);
 
 	// Get zoom state
 	if(Player->IsCrouching()) {
-		if(Map->IsVisible(Player->GetPosition(), WorldCursor)) {
-			Camera->UpdatePosition((WorldCursor - Player->GetPosition()) / Player->GetZoomScale());
+		if(Map->IsVisible(Player->Position, WorldCursor)) {
+			Camera->UpdatePosition((WorldCursor - Player->Position) / Player->GetZoomScale());
 		}
 		else {
-			Vector2 Direction = WorldCursor - Player->GetPosition();
+			Vector2 Direction = WorldCursor - Player->Position;
 
 			Vector2 NewPosition;
-			Map->CheckBulletCollisions(Player->GetPosition(), Direction, nullptr, &NewPosition, 0, false);
-			Camera->UpdatePosition((NewPosition - Player->GetPosition()) / Player->GetZoomScale());
+			Map->CheckBulletCollisions(Player->Position, Direction, nullptr, &NewPosition, 0, false);
+			Camera->UpdatePosition((NewPosition - Player->Position) / Player->GetZoomScale());
 		}
 		Camera->SetDistance(CAMERA_DISTANCE_AIMED);
 	}
@@ -369,15 +375,13 @@ void _PlayState::Update(double FrameTime) {
 	if(CursorItem && !HUD->GetCursorOverItem() && (HUD->GetInventoryOpen() || CursorItemTimer > HUD_CURSOR_ITEM_WAIT))
 		HUD->SetCursorOverItem(CursorItem);
 
-	Audio.SetPosition(Player->GetPosition());
+	Audio.SetPosition(Player->Position);
 }
 
 // Render the state
 void _PlayState::Render(double BlendFactor) {
 	if(IsPaused())
 		BlendFactor = 0;
-	else
-		Camera->ConvertScreenToWorld(Input.GetMouse(), WorldCursor);
 
 	// Setup the viewing matrix
 	Graphics.Setup3DViewport();
@@ -428,12 +432,11 @@ void _PlayState::Render(double BlendFactor) {
 
 	// Draw the foreground tiles
 	Map->RenderForeground();
-	Map->RenderLights(Player->GetPosition());
+	Map->RenderLights(Player->Position);
 
 	// Draw the crosshair
-	if(!Player->IsDying()) {
-		HUD->RenderCrosshair(WorldCursor);
-	}
+	if(!Player->IsDying())
+		HUD->RenderCrosshair(WorldCursor * BlendFactor + PreviousWorldCursor * (1.0f - BlendFactor));
 
 	// Debug
 	if(0) {
@@ -449,17 +452,17 @@ void _PlayState::Render(double BlendFactor) {
 			if(Range == 0.0f)
 				Range = 100.0f;
 			Graphics.EnableVBO(VBO_CIRCLE);
-			Graphics.DrawCircle(Player->GetPosition().X, Player->GetPosition().Y, 0.2f, Range, Color);
+			Graphics.DrawCircle(Player->Position.X, Player->Position.Y, 0.2f, Range, Color);
 			Graphics.DisableVBO(VBO_CIRCLE);
 			Vector2 t1, t2;
-			t1 = Player->GetPosition() + Vector2(Player->GetDirection() - Player->GetMaxAccuracy(i) / 2 ) * Range;
-			t2 = Player->GetPosition() + Vector2(Player->GetDirection() + Player->GetMaxAccuracy(i) / 2 ) * Range;
+			t1 = Player->Position + Vector2(Player->GetDirection() - Player->GetMaxAccuracy(i) / 2 ) * Range;
+			t2 = Player->Position + Vector2(Player->GetDirection() + Player->GetMaxAccuracy(i) / 2 ) * Range;
 			glBegin(GL_LINES);
-			glVertex2f(Player->GetPosition().X, Player->GetPosition().Y);
+			glVertex2f(Player->Position.X, Player->Position.Y);
 			glVertex2f(t1.X, t1.Y);
 			glEnd();
 			glBegin(GL_LINES);
-			glVertex2f(Player->GetPosition().X, Player->GetPosition().Y);
+			glVertex2f(Player->Position.X, Player->Position.Y);
 			glVertex2f(t2.X, t2.Y);
 			glEnd();
 		}
@@ -482,7 +485,7 @@ void _PlayState::Render(double BlendFactor) {
 				size_t Count = 0;
 				std::list<_Event *> &Events = Map->GetEventList(_Coord(X, Y));
 				for(auto Event : Events) {
-					if(Event->GetActive())
+					if(Event->Active)
 						Count++;
 
 				}
@@ -533,21 +536,21 @@ void _PlayState::EntityAttack(_Entity *Attacker, int GridType) {
 
 	// Weapon type specific code
 	int WeaponType = WEAPON_MELEE;
-	if(Attacker->GetAttackRequestType() == 0)
+	if(Attacker->AttackRequestType == 0)
 		WeaponType = Attacker->GetWeaponType();
 
 	// Play fire sound and generate fire/smoke particles
 	HitStruct HitInformation;
 	if(WeaponType != WEAPON_MELEE) {
 		GenerateBulletEffects(Attacker, -1, HitInformation.Position);
-		Audio.Play(new _AudioSource(Audio.GetBuffer(Attacker->GetSample(SAMPLE_FIRE))), Attacker->GetPosition());
+		Audio.Play(new _AudioSource(Audio.GetBuffer(Attacker->GetSample(SAMPLE_FIRE))), Attacker->Position);
 	}
 
 	Attacker->StartTriggerDownAudio();
 
 	// For each bullet that the weapon fires
 	bool PlayedHitWallSound = false;
-	for(int i = 0; i < Attacker->GetBulletsShot(); i++) {
+	for(int i = 0; i < Attacker->BulletsShot; i++) {
 		HitInformation.Type = HIT_NONE;
 
 		// Check weapon type
@@ -556,7 +559,7 @@ void _PlayState::EntityAttack(_Entity *Attacker, int GridType) {
 			HitInformation.Object = Map->CheckMeleeCollisions(Attacker, Vector2(Attacker->GetDirection()), GridType);
 			if(HitInformation.Object != nullptr) {
 				HitInformation.Type = HIT_OBJECT;
-				HitInformation.Position = HitInformation.Object->GetPosition();
+				HitInformation.Position = HitInformation.Object->Position;
 			}
 		}
 		else {
@@ -565,19 +568,19 @@ void _PlayState::EntityAttack(_Entity *Attacker, int GridType) {
 			float ShotDirection = Attacker->GenerateShotDirection();
 
 			// Check distance to the wall
-			Map->CheckBulletCollisions(Attacker->GetPosition(), Vector2(ShotDirection), &HitInformation.Object, &HitInformation.Position, GridType, true);
+			Map->CheckBulletCollisions(Attacker->Position, Vector2(ShotDirection), &HitInformation.Object, &HitInformation.Position, GridType, true);
 			if(HitInformation.Object != nullptr)
 				HitInformation.Type = HIT_OBJECT;
 			else
 				HitInformation.Type = HIT_WALL;
 
 			_ParticleTemplate *Template = Assets.GetParticleTemplate("tracer0");
-			Vector2 ParticleStart = Attacker->GetPosition() + (Vector2(0, -Template->Size.Y * 0.5f) + Attacker->GetWeaponOffset(Attacker->GetWeaponType())).RotateVector(ShotDirection);
+			Vector2 ParticleStart = Attacker->Position + (Vector2(0, -Template->Size.Y * 0.5f) + Attacker->GetWeaponOffset(Attacker->GetWeaponType())).RotateVector(ShotDirection);
 
-			float Distance = (HitInformation.Position - Attacker->GetPosition()).Magnitude() - Template->Size.Y;
+			float Distance = (HitInformation.Position - Attacker->Position).Magnitude() - Template->Size.Y;
 
 			_Particle *Tracer = new _Particle(_ParticleSpawn(Template, ParticleStart, OBJECT_Z, ShotDirection));
-			Tracer->SetLifetime(Distance * Template->VelocityScale.Y * GAME_FPS);
+			Tracer->Lifetime = Distance * Template->VelocityScale.Y * GAME_FPS;
 			Particles->Add(Tracer);
 		}
 
@@ -597,16 +600,16 @@ void _PlayState::EntityAttack(_Entity *Attacker, int GridType) {
 				GenerateBulletEffects(Attacker, HIT_OBJECT, HitInformation.Position);
 
 				// Generate damage
-				int Damage = Attacker->GenerateDamage(Attacker->GetAttackRequestType(), HitInformation.Object->GetDamageBlock(), HitInformation.Object->GetDamageResist());
+				int Damage = Attacker->GenerateDamage(Attacker->AttackRequestType, HitInformation.Object->DamageBlock, HitInformation.Object->DamageResist);
 
 				// Create damage number particles
 				Vector2 DamagePosition = HitInformation.Position;
-				if(HitInformation.Object->GetType() ==  _Object::PLAYER)
+				if(HitInformation.Object->Type ==  _Object::PLAYER)
 					DamagePosition += GenerateRandomPointInCircle(0.3f);
 				_Particle *DamageParticle = new _Particle(_ParticleSpawn(Assets.GetParticleTemplate("damage0"), DamagePosition, OBJECT_Z, 0));
-				DamageParticle->SetText(std::to_string(Damage));
-				if(HitInformation.Object->GetType() ==  _Object::PLAYER)
-					DamageParticle->SetColor(COLOR_RED);
+				DamageParticle->Text = std::to_string(Damage);
+				if(HitInformation.Object->Type ==  _Object::PLAYER)
+					DamageParticle->Color = COLOR_RED;
 				Particles->Add(DamageParticle);
 
 				// Update health
@@ -618,7 +621,7 @@ void _PlayState::EntityAttack(_Entity *Attacker, int GridType) {
 					// Dying sound
 					Audio.Play(new _AudioSource(Audio.GetBuffer(HitInformation.Object->GetSample(SAMPLE_DEATH))), HitInformation.Position);
 
-					if(Attacker->GetType() == _Object::PLAYER)
+					if(Attacker->Type == _Object::PLAYER)
 						Attacker->UpdateKillCount(1);
 				}
 
@@ -629,13 +632,13 @@ void _PlayState::EntityAttack(_Entity *Attacker, int GridType) {
 				Audio.Play(new _AudioSource(Audio.GetBuffer(HitInformation.Object->GetSample(SAMPLE_TAKEDAMAGE))), HitInformation.Position);
 
 				// Set HUD last hit object
-				if(HitInformation.Object->GetType() == _Object::MONSTER)
+				if(HitInformation.Object->Type == _Object::MONSTER)
 					HUD->SetLastEntityHit(HitInformation.Object);
 			break;
 		}
 	}
 
-	Attacker->SetAttackMade(false);
+	Attacker->AttackMade = false;
 }
 
 // Places an item into the player's inventory
@@ -645,7 +648,7 @@ void _PlayState::PickupObject() {
 	// Loop through the objects
 	_TileBounds TB;
 	Map->GetTileBounds(Vector2(0.8, 0.8), 0.5, TB);
-	HitItem = (_Item *)Map->CheckCollisionsInGrid(Player->GetPosition(), Player->GetRadius(), GRID_ITEM, nullptr);
+	HitItem = (_Item *)Map->CheckCollisionsInGrid(Player->Position, Player->Radius, GRID_ITEM, nullptr);
 
 	if(HitItem != nullptr) {
 		int AddResult = Player->AddItem(HitItem);
@@ -674,21 +677,21 @@ void _PlayState::UseObject() {
 
 	// Open a door if possible
 	_Coord Position;
-	Map->GetAdjacentTile(Player->GetPosition(), Player->GetDirection(), Position);
+	Map->GetAdjacentTile(Player->Position, Player->GetDirection(), Position);
 
 	// Check for events
 	std::list<_Event *> &Events = Map->GetEventList(Position);
 	for(auto Event : Events) {
 
 		// Check for doors or switches
-		if(Event->GetActive() && (Event->GetType() == EVENT_DOOR || Event->GetType() == EVENT_WSWITCH) && Map->CanChangeMapState(Event)) {
+		if(Event->Active && (Event->Type == EVENT_DOOR || Event->Type == EVENT_WSWITCH) && Map->CanChangeMapState(Event)) {
 
 			// Check for key in inventory and use it
-			if(Event->GetItemIdentifier() != "") {
-				int ItemIndex = Player->FindItem(Event->GetItemIdentifier());
+			if(Event->ItemIdentifier != "") {
+				int ItemIndex = Player->FindItem(Event->ItemIdentifier);
 				if(ItemIndex == -1) {
-					if(Assets.IsMiscItemLoaded(Event->GetItemIdentifier()))
-						HUD->ShowMessageBox("You need a " + Assets.GetMiscItemTemplate(Event->GetItemIdentifier())->Name, HUD_KEYMESSAGETIME);
+					if(Assets.IsMiscItemLoaded(Event->ItemIdentifier))
+						HUD->ShowMessageBox("You need a " + Assets.GetMiscItemTemplate(Event->ItemIdentifier)->Name, HUD_KEYMESSAGETIME);
 
 					return;
 				}
@@ -702,10 +705,10 @@ void _PlayState::UseObject() {
 			Map->ChangeMapState(Event);
 
 			// Decrement level
-			if(Event->GetLevel() > 0) {
+			if(Event->Level > 0) {
 				Event->Decrement();
-				if(Event->GetLevel() == 0)
-					Event->SetActive(false);
+				if(Event->Level == 0)
+					Event->Active = false;
 			}
 
 			Player->ResetUseTimer();
@@ -723,7 +726,7 @@ void _PlayState::CreateItemDrop(const _Entity *Entity) {
 
 			// Spawn random item
 			_ObjectSpawn ObjectSpawn;
-			ObjectSpawn.Position = GenerateRandomPointInCircle(PLAYER_RADIUS) + Entity->GetPosition();
+			ObjectSpawn.Position = GenerateRandomPointInCircle(PLAYER_RADIUS) + Entity->Position;
 
 			// Roll for drop
 			Assets.GetRandomDrop(ItemGroup, &ObjectSpawn);
@@ -739,19 +742,19 @@ void _PlayState::UpdateMonsters(double FrameTime) {
 	for(auto MonsterIterator = Monsters.begin(); MonsterIterator != Monsters.end();) {
 		_Monster *Monster = (_Monster *)*MonsterIterator;
 
-		if(!Monster->GetActive()) {
+		if(!Monster->Active) {
 			Map->RemoveObjectFromGrid(Monster, GRID_MONSTER);
 			delete Monster;
 			MonsterIterator = Monsters.erase(MonsterIterator);
 		}
 		else {
-			Monster->Update(FrameTime, Player);
+			Monster->UpdateMonster(FrameTime, Player);
 
-			if(Monster->GetAttackMade()) {
+			if(Monster->AttackMade) {
 				EntityAttack(Monster, GRID_PLAYER);
 			}
 
-			if(Camera->IsCircleInView(Monster->GetPosition(), Monster->GetScale())) {
+			if(Camera->IsCircleInView(Monster->Position, Monster->Scale)) {
 				Map->AddRenderList(Monster, 2);
 			}
 
@@ -762,44 +765,44 @@ void _PlayState::UpdateMonsters(double FrameTime) {
 
 // Checks for the player triggering events
 void _PlayState::CheckEvents(const _Entity *Entity) {
-	_Coord Position = Map->GetValidCoord(Entity->GetPosition());
+	_Coord Position = Map->GetValidCoord(Entity->Position);
 
 	// Check for events triggered by walking
 	std::list<_Event *> &Events = Map->GetEventList(Position);
 	for(auto Event : Events) {
 
 		// Perform action
-		if(Event->GetActive()) {
-			switch(Event->GetType()) {
+		if(Event->Active) {
+			switch(Event->Type) {
 				case EVENT_SPAWN:
-					if(Assets.IsMonsterLoaded(Event->GetMonsterIdentifier())) {
+					if(Assets.IsMonsterLoaded(Event->MonsterIdentifier)) {
 						Event->StartTimer();
 						ActiveEvents.push_back(Event);
 					}
-					Event->SetActive(false);
+					Event->Active = false;
 				break;
 				case EVENT_CHECK:
 					switch(Map->GetMapType()) {
 						case MAPTYPE_SINGLE:
-							if(Event->GetLevel() > Player->GetCheckpointIndex()) {
-								Player->SetCheckpointIndex(Event->GetLevel());
+							if(Event->Level > Player->GetCheckpointIndex()) {
+								Player->SetCheckpointIndex(Event->Level);
 								HUD->ShowTextMessage(HUD_CHECKPOINTMESSAGE, HUD_CHECKPOINTTIME);
 								Player->Save();
 								SaveGameTimer = 0;
 							}
-							Event->SetActive(false);
+							Event->Active = false;
 						break;
 						case MAPTYPE_TUTORIAL:
-							if(Event->GetLevel() > Player->GetCheckpointIndex()) {
-								Player->SetCheckpointIndex(Event->GetLevel());
+							if(Event->Level > Player->GetCheckpointIndex()) {
+								Player->SetCheckpointIndex(Event->Level);
 								HUD->ShowTextMessage(HUD_CHECKPOINTMESSAGE, HUD_CHECKPOINTTIME);
 								Player->Save();
 							}
-							Event->SetActive(false);
+							Event->Active = false;
 						break;
 						case MAPTYPE_ADVENTURE:
-							if(Event->GetLevel() != Player->GetCheckpointIndex()) {
-								Player->SetCheckpointIndex(Event->GetLevel());
+							if(Event->Level != Player->GetCheckpointIndex()) {
+								Player->SetCheckpointIndex(Event->Level);
 								HUD->ShowTextMessage(HUD_CHECKPOINTMESSAGE, HUD_CHECKPOINTTIME);
 								Player->Save();
 							}
@@ -809,7 +812,7 @@ void _PlayState::CheckEvents(const _Entity *Entity) {
 					}
 				break;
 				case EVENT_END:
-					Level = Event->GetItemIdentifier();
+					Level = Event->ItemIdentifier;
 
 					// End of the game
 					if(Level == "") {
@@ -820,42 +823,41 @@ void _PlayState::CheckEvents(const _Entity *Entity) {
 					else
 						Framework.ChangeState(&PlayState);
 
-					Player->SetCheckpointIndex(Event->GetLevel());
+					Player->SetCheckpointIndex(Event->Level);
 					Player->SetMapIdentifier(Level);
 					Player->Save();
 				break;
 				case EVENT_TEXT:
-					if(Assets.IsStringLoaded(Event->GetItemIdentifier()))
-						HUD->ShowMessageBox(Assets.GetString(Event->GetItemIdentifier()), Event->GetActivationPeriod());
+					if(Assets.IsStringLoaded(Event->ItemIdentifier))
+						HUD->ShowMessageBox(Assets.GetString(Event->ItemIdentifier), Event->ActivationPeriod);
 
 					// Message with level of 0 = infinite
-					if(Event->GetLevel() != 0)
-						Event->SetActive(false);
+					if(Event->Level != 0)
+						Event->Active = false;
 				break;
 				case EVENT_SOUND:
-					if(Audio.GetBuffer(Event->GetItemIdentifier())) {
+					if(Audio.GetBuffer(Event->ItemIdentifier)) {
 						Event->StartTimer();
 						ActiveEvents.push_back(Event);
 					}
-					Event->SetActive(false);
+					Event->Active = false;
 				break;
 				case EVENT_FSWITCH:
 				case EVENT_ENABLE:
 					Event->StartTimer();
 					ActiveEvents.push_back(Event);
-					Event->SetActive(false);
+					Event->Active = false;
 				break;
 				case EVENT_TELE: {
-					if(Event->GetLevel() > 0) {
+					if(Event->Level > 0) {
 						Event->Decrement();
-						if(Event->GetLevel() == 0)
-							Event->SetActive(false);
+						if(Event->Level == 0)
+							Event->Active = false;
 					}
 
-					const std::vector<_EventTile> &Tiles = Event->GetTiles();
-					if(Tiles.size() > 0) {
-						Vector2 NewPosition(Tiles[0].Coord.X + 0.5f, Tiles[0].Coord.Y + 0.5f);
-						Particles->Create(_ParticleSpawn(Assets.GetParticleTemplate(Event->GetParticleIdentifier()), NewPosition, OBJECT_Z, 0));
+					if(Event->Tiles.size() > 0) {
+						Vector2 NewPosition(Event->Tiles[0].Coord.X + 0.5f, Event->Tiles[0].Coord.Y + 0.5f);
+						Particles->Create(_ParticleSpawn(Assets.GetParticleTemplate(Event->ParticleIdentifier), NewPosition, OBJECT_Z, 0));
 
 						Map->RemoveObjectFromGrid(Player, GRID_PLAYER);
 						Player->SetPosition(NewPosition);
@@ -864,9 +866,9 @@ void _PlayState::CheckEvents(const _Entity *Entity) {
 				} break;
 				case EVENT_LIGHT: {
 					if(LastLightEvent != Event) {
-						Map->SetAmbientLight(Assets.GetColor(Event->GetItemIdentifier()));
-						Map->SetAmbientLightChangePeriod(Event->GetActivationPeriod());
-						Map->SetAmbientLightRadius((float)Event->GetLevel());
+						Map->SetAmbientLight(Assets.GetColor(Event->ItemIdentifier));
+						Map->SetAmbientLightChangePeriod(Event->ActivationPeriod);
+						Map->SetAmbientLightRadius((float)Event->Level);
 						LastLightEvent = Event;
 					}
 				} break;
@@ -888,21 +890,21 @@ void _PlayState::UpdateEvents(double FrameTime) {
 		if(Event->TimerExpired()) {
 			Vector2 Position;
 			bool Decrement = false;
-			switch(Event->GetType()) {
+			switch(Event->Type) {
 				case EVENT_SPAWN: {
 
-					const std::vector<_EventTile> &Tiles = Event->GetTiles();
+					const std::vector<_EventTile> &Tiles = Event->Tiles;
 					for(size_t i = 0; i < Tiles.size(); i++) {
 						Position.X = static_cast<float>(Tiles[i].Coord.X) + 0.5f;
 						Position.Y = static_cast<float>(Tiles[i].Coord.Y) + 0.5f;
-						AddMonster(Assets.CreateMonster(Event->GetMonsterIdentifier(), Position));
-						Particles->Create(_ParticleSpawn(Assets.GetParticleTemplate(Event->GetParticleIdentifier()), Position, OBJECT_Z, 0));
+						AddMonster(Assets.CreateMonster(Event->MonsterIdentifier, Position));
+						Particles->Create(_ParticleSpawn(Assets.GetParticleTemplate(Event->ParticleIdentifier), Position, OBJECT_Z, 0));
 					}
 
 					Decrement = true;
 				} break;
 				case EVENT_SOUND:
-					Audio.Play(new _AudioSource(Audio.GetBuffer(Event->GetItemIdentifier()), true));
+					Audio.Play(new _AudioSource(Audio.GetBuffer(Event->ItemIdentifier), true));
 					Decrement = true;
 				break;
 				case EVENT_FSWITCH:
@@ -912,7 +914,7 @@ void _PlayState::UpdateEvents(double FrameTime) {
 					}
 				break;
 				case EVENT_ENABLE: {
-					const std::vector<_EventTile> &Tiles = Event->GetTiles();
+					const std::vector<_EventTile> &Tiles = Event->Tiles;
 					for(size_t i = 0; i < Tiles.size(); i++)
 						Map->ToggleEventActive(Tiles[i].BlockID);
 
@@ -925,10 +927,10 @@ void _PlayState::UpdateEvents(double FrameTime) {
 			// Decrease the event level
 			if(Decrement) {
 				Event->StartTimer();
-				if(Event->GetLevel() != -1)
+				if(Event->Level != -1)
 					Event->Decrement();
 
-				if(Event->GetLevel() == 0) {
+				if(Event->Level == 0) {
 					ActiveEventIterator = ActiveEvents.erase(ActiveEventIterator);
 					if(ActiveEventIterator == ActiveEvents.end())
 						break;
@@ -1005,7 +1007,7 @@ void _PlayState::GenerateBulletEffects(_Entity *Attacker, const int Type, const 
 	if(Type == -1) {
 
 		// Particle position
-		ParticlePosition = Attacker->GetPosition() + Attacker->GetWeaponOffset(Attacker->GetWeaponType()).RotateVector(Attacker->GetDirection());
+		ParticlePosition = Attacker->Position + Attacker->GetWeaponOffset(Attacker->GetWeaponType()).RotateVector(Attacker->GetDirection());
 
 		// Particles
 		Particles->Create(_ParticleSpawn(Attacker->GetWeaponParticle(WEAPONPARTICLE_FIRE), ParticlePosition, OBJECT_Z, Attacker->GetDirection()));

@@ -46,7 +46,7 @@ void _ObjectManager::Update(double FrameTime, const _Camera *Camera) {
 		Object->Update(FrameTime);
 
 		// Delete old objects
-		if(!Object->GetActive()) {
+		if(!Object->Active) {
 
 			// Delete object
 			delete Object;
@@ -54,10 +54,10 @@ void _ObjectManager::Update(double FrameTime, const _Camera *Camera) {
 		}
 		else {
 
-			if(Camera->IsCircleInView(Object->GetPosition(), Object->GetScale())) {
+			if(Camera->IsCircleInView(Object->Position, Object->Scale)) {
 
 				// Add object to render list
-				switch(Object->GetType()) {
+				switch(Object->Type) {
 					case _Object::MISCITEM:
 					case _Object::AMMO:
 					case _Object::UPGRADE:

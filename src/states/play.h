@@ -64,17 +64,17 @@ class _PlayState : public _State {
 
 		// Setup
 		_PlayState();
-		void Init();
-		void Close();
+		void Init() override;
+		void Close() override;
 
 		// Input
-		bool HandleAction(int InputType, int Action, int Value);
-		void KeyEvent(const _KeyEvent &KeyEvent);
-		void MouseEvent(const _MouseEvent &MouseEvent);
+		bool HandleAction(int InputType, int Action, int Value) override;
+		void KeyEvent(const _KeyEvent &KeyEvent) override;
+		void MouseEvent(const _MouseEvent &MouseEvent) override;
 
 		// Update
-		void Update(double FrameTime);
-		void Render(double BlendFactor);
+		void Update(double FrameTime) override;
+		void Render(double BlendFactor) override;
 
 		void SetLevel(const std::string &Level) { this->Level = Level; }
 		void SetTestMode(bool Value) { TestMode = Value; }
@@ -133,6 +133,7 @@ class _PlayState : public _State {
 
 		// Camera
 		_Camera *Camera;
+		Vector2 PreviousWorldCursor;
 		Vector2 WorldCursor;
 };
 

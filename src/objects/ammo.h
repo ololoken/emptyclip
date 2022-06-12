@@ -29,15 +29,11 @@ class _Ammo : public _Item {
 	public:
 
 		_Ammo(const std::string &Identifier, int Count, const Vector2 &Position, const _AmmoTemplate *Ammo, _Texture *Texture);
-		~_Ammo();
+		~_Ammo() override;
 
-		void SetAmmoType(int AmmoType) { this->AmmoType = AmmoType; }
-		int GetAmmoType() const { return AmmoType; }
 		virtual std::string GetTypeAsString() const override { return "Ammo"; }
-
 		static std::string ToString(int Type);
 
-	protected:
-
 		int AmmoType;
+
 };

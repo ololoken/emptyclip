@@ -55,37 +55,15 @@ class _Object {
 		virtual void Serialize(_Buffer &Buffer) { }
 		void FacePosition(const Vector2 &Cursor);
 
-		void SetActive(bool Value) { this->Active = Value; }
-		bool GetActive() const { return Active; }
-
 		void SetName(const std::string &Name) { this->Name = Name; }
 		virtual const std::string &GetName() const { return Name; }
 
-		void SetColor(const _Color &Color) { this->Color = Color; }
-		const _Color &GetColor() const { return Color; }
-
+		void SetPosition(const Vector2 &Position);
 		void SetDirection(float Direction) { this->Rotation = Direction; }
 		float GetDirection() const { return Rotation; }
 
-		void SetScale(float Value) { this->Scale = Value; }
-		float GetScale() const { return Scale; }
-
-		void SetPosition(const Vector2 &Position);
-		const Vector2 &GetPosition() const { return Position; }
-
-		void SetWallState(int Value) { this->WallState = Value; }
-		int GetWallState() const { return WallState; }
-
-		void SetTileChanged(bool Value) { TileChanged = Value; }
-		bool GetTileChanged() const { return TileChanged; }
-
 		virtual std::string GetTypeAsString() const { return "Object"; }
-		int GetType() const { return Type; }
-		float GetRadius() const { return Radius; }
-
 		void SetMap(_Map *Map) { this->Map = Map; }
-
-	protected:
 
 		// Attributes
 		bool Active;

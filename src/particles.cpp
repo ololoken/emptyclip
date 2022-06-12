@@ -48,15 +48,14 @@ void _Particles::Update(double FrameTime) {
 		Particle->Update(FrameTime);
 
 		// Delete
-		if(Particle->IsDeleted()) {
+		if(Particle->Deleted) {
 			delete Particle;
 			Iterator = Particles.erase(Iterator);
 		}
 		else {
 
-			if(Camera->IsCircleInView(Particle->GetPosition(), Particle->GetRadius())) {
-				RenderList[Particle->GetType()].push_back(Particle);
-			}
+			if(Camera->IsCircleInView(Particle->Position, std::max(Particle->Scale.X, Particle->Scale.Y)))
+				RenderList[Particle->Type].push_back(Particle);
 
 			++Iterator;
 		}

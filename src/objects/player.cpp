@@ -84,7 +84,7 @@ _Player::_Player(const std::string &SavePath) {
 	AttackSampleTemplateStruct *AttackSample = Assets.GetAttackSampleTemplate("player0");
 	for(int i = 0; i < SAMPLE_TYPES; i++) {
 		if(AttackSample)
-			SetSample(i, AttackSample->Samples[i]);
+			Samples[i] = AttackSample->Samples[i];
 	}
 
 	Reset();
@@ -155,7 +155,7 @@ void _Player::Reset() {
 	ResetWeaponAnimation();
 	StopAudio();
 
-	CurrentHealth = MaxHealth;
+	Health = MaxHealth;
 }
 
 // Loads information from a file
@@ -224,9 +224,9 @@ void _Player::Load() {
 				//std::cout << "Experience: " << Experience << std::endl;
 			break;
 			case CHUNK_HEALTH:
-				File.read((char *)&CurrentHealth, sizeof(CurrentHealth));
-				if(CurrentHealth <= 0)
-					CurrentHealth = 1;
+				File.read((char *)&Health, sizeof(Health));
+				if(Health <= 0)
+					Health = 1;
 				//std::cout << "CurrentHealth: " << CurrentHealth << std::endl;
 			break;
 			case CHUNK_TIME_PLAYED: {
@@ -284,7 +284,7 @@ void _Player::Save() {
 	WriteChunk(File, CHUNK_PROGRESSION, (char *)&Progression, sizeof(Progression));
 	WriteChunk(File, CHUNK_EXPERIENCE, (char *)&Experience, sizeof(Experience));
 	WriteChunk(File, CHUNK_GOLD, (char *)&Gold, sizeof(Gold));
-	WriteChunk(File, CHUNK_HEALTH, (char *)&CurrentHealth, sizeof(CurrentHealth));
+	WriteChunk(File, CHUNK_HEALTH, (char *)&Health, sizeof(Health));
 	WriteChunk(File, CHUNK_TIME_PLAYED, (char *)&TimePlayed, sizeof(TimePlayed));
 	WriteChunk(File, CHUNK_MONSTER_KILLS, (char *)&MonsterKills, sizeof(MonsterKills));
 	WriteChunk(File, CHUNK_SKILLS, (char *)&Skills, sizeof(Skills));
@@ -388,9 +388,9 @@ void _Player::SaveItems(std::ofstream &File) {
 	for(int i = 0; i < INVENTORY_SIZE; i++) {
 		if(HasInventory(i)) {
 			Buffer.Write(i);
-			Buffer.Write(Inventory[i]->GetType());
-			Buffer.Write(Inventory[i]->GetQuality());
-			Buffer.Write(Inventory[i]->GetCount());
+			Buffer.Write(Inventory[i]->Type);
+			Buffer.Write(Inventory[i]->Quality);
+			Buffer.Write(Inventory[i]->Count);
 			Inventory[i]->Serialize(Buffer);
 		}
 	}
@@ -444,14 +444,14 @@ void _Player::Update(double FrameTime) {
 	UpdateWeaponSwitch();
 
 	// Stop trigger down audio
-	if(TriggerDownAudio && (!GetAttackRequested() || !HasAmmo() || IsDying() || IsSwitchingWeapons() || IsReloading())) {
+	if(TriggerDownAudio && (!AttackRequested || !HasAmmo() || IsDying() || IsSwitchingWeapons() || IsReloading())) {
 		StopAudio();
 	}
 
 	// Make an attack
-	if(GetAttackRequested()) {
+	if(AttackRequested) {
 		StartAttack();
-		SetAttackRequested(false);
+		AttackRequested = false;
 	}
 
 	// Use a medkit
@@ -633,7 +633,7 @@ int _Player::SpentSkillPoints() const {
 // Adds an item to the player's possession, returns 0 on full, return 2 on combine
 int _Player::AddItem(_Item *Item) {
 
-	switch(Item->GetType()) {
+	switch(Item->Type) {
 		case _Object::WEAPON: {
 			_Weapon *WeaponItem = static_cast<_Weapon *>(Item);
 			if(WeaponItem->IsMelee()) {
@@ -663,7 +663,7 @@ int _Player::AddItem(_Item *Item) {
 		} break;
 		case _Object::ARMOR: {
 			_Armor *ArmorItem = static_cast<_Armor *>(Item);
-			if(!HasArmor() && Assets.GetSkill(Skills[SKILL_STRENGTH], SKILL_STRENGTH) >= ArmorItem->GetStrengthRequirement()) {
+			if(!HasArmor() && Assets.GetSkill(Skills[SKILL_STRENGTH], SKILL_STRENGTH) >= ArmorItem->StrengthRequirement) {
 				SetArmor(ArmorItem);
 				RecalculateStats();
 				return 1;
@@ -700,7 +700,7 @@ void _Player::DropItem(int Slot) {
 	}
 
 	// Add item to map
-	Item->SetPosition(GetPosition() + GenerateRandomPointInCircle(PLAYER_RADIUS));
+	Item->SetPosition(Position + GenerateRandomPointInCircle(PLAYER_RADIUS));
 	Map->AddItem(Item);
 }
 
@@ -711,16 +711,16 @@ bool _Player::CanEquipItem(_Item *Item, int Slot) {
 
 	switch(Slot) {
 		case INVENTORY_ARMOR: {
-			if(Item->GetType() != _Object::ARMOR)
+			if(Item->Type != _Object::ARMOR)
 				return false;
 
 			_Armor *Armor = (_Armor *)Item;
-			return Assets.GetSkill(Skills[SKILL_STRENGTH], SKILL_STRENGTH) >= Armor->GetStrengthRequirement();
+			return Assets.GetSkill(Skills[SKILL_STRENGTH], SKILL_STRENGTH) >= Armor->StrengthRequirement;
 		} break;
 		case INVENTORY_MAINHAND:
 		case INVENTORY_OFFHAND:
 		case INVENTORY_MELEE: {
-			if(Item->GetType() == _Object::WEAPON) {
+			if(Item->Type == _Object::WEAPON) {
 				_Weapon *Weapon = (_Weapon *)Item;
 				if(Slot == INVENTORY_MELEE) {
 					if(Weapon->IsMelee())
@@ -789,16 +789,17 @@ void _Player::SwapInventory(int SlotFrom, int SlotTo) {
 // Return 1 when item was combined but still has count left
 // Return 2 when item was combined and fromitem needs deletion
 int _Player::CombineItems(_Item *FromItem, _Item *ToItem) {
-	if(FromItem && ToItem && FromItem->CanStack() && ToItem->CanStack() && FromItem->GetIdentifier() == ToItem->GetIdentifier()) {
-		ToItem->UpdateCount(FromItem->GetCount());
-		if(ToItem->GetCount() > GetInventoryMaxStack()) {
-			FromItem->SetCount(ToItem->GetCount() - GetInventoryMaxStack());
-			ToItem->SetCount(GetInventoryMaxStack());
+
+	if(FromItem && ToItem && FromItem->CanStack() && ToItem->CanStack() && FromItem->Identifier == ToItem->Identifier) {
+		ToItem->UpdateCount(FromItem->Count);
+		if(ToItem->Count > GetInventoryMaxStack()) {
+			FromItem->Count = ToItem->Count - GetInventoryMaxStack();
+			ToItem->Count = GetInventoryMaxStack();
+
 			return 1;
 		}
-		else {
+		else
 			return 2;
-		}
 	}
 
 	return 0;
@@ -834,7 +835,7 @@ int _Player::AddInventory(_Item *Item) {
 bool _Player::AddComponent(int FromIndex, int ToIndex) {
 	_Weapon *Weapon = nullptr;
 
-	if(!HasInventory(FromIndex) || Inventory[FromIndex]->GetType() != _Object::UPGRADE)
+	if(!HasInventory(FromIndex) || Inventory[FromIndex]->Type != _Object::UPGRADE)
 		return false;
 
 	if(ToIndex == INVENTORY_MAINHAND && HasMainHand())
@@ -882,17 +883,17 @@ int _Player::GetWeaponAmmoType() const {
 
 // Determines what type of ammo an item in the inventory is
 int _Player::GetInventoryAmmoType(int Index) const {
-	if(HasInventory(Index) && Inventory[Index]->GetType() == _Object::AMMO)
-		return static_cast<_Ammo *>(Inventory[Index])->GetAmmoType();
+	if(HasInventory(Index) && Inventory[Index]->Type == _Object::AMMO)
+		return static_cast<_Ammo *>(Inventory[Index])->AmmoType;
 
 	return -1;
 }
 
 // Checks if the item is the right ammo for the player's mainhand weapon
 bool _Player::IsRightClip(const _Item *Item) const {
-	if(Item->GetType() == _Object::AMMO) {
+	if(Item->Type == _Object::AMMO) {
 		const _Ammo *Ammo = static_cast<const _Ammo *>(Item);
-		if(Ammo->GetAmmoType() == GetWeaponAmmoType())
+		if(Ammo->AmmoType == GetWeaponAmmoType())
 			return true;
 	}
 
@@ -945,10 +946,10 @@ bool _Player::UseItem(int Index, bool Event) {
 	if(Index >= INVENTORY_BAGSTART && Index < INVENTORY_BAGEND && HasInventory(Index)) {
 
 		_MiscItem *MiscItem;
-		switch(Inventory[Index]->GetType()) {
+		switch(Inventory[Index]->Type) {
 			case _Object::MISCITEM:
 				MiscItem = (_MiscItem *)Inventory[Index];
-				switch(MiscItem->GetMiscItemType()) {
+				switch(MiscItem->MiscItemType) {
 					case MISCITEM_MEDKIT:
 						UseMedkit(Index);
 					break;
@@ -968,10 +969,10 @@ bool _Player::UseItem(int Index, bool Event) {
 
 // Uses a medkit if one is available
 bool _Player::UseMedkit(int Index) {
-	if(CanUseMedkit() && HasInventory(Index) && Inventory[Index]->GetType() == _Object::MISCITEM) {
+	if(CanUseMedkit() && HasInventory(Index) && Inventory[Index]->Type == _Object::MISCITEM) {
 		_MiscItem *MiscItem = static_cast<_MiscItem *>(Inventory[Index]);
-		if(MiscItem->GetMiscItemType() == MISCITEM_MEDKIT) {
-			int Amount = GetMedkitHealAmount(MiscItem->GetLevel());
+		if(MiscItem->MiscItemType == MISCITEM_MEDKIT) {
+			int Amount = GetMedkitHealAmount(MiscItem->Level);
 			UpdateHealth(Amount);
 			ConsumeInventory(Index);
 			MedkitTimer = 0;
@@ -996,13 +997,11 @@ int _Player::GetMedkitHealAmount(int MedkitLevel) const {
 
 // Searches for an misc item and returns the index
 int _Player::FindMiscItem(int ItemType) {
-	_MiscItem *MiscItem;
 
 	for(int i = INVENTORY_BAGSTART; i < INVENTORY_BAGEND; i++) {
-		if(HasInventory(i) && Inventory[i]->GetType() == _Object::MISCITEM) {
-			MiscItem = static_cast<_MiscItem *>(Inventory[i]);
-
-			if(MiscItem->GetMiscItemType() == ItemType)
+		if(HasInventory(i) && Inventory[i]->Type == _Object::MISCITEM) {
+			_MiscItem *MiscItem = static_cast<_MiscItem *>(Inventory[i]);
+			if(MiscItem->MiscItemType == ItemType)
 				return i;
 		}
 	}
@@ -1014,7 +1013,7 @@ int _Player::FindMiscItem(int ItemType) {
 int _Player::FindItem(const std::string &Identifier) {
 
 	for(int i = INVENTORY_BAGSTART; i < INVENTORY_BAGEND; i++) {
-		if(HasInventory(i) && Inventory[i]->GetIdentifier() == Identifier) {
+		if(HasInventory(i) && Inventory[i]->Identifier == Identifier) {
 			return i;
 		}
 	}
@@ -1204,7 +1203,7 @@ void _Player::RecalculateStats() {
 		Weapon[WEAPONATTACK_MAIN].MinDamage = GetMainHand()->GetMinDamage();
 		Weapon[WEAPONATTACK_MAIN].MaxDamage = GetMainHand()->GetMaxDamage();
 		Weapon[WEAPONATTACK_MAIN].ReloadPeriod = GetMainHand()->GetReloadPeriod();
-		Weapon[WEAPONATTACK_MAIN].BulletsShot = GetMainHand()->GetBulletsShot();
+		Weapon[WEAPONATTACK_MAIN].BulletsShot = GetMainHand()->BulletsShot;
 		Weapon[WEAPONATTACK_MAIN].ZoomScale = GetMainHand()->GetZoomScale();
 		MainWeaponType = GetMainHand()->GetWeaponType();
 	}
@@ -1223,7 +1222,7 @@ void _Player::RecalculateStats() {
 		Weapon[WEAPONATTACK_MELEE].MinDamage = GetMelee()->GetMinDamage();
 		Weapon[WEAPONATTACK_MELEE].MaxDamage = GetMelee()->GetMaxDamage();
 		Weapon[WEAPONATTACK_MELEE].ReloadPeriod = GetMelee()->GetReloadPeriod();
-		Weapon[WEAPONATTACK_MELEE].BulletsShot = GetMelee()->GetBulletsShot();
+		Weapon[WEAPONATTACK_MELEE].BulletsShot = GetMelee()->BulletsShot;
 		Weapon[WEAPONATTACK_MELEE].ZoomScale = GetMelee()->GetZoomScale();
 	}
 
@@ -1274,9 +1273,9 @@ void _Player::RecalculateStats() {
 	// Armor
 	DamageBlock = Assets.GetLevelDamageBlock(Level);
 	if(GetArmor()) {
-		DamageBlock += GetArmor()->GetDamageBlock();
-		DamageResist += GetArmor()->GetDamageResist();
-		MovementSpeed += GetArmor()->GetMovementSpeed();
+		DamageBlock += GetArmor()->DamageBlock;
+		DamageResist += GetArmor()->DamageResist;
+		MovementSpeed += GetArmor()->MovementSpeed;
 	}
 
 	// Get final speed
@@ -1346,7 +1345,7 @@ const std::string &_Player::GetSample(int SampleType) const {
 	else if(AttackRequestType == 1 && SampleType <= SAMPLE_HIT && HasMelee())
 		return GetMelee()->GetSample(SampleType);
 	else
-		return _Entity::GetSample(SampleType);
+		return Samples[SampleType];
 }
 
 // Returns the weapon's particle template
@@ -1368,7 +1367,7 @@ void _Player::UpdateColor() {
 }
 
 int _Player::GetInventoryMaxStack() const { return Assets.GetSkill(Skills[SKILL_MAXINVENTORY], SKILL_MAXINVENTORY) + 1; }
-bool _Player::CanUseMedkit() const { return (MedkitTimer > PLAYER_MEDKITPERIOD) && CurrentHealth < MaxHealth; }
+bool _Player::CanUseMedkit() const { return (MedkitTimer > PLAYER_MEDKITPERIOD) && Health < MaxHealth; }
 bool _Player::CanReload() const { return HasMainHand() && !Reloading && !SwitchingWeapons && !IsMeleeAttacking() && GetMainHand()->GetAmmo() != GetMainHand()->GetRoundSize() && HasClips(); }
 
 bool _Player::IsMelee() const { return GetMainHand() == nullptr || GetMainHand()->GetWeaponType() == WEAPON_MELEE; }
@@ -1378,7 +1377,7 @@ void _Player::SetOffHand(_Weapon *Weapon) { Inventory[INVENTORY_OFFHAND] = Weapo
 void _Player::SetMelee(_Weapon *Weapon) { Inventory[INVENTORY_MELEE] = Weapon; }
 void _Player::SetArmor(_Armor *Armor) { Inventory[INVENTORY_ARMOR] = Armor; }
 
-void _Player::SetTorsoAnimation(const _Animation *Animation) { *this->Animation = *Animation; }
-void _Player::SetLegAnimation(const _Animation *Animation) { *this->LegAnimation = *Animation; }
+void _Player::SetTorsoAnimation(const _Animation *NewAnimation) { *this->Animation = *NewAnimation; }
+void _Player::SetLegAnimation(const _Animation *NewAnimation) { *this->LegAnimation = *NewAnimation; }
 void _Player::SetLegAnimationPlayMode(int Mode) { LegAnimation->SetPlayMode(Mode); }
 void _Player::SetAnimationPlaybackSpeedFactor() { Animation->SetPlaybackSpeedFactor(1.0f / MovementModifier); }

@@ -65,29 +65,6 @@ class _Event {
 		void Decrement() { Level--; }
 		bool TimerExpired() const { return (Timer > ActivationPeriod); }
 
-		void SetActive(int Value) { Active = Value; }
-		void SetStart(const _Coord &Value) { Start = Value; }
-		void SetEnd(const _Coord &Value) { End = Value; }
-		void SetLevel(int Value) { Level = Value; }
-		void SetActivationPeriod(double Value) { ActivationPeriod = Value; }
-		void SetItemIdentifier(const std::string &Identifier) { ItemIdentifier = Identifier; }
-		void SetMonsterIdentifier(const std::string &Identifier) { MonsterIdentifier = Identifier; }
-		void SetParticleIdentifier(const std::string &Identifier) { ParticleIdentifier = Identifier; }
-
-		int GetType() const { return Type; }
-		int GetActive() const { return Active; }
-		const _Coord &GetStart() const { return Start; }
-		const _Coord &GetEnd() const { return End; }
-		int GetLevel() const { return Level; }
-		double GetActivationPeriod() const { return ActivationPeriod; }
-		std::string GetItemIdentifier() const { return ItemIdentifier; }
-		std::string GetMonsterIdentifier() const { return MonsterIdentifier; }
-		std::string GetParticleIdentifier() const { return ParticleIdentifier; }
-		std::vector<_EventTile> &GetTiles() { return Tiles; }
-		const std::vector<_EventTile> &GetTiles() const { return Tiles; }
-
-	private:
-
 		int Type;
 		int Active;
 		int Level;

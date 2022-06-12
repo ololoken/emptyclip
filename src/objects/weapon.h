@@ -33,7 +33,7 @@ class _Weapon : public _Item {
 	public:
 
 		_Weapon(const std::string &Identifier, int Count, const Vector2 &Position, const _WeaponTemplate *Weapon, _Texture *Texture, bool Generate);
-		~_Weapon();
+		~_Weapon() override;
 
 		void Serialize(_Buffer &Buffer) override;
 
@@ -53,7 +53,6 @@ class _Weapon : public _Item {
 		float GetZoomScale() const { return Stats.ZoomScale; }
 		int GetWeaponType() const { return Stats.Type; }
 		int GetAmmoType() const { return Stats.AmmoType; }
-		int GetBulletsShot() const { return BulletsShot;}
 		double GetFirePeriod() const { return FirePeriod; }
 		double GetReloadPeriod() const { return ReloadPeriod; }
 		int GetMinDamage() const { return MinDamage; }
@@ -66,7 +65,7 @@ class _Weapon : public _Item {
 		int GetAmmo() const { return Ammo; }
 		int GetMaxComponents() const { return MaxComponents; }
 		int GetComponents() const { return static_cast<int>(Upgrades.size()); }
-		const std::string &GetSample(int SampleType) const { return Stats.Samples[SampleType]; };
+		const std::string &GetSample(int SampleType) const { return Stats.Samples[SampleType]; }
 		float GetBonus(int Index) const { return Bonus[Index]; }
 		_Upgrade *GetUpgrade(int Index) const;
 		_ParticleTemplate *GetWeaponParticle(int Index);
@@ -75,13 +74,20 @@ class _Weapon : public _Item {
 		virtual std::string GetTypeAsString() const override { return ToString(Stats.Type) + " class weapon"; }
 		static std::string ToString(int Type);
 
-	protected:
-
 		std::vector<_Upgrade *> Upgrades;
 		_WeaponTemplate Stats;
-		int Ammo, RoundSize;
-		int MinDamage, MaxDamage;
-		float MinAccuracy, MaxAccuracy, Bonus[UPGRADE_TYPES];
-		double FirePeriod, ReloadPeriod;
-		int MaxComponents, BulletsShot;
+		int Ammo;
+		int RoundSize;
+		int MinDamage;
+		int MaxDamage;
+		float MinAccuracy;
+		float MaxAccuracy;
+		float Bonus[UPGRADE_TYPES];
+		double FirePeriod;
+		double ReloadPeriod;
+		int MaxComponents;
+		int BulletsShot;
+
+	protected:
+
 };

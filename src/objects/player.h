@@ -55,7 +55,7 @@ class _Player : public _Entity {
 	public:
 
 		_Player(const std::string &SavePath);
-		~_Player();
+		~_Player() override;
 
 		void Reset();
 		void Load();
@@ -153,10 +153,10 @@ class _Player : public _Entity {
 		bool IsSprinting() const { return Sprinting; }
 		bool GetUseRequested() const { return UseRequested; }
 		bool GetMedkitRequested() const { return MedkitRequested; }
-		const std::string &GetSample(int Type) const;
+		const std::string &GetSample(int Type) const override;
 
 		void AdjustLegDirection(float Destination);
-		void SetLegAnimationPlayMode(int Type);
+		void SetLegAnimationPlayMode(int Mode) override;
 		void SetLegDirection(float Rotation) { LegDirection = Rotation; }
 
 		void SetCheckpointIndex(int CheckpointIndex) { this->CheckpointIndex = CheckpointIndex; }
@@ -176,13 +176,13 @@ class _Player : public _Entity {
 		void LoadUpgrades(_Buffer &Buffer, _Weapon *Weapon);
 		void SaveItems(std::ofstream &File);
 
-		void SetAnimationPlaybackSpeedFactor();
+		void SetAnimationPlaybackSpeedFactor() override;
 		void CalculateLevelPercentage();
 		void CalculateExperienceStats();
 		void CalculateSkillsRemaining();
 		void UpdateColor();
 
-		void IncurDeathPenalty();
+		void IncurDeathPenalty() override;
 		void ResetWeaponAnimation();
 
 		bool CanUseMedkit() const;
@@ -207,23 +207,40 @@ class _Player : public _Entity {
 
 		// Inventory
 		_Item *Inventory[INVENTORY_SIZE];
-		bool UseRequested, MedkitRequested;
-		bool Used, MedkitUsed;
-		int WeaponSwitchFrom, WeaponSwitchTo;
+		bool UseRequested;
+		bool MedkitRequested;
+		bool Used;
+		bool MedkitUsed;
+		int WeaponSwitchFrom;
+		int WeaponSwitchTo;
 
 		// Character information
 		float LevelPercentage;
 		double PlayingTimer;
-		int MonsterKills, TimePlayed;
+		int MonsterKills;
+		int TimePlayed;
 		int64_t Gold;
-		int64_t Experience, ExperienceNextLevel, ExperienceCurrentLevel;
+		int64_t Experience;
+		int64_t ExperienceNextLevel;
+		int64_t ExperienceCurrentLevel;
 
 		// Skills
-		int Skills[SKILL_COUNT], SkillPointsRemaining;
+		int Skills[SKILL_COUNT];
+		int SkillPointsRemaining;
 
 		// Attacking
-		float CurrentAccuracyNormal, MinAccuracyNormal, MaxAccuracyNormal, ZoomScale;
-		double WeaponSwitchTimer, ReloadTimer, UseTimer, MedkitTimer, WeaponSwitchPeriod, ReloadPeriod, UsePeriod;
+		float CurrentAccuracyNormal;
+		float MinAccuracyNormal;
+		float MaxAccuracyNormal;
+		float ZoomScale;
+		double WeaponSwitchTimer;
+		double ReloadTimer;
+		double UseTimer;
+		double MedkitTimer;
+		double WeaponSwitchPeriod;
+		double ReloadPeriod;
+		double UsePeriod;
 		int FireRate[WEAPONATTACK_COUNT];
-		bool Reloading, SwitchingWeapons;
+		bool Reloading;
+		bool SwitchingWeapons;
 };

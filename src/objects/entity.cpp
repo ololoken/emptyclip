@@ -26,8 +26,9 @@
 #include <iostream>
 
 // Constructor
-_Entity::_Entity()
-:	MoveState(MOVE_NONE),
+_Entity::_Entity() :
+	TriggerDownAudio(nullptr),
+	MoveState(MOVE_NONE),
 	MoveSoundTimer(0),
 	MoveSoundDelay(0),
 	MovementSpeed(0),
@@ -37,17 +38,17 @@ _Entity::_Entity()
 	MaxStamina(1),
 	StaminaRegenModifier(1.0f),
 	Tired(false),
+	Level(1),
+	Health(0),
+	MaxHealth(0),
+	DamageBlock(0),
+	DamageResist(0.0f),
 	Action(ACTION_IDLE),
 	WalkingAnimation(ENTITY_ANIMATIONWALKING),
 	MeleeAnimation(ENTITY_ANIMATIONATTACK),
 	ShootingOnehandAnimation(ENTITY_ANIMATIONATTACK),
 	ShootingTwohandAnimation(ENTITY_ANIMATIONATTACK),
 	DyingAnimation(ENTITY_ANIMATIONDYING),
-	Level(1),
-	CurrentHealth(0),
-	MaxHealth(0),
-	DamageBlock(0),
-	DamageResist(0.0f),
 	CurrentAccuracy(0),
 	MinAccuracy(0),
 	MaxAccuracy{0, 0},
@@ -61,8 +62,7 @@ _Entity::_Entity()
 	AttackRequested(false),
 	AttackAllowed{true, true},
 	AttackMade(false),
-	AttackRequestType(0),
-	TriggerDownAudio(nullptr) {
+	AttackRequestType(0) {
 
 	Animation = new _Animation();
 	Map = nullptr;
@@ -144,7 +144,7 @@ bool _Entity::StartAttack() {
 		Action = ACTION_STARTMELEE;
 
 		// Melee fire sound
-		Audio.Play(new _AudioSource(Audio.GetBuffer(GetSample(SAMPLE_FIRE))), GetPosition());
+		Audio.Play(new _AudioSource(Audio.GetBuffer(GetSample(SAMPLE_FIRE))), Position);
 	}
 	else
 		Action = ACTION_STARTSHOOT;
@@ -362,7 +362,7 @@ void _Entity::Move() {
 
 		// Check collisions with walls and map boundaries
 		Vector2 NewPosition;
-		Map->CheckCollisions(GetPosition() + NewDirection, GetRadius(), NewPosition);
+		Map->CheckCollisions(Position + NewDirection, Radius, NewPosition);
 
 		// Determine if the object has moved
 		if(Position != NewPosition) {
@@ -428,17 +428,17 @@ void _Entity::UpdateMaxHealth(int Adjust) {
 void _Entity::UpdateHealth(int Adjust) {
 
 	// Update health
-	CurrentHealth += Adjust;
+	Health += Adjust;
 
 	// Make sure current health doesn't exceed the maximum
-	if(CurrentHealth > MaxHealth)
-		CurrentHealth = MaxHealth;
+	if(Health > MaxHealth)
+		Health = MaxHealth;
 
 	// Object has died
-	if(CurrentHealth < 0)
-		CurrentHealth = 0;
+	if(Health < 0)
+		Health = 0;
 
-	if(CurrentHealth == 0 && !IsDying()) {
+	if(Health == 0 && !IsDying()) {
 		Action = ACTION_STARTDEATH;
 	}
 }

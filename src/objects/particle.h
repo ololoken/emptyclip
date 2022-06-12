@@ -20,7 +20,6 @@
 // Libraries
 #include <vector2.h>
 #include <color.h>
-#include <algorithm>
 #include <string>
 
 // Forward Declarations
@@ -39,30 +38,6 @@ class _Particle {
 		void Update(double FrameTime);
 		void Render();
 
-		bool IsDeleted() const { return Deleted; }
-
-		void SetText(const std::string &Value) { this->Text = Value; }
-		const std::string &GetText() const { return Text; }
-
-		void SetType(int Type) { this->Type = Type; }
-		int GetType() const { return Type; }
-
-		void SetScale(const Vector2 &Scale) { this->Scale = Scale; }
-		float GetRadius() const { return std::max(Scale.X, Scale.Y); }
-
-		void SetPosition(const Vector2 &Position) { this->Position = Position; }
-		const Vector2 &GetPosition() const { return Position; }
-
-		void SetLifetime(double Lifetime) { this->Lifetime = Lifetime; }
-		double GetLifetime() const { return Lifetime; }
-
-		void SetVelocity(const Vector2 &Velocity) { this->Velocity = Velocity; }
-		const Vector2 &GetVelocity() const { return Velocity; }
-
-		void SetColor(const _Color &Color) { this->Color = Color; }
-
-	private:
-
 		// Attributes
 		int Type;
 		double Lifetime;
@@ -74,9 +49,15 @@ class _Particle {
 		std::string Text;
 		_Color Color;
 		Vector2 Scale;
-		float Rotation, AlphaSpeed, PositionZ, ScaleAspect;
+		float Rotation;
+		float AlphaSpeed;
+		float PositionZ;
+		float ScaleAspect;
 
 		// Physics
-		Vector2 Position, Velocity, Acceleration;
+		Vector2 Position;
+		Vector2 Velocity;
+		Vector2 Acceleration;
 		float TurnSpeed;
+
 };

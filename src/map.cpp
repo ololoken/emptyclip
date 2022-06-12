@@ -152,7 +152,7 @@ _Map::_Map(const std::string &Filename) : _Map() {
 		}
 		Events.push_back(Event);
 
-		if(Event->GetType() == EVENT_CHECK)
+		if(Event->Type == EVENT_CHECK)
 			CheckpointEvents.push_back(Event);
 	}
 
@@ -257,8 +257,8 @@ void _Map::Init() {
 
 	// Loop through the events and fill out array
 	for(size_t k = 0; k < Events.size(); k++) {
-		for(int i = Events[k]->GetStart().X; i <= Events[k]->GetEnd().X; i++) {
-			for(int j = Events[k]->GetStart().Y; j <= Events[k]->GetEnd().Y; j++) {
+		for(int i = Events[k]->Start.X; i <= Events[k]->End.X; i++) {
+			for(int j = Events[k]->Start.Y; j <= Events[k]->End.Y; j++) {
 				Data[i][j].Events.push_back(Events[k]);
 			}
 		}
@@ -290,25 +290,22 @@ bool _Map::SaveLevel(const std::string &String) {
 	// Events
 	Output << Events.size() << '\n';
 	for(size_t i = 0; i < Events.size(); i++) {
-		const std::vector<_EventTile> &Tiles = Events[i]->GetTiles();
-
-		Output << Events[i]->GetType() << " ";
-		Output << Events[i]->GetActive() << " ";
-		Output << Events[i]->GetStart().X << " ";
-		Output << Events[i]->GetStart().Y << " ";
-		Output << Events[i]->GetEnd().X << " ";
-		Output << Events[i]->GetEnd().Y << " ";
-		Output << Events[i]->GetLevel() << " ";
-		Output << Events[i]->GetActivationPeriod() << " ";
-		Output << Tiles.size() << " ";
-		Output << '\"' << Events[i]->GetItemIdentifier() << '\"' << " ";
-		Output << '\"' << Events[i]->GetMonsterIdentifier() << '\"' << " ";
-		Output << '\"' << Events[i]->GetParticleIdentifier() << '\"' << '\n';
+		Output << Events[i]->Type << " ";
+		Output << Events[i]->Active << " ";
+		Output << Events[i]->Start.X << " ";
+		Output << Events[i]->Start.Y << " ";
+		Output << Events[i]->End.X << " ";
+		Output << Events[i]->End.Y << " ";
+		Output << Events[i]->Level << " ";
+		Output << Events[i]->ActivationPeriod << " ";
+		Output << Events[i]->Tiles.size() << " ";
+		Output << '\"' << Events[i]->ItemIdentifier << '\"' << " ";
+		Output << '\"' << Events[i]->MonsterIdentifier << '\"' << " ";
+		Output << '\"' << Events[i]->ParticleIdentifier << '\"' << '\n';
 
 		// Write tiles
-		for(size_t j = 0; j < Tiles.size(); j++) {
-			Output << Tiles[j].Coord.X << " " << Tiles[j].Coord.Y << " " << Tiles[j].Layer << " " << Tiles[j].BlockID << '\n';
-		}
+		for(size_t j = 0; j < Events[i]->Tiles.size(); j++)
+			Output << Events[i]->Tiles[j].Coord.X << " " << Events[i]->Tiles[j].Coord.Y << " " << Events[i]->Tiles[j].Layer << " " << Events[i]->Tiles[j].BlockID << '\n';
 	}
 
 	// Blocks
@@ -351,7 +348,7 @@ void _Map::AddObjectToGrid(_Object *Object, int Type) {
 
 	// Get the object's bounding rectangle
 	_TileBounds TileBounds;
-	GetTileBounds(Object->GetPosition(), Object->GetRadius(), TileBounds);
+	GetTileBounds(Object->Position, Object->Radius, TileBounds);
 
 	for(int i = TileBounds.Start.X; i <= TileBounds.End.X; i++) {
 		for(int j = TileBounds.Start.Y; j <= TileBounds.End.Y; j++) {
@@ -367,7 +364,7 @@ void _Map::RemoveObjectFromGrid(_Object *Object, int Type) {
 
 	// Get the object's bounding rectangle
 	_TileBounds TileBounds;
-	GetTileBounds(Object->GetPosition(), Object->GetRadius(), TileBounds);
+	GetTileBounds(Object->Position, Object->Radius, TileBounds);
 
 	for(int i = TileBounds.Start.X; i <= TileBounds.End.X; i++) {
 		for(int j = TileBounds.Start.Y; j <= TileBounds.End.Y; j++) {
@@ -521,8 +518,8 @@ _Object *_Map::CheckCollisionsInGrid(const Vector2 &Position, float Radius, int 
 		for(int j = TileBounds.Start.Y; j <= TileBounds.End.Y; j++) {
 			for(auto Iterator : Data[i][j].Objects[GridType]) {
 				if(Iterator != SkipObject) {
-					DistanceSquared = (Iterator->GetPosition() - Position).MagnitudeSquared();
-					RadiiSum = Iterator->GetRadius() + Radius;
+					DistanceSquared = (Iterator->Position - Position).MagnitudeSquared();
+					RadiiSum = Iterator->Radius + Radius;
 
 					// Check circle intersection
 					if(DistanceSquared < RadiiSum * RadiiSum) {
@@ -551,8 +548,8 @@ void _Map::CheckEntityCollisionsInGrid(const Vector2 &Position, float Radius, co
 				for(auto Iterator = Data[i][j].Objects[k].begin(); Iterator != Data[i][j].Objects[k].end(); ++Iterator) {
 					_Entity *Entity = static_cast<_Entity *>(*Iterator);
 					if(Entity != SkipObject && !Entity->IsDying()) {
-						float DistanceSquared = (Entity->GetPosition() - Position).MagnitudeSquared();
-						float RadiiSum = Entity->GetRadius() + Radius;
+						float DistanceSquared = (Entity->Position - Position).MagnitudeSquared();
+						float RadiiSum = Entity->Radius + Radius;
 
 						// Check circle intersection
 						if(DistanceSquared < RadiiSum * RadiiSum)
@@ -571,24 +568,24 @@ _Entity *_Map::CheckMeleeCollisions(_Entity *Attacker, const Vector2 &Direction,
 
 	// Get the object's bounding rectangle
 	_TileBounds TileBounds;
-	GetTileBounds(Attacker->GetPosition(), Attacker->GetWeaponRange(Attacker->GetAttackRequestType()), TileBounds);
+	GetTileBounds(Attacker->Position, Attacker->GetWeaponRange(Attacker->AttackRequestType), TileBounds);
 	for(int i = TileBounds.Start.X; i <= TileBounds.End.X; i++) {
 		for(int j = TileBounds.Start.Y; j <= TileBounds.End.Y; j++) {
 			for(auto Iterator = Data[i][j].Objects[GridType].begin(); Iterator != Data[i][j].Objects[GridType].end(); ++Iterator) {
 				_Entity *Entity = static_cast<_Entity *>(*Iterator);
 				if(!Entity->IsDying()) {
-					float DistanceSquared = (Entity->GetPosition() - Attacker->GetPosition()).MagnitudeSquared();
-					float RadiiSum = Entity->GetRadius() + Attacker->GetWeaponRange(Attacker->GetAttackRequestType());
+					float DistanceSquared = (Entity->Position - Attacker->Position).MagnitudeSquared();
+					float RadiiSum = Entity->Radius + Attacker->GetWeaponRange(Attacker->AttackRequestType);
 
 					// Check circle intersection
 					if(DistanceSquared < RadiiSum * RadiiSum) {
-						Vector2 ObjectDirection((Entity->GetPosition() - Attacker->GetPosition()).UnitVector());
+						Vector2 ObjectDirection((Entity->Position - Attacker->Position).UnitVector());
 
 						// Compare angles
-						if((Direction * ObjectDirection) > cosf(Attacker->GetMaxAccuracy(Attacker->GetAttackRequestType()) * 0.5f / DEGREES_IN_RADIAN)) {
+						if((Direction * ObjectDirection) > cosf(Attacker->GetMaxAccuracy(Attacker->AttackRequestType) * 0.5f / DEGREES_IN_RADIAN)) {
 
 							// Check for walls
-							if(IsVisible(Attacker->GetPosition(), Entity->GetPosition()))
+							if(IsVisible(Attacker->Position, Entity->Position))
 								return Entity;
 						}
 					}
@@ -778,10 +775,10 @@ void _Map::CheckBulletCollisions(const Vector2 &Position, const Vector2 &Directi
 // Returns a t value for when a ray intersects a circle
 float _Map::RayObjectIntersection(const Vector2 &Origin, const Vector2 &Direction, const _Object *Object) const {
 
-	Vector2 Vector2EMinusC(Origin - Object->GetPosition());
+	Vector2 Vector2EMinusC(Origin - Object->Position);
 	float QuantityDDotD = Direction * Direction;
 	float QuantityDDotEMC = Direction * Vector2EMinusC;
-	float Discriminant = QuantityDDotEMC * QuantityDDotEMC - QuantityDDotD * (Vector2EMinusC * Vector2EMinusC - Object->GetRadius() * Object->GetRadius());
+	float Discriminant = QuantityDDotEMC * QuantityDDotEMC - QuantityDDotD * (Vector2EMinusC * Vector2EMinusC - Object->Radius * Object->Radius);
 	if(Discriminant >= 0) {
 		float ProductRayOMinusC = (Direction * -1) * Vector2EMinusC;
 		float SqrtDiscriminant = sqrt(Discriminant);
@@ -1088,7 +1085,7 @@ int _Map::GetLayerSize(int Index) {
 // Toggles an event's active state
 void _Map::ToggleEventActive(int Index) {
 	if(Index >= 0 && Index < (int)Events.size())
-		Events[Index]->SetActive(!Events[Index]->GetActive());
+		Events[Index]->Active = !Events[Index]->Active;
 }
 
 // Gets an event
@@ -1123,11 +1120,11 @@ Vector2 _Map::GetStartingPositionByCheckpoint(int Level) {
 	// Look through events
 	for(size_t i = 0; i < CheckpointEvents.size(); i++) {
 		_Event *Event = CheckpointEvents[i];
-		if(Event->GetLevel() == Level) {
-			const std::vector<_EventTile> &Tiles = Event->GetTiles();
+		if(Event->Level == Level) {
+			const std::vector<_EventTile> &Tiles = Event->Tiles;
 
 			if(Tiles.size() == 0)
-				return Vector2(Event->GetStart().X + 0.5f, Event->GetStart().Y + 0.5f);
+				return Vector2(Event->Start.X + 0.5f, Event->Start.Y + 0.5f);
 			else
 				return Vector2(Tiles[0].Coord.X + 0.5f, Tiles[0].Coord.Y + 0.5f);
 		}
@@ -1143,7 +1140,7 @@ int _Map::GetSelectedEvent(const _Coord &Index, _Event **ReturnEvent) {
 	for(auto Iterator = Events.rbegin(); Iterator != Events.rend(); ++Iterator) {
 		_Event *Event = *Iterator;
 
-		if(Index.X >= Event->GetStart().X && Index.Y >=Event->GetStart().Y && Index.X <= Event->GetEnd().X && Index.Y <= Event->GetEnd().Y) {
+		if(Index.X >= Event->Start.X && Index.Y >=Event->Start.Y && Index.X <= Event->End.X && Index.Y <= Event->End.Y) {
 			*ReturnEvent = Event;
 			return Events.size() - 1 - (Iterator - Events.rbegin());
 		}
@@ -1223,12 +1220,12 @@ void _Map::ChangeMapState(const _Event *Event) {
 		throw std::runtime_error("Tile data uninitialized!");
 
 	// Check for the proper event
-	if(Event->GetType() == EVENT_DOOR || Event->GetType() == EVENT_WSWITCH || Event->GetType() == EVENT_FSWITCH) {
-		const std::vector<_EventTile> &Tiles = Event->GetTiles();
+	if(Event->Type == EVENT_DOOR || Event->Type == EVENT_WSWITCH || Event->Type == EVENT_FSWITCH) {
+		const std::vector<_EventTile> &Tiles = Event->Tiles;
 
 		// Switch the texture of the first block for wall switches
 		int StartIndex = 0;
-		if(Event->GetType() == EVENT_WSWITCH && Tiles.size() > 0 && Tiles[0].BlockID != -1) {
+		if(Event->Type == EVENT_WSWITCH && Tiles.size() > 0 && Tiles[0].BlockID != -1) {
 			SwapBlockTextures(Tiles[0].Layer, Tiles[0].BlockID);
 			StartIndex = 1;
 		}
@@ -1251,7 +1248,7 @@ bool _Map::CanChangeMapState(const _Event *Event) {
 		throw std::runtime_error("Tile data uninitialized!");
 
 	// Check for the proper event
-	const std::vector<_EventTile> &Tiles = Event->GetTiles();
+	const std::vector<_EventTile> &Tiles = Event->Tiles;
 
 	// Check for objects in the wall
 	for(size_t i = 0; i < Tiles.size(); i++) {
@@ -1374,9 +1371,9 @@ void _Map::RenderEvents(std::vector<_Texture *> &Textures) {
 
 	// Draw events
 	for(size_t i = 0; i < Events.size(); i++) {
-		float Bounds[4] = { (float)Events[i]->GetStart().X,(float) Events[i]->GetStart().Y, (float)Events[i]->GetEnd().X + 1.0f, (float)Events[i]->GetEnd().Y + 1.0f };
+		float Bounds[4] = { (float)Events[i]->Start.X,(float) Events[i]->Start.Y, (float)Events[i]->End.X + 1.0f, (float)Events[i]->End.Y + 1.0f };
 		if(Camera->IsAABBInView(Bounds))
-			Graphics.DrawRepeatable((float)Events[i]->GetStart().X, (float)Events[i]->GetStart().Y, MAP_LAYEROFFSET, (float)Events[i]->GetEnd().X + 1.0f, (float)Events[i]->GetEnd().Y + 1.0f, MAP_LAYEROFFSET, Textures[Events[i]->GetType()], 0, 1.0f);
+			Graphics.DrawRepeatable((float)Events[i]->Start.X, (float)Events[i]->Start.Y, MAP_LAYEROFFSET, (float)Events[i]->End.X + 1.0f, (float)Events[i]->End.Y + 1.0f, MAP_LAYEROFFSET, Textures[Events[i]->Type], 0, 1.0f);
 	}
 
 	Graphics.EnableDepthTest();

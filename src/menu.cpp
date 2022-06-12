@@ -88,7 +88,7 @@ void _Menu::InitTitle() {
 	Background = Assets.GetImage("menu_bg");
 	CurrentLayout = Assets.GetElement("menu_title");
 
-	Background->SetWidth(Graphics.GetScreenWidth() * ((float)Background->GetTexture()->GetHeight() / Background->GetTexture()->GetWidth()));
+	Background->SetWidth(Graphics.GetScreenWidth() * ((float)Background->Texture->GetHeight() / Background->Texture->GetWidth()));
 	Background->SetHeight(Graphics.GetScreenHeight());
 
 	State = STATE_TITLE;
@@ -414,7 +414,7 @@ void _Menu::Update(double FrameTime) {
 			for(int i = 0; i <= _Save::SLOT_9; i++) {
 				_Player *Player = Save.GetPlayer(i);
 				if(Player) {
-					Player->SetChangedPosition(true);
+					Player->PositionChanged = true;
 					Player->UpdateAnimation(FrameTime);
 				}
 			}
@@ -488,8 +488,7 @@ void _Menu::RefreshSaveSlots() {
 		_Player *Player = Save.GetPlayer(i);
 		if(Player) {
 			Player->SetLegAnimationPlayMode(PLAYING);
-			//Player->GetAnimation()->ChangeReel(0);
-			Player->GetAnimation()->SetPlayMode(PLAYING);
+			Player->Animation->SetPlayMode(PLAYING);
 			SlotLabel->SetText(Player->GetName());
 		}
 		else

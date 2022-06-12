@@ -121,19 +121,21 @@ class _EditorState : public _State {
 
 		// Setup
 		_EditorState();
-		void Init();
-		void Close();
+		virtual ~_EditorState() { }
+
+		void Init() override;
+		void Close() override;
 
 		// Input
-		bool HandleAction(int InputType, int Action, int Value);
-		void KeyEvent(const _KeyEvent &KeyEvent);
-		void TextEvent(const char *Text);
-		void MouseEvent(const _MouseEvent &MouseEvent);
-		void MouseWheelEvent(int Direction);
+		bool HandleAction(int InputType, int Action, int Value) override;
+		void KeyEvent(const _KeyEvent &KeyEvent) override;
+		void TextEvent(const char *Text) override;
+		void MouseEvent(const _MouseEvent &MouseEvent) override;
+		void MouseWheelEvent(int Direction) override;
 
 		// Update
-		void Update(double FrameTime);
-		void Render(double BlendFactor);
+		void Update(double FrameTime) override;
+		void Render(double BlendFactor) override;
 
 		// State parameters
 		void SetMapFilename(const std::string &Filename) { MapFilename = Filename; }

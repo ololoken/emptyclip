@@ -34,25 +34,10 @@ class _Item : public _Object {
 		int UpdateCount(int Amount) { Count += Amount; return Count; }
 		bool CanStack() { return !(Type == _Object::WEAPON || Type == _Object::ARMOR); }
 
-		void SetLevel(int Level) { this->Level = Level; }
-		int GetLevel() const { return Level; }
-
-		void SetCount(int Count) { this->Count = Count; }
-		int GetCount() const { return Count; }
-
-		void SetQuality(int Quality) { this->Quality = Quality; }
-		int GetQuality() const { return Quality; }
-
-		void SetIdentifier(const std::string &Identifier) { this->Identifier = Identifier; }
-		std::string GetIdentifier() const { return Identifier; }
-
-		const _Texture *GetTexture() const { return Texture; }
-
-	protected:
-
 		std::string Identifier;
 		int Level;
 		int Count;
 		int Quality;
 		_Texture *Texture;
+
 };

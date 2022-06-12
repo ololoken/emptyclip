@@ -37,8 +37,8 @@ _Button::~_Button() {
 void _Button::Render() const {
 
 	if(Style) {
-		if(Style->GetTexture()) {
-			Graphics.DrawImage(Bounds, Style->GetTexture(), Style->GetTextureColor(), Style->GetStretch());
+		if(Style->Texture) {
+			Graphics.DrawImage(Bounds, Style->Texture, Style->GetTextureColor(), Style->GetStretch());
 		}
 		else {
 			Graphics.DrawRectangle(Bounds, Style->GetBackgroundColor(), true);
@@ -48,8 +48,8 @@ void _Button::Render() const {
 
 	// Draw hover texture
 	if(HoverStyle && (Enabled || HitElement)) {
-		if(HoverStyle->GetTexture())
-			Graphics.DrawImage(Bounds, HoverStyle->GetTexture(), HoverStyle->GetTextureColor(), Style->GetStretch());
+		if(HoverStyle->Texture)
+			Graphics.DrawImage(Bounds, HoverStyle->Texture, HoverStyle->GetTextureColor(), Style->GetStretch());
 		else {
 			if(HoverStyle->GetHasBackgroundColor())
 				Graphics.DrawRectangle(Bounds, HoverStyle->GetBackgroundColor(), true);

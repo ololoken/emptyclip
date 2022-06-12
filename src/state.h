@@ -24,20 +24,23 @@ class _State {
 
 	public:
 
+		_State() { }
+		virtual ~_State() { }
+
 		// Setup
-		virtual void Init() { };
-		virtual void Close() { };
+		virtual void Init() { }
+		virtual void Close() { }
 
 		// Input
 		virtual bool HandleAction(int InputType, int Action, int Value) { return false; }
-		virtual void KeyEvent(const _KeyEvent &KeyEvent) { };
-		virtual void TextEvent(const char *Text) { };
+		virtual void KeyEvent(const _KeyEvent &KeyEvent) { }
+		virtual void TextEvent(const char *Text) { }
 		virtual void MouseEvent(const _MouseEvent &MouseEvent) { }
 		virtual void MouseWheelEvent(int Direction) { }
 
 		// Update
-		virtual void Update(double FrameTime) { };
-		virtual void Render(double BlendFactor) { };
+		virtual void Update(double FrameTime) { }
+		virtual void Render(double BlendFactor) { }
 
 	protected:
 

@@ -239,7 +239,7 @@ void _HUD::Update(double FrameTime, float Radius) {
 		Graphics.ShowCursor(false);
 
 	// Update health display
-	if(LastEntityHit != nullptr && (LastEntityHitTimer > HUD_ENTITYHEALTHDISPLAYPERIOD || !LastEntityHit->GetActive())) {
+	if(LastEntityHit != nullptr && (LastEntityHitTimer > HUD_ENTITYHEALTHDISPLAYPERIOD || !LastEntityHit->Active)) {
 		LastEntityHit = nullptr;
 	}
 
@@ -287,16 +287,16 @@ void _HUD::Render() {
 
 	// Draw stamina
 	Images[IMAGE_PLAYERSTAMINA]->SetWidth(Elements[ELEMENT_PLAYERSTAMINA]->GetSize().X * Player->GetStaminaPercentage());
-	if(Player->GetTired())
-		Images[IMAGE_PLAYERSTAMINA]->SetColor(_Color(1.0f, 0.5f, 0.0f));
+	if(Player->Tired)
+		Images[IMAGE_PLAYERSTAMINA]->Color = _Color(1.0f, 0.5f, 0.0f);
 	else
-		Images[IMAGE_PLAYERSTAMINA]->SetColor(_Color(1.0f, 1.0f, 1.0f));
+		Images[IMAGE_PLAYERSTAMINA]->Color = _Color(1.0f, 1.0f, 1.0f);
 
 	if(Player->GetStaminaPercentage() < 1.0f)
 		Elements[ELEMENT_PLAYERSTAMINA]->Render();
 
 	// Draw player health
-	Buffer << Player->GetHealth() << "/" << Player->GetMaxHealth();
+	Buffer << Player->Health << "/" << Player->MaxHealth;
 	Labels[LABEL_PLAYERHEALTH]->SetText(Buffer.str());
 	Buffer.str("");
 
@@ -312,7 +312,7 @@ void _HUD::Render() {
 
 	// Draw player name and level
 	Labels[LABEL_PLAYERNAME]->SetText(Player->GetName());
-	Buffer << "Level " << Player->GetLevel();
+	Buffer << "Level " << Player->Level;
 	Labels[LABEL_PLAYERLEVEL]->SetText(Buffer.str());
 	Buffer.str("");
 	Elements[ELEMENT_PLAYERINFO]->Render();
@@ -339,9 +339,9 @@ void _HUD::Render() {
 	// Draw item tooltip
 	if(CursorOverItem && CursorItem != CursorOverItem) {
 		RenderItemInfo(CursorOverItem, Input.GetMouse().X, Input.GetMouse().Y);
-		if(CursorOverItem->GetType() == _Object::WEAPON && CursorOverItem != Player->GetMainHand())
+		if(CursorOverItem->Type == _Object::WEAPON && CursorOverItem != Player->GetMainHand())
 			RenderItemInfo(Player->GetMainHand(), -100, Graphics.GetScreenHeight()/2);
-		else if(CursorOverItem->GetType() == _Object::ARMOR && CursorOverItem != Player->GetArmor())
+		else if(CursorOverItem->Type == _Object::ARMOR && CursorOverItem != Player->GetArmor())
 			RenderItemInfo(Player->GetArmor(), -100, Graphics.GetScreenHeight()/2);
 	}
 }
@@ -372,7 +372,7 @@ void _HUD::DrawIndicator(const std::string &String, float Percent, _Texture *Tex
 	Graphics.DrawRectangle(Elements[ELEMENT_INDICATOR]->GetBounds(), COLOR_TGRAY);
 
 	// Set progress size
-	Images[IMAGE_RELOAD]->SetTexture(Texture);
+	Images[IMAGE_RELOAD]->Texture = Texture;
 	Images[IMAGE_RELOAD]->SetWidth(Elements[ELEMENT_INDICATOR]->GetSize().X * Percent);
 	Elements[ELEMENT_INDICATOR]->Render();
 }
@@ -382,8 +382,8 @@ void _HUD::DrawHUDWeapon(const _Weapon *Weapon, _Element *Element, _Image *Image
 	if(!Weapon)
 		return;
 
-	Image->SetTexture(Weapon->GetTexture());
-	Image->SetColor(Weapon->GetColor());
+	Image->Texture = Weapon->Texture;
+	Image->Color = Weapon->Color;
 	if(Weapon->GetRoundSize()) {
 		std::ostringstream Buffer;
 		Buffer << Weapon->GetAmmo() << "/" << Weapon->GetRoundSize();
@@ -430,15 +430,15 @@ void _HUD::RenderCharacterScreen() {
 	Labels[LABEL_MELEEDAMAGE]->SetText(Buffer.str());
 	Buffer.str("");
 
-	Buffer << Player->GetDamageBlock();
+	Buffer << Player->DamageBlock;
 	Labels[LABEL_DAMAGEBLOCK]->SetText(Buffer.str());
 	Buffer.str("");
 
-	Buffer << int(100 * Player->GetDamageResist() + 0.5f) << "%";
+	Buffer << int(100 * Player->DamageResist + 0.5f) << "%";
 	Labels[LABEL_DAMAGERESIST]->SetText(Buffer.str());
 	Buffer.str("");
 
-	Buffer << int(100 * Player->GetMovementSpeed() / PLAYER_MOVEMENTSPEED + 0.5f) << "%";
+	Buffer << int(100 * Player->MovementSpeed / PLAYER_MOVEMENTSPEED + 0.5f) << "%";
 	Labels[LABEL_MOVEMENTSPEED]->SetText(Buffer.str());
 	Buffer.str("");
 
@@ -454,7 +454,7 @@ void _HUD::RenderCharacterScreen() {
 			if(Player->GetInventory(i) != CursorItem) {
 				_Button *Button = (_Button *)Elements[ELEMENT_INVENTORY]->GetChildren()[i];
 				if(Button) {
-					Graphics.DrawImage(Button->GetBounds().GetMidPoint(), Player->GetInventory(i)->GetTexture(), Player->GetInventory(i)->GetColor());
+					Graphics.DrawImage(Button->GetBounds().GetMidPoint(), Player->GetInventory(i)->Texture, Player->GetInventory(i)->Color);
 					if(i >= INVENTORY_BAGSTART && Player->GetInventory(i)->CanStack()) {
 						DrawItemCount(Player->GetInventory(i), Button->GetBounds().End.X - 2, Button->GetBounds().End.Y - 2);
 					}
@@ -466,7 +466,7 @@ void _HUD::RenderCharacterScreen() {
 	// Draw cursor item
 	if(CursorItem) {
 		_Point Position(Input.GetMouse() - ClickOffset);
-		Graphics.DrawImage(Position, CursorItem->GetTexture(), CursorItem->GetColor());
+		Graphics.DrawImage(Position, CursorItem->Texture, CursorItem->Color);
 		if(CursorItem->CanStack())
 			DrawItemCount(CursorItem, Position.X + 22, Position.Y + 22);
 	}
@@ -479,7 +479,7 @@ void _HUD::RenderCharacterScreen() {
 // Draw the item count text
 void _HUD::DrawItemCount(_Item *Item, int X, int Y) {
 	std::ostringstream Buffer;
-	Buffer << Item->GetCount();
+	Buffer << Item->Count;
 	Fonts[FONT_TINY]->DrawText(Buffer.str(), X, Y, COLOR_WHITE, RIGHT_BASELINE);
 	Buffer.str("");
 }
@@ -494,11 +494,11 @@ void _HUD::RenderItemInfo(_Item *Item, int DrawX, int DrawY) {
 	int Height;
 
 	// TODO cleanup
-	if(Item->GetType() == _Object::WEAPON) {
+	if(Item->Type == _Object::WEAPON) {
 		Width = 245;
 		Height = 375;
 	}
-	else if(Item->GetType() == _Object::ARMOR) {
+	else if(Item->Type == _Object::ARMOR) {
 		Width = 220;
 		Height = 170;
 	}
@@ -519,7 +519,7 @@ void _HUD::RenderItemInfo(_Item *Item, int DrawX, int DrawY) {
 	// Get current equipment
 	_Weapon *MainHand = Player->GetMainHand();
 	_Armor *EquippedArmor = Player->GetArmor();
-	if((Item->GetType() == _Object::WEAPON && MainHand && Item != MainHand) || (Item->GetType() == _Object::ARMOR && EquippedArmor && Item != EquippedArmor))
+	if((Item->Type == _Object::WEAPON && MainHand && Item != MainHand) || (Item->Type == _Object::ARMOR && EquippedArmor && Item != EquippedArmor))
 		MinX += Width;
 
 	DrawX += WindowOffsetX;
@@ -542,7 +542,7 @@ void _HUD::RenderItemInfo(_Item *Item, int DrawX, int DrawY) {
 	Fonts[FONT_SMALL]->DrawText(Item->GetTypeAsString(), DrawX, DrawY, COLOR_WHITE, CENTER_BASELINE);
 
 	DrawY += 10;
-	switch(Item->GetType()) {
+	switch(Item->Type) {
 		case _Object::WEAPON: {
 			std::ostringstream Buffer;
 			_Weapon *Weapon = (_Weapon *)Item;
@@ -579,17 +579,17 @@ void _HUD::RenderItemInfo(_Item *Item, int DrawX, int DrawY) {
 			}
 
 			// Attacks
-			if(Weapon->GetBulletsShot() > 1) {
+			if(Weapon->BulletsShot > 1) {
 				TextColor = COLOR_WHITE;
 				if(MainHand) {
-					if(Weapon->GetBulletsShot() > MainHand->GetBulletsShot())
+					if(Weapon->BulletsShot > MainHand->BulletsShot)
 						TextColor = COLOR_GREEN;
-					else if(Weapon->GetBulletsShot() < MainHand->GetBulletsShot())
+					else if(Weapon->BulletsShot < MainHand->BulletsShot)
 						TextColor = COLOR_RED;
 				}
 
 				DrawY += 20;
-				Buffer << Weapon->GetBulletsShot();
+				Buffer << Weapon->BulletsShot;
 				std::string AttackCountText;
 				if(Weapon->GetWeaponType() == WEAPON_MELEE)
 					AttackCountText = "Attacks/Swing";
@@ -723,67 +723,67 @@ void _HUD::RenderItemInfo(_Item *Item, int DrawX, int DrawY) {
 			DrawX += 40;
 
 			// Strength required
-			if(Armor->GetStrengthRequirement() != 0) {
+			if(Armor->StrengthRequirement != 0) {
 				TextColor = COLOR_WHITE;
 				if(EquippedArmor) {
-					if(Armor->GetStrengthRequirement() < EquippedArmor->GetStrengthRequirement())
+					if(Armor->StrengthRequirement < EquippedArmor->StrengthRequirement)
 						TextColor = COLOR_GREEN;
-					else if(Armor->GetStrengthRequirement() > EquippedArmor->GetStrengthRequirement())
+					else if(Armor->StrengthRequirement > EquippedArmor->StrengthRequirement)
 						TextColor = COLOR_RED;
 				}
 				DrawY += 20;
-				Buffer << Armor->GetStrengthRequirement();
+				Buffer << Armor->StrengthRequirement;
 				Fonts[FONT_MEDIUM]->DrawText("Strength Required", DrawX - PadX, DrawY, COLOR_WHITE, RIGHT_BASELINE);
 				Fonts[FONT_MEDIUM]->DrawText(Buffer.str(), DrawX + PadX, DrawY, TextColor, LEFT_BASELINE);
 				Buffer.str("");
 			}
 
 			// Damage Block
-			if(Armor->GetDamageBlock() != 0) {
+			if(Armor->DamageBlock != 0) {
 				TextColor = COLOR_WHITE;
 				if(EquippedArmor) {
-					if(Armor->GetDamageBlock() > EquippedArmor->GetDamageBlock())
+					if(Armor->DamageBlock > EquippedArmor->DamageBlock)
 						TextColor = COLOR_GREEN;
-					else if(Armor->GetDamageBlock() < EquippedArmor->GetDamageBlock())
+					else if(Armor->DamageBlock < EquippedArmor->DamageBlock)
 						TextColor = COLOR_RED;
 				}
 
 				DrawY += 20;
-				Buffer << Armor->GetDamageBlock();
+				Buffer << Armor->DamageBlock;
 				Fonts[FONT_MEDIUM]->DrawText("Damage Block", DrawX - PadX, DrawY, COLOR_WHITE, RIGHT_BASELINE);
 				Fonts[FONT_MEDIUM]->DrawText(Buffer.str(), DrawX + PadX, DrawY, TextColor, LEFT_BASELINE);
 				Buffer.str("");
 			}
 
 			// Damage Resist
-			if(Armor->GetDamageResist() != 0) {
+			if(Armor->DamageResist != 0) {
 				TextColor = COLOR_WHITE;
 				if(EquippedArmor) {
-					if(Armor->GetDamageResist() > EquippedArmor->GetDamageResist())
+					if(Armor->DamageResist > EquippedArmor->DamageResist)
 						TextColor = COLOR_GREEN;
-					else if(Armor->GetDamageResist() < EquippedArmor->GetDamageResist())
+					else if(Armor->DamageResist < EquippedArmor->DamageResist)
 						TextColor = COLOR_RED;
 				}
 
 				DrawY += 20;
-				Buffer << (Armor->GetDamageResist() < 0 ? "" : "+") << Armor->GetDamageResist() * 100 << "%";
+				Buffer << (Armor->DamageResist < 0 ? "" : "+") << Armor->DamageResist * 100 << "%";
 				Fonts[FONT_MEDIUM]->DrawText("Damage Resist", DrawX - PadX, DrawY, COLOR_WHITE, RIGHT_BASELINE);
 				Fonts[FONT_MEDIUM]->DrawText(Buffer.str(), DrawX + PadX, DrawY, TextColor, LEFT_BASELINE);
 				Buffer.str("");
 			}
 
 			// Movement Speed
-			if(Armor->GetMovementSpeed() != 0) {
+			if(Armor->MovementSpeed != 0) {
 				TextColor = COLOR_WHITE;
 				if(EquippedArmor) {
-					if(Armor->GetMovementSpeed() > EquippedArmor->GetMovementSpeed())
+					if(Armor->MovementSpeed > EquippedArmor->MovementSpeed)
 						TextColor = COLOR_GREEN;
-					else if(Armor->GetMovementSpeed() < EquippedArmor->GetMovementSpeed())
+					else if(Armor->MovementSpeed < EquippedArmor->MovementSpeed)
 						TextColor = COLOR_RED;
 				}
 
 				DrawY += 20;
-				Buffer << (Armor->GetMovementSpeed() < 0 ? "" : "+") << Armor->GetMovementSpeed() * 100 << "%";
+				Buffer << (Armor->MovementSpeed < 0 ? "" : "+") << Armor->MovementSpeed * 100 << "%";
 				Fonts[FONT_MEDIUM]->DrawText("Movement Speed", DrawX - PadX, DrawY, COLOR_WHITE, RIGHT_BASELINE);
 				Fonts[FONT_MEDIUM]->DrawText(Buffer.str(), DrawX + PadX, DrawY, TextColor, LEFT_BASELINE);
 				Buffer.str("");
@@ -791,12 +791,12 @@ void _HUD::RenderItemInfo(_Item *Item, int DrawX, int DrawY) {
 		} break;
 		case _Object::MISCITEM: {
 			_MiscItem *MiscItem = (_MiscItem *)Item;
-			if(MiscItem->GetMiscItemType() == MISCITEM_MEDKIT) {
+			if(MiscItem->MiscItemType == MISCITEM_MEDKIT) {
 				std::ostringstream Buffer;
 
 				// Heal amount
 				DrawY += 20;
-				Buffer << "+" << Player->GetMedkitHealAmount(MiscItem->GetLevel()) << " HP";
+				Buffer << "+" << Player->GetMedkitHealAmount(MiscItem->Level) << " HP";
 				Fonts[FONT_MEDIUM]->DrawText(Buffer.str(), DrawX, DrawY, COLOR_GREEN, CENTER_BASELINE);
 			}
 		} break;

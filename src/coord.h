@@ -17,6 +17,8 @@
 *******************************************************************************/
 #pragma once
 
+#include <vector2.h>
+
 // A coordinate for the map
 struct _Coord {
 	_Coord() = default;

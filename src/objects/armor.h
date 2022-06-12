@@ -37,19 +37,13 @@ class _Armor : public _Item {
 	public:
 
 		_Armor(const std::string &Identifier, int Count, const Vector2 &Position, const _ArmorTemplate *Armor, _Texture *Texture);
-		~_Armor();
-
-		int GetStrengthRequirement() const { return StrengthRequirement; }
-		int GetDamageBlock() const { return DamageBlock; }
-		float GetDamageResist() const { return DamageResist; }
-		float GetMovementSpeed() const { return MovementSpeed; }
+		~_Armor() override;
 
 		virtual std::string GetTypeAsString() const override { return "Armor"; }
-
-	protected:
 
 		int StrengthRequirement;
 		int DamageBlock;
 		float DamageResist;
 		float MovementSpeed;
+
 };

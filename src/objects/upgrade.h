@@ -29,7 +29,7 @@ class _Upgrade : public _Item {
 	public:
 
 		_Upgrade(const std::string &Identifier, int Count, const Vector2 &Position, const _UpgradeTemplate *Upgrade, _Texture *Texture);
-		~_Upgrade();
+		~_Upgrade() override;
 
 		void SetUpgradeType(int UpgradeType) { this->UpgradeType = UpgradeType; }
 		void SetWeaponType(int WeaponType) { this->WeaponType = WeaponType; }

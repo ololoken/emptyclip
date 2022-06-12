@@ -25,12 +25,12 @@ _Armor::_Armor(const std::string &Identifier, int Count, const Vector2 &Position
 	this->Texture = Texture;
 	this->Position = Position;
 
-	this->StrengthRequirement = Armor->StrengthRequirement;
-	this->DamageBlock = Armor->DamageBlock;
-	this->DamageResist = Armor->DamageResist;
-	this->MovementSpeed = Armor->MovementSpeed;
-	this->Name = Armor->Name;
-	this->Color = Armor->Color;
+	StrengthRequirement = Armor->StrengthRequirement;
+	DamageBlock = Armor->DamageBlock;
+	DamageResist = Armor->DamageResist;
+	MovementSpeed = Armor->MovementSpeed;
+	Name = Armor->Name;
+	Color = Armor->Color;
 }
 
 // Destructor

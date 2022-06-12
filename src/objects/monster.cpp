@@ -37,8 +37,8 @@ int PersonalityBaseBehaviors[PERSONALITY_COUNT] = {
 };
 
 // Constructor
-_Monster::_Monster()
-:	_Entity() {
+_Monster::_Monster() :
+	_Entity() {
 
 	Type = _Object::MONSTER;
 }
@@ -48,8 +48,8 @@ _Monster::~_Monster() {
 }
 
 // Constructor
-_Monster::_Monster(_MonsterTemplate *Monster, _Animation *Animation, const Vector2 &Position)
-:	_Entity() {
+_Monster::_Monster(_MonsterTemplate *Monster, _Animation *Animation, const Vector2 &Position) :
+	_Entity() {
 
 	Type = _Object::MONSTER;
 
@@ -62,7 +62,7 @@ _Monster::_Monster(_MonsterTemplate *Monster, _Animation *Animation, const Vecto
 	Recoil = 0;
 	RecoilRegen = 0;
 	Level = Monster->Level;
-	CurrentHealth = MaxHealth = Monster->Health;
+	Health = MaxHealth = Monster->Health;
 	DamageBlock = Monster->DamageBlock;
 	ViewRangeFront = Monster->ViewRange;
 	ViewRangeSide = Monster->ViewRange * MONSTER_SIDERANGE;
@@ -109,7 +109,7 @@ _Monster::_Monster(_MonsterTemplate *Monster, _Animation *Animation, const Vecto
 }
 
 // Updates the entity's states
-void _Monster::Update(double FrameTime, _Player *Player) {
+void _Monster::UpdateMonster(double FrameTime, _Player *Player) {
 	_Entity::Update(FrameTime);
 
 	BehaviorTime += FrameTime;
@@ -130,10 +130,10 @@ void _Monster::Update(double FrameTime, _Player *Player) {
 	// Update animation
 	UpdateAnimation(FrameTime);
 
-	bool PlayerVisible = IsVisible(Player->GetPosition());
+	bool PlayerVisible = IsVisible(Player->Position);
 	bool PlayerVisibleWithBounds = false;
 	if(PlayerVisible)
-		PlayerVisibleWithBounds = Map->IsVisibleWithBounds(Position, Player->GetPosition(), Radius);
+		PlayerVisibleWithBounds = Map->IsVisibleWithBounds(Position, Player->Position, Radius);
 
 	if(Player->IsDying()) {
 		PlayerVisible = PlayerVisibleWithBounds = false;
@@ -141,10 +141,10 @@ void _Monster::Update(double FrameTime, _Player *Player) {
 	}
 
 	if(!(CurrentActions & AI_LOOKING) && PersonalityType != PERSONALITY_TREASURE && !IsDying()) {
-		if(GetMoveState() == MOVE_DIRECTION)//CurrentActions & AI_WANDERING || CurrentActions & (AI_EXPLORING | AI_RETREATING))
+		if(MoveState == MOVE_DIRECTION)
 			FacePosition(MoveDirection+Position);
 		else if(PlayerVisibleWithBounds)
-			FacePosition(Player->GetPosition());
+			FacePosition(Player->Position);
 		else if(MoveState == MOVE_GOAL)
 			FacePosition(GetGoal());
 	}
@@ -234,7 +234,7 @@ void _Monster::Update(double FrameTime, _Player *Player) {
 			// Attack player
 			if(Actions & MONSTER_ATTACK) {
 				// Make sure player is in range, and in sight
-				if(PlayerVisible && InRange(Player->GetPosition())) {
+				if(PlayerVisible && InRange(Player->Position)) {
 					bool DoAttack = true;
 					bool Retreat = false;
 
@@ -242,7 +242,7 @@ void _Monster::Update(double FrameTime, _Player *Player) {
 						case PERSONALITY_GUARD:
 							if(Player->IsDying())
 								DoAttack = false;
-							if(CurrentHealth < MaxHealth*0.1) {
+							if(Health < MaxHealth*0.1) {
 								Retreat = true;
 								DoAttack = false;
 							}
@@ -253,7 +253,7 @@ void _Monster::Update(double FrameTime, _Player *Player) {
 						case PERSONALITY_CURIOUS:
 							if(Player->IsDying())
 								DoAttack = false;
-							if(CurrentHealth < MaxHealth*0.4) {
+							if(Health < MaxHealth*0.4) {
 								Retreat = true;
 								DoAttack = false;
 							}
@@ -264,7 +264,7 @@ void _Monster::Update(double FrameTime, _Player *Player) {
 						case PERSONALITY_LOOKOUT:
 							if(Player->IsDying())
 								DoAttack = false;
-							if(CurrentHealth < MaxHealth*0.6) {
+							if(Health < MaxHealth*0.6) {
 								DoAttack = false;
 							}
 							break;
@@ -276,12 +276,12 @@ void _Monster::Update(double FrameTime, _Player *Player) {
 
 					// Attack player
 					if(DoAttack) {
-						FacePosition(Player->GetPosition());
+						FacePosition(Player->Position);
 						StartAttack();
 						CurrentActions |= AI_ATTACKING;
 					}
 					else if(PersonalityType == PERSONALITY_AGGRESSOR) {
-						FacePosition(Player->GetPosition());
+						FacePosition(Player->Position);
 						StartAttack();
 					}
 					else {
@@ -335,12 +335,6 @@ bool _Monster::VisiblePath(const Vector2 &Goal) {
 	return false;
 }
 
-// Turns the monster to face its goal
-void _Monster::UpdateDirection() {
-
-	FacePosition(GetGoal());
-}
-
 bool _Monster::Passed(const Vector2 &Pos) {
 	return (Position == Pos);
 }
@@ -384,25 +378,25 @@ bool _Monster::IsVisible(const Vector2 &TargetPosition) {
 bool _Monster::Investigate(_Player *Player, bool PlayerVisible) {
 	// Find path to player if he/she is visible.
 	if(PlayerVisible) {
-		VisiblePath(Player->GetPosition());
+		VisiblePath(Player->Position);
 		if(ReturnPosition.X < 0)
 			ReturnPosition = Position;
 		CurrentActions |= AI_INVESTIGATING | AI_FOLLOWING_PLAYER | AI_FOLLOWING_PATH;
 	}
-	else if(VisiblePath(Player->GetPosition()))
+	else if(VisiblePath(Player->Position))
 		CurrentActions |= AI_INVESTIGATING | AI_FOLLOWING_PLAYER;
 	else
 		CurrentActions &= ~AI_FOLLOWING_PLAYER;
 
 	if(CurrentActions & AI_INVESTIGATING) {
-		if(GetMoveState() == MOVE_GOAL) {
+		if(MoveState == MOVE_GOAL) {
 			// Keep moving along the path...
 			CheckGoal();
 			// Check if we've reach the end of the path.
 			if(Goals.empty())
 				return true;
 		}
-		else if(GetMoveState() == MOVE_DIRECTION)
+		else if(MoveState == MOVE_DIRECTION)
 			return false;
 	}
 
@@ -522,7 +516,7 @@ void _Monster::Look() {
 
 void _Monster::Retreat(_Player *Player, bool PlayerVisible) {
 	if(PlayerVisible) {
-		MoveDirection = Position - Player->GetPosition();
+		MoveDirection = Position - Player->Position;
 		if(MoveDirection.X != 0 || MoveDirection.Y != 0)
 			MoveDirection = MoveDirection.UnitVector();
 
@@ -539,7 +533,7 @@ void _Monster::Retreat(_Player *Player, bool PlayerVisible) {
 void _Monster::Follow(_Player *Player, bool PlayerVisible) {
 	if(PlayerVisible)
 	{
-		VisiblePath(Player->GetPosition());
+		VisiblePath(Player->Position);
 		CurrentActions |= AI_FOLLOWING_PLAYER;
 	}
 	CheckGoal();

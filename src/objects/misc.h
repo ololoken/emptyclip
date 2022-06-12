@@ -36,14 +36,8 @@ class _MiscItem : public _Item {
 	public:
 
 		_MiscItem(const std::string &Identifier, int Count, const Vector2 &Position, const _MiscItemTemplate *MiscItem, _Texture *Texture);
-		~_MiscItem();
-
-		void SetMiscItemType(int MiscItemType) { this->MiscItemType = MiscItemType; }
-		int GetMiscItemType() const { return MiscItemType; }
 
 		virtual std::string GetTypeAsString() const override;
-
-	protected:
 
 		int MiscItemType;
 };

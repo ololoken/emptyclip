@@ -20,16 +20,17 @@
 struct _Color {
 
 	_Color() { }
-	_Color(float Red, float Green, float Blue)
-		:   Red(Red),
-		    Green(Green),
-		    Blue(Blue),
-		    Alpha(1.0f) { }
-	_Color(float Red, float Green, float Blue, float Alpha)
-		:   Red(Red),
-		    Green(Green),
-		    Blue(Blue),
-		    Alpha(Alpha) { }
+	_Color(float Red, float Green, float Blue) :
+		Red(Red),
+		Green(Green),
+		Blue(Blue),
+		Alpha(1.0f) { }
+
+	_Color(float Red, float Green, float Blue, float Alpha) :
+		Red(Red),
+		Green(Green),
+		Blue(Blue),
+		Alpha(Alpha) { }
 
 	_Color operator+(const _Color &Color) const {
 		return _Color(Red + Color.Red, Green + Color.Green, Blue + Color.Blue, Alpha + Color.Alpha);

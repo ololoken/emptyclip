@@ -124,26 +124,33 @@ enum SkillTypes {
 };
 
 struct _AmmoTemplate {
-	std::string Name, IconIdentifier;
+	std::string Name;
+	std::string IconIdentifier;
 	_Color Color;
 	int AmmoType;
 };
 
 struct _UpgradeTemplate {
-	std::string Name, IconIdentifier;
+	std::string Name;
+	std::string IconIdentifier;
 	_Color Color;
 	float Bonus;
-	int WeaponType, UpgradeType;
+	int WeaponType;
+	int UpgradeType;
 };
 
 struct _MiscItemTemplate {
-	std::string Name, IconIdentifier;
+	std::string Name;
+	std::string IconIdentifier;
 	_Color Color;
 	int Type, Level;
 };
 
 struct _ParticleTemplate {
-	Vector2 StartDirection, VelocityScale, TurnSpeed, Size;
+	Vector2 StartDirection;
+	Vector2 VelocityScale;
+	Vector2 TurnSpeed;
+	Vector2 Size;
 	_Color Color;
 	const _Texture *Texture;
 	const _Font *Font;
@@ -156,6 +163,7 @@ struct _ParticleTemplate {
 };
 
 struct _WeaponParticleTemplate {
+
 	_WeaponParticleTemplate() {
 		for(int i = 0; i < WEAPONPARTICLE_TYPES; i++)
 			ParticleTemplates[i] = nullptr;
@@ -166,26 +174,27 @@ struct _WeaponParticleTemplate {
 
 // Holds information about a weapon
 struct _WeaponTemplate {
-	_WeaponTemplate()
-		:	WeaponParticles(nullptr),
-			Name("Fists"),
-			MinAccuracy(0.0f),
-			MaxAccuracy(90.0f),
-			Recoil(0.0f),
-			RecoilRegen(0.0f),
-			Range(0.5f),
-			ZoomScale(15.0f),
-			FirePeriod(0.4),
-			ReloadPeriod(0.0),
-			MinComponents(0),
-			MaxComponents(0),
-			MinDamage(1),
-			MaxDamage(3),
-			BulletsShot(1),
-			RoundSize(0),
-			Type(WEAPON_MELEE),
-			AmmoType(AMMO_NONE),
-			FireRate(FIRERATE_SEMI) {
+
+	_WeaponTemplate() :
+		WeaponParticles(nullptr),
+		Name("Fists"),
+		MinAccuracy(0.0f),
+		MaxAccuracy(90.0f),
+		Recoil(0.0f),
+		RecoilRegen(0.0f),
+		Range(0.5f),
+		ZoomScale(15.0f),
+		FirePeriod(0.4),
+		ReloadPeriod(0.0),
+		MinComponents(0),
+		MaxComponents(0),
+		MinDamage(1),
+		MaxDamage(3),
+		BulletsShot(1),
+		RoundSize(0),
+		Type(WEAPON_MELEE),
+		AmmoType(AMMO_NONE),
+		FireRate(FIRERATE_SEMI) {
 
 		for(int i = 0; i < SAMPLE_TYPES; i++)
 			Samples[i] = "";
@@ -193,12 +202,26 @@ struct _WeaponTemplate {
 
 	_WeaponParticleTemplate *WeaponParticles;
 	_Color Color;
-	std::string Name, IconIdentifier;
+	std::string Name;
+	std::string IconIdentifier;
 	std::string Samples[SAMPLE_TYPES];
-
-	float MinAccuracy, MaxAccuracy, Recoil, RecoilRegen, Range, ZoomScale;
-	double FirePeriod, ReloadPeriod;
-	int MinComponents, MaxComponents, MinDamage, MaxDamage, BulletsShot, RoundSize, Type, AmmoType, FireRate;
+	float MinAccuracy;
+	float MaxAccuracy;
+	float Recoil;
+	float RecoilRegen;
+	float Range;
+	float ZoomScale;
+	double FirePeriod;
+	double ReloadPeriod;
+	int MinComponents;
+	int	MaxComponents;
+	int MinDamage;
+	int MaxDamage;
+	int BulletsShot;
+	int RoundSize;
+	int Type;
+	int AmmoType;
+	int FireRate;
 };
 
 // Holds information about a monster
@@ -215,6 +238,7 @@ struct _MonsterTemplate {
 
 // Holds information about object spawns
 struct _ObjectSpawn {
+
 	_ObjectSpawn() :
 		Identifier(""),
 		Position(ZERO_VECTOR),

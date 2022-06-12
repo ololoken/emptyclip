@@ -592,12 +592,12 @@ void _EditorState::MouseEvent(const _MouseEvent &MouseEvent) {
 								if(EventSelected()) {
 
 									// Save old states
-									OldStart = SelectedEvent->GetStart();
-									OldEnd = SelectedEvent->GetEnd();
+									OldStart = SelectedEvent->Start;
+									OldEnd = SelectedEvent->End;
 									SavedIndex = WorldCursorIndex;
 
 									// Remove bad tiles
-									std::vector<_EventTile> &Tiles = SelectedEvent->GetTiles();
+									std::vector<_EventTile> &Tiles = SelectedEvent->Tiles;
 									for(size_t i = 0; i < Tiles.size(); i++) {
 										int LayerSize = Map->GetLayerSize(Tiles[i].Layer);
 										if(Tiles[i].BlockID != -1 && LayerSize != -1 && Tiles[i].BlockID >= LayerSize) {
@@ -764,7 +764,7 @@ void _EditorState::Update(double FrameTime) {
 					Block.End = DrawEnd-1;
 					Block.MinZ = MinZ;
 					Block.MaxZ = MaxZ;
-					Block.Texture = Brush[EDITMODE_BLOCKS]->GetStyle()->GetTexture();
+					Block.Texture = Brush[EDITMODE_BLOCKS]->GetStyle()->Texture;
 					Block.AltTexture = AltTexture;
 					Block.TextureIdentifier = Brush[EDITMODE_BLOCKS]->GetIdentifier();
 					Block.AltTextureIdentifier = Brush[EDITMODE_BLOCKS]->GetIdentifier();
@@ -792,8 +792,8 @@ void _EditorState::Update(double FrameTime) {
 			}
 
 			if(IsMoving) {
-				SelectedEvent->SetStart(DrawStart);
-				SelectedEvent->SetEnd(DrawEnd-1);
+				SelectedEvent->Start = DrawStart;
+				SelectedEvent->End = DrawEnd - 1;
 			}
 		break;
 		default:
@@ -819,24 +819,24 @@ void _EditorState::Render(double BlendFactor) {
 		if(Brush[CurrentPalette]) {
 			if(CurrentPalette == EDITMODE_EVENTS) {
 				Graphics.DisableDepthTest();
-				Graphics.DrawRepeatable((float)DrawStart.X, (float)DrawStart.Y, MAP_LAYEROFFSET, (float)DrawEnd.X, (float)DrawEnd.Y, MAP_LAYEROFFSET, Brush[CurrentPalette]->GetStyle()->GetTexture(), 0, 1.0f);
+				Graphics.DrawRepeatable((float)DrawStart.X, (float)DrawStart.Y, MAP_LAYEROFFSET, (float)DrawEnd.X, (float)DrawEnd.Y, MAP_LAYEROFFSET, Brush[CurrentPalette]->GetStyle()->Texture, 0, 1.0f);
 				Graphics.EnableDepthTest();
 			}
 			else {
 				if(CurrentLayer == MAPLAYER_FORE)
-					Graphics.DrawRepeatable((float)DrawStart.X, (float)DrawStart.Y, (float)MaxZ + MAP_LAYEROFFSET * CurrentLayer, (float)DrawEnd.X, (float)DrawEnd.Y, (float)MaxZ + MAP_LAYEROFFSET * CurrentLayer, Brush[CurrentPalette]->GetStyle()->GetTexture(), Rotation, ScaleX);
+					Graphics.DrawRepeatable((float)DrawStart.X, (float)DrawStart.Y, (float)MaxZ + MAP_LAYEROFFSET * CurrentLayer, (float)DrawEnd.X, (float)DrawEnd.Y, (float)MaxZ + MAP_LAYEROFFSET * CurrentLayer, Brush[CurrentPalette]->GetStyle()->Texture, Rotation, ScaleX);
 				else if(CurrentLayer == MAPLAYER_FLAT) {
 					Graphics.EnableVBO(VBO_CUBE);
-					Graphics.DrawWall((float)DrawStart.X, (float)DrawStart.Y, (float)MinZ, (float)DrawEnd.X - DrawStart.X, (float)DrawEnd.Y - DrawStart.Y, MaxZ - MinZ, Rotation, Brush[CurrentPalette]->GetStyle()->GetTexture());
+					Graphics.DrawWall((float)DrawStart.X, (float)DrawStart.Y, (float)MinZ, (float)DrawEnd.X - DrawStart.X, (float)DrawEnd.Y - DrawStart.Y, MaxZ - MinZ, Rotation, Brush[CurrentPalette]->GetStyle()->Texture);
 					Graphics.DisableVBO(VBO_CUBE);
 				}
 				else {
 					if(MaxZ == MinZ) {
-						Graphics.DrawRepeatable((float)DrawStart.X, (float)DrawStart.Y, (float)MinZ + MAP_LAYEROFFSET * CurrentLayer, (float)DrawEnd.X, (float)DrawEnd.Y, (float)MinZ + MAP_LAYEROFFSET * CurrentLayer, Brush[CurrentPalette]->GetStyle()->GetTexture(), Rotation, ScaleX);
+						Graphics.DrawRepeatable((float)DrawStart.X, (float)DrawStart.Y, (float)MinZ + MAP_LAYEROFFSET * CurrentLayer, (float)DrawEnd.X, (float)DrawEnd.Y, (float)MinZ + MAP_LAYEROFFSET * CurrentLayer, Brush[CurrentPalette]->GetStyle()->Texture, Rotation, ScaleX);
 					}
 					else {
 						Graphics.EnableVBO(VBO_CUBE);
-						Graphics.DrawCube((float)DrawStart.X, (float)DrawStart.Y, (float)MinZ, (float)DrawEnd.X - DrawStart.X, (float)DrawEnd.Y - DrawStart.Y, (float)MaxZ - MinZ, Brush[CurrentPalette]->GetStyle()->GetTexture());
+						Graphics.DrawCube((float)DrawStart.X, (float)DrawStart.Y, (float)MinZ, (float)DrawEnd.X - DrawStart.X, (float)DrawEnd.Y - DrawStart.Y, (float)MaxZ - MinZ, Brush[CurrentPalette]->GetStyle()->Texture);
 						Graphics.DisableVBO(VBO_CUBE);
 					}
 				}
@@ -896,17 +896,17 @@ void _EditorState::Render(double BlendFactor) {
 
 	// Outline selected event
 	if(EventSelected()) {
-		Graphics.DrawRectangle((float)SelectedEvent->GetStart().X + 0.02f, (float)SelectedEvent->GetStart().Y + 0.02f, (float)SelectedEvent->GetEnd().X + 0.98f, (float)SelectedEvent->GetEnd().Y + 0.98f, COLOR_CYAN);
+		Graphics.DrawRectangle((float)SelectedEvent->Start.X + 0.02f, (float)SelectedEvent->Start.Y + 0.02f, (float)SelectedEvent->End.X + 0.98f, (float)SelectedEvent->End.Y + 0.98f, COLOR_CYAN);
 
 		// Outline affected tiles and blocks
-		const std::vector<_EventTile> &Tiles = SelectedEvent->GetTiles();
+		const std::vector<_EventTile> &Tiles = SelectedEvent->Tiles;
 		for(size_t i = 0; i < Tiles.size(); i++) {
 			Graphics.DrawRectangle(Tiles[i].Coord.X + 0.2f, Tiles[i].Coord.Y + 0.2f, Tiles[i].Coord.X + 0.8f, Tiles[i].Coord.Y + 0.8f, COLOR_RED);
 
 			if(Tiles[i].BlockID != -1) {
-				if(SelectedEvent->GetType() == EVENT_ENABLE) {
+				if(SelectedEvent->Type == EVENT_ENABLE) {
 					const _Event *Event = Map->GetEvent(Tiles[i].BlockID);
-					Graphics.DrawRectangle((float)Event->GetStart().X, (float)Event->GetStart().Y, (float)Event->GetEnd().X + 1.0f, (float)Event->GetEnd().Y + 1.0f, COLOR_YELLOW);
+					Graphics.DrawRectangle((float)Event->Start.X, (float)Event->Start.Y, (float)Event->End.X + 1.0f, (float)Event->End.Y + 1.0f, COLOR_YELLOW);
 				}
 				else {
 					const _Block *Block = Map->GetBlock(Tiles[i].Layer, Tiles[i].BlockID);
@@ -1092,7 +1092,7 @@ void _EditorState::DrawBrush() {
 	if(Brush[CurrentPalette]) {
 		IconIdentifier = Brush[CurrentPalette]->GetIdentifier();
 		IconText = Brush[CurrentPalette]->GetStyle()->GetIdentifier();
-		IconTexture = Brush[CurrentPalette]->GetStyle()->GetTexture();
+		IconTexture = Brush[CurrentPalette]->GetStyle()->Texture;
 		IconColor = Brush[CurrentPalette]->GetStyle()->GetTextureColor();
 	}
 
@@ -1167,17 +1167,17 @@ void _EditorState::DrawBrush() {
 			double ActivationPeriod;
 			int Active, Level;
 			if(EventSelected()) {
-				_Button *Button = (_Button *)PaletteElement[EDITMODE_EVENTS]->GetChildren()[SelectedEvent->GetType()];
-				IconTexture = Button->GetStyle()->GetTexture();
+				_Button *Button = (_Button *)PaletteElement[EDITMODE_EVENTS]->GetChildren()[SelectedEvent->Type];
+				IconTexture = Button->GetStyle()->Texture;
 				IconIdentifier = Button->GetIdentifier();
 				IconText = Button->GetStyle()->GetIdentifier();
 
-				ItemIdentifier = SelectedEvent->GetItemIdentifier();
-				MonsterIdentifier = SelectedEvent->GetMonsterIdentifier();
-				ParticleIdentifier = SelectedEvent->GetParticleIdentifier();
-				Active = SelectedEvent->GetActive();
-				Level = SelectedEvent->GetLevel();
-				ActivationPeriod = SelectedEvent->GetActivationPeriod();
+				ItemIdentifier = SelectedEvent->ItemIdentifier;
+				MonsterIdentifier = SelectedEvent->MonsterIdentifier;
+				ParticleIdentifier = SelectedEvent->ParticleIdentifier;
+				Active = SelectedEvent->Active;
+				Level = SelectedEvent->Level;
+				ActivationPeriod = SelectedEvent->ActivationPeriod;
 			}
 			else {
 				ItemIdentifier = SavedText[EDITINPUT_ITEMIDENTIFIER];
@@ -1559,13 +1559,13 @@ void _EditorState::UpdateEventIdentifier(int Type, const std::string &Identifier
 	if(EventSelected()) {
 		switch(Type) {
 			case EDITINPUT_ITEMIDENTIFIER:
-				SelectedEvent->SetItemIdentifier(Identifier);
+				SelectedEvent->ItemIdentifier = Identifier;
 			break;
 			case EDITINPUT_MONSTERIDENTIFIER:
-				SelectedEvent->SetMonsterIdentifier(Identifier);
+				SelectedEvent->MonsterIdentifier = Identifier;
 			break;
 			case EDITINPUT_PARTICLEIDENTIFIER:
-				SelectedEvent->SetParticleIdentifier(Identifier);
+				SelectedEvent->ParticleIdentifier = Identifier;
 			break;
 		}
 	}
@@ -1577,13 +1577,13 @@ std::string _EditorState::GetEventIdentifier(int Type) {
 	if(EventSelected()) {
 		switch(Type) {
 			case EDITINPUT_ITEMIDENTIFIER:
-				return SelectedEvent->GetItemIdentifier();
+				return SelectedEvent->ItemIdentifier;
 			break;
 			case EDITINPUT_MONSTERIDENTIFIER:
-				return SelectedEvent->GetMonsterIdentifier();
+				return SelectedEvent->MonsterIdentifier;
 			break;
 			case EDITINPUT_PARTICLEIDENTIFIER:
-				return SelectedEvent->GetParticleIdentifier();
+				return SelectedEvent->ParticleIdentifier;
 			break;
 		}
 	}
@@ -1658,11 +1658,11 @@ void _EditorState::ExecuteToggleTile() {
 
 	if(EventSelected()) {
 		auto Iterator = SelectedEvent->FindTile(WorldCursorIndex.X, WorldCursorIndex.Y);
-		if(Iterator != SelectedEvent->GetTiles().end()) {
+		if(Iterator != SelectedEvent->Tiles.end()) {
 			SelectedEvent->RemoveTile(Iterator);
 		}
 		else {
-			switch(SelectedEvent->GetType()) {
+			switch(SelectedEvent->Type) {
 				case EVENT_DOOR:
 				case EVENT_WSWITCH:
 				case EVENT_FSWITCH: {
@@ -1702,9 +1702,9 @@ void _EditorState::ExecuteChangeZ(float Change, int Type) {
 // Executes the change level command
 void _EditorState::ExecuteChangeLevel(int Change) {
 	if(EventSelected()) {
-		SelectedEvent->SetLevel(SelectedEvent->GetLevel() + Change);
-		if(SelectedEvent->GetLevel() < 0)
-			SelectedEvent->SetLevel(0);
+		SelectedEvent->Level = SelectedEvent->Level + Change;
+		if(SelectedEvent->Level < 0)
+			SelectedEvent->Level = 0;
 
 	}
 	else {
@@ -1718,9 +1718,9 @@ void _EditorState::ExecuteChangeLevel(int Change) {
 void _EditorState::ExecuteChangePeriod(double Value) {
 
 	if(EventSelected()) {
-		SelectedEvent->SetActivationPeriod(SelectedEvent->GetActivationPeriod() + Value);
-		if(SelectedEvent->GetActivationPeriod() < 0.0)
-			SelectedEvent->SetActivationPeriod(0.0);
+		SelectedEvent->ActivationPeriod = SelectedEvent->ActivationPeriod + Value;
+		if(SelectedEvent->ActivationPeriod < 0.0)
+			SelectedEvent->ActivationPeriod = 0.0;
 
 	}
 	else {
@@ -1734,7 +1734,7 @@ void _EditorState::ExecuteChangePeriod(double Value) {
 void _EditorState::ExecuteChangeActive() {
 
 	if(EventSelected())
-		SelectedEvent->SetActive(!SelectedEvent->GetActive());
+		SelectedEvent->Active = !SelectedEvent->Active;
 	else
 		EventActive = !EventActive;
 }
@@ -1857,11 +1857,11 @@ void _EditorState::ExecutePaste(bool Viewport) {
 		case EDITMODE_EVENTS:
 			if(ClipboardEvent != nullptr) {
 				DrawStart = Map->GetValidCoord(StartPosition);
-				DrawEnd = Map->GetValidCoord(ClipboardEvent->GetEnd() - ClipboardEvent->GetStart() + StartPosition);
+				DrawEnd = Map->GetValidCoord(ClipboardEvent->End - ClipboardEvent->Start + StartPosition);
 
-				_Event *Event = new _Event(ClipboardEvent->GetType(), ClipboardEvent->GetActive(), DrawStart, DrawEnd,
-										ClipboardEvent->GetLevel(), ClipboardEvent->GetActivationPeriod(), ClipboardEvent->GetItemIdentifier(),
-										ClipboardEvent->GetMonsterIdentifier(), ClipboardEvent->GetParticleIdentifier());
+				_Event *Event = new _Event(ClipboardEvent->Type, ClipboardEvent->Active, DrawStart, DrawEnd,
+										ClipboardEvent->Level, ClipboardEvent->ActivationPeriod, ClipboardEvent->ItemIdentifier,
+										ClipboardEvent->MonsterIdentifier, ClipboardEvent->ParticleIdentifier);
 
 				Map->AddEvent(Event);
 			}
@@ -1942,17 +1942,17 @@ void _EditorState::ExecuteSelectPalette(_Button *Button, int ClickType) {
 			if(ClickType == 1) {
 				if(BlockSelected()) {
 					SelectedBlock->AltTextureIdentifier = Button->GetIdentifier();
-					SelectedBlock->AltTexture = Button->GetStyle()->GetTexture();
+					SelectedBlock->AltTexture = Button->GetStyle()->Texture;
 				}
 				else {
 					AltTextureIdentifier = Button->GetIdentifier();
-					AltTexture = Button->GetStyle()->GetTexture();
+					AltTexture = Button->GetStyle()->Texture;
 				}
 			}
 			else {
 				if(BlockSelected()) {
 					SelectedBlock->TextureIdentifier = Button->GetIdentifier();
-					SelectedBlock->Texture = Button->GetStyle()->GetTexture();
+					SelectedBlock->Texture = Button->GetStyle()->Texture;
 				}
 			}
 		break;
@@ -1986,11 +1986,11 @@ void _EditorState::ExecuteSelectPalette(_Button *Button, int ClickType) {
 			if(ClickType == 1 && EventSelected()) {
 				switch(CurrentPalette) {
 					case EDITMODE_MONSTERS:
-						SelectedEvent->SetMonsterIdentifier(Button->GetIdentifier());
+						SelectedEvent->MonsterIdentifier = Button->GetIdentifier();
 						ExecuteSwitchMode(EDITMODE_EVENTS);
 					break;
 					case EDITMODE_ITEMS:
-						SelectedEvent->SetItemIdentifier(Button->GetIdentifier());
+						SelectedEvent->ItemIdentifier = Button->GetIdentifier();
 						ExecuteSwitchMode(EDITMODE_EVENTS);
 					break;
 					default:
@@ -2102,8 +2102,8 @@ void _EditorState::ExecuteUpdateBlockLimits(int Direction, bool Expand) {
 		Change = true;
 	}
 	else if(CurrentPalette == EDITMODE_EVENTS && EventSelected()) {
-		Start = SelectedEvent->GetStart();
-		End = SelectedEvent->GetEnd();
+		Start = SelectedEvent->Start;
+		End = SelectedEvent->End;
 		Change = true;
 	}
 
@@ -2153,8 +2153,8 @@ void _EditorState::ExecuteUpdateBlockLimits(int Direction, bool Expand) {
 			SelectedBlock->End = Map->GetValidCoord(End);
 		}
 		else if(CurrentPalette == EDITMODE_EVENTS && EventSelected()) {
-			SelectedEvent->SetStart(Map->GetValidCoord(Start));
-			SelectedEvent->SetEnd(Map->GetValidCoord(End));
+			SelectedEvent->Start = Map->GetValidCoord(Start);
+			SelectedEvent->End = Map->GetValidCoord(End);
 		}
 	}
 }

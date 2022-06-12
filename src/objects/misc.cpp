@@ -25,15 +25,11 @@ _MiscItem::_MiscItem(const std::string &Identifier, int Count, const Vector2 &Po
 	this->Texture = Texture;
 	this->Type = _Object::MISCITEM;
 	this->Position = Position;
-
 	this->Name = MiscItem->Name;
-	this->MiscItemType = MiscItem->Type;
 	this->Color = MiscItem->Color;
 	this->Level = MiscItem->Level;
-}
 
-// Destructor
-_MiscItem::~_MiscItem() {
+	MiscItemType = MiscItem->Type;
 }
 
 // Get type as string

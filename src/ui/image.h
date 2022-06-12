@@ -32,18 +32,10 @@ class _Image : public _Element {
 		_Image(const std::string &Identifier, _Element *Parent, const _Point &Offset, const _Point &Size, const _Alignment &Alignment, const _Texture *Texture, const _Color &Color, bool Stretch);
 		~_Image();
 
-		void SetColor(const _Color &Color) { this->Color = Color; }
-		const _Color &GetColor() const { return Color; }
-
-		void SetTexture(const _Texture *Texture);
-		const _Texture *GetTexture() const;
-
 		void Render() const;
 
-	private:
-
-		_Color Color;
 		const _Texture *Texture;
+		_Color Color;
 		bool Stretch;
 
 };

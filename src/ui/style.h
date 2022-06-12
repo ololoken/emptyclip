@@ -48,7 +48,6 @@ class _Style {
 		const _Color &GetBorderColor() const { return BorderColor; }
 
 		void SetTexture(_Texture *Texture) { this->Texture = Texture; }
-		const _Texture *GetTexture() const { return Texture; }
 
 		void SetTextureColor(const _Color &TextureColor) { this->TextureColor = TextureColor; }
 		const _Color &GetTextureColor() const { return TextureColor; }
@@ -56,15 +55,13 @@ class _Style {
 		void SetStretch(bool Stretch) { this->Stretch = Stretch; }
 		bool GetStretch() const { return Stretch; }
 
-	private:
-
 		std::string Identifier;
-
-		_Color BackgroundColor, BorderColor;
-		bool HasBackgroundColor, HasBorderColor;
-
 		const _Texture *Texture;
+		_Color BackgroundColor;
+		_Color BorderColor;
 		_Color TextureColor;
-
+		bool HasBackgroundColor;
+		bool HasBorderColor;
 		bool Stretch;
+
 };

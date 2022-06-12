@@ -81,9 +81,8 @@ class _Monster : public _Entity {
 		bool CalcPath(const Vector2 &Goal);
 		bool VisiblePath(const Vector2 &Goal);
 
-		void UpdateDirection();
 		bool Passed(const Vector2 &Pos);
-		void Update(double FrameTime, _Player *Player);
+		void UpdateMonster(double FrameTime, _Player *Player);
 		bool IsVisible(const Vector2 &TargetPosition);
 		bool InRange(const Vector2 &Pos);
 
@@ -99,7 +98,6 @@ class _Monster : public _Entity {
 		bool CheckGoal();
 
 		const _ParticleTemplate *GetWeaponParticle(int Index) const;
-		std::string GetItemGroupIdentifier() const { return ItemGroupIdentifier; }
 		int64_t GetExperienceGiven() const { return ExperienceGiven; }
 		int GetBehavior() { if(BehaviorList.empty()) BehaviorList.push_front(BaseBehavior); return BehaviorList.front(); }
 

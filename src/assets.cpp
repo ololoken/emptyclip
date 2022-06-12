@@ -1538,7 +1538,7 @@ _Monster *_Assets::CreateMonster(const std::string &Identifier, const Vector2 &P
 	// Creates a monster
 	_Monster *Monster = new _Monster(MonsterTemplate, GetAnimation(MonsterTemplate->AnimationIdentifier), Position);
 	for(int i = 0; i < SAMPLE_TYPES; i++)
-		Monster->SetSample(i, AttackSample->Samples[i]);
+		Monster->Samples[i] = AttackSample->Samples[i];
 
 	return Monster;
 }

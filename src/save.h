@@ -52,7 +52,7 @@ class _Save {
 		void DeletePlayer(int Slot);
 		void LoadSaves();
 
-		_Player *GetPlayer(int Slot) { return Players[Slot]; }
+		_Player *GetPlayer(std::size_t Slot) { return Players[Slot]; }
 
 	private:
 
