@@ -26,6 +26,8 @@
 #include <iostream>
 #include <glm/gtx/norm.hpp>
 
+const double SQRT1_2 = 0.70710678118654752440;
+
 // Constructor
 _Entity::_Entity() :
 	TriggerDownAudio(nullptr),
@@ -315,20 +317,20 @@ void _Entity::Move() {
 				NewDirection.x = 1;
 			break;
 			case MOVE_FORWARDLEFT:
-				NewDirection.x = -M_SQRT1_2;
-				NewDirection.y = -M_SQRT1_2;
+				NewDirection.x = -SQRT1_2;
+				NewDirection.y = -SQRT1_2;
 			break;
 			case MOVE_FORWARDRIGHT:
-				NewDirection.x = M_SQRT1_2;
-				NewDirection.y = -M_SQRT1_2;
+				NewDirection.x = SQRT1_2;
+				NewDirection.y = -SQRT1_2;
 			break;
 			case MOVE_BACKWARDLEFT:
-				NewDirection.x = -M_SQRT1_2;
-				NewDirection.y = M_SQRT1_2;
+				NewDirection.x = -SQRT1_2;
+				NewDirection.y = SQRT1_2;
 			break;
 			case MOVE_BACKWARDRIGHT:
-				NewDirection.x = M_SQRT1_2;
-				NewDirection.y = M_SQRT1_2;
+				NewDirection.x = SQRT1_2;
+				NewDirection.y = SQRT1_2;
 			break;
 			default:
 			break;
