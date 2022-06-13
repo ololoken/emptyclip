@@ -165,6 +165,7 @@ const  std::string  ASSETS_AMMO                    =  "tables/ammo.tsv";
 const  std::string  ASSETS_WEAPONS                 =  "tables/weapons.tsv";
 const  std::string  ASSETS_ARMOR                   =  "tables/armor.tsv";
 const  std::string  ASSETS_ITEMDROPDATA            =  "tables/itemdrops.tsv";
+const  std::string  ASSETS_PROGRAMS                =  "tables/programs.tsv";
 const  std::string  ASSETS_TEXTURES_MAIN           =  "tables/textures/main.tsv";
 const  std::string  ASSETS_TEXTURES_MAP            =  "tables/textures/map.tsv";
 const  std::string  ASSETS_TEXTURES_EDITOR         =  "tables/textures/editor.tsv";

@@ -18,6 +18,7 @@
 #include <ui/image.h>
 #include <texture.h>
 #include <graphics.h>
+#include <assets.h>
 
 // Constructor
 _Image::_Image(const std::string &Identifier, _Element *Parent, const glm::ivec2 &Offset, const glm::ivec2 &Size, const _Alignment &Alignment, const _Texture *Texture, const glm::vec4 &Color, bool Stretch) :
@@ -35,10 +36,16 @@ _Image::~_Image() {
 // Render the element
 void _Image::Render() const {
 
-	if(Texture)
-		Graphics.DrawImage(Bounds, Texture, Color, Stretch);
-	else
-		Graphics.DrawRectangle(Bounds, Color, Stretch);
+	if(Texture) {
+		Graphics.SetProgram(Assets.Programs["ortho_pos_uv"]);
+		Graphics.SetColor(Color);
+		Graphics.DrawImage(Bounds, Texture, Stretch);
+	}
+	else {
+		Graphics.SetProgram(Assets.Programs["ortho_pos"]);
+		Graphics.SetColor(Color);
+		Graphics.DrawRectangle(Bounds, Stretch);
+	}
 
 	// Draw children
 	_Element::Render();

@@ -104,6 +104,7 @@ void _Framework::Init(int ArgumentCount, char **Arguments) {
 
 	// Set up subsystems
 	Graphics.Init(WindowSettings);
+	Graphics.SetCullFace(false);
 	Audio.Init(AudioEnabled);
 	Audio.SetGain(Config.SoundVolume);
 

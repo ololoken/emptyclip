@@ -19,52 +19,53 @@
 
 // Libraries
 #include <glm/vec2.hpp>
+#include <glm/mat4x4.hpp>
 
 // Camera class
 class _Camera {
 
 	public:
 
-		_Camera(const glm::vec2 &Position, float Distance, float UpdateDivisor);
+		_Camera(const glm::vec3 &Position, float UpdateDivisor);
 		~_Camera();
 
 		// Updates
 		void CalculateFrustum(float AspectRatio);
-		void Set3DProjection(double BlendFactor) const;
-		void Update(double FrameTime);
+		void Set3DProjection(double BlendFactor);
 		void ConvertScreenToWorld(const glm::ivec2 &Point, glm::vec2 &WorldPosition);
 		void ConvertWorldToScreen(const glm::vec2 &WorldPosition, glm::ivec2 &Point);
+
+		void Update(double FrameTime);
+		void UpdatePosition(const glm::vec2 &UpdatePosition) { this->TargetPosition += glm::vec3(UpdatePosition, 0.0f); }
+		void UpdateDistance(float Update) { this->TargetPosition.z += Update; }
+
+		void ForcePosition(const glm::vec3 &Position) { this->TargetPosition = this->LastPosition = this->Position = Position; }
+		void Set2DPosition(const glm::vec2 &Position) { this->TargetPosition = glm::vec3(Position.x, Position.y, this->Position.z); }
+		void SetDistance(float Distance) { this->TargetPosition.z = Distance; }
+
+		glm::vec2 Get2DPosition() const { return glm::vec2(Position.x, Position.y); }
+
+		void GetDrawPosition(double BlendFactor, glm::vec3 &DrawPosition);
+		const glm::vec4 &GetAABB() const { return AABB; }
 
 		bool IsCircleInView(const glm::vec2 &Position, float Radius) const;
 		bool IsAABBInView(const float *Bounds) const;
 
-		void UpdatePosition(const glm::vec2 &UpdatePosition) { this->TargetPosition += UpdatePosition; }
-		void ForcePosition(const glm::vec2 &Position) { this->LastPosition = this->Position = Position; this->TargetPosition = Position; }
-
-		void UpdateDistance(float Update) { this->TargetDistance += Update; }
-		void ForceDistance(float Distance) { this->Distance = LastDistance = TargetDistance = Distance; }
-
-		void SetPosition(const glm::vec2 &Position) { this->TargetPosition = Position; }
-		const glm::vec2 &GetPosition() const { return Position; }
-
-		void SetDistance(float Distance) { this->TargetDistance = Distance; }
-		float GetDistance() const { return Distance; }
-		float GetTargetDistance() const { return TargetDistance; }
-
-		void SetFovy(float Fovy) { this->Fovy = Fovy; }
-		float GetFovy() const { return Fovy; }
-
-		const float *GetAABB() const { return AABB; }
+		glm::mat4 Transform;
 
 	private:
 
-		glm::vec2 LastPosition, Position, TargetPosition;
-		float LastDistance, Distance, TargetDistance;
-		float Fovy;
+		glm::mat4 Projection;
+
+		glm::vec3 LastPosition;
+		glm::vec3 Position;
+		glm::vec3 TargetPosition;
 		float UpdateDivisor;
 
-		float Frustum[2];
-		float Near, Far;
+		glm::vec2 Frustum;
+		float Fovy;
+		float Near;
+		float Far;
 
-		float AABB[4];
+		glm::vec4 AABB;
 };

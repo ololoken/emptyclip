@@ -32,29 +32,6 @@ class _Style {
 		_Style(const std::string &Identifier, bool HasBackgroundColor, bool HasBorderColor, const glm::vec4 &BackgroundColor, const glm::vec4 &BorderColor, const _Texture *Texture, const glm::vec4 &TextureColor, bool Stretch);
 		~_Style();
 
-		void SetIdentifier(const std::string &Identifier) { this->Identifier = Identifier; }
-		const std::string &GetIdentifier() const { return Identifier; }
-
-		void SetHasBackgroundColor(bool HasBackgroundColor) { this->HasBackgroundColor = HasBackgroundColor; }
-		bool GetHasBackgroundColor() const { return HasBackgroundColor; }
-
-		void SetHasBorderColor(bool HasBorderColor) { this->HasBorderColor = HasBorderColor; }
-		bool GetHasBorderColor() const { return HasBorderColor; }
-
-		void SetBackgroundColor(const glm::vec4 &BackgroundColor) { this->BackgroundColor = BackgroundColor; }
-		const glm::vec4 &GetBackgroundColor() const { return BackgroundColor; }
-
-		void SetBorderColor(const glm::vec4 &BorderColor) { this->BorderColor = BorderColor; }
-		const glm::vec4 &GetBorderColor() const { return BorderColor; }
-
-		void SetTexture(_Texture *Texture) { this->Texture = Texture; }
-
-		void SetTextureColor(const glm::vec4 &TextureColor) { this->TextureColor = TextureColor; }
-		const glm::vec4 &GetTextureColor() const { return TextureColor; }
-
-		void SetStretch(bool Stretch) { this->Stretch = Stretch; }
-		bool GetStretch() const { return Stretch; }
-
 		std::string Identifier;
 		const _Texture *Texture;
 		glm::vec4 BackgroundColor;

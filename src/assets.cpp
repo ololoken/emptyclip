@@ -22,6 +22,7 @@
 #include <random.h>
 #include <utils.h>
 #include <animation.h>
+#include <program.h>
 #include <ui/style.h>
 #include <ui/element.h>
 #include <ui/label.h>
@@ -45,10 +46,11 @@ _Assets Assets;
 void _Assets::Init(const std::string &AssetPath) {
 	this->AssetPath = AssetPath;
 
+	LoadPrograms(ASSETS_PROGRAMS);
 	LoadStringTable(ASSETS_STRINGS);
 	LoadLevels();
 	LoadSkills();
-	LoadFonts(ASSETS_FONTDATA);
+	LoadFonts(ASSETS_FONTDATA, false);
 	LoadTextures(ASSETS_TEXTURES_MAIN);
 	LoadTextures(ASSETS_TEXTURES_MAP);
 	LoadTextures(ASSETS_TEXTURES_EDITOR);
@@ -75,6 +77,7 @@ void _Assets::Init(const std::string &AssetPath) {
 
 	LoadAnimation("player_torso", ASSETS_PLAYERTEXTURES);
 	LoadAnimation("player_legs", ASSETS_PLAYERTEXTURES);
+	LoadFonts(ASSETS_FONTDATA);
 
 	BlankWeaponParticle = _WeaponParticleTemplate();
 }
@@ -82,13 +85,25 @@ void _Assets::Init(const std::string &AssetPath) {
 // Shutdown
 void _Assets::Close() {
 
-	UnloadTextures();
 	UnloadMonsterSet();
 	UnloadAnimation("player_torso");
 	UnloadAnimation("player_legs");
 	UnloadStyles();
 	UnloadElements();
 	UnloadFonts();
+
+	for(const auto &Texture : Textures)
+		delete Texture.second;
+
+	for(const auto &Program : Programs)
+		delete Program.second;
+
+	for(const auto &Shader : Shaders)
+		delete Shader.second;
+
+	Textures.clear();
+	Programs.clear();
+	Shaders.clear();
 }
 
 // Loads the strings
@@ -122,39 +137,61 @@ void _Assets::LoadStringTable(const std::string &Filename) {
 }
 
 // Loads the fonts
-void _Assets::LoadFonts(const std::string &Filename) {
+void _Assets::LoadFonts(const std::string &Path, bool LoadFonts) {
 
 	// Load file
-	std::ifstream InputFile((AssetPath + Filename).c_str(), std::ios::in);
-	if(!InputFile) {
-		throw std::runtime_error("Error loading: " + Filename);
-	}
+	std::ifstream File(AssetPath + Path.c_str(), std::ios::in);
+	if(!File)
+		throw std::runtime_error("Error loading: " + Path);
 
-	// Ignore the first line
-	InputFile.ignore(1024, '\n');
+	// Skip header
+	File.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
 	// Read the file
-	while(!InputFile.eof() && InputFile.peek() != EOF) {
-		std::string Identifier = GetTSVText(InputFile);
-		std::string FontFile = GetTSVText(InputFile);
+	while(!File.eof() && File.peek() != EOF) {
 
-		int Size;
-		InputFile >> Size;
-
-		InputFile.ignore(1024, '\n');
-
-		// Load font
-		_Font *Font = new _Font(AssetPath + ASSETS_FONTS + FontFile, Size);
+		// Read strings
+		std::string Name;
+		std::string FontFile;
+		std::string ProgramName;
+		std::getline(File, Name, '\t');
+		std::getline(File, FontFile, '\t');
+		std::getline(File, ProgramName, '\t');
 
 		// Check for duplicates
-		if(IsFontLoaded(Identifier)) {
-			throw std::runtime_error("LoadFonts - Duplicate entry: " + Identifier);
-		}
+		if(!LoadFonts && Fonts[Name])
+			throw std::runtime_error(std::string(__PRETTY_FUNCTION__) + " - Duplicate entry: " + Name);
 
-		Fonts.insert(make_pair(Identifier, Font));
+		// Find program
+		if(Programs.find(ProgramName) == Programs.end())
+			throw std::runtime_error(std::string(__PRETTY_FUNCTION__) + " - Cannot find program: " + ProgramName);
+
+		// Get size
+		uint32_t Size;
+		File >> Size;
+
+		File.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+
+		// Load font
+		if(LoadFonts) {
+
+			// Check for font name
+			if(Fonts.find(Name) == Fonts.end())
+				throw std::runtime_error(std::string(__PRETTY_FUNCTION__) + " - Cannot find font: " + Name);
+
+			// Load font
+			Fonts[Name]->Load(Name, FontFile, Programs[ProgramName], Size);
+		}
+		else {
+
+			// Create empty font
+			_Font *Font = new _Font();
+			Font->ID = Name;
+			Fonts[Name] = Font;
+		}
 	}
 
-	InputFile.close();
+	File.close();
 }
 
 // Loads the level table
@@ -235,7 +272,7 @@ void _Assets::LoadColorTable(const std::string &Filename) {
 			throw std::runtime_error(std::string(__FUNCTION__) + " - Duplicate entry: " + Identifier);
 		}
 
-		ColorTable.insert(make_pair(Identifier, Color));
+		Colors.insert(make_pair(Identifier, Color));
 	}
 	InputFile.close();
 }
@@ -322,6 +359,52 @@ void _Assets::LoadAnimationTable(const std::string &Filename) {
 	InputFile.close();
 }
 
+// Load shader programs
+void _Assets::LoadPrograms(const std::string &Path) {
+
+	// Load file
+	std::ifstream File(Path.c_str(), std::ios::in);
+	if(!File)
+		throw std::runtime_error("Error loading: " + Path);
+
+	// Skip header
+	File.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+
+	// Read the file
+	while(!File.eof() && File.peek() != EOF) {
+		std::string Name;
+		std::string VertexPath;
+		std::string FragmentPath;
+		std::getline(File, Name, '\t');
+		std::getline(File, VertexPath, '\t');
+		std::getline(File, FragmentPath, '\t');
+
+		// Get integer parameters
+		GLuint Attribs;
+		int MaxLights;
+		File >> Attribs >> MaxLights;
+
+		File.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+
+		// Check for duplicates
+		if(Programs[Name])
+			throw std::runtime_error(std::string(__PRETTY_FUNCTION__) + " - Duplicate entry: " + Name);
+
+		// Load vertex shader
+		if(Shaders.find(VertexPath) == Shaders.end())
+			Shaders[VertexPath] = new _Shader(VertexPath, GL_VERTEX_SHADER);
+
+		// Load fragment shader
+		if(Shaders.find(FragmentPath) == Shaders.end())
+			Shaders[FragmentPath] = new _Shader(FragmentPath, GL_FRAGMENT_SHADER);
+
+		// Create program
+		Programs[Name] = new _Program(Name, Shaders[VertexPath], Shaders[FragmentPath], Attribs, MaxLights);
+	}
+
+	File.close();
+}
+
 // Load textures
 void _Assets::LoadTextures(const std::string &Filename) {
 
@@ -344,7 +427,8 @@ void _Assets::LoadTextures(const std::string &Filename) {
 
 		// Load texture
 		std::string Path = AssetPath + ASSETS_TEXTURE_PATH + TextureFile;
-		_Texture *Texture = new _Texture(Path, Group, Repeat, MipMaps);
+		_Texture *Texture = new _Texture(Path, false, Repeat, MipMaps, false);
+		Texture->Group = Group;
 		if(!Texture) {
 			throw std::runtime_error(std::string(__FUNCTION__) + " - Error loading: " + Path);
 		}
@@ -466,7 +550,7 @@ void _Assets::LoadParticleTable(const std::string &Filename) {
 		Particle.Color = GetColor(ColorIdentifier);
 
 		// Get font
-		Particle.Font = Assets.GetFont(FontIdentifier);
+		Particle.Font = Assets.Fonts[FontIdentifier];
 		if(FontIdentifier != "" && !Particle.Font)
 			throw std::runtime_error("Unable to find font: " + FontIdentifier);
 
@@ -1004,10 +1088,9 @@ void _Assets::LoadReel(const std::string &Identifier, const std::string &Path) {
 
 			for(int i = 0; i < static_cast<int>(ReelTableIterator->second.TextureFiles.size()); i++) {
 				FilePath = AssetPath + Path + ReelTableIterator->second.TextureFiles[i];
-				Texture = new _Texture(FilePath, 0, false, true);
-				if(!Texture) {
+				Texture = new _Texture(FilePath, false, false, true, false);
+				if(!Texture)
 					throw std::runtime_error("Error loading: " + FilePath);
-				}
 
 				Reel.Textures.push_back(Texture);
 			}
@@ -1189,7 +1272,7 @@ void _Assets::LoadLabels(const std::string &Filename) {
 		}
 
 		// Get font
-		_Font *Font = GetFont(FontIdentifier);
+		_Font *Font = Fonts[FontIdentifier];
 		if(!Font) {
 			throw std::runtime_error("Unable to find font: " + FontIdentifier);
 		}
@@ -1366,7 +1449,7 @@ void _Assets::LoadTextBoxes(const std::string &Filename) {
 		_Style *Style = GetStyle(StyleIdentifier);
 
 		// Get font
-		_Font *Font = GetFont(FontIdentifier);
+		_Font *Font = Fonts[FontIdentifier];
 		if(!Font) {
 			throw std::runtime_error("Unable to find font: " + FontIdentifier);
 		}
@@ -1445,15 +1528,6 @@ void _Assets::UnloadElements() {
 		delete Element.second;
 
 	Elements.clear();
-}
-
-// Frees memory used by textures
-void _Assets::UnloadTextures() {
-
-	for(const auto &Texture : Textures)
-		delete Texture.second;
-
-	Textures.clear();
 }
 
 // Frees memory used by the monster set
@@ -1677,14 +1751,13 @@ void _Assets::GetTextureList(std::vector<_Brush> &TextureList, int Group) {
 		if(!Texture.second)
 			throw std::runtime_error("Bad texture in textures list");
 
-		if(Texture.second->GetGroup() == Group || Group == -1) {
-			TextureList.push_back(_Brush(Texture.first, Texture.second->GetName(), Texture.second, COLOR_WHITE));
-		}
+		if(Texture.second->Group == Group || Group == -1)
+			TextureList.push_back(_Brush(Texture.first, Texture.second->Name, Texture.second, COLOR_WHITE));
 	}
 }
 
 bool _Assets::IsStringLoaded(const std::string &Identifier) { return StringTable.find(Identifier) != StringTable.end(); }
-bool _Assets::IsColorLoaded(const std::string &Identifier) { return ColorTable.find(Identifier) != ColorTable.end(); }
+bool _Assets::IsColorLoaded(const std::string &Identifier) { return Colors.find(Identifier) != Colors.end(); }
 bool _Assets::IsTextureLoaded(const std::string &Identifier) { return Textures.find(Identifier) != Textures.end(); }
 bool _Assets::IsAttackSampleLoaded(const std::string &Identifier) { return AttackSampleTable.find(Identifier) != AttackSampleTable.end(); }
 bool _Assets::IsParticleLoaded(const std::string &Identifier) { return ParticleTable.find(Identifier) != ParticleTable.end(); }
@@ -1701,7 +1774,7 @@ bool _Assets::IsArmorLoaded(const std::string &Identifier) { return ArmorTable.f
 bool _Assets::IsItemGroupLoaded(const std::string &Identifier) { return ItemGroupTable.find(Identifier) != ItemGroupTable.end(); }
 
 void _Assets::UnloadStringTable() { StringTable.clear(); }
-void _Assets::UnloadColorTable() { ColorTable.clear(); }
+void _Assets::UnloadColorTable() { Colors.clear(); }
 void _Assets::UnloadReelTable() { ReelTable.clear(); }
 void _Assets::UnloadAnimationTable() { AnimationTable.clear(); }
 void _Assets::UnloadAttackSampleTable() { AttackSampleTable.clear(); }
@@ -1715,12 +1788,6 @@ void _Assets::UnloadWeaponTable() { WeaponTable.clear(); }
 void _Assets::UnloadArmorTable() { ArmorTable.clear(); }
 void _Assets::UnloadItemGroupTable() { ItemGroupTable.clear(); }
 
-_Font *_Assets::GetFont(const std::string &Identifier) {
-	if(Fonts.find(Identifier) == Fonts.end())
-		return nullptr;
-
-	return Fonts[Identifier];
-}
 _Texture *_Assets::GetTexture(const std::string &Identifier) {
 	if(Textures.find(Identifier) == Textures.end())
 		return nullptr;
@@ -1734,10 +1801,10 @@ std::string _Assets::GetString(const std::string &Identifier) {
 	return StringTable[Identifier];
 }
 const glm::vec4 &_Assets::GetColor(const std::string &Identifier) {
-	if(ColorTable.find(Identifier) == ColorTable.end())
+	if(Colors.find(Identifier) == Colors.end())
 		return COLOR_WHITE;
 
-	return ColorTable[Identifier];
+	return Colors[Identifier];
 }
 _Reel *_Assets::GetReel(const std::string &Identifier) {
 	if(Reels.find(Identifier) == Reels.end())

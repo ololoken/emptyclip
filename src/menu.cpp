@@ -83,12 +83,12 @@ void _Menu::InitTitle() {
 		BuildVersion = std::string("-") + BUILD_VERSION;
 
 	Assets.GetLabel("game_version")->SetText(GAME_VERSION + BuildVersion);
-	Graphics.ShowCursor(true);
+	Graphics.SetCursor(true);
 
 	Background = Assets.GetImage("menu_bg");
 	CurrentLayout = Assets.GetElement("menu_title");
 
-	Background->SetWidth(Graphics.CurrentSize.x * ((float)Background->Texture->GetHeight() / Background->Texture->GetWidth()));
+	Background->SetWidth(Graphics.CurrentSize.x * ((float)Background->Texture->Size.y / Background->Texture->Size.x));
 	Background->SetHeight(Graphics.CurrentSize.y);
 
 	State = STATE_TITLE;
@@ -135,7 +135,7 @@ void _Menu::InitOptions() {
 void _Menu::InitInGame() {
 	CurrentLayout = Assets.GetElement("menu_ingame");
 
-	Graphics.ShowCursor(true);
+	Graphics.SetCursor(true);
 	Background = nullptr;
 
 	State = STATE_INGAME;
@@ -161,7 +161,7 @@ void _Menu::InitNewPlayer() {
 
 		ColorButtons[i] = Assets.GetButton(Buffer.str());
 		ColorButtons[i]->SetEnabled(false);
-		ColorButtons[i]->SetID(i);
+		ColorButtons[i]->ID = i;
 	}
 
 	SelectedColor = 0;
@@ -280,23 +280,23 @@ void _Menu::MouseEvent(const _MouseEvent &MouseEvent) {
 
 		switch(State) {
 			case STATE_TITLE: {
-				if(Clicked->GetIdentifier() == "button_title_tutorial") {
+				if(Clicked->Identifier == "button_title_tutorial") {
 					InitTutorial();
 				}
-				else if(Clicked->GetIdentifier() == "button_title_single") {
+				else if(Clicked->Identifier == "button_title_single") {
 					InitSinglePlayer();
 				}
-				else if(Clicked->GetIdentifier() == "button_title_options") {
+				else if(Clicked->Identifier == "button_title_options") {
 					InitOptions();
 				}
-				else if(Clicked->GetIdentifier() == "button_title_exit") {
+				else if(Clicked->Identifier == "button_title_exit") {
 					Framework.SetDone(true);
 				}
 			} break;
 			case STATE_SINGLEPLAYER: {
 				if(SinglePlayerState == SINGLEPLAYER_NONE) {
 
-					if(Clicked->GetIdentifier() == "button_singleplayer_delete") {
+					if(Clicked->Identifier == "button_singleplayer_delete") {
 						if(SelectedSlot != -1) {
 							Save.DeletePlayer(SelectedSlot);
 							RefreshSaveSlots();
@@ -305,26 +305,26 @@ void _Menu::MouseEvent(const _MouseEvent &MouseEvent) {
 							SelectedSlot = -1;
 						}
 					}
-					else if(Clicked->GetIdentifier() == "button_singleplayer_play") {
+					else if(Clicked->Identifier == "button_singleplayer_play") {
 						if(SelectedSlot != -1 && Save.GetPlayer(SelectedSlot)) {
 							LaunchGame();
 						}
 					}
-					else if(Clicked->GetIdentifier() == "button_singleplayer_back") {
+					else if(Clicked->Identifier == "button_singleplayer_back") {
 						InitTitle();
 					}
-					else if(Clicked->GetIdentifier().substr(0, PlayerButtonPrefix.size()) == PlayerButtonPrefix) {
+					else if(Clicked->Identifier.substr(0, PlayerButtonPrefix.size()) == PlayerButtonPrefix) {
 
 						// Deselect previous slot
 						if(SelectedSlot != -1)
 							SaveSlots[SelectedSlot]->SetEnabled(false);
 
 						// Set up create player screen
-						if(!Save.GetPlayer(Clicked->GetID())) {
+						if(!Save.GetPlayer(Clicked->ID)) {
 							InitNewPlayer();
 						}
 
-						SelectedSlot = Clicked->GetID();
+						SelectedSlot = Clicked->ID;
 						SaveSlots[SelectedSlot]->SetEnabled(true);
 
 						if(DoubleClick) {
@@ -333,63 +333,63 @@ void _Menu::MouseEvent(const _MouseEvent &MouseEvent) {
 					}
 				}
 				else {
-					if(Clicked->GetIdentifier().substr(0, PlayerColorButtonPrefix.size()) == PlayerColorButtonPrefix) {
+					if(Clicked->Identifier.substr(0, PlayerColorButtonPrefix.size()) == PlayerColorButtonPrefix) {
 						if(SelectedColor != -1)
 							ColorButtons[SelectedColor]->SetEnabled(false);
 
-						SelectedColor = Clicked->GetID();
+						SelectedColor = Clicked->ID;
 						ColorButtons[SelectedColor]->SetEnabled(true);
 					}
-					else if(Clicked->GetIdentifier() == "button_new_create") {
+					else if(Clicked->Identifier == "button_new_create") {
 						CreatePlayer();
 					}
-					else if(Clicked->GetIdentifier() == "button_new_cancel") {
+					else if(Clicked->Identifier == "button_new_cancel") {
 						CancelCreate();
 					}
 				}
 			} break;
 			case STATE_OPTIONS: {
 				if(OptionsState == OPTION_NONE) {
-					if(Clicked->GetIdentifier() == "button_options_defaults") {
+					if(Clicked->Identifier == "button_options_defaults") {
 						Config.LoadDefaultInputBindings();
 						RefreshInputLabels();
 					}
-					else if(Clicked->GetIdentifier() == "button_options_save") {
+					else if(Clicked->Identifier == "button_options_save") {
 						Config.Save();
 						if(Framework.GetState() == &PlayState)
 							InitInGame();
 						else
 							InitTitle();
 					}
-					else if(Clicked->GetIdentifier() == "button_options_cancel") {
+					else if(Clicked->Identifier == "button_options_cancel") {
 						Config.Load();
 						if(Framework.GetState() == &PlayState)
 							InitInGame();
 						else
 							InitTitle();
 					}
-					else if(Clicked->GetIdentifier().substr(0, InputBoxPrefix.size()) == InputBoxPrefix) {
+					else if(Clicked->Identifier.substr(0, InputBoxPrefix.size()) == InputBoxPrefix) {
 						OptionsState = OPTION_ACCEPT_INPUT;
-						CurrentAction = Clicked->GetID();
+						CurrentAction = Clicked->ID;
 						Assets.GetLabel("menu_options_accept_text_action")->SetText(Actions.GetName(CurrentAction));
 					}
 				}
 			} break;
 			case STATE_INGAME: {
-				if(Clicked->GetIdentifier() == "button_ingame_restart" && PlayState.GetPlayer()) {
+				if(Clicked->Identifier == "button_ingame_restart" && PlayState.GetPlayer()) {
 					InitPlay();
 					PlayState.GetPlayer()->SetCheckpointIndex(0);
 					PlayState.GetPlayer()->Save();
 					PlayState.GetPlayer()->Load();
 					Framework.ChangeState(&PlayState);
 				}
-				else if(Clicked->GetIdentifier() == "button_ingame_resume") {
+				else if(Clicked->Identifier == "button_ingame_resume") {
 					InitPlay();
 				}
-				else if(Clicked->GetIdentifier() == "button_ingame_options") {
+				else if(Clicked->Identifier == "button_ingame_options") {
 					InitOptions();
 				}
-				else if(Clicked->GetIdentifier() == "button_ingame_menu") {
+				else if(Clicked->Identifier == "button_ingame_menu") {
 					Framework.ChangeState(&NullState);
 				}
 			} break;
@@ -428,7 +428,7 @@ void _Menu::Update(double FrameTime) {
 
 // Draw phase
 void _Menu::Render() {
-	Graphics.Setup2DProjectionMatrix();
+	Graphics.Setup2D();
 
 	if(Background)
 		Background->Render();
@@ -444,23 +444,22 @@ void _Menu::Render() {
 				CurrentLayout->Render();
 
 			if(OptionsState == OPTION_ACCEPT_INPUT) {
-				Graphics.FadeScreen(MENU_ACCEPTINPUT_FADE);
+				Graphics.FadeScreen(Assets.Programs["ortho_pos"], MENU_ACCEPTINPUT_FADE);
 				Assets.GetElement("menu_popup")->Render();
 			}
 		} break;
 		case STATE_SINGLEPLAYER: {
 			Assets.GetElement("menu_singleplayer")->Render();
 
-			Graphics.EnableVBO(VBO_QUAD);
+			Graphics.SetVBO(VBO_QUAD);
 			for(int i = 0; i <= _Save::SLOT_9; i++) {
 				_Player *Player = Save.GetPlayer(i);
 				if(Player)
-					Player->Render2D(SaveSlots[i]->GetBounds().GetMidPoint());
+					Player->Render2D(SaveSlots[i]->Bounds.GetMidPoint());
 			}
-			Graphics.DisableVBO(VBO_QUAD);
 
 			if(SinglePlayerState == SINGLEPLAYER_NEW_PLAYER) {
-				Graphics.FadeScreen(MENU_ACCEPTINPUT_FADE);
+				Graphics.FadeScreen(Assets.Programs["ortho_pos"], MENU_ACCEPTINPUT_FADE);
 				if(CurrentLayout)
 					CurrentLayout->Render();
 			}
@@ -496,7 +495,7 @@ void _Menu::RefreshSaveSlots() {
 
 		Buffer << PlayerButtonPrefix << i;
 		SaveSlots[i] = Assets.GetButton(Buffer.str());
-		SaveSlots[i]->SetID(i);
+		SaveSlots[i]->ID = i;
 	}
 }
 
@@ -505,7 +504,7 @@ void _Menu::RefreshInputLabels() {
 	for(size_t i = 0; i < LABEL_COUNT; i++) {
 		InputLabels[i] = Assets.GetLabel(KEYLABEL_IDENTIFIERS[i]);
 		InputLabels[i]->SetText(Actions.GetInputNameForAction(i));
-		InputLabels[i]->GetParent()->SetID(i);
+		InputLabels[i]->Parent->ID = i;
 	}
 }
 

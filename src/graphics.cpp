@@ -16,53 +16,54 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 *******************************************************************************/
 #include <graphics.h>
+#include <assets.h>
+#include <program.h>
 #include <color.h>
 #include <texture.h>
 #include <stdexcept>
 #include <constants.h>
-#include <opengl.h>
 #include <ui/element.h>
 #include <SDL_mouse.h>
-
-typedef void (APIENTRYP PFNGLGENBUFFERSPROC) (GLsizei n, GLuint *buffers);
-typedef void (APIENTRYP PFNGLBINDBUFFERPROC) (GLenum target, GLuint buffer);
-typedef void (APIENTRYP PFNGLBUFFERDATAPROC) (GLenum target, GLsizeiptr size, const void *data, GLenum usage);
-typedef void (APIENTRYP PFNGLDELETEBUFFERSPROC) (GLsizei n, const GLuint *buffers);
-PFNGLGENBUFFERSPROC glGenBuffers;
-PFNGLBINDBUFFERPROC glBindBuffer;
-PFNGLBUFFERDATAPROC glBufferData;
-PFNGLDELETEBUFFERSPROC glDeleteBuffers;
+#include <glm/gtc/type_ptr.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 
 _Graphics Graphics;
 
 // Initialize
 void _Graphics::Init(const _WindowSettings &WindowSettings) {
-	CurrentSize = WindowSettings.Size;
+	CircleVertices = 32;
+	Anisotropy = 0.0f;
 	FramesPerSecond = 0;
 	FrameCount = 0;
 	FrameRateTimer = 0;
-	TriangleCount = 0;
 	Context = nullptr;
 	Window = nullptr;
-	Enabled = true;
-	LastTextureID = -1;
-	LastColor = COLOR_WHITE;
-	LastTextureEnabled = true;
+	VertexArrayID = 0;
+	Element = nullptr;
+
+	// Set sizes
+	SDL_DisplayMode DisplayMode;
+	WindowSize = WindowSettings.Size;
+	FullscreenSize = glm::ivec2(0);
+	if(SDL_GetDesktopDisplayMode(0, &DisplayMode) == 0)
+		FullscreenSize = glm::ivec2(DisplayMode.w, DisplayMode.h);
 
 	// Set video flags
 	Uint32 VideoFlags = SDL_WINDOW_OPENGL;
 	if(WindowSettings.Fullscreen) {
 		VideoFlags |= SDL_WINDOW_FULLSCREEN_DESKTOP;
-
-		SDL_DisplayMode DisplayMode;
-		if(SDL_GetDesktopDisplayMode(0, &DisplayMode) == 0)
-			CurrentSize = glm::ivec2(DisplayMode.w, DisplayMode.h);
+		CurrentSize = FullscreenSize;
 	}
+	else
+		CurrentSize = WindowSize;
 
 	// Set root element
 	Element = new _Element("screen_element", nullptr, glm::ivec2(0, 0), glm::ivec2(CurrentSize.x, CurrentSize.y), _Alignment(0, 0), nullptr, false);
 
 	// Set opengl attributes
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
 	SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 1);
 	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 	if(WindowSettings.MSAA > 0) {
@@ -70,7 +71,13 @@ void _Graphics::Init(const _WindowSettings &WindowSettings) {
 		SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, WindowSettings.MSAA);
 	}
 
-	// Set video mode
+	// Load cursors
+	Cursors[CURSOR_NONE] = nullptr;
+	Cursors[CURSOR_MAIN] = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_ARROW);
+	Cursors[CURSOR_CROSS] = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_CROSSHAIR);
+	SDL_SetCursor(Cursors[CURSOR_MAIN]);
+
+	// Create window
 	Window = SDL_CreateWindow(WindowSettings.WindowTitle.c_str(), WindowSettings.Position.x, WindowSettings.Position.y, CurrentSize.x, CurrentSize.y, VideoFlags);
 	if(Window == nullptr)
 		throw std::runtime_error("SDL_CreateWindow failed");
@@ -80,6 +87,12 @@ void _Graphics::Init(const _WindowSettings &WindowSettings) {
 	if(Context == nullptr)
 		throw std::runtime_error("SDL_GL_CreateContext failed");
 
+	InitGLFunctions();
+
+	int MajorVersion, MinorVersion;
+	SDL_GL_GetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, &MajorVersion);
+	SDL_GL_GetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, &MinorVersion);
+
 	// Set vsync
 	SDL_GL_SetSwapInterval(WindowSettings.Vsync);
 
@@ -87,575 +100,271 @@ void _Graphics::Init(const _WindowSettings &WindowSettings) {
 	SetupOpenGL();
 
 	// Setup viewport
-	ChangeViewport(CurrentSize);
-}
-
-// Shutdown system
-void _Graphics::Close() {
-	delete Element;
-
-	if(Context) {
-		for(int i = 0; i < VBO_COUNT; i++)
-			glDeleteBuffers(1, &VertexBuffer[i]);
-
-		SDL_GL_DeleteContext(Context);
-		Context = nullptr;
-	}
-
-	if(Window) {
-		SDL_DestroyWindow(Window);
-		Window = nullptr;
-	}
-}
-
-// Change the viewport
-void _Graphics::ChangeViewport(const glm::ivec2 &Size) {
-	ViewportSize = Size;
-
-	// Calculate aspect ratio
-	AspectRatio = (float)ViewportSize.x / ViewportSize.y;
-}
-
-// Toggle fullscreen
-void _Graphics::ToggleFullScreen() {
-	if(SDL_SetWindowFullscreen(Window, SDL_GetWindowFlags(Window) ^ SDL_WINDOW_FULLSCREEN_DESKTOP) != 0) {
-		// failed
-	}
+	SetViewport(CurrentSize);
 }
 
 // Sets up OpenGL
 void _Graphics::SetupOpenGL() {
 
-	// Load extensions
-	glGenBuffers = (PFNGLGENBUFFERSPROC)SDL_GL_GetProcAddress("glGenBuffers");
-	glBindBuffer = (PFNGLBINDBUFFERPROC)SDL_GL_GetProcAddress("glBindBuffer");
-	glBufferData = (PFNGLBUFFERDATAPROC)SDL_GL_GetProcAddress("glBufferData");
-	glDeleteBuffers = (PFNGLDELETEBUFFERSPROC)SDL_GL_GetProcAddress("glDeleteBuffers");
+	// Anisotropic filtering
+	if(SDL_GL_ExtensionSupported("GL_EXT_texture_filter_anisotropic")) {
+		GLfloat MaxAnisotropy;
+		glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &MaxAnisotropy);
+
+		if(Anisotropy > MaxAnisotropy)
+			Anisotropy = MaxAnisotropy;
+	}
 
 	// Default state
-	glEnable(GL_TEXTURE_2D);
-	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-	glCullFace(GL_BACK);
 	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+	glCullFace(GL_BACK);
+	glEnable(GL_CULL_FACE);
+	glDisable(GL_DEPTH_TEST);
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
+	// Create vertex array
+	glGenVertexArrays(1, &VertexArrayID);
+	glBindVertexArray(VertexArrayID);
+	glEnableVertexAttribArray(0);
+
+	// Set ortho matrix
+	Ortho = glm::ortho(0.0f, (float)CurrentSize.x, (float)CurrentSize.y, 0.0f, -1.0f, 1.0f);
+
 	// Build vertex buffers
 	BuildVertexBuffers();
+
+	// Reset internal state
+	ResetState();
 
 	// Clear screen
 	ClearScreen();
 	Flip(0);
 }
 
+// Shutdown
+void _Graphics::Close() {
+	delete Element;
+	Element = nullptr;
+
+	// Close opengl context
+	if(Context) {
+		for(int i = 1; i < VBO_COUNT; i++)
+			glDeleteBuffers(1, &VertexBuffer[i]);
+
+		glDeleteVertexArrays(1, &VertexArrayID);
+
+		SDL_GL_DeleteContext(Context);
+		Context = nullptr;
+	}
+
+	// Close cursors
+	for(int i = 1; i < CURSOR_COUNT; i++)
+		SDL_FreeCursor(Cursors[i]);
+
+	// Close window
+	if(Window) {
+		SDL_DestroyWindow(Window);
+		Window = nullptr;
+	}
+}
+
 // Builds the vertex buffer objects
 void _Graphics::BuildVertexBuffers() {
+	VertexBuffer[VBO_NONE] = 0;
+
+	// Line
+	{
+		float Vertices[] = {
+			0.0f, 0.0f,
+			1.0f, 1.0f,
+		};
+
+		VertexBuffer[VBO_LINE] = CreateVBO(Vertices, sizeof(Vertices), GL_STATIC_DRAW);
+	}
 
 	// Circle
 	{
-		float Triangles[GRAPHICS_CIRCLE_VERTICES * 2];
+		float *Vertices = new float[CircleVertices * 2];
 
 		// Get vertices
-		for(int i = 0; i < GRAPHICS_CIRCLE_VERTICES; i++) {
-			float Radians = ((float)i / GRAPHICS_CIRCLE_VERTICES) * (M_PI * 2);
-			Triangles[i * 2] = cos(Radians);
-			Triangles[i * 2 + 1] = sin(Radians);
+		for(int i = 0; i < CircleVertices; i++) {
+			float Radians = ((float)i / CircleVertices) * (glm::pi<float>() * 2.0f);
+			Vertices[i * 2] = std::cos(Radians);
+			Vertices[i * 2 + 1] = std::sin(Radians);
 		}
 
-		VertexBuffer[VBO_CIRCLE] = CreateVBO(Triangles, sizeof(Triangles));
+		VertexBuffer[VBO_CIRCLE] = CreateVBO(Vertices, sizeof(float) * (unsigned)CircleVertices * 2, GL_STATIC_DRAW);
+		delete[] Vertices;
 	}
 
-	// Textured 2D Quad
+	// Quad
 	{
-		// Vertex data for quad
-		float Triangles[] = {
-			-0.5f,  0.5f, 0.0f, 1.0f,
-			 0.5f,  0.5f, 1.0f, 1.0f,
-			-0.5f, -0.5f, 0.0f, 0.0f,
-			 0.5f, -0.5f, 1.0f, 0.0f,
+		float Vertices[] = {
+			1.0f, 0.0f,
+			0.0f, 0.0f,
+			1.0f, 1.0f,
+			0.0f, 1.0f,
 		};
 
-		VertexBuffer[VBO_QUAD] = CreateVBO(Triangles, sizeof(Triangles));
+		VertexBuffer[VBO_QUAD] = CreateVBO(Vertices, sizeof(Vertices), GL_STATIC_DRAW);
+	}
+
+	// Rectangle
+	{
+		float Vertices[] = {
+			0.0f, 0.0f,
+			1.0f, 0.0f,
+			1.0f, 1.0f,
+			0.0f, 1.0f,
+		};
+
+		VertexBuffer[VBO_RECT] = CreateVBO(Vertices, sizeof(Vertices), GL_STATIC_DRAW);
+	}
+
+	// Centered textured quad
+	{
+		float Vertices[] = {
+			-0.5f,  0.5f,
+			 0.5f,  0.5f,
+			-0.5f, -0.5f,
+			 0.5f, -0.5f,
+			 0.0f,  1.0f,
+			 1.0f,  1.0f,
+			 0.0f,  0.0f,
+			 1.0f,  0.0f,
+		};
+
+		VertexBuffer[VBO_SPRITE] = CreateVBO(Vertices, sizeof(Vertices), GL_STATIC_DRAW);
+	}
+
+	// Dynamic vbo for drawing animations
+	{
+		float Vertices[] = {
+			-0.5f,  0.5f,
+			 0.5f,  0.5f,
+			-0.5f, -0.5f,
+			 0.5f, -0.5f,
+			 1.0f,  0.0f,
+			 0.0f,  0.0f,
+			 1.0f,  1.0f,
+			 0.0f,  1.0f,
+		};
+
+		VertexBuffer[VBO_ATLAS] = CreateVBO(Vertices, sizeof(Vertices), GL_DYNAMIC_DRAW);
+	}
+
+	// Textured quad
+	{
+		float Vertices[] = {
+			1.0f, 0.0f,
+			0.0f, 0.0f,
+			1.0f, 1.0f,
+			0.0f, 1.0f,
+			1.0f, 0.0f,
+			0.0f, 0.0f,
+			1.0f, 1.0f,
+			0.0f, 1.0f,
+		};
+
+		VertexBuffer[VBO_QUAD_UV] = CreateVBO(Vertices, sizeof(Vertices), GL_STATIC_DRAW);
 	}
 
 	// Cube
 	{
-
-		float Triangles[] = {
+		float Vertices[] = {
 
 			// Top
-			1.0f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f,
-			0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f,
-			1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f,
-			0.0f, 1.0f, 1.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f,
+			1.0f,  0.0f,  1.0f,  1.0f,  0.0f,  0.0f,  0.0f,  1.0f,
+			0.0f,  0.0f,  1.0f,  0.0f,  0.0f,  0.0f,  0.0f,  1.0f,
+			1.0f,  1.0f,  1.0f,  1.0f,  1.0f,  0.0f,  0.0f,  1.0f,
+			0.0f,  1.0f,  1.0f,  0.0f,  1.0f,  0.0f,  0.0f,  1.0f,
 
 			// Front
-			1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f,
-			0.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f,
-			1.0f, 1.0f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f, 0.0f,
-			0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f,
+			1.0f,  1.0f,  1.0f,  1.0f,  0.0f,  0.0f,  1.0f,  0.0f,
+			0.0f,  1.0f,  1.0f,  0.0f,  0.0f,  0.0f,  1.0f,  0.0f,
+			1.0f,  1.0f,  0.0f,  1.0f,  1.0f,  0.0f,  1.0f,  0.0f,
+			0.0f,  1.0f,  0.0f,  0.0f,  1.0f,  0.0f,  1.0f,  0.0f,
 
 			// Left
-			0.0f, 1.0f, 1.0f, 1.0f, 0.0f, -1.0f, 0.0f, 0.0f,
-			0.0f, 0.0f, 1.0f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f,
-			0.0f, 1.0f, 0.0f, 1.0f, 1.0f, -1.0f, 0.0f, 0.0f,
-			0.0f, 0.0f, 0.0f, 0.0f, 1.0f, -1.0f, 0.0f, 0.0f,
+			0.0f,  1.0f,  1.0f,  1.0f,  0.0f, -1.0f,  0.0f,  0.0f,
+			0.0f,  0.0f,  1.0f,  0.0f,  0.0f, -1.0f,  0.0f,  0.0f,
+			0.0f,  1.0f,  0.0f,  1.0f,  1.0f, -1.0f,  0.0f,  0.0f,
+			0.0f,  0.0f,  0.0f,  0.0f,  1.0f, -1.0f,  0.0f,  0.0f,
 
 			// Back
-			0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, -1.0f, 0.0f,
-			1.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, -1.0f, 0.0f,
-			0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, -1.0f, 0.0f,
-			1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, -1.0f, 0.0f,
+			0.0f,  0.0f,  1.0f,  1.0f,  0.0f,  0.0f, -1.0f,  0.0f,
+			1.0f,  0.0f,  1.0f,  0.0f,  0.0f,  0.0f, -1.0f,  0.0f,
+			0.0f,  0.0f,  0.0f,  1.0f,  1.0f,  0.0f, -1.0f,  0.0f,
+			1.0f,  0.0f,  0.0f,  0.0f,  1.0f,  0.0f, -1.0f,  0.0f,
 
 			// Right
-			1.0f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f, 0.0f, 0.0f,
-			1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f,
-			1.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f,
-			1.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f,
+			1.0f,  0.0f,  1.0f,  1.0f,  0.0f,  1.0f,  0.0f,  0.0f,
+			1.0f,  1.0f,  1.0f,  0.0f,  0.0f,  1.0f,  0.0f,  0.0f,
+			1.0f,  0.0f,  0.0f,  1.0f,  1.0f,  1.0f,  0.0f,  0.0f,
+			1.0f,  1.0f,  0.0f,  0.0f,  1.0f,  1.0f,  0.0f,  0.0f,
 		};
 
-		VertexBuffer[VBO_CUBE] = CreateVBO(Triangles, sizeof(Triangles));
+		VertexBuffer[VBO_CUBE] = CreateVBO(Vertices, sizeof(Vertices), GL_STATIC_DRAW);
 	}
 }
 
 // Create vertex buffer and return id
-GLuint _Graphics::CreateVBO(float *Triangles, GLuint Size) {
+GLuint _Graphics::CreateVBO(float *Vertices, GLsizeiptr Size, GLenum Type) {
 
+	// Create buffer
 	GLuint BufferID;
 	glGenBuffers(1, &BufferID);
 	glBindBuffer(GL_ARRAY_BUFFER, BufferID);
-	glBufferData(GL_ARRAY_BUFFER, Size, Triangles, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, Size, Vertices, Type);
 
 	return BufferID;
 }
 
-// Enable state for VBO
-void _Graphics::EnableVBO(int Type) {
-
-	glBindBuffer(GL_ARRAY_BUFFER, VertexBuffer[Type]);
-
-	switch(Type) {
-		case VBO_CUBE:
-			glEnableClientState(GL_VERTEX_ARRAY);
-			glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-			glEnableClientState(GL_NORMAL_ARRAY);
-			glVertexPointer(3, GL_FLOAT, sizeof(float) * 8, nullptr);
-			glTexCoordPointer(2, GL_FLOAT, sizeof(float) * 8, (GLvoid *)(sizeof(float) * 3));
-			glNormalPointer(GL_FLOAT, sizeof(float) * 8, (GLvoid *)(sizeof(float) * 5));
-		break;
-		case VBO_QUAD:
-			glEnableClientState(GL_VERTEX_ARRAY);
-			glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-			glVertexPointer(2, GL_FLOAT, sizeof(float) * 4, nullptr);
-			glTexCoordPointer(2, GL_FLOAT, sizeof(float) * 4, (GLvoid *)(sizeof(float) * 2));
-		break;
-		case VBO_CIRCLE:
-			glEnableClientState(GL_VERTEX_ARRAY);
-			glVertexPointer(2, GL_FLOAT, sizeof(float) * 2, nullptr);
-		break;
-	}
+// Resets all the last used variables
+void _Graphics::ResetState() {
+	SetAttribLevel(0);
+	glUseProgram(0);
+	glActiveTexture(GL_TEXTURE0);
+	LastVertexBufferID = (GLuint)-1;
+	LastTextureID = (GLuint)-1;
+	LastAttribLevel = (GLuint)-1;
+	LastProgram = nullptr;
+	LastDepthTest = false;
 }
 
-// Disable state for VBO
-void _Graphics::DisableVBO(int Type) {
+// Throw opengl error
+void _Graphics::CheckError() {
+	GLenum Error = glGetError();
+	if(Error)
+		throw std::runtime_error("glGetError returned " + std::to_string(Error));
+}
 
-	switch(Type) {
-		case VBO_CUBE:
-			glDisableClientState(GL_VERTEX_ARRAY);
-			glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-			glDisableClientState(GL_NORMAL_ARRAY);
-		break;
-		case VBO_QUAD:
-			glDisableClientState(GL_VERTEX_ARRAY);
-			glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-		break;
-		case VBO_CIRCLE:
-			glDisableClientState(GL_VERTEX_ARRAY);
-		break;
-	}
+// Sets up the projection matrix for drawing 2D objects
+void _Graphics::Setup2D() {
+	glViewport(0, 0, CurrentSize.x, CurrentSize.y);
+}
+
+// Set up modelview matrix
+void _Graphics::Setup3D() {
+	glViewport(0, CurrentSize.y - ViewportSize.y, ViewportSize.x, ViewportSize.y);
+}
+
+// Fade the screen
+void _Graphics::FadeScreen(const _Program *Program, float Amount) {
+	Graphics.SetProgram(Program);
+	Graphics.SetColor(glm::vec4(0.0f, 0.0f, 0.0f, Amount));
+	DrawRectangle(glm::vec2(0, 0), CurrentSize, true);
 }
 
 // Clears the screen
 void _Graphics::ClearScreen() {
+	SetDepthMask(true);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
-}
-
-// Set up modelview matrix
-void _Graphics::Setup3DViewport() {
-	glViewport(0, CurrentSize.y - ViewportSize.y, ViewportSize.x, ViewportSize.y);
-}
-
-// Sets up the projection matrix for drawing 2D objects
-void _Graphics::Setup2DProjectionMatrix() {
-
-	// Set viewport
-	glViewport(0, 0, CurrentSize.x, CurrentSize.y);
-
-	// Set projection matrix and frustum
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-	glOrtho(0, CurrentSize.x, CurrentSize.y, 0, -1, 1);
-
-	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
-
-	glDisable(GL_DEPTH_TEST);
-}
-
-// Fade the screen
-void _Graphics::FadeScreen(float Amount) {
-	Graphics.DrawRectangle(glm::vec2(0), CurrentSize, glm::vec4(0.0f, 0.0f, 0.0f, Amount), true);
-}
-
-// Draw centered image in screen space
-void _Graphics::DrawImage(const glm::ivec2 &CenterPoint, const _Texture *Texture, const glm::vec4 &Color) {
-	SetTextureEnabled(true);
-	SetTextureID(Texture->GetID());
-	SetColor(Color);
-
-	float HalfWidth = Texture->GetWidth() / 2.0f;
-	float HalfHeight = Texture->GetHeight() / 2.0f;
-
-	glBegin(GL_TRIANGLE_STRIP);
-
-		// Top right
-		glTexCoord2f(1, 0.0f);
-		glVertex2f(CenterPoint.x + HalfWidth, CenterPoint.y - HalfHeight);
-
-		// Top left
-		glTexCoord2f(0.0f, 0.0f);
-		glVertex2f(CenterPoint.x - HalfWidth, CenterPoint.y - HalfHeight);
-
-		// Bottom right
-		glTexCoord2f(1, 1);
-		glVertex2f(CenterPoint.x + HalfWidth, CenterPoint.y + HalfHeight);
-
-		// Bottom left
-		glTexCoord2f(0.0f, 1);
-		glVertex2f(CenterPoint.x - HalfWidth, CenterPoint.y + HalfHeight);
-
-	glEnd();
-
-	TriangleCount += 2;
-}
-
-// Draw image in screen space
-void _Graphics::DrawImage(const _Bounds &Bounds, const _Texture *Texture, const glm::vec4 &Color, bool Stretch) {
-	SetTextureEnabled(true);
-	SetColor(Color);
-	SetTextureID(Texture->GetID());
-
-	// Get s and t
-	float S, T;
-	if(Stretch) {
-		S = T = 1;
-	}
-	else {
-		S = (Bounds.End.x - Bounds.Start.x) / (float)(Texture->GetWidth());
-		T = (Bounds.End.y - Bounds.Start.y) / (float)(Texture->GetHeight());
-	}
-
-	glBegin(GL_TRIANGLE_STRIP);
-
-		// Top right
-		glTexCoord2f(S, 0.0f);
-		glVertex2f(Bounds.End.x, Bounds.Start.y);
-
-		// Top left
-		glTexCoord2f(0.0f, 0.0f);
-		glVertex2f(Bounds.Start.x, Bounds.Start.y);
-
-		// Bottom right
-		glTexCoord2f(S, T);
-		glVertex2f(Bounds.End.x, Bounds.End.y);
-
-		// Bottom left
-		glTexCoord2f(0.0f, T);
-		glVertex2f(Bounds.Start.x, Bounds.End.y);
-
-	glEnd();
-
-	TriangleCount += 2;
-}
-
-// Draw rectangle in screen space
-void _Graphics::DrawRectangle(const _Bounds &Bounds, const glm::vec4 &Color, bool Filled) {
-	SetTextureEnabled(false);
-
-	// Set alpha
-	SetColor(Color);
-
-	if(Filled)
-		glBegin(GL_QUADS);
-	else
-		glBegin(GL_LINE_LOOP);
-
-	// Top left
-	glVertex2f(Bounds.Start.x+1, Bounds.Start.y);
-
-	// Top right
-	glVertex2f(Bounds.End.x, Bounds.Start.y);
-
-	// Bottom right
-	glVertex2f(Bounds.End.x, Bounds.End.y-1);
-
-	// Bottom left
-	glVertex2f(Bounds.Start.x+1, Bounds.End.y-1);
-
-	glEnd();
-
-	TriangleCount += 2;
-}
-
-// Draw stencil mask
-void _Graphics::DrawMask(const _Bounds &Bounds) {
-
-	// Enable stencil
-	glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
-	glDepthMask(GL_FALSE);
-	glStencilMask(0x01);
-
-	// Write 1 to stencil buffer
-	glStencilFunc(GL_ALWAYS, 0x01, 0x01);
-	glStencilOp(GL_REPLACE, GL_REPLACE, GL_REPLACE);
-	glBegin(GL_TRIANGLE_STRIP);
-		glVertex2f(Bounds.End.x, Bounds.Start.y);
-		glVertex2f(Bounds.Start.x, Bounds.Start.y);
-		glVertex2f(Bounds.End.x, Bounds.End.y);
-		glVertex2f(Bounds.Start.x, Bounds.End.y);
-	glEnd();
-
-	// Then draw element only where stencil is 1
-	glStencilFunc(GL_EQUAL, 0x01, 0x01);
-	glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
-	glDepthMask(GL_TRUE);
-
-	TriangleCount += 2;
-}
-
-// Draw 3d sprite
-void _Graphics::DrawTexture(const glm::vec3 &Position, const _Texture *Texture, const glm::vec4 &Color, float Rotation, const glm::vec2 &Scale) {
-	SetTextureEnabled(true);
-	SetColor(Color);
-	SetTextureID(Texture->GetID());
-
-	glPushMatrix();
-
-		// Apply translation, rotation, and scale transforms
-		glTranslatef(Position.x, Position.y, Position.z);
-		if(Rotation != 0.0f)
-			glRotatef(Rotation, 0.0f, 0.0f, 1.0f);
-
-		// Set scale
-		glScalef(Scale.x, Scale.y, 1.0f);
-
-		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-
-	glPopMatrix();
-
-	TriangleCount += 2;
-}
-
-// Draw 3d wall
-void _Graphics::DrawCube(const glm::vec3 &Position, const glm::vec3 &Scale, const _Texture *Texture) {
-	SetTextureEnabled(true);
-	SetColor(COLOR_WHITE);
-	SetTextureID(Texture->GetID());
-
-	glEnable(GL_CULL_FACE);
-
-	glPushMatrix();
-
-		// Position cube
-		glTranslatef(Position.x, Position.y, Position.z);
-		glScalef(Scale.x, Scale.y, Scale.z);
-
-		// Change texture
-		glMatrixMode(GL_TEXTURE);
-
-		// Draw top
-		glScalef(Scale.x, Scale.y, 1);
-		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-		glLoadIdentity();
-
-		// Draw front
-		glScalef(Scale.x, Scale.z, 1);
-		glDrawArrays(GL_TRIANGLE_STRIP, 4, 4);
-		glLoadIdentity();
-
-		// Draw left
-		glScalef(Scale.y, Scale.z, 1);
-		glDrawArrays(GL_TRIANGLE_STRIP, 8, 4);
-		glLoadIdentity();
-
-		// Draw back
-		glScalef(Scale.x, Scale.z, 1);
-		glDrawArrays(GL_TRIANGLE_STRIP, 12, 4);
-		glLoadIdentity();
-
-		// Draw right
-		glScalef(Scale.y, Scale.z, 1);
-		glDrawArrays(GL_TRIANGLE_STRIP, 16, 4);
-		glLoadIdentity();
-
-		glMatrixMode(GL_MODELVIEW);
-
-	glPopMatrix();
-
-	glDisable(GL_CULL_FACE);
-
-	TriangleCount += 2*5;
-}
-
-// Draw double-sided flat wall
-void _Graphics::DrawWall(const glm::vec3 &Position, const glm::vec3 &Scale, float Rotation, const _Texture *Texture) {
-	SetTextureEnabled(true);
-	SetTextureID(Texture->GetID());
-	SetColor(COLOR_WHITE);
-
-	glPushMatrix();
-
-	if(Rotation == 0) {
-
-		glTranslatef(Position.x, Position.y + 0.5f, Position.z);
-		glScalef(Scale.x, Scale.y, Scale.z);
-
-		glMatrixMode(GL_TEXTURE);
-		glScalef(Scale.x, Scale.z, 1);
-		glDrawArrays(GL_TRIANGLE_STRIP, 12, 4);
-	}
-	else {
-
-		glTranslatef(Position.x + 0.5f, Position.y, Position.z);
-		glScalef(Scale.x, Scale.y, Scale.z);
-
-		glMatrixMode(GL_TEXTURE);
-		glScalef(Scale.y, Scale.z, 1);
-		glDrawArrays(GL_TRIANGLE_STRIP, 8, 4);
-	}
-
-	glLoadIdentity();
-	glMatrixMode(GL_MODELVIEW);
-
-	glPopMatrix();
-
-	TriangleCount += 2;
-}
-
-// Draw quad with repeated textures
-void _Graphics::DrawRepeatable(const glm::vec3 &Start, const glm::vec3 &End, const _Texture *Texture, float Rotation, float ScaleX) {
-	SetTextureEnabled(true);
-	SetTextureID(Texture->GetID());
-	SetColor(COLOR_WHITE);
-
-	// Get textureID and properties
-	float Width = End.x - Start.x;
-	float Height = End.y - Start.y;
-
-	// Set texture mode
-	glMatrixMode(GL_TEXTURE);
-	glPushMatrix();
-
-		// Rotate the texture
-		glScalef(ScaleX, 1.0f, 1.0f);
-		glRotatef(Rotation, 0.0f, 0.0f, -1.0f);
-
-		glBegin(GL_TRIANGLE_STRIP);
-			glNormal3f(0.0f, 0.0f, 1.0f);
-
-			// Top right
-			glTexCoord2f(Width, 0.0f);
-			glVertex3f(End.x, Start.y, Start.z);
-
-			// Top left
-			glTexCoord2f(0.0f, 0.0f);
-			glVertex3f(Start.x, Start.y, Start.z);
-
-			// Bottom right
-			glTexCoord2f(Width, Height);
-			glVertex3f(End.x, End.y, End.z);
-
-			// Bottom left
-			glTexCoord2f(0.0f, Height);
-			glVertex3f(Start.x, End.y, End.z);
-
-		glEnd();
-
-	glPopMatrix();
-
-	// Restore modelview matrix
-	glMatrixMode(GL_MODELVIEW);
-
-	TriangleCount += 2;
-}
-
-// Draw rectangle in 3d space
-void _Graphics::DrawRectangle(const glm::vec2 &Start, const glm::vec2 &End, const glm::vec4 &Color, bool Filled) {
-	SetTextureEnabled(false);
-	SetColor(Color);
-
-	if(Filled)
-		glBegin(GL_QUADS);
-	else
-		glBegin(GL_LINE_LOOP);
-
-	// Top left
-	glVertex2f(Start.x, Start.y);
-
-	// Top right
-	glVertex2f(End.x, Start.y);
-
-	// Bottom right
-	glVertex2f(End.x, End.y);
-
-	// Bottom left
-	glVertex2f(Start.x, End.y);
-
-	glEnd();
-
-	TriangleCount += 2;
-}
-
-// Draws line
-void _Graphics::DrawLine(const glm::vec2 &Start, const glm::vec2 &End) {
-	SetTextureEnabled(false);
-
-	glPushMatrix();
-
-		glTranslatef(0.0f, 0.0f, 0.0f);
-
-		glBegin(GL_LINES);
-
-			glVertex2f(Start.x, Start.y);
-			glVertex2f(End.x, End.y);
-
-		glEnd();
-
-	glPopMatrix();
-}
-
-// Draw circle
-void _Graphics::DrawCircle(const glm::vec3 &Position, float Radius) {
-	SetTextureEnabled(false);
-	SetColor(COLOR_WHITE);
-
-	glPushMatrix();
-
-		// Apply translation and scale transforms
-		glTranslatef(Position.x, Position.y, Position.z);
-		glScalef(Radius, Radius, 0.0f);
-
-		glDrawArrays(GL_LINE_LOOP, 0, GRAPHICS_CIRCLE_VERTICES);
-
-	glPopMatrix();
 }
 
 // Draws the frame
 void _Graphics::Flip(double FrameTime) {
-	if(!Enabled)
-		return;
-
-	TriangleCount = 0;
 
 	// Swap buffers
 	SDL_GL_SwapWindow(Window);
@@ -671,42 +380,467 @@ void _Graphics::Flip(double FrameTime) {
 		FrameCount = 0;
 		FrameRateTimer -= 1.0;
 	}
+
+	// Check for errors
+	#ifndef NDEBUG
+		CheckError();
+	#endif
+}
+
+// Change the viewport
+void _Graphics::SetViewport(const glm::ivec2 &Size) {
+	ViewportSize = Size;
+
+	// Calculate aspect ratio
+	AspectRatio = (float)ViewportSize.x / ViewportSize.y;
+}
+
+// Change window and viewport size
+void _Graphics::SetWindowSize(const glm::ivec2 &Size) {
+
+	// Keep viewport difference the same
+	glm::ivec2 ViewportDifference = CurrentSize - ViewportSize;
+
+	// Change viewport size
+	CurrentSize = Size;
+	SetViewport(Size - ViewportDifference);
+
+	// Update shaders
+	Ortho = glm::ortho(0.0f, (float)CurrentSize.x, (float)CurrentSize.y, 0.0f, -1.0f, 1.0f);
+	SetStaticUniforms();
+
+	// Update UI elements
+	Element->Size = Size;
+	Element->CalculateBounds();
+
+	// Update actual window
+	SDL_SetWindowSize(Window, Size.x, Size.y);
+}
+
+// Toggle fullscreen
+bool _Graphics::SetFullscreen(bool Fullscreen) {
+	if(FullscreenSize == glm::ivec2(0))
+		return false;
+
+	if(Fullscreen)
+		Graphics.SetWindowSize(FullscreenSize);
+	else
+		Graphics.SetWindowSize(WindowSize);
+
+	if(SDL_SetWindowFullscreen(Window, SDL_GetWindowFlags(Window) ^ SDL_WINDOW_FULLSCREEN_DESKTOP) != 0)
+		return false;
+
+	return true;
+}
+
+// Assign uniform values in program
+void _Graphics::SetStaticUniforms() {
+	SetProgram(Assets.Programs["ortho_pos"]);
+	glUniformMatrix4fv(Assets.Programs["ortho_pos"]->ViewProjectionTransformID, 1, GL_FALSE, glm::value_ptr(Ortho));
+	SetProgram(Assets.Programs["ortho_pos_uv"]);
+	glUniformMatrix4fv(Assets.Programs["ortho_pos_uv"]->ViewProjectionTransformID, 1, GL_FALSE, glm::value_ptr(Ortho));
+	SetProgram(Assets.Programs["text"]);
+	glUniformMatrix4fv(Assets.Programs["text"]->ViewProjectionTransformID, 1, GL_FALSE, glm::value_ptr(Ortho));
+}
+
+// Set Vsync
+bool _Graphics::SetVsync(bool Vsync) {
+	return SDL_GL_SetSwapInterval(Vsync) == 0;
+}
+
+// Get Vsync value
+bool _Graphics::GetVsync() {
+	return SDL_GL_GetSwapInterval();
+}
+
+// Set mouse cursor icon
+void _Graphics::SetCursor(int Type) {
+	if(Type == CURSOR_NONE) {
+		SDL_ShowCursor(false);
+	}
+	else {
+		SDL_ShowCursor(true);
+		SDL_SetCursor(Cursors[Type]);
+	}
+}
+
+// Enable state for VBO
+void _Graphics::SetVBO(GLuint VBO) {
+	if(LastVertexBufferID == VBO)
+		return;
+
+	glBindBuffer(GL_ARRAY_BUFFER, VertexBuffer[VBO]);
+
+	switch(VBO) {
+		case VBO_CUBE:
+			SetAttribLevel(3);
+			glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 8, nullptr);
+			glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 8, (GLvoid *)(sizeof(glm::vec3)));
+			glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 8, (GLvoid *)(sizeof(glm::vec3) + sizeof(glm::vec2)));
+		break;
+		case VBO_SPRITE:
+		case VBO_ATLAS:
+		case VBO_QUAD_UV:
+			SetAttribLevel(2);
+			glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 2, nullptr);
+			glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 2, (GLvoid *)(sizeof(float) * 8));
+		break;
+		case VBO_LINE:
+		case VBO_RECT:
+		case VBO_QUAD:
+		case VBO_CIRCLE:
+			SetAttribLevel(1);
+			glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 2, nullptr);
+		break;
+	}
+
+	LastVertexBufferID = VBO;
+}
+
+// Enable vertex attrib arrays
+void _Graphics::SetAttribLevel(GLuint AttribLevel) {
+	if(AttribLevel == LastAttribLevel)
+		return;
+
+	if(AttribLevel < LastAttribLevel && LastAttribLevel != (GLuint)-1) {
+		for(GLuint i = 1; i < LastAttribLevel; i++)
+			glDisableVertexAttribArray(i);
+	}
+
+	for(GLuint i = 1; i < AttribLevel; i++)
+		glEnableVertexAttribArray(i);
+
+	LastAttribLevel = AttribLevel;
 }
 
 // Set opengl color
 void _Graphics::SetColor(const glm::vec4 &Color) {
-	if(Color != LastColor) {
-		glColor4f(Color.r, Color.g, Color.b, Color.a);
-		LastColor = Color;
-	}
-}
-
-// Enable/disable textures
-void _Graphics::SetTextureEnabled(bool Value) {
-	if(Value != LastTextureEnabled) {
-		if(Value)
-			glEnable(GL_TEXTURE_2D);
-		else
-			glDisable(GL_TEXTURE_2D);
-
-		LastTextureEnabled = Value;
-	}
+	glUniform4fv(LastProgram->ColorID, 1, &Color[0]);
 }
 
 // Set texture id
-void _Graphics::SetTextureID(GLuint TextureID) {
-	if(TextureID != LastTextureID) {
-		glBindTexture(GL_TEXTURE_2D, TextureID);
-		LastTextureID = TextureID;
-	}
+void _Graphics::SetTextureID(GLuint TextureID, GLenum Type) {
+	if(TextureID == LastTextureID)
+		return;
+
+	glBindTexture(Type, TextureID);
+
+	LastTextureID = TextureID;
 }
 
-_Element *_Graphics::GetElement() { return Element; }
-void _Graphics::SetDepthMask(bool Value) { glDepthMask(Value); }
-void _Graphics::EnableStencilTest() { glEnable(GL_STENCIL_TEST); }
-void _Graphics::DisableStencilTest() { glDisable(GL_STENCIL_TEST); }
-void _Graphics::EnableDepthTest() { glEnable(GL_DEPTH_TEST); }
-void _Graphics::DisableDepthTest() { glDisable(GL_DEPTH_TEST); }
-void _Graphics::EnableParticleBlending() { glBlendFunc(GL_SRC_ALPHA, 1); }
-void _Graphics::DisableParticleBlending() { glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); }
-void _Graphics::ShowCursor(bool Show) { SDL_ShowCursor(Show); }
+// Enable a program
+void _Graphics::SetProgram(const _Program *Program) {
+	if(Program == LastProgram)
+		return;
+
+	SetAttribLevel(Program->Attribs);
+	Program->Use();
+	LastProgram = Program;
+}
+
+// Enable/disable depth test
+void _Graphics::SetDepthTest(bool DepthTest) {
+	if(DepthTest == LastDepthTest)
+		return;
+
+	if(DepthTest)
+		glEnable(GL_DEPTH_TEST);
+	else
+		glDisable(GL_DEPTH_TEST);
+
+	LastDepthTest = DepthTest;
+}
+
+// Set cull face
+void _Graphics::SetCullFace(bool Value) {
+	if(Value)
+		glEnable(GL_CULL_FACE);
+	else
+		glDisable(GL_CULL_FACE);
+}
+
+// Set depth mask
+void _Graphics::SetDepthMask(bool Value) {
+	glDepthMask(Value);
+}
+
+// Enable stencil test
+void _Graphics::EnableStencilTest() {
+	glEnable(GL_STENCIL_TEST);
+}
+
+// Disable stencil tests
+void _Graphics::DisableStencilTest() {
+	glDisable(GL_STENCIL_TEST);
+}
+
+// Enable scissor test
+void _Graphics::EnableScissorTest() {
+	glEnable(GL_SCISSOR_TEST);
+}
+
+// Disable scissor test
+void _Graphics::DisableScissorTest() {
+	glDisable(GL_SCISSOR_TEST);
+}
+
+// Enable blending mode for particles
+void _Graphics::EnableParticleBlending() {
+	glBlendFunc(GL_SRC_ALPHA, 1);
+}
+
+// Disable blending mode for particles
+void _Graphics::DisableParticleBlending() {
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+}
+
+// Draw line
+void _Graphics::DrawLine(const glm::vec2 &Start, const glm::vec2 &End) {
+	SetVBO(VBO_LINE);
+	glm::vec2 Size = End - Start;
+
+	glm::mat4 Transform(1.0f);
+	Transform[3][0] = Start.x;
+	Transform[3][1] = Start.y;
+	Transform[0][0] = Size.x;
+	Transform[1][1] = Size.y;
+	glUniformMatrix4fv(LastProgram->ModelTransformID, 1, GL_FALSE, glm::value_ptr(Transform));
+	glDrawArrays(GL_LINES, 0, 2);
+}
+
+// Draw rectangle in screen space
+void _Graphics::DrawRectangle(const _Bounds &Bounds, bool Filled) {
+	DrawRectangle(glm::vec2(Bounds.Start.x, Bounds.Start.y), glm::vec2(Bounds.End.x, Bounds.End.y), Filled);
+}
+
+// Draw rectangle
+void _Graphics::DrawRectangle(const glm::vec2 &Start, const glm::vec2 &End, bool Filled) {
+
+	glm::mat4 Transform(1.0f);
+	if(Filled) {
+		SetVBO(VBO_QUAD);
+		Transform = glm::translate(Transform, glm::vec3(Start, 0.0f));
+		Transform = glm::scale(Transform, glm::vec3(End - Start, 0.0f));
+	}
+	else {
+		SetVBO(VBO_RECT);
+		Transform = glm::translate(Transform, glm::vec3(Start.x + 0.5f, Start.y + 0.5f, 0.0f));
+		Transform = glm::scale(Transform, glm::vec3(End - Start - glm::vec2(1.0f), 0.0f));
+	}
+
+	glUniformMatrix4fv(LastProgram->ModelTransformID, 1, GL_FALSE, glm::value_ptr(Transform));
+	if(Filled)
+		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+	else
+		glDrawArrays(GL_LINE_LOOP, 0, 4);
+}
+
+// Draw rectangle in 3D space
+void _Graphics::DrawRectangle3D(const glm::vec2 &Start, const glm::vec2 &End, bool Filled) {
+
+	glm::mat4 Transform(1.0f);
+	if(Filled) {
+		SetVBO(VBO_QUAD);
+		Transform = glm::translate(Transform, glm::vec3(Start, 0.0f));
+		Transform = glm::scale(Transform, glm::vec3(End - Start, 0.0f));
+	}
+	else {
+		SetVBO(VBO_RECT);
+		Transform = glm::translate(Transform, glm::vec3(Start.x, Start.y, 0.0f));
+		Transform = glm::scale(Transform, glm::vec3(End - Start, 0.0f));
+	}
+
+	glUniformMatrix4fv(LastProgram->ModelTransformID, 1, GL_FALSE, glm::value_ptr(Transform));
+	if(Filled)
+		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+	else
+		glDrawArrays(GL_LINE_LOOP, 0, 4);
+}
+
+// Draw circle
+void _Graphics::DrawCircle(const glm::vec3 &Position, float Radius) {
+	Graphics.SetVBO(VBO_CIRCLE);
+
+	glm::mat4 ModelTransform;
+	ModelTransform = glm::translate(glm::mat4(1.0f), Position);
+	ModelTransform = glm::scale(ModelTransform, glm::vec3(Radius, Radius, 0.0f));
+	glUniformMatrix4fv(LastProgram->ModelTransformID, 1, GL_FALSE, glm::value_ptr(ModelTransform));
+
+	glDrawArrays(GL_LINE_LOOP, 0, CircleVertices);
+}
+
+// Draw stencil mask
+void _Graphics::DrawMask(const _Bounds &Bounds) {
+
+	// Enable stencil
+	glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
+	glStencilMask(0x01);
+
+	// Write 1 to stencil buffer
+	glStencilFunc(GL_ALWAYS, 0x01, 0x01);
+	glStencilOp(GL_REPLACE, GL_REPLACE, GL_REPLACE);
+
+	// Draw region
+	DrawRectangle(Bounds.Start, Bounds.End, true);
+
+	// Then draw element only where stencil is 1
+	glStencilFunc(GL_EQUAL, 0x01, 0x01);
+	glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
+	glStencilMask(0x00);
+}
+
+// Draw centered image in screen space
+void _Graphics::DrawImage(const glm::ivec2 &Position, const _Texture *Texture) {
+	glm::vec2 TextureSize = glm::vec2(Texture->Size) * 0.5f;
+
+	// Draw image
+	_Bounds Bounds(glm::vec2(Position) - TextureSize, glm::vec2(Position) + TextureSize);
+	DrawImage(Bounds, Texture, true);
+}
+
+// Draw image in screen space
+void _Graphics::DrawImage(const _Bounds &Bounds, const _Texture *Texture, bool Stretch) {
+	SetVBO(VBO_QUAD_UV);
+	SetTextureID(Texture->ID);
+
+	// Get texture coordinates
+	float S = Stretch ? 1.0f : (Bounds.End.x - Bounds.Start.x) / (float)(Texture->Size.x);
+	float T = Stretch ? 1.0f : (Bounds.End.y - Bounds.Start.y) / (float)(Texture->Size.y);
+
+	// Get size
+	glm::vec2 Size = Bounds.End - Bounds.Start;
+
+	// Model transform
+	glm::mat4 Transform(1.0f);
+	Transform[3][0] = Bounds.Start.x;
+	Transform[3][1] = Bounds.Start.y;
+	Transform[0][0] = Size.x;
+	Transform[1][1] = Size.y;
+	glUniformMatrix4fv(LastProgram->ModelTransformID, 1, GL_FALSE, glm::value_ptr(Transform));
+
+	// Texture transform
+	glm::mat4 TextureTransform(1.0f);
+	TextureTransform[0][0] = S;
+	TextureTransform[1][1] = T;
+	glUniformMatrix4fv(LastProgram->TextureTransformID, 1, GL_FALSE, glm::value_ptr(TextureTransform));
+	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+}
+
+// Draw 3d sprite
+void _Graphics::DrawSprite(const glm::vec3 &Position, const _Texture *Texture, float Rotation, const glm::vec2 &Scale) {
+	SetVBO(VBO_SPRITE);
+	SetTextureID(Texture->ID);
+
+	Rotation = glm::radians(Rotation);
+
+	glm::mat4 ModelTransform;
+	ModelTransform = glm::translate(glm::mat4(1.0f), Position);
+	if(Rotation != 0.0f)
+		ModelTransform = glm::rotate(ModelTransform, Rotation, glm::vec3(0, 0, 1));
+
+	ModelTransform = glm::scale(ModelTransform, glm::vec3(Scale, 0.0f));
+
+	glUniformMatrix4fv(LastProgram->ModelTransformID, 1, GL_FALSE, glm::value_ptr(ModelTransform));
+
+	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+}
+
+// Draw quad with repeated textures
+void _Graphics::DrawRepeatable(const glm::vec3 &Start, const glm::vec3 &End, const _Texture *Texture, float Rotation, float ScaleX) {
+	SetVBO(VBO_QUAD_UV);
+	SetTextureID(Texture->ID);
+
+	// Get size
+	glm::vec3 Size = End - Start;
+
+	// Model transform
+	glm::mat4 Transform(1.0f);
+	Transform[3][0] = Start.x;
+	Transform[3][1] = Start.y;
+	Transform[3][2] = Start.z;
+	Transform[0][0] = Size.x;
+	Transform[1][1] = Size.y;
+	Transform[2][2] = Size.z;
+	glUniformMatrix4fv(LastProgram->ModelTransformID, 1, GL_FALSE, glm::value_ptr(Transform));
+
+	// Texture transform
+	glm::mat4 TextureTransform(1.0f);
+	if(Rotation != 0.0f)
+		TextureTransform = glm::rotate(TextureTransform, glm::radians(Rotation), glm::vec3(0, 0, -1));
+	TextureTransform = glm::scale(TextureTransform, glm::vec3(Size.x * ScaleX, Size.y, 1.0f));
+
+	glUniformMatrix4fv(LastProgram->TextureTransformID, 1, GL_FALSE, glm::value_ptr(TextureTransform));
+
+	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+}
+
+// Draw double-sided flat wall
+void _Graphics::DrawWall(const glm::vec3 &Position, const glm::vec3 &Scale, float Rotation, const _Texture *Texture) {
+	SetVBO(VBO_CUBE);
+	SetTextureID(Texture->ID);
+
+	glm::mat4 ModelTransform(1.0f);
+	glm::mat4 TextureTransform(1.0f);
+	int Offset;
+	if(Rotation == 0) {
+		ModelTransform = glm::translate(ModelTransform, glm::vec3(Position.x, Position.y + 0.5f, Position.z));
+		TextureTransform[0][0] = Scale.x;
+		TextureTransform[1][1] = Scale.z;
+		Offset = 12;
+	}
+	else {
+		ModelTransform = glm::translate(ModelTransform, glm::vec3(Position.x + 0.5f, Position.y, Position.z));
+		TextureTransform[0][0] = Scale.y;
+		TextureTransform[1][1] = Scale.z;
+		Offset = 8;
+	}
+	ModelTransform = glm::scale(ModelTransform, Scale);
+
+	glUniformMatrix4fv(LastProgram->ModelTransformID, 1, GL_FALSE, glm::value_ptr(ModelTransform));
+	glUniformMatrix4fv(LastProgram->TextureTransformID, 1, GL_FALSE, glm::value_ptr(TextureTransform));
+
+	glDrawArrays(GL_TRIANGLE_STRIP, Offset, 4);
+}
+
+// Draw 3d wall
+void _Graphics::DrawCube(const glm::vec3 &Start, const glm::vec3 &Scale, const _Texture *Texture) {
+	SetVBO(VBO_CUBE);
+	SetTextureID(Texture->ID);
+
+	glm::mat4 ModelTransform(1.0f);
+	ModelTransform = glm::translate(ModelTransform, Start);
+	ModelTransform = glm::scale(ModelTransform, Scale);
+	glUniformMatrix4fv(LastProgram->ModelTransformID, 1, GL_FALSE, glm::value_ptr(ModelTransform));
+
+	glm::mat4 TextureTransform(1.0f);
+
+	// Draw top
+	TextureTransform[0][0] = Scale.x;
+	TextureTransform[1][1] = Scale.y;
+	glUniformMatrix4fv(LastProgram->TextureTransformID, 1, GL_FALSE, glm::value_ptr(TextureTransform));
+	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+
+	// Draw front
+	TextureTransform[0][0] = Scale.x;
+	TextureTransform[1][1] = Scale.z;
+	glUniformMatrix4fv(LastProgram->TextureTransformID, 1, GL_FALSE, glm::value_ptr(TextureTransform));
+	glDrawArrays(GL_TRIANGLE_STRIP, 4, 4);
+
+	// Draw left
+	TextureTransform[0][0] = Scale.y;
+	TextureTransform[1][1] = Scale.z;
+	glUniformMatrix4fv(LastProgram->TextureTransformID, 1, GL_FALSE, glm::value_ptr(TextureTransform));
+	glDrawArrays(GL_TRIANGLE_STRIP, 8, 4);
+
+	// Draw back
+	TextureTransform[0][0] = Scale.x;
+	TextureTransform[1][1] = Scale.z;
+	glUniformMatrix4fv(LastProgram->TextureTransformID, 1, GL_FALSE, glm::value_ptr(TextureTransform));
+	glDrawArrays(GL_TRIANGLE_STRIP, 12, 4);
+
+	// Draw right
+	TextureTransform[0][0] = Scale.y;
+	TextureTransform[1][1] = Scale.z;
+	glUniformMatrix4fv(LastProgram->TextureTransformID, 1, GL_FALSE, glm::value_ptr(TextureTransform));
+	glDrawArrays(GL_TRIANGLE_STRIP, 16, 4);
+}

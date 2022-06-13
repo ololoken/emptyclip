@@ -40,5 +40,6 @@ void _Item::Serialize(_Buffer &Buffer) {
 
 // Draws the object
 void _Item::Render(double BlendFactor) {
-	Graphics.DrawTexture(glm::vec3(Position, PositionZ), Texture, Color, Rotation, glm::vec2(ITEM_SCALE));
+	Graphics.SetColor(Color);
+	Graphics.DrawSprite(glm::vec3(Position, PositionZ), Texture, Rotation, glm::vec2(ITEM_SCALE));
 }

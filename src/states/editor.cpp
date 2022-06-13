@@ -29,6 +29,7 @@
 #include <animation.h>
 #include <config.h>
 #include <constants.h>
+#include <program.h>
 #include <ui/element.h>
 #include <ui/button.h>
 #include <ui/textbox.h>
@@ -44,6 +45,7 @@
 #include <iostream>
 #include <SDL_keycode.h>
 #include <SDL_mouse.h>
+#include <glm/gtc/type_ptr.hpp>
 
 _EditorState EditorState;
 
@@ -71,7 +73,7 @@ const int PaletteSizes[EDITMODE_COUNT] = {
 
 // Constructor
 _EditorState::_EditorState() :
-	SavedCameraPosition({0, 0}),
+	SavedCameraPosition(0, 0, CAMERA_DISTANCE),
 	SavedCheckpointIndex(-1),
 	MapFilename(""),
 	SavedLayer(-1),
@@ -82,7 +84,7 @@ _EditorState::_EditorState() :
 void _EditorState::Init() {
 
 	// Load command buttons
-	MainFont = Assets.GetFont("menu_buttons");
+	MainFont = Assets.Fonts["menu_buttons"];
 	CommandElement = Assets.GetElement("editor_command");
 	BlockElement = Assets.GetElement("editor_blocks");
 	EventElement = Assets.GetElement("editor_events");
@@ -121,7 +123,7 @@ void _EditorState::Init() {
 	ResetEditorState();
 
 	// Create camera
-	Camera = new _Camera(glm::vec2(0, 0), CAMERA_DISTANCE, CAMERA_EDITOR_DIVISOR);
+	Camera = new _Camera(glm::vec3(0, 0, CAMERA_DISTANCE), CAMERA_EDITOR_DIVISOR);
 
 	// Load level
 	if(PlayState.GetFromEditor())
@@ -130,9 +132,9 @@ void _EditorState::Init() {
 	LoadMap(MapFilename, PlayState.GetFromEditor());
 
 	// Set up graphics
-	Graphics.ChangeViewport(Graphics.CurrentSize - EDITOR_VIEWPORT_OFFSET);
+	Graphics.SetViewport(Graphics.CurrentSize - EDITOR_VIEWPORT_OFFSET);
 	Camera->CalculateFrustum(Graphics.AspectRatio);
-	Graphics.ShowCursor(true);
+	Graphics.SetCursor(true);
 
 	// Adjust UI
 	for(int i = 0; i < EDITMODE_COUNT; i++)
@@ -149,7 +151,7 @@ void _EditorState::Init() {
 }
 
 void _EditorState::Close() {
-	SavedCameraPosition = Camera->GetPosition();
+	Camera->GetDrawPosition(0, SavedCameraPosition);
 	SavedLayer = CurrentLayer;
 	SavedPalette = CurrentPalette;
 	SavedCheckpointIndex = CheckpointIndex;
@@ -190,7 +192,7 @@ bool _EditorState::LoadMap(const std::string &File, bool UseSavedCameraPosition)
 	if(UseSavedCameraPosition)
 		Camera->ForcePosition(SavedCameraPosition);
 	else
-		Camera->ForcePosition(Map->GetStartingPositionByCheckpoint(0));
+		Camera->ForcePosition(glm::vec3(Map->GetStartingPositionByCheckpoint(0), CAMERA_DISTANCE));
 
 	return Success;
 }
@@ -514,21 +516,21 @@ void _EditorState::MouseEvent(const _MouseEvent &MouseEvent) {
 
 	// Handle command group clicks
 	_Element *Clicked = CommandElement->GetClickedElement();
-	if(Clicked && Clicked->GetID() != -1) {
-		ProcessIcons(Clicked->GetID(), MouseEvent.Button == SDL_BUTTON_RIGHT);
+	if(Clicked && Clicked->ID != -1) {
+		ProcessIcons(Clicked->ID, MouseEvent.Button == SDL_BUTTON_RIGHT);
 	}
 
 	if(CurrentPalette == EDITMODE_BLOCKS) {
 		_Element *Clicked = BlockElement->GetClickedElement();
-		if(Clicked && Clicked->GetID() != -1) {
-			ProcessBlockIcons(Clicked->GetID(), MouseEvent.Button == SDL_BUTTON_RIGHT);
+		if(Clicked && Clicked->ID != -1) {
+			ProcessBlockIcons(Clicked->ID, MouseEvent.Button == SDL_BUTTON_RIGHT);
 		}
 	}
 
 	if(CurrentPalette == EDITMODE_EVENTS) {
 		_Element *Clicked = EventElement->GetClickedElement();
-		if(Clicked && Clicked->GetID() != -1) {
-			ProcessEventIcons(Clicked->GetID(), MouseEvent.Button == SDL_BUTTON_RIGHT);
+		if(Clicked && Clicked->ID != -1) {
+			ProcessEventIcons(Clicked->ID, MouseEvent.Button == SDL_BUTTON_RIGHT);
 		}
 	}
 
@@ -556,7 +558,7 @@ void _EditorState::MouseEvent(const _MouseEvent &MouseEvent) {
 							default: {
 								_Button *Button = Brush[CurrentPalette];
 								if(Button)
-									SpawnObject(Map->GetValidPosition(WorldCursor), StateToType(CurrentPalette), Button->GetIdentifier(), IsShiftDown);
+									SpawnObject(Map->GetValidPosition(WorldCursor), StateToType(CurrentPalette), Button->Identifier, IsShiftDown);
 							} break;
 						}
 					}
@@ -564,7 +566,7 @@ void _EditorState::MouseEvent(const _MouseEvent &MouseEvent) {
 				case SDL_BUTTON_RIGHT:
 
 					// Move the camera
-					Camera->SetPosition(WorldCursor);
+					Camera->Set2DPosition(WorldCursor);
 
 				break;
 				case SDL_BUTTON_MIDDLE:
@@ -665,8 +667,6 @@ void _EditorState::MouseWheelEvent(int Direction) {
 
 		// Zoom
 		Camera->UpdateDistance(-Multiplier);
-		if(Camera->GetTargetDistance() < 1.0f)
-			Camera->SetDistance(1.0f);
 	}
 	else {
 		if(Direction > 0)
@@ -764,10 +764,10 @@ void _EditorState::Update(double FrameTime) {
 					Block.End = DrawEnd-1;
 					Block.MinZ = MinZ;
 					Block.MaxZ = MaxZ;
-					Block.Texture = Brush[EDITMODE_BLOCKS]->GetStyle()->Texture;
+					Block.Texture = Brush[EDITMODE_BLOCKS]->Style->Texture;
 					Block.AltTexture = AltTexture;
-					Block.TextureIdentifier = Brush[EDITMODE_BLOCKS]->GetIdentifier();
-					Block.AltTextureIdentifier = Brush[EDITMODE_BLOCKS]->GetIdentifier();
+					Block.TextureIdentifier = Brush[EDITMODE_BLOCKS]->Identifier;
+					Block.AltTextureIdentifier = Brush[EDITMODE_BLOCKS]->Identifier;
 					Block.Rotation = Rotation;
 					Block.ScaleX = ScaleX;
 					Block.Wall = (CurrentLayer == EDITOR_WALL_LAYER);
@@ -787,7 +787,7 @@ void _EditorState::Update(double FrameTime) {
 		case EDITMODE_EVENTS:
 			if(FinishDrawing) {
 				if(Brush[EDITMODE_EVENTS])
-					AddEvent(Brush[EDITMODE_EVENTS]->GetID());
+					AddEvent(Brush[EDITMODE_EVENTS]->ID);
 				FinishDrawing = IsDrawing = false;
 			}
 
@@ -807,9 +807,17 @@ void _EditorState::Update(double FrameTime) {
 void _EditorState::Render(double BlendFactor) {
 
 	// Setup 3D transformation
-	Graphics.Setup3DViewport();
+	Graphics.Setup3D();
 	Camera->Set3DProjection(BlendFactor);
-	Graphics.EnableDepthTest();
+	Assets.Programs["pos_uv"]->AmbientLight = glm::vec4(1);
+
+	// Setup the viewing matrix
+	Graphics.SetProgram(Assets.Programs["pos"]);
+	glUniformMatrix4fv(Assets.Programs["pos"]->ViewProjectionTransformID, 1, GL_FALSE, glm::value_ptr(Camera->Transform));
+	Graphics.SetProgram(Assets.Programs["pos_uv"]);
+	glUniformMatrix4fv(Assets.Programs["pos_uv"]->ViewProjectionTransformID, 1, GL_FALSE, glm::value_ptr(Camera->Transform));
+	Graphics.SetProgram(Assets.Programs["text"]);
+	glUniformMatrix4fv(Assets.Programs["text"]->ViewProjectionTransformID, 1, GL_FALSE, glm::value_ptr(Camera->Transform));
 
 	// Draw floors
 	Map->RenderFloors();
@@ -818,26 +826,24 @@ void _EditorState::Render(double BlendFactor) {
 	if(IsDrawing) {
 		if(Brush[CurrentPalette]) {
 			if(CurrentPalette == EDITMODE_EVENTS) {
-				Graphics.DisableDepthTest();
-				Graphics.DrawRepeatable(glm::vec3(DrawStart.x, DrawStart.y, MAP_LAYEROFFSET), glm::vec3(DrawEnd.x, DrawEnd.y, MAP_LAYEROFFSET), Brush[CurrentPalette]->GetStyle()->Texture, 0, 1.0f);
-				Graphics.EnableDepthTest();
+				Graphics.SetDepthTest(false);
+				Graphics.DrawRepeatable(glm::vec3(DrawStart.x, DrawStart.y, MAP_LAYEROFFSET), glm::vec3(DrawEnd.x, DrawEnd.y, MAP_LAYEROFFSET), Brush[CurrentPalette]->Style->Texture, 0, 1.0f);
+				Graphics.SetDepthTest(true);
 			}
 			else {
 				if(CurrentLayer == MAPLAYER_FORE)
-					Graphics.DrawRepeatable(glm::vec3(DrawStart.x, DrawStart.y, MaxZ + MAP_LAYEROFFSET * CurrentLayer), glm::vec3(DrawEnd.x, DrawEnd.y, MaxZ + MAP_LAYEROFFSET * CurrentLayer), Brush[CurrentPalette]->GetStyle()->Texture, Rotation, ScaleX);
+					Graphics.DrawRepeatable(glm::vec3(DrawStart.x, DrawStart.y, MaxZ + MAP_LAYEROFFSET * CurrentLayer), glm::vec3(DrawEnd.x, DrawEnd.y, MaxZ + MAP_LAYEROFFSET * CurrentLayer), Brush[CurrentPalette]->Style->Texture, Rotation, ScaleX);
 				else if(CurrentLayer == MAPLAYER_FLAT) {
-					Graphics.EnableVBO(VBO_CUBE);
-					Graphics.DrawWall(glm::vec3(DrawStart.x, DrawStart.y, MinZ), glm::vec3(DrawEnd.x - DrawStart.x, DrawEnd.y - DrawStart.y, MaxZ - MinZ), Rotation, Brush[CurrentPalette]->GetStyle()->Texture);
-					Graphics.DisableVBO(VBO_CUBE);
+					Graphics.SetVBO(VBO_CUBE);
+					Graphics.DrawWall(glm::vec3(DrawStart.x, DrawStart.y, MinZ), glm::vec3(DrawEnd.x - DrawStart.x, DrawEnd.y - DrawStart.y, MaxZ - MinZ), Rotation, Brush[CurrentPalette]->Style->Texture);
 				}
 				else {
 					if(MaxZ == MinZ) {
-						Graphics.DrawRepeatable(glm::vec3(DrawStart.x, DrawStart.y, MinZ + MAP_LAYEROFFSET * CurrentLayer), glm::vec3(DrawEnd.x, DrawEnd.y, MinZ + MAP_LAYEROFFSET * CurrentLayer), Brush[CurrentPalette]->GetStyle()->Texture, Rotation, ScaleX);
+						Graphics.DrawRepeatable(glm::vec3(DrawStart.x, DrawStart.y, MinZ + MAP_LAYEROFFSET * CurrentLayer), glm::vec3(DrawEnd.x, DrawEnd.y, MinZ + MAP_LAYEROFFSET * CurrentLayer), Brush[CurrentPalette]->Style->Texture, Rotation, ScaleX);
 					}
 					else {
-						Graphics.EnableVBO(VBO_CUBE);
-						Graphics.DrawCube(glm::vec3(DrawStart.x, DrawStart.y, MinZ), glm::vec3(DrawEnd.x - DrawStart.x, DrawEnd.y - DrawStart.y, MaxZ - MinZ), Brush[CurrentPalette]->GetStyle()->Texture);
-						Graphics.DisableVBO(VBO_CUBE);
+						Graphics.SetVBO(VBO_CUBE);
+						Graphics.DrawCube(glm::vec3(DrawStart.x, DrawStart.y, MinZ), glm::vec3(DrawEnd.x - DrawStart.x, DrawEnd.y - DrawStart.y, MaxZ - MinZ), Brush[CurrentPalette]->Style->Texture);
 					}
 				}
 			}
@@ -845,28 +851,28 @@ void _EditorState::Render(double BlendFactor) {
 	}
 
 	// Draw objects
+	Graphics.SetProgram(Assets.Programs["pos_uv"]);
 	Graphics.SetDepthMask(false);
-	Graphics.EnableVBO(VBO_QUAD);
+	Graphics.SetVBO(VBO_QUAD);
 	const std::vector<_ObjectSpawn *> &Objects = Map->GetObjectsList();
 	for(size_t i = 0; i < Objects.size(); i++) {
 		DrawObject(0.0f, 0.0f, Objects[i], 1.0f);
 	}
-	Graphics.DisableVBO(VBO_QUAD);
 
 	// Outline selected item
-	Graphics.EnableVBO(VBO_CIRCLE);
+	Graphics.SetProgram(Assets.Programs["pos"]);
+	Graphics.SetColor(COLOR_WHITE);
 	for(auto Iterator : SelectedObjects) {
 		glm::vec2 Position = GetMoveDeltaPosition(Iterator->Position);
 		Graphics.DrawCircle(glm::vec3(Position, ITEM_Z + 0.05f), EDITOR_OBJECTRADIUS);
 	}
-	Graphics.DisableVBO(VBO_CIRCLE);
 
 	// Draw faded items while moving
-	Graphics.EnableVBO(VBO_QUAD);
+	Graphics.SetProgram(Assets.Programs["pos_uv"]);
+	Graphics.SetVBO(VBO_QUAD);
 	for(auto Iterator : SelectedObjects) {
 		DrawObject(MoveDelta.x, MoveDelta.y, Iterator, 0.5f);
 	}
-	Graphics.DisableVBO(VBO_QUAD);
 	Graphics.SetDepthMask(true);
 
 	// Draw walls
@@ -878,10 +884,13 @@ void _EditorState::Render(double BlendFactor) {
 	// Draw the events
 	Map->RenderEvents(EventTextures);
 
-	Graphics.DisableDepthTest();
+	Graphics.SetDepthMask(false);
+	Graphics.SetDepthTest(false);
 
 	// Draw map boundaries
-	Graphics.DrawRectangle(glm::vec2(-0.01f, -0.01f), glm::vec2(Map->GetWidth() + 0.01f, Map->GetHeight() + 0.01f), COLOR_RED);
+	Graphics.SetProgram(Assets.Programs["pos"]);
+	Graphics.SetColor(COLOR_RED);
+	Graphics.DrawRectangle3D(glm::vec2(-0.01f, -0.01f), glm::vec2(Map->GetWidth() + 0.01f, Map->GetHeight() + 0.01f), false);
 
 	// Draw grid
 	Map->RenderGrid(GridMode);
@@ -891,47 +900,58 @@ void _EditorState::Render(double BlendFactor) {
 		Map->HighlightBlocks(CurrentLayer);
 
 	// Outline selected block
-	if(BlockSelected())
-		Graphics.DrawRectangle(glm::vec2(SelectedBlock->Start.x, SelectedBlock->Start.y), glm::vec2(SelectedBlock->End.x + 1.0f, SelectedBlock->End.y + 1.0f), COLOR_WHITE);
+	if(BlockSelected()) {
+		Graphics.SetColor(COLOR_WHITE);
+		Graphics.DrawRectangle3D(glm::vec2(SelectedBlock->Start.x, SelectedBlock->Start.y), glm::vec2(SelectedBlock->End.x + 1.0f, SelectedBlock->End.y + 1.0f), false);
+	}
 
 	// Outline selected event
 	if(EventSelected()) {
-		Graphics.DrawRectangle(glm::vec2(SelectedEvent->Start.x + 0.02f, SelectedEvent->Start.y + 0.02f), glm::vec2(SelectedEvent->End.x + 0.98f, SelectedEvent->End.y + 0.98f), COLOR_CYAN);
+		Graphics.SetColor(COLOR_CYAN);
+		Graphics.DrawRectangle3D(glm::vec2(SelectedEvent->Start.x + 0.02f, SelectedEvent->Start.y + 0.02f), glm::vec2(SelectedEvent->End.x + 0.98f, SelectedEvent->End.y + 0.98f), false);
 
 		// Outline affected tiles and blocks
 		const std::vector<_EventTile> &Tiles = SelectedEvent->Tiles;
 		for(size_t i = 0; i < Tiles.size(); i++) {
-			Graphics.DrawRectangle(glm::vec2(Tiles[i].Coord.x + 0.2f, Tiles[i].Coord.y + 0.2f), glm::vec2(Tiles[i].Coord.x + 0.8f, Tiles[i].Coord.y + 0.8f), COLOR_RED);
+			Graphics.SetColor(COLOR_RED);
+			Graphics.DrawRectangle3D(glm::vec2(Tiles[i].Coord.x + 0.2f, Tiles[i].Coord.y + 0.2f), glm::vec2(Tiles[i].Coord.x + 0.8f, Tiles[i].Coord.y + 0.8f), false);
 
 			if(Tiles[i].BlockID != -1) {
 				if(SelectedEvent->Type == EVENT_ENABLE) {
 					const _Event *Event = Map->GetEvent(Tiles[i].BlockID);
-					Graphics.DrawRectangle(glm::vec2(Event->Start.x, Event->Start.y), glm::vec2(Event->End.x + 1.0f, Event->End.y + 1.0f), COLOR_YELLOW);
+					Graphics.SetColor(COLOR_YELLOW);
+					Graphics.DrawRectangle3D(glm::vec2(Event->Start.x, Event->Start.y), glm::vec2(Event->End.x + 1.0f, Event->End.y + 1.0f), false);
 				}
 				else {
 					const _Block *Block = Map->GetBlock(Tiles[i].Layer, Tiles[i].BlockID);
-					Graphics.DrawRectangle(glm::vec2(Block->Start.x, Block->Start.y), glm::vec2(Block->End.x + 1.0f, Block->End.y + 1.0f), COLOR_GREEN);
+					Graphics.SetColor(COLOR_GREEN);
+					Graphics.DrawRectangle3D(glm::vec2(Block->Start.x, Block->Start.y), glm::vec2(Block->End.x + 1.0f, Block->End.y + 1.0f), false);
 				}
 			}
 		}
 	}
 
 	// Dragging a box around object
-	if(DraggingBox)
-		Graphics.DrawRectangle(ClickedPosition, WorldCursor, COLOR_WHITE);
+	if(DraggingBox) {
+		Graphics.SetColor(COLOR_WHITE);
+		Graphics.DrawRectangle3D(ClickedPosition, WorldCursor, false);
+	}
 
 	// Draw a block
-	if(IsDrawing)
-		Graphics.DrawRectangle(glm::vec2(DrawStart.x, DrawStart.y), glm::vec2(DrawEnd.x, DrawEnd.y), COLOR_GREEN);
+	if(IsDrawing) {
+		Graphics.SetColor(COLOR_GREEN);
+		Graphics.DrawRectangle3D(glm::vec2(DrawStart.x, DrawStart.y), glm::vec2(DrawEnd.x, DrawEnd.y), false);
+	}
 
-	Graphics.EnableDepthTest();
-
-	// Setup 2D transformation
-	Graphics.Setup2DProjectionMatrix();
-	std::ostringstream Buffer;
+	// Setup for drawing the HUD
+	Graphics.Setup2D();
+	Graphics.SetStaticUniforms();
+	Graphics.SetDepthTest(false);
+	Graphics.SetDepthMask(false);
 
 	// Draw viewport outline
-	Graphics.DrawRectangle(glm::vec2(0, 0), Graphics.ViewportSize, COLOR_DARK);
+	Graphics.SetColor(COLOR_DARK);
+	Graphics.DrawRectangle(glm::vec2(0, 0), Graphics.ViewportSize);
 
 	// Draw text
 	if(EditorInput != -1) {
@@ -939,42 +959,43 @@ void _EditorState::Render(double BlendFactor) {
 	}
 
 	// Draw filename
+	std::ostringstream Buffer;
 	Buffer << Map->GetFilename();
-	MainFont->DrawText(Buffer.str(), 25, 25);
+	MainFont->DrawText(Buffer.str(), glm::vec2(25, 25));
 	Buffer.str("");
 
 	// Draw cursor position
 	int X = 16;
 	int Y = Graphics.ViewportSize.y - 25;
 	Buffer << std::fixed << WorldCursor.x << ", " << WorldCursor.y;
-	MainFont->DrawText(Buffer.str(), X, Y);
+	MainFont->DrawText(Buffer.str(), glm::vec2(X, Y));
 	Buffer.str("");
 
 	// Draw FPS
 	X = Graphics.ViewportSize.x - 45;
 	Y = 25;
 	Buffer << Graphics.FramesPerSecond << " FPS";
-	MainFont->DrawText(Buffer.str(), X, Y, COLOR_WHITE, RIGHT_BASELINE);
+	MainFont->DrawText(Buffer.str(), glm::vec2(X, Y), RIGHT_BASELINE);
 	Buffer.str("");
 
 	// Draw selection count
 	Buffer << SelectedObjects.size() << " selected";
-	MainFont->DrawText(Buffer.str(), X, Y + 20, COLOR_WHITE, RIGHT_BASELINE);
+	MainFont->DrawText(Buffer.str(), glm::vec2(X, Y + 20), RIGHT_BASELINE);
 	Buffer.str("");
 
 	// Draw checkpoint info
 	X = Graphics.ViewportSize.x - 45;
 	Y = Graphics.ViewportSize.y - 40;
 	Buffer << CheckpointIndex;
-	MainFont->DrawText("Checkpoint:", X, Y, COLOR_WHITE, RIGHT_BASELINE);
-	MainFont->DrawText(Buffer.str(), X + 5, Y);
+	MainFont->DrawText("Checkpoint:", glm::vec2(X, Y), RIGHT_BASELINE);
+	MainFont->DrawText(Buffer.str(), glm::vec2(X + 5, Y));
 	Buffer.str("");
 
 	// Draw grid size
 	Y += 20;
 	Buffer << GridMode;
-	MainFont->DrawText("Grid:", X, Y, COLOR_WHITE, RIGHT_BASELINE);
-	MainFont->DrawText(Buffer.str(), X + 5, Y);
+	MainFont->DrawText("Grid:", glm::vec2(X, Y), RIGHT_BASELINE);
+	MainFont->DrawText(Buffer.str(), glm::vec2(X + 5, Y));
 	Buffer.str("");
 
 	// Draw command buttons
@@ -1044,7 +1065,7 @@ void _EditorState::LoadPalettes() {
 void _EditorState::ClearPalette(int Type) {
 	std::vector<_Element *> &Children = PaletteElement[Type]->GetChildren();
 	for(size_t i = 0; i < Children.size(); i++) {
-		delete Children[i]->GetStyle();
+		delete Children[i]->Style;
 		delete Children[i];
 	}
 	Children.clear();
@@ -1063,7 +1084,7 @@ void _EditorState::LoadPaletteButtons(std::vector<_Brush> &Icons, int Type) {
 
 	// Loop through textures
 	glm::ivec2 Offset(0, 0);
-	int Width = PaletteElement[Type]->GetSize().x;
+	int Width = PaletteElement[Type]->Size.x;
 	for(size_t i = 0; i < Icons.size(); i++) {
 		PaletteElement[Type]->AddChild(new _Button(
 			Icons[i].Identifier,
@@ -1090,10 +1111,10 @@ void _EditorState::DrawBrush() {
 	glm::vec4 IconColor = COLOR_WHITE;
 	const _Texture *IconTexture = nullptr;
 	if(Brush[CurrentPalette]) {
-		IconIdentifier = Brush[CurrentPalette]->GetIdentifier();
-		IconText = Brush[CurrentPalette]->GetStyle()->GetIdentifier();
-		IconTexture = Brush[CurrentPalette]->GetStyle()->Texture;
-		IconColor = Brush[CurrentPalette]->GetStyle()->GetTextureColor();
+		IconIdentifier = Brush[CurrentPalette]->Identifier;
+		IconText = Brush[CurrentPalette]->Style->Identifier;
+		IconTexture = Brush[CurrentPalette]->Style->Texture;
+		IconColor = Brush[CurrentPalette]->Style->TextureColor;
 	}
 
 	// Edit mode specific text
@@ -1118,7 +1139,7 @@ void _EditorState::DrawBrush() {
 			}
 			else {
 				if(Brush[CurrentPalette])
-					IconText = Brush[CurrentPalette]->GetIdentifier();
+					IconText = Brush[CurrentPalette]->Identifier;
 				IconRotation = Rotation;
 				IconScaleX = ScaleX;
 				BlockMinZ = MinZ;
@@ -1132,33 +1153,33 @@ void _EditorState::DrawBrush() {
 			int Y = (float)Graphics.ViewportSize.y + 5;
 			std::ostringstream Buffer;
 			Buffer << IconRotation;
-			MainFont->DrawText("Rotation:", X, Y, COLOR_WHITE, RIGHT_BASELINE);
-			MainFont->DrawText(Buffer.str(), X + 5, Y);
+			MainFont->DrawText("Rotation:", glm::vec2(X, Y), RIGHT_BASELINE);
+			MainFont->DrawText(Buffer.str(), glm::vec2(X + 5, Y));
 			Buffer.str("");
 
 			Buffer << BlockMinZ;
-			MainFont->DrawText("Min Z:", X + 85, Y, COLOR_WHITE, RIGHT_BASELINE);
-			MainFont->DrawText(Buffer.str(), X + 90, Y);
+			MainFont->DrawText("Min Z:", glm::vec2(X + 85, Y), RIGHT_BASELINE);
+			MainFont->DrawText(Buffer.str(), glm::vec2(X + 90, Y));
 			Buffer.str("");
 
 			Y += 15;
 			Buffer << IconScaleX;
-			MainFont->DrawText("ScaleX:", X, Y, COLOR_WHITE, RIGHT_BASELINE);
-			MainFont->DrawText(Buffer.str(), X + 5, Y);
+			MainFont->DrawText("ScaleX:", glm::vec2(X, Y), RIGHT_BASELINE);
+			MainFont->DrawText(Buffer.str(), glm::vec2(X + 5, Y));
 			Buffer.str("");
 
 			Buffer << BlockMaxZ;
-			MainFont->DrawText("Max Z:", X + 85, Y, COLOR_WHITE, RIGHT_BASELINE);
-			MainFont->DrawText(Buffer.str(), X + 90, Y);
+			MainFont->DrawText("Max Z:", glm::vec2(X + 85, Y), RIGHT_BASELINE);
+			MainFont->DrawText(Buffer.str(), glm::vec2(X + 90, Y));
 			Buffer.str("");
 
 			Y += 15;
 			Buffer << BlockWalkable;
-			MainFont->DrawText("Walk:", X, Y, COLOR_WHITE, RIGHT_BASELINE);
-			MainFont->DrawText(Buffer.str(), X + 5, Y);
+			MainFont->DrawText("Walk:", glm::vec2(X, Y), RIGHT_BASELINE);
+			MainFont->DrawText(Buffer.str(), glm::vec2(X + 5, Y));
 			Buffer.str("");
 
-			MainFont->DrawText(BlockAltTextureIdentifier, (float)Graphics.ViewportSize.x + 112, (float)Graphics.ViewportSize.y + 145, COLOR_WHITE, CENTER_MIDDLE);
+			MainFont->DrawText(BlockAltTextureIdentifier, glm::vec2(Graphics.ViewportSize.x + 112.0f, Graphics.ViewportSize.y + 145.0f), CENTER_MIDDLE);
 		} break;
 		case EDITMODE_EVENTS: {
 
@@ -1168,9 +1189,9 @@ void _EditorState::DrawBrush() {
 			int Active, Level;
 			if(EventSelected()) {
 				_Button *Button = (_Button *)PaletteElement[EDITMODE_EVENTS]->GetChildren()[SelectedEvent->Type];
-				IconTexture = Button->GetStyle()->Texture;
-				IconIdentifier = Button->GetIdentifier();
-				IconText = Button->GetStyle()->GetIdentifier();
+				IconTexture = Button->Style->Texture;
+				IconIdentifier = Button->Identifier;
+				IconText = Button->Style->Identifier;
 
 				ItemIdentifier = SelectedEvent->ItemIdentifier;
 				MonsterIdentifier = SelectedEvent->MonsterIdentifier;
@@ -1193,26 +1214,26 @@ void _EditorState::DrawBrush() {
 
 			std::ostringstream Buffer;
 			Buffer << Active;
-			MainFont->DrawText("Active:", X, Y, COLOR_WHITE, RIGHT_BASELINE);
-			MainFont->DrawText(Buffer.str(), X + 5, Y);
+			MainFont->DrawText("Active:", glm::vec2(X, Y), RIGHT_BASELINE);
+			MainFont->DrawText(Buffer.str(), glm::vec2(X + 5, Y));
 			Buffer.str("");
 
 			Y += 15;
-			MainFont->DrawText("Item:", X, Y, COLOR_WHITE, RIGHT_BASELINE);
-			MainFont->DrawText(ItemIdentifier, X + 5, Y);
+			MainFont->DrawText("Item:", glm::vec2(X, Y), RIGHT_BASELINE);
+			MainFont->DrawText(ItemIdentifier, glm::vec2(X + 5, Y));
 
 			Y += 15;
-			MainFont->DrawText("Monster:", X, Y, COLOR_WHITE, RIGHT_BASELINE);
-			MainFont->DrawText(MonsterIdentifier, X + 5, Y);
+			MainFont->DrawText("Monster:", glm::vec2(X, Y), RIGHT_BASELINE);
+			MainFont->DrawText(MonsterIdentifier, glm::vec2(X + 5, Y));
 
 			Y += 15;
-			MainFont->DrawText("Particle:", X, Y, COLOR_WHITE, RIGHT_BASELINE);
-			MainFont->DrawText(ParticleIdentifier, X + 5, Y);
+			MainFont->DrawText("Particle:", glm::vec2(X, Y), RIGHT_BASELINE);
+			MainFont->DrawText(ParticleIdentifier, glm::vec2(X + 5, Y));
 
 			Y += 15;
 			Buffer << Level << ":" << ActivationPeriod;
-			MainFont->DrawText("Level:", X, Y, COLOR_WHITE, RIGHT_BASELINE);
-			MainFont->DrawText(Buffer.str(), X + 5, Y);
+			MainFont->DrawText("Level:", glm::vec2(X, Y), RIGHT_BASELINE);
+			MainFont->DrawText(Buffer.str(), glm::vec2(X + 5, Y));
 			Buffer.str("");
 		} break;
 		default:
@@ -1229,14 +1250,16 @@ void _EditorState::DrawBrush() {
 
 	// Bottom information box
 	if(IconText != "")
-		MainFont->DrawText(IconText, (float)Graphics.ViewportSize.x + 112, (float)Graphics.ViewportSize.y + 130, COLOR_WHITE, CENTER_MIDDLE);
+		MainFont->DrawText(IconText, glm::vec2(Graphics.ViewportSize.x + 112, Graphics.ViewportSize.y + 130), CENTER_MIDDLE);
 
 	if(IconIdentifier != "")
-		MainFont->DrawText(IconIdentifier, (float)Graphics.ViewportSize.x + 112, (float)Graphics.ViewportSize.y + 145, COLOR_WHITE, CENTER_MIDDLE);
+		MainFont->DrawText(IconIdentifier, glm::vec2(Graphics.ViewportSize.x + 112, Graphics.ViewportSize.y + 145), CENTER_MIDDLE);
 
 	if(IconTexture) {
-		Graphics.EnableVBO(VBO_QUAD);
-		Graphics.DrawTexture(glm::vec3((float)Graphics.CurrentSize.x - 112, (float)Graphics.CurrentSize.y - 84, 0.0f), IconTexture, IconColor, IconRotation, glm::vec2(IconScaleX * EDITOR_PALETTE_SELECTEDSIZE * 2, EDITOR_PALETTE_SELECTEDSIZE * 2));
+		Assets.Programs["ortho_pos_uv"]->ResetTextureTransform();
+		Graphics.SetProgram(Assets.Programs["ortho_pos_uv"]);
+		Graphics.SetColor(IconColor);
+		Graphics.DrawSprite(glm::vec3((float)Graphics.CurrentSize.x - 112, (float)Graphics.CurrentSize.y - 84, 0.0f), IconTexture, IconRotation * IconScaleX, glm::vec2(IconScaleX * EDITOR_PALETTE_SELECTEDSIZE * 2, EDITOR_PALETTE_SELECTEDSIZE * 2));
 	}
 }
 
@@ -1287,8 +1310,12 @@ void _EditorState::DrawObject(float OffsetX, float OffsetY, const _ObjectSpawn *
 	}
 
 	Color.a *= Alpha;
-	if(Texture != nullptr)
-		Graphics.DrawTexture(glm::vec3(DrawPosition, Depth), Texture, Color, 0.0f, glm::vec2(Scale));
+	if(Texture != nullptr) {
+		Assets.Programs["pos_uv"]->ResetTextureTransform();
+		Graphics.SetProgram(Assets.Programs["pos_uv"]);
+		Graphics.SetColor(Color);
+		Graphics.DrawSprite(glm::vec3(DrawPosition, Depth), Texture, 0.0f, glm::vec2(Scale));
+	}
 }
 
 // Converts an editor mode to an object type
@@ -1840,7 +1867,7 @@ void _EditorState::ExecutePaste(bool Viewport) {
 	if(Viewport)
 		StartPosition = WorldCursor;
 	else
-		StartPosition = Camera->GetPosition();
+		StartPosition = Camera->Get2DPosition();
 
 	switch(CurrentPalette) {
 		case EDITMODE_BLOCKS:
@@ -1902,7 +1929,7 @@ void _EditorState::ExecuteUpdateSelectedPalette(int Change) {
 		return;
 	}
 
-	int CurrentIndex = Brush[CurrentPalette]->GetID();
+	int CurrentIndex = Brush[CurrentPalette]->ID;
 	CurrentIndex += Change;
 	if(CurrentIndex >= (int)Children.size())
 		CurrentIndex = 0;
@@ -1917,7 +1944,7 @@ void _EditorState::ExecuteSelectPalette(_Button *Button, int ClickType) {
 	if(!Button)
 		return;
 
-	if(Button->GetID() == -1) {
+	if(Button->ID == -1) {
 
 		// Deselect alternate texture
 		if(ClickType == 1 && CurrentPalette == EDITMODE_BLOCKS) {
@@ -1941,24 +1968,24 @@ void _EditorState::ExecuteSelectPalette(_Button *Button, int ClickType) {
 
 			if(ClickType == 1) {
 				if(BlockSelected()) {
-					SelectedBlock->AltTextureIdentifier = Button->GetIdentifier();
-					SelectedBlock->AltTexture = Button->GetStyle()->Texture;
+					SelectedBlock->AltTextureIdentifier = Button->Identifier;
+					SelectedBlock->AltTexture = Button->Style->Texture;
 				}
 				else {
-					AltTextureIdentifier = Button->GetIdentifier();
-					AltTexture = Button->GetStyle()->Texture;
+					AltTextureIdentifier = Button->Identifier;
+					AltTexture = Button->Style->Texture;
 				}
 			}
 			else {
 				if(BlockSelected()) {
-					SelectedBlock->TextureIdentifier = Button->GetIdentifier();
-					SelectedBlock->Texture = Button->GetStyle()->Texture;
+					SelectedBlock->TextureIdentifier = Button->Identifier;
+					SelectedBlock->Texture = Button->Style->Texture;
 				}
 			}
 		break;
 		case EDITMODE_EVENTS:
 			if(!EventSelected()) {
-				switch(Button->GetID()) {
+				switch(Button->ID) {
 					case EVENT_SPAWN:
 						SetEventProperties(0, 1, 1, "smoke0");
 					break;
@@ -1986,11 +2013,11 @@ void _EditorState::ExecuteSelectPalette(_Button *Button, int ClickType) {
 			if(ClickType == 1 && EventSelected()) {
 				switch(CurrentPalette) {
 					case EDITMODE_MONSTERS:
-						SelectedEvent->MonsterIdentifier = Button->GetIdentifier();
+						SelectedEvent->MonsterIdentifier = Button->Identifier;
 						ExecuteSwitchMode(EDITMODE_EVENTS);
 					break;
 					case EDITMODE_ITEMS:
-						SelectedEvent->ItemIdentifier = Button->GetIdentifier();
+						SelectedEvent->ItemIdentifier = Button->Identifier;
 						ExecuteSwitchMode(EDITMODE_EVENTS);
 					break;
 					default:

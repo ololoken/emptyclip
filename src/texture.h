@@ -18,7 +18,10 @@
 #pragma once
 
 #include <opengl.h>
+#include <glm/vec2.hpp>
 #include <string>
+
+struct SDL_Surface;
 
 // Classes
 class _Texture {
@@ -31,18 +34,11 @@ class _Texture {
 			MAP,
 		};
 
-		_Texture();
-		_Texture(const std::string &FilePath, int Group, bool Repeat, bool Mipmaps);
-		_Texture(unsigned char *Data, int Width, int Height, int InternalFormat, int Format);
+		_Texture(const std::string &Path) : Name(Path), Group(0), ID(0) { }
+		_Texture(const std::string &Path, bool IsServer, bool Repeat, bool Mipmaps, bool Nearest);
+		_Texture(const std::string &Path, FILE *FileHandle, bool IsServer, bool Repeat, bool Mipmaps, bool Nearest);
+		_Texture(unsigned char *Data, const glm::ivec2 &Size, int InternalFormat, GLenum Format);
 		~_Texture();
-
-		const std::string &GetName() const { return Name; }
-		int GetGroup() const { return Group; }
-		GLuint GetID() const { return ID; }
-		int GetWidth() const { return Width; }
-		int GetHeight() const { return Height; }
-
-	private:
 
 		// Info
 		std::string Name;
@@ -50,6 +46,10 @@ class _Texture {
 		GLuint ID;
 
 		// Dimensions
-		int Width;
-		int Height;
+		glm::ivec2 Size;
+
+	private:
+
+		void Load(SDL_Surface *Image, bool Repeat, bool Mipmaps, bool Nearest);
+
 };

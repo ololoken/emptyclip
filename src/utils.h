@@ -22,6 +22,7 @@
 #include <fstream>
 #include <string>
 
+const char *LoadFileIntoMemory(const char *Path);
 std::string GetCSVText(std::ifstream &Stream);
 std::string GetTSVText(std::ifstream &Stream, bool *EndOfLine=0);
 glm::vec2 GenerateRandomPointInCircle(float Radius);

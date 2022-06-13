@@ -20,6 +20,7 @@
 #include <ui/style.h>
 #include <texture.h>
 #include <graphics.h>
+#include <assets.h>
 
 // Constructor
 _Button::_Button(const std::string &Identifier, _Element *Parent, const glm::ivec2 &Offset, const glm::ivec2 &Size, const _Alignment &Alignment, const _Style *Style, const _Style *HoverStyle) :
@@ -38,35 +39,43 @@ void _Button::Render() const {
 
 	if(Style) {
 		if(Style->Texture) {
-			Graphics.DrawImage(Bounds, Style->Texture, Style->GetTextureColor(), Style->GetStretch());
+			Graphics.SetProgram(Assets.Programs["ortho_pos_uv"]);
+			Graphics.SetColor(Style->TextureColor);
+			Graphics.DrawImage(Bounds, Style->Texture, Style->Stretch);
 		}
 		else {
-			Graphics.DrawRectangle(Bounds, Style->GetBackgroundColor(), true);
-			Graphics.DrawRectangle(Bounds, Style->GetBorderColor(), false);
+			Graphics.SetProgram(Assets.Programs["ortho_pos"]);
+			Graphics.SetColor(Style->BackgroundColor);
+			Graphics.DrawRectangle(Bounds, true);
+			Graphics.SetColor(Style->BorderColor);
+			Graphics.DrawRectangle(Bounds, false);
 		}
 	}
 
 	// Draw hover texture
 	if(HoverStyle && (Enabled || HitElement)) {
-		if(HoverStyle->Texture)
-			Graphics.DrawImage(Bounds, HoverStyle->Texture, HoverStyle->GetTextureColor(), Style->GetStretch());
+		if(HoverStyle->Texture) {
+			Graphics.SetProgram(Assets.Programs["ortho_pos_uv"]);
+			Graphics.SetColor(HoverStyle->TextureColor);
+			Graphics.DrawImage(Bounds, HoverStyle->Texture, Style->Stretch);
+		}
 		else {
-			if(HoverStyle->GetHasBackgroundColor())
-				Graphics.DrawRectangle(Bounds, HoverStyle->GetBackgroundColor(), true);
+			if(HoverStyle->HasBackgroundColor) {
+				Graphics.SetProgram(Assets.Programs["ortho_pos"]);
+				Graphics.SetColor(HoverStyle->BackgroundColor);
+				Graphics.DrawRectangle(Bounds, true);
+			}
 
-			if(HoverStyle->GetHasBorderColor())
-				Graphics.DrawRectangle(Bounds, HoverStyle->GetBorderColor(), false);
+			if(HoverStyle->HasBorderColor) {
+				Graphics.SetProgram(Assets.Programs["ortho_pos"]);
+				Graphics.SetColor(HoverStyle->BorderColor);
+				Graphics.DrawRectangle(Bounds, false);
+			}
 		}
 	}
 
 	// Render all children
 	for(size_t i = 0; i < Children.size(); i++) {
 		Children[i]->Render();
-	}
-}
-
-// Handle pressed event
-void _Button::HandleInput(bool Pressed) {
-	if(HitElement) {
 	}
 }

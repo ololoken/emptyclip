@@ -54,14 +54,14 @@ class _AudioSource {
 		glm::vec2 GetPosition();
 		bool IsPlaying();
 		bool IsRelative();
-		ALuint GetID() { return ID; }
 		const _AudioBuffer *GetAudioBuffer() const { return AudioBuffer; }
+
+		ALuint ID;
 
 	private:
 
 		bool Loaded;
 		const _AudioBuffer *AudioBuffer;
-		ALuint ID;
 };
 
 // Classes

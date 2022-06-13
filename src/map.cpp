@@ -21,6 +21,7 @@
 #include <assets.h>
 #include <camera.h>
 #include <events.h>
+#include <program.h>
 #include <objectmanager.h>
 #include <objects/entity.h>
 #include <objects/item.h>
@@ -1176,9 +1177,9 @@ void _Map::RenderGrid(int Mode) {
 
 // Draws rectangles around all the blocks
 void _Map::HighlightBlocks(int Layer) {
-	for(int i = 0; i < static_cast<int>(Blocks[Layer].size()); i++) {
-		Graphics.DrawRectangle(glm::vec2(Blocks[Layer][i].Start.x, Blocks[Layer][i].Start.y), glm::vec2(Blocks[Layer][i].End.x + 1.0f, Blocks[Layer][i].End.y + 1.0f), COLOR_MAGENTA);
-	}
+	Graphics.SetColor(COLOR_MAGENTA);
+	for(int i = 0; i < static_cast<int>(Blocks[Layer].size()); i++)
+		Graphics.DrawRectangle3D(glm::vec2(Blocks[Layer][i].Start.x, Blocks[Layer][i].Start.y), glm::vec2(Blocks[Layer][i].End.x + 1.0f, Blocks[Layer][i].End.y + 1.0f), false);
 }
 
 // Returns the total number of blocks
@@ -1260,13 +1261,12 @@ bool _Map::CanChangeMapState(const _Event *Event) {
 
 // Swaps a block's texture with its alternate texture
 void _Map::SwapBlockTextures(int Layer, int Index) {
+	if(Index == -1)
+		return;
 
-	if(Index != -1) {
-		_Block *Block = &Blocks[Layer][Index];
-		if(Block->AltTexture) {
-			std::swap(Block->Texture, Block->AltTexture);
-		}
-	}
+	_Block *Block = &Blocks[Layer][Index];
+	if(Block->AltTexture)
+		std::swap(Block->Texture, Block->AltTexture);
 }
 
 // Renders the floor
@@ -1274,43 +1274,45 @@ void _Map::RenderFloors() {
 	if(!Camera)
 		return;
 
+	float Bounds[4];
+
 	// Draw base layer
+	Graphics.SetProgram(Assets.Programs["pos_uv"]);
+	Graphics.SetColor(glm::vec4(1.0f));
+	Graphics.SetDepthTest(false);
 	Graphics.SetDepthMask(false);
-	for(int i = 0; i < static_cast<int>(Blocks[0].size()); i++) {
+	for(std::size_t i = 0; i < Blocks[0].size(); i++) {
 		_Block *Block = &Blocks[0][i];
+
 		bool Draw = true;
 		if(Block->MinZ >= 0) {
-			float Bounds[4] = { (float)Block->Start.x, (float)Block->Start.y, (float)Block->End.x + 1.0f, (float)Block->End.y + 1.0f };
+			Block->GetBounds(Bounds);
 			Draw = Camera->IsAABBInView(Bounds);
 		}
 
 		if(Draw)
 			Graphics.DrawRepeatable(glm::vec3(Block->Start.x, Block->Start.y, Block->MinZ + MAP_LAYEROFFSET * i), glm::vec3(Block->End.x + 1.0f, Block->End.y + 1.0f, Block->MinZ + MAP_LAYEROFFSET * i), Block->Texture, Block->Rotation, Block->ScaleX);
 	}
-	Graphics.SetDepthMask(true);
 
 	// Draw floor layers 0-2
+	Graphics.SetDepthMask(true);
+	Graphics.SetDepthTest(true);
 	for(int i = MAPLAYER_FLOOR0; i <= MAPLAYER_FLOOR2; i++) {
-
 		for(int j = 0; j < static_cast<int>(Blocks[i].size()); j++) {
 			_Block *Block = &Blocks[i][j];
-
 			if(Block->MinZ == Block->MaxZ) {
 
 				bool Draw = true;
 				if(Block->MinZ >= 0) {
-					float Bounds[4] = { (float)Block->Start.x, (float)Block->Start.y, (float)Block->End.x + 1.0f, (float)Block->End.y + 1.0f };
+					Block->GetBounds(Bounds);
 					Draw = Camera->IsAABBInView(Bounds);
 				}
 
 				if(Draw)
 					Graphics.DrawRepeatable(glm::vec3(Block->Start.x, Block->Start.y, Block->MinZ + MAP_LAYEROFFSET * i), glm::vec3(Block->End.x + 1.0f, Block->End.y + 1.0f, Block->MinZ + MAP_LAYEROFFSET * i), Block->Texture, Block->Rotation, Block->ScaleX);
 			}
-			else {
-				Graphics.EnableVBO(VBO_CUBE);
+			else
 				Graphics.DrawCube(glm::vec3(Block->Start.x, Block->Start.y, Block->MinZ), glm::vec3(Block->End.x - Block->Start.x + 1.0f, Block->End.y - Block->Start.y + 1.0f, Block->MaxZ - Block->MinZ), Block->Texture);
-				Graphics.DisableVBO(VBO_CUBE);
-			}
 		}
 	}
 }
@@ -1320,7 +1322,13 @@ void _Map::RenderWalls() {
 	if(!Camera)
 		return;
 
-	Graphics.EnableVBO(VBO_CUBE);
+	float Bounds[4];
+
+	// Set up graphics
+	Graphics.SetProgram(Assets.Programs["pos_uv"]);
+	Graphics.SetColor(glm::vec4(1.0f));
+	Graphics.SetDepthMask(true);
+	Graphics.SetDepthTest(true);
 
 	// Draw walls
 	for(std::size_t i = 0; i < Blocks[5].size(); i++) {
@@ -1328,29 +1336,26 @@ void _Map::RenderWalls() {
 
 		bool Draw = true;
 		if(Block->MinZ >= 0) {
-			float Bounds[4] = { (float)Block->Start.x, (float)Block->Start.y, (float)Block->End.x + 1.0f, (float)Block->End.y + 1.0f };
+			Block->GetBounds(Bounds);
 			Draw = Camera->IsAABBInView(Bounds);
 		}
+
 		if(Draw)
 			Graphics.DrawCube(glm::vec3(Block->Start.x, Block->Start.y, Block->MinZ), glm::vec3(Block->End.x - Block->Start.x + 1.0f, Block->End.y - Block->Start.y + 1.0f, Block->MaxZ - Block->MinZ), Block->Texture);
 	}
 
 	// Draw flat walls
-	Graphics.SetDepthMask(false);
 	for(size_t i = 0; i < Blocks[4].size(); i++) {
 		_Block *Block = &Blocks[4][i];
 		bool Draw = true;
 		if(Block->MinZ >= 0) {
-			float Bounds[4] = { (float)Block->Start.x, (float)Block->Start.y + 0.0f, (float)Block->End.x + 1.0f, (float)Block->End.y + 1.0f };
+			Block->GetBounds(Bounds);
 			Draw = Camera->IsAABBInView(Bounds);
 		}
 
 		if(Draw)
 			Graphics.DrawWall(glm::vec3(Block->Start.x, Block->Start.y, Block->MinZ), glm::vec3(Block->End.x - Block->Start.x + 1.0f, Block->End.y - Block->Start.y + 1.0f, Block->MaxZ - Block->MinZ), Block->Rotation, Block->Texture);
 	}
-	Graphics.SetDepthMask(true);
-
-	Graphics.DisableVBO(VBO_CUBE);
 }
 
 // Draws the events
@@ -1358,7 +1363,9 @@ void _Map::RenderEvents(std::vector<_Texture *> &Textures) {
 	if(!Camera)
 		return;
 
-	Graphics.DisableDepthTest();
+	Graphics.SetProgram(Assets.Programs["pos_uv"]);
+	Graphics.SetColor(glm::vec4(1.0f));
+	Graphics.SetDepthTest(false);
 
 	// Draw events
 	for(size_t i = 0; i < Events.size(); i++) {
@@ -1366,8 +1373,6 @@ void _Map::RenderEvents(std::vector<_Texture *> &Textures) {
 		if(Camera->IsAABBInView(Bounds))
 			Graphics.DrawRepeatable(glm::vec3(Events[i]->Start.x, Events[i]->Start.y, MAP_LAYEROFFSET), glm::vec3(Events[i]->End.x + 1.0f, Events[i]->End.y + 1.0f, MAP_LAYEROFFSET), Textures[Events[i]->Type], 0, 1.0f);
 	}
-
-	Graphics.EnableDepthTest();
 }
 
 // Renders the foreground tiles
@@ -1375,12 +1380,20 @@ void _Map::RenderForeground() {
 	if(!Camera)
 		return;
 
+	float Bounds[4];
+
+	// Set up graphics
+	Graphics.SetProgram(Assets.Programs["pos_uv"]);
+	Graphics.SetColor(glm::vec4(1.0f));
+	Graphics.SetDepthMask(true);
+	Graphics.SetDepthTest(true);
+
 	// Draw foreground
 	for(std::size_t i = 0; i < Blocks[6].size(); i++) {
 		_Block *Block = &Blocks[6][i];
 		bool Draw = true;
 		if(Block->MinZ >= 0) {
-			float Bounds[4] = { (float)Block->Start.x, (float)Block->Start.y, (float)Block->End.x + 1.0f, (float)Block->End.y + 1.0f };
+			Block->GetBounds(Bounds);
 			Draw = Camera->IsAABBInView(Bounds);
 		}
 
@@ -1402,6 +1415,8 @@ void _Map::Update(double FrameTime) {
 
 // Render entities and items
 void _Map::RenderObjects(double BlendFactor) {
+	Assets.Programs["pos_uv"]->ResetTextureTransform();
+	Graphics.SetProgram(Assets.Programs["pos_uv"]);
 	ObjectManager->Render(BlendFactor);
 }
 

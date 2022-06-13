@@ -18,21 +18,28 @@
 #pragma once
 
 // Libraries
-#include <color.h>
-#include <SDL_video.h>
-#include <SDL_opengl.h>
+#include <opengl.h>
 #include <glm/vec2.hpp>
-#include <glm/vec3.hpp>
+#include <glm/mat4x4.hpp>
+#include <SDL_video.h>
 #include <string>
 
 // Forward Declarations
+struct SDL_Cursor;
 class _Texture;
+class _Program;
 class _Element;
-class _Bounds;
+struct _Bounds;
 
 enum VertexBufferType {
+	VBO_NONE,
+	VBO_LINE,
 	VBO_CIRCLE,
 	VBO_QUAD,
+	VBO_RECT,
+	VBO_SPRITE,
+	VBO_ATLAS,
+	VBO_QUAD_UV,
 	VBO_CUBE,
 	VBO_COUNT
 };
@@ -47,86 +54,103 @@ struct _WindowSettings {
 	bool Vsync;
 };
 
+enum CursorType {
+	CURSOR_NONE,
+	CURSOR_MAIN,
+	CURSOR_CROSS,
+	CURSOR_COUNT,
+};
+
 // Classes
 class _Graphics {
 
 	public:
 
-		_Graphics() { Enabled = false; }
-
 		void Init(const _WindowSettings &WindowSettings);
 		void Close();
 
-		void ToggleFullScreen();
-		void ShowCursor(bool Show);
-		void BuildVertexBuffers();
+		GLuint CreateVBO(float *Vertices, GLsizeiptr Size, GLenum Type);
 
-		void ChangeViewport(const glm::ivec2 &Size);
-		void Setup2DProjectionMatrix();
-		void Setup3DViewport();
+		void ResetState();
+		void CheckError();
+		void Setup2D();
+		void Setup3D();
 
-		void FadeScreen(float Amount);
-		void DrawImage(const glm::ivec2 &CenterPoint, const _Texture *Texture, const glm::vec4 &Color);
-		void DrawImage(const _Bounds &Bounds, const _Texture *Texture, const glm::vec4 &Color, bool Stretch=false);
-		void DrawRectangle(const _Bounds &Bounds, const glm::vec4 &Color, bool Filled=false);
-		void DrawMask(const _Bounds &Bounds);
-
-		void DrawTexture(const glm::vec3 &Position, const _Texture *Texture, const glm::vec4 &Color, float Rotation=0.0f, const glm::vec2 &Scale=glm::vec2(1.0f));
-		void DrawRepeatable(const glm::vec3 &Start, const glm::vec3 &End, const _Texture *Texture, float Rotation, float ScaleX);
-		void DrawCube(const glm::vec3 &Position, const glm::vec3 &Scale, const _Texture *Texture);
-		void DrawWall(const glm::vec3 &Position, const glm::vec3 &Scale, float Rotation, const _Texture *Texture);
-		void DrawRectangle(const glm::vec2 &Start, const glm::vec2 &End, const glm::vec4 &Color, bool Filled=false);
-		void DrawLine(const glm::vec2 &Start, const glm::vec2 &End);
-		void DrawCircle(const glm::vec3 &Position, float Radius);
-
-		_Element *GetElement();
-
-		void SetDepthMask(bool Value);
-		void EnableDepthTest();
-		void DisableDepthTest();
-		void EnableStencilTest();
-		void DisableStencilTest();
-		void EnableParticleBlending();
-		void DisableParticleBlending();
+		void FadeScreen(const _Program *Program, float Amount);
 		void ClearScreen();
 		void Flip(double FrameTime);
 
-		GLuint CreateVBO(float *Triangles, GLuint Size);
-		void EnableVBO(int Type);
-		void DisableVBO(int Type);
-
+		void SetViewport(const glm::ivec2 &Size);
+		void SetWindowSize(const glm::ivec2 &Size);
+		bool SetFullscreen(bool Fullscreen);
+		void SetStaticUniforms();
+		bool SetVsync(bool Vsync);
+		bool GetVsync();
+		void SetCursor(int Type);
+		void SetVBO(GLuint Type);
+		void SetAttribLevel(GLuint AttribLevel);
 		void SetColor(const glm::vec4 &Color);
-		void SetTextureEnabled(bool Value);
-		void SetTextureID(GLuint TextureID);
+		void SetTextureID(GLuint TextureID, GLenum Type=GL_TEXTURE_2D);
+		void SetProgram(const _Program *Program);
+		void SetDepthTest(bool DepthTest);
+		void SetCullFace(bool Value);
+		void SetDepthMask(bool Value);
+		void EnableStencilTest();
+		void DisableStencilTest();
+		void EnableScissorTest();
+		void DisableScissorTest();
+		void EnableParticleBlending();
+		void DisableParticleBlending();
 
-		// Viewport
+		void DrawLine(const glm::vec2 &Start, const glm::vec2 &End);
+		void DrawRectangle(const _Bounds &Bounds, bool Filled=false);
+		void DrawRectangle(const glm::vec2 &Start, const glm::vec2 &End, bool Filled=false);
+		void DrawRectangle3D(const glm::vec2 &Start, const glm::vec2 &End, bool Filled);
+		void DrawCircle(const glm::vec3 &Position, float Radius);
+		void DrawMask(const _Bounds &Bounds);
+
+		void DrawImage(const glm::ivec2 &Position, const _Texture *Texture);
+		void DrawImage(const _Bounds &Bounds, const _Texture *Texture, bool Stretch=false);
+		void DrawSprite(const glm::vec3 &Position, const _Texture *Texture, float Rotation=0.0f, const glm::vec2 &Scale=glm::vec2(1.0f));
+		void DrawRepeatable(const glm::vec3 &Start, const glm::vec3 &End, const _Texture *Texture, float Rotation, float ScaleX);
+		void DrawWall(const glm::vec3 &Position, const glm::vec3 &Scale, float Rotation, const _Texture *Texture);
+		void DrawCube(const glm::vec3 &Start, const glm::vec3 &Scale, const _Texture *Texture);
+
+		_Element *Element;
 		glm::ivec2 CurrentSize;
 		glm::ivec2 ViewportSize;
+		glm::mat4 Ortho;
 		float AspectRatio;
-
-		// Benchmarking
+		GLfloat Anisotropy;
 		int FramesPerSecond;
 
 	private:
 
+		void BuildVertexBuffers();
 		void SetupOpenGL();
 
-		// Data structures
-		bool Enabled;
-		SDL_Window *Window;
-		SDL_GLContext Context;
-		_Element *Element;
-
 		// Vertex buffers
+		int CircleVertices;
+		GLuint VertexArrayID;
 		GLuint VertexBuffer[VBO_COUNT];
 
+		// Data structures
+		SDL_Window *Window;
+		SDL_GLContext Context;
+		SDL_Cursor *Cursors[CURSOR_COUNT];
+
+		// Sizes
+		glm::ivec2 WindowSize;
+		glm::ivec2 FullscreenSize;
+
 		// State changes
-		bool LastTextureEnabled;
+		GLuint LastVertexBufferID;
 		GLuint LastTextureID;
-		glm::vec4 LastColor;
+		GLuint LastAttribLevel;
+		const _Program *LastProgram;
+		bool LastDepthTest;
 
 		// Benchmarking
-		int TriangleCount;
 		double FrameRateTimer;
 		int FrameCount;
 };

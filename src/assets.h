@@ -22,6 +22,7 @@
 #include <objects/templates.h>
 #include <string>
 #include <map>
+#include <unordered_map>
 #include <vector>
 
 // Forward Declarations
@@ -43,6 +44,8 @@ class _Armor;
 class _MiscItem;
 class _Upgrade;
 class _Ammo;
+class _Program;
+class _Shader;
 struct _Reel;
 struct _ReelTemplate;
 struct _ParticleTemplate;
@@ -130,6 +133,7 @@ class _Assets {
 		void LoadAttackSampleTable(const std::string &Filename);
 		void LoadMonsterTable(const std::string &Filename);
 		void LoadParticleTable(const std::string &Filename);
+		void LoadPrograms(const std::string &Path);
 		void LoadTextures(const std::string &Filename);
 		void LoadSamples(const std::string &Filename, const std::string &SamplePath);
 		void LoadMiscItemTable(const std::string &Filename);
@@ -139,7 +143,7 @@ class _Assets {
 		void LoadArmorTable(const std::string &Filename);
 		void LoadItemDropTable(const std::string &Filename);
 
-		void LoadFonts(const std::string &Filename);
+		void LoadFonts(const std::string &Path, bool LoadFonts=true);
 		void LoadMonsterSet(const std::string &Filename);
 		void LoadReel(const std::string &Identifier, const std::string &Path);
 		void LoadAnimation(const std::string &Identifier, const std::string &Path);
@@ -184,7 +188,6 @@ class _Assets {
 		void UnloadArmorTable();
 		void UnloadItemGroupTable();
 
-		void UnloadTextures();
 		void UnloadMonsterSet();
 		void UnloadSamples();
 		void UnloadFonts();
@@ -207,7 +210,6 @@ class _Assets {
 		float GetSkill(int Level, int Type) const { return Skills[Level].Data[Type]; }
 		float GetSkillPercentImprovement(int Level, int Type) const { return (Skills[Level].Data[Type] - 1.0f) * 100.0f; }
 
-		_Font *GetFont(const std::string &Identifier);
 		_Style *GetStyle(const std::string &Identifier);
 		_Element *GetElement(const std::string &Identifier);
 		_Label *GetLabel(const std::string &Identifier);
@@ -248,6 +250,11 @@ class _Assets {
 
 		void GetTextureList(std::vector<_Brush> &TextureList, int Group=-1);
 
+		// Data
+		std::unordered_map<std::string, _Program *> Programs;
+		std::unordered_map<std::string, glm::vec4> Colors;
+		std::unordered_map<std::string, _Font *> Fonts;
+
 	private:
 
 		void LoadLevels();
@@ -275,13 +282,12 @@ class _Assets {
 		std::string AmmoTypeIdentifiers[AMMO_TYPES];
 
 		// Data
-		std::map<std::string, glm::vec4> ColorTable;
 		std::map<std::string, _Texture *> Textures;
 		std::map<std::string, _Reel> Reels;
 		std::map<std::string, _Animation *> Animations;
 		std::map<std::string, _Style *> Styles;
 		std::map<std::string, _Element *> Elements;
-		std::map<std::string, _Font *> Fonts;
+		std::unordered_map<std::string, const _Shader *> Shaders;
 		_WeaponParticleTemplate BlankWeaponParticle;
 };
 

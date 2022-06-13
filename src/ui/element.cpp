@@ -19,14 +19,16 @@
 #include <ui/style.h>
 #include <graphics.h>
 #include <input.h>
+#include <assets.h>
+#include <program.h>
 
 const glm::vec4 DebugColors[] = { COLOR_CYAN, COLOR_YELLOW, COLOR_RED, COLOR_GREEN, COLOR_BLUE };
 const int DebugColorCount = sizeof(DebugColors) / sizeof(glm::vec4);
 
 // Constructor for ui element
-_Element::_Element(const std::string &Identifier, _Element *Parent, const glm::ivec2 &Offset, const glm::ivec2 &Size, const _Alignment &Alignment, const _Style *Style, bool MaskOutside) {
+_Element::_Element(const std::string &Identifier, _Element *Parent, const glm::vec2 &Offset, const glm::vec2 &Size, const _Alignment &Alignment, const _Style *Style, bool MaskOutside) {
 	if(!Parent)
-		Parent = Graphics.GetElement();
+		Parent = Graphics.Element;
 
 	this->Identifier = Identifier;
 	this->Parent = Parent;
@@ -42,7 +44,7 @@ _Element::_Element(const std::string &Identifier, _Element *Parent, const glm::i
 	this->HitElement = nullptr;
 	this->PressedElement = nullptr;
 	this->ReleasedElement = nullptr;
-	this->ChildrenOffset = glm::ivec2(0);
+	this->ChildrenOffset = glm::vec2(0);
 
 	CalculateBounds();
 }
@@ -97,7 +99,7 @@ _Element *_Element::GetClickedElement() {
 }
 
 // Handle mouse movement
-void _Element::Update(double FrameTime, const glm::ivec2 &Mouse) {
+void _Element::Update(double FrameTime, const glm::vec2 &Mouse) {
 	HitElement = nullptr;
 	ReleasedElement = nullptr;
 
@@ -113,8 +115,8 @@ void _Element::Update(double FrameTime, const glm::ivec2 &Mouse) {
 	// Test children
 	for(size_t i = 0; i < Children.size(); i++) {
 		Children[i]->Update(FrameTime, Mouse);
-		if(Children[i]->GetHitElement())
-			HitElement = Children[i]->GetHitElement();
+		if(Children[i]->HitElement)
+			HitElement = Children[i]->HitElement;
 	}
 }
 
@@ -126,12 +128,12 @@ void _Element::CalculateBounds() {
 	switch(Alignment.Horizontal) {
 		case _Alignment::CENTER:
 			if(Parent)
-				Bounds.Start.x += Parent->GetSize().x / 2;
+				Bounds.Start.x += Parent->Size.x / 2;
 			Bounds.Start.x -= Size.x / 2;
 		break;
 		case _Alignment::RIGHT:
 			if(Parent)
-				Bounds.Start.x += Parent->GetSize().x;
+				Bounds.Start.x += Parent->Size.x;
 			Bounds.Start.x -= Size.x;
 		break;
 	}
@@ -140,19 +142,19 @@ void _Element::CalculateBounds() {
 	switch(Alignment.Vertical) {
 		case _Alignment::MIDDLE:
 			if(Parent)
-				Bounds.Start.y += Parent->GetSize().y / 2;
+				Bounds.Start.y += Parent->Size.y / 2;
 			Bounds.Start.y -= Size.y / 2;
 		break;
 		case _Alignment::BOTTOM:
 			if(Parent)
-				Bounds.Start.y += Parent->GetSize().y;
+				Bounds.Start.y += Parent->Size.y;
 			Bounds.Start.y -= Size.y;
 		break;
 	}
 
 	// Offset from parent
 	if(Parent)
-		Bounds.Start += Parent->GetBounds().Start + Parent->GetChildrenOffset();
+		Bounds.Start += Parent->Bounds.Start + Parent->ChildrenOffset;
 
 	// Set end
 	Bounds.End = Bounds.Start + Size;
@@ -174,27 +176,32 @@ void _Element::CalculateChildrenBounds() {
 void _Element::Render() const {
 
 	if(MaskOutside) {
+		Graphics.SetProgram(Assets.Programs["ortho_pos"]);
 		Graphics.EnableStencilTest();
 		Graphics.DrawMask(Bounds);
 	}
 
 	if(Style) {
-		if(Style->GetHasBackgroundColor()) {
-			glm::vec4 RenderColor(Style->GetBackgroundColor());
+		if(Style->HasBackgroundColor) {
+			glm::vec4 RenderColor(Style->BackgroundColor);
 			RenderColor.a *= Fade;
-			Graphics.DrawRectangle(Bounds, RenderColor, true);
+			Graphics.SetProgram(Assets.Programs["ortho_pos"]);
+			Graphics.SetColor(RenderColor);
+			Graphics.DrawRectangle(Bounds, true);
 		}
 
-		if(Style->GetHasBorderColor()) {
-			glm::vec4 RenderColor(Style->GetBorderColor());
+		if(Style->HasBorderColor) {
+			glm::vec4 RenderColor(Style->BorderColor);
 			RenderColor.a *= Fade;
-			Graphics.DrawRectangle(Bounds, RenderColor, false);
+			Graphics.SetProgram(Assets.Programs["ortho_pos"]);
+			Graphics.SetColor(RenderColor);
+			Graphics.DrawRectangle(Bounds, false);
 		}
 	}
 
 	// Render all children
 	for(size_t i = 0; i < Children.size(); i++) {
-		Children[i]->SetFade(Fade);
+		Children[i]->Fade = Fade;
 		Children[i]->Render();
 	}
 
@@ -202,7 +209,9 @@ void _Element::Render() const {
 		Graphics.DisableStencilTest();
 
 	if(Debug && Debug-1 < DebugColorCount) {
-		Graphics.DrawRectangle(Bounds.Start, Bounds.End, DebugColors[1]);
+		Graphics.SetProgram(Assets.Programs["ortho_pos"]);
+		Graphics.SetColor(DebugColors[1]);
+		Graphics.DrawRectangle(Bounds.Start, Bounds.End);
 	}
 }
 

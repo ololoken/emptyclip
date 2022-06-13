@@ -19,11 +19,12 @@
 
 // Libraries
 #include <state.h>
-#include <glm/vec2.hpp>
 #include <map.h>
 #include <string>
 #include <vector>
 #include <list>
+#include <glm/vec2.hpp>
+#include <glm/vec3.hpp>
 
 // Forward Declarations
 class _Font;
@@ -205,7 +206,7 @@ class _EditorState : public _State {
 		void ExecuteUpdateBlockLimits(int Direction, bool Expand);
 
 		// Parameters
-		glm::vec2 SavedCameraPosition;
+		glm::vec3 SavedCameraPosition;
 		int CheckpointIndex;
 		int SavedCheckpointIndex;
 		std::string MapFilename;

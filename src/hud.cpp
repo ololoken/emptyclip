@@ -19,6 +19,7 @@
 #include <graphics.h>
 #include <font.h>
 #include <config.h>
+#include <program.h>
 #include <assets.h>
 #include <actions.h>
 #include <ui/label.h>
@@ -35,6 +36,7 @@
 #include <sstream>
 #include <iomanip>
 #include <SDL_mouse.h>
+#include <glm/gtc/type_ptr.hpp>
 
 // Initialize
 _HUD::_HUD(_Player *Player) {
@@ -49,12 +51,12 @@ _HUD::_HUD(_Player *Player) {
 	InventoryOpen = false;
 
 	// Get textures
-	Fonts[FONT_TINY] = Assets.GetFont("hud_tiny");
-	Fonts[FONT_SMALL] = Assets.GetFont("hud_small");
-	Fonts[FONT_MEDIUM] = Assets.GetFont("hud_medium");
-	Fonts[FONT_LARGE] = Assets.GetFont("hud_large");
-	Fonts[FONT_LARGER] = Assets.GetFont("hud_larger");
-	Fonts[FONT_LARGEST] = Assets.GetFont("hud_largest");
+	Fonts[FONT_TINY] = Assets.Fonts["hud_tiny"];
+	Fonts[FONT_SMALL] = Assets.Fonts["hud_small"];
+	Fonts[FONT_MEDIUM] = Assets.Fonts["hud_medium"];
+	Fonts[FONT_LARGE] = Assets.Fonts["hud_large"];
+	Fonts[FONT_LARGER] = Assets.Fonts["hud_larger"];
+	Fonts[FONT_LARGEST] = Assets.Fonts["hud_largest"];
 	CrosshairID = Assets.GetTexture("hud_crosshair");
 	ReloadTexture = Assets.GetTexture("viewport_reload0");
 	WeaponSwitchTexture = Assets.GetTexture("viewport_weaponswitch0");
@@ -143,7 +145,7 @@ void _HUD::SetInventoryOpen(bool Value) {
 		CursorItem = CursorOverItem = nullptr;
 	}
 
-	Graphics.ShowCursor(InventoryOpen);
+	Graphics.SetCursor(InventoryOpen);
 }
 
 // Handle mouse events
@@ -151,15 +153,15 @@ void _HUD::MouseEvent(const _MouseEvent &MouseEvent) {
 	if(!GetInventoryOpen())
 		return;
 
-	_Element *HitElement = Elements[ELEMENT_INVENTORY]->GetHitElement();
+	_Element *HitElement = Elements[ELEMENT_INVENTORY]->HitElement;
 	if(MouseEvent.Button == SDL_BUTTON_LEFT) {
 
 		// Start dragging an item
 		if(MouseEvent.Pressed) {
-			if(HitElement && HitElement->GetID() >= 0 && Player->CanDropItem()) {
+			if(HitElement && HitElement->ID >= 0 && Player->CanDropItem()) {
 				DragStart = HitElement;
-				CursorItem = Player->GetInventory(DragStart->GetID());
-				ClickOffset = MouseEvent.Position - HitElement->GetBounds().GetMidPoint();
+				CursorItem = Player->GetInventory(DragStart->ID);
+				ClickOffset = glm::vec2(MouseEvent.Position) - HitElement->Bounds.GetMidPoint();
 			}
 		}
 		else {
@@ -169,10 +171,10 @@ void _HUD::MouseEvent(const _MouseEvent &MouseEvent) {
 
 				// Dropped outside the inventory
 				if(!HitElement) {
-					Player->DropItem(DragStart->GetID());
+					Player->DropItem(DragStart->ID);
 				}
-				else if(HitElement->GetID() >= 0) {
-					Player->SwapInventory(DragStart->GetID(), HitElement->GetID());
+				else if(HitElement->ID >= 0) {
+					Player->SwapInventory(DragStart->ID, HitElement->ID);
 				}
 			}
 
@@ -182,29 +184,29 @@ void _HUD::MouseEvent(const _MouseEvent &MouseEvent) {
 		}
 
 		//if(HitElement)
-		//	printf("%d %s\n", HitElement->GetID(), HitElement->GetIdentifier().c_str());
+		//	printf("%d %s\n", HitElement->ID, HitElement->Identifier.c_str());
 	}
 	else if(MouseEvent.Button == SDL_BUTTON_RIGHT) {
 		if(MouseEvent.Pressed) {
-			if(HitElement && HitElement->GetID() >= 0) {
-				Player->UseMedkit(HitElement->GetID());
-				if(!Player->HasInventory(HitElement->GetID()))
+			if(HitElement && HitElement->ID >= 0) {
+				Player->UseMedkit(HitElement->ID);
+				if(!Player->HasInventory(HitElement->ID))
 					CursorOverItem = nullptr;
 			}
 		}
 	}
 	else if(MouseEvent.Button == SDL_BUTTON_MIDDLE) {
 		if(MouseEvent.Pressed) {
-			if(HitElement && HitElement->GetID() >= 0) {
-				Player->DropItem(HitElement->GetID());
+			if(HitElement && HitElement->ID >= 0) {
+				Player->DropItem(HitElement->ID);
 			}
 		}
 	}
 
-	HitElement = Elements[ELEMENT_SKILLS]->GetHitElement();
+	HitElement = Elements[ELEMENT_SKILLS]->HitElement;
 	if(MouseEvent.Pressed && MouseEvent.Button == SDL_BUTTON_LEFT) {
-		if(HitElement && HitElement->GetID() >= 0) {
-			Player->UpdateSkill(HitElement->GetID(), 1);
+		if(HitElement && HitElement->ID >= 0) {
+			Player->UpdateSkill(HitElement->ID, 1);
 		}
 	}
 }
@@ -222,21 +224,21 @@ void _HUD::Update(double FrameTime, float Radius) {
 
 	// Update inventory
 	if(GetInventoryOpen()) {
-		Graphics.ShowCursor(true);
+		Graphics.SetCursor(true);
 		Elements[ELEMENT_INVENTORY]->Update(FrameTime, Input.GetMouse());
 		Elements[ELEMENT_SKILLS]->Update(FrameTime, Input.GetMouse());
 
 		_Element *HitElement;
-		HitElement = Elements[ELEMENT_INVENTORY]->GetHitElement();
-		if(HitElement && HitElement->GetID() >= 0)
-			CursorOverItem = Player->GetInventory(HitElement->GetID());
+		HitElement = Elements[ELEMENT_INVENTORY]->HitElement;
+		if(HitElement && HitElement->ID >= 0)
+			CursorOverItem = Player->GetInventory(HitElement->ID);
 
-		HitElement = Elements[ELEMENT_SKILLS]->GetHitElement();
-		if(HitElement && HitElement->GetID() >= 0)
-			UpdateSkillInfo(HitElement->GetID(), Input.GetMouse().x, Input.GetMouse().y);
+		HitElement = Elements[ELEMENT_SKILLS]->HitElement;
+		if(HitElement && HitElement->ID >= 0)
+			UpdateSkillInfo(HitElement->ID, Input.GetMouse().x, Input.GetMouse().y);
 	}
 	else
-		Graphics.ShowCursor(false);
+		Graphics.SetCursor(false);
 
 	// Update health display
 	if(LastEntityHit != nullptr && (LastEntityHitTimer > HUD_ENTITYHEALTHDISPLAYPERIOD || !LastEntityHit->Active)) {
@@ -265,7 +267,7 @@ void _HUD::Render() {
 	// Message
 	if(MessageTimer > 0.0) {
 		if(MessageTimer < 1.0)
-			Labels[LABEL_MESSAGE]->SetFade(MessageTimer);
+			Labels[LABEL_MESSAGE]->Fade = MessageTimer;
 
 		Labels[LABEL_MESSAGE]->Render();
 	}
@@ -273,7 +275,7 @@ void _HUD::Render() {
 	// Message Box
 	if(MessageBoxTimer > 0.0) {
 		if(MessageBoxTimer < 1.0)
-			Elements[ELEMENT_MESSAGE]->SetFade(MessageBoxTimer);
+			Elements[ELEMENT_MESSAGE]->Fade = MessageBoxTimer;
 
 		Elements[ELEMENT_MESSAGE]->Render();
 	}
@@ -281,12 +283,12 @@ void _HUD::Render() {
 	// Draw enemy health
 	if(LastEntityHit != nullptr) {
 		Labels[LABEL_ENEMYNAME]->SetText(LastEntityHit->GetName());
-		Images[IMAGE_ENEMYHEALTH]->SetWidth(Elements[ELEMENT_ENEMYINFO]->GetSize().x * LastEntityHit->GetHealthPercentage());
+		Images[IMAGE_ENEMYHEALTH]->SetWidth(Elements[ELEMENT_ENEMYINFO]->Size.x * LastEntityHit->GetHealthPercentage());
 		Elements[ELEMENT_ENEMYINFO]->Render();
 	}
 
 	// Draw stamina
-	Images[IMAGE_PLAYERSTAMINA]->SetWidth(Elements[ELEMENT_PLAYERSTAMINA]->GetSize().x * Player->GetStaminaPercentage());
+	Images[IMAGE_PLAYERSTAMINA]->SetWidth(Elements[ELEMENT_PLAYERSTAMINA]->Size.x * Player->GetStaminaPercentage());
 	if(Player->Tired)
 		Images[IMAGE_PLAYERSTAMINA]->Color = glm::vec4(1.0f, 0.5f, 0.0f, 1.0f);
 	else
@@ -300,14 +302,14 @@ void _HUD::Render() {
 	Labels[LABEL_PLAYERHEALTH]->SetText(Buffer.str());
 	Buffer.str("");
 
-	Images[IMAGE_PLAYERHEALTH]->SetWidth(Elements[ELEMENT_PLAYERHEALTH]->GetSize().x * Player->GetHealthPercentage());
+	Images[IMAGE_PLAYERHEALTH]->SetWidth(Elements[ELEMENT_PLAYERHEALTH]->Size.x * Player->GetHealthPercentage());
 	Elements[ELEMENT_PLAYERHEALTH]->Render();
 
 	// Draw experience bar
 	Buffer << Player->GetExperience() << " / " << Player->GetExperienceNextLevel() << " XP";
 	Labels[LABEL_EXPERIENCE]->SetText(Buffer.str());
 	Buffer.str("");
-	Images[IMAGE_EXPERIENCE]->SetWidth(Elements[ELEMENT_EXPERIENCE]->GetSize().x * Player->GetLevelPercentage());
+	Images[IMAGE_EXPERIENCE]->SetWidth(Elements[ELEMENT_EXPERIENCE]->Size.x * Player->GetLevelPercentage());
 	Elements[ELEMENT_EXPERIENCE]->Render();
 
 	// Draw player name and level
@@ -351,17 +353,15 @@ void _HUD::RenderCrosshair(const glm::vec2 &Position) {
 	if(InventoryOpen)
 		return;
 
-	Graphics.DisableDepthTest();
+	Graphics.SetDepthTest(false);
 
-	Graphics.EnableVBO(VBO_CIRCLE);
+	Graphics.SetProgram(Assets.Programs["pos"]);
+	Graphics.SetColor(COLOR_WHITE);
 	Graphics.DrawCircle(glm::vec3(Position, 0.0f), CrosshairScale);
-	Graphics.DisableVBO(VBO_CIRCLE);
 
-	Graphics.EnableVBO(VBO_QUAD);
-	Graphics.DrawTexture(glm::vec3(Position, 0.0f), CrosshairID, COLOR_WHITE, 0);
-	Graphics.DisableVBO(VBO_QUAD);
-
-	Graphics.EnableDepthTest();
+	Graphics.SetProgram(Assets.Programs["pos_uv"]);
+	Graphics.SetColor(COLOR_WHITE);
+	Graphics.DrawSprite(glm::vec3(Position, 0.0f), CrosshairID, 0);
 }
 
 // Draws a box and text
@@ -369,11 +369,13 @@ void _HUD::DrawIndicator(const std::string &String, float Percent, _Texture *Tex
 
 	// Set text
 	Labels[LABEL_INDICATOR]->SetText(String);
-	Graphics.DrawRectangle(Elements[ELEMENT_INDICATOR]->GetBounds(), COLOR_TGRAY);
+	Graphics.SetProgram(Assets.Programs["ortho_pos"]);
+	Graphics.SetColor(COLOR_TGRAY);
+	Graphics.DrawRectangle(Elements[ELEMENT_INDICATOR]->Bounds);
 
 	// Set progress size
 	Images[IMAGE_RELOAD]->Texture = Texture;
-	Images[IMAGE_RELOAD]->SetWidth(Elements[ELEMENT_INDICATOR]->GetSize().x * Percent);
+	Images[IMAGE_RELOAD]->SetWidth(Elements[ELEMENT_INDICATOR]->Size.x * Percent);
 	Elements[ELEMENT_INDICATOR]->Render();
 }
 
@@ -454,9 +456,11 @@ void _HUD::RenderCharacterScreen() {
 			if(Player->GetInventory(i) != CursorItem) {
 				_Button *Button = (_Button *)Elements[ELEMENT_INVENTORY]->GetChildren()[i];
 				if(Button) {
-					Graphics.DrawImage(Button->GetBounds().GetMidPoint(), Player->GetInventory(i)->Texture, Player->GetInventory(i)->Color);
+					Graphics.SetProgram(Assets.Programs["ortho_pos_uv"]);
+					Graphics.SetColor(Player->GetInventory(i)->Color);
+					Graphics.DrawImage(Button->Bounds.GetMidPoint(), Player->GetInventory(i)->Texture);
 					if(i >= INVENTORY_BAGSTART && Player->GetInventory(i)->CanStack()) {
-						DrawItemCount(Player->GetInventory(i), Button->GetBounds().End.x - 2, Button->GetBounds().End.y - 2);
+						DrawItemCount(Player->GetInventory(i), Button->Bounds.End.x - 2, Button->Bounds.End.y - 2);
 					}
 				}
 			}
@@ -466,7 +470,9 @@ void _HUD::RenderCharacterScreen() {
 	// Draw cursor item
 	if(CursorItem) {
 		glm::ivec2 Position(Input.GetMouse() - ClickOffset);
-		Graphics.DrawImage(Position, CursorItem->Texture, CursorItem->Color);
+		Graphics.SetProgram(Assets.Programs["ortho_pos_uv"]);
+		Graphics.SetColor(CursorItem->Color);
+		Graphics.DrawImage(Position, CursorItem->Texture);
 		if(CursorItem->CanStack())
 			DrawItemCount(CursorItem, Position.x + 22, Position.y + 22);
 	}
@@ -480,7 +486,7 @@ void _HUD::RenderCharacterScreen() {
 void _HUD::DrawItemCount(_Item *Item, int X, int Y) {
 	std::ostringstream Buffer;
 	Buffer << Item->Count;
-	Fonts[FONT_TINY]->DrawText(Buffer.str(), X, Y, COLOR_WHITE, RIGHT_BASELINE);
+	Fonts[FONT_TINY]->DrawText(Buffer.str(), glm::vec2(X, Y), RIGHT_BASELINE, COLOR_WHITE);
 	Buffer.str("");
 }
 
@@ -532,14 +538,17 @@ void _HUD::RenderItemInfo(_Item *Item, int DrawX, int DrawY) {
 		DrawX = Graphics.CurrentSize.x - MinPadding - Width;
 	if(DrawY > Graphics.CurrentSize.y - MinPadding - Height)
 		DrawY = Graphics.CurrentSize.y - MinPadding - Height;
-	Graphics.DrawRectangle(glm::vec2(DrawX, DrawY), glm::vec2(DrawX + Width, DrawY + Height), glm::vec4(0, 0, 0, 0.8f), true);
+
+	Graphics.SetProgram(Assets.Programs["ortho_pos"]);
+	Graphics.SetColor(glm::vec4(0, 0, 0, 0.8f));
+	Graphics.DrawRectangle(glm::vec2(DrawX, DrawY), glm::vec2(DrawX + Width, DrawY + Height), true);
 
 	DrawY += 25;
 	DrawX += Width/2;
-	Fonts[FONT_LARGE]->DrawText(Item->GetName(), DrawX, DrawY, COLOR_WHITE, CENTER_BASELINE);
+	Fonts[FONT_LARGE]->DrawText(Item->GetName(), glm::vec2(DrawX, DrawY), CENTER_BASELINE);
 
 	DrawY += 16;
-	Fonts[FONT_SMALL]->DrawText(Item->GetTypeAsString(), DrawX, DrawY, COLOR_WHITE, CENTER_BASELINE);
+	Fonts[FONT_SMALL]->DrawText(Item->GetTypeAsString(), glm::vec2(DrawX, DrawY), CENTER_BASELINE);
 
 	DrawY += 10;
 	switch(Item->Type) {
@@ -558,8 +567,8 @@ void _HUD::RenderItemInfo(_Item *Item, int DrawX, int DrawY) {
 			}
 			DrawY += 20;
 			Buffer << Weapon->GetMinDamage() << " - " << Weapon->GetMaxDamage();
-			Fonts[FONT_MEDIUM]->DrawText("Damage", DrawX - PadX, DrawY, COLOR_WHITE, RIGHT_BASELINE);
-			Fonts[FONT_MEDIUM]->DrawText(Buffer.str(), DrawX + PadX, DrawY, TextColor, LEFT_BASELINE);
+			Fonts[FONT_MEDIUM]->DrawText("Damage", glm::vec2(glm::vec2(DrawX - PadX, DrawY)), RIGHT_BASELINE);
+			Fonts[FONT_MEDIUM]->DrawText(Buffer.str(), glm::vec2(glm::vec2(DrawX + PadX, DrawY)), LEFT_BASELINE, TextColor);
 			Buffer.str("");
 
 			// Clip size
@@ -573,8 +582,8 @@ void _HUD::RenderItemInfo(_Item *Item, int DrawX, int DrawY) {
 				}
 				DrawY += 20;
 				Buffer << Weapon->GetAmmo() << "/" << Weapon->GetRoundSize();
-				Fonts[FONT_MEDIUM]->DrawText("Rounds", DrawX - PadX, DrawY, COLOR_WHITE, RIGHT_BASELINE);
-				Fonts[FONT_MEDIUM]->DrawText(Buffer.str(), DrawX + PadX, DrawY, TextColor, LEFT_BASELINE);
+				Fonts[FONT_MEDIUM]->DrawText("Rounds", glm::vec2(glm::vec2(DrawX - PadX, DrawY)), RIGHT_BASELINE);
+				Fonts[FONT_MEDIUM]->DrawText(Buffer.str(), glm::vec2(glm::vec2(DrawX + PadX, DrawY)), LEFT_BASELINE, TextColor);
 				Buffer.str("");
 			}
 
@@ -595,8 +604,8 @@ void _HUD::RenderItemInfo(_Item *Item, int DrawX, int DrawY) {
 					AttackCountText = "Attacks/Swing";
 				else
 					AttackCountText = "Bullets/Shot";
-				Fonts[FONT_MEDIUM]->DrawText(AttackCountText, DrawX - PadX, DrawY, COLOR_WHITE, RIGHT_BASELINE);
-				Fonts[FONT_MEDIUM]->DrawText(Buffer.str(), DrawX + PadX, DrawY, TextColor, LEFT_BASELINE);
+				Fonts[FONT_MEDIUM]->DrawText(AttackCountText, glm::vec2(glm::vec2(DrawX - PadX, DrawY)), RIGHT_BASELINE);
+				Fonts[FONT_MEDIUM]->DrawText(Buffer.str(), glm::vec2(glm::vec2(DrawX + PadX, DrawY)), LEFT_BASELINE, TextColor);
 				Buffer.str("");
 			}
 
@@ -617,8 +626,8 @@ void _HUD::RenderItemInfo(_Item *Item, int DrawX, int DrawY) {
 					AttackCountText = "Attack Rate";
 				else
 					AttackCountText = "Fire Rate";
-				Fonts[FONT_MEDIUM]->DrawText(AttackCountText, DrawX - PadX, DrawY, COLOR_WHITE, RIGHT_BASELINE);
-				Fonts[FONT_MEDIUM]->DrawText(Buffer.str(), DrawX + PadX, DrawY, TextColor, LEFT_BASELINE);
+				Fonts[FONT_MEDIUM]->DrawText(AttackCountText, glm::vec2(glm::vec2(DrawX - PadX, DrawY)), RIGHT_BASELINE);
+				Fonts[FONT_MEDIUM]->DrawText(Buffer.str(), glm::vec2(glm::vec2(DrawX + PadX, DrawY)), LEFT_BASELINE, TextColor);
 				Buffer.str("");
 				Buffer << std::setprecision(6);
 			}
@@ -646,13 +655,13 @@ void _HUD::RenderItemInfo(_Item *Item, int DrawX, int DrawY) {
 			DrawY += 20;
 			if(Weapon->GetWeaponType() == WEAPON_MELEE) {
 				Buffer << Weapon->GetMaxAccuracy() << " degrees";
-				Fonts[FONT_MEDIUM]->DrawText("Swing Arc", DrawX - PadX, DrawY, COLOR_WHITE, RIGHT_BASELINE);
+				Fonts[FONT_MEDIUM]->DrawText("Swing Arc", glm::vec2(DrawX - PadX, DrawY), RIGHT_BASELINE);
 			}
 			else {
 				Buffer << (int)(Weapon->GetMinAccuracy() + 0.5f) << " - " << (int)(Weapon->GetMaxAccuracy() + 0.5f);
-				Fonts[FONT_MEDIUM]->DrawText("Spread", DrawX - PadX, DrawY, COLOR_WHITE, RIGHT_BASELINE);
+				Fonts[FONT_MEDIUM]->DrawText("Spread", glm::vec2(DrawX - PadX, DrawY), RIGHT_BASELINE);
 			}
-			Fonts[FONT_MEDIUM]->DrawText(Buffer.str(), DrawX + PadX, DrawY, TextColor, LEFT_BASELINE);
+			Fonts[FONT_MEDIUM]->DrawText(Buffer.str(), glm::vec2(DrawX + PadX, DrawY), LEFT_BASELINE, TextColor);
 			Buffer.str("");
 
 			// Reload speed
@@ -668,8 +677,8 @@ void _HUD::RenderItemInfo(_Item *Item, int DrawX, int DrawY) {
 				DrawY += 20;
 				Buffer << Weapon->GetReloadPeriod() << "s";
 				std::string AttackCountText;
-				Fonts[FONT_MEDIUM]->DrawText("Reload Time", DrawX - PadX, DrawY, COLOR_WHITE, RIGHT_BASELINE);
-				Fonts[FONT_MEDIUM]->DrawText(Buffer.str(), DrawX + PadX, DrawY, TextColor, LEFT_BASELINE);
+				Fonts[FONT_MEDIUM]->DrawText("Reload Time", glm::vec2(DrawX - PadX, DrawY), RIGHT_BASELINE);
+				Fonts[FONT_MEDIUM]->DrawText(Buffer.str(), glm::vec2(DrawX + PadX, DrawY), LEFT_BASELINE, TextColor);
 				Buffer.str("");
 			}
 
@@ -677,8 +686,8 @@ void _HUD::RenderItemInfo(_Item *Item, int DrawX, int DrawY) {
 			if(Weapon->GetAmmoType()) {
 				DrawY += 20;
 				Buffer << _Ammo::ToString(Weapon->GetAmmoType());
-				Fonts[FONT_MEDIUM]->DrawText("Ammo Type", DrawX  - PadX, DrawY, COLOR_WHITE, RIGHT_BASELINE);
-				Fonts[FONT_MEDIUM]->DrawText(Buffer.str(), DrawX + PadX, DrawY);
+				Fonts[FONT_MEDIUM]->DrawText("Ammo Type", glm::vec2(DrawX - PadX, DrawY), RIGHT_BASELINE);
+				Fonts[FONT_MEDIUM]->DrawText(Buffer.str(), glm::vec2(DrawX + PadX, DrawY));
 				Buffer.str("");
 			}
 
@@ -694,8 +703,8 @@ void _HUD::RenderItemInfo(_Item *Item, int DrawX, int DrawY) {
 
 				DrawY += 20;
 				Buffer << Weapon->GetComponents() << "/" << Weapon->GetMaxComponents();
-				Fonts[FONT_MEDIUM]->DrawText("Components", DrawX - PadX, DrawY, COLOR_WHITE, RIGHT_BASELINE);
-				Fonts[FONT_MEDIUM]->DrawText(Buffer.str(), DrawX + PadX, DrawY, TextColor, LEFT_BASELINE);
+				Fonts[FONT_MEDIUM]->DrawText("Components", glm::vec2(DrawX - PadX, DrawY), RIGHT_BASELINE);
+				Fonts[FONT_MEDIUM]->DrawText(Buffer.str(), glm::vec2(DrawX + PadX, DrawY), LEFT_BASELINE, TextColor);
 				Buffer.str("");
 			}
 
@@ -708,7 +717,7 @@ void _HUD::RenderItemInfo(_Item *Item, int DrawX, int DrawY) {
 						DrawY += 10;
 					DrawY += 20;
 					Buffer << "+" << Weapon->GetBonus(i) * 100.0f << "% " << _Upgrade::ToString(i, Weapon->GetWeaponType());
-					Fonts[FONT_MEDIUM]->DrawText(Buffer.str(), DrawX, DrawY, TextColor, CENTER_BASELINE);
+					Fonts[FONT_MEDIUM]->DrawText(Buffer.str(), glm::vec2(DrawX, DrawY), CENTER_BASELINE, TextColor);
 					Buffer.str("");
 
 					First = false;
@@ -733,8 +742,8 @@ void _HUD::RenderItemInfo(_Item *Item, int DrawX, int DrawY) {
 				}
 				DrawY += 20;
 				Buffer << Armor->StrengthRequirement;
-				Fonts[FONT_MEDIUM]->DrawText("Strength Required", DrawX - PadX, DrawY, COLOR_WHITE, RIGHT_BASELINE);
-				Fonts[FONT_MEDIUM]->DrawText(Buffer.str(), DrawX + PadX, DrawY, TextColor, LEFT_BASELINE);
+				Fonts[FONT_MEDIUM]->DrawText("Strength Required", glm::vec2(DrawX - PadX, DrawY), RIGHT_BASELINE);
+				Fonts[FONT_MEDIUM]->DrawText(Buffer.str(), glm::vec2(DrawX + PadX, DrawY), LEFT_BASELINE, TextColor);
 				Buffer.str("");
 			}
 
@@ -750,8 +759,8 @@ void _HUD::RenderItemInfo(_Item *Item, int DrawX, int DrawY) {
 
 				DrawY += 20;
 				Buffer << Armor->DamageBlock;
-				Fonts[FONT_MEDIUM]->DrawText("Damage Block", DrawX - PadX, DrawY, COLOR_WHITE, RIGHT_BASELINE);
-				Fonts[FONT_MEDIUM]->DrawText(Buffer.str(), DrawX + PadX, DrawY, TextColor, LEFT_BASELINE);
+				Fonts[FONT_MEDIUM]->DrawText("Damage Block", glm::vec2(DrawX - PadX, DrawY), RIGHT_BASELINE);
+				Fonts[FONT_MEDIUM]->DrawText(Buffer.str(), glm::vec2(DrawX + PadX, DrawY), LEFT_BASELINE, TextColor);
 				Buffer.str("");
 			}
 
@@ -767,8 +776,8 @@ void _HUD::RenderItemInfo(_Item *Item, int DrawX, int DrawY) {
 
 				DrawY += 20;
 				Buffer << (Armor->DamageResist < 0 ? "" : "+") << Armor->DamageResist * 100 << "%";
-				Fonts[FONT_MEDIUM]->DrawText("Damage Resist", DrawX - PadX, DrawY, COLOR_WHITE, RIGHT_BASELINE);
-				Fonts[FONT_MEDIUM]->DrawText(Buffer.str(), DrawX + PadX, DrawY, TextColor, LEFT_BASELINE);
+				Fonts[FONT_MEDIUM]->DrawText("Damage Resist", glm::vec2(DrawX - PadX, DrawY), RIGHT_BASELINE);
+				Fonts[FONT_MEDIUM]->DrawText(Buffer.str(), glm::vec2(DrawX + PadX, DrawY), LEFT_BASELINE, TextColor);
 				Buffer.str("");
 			}
 
@@ -784,8 +793,8 @@ void _HUD::RenderItemInfo(_Item *Item, int DrawX, int DrawY) {
 
 				DrawY += 20;
 				Buffer << (Armor->MovementSpeed < 0 ? "" : "+") << Armor->MovementSpeed * 100 << "%";
-				Fonts[FONT_MEDIUM]->DrawText("Movement Speed", DrawX - PadX, DrawY, COLOR_WHITE, RIGHT_BASELINE);
-				Fonts[FONT_MEDIUM]->DrawText(Buffer.str(), DrawX + PadX, DrawY, TextColor, LEFT_BASELINE);
+				Fonts[FONT_MEDIUM]->DrawText("Movement Speed", glm::vec2(DrawX - PadX, DrawY), RIGHT_BASELINE);
+				Fonts[FONT_MEDIUM]->DrawText(Buffer.str(), glm::vec2(DrawX + PadX, DrawY), LEFT_BASELINE, TextColor);
 				Buffer.str("");
 			}
 		} break;
@@ -797,7 +806,7 @@ void _HUD::RenderItemInfo(_Item *Item, int DrawX, int DrawY) {
 				// Heal amount
 				DrawY += 20;
 				Buffer << "+" << Player->GetMedkitHealAmount(MiscItem->Level) << " HP";
-				Fonts[FONT_MEDIUM]->DrawText(Buffer.str(), DrawX, DrawY, COLOR_GREEN, CENTER_BASELINE);
+				Fonts[FONT_MEDIUM]->DrawText(Buffer.str(), glm::vec2(DrawX, DrawY), CENTER_BASELINE, COLOR_GREEN);
 			}
 		} break;
 		case _Object::UPGRADE: {
@@ -810,7 +819,7 @@ void _HUD::RenderItemInfo(_Item *Item, int DrawX, int DrawY) {
 				Buffer << "+" << (int)(Upgrade->GetBonus()) << " Attack Count";
 			else
 				Buffer << "+" << (int)(Upgrade->GetBonus() * 100.0f + 0.5f) << "% " << _Upgrade::ToString(Upgrade->GetUpgradeType(), -1);
-			Fonts[FONT_MEDIUM]->DrawText(Buffer.str(), DrawX, DrawY, COLOR_WHITE, CENTER_BASELINE);
+			Fonts[FONT_MEDIUM]->DrawText(Buffer.str(), glm::vec2(DrawX, DrawY), CENTER_BASELINE);
 		} break;
 	}
 }
@@ -819,8 +828,8 @@ void _HUD::RenderItemInfo(_Item *Item, int DrawX, int DrawY) {
 void _HUD::UpdateSkillInfo(int Skill, int DrawX, int DrawY) {
 	CursorSkill = Skill;
 
-	DrawX -= Elements[ELEMENT_SKILLINFO]->GetSize().x + 15;
-	DrawY -= Elements[ELEMENT_SKILLINFO]->GetSize().y + 15;
+	DrawX -= Elements[ELEMENT_SKILLINFO]->Size.x + 15;
+	DrawY -= Elements[ELEMENT_SKILLINFO]->Size.y + 15;
 	if(DrawX < 10)
 		DrawX = 10;
 	if(DrawY < 10)
@@ -882,7 +891,7 @@ void _HUD::UpdateSkillInfo(int Skill, int DrawX, int DrawY) {
 	}
 
 	// Wrap text
-	Labels[LABEL_SKILLTEXT]->SetWrap(Elements[ELEMENT_SKILLINFO]->GetSize().x - 20);
+	Labels[LABEL_SKILLTEXT]->SetWrap(Elements[ELEMENT_SKILLINFO]->Size.x - 20);
 
 	Labels[LABEL_SKILL_LEVEL]->SetText(Buffer.str());
 	if(Player->GetSkill(Skill)+1 > GAME_SKILLLEVELS)
@@ -892,14 +901,14 @@ void _HUD::UpdateSkillInfo(int Skill, int DrawX, int DrawY) {
 
 // Draw death message
 void _HUD::RenderDeathScreen() {
-	Fonts[FONT_LARGEST]->DrawText("You Died!", Graphics.CurrentSize.x / 2, Graphics.CurrentSize.y / 2 - 200, COLOR_WHITE, CENTER_MIDDLE);
-	Fonts[FONT_LARGE]->DrawText(std::string("Press [") + Actions.GetInputNameForAction(_Actions::USE) + "] to continue", Graphics.CurrentSize.x / 2, Graphics.CurrentSize.y / 2 - 150, COLOR_WHITE, CENTER_MIDDLE);
+	Fonts[FONT_LARGEST]->DrawText("You Died!", glm::vec2(Graphics.CurrentSize.x / 2, Graphics.CurrentSize.y / 2 - 200), CENTER_MIDDLE);
+	Fonts[FONT_LARGE]->DrawText(std::string("Press [") + Actions.GetInputNameForAction(_Actions::USE) + "] to continue", glm::vec2(Graphics.CurrentSize.x / 2, Graphics.CurrentSize.y / 2 - 150), CENTER_MIDDLE);
 }
 
 // Show hud message
 void _HUD::ShowTextMessage(const std::string &Message, double Time) {
 	Labels[LABEL_MESSAGE]->SetText(Message);
-	Labels[LABEL_MESSAGE]->SetFade(1.0f);
+	Labels[LABEL_MESSAGE]->Fade = 1.0f;
 	MessageTimer = Time;
 }
 
@@ -909,8 +918,8 @@ void _HUD::ShowMessageBox(const std::string &Message, double Time) {
 		return;
 
 	Labels[LABEL_MESSAGEBOX]->SetText(Message);
-	Labels[LABEL_MESSAGEBOX]->SetWrap(Elements[ELEMENT_MESSAGE]->GetSize().x - 25);
+	Labels[LABEL_MESSAGEBOX]->SetWrap(Elements[ELEMENT_MESSAGE]->Size.x - 25);
 
-	Elements[ELEMENT_MESSAGE]->SetFade(1.0f);
+	Elements[ELEMENT_MESSAGE]->Fade = 1.0f;
 	MessageBoxTimer = Time;
 }

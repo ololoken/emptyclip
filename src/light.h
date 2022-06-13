@@ -17,35 +17,18 @@
 *******************************************************************************/
 #pragma once
 
-// Libraries
-#include <ui/element.h>
-#include <color.h>
+#include <opengl.h>
+#include <glm/vec3.hpp>
+#include <glm/vec4.hpp>
 
-// Forward Declarations
-class _Texture;
-class _Label;
-class _Style;
+// Light
+struct _Light {
+	_Light() : PositionID(-1), ColorID(-1), RadiusID(-1), Position(0.0f, 0.0f, 0.0f), Color(1.0f), Radius(1.0f) { }
 
-// Classes
-class _Button : public _Element {
-
-	public:
-
-		_Button(const std::string &Identifier, _Element *Parent, const glm::ivec2 &Offset, const glm::ivec2 &Size, const _Alignment &Alignment, const _Style *Style, const _Style *HoverStyle);
-		~_Button();
-
-		void HandleInput(bool Pressed) { }
-		void Render() const;
-
-		void SetTexture(_Texture *Texture);
-		const _Texture *GetTexture() const;
-
-		void SetEnabled(bool Enabled) { this->Enabled = Enabled; }
-		bool GetEnabled() const { return Enabled; }
-
-	private:
-
-		const _Style *HoverStyle;
-
-		bool Enabled;
+	GLint PositionID;
+	GLint ColorID;
+	GLint RadiusID;
+	glm::vec3 Position;
+	glm::vec4 Color;
+	float Radius;
 };

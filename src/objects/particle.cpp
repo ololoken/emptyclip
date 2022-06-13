@@ -76,9 +76,11 @@ void _Particle::Update(double FrameTime) {
 // Render
 void _Particle::Render() {
 
-	if(Texture)
-		Graphics.DrawTexture(glm::vec3(Position, PositionZ), Texture, Color, Rotation, Scale);
+	if(Texture) {
+		Graphics.SetColor(Color);
+		Graphics.DrawSprite(glm::vec3(Position, PositionZ), Texture, Rotation, Scale);
+	}
 
 	if(Font && Text != "")
-		Font->DrawText(Text.c_str(), Position.x, Position.y, Color, CENTER_BASELINE, 1/64.0f);
+		Font->DrawText(Text.c_str(), Position, CENTER_BASELINE, Color, 1/64.0f);
 }

@@ -407,13 +407,10 @@ void _Entity::Move() {
 
 // Draws the object
 void _Entity::Render(double BlendFactor) {
+	Graphics.SetColor(Color);
+
 	glm::vec2 DrawPosition(Position * (float)BlendFactor + LastPosition * (float)(1.0f - BlendFactor));
-
-	Graphics.DrawTexture(glm::vec3(DrawPosition, PositionZ), Animation->GetCurrentFrame(), Color, Rotation, glm::vec2(Scale));
-
-	//Graphics.EnableVBO(VBO_CIRCLE);
-	//Graphics.DrawCircle(DrawPosition.x, DrawPosition.y, 0, Radius, COLOR_WHITE);
-	//Graphics.DisableVBO(VBO_CIRCLE);
+	Graphics.DrawSprite(glm::vec3(DrawPosition, PositionZ), Animation->GetCurrentFrame(), Rotation, glm::vec2(Scale));
 }
 
 // Updates the Entity's maximum health

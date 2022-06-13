@@ -30,6 +30,7 @@
 #include <actions.h>
 #include <utils.h>
 #include <particles.h>
+#include <program.h>
 #include <objects/entity.h>
 #include <objects/player.h>
 #include <objects/monster.h>
@@ -46,6 +47,7 @@
 #include <iostream>
 #include <glm/gtx/norm.hpp>
 #include <glm/gtx/rotate_vector.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 _PlayState PlayState;
 
@@ -59,6 +61,8 @@ _PlayState::_PlayState() {
 
 // Load level and set up objects
 void _PlayState::Init() {
+	Graphics.SetViewport(Graphics.CurrentSize);
+
 	CursorItem = nullptr;
 	PreviousCursorItem = nullptr;
 	LastLightEvent = nullptr;
@@ -100,19 +104,19 @@ void _PlayState::Init() {
 		SpawnObject(Objects[i]);
 	}
 
-	// Initialize hud
+	// Initialize objects
 	HUD = new _HUD(Player);
-
-	// Set up graphics
-	Camera = new _Camera(Player->Position, CAMERA_DISTANCE, CAMERA_DIVISOR);
-	Map->SetCamera(Camera);
-
 	Particles = new _Particles();
-	Particles->SetCamera(Camera);
 
-	Graphics.ChangeViewport(Graphics.CurrentSize);
+	// Set up camera
+	Camera = new _Camera(glm::vec3(Player->Position, CAMERA_DISTANCE), CAMERA_DIVISOR);
 	Camera->CalculateFrustum(Graphics.AspectRatio);
-	Graphics.ShowCursor(false);
+	Map->SetCamera(Camera);
+	Particles->SetCamera(Camera);
+	Camera->ConvertScreenToWorld(Input.GetMouse(), WorldCursor);
+	PreviousWorldCursor = WorldCursor;
+
+	Graphics.SetCursor(false);
 
 	Actions.ResetState();
 }
@@ -223,7 +227,7 @@ void _PlayState::KeyEvent(const _KeyEvent &KeyEvent) {
 				Menu.InitInGame();
 			break;
 			case SDL_SCANCODE_GRAVE:
-				//WorldCursor.Print();
+				std::cout << WorldCursor.x << " " << WorldCursor.y << std::endl;
 				//IsFiring = !IsFiring;
 				//Audio.Play(new _AudioSource(Audio.GetBuffer("player_hit0")), WorldCursor);
 				//HUD->ShowTextMessage("CHECKPOINT REACHED", 5.0f);
@@ -248,7 +252,7 @@ void _PlayState::Update(double FrameTime) {
 	// Handle pause
 	if(IsPaused()) {
 		Menu.Update(FrameTime);
-		Graphics.ShowCursor(true);
+		Graphics.SetCursor(true);
 		if(HUD)
 			HUD->SetCursorOverItem(nullptr);
 
@@ -341,7 +345,7 @@ void _PlayState::Update(double FrameTime) {
 		EntityAttack(Player, GRID_MONSTER);
 
 	// Update camera
-	Camera->SetPosition(Player->Position);
+	Camera->Set2DPosition(Player->Position);
 
 	// Get zoom state
 	if(Player->IsCrouching()) {
@@ -385,52 +389,50 @@ void _PlayState::Render(double BlendFactor) {
 	if(IsPaused())
 		BlendFactor = 0;
 
+	Assets.Programs["pos_uv"]->AmbientLight = glm::vec4(1);
+
 	// Setup the viewing matrix
-	Graphics.Setup3DViewport();
+	Graphics.Setup3D();
 	Camera->Set3DProjection(BlendFactor);
-	Graphics.EnableDepthTest();
+
+	// Setup the viewing matrix
+	Graphics.SetProgram(Assets.Programs["pos"]);
+	glUniformMatrix4fv(Assets.Programs["pos"]->ViewProjectionTransformID, 1, GL_FALSE, glm::value_ptr(Camera->Transform));
+	Graphics.SetProgram(Assets.Programs["pos_uv"]);
+	glUniformMatrix4fv(Assets.Programs["pos_uv"]->ViewProjectionTransformID, 1, GL_FALSE, glm::value_ptr(Camera->Transform));
+	Graphics.SetProgram(Assets.Programs["text"]);
+	glUniformMatrix4fv(Assets.Programs["text"]->ViewProjectionTransformID, 1, GL_FALSE, glm::value_ptr(Camera->Transform));
 
 	// Draw the floor
 	Map->RenderFloors();
 
-	Graphics.SetDepthMask(false);
-
-	// Enable VBOs
-	Graphics.EnableVBO(VBO_QUAD);
-	Graphics.DisableDepthTest();
-
 	// Draw floor decals
+	Assets.Programs["pos_uv"]->ResetTextureTransform();
+	Graphics.SetDepthMask(false);
+	Graphics.SetDepthTest(false);
 	Particles->Render(_Particles::FLOOR_DECALS);
 
 	// Draw objects
 	Map->RenderObjects(BlendFactor);
 
-	// Disable VBOs
-	Graphics.EnableDepthTest();
-	Graphics.DisableVBO(VBO_QUAD);
-	Graphics.SetDepthMask(true);
-
 	// Draw the walls
 	Map->RenderWalls();
 
-	Graphics.SetDepthMask(false);
-
-	Graphics.EnableVBO(VBO_QUAD);
-
 	// Draw wall decals
+	Assets.Programs["pos_uv"]->ResetTextureTransform();
+	Graphics.SetProgram(Assets.Programs["pos_uv"]);
+	Graphics.SetDepthMask(false);
+	Graphics.SetDepthTest(true);
 	Particles->Render(_Particles::WALL_DECALS);
 
 	// Draw particles
 	Graphics.EnableParticleBlending();
 	Particles->Render(_Particles::NORMAL);
+
+	// Draw damage text numbers
 	Graphics.DisableParticleBlending();
-	Graphics.DisableVBO(VBO_QUAD);
-
-	Graphics.DisableDepthTest();
+	Graphics.SetDepthTest(false);
 	Particles->Render(_Particles::TEXT);
-	Graphics.EnableDepthTest();
-
-	Graphics.SetDepthMask(true);
 
 	// Draw the foreground tiles
 	Map->RenderForeground();
@@ -453,9 +455,7 @@ void _PlayState::Render(double BlendFactor) {
 			float Range = Player->GetWeaponRange(i);
 			if(Range == 0.0f)
 				Range = 100.0f;
-			Graphics.EnableVBO(VBO_CIRCLE);
 			Graphics.DrawCircle(Player->Position.x, Player->Position.y, 0.2f, Range, Color);
-			Graphics.DisableVBO(VBO_CIRCLE);
 			glm::vec2 t1, t2;
 			t1 = Player->Position + Player->GetDirectionVector(- Player->GetMaxAccuracy(i) / 2) * Range;
 			t2 = Player->Position + Player->GetDirectionVector(+ Player->GetMaxAccuracy(i) / 2) * Range;
@@ -474,7 +474,11 @@ void _PlayState::Render(double BlendFactor) {
 	*/
 
 	// Setup OpenGL for drawing the HUD
-	Graphics.Setup2DProjectionMatrix();
+	Graphics.Setup2D();
+	Graphics.SetStaticUniforms();
+	Graphics.SetDepthTest(false);
+	Graphics.SetDepthMask(false);
+
 	/*
 	_Coord Start(Camera->GetAABB()[0], Camera->GetAABB()[1]);
 	_Coord End(Camera->GetAABB()[2], Camera->GetAABB()[3]);
@@ -493,7 +497,7 @@ void _PlayState::Render(double BlendFactor) {
 
 				}
 				Buffer << Count << "/" << Events.size();
-				Assets.GetFont("hud_tiny")->DrawText(Buffer.str(), P.x, P.y);
+				Assets.Fonts["hud_tiny"]->DrawText(Buffer.str(), P.x, P.y);
 				Buffer.str("");
 			}
 		}
@@ -502,18 +506,16 @@ void _PlayState::Render(double BlendFactor) {
 	HUD->Render();
 
 	if(IsPaused() || (Player && Player->IsDead()))
-		Graphics.DrawRectangle(glm::vec2(0), Graphics.CurrentSize, glm::vec4(0, 0, 0, GAME_PAUSE_FADEAMOUNT), true);
+		Graphics.FadeScreen(Assets.Programs["ortho_pos"], GAME_PAUSE_FADEAMOUNT);
 
 	// Draw in-game menu
 	if(IsPaused()) {
 		Menu.Render();
 	}
 	else if(Player && Player->IsDead()) {
-		Graphics.ShowCursor(1);
+		Graphics.SetCursor(1);
 		HUD->RenderDeathScreen();
 	}
-
-	Graphics.SetDepthMask(true);
 }
 
 // Restart the level after death

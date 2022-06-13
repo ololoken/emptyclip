@@ -20,6 +20,31 @@
 #include <cmath>
 #include <glm/gtx/rotate_vector.hpp>
 
+// Loads a file into a string
+const char *LoadFileIntoMemory(const char *Path) {
+
+	// Open file
+	std::ifstream File(Path, std::ios::binary);
+	if(!File)
+		return nullptr;
+
+	// Get file size
+	File.seekg(0, std::ios::end);
+	std::ifstream::pos_type Size = File.tellg();
+	if(!Size)
+		return nullptr;
+
+	File.seekg(0, std::ios::beg);
+
+	// Read data
+	char *Data = new char[(std::size_t)Size + 1];
+	File.read(Data, Size);
+	File.close();
+	Data[(std::size_t)Size] = 0;
+
+	return Data;
+}
+
 // Reads in a string that is CSV formatted
 std::string GetCSVText(std::ifstream &Stream) {
 	std::string Text;

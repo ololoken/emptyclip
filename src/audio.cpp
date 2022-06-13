@@ -194,7 +194,7 @@ void _Audio::Play(_AudioSource *AudioSource, const glm::vec2 &Position) {
 			for(auto Iterator = Sources.begin(); Iterator != Sources.end(); ++Iterator) {
 				_AudioSource *Source = *Iterator;
 				if(Source->IsPlaying() && Source->GetAudioBuffer()->ID == AudioSource->GetAudioBuffer()->ID) {
-					alSourceStop(Source->GetID());
+					alSourceStop(Source->ID);
 					break;
 				}
 			}

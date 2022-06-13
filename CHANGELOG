@@ -1,6 +1,7 @@
 Empty Clip 2.0.0 -
-- Completely redesigned the interface and added support for different screen resolutions
-- Optimized rendering code and added support for high framerates
+- Rewrote engine to use SDL2 and OpenGL 3.3
+- Optimized rendering code and added support for high refresh monitors
+- Completely redesigned interface and added support for different screen resolutions
 - Inventory is bigger and can now hold equipment
 - Items in inventory can now stack
 - Items can be dropped by clicking the middle mouse button
