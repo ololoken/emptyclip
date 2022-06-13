@@ -1,0 +1,23 @@
+app-id: io.github.jazztickets.emptyclip
+runtime: org.freedesktop.Platform
+runtime-version: '21.08'
+sdk: org.freedesktop.Sdk
+command: emptyclip
+rename-desktop-file: emptyclip.desktop
+rename-icon: emptyclip
+rename-appdata-file: emptyclip.xml
+
+finish-args:
+  - --device=all
+  - --share=ipc
+  - --socket=wayland
+  - --socket=fallback-x11
+  - --socket=pulseaudio
+
+modules:
+  - name: emptyclip
+    buildsystem: cmake-ninja
+    builddir: true
+    sources:
+      - type: archive
+        path: out/src.tar.gz
