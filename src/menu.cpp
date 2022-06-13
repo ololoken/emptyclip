@@ -429,6 +429,7 @@ void _Menu::Update(double FrameTime) {
 // Draw phase
 void _Menu::Render() {
 	Graphics.Setup2D();
+	Graphics.SetStaticUniforms();
 
 	if(Background)
 		Background->Render();
