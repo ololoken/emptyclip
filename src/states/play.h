@@ -44,20 +44,6 @@ enum CollisionType {
 	HIT_OBJECT
 };
 
-// Holds information about a hit entity
-struct HitStruct {
-
-	HitStruct() { }
-	HitStruct(_Entity *Object, const glm::vec2 &Position, int Type) :
-		Object(Object),
-		Position(Position),
-		Type(Type) { }
-
-	_Entity *Object;
-	glm::vec2 Position;
-	int Type;
-};
-
 // Play state
 class _PlayState : public _State {
 

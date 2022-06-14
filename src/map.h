@@ -71,6 +71,7 @@ class _Texture;
 class _Particle;
 class _ObjectManager;
 struct _ObjectSpawn;
+struct _Hit;
 
 // Holds data for a single tile
 struct _Tile {
@@ -115,6 +116,20 @@ struct _Block {
 	bool Walkable;
 };
 
+// Holds information about a hit entity
+struct _Hit {
+
+	_Hit() { }
+	_Hit(_Entity *Object, const glm::vec2 &Position, int Type) :
+		Object(Object),
+		Position(Position),
+		Type(Type) { }
+
+	_Entity *Object;
+	glm::vec2 Position;
+	int Type;
+};
+
 // Classes
 class _Map {
 
@@ -133,7 +148,7 @@ class _Map {
 		void CheckEntityCollisionsInGrid(const glm::vec2 &Position, float Radius, const _Object *SkipObject, std::list<_Entity *> &Entities) const;
 		_Object *CheckCollisionsInGrid(const glm::vec2 &Position, float Radius, int GridType, const _Object *SkipObject) const;
 		_Entity *CheckMeleeCollisions(_Entity *Attacker, const glm::vec2 &Direction, int GridType) const;
-		void CheckBulletCollisions(const glm::vec2 &Position, const glm::vec2 &Direction, _Entity **HitEntity, glm::vec2 *HitPosition, int GridType, bool CheckObjects) const;
+		void CheckBulletCollisions(const glm::vec2 &Position, const glm::vec2 &Direction, _Hit &Hit, int GridType, bool CheckObjects) const;
 		float RayObjectIntersection(const glm::vec2 &Origin, const glm::vec2 &Direction, const _Object *Object) const;
 		bool IsVisible(const glm::vec2 &Start, const glm::vec2 &End) const;
 		bool IsVisibleWithBounds(const glm::vec2 &Start, const glm::vec2 &End, float BoundSize) const;

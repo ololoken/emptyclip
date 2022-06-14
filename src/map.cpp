@@ -667,7 +667,7 @@ void _Map::GetAdjacentTile(const glm::vec2 &Position, float Direction, _Coord &C
 }
 
 // Checks bullet collisions with objects and walls
-void _Map::CheckBulletCollisions(const glm::vec2 &Position, const glm::vec2 &Direction, _Entity **HitEntity, glm::vec2 *HitPosition, int GridType, bool CheckObjects) const {
+void _Map::CheckBulletCollisions(const glm::vec2 &Position, const glm::vec2 &Direction, _Hit &Hit, int GridType, bool CheckObjects) const {
 	if(!Data)
 		throw std::runtime_error("Tile data uninitialized!");
 
@@ -710,7 +710,7 @@ void _Map::CheckBulletCollisions(const glm::vec2 &Position, const glm::vec2 &Dir
 
 	// Traverse tiles
 	if(CheckObjects)
-		*HitEntity = nullptr;
+		Hit.Object = nullptr;
 	float MinDistance = HUGE_VAL;
 	bool EndedOnX = false;
 	while(TileTracer.x >= 0 && TileTracer.y >= 0 && TileTracer.x < Width && TileTracer.y < Height && CanShootThrough(TileTracer.x, TileTracer.y)) {
@@ -722,7 +722,7 @@ void _Map::CheckBulletCollisions(const glm::vec2 &Position, const glm::vec2 &Dir
 				if(!Entity->IsDying()) {
 					float Distance = RayObjectIntersection(Position, Direction, Entity);
 					if(Distance < MinDistance && Distance > 0.0f) {
-						*HitEntity = Entity;
+						Hit.Object = Entity;
 						MinDistance = Distance;
 					}
 				}
@@ -743,8 +743,8 @@ void _Map::CheckBulletCollisions(const glm::vec2 &Position, const glm::vec2 &Dir
 	}
 
 	// An object was hit
-	if(CheckObjects && *HitEntity != nullptr) {
-		*HitPosition = Direction * MinDistance + Position;
+	if(CheckObjects && Hit.Object != nullptr) {
+		Hit.Position = Direction * MinDistance + Position;
 		return;
 	}
 
@@ -771,9 +771,9 @@ void _Map::CheckBulletCollisions(const glm::vec2 &Position, const glm::vec2 &Dir
 		WallHitPosition.y = WallBoundary.y;
 	}
 
-	*HitPosition = WallHitPosition + Position;
+	Hit.Position = WallHitPosition + Position;
 	if(CheckObjects)
-		*HitEntity = nullptr;
+		Hit.Object = nullptr;
 }
 
 // Returns a t value for when a ray intersects a circle
