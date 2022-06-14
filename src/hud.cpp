@@ -341,8 +341,19 @@ void _HUD::Render() {
 	// Draw item tooltip
 	if(CursorOverItem && CursorItem != CursorOverItem) {
 		RenderItemInfo(CursorOverItem, Input.GetMouse().x, Input.GetMouse().y);
-		if(CursorOverItem->Type == _Object::WEAPON && CursorOverItem != Player->GetMainHand())
-			RenderItemInfo(Player->GetMainHand(), -100, Graphics.CurrentSize.y/2);
+
+		// Compare with equipment
+		if(CursorOverItem->Type == _Object::WEAPON) {
+			_Weapon *Weapon = (_Weapon *)CursorOverItem;
+			if(Weapon->GetWeaponType() == WEAPON_MELEE) {
+				if(Weapon != Player->GetMelee())
+					RenderItemInfo(Player->GetMelee(), -100, Graphics.CurrentSize.y/2);
+			}
+			else {
+				if(Weapon != Player->GetMainHand())
+					RenderItemInfo(Player->GetMainHand(), -100, Graphics.CurrentSize.y/2);
+			}
+		}
 		else if(CursorOverItem->Type == _Object::ARMOR && CursorOverItem != Player->GetArmor())
 			RenderItemInfo(Player->GetArmor(), -100, Graphics.CurrentSize.y/2);
 	}
@@ -523,10 +534,15 @@ void _HUD::RenderItemInfo(_Item *Item, int DrawX, int DrawY) {
 	int WindowOffsetX = 20;
 
 	// Get current equipment
-	_Weapon *MainHand = Player->GetMainHand();
+	_Weapon *ExistingWeapon = Player->GetMainHand();
 	_Armor *EquippedArmor = Player->GetArmor();
-	if((Item->Type == _Object::WEAPON && MainHand && Item != MainHand) || (Item->Type == _Object::ARMOR && EquippedArmor && Item != EquippedArmor))
-		MinX += Width;
+
+	// Check weapon type
+	if(Item->Type == _Object::WEAPON) {
+		_Weapon *CompareWeapon = (_Weapon *)Item;
+		if(CompareWeapon->GetWeaponType() == WEAPON_MELEE)
+			ExistingWeapon = Player->GetMelee();
+	}
 
 	DrawX += WindowOffsetX;
 	DrawY -= Height/2;
@@ -559,10 +575,10 @@ void _HUD::RenderItemInfo(_Item *Item, int DrawX, int DrawY) {
 
 			// Damage
 			TextColor = COLOR_WHITE;
-			if(MainHand) {
-				if(Weapon->GetAverageDamage() > MainHand->GetAverageDamage())
+			if(ExistingWeapon) {
+				if(Weapon->GetAverageDamage() > ExistingWeapon->GetAverageDamage())
 					TextColor = COLOR_GREEN;
-				else if(Weapon->GetAverageDamage() < MainHand->GetAverageDamage())
+				else if(Weapon->GetAverageDamage() < ExistingWeapon->GetAverageDamage())
 					TextColor = COLOR_RED;
 			}
 			DrawY += 20;
@@ -574,10 +590,10 @@ void _HUD::RenderItemInfo(_Item *Item, int DrawX, int DrawY) {
 			// Clip size
 			if(Weapon->GetRoundSize()) {
 				TextColor = COLOR_WHITE;
-				if(MainHand) {
-					if(Weapon->GetRoundSize() > MainHand->GetRoundSize())
+				if(ExistingWeapon) {
+					if(Weapon->GetRoundSize() > ExistingWeapon->GetRoundSize())
 						TextColor = COLOR_GREEN;
-					else if(Weapon->GetRoundSize() < MainHand->GetRoundSize())
+					else if(Weapon->GetRoundSize() < ExistingWeapon->GetRoundSize())
 						TextColor = COLOR_RED;
 				}
 				DrawY += 20;
@@ -590,10 +606,10 @@ void _HUD::RenderItemInfo(_Item *Item, int DrawX, int DrawY) {
 			// Attacks
 			if(Weapon->BulletsShot > 1) {
 				TextColor = COLOR_WHITE;
-				if(MainHand) {
-					if(Weapon->BulletsShot > MainHand->BulletsShot)
+				if(ExistingWeapon) {
+					if(Weapon->BulletsShot > ExistingWeapon->BulletsShot)
 						TextColor = COLOR_GREEN;
-					else if(Weapon->BulletsShot < MainHand->BulletsShot)
+					else if(Weapon->BulletsShot < ExistingWeapon->BulletsShot)
 						TextColor = COLOR_RED;
 				}
 
@@ -612,10 +628,10 @@ void _HUD::RenderItemInfo(_Item *Item, int DrawX, int DrawY) {
 			// Fire rate
 			if(Weapon->GetFirePeriod()) {
 				TextColor = COLOR_WHITE;
-				if(MainHand) {
-					if(Weapon->GetFirePeriod() < MainHand->GetFirePeriod())
+				if(ExistingWeapon) {
+					if(Weapon->GetFirePeriod() < ExistingWeapon->GetFirePeriod())
 						TextColor = COLOR_GREEN;
-					else if(Weapon->GetFirePeriod() > MainHand->GetFirePeriod())
+					else if(Weapon->GetFirePeriod() > ExistingWeapon->GetFirePeriod())
 						TextColor = COLOR_RED;
 				}
 
@@ -634,8 +650,8 @@ void _HUD::RenderItemInfo(_Item *Item, int DrawX, int DrawY) {
 
 			// Weapon Spread
 			TextColor = COLOR_WHITE;
-			if(MainHand && MainHand->IsMelee() == Weapon->IsMelee()) {
-				if(Weapon->GetAverageAccuracy() < MainHand->GetAverageAccuracy()) {
+			if(ExistingWeapon && ExistingWeapon->IsMelee() == Weapon->IsMelee()) {
+				if(Weapon->GetAverageAccuracy() < ExistingWeapon->GetAverageAccuracy()) {
 
 					// Less is worse for melee
 					if(Weapon->GetWeaponType() == WEAPON_MELEE)
@@ -643,7 +659,7 @@ void _HUD::RenderItemInfo(_Item *Item, int DrawX, int DrawY) {
 					else
 						TextColor = COLOR_GREEN;
 				}
-				else if(Weapon->GetAverageAccuracy() > MainHand->GetAverageAccuracy()) {
+				else if(Weapon->GetAverageAccuracy() > ExistingWeapon->GetAverageAccuracy()) {
 
 					// Bigger is better for melee
 					if(Weapon->GetWeaponType() == WEAPON_MELEE)
@@ -667,10 +683,10 @@ void _HUD::RenderItemInfo(_Item *Item, int DrawX, int DrawY) {
 			// Reload speed
 			if(Weapon->GetReloadPeriod() > 1) {
 				TextColor = COLOR_WHITE;
-				if(MainHand) {
-					if(Weapon->GetReloadPeriod() < MainHand->GetReloadPeriod())
+				if(ExistingWeapon) {
+					if(Weapon->GetReloadPeriod() < ExistingWeapon->GetReloadPeriod())
 						TextColor = COLOR_GREEN;
-					else if(Weapon->GetReloadPeriod() > MainHand->GetReloadPeriod())
+					else if(Weapon->GetReloadPeriod() > ExistingWeapon->GetReloadPeriod())
 						TextColor = COLOR_RED;
 				}
 
@@ -694,10 +710,10 @@ void _HUD::RenderItemInfo(_Item *Item, int DrawX, int DrawY) {
 			// Components
 			if(Weapon->GetMaxComponents() >= 1) {
 				TextColor = COLOR_WHITE;
-				if(MainHand) {
-					if(Weapon->GetMaxComponents() > MainHand->GetMaxComponents())
+				if(ExistingWeapon) {
+					if(Weapon->GetMaxComponents() > ExistingWeapon->GetMaxComponents())
 						TextColor = COLOR_GREEN;
-					else if(Weapon->GetMaxComponents() < MainHand->GetMaxComponents())
+					else if(Weapon->GetMaxComponents() < ExistingWeapon->GetMaxComponents())
 						TextColor = COLOR_RED;
 				}
 
