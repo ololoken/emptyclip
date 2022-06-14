@@ -150,7 +150,7 @@ class _Map {
 		void SetAmbientLightChangePeriod(double Value) { AmbientLightPeriod = Value; AmbientLightTimer = AmbientLightBlendFactor = 0.0; }
 
 		void RenderFloors();
-		void RenderWalls(int Type);
+		void RenderWalls();
 		void RenderFlatWalls();
 		void RenderObjects(double BlendFactor);
 		int RenderParticles(int Type);

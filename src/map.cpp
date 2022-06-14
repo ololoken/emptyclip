@@ -1335,7 +1335,7 @@ void _Map::RenderFloors() {
 }
 
 // Renders the walls
-void _Map::RenderWalls(int Type) {
+void _Map::RenderWalls() {
 	if(!Camera)
 		return;
 
@@ -1344,6 +1344,8 @@ void _Map::RenderWalls(int Type) {
 	Graphics.SetColor(glm::vec4(1.0f));
 	Graphics.SetDepthMask(true);
 	Graphics.SetDepthTest(true);
+
+	Graphics.SetCullFace(true);
 
 	// Draw walls
 	float Bounds[4];
@@ -1362,29 +1364,14 @@ void _Map::RenderWalls(int Type) {
 			continue;
 
 		// Draw cube
-		float StartZ = Block->MinZ;
-		float EndZ = Block->MaxZ;
-
-		// Draw wall clipped at OBJECT_Z
-		if(Type == 1) {
-			if(StartZ > OBJECT_Z)
-				continue;
-
-			EndZ = OBJECT_Z;
-		}
-		// Draw wall starting from OBJECT_Z
-		else if(Type == 2) {
-			if(EndZ < OBJECT_Z)
-				continue;
-
-			StartZ = std::max(OBJECT_Z, Block->MinZ);
-		}
 		Graphics.DrawCube(
-			glm::vec3(Block->Start.x, Block->Start.y, StartZ),
-			glm::vec3(Block->End.x - Block->Start.x + 1.0f, Block->End.y - Block->Start.y + 1.0f, EndZ - StartZ),
+			glm::vec3(Block->Start.x, Block->Start.y, Block->MinZ),
+			glm::vec3(Block->End.x - Block->Start.x + 1.0f, Block->End.y - Block->Start.y + 1.0f, Block->MaxZ - Block->MinZ),
 			Block->Texture
 		);
 	}
+
+	Graphics.SetCullFace(false);
 }
 
 // Render flat walls

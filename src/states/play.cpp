@@ -414,13 +414,13 @@ void _PlayState::Render(double BlendFactor) {
 	int ParticleRenderCount = Map->RenderParticles(_Particles::FLOOR_DECALS);
 
 	// Draw walls clipped with MaxZ=OBJECT_Z
-	Map->RenderWalls(1);
+	Map->RenderWalls();
 
 	// Draw objects
 	Map->RenderObjects(BlendFactor);
 
 	// Draw the rest of the walls
-	Map->RenderWalls(2);
+	Map->RenderWalls();
 	Map->RenderFlatWalls();
 
 	// Draw wall decals
