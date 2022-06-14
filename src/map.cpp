@@ -1281,8 +1281,8 @@ void _Map::RenderFloors() {
 	Graphics.SetColor(glm::vec4(1.0f));
 	Graphics.SetDepthTest(false);
 	Graphics.SetDepthMask(false);
-	for(std::size_t i = 0; i < Blocks[0].size(); i++) {
-		_Block *Block = &Blocks[0][i];
+	for(std::size_t i = 0; i < Blocks[MAPLAYER_BASE].size(); i++) {
+		_Block *Block = &Blocks[MAPLAYER_BASE][i];
 
 		bool Draw = true;
 		if(Block->MinZ >= 0) {
@@ -1318,11 +1318,9 @@ void _Map::RenderFloors() {
 }
 
 // Renders the walls
-void _Map::RenderWalls() {
+void _Map::RenderWalls(int Type) {
 	if(!Camera)
 		return;
-
-	float Bounds[4];
 
 	// Set up graphics
 	Graphics.SetProgram(Assets.Programs["pos_uv"]);
@@ -1331,23 +1329,58 @@ void _Map::RenderWalls() {
 	Graphics.SetDepthTest(true);
 
 	// Draw walls
-	for(std::size_t i = 0; i < Blocks[5].size(); i++) {
-		_Block *Block = &Blocks[5][i];
+	float Bounds[4];
+	for(std::size_t i = 0; i < Blocks[MAPLAYER_WALL].size(); i++) {
+		_Block *Block = &Blocks[MAPLAYER_WALL][i];
 
+		// Always draw walls that go lower than floor
 		bool Draw = true;
 		if(Block->MinZ >= 0) {
 			Block->GetBounds(Bounds);
 			Draw = Camera->IsAABBInView(Bounds);
 		}
 
-		if(Draw)
-			Graphics.DrawCube(glm::vec3(Block->Start.x, Block->Start.y, Block->MinZ), glm::vec3(Block->End.x - Block->Start.x + 1.0f, Block->End.y - Block->Start.y + 1.0f, Block->MaxZ - Block->MinZ), Block->Texture);
-	}
+		// Skip
+		if(!Draw)
+			continue;
 
-	// Draw flat walls
+		// Draw cube
+		float StartZ = Block->MinZ;
+		float EndZ = Block->MaxZ;
+
+		// Draw wall clipped at OBJECT_Z
+		if(Type == 1) {
+			if(StartZ > OBJECT_Z)
+				continue;
+
+			EndZ = OBJECT_Z;
+		}
+		// Draw wall starting from OBJECT_Z
+		else if(Type == 2) {
+			if(EndZ < OBJECT_Z)
+				continue;
+
+			StartZ = std::max(OBJECT_Z, Block->MinZ);
+		}
+		Graphics.DrawCube(
+			glm::vec3(Block->Start.x, Block->Start.y, StartZ),
+			glm::vec3(Block->End.x - Block->Start.x + 1.0f, Block->End.y - Block->Start.y + 1.0f, EndZ - StartZ),
+			Block->Texture
+		);
+	}
+}
+
+// Render flat walls
+void _Map::RenderFlatWalls() {
+
+	Graphics.SetProgram(Assets.Programs["pos_uv"]);
+	Graphics.SetColor(glm::vec4(1.0f));
 	Graphics.SetDepthMask(false);
-	for(size_t i = 0; i < Blocks[4].size(); i++) {
-		_Block *Block = &Blocks[4][i];
+	Graphics.SetDepthTest(true);
+
+	float Bounds[4];
+	for(size_t i = 0; i < Blocks[MAPLAYER_FLAT].size(); i++) {
+		_Block *Block = &Blocks[MAPLAYER_FLAT][i];
 		bool Draw = true;
 		if(Block->MinZ >= 0) {
 			Block->GetBounds(Bounds);
@@ -1403,6 +1436,15 @@ void _Map::RenderForeground() {
 	}
 }
 
+// Render entities and items
+void _Map::RenderObjects(double BlendFactor) {
+	Assets.Programs["pos_uv"]->ResetTextureTransform();
+	Graphics.SetProgram(Assets.Programs["pos_uv"]);
+	Graphics.SetDepthMask(false);
+	Graphics.SetDepthTest(true);
+	ObjectManager->Render(BlendFactor);
+}
+
 // Update map
 void _Map::Update(double FrameTime) {
 	ObjectManager->Update(FrameTime, Camera);
@@ -1412,13 +1454,6 @@ void _Map::Update(double FrameTime) {
 	}
 	else
 		AmbientLightBlendFactor = 1.0;
-}
-
-// Render entities and items
-void _Map::RenderObjects(double BlendFactor) {
-	Assets.Programs["pos_uv"]->ResetTextureTransform();
-	Graphics.SetProgram(Assets.Programs["pos_uv"]);
-	ObjectManager->Render(BlendFactor);
 }
 
 // Adds an item to the item list and collision grid

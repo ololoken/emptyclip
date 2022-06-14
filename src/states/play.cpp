@@ -412,11 +412,15 @@ void _PlayState::Render(double BlendFactor) {
 	Graphics.SetDepthTest(false);
 	Particles->Render(_Particles::FLOOR_DECALS);
 
+	// Draw walls clipped with MaxZ=OBJECT_Z
+	Map->RenderWalls(1);
+
 	// Draw objects
 	Map->RenderObjects(BlendFactor);
 
-	// Draw the walls
-	Map->RenderWalls();
+	// Draw the rest of the walls
+	Map->RenderWalls(2);
+	Map->RenderFlatWalls();
 
 	// Draw wall decals
 	Assets.Programs["pos_uv"]->ResetTextureTransform();

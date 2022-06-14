@@ -147,7 +147,9 @@ class _Map {
 		void SetAmbientLightChangePeriod(double Value) { AmbientLightPeriod = Value; AmbientLightTimer = AmbientLightBlendFactor = 0.0; }
 
 		void RenderFloors();
-		void RenderWalls();
+		void RenderWalls(int Type);
+		void RenderFlatWalls();
+		void RenderObjects(double BlendFactor);
 		void RenderForeground();
 		void RenderLights(const glm::vec2 &PlayerPosition);
 		void RenderEvents(std::vector<_Texture *> &Textures);
@@ -190,7 +192,6 @@ class _Map {
 		const _Block *GetBlock(int Layer, const size_t Index) const;
 		glm::vec2 GetValidPosition(const glm::vec2 &Position) const;
 
-		void RenderObjects(double BlendFactor);
 		void AddItem(_Item *Item);
 		void RemoveItem(_Item *Item);
 

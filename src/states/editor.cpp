@@ -850,6 +850,9 @@ void _EditorState::Render(double BlendFactor) {
 		}
 	}
 
+	// Draw walls clipped with MaxZ=OBJECT_Z
+	Map->RenderWalls(1);
+
 	// Draw objects
 	Graphics.SetProgram(Assets.Programs["pos_uv"]);
 	Graphics.SetDepthMask(false);
@@ -876,7 +879,8 @@ void _EditorState::Render(double BlendFactor) {
 	Graphics.SetDepthMask(true);
 
 	// Draw walls
-	Map->RenderWalls();
+	Map->RenderWalls(2);
+	Map->RenderFlatWalls();
 
 	// Draw the foreground tiles
 	Map->RenderForeground();
