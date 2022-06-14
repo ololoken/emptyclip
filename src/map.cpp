@@ -59,7 +59,7 @@ _Map::_Map(const std::string &Filename) : _Map() {
 	this->Filename = Filename;
 
 	// Load file
-	std::ifstream InputFile((Assets.GetAssetPath() + ASSETS_MAPS + Filename).c_str(), std::ios::in);
+	std::ifstream InputFile((Assets.AssetPath + "maps/" + Filename).c_str(), std::ios::in);
 	if(!InputFile)
 		throw std::runtime_error("Cannot load file: " + Filename);
 
@@ -273,7 +273,7 @@ void _Map::Init() {
 bool _Map::SaveLevel(const std::string &String) {
 
 	Filename = String;
-	std::ofstream Output((Assets.GetAssetPath() + ASSETS_MAPS + Filename).c_str(), std::ios::out);
+	std::ofstream Output((Assets.AssetPath + "maps/" + Filename).c_str(), std::ios::out);
 	if(!Output)
 		throw std::runtime_error("Cannot create file: " + Filename);
 
@@ -339,7 +339,7 @@ bool _Map::SaveLevel(const std::string &String) {
 
 // Loads a monster set
 bool _Map::LoadMonsterSet(const std::string &String) {
-	Assets.LoadMonsterSet(ASSETS_MONSTERSETS + String);
+	Assets.LoadMonsterSet("maps/monstersets/" + String);
 	MonsterSet = String;
 
 	return true;

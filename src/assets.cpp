@@ -46,38 +46,38 @@ _Assets Assets;
 void _Assets::Init(const std::string &AssetPath) {
 	this->AssetPath = AssetPath;
 
-	LoadPrograms(ASSETS_PROGRAMS);
-	LoadStringTable(ASSETS_STRINGS);
-	LoadLevels();
-	LoadSkills();
-	LoadFonts(ASSETS_FONTDATA, false);
-	LoadTextures(ASSETS_TEXTURES_MAIN);
-	LoadTextures(ASSETS_TEXTURES_MAP);
-	LoadTextures(ASSETS_TEXTURES_EDITOR);
-	LoadColorTable(ASSETS_COLORS);
-	LoadSamples(ASSETS_SAMPLEDATA, ASSETS_SAMPLES);
-	LoadAttackSampleTable(ASSETS_ATTACK_SAMPLES);
-	LoadParticleTable(ASSETS_PARTICLES);
-	LoadWeaponParticles(ASSETS_WEAPONPARTICLES);
-	LoadStyles(ASSETS_STYLES);
-	LoadElements(ASSETS_ELEMENTS);
-	LoadImages(ASSETS_IMAGES);
-	LoadButtons(ASSETS_BUTTONS);
-	LoadTextBoxes(ASSETS_TEXTBOXES);
-	LoadLabels(ASSETS_LABELS);
-	LoadReelTable(ASSETS_REELS);
-	LoadAnimationTable(ASSETS_ANIMATIONS);
-	LoadMiscItemTable(ASSETS_MISCITEMS);
-	LoadUpgradeTable(ASSETS_UPGRADES);
-	LoadAmmoTable(ASSETS_AMMO);
-	LoadWeaponTable(ASSETS_WEAPONS);
-	LoadArmorTable(ASSETS_ARMOR);
-	LoadItemDropTable(ASSETS_ITEMDROPDATA);
-	LoadMonsterTable(ASSETS_MONSTERS);
+	LoadPrograms("tables/programs.tsv");
+	LoadStringTable("tables/strings.tsv");
+	LoadLevels("tables/levels.tsv");
+	LoadSkills("tables/skills.tsv");
+	LoadFonts("tables/fonts.tsv", false);
+	LoadTextures("tables/textures/main.tsv");
+	LoadTextures("tables/textures/map.tsv");
+	LoadTextures("tables/textures/editor.tsv");
+	LoadColorTable("tables/colors.tsv");
+	LoadSamples("tables/sounds/samples.tsv", "sounds/");
+	LoadAttackSampleTable("tables/sounds/attack.tsv");
+	LoadParticleTable("tables/particles.tsv");
+	LoadWeaponParticles("tables/weaponparticles.tsv");
+	LoadStyles("tables/ui/styles.tsv");
+	LoadElements("tables/ui/elements.tsv");
+	LoadImages("tables/ui/images.tsv");
+	LoadButtons("tables/ui/buttons.tsv");
+	LoadTextBoxes("tables/ui/textboxes.tsv");
+	LoadLabels("tables/ui/labels.tsv");
+	LoadReelTable("tables/reels.tsv");
+	LoadAnimationTable("tables/animation.tsv");
+	LoadMiscItemTable("tables/items.tsv");
+	LoadUpgradeTable("tables/upgrades.tsv");
+	LoadAmmoTable("tables/ammo.tsv");
+	LoadWeaponTable("tables/weapons.tsv");
+	LoadArmorTable("tables/armor.tsv");
+	LoadItemDropTable("tables/itemdrops.tsv");
+	LoadMonsterTable("tables/monsters.tsv");
 
-	LoadAnimation("player_torso", ASSETS_PLAYERTEXTURES);
-	LoadAnimation("player_legs", ASSETS_PLAYERTEXTURES);
-	LoadFonts(ASSETS_FONTDATA);
+	LoadAnimation("player_torso", "textures/player/");
+	LoadAnimation("player_legs", "textures/player/");
+	LoadFonts("tables/fonts.tsv");
 
 	BlankWeaponParticle = _WeaponParticleTemplate();
 }
@@ -88,9 +88,21 @@ void _Assets::Close() {
 	UnloadMonsterSet();
 	UnloadAnimation("player_torso");
 	UnloadAnimation("player_legs");
-	UnloadStyles();
-	UnloadElements();
-	UnloadFonts();
+
+	for(const auto &Style : Styles)
+		delete Style.second;
+
+	Styles.clear();
+
+	for(const auto &Element : Elements)
+		delete Element.second;
+
+	Elements.clear();
+
+	for(const auto &Font : Fonts)
+		delete Font.second;
+
+	Fonts.clear();
 
 	for(const auto &Texture : Textures)
 		delete Texture.second;
@@ -195,13 +207,13 @@ void _Assets::LoadFonts(const std::string &Path, bool LoadFonts) {
 }
 
 // Loads the level table
-void _Assets::LoadLevels() {
+void _Assets::LoadLevels(const std::string &Path) {
 	LevelStruct Level;
 
 	// Load file
-	std::ifstream InputFile((AssetPath + ASSETS_LEVELS).c_str(), std::ios::in);
+	std::ifstream InputFile((AssetPath + Path).c_str(), std::ios::in);
 	if(!InputFile) {
-		throw std::runtime_error("Error loading: " + ASSETS_LEVELS);
+		throw std::runtime_error("Error loading: " + Path);
 	}
 
 	Levels.clear();
@@ -220,13 +232,13 @@ void _Assets::LoadLevels() {
 }
 
 // Loads the skill table
-void _Assets::LoadSkills() {
+void _Assets::LoadSkills(const std::string &Path) {
 	SkillStruct Skill;
 
 	// Load file
-	std::ifstream InputFile((AssetPath + ASSETS_SKILLS).c_str(), std::ios::in);
+	std::ifstream InputFile((AssetPath + Path).c_str(), std::ios::in);
 	if(!InputFile) {
-		throw std::runtime_error("LoadSkills: Cannot open " + ASSETS_SKILLS);
+		throw std::runtime_error("LoadSkills: Cannot open " + Path);
 	}
 
 	Skills.clear();
@@ -235,7 +247,7 @@ void _Assets::LoadSkills() {
 	InputFile.ignore(1024, '\n');
 	for(int i = 0; i < GAME_SKILLLEVELS+1; i++) {
 		if(InputFile.eof()) {
-			throw std::runtime_error("Premature end of file" + ASSETS_SKILLS);
+			throw std::runtime_error("Premature end of file" + Path);
 		}
 
 		for(int i = 0; i < SKILL_COUNT; i++)
@@ -255,9 +267,6 @@ void _Assets::LoadColorTable(const std::string &Filename) {
 	if(!InputFile) {
 		throw std::runtime_error("Error loading: " + Filename);
 	}
-
-	// Remove previous data
-	UnloadColorTable();
 
 	// Read the file
 	InputFile.ignore(1024, '\n');
@@ -287,9 +296,6 @@ void _Assets::LoadReelTable(const std::string &Filename) {
 	if(!InputFile) {
 		throw std::runtime_error("Error loading: " + Filename);
 	}
-
-	// Remove previous data
-	UnloadReelTable();
 
 	// Read the file
 	InputFile.ignore(1024, '\n');
@@ -328,9 +334,6 @@ void _Assets::LoadAnimationTable(const std::string &Filename) {
 	if(!InputFile) {
 		throw std::runtime_error("Error loading: " + Filename);
 	}
-
-	// Remove previous data
-	UnloadAnimationTable();
 
 	// Read the file
 	InputFile.ignore(1024, '\n');
@@ -426,7 +429,7 @@ void _Assets::LoadTextures(const std::string &Filename) {
 		InputFile.ignore(1024, '\n');
 
 		// Load texture
-		std::string Path = AssetPath + ASSETS_TEXTURE_PATH + TextureFile;
+		std::string Path = AssetPath + "textures/" + TextureFile;
 		_Texture *Texture = new _Texture(Path, false, Repeat, MipMaps, false);
 		Texture->Group = Group;
 		if(!Texture) {
@@ -466,7 +469,7 @@ void _Assets::LoadSamples(const std::string &Filename, const std::string &Sample
 		InputFile.ignore(1024, '\n');
 
 		// Load sample file
-		std::string Path = AssetPath + ASSETS_SAMPLES + SampleFile;
+		std::string Path = AssetPath + SamplePath + SampleFile;
 		if(!Audio.LoadBuffer(Identifier, Path, Volume, Limit)) {
 			throw std::runtime_error("Error loading: " + Path);
 		}
@@ -485,9 +488,6 @@ void _Assets::LoadAttackSampleTable(const std::string &Filename) {
 	if(!InputFile) {
 		throw std::runtime_error("Error loading: " + Filename);
 	}
-
-	// Remove previous data
-	UnloadAttackSampleTable();
 
 	// Ignore the first line
 	InputFile.ignore(1024, '\n');
@@ -518,9 +518,6 @@ void _Assets::LoadParticleTable(const std::string &Filename) {
 	if(!InputFile) {
 		throw std::runtime_error("Error loading: " + Filename);
 	}
-
-	// Remove previous data
-	UnloadParticleTable();
 
 	// Read the file
 	InputFile.ignore(1024, '\n');
@@ -571,9 +568,6 @@ void _Assets::LoadWeaponParticles(const std::string &Filename) {
 		throw std::runtime_error("Error loading: " + Filename);
 	}
 
-	// Remove previous data
-	UnloadWeaponParticleTable();
-
 	// Read the file
 	InputFile.ignore(1024, '\n');
 	while(!InputFile.eof() && InputFile.peek() != EOF) {
@@ -608,9 +602,6 @@ void _Assets::LoadMonsterTable(const std::string &Filename) {
 	if(!InputFile) {
 		throw std::runtime_error("Error loading: " + Filename);
 	}
-
-	// Remove previous data
-	UnloadMonsterTable();
 
 	// Read the file
 	InputFile.ignore(1024, '\n');
@@ -682,9 +673,6 @@ void _Assets::LoadMiscItemTable(const std::string &Filename) {
 		throw std::runtime_error("Error loading: " + Filename);
 	}
 
-	// Remove previous data
-	UnloadMiscItemTable();
-
 	// Read the file
 	InputFile.ignore(1024, '\n');
 	while(!InputFile.eof() && InputFile.peek() != EOF) {
@@ -734,9 +722,6 @@ void _Assets::LoadUpgradeTable(const std::string &Filename) {
 		throw std::runtime_error("Error loading: " + Filename);
 	}
 
-	// Remove previous data
-	UnloadUpgradeTable();
-
 	// Read the file
 	InputFile.ignore(1024, '\n');
 	while(!InputFile.eof() && InputFile.peek() != EOF) {
@@ -784,9 +769,6 @@ void _Assets::LoadAmmoTable(const std::string &Filename) {
 	if(!InputFile) {
 		throw std::runtime_error("Error loading: " + Filename);
 	}
-
-	// Remove previous data
-	UnloadAmmoTable();
 
 	// Read the file
 	InputFile.ignore(1024, '\n');
@@ -837,9 +819,6 @@ void _Assets::LoadWeaponTable(const std::string &Filename) {
 	if(!InputFile) {
 		throw std::runtime_error("Error loading: " + Filename);
 	}
-
-	// Remove previous data
-	UnloadWeaponTable();
 
 	// Read the file
 	InputFile.ignore(1024, '\n');
@@ -912,9 +891,6 @@ void _Assets::LoadArmorTable(const std::string &Filename) {
 		throw std::runtime_error("Error loading: " + Filename);
 	}
 
-	// Remove previous data
-	UnloadArmorTable();
-
 	// Read the file
 	InputFile.ignore(1024, '\n');
 	while(!InputFile.eof() && InputFile.peek() != EOF) {
@@ -960,9 +936,6 @@ void _Assets::LoadItemDropTable(const std::string &Filename) {
 	if(!InputFile) {
 		throw std::runtime_error("Error loading: " + Filename);
 	}
-
-	// Remove previous data
-	UnloadItemGroupTable();
 
 	// Skip first two fields
 	GetTSVText(InputFile);
@@ -1129,7 +1102,7 @@ void _Assets::LoadAnimation(const std::string &Identifier, const std::string &Pa
 void _Assets::LoadMonsterAnimation() {
 
 	for(size_t i = 0; i < MonsterSet.size(); i++) {
-		LoadAnimation(GetMonsterTemplate(MonsterSet[i])->AnimationIdentifier, ASSETS_MONSTERTEXTURES);
+		LoadAnimation(GetMonsterTemplate(MonsterSet[i])->AnimationIdentifier, "textures/monsters/");
 	}
 }
 
@@ -1494,10 +1467,8 @@ void _Assets::UnloadAnimation(const std::string &Identifier) {
 		// Unload reels
 		auto AnimationTableIterator = AnimationTable.find(Identifier);
 		if(AnimationTableIterator != AnimationTable.end()) {
-
 			for(size_t i = 0; i < AnimationTableIterator->second.Identifiers.size(); i++)
 				UnloadReel(AnimationTableIterator->second.Identifiers[i]);
-
 		}
 
 		delete AnimationIterator->second;
@@ -1505,49 +1476,12 @@ void _Assets::UnloadAnimation(const std::string &Identifier) {
 	}
 }
 
-// Frees memory and textures used by monsters
-void _Assets::UnloadMonsterAnimation() {
-
-	for(const auto &Monster : MonsterTable)
-		UnloadAnimation(Monster.second.AnimationIdentifier);
-}
-
-// Free styles
-void _Assets::UnloadStyles() {
-
-	for(const auto &Style : Styles)
-		delete Style.second;
-
-	Styles.clear();
-}
-
-// Free ui elements
-void _Assets::UnloadElements() {
-
-	for(const auto &Element : Elements)
-		delete Element.second;
-
-	Elements.clear();
-}
-
 // Frees memory used by the monster set
 void _Assets::UnloadMonsterSet() {
-	UnloadMonsterAnimation();
+	for(const auto &Monster : MonsterTable)
+		UnloadAnimation(Monster.second.AnimationIdentifier);
 
 	MonsterSet.clear();
-}
-
-// Frees memory used by samples
-void _Assets::UnloadSamples() {
-}
-
-// Frees memory used by fonts
-void _Assets::UnloadFonts() {
-
-	for(const auto &Font : Fonts)
-		delete Font.second;
-
-	Fonts.clear();
 }
 
 // Returns the valid amount of experience
@@ -1772,21 +1706,6 @@ bool _Assets::IsAmmoLoaded(const std::string &Identifier) { return AmmoTable.fin
 bool _Assets::IsWeaponLoaded(const std::string &Identifier) { return WeaponTable.find(Identifier) != WeaponTable.end(); }
 bool _Assets::IsArmorLoaded(const std::string &Identifier) { return ArmorTable.find(Identifier) != ArmorTable.end(); }
 bool _Assets::IsItemGroupLoaded(const std::string &Identifier) { return ItemGroupTable.find(Identifier) != ItemGroupTable.end(); }
-
-void _Assets::UnloadStringTable() { StringTable.clear(); }
-void _Assets::UnloadColorTable() { Colors.clear(); }
-void _Assets::UnloadReelTable() { ReelTable.clear(); }
-void _Assets::UnloadAnimationTable() { AnimationTable.clear(); }
-void _Assets::UnloadAttackSampleTable() { AttackSampleTable.clear(); }
-void _Assets::UnloadParticleTable() { ParticleTable.clear(); }
-void _Assets::UnloadWeaponParticleTable() { WeaponParticleTable.clear(); }
-void _Assets::UnloadMonsterTable() { MonsterTable.clear(); }
-void _Assets::UnloadMiscItemTable() { MiscItemTable.clear(); }
-void _Assets::UnloadUpgradeTable() { UpgradeTable.clear(); }
-void _Assets::UnloadAmmoTable() { AmmoTable.clear(); }
-void _Assets::UnloadWeaponTable() { WeaponTable.clear(); }
-void _Assets::UnloadArmorTable() { ArmorTable.clear(); }
-void _Assets::UnloadItemGroupTable() { ItemGroupTable.clear(); }
 
 _Texture *_Assets::GetTexture(const std::string &Identifier) {
 	if(Textures.find(Identifier) == Textures.end())

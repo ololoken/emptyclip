@@ -173,32 +173,9 @@ class _Assets {
 		bool IsArmorLoaded(const std::string &Identifier);
 		bool IsItemGroupLoaded(const std::string &Identifier);
 
-		void UnloadStringTable();
-		void UnloadColorTable();
-		void UnloadReelTable();
-		void UnloadAnimationTable();
-		void UnloadAttackSampleTable();
-		void UnloadParticleTable();
-		void UnloadWeaponParticleTable();
-		void UnloadMonsterTable();
-		void UnloadMiscItemTable();
-		void UnloadUpgradeTable();
-		void UnloadAmmoTable();
-		void UnloadWeaponTable();
-		void UnloadArmorTable();
-		void UnloadItemGroupTable();
-
 		void UnloadMonsterSet();
-		void UnloadSamples();
-		void UnloadFonts();
 		void UnloadReel(const std::string &Identifier);
 		void UnloadAnimation(const std::string &Identifier);
-		void UnloadMonsterAnimation();
-		void UnloadStyles();
-		void UnloadElements();
-
-		void SetAssetPath(const std::string &AssetPath) { this->AssetPath = AssetPath; }
-		std::string GetAssetPath() const { return AssetPath; }
 
 		int GetLevel(int64_t Experience);
 		int64_t GetValidExperience(int64_t Experience);
@@ -255,12 +232,12 @@ class _Assets {
 		std::unordered_map<std::string, glm::vec4> Colors;
 		std::unordered_map<std::string, _Font *> Fonts;
 
+		std::string AssetPath;
+
 	private:
 
-		void LoadLevels();
-		void LoadSkills();
-
-		std::string AssetPath;
+		void LoadLevels(const std::string &Path);
+		void LoadSkills(const std::string &Path);
 
 		// Tables
 		std::map<std::string, std::string> StringTable;
