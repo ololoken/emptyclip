@@ -956,7 +956,7 @@ bool _Player::UseItem(int Index, bool Event) {
 					case MISCITEM_MEDKIT:
 						UseMedkit(Index);
 					break;
-					case MISCITEM_OTHER:
+					case MISCITEM_KEY:
 						if(Event) {
 							ConsumeInventory(Index);
 							return true;

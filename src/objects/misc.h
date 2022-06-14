@@ -22,8 +22,9 @@
 
 // Enumerations
 enum MiscItemType {
+	MISCITEM_NONE,
 	MISCITEM_MEDKIT,
-	MISCITEM_OTHER,
+	MISCITEM_KEY,
 	MISCITEM_COUNT,
 };
 

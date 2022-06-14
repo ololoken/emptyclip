@@ -39,7 +39,7 @@ std::string _MiscItem::GetTypeAsString() const {
 		case MISCITEM_MEDKIT:
 			return "Medkit";
 		break;
-		case MISCITEM_OTHER:
+		case MISCITEM_KEY:
 			return "Key";
 		break;
 	}
