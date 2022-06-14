@@ -88,7 +88,7 @@ void _PlayState::Init() {
 	// Load level
 	Map = new _Map(Level);
 	Map->Init();
-	Player->SetMap(Map);
+	Player->Map = Map;
 	Player->SetMapIdentifier(Map->GetFilename());
 
 	// Set starting states
@@ -685,7 +685,7 @@ void _PlayState::UseObject() {
 
 	// Open a door if possible
 	_Coord Position;
-	Map->GetAdjacentTile(Player->Position, Player->GetDirection(), Position);
+	Map->GetAdjacentTile(Player->Position, Player->Rotation, Position);
 
 	// Check for events
 	std::list<_Event *> &Events = Map->GetEventList(Position);
@@ -989,7 +989,7 @@ void _PlayState::SpawnObject(_ObjectSpawn *ObjectSpawn, bool GenerateStats) {
 
 // Adds a monster to the monster list and collision grid
 void _PlayState::AddMonster(_Monster *Monster) {
-	Monster->SetMap(Map);
+	Monster->Map = Map;
 
 	Monsters.push_back(Monster);
 	Map->AddObjectToGrid(Monster, GRID_MONSTER);
@@ -1013,22 +1013,22 @@ void _PlayState::GenerateBulletEffects(_Entity *Attacker, const int Type, const 
 	if(Type == -1) {
 
 		// Particle position
-		ParticlePosition = Attacker->Position + glm::rotate(Attacker->GetWeaponOffset(Attacker->GetWeaponType()), glm::radians(Attacker->GetDirection()));
+		ParticlePosition = Attacker->Position + glm::rotate(Attacker->GetWeaponOffset(Attacker->GetWeaponType()), glm::radians(Attacker->Rotation));
 
 		// Particles
-		Particles->Create(_ParticleSpawn(Attacker->GetWeaponParticle(WEAPONPARTICLE_FIRE), glm::vec2(0), ParticlePosition, OBJECT_Z, Attacker->GetDirection()));
+		Particles->Create(_ParticleSpawn(Attacker->GetWeaponParticle(WEAPONPARTICLE_FIRE), glm::vec2(0), ParticlePosition, OBJECT_Z, Attacker->Rotation));
 		Particles->Create(_ParticleSpawn(Attacker->GetWeaponParticle(WEAPONPARTICLE_SMOKE), glm::vec2(0), ParticlePosition, OBJECT_Z, 0));
 	}
 	else if(Type == HIT_WALL) {
-		Particles->Create(_ParticleSpawn(Attacker->GetWeaponParticle(WEAPONPARTICLE_RICOCHET), Hit.Normal, Hit.Position, OBJECT_Z, Attacker->GetDirection()));
-		Particles->Create(_ParticleSpawn(Attacker->GetWeaponParticle(WEAPONPARTICLE_BULLETHOLE), Hit.Normal, Hit.Position, OBJECT_Z, Attacker->GetDirection()));
+		Particles->Create(_ParticleSpawn(Attacker->GetWeaponParticle(WEAPONPARTICLE_RICOCHET), Hit.Normal, Hit.Position, OBJECT_Z, Attacker->Rotation));
+		Particles->Create(_ParticleSpawn(Attacker->GetWeaponParticle(WEAPONPARTICLE_BULLETHOLE), Hit.Normal, Hit.Position, OBJECT_Z, Attacker->Rotation));
 	}
 	else if(Type == HIT_OBJECT) {
 		ParticlePosition = GenerateRandomPointInCircle(0.7f) + Hit.Position;
 
 		// Blood
-		Particles->Create(_ParticleSpawn(Assets.GetParticleTemplate("bloodspurt0"), Hit.Normal, Hit.Position, OBJECT_Z, Attacker->GetDirection()));
-		Particles->Create(_ParticleSpawn(Assets.GetParticleTemplate("blood0"), Hit.Normal, ParticlePosition, 0.06f, Attacker->GetDirection()));
+		Particles->Create(_ParticleSpawn(Assets.GetParticleTemplate("bloodspurt0"), Hit.Normal, Hit.Position, OBJECT_Z, Attacker->Rotation));
+		Particles->Create(_ParticleSpawn(Assets.GetParticleTemplate("blood0"), Hit.Normal, ParticlePosition, 0.06f, Attacker->Rotation));
 	}
 }
 

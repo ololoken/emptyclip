@@ -52,7 +52,7 @@ void _Save::CreateNewPlayer(int Slot, const std::string &Name, const std::string
 		return;
 
 	Players[Slot] = new _Player(GetConfigPath(Slot));
-	Players[Slot]->SetName(Name);
+	Players[Slot]->Name = Name;
 	Players[Slot]->SetColorIdentifier(ColorIdentifier);
 
 	Players[Slot]->Save();

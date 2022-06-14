@@ -55,16 +55,12 @@ class _Object {
 		virtual void Serialize(_Buffer &Buffer) { }
 		void FacePosition(const glm::vec2 &Cursor);
 
-		void SetName(const std::string &Name) { this->Name = Name; }
 		virtual const std::string &GetName() const { return Name; }
 
 		void SetPosition(const glm::vec2 &NewPosition);
-		void SetDirection(float Direction) { this->Rotation = Direction; }
-		float GetDirection() const { return Rotation; }
 		glm::vec2 GetDirectionVector(float RotationOffset = 0.0f) const;
 
 		virtual std::string GetTypeAsString() const { return "Object"; }
-		void SetMap(_Map *Map) { this->Map = Map; }
 
 		// Attributes
 		bool Active;
