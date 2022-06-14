@@ -43,3 +43,18 @@ void _Item::Render(double BlendFactor) {
 	Graphics.SetColor(Color);
 	Graphics.DrawSprite(glm::vec3(Position, PositionZ), Texture, Rotation, glm::vec2(ITEM_SCALE));
 }
+
+// Get type as string
+std::string _Item::GetTypeAsString() const {
+
+	switch(Type) {
+		case _Object::MEDKIT:
+			return "Medkit";
+		break;
+		case _Object::KEY:
+			return "Key";
+		break;
+	}
+
+	return "";
+}

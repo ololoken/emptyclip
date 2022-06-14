@@ -96,9 +96,9 @@ _Map::_Map(const std::string &Filename) : _Map() {
 				if(!Assets.IsMonsterLoaded(Object->Identifier))
 					throw std::runtime_error("Cannot find monster: " + Object->Identifier);
 			break;
-			case _Object::MISCITEM:
+			case _Object::MEDKIT:
 				if(!Assets.IsMiscItemLoaded(Object->Identifier))
-					throw std::runtime_error("Cannot find misc item: " + Object->Identifier);
+					throw std::runtime_error("Cannot find medkit: " + Object->Identifier);
 			break;
 			case _Object::AMMO:
 				if(!Assets.IsAmmoLoaded(Object->Identifier))
@@ -115,6 +115,10 @@ _Map::_Map(const std::string &Filename) : _Map() {
 			case _Object::ARMOR:
 				if(!Assets.IsArmorLoaded(Object->Identifier))
 					throw std::runtime_error("Cannot find armor: " + Object->Identifier);
+			break;
+			case _Object::KEY:
+				if(!Assets.IsMiscItemLoaded(Object->Identifier))
+					throw std::runtime_error("Cannot find key: " + Object->Identifier);
 			break;
 		}
 

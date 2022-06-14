@@ -171,7 +171,6 @@ class _EditorState : public _State {
 		bool ObjectsSelected();
 
 		void SetEventProperties(double ActivationPeriod, int Level, int Active, const std::string &ParticleIdentifier);
-		int StateToType(int State);
 		std::string GetEventIdentifier(int Type);
 		glm::vec2 GetValidObjectPosition(const glm::vec2 &Position) const;
 		bool ObjectInSelectedList(_ObjectSpawn *Object);

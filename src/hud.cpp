@@ -814,16 +814,13 @@ void _HUD::RenderItemInfo(_Item *Item, int DrawX, int DrawY) {
 				Buffer.str("");
 			}
 		} break;
-		case _Object::MISCITEM: {
-			_MiscItem *MiscItem = (_MiscItem *)Item;
-			if(MiscItem->MiscItemType == MISCITEM_MEDKIT) {
-				std::ostringstream Buffer;
+		case _Object::MEDKIT: {
+			std::ostringstream Buffer;
 
-				// Heal amount
-				DrawY += 20;
-				Buffer << "+" << Player->GetMedkitHealAmount(MiscItem->Level) << " HP";
-				Fonts[FONT_MEDIUM]->DrawText(Buffer.str(), glm::vec2(DrawX, DrawY), CENTER_BASELINE, COLOR_GREEN);
-			}
+			// Heal amount
+			DrawY += 20;
+			Buffer << "+" << Player->GetMedkitHealAmount(Item->Level) << " HP";
+			Fonts[FONT_MEDIUM]->DrawText(Buffer.str(), glm::vec2(DrawX, DrawY), CENTER_BASELINE, COLOR_GREEN);
 		} break;
 		case _Object::UPGRADE: {
 			_Upgrade *Upgrade = (_Upgrade *)Item;

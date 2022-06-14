@@ -969,7 +969,7 @@ void _PlayState::SpawnObject(_ObjectSpawn *ObjectSpawn, bool GenerateStats) {
 		case _Object::MONSTER:
 			AddMonster(Assets.CreateMonster(ObjectSpawn->Identifier, ObjectSpawn->Position));
 		break;
-		case _Object::MISCITEM:
+		case _Object::MEDKIT:
 			Map->AddItem(Assets.CreateMiscItem(ObjectSpawn->Identifier, 1, ObjectSpawn->Position));
 		break;
 		case _Object::AMMO:
@@ -983,6 +983,9 @@ void _PlayState::SpawnObject(_ObjectSpawn *ObjectSpawn, bool GenerateStats) {
 		break;
 		case _Object::ARMOR:
 			Map->AddItem(Assets.CreateArmor(ObjectSpawn->Identifier, 1, ObjectSpawn->Position));
+		break;
+		case _Object::KEY:
+			Map->AddItem(Assets.CreateMiscItem(ObjectSpawn->Identifier, 1, ObjectSpawn->Position));
 		break;
 	}
 }

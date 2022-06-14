@@ -71,15 +71,18 @@ struct AttackSampleTemplateStruct {
 // Used for the map editor
 struct _Brush {
 	_Brush() { }
-	_Brush(const std::string &Identifier, const std::string &Text, _Texture *Texture, const glm::vec4 &Color)
-		:	Identifier(Identifier),
-			Text(Text),
-			Texture(Texture),
-			Color(Color) { }
+	_Brush(const std::string &Identifier, const std::string &Text, _Texture *Texture, const glm::vec4 &Color, int ObjectType=-1) :
+		Identifier(Identifier),
+		Text(Text),
+		Texture(Texture),
+		Color(Color),
+		ObjectType(ObjectType) { }
 
-	std::string Identifier, Text;
+	std::string Identifier;
+	std::string Text;
 	_Texture *Texture;
 	glm::vec4 Color;
+	int ObjectType;
 };
 
 // Used for level information

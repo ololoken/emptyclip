@@ -39,11 +39,12 @@ class _Object {
 			UNDEFINED=-1,
 			PLAYER,
 			MONSTER,
-			MISCITEM,
+			KEY,
 			AMMO,
 			UPGRADE,
 			WEAPON,
 			ARMOR,
+			MEDKIT,
 			COUNT
 		};
 

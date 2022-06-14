@@ -316,7 +316,7 @@ void _Player::LoadItems(_Buffer &Buffer) {
 
 		// Create items
 		switch(Type) {
-			case _Object::MISCITEM:
+			case _Object::MEDKIT:
 				Identifier = Buffer.ReadString();
 				Inventory[Slot] = Assets.CreateMiscItem(Identifier, Count, glm::vec2(0, 0));
 			break;
@@ -334,6 +334,10 @@ void _Player::LoadItems(_Buffer &Buffer) {
 			case _Object::ARMOR:
 				Identifier = Buffer.ReadString();
 				Inventory[Slot] = Assets.CreateArmor(Identifier, Count, glm::vec2(0, 0));
+			break;
+			case _Object::KEY:
+				Identifier = Buffer.ReadString();
+				Inventory[Slot] = Assets.CreateMiscItem(Identifier, Count, glm::vec2(0, 0));
 			break;
 		}
 	}
@@ -458,7 +462,7 @@ void _Player::Update(double FrameTime) {
 
 	// Use a medkit
 	if(GetMedkitRequested()) {
-		UseMedkit(FindMiscItem(MISCITEM_MEDKIT));
+		UseMedkit(FindMiscItem(_Object::MEDKIT));
 		SetMedkitRequested(false);
 	}
 
@@ -947,21 +951,14 @@ void _Player::ReduceAmmo() {
 bool _Player::UseItem(int Index, bool Event) {
 
 	if(Index >= INVENTORY_BAGSTART && Index < INVENTORY_BAGEND && HasInventory(Index)) {
-
-		_MiscItem *MiscItem;
 		switch(Inventory[Index]->Type) {
-			case _Object::MISCITEM:
-				MiscItem = (_MiscItem *)Inventory[Index];
-				switch(MiscItem->MiscItemType) {
-					case MISCITEM_MEDKIT:
-						UseMedkit(Index);
-					break;
-					case MISCITEM_KEY:
-						if(Event) {
-							ConsumeInventory(Index);
-							return true;
-						}
-					break;
+			case _Object::MEDKIT:
+				UseMedkit(Index);
+			break;
+			case _Object::KEY:
+				if(Event) {
+					ConsumeInventory(Index);
+					return true;
 				}
 			break;
 		}
@@ -972,21 +969,18 @@ bool _Player::UseItem(int Index, bool Event) {
 
 // Uses a medkit if one is available
 bool _Player::UseMedkit(int Index) {
-	if(CanUseMedkit() && HasInventory(Index) && Inventory[Index]->Type == _Object::MISCITEM) {
-		_MiscItem *MiscItem = static_cast<_MiscItem *>(Inventory[Index]);
-		if(MiscItem->MiscItemType == MISCITEM_MEDKIT) {
-			int Amount = GetMedkitHealAmount(MiscItem->Level);
-			UpdateHealth(Amount);
-			ConsumeInventory(Index);
-			MedkitTimer = 0;
+	if(CanUseMedkit() && HasInventory(Index) && Inventory[Index]->Type == _Object::MEDKIT) {
+		int Amount = GetMedkitHealAmount(Inventory[Index]->Level);
+		UpdateHealth(Amount);
+		ConsumeInventory(Index);
+		MedkitTimer = 0;
 
-			if(DebugLevel > 1) {
-				std::cout << "***UseMedkit***\n";
-				std::cout << "Amount: " << Amount << '\n' << std::endl;
-			}
-
-			return true;
+		if(DebugLevel > 1) {
+			std::cout << "***UseMedkit***\n";
+			std::cout << "Amount: " << Amount << '\n' << std::endl;
 		}
+
+		return true;
 	}
 
 	return false;
@@ -1002,11 +996,8 @@ int _Player::GetMedkitHealAmount(int MedkitLevel) const {
 int _Player::FindMiscItem(int ItemType) {
 
 	for(int i = INVENTORY_BAGSTART; i < INVENTORY_BAGEND; i++) {
-		if(HasInventory(i) && Inventory[i]->Type == _Object::MISCITEM) {
-			_MiscItem *MiscItem = static_cast<_MiscItem *>(Inventory[i]);
-			if(MiscItem->MiscItemType == ItemType)
-				return i;
-		}
+		if(HasInventory(i) && Inventory[i]->Type == ItemType)
+			return i;
 	}
 
 	return -1;

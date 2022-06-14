@@ -20,14 +20,6 @@
 // Libraries
 #include <objects/item.h>
 
-// Enumerations
-enum MiscItemType {
-	MISCITEM_NONE,
-	MISCITEM_MEDKIT,
-	MISCITEM_KEY,
-	MISCITEM_COUNT,
-};
-
 // Forward Declarations
 struct _MiscItemTemplate;
 
@@ -37,8 +29,4 @@ class _MiscItem : public _Item {
 	public:
 
 		_MiscItem(const std::string &Identifier, int Count, const glm::vec2 &Position, const _MiscItemTemplate *MiscItem, _Texture *Texture);
-
-		virtual std::string GetTypeAsString() const override;
-
-		int MiscItemType;
 };

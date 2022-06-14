@@ -974,7 +974,7 @@ void _Assets::LoadItemDropTable(const std::string &Filename) {
 		switch(ItemGroupEntry.Type) {
 			case -1:
 			break;
-			case _Object::MISCITEM:
+			case _Object::MEDKIT:
 				if(!IsMiscItemLoaded(ItemGroupEntry.ItemIdentifier))
 					throw std::runtime_error(std::string(__FUNCTION__) + " - Cannot find: " + ItemGroupEntry.ItemIdentifier + " in " + Filename);
 			break;
@@ -992,6 +992,10 @@ void _Assets::LoadItemDropTable(const std::string &Filename) {
 			break;
 			case _Object::ARMOR:
 				if(!IsArmorLoaded(ItemGroupEntry.ItemIdentifier))
+					throw std::runtime_error(std::string(__FUNCTION__) + " - Cannot find: " + ItemGroupEntry.ItemIdentifier + " in " + Filename);
+			break;
+			case _Object::KEY:
+				if(!IsMiscItemLoaded(ItemGroupEntry.ItemIdentifier))
 					throw std::runtime_error(std::string(__FUNCTION__) + " - Cannot find: " + ItemGroupEntry.ItemIdentifier + " in " + Filename);
 			break;
 			default:
@@ -1644,7 +1648,7 @@ void _Assets::GetMonsterList(std::vector<_Brush> &Icons) {
 		}
 		else {
 			Monster = GetMonsterTemplate(MonsterSet[i]);
-			Icons.push_back(_Brush(MonsterSet[i], Monster->Name, Animations[Monster->AnimationIdentifier]->GetStartPositionFrame(), Monster->Color));
+			Icons.push_back(_Brush(MonsterSet[i], Monster->Name, Animations[Monster->AnimationIdentifier]->GetStartPositionFrame(), Monster->Color, _Object::MONSTER));
 		}
 	}
 }
@@ -1652,31 +1656,31 @@ void _Assets::GetMonsterList(std::vector<_Brush> &Icons) {
 // Generates a list of misc item icons
 void _Assets::GetItemList(std::vector<_Brush> &Icons) {
 	for(const auto &MiscItem : MiscItemTable)
-		Icons.push_back(_Brush(MiscItem.first, MiscItem.second.Name, Textures[MiscItem.second.IconIdentifier], MiscItem.second.Color));
+		Icons.push_back(_Brush(MiscItem.first, MiscItem.second.Name, Textures[MiscItem.second.IconIdentifier], MiscItem.second.Color, MiscItem.second.Type));
 }
 
 // Generates a list of upgrade icons
 void _Assets::GetUpgradeList(std::vector<_Brush> &Icons) {
 	for(const auto &Upgrade : UpgradeTable)
-		Icons.push_back(_Brush(Upgrade.first, Upgrade.second.Name, Textures[Upgrade.second.IconIdentifier], Upgrade.second.Color));
+		Icons.push_back(_Brush(Upgrade.first, Upgrade.second.Name, Textures[Upgrade.second.IconIdentifier], Upgrade.second.Color, _Object::UPGRADE));
 }
 
 // Generates a list of ammo icons
 void _Assets::GetAmmoList(std::vector<_Brush> &Icons) {
 	for(const auto &Ammo : AmmoTable)
-		Icons.push_back(_Brush(Ammo.first, Ammo.second.Name, Textures[Ammo.second.IconIdentifier], Ammo.second.Color));
+		Icons.push_back(_Brush(Ammo.first, Ammo.second.Name, Textures[Ammo.second.IconIdentifier], Ammo.second.Color, _Object::AMMO));
 }
 
 // Generates a list of weapon icons
 void _Assets::GetWeaponList(std::vector<_Brush> &Icons) {
 	for(const auto &Weapon : WeaponTable)
-		Icons.push_back(_Brush(Weapon.first, Weapon.second.Name, Textures[Weapon.second.IconIdentifier], Weapon.second.Color));
+		Icons.push_back(_Brush(Weapon.first, Weapon.second.Name, Textures[Weapon.second.IconIdentifier], Weapon.second.Color, _Object::WEAPON));
 }
 
 // Generates a list of armor icons
 void _Assets::GetArmorList(std::vector<_Brush> &Icons) {
 	for(const auto &Armor : ArmorTable)
-		Icons.push_back(_Brush(Armor.first, Armor.second.Name, Textures[Armor.second.IconIdentifier], Armor.second.Color));
+		Icons.push_back(_Brush(Armor.first, Armor.second.Name, Textures[Armor.second.IconIdentifier], Armor.second.Color, _Object::ARMOR));
 }
 
 // Get a list of textures

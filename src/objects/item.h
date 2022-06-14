@@ -34,6 +34,8 @@ class _Item : public _Object {
 		int UpdateCount(int Amount) { Count += Amount; return Count; }
 		bool CanStack() { return !(Type == _Object::WEAPON || Type == _Object::ARMOR); }
 
+		virtual std::string GetTypeAsString() const override;
+
 		std::string Identifier;
 		int Level;
 		int Count;

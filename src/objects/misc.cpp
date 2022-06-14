@@ -23,26 +23,9 @@ _MiscItem::_MiscItem(const std::string &Identifier, int Count, const glm::vec2 &
 	this->Identifier = Identifier;
 	this->Count = Count;
 	this->Texture = Texture;
-	this->Type = _Object::MISCITEM;
 	this->Position = Position;
 	this->Name = MiscItem->Name;
 	this->Color = MiscItem->Color;
 	this->Level = MiscItem->Level;
-
-	MiscItemType = MiscItem->Type;
-}
-
-// Get type as string
-std::string _MiscItem::GetTypeAsString() const {
-
-	switch(MiscItemType) {
-		case MISCITEM_MEDKIT:
-			return "Medkit";
-		break;
-		case MISCITEM_KEY:
-			return "Key";
-		break;
-	}
-
-	return "";
+	this->Type = MiscItem->Type;
 }

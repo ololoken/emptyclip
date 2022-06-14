@@ -558,7 +558,7 @@ void _EditorState::MouseEvent(const _MouseEvent &MouseEvent) {
 							default: {
 								_Button *Button = Brush[CurrentPalette];
 								if(Button)
-									SpawnObject(Map->GetValidPosition(WorldCursor), StateToType(CurrentPalette), Button->Identifier, IsShiftDown);
+									SpawnObject(Map->GetValidPosition(WorldCursor), (intptr_t)Button->UserData, Button->Identifier, IsShiftDown);
 							} break;
 						}
 					}
@@ -1090,14 +1090,18 @@ void _EditorState::LoadPaletteButtons(std::vector<_Brush> &Icons, int Type) {
 	glm::ivec2 Offset(0, 0);
 	int Width = PaletteElement[Type]->Size.x;
 	for(size_t i = 0; i < Icons.size(); i++) {
-		PaletteElement[Type]->AddChild(new _Button(
+		_Button *Button = new _Button(
 			Icons[i].Identifier,
 			PaletteElement[Type],
 			Offset,
 			glm::ivec2(PaletteSizes[Type], PaletteSizes[Type]),
 			LEFT_TOP,
 			new _Style(Icons[i].Text, false, false, COLOR_WHITE, COLOR_WHITE, Icons[i].Texture, Icons[i].Color, true),
-			Assets.GetStyle("editor_selected0")));
+			Assets.GetStyle("editor_selected0"));
+
+		Button->UserData = (void *)(intptr_t)Icons[i].ObjectType;
+
+		PaletteElement[Type]->AddChild(Button);
 
 		Offset.x += PaletteSizes[Type];
 		if(Offset.x > Width - PaletteSizes[Type]) {
@@ -1281,7 +1285,7 @@ void _EditorState::DrawObject(float OffsetX, float OffsetY, const _ObjectSpawn *
 			Scale = Monster->Scale;
 			Depth = OBJECT_Z;
 		} break;
-		case _Object::MISCITEM: {
+		case _Object::MEDKIT: {
 			_MiscItemTemplate *MiscItem = Assets.GetMiscItemTemplate(Object->Identifier);
 			Texture = Assets.GetTexture(MiscItem->IconIdentifier);
 			Color = MiscItem->Color;
@@ -1306,6 +1310,12 @@ void _EditorState::DrawObject(float OffsetX, float OffsetY, const _ObjectSpawn *
 			Texture = Assets.GetTexture(Armor->IconIdentifier);
 			Color = Armor->Color;
 		} break;
+		case _Object::KEY: {
+			_MiscItemTemplate *MiscItem = Assets.GetMiscItemTemplate(Object->Identifier);
+			Texture = Assets.GetTexture(MiscItem->IconIdentifier);
+			Color = MiscItem->Color;
+		} break;
+
 	}
 
 	glm::vec2 DrawPosition(Object->Position.x + OffsetX, Object->Position.y + OffsetY);
@@ -1320,33 +1330,6 @@ void _EditorState::DrawObject(float OffsetX, float OffsetY, const _ObjectSpawn *
 		Graphics.SetColor(Color);
 		Graphics.DrawSprite(glm::vec3(DrawPosition, Depth), Texture, 0.0f, glm::vec2(Scale));
 	}
-}
-
-// Converts an editor mode to an object type
-int _EditorState::StateToType(int State) {
-
-	switch(State) {
-		case EDITMODE_MONSTERS:
-			return _Object::MONSTER;
-		break;
-		case EDITMODE_ITEMS:
-			return _Object::MISCITEM;
-		break;
-		case EDITMODE_AMMO:
-			return _Object::AMMO;
-		break;
-		case EDITMODE_UPGRADES:
-			return _Object::UPGRADE;
-		break;
-		case EDITMODE_WEAPONS:
-			return _Object::WEAPON;
-		break;
-		case EDITMODE_ARMOR:
-			return _Object::ARMOR;
-		break;
-	}
-
-	return _Object::MISCITEM;
 }
 
 // Processes clicks on the buttons

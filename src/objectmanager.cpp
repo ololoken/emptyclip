@@ -58,11 +58,12 @@ void _ObjectManager::Update(double FrameTime, const _Camera *Camera) {
 
 				// Add object to render list
 				switch(Object->Type) {
-					case _Object::MISCITEM:
+					case _Object::KEY:
 					case _Object::AMMO:
 					case _Object::UPGRADE:
 					case _Object::WEAPON:
 					case _Object::ARMOR:
+					case _Object::MEDKIT:
 						ItemRenderList[0].push_back(Object);
 					break;
 				}
