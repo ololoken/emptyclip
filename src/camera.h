@@ -46,12 +46,12 @@ class _Camera {
 		glm::vec2 Get2DPosition() const { return glm::vec2(Position.x, Position.y); }
 
 		void GetDrawPosition(double BlendFactor, glm::vec3 &DrawPosition);
-		const glm::vec4 &GetAABB() const { return AABB; }
 
 		bool IsCircleInView(const glm::vec2 &Position, float Radius) const;
 		bool IsAABBInView(const float *Bounds) const;
 
 		glm::mat4 Transform;
+		glm::vec4 AABB;
 
 	private:
 
@@ -66,6 +66,4 @@ class _Camera {
 		float Fovy;
 		float Near;
 		float Far;
-
-		glm::vec4 AABB;
 };

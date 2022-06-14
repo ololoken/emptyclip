@@ -16,13 +16,15 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 *******************************************************************************/
 #include <particles.h>
+#include <map.h>
 #include <objects/templates.h>
 #include <objects/particle.h>
 #include <camera.h>
 
 // Constructor
 _Particles::_Particles() :
-	Camera(nullptr) {
+	Camera(nullptr),
+	Map(nullptr) {
 
 	for(int i = 0; i < COUNT; i++)
 		RenderList[i].reserve(5000);
@@ -89,7 +91,21 @@ void _Particles::Create(const _ParticleSpawn &Spawn) {
 	if(!Spawn.Template)
 		return;
 
-	// Add particles
+	// Add floor and wall decals to map grid
+	if(Spawn.Template->Type == FLOOR_DECALS || Spawn.Template->Type == WALL_DECALS) {
+		if(!Map)
+			return;
+
+		// Create particles and add to grid
+		for(int i = 0; i < Spawn.Template->Count; i++) {
+			_Particle *Particle = new _Particle(Spawn);
+			Map->AddParticle(Particle);
+		}
+
+		return;
+	}
+
+	// Add general particles
 	for(int i = 0; i < Spawn.Template->Count; i++) {
 		_Particle *Particle = new _Particle(Spawn);
 		Particles.push_back(Particle);

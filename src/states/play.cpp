@@ -112,7 +112,8 @@ void _PlayState::Init() {
 	Camera = new _Camera(glm::vec3(Player->Position, CAMERA_DISTANCE), CAMERA_DIVISOR);
 	Camera->CalculateFrustum(Graphics.AspectRatio);
 	Map->SetCamera(Camera);
-	Particles->SetCamera(Camera);
+	Particles->Camera = Camera;
+	Particles->Map = Map;
 	Camera->ConvertScreenToWorld(Input.GetMouse(), WorldCursor);
 	PreviousWorldCursor = WorldCursor;
 
@@ -410,7 +411,7 @@ void _PlayState::Render(double BlendFactor) {
 	Assets.Programs["pos_uv"]->ResetTextureTransform();
 	Graphics.SetDepthMask(false);
 	Graphics.SetDepthTest(false);
-	Particles->Render(_Particles::FLOOR_DECALS);
+	int ParticleRenderCount = Map->RenderParticles(_Particles::FLOOR_DECALS);
 
 	// Draw walls clipped with MaxZ=OBJECT_Z
 	Map->RenderWalls(1);
@@ -427,7 +428,8 @@ void _PlayState::Render(double BlendFactor) {
 	Graphics.SetProgram(Assets.Programs["pos_uv"]);
 	Graphics.SetDepthMask(false);
 	Graphics.SetDepthTest(true);
-	Particles->Render(_Particles::WALL_DECALS);
+	ParticleRenderCount += Map->RenderParticles(_Particles::WALL_DECALS);
+	//std::cout << ParticleRenderCount << std::endl;
 
 	// Draw particles
 	Graphics.EnableParticleBlending();

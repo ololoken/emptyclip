@@ -25,6 +25,7 @@
 #include <objectmanager.h>
 #include <objects/entity.h>
 #include <objects/item.h>
+#include <objects/particle.h>
 #include <constants.h>
 #include <fstream>
 #include <stdexcept>
@@ -199,6 +200,11 @@ _Map::~_Map() {
 	// Remove events
 	for(size_t i = 0; i < Events.size(); i++)
 		delete Events[i];
+
+	// Delete particles
+	for(const auto &Particle : Particles)
+		delete Particle;
+	Particles.clear();
 
 	if(Data != nullptr) {
 		for(int i = 0; i < Width; i++)
@@ -1182,6 +1188,17 @@ void _Map::HighlightBlocks(int Layer) {
 		Graphics.DrawRectangle3D(glm::vec2(Blocks[Layer][i].Start.x, Blocks[Layer][i].Start.y), glm::vec2(Blocks[Layer][i].End.x + 1.0f, Blocks[Layer][i].End.y + 1.0f), false);
 }
 
+// Add particle to grid
+void _Map::AddParticle(_Particle *Particle) {
+	if(!Data)
+		throw std::runtime_error("Tile data uninitialized!");
+
+	_Coord Coord = GetValidCoord(_Coord(Particle->Position.x, Particle->Position.y));
+	Data[Coord.x][Coord.y].Particles.push_back(Particle);
+
+	Particles.push_back(Particle);
+}
+
 // Returns the total number of blocks
 int _Map::GetTotalBlockSize() const {
 	int Sum = 0;
@@ -1443,6 +1460,30 @@ void _Map::RenderObjects(double BlendFactor) {
 	Graphics.SetDepthMask(false);
 	Graphics.SetDepthTest(true);
 	ObjectManager->Render(BlendFactor);
+}
+
+// Render map decals
+int _Map::RenderParticles(int Type) {
+
+	// Get start and end range of tiles to render
+	_Coord Start = GetValidCoord(_Coord(Camera->AABB[0] - PARTICLE_GRID_PADDING, Camera->AABB[1] - PARTICLE_GRID_PADDING));
+	_Coord End = GetValidCoord(_Coord(Camera->AABB[2] + PARTICLE_GRID_PADDING, Camera->AABB[3] + PARTICLE_GRID_PADDING));
+
+	// Draw particles
+	int Count = 0;
+	for(int i = Start.x; i <= End.x; i++) {
+		for(int j = Start.y; j <= End.y; j++) {
+			for(const auto &Particle : Data[i][j].Particles) {
+				if(Particle->Type != Type)
+					continue;
+
+				Particle->Render();
+				Count++;
+			}
+		}
+	}
+
+	return Count;
 }
 
 // Update map

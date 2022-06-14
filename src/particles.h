@@ -25,6 +25,7 @@
 
 // Forward Declarations
 class _Camera;
+class _Map;
 class _Particle;
 struct _ParticleTemplate;
 
@@ -42,7 +43,7 @@ struct _ParticleSpawn {
 	float RotationAdjust;
 };
 
-// Manages all the objects
+// Manages particles
 class _Particles {
 
 	public:
@@ -67,8 +68,9 @@ class _Particles {
 		void Create(const _ParticleSpawn &Spawn);
 		void Clear();
 
-		void SetCamera(const _Camera *Camera) { this->Camera = Camera; }
-		const _Camera *GetCamera() const { return Camera; }
+		// Objects
+		const _Camera *Camera;
+		_Map *Map;
 
 	private:
 
@@ -78,6 +80,5 @@ class _Particles {
 		// Rendering
 		std::vector<_Particle *> RenderList[COUNT];
 
-		// Graphics
-		const _Camera *Camera;
+
 };

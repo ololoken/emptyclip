@@ -55,10 +55,11 @@ enum MapType {
 	MAPTYPE_ADVENTURE
 };
 
-const int WALL_LEFT          = 0x1;
-const int WALL_TOP           = 0x2;
-const int WALL_RIGHT         = 0x4;
-const int WALL_BOTTOM        = 0x8;
+const int WALL_LEFT                 = 0x1;
+const int WALL_TOP                  = 0x2;
+const int WALL_RIGHT                = 0x4;
+const int WALL_BOTTOM               = 0x8;
+const float PARTICLE_GRID_PADDING   = 2;
 
 // Forward Declarations
 class _Event;
@@ -67,6 +68,7 @@ class _Object;
 class _Item;
 class _Camera;
 class _Texture;
+class _Particle;
 class _ObjectManager;
 struct _ObjectSpawn;
 
@@ -84,6 +86,7 @@ struct _Tile {
 
 	std::list<_Object *> Objects[GRID_COUNT];
 	std::list<_Event *> Events;
+	std::vector<_Particle *> Particles;
 	int Collision;
 };
 
@@ -150,6 +153,7 @@ class _Map {
 		void RenderWalls(int Type);
 		void RenderFlatWalls();
 		void RenderObjects(double BlendFactor);
+		int RenderParticles(int Type);
 		void RenderForeground();
 		void RenderLights(const glm::vec2 &PlayerPosition);
 		void RenderEvents(std::vector<_Texture *> &Textures);
@@ -159,6 +163,7 @@ class _Map {
 		void AddBlock(int Layer, _Block Block) { Blocks[Layer].push_back(Block); }
 		void AddEvent(_Event *Event) { Events.push_back(Event); }
 		void AddObject(_ObjectSpawn *Object) { ObjectSpawns.push_back(Object); }
+		void AddParticle(_Particle *Particle);
 		const std::vector<_ObjectSpawn *> &GetObjectsList() { return ObjectSpawns; }
 		void GetSelectedObject(const glm::vec2 &Position, float RadiusSquared, _ObjectSpawn **Object, size_t *Index);
 		void GetSelectedObjects(const glm::vec2 &Start, const glm::vec2 &End, std::list<_ObjectSpawn *> *SelectedObjects, std::list<std::size_t> *SelectedObjectIndices);
@@ -220,6 +225,7 @@ class _Map {
 		std::unique_ptr<_ObjectManager> ObjectManager;
 		std::list<_Object *> Objects;
 		std::vector<_ObjectSpawn *> ObjectSpawns;
+		std::vector<_Particle *> Particles;
 
 		// Graphics
 		_Camera *Camera;
