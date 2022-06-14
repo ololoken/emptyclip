@@ -1345,6 +1345,7 @@ void _Map::RenderWalls() {
 	}
 
 	// Draw flat walls
+	Graphics.SetDepthMask(false);
 	for(size_t i = 0; i < Blocks[4].size(); i++) {
 		_Block *Block = &Blocks[4][i];
 		bool Draw = true;
