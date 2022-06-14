@@ -36,6 +36,7 @@ class _Camera;
 struct _ObjectSpawn;
 struct _ParticleTemplate;
 struct _EventTile;
+struct _Hit;
 
 // Types of entity attack outcomes
 enum CollisionType {
@@ -69,7 +70,7 @@ class _PlayState : public _State {
 		void SetCheckpointIndex(int Value) { CheckpointIndex = Value; }
 		bool GetFromEditor() const { return FromEditor; }
 
-		void GenerateBulletEffects(_Entity *Attacker, const int Type, const glm::vec2 &Position);
+		void GenerateBulletEffects(_Entity *Attacker, const int Type, const _Hit &Hit);
 
 		void SetPlayer(_Player *Player) { this->Player = Player; }
 		_Player *GetPlayer() { return Player; }

@@ -533,7 +533,7 @@ void _Assets::LoadParticleTable(const std::string &Filename) {
 
 		InputFile 	>> Particle.Type >> Particle.Count >> Particle.Lifetime >> Particle.StartDirection.x >> Particle.StartDirection.y >> Particle.TurnSpeed.x
 					>> Particle.TurnSpeed.y >> Particle.VelocityScale.x >> Particle.VelocityScale.y >> Particle.AccelerationScale
-					>> Particle.Size.x >> Particle.Size.y >> Particle.ScaleAspect >> Particle.AlphaSpeed;
+					>> Particle.Size.x >> Particle.Size.y >> Particle.DeviationZ >> Particle.ScaleAspect >> Particle.AlphaSpeed;
 		InputFile.ignore(1024, '\n');
 
 		// Check for duplicates

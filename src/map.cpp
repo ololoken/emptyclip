@@ -718,15 +718,23 @@ void _Map::CheckBulletCollisions(const glm::vec2 &Position, const glm::vec2 &Dir
 		// Check for object intersections
 		if(CheckObjects) {
 			for(auto Iterator = Data[TileTracer.x][TileTracer.y].Objects[GridType].begin(); Iterator != Data[TileTracer.x][TileTracer.y].Objects[GridType].end(); ++Iterator) {
-				_Entity *Entity = static_cast<_Entity *>(*Iterator);
-				if(!Entity->IsDying()) {
-					float Distance = RayObjectIntersection(Position, Direction, Entity);
-					if(Distance < MinDistance && Distance > 0.0f) {
-						Hit.Object = Entity;
-						MinDistance = Distance;
-					}
+				_Entity *Entity = (_Entity *)(*Iterator);
+				if(Entity->IsDying())
+					continue;
+
+				float Distance = RayObjectIntersection(Position, Direction, Entity);
+				if(Distance < MinDistance && Distance > 0.0f) {
+					Hit.Object = Entity;
+					MinDistance = Distance;
 				}
 			}
+		}
+
+		// An object was hit
+		if(CheckObjects && Hit.Object != nullptr) {
+			Hit.Position = Direction * MinDistance + Position;
+			Hit.Normal = glm::normalize(-Direction);
+			return;
 		}
 
 		// Determine which direction needs an update
@@ -740,12 +748,7 @@ void _Map::CheckBulletCollisions(const glm::vec2 &Position, const glm::vec2 &Dir
 			TileTracer.y += TileIncrementY;
 			EndedOnX = false;
 		}
-	}
 
-	// An object was hit
-	if(CheckObjects && Hit.Object != nullptr) {
-		Hit.Position = Direction * MinDistance + Position;
-		return;
 	}
 
 	// Determine which side has hit
@@ -753,7 +756,16 @@ void _Map::CheckBulletCollisions(const glm::vec2 &Position, const glm::vec2 &Dir
 	if(EndedOnX) {
 
 		// Get correct side of the wall
-		FirstBoundaryTileX = Direction.x < 0 ? TileTracer.x+1 : TileTracer.x;
+		if(Direction.x < 0) {
+			FirstBoundaryTileX = TileTracer.x + 1;
+			Hit.Normal.x = 1;
+			Hit.Normal.y = 0;
+		}
+		else {
+			FirstBoundaryTileX = TileTracer.x;
+			Hit.Normal.x = -1;
+			Hit.Normal.y = 0;
+		}
 		WallBoundary.x = FirstBoundaryTileX - Position.x;
 
 		// Determine hit position
@@ -763,7 +775,16 @@ void _Map::CheckBulletCollisions(const glm::vec2 &Position, const glm::vec2 &Dir
 	else {
 
 		// Get correct side of the wall
-		FirstBoundaryTileY = Direction.y < 0 ? TileTracer.y+1 : TileTracer.y;
+		if(Direction.y < 0) {
+			FirstBoundaryTileY = TileTracer.y + 1;
+			Hit.Normal.x = 0;
+			Hit.Normal.y = 1;
+		}
+		else {
+			FirstBoundaryTileY = TileTracer.y;
+			Hit.Normal.x = 0;
+			Hit.Normal.y = -1;
+		}
 		WallBoundary.y = FirstBoundaryTileY - Position.y;
 
 		// Determine hit position

@@ -30,14 +30,16 @@ class _Particle;
 struct _ParticleTemplate;
 
 struct _ParticleSpawn {
-	_ParticleSpawn(const _ParticleTemplate *Template, const glm::vec2 &Position, float PositionZ, float RotationAdjust) :
+	_ParticleSpawn(const _ParticleTemplate *Template, const glm::vec2 &Normal, const glm::vec2 &Position, float PositionZ, float RotationAdjust) :
 		Template(Template),
+		Normal(Normal),
 		Position(Position),
 		PositionZ(PositionZ),
 		RotationAdjust(RotationAdjust) { }
 
 	const _ParticleTemplate *Template;
 	std::string Text;
+	glm::vec2 Normal;
 	glm::vec2 Position;
 	float PositionZ;
 	float RotationAdjust;

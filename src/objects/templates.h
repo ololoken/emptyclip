@@ -154,11 +154,12 @@ struct _ParticleTemplate {
 	glm::vec4 Color;
 	const _Texture *Texture;
 	const _Font *Font;
-	int Count;
+	double Lifetime;
 	float AccelerationScale;
 	float AlphaSpeed;
-	double Lifetime;
+	float DeviationZ;
 	float ScaleAspect;
+	int Count;
 	int Type;
 };
 

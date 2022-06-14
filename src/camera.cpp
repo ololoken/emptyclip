@@ -24,6 +24,7 @@
 
 // Initialize
 _Camera::_Camera(const glm::vec3 &Position, float UpdateDivisor) :
+	AABB(0),
 	LastPosition(Position),
 	Position(Position),
 	TargetPosition(Position),
@@ -31,8 +32,7 @@ _Camera::_Camera(const glm::vec3 &Position, float UpdateDivisor) :
 	Frustum(0),
 	Fovy(CAMERA_FOVY),
 	Near(CAMERA_NEAR),
-	Far(CAMERA_FAR),
-	AABB(0) {
+	Far(CAMERA_FAR) {
 }
 
 // Shutdown

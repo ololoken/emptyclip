@@ -844,3 +844,21 @@ void _Graphics::DrawCube(const glm::vec3 &Start, const glm::vec3 &Scale, const _
 	glUniformMatrix4fv(LastProgram->TextureTransformID, 1, GL_FALSE, glm::value_ptr(TextureTransform));
 	glDrawArrays(GL_TRIANGLE_STRIP, 16, 4);
 }
+
+// Vertical texture
+void _Graphics::DrawWallDecal(const glm::vec3 &Position, const _Texture *Texture, float Rotation, const glm::vec2 &Scale) {
+	SetVBO(VBO_SPRITE);
+	SetTextureID(Texture->ID);
+
+	glm::mat4 ModelTransform;
+	ModelTransform = glm::translate(glm::mat4(1.0f), Position);
+	if(Rotation != 0.0f)
+		ModelTransform = glm::rotate(ModelTransform, glm::radians(Rotation), glm::vec3(0, 0, 1));
+
+	ModelTransform = glm::rotate(ModelTransform, glm::radians(90.0f), glm::vec3(1, 0, 0));
+	ModelTransform = glm::scale(ModelTransform, glm::vec3(Scale.x, Scale.y, 0.0f));
+
+	glUniformMatrix4fv(LastProgram->ModelTransformID, 1, GL_FALSE, glm::value_ptr(ModelTransform));
+
+	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+}

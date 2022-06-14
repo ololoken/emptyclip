@@ -126,6 +126,7 @@ struct _Hit {
 		Type(Type) { }
 
 	_Entity *Object;
+	glm::vec2 Normal;
 	glm::vec2 Position;
 	int Type;
 };

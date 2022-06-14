@@ -425,7 +425,6 @@ void _PlayState::Render(double BlendFactor) {
 	Assets.Programs["pos_uv"]->ResetTextureTransform();
 	Graphics.SetProgram(Assets.Programs["pos_uv"]);
 	Graphics.SetDepthMask(false);
-	Graphics.SetDepthTest(true);
 	ParticleRenderCount += Map->RenderParticles(_Particles::WALL_DECALS);
 	//std::cout << ParticleRenderCount << std::endl;
 
@@ -551,7 +550,7 @@ void _PlayState::EntityAttack(_Entity *Attacker, int GridType) {
 	// Play fire sound and generate fire/smoke particles
 	_Hit Hit;
 	if(WeaponType != WEAPON_MELEE) {
-		GenerateBulletEffects(Attacker, -1, Hit.Position);
+		GenerateBulletEffects(Attacker, -1, Hit);
 		Audio.Play(new _AudioSource(Audio.GetBuffer(Attacker->GetSample(SAMPLE_FIRE))), Attacker->Position);
 	}
 
@@ -588,7 +587,7 @@ void _PlayState::EntityAttack(_Entity *Attacker, int GridType) {
 
 			float Distance = glm::length(Hit.Position - Attacker->Position) - Template->Size.y;
 
-			_Particle *Tracer = new _Particle(_ParticleSpawn(Template, ParticleStart, OBJECT_Z, ShotDirection));
+			_Particle *Tracer = new _Particle(_ParticleSpawn(Template, glm::vec2(0), ParticleStart, OBJECT_Z, ShotDirection));
 			Tracer->Lifetime = Distance * Template->VelocityScale.y * GAME_FPS;
 			Particles->Add(Tracer);
 		}
@@ -603,10 +602,10 @@ void _PlayState::EntityAttack(_Entity *Attacker, int GridType) {
 					PlayedHitWallSound = true;
 				}
 
-				GenerateBulletEffects(Attacker, HIT_WALL, Hit.Position);
+				GenerateBulletEffects(Attacker, HIT_WALL, Hit);
 			break;
 			case HIT_OBJECT:
-				GenerateBulletEffects(Attacker, HIT_OBJECT, Hit.Position);
+				GenerateBulletEffects(Attacker, HIT_OBJECT, Hit);
 
 				// Generate damage
 				int Damage = Attacker->GenerateDamage(Attacker->AttackRequestType, Hit.Object->DamageBlock, Hit.Object->DamageResist);
@@ -615,7 +614,7 @@ void _PlayState::EntityAttack(_Entity *Attacker, int GridType) {
 				glm::vec2 DamagePosition = Hit.Position;
 				if(Hit.Object->Type ==  _Object::PLAYER)
 					DamagePosition += GenerateRandomPointInCircle(0.3f);
-				_Particle *DamageParticle = new _Particle(_ParticleSpawn(Assets.GetParticleTemplate("damage0"), DamagePosition, OBJECT_Z, 0));
+				_Particle *DamageParticle = new _Particle(_ParticleSpawn(Assets.GetParticleTemplate("damage0"), glm::vec2(0), DamagePosition, OBJECT_Z, 0));
 				DamageParticle->Text = std::to_string(Damage);
 				if(Hit.Object->Type ==  _Object::PLAYER)
 					DamageParticle->Color = COLOR_RED;
@@ -865,7 +864,7 @@ void _PlayState::CheckEvents(const _Entity *Entity) {
 
 					if(Event->Tiles.size() > 0) {
 						glm::vec2 NewPosition(Event->Tiles[0].Coord.x + 0.5f, Event->Tiles[0].Coord.y + 0.5f);
-						Particles->Create(_ParticleSpawn(Assets.GetParticleTemplate(Event->ParticleIdentifier), NewPosition, OBJECT_Z, 0));
+						Particles->Create(_ParticleSpawn(Assets.GetParticleTemplate(Event->ParticleIdentifier), glm::vec2(0), NewPosition, OBJECT_Z, 0));
 
 						Map->RemoveObjectFromGrid(Player, GRID_PLAYER);
 						Player->SetPosition(NewPosition);
@@ -905,7 +904,7 @@ void _PlayState::UpdateEvents(double FrameTime) {
 						Position.x = static_cast<float>(Tiles[i].Coord.x) + 0.5f;
 						Position.y = static_cast<float>(Tiles[i].Coord.y) + 0.5f;
 						AddMonster(Assets.CreateMonster(Event->MonsterIdentifier, Position));
-						Particles->Create(_ParticleSpawn(Assets.GetParticleTemplate(Event->ParticleIdentifier), Position, OBJECT_Z, 0));
+						Particles->Create(_ParticleSpawn(Assets.GetParticleTemplate(Event->ParticleIdentifier), glm::vec2(0), Position, OBJECT_Z, 0));
 					}
 
 					Decrement = true;
@@ -1008,7 +1007,7 @@ void _PlayState::RemoveMonster(_Monster *Monster) {
 	Map->RemoveObjectFromGrid(Monster, GRID_MONSTER);
 }
 
-void _PlayState::GenerateBulletEffects(_Entity *Attacker, const int Type, const glm::vec2 &Position) {
+void _PlayState::GenerateBulletEffects(_Entity *Attacker, const int Type, const _Hit &Hit) {
 	glm::vec2 ParticlePosition;
 
 	if(Type == -1) {
@@ -1017,19 +1016,19 @@ void _PlayState::GenerateBulletEffects(_Entity *Attacker, const int Type, const 
 		ParticlePosition = Attacker->Position + glm::rotate(Attacker->GetWeaponOffset(Attacker->GetWeaponType()), glm::radians(Attacker->GetDirection()));
 
 		// Particles
-		Particles->Create(_ParticleSpawn(Attacker->GetWeaponParticle(WEAPONPARTICLE_FIRE), ParticlePosition, OBJECT_Z, Attacker->GetDirection()));
-		Particles->Create(_ParticleSpawn(Attacker->GetWeaponParticle(WEAPONPARTICLE_SMOKE), ParticlePosition, OBJECT_Z, 0));
+		Particles->Create(_ParticleSpawn(Attacker->GetWeaponParticle(WEAPONPARTICLE_FIRE), glm::vec2(0), ParticlePosition, OBJECT_Z, Attacker->GetDirection()));
+		Particles->Create(_ParticleSpawn(Attacker->GetWeaponParticle(WEAPONPARTICLE_SMOKE), glm::vec2(0), ParticlePosition, OBJECT_Z, 0));
 	}
 	else if(Type == HIT_WALL) {
-		Particles->Create(_ParticleSpawn(Attacker->GetWeaponParticle(WEAPONPARTICLE_RICOCHET), Position, OBJECT_Z, Attacker->GetDirection()));
-		Particles->Create(_ParticleSpawn(Attacker->GetWeaponParticle(WEAPONPARTICLE_BULLETHOLE), Position, OBJECT_Z, Attacker->GetDirection()));
+		Particles->Create(_ParticleSpawn(Attacker->GetWeaponParticle(WEAPONPARTICLE_RICOCHET), Hit.Normal, Hit.Position, OBJECT_Z, Attacker->GetDirection()));
+		Particles->Create(_ParticleSpawn(Attacker->GetWeaponParticle(WEAPONPARTICLE_BULLETHOLE), Hit.Normal, Hit.Position, OBJECT_Z, Attacker->GetDirection()));
 	}
 	else if(Type == HIT_OBJECT) {
-		ParticlePosition = GenerateRandomPointInCircle(0.7f) + Position;
+		ParticlePosition = GenerateRandomPointInCircle(0.7f) + Hit.Position;
 
 		// Blood
-		Particles->Create(_ParticleSpawn(Assets.GetParticleTemplate("bloodspurt0"), Position, OBJECT_Z, Attacker->GetDirection()));
-		Particles->Create(_ParticleSpawn(Assets.GetParticleTemplate("blood0"), ParticlePosition, 0.06f, Attacker->GetDirection()));
+		Particles->Create(_ParticleSpawn(Assets.GetParticleTemplate("bloodspurt0"), Hit.Normal, Hit.Position, OBJECT_Z, Attacker->GetDirection()));
+		Particles->Create(_ParticleSpawn(Assets.GetParticleTemplate("blood0"), Hit.Normal, ParticlePosition, 0.06f, Attacker->GetDirection()));
 	}
 }
 

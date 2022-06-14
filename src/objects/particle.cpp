@@ -37,6 +37,7 @@ _Particle::_Particle(const _ParticleSpawn &Spawn) :
 	ScaleAspect(Spawn.Template->ScaleAspect) {
 
 	// Random
+	Position = Spawn.Position;
 	Rotation = Spawn.RotationAdjust + (float)(Random.GenerateRange(Spawn.Template->StartDirection.x, Spawn.Template->StartDirection.y));
 	Velocity = glm::rotate(glm::vec2(0, -1), glm::radians(this->Rotation)) * (float)Random.GenerateRange(Spawn.Template->VelocityScale.x, Spawn.Template->VelocityScale.y);
 	Acceleration = Velocity * Spawn.Template->AccelerationScale;
@@ -51,7 +52,12 @@ _Particle::_Particle(const _ParticleSpawn &Spawn) :
 		Scale.y = Size;
 	}
 
-	Position = Spawn.Position;
+	PositionZ += Random.GenerateRange(-Spawn.Template->DeviationZ, Spawn.Template->DeviationZ);
+
+	if(Type == _Particles::WALL_DECALS) {
+		Position += Spawn.Normal * 0.01f;
+		Rotation = glm::degrees(atan2(Spawn.Normal.y, Spawn.Normal.x)) + 90.0f;
+	}
 }
 
 // Destructor
@@ -78,7 +84,10 @@ void _Particle::Render() {
 
 	if(Texture) {
 		Graphics.SetColor(Color);
-		Graphics.DrawSprite(glm::vec3(Position, PositionZ), Texture, Rotation, Scale);
+		if(Type == _Particles::WALL_DECALS)
+			Graphics.DrawWallDecal(glm::vec3(Position, PositionZ), Texture, Rotation, Scale);
+		else
+			Graphics.DrawSprite(glm::vec3(Position, PositionZ), Texture, Rotation, Scale);
 	}
 
 	if(Font && Text != "")
