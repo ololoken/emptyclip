@@ -66,9 +66,6 @@ Disable audio
 Start the mapeditor
 -editor [level]
 
-Use game data from a mod directory
--mod <mod directory>
-
 ----- HOW TO PLAY -----
 
 Use ESDF to walk around

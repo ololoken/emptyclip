@@ -43,8 +43,7 @@
 _Assets Assets;
 
 // Initialize
-void _Assets::Init(const std::string &AssetPath) {
-	this->AssetPath = AssetPath;
+void _Assets::Init() {
 
 	LoadPrograms("tables/programs.tsv");
 	LoadStrings("tables/strings.tsv");
@@ -123,7 +122,7 @@ void _Assets::Close() {
 void _Assets::LoadStrings(const std::string &Path) {
 
 	// Load file
-	std::ifstream File((AssetPath + Path).c_str(), std::ios::in);
+	std::ifstream File(Path, std::ios::in);
 	if(!File)
 		throw std::runtime_error("Error loading: " + Path);
 
@@ -152,7 +151,7 @@ void _Assets::LoadStrings(const std::string &Path) {
 void _Assets::LoadFonts(const std::string &Path, bool LoadFonts) {
 
 	// Load file
-	std::ifstream File(AssetPath + Path.c_str(), std::ios::in);
+	std::ifstream File(Path, std::ios::in);
 	if(!File)
 		throw std::runtime_error("Error loading: " + Path);
 
@@ -211,7 +210,7 @@ void _Assets::LoadLevels(const std::string &Path) {
 	LevelStruct Level;
 
 	// Load file
-	std::ifstream InputFile((AssetPath + Path).c_str(), std::ios::in);
+	std::ifstream InputFile(Path, std::ios::in);
 	if(!InputFile) {
 		throw std::runtime_error("Error loading: " + Path);
 	}
@@ -236,7 +235,7 @@ void _Assets::LoadSkills(const std::string &Path) {
 	SkillStruct Skill;
 
 	// Load file
-	std::ifstream InputFile((AssetPath + Path).c_str(), std::ios::in);
+	std::ifstream InputFile(Path, std::ios::in);
 	if(!InputFile) {
 		throw std::runtime_error("LoadSkills: Cannot open " + Path);
 	}
@@ -261,7 +260,7 @@ void _Assets::LoadSkills(const std::string &Path) {
 void _Assets::LoadColors(const std::string &Path) {
 
 	// Load file
-	std::ifstream File((AssetPath + Path).c_str(), std::ios::in);
+	std::ifstream File(Path, std::ios::in);
 	if(!File)
 		throw std::runtime_error("Error loading: " + Path);
 
@@ -295,7 +294,7 @@ void _Assets::LoadColors(const std::string &Path) {
 void _Assets::LoadReelTable(const std::string &Path) {
 
 	// Load file
-	std::ifstream File((AssetPath + Path).c_str(), std::ios::in);
+	std::ifstream File(Path, std::ios::in);
 	if(!File)
 		throw std::runtime_error("Error loading: " + Path);
 
@@ -340,7 +339,7 @@ void _Assets::LoadAnimationTable(const std::string &Path) {
 	AnimationTemplateStruct AnimationTemplate;
 
 	// Load file
-	std::ifstream File((AssetPath + Path).c_str(), std::ios::in);
+	std::ifstream File(Path, std::ios::in);
 	if(!File)
 		throw std::runtime_error("Error loading: " + Path);
 
@@ -425,7 +424,7 @@ void _Assets::LoadPrograms(const std::string &Path) {
 void _Assets::LoadTextures(const std::string &Path) {
 
 	// Load file
-	std::ifstream File((AssetPath + Path).c_str(), std::ios::in);
+	std::ifstream File(Path, std::ios::in);
 	if(!File)
 		throw std::runtime_error("Error loading: " + Path);
 
@@ -448,7 +447,7 @@ void _Assets::LoadTextures(const std::string &Path) {
 		File.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
 		// Load texture
-		std::string Path = AssetPath + "textures/" + TextureFile;
+		std::string Path = "textures/" + TextureFile;
 		_Texture *Texture = new _Texture(Path, false, Repeat, MipMaps, false);
 		if(!Texture)
 			throw std::runtime_error(std::string(__FUNCTION__) + " - Error loading: " + Path);
@@ -467,7 +466,7 @@ void _Assets::LoadTextures(const std::string &Path) {
 void _Assets::LoadSounds(const std::string &Path, const std::string &SamplePath) {
 
 	// Load file
-	std::ifstream File((AssetPath + Path).c_str(), std::ios::in);
+	std::ifstream File(Path, std::ios::in);
 	if(!File)
 		throw std::runtime_error("Error loading: " + Path);
 
@@ -487,7 +486,7 @@ void _Assets::LoadSounds(const std::string &Path, const std::string &SamplePath)
 		File.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
 		// Load sample file
-		std::string Path = AssetPath + SamplePath + SampleFile;
+		std::string Path = SamplePath + SampleFile;
 		if(!Audio.LoadBuffer(Identifier, Path, Volume, Limit))
 			throw std::runtime_error("Error loading: " + Path);
 	}
@@ -500,7 +499,7 @@ void _Assets::LoadSoundGroups(const std::string &Path) {
 	AttackSampleTemplateStruct SampleTemplate;
 
 	// Load file
-	std::ifstream File((AssetPath + Path).c_str(), std::ios::in);
+	std::ifstream File(Path, std::ios::in);
 	if(!File)
 		throw std::runtime_error("Error loading: " + Path);
 
@@ -536,7 +535,7 @@ void _Assets::LoadSoundGroups(const std::string &Path) {
 void _Assets::LoadParticles(const std::string &Path) {
 
 	// Load file
-	std::ifstream File((AssetPath + Path).c_str(), std::ios::in);
+	std::ifstream File(Path, std::ios::in);
 	if(!File)
 		throw std::runtime_error("Error loading: " + Path);
 
@@ -588,7 +587,7 @@ void _Assets::LoadParticles(const std::string &Path) {
 void _Assets::LoadWeaponParticles(const std::string &Path) {
 
 	// Load file
-	std::ifstream File((AssetPath + Path).c_str(), std::ios::in);
+	std::ifstream File(Path, std::ios::in);
 	if(!File)
 		throw std::runtime_error("Error loading: " + Path);
 
@@ -630,7 +629,7 @@ void _Assets::LoadWeaponParticles(const std::string &Path) {
 void _Assets::LoadMonsterTable(const std::string &Path) {
 
 	// Load file
-	std::ifstream File((AssetPath + Path).c_str(), std::ios::in);
+	std::ifstream File(Path, std::ios::in);
 	if(!File)
 		throw std::runtime_error("Error loading: " + Path);
 
@@ -699,7 +698,7 @@ void _Assets::LoadMonsterTable(const std::string &Path) {
 void _Assets::LoadMiscItemTable(const std::string &Path) {
 
 	// Load file
-	std::ifstream File((AssetPath + Path).c_str(), std::ios::in);
+	std::ifstream File(Path, std::ios::in);
 	if(!File)
 		throw std::runtime_error("Error loading: " + Path);
 
@@ -747,7 +746,7 @@ void _Assets::LoadMiscItemTable(const std::string &Path) {
 void _Assets::LoadUpgradeTable(const std::string &Path) {
 
 	// Load file
-	std::ifstream File((AssetPath + Path).c_str(), std::ios::in);
+	std::ifstream File(Path, std::ios::in);
 	if(!File)
 		throw std::runtime_error("Error loading: " + Path);
 
@@ -795,7 +794,7 @@ void _Assets::LoadUpgradeTable(const std::string &Path) {
 void _Assets::LoadAmmoTable(const std::string &Path) {
 
 	// Load file
-	std::ifstream File((AssetPath + Path).c_str(), std::ios::in);
+	std::ifstream File(Path, std::ios::in);
 	if(!File)
 		throw std::runtime_error("Error loading: " + Path);
 
@@ -845,7 +844,7 @@ void _Assets::LoadAmmoTable(const std::string &Path) {
 void _Assets::LoadWeaponTable(const std::string &Path) {
 
 	// Load file
-	std::ifstream File((AssetPath + Path).c_str(), std::ios::in);
+	std::ifstream File(Path, std::ios::in);
 	if(!File)
 		throw std::runtime_error("Error loading: " + Path);
 
@@ -918,7 +917,7 @@ void _Assets::LoadWeaponTable(const std::string &Path) {
 void _Assets::LoadArmorTable(const std::string &Path) {
 
 	// Load file
-	std::ifstream File((AssetPath + Path).c_str(), std::ios::in);
+	std::ifstream File(Path, std::ios::in);
 	if(!File)
 		throw std::runtime_error("Error loading: " + Path);
 
@@ -967,7 +966,7 @@ void _Assets::LoadArmorTable(const std::string &Path) {
 void _Assets::LoadItemDrops(const std::string &Path) {
 
 	// Load file
-	std::ifstream File((AssetPath + Path).c_str(), std::ios::in);
+	std::ifstream File(Path, std::ios::in);
 	if(!File)
 		throw std::runtime_error("Error loading: " + Path);
 
@@ -1063,7 +1062,7 @@ void _Assets::LoadItemDrops(const std::string &Path) {
 void _Assets::LoadMonsterSet(const std::string &Path) {
 
 	// Load file
-	std::ifstream File((AssetPath + Path).c_str(), std::ios::in);
+	std::ifstream File(Path, std::ios::in);
 	if(!File)
 		return;
 
@@ -1101,7 +1100,7 @@ void _Assets::LoadReel(const std::string &Identifier, const std::string &Path) {
 		Reel.PlaybackSpeed = ReelTableIterator->second.PlaybackSpeed;
 
 		for(int i = 0; i < static_cast<int>(ReelTableIterator->second.TextureFiles.size()); i++) {
-			std::string ReelPath = AssetPath + Path + ReelTableIterator->second.TextureFiles[i];
+			std::string ReelPath = Path + ReelTableIterator->second.TextureFiles[i];
 			_Texture *Texture = new _Texture(ReelPath, false, false, true, false);
 			if(!Texture)
 				throw std::runtime_error("Error loading: " + ReelPath);
@@ -1147,7 +1146,7 @@ void _Assets::LoadMonsterAnimation() {
 void _Assets::LoadStyles(const std::string &Path) {
 
 	// Load file
-	std::ifstream File((AssetPath + Path).c_str(), std::ios::in);
+	std::ifstream File(Path, std::ios::in);
 	if(!File)
 		throw std::runtime_error("Error loading: " + Path);
 
@@ -1228,7 +1227,7 @@ void _Assets::LoadStyles(const std::string &Path) {
 void _Assets::LoadElements(const std::string &Path) {
 
 	// Load file
-	std::ifstream File((AssetPath + Path).c_str(), std::ios::in);
+	std::ifstream File(Path, std::ios::in);
 	if(!File) {
 		throw std::runtime_error("Error loading: " + Path);
 	}
@@ -1291,7 +1290,7 @@ void _Assets::LoadElements(const std::string &Path) {
 void _Assets::LoadLabels(const std::string &Path) {
 
 	// Load file
-	std::ifstream File((AssetPath + Path).c_str(), std::ios::in);
+	std::ifstream File(Path, std::ios::in);
 	if(!File) {
 		throw std::runtime_error("Error loading: " + Path);
 	}
@@ -1355,7 +1354,7 @@ void _Assets::LoadLabels(const std::string &Path) {
 void _Assets::LoadImages(const std::string &Path) {
 
 	// Load file
-	std::ifstream File((AssetPath + Path).c_str(), std::ios::in);
+	std::ifstream File(Path, std::ios::in);
 	if(!File) {
 		throw std::runtime_error("Error loading: " + Path);
 	}
@@ -1416,7 +1415,7 @@ void _Assets::LoadImages(const std::string &Path) {
 void _Assets::LoadButtons(const std::string &Path) {
 
 	// Load file
-	std::ifstream File((AssetPath + Path).c_str(), std::ios::in);
+	std::ifstream File(Path, std::ios::in);
 	if(!File)
 		throw std::runtime_error("Error loading: " + Path);
 
@@ -1473,7 +1472,7 @@ void _Assets::LoadButtons(const std::string &Path) {
 void _Assets::LoadTextBoxes(const std::string &Path) {
 
 	// Load file
-	std::ifstream File((AssetPath + Path).c_str(), std::ios::in);
+	std::ifstream File(Path, std::ios::in);
 	if(!File) {
 		throw std::runtime_error("Error loading: " + Path);
 	}

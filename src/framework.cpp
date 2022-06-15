@@ -44,7 +44,6 @@ void _Framework::Init(int ArgumentCount, char **Arguments) {
 	TimeStepAccumulator = 0.0;
 	TimeStep = GAME_TIMESTEP;
 	FrameworkState = INIT;
-	std::string ModPath = "./";
 	State = &NullState;
 
 	bool AudioEnabled = Config.AudioEnabled;
@@ -81,11 +80,6 @@ void _Framework::Init(int ArgumentCount, char **Arguments) {
 		else if(Token == "-noaudio") {
 			AudioEnabled = false;
 		}
-		else if(Token == "-mod" && TokensRemaining > 0) {
-			ModPath = Arguments[++i];
-			if(ModPath.substr(ModPath.size()-1, 1) != "/")
-				ModPath += "/";
-		}
 	}
 
 	// Initialize SDL
@@ -113,7 +107,7 @@ void _Framework::Init(int ArgumentCount, char **Arguments) {
 	Random.SetSeed(SDL_GetPerformanceCounter());
 
 	// Load assets
-	Assets.Init(ModPath);
+	Assets.Init();
 	Actions.LoadActionNames();
 	Save.LoadSaves();
 }

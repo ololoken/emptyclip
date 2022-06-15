@@ -124,10 +124,9 @@ class _Assets {
 
 	public:
 
-		void Init(const std::string &DatabasePath);
+		void Init();
 		void Close();
 
-		bool Initialize();
 		void LoadStrings(const std::string &Path);
 		void LoadColors(const std::string &Path);
 		void LoadReelTable(const std::string &Path);
@@ -229,8 +228,6 @@ class _Assets {
 		std::unordered_map<std::string, _AmmoTemplate> AmmoTable;
 		std::unordered_map<std::string, _WeaponTemplate> WeaponTable;
 		std::unordered_map<std::string, _ArmorTemplate> ArmorTable;
-
-		std::string AssetPath;
 
 	private:
 
