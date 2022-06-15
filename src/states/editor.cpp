@@ -45,8 +45,13 @@
 #include <SDL_keycode.h>
 #include <SDL_mouse.h>
 #include <glm/gtc/type_ptr.hpp>
+#include <algorithm>
 
 _EditorState EditorState;
+
+inline bool CompareBrush(_Brush &First, _Brush &Second) {
+	return First.ObjectType < Second.ObjectType || (First.ObjectType == Second.ObjectType && First.Identifier < Second.Identifier);
+}
 
 // Input box
 const char *InputBoxStrings[EDITINPUT_COUNT] = {
@@ -1084,6 +1089,9 @@ void _EditorState::LoadMonsterButtons() {
 // Loads the palette
 void _EditorState::LoadPaletteButtons(std::vector<_Brush> &Icons, int Type) {
 	ClearPalette(Type);
+
+	// Sort icons
+	std::sort(Icons.begin(), Icons.end(), CompareBrush);
 
 	// Loop through textures
 	glm::ivec2 Offset(0, 0);
