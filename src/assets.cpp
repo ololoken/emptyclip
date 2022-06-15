@@ -47,8 +47,6 @@ void _Assets::Init() {
 
 	LoadPrograms("tables/programs.tsv");
 	LoadStrings("tables/strings.tsv");
-	LoadLevels("tables/levels.tsv");
-	LoadSkills("tables/skills.tsv");
 	LoadFonts("tables/fonts.tsv", false);
 	LoadTextures("tables/textures/main.tsv");
 	LoadTextures("tables/textures/map.tsv");
@@ -203,57 +201,6 @@ void _Assets::LoadFonts(const std::string &Path, bool LoadFonts) {
 	}
 
 	File.close();
-}
-
-// Loads the level table
-void _Assets::LoadLevels(const std::string &Path) {
-	LevelStruct Level;
-
-	// Load file
-	std::ifstream InputFile(Path, std::ios::in);
-	if(!InputFile) {
-		throw std::runtime_error("Error loading: " + Path);
-	}
-
-	Levels.clear();
-
-	// Load the data
-	InputFile.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-	for(int i = 0; i < GAME_MAX_LEVEL; i++) {
-		if(InputFile.eof()) {
-			throw std::runtime_error("LoadLevels - Premature end of file");
-		}
-
-		InputFile >> Level.Experience >> Level.HealthBonus >> Level.DamageBlockBonus >> Level.SkillPoints;
-
-		Levels.push_back(Level);
-	}
-}
-
-// Loads the skill table
-void _Assets::LoadSkills(const std::string &Path) {
-	SkillStruct Skill;
-
-	// Load file
-	std::ifstream InputFile(Path, std::ios::in);
-	if(!InputFile) {
-		throw std::runtime_error("LoadSkills: Cannot open " + Path);
-	}
-
-	Skills.clear();
-
-	// Load the data
-	InputFile.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-	for(int i = 0; i < GAME_SKILLLEVELS+1; i++) {
-		if(InputFile.eof()) {
-			throw std::runtime_error("Premature end of file" + Path);
-		}
-
-		for(int i = 0; i < SKILL_COUNT; i++)
-			InputFile >> Skill.Data[i];
-
-		Skills.push_back(Skill);
-	}
 }
 
 // Loads the color table
@@ -1561,56 +1508,6 @@ void _Assets::UnloadAnimation(const std::string &Identifier) {
 	Animations.erase(AnimationIterator);
 }
 
-// Returns the valid amount of experience
-int64_t _Assets::GetValidExperience(int64_t Experience) {
-
-	if(Experience < 0)
-		return 0;
-	else if(Experience > Levels[GAME_MAX_LEVEL-1].Experience)
-		return Levels[GAME_MAX_LEVEL-1].Experience;
-
-	return Experience;
-}
-
-// Returns the level given the experience number
-int _Assets::GetLevel(int64_t Experience) {
-
-	// Degenerate case
-	if(Experience <= 0)
-		return 1;
-	else if(Experience >= Levels[GAME_MAX_LEVEL-1].Experience)
-		return GAME_MAX_LEVEL;
-
-	// Perform linear search through array
-	for(int i = 1; i < GAME_MAX_LEVEL; i++) {
-		if(Experience < Levels[i].Experience)
-			return i;
-	}
-
-	return 1;
-}
-
-// Returns the total experience required for a level
-int64_t _Assets::GetExperienceForLevel(int Level) {
-
-	// Degenerate case
-	if(Level <= 0)
-		return Levels[0].Experience;
-	else if(Level > GAME_MAX_LEVEL)
-		return 0;
-
-	return  Levels[Level-1].Experience;
-}
-
-// Returns a skill value in a valid range
-int _Assets::GetValidSkill(int Level) {
-	if(Level < 0)
-		return 0;
-	else if(Level >= GAME_SKILLLEVELS)
-		return GAME_SKILLLEVELS;
-
-	return Level;
-}
 
 // Creates a monster
 _Monster *_Assets::CreateMonster(const std::string &Identifier, const glm::vec2 &Position) {

@@ -84,19 +84,6 @@ struct _Brush {
 	int ObjectType;
 };
 
-// Used for level information
-struct LevelStruct {
-	int64_t Experience;
-	int HealthBonus;
-	int DamageBlockBonus;
-	int SkillPoints;
-};
-
-// Holds skill information
-struct SkillStruct {
-	float Data[SKILL_COUNT];
-};
-
 // A single entry for an item group
 struct ItemGroupEntryStruct {
 	ItemGroupEntryStruct() { }
@@ -175,16 +162,6 @@ class _Assets {
 		void UnloadReel(const std::string &Identifier);
 		void UnloadAnimation(const std::string &Identifier);
 
-		int GetLevel(int64_t Experience);
-		int64_t GetValidExperience(int64_t Experience);
-		int64_t GetExperienceForLevel(int Level);
-		int GetLevelHealth(int Level) { return Levels[Level-1].HealthBonus; }
-		int GetLevelDamageBlock(int Level) { return Levels[Level-1].DamageBlockBonus; }
-		int GetSkillPointsRemaining(int Level) { return Levels[Level-1].SkillPoints; }
-		int GetValidSkill(int Level);
-		float GetSkill(int Level, int Type) const { return Skills[Level].Data[Type]; }
-		float GetSkillPercentImprovement(int Level, int Type) const { return (Skills[Level].Data[Type] - 1.0f) * 100.0f; }
-
 		_Label *GetLabel(const std::string &Identifier);
 		_Image *GetImage(const std::string &Identifier);
 		_Button *GetButton(const std::string &Identifier);
@@ -231,9 +208,6 @@ class _Assets {
 
 	private:
 
-		void LoadLevels(const std::string &Path);
-		void LoadSkills(const std::string &Path);
-
 		// Tables
 		std::unordered_map<std::string, _ReelTemplate> ReelTable;
 		std::unordered_map<std::string, AnimationTemplateStruct> AnimationTable;
@@ -241,8 +215,6 @@ class _Assets {
 		std::unordered_map<std::string, _ParticleTemplate> ParticleTable;
 		std::unordered_map<std::string, _WeaponParticleTemplate> WeaponParticleTable;
 		std::unordered_map<std::string, _ItemGroup> ItemGroupTable;
-		std::vector<LevelStruct> Levels;
-		std::vector<SkillStruct> Skills;
 		std::string AmmoTypeIdentifiers[AMMO_TYPES];
 
 		// Data

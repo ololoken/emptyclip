@@ -19,6 +19,7 @@
 #include <graphics.h>
 #include <audio.h>
 #include <assets.h>
+#include <stats.h>
 #include <animation.h>
 #include <utils.h>
 #include <map.h>
@@ -566,12 +567,11 @@ void _Player::Render2D(const glm::ivec2 &Position) {
 
 // Updates the player's experience, leveling up if needed
 void _Player::UpdateExperience(int64_t ExperienceGained) {
-	Experience = Assets.GetValidExperience(Experience + ExperienceGained);
+	Experience = Stats.GetValidExperience(Experience + ExperienceGained);
 
 	// Check if enough experience has been reached for a new level.
-	if(Experience >= ExperienceNextLevel) {
+	if(Experience >= ExperienceNextLevel)
 		UpdateLevel();
-	}
 
 	CalculateLevelPercentage();
 }
@@ -590,7 +590,7 @@ void _Player::UpdateLevel() {
 	RecalculateStats();
 
 	// Update current health
-	UpdateHealth(Assets.GetLevelHealth(Level) - Assets.GetLevelHealth(OldLevel));
+	UpdateHealth(Stats.GetLevelHealth(Level) - Stats.GetLevelHealth(OldLevel));
 }
 
 // Updates a skill
@@ -601,10 +601,10 @@ void _Player::UpdateSkill(int Index, int Value) {
 		TentativeSum += Skills[i];
 
 	// Check to make sure skill points don't exceed level
-	if(TentativeSum > Assets.GetSkillPointsRemaining(Level))
+	if(TentativeSum > Stats.GetSkillPointsRemaining(Level))
 		return;
 
-	Skills[Index] = Assets.GetValidSkill(Skills[Index] + Value);
+	Skills[Index] = Stats.GetValidSkill(Skills[Index] + Value);
 	CalculateSkillsRemaining();
 
 	// Update player stats
@@ -613,14 +613,14 @@ void _Player::UpdateSkill(int Index, int Value) {
 
 // Calculates the level and experience variables
 void _Player::CalculateExperienceStats() {
-	Level = Assets.GetLevel(Experience);
-	ExperienceCurrentLevel = Assets.GetExperienceForLevel(Level);
-	ExperienceNextLevel = Assets.GetExperienceForLevel(Level + 1);
+	Level = Stats.GetLevel(Experience);
+	ExperienceCurrentLevel = Stats.GetExperienceForLevel(Level);
+	ExperienceNextLevel = Stats.GetExperienceForLevel(Level + 1);
 }
 
 // Calculates the number of skills points remaining
 void _Player::CalculateSkillsRemaining() {
-	SkillPointsRemaining = Assets.GetSkillPointsRemaining(Level) - SpentSkillPoints();
+	SkillPointsRemaining = Stats.GetSkillPointsRemaining(Level) - SpentSkillPoints();
 }
 
 // Calculates the percentage to the player's next level
@@ -670,7 +670,7 @@ int _Player::AddItem(_Item *Item) {
 		} break;
 		case _Object::ARMOR: {
 			_Armor *ArmorItem = static_cast<_Armor *>(Item);
-			if(!HasArmor() && Assets.GetSkill(Skills[SKILL_STRENGTH], SKILL_STRENGTH) >= ArmorItem->StrengthRequirement) {
+			if(!HasArmor() && Stats.GetSkill(Skills[SKILL_STRENGTH], SKILL_STRENGTH) >= ArmorItem->StrengthRequirement) {
 				SetArmor(ArmorItem);
 				RecalculateStats();
 				return 1;
@@ -722,7 +722,7 @@ bool _Player::CanEquipItem(_Item *Item, int Slot) {
 				return false;
 
 			_Armor *Armor = (_Armor *)Item;
-			return Assets.GetSkill(Skills[SKILL_STRENGTH], SKILL_STRENGTH) >= Armor->StrengthRequirement;
+			return Stats.GetSkill(Skills[SKILL_STRENGTH], SKILL_STRENGTH) >= Armor->StrengthRequirement;
 		} break;
 		case INVENTORY_MAINHAND:
 		case INVENTORY_OFFHAND:
@@ -1230,7 +1230,7 @@ void _Player::RecalculateStats() {
 		MaxAccuracyNormal = Weapon[WEAPONATTACK_MAIN].MaxAccuracy;
 	}
 	else {
-		float AccuracySkillMultiplier = 1.0f / Assets.GetSkill(Skills[SKILL_ACCURACY], SKILL_ACCURACY);
+		float AccuracySkillMultiplier = 1.0f / Stats.GetSkill(Skills[SKILL_ACCURACY], SKILL_ACCURACY);
 		CurrentAccuracyNormal = MinAccuracyNormal = Weapon[WEAPONATTACK_MAIN].MinAccuracy * AccuracySkillMultiplier;
 		MaxAccuracyNormal = Weapon[WEAPONATTACK_MAIN].MaxAccuracy * AccuracySkillMultiplier;
 		Recoil = Weapon[WEAPONATTACK_MAIN].Recoil;
@@ -1245,11 +1245,11 @@ void _Player::RecalculateStats() {
 	// Attacking
 	for(int i = 0; i < WEAPONATTACK_COUNT; i++) {
 		FireRate[i] = Weapon[i].FireRate;
-		FirePeriod[i] = Weapon[i].FirePeriod / Assets.GetSkill(Skills[SKILL_ATTACKSPEED], SKILL_ATTACKSPEED);
+		FirePeriod[i] = Weapon[i].FirePeriod / Stats.GetSkill(Skills[SKILL_ATTACKSPEED], SKILL_ATTACKSPEED);
 		MinDamage[i] = (int)(Weapon[i].MinDamage);
 		MaxDamage[i] = (int)(Weapon[i].MaxDamage);
 	}
-	ReloadPeriod = Weapon[WEAPONATTACK_MAIN].ReloadPeriod / Assets.GetSkill(Skills[SKILL_RELOADSPEED], SKILL_RELOADSPEED);
+	ReloadPeriod = Weapon[WEAPONATTACK_MAIN].ReloadPeriod / Stats.GetSkill(Skills[SKILL_RELOADSPEED], SKILL_RELOADSPEED);
 	WeaponSwitchPeriod = PLAYER_WEAPONSWITCHPERIOD * 1;
 	BulletsShot = Weapon[WEAPONATTACK_MAIN].BulletsShot;
 	ZoomScale = Weapon[WEAPONATTACK_MAIN].ZoomScale;
@@ -1258,14 +1258,14 @@ void _Player::RecalculateStats() {
 	if(FirePeriod[WEAPONATTACK_MAIN] < WEAPON_MINFIREPERIOD)
 		FirePeriod[WEAPONATTACK_MAIN] = WEAPON_MINFIREPERIOD;
 
-	MovementSpeed = Assets.GetSkill(Skills[SKILL_MOVESPEED], SKILL_MOVESPEED);
-	DamageResist = Assets.GetSkill(Skills[SKILL_DAMAGERESIST], SKILL_DAMAGERESIST) - 1.0f;
-	MaxHealth = (int)(Assets.GetLevelHealth(Level) * Assets.GetSkill(Skills[SKILL_HEALTH], SKILL_HEALTH));
-	MaxStamina = 1.0f * Assets.GetSkill(Skills[SKILL_MAXSTAMINA], SKILL_MAXSTAMINA);
-	StaminaRegenModifier = 1.0f * Assets.GetSkill(Skills[SKILL_MAXSTAMINA], SKILL_MAXSTAMINA);
+	MovementSpeed = Stats.GetSkill(Skills[SKILL_MOVESPEED], SKILL_MOVESPEED);
+	DamageResist = Stats.GetSkill(Skills[SKILL_DAMAGERESIST], SKILL_DAMAGERESIST) - 1.0f;
+	MaxHealth = (int)(Stats.GetLevelHealth(Level) * Stats.GetSkill(Skills[SKILL_HEALTH], SKILL_HEALTH));
+	MaxStamina = 1.0f * Stats.GetSkill(Skills[SKILL_MAXSTAMINA], SKILL_MAXSTAMINA);
+	StaminaRegenModifier = 1.0f * Stats.GetSkill(Skills[SKILL_MAXSTAMINA], SKILL_MAXSTAMINA);
 
 	// Armor
-	DamageBlock = Assets.GetLevelDamageBlock(Level);
+	DamageBlock = Stats.GetLevelDamageBlock(Level);
 	if(GetArmor()) {
 		DamageBlock += GetArmor()->DamageBlock;
 		DamageResist += GetArmor()->DamageResist;
@@ -1360,7 +1360,7 @@ void _Player::UpdateColor() {
 		Color = COLOR_WHITE;
 }
 
-int _Player::GetInventoryMaxStack() const { return Assets.GetSkill(Skills[SKILL_MAXINVENTORY], SKILL_MAXINVENTORY) + 1; }
+int _Player::GetInventoryMaxStack() const { return Stats.GetSkill(Skills[SKILL_MAXINVENTORY], SKILL_MAXINVENTORY) + 1; }
 bool _Player::CanUseMedkit() const { return (MedkitTimer > PLAYER_MEDKITPERIOD) && Health < MaxHealth; }
 bool _Player::CanReload() const { return HasMainHand() && !Reloading && !SwitchingWeapons && !IsMeleeAttacking() && GetMainHand()->GetAmmo() != GetMainHand()->GetRoundSize() && HasClips(); }
 

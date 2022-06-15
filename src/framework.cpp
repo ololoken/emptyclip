@@ -27,6 +27,7 @@
 #include <stdexcept>
 #include <constants.h>
 #include <assets.h>
+#include <stats.h>
 #include <save.h>
 #include <states/null.h>
 #include <states/convert.h>
@@ -108,6 +109,7 @@ void _Framework::Init(int ArgumentCount, char **Arguments) {
 
 	// Load assets
 	Assets.Init();
+	Stats.Init();
 	Actions.LoadActionNames();
 	Save.LoadSaves();
 }

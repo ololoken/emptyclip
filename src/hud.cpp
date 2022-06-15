@@ -19,6 +19,7 @@
 #include <graphics.h>
 #include <font.h>
 #include <config.h>
+#include <stats.h>
 #include <program.h>
 #include <assets.h>
 #include <actions.h>
@@ -858,48 +859,48 @@ void _HUD::UpdateSkillInfo(int Skill, int DrawX, int DrawY) {
 	switch(Skill) {
 		case SKILL_STRENGTH:
 			Labels[LABEL_SKILLTEXT]->Text = "Allows you to equip heavier armor";
-			Buffer << "+" << Assets.GetSkill(Player->GetSkill(Skill), Skill) << " Strength";
-			BufferNext << "+" << Assets.GetSkill(Assets.GetValidSkill(Player->GetSkill(Skill)+1), Skill) << " Strength";
+			Buffer << "+" << Stats.GetSkill(Player->GetSkill(Skill), Skill) << " Strength";
+			BufferNext << "+" << Stats.GetSkill(Stats.GetValidSkill(Player->GetSkill(Skill)+1), Skill) << " Strength";
 		break;
 		case SKILL_HEALTH:
 			Labels[LABEL_SKILLTEXT]->Text = "Increases health";
-			Buffer << "+" << Assets.GetSkillPercentImprovement(Player->GetSkill(Skill), Skill) << "% Health";
-			BufferNext << "+" << Assets.GetSkillPercentImprovement(Assets.GetValidSkill(Player->GetSkill(Skill)+1), Skill) << "% Health";
+			Buffer << "+" << Stats.GetSkillPercentImprovement(Player->GetSkill(Skill), Skill) << "% Health";
+			BufferNext << "+" << Stats.GetSkillPercentImprovement(Stats.GetValidSkill(Player->GetSkill(Skill)+1), Skill) << "% Health";
 		break;
 		case SKILL_ACCURACY:
 			Labels[LABEL_SKILLTEXT]->Text = "Increases gun accuracy";
-			Buffer << "+" << Assets.GetSkillPercentImprovement(Player->GetSkill(Skill), Skill) << "% Accuracy";
-			BufferNext << "+" << Assets.GetSkillPercentImprovement(Assets.GetValidSkill(Player->GetSkill(Skill)+1), Skill) << "% Accuracy";
+			Buffer << "+" << Stats.GetSkillPercentImprovement(Player->GetSkill(Skill), Skill) << "% Accuracy";
+			BufferNext << "+" << Stats.GetSkillPercentImprovement(Stats.GetValidSkill(Player->GetSkill(Skill)+1), Skill) << "% Accuracy";
 		break;
 		case SKILL_RELOADSPEED:
 			Labels[LABEL_SKILLTEXT]->Text = "Increases reload speed";
-			Buffer << "+" << Assets.GetSkillPercentImprovement(Player->GetSkill(Skill), Skill) << "% Reload Speed";
-			BufferNext << "+" << Assets.GetSkillPercentImprovement(Assets.GetValidSkill(Player->GetSkill(Skill)+1), Skill) << "% Reload Speed";
+			Buffer << "+" << Stats.GetSkillPercentImprovement(Player->GetSkill(Skill), Skill) << "% Reload Speed";
+			BufferNext << "+" << Stats.GetSkillPercentImprovement(Stats.GetValidSkill(Player->GetSkill(Skill)+1), Skill) << "% Reload Speed";
 		break;
 		case SKILL_ATTACKSPEED:
 			Labels[LABEL_SKILLTEXT]->Text = "Increases attack speed";
-			Buffer << "+" << Assets.GetSkillPercentImprovement(Player->GetSkill(Skill), Skill) << "% Attack Speed";
-			BufferNext << "+" << Assets.GetSkillPercentImprovement(Assets.GetValidSkill(Player->GetSkill(Skill)+1), Skill) << "% Attack Speed";
+			Buffer << "+" << Stats.GetSkillPercentImprovement(Player->GetSkill(Skill), Skill) << "% Attack Speed";
+			BufferNext << "+" << Stats.GetSkillPercentImprovement(Stats.GetValidSkill(Player->GetSkill(Skill)+1), Skill) << "% Attack Speed";
 		break;
 		case SKILL_MOVESPEED:
 			Labels[LABEL_SKILLTEXT]->Text = "Increases move speed";
-			Buffer << "+" << Assets.GetSkillPercentImprovement(Player->GetSkill(Skill), Skill) << "% Move Speed";
-			BufferNext << "+" << Assets.GetSkillPercentImprovement(Assets.GetValidSkill(Player->GetSkill(Skill)+1), Skill) << "% Move Speed";
+			Buffer << "+" << Stats.GetSkillPercentImprovement(Player->GetSkill(Skill), Skill) << "% Move Speed";
+			BufferNext << "+" << Stats.GetSkillPercentImprovement(Stats.GetValidSkill(Player->GetSkill(Skill)+1), Skill) << "% Move Speed";
 		break;
 		case SKILL_DAMAGERESIST:
 			Labels[LABEL_SKILLTEXT]->Text = "Damage Resist";
-			Buffer << "+" << Assets.GetSkillPercentImprovement(Player->GetSkill(Skill), Skill) << "% Damage Resist";
-			BufferNext << "+" << Assets.GetSkillPercentImprovement(Assets.GetValidSkill(Player->GetSkill(Skill)+1), Skill) << "% Damage Resist";
+			Buffer << "+" << Stats.GetSkillPercentImprovement(Player->GetSkill(Skill), Skill) << "% Damage Resist";
+			BufferNext << "+" << Stats.GetSkillPercentImprovement(Stats.GetValidSkill(Player->GetSkill(Skill)+1), Skill) << "% Damage Resist";
 		break;
 		case SKILL_MAXINVENTORY:
 			Labels[LABEL_SKILLTEXT]->Text = "Increases max inventory stack size";
-			Buffer << "+" << Assets.GetSkill(Player->GetSkill(Skill), Skill) << " Stacks";
-			BufferNext << "+" << Assets.GetSkill(Assets.GetValidSkill(Player->GetSkill(Skill)+1), Skill) << " Stacks";
+			Buffer << "+" << Stats.GetSkill(Player->GetSkill(Skill), Skill) << " Stacks";
+			BufferNext << "+" << Stats.GetSkill(Stats.GetValidSkill(Player->GetSkill(Skill)+1), Skill) << " Stacks";
 		break;
 		case SKILL_MAXSTAMINA:
 			Labels[LABEL_SKILLTEXT]->Text = "Increases max stamina";
-			Buffer << "+" << Assets.GetSkillPercentImprovement(Player->GetSkill(Skill), Skill) << "% Max Stamina";
-			BufferNext << "+" << Assets.GetSkillPercentImprovement(Assets.GetValidSkill(Player->GetSkill(Skill)+1), Skill) << "% Max Stamina";
+			Buffer << "+" << Stats.GetSkillPercentImprovement(Player->GetSkill(Skill), Skill) << "% Max Stamina";
+			BufferNext << "+" << Stats.GetSkillPercentImprovement(Stats.GetValidSkill(Player->GetSkill(Skill)+1), Skill) << "% Max Stamina";
 		break;
 	}
 
