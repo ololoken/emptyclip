@@ -47,7 +47,7 @@ void _Assets::Init(const std::string &AssetPath) {
 	this->AssetPath = AssetPath;
 
 	LoadPrograms("tables/programs.tsv");
-	LoadStringTable("tables/strings.tsv");
+	LoadStrings("tables/strings.tsv");
 	LoadLevels("tables/levels.tsv");
 	LoadSkills("tables/skills.tsv");
 	LoadFonts("tables/fonts.tsv", false);
@@ -119,13 +119,12 @@ void _Assets::Close() {
 }
 
 // Loads the strings
-void _Assets::LoadStringTable(const std::string &Path) {
+void _Assets::LoadStrings(const std::string &Path) {
 
 	// Load file
 	std::ifstream File((AssetPath + Path).c_str(), std::ios::in);
-	if(!File) {
+	if(!File)
 		throw std::runtime_error("Error loading: " + Path);
-	}
 
 	// Ignore the first line
 	File.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
@@ -133,18 +132,18 @@ void _Assets::LoadStringTable(const std::string &Path) {
 	// Read file
 	while(!File.eof() && File.peek() != EOF) {
 
-		std::string Identifier;
+		std::string ID;
 		std::string Text;
-		std::getline(File, Identifier, '\t');
-		std::getline(File, Text, '\t');
+		std::getline(File, ID, '\t');
+		std::getline(File, Text, '\n');
 
 		// Check for duplicates
-		if(IsStringLoaded(Identifier)) {
-			throw std::runtime_error("LoadStringTable - Duplicate entry: " + Identifier);
-		}
+		if(Strings.find(ID) != Strings.end())
+			throw std::runtime_error(std::string(__FUNCTION__) + " - Duplicate entry: " + ID);
 
-		StringTable.insert(make_pair(Identifier, Text));
+		Strings.insert(make_pair(ID, Text));
 	}
+
 	File.close();
 }
 
@@ -1131,7 +1130,7 @@ void _Assets::LoadAnimation(const std::string &Identifier, const std::string &Pa
 		for(int i = 0; i < static_cast<int>(AnimationTableIterator->second.Identifiers.size()); i++) {
 			LoadReel(AnimationTableIterator->second.Identifiers[i], Path);
 
-			Animation->AddReel(GetReel(AnimationTableIterator->second.Identifiers[i]));
+			Animation->Reels.push_back(GetReel(AnimationTableIterator->second.Identifiers[i]));
 		}
 
 		Animation->ChangeReel(0);
@@ -1780,7 +1779,7 @@ void _Assets::GetTextureList(std::vector<_Brush> &TextureList, int Group) {
 	}
 }
 
-bool _Assets::IsStringLoaded(const std::string &Identifier) { return StringTable.find(Identifier) != StringTable.end(); }
+bool _Assets::IsStringLoaded(const std::string &Identifier) { return Strings.find(Identifier) != Strings.end(); }
 bool _Assets::IsColorLoaded(const std::string &Identifier) { return Colors.find(Identifier) != Colors.end(); }
 bool _Assets::IsTextureLoaded(const std::string &Identifier) { return Textures.find(Identifier) != Textures.end(); }
 bool _Assets::IsAttackSampleLoaded(const std::string &Identifier) { return AttackSampleTable.find(Identifier) != AttackSampleTable.end(); }
@@ -1797,12 +1796,6 @@ bool _Assets::IsWeaponLoaded(const std::string &Identifier) { return WeaponTable
 bool _Assets::IsArmorLoaded(const std::string &Identifier) { return ArmorTable.find(Identifier) != ArmorTable.end(); }
 bool _Assets::IsItemGroupLoaded(const std::string &Identifier) { return ItemGroupTable.find(Identifier) != ItemGroupTable.end(); }
 
-std::string _Assets::GetString(const std::string &Identifier) {
-	if(StringTable.find(Identifier) == StringTable.end())
-		return "";
-
-	return StringTable[Identifier];
-}
 const glm::vec4 &_Assets::GetColor(const std::string &Identifier) {
 	if(Colors.find(Identifier) == Colors.end())
 		return COLOR_WHITE;

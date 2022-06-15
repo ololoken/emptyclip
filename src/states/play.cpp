@@ -835,10 +835,7 @@ void _PlayState::CheckEvents(const _Entity *Entity) {
 					Player->Save();
 				break;
 				case EVENT_TEXT:
-					if(Assets.IsStringLoaded(Event->ItemIdentifier))
-						HUD->ShowMessageBox(Assets.GetString(Event->ItemIdentifier), Event->ActivationPeriod);
-
-					// Message with level of 0 = infinite
+					HUD->ShowMessageBox(Assets.Strings[Event->ItemIdentifier], Event->ActivationPeriod);
 					if(Event->Level != 0)
 						Event->Active = false;
 				break;

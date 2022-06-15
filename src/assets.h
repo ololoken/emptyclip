@@ -128,7 +128,7 @@ class _Assets {
 		void Close();
 
 		bool Initialize();
-		void LoadStringTable(const std::string &Path);
+		void LoadStrings(const std::string &Path);
 		void LoadColors(const std::string &Path);
 		void LoadReelTable(const std::string &Path);
 		void LoadAnimationTable(const std::string &Path);
@@ -195,7 +195,6 @@ class _Assets {
 		_Image *GetImage(const std::string &Identifier);
 		_Button *GetButton(const std::string &Identifier);
 		_TextBox *GetTextBox(const std::string &Identifier);
-		std::string GetString(const std::string &Identifier);
 		const glm::vec4 &GetColor(const std::string &Identifier);
 		_Reel *GetReel(const std::string &Identifier);
 		AttackSampleTemplateStruct *GetAttackSampleTemplate(const std::string &Identifier);
@@ -229,6 +228,7 @@ class _Assets {
 		void GetTextureList(std::vector<_Brush> &TextureList, int Group=-1);
 
 		// Data
+		std::unordered_map<std::string, std::string> Strings;
 		std::unordered_map<std::string, const _Texture *> Textures;
 		std::unordered_map<std::string, _Program *> Programs;
 		std::unordered_map<std::string, glm::vec4> Colors;
@@ -244,7 +244,6 @@ class _Assets {
 		void LoadSkills(const std::string &Path);
 
 		// Tables
-		std::unordered_map<std::string, std::string> StringTable;
 		std::unordered_map<std::string, _ReelTemplate> ReelTable;
 		std::unordered_map<std::string, AnimationTemplateStruct> AnimationTable;
 		std::unordered_map<std::string, AttackSampleTemplateStruct> AttackSampleTable;

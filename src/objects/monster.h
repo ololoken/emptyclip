@@ -98,15 +98,13 @@ class _Monster : public _Entity {
 		bool CheckGoal();
 
 		const _ParticleTemplate *GetWeaponParticle(int Index) const;
-		int64_t GetExperienceGiven() const { return ExperienceGiven; }
-		int GetBehavior() { if(BehaviorList.empty()) BehaviorList.push_front(BaseBehavior); return BehaviorList.front(); }
+		int GetBehavior();
 
 		glm::vec2 ReturnPosition;
 
 	private:
 
 		float AITimer;
-		float WaitTime;
 
 		int PersonalityType;
 		std::list<int> BehaviorList;

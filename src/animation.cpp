@@ -28,10 +28,6 @@ _Animation::_Animation() :
 
 }
 
-// Destructor
-_Animation::~_Animation() {
-}
-
 // Assignment
 _Animation &_Animation::operator=(const _Animation &Animation) {
 	Reels = Animation.Reels;

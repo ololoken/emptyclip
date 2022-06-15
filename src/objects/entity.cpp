@@ -217,7 +217,7 @@ void _Entity::UpdateAnimation(double FrameTime) {
 			MoveState = MOVE_NONE;
 		break;
 		case ACTION_MELEE:
-			if(Animation->GetPlayMode() == STOPPED) {
+			if(Animation->PlayMode == STOPPED) {
 				Animation->ChangeReel(WalkingAnimation);
 				SetAnimationPlaybackSpeedFactor();
 				Action = ACTION_IDLE;
@@ -235,7 +235,7 @@ void _Entity::UpdateAnimation(double FrameTime) {
 			AttackMade = true;
 		break;
 		case ACTION_SHOOT:
-			if(Animation->GetPlayMode() == STOPPED) {
+			if(Animation->PlayMode == STOPPED) {
 				Action = ACTION_IDLE;
 				Animation->ChangeReel(WalkingAnimation);
 				SetAnimationPlaybackSpeedFactor();
@@ -255,7 +255,7 @@ void _Entity::UpdateAnimation(double FrameTime) {
 			IncurDeathPenalty();
 		break;
 		case ACTION_DYING:
-			if(Animation->GetPlayMode() == STOPPED)
+			if(Animation->PlayMode == STOPPED)
 				Active = false;
 		break;
 	}

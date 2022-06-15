@@ -927,6 +927,9 @@ void _HUD::ShowTextMessage(const std::string &Message, double Time) {
 
 // Show message box
 void _HUD::ShowMessageBox(const std::string &Message, double Time) {
+	if(Message == "")
+		return;
+
 	if(MessageBoxTimer > 0.0 && Labels[LABEL_MESSAGEBOX]->GetText() == Message)
 		return;
 

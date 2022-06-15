@@ -1091,7 +1091,8 @@ void _EditorState::LoadPaletteButtons(std::vector<_Brush> &Icons, int Type) {
 	ClearPalette(Type);
 
 	// Sort icons
-	std::sort(Icons.begin(), Icons.end(), CompareBrush);
+	if(Type != EDITMODE_EVENTS)
+		std::sort(Icons.begin(), Icons.end(), CompareBrush);
 
 	// Loop through textures
 	glm::ivec2 Offset(0, 0);

@@ -1114,7 +1114,7 @@ void _Player::UpdateSpeed(float Factor) {
 
 	MoveSoundDelay = ENTITY_MOVESOUNDDELAYFACTOR / (MovementSpeed * MovementModifier);
 	LegAnimation->SetPlaybackSpeedFactor(1.0f / MovementModifier);
-	if(Animation->GetCurrentReel() == PLAYER_ANIMATIONWALKINGONEHAND || Animation->GetCurrentReel() == PLAYER_ANIMATIONWALKINGTWOHAND)
+	if(Animation->CurrentReel == PLAYER_ANIMATIONWALKINGONEHAND || Animation->CurrentReel == PLAYER_ANIMATIONWALKINGTWOHAND)
 		SetAnimationPlaybackSpeedFactor();
 }
 

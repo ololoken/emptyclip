@@ -85,8 +85,8 @@ _Monster::_Monster(_MonsterTemplate *Monster, _Animation *Animation, const glm::
 	*this->Animation = *Animation;
 	WeaponParticles = Monster->WeaponParticles;
 	MoveSoundDelay = 1000;
-	if(Animation && Animation->GetReel(0))
-		MoveSoundDelay = Animation->GetPlaybackSpeed() * Animation->GetReel(0)->Textures.size();
+	if(Animation && Animation->Reels[0])
+		MoveSoundDelay = Animation->PlaybackSpeed * Animation->Reels[0]->Textures.size();
 
 	ViewRangeFront *= ViewRangeFront;
 	ViewRangeSide *= ViewRangeSide;
@@ -101,7 +101,6 @@ _Monster::_Monster(_MonsterTemplate *Monster, _Animation *Animation, const glm::
 
 	// Temp
 	AITimer = 0;
-	WaitTime = 0;
 	BaseBehavior = PersonalityBaseBehaviors[PersonalityType];
 	CurrentActions = 0;
 
@@ -554,6 +553,12 @@ bool _Monster::CheckGoal() {
 }
 
 const _ParticleTemplate *_Monster::GetWeaponParticle(int Index) const {
-
 	return WeaponParticles->ParticleTemplates[Index];
+}
+
+int _Monster::GetBehavior() {
+	if(BehaviorList.empty())
+		BehaviorList.push_front(BaseBehavior);
+
+	return BehaviorList.front();
 }

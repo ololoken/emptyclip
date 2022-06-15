@@ -51,7 +51,7 @@ armor_chain	Chainmail (medium armor)
 armor_plate	Platemail (heavy armor)
 armor_ammo	Right-clicking ammo in your inventory will put it into your ammo belt. Right-clicking ammo in your belt will drop it.
 upgrade_use	Upgrade components can be used to upgrade your weapon. Pick up the item, then drag it onto your weapon.
-medkit_use	Hit the medkit key to use a medkit. You cannot use one if your health is full. (default: Z)
+medkit_use	Hit the medkit key to use a medkit. You cannot use one if your health is full. (default: Q)
 medkit_inventory	You may also right-click a medkit in your inventory to use it.
 treasure_open	Treasure chests contain valuable items. Attack  the chests to open them.
 town_gamble0	Low Gambling Room

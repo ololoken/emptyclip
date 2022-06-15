@@ -61,10 +61,8 @@ class _Animation {
 
 		_Animation();
 		_Animation &operator=(const _Animation &Animation);
-		~_Animation();
 
 		void Update(double FrameTime);
-		void AddReel(const _Reel *Reel) { Reels.push_back(Reel); }
 		void ChangeReel(int Index);
 
 		void SetFramePeriod(double Value);
@@ -72,14 +70,8 @@ class _Animation {
 		void SetPlayMode(int Mode);
 		void SetAllowUpdate(bool Value) { AllowUpdate = Value; }
 
-		int GetPlayMode() const { return PlayMode; }
-		int GetCurrentReel() const { return CurrentReel; }
 		_Texture *GetCurrentFrame() const;
 		_Texture *GetStartPositionFrame() const;
-		float GetPlaybackSpeed() const { return PlaybackSpeed; }
-		const _Reel *GetReel(int Index) { return Reels[Index]; }
-
-	private:
 
 		std::vector<const _Reel *> Reels;
 		int PlayMode;
