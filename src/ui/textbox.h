@@ -41,15 +41,11 @@ class _TextBox : public _Element {
 		void SetFocused(bool Focused) { this->Focused = Focused; }
 		bool GetFocused() const { return Focused; }
 
-		void SetText(const std::string &Text) { this->Text = Text; ResetCursor(); }
-		const std::string &GetText() const { return Text; }
+		void ResetCursor() { DrawCursor = true; CursorTimer = 0; }
 
 	private:
 
-		void ResetCursor() { DrawCursor = true; CursorTimer = 0; }
-
 		const _Font *Font;
-		std::string Text;
 
 		bool Focused;
 		size_t MaxLength;

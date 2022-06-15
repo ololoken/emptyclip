@@ -1355,7 +1355,7 @@ const _ParticleTemplate *_Player::GetWeaponParticle(int Index) const {
 void _Player::UpdateColor() {
 
 	if(Assets.IsColorLoaded(ColorIdentifier))
-		Color = Assets.GetColor(ColorIdentifier);
+		Color = Assets.Colors[ColorIdentifier];
 	else
 		Color = COLOR_WHITE;
 }

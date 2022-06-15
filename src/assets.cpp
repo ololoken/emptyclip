@@ -85,7 +85,9 @@ void _Assets::Init(const std::string &AssetPath) {
 // Shutdown
 void _Assets::Close() {
 
-	UnloadMonsterSet();
+	for(const auto &Monster : MonsterTable)
+		UnloadAnimation(Monster.second.AnimationIdentifier);
+	MonsterSet.clear();
 	UnloadAnimation("player_torso");
 	UnloadAnimation("player_legs");
 
@@ -141,7 +143,7 @@ void _Assets::LoadStrings(const std::string &Path) {
 		if(Strings.find(ID) != Strings.end())
 			throw std::runtime_error(std::string(__FUNCTION__) + " - Duplicate entry: " + ID);
 
-		Strings.insert(make_pair(ID, Text));
+		Strings[ID] = Text;
 	}
 
 	File.close();
@@ -368,7 +370,7 @@ void _Assets::LoadAnimationTable(const std::string &Path) {
 		if(IsAnimationLoaded(Identifier))
 			throw std::runtime_error(std::string(__FUNCTION__) + " - Duplicate entry: " + Identifier);
 
-		AnimationTable.insert(make_pair(Identifier, AnimationTemplate));
+		AnimationTable[Identifier] = AnimationTemplate;
 	}
 
 	File.close();
@@ -527,7 +529,7 @@ void _Assets::LoadSoundGroups(const std::string &Path) {
 		if(IsAttackSampleLoaded(Identifier))
 			throw std::runtime_error(std::string(__FUNCTION__) + " - Duplicate entry: " + Identifier);
 
-		AttackSampleTable.insert(make_pair(Identifier, SampleTemplate));
+		AttackSampleTable[Identifier] = SampleTemplate;
 	}
 
 	File.close();
@@ -572,7 +574,7 @@ void _Assets::LoadParticles(const std::string &Path) {
 			throw std::runtime_error("Unable to find texture: " + TextureIdentifier);
 
 		// Set color
-		Particle.Color = GetColor(ColorIdentifier);
+		Particle.Color = Colors[ColorIdentifier];
 
 		// Get font
 		Particle.Font = Assets.Fonts[FontIdentifier];
@@ -621,7 +623,7 @@ void _Assets::LoadWeaponParticles(const std::string &Path) {
 				WeaponParticle.ParticleTemplates[i] = GetParticleTemplate(ParticleIdentifier);
 		}
 
-		WeaponParticleTable.insert(make_pair(Name, WeaponParticle));
+		WeaponParticleTable[Name] = WeaponParticle;
 	}
 
 	File.close();
@@ -663,13 +665,13 @@ void _Assets::LoadMonsterTable(const std::string &Path) {
 			if(!IsColorLoaded(ColorName))
 				throw std::runtime_error(std::string(__FUNCTION__) + " - Cannot find color: " + ColorName);
 
-			Monster.Color = GetColor(ColorName);
+			Monster.Color = Colors[ColorName];
 		}
 		else
 			Monster.Color = COLOR_WHITE;
 
 		// Check for item group
-		if(Monster.ItemGroupIdentifier != "" && !IsItemGroupLoaded(Monster.ItemGroupIdentifier))
+		if(Monster.ItemGroupIdentifier != "" && ItemGroupTable.find(Monster.ItemGroupIdentifier) == ItemGroupTable.end())
 			throw std::runtime_error(std::string(__FUNCTION__) + " - Cannot find item group: " + Monster.ItemGroupIdentifier + " in " + Name);
 
 		// Check for animation
@@ -729,7 +731,7 @@ void _Assets::LoadMiscItemTable(const std::string &Path) {
 			if(!IsColorLoaded(ColorName))
 				throw std::runtime_error(std::string(__FUNCTION__) + " - Cannot find color: " + ColorName);
 
-			MiscItem.Color = GetColor(ColorName);
+			MiscItem.Color = Colors[ColorName];
 		}
 		else
 			MiscItem.Color = COLOR_WHITE;
@@ -777,7 +779,7 @@ void _Assets::LoadUpgradeTable(const std::string &Path) {
 			if(!IsColorLoaded(ColorName))
 				throw std::runtime_error(std::string(__FUNCTION__) + " - Cannot find color: " + ColorName);
 
-			Upgrade.Color = GetColor(ColorName);
+			Upgrade.Color = Colors[ColorName];
 		}
 		else
 			Upgrade.Color = COLOR_WHITE;
@@ -826,7 +828,7 @@ void _Assets::LoadAmmoTable(const std::string &Path) {
 			if(!IsColorLoaded(ColorName))
 				throw std::runtime_error(std::string(__FUNCTION__) + " - Cannot find color: " + ColorName);
 
-			Ammo.Color = GetColor(ColorName);
+			Ammo.Color = Colors[ColorName];
 		}
 		else
 			Ammo.Color = COLOR_WHITE;
@@ -883,7 +885,7 @@ void _Assets::LoadWeaponTable(const std::string &Path) {
 			if(!IsColorLoaded(ColorName))
 				throw std::runtime_error(std::string(__FUNCTION__) + " - Cannot find color: " + ColorName);
 
-			Weapon.Color = GetColor(ColorName);
+			Weapon.Color = Colors[ColorName];
 		}
 		else
 			Weapon.Color = COLOR_WHITE;
@@ -949,7 +951,7 @@ void _Assets::LoadArmorTable(const std::string &Path) {
 			if(!IsColorLoaded(ColorName))
 				throw std::runtime_error(std::string(__FUNCTION__) + " - Cannot find color: " + ColorName);
 
-			Armor.Color = GetColor(ColorName);
+			Armor.Color = Colors[ColorName];
 		}
 		else
 			Armor.Color = COLOR_WHITE;
@@ -1068,7 +1070,7 @@ void _Assets::LoadMonsterSet(const std::string &Path) {
 	if(!File)
 		return;
 
-	UnloadMonsterSet();
+	MonsterSet.clear();
 
 	// Read file
 	std::string Identifier;
@@ -1110,7 +1112,7 @@ void _Assets::LoadReel(const std::string &Identifier, const std::string &Path) {
 			Reel.Textures.push_back(Texture);
 		}
 
-		Reels.insert(make_pair(Identifier, Reel));
+		Reels[Identifier] = Reel;
 	}
 }
 
@@ -1134,11 +1136,11 @@ void _Assets::LoadAnimation(const std::string &Identifier, const std::string &Pa
 		}
 
 		Animation->ChangeReel(0);
-		Animations.insert(make_pair(Identifier, Animation));
+		Animations[Identifier] = Animation;
 	}
 }
 
-// Loads the monster aniimation
+// Loads all the monster animations in a monster set
 void _Assets::LoadMonsterAnimation() {
 	for(size_t i = 0; i < MonsterSet.size(); i++)
 		LoadAnimation(GetMonsterTemplate(MonsterSet[i])->AnimationIdentifier, "textures/monsters/");
@@ -1256,7 +1258,7 @@ void _Assets::LoadElements(const std::string &Path) {
 		// Look for parent
 		_Element *ParentElement = nullptr;
 		if(ParentIdentifier != "") {
-			ParentElement = GetElement(ParentIdentifier);
+			ParentElement = Elements[ParentIdentifier];
 			if(!ParentElement) {
 				throw std::runtime_error("Parent element not found: " + ParentIdentifier);
 			}
@@ -1265,26 +1267,24 @@ void _Assets::LoadElements(const std::string &Path) {
 		// Get style
 		_Style *Style = nullptr;
 		if(StyleIdentifier != "") {
-			Style = GetStyle(StyleIdentifier);
-			if(!Style) {
+			Style = Styles[StyleIdentifier];
+			if(!Style)
 				throw std::runtime_error("Unable to find style: " + StyleIdentifier);
-			}
 		}
 
 		// Create
 		_Element *Element = new _Element(Identifier, ParentElement, Offset, Size, Alignment, Style, MaskOutside);
 
 		// Check for duplicates
-		if(GetElement(Identifier)) {
+		if(Elements[Identifier])
 			throw std::runtime_error("Duplicate element identifier: " + Identifier);
-		}
 
 		// Add as child for parent
 		if(ParentElement) {
 			ParentElement->AddChild(Element);
 		}
 
-		Elements.insert(make_pair(Identifier, Element));
+		Elements[Identifier] = Element;
 	}
 
 	File.close();
@@ -1324,7 +1324,7 @@ void _Assets::LoadLabels(const std::string &Path) {
 		// Look for parent
 		_Element *ParentElement = nullptr;
 		if(ParentName != "") {
-			ParentElement = GetElement(ParentName);
+			ParentElement = Elements[ParentName];
 			if(!ParentElement)
 				throw std::runtime_error("Parent element not found: " + ParentName);
 		}
@@ -1335,20 +1335,20 @@ void _Assets::LoadLabels(const std::string &Path) {
 			throw std::runtime_error("Unable to find font: " + FontName);
 
 		// Get color
-		glm::vec4 Color = GetColor(ColorName);
+		glm::vec4 Color = Colors[ColorName];
 
 		// Create
 		_Label *Element = new _Label(Name, ParentElement, Offset, Size, Alignment, Font, Color, Text);
 
 		// Check for duplicates
-		if(GetElement(Name))
+		if(Elements[Name])
 			throw std::runtime_error("Duplicate element identifier: " + Name);
 
 		// Add as child for parent
 		if(ParentElement)
 			ParentElement->AddChild(Element);
 
-		Elements.insert(make_pair(Name, Element));
+		Elements[Name] = Element;
 	}
 
 	File.close();
@@ -1387,7 +1387,7 @@ void _Assets::LoadImages(const std::string &Path) {
 		// Look for parent
 		_Element *ParentElement = nullptr;
 		if(ParentIdentifier != "") {
-			ParentElement = GetElement(ParentIdentifier);
+			ParentElement = Elements[ParentIdentifier];
 			if(!ParentElement)
 				throw std::runtime_error("Parent element not found: " + ParentIdentifier);
 		}
@@ -1396,20 +1396,20 @@ void _Assets::LoadImages(const std::string &Path) {
 		const _Texture *Texture = Textures[TextureIdentifier];
 
 		// Get color
-		glm::vec4 Color = GetColor(ColorIdentifier);
+		glm::vec4 Color = Colors[ColorIdentifier];
 
 		// Create
 		_Image *Element = new _Image(Identifier, ParentElement, Offset, Size, Alignment, Texture, Color, Stretch);
 
 		// Check for duplicates
-		if(GetElement(Identifier))
+		if(Elements[Identifier])
 			throw std::runtime_error("Duplicate element identifier: " + Identifier);
 
 		// Add as child for parent
 		if(ParentElement)
 			ParentElement->AddChild(Element);
 
-		Elements.insert(make_pair(Identifier, Element));
+		Elements[Identifier] = Element;
 	}
 
 	File.close();
@@ -1446,27 +1446,27 @@ void _Assets::LoadButtons(const std::string &Path) {
 		// Look for parent
 		_Element *ParentElement = nullptr;
 		if(ParentIdentifier != "") {
-			ParentElement = GetElement(ParentIdentifier);
+			ParentElement = Elements[ParentIdentifier];
 			if(!ParentElement)
 				throw std::runtime_error("Parent element not found: " + ParentIdentifier);
 		}
 
 		// Get style
-		_Style *Style = GetStyle(StyleIdentifier);
-		_Style *HoverStyle = GetStyle(HoverStyleIdentifier);
+		_Style *Style = Styles[StyleIdentifier];
+		_Style *HoverStyle = Styles[HoverStyleIdentifier];
 
 		// Create
 		_Button *Element = new _Button(Identifier, ParentElement, Offset, Size, Alignment, Style, HoverStyle);
 
 		// Check for duplicates
-		if(GetElement(Identifier))
+		if(Elements[Identifier])
 			throw std::runtime_error("Duplicate element identifier: " + Identifier);
 
 		// Add as child for parent
 		if(ParentElement)
 			ParentElement->AddChild(Element);
 
-		Elements.insert(make_pair(Identifier, Element));
+		Elements[Identifier] = Element;
 	}
 
 	File.close();
@@ -1505,13 +1505,13 @@ void _Assets::LoadTextBoxes(const std::string &Path) {
 		// Look for parent
 		_Element *ParentElement = nullptr;
 		if(ParentIdentifier != "") {
-			ParentElement = GetElement(ParentIdentifier);
+			ParentElement = Elements[ParentIdentifier];
 			if(!ParentElement)
 				throw std::runtime_error("Parent element not found: " + ParentIdentifier);
 		}
 
 		// Get style
-		_Style *Style = GetStyle(StyleIdentifier);
+		_Style *Style = Styles[StyleIdentifier];
 
 		// Get font
 		_Font *Font = Fonts[FontIdentifier];
@@ -1522,14 +1522,14 @@ void _Assets::LoadTextBoxes(const std::string &Path) {
 		_TextBox *Element = new _TextBox(Identifier, ParentElement, Offset, Size, Alignment, Style, Font, MaxLength);
 
 		// Check for duplicates
-		if(GetElement(Identifier))
+		if(Elements[Identifier])
 			throw std::runtime_error("Duplicate element identifier: " + Identifier);
 
 		// Add as child for parent
 		if(ParentElement)
 			ParentElement->AddChild(Element);
 
-		Elements.insert(make_pair(Identifier, Element));
+		Elements[Identifier] = Element;
 	}
 
 	File.close();
@@ -1551,26 +1551,18 @@ void _Assets::UnloadReel(const std::string &Identifier) {
 void _Assets::UnloadAnimation(const std::string &Identifier) {
 
 	auto AnimationIterator = Animations.find(Identifier);
-	if(AnimationIterator != Animations.end()) {
+	if(AnimationIterator == Animations.end())
+		return;
 
-		// Unload reels
-		auto AnimationTableIterator = AnimationTable.find(Identifier);
-		if(AnimationTableIterator != AnimationTable.end()) {
-			for(size_t i = 0; i < AnimationTableIterator->second.Identifiers.size(); i++)
-				UnloadReel(AnimationTableIterator->second.Identifiers[i]);
-		}
-
-		delete AnimationIterator->second;
-		Animations.erase(AnimationIterator);
+	// Unload reels
+	auto AnimationTableIterator = AnimationTable.find(Identifier);
+	if(AnimationTableIterator != AnimationTable.end()) {
+		for(size_t i = 0; i < AnimationTableIterator->second.Identifiers.size(); i++)
+			UnloadReel(AnimationTableIterator->second.Identifiers[i]);
 	}
-}
 
-// Frees memory used by the monster set
-void _Assets::UnloadMonsterSet() {
-	for(const auto &Monster : MonsterTable)
-		UnloadAnimation(Monster.second.AnimationIdentifier);
-
-	MonsterSet.clear();
+	delete AnimationIterator->second;
+	Animations.erase(AnimationIterator);
 }
 
 // Returns the valid amount of experience
@@ -1707,79 +1699,6 @@ void _Assets::GetRandomDrop(const _ItemGroup *ItemGroup, _ObjectSpawn *ObjectSpa
 	}
 }
 
-// Generates a list of monster icons
- void _Assets::GetEventList(std::vector<_Brush> &Icons) {
-
-	Icons.push_back(_Brush("door", "Door", Textures["editor_eventdoor"], COLOR_WHITE));
-	Icons.push_back(_Brush("wswitch", "Wall Switch", Textures["editor_eventwswitch"], COLOR_WHITE));
-	Icons.push_back(_Brush("spawn", "Spawn", Textures["editor_eventspawn"], COLOR_WHITE));
-	Icons.push_back(_Brush("check", "Checkpoint", Textures["editor_eventcheck"], COLOR_WHITE));
-	Icons.push_back(_Brush("end", "End of Level", Textures["editor_eventend"], COLOR_WHITE));
-	Icons.push_back(_Brush("text", "Event Message", Textures["editor_eventtext"], COLOR_WHITE));
-	Icons.push_back(_Brush("sound", "Event Sound", Textures["editor_eventsound"], COLOR_WHITE));
-	Icons.push_back(_Brush("fswitch", "Floor Switch", Textures["editor_eventfswitch"], COLOR_WHITE));
-	Icons.push_back(_Brush("enable", "Event Enabler", Textures["editor_eventenable"], COLOR_WHITE));
-	Icons.push_back(_Brush("tele", "Teleporter", Textures["editor_eventtele"], COLOR_WHITE));
-	Icons.push_back(_Brush("light", "Lights", Textures["editor_eventlight"], COLOR_WHITE));
-}
-
-// Generates a list of monster icons
-void _Assets::GetMonsterList(std::vector<_Brush> &Icons) {
-	_MonsterTemplate *Monster;
-
-	for(size_t i = 0; i < MonsterSet.size(); i++) {
-		if(!IsMonsterLoaded(MonsterSet[i])) {
-			throw std::runtime_error("_Database::GetMonsterList - Cannot find monster: " + MonsterSet[i]);
-		}
-		else {
-			Monster = GetMonsterTemplate(MonsterSet[i]);
-			Icons.push_back(_Brush(MonsterSet[i], Monster->Name, Animations[Monster->AnimationIdentifier]->GetStartPositionFrame(), Monster->Color, _Object::MONSTER));
-		}
-	}
-}
-
-// Generates a list of misc item icons
-void _Assets::GetItemList(std::vector<_Brush> &Icons) {
-	for(const auto &MiscItem : MiscItemTable)
-		Icons.push_back(_Brush(MiscItem.first, MiscItem.second.Name, Textures[MiscItem.second.IconIdentifier], MiscItem.second.Color, MiscItem.second.Type));
-}
-
-// Generates a list of upgrade icons
-void _Assets::GetUpgradeList(std::vector<_Brush> &Icons) {
-	for(const auto &Upgrade : UpgradeTable)
-		Icons.push_back(_Brush(Upgrade.first, Upgrade.second.Name, Textures[Upgrade.second.IconIdentifier], Upgrade.second.Color, _Object::UPGRADE));
-}
-
-// Generates a list of ammo icons
-void _Assets::GetAmmoList(std::vector<_Brush> &Icons) {
-	for(const auto &Ammo : AmmoTable)
-		Icons.push_back(_Brush(Ammo.first, Ammo.second.Name, Textures[Ammo.second.IconIdentifier], Ammo.second.Color, _Object::AMMO));
-}
-
-// Generates a list of weapon icons
-void _Assets::GetWeaponList(std::vector<_Brush> &Icons) {
-	for(const auto &Weapon : WeaponTable)
-		Icons.push_back(_Brush(Weapon.first, Weapon.second.Name, Textures[Weapon.second.IconIdentifier], Weapon.second.Color, _Object::WEAPON));
-}
-
-// Generates a list of armor icons
-void _Assets::GetArmorList(std::vector<_Brush> &Icons) {
-	for(const auto &Armor : ArmorTable)
-		Icons.push_back(_Brush(Armor.first, Armor.second.Name, Textures[Armor.second.IconIdentifier], Armor.second.Color, _Object::ARMOR));
-}
-
-// Get a list of textures
-void _Assets::GetTextureList(std::vector<_Brush> &TextureList, int Group) {
-	for(const auto &Texture : Textures) {
-		if(!Texture.second)
-			continue;
-
-		if(Texture.second->Group == Group || Group == -1)
-			TextureList.push_back(_Brush(Texture.first, Texture.second->Name, Texture.second, COLOR_WHITE));
-	}
-}
-
-bool _Assets::IsStringLoaded(const std::string &Identifier) { return Strings.find(Identifier) != Strings.end(); }
 bool _Assets::IsColorLoaded(const std::string &Identifier) { return Colors.find(Identifier) != Colors.end(); }
 bool _Assets::IsTextureLoaded(const std::string &Identifier) { return Textures.find(Identifier) != Textures.end(); }
 bool _Assets::IsAttackSampleLoaded(const std::string &Identifier) { return AttackSampleTable.find(Identifier) != AttackSampleTable.end(); }
@@ -1787,7 +1706,6 @@ bool _Assets::IsParticleLoaded(const std::string &Identifier) { return ParticleT
 bool _Assets::IsWeaponParticleTemplateLoaded(const std::string &Identifier) { return WeaponParticleTable.find(Identifier) != WeaponParticleTable.end(); }
 bool _Assets::IsReelLoaded(const std::string &Identifier) { return ReelTable.find(Identifier) != ReelTable.end(); }
 bool _Assets::IsAnimationLoaded(const std::string &Identifier) { return AnimationTable.find(Identifier) != AnimationTable.end(); }
-bool _Assets::IsFontLoaded(const std::string &Identifier) { return Fonts.find(Identifier) != Fonts.end(); }
 bool _Assets::IsMonsterLoaded(const std::string &Identifier) { return MonsterTable.find(Identifier) != MonsterTable.end(); }
 bool _Assets::IsMiscItemLoaded(const std::string &Identifier) { return MiscItemTable.find(Identifier) != MiscItemTable.end(); }
 bool _Assets::IsUpgradeLoaded(const std::string &Identifier) { return UpgradeTable.find(Identifier) != UpgradeTable.end(); }
@@ -1796,12 +1714,6 @@ bool _Assets::IsWeaponLoaded(const std::string &Identifier) { return WeaponTable
 bool _Assets::IsArmorLoaded(const std::string &Identifier) { return ArmorTable.find(Identifier) != ArmorTable.end(); }
 bool _Assets::IsItemGroupLoaded(const std::string &Identifier) { return ItemGroupTable.find(Identifier) != ItemGroupTable.end(); }
 
-const glm::vec4 &_Assets::GetColor(const std::string &Identifier) {
-	if(Colors.find(Identifier) == Colors.end())
-		return COLOR_WHITE;
-
-	return Colors[Identifier];
-}
 _Reel *_Assets::GetReel(const std::string &Identifier) {
 	if(Reels.find(Identifier) == Reels.end())
 		return nullptr;
@@ -1874,19 +1786,8 @@ _ItemGroup *_Assets::GetItemGroup(const std::string &Identifier) {
 
 	return &ItemGroupTable[Identifier];
 }
-_Style *_Assets::GetStyle(const std::string &Identifier) {
-	if(Styles.find(Identifier) == Styles.end())
-		return nullptr;
 
-	return Styles[Identifier];
-}
-_Element *_Assets::GetElement(const std::string &Identifier) {
-	if(Elements.find(Identifier) == Elements.end())
-		return nullptr;
-
-	return Elements[Identifier];
-}
-_Label *_Assets::GetLabel(const std::string &Identifier) { return (_Label *)GetElement(Identifier); }
-_Image *_Assets::GetImage(const std::string &Identifier) { return (_Image *)GetElement(Identifier); }
-_Button *_Assets::GetButton(const std::string &Identifier) { return (_Button *)GetElement(Identifier); }
-_TextBox *_Assets::GetTextBox(const std::string &Identifier) { return (_TextBox *)GetElement(Identifier); }
+_Label *_Assets::GetLabel(const std::string &Identifier) { return (_Label *)Elements[Identifier]; }
+_Image *_Assets::GetImage(const std::string &Identifier) { return (_Image *)Elements[Identifier]; }
+_Button *_Assets::GetButton(const std::string &Identifier) { return (_Button *)Elements[Identifier]; }
+_TextBox *_Assets::GetTextBox(const std::string &Identifier) { return (_TextBox *)Elements[Identifier]; }

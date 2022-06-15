@@ -870,7 +870,7 @@ void _PlayState::CheckEvents(const _Entity *Entity) {
 				} break;
 				case EVENT_LIGHT: {
 					if(LastLightEvent != Event) {
-						Map->SetAmbientLight(Assets.GetColor(Event->ItemIdentifier));
+						Map->SetAmbientLight(Assets.Colors[Event->ItemIdentifier]);
 						Map->SetAmbientLightChangePeriod(Event->ActivationPeriod);
 						LastLightEvent = Event;
 					}

@@ -216,7 +216,7 @@ _Map::~_Map() {
 		delete[] Data;
 	}
 
-	Assets.UnloadMonsterSet();
+	Assets.MonsterSet.clear();
 }
 
 // Create tile data

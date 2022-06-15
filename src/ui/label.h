@@ -35,9 +35,6 @@ class _Label : public _Element {
 
 		void Render() const;
 
-		void SetText(const std::string &Text) { this->Text = Text; }
-		const std::string &GetText() const { return Text; }
-
 		void SetWrap(float Width);
 
 	private:
@@ -45,7 +42,6 @@ class _Label : public _Element {
 		const _Font *Font;
 		glm::vec4 Color;
 
-		std::string Text;
 		std::vector<std::string> Texts;
 
 };

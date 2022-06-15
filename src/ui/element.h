@@ -71,6 +71,8 @@ class _Element {
 		void *UserData;
 		int ID;
 
+		std::string Text;
+
 		glm::vec2 Offset;
 		glm::vec2 Size;
 		_Alignment Alignment;

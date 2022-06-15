@@ -58,6 +58,11 @@ void _Audio::Close() {
 	if(!Enabled)
 		return;
 
+	// Delete sources
+	for(auto &Source : Sources)
+		delete Source;
+	Sources.clear();
+
 	// Free loaded sounds
 	FreeAllBuffers();
 

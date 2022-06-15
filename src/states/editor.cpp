@@ -89,20 +89,20 @@ void _EditorState::Init() {
 
 	// Load command buttons
 	MainFont = Assets.Fonts["menu_buttons"];
-	CommandElement = Assets.GetElement("editor_command");
-	BlockElement = Assets.GetElement("editor_blocks");
-	EventElement = Assets.GetElement("editor_events");
+	CommandElement = Assets.Elements["editor_command"];
+	BlockElement = Assets.Elements["editor_blocks"];
+	EventElement = Assets.Elements["editor_events"];
 	InputBox = Assets.GetTextBox("editor_inputbox");
 
 	// Create button groups
-	PaletteElement[0] = Assets.GetElement("editor_palette_block");
-	PaletteElement[1] = Assets.GetElement("editor_palette_events");
-	PaletteElement[2] = Assets.GetElement("editor_palette_monsters");
-	PaletteElement[3] = Assets.GetElement("editor_palette_items");
-	PaletteElement[4] = Assets.GetElement("editor_palette_ammo");
-	PaletteElement[5] = Assets.GetElement("editor_palette_upgrades");
-	PaletteElement[6] = Assets.GetElement("editor_palette_weapons");
-	PaletteElement[7] = Assets.GetElement("editor_palette_armors");
+	PaletteElement[0] = Assets.Elements["editor_palette_block"];
+	PaletteElement[1] = Assets.Elements["editor_palette_events"];
+	PaletteElement[2] = Assets.Elements["editor_palette_monsters"];
+	PaletteElement[3] = Assets.Elements["editor_palette_items"];
+	PaletteElement[4] = Assets.Elements["editor_palette_ammo"];
+	PaletteElement[5] = Assets.Elements["editor_palette_upgrades"];
+	PaletteElement[6] = Assets.Elements["editor_palette_weapons"];
+	PaletteElement[7] = Assets.Elements["editor_palette_armors"];
 
 	// Assign layer buttons
 	LayerButtons[0] = Assets.GetButton("editor_layer_base");
@@ -286,7 +286,7 @@ void _EditorState::KeyEvent(const _KeyEvent &KeyEvent) {
 	if(EditorInput != -1) {
 		switch(KeyEvent.Key) {
 			case SDL_SCANCODE_RETURN: {
-				const std::string InputText = InputBox->GetText();
+				const std::string InputText = InputBox->Text;
 				switch(EditorInput) {
 					case EDITINPUT_LOADMONSTERSET:
 
@@ -1029,12 +1029,22 @@ void _EditorState::LoadPalettes() {
 	std::vector<_Brush> Icons;
 
 	// Load map textures
-	Assets.GetTextureList(Icons, _Texture::MAP);
+	GetTextureList(Icons, _Texture::MAP);
 	LoadPaletteButtons(Icons, EDITMODE_BLOCKS);
 	Icons.clear();
 
 	// Load events
-	Assets.GetEventList(Icons);
+	Icons.push_back(_Brush("door", "Door", Assets.Textures["editor_eventdoor"], COLOR_WHITE));
+	Icons.push_back(_Brush("wswitch", "Wall Switch", Assets.Textures["editor_eventwswitch"], COLOR_WHITE));
+	Icons.push_back(_Brush("spawn", "Spawn", Assets.Textures["editor_eventspawn"], COLOR_WHITE));
+	Icons.push_back(_Brush("check", "Checkpoint", Assets.Textures["editor_eventcheck"], COLOR_WHITE));
+	Icons.push_back(_Brush("end", "End of Level", Assets.Textures["editor_eventend"], COLOR_WHITE));
+	Icons.push_back(_Brush("text", "Event Message", Assets.Textures["editor_eventtext"], COLOR_WHITE));
+	Icons.push_back(_Brush("sound", "Event Sound", Assets.Textures["editor_eventsound"], COLOR_WHITE));
+	Icons.push_back(_Brush("fswitch", "Floor Switch", Assets.Textures["editor_eventfswitch"], COLOR_WHITE));
+	Icons.push_back(_Brush("enable", "Event Enabler", Assets.Textures["editor_eventenable"], COLOR_WHITE));
+	Icons.push_back(_Brush("tele", "Teleporter", Assets.Textures["editor_eventtele"], COLOR_WHITE));
+	Icons.push_back(_Brush("light", "Lights", Assets.Textures["editor_eventlight"], COLOR_WHITE));
 	LoadPaletteButtons(Icons, EDITMODE_EVENTS);
 	for(size_t i = 0; i < Icons.size(); i++)
 		EventTextures.push_back(Icons[i].Texture);
@@ -1044,27 +1054,32 @@ void _EditorState::LoadPalettes() {
 	LoadMonsterButtons();
 
 	// Load items
-	Assets.GetItemList(Icons);
+	for(const auto &MiscItem : Assets.MiscItemTable)
+		Icons.push_back(_Brush(MiscItem.first, MiscItem.second.Name, Assets.Textures[MiscItem.second.IconIdentifier], MiscItem.second.Color, MiscItem.second.Type));
 	LoadPaletteButtons(Icons, EDITMODE_ITEMS);
 	Icons.clear();
 
 	// Load ammo
-	Assets.GetAmmoList(Icons);
+	for(const auto &Ammo : Assets.AmmoTable)
+		Icons.push_back(_Brush(Ammo.first, Ammo.second.Name, Assets.Textures[Ammo.second.IconIdentifier], Ammo.second.Color, _Object::AMMO));
 	LoadPaletteButtons(Icons, EDITMODE_AMMO);
 	Icons.clear();
 
 	// Load upgrades
-	Assets.GetUpgradeList(Icons);
+	for(const auto &Upgrade : Assets.UpgradeTable)
+		Icons.push_back(_Brush(Upgrade.first, Upgrade.second.Name, Assets.Textures[Upgrade.second.IconIdentifier], Upgrade.second.Color, _Object::UPGRADE));
 	LoadPaletteButtons(Icons, EDITMODE_UPGRADES);
 	Icons.clear();
 
 	// Load weapons
-	Assets.GetWeaponList(Icons);
+	for(const auto &Weapon : Assets.WeaponTable)
+		Icons.push_back(_Brush(Weapon.first, Weapon.second.Name, Assets.Textures[Weapon.second.IconIdentifier], Weapon.second.Color, _Object::WEAPON));
 	LoadPaletteButtons(Icons, EDITMODE_WEAPONS);
 	Icons.clear();
 
 	// Load armor
-	Assets.GetArmorList(Icons);
+	for(const auto &Armor : Assets.ArmorTable)
+		Icons.push_back(_Brush(Armor.first, Armor.second.Name, Assets.Textures[Armor.second.IconIdentifier], Armor.second.Color, _Object::ARMOR));
 	LoadPaletteButtons(Icons, EDITMODE_ARMOR);
 	Icons.clear();
 }
@@ -1082,7 +1097,17 @@ void _EditorState::ClearPalette(int Type) {
 // Loads the palette buttons from the map's monster set
 void _EditorState::LoadMonsterButtons() {
 	std::vector<_Brush> Icons;
-	Assets.GetMonsterList(Icons);
+	_MonsterTemplate *Monster;
+
+	for(size_t i = 0; i < Assets.MonsterSet.size(); i++) {
+		if(!Assets.IsMonsterLoaded(Assets.MonsterSet[i])) {
+			throw std::runtime_error("_Database::GetMonsterList - Cannot find monster: " + Assets.MonsterSet[i]);
+		}
+		else {
+			Monster = Assets.GetMonsterTemplate(Assets.MonsterSet[i]);
+			Icons.push_back(_Brush(Assets.MonsterSet[i], Monster->Name, Assets.Animations[Monster->AnimationIdentifier]->GetStartPositionFrame(), Monster->Color, _Object::MONSTER));
+		}
+	}
 	LoadPaletteButtons(Icons, EDITMODE_MONSTERS);
 }
 
@@ -1750,7 +1775,6 @@ void _EditorState::ExecuteChangeLevel(int Change) {
 
 // Executes the change activation period command
 void _EditorState::ExecuteChangePeriod(double Value) {
-
 	if(EventSelected()) {
 		SelectedEvent->ActivationPeriod = SelectedEvent->ActivationPeriod + Value;
 		if(SelectedEvent->ActivationPeriod < 0.0)
@@ -1786,11 +1810,11 @@ void _EditorState::ExecuteIOCommand(int Type) {
 	EditorInput = Type;
 	InputBox->SetFocused(true);
 	_Label *Label = (_Label *)InputBox->GetChildren()[0];
-	Label->SetText(InputBoxStrings[Type]);
+	Label->Text = InputBoxStrings[Type];
 	if(Type >= EDITINPUT_ITEMIDENTIFIER && Type <= EDITINPUT_PARTICLEIDENTIFIER && EventSelected())
-		InputBox->SetText(GetEventIdentifier(Type));
+		InputBox->Text = GetEventIdentifier(Type);
 	else
-		InputBox->SetText(SavedText[Type]);
+		InputBox->Text = SavedText[Type];
 }
 
 // Executes the clear map command
@@ -2234,7 +2258,6 @@ void _EditorState::SelectObjects() {
 
 // Aligns an object to the grid
 glm::vec2 _EditorState::AlignToGrid(const glm::vec2 &Position) const {
-
 	return glm::vec2((int)Position.x + 0.5f, (int)Position.y + 0.5f);
 }
 
@@ -2264,11 +2287,24 @@ void _EditorState::ClearClipboard() {
 	ClipboardObjects.clear();
 }
 
+// Clear object selection
 void _EditorState::DeselectObjects() {
 	SelectedObjects.clear();
 	SelectedObjectIndices.clear();
 }
 
+// Determine if any objects are selected
 bool _EditorState::ObjectsSelected() {
 	return SelectedObjects.size() != 0;
+}
+
+// Get a list of textures
+void _EditorState::GetTextureList(std::vector<_Brush> &TextureList, int Group) {
+	for(const auto &Texture : Assets.Textures) {
+		if(!Texture.second)
+			continue;
+
+		if(Texture.second->Group == Group || Group == -1)
+			TextureList.push_back(_Brush(Texture.first, Texture.second->Name, Texture.second, COLOR_WHITE));
+	}
 }

@@ -158,7 +158,6 @@ class _Assets {
 		void LoadButtons(const std::string &Path);
 		void LoadTextBoxes(const std::string &Path);
 
-		bool IsStringLoaded(const std::string &Identifier);
 		bool IsColorLoaded(const std::string &Identifier);
 		bool IsTextureLoaded(const std::string &Identifier);
 		bool IsAttackSampleLoaded(const std::string &Identifier);
@@ -166,7 +165,6 @@ class _Assets {
 		bool IsWeaponParticleTemplateLoaded(const std::string &Identifier);
 		bool IsReelLoaded(const std::string &Identifier);
 		bool IsAnimationLoaded(const std::string &Identifier);
-		bool IsFontLoaded(const std::string &Identifier);
 		bool IsMonsterLoaded(const std::string &Identifier);
 		bool IsMiscItemLoaded(const std::string &Identifier);
 		bool IsUpgradeLoaded(const std::string &Identifier);
@@ -175,7 +173,6 @@ class _Assets {
 		bool IsArmorLoaded(const std::string &Identifier);
 		bool IsItemGroupLoaded(const std::string &Identifier);
 
-		void UnloadMonsterSet();
 		void UnloadReel(const std::string &Identifier);
 		void UnloadAnimation(const std::string &Identifier);
 
@@ -189,13 +186,10 @@ class _Assets {
 		float GetSkill(int Level, int Type) const { return Skills[Level].Data[Type]; }
 		float GetSkillPercentImprovement(int Level, int Type) const { return (Skills[Level].Data[Type] - 1.0f) * 100.0f; }
 
-		_Style *GetStyle(const std::string &Identifier);
-		_Element *GetElement(const std::string &Identifier);
 		_Label *GetLabel(const std::string &Identifier);
 		_Image *GetImage(const std::string &Identifier);
 		_Button *GetButton(const std::string &Identifier);
 		_TextBox *GetTextBox(const std::string &Identifier);
-		const glm::vec4 &GetColor(const std::string &Identifier);
 		_Reel *GetReel(const std::string &Identifier);
 		AttackSampleTemplateStruct *GetAttackSampleTemplate(const std::string &Identifier);
 		_Animation *GetAnimation(const std::string &Identifier);
@@ -217,24 +211,24 @@ class _Assets {
 		_Armor *CreateArmor(const std::string &Identifier, int Count, const glm::vec2 &Position);
 		void GetRandomDrop(const _ItemGroup *ItemGroup, _ObjectSpawn *ObjectSpawn);
 
-		void GetEventList(std::vector<_Brush> &Icons);
-		void GetMonsterList(std::vector<_Brush> &Icons);
-		void GetItemList(std::vector<_Brush> &Icons);
-		void GetUpgradeList(std::vector<_Brush> &Icons);
-		void GetAmmoList(std::vector<_Brush> &Icons);
-		void GetWeaponList(std::vector<_Brush> &Icons);
-		void GetArmorList(std::vector<_Brush> &Icons);
-
-		void GetTextureList(std::vector<_Brush> &TextureList, int Group=-1);
-
 		// Data
 		std::unordered_map<std::string, std::string> Strings;
+		std::unordered_map<std::string, _Animation *> Animations;
+
 		std::unordered_map<std::string, const _Texture *> Textures;
 		std::unordered_map<std::string, _Program *> Programs;
 		std::unordered_map<std::string, glm::vec4> Colors;
 		std::unordered_map<std::string, _Font *> Fonts;
 		std::unordered_map<std::string, _Style *> Styles;
 		std::unordered_map<std::string, _Element *> Elements;
+
+		std::vector<std::string> MonsterSet;
+		std::unordered_map<std::string, _MonsterTemplate> MonsterTable;
+		std::unordered_map<std::string, _MiscItemTemplate> MiscItemTable;
+		std::unordered_map<std::string, _UpgradeTemplate> UpgradeTable;
+		std::unordered_map<std::string, _AmmoTemplate> AmmoTable;
+		std::unordered_map<std::string, _WeaponTemplate> WeaponTable;
+		std::unordered_map<std::string, _ArmorTemplate> ArmorTable;
 
 		std::string AssetPath;
 
@@ -249,21 +243,13 @@ class _Assets {
 		std::unordered_map<std::string, AttackSampleTemplateStruct> AttackSampleTable;
 		std::unordered_map<std::string, _ParticleTemplate> ParticleTable;
 		std::unordered_map<std::string, _WeaponParticleTemplate> WeaponParticleTable;
-		std::unordered_map<std::string, _MonsterTemplate> MonsterTable;
-		std::unordered_map<std::string, _MiscItemTemplate> MiscItemTable;
-		std::unordered_map<std::string, _UpgradeTemplate> UpgradeTable;
-		std::unordered_map<std::string, _AmmoTemplate> AmmoTable;
-		std::unordered_map<std::string, _WeaponTemplate> WeaponTable;
-		std::unordered_map<std::string, _ArmorTemplate> ArmorTable;
 		std::unordered_map<std::string, _ItemGroup> ItemGroupTable;
-		std::vector<std::string> MonsterSet;
 		std::vector<LevelStruct> Levels;
 		std::vector<SkillStruct> Skills;
 		std::string AmmoTypeIdentifiers[AMMO_TYPES];
 
 		// Data
 		std::unordered_map<std::string, _Reel> Reels;
-		std::unordered_map<std::string, _Animation *> Animations;
 		std::unordered_map<std::string, const _Shader *> Shaders;
 		_WeaponParticleTemplate BlankWeaponParticle;
 };

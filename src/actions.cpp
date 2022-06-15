@@ -30,19 +30,19 @@ _Actions::_Actions() {
 
 // Load action names from database;
 void _Actions::LoadActionNames() {
-	Names[UP] = Assets.GetLabel("label_options_up")->GetText();
-	Names[DOWN] = Assets.GetLabel("label_options_down")->GetText();
-	Names[LEFT] = Assets.GetLabel("label_options_left")->GetText();
-	Names[RIGHT] = Assets.GetLabel("label_options_right")->GetText();
-	Names[USE] = Assets.GetLabel("label_options_use")->GetText();
-	Names[INVENTORY] = Assets.GetLabel("label_options_inventory")->GetText();
-	Names[FIRE] = Assets.GetLabel("label_options_fire")->GetText();
-	Names[AIM] = Assets.GetLabel("label_options_aim")->GetText();
-	Names[MELEE] = Assets.GetLabel("label_options_melee")->GetText();
-	Names[RELOAD] = Assets.GetLabel("label_options_reload")->GetText();
-	Names[WEAPONSWITCH] = Assets.GetLabel("label_options_weaponswitch")->GetText();
-	Names[MEDKIT] = Assets.GetLabel("label_options_medkit")->GetText();
-	Names[SPRINT] = Assets.GetLabel("label_options_sprint")->GetText();
+	Names[UP] = Assets.Elements["label_options_up"]->Text;
+	Names[DOWN] = Assets.Elements["label_options_down"]->Text;
+	Names[LEFT] = Assets.Elements["label_options_left"]->Text;
+	Names[RIGHT] = Assets.Elements["label_options_right"]->Text;
+	Names[USE] = Assets.Elements["label_options_use"]->Text;
+	Names[INVENTORY] = Assets.Elements["label_options_inventory"]->Text;
+	Names[FIRE] = Assets.Elements["label_options_fire"]->Text;
+	Names[AIM] = Assets.Elements["label_options_aim"]->Text;
+	Names[MELEE] = Assets.Elements["label_options_melee"]->Text;
+	Names[RELOAD] = Assets.Elements["label_options_reload"]->Text;
+	Names[WEAPONSWITCH] = Assets.Elements["label_options_weaponswitch"]->Text;
+	Names[MEDKIT] = Assets.Elements["label_options_medkit"]->Text;
+	Names[SPRINT] = Assets.Elements["label_options_sprint"]->Text;
 }
 
 // Clear all mappings
