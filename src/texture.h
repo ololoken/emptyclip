@@ -28,13 +28,7 @@ class _Texture {
 
 	public:
 
-		enum GroupType {
-			MAIN,
-			EDITOR,
-			MAP,
-		};
-
-		_Texture(const std::string &Path) : Name(Path), Group(0), ID(0) { }
+		_Texture(const std::string &Path) : Name(Path), ID(0) { }
 		_Texture(const std::string &Path, bool IsServer, bool Repeat, bool Mipmaps, bool Nearest);
 		_Texture(const std::string &Path, FILE *FileHandle, bool IsServer, bool Repeat, bool Mipmaps, bool Nearest);
 		_Texture(unsigned char *Data, const glm::ivec2 &Size, int InternalFormat, GLenum Format);
@@ -42,7 +36,6 @@ class _Texture {
 
 		// Info
 		std::string Name;
-		int Group;
 		GLuint ID;
 
 		// Dimensions

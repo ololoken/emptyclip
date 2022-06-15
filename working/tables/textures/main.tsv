@@ -1,108 +1,166 @@
-identifier	texture	group	repeat	mipmaps
-hud_crosshair	hud/crosshair0.png	0	0	0
-hud_inventory	hud/inventory0.png	0	0	0
-hud_inventory_armor	hud/inventory_armor.png	0	0	0
-hud_inventory_gun	hud/inventory_gun.png	0	0	0
-hud_inventory_melee	hud/inventory_melee.png	0	0	0
-hud_plus	hud/plus.png	0	0	0
-hud_plus_hover	hud/plus_hover.png	0	0	0
-hud_experience	hud/experience0.png	0	1	0
-hud_experience_full	hud/experience1.png	0	1	0
-viewport_health0	hud/health0.png	0	1	0
-viewport_health1	hud/health1.png	0	1	0
-viewport_healthend0	hud/healthend0.png	0	0	0
-viewport_healthend1	hud/healthend1.png	0	0	0
-viewport_reload0	hud/reload0.png	0	0	0
-viewport_weaponswitch0	hud/weaponswitch0.png	0	1	0
-viewport_stamina0	hud/stamina0.png	0	1	0
-viewport_stamina1	hud/stamina1.png	0	1	0
-menu_button	menu/button.png	0	0	0
-menu_button_hover	menu/button_hover.png	0	0	0
-menu_title	menu/title.png	0	0	0
-menu_bg	menu/sky.png	0	0	0
-menu_legs	player/legs4.png	0	0	0
-menu_torso	player/walking_onehand4.png	0	0	0
-i_medkit0	items/i_medkit0.png	0	0	0
-i_key0	items/i_key0.png	0	0	0
-i_key1	items/i_key1.png	0	0	0
-i_key2	items/i_key2.png	0	0	0
-a_9mm	items/a_9mm.png	0	0	0
-a_357	items/a_357.png	0	0	0
-a_556mm	items/a_556mm.png	0	0	0
-a_762mm	items/a_762mm.png	0	0	0
-a_shells	items/a_shells.png	0	0	0
-a_rockets	items/a_rockets.png	0	0	0
-a_power	items/a_power.png	0	0	0
-a_plasma	items/a_plasma.png	0	0	0
-a_psi	items/a_psi.png	0	0	0
-u_clip0	items/u_clip0.png	0	0	0
-u_damage0	items/u_damage0.png	0	0	0
-u_accuracy0	items/u_accuracy0.png	0	0	0
-u_speed0	items/u_speed0.png	0	0	0
-u_reload0	items/u_reload0.png	0	0	0
-u_bullet0	items/u_bullet0.png	0	0	0
-u_meleeclip0	items/u_meleeclip0.png	0	0	0
-u_pistolclip0	items/u_pistolclip0.png	0	0	0
-u_shotgunclip0	items/u_shotgunclip0.png	0	0	0
-u_rifleclip0	items/u_rifleclip0.png	0	0	0
-u_heavyclip0	items/u_heavyclip0.png	0	0	0
-u_meleedamage0	items/u_meleedamage0.png	0	0	0
-u_pistoldamage0	items/u_pistoldamage0.png	0	0	0
-u_shotgundamage0	items/u_shotgundamage0.png	0	0	0
-u_rifledamage0	items/u_rifledamage0.png	0	0	0
-u_heavydamage0	items/u_heavydamage0.png	0	0	0
-u_meleeaccuracy0	items/u_meleeaccuracy0.png	0	0	0
-u_pistolaccuracy0	items/u_pistolaccuracy0.png	0	0	0
-u_shotgunaccuracy0	items/u_shotgunaccuracy0.png	0	0	0
-u_rifleaccuracy0	items/u_rifleaccuracy0.png	0	0	0
-u_heavyaccuracy0	items/u_heavyaccuracy0.png	0	0	0
-u_meleespeed0	items/u_meleespeed0.png	0	0	0
-u_pistolspeed0	items/u_pistolspeed0.png	0	0	0
-u_shotgunspeed0	items/u_shotgunspeed0.png	0	0	0
-u_riflespeed0	items/u_riflespeed0.png	0	0	0
-u_heavyspeed0	items/u_heavyspeed0.png	0	0	0
-u_meleereload0	items/u_meleereload0.png	0	0	0
-u_pistolreload0	items/u_pistolreload0.png	0	0	0
-u_shotgunreload0	items/u_shotgunreload0.png	0	0	0
-u_riflereload0	items/u_riflereload0.png	0	0	0
-u_heavyreload0	items/u_heavyreload0.png	0	0	0
-s_assault0	items/s_assault0.png	0	0	0
-s_axe0	items/s_axe0.png	0	0	0
-s_chain0	items/s_chain0.png	0	0	0
-s_club0	items/s_club0.png	0	0	0
-s_knife0	items/s_knife0.png	0	0	0
-s_m160	items/s_m160.png	0	0	0
-s_magnum0	items/s_magnum0.png	0	0	0
-s_medkit0	items/s_medkit0.png	0	0	0
-s_minigun0	items/s_minigun0.png	0	0	0
-s_p900	items/s_p900.png	0	0	0
-s_pistol0	items/s_pistol0.png	0	0	0
-s_plate0	items/s_plate0.png	0	0	0
-s_psi0	items/s_psi0.png	0	0	0
-s_shirt0	items/s_shirt0.png	0	0	0
-s_shotgun0	items/s_shotgun0.png	0	0	0
-s_sniper0	items/s_sniper0.png	0	0	0
-s_sword0	items/s_sword0.png	0	0	0
-s_sword1	items/s_sword1.png	0	0	0
-w_knife0	items/w_knife0.png	0	0	0
-w_bat0	items/w_bat0.png	0	0	0
-w_axe0	items/w_axe0.png	0	0	0
-w_sword0	items/w_sword0.png	0	0	0
-w_pistol0	items/w_handgun0.png	0	0	0
-w_shotgun0	items/w_shotgun0.png	0	0	0
-w_rifle0	items/w_rifle0.png	0	0	0
-w_machine0	items/w_machine0.png	0	0	0
-w_sniper0	items/w_sniper0.png	0	0	0
-ar_shirt0	items/ar_shirt0.png	0	0	0
-ar_chain0	items/ar_chain0.png	0	0	0
-ar_plate0	items/ar_plate0.png	0	0	0
-particle_bulletfire0	particles/bullet_fire0.png	0	0	0
-particle_bulletspark0	particles/bullet_spark0.png	0	0	0
-particle_bullethole0	particles/bullet_hole0.png	0	0	0
-particle_plasmafire0	particles/plasma_spark0.png	0	0	0
-particle_plasmasmoke0	particles/plasma_smoke0.png	0	0	0
-particle_plasmaspark0	particles/plasma_spark0.png	0	0	0
-particle_plasmahole0	particles/plasma_spark0.png	0	0	0
-particle_blood0	particles/blood0.png	0	0	0
-particle_bloodspurt0	particles/bloodspurt0.png	0	0	0
-particle_smoke0	particles/smoke0.png	0	0	0
+identifier	texture	repeat	mipmaps
+editor_eventdoor	editor/event_door.png	1	1
+editor_eventwswitch	editor/event_wswitch.png	1	1
+editor_eventspawn	editor/event_spawn.png	1	1
+editor_eventcheck	editor/event_check.png	1	1
+editor_eventend	editor/event_end.png	1	1
+editor_eventtext	editor/event_text.png	1	1
+editor_eventsound	editor/event_sound.png	1	1
+editor_eventfswitch	editor/event_fswitch.png	1	1
+editor_eventenable	editor/event_enable.png	1	1
+editor_eventtele	editor/event_tele.png	1	1
+editor_eventlight	editor/event_light.png	1	1
+editor_active	editor/active.png	0	0
+editor_ammo	editor/ammo.png	0	0
+editor_arm	editor/arm.png	0	0
+editor_block	editor/block.png	0	0
+editor_new	editor/new.png	0	0
+editor_copy	editor/copy.png	0	0
+editor_del	editor/del.png	0	0
+editor_down	editor/down.png	0	0
+editor_event	editor/event.png	0	0
+editor_fore	editor/fore.png	0	0
+editor_grid	editor/grid.png	0	0
+editor_item	editor/item.png	0	0
+editor_itemidentifier	editor/item_identifier.png	0	0
+editor_layer1	editor/layer1.png	0	0
+editor_layer2	editor/layer2.png	0	0
+editor_layer3	editor/layer3.png	0	0
+editor_layer4	editor/layer4.png	0	0
+editor_layer5	editor/layer5.png	0	0
+editor_levelup	editor/level_up.png	0	0
+editor_leveldown	editor/level_down.png	0	0
+editor_load	editor/load.png	0	0
+editor_lower	editor/lower.png	0	0
+editor_mirror	editor/mirror.png	0	0
+editor_mod	editor/mod.png	0	0
+editor_mons	editor/mons.png	0	0
+editor_monsidentifier	editor/mons_identifier.png	0	0
+editor_mset	editor/mset.png	0	0
+editor_none	editor/none.png	0	0
+editor_partidentifier	editor/part_identifier.png	0	0
+editor_paste	editor/paste.png	0	0
+editor_periodup	editor/period_up.png	0	0
+editor_perioddown	editor/period_down.png	0	0
+editor_raise	editor/raise.png	0	0
+editor_rotate	editor/rotate.png	0	0
+editor_save	editor/save.png	0	0
+editor_show	editor/show.png	0	0
+editor_test	editor/test.png	0	0
+editor_tile	editor/tile.png	0	0
+editor_undo	editor/undo.png	0	0
+editor_up	editor/up.png	0	0
+editor_walk	editor/walk.png	0	0
+editor_wall	editor/wall.png	0	0
+editor_weap	editor/weap.png	0	0
+editor_selected0	editor/selected0.png	0	0
+editor_selected1	editor/selected1.png	0	0
+editor_paletteprevious	editor/palette_previous.png	0	0
+editor_palettenext	editor/palette_next.png	0	0
+hud_crosshair	hud/crosshair0.png	0	0
+hud_inventory	hud/inventory0.png	0	0
+hud_inventory_armor	hud/inventory_armor.png	0	0
+hud_inventory_gun	hud/inventory_gun.png	0	0
+hud_inventory_melee	hud/inventory_melee.png	0	0
+hud_plus	hud/plus.png	0	0
+hud_plus_hover	hud/plus_hover.png	0	0
+hud_experience	hud/experience0.png	1	0
+hud_experience_full	hud/experience1.png	1	0
+viewport_health0	hud/health0.png	1	0
+viewport_health1	hud/health1.png	1	0
+viewport_healthend0	hud/healthend0.png	0	0
+viewport_healthend1	hud/healthend1.png	0	0
+viewport_reload0	hud/reload0.png	0	0
+viewport_weaponswitch0	hud/weaponswitch0.png	1	0
+viewport_stamina0	hud/stamina0.png	1	0
+viewport_stamina1	hud/stamina1.png	1	0
+menu_button	menu/button.png	0	0
+menu_button_hover	menu/button_hover.png	0	0
+menu_title	menu/title.png	0	0
+menu_bg	menu/sky.png	0	0
+menu_legs	player/legs4.png	0	0
+menu_torso	player/walking_onehand4.png	0	0
+i_medkit0	items/i_medkit0.png	0	0
+i_key0	items/i_key0.png	0	0
+i_key1	items/i_key1.png	0	0
+i_key2	items/i_key2.png	0	0
+a_9mm	items/a_9mm.png	0	0
+a_357	items/a_357.png	0	0
+a_556mm	items/a_556mm.png	0	0
+a_762mm	items/a_762mm.png	0	0
+a_shells	items/a_shells.png	0	0
+a_rockets	items/a_rockets.png	0	0
+a_power	items/a_power.png	0	0
+a_plasma	items/a_plasma.png	0	0
+a_psi	items/a_psi.png	0	0
+u_clip0	items/u_clip0.png	0	0
+u_damage0	items/u_damage0.png	0	0
+u_accuracy0	items/u_accuracy0.png	0	0
+u_speed0	items/u_speed0.png	0	0
+u_reload0	items/u_reload0.png	0	0
+u_bullet0	items/u_bullet0.png	0	0
+u_meleeclip0	items/u_meleeclip0.png	0	0
+u_pistolclip0	items/u_pistolclip0.png	0	0
+u_shotgunclip0	items/u_shotgunclip0.png	0	0
+u_rifleclip0	items/u_rifleclip0.png	0	0
+u_heavyclip0	items/u_heavyclip0.png	0	0
+u_meleedamage0	items/u_meleedamage0.png	0	0
+u_pistoldamage0	items/u_pistoldamage0.png	0	0
+u_shotgundamage0	items/u_shotgundamage0.png	0	0
+u_rifledamage0	items/u_rifledamage0.png	0	0
+u_heavydamage0	items/u_heavydamage0.png	0	0
+u_meleeaccuracy0	items/u_meleeaccuracy0.png	0	0
+u_pistolaccuracy0	items/u_pistolaccuracy0.png	0	0
+u_shotgunaccuracy0	items/u_shotgunaccuracy0.png	0	0
+u_rifleaccuracy0	items/u_rifleaccuracy0.png	0	0
+u_heavyaccuracy0	items/u_heavyaccuracy0.png	0	0
+u_meleespeed0	items/u_meleespeed0.png	0	0
+u_pistolspeed0	items/u_pistolspeed0.png	0	0
+u_shotgunspeed0	items/u_shotgunspeed0.png	0	0
+u_riflespeed0	items/u_riflespeed0.png	0	0
+u_heavyspeed0	items/u_heavyspeed0.png	0	0
+u_meleereload0	items/u_meleereload0.png	0	0
+u_pistolreload0	items/u_pistolreload0.png	0	0
+u_shotgunreload0	items/u_shotgunreload0.png	0	0
+u_riflereload0	items/u_riflereload0.png	0	0
+u_heavyreload0	items/u_heavyreload0.png	0	0
+s_assault0	items/s_assault0.png	0	0
+s_axe0	items/s_axe0.png	0	0
+s_chain0	items/s_chain0.png	0	0
+s_club0	items/s_club0.png	0	0
+s_knife0	items/s_knife0.png	0	0
+s_m160	items/s_m160.png	0	0
+s_magnum0	items/s_magnum0.png	0	0
+s_medkit0	items/s_medkit0.png	0	0
+s_minigun0	items/s_minigun0.png	0	0
+s_p900	items/s_p900.png	0	0
+s_pistol0	items/s_pistol0.png	0	0
+s_plate0	items/s_plate0.png	0	0
+s_psi0	items/s_psi0.png	0	0
+s_shirt0	items/s_shirt0.png	0	0
+s_shotgun0	items/s_shotgun0.png	0	0
+s_sniper0	items/s_sniper0.png	0	0
+s_sword0	items/s_sword0.png	0	0
+s_sword1	items/s_sword1.png	0	0
+w_knife0	items/w_knife0.png	0	0
+w_bat0	items/w_bat0.png	0	0
+w_axe0	items/w_axe0.png	0	0
+w_sword0	items/w_sword0.png	0	0
+w_pistol0	items/w_handgun0.png	0	0
+w_shotgun0	items/w_shotgun0.png	0	0
+w_rifle0	items/w_rifle0.png	0	0
+w_machine0	items/w_machine0.png	0	0
+w_sniper0	items/w_sniper0.png	0	0
+ar_shirt0	items/ar_shirt0.png	0	0
+ar_chain0	items/ar_chain0.png	0	0
+ar_plate0	items/ar_plate0.png	0	0
+particle_bulletfire0	particles/bullet_fire0.png	0	0
+particle_bulletspark0	particles/bullet_spark0.png	0	0
+particle_bullethole0	particles/bullet_hole0.png	0	0
+particle_plasmafire0	particles/plasma_spark0.png	0	0
+particle_plasmasmoke0	particles/plasma_smoke0.png	0	0
+particle_plasmaspark0	particles/plasma_spark0.png	0	0
+particle_plasmahole0	particles/plasma_spark0.png	0	0
+particle_blood0	particles/blood0.png	0	0
+particle_bloodspurt0	particles/bloodspurt0.png	0	0
+particle_smoke0	particles/smoke0.png	0	0

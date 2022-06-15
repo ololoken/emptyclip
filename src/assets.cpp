@@ -53,7 +53,6 @@ void _Assets::Init(const std::string &AssetPath) {
 	LoadFonts("tables/fonts.tsv", false);
 	LoadTextures("tables/textures/main.tsv");
 	LoadTextures("tables/textures/map.tsv");
-	LoadTextures("tables/textures/editor.tsv");
 	LoadColors("tables/colors.tsv");
 	LoadSounds("tables/sounds.tsv", "sounds/");
 	LoadSoundGroups("tables/sound_groups.tsv");
@@ -444,15 +443,13 @@ void _Assets::LoadTextures(const std::string &Path) {
 		std::getline(File, Name, '\t');
 		std::getline(File, TextureFile, '\t');
 
-		int Group;
 		bool Repeat, MipMaps;
-		File >> Group >> Repeat >> MipMaps;
+		File >> Repeat >> MipMaps;
 		File.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
 		// Load texture
 		std::string Path = AssetPath + "textures/" + TextureFile;
 		_Texture *Texture = new _Texture(Path, false, Repeat, MipMaps, false);
-		Texture->Group = Group;
 		if(!Texture)
 			throw std::runtime_error(std::string(__FUNCTION__) + " - Error loading: " + Path);
 

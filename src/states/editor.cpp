@@ -1029,7 +1029,10 @@ void _EditorState::LoadPalettes() {
 	std::vector<_Brush> Icons;
 
 	// Load map textures
-	GetTextureList(Icons, _Texture::MAP);
+	for(const auto &Texture : Assets.Textures) {
+		if(Texture.second && Texture.second->Name.find("map/") != std::string::npos)
+			Icons.push_back(_Brush(Texture.first, Texture.second->Name, Texture.second, COLOR_WHITE));
+	}
 	LoadPaletteButtons(Icons, EDITMODE_BLOCKS);
 	Icons.clear();
 
@@ -2296,15 +2299,4 @@ void _EditorState::DeselectObjects() {
 // Determine if any objects are selected
 bool _EditorState::ObjectsSelected() {
 	return SelectedObjects.size() != 0;
-}
-
-// Get a list of textures
-void _EditorState::GetTextureList(std::vector<_Brush> &TextureList, int Group) {
-	for(const auto &Texture : Assets.Textures) {
-		if(!Texture.second)
-			continue;
-
-		if(Texture.second->Group == Group || Group == -1)
-			TextureList.push_back(_Brush(Texture.first, Texture.second->Name, Texture.second, COLOR_WHITE));
-	}
 }

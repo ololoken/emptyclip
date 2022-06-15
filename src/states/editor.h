@@ -204,8 +204,6 @@ class _EditorState : public _State {
 		void ExecuteShiftLayer(int Change);
 		void ExecuteUpdateBlockLimits(int Direction, bool Expand);
 
-		void GetTextureList(std::vector<_Brush> &TextureList, int Group=-1);
-
 		// Parameters
 		glm::vec3 SavedCameraPosition;
 		int CheckpointIndex;
