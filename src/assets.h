@@ -21,7 +21,6 @@
 #include <glm/vec2.hpp>
 #include <objects/templates.h>
 #include <string>
-#include <map>
 #include <unordered_map>
 #include <vector>
 
@@ -71,7 +70,7 @@ struct AttackSampleTemplateStruct {
 // Used for the map editor
 struct _Brush {
 	_Brush() { }
-	_Brush(const std::string &Identifier, const std::string &Text, _Texture *Texture, const glm::vec4 &Color, int ObjectType=-1) :
+	_Brush(const std::string &Identifier, const std::string &Text, const _Texture *Texture, const glm::vec4 &Color, int ObjectType=-1) :
 		Identifier(Identifier),
 		Text(Text),
 		Texture(Texture),
@@ -80,7 +79,7 @@ struct _Brush {
 
 	std::string Identifier;
 	std::string Text;
-	_Texture *Texture;
+	const _Texture *Texture;
 	glm::vec4 Color;
 	int ObjectType;
 };
@@ -129,35 +128,35 @@ class _Assets {
 		void Close();
 
 		bool Initialize();
-		void LoadStringTable(const std::string &Filename);
-		void LoadColorTable(const std::string &Filename);
-		void LoadReelTable(const std::string &Filename);
-		void LoadAnimationTable(const std::string &Filename);
-		void LoadAttackSampleTable(const std::string &Filename);
-		void LoadMonsterTable(const std::string &Filename);
-		void LoadParticleTable(const std::string &Filename);
+		void LoadStringTable(const std::string &Path);
+		void LoadColors(const std::string &Path);
+		void LoadReelTable(const std::string &Path);
+		void LoadAnimationTable(const std::string &Path);
+		void LoadSoundGroups(const std::string &Path);
+		void LoadMonsterTable(const std::string &Path);
+		void LoadParticles(const std::string &Path);
 		void LoadPrograms(const std::string &Path);
-		void LoadTextures(const std::string &Filename);
-		void LoadSamples(const std::string &Filename, const std::string &SamplePath);
-		void LoadMiscItemTable(const std::string &Filename);
-		void LoadUpgradeTable(const std::string &Filename);
-		void LoadAmmoTable(const std::string &Filename);
-		void LoadWeaponTable(const std::string &Filename);
-		void LoadArmorTable(const std::string &Filename);
-		void LoadItemDropTable(const std::string &Filename);
+		void LoadTextures(const std::string &Path);
+		void LoadSounds(const std::string &Path, const std::string &SamplePath);
+		void LoadMiscItemTable(const std::string &Path);
+		void LoadUpgradeTable(const std::string &Path);
+		void LoadAmmoTable(const std::string &Path);
+		void LoadWeaponTable(const std::string &Path);
+		void LoadArmorTable(const std::string &Path);
+		void LoadItemDrops(const std::string &Path);
 
 		void LoadFonts(const std::string &Path, bool LoadFonts=true);
-		void LoadMonsterSet(const std::string &Filename);
+		void LoadMonsterSet(const std::string &Path);
 		void LoadReel(const std::string &Identifier, const std::string &Path);
 		void LoadAnimation(const std::string &Identifier, const std::string &Path);
-		void LoadWeaponParticles(const std::string &Filename);
+		void LoadWeaponParticles(const std::string &Path);
 		void LoadMonsterAnimation();
-		void LoadStyles(const std::string &Filename);
-		void LoadElements(const std::string &Filename);
-		void LoadLabels(const std::string &Filename);
-		void LoadImages(const std::string &Filename);
-		void LoadButtons(const std::string &Filename);
-		void LoadTextBoxes(const std::string &Filename);
+		void LoadStyles(const std::string &Path);
+		void LoadElements(const std::string &Path);
+		void LoadLabels(const std::string &Path);
+		void LoadImages(const std::string &Path);
+		void LoadButtons(const std::string &Path);
+		void LoadTextBoxes(const std::string &Path);
 
 		bool IsStringLoaded(const std::string &Identifier);
 		bool IsColorLoaded(const std::string &Identifier);
@@ -196,7 +195,6 @@ class _Assets {
 		_Image *GetImage(const std::string &Identifier);
 		_Button *GetButton(const std::string &Identifier);
 		_TextBox *GetTextBox(const std::string &Identifier);
-		_Texture *GetTexture(const std::string &Identifier);
 		std::string GetString(const std::string &Identifier);
 		const glm::vec4 &GetColor(const std::string &Identifier);
 		_Reel *GetReel(const std::string &Identifier);
@@ -231,9 +229,12 @@ class _Assets {
 		void GetTextureList(std::vector<_Brush> &TextureList, int Group=-1);
 
 		// Data
+		std::unordered_map<std::string, const _Texture *> Textures;
 		std::unordered_map<std::string, _Program *> Programs;
 		std::unordered_map<std::string, glm::vec4> Colors;
 		std::unordered_map<std::string, _Font *> Fonts;
+		std::unordered_map<std::string, _Style *> Styles;
+		std::unordered_map<std::string, _Element *> Elements;
 
 		std::string AssetPath;
 
@@ -243,30 +244,27 @@ class _Assets {
 		void LoadSkills(const std::string &Path);
 
 		// Tables
-		std::map<std::string, std::string> StringTable;
-		std::map<std::string, _ReelTemplate> ReelTable;
-		std::map<std::string, AnimationTemplateStruct> AnimationTable;
-		std::map<std::string, AttackSampleTemplateStruct> AttackSampleTable;
-		std::map<std::string, _ParticleTemplate> ParticleTable;
-		std::map<std::string, _WeaponParticleTemplate> WeaponParticleTable;
-		std::map<std::string, _MonsterTemplate> MonsterTable;
-		std::map<std::string, _MiscItemTemplate> MiscItemTable;
-		std::map<std::string, _UpgradeTemplate> UpgradeTable;
-		std::map<std::string, _AmmoTemplate> AmmoTable;
-		std::map<std::string, _WeaponTemplate> WeaponTable;
-		std::map<std::string, _ArmorTemplate> ArmorTable;
-		std::map<std::string, _ItemGroup> ItemGroupTable;
+		std::unordered_map<std::string, std::string> StringTable;
+		std::unordered_map<std::string, _ReelTemplate> ReelTable;
+		std::unordered_map<std::string, AnimationTemplateStruct> AnimationTable;
+		std::unordered_map<std::string, AttackSampleTemplateStruct> AttackSampleTable;
+		std::unordered_map<std::string, _ParticleTemplate> ParticleTable;
+		std::unordered_map<std::string, _WeaponParticleTemplate> WeaponParticleTable;
+		std::unordered_map<std::string, _MonsterTemplate> MonsterTable;
+		std::unordered_map<std::string, _MiscItemTemplate> MiscItemTable;
+		std::unordered_map<std::string, _UpgradeTemplate> UpgradeTable;
+		std::unordered_map<std::string, _AmmoTemplate> AmmoTable;
+		std::unordered_map<std::string, _WeaponTemplate> WeaponTable;
+		std::unordered_map<std::string, _ArmorTemplate> ArmorTable;
+		std::unordered_map<std::string, _ItemGroup> ItemGroupTable;
 		std::vector<std::string> MonsterSet;
 		std::vector<LevelStruct> Levels;
 		std::vector<SkillStruct> Skills;
 		std::string AmmoTypeIdentifiers[AMMO_TYPES];
 
 		// Data
-		std::map<std::string, _Texture *> Textures;
-		std::map<std::string, _Reel> Reels;
-		std::map<std::string, _Animation *> Animations;
-		std::map<std::string, _Style *> Styles;
-		std::map<std::string, _Element *> Elements;
+		std::unordered_map<std::string, _Reel> Reels;
+		std::unordered_map<std::string, _Animation *> Animations;
 		std::unordered_map<std::string, const _Shader *> Shaders;
 		_WeaponParticleTemplate BlankWeaponParticle;
 };

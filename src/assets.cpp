@@ -23,7 +23,6 @@
 #include <utils.h>
 #include <animation.h>
 #include <program.h>
-#include <ui/style.h>
 #include <ui/element.h>
 #include <ui/label.h>
 #include <ui/button.h>
@@ -39,6 +38,7 @@
 #include <objects/ammo.h>
 #include <constants.h>
 #include <stdexcept>
+#include <sstream>
 
 _Assets Assets;
 
@@ -54,10 +54,10 @@ void _Assets::Init(const std::string &AssetPath) {
 	LoadTextures("tables/textures/main.tsv");
 	LoadTextures("tables/textures/map.tsv");
 	LoadTextures("tables/textures/editor.tsv");
-	LoadColorTable("tables/colors.tsv");
-	LoadSamples("tables/sounds/samples.tsv", "sounds/");
-	LoadAttackSampleTable("tables/sounds/attack.tsv");
-	LoadParticleTable("tables/particles.tsv");
+	LoadColors("tables/colors.tsv");
+	LoadSounds("tables/sounds.tsv", "sounds/");
+	LoadSoundGroups("tables/sound_groups.tsv");
+	LoadParticles("tables/particles.tsv");
 	LoadWeaponParticles("tables/weaponparticles.tsv");
 	LoadStyles("tables/ui/styles.tsv");
 	LoadElements("tables/ui/elements.tsv");
@@ -72,7 +72,7 @@ void _Assets::Init(const std::string &AssetPath) {
 	LoadAmmoTable("tables/ammo.tsv");
 	LoadWeaponTable("tables/weapons.tsv");
 	LoadArmorTable("tables/armor.tsv");
-	LoadItemDropTable("tables/itemdrops.tsv");
+	LoadItemDrops("tables/itemdrops.tsv");
 	LoadMonsterTable("tables/monsters.tsv");
 
 	LoadAnimation("player_torso", "textures/player/");
@@ -119,24 +119,24 @@ void _Assets::Close() {
 }
 
 // Loads the strings
-void _Assets::LoadStringTable(const std::string &Filename) {
-
-	std::string Identifier, Text;
+void _Assets::LoadStringTable(const std::string &Path) {
 
 	// Load file
-	std::ifstream InputFile((AssetPath + Filename).c_str(), std::ios::in);
-	if(!InputFile) {
-		throw std::runtime_error("Error loading: " + Filename);
+	std::ifstream File((AssetPath + Path).c_str(), std::ios::in);
+	if(!File) {
+		throw std::runtime_error("Error loading: " + Path);
 	}
 
 	// Ignore the first line
-	InputFile.ignore(1024, '\n');
+	File.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
-	// Read the file
-	while(!InputFile.eof() && InputFile.peek() != EOF) {
+	// Read file
+	while(!File.eof() && File.peek() != EOF) {
 
-		Identifier = GetTSVText(InputFile);
-		Text = GetTSVText(InputFile);
+		std::string Identifier;
+		std::string Text;
+		std::getline(File, Identifier, '\t');
+		std::getline(File, Text, '\t');
 
 		// Check for duplicates
 		if(IsStringLoaded(Identifier)) {
@@ -145,7 +145,7 @@ void _Assets::LoadStringTable(const std::string &Filename) {
 
 		StringTable.insert(make_pair(Identifier, Text));
 	}
-	InputFile.close();
+	File.close();
 }
 
 // Loads the fonts
@@ -159,7 +159,7 @@ void _Assets::LoadFonts(const std::string &Path, bool LoadFonts) {
 	// Skip header
 	File.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
-	// Read the file
+	// Read file
 	while(!File.eof() && File.peek() != EOF) {
 
 		// Read strings
@@ -219,7 +219,7 @@ void _Assets::LoadLevels(const std::string &Path) {
 	Levels.clear();
 
 	// Load the data
-	InputFile.ignore(1024, '\n');
+	InputFile.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 	for(int i = 0; i < GAME_MAX_LEVEL; i++) {
 		if(InputFile.eof()) {
 			throw std::runtime_error("LoadLevels - Premature end of file");
@@ -244,7 +244,7 @@ void _Assets::LoadSkills(const std::string &Path) {
 	Skills.clear();
 
 	// Load the data
-	InputFile.ignore(1024, '\n');
+	InputFile.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 	for(int i = 0; i < GAME_SKILLLEVELS+1; i++) {
 		if(InputFile.eof()) {
 			throw std::runtime_error("Premature end of file" + Path);
@@ -258,108 +258,121 @@ void _Assets::LoadSkills(const std::string &Path) {
 }
 
 // Loads the color table
-void _Assets::LoadColorTable(const std::string &Filename) {
-	glm::vec4 Color;
-	std::string Identifier;
+void _Assets::LoadColors(const std::string &Path) {
 
 	// Load file
-	std::ifstream InputFile((AssetPath + Filename).c_str(), std::ios::in);
-	if(!InputFile) {
-		throw std::runtime_error("Error loading: " + Filename);
-	}
+	std::ifstream File((AssetPath + Path).c_str(), std::ios::in);
+	if(!File)
+		throw std::runtime_error("Error loading: " + Path);
 
-	// Read the file
-	InputFile.ignore(1024, '\n');
-	while(!InputFile.eof() && InputFile.peek() != EOF) {
+	// Skip header
+	File.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
-		Identifier = GetTSVText(InputFile);
-		InputFile >> Color.r >> Color.g >> Color.b >> Color.a;
-		InputFile.ignore(1024, '\n');
+	// Add default color
+	glm::vec4 Color(1.0f);
+	Colors[""] = Color;
+
+	// Read table
+	while(!File.eof() && File.peek() != EOF) {
+
+		std::string Name;
+		std::getline(File, Name, '\t');
+
+		File >> Color.r >> Color.g >> Color.b >> Color.a;
+		File.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
 		// Check for duplicates
-		if(IsColorLoaded(Identifier)) {
-			throw std::runtime_error(std::string(__FUNCTION__) + " - Duplicate entry: " + Identifier);
-		}
+		if(Colors.find(Name) != Colors.end())
+			throw std::runtime_error(std::string(__PRETTY_FUNCTION__) + " - Duplicate entry: " + Name);
 
-		Colors.insert(make_pair(Identifier, Color));
+		Colors[Name] = Color;
 	}
-	InputFile.close();
+
+	File.close();
 }
 
 // Loads the reels table
-void _Assets::LoadReelTable(const std::string &Filename) {
-	_ReelTemplate ReelTemplate;
-	std::string TextureFile, Identifier;
+void _Assets::LoadReelTable(const std::string &Path) {
 
 	// Load file
-	std::ifstream InputFile((AssetPath + Filename).c_str(), std::ios::in);
-	if(!InputFile) {
-		throw std::runtime_error("Error loading: " + Filename);
-	}
+	std::ifstream File((AssetPath + Path).c_str(), std::ios::in);
+	if(!File)
+		throw std::runtime_error("Error loading: " + Path);
 
-	// Read the file
-	InputFile.ignore(1024, '\n');
-	while(!InputFile.eof() && InputFile.peek() != EOF) {
+	// Skip header
+	File.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
-		Identifier = GetTSVText(InputFile);
-		InputFile >> ReelTemplate.PlaybackSpeed >> ReelTemplate.RepeatMode >> ReelTemplate.StartPosition;
+	// Read file
+	while(!File.eof() && File.peek() != EOF) {
+
+		std::string Identifier;
+		std::getline(File, Identifier, '\t');
+
+		_ReelTemplate ReelTemplate;
+		File >> ReelTemplate.PlaybackSpeed >> ReelTemplate.RepeatMode >> ReelTemplate.StartPosition;
+		File.ignore(1);
 		ReelTemplate.TextureFiles.clear();
 
-		// Get textures
-		bool EndOfLine = false;
-		while(!EndOfLine && InputFile.peek() != EOF) {
-			TextureFile = GetTSVText(InputFile, &EndOfLine);
+		// Read rest of line into buffer
+		std::string Line;
+		std::getline(File, Line, '\n');
+		std::stringstream Buffer(Line);
 
+		// Get textures
+		std::string TextureFile;
+		while(std::getline(Buffer, TextureFile, '\t')) {
 			if(TextureFile != "")
 				ReelTemplate.TextureFiles.push_back(TextureFile);
 		}
 
 		// Check for duplicates
-		if(IsReelLoaded(Identifier)) {
+		if(IsReelLoaded(Identifier))
 			throw std::runtime_error(std::string(__FUNCTION__) + " - Duplicate entry: " + Identifier);
-		}
 
-		ReelTable.insert(make_pair(Identifier, ReelTemplate));
+		ReelTable[Identifier] = ReelTemplate;
 	}
-	InputFile.close();
+
+	File.close();
 }
 
 // Loads the animation table
-void _Assets::LoadAnimationTable(const std::string &Filename) {
+void _Assets::LoadAnimationTable(const std::string &Path) {
 	AnimationTemplateStruct AnimationTemplate;
-	std::string Identifier, ReelIdentifier;
 
 	// Load file
-	std::ifstream InputFile((AssetPath + Filename).c_str(), std::ios::in);
-	if(!InputFile) {
-		throw std::runtime_error("Error loading: " + Filename);
-	}
+	std::ifstream File((AssetPath + Path).c_str(), std::ios::in);
+	if(!File)
+		throw std::runtime_error("Error loading: " + Path);
 
-	// Read the file
-	InputFile.ignore(1024, '\n');
-	while(!InputFile.eof() && InputFile.peek() != EOF) {
+	// Skip header
+	File.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
-		Identifier = GetTSVText(InputFile);
+	// Read file
+	while(!File.eof() && File.peek() != EOF) {
+		std::string Identifier;
+		std::getline(File, Identifier, '\t');
 		AnimationTemplate.Identifiers.clear();
 
-		// Get textures
-		bool EndOfLine = false;
-		while(!EndOfLine && InputFile.peek() != EOF) {
-			ReelIdentifier = GetTSVText(InputFile, &EndOfLine);
+		// Read rest of line into buffer
+		std::string Line;
+		std::getline(File, Line, '\n');
+		std::stringstream Buffer(Line);
 
+		// Get reels
+		std::string ReelIdentifier;
+		while(std::getline(Buffer, ReelIdentifier, '\t')) {
 			if(ReelIdentifier != "")
 				AnimationTemplate.Identifiers.push_back(ReelIdentifier);
 		}
 
 		// Check for duplicates
-		if(IsAnimationLoaded(Identifier)) {
+		if(IsAnimationLoaded(Identifier))
 			throw std::runtime_error(std::string(__FUNCTION__) + " - Duplicate entry: " + Identifier);
-		}
 
 		AnimationTable.insert(make_pair(Identifier, AnimationTemplate));
 	}
 
-	InputFile.close();
+	File.close();
 }
 
 // Load shader programs
@@ -373,7 +386,7 @@ void _Assets::LoadPrograms(const std::string &Path) {
 	// Skip header
 	File.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
-	// Read the file
+	// Read file
 	while(!File.eof() && File.peek() != EOF) {
 		std::string Name;
 		std::string VertexPath;
@@ -409,137 +422,153 @@ void _Assets::LoadPrograms(const std::string &Path) {
 }
 
 // Load textures
-void _Assets::LoadTextures(const std::string &Filename) {
+void _Assets::LoadTextures(const std::string &Path) {
 
 	// Load file
-	std::ifstream InputFile((AssetPath + Filename).c_str(), std::ios::in);
-	if(!InputFile) {
-		throw std::runtime_error("Error loading: " + Filename);
-	}
+	std::ifstream File((AssetPath + Path).c_str(), std::ios::in);
+	if(!File)
+		throw std::runtime_error("Error loading: " + Path);
 
-	// Read the file
-	InputFile.ignore(1024, '\n');
-	while(!InputFile.eof() && InputFile.peek() != EOF) {
+	// Skip header
+	File.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
-		std::string Identifier = GetTSVText(InputFile);
-		std::string TextureFile = GetTSVText(InputFile);
+	// Add null texture
+	Textures[""] = nullptr;
+
+	// Read file
+	while(!File.eof() && File.peek() != EOF) {
+
+		std::string Name;
+		std::string TextureFile;
+		std::getline(File, Name, '\t');
+		std::getline(File, TextureFile, '\t');
+
 		int Group;
 		bool Repeat, MipMaps;
-		InputFile >> Group >> Repeat >> MipMaps;
-		InputFile.ignore(1024, '\n');
+		File >> Group >> Repeat >> MipMaps;
+		File.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
 		// Load texture
 		std::string Path = AssetPath + "textures/" + TextureFile;
 		_Texture *Texture = new _Texture(Path, false, Repeat, MipMaps, false);
 		Texture->Group = Group;
-		if(!Texture) {
+		if(!Texture)
 			throw std::runtime_error(std::string(__FUNCTION__) + " - Error loading: " + Path);
-		}
 
 		// Check for duplicates
-		if(IsTextureLoaded(Identifier)) {
-			throw std::runtime_error(std::string(__FUNCTION__) + " - Duplicate entry: " + Identifier);
-		}
+		if(IsTextureLoaded(Name))
+			throw std::runtime_error(std::string(__FUNCTION__) + " - Duplicate entry: " + Name);
 
-		Textures.insert(make_pair(Identifier, Texture));
+		Textures[Name] = Texture;
 	}
 
-	InputFile.close();
+	File.close();
 }
 
-// Loads the sample table
-void _Assets::LoadSamples(const std::string &Filename, const std::string &SamplePath) {
-	std::string Identifier, SampleFile;
-	float Volume;
-	int Limit;
+// Load sounds
+void _Assets::LoadSounds(const std::string &Path, const std::string &SamplePath) {
 
 	// Load file
-	std::ifstream InputFile((AssetPath + Filename).c_str(), std::ios::in);
-	if(!InputFile) {
-		throw std::runtime_error("Error loading: " + Filename);
-	}
+	std::ifstream File((AssetPath + Path).c_str(), std::ios::in);
+	if(!File)
+		throw std::runtime_error("Error loading: " + Path);
 
-	// Read the file
-	InputFile.ignore(1024, '\n');
-	while(!InputFile.eof() && InputFile.peek() != EOF) {
+	// Skip header
+	File.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
-		Identifier = GetTSVText(InputFile);
-		SampleFile = GetTSVText(InputFile);
-		InputFile >> Volume >> Limit;
-		InputFile.ignore(1024, '\n');
+	// Read file
+	while(!File.eof() && File.peek() != EOF) {
+		std::string Identifier;
+		std::string SampleFile;
+		std::getline(File, Identifier, '\t');
+		std::getline(File, SampleFile, '\t');
+
+		float Volume;
+		int Limit;
+		File >> Volume >> Limit;
+		File.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
 		// Load sample file
 		std::string Path = AssetPath + SamplePath + SampleFile;
-		if(!Audio.LoadBuffer(Identifier, Path, Volume, Limit)) {
+		if(!Audio.LoadBuffer(Identifier, Path, Volume, Limit))
 			throw std::runtime_error("Error loading: " + Path);
-		}
 	}
 
-	InputFile.close();
+	File.close();
 }
 
 // Loads the attack samples table
-void _Assets::LoadAttackSampleTable(const std::string &Filename) {
+void _Assets::LoadSoundGroups(const std::string &Path) {
 	AttackSampleTemplateStruct SampleTemplate;
-	std::string Identifier;
 
 	// Load file
-	std::ifstream InputFile((AssetPath + Filename).c_str(), std::ios::in);
-	if(!InputFile) {
-		throw std::runtime_error("Error loading: " + Filename);
-	}
+	std::ifstream File((AssetPath + Path).c_str(), std::ios::in);
+	if(!File)
+		throw std::runtime_error("Error loading: " + Path);
 
-	// Ignore the first line
-	InputFile.ignore(1024, '\n');
+	// Skip header
+	File.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
-	while(!InputFile.eof() && InputFile.peek() != EOF) {
-		Identifier = GetTSVText(InputFile);
+	// Read file
+	while(!File.eof() && File.peek() != EOF) {
+
+		std::string Identifier;
+		std::getline(File, Identifier, '\t');
+
+		// Read rest of line into buffer
+		std::string Line;
+		std::getline(File, Line, '\n');
+		std::stringstream Buffer(Line);
+
+		// Read sounds
 		for(int i = 0; i < SAMPLE_TYPES; i++)
-			SampleTemplate.Samples[i] = GetTSVText(InputFile);
+			std::getline(Buffer, SampleTemplate.Samples[i], '\t');
 
 		// Check for duplicates
-		if(IsAttackSampleLoaded(Identifier)) {
+		if(IsAttackSampleLoaded(Identifier))
 			throw std::runtime_error(std::string(__FUNCTION__) + " - Duplicate entry: " + Identifier);
-		}
 
 		AttackSampleTable.insert(make_pair(Identifier, SampleTemplate));
 	}
 
-	InputFile.close();
+	File.close();
 }
 
 // Loads the particle table
-void _Assets::LoadParticleTable(const std::string &Filename) {
-	_ParticleTemplate Particle;
-	std::string Identifier;
+void _Assets::LoadParticles(const std::string &Path) {
 
 	// Load file
-	std::ifstream InputFile((AssetPath + Filename).c_str(), std::ios::in);
-	if(!InputFile) {
-		throw std::runtime_error("Error loading: " + Filename);
-	}
+	std::ifstream File((AssetPath + Path).c_str(), std::ios::in);
+	if(!File)
+		throw std::runtime_error("Error loading: " + Path);
 
-	// Read the file
-	InputFile.ignore(1024, '\n');
-	while(!InputFile.eof() && InputFile.peek() != EOF) {
+	// Skip header
+	File.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
-		Identifier = GetTSVText(InputFile);
-		std::string TextureIdentifier = GetTSVText(InputFile);
-		std::string ColorIdentifier = GetTSVText(InputFile);
-		std::string FontIdentifier = GetTSVText(InputFile);
+	// Read file
+	while(!File.eof() && File.peek() != EOF) {
 
-		InputFile 	>> Particle.Type >> Particle.Count >> Particle.Lifetime >> Particle.StartDirection.x >> Particle.StartDirection.y >> Particle.TurnSpeed.x
-					>> Particle.TurnSpeed.y >> Particle.VelocityScale.x >> Particle.VelocityScale.y >> Particle.AccelerationScale
-					>> Particle.Size.x >> Particle.Size.y >> Particle.DeviationZ >> Particle.ScaleAspect >> Particle.AlphaSpeed;
-		InputFile.ignore(1024, '\n');
+		std::string Identifier;
+		std::string TextureIdentifier;
+		std::string ColorIdentifier;
+		std::string FontIdentifier;
+		std::getline(File, Identifier, '\t');
+		std::getline(File, TextureIdentifier, '\t');
+		std::getline(File, ColorIdentifier, '\t');
+		std::getline(File, FontIdentifier, '\t');
+
+		_ParticleTemplate Particle;
+		File >> Particle.Type >> Particle.Count >> Particle.Lifetime >> Particle.StartDirection.x >> Particle.StartDirection.y >> Particle.TurnSpeed.x
+				>> Particle.TurnSpeed.y >> Particle.VelocityScale.x >> Particle.VelocityScale.y >> Particle.AccelerationScale
+				>> Particle.Size.x >> Particle.Size.y >> Particle.DeviationZ >> Particle.ScaleAspect >> Particle.AlphaSpeed;
+		File.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
 		// Check for duplicates
-		if(IsParticleLoaded(Identifier)) {
+		if(IsParticleLoaded(Identifier))
 			throw std::runtime_error(std::string(__FUNCTION__) + " - Duplicate entry: " + Identifier);
-		}
 
 		// Get texture
-		Particle.Texture = Assets.GetTexture(TextureIdentifier);
+		Particle.Texture = Assets.Textures[TextureIdentifier];
 		if(TextureIdentifier != "" && !Particle.Texture)
 			throw std::runtime_error("Unable to find texture: " + TextureIdentifier);
 
@@ -551,99 +580,106 @@ void _Assets::LoadParticleTable(const std::string &Filename) {
 		if(FontIdentifier != "" && !Particle.Font)
 			throw std::runtime_error("Unable to find font: " + FontIdentifier);
 
-		ParticleTable.insert(make_pair(Identifier, Particle));
+		ParticleTable[Identifier] = Particle;
 	}
 
-	InputFile.close();
+	File.close();
 }
 
 // Loads the weapon particles
-void _Assets::LoadWeaponParticles(const std::string &Filename) {
-	_WeaponParticleTemplate WeaponParticle;
-	std::string Identifier, ParticleIdentifier;
+void _Assets::LoadWeaponParticles(const std::string &Path) {
 
 	// Load file
-	std::ifstream InputFile((AssetPath + Filename).c_str(), std::ios::in);
-	if(!InputFile) {
-		throw std::runtime_error("Error loading: " + Filename);
-	}
+	std::ifstream File((AssetPath + Path).c_str(), std::ios::in);
+	if(!File)
+		throw std::runtime_error("Error loading: " + Path);
 
-	// Read the file
-	InputFile.ignore(1024, '\n');
-	while(!InputFile.eof() && InputFile.peek() != EOF) {
+	// Skip header
+	File.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
-		Identifier = GetTSVText(InputFile);
+	// Read file
+	while(!File.eof() && File.peek() != EOF) {
+
+		// Get name
+		std::string Name;
+		std::getline(File, Name, '\t');
+
+		// Read rest of line into buffer
+		std::string Line;
+		std::getline(File, Line, '\n');
+		std::stringstream Buffer(Line);
+
+		_WeaponParticleTemplate WeaponParticle;
 		for(int i = 0; i < WEAPONPARTICLE_TYPES; i++) {
-			ParticleIdentifier = GetTSVText(InputFile);
+			std::string ParticleIdentifier;
+			std::getline(Buffer, ParticleIdentifier, '\t');
 
-			if(ParticleIdentifier != "" && !IsParticleLoaded(ParticleIdentifier)) {
+			if(ParticleIdentifier != "" && !IsParticleLoaded(ParticleIdentifier))
 				throw std::runtime_error(std::string(__FUNCTION__) + " - Cannot find particle: " + ParticleIdentifier);
-			}
 			else if(ParticleIdentifier == "")
 				WeaponParticle.ParticleTemplates[i] = nullptr;
 			else
 				WeaponParticle.ParticleTemplates[i] = GetParticleTemplate(ParticleIdentifier);
-
 		}
 
-		WeaponParticleTable.insert(make_pair(Identifier, WeaponParticle));
+		WeaponParticleTable.insert(make_pair(Name, WeaponParticle));
 	}
 
-	InputFile.close();
+	File.close();
 }
 
 // Loads the monsters table
-void _Assets::LoadMonsterTable(const std::string &Filename) {
-	_MonsterTemplate Monster;
-	std::string Identifier, ColorName, WeaponParticlesIdentifier;
+void _Assets::LoadMonsterTable(const std::string &Path) {
 
 	// Load file
-	std::ifstream InputFile((AssetPath + Filename).c_str(), std::ios::in);
-	if(!InputFile) {
-		throw std::runtime_error("Error loading: " + Filename);
-	}
+	std::ifstream File((AssetPath + Path).c_str(), std::ios::in);
+	if(!File)
+		throw std::runtime_error("Error loading: " + Path);
 
-	// Read the file
-	InputFile.ignore(1024, '\n');
-	while(!InputFile.eof() && InputFile.peek() != EOF) {
+	// Skip header
+	File.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
-		Identifier = GetTSVText(InputFile);
-		Monster.Name = GetTSVText(InputFile);
-		Monster.AnimationIdentifier = GetTSVText(InputFile);
-		WeaponParticlesIdentifier = GetTSVText(InputFile);
-		Monster.SamplesIdentifier = GetTSVText(InputFile);
-		Monster.ItemGroupIdentifier = GetTSVText(InputFile);
-		ColorName = GetTSVText(InputFile);
-		InputFile 	>> Monster.Level >> Monster.Health >> Monster.DamageBlock >> Monster.BehaviorType >> Monster.ViewRange >> Monster.ExperienceGiven
-					>> Monster.MovementSpeed >> Monster.Radius >> Monster.Scale >> Monster.CurrentSpeed >> Monster.Accuracy
-					>> Monster.AttackRange >> Monster.MinDamage >> Monster.MaxDamage >> Monster.FirePeriod >> Monster.WeaponType;
-		InputFile.ignore(1024, '\n');
+	// Read file
+	while(!File.eof() && File.peek() != EOF) {
+
+		_MonsterTemplate Monster;
+		std::string Name;
+		std::string ColorName;
+		std::string WeaponParticlesIdentifier;
+		std::getline(File, Name, '\t');
+		std::getline(File, Monster.Name, '\t');
+		std::getline(File, Monster.AnimationIdentifier, '\t');
+		std::getline(File, WeaponParticlesIdentifier, '\t');
+		std::getline(File, Monster.SamplesIdentifier, '\t');
+		std::getline(File, Monster.ItemGroupIdentifier, '\t');
+		std::getline(File, ColorName, '\t');
+
+		File >> Monster.Level >> Monster.Health >> Monster.DamageBlock >> Monster.BehaviorType >> Monster.ViewRange >> Monster.ExperienceGiven
+			>> Monster.MovementSpeed >> Monster.Radius >> Monster.Scale >> Monster.CurrentSpeed >> Monster.Accuracy
+			>> Monster.AttackRange >> Monster.MinDamage >> Monster.MaxDamage >> Monster.FirePeriod >> Monster.WeaponType;
+		File.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
 		// Set color
-		if(ColorName == "")
-			Monster.Color = COLOR_WHITE;
-		else {
-
-			if(!IsColorLoaded(ColorName)) {
+		if(ColorName != "") {
+			if(!IsColorLoaded(ColorName))
 				throw std::runtime_error(std::string(__FUNCTION__) + " - Cannot find color: " + ColorName);
-			}
+
 			Monster.Color = GetColor(ColorName);
 		}
+		else
+			Monster.Color = COLOR_WHITE;
 
 		// Check for item group
-		if(Monster.ItemGroupIdentifier != "" && !IsItemGroupLoaded(Monster.ItemGroupIdentifier)) {
-			throw std::runtime_error(std::string(__FUNCTION__) + " - Cannot find item group: " + Monster.ItemGroupIdentifier + " in " + Identifier);
-		}
+		if(Monster.ItemGroupIdentifier != "" && !IsItemGroupLoaded(Monster.ItemGroupIdentifier))
+			throw std::runtime_error(std::string(__FUNCTION__) + " - Cannot find item group: " + Monster.ItemGroupIdentifier + " in " + Name);
 
 		// Check for animation
-		if(!IsAnimationLoaded(Monster.AnimationIdentifier)) {
-			throw std::runtime_error(std::string(__FUNCTION__) + " - Cannot find animation: " + Monster.AnimationIdentifier + " in " + Identifier);
-		}
+		if(!IsAnimationLoaded(Monster.AnimationIdentifier))
+			throw std::runtime_error(std::string(__FUNCTION__) + " - Cannot find animation: " + Monster.AnimationIdentifier + " in " + Name);
 
 		// Check for samples
-		if(!IsAttackSampleLoaded(Monster.SamplesIdentifier)) {
-			throw std::runtime_error(std::string(__FUNCTION__) + " - Cannot find sample: " + Monster.SamplesIdentifier + " in " + Identifier);
-		}
+		if(!IsAttackSampleLoaded(Monster.SamplesIdentifier))
+			throw std::runtime_error(std::string(__FUNCTION__) + " - Cannot find sample: " + Monster.SamplesIdentifier + " in " + Name);
 
 		// Set particles
 		if(IsWeaponParticleTemplateLoaded(WeaponParticlesIdentifier))
@@ -652,210 +688,210 @@ void _Assets::LoadMonsterTable(const std::string &Filename) {
 			Monster.WeaponParticles = &BlankWeaponParticle;
 
 		// Check for duplicates
-		if(IsMonsterLoaded(Identifier)) {
-			throw std::runtime_error(std::string(__FUNCTION__) + " - Duplicate entry: " + Identifier);
-		}
+		if(IsMonsterLoaded(Name))
+			throw std::runtime_error(std::string(__FUNCTION__) + " - Duplicate entry: " + Name);
 
-		MonsterTable.insert(make_pair(Identifier, Monster));
+		MonsterTable[Name] = Monster;
 	}
 
-	InputFile.close();
+	File.close();
 }
 
 // Loads the misc item table
-void _Assets::LoadMiscItemTable(const std::string &Filename) {
-	_MiscItemTemplate MiscItem;
-	std::string Identifier, ColorName;
+void _Assets::LoadMiscItemTable(const std::string &Path) {
 
 	// Load file
-	std::ifstream InputFile((AssetPath + Filename).c_str(), std::ios::in);
-	if(!InputFile) {
-		throw std::runtime_error("Error loading: " + Filename);
-	}
+	std::ifstream File((AssetPath + Path).c_str(), std::ios::in);
+	if(!File)
+		throw std::runtime_error("Error loading: " + Path);
 
-	// Read the file
-	InputFile.ignore(1024, '\n');
-	while(!InputFile.eof() && InputFile.peek() != EOF) {
+	// Skip header
+	File.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
-		Identifier = GetTSVText(InputFile);
-		MiscItem.Name = GetTSVText(InputFile);
-		MiscItem.IconIdentifier = GetTSVText(InputFile);
-		ColorName = GetTSVText(InputFile);
-		InputFile >> MiscItem.Type >> MiscItem.Level;
-		InputFile.ignore(1024, '\n');
+	// Read file
+	while(!File.eof() && File.peek() != EOF) {
+
+		_MiscItemTemplate MiscItem;
+		std::string Identifier;
+		std::string ColorName;
+		std::getline(File, Identifier, '\t');
+		std::getline(File, MiscItem.Name, '\t');
+		std::getline(File, MiscItem.IconIdentifier, '\t');
+		std::getline(File, ColorName, '\t');
+		File >> MiscItem.Type >> MiscItem.Level;
+		File.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
 		// Check for loaded textures
-		if(!IsTextureLoaded(MiscItem.IconIdentifier)) {
+		if(!IsTextureLoaded(MiscItem.IconIdentifier))
 			throw std::runtime_error(std::string(__FUNCTION__) + " - Cannot find texture: " + MiscItem.IconIdentifier);
-		}
 
 		// Set color
-		if(ColorName == "")
-			MiscItem.Color = COLOR_WHITE;
-		else {
-
-			if(!IsColorLoaded(ColorName)) {
+		if(ColorName != "") {
+			if(!IsColorLoaded(ColorName))
 				throw std::runtime_error(std::string(__FUNCTION__) + " - Cannot find color: " + ColorName);
-			}
+
 			MiscItem.Color = GetColor(ColorName);
 		}
+		else
+			MiscItem.Color = COLOR_WHITE;
 
 		// Check for duplicates
-		if(IsMiscItemLoaded(Identifier)) {
+		if(IsMiscItemLoaded(Identifier))
 			throw std::runtime_error(std::string(__FUNCTION__) + " - Duplicate entry: " + Identifier);
-		}
 
-		MiscItemTable.insert(make_pair(Identifier, MiscItem));
+		MiscItemTable[Identifier] = MiscItem;
 	}
 
-	InputFile.close();
+	File.close();
 }
 
 // Loads the upgrade table
-void _Assets::LoadUpgradeTable(const std::string &Filename) {
-	_UpgradeTemplate Upgrade;
-	std::string Identifier, ColorName;
+void _Assets::LoadUpgradeTable(const std::string &Path) {
 
 	// Load file
-	std::ifstream InputFile((AssetPath + Filename).c_str(), std::ios::in);
-	if(!InputFile) {
-		throw std::runtime_error("Error loading: " + Filename);
-	}
+	std::ifstream File((AssetPath + Path).c_str(), std::ios::in);
+	if(!File)
+		throw std::runtime_error("Error loading: " + Path);
 
-	// Read the file
-	InputFile.ignore(1024, '\n');
-	while(!InputFile.eof() && InputFile.peek() != EOF) {
+	// Skip header
+	File.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
-		Identifier = GetTSVText(InputFile);
-		Upgrade.Name = GetTSVText(InputFile);
-		Upgrade.IconIdentifier = GetTSVText(InputFile);
-		ColorName = GetTSVText(InputFile);
-		InputFile >> Upgrade.UpgradeType >> Upgrade.WeaponType >> Upgrade.Bonus;
-		InputFile.ignore(1024, '\n');
+	// Read file
+	while(!File.eof() && File.peek() != EOF) {
+
+		_UpgradeTemplate Upgrade;
+		std::string Name;
+		std::string ColorName;
+		std::getline(File, Name, '\t');
+		std::getline(File, Upgrade.Name, '\t');
+		std::getline(File, Upgrade.IconIdentifier, '\t');
+		std::getline(File, ColorName, '\t');
+		File >> Upgrade.UpgradeType >> Upgrade.WeaponType >> Upgrade.Bonus;
+		File.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
 		// Check for loaded textures
-		if(!IsTextureLoaded(Upgrade.IconIdentifier)) {
+		if(!IsTextureLoaded(Upgrade.IconIdentifier))
 			throw std::runtime_error(std::string(__FUNCTION__) + " - Cannot find texture: " + Upgrade.IconIdentifier);
-		}
 
 		// Set color
-		if(ColorName == "")
-			Upgrade.Color = COLOR_WHITE;
-		else {
-
-			if(!IsColorLoaded(ColorName)) {
+		if(ColorName != "") {
+			if(!IsColorLoaded(ColorName))
 				throw std::runtime_error(std::string(__FUNCTION__) + " - Cannot find color: " + ColorName);
-			}
+
 			Upgrade.Color = GetColor(ColorName);
 		}
+		else
+			Upgrade.Color = COLOR_WHITE;
 
 		// Check for duplicates
-		if(IsUpgradeLoaded(Identifier)) {
-			throw std::runtime_error(std::string(__FUNCTION__) + " - Duplicate entry: " + Identifier);
-		}
+		if(IsUpgradeLoaded(Name))
+			throw std::runtime_error(std::string(__FUNCTION__) + " - Duplicate entry: " + Name);
 
-		UpgradeTable.insert(make_pair(Identifier, Upgrade));
+		UpgradeTable[Name] = Upgrade;
 	}
-	InputFile.close();
+
+	File.close();
 }
 
 // Loads the ammo table
-void _Assets::LoadAmmoTable(const std::string &Filename) {
-	_AmmoTemplate Ammo;
-	std::string Identifier, ColorName;
+void _Assets::LoadAmmoTable(const std::string &Path) {
 
 	// Load file
-	std::ifstream InputFile((AssetPath + Filename).c_str(), std::ios::in);
-	if(!InputFile) {
-		throw std::runtime_error("Error loading: " + Filename);
-	}
+	std::ifstream File((AssetPath + Path).c_str(), std::ios::in);
+	if(!File)
+		throw std::runtime_error("Error loading: " + Path);
 
-	// Read the file
-	InputFile.ignore(1024, '\n');
-	while(!InputFile.eof() && InputFile.peek() != EOF) {
+	// Skip header
+	File.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
-		Identifier = GetTSVText(InputFile);
-		Ammo.Name = GetTSVText(InputFile);
-		Ammo.IconIdentifier = GetTSVText(InputFile);
-		ColorName = GetTSVText(InputFile);
-		InputFile >> Ammo.AmmoType;
-		InputFile.ignore(1024, '\n');
+	// Read file
+	while(!File.eof() && File.peek() != EOF) {
+
+		_AmmoTemplate Ammo;
+		std::string Name;
+		std::string ColorName;
+		std::getline(File, Name, '\t');
+		std::getline(File, Ammo.Name, '\t');
+		std::getline(File, Ammo.IconIdentifier, '\t');
+		std::getline(File, ColorName, '\t');
+
+		File >> Ammo.AmmoType;
+		File.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
 		// Check for loaded textures
-		if(!IsTextureLoaded(Ammo.IconIdentifier)) {
+		if(!IsTextureLoaded(Ammo.IconIdentifier))
 			throw std::runtime_error(std::string(__FUNCTION__) + " - Texture not found: " + Ammo.IconIdentifier);
-		}
 
 		// Set color
-		if(ColorName == "")
-			Ammo.Color = COLOR_WHITE;
-		else {
-
-			if(!IsColorLoaded(ColorName)) {
+		if(ColorName != "") {
+			if(!IsColorLoaded(ColorName))
 				throw std::runtime_error(std::string(__FUNCTION__) + " - Cannot find color: " + ColorName);
-			}
+
 			Ammo.Color = GetColor(ColorName);
 		}
+		else
+			Ammo.Color = COLOR_WHITE;
 
 		// Check for duplicates
-		if(IsAmmoLoaded(Identifier)) {
-			throw std::runtime_error(std::string(__FUNCTION__) + " - Duplicate entry: " + Identifier);
-		}
+		if(IsAmmoLoaded(Name))
+			throw std::runtime_error(std::string(__FUNCTION__) + " - Duplicate entry: " + Name);
 
-		AmmoTypeIdentifiers[Ammo.AmmoType] = Identifier;
-		AmmoTable.insert(make_pair(Identifier, Ammo));
+		AmmoTypeIdentifiers[Ammo.AmmoType] = Name;
+		AmmoTable[Name] = Ammo;
 	}
-	InputFile.close();
+
+	File.close();
 }
 
 // Loads the weapon table
-void _Assets::LoadWeaponTable(const std::string &Filename) {
-
-	AttackSampleTemplateStruct *AttackSample;
-	std::string Identifier, ColorName, SamplesIdentifier, WeaponParticlesIdentifier;
+void _Assets::LoadWeaponTable(const std::string &Path) {
 
 	// Load file
-	std::ifstream InputFile((AssetPath + Filename).c_str(), std::ios::in);
-	if(!InputFile) {
-		throw std::runtime_error("Error loading: " + Filename);
-	}
+	std::ifstream File((AssetPath + Path).c_str(), std::ios::in);
+	if(!File)
+		throw std::runtime_error("Error loading: " + Path);
 
-	// Read the file
-	InputFile.ignore(1024, '\n');
-	while(!InputFile.eof() && InputFile.peek() != EOF) {
+	// Skip header
+	File.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+
+	// Read file
+	while(!File.eof() && File.peek() != EOF) {
 		_WeaponTemplate Weapon;
+		AttackSampleTemplateStruct *AttackSample;
 
-		Identifier = GetTSVText(InputFile);
-		Weapon.Name = GetTSVText(InputFile);
-		Weapon.IconIdentifier = GetTSVText(InputFile);
-		SamplesIdentifier = GetTSVText(InputFile);
-		WeaponParticlesIdentifier = GetTSVText(InputFile);
-		ColorName = GetTSVText(InputFile);
-		InputFile 	>> Weapon.Type >> Weapon.ZoomScale >> Weapon.MinAccuracy >> Weapon.MaxAccuracy >> Weapon.Recoil >> Weapon.RecoilRegen >> Weapon.Range
-					>> Weapon.FireRate >> Weapon.FirePeriod >> Weapon.ReloadPeriod >> Weapon.MinComponents >> Weapon.MaxComponents
-					>> Weapon.MinDamage >> Weapon.MaxDamage	>> Weapon.BulletsShot >> Weapon.RoundSize >> Weapon.AmmoType;
-		InputFile.ignore(1024, '\n');
+		std::string Name;
+		std::string ColorName;
+		std::string SamplesIdentifier;
+		std::string WeaponParticlesIdentifier;
+		std::getline(File, Name, '\t');
+		std::getline(File, Weapon.Name, '\t');
+		std::getline(File, Weapon.IconIdentifier, '\t');
+		std::getline(File, SamplesIdentifier, '\t');
+		std::getline(File, WeaponParticlesIdentifier, '\t');
+		std::getline(File, ColorName, '\t');
+
+		File >> Weapon.Type >> Weapon.ZoomScale >> Weapon.MinAccuracy >> Weapon.MaxAccuracy >> Weapon.Recoil >> Weapon.RecoilRegen >> Weapon.Range
+				>> Weapon.FireRate >> Weapon.FirePeriod >> Weapon.ReloadPeriod >> Weapon.MinComponents >> Weapon.MaxComponents
+				>> Weapon.MinDamage >> Weapon.MaxDamage	>> Weapon.BulletsShot >> Weapon.RoundSize >> Weapon.AmmoType;
+		File.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
 		// Check for loaded textures
-		if(!IsTextureLoaded(Weapon.IconIdentifier)) {
+		if(!IsTextureLoaded(Weapon.IconIdentifier))
 			throw std::runtime_error(std::string(__FUNCTION__) + " - Texture not found: " + Weapon.IconIdentifier);
-		}
 
 		// Set color
-		if(ColorName == "")
-			Weapon.Color = COLOR_WHITE;
-		else {
-
-			if(!IsColorLoaded(ColorName)) {
+		if(ColorName != "") {
+			if(!IsColorLoaded(ColorName))
 				throw std::runtime_error(std::string(__FUNCTION__) + " - Cannot find color: " + ColorName);
-			}
+
 			Weapon.Color = GetColor(ColorName);
 		}
+		else
+			Weapon.Color = COLOR_WHITE;
 
 		// Check for attack sample
-		if(!IsAttackSampleLoaded(SamplesIdentifier)) {
+		if(!IsAttackSampleLoaded(SamplesIdentifier))
 			throw std::runtime_error(std::string(__FUNCTION__) + " - Cannot find sample: " + SamplesIdentifier);
-		}
 
 		// Set samples
 		AttackSample = GetAttackSampleTemplate(SamplesIdentifier);
@@ -871,104 +907,109 @@ void _Assets::LoadWeaponTable(const std::string &Filename) {
 			Weapon.WeaponParticles = &BlankWeaponParticle;
 
 		// Check for duplicates
-		if(IsWeaponLoaded(Identifier)) {
-			throw std::runtime_error(std::string(__FUNCTION__) + " - Duplicate entry: " + Identifier);
-		}
+		if(IsWeaponLoaded(Name))
+			throw std::runtime_error(std::string(__FUNCTION__) + " - Duplicate entry: " + Name);
 
-		WeaponTable.insert(make_pair(Identifier, Weapon));
+		WeaponTable[Name] = Weapon;
 	}
-	InputFile.close();
+
+	File.close();
 }
 
 // Loads the armor table
-void _Assets::LoadArmorTable(const std::string &Filename) {
-	_ArmorTemplate Armor;
-	std::string Identifier, ColorName;
+void _Assets::LoadArmorTable(const std::string &Path) {
 
 	// Load file
-	std::ifstream InputFile((AssetPath + Filename).c_str(), std::ios::in);
-	if(!InputFile) {
-		throw std::runtime_error("Error loading: " + Filename);
-	}
+	std::ifstream File((AssetPath + Path).c_str(), std::ios::in);
+	if(!File)
+		throw std::runtime_error("Error loading: " + Path);
 
-	// Read the file
-	InputFile.ignore(1024, '\n');
-	while(!InputFile.eof() && InputFile.peek() != EOF) {
+	// Skip header
+	File.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
-		Identifier = GetTSVText(InputFile);
-		Armor.Name = GetTSVText(InputFile);
-		Armor.IconIdentifier = GetTSVText(InputFile);
-		ColorName = GetTSVText(InputFile);
-		InputFile >> Armor.StrengthRequirement >> Armor.DamageBlock >> Armor.DamageResist >> Armor.MovementSpeed;
-		InputFile.ignore(1024, '\n');
+	// Read file
+	while(!File.eof() && File.peek() != EOF) {
+
+		_ArmorTemplate Armor;
+		std::string Name;
+		std::string ColorName;
+		std::getline(File, Name, '\t');
+		std::getline(File, Armor.Name, '\t');
+		std::getline(File, Armor.IconIdentifier, '\t');
+		std::getline(File, ColorName, '\t');
+
+		File >> Armor.StrengthRequirement >> Armor.DamageBlock >> Armor.DamageResist >> Armor.MovementSpeed;
+		File.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
 		// Check for loaded textures
-		if(!IsTextureLoaded(Armor.IconIdentifier)) {
+		if(!IsTextureLoaded(Armor.IconIdentifier))
 			throw std::runtime_error(std::string(__FUNCTION__) + " - Texture not found: " + Armor.IconIdentifier);
-		}
 
 		// Set color
-		if(ColorName == "")
-			Armor.Color = COLOR_WHITE;
-		else {
-
-			if(!IsColorLoaded(ColorName)) {
+		if(ColorName != "") {
+			if(!IsColorLoaded(ColorName))
 				throw std::runtime_error(std::string(__FUNCTION__) + " - Cannot find color: " + ColorName);
-			}
+
 			Armor.Color = GetColor(ColorName);
 		}
+		else
+			Armor.Color = COLOR_WHITE;
 
 		// Check for duplicates
-		if(IsArmorLoaded(Identifier)) {
-			throw std::runtime_error(std::string(__FUNCTION__) + " - Duplicate entry: " + Identifier);
-		}
+		if(IsArmorLoaded(Name))
+			throw std::runtime_error(std::string(__FUNCTION__) + " - Duplicate entry: " + Name);
 
-		ArmorTable.insert(make_pair(Identifier, Armor));
+		ArmorTable[Name] = Armor;
 	}
-	InputFile.close();
+
+	File.close();
 }
 
 // Load item drop table
-void _Assets::LoadItemDropTable(const std::string &Filename) {
+void _Assets::LoadItemDrops(const std::string &Path) {
 
 	// Load file
-	std::ifstream InputFile((AssetPath + Filename).c_str(), std::ios::in);
-	if(!InputFile) {
-		throw std::runtime_error("Error loading: " + Filename);
-	}
+	std::ifstream File((AssetPath + Path).c_str(), std::ios::in);
+	if(!File)
+		throw std::runtime_error("Error loading: " + Path);
 
 	// Skip first two fields
-	GetTSVText(InputFile);
-	GetTSVText(InputFile);
+	File.ignore(std::numeric_limits<std::streamsize>::max(), '\t');
+	File.ignore(std::numeric_limits<std::streamsize>::max(), '\t');
+
+	// Read rest of line into buffer
+	std::string Line;
+	std::getline(File, Line, '\n');
+	std::stringstream Buffer(Line);
 
 	// Get item drop names first
-	bool EndOfLine = false;
 	int ItemDrops = 0;
 	std::vector<std::string> ItemDropNames;
-	while(!EndOfLine && InputFile.peek() != EOF) {
-		std::string DropName = GetTSVText(InputFile, &EndOfLine);
+	std::string DropName;
+	while(std::getline(Buffer, DropName, '\t')) {
+		if(DropName == "")
+			continue;
 
-		if(DropName != "") {
-			ItemDropNames.push_back(DropName);
+		ItemDropNames.push_back(DropName);
 
-			auto ItemGroupTableIterator = ItemGroupTable.find(DropName);
-			if(ItemGroupTableIterator == ItemGroupTable.end()) {
-				_ItemGroup ItemGroup;
-				ItemGroup.Total = 0;
-				ItemGroup.Quantity = 1;
-				ItemGroupTable[DropName] = ItemGroup;
-			}
-			ItemDrops++;
+		auto ItemGroupTableIterator = ItemGroupTable.find(DropName);
+		if(ItemGroupTableIterator == ItemGroupTable.end()) {
+			_ItemGroup ItemGroup;
+			ItemGroup.Total = 0;
+			ItemGroup.Quantity = 1;
+			ItemGroupTable[DropName] = ItemGroup;
 		}
+
+		ItemDrops++;
 	}
 
 	// Read rest of data
-	while(!InputFile.eof() && InputFile.peek() != EOF) {
-		ItemGroupEntryStruct ItemGroupEntry;
+	while(!File.eof() && File.peek() != EOF) {
 
-		InputFile >> ItemGroupEntry.Type;
-		InputFile.ignore(1, '\t');
-		ItemGroupEntry.ItemIdentifier = GetTSVText(InputFile);
+		ItemGroupEntryStruct ItemGroupEntry;
+		File >> ItemGroupEntry.Type;
+		File.ignore(1, '\t');
+		std::getline(File, ItemGroupEntry.ItemIdentifier, '\t');
 
 		// See if items exist
 		switch(ItemGroupEntry.Type) {
@@ -976,72 +1017,72 @@ void _Assets::LoadItemDropTable(const std::string &Filename) {
 			break;
 			case _Object::MEDKIT:
 				if(!IsMiscItemLoaded(ItemGroupEntry.ItemIdentifier))
-					throw std::runtime_error(std::string(__FUNCTION__) + " - Cannot find: " + ItemGroupEntry.ItemIdentifier + " in " + Filename);
+					throw std::runtime_error(std::string(__FUNCTION__) + " - Cannot find: " + ItemGroupEntry.ItemIdentifier + " in " + Path);
 			break;
 			case _Object::AMMO:
 				if(!IsAmmoLoaded(ItemGroupEntry.ItemIdentifier))
-					throw std::runtime_error(std::string(__FUNCTION__) + " - Cannot find: " + ItemGroupEntry.ItemIdentifier + " in " + Filename);
+					throw std::runtime_error(std::string(__FUNCTION__) + " - Cannot find: " + ItemGroupEntry.ItemIdentifier + " in " + Path);
 			break;
 			case _Object::UPGRADE:
 				if(!IsUpgradeLoaded(ItemGroupEntry.ItemIdentifier))
-					throw std::runtime_error(std::string(__FUNCTION__) + " - Cannot find: " + ItemGroupEntry.ItemIdentifier + " in " + Filename);
+					throw std::runtime_error(std::string(__FUNCTION__) + " - Cannot find: " + ItemGroupEntry.ItemIdentifier + " in " + Path);
 			break;
 			case _Object::WEAPON:
 				if(!IsWeaponLoaded(ItemGroupEntry.ItemIdentifier))
-					throw std::runtime_error(std::string(__FUNCTION__) + " - Cannot find: " + ItemGroupEntry.ItemIdentifier + " in " + Filename);
+					throw std::runtime_error(std::string(__FUNCTION__) + " - Cannot find: " + ItemGroupEntry.ItemIdentifier + " in " + Path);
 			break;
 			case _Object::ARMOR:
 				if(!IsArmorLoaded(ItemGroupEntry.ItemIdentifier))
-					throw std::runtime_error(std::string(__FUNCTION__) + " - Cannot find: " + ItemGroupEntry.ItemIdentifier + " in " + Filename);
+					throw std::runtime_error(std::string(__FUNCTION__) + " - Cannot find: " + ItemGroupEntry.ItemIdentifier + " in " + Path);
 			break;
 			case _Object::KEY:
 				if(!IsMiscItemLoaded(ItemGroupEntry.ItemIdentifier))
-					throw std::runtime_error(std::string(__FUNCTION__) + " - Cannot find: " + ItemGroupEntry.ItemIdentifier + " in " + Filename);
+					throw std::runtime_error(std::string(__FUNCTION__) + " - Cannot find: " + ItemGroupEntry.ItemIdentifier + " in " + Path);
 			break;
 			default:
-				throw std::runtime_error(std::string(__FUNCTION__) + " - Bad item type: " + ItemGroupEntry.ItemIdentifier + " in " + Filename);
+				throw std::runtime_error(std::string(__FUNCTION__) + " - Bad item type: " + ItemGroupEntry.ItemIdentifier + " in " + Path);
 			break;
 		}
 
 		// Add counts to item groups
 		for(int i = 0; i < ItemDrops; i++) {
-			InputFile >> ItemGroupEntry.Count;
+			File >> ItemGroupEntry.Count;
+			if(ItemGroupEntry.Count <= 0)
+				continue;
 
-			if(ItemGroupEntry.Count > 0) {
-				ItemGroupTable[ItemDropNames[i]].Total += ItemGroupEntry.Count;
-				ItemGroupEntry.Count = ItemGroupTable[ItemDropNames[i]].Total;
-				ItemGroupTable[ItemDropNames[i]].Entries.push_back(ItemGroupEntry);
-			}
+			ItemGroupTable[ItemDropNames[i]].Total += ItemGroupEntry.Count;
+			ItemGroupEntry.Count = ItemGroupTable[ItemDropNames[i]].Total;
+			ItemGroupTable[ItemDropNames[i]].Entries.push_back(ItemGroupEntry);
 		}
 
-		InputFile.ignore(1024, '\n');
+		File.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 	}
 
-	InputFile.close();
+	File.close();
 }
 
 // Loads a monster set
-void _Assets::LoadMonsterSet(const std::string &Filename) {
+void _Assets::LoadMonsterSet(const std::string &Path) {
 
 	// Load file
-	std::ifstream InputFile((AssetPath + Filename).c_str(), std::ios::in);
-	if(!InputFile)
+	std::ifstream File((AssetPath + Path).c_str(), std::ios::in);
+	if(!File)
 		return;
 
 	UnloadMonsterSet();
 
-	// Read the file
+	// Read file
 	std::string Identifier;
-	while(!InputFile.eof() && InputFile.peek() != EOF) {
-		InputFile >> Identifier;
-		InputFile.ignore(1024, '\n');
-
+	while(!File.eof() && File.peek() != EOF) {
+		File >> Identifier;
+		File.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 		if(!IsMonsterLoaded(Identifier))
 			throw std::runtime_error("Cannot find monster: " + Identifier);
 
 		MonsterSet.push_back(Identifier);
 	}
-	InputFile.close();
+
+	File.close();
 
 	// Load the animation textures
 	LoadMonsterAnimation();
@@ -1049,31 +1090,28 @@ void _Assets::LoadMonsterSet(const std::string &Filename) {
 
 // Loads the reel from the given identifier
 void _Assets::LoadReel(const std::string &Identifier, const std::string &Path) {
-	_Reel Reel;
-	std::string FilePath;
-	_Texture *Texture;
 
 	auto ReelTableIterator = ReelTable.find(Identifier);
-	if(ReelTableIterator != ReelTable.end()) {
+	if(ReelTableIterator == ReelTable.end())
+		return;
 
-		auto ReelIterator = Reels.find(Identifier);
-		if(ReelIterator == Reels.end()) {
+	auto ReelIterator = Reels.find(Identifier);
+	if(ReelIterator == Reels.end()) {
+		_Reel Reel;
+		Reel.StartPosition = ReelTableIterator->second.StartPosition;
+		Reel.RepeatMode = static_cast<RepeatType>(ReelTableIterator->second.RepeatMode);
+		Reel.PlaybackSpeed = ReelTableIterator->second.PlaybackSpeed;
 
-			Reel.StartPosition = ReelTableIterator->second.StartPosition;
-			Reel.RepeatMode = static_cast<RepeatType>(ReelTableIterator->second.RepeatMode);
-			Reel.PlaybackSpeed = ReelTableIterator->second.PlaybackSpeed;
+		for(int i = 0; i < static_cast<int>(ReelTableIterator->second.TextureFiles.size()); i++) {
+			std::string ReelPath = AssetPath + Path + ReelTableIterator->second.TextureFiles[i];
+			_Texture *Texture = new _Texture(ReelPath, false, false, true, false);
+			if(!Texture)
+				throw std::runtime_error("Error loading: " + ReelPath);
 
-			for(int i = 0; i < static_cast<int>(ReelTableIterator->second.TextureFiles.size()); i++) {
-				FilePath = AssetPath + Path + ReelTableIterator->second.TextureFiles[i];
-				Texture = new _Texture(FilePath, false, false, true, false);
-				if(!Texture)
-					throw std::runtime_error("Error loading: " + FilePath);
-
-				Reel.Textures.push_back(Texture);
-			}
-
-			Reels.insert(make_pair(Identifier, Reel));
+			Reel.Textures.push_back(Texture);
 		}
+
+		Reels.insert(make_pair(Identifier, Reel));
 	}
 }
 
@@ -1081,102 +1119,140 @@ void _Assets::LoadReel(const std::string &Identifier, const std::string &Path) {
 void _Assets::LoadAnimation(const std::string &Identifier, const std::string &Path) {
 
 	auto AnimationTableIterator = AnimationTable.find(Identifier);
-	if(AnimationTableIterator != AnimationTable.end()) {
+	if(AnimationTableIterator == AnimationTable.end())
+		return;
 
-		// Check if animation has already been loaded
-		auto AnimationIterator = Animations.find(Identifier);
-		if(AnimationIterator == Animations.end()) {
+	// Check if animation has already been loaded
+	auto AnimationIterator = Animations.find(Identifier);
+	if(AnimationIterator == Animations.end()) {
+		_Animation *Animation = new _Animation();
 
-			_Animation *Animation = new _Animation();
+		// Load reels
+		for(int i = 0; i < static_cast<int>(AnimationTableIterator->second.Identifiers.size()); i++) {
+			LoadReel(AnimationTableIterator->second.Identifiers[i], Path);
 
-			// Load reels
-			for(int i = 0; i < static_cast<int>(AnimationTableIterator->second.Identifiers.size()); i++) {
-				LoadReel(AnimationTableIterator->second.Identifiers[i], Path);
-
-				Animation->AddReel(GetReel(AnimationTableIterator->second.Identifiers[i]));
-			}
-
-			Animation->ChangeReel(0);
-			Animations.insert(make_pair(Identifier, Animation));
+			Animation->AddReel(GetReel(AnimationTableIterator->second.Identifiers[i]));
 		}
+
+		Animation->ChangeReel(0);
+		Animations.insert(make_pair(Identifier, Animation));
 	}
 }
 
 // Loads the monster aniimation
 void _Assets::LoadMonsterAnimation() {
-
-	for(size_t i = 0; i < MonsterSet.size(); i++) {
+	for(size_t i = 0; i < MonsterSet.size(); i++)
 		LoadAnimation(GetMonsterTemplate(MonsterSet[i])->AnimationIdentifier, "textures/monsters/");
-	}
 }
 
 // Loads the styles
-void _Assets::LoadStyles(const std::string &Filename) {
+void _Assets::LoadStyles(const std::string &Path) {
 
 	// Load file
-	std::ifstream InputFile((AssetPath + Filename).c_str(), std::ios::in);
-	if(!InputFile) {
-		throw std::runtime_error("Error loading: " + Filename);
-	}
+	std::ifstream File((AssetPath + Path).c_str(), std::ios::in);
+	if(!File)
+		throw std::runtime_error("Error loading: " + Path);
 
-	// Read the file
-	InputFile.ignore(1024, '\n');
-	while(!InputFile.eof() && InputFile.peek() != EOF) {
+	// Skip header
+	File.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
-		std::string Identifier = GetTSVText(InputFile);
-		std::string BackgroundColorIdentifier = GetTSVText(InputFile);
-		std::string BorderColorIdentifier = GetTSVText(InputFile);
-		std::string TextureIdentifier = GetTSVText(InputFile);
-		std::string TextureColorIdentifier = GetTSVText(InputFile);
+	// Read file
+	while(!File.eof() && File.peek() != EOF) {
+
+		std::string Name;
+		std::string BackgroundColorName;
+		std::string BorderColorName;
+		std::string ProgramName;
+		std::string TextureName;
+		std::string TextureColorName;
+		std::getline(File, Name, '\t');
+		std::getline(File, BackgroundColorName, '\t');
+		std::getline(File, BorderColorName, '\t');
+		std::getline(File, ProgramName, '\t');
+		std::getline(File, TextureName, '\t');
+		std::getline(File, TextureColorName, '\t');
+
+		// Check for background color
+		if(BackgroundColorName != "" && Colors.find(BackgroundColorName) == Colors.end())
+			throw std::runtime_error("Unable to find background color: " + BackgroundColorName + " for style: " + Name);
+
+		// Check for border color
+		if(BorderColorName != "" && Colors.find(BorderColorName) == Colors.end())
+			throw std::runtime_error("Unable to find border color: " + BorderColorName + " for style: " + Name);
+
+		// Check for texture color
+		if(TextureColorName != "" && Colors.find(TextureColorName) == Colors.end())
+			throw std::runtime_error("Unable to find texture color: " + TextureColorName + " for style: " + Name);
+
+		// Find program
+		if(Programs.find(ProgramName) == Programs.end())
+			throw std::runtime_error("Cannot find program: " + ProgramName + " for style: " + Name);
+
+		// Check for texture
+		if(TextureName != "" && Textures.find(TextureName) == Textures.end())
+			throw std::runtime_error("Unable to find texture: " + TextureName + " for style: " + Name);
 
 		bool Stretch;
-		InputFile >> Stretch;
-		InputFile.ignore(1024, '\n');
+		File >> Stretch;
+		File.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
 		// Get colors
-		glm::vec4 BackgroundColor = GetColor(BackgroundColorIdentifier);
-		glm::vec4 BorderColor = GetColor(BorderColorIdentifier);
-		glm::vec4 TextureColor = GetColor(TextureColorIdentifier);
+		glm::vec4 BackgroundColor = Colors[BackgroundColorName];
+		glm::vec4 BorderColor = Colors[BorderColorName];
+		glm::vec4 TextureColor = Colors[TextureColorName];
 
 		// Get textures
-		_Texture *Texture = GetTexture(TextureIdentifier);
+		const _Texture *Texture = Textures[TextureName];
 
-		// Create
-		_Style *Style = new _Style(Identifier, BackgroundColorIdentifier != "", BorderColorIdentifier != "", BackgroundColor, BorderColor, Texture, TextureColor, Stretch);
+		// Create style
+		_Style *Style = new _Style();
+		Style->Name = Name;
+		Style->HasBackgroundColor = BackgroundColorName != "";
+		Style->HasBorderColor = BorderColorName != "";
+		Style->BackgroundColor = BackgroundColor;
+		Style->BorderColor = BorderColor;
+		Style->Program = Programs[ProgramName];
+		Style->Texture = Texture;
+		Style->TextureColor = TextureColor;
+		Style->Stretch = Stretch;
 
 		// Check for duplicates
-		if(GetStyle(Identifier)) {
-			throw std::runtime_error("Duplicate style identifier: " + Identifier);
-		}
+		if(Styles.find(Name) != Styles.end())
+			throw std::runtime_error("Duplicate style Name: " + Name);
 
-		Styles.insert(make_pair(Identifier, Style));
+		Styles[Name] = Style;
 	}
 
-	InputFile.close();
+	File.close();
 }
 
 // Loads the ui elements
-void _Assets::LoadElements(const std::string &Filename) {
+void _Assets::LoadElements(const std::string &Path) {
 
 	// Load file
-	std::ifstream InputFile((AssetPath + Filename).c_str(), std::ios::in);
-	if(!InputFile) {
-		throw std::runtime_error("Error loading: " + Filename);
+	std::ifstream File((AssetPath + Path).c_str(), std::ios::in);
+	if(!File) {
+		throw std::runtime_error("Error loading: " + Path);
 	}
 
-	// Read the file
-	InputFile.ignore(1024, '\n');
-	while(!InputFile.eof() && InputFile.peek() != EOF) {
+	// Skip header
+	File.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
-		std::string Identifier = GetTSVText(InputFile);
-		std::string ParentIdentifier = GetTSVText(InputFile);
-		std::string StyleIdentifier = GetTSVText(InputFile);
+	// Read file
+	while(!File.eof() && File.peek() != EOF) {
+
+		std::string Identifier;
+		std::string ParentIdentifier;
+		std::string StyleIdentifier;
+		std::getline(File, Identifier, '\t');
+		std::getline(File, ParentIdentifier, '\t');
+		std::getline(File, StyleIdentifier, '\t');
 
 		glm::ivec2 Offset, Size;
 		_Alignment Alignment;
 		bool MaskOutside;
-		InputFile >> Offset.x >> Offset.y >> Size.x >> Size.y >> Alignment.Horizontal >> Alignment.Vertical >> MaskOutside;
-		InputFile.ignore(1024, '\n');
+		File >> Offset.x >> Offset.y >> Size.x >> Size.y >> Alignment.Horizontal >> Alignment.Vertical >> MaskOutside;
+		File.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
 		// Look for parent
 		_Element *ParentElement = nullptr;
@@ -1212,105 +1288,113 @@ void _Assets::LoadElements(const std::string &Filename) {
 		Elements.insert(make_pair(Identifier, Element));
 	}
 
-	InputFile.close();
+	File.close();
 }
 
 // Loads labels elements
-void _Assets::LoadLabels(const std::string &Filename) {
+void _Assets::LoadLabels(const std::string &Path) {
 
 	// Load file
-	std::ifstream InputFile((AssetPath + Filename).c_str(), std::ios::in);
-	if(!InputFile) {
-		throw std::runtime_error("Error loading: " + Filename);
+	std::ifstream File((AssetPath + Path).c_str(), std::ios::in);
+	if(!File) {
+		throw std::runtime_error("Error loading: " + Path);
 	}
 
-	// Read the file
-	InputFile.ignore(1024, '\n');
-	while(!InputFile.eof() && InputFile.peek() != EOF) {
+	// Skip header
+	File.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
-		std::string Identifier = GetTSVText(InputFile);
-		std::string ParentIdentifier = GetTSVText(InputFile);
-		std::string FontIdentifier = GetTSVText(InputFile);
-		std::string ColorIdentifier = GetTSVText(InputFile);
-		std::string Text = GetTSVText(InputFile);
+	// Read file
+	while(!File.eof() && File.peek() != EOF) {
+
+		std::string Name;
+		std::string ParentName;
+		std::string FontName;
+		std::string ColorName;
+		std::string Text;
+		std::getline(File, Name, '\t');
+		std::getline(File, ParentName, '\t');
+		std::getline(File, FontName, '\t');
+		std::getline(File, ColorName, '\t');
+		std::getline(File, Text, '\t');
 
 		glm::ivec2 Offset, Size;
 		_Alignment Alignment;
-		InputFile >> Offset.x >> Offset.y >> Size.x >> Size.y >> Alignment.Horizontal >> Alignment.Vertical;
-		InputFile.ignore(1024, '\n');
+		File >> Offset.x >> Offset.y >> Size.x >> Size.y >> Alignment.Horizontal >> Alignment.Vertical;
+		File.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
 		// Look for parent
 		_Element *ParentElement = nullptr;
-		if(ParentIdentifier != "") {
-			ParentElement = GetElement(ParentIdentifier);
-			if(!ParentElement) {
-				throw std::runtime_error("Parent element not found: " + ParentIdentifier);
-			}
+		if(ParentName != "") {
+			ParentElement = GetElement(ParentName);
+			if(!ParentElement)
+				throw std::runtime_error("Parent element not found: " + ParentName);
 		}
 
 		// Get font
-		_Font *Font = Fonts[FontIdentifier];
-		if(!Font) {
-			throw std::runtime_error("Unable to find font: " + FontIdentifier);
-		}
+		_Font *Font = Fonts[FontName];
+		if(!Font)
+			throw std::runtime_error("Unable to find font: " + FontName);
 
 		// Get color
-		glm::vec4 Color = GetColor(ColorIdentifier);
+		glm::vec4 Color = GetColor(ColorName);
 
 		// Create
-		_Label *Element = new _Label(Identifier, ParentElement, Offset, Size, Alignment, Font, Color, Text);
+		_Label *Element = new _Label(Name, ParentElement, Offset, Size, Alignment, Font, Color, Text);
 
 		// Check for duplicates
-		if(GetElement(Identifier)) {
-			throw std::runtime_error("Duplicate element identifier: " + Identifier);
-		}
+		if(GetElement(Name))
+			throw std::runtime_error("Duplicate element identifier: " + Name);
 
 		// Add as child for parent
-		if(ParentElement) {
+		if(ParentElement)
 			ParentElement->AddChild(Element);
-		}
 
-		Elements.insert(make_pair(Identifier, Element));
+		Elements.insert(make_pair(Name, Element));
 	}
 
-	InputFile.close();
+	File.close();
 }
 
 // Loads image elements
-void _Assets::LoadImages(const std::string &Filename) {
+void _Assets::LoadImages(const std::string &Path) {
 
 	// Load file
-	std::ifstream InputFile((AssetPath + Filename).c_str(), std::ios::in);
-	if(!InputFile) {
-		throw std::runtime_error("Error loading: " + Filename);
+	std::ifstream File((AssetPath + Path).c_str(), std::ios::in);
+	if(!File) {
+		throw std::runtime_error("Error loading: " + Path);
 	}
 
-	// Read the file
-	InputFile.ignore(1024, '\n');
-	while(!InputFile.eof() && InputFile.peek() != EOF) {
+	// Skip header
+	File.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
-		std::string Identifier = GetTSVText(InputFile);
-		std::string ParentIdentifier = GetTSVText(InputFile);
-		std::string TextureIdentifier = GetTSVText(InputFile);
-		std::string ColorIdentifier = GetTSVText(InputFile);
+	// Read file
+	while(!File.eof() && File.peek() != EOF) {
+
+		std::string Identifier;
+		std::string ParentIdentifier;
+		std::string TextureIdentifier;
+		std::string ColorIdentifier;
+		std::getline(File, Identifier, '\t');
+		std::getline(File, ParentIdentifier, '\t');
+		std::getline(File, TextureIdentifier, '\t');
+		std::getline(File, ColorIdentifier, '\t');
 
 		glm::ivec2 Offset, Size;
 		_Alignment Alignment;
 		int Stretch;
-		InputFile >> Offset.x >> Offset.y >> Size.x >> Size.y >> Alignment.Horizontal >> Alignment.Vertical >> Stretch;
-		InputFile.ignore(1024, '\n');
+		File >> Offset.x >> Offset.y >> Size.x >> Size.y >> Alignment.Horizontal >> Alignment.Vertical >> Stretch;
+		File.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
 		// Look for parent
 		_Element *ParentElement = nullptr;
 		if(ParentIdentifier != "") {
 			ParentElement = GetElement(ParentIdentifier);
-			if(!ParentElement) {
+			if(!ParentElement)
 				throw std::runtime_error("Parent element not found: " + ParentIdentifier);
-			}
 		}
 
 		// Get texture
-		_Texture *Texture = GetTexture(TextureIdentifier);
+		const _Texture *Texture = Textures[TextureIdentifier];
 
 		// Get color
 		glm::vec4 Color = GetColor(ColorIdentifier);
@@ -1319,51 +1403,53 @@ void _Assets::LoadImages(const std::string &Filename) {
 		_Image *Element = new _Image(Identifier, ParentElement, Offset, Size, Alignment, Texture, Color, Stretch);
 
 		// Check for duplicates
-		if(GetElement(Identifier)) {
+		if(GetElement(Identifier))
 			throw std::runtime_error("Duplicate element identifier: " + Identifier);
-		}
 
 		// Add as child for parent
-		if(ParentElement) {
+		if(ParentElement)
 			ParentElement->AddChild(Element);
-		}
 
 		Elements.insert(make_pair(Identifier, Element));
 	}
 
-	InputFile.close();
+	File.close();
 }
 
 // Loads button elements
-void _Assets::LoadButtons(const std::string &Filename) {
+void _Assets::LoadButtons(const std::string &Path) {
 
 	// Load file
-	std::ifstream InputFile((AssetPath + Filename).c_str(), std::ios::in);
-	if(!InputFile) {
-		throw std::runtime_error("Error loading: " + Filename);
-	}
+	std::ifstream File((AssetPath + Path).c_str(), std::ios::in);
+	if(!File)
+		throw std::runtime_error("Error loading: " + Path);
 
-	// Read the file
-	InputFile.ignore(1024, '\n');
-	while(!InputFile.eof() && InputFile.peek() != EOF) {
+	// Skip header
+	File.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
-		std::string Identifier = GetTSVText(InputFile);
-		std::string ParentIdentifier = GetTSVText(InputFile);
-		std::string StyleIdentifier = GetTSVText(InputFile);
-		std::string HoverStyleIdentifier = GetTSVText(InputFile);
+	// Read file
+	while(!File.eof() && File.peek() != EOF) {
+
+		std::string Identifier;
+		std::string ParentIdentifier;
+		std::string StyleIdentifier;
+		std::string HoverStyleIdentifier;
+		std::getline(File, Identifier, '\t');
+		std::getline(File, ParentIdentifier, '\t');
+		std::getline(File, StyleIdentifier, '\t');
+		std::getline(File, HoverStyleIdentifier, '\t');
 
 		glm::ivec2 Offset, Size;
 		_Alignment Alignment;
-		InputFile >> Offset.x >> Offset.y >> Size.x >> Size.y >> Alignment.Horizontal >> Alignment.Vertical;
-		InputFile.ignore(1024, '\n');
+		File >> Offset.x >> Offset.y >> Size.x >> Size.y >> Alignment.Horizontal >> Alignment.Vertical;
+		File.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
 		// Look for parent
 		_Element *ParentElement = nullptr;
 		if(ParentIdentifier != "") {
 			ParentElement = GetElement(ParentIdentifier);
-			if(!ParentElement) {
+			if(!ParentElement)
 				throw std::runtime_error("Parent element not found: " + ParentIdentifier);
-			}
 		}
 
 		// Get style
@@ -1374,52 +1460,55 @@ void _Assets::LoadButtons(const std::string &Filename) {
 		_Button *Element = new _Button(Identifier, ParentElement, Offset, Size, Alignment, Style, HoverStyle);
 
 		// Check for duplicates
-		if(GetElement(Identifier)) {
+		if(GetElement(Identifier))
 			throw std::runtime_error("Duplicate element identifier: " + Identifier);
-		}
 
 		// Add as child for parent
-		if(ParentElement) {
+		if(ParentElement)
 			ParentElement->AddChild(Element);
-		}
 
 		Elements.insert(make_pair(Identifier, Element));
 	}
 
-	InputFile.close();
+	File.close();
 }
 
 // Loads textbox elements
-void _Assets::LoadTextBoxes(const std::string &Filename) {
+void _Assets::LoadTextBoxes(const std::string &Path) {
 
 	// Load file
-	std::ifstream InputFile((AssetPath + Filename).c_str(), std::ios::in);
-	if(!InputFile) {
-		throw std::runtime_error("Error loading: " + Filename);
+	std::ifstream File((AssetPath + Path).c_str(), std::ios::in);
+	if(!File) {
+		throw std::runtime_error("Error loading: " + Path);
 	}
 
-	// Read the file
-	InputFile.ignore(1024, '\n');
-	while(!InputFile.eof() && InputFile.peek() != EOF) {
+	// Skip header
+	File.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
-		std::string Identifier = GetTSVText(InputFile);
-		std::string ParentIdentifier = GetTSVText(InputFile);
-		std::string StyleIdentifier = GetTSVText(InputFile);
-		std::string FontIdentifier = GetTSVText(InputFile);
+	// Read file
+	while(!File.eof() && File.peek() != EOF) {
+
+		std::string Identifier;
+		std::string ParentIdentifier;
+		std::string StyleIdentifier;
+		std::string FontIdentifier;
+		std::getline(File, Identifier, '\t');
+		std::getline(File, ParentIdentifier, '\t');
+		std::getline(File, StyleIdentifier, '\t');
+		std::getline(File, FontIdentifier, '\t');
 
 		glm::ivec2 Offset, Size;
 		_Alignment Alignment;
 		int MaxLength;
-		InputFile >> Offset.x >> Offset.y >> Size.x >> Size.y >> Alignment.Horizontal >> Alignment.Vertical >> MaxLength;
-		InputFile.ignore(1024, '\n');
+		File >> Offset.x >> Offset.y >> Size.x >> Size.y >> Alignment.Horizontal >> Alignment.Vertical >> MaxLength;
+		File.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
 		// Look for parent
 		_Element *ParentElement = nullptr;
 		if(ParentIdentifier != "") {
 			ParentElement = GetElement(ParentIdentifier);
-			if(!ParentElement) {
+			if(!ParentElement)
 				throw std::runtime_error("Parent element not found: " + ParentIdentifier);
-			}
 		}
 
 		// Get style
@@ -1427,27 +1516,24 @@ void _Assets::LoadTextBoxes(const std::string &Filename) {
 
 		// Get font
 		_Font *Font = Fonts[FontIdentifier];
-		if(!Font) {
+		if(!Font)
 			throw std::runtime_error("Unable to find font: " + FontIdentifier);
-		}
 
 		// Create
 		_TextBox *Element = new _TextBox(Identifier, ParentElement, Offset, Size, Alignment, Style, Font, MaxLength);
 
 		// Check for duplicates
-		if(GetElement(Identifier)) {
+		if(GetElement(Identifier))
 			throw std::runtime_error("Duplicate element identifier: " + Identifier);
-		}
 
 		// Add as child for parent
-		if(ParentElement) {
+		if(ParentElement)
 			ParentElement->AddChild(Element);
-		}
 
 		Elements.insert(make_pair(Identifier, Element));
 	}
 
-	InputFile.close();
+	File.close();
 }
 
 // Frees memory and textures used by a reel
@@ -1559,14 +1645,14 @@ _Monster *_Assets::CreateMonster(const std::string &Identifier, const glm::vec2 
 _MiscItem *_Assets::CreateMiscItem(const std::string &Identifier, int Count, const glm::vec2 &Position) {
 	_MiscItemTemplate *MiscItemTemplate = GetMiscItemTemplate(Identifier);
 
-	return new _MiscItem(Identifier, Count, Position, MiscItemTemplate, GetTexture(MiscItemTemplate->IconIdentifier));
+	return new _MiscItem(Identifier, Count, Position, MiscItemTemplate, Textures[MiscItemTemplate->IconIdentifier]);
 }
 
 // Creates ammo
 _Ammo *_Assets::CreateAmmoItem(const std::string &Identifier, int Count, const glm::vec2 &Position) {
 	_AmmoTemplate *AmmoTemplate = GetAmmoTemplate(Identifier);
 
-	return new _Ammo(Identifier, Count, Position, AmmoTemplate, GetTexture(AmmoTemplate->IconIdentifier));
+	return new _Ammo(Identifier, Count, Position, AmmoTemplate, Textures[AmmoTemplate->IconIdentifier]);
 }
 
 // Creates ammo from an ammo type
@@ -1577,7 +1663,7 @@ _Ammo *_Assets::CreateAmmoItem(int Type) {
 // Creates a weapon
 _Weapon *_Assets::CreateWeapon(const std::string &Identifier, int Count, const glm::vec2 &Position, bool Generate) {
 	_WeaponTemplate *WeaponTemplate = GetWeaponTemplate(Identifier);
-	_Weapon *Weapon = new _Weapon(Identifier, Count, Position, WeaponTemplate, GetTexture(WeaponTemplate->IconIdentifier), Generate);
+	_Weapon *Weapon = new _Weapon(Identifier, Count, Position, WeaponTemplate, Textures[WeaponTemplate->IconIdentifier], Generate);
 
 	return Weapon;
 }
@@ -1586,14 +1672,14 @@ _Weapon *_Assets::CreateWeapon(const std::string &Identifier, int Count, const g
 _Upgrade *_Assets::CreateUpgradeItem(const std::string &Identifier, int Count, const glm::vec2 &Position) {
 	_UpgradeTemplate *UpgradeTemplate = GetUpgradeTemplate(Identifier);
 
-	return new _Upgrade(Identifier, Count, Position, UpgradeTemplate, GetTexture(UpgradeTemplate->IconIdentifier));
+	return new _Upgrade(Identifier, Count, Position, UpgradeTemplate, Textures[UpgradeTemplate->IconIdentifier]);
 }
 
 // Creates armor
 _Armor *_Assets::CreateArmor(const std::string &Identifier, int Count, const glm::vec2 &Position) {
 	_ArmorTemplate *ArmorTemplate = GetArmorTemplate(Identifier);
 
-	return new _Armor(Identifier, Count, Position, ArmorTemplate, GetTexture(ArmorTemplate->IconIdentifier));
+	return new _Armor(Identifier, Count, Position, ArmorTemplate, Textures[ArmorTemplate->IconIdentifier]);
 }
 
 // Returns a random item identifier from an item group
@@ -1625,17 +1711,17 @@ void _Assets::GetRandomDrop(const _ItemGroup *ItemGroup, _ObjectSpawn *ObjectSpa
 // Generates a list of monster icons
  void _Assets::GetEventList(std::vector<_Brush> &Icons) {
 
-	Icons.push_back(_Brush("door", "Door", GetTexture("editor_eventdoor"), COLOR_WHITE));
-	Icons.push_back(_Brush("wswitch", "Wall Switch", GetTexture("editor_eventwswitch"), COLOR_WHITE));
-	Icons.push_back(_Brush("spawn", "Spawn", GetTexture("editor_eventspawn"), COLOR_WHITE));
-	Icons.push_back(_Brush("check", "Checkpoint", GetTexture("editor_eventcheck"), COLOR_WHITE));
-	Icons.push_back(_Brush("end", "End of Level", GetTexture("editor_eventend"), COLOR_WHITE));
-	Icons.push_back(_Brush("text", "Event Message", GetTexture("editor_eventtext"), COLOR_WHITE));
-	Icons.push_back(_Brush("sound", "Event Sound", GetTexture("editor_eventsound"), COLOR_WHITE));
-	Icons.push_back(_Brush("fswitch", "Floor Switch", GetTexture("editor_eventfswitch"), COLOR_WHITE));
-	Icons.push_back(_Brush("enable", "Event Enabler", GetTexture("editor_eventenable"), COLOR_WHITE));
-	Icons.push_back(_Brush("tele", "Teleporter", GetTexture("editor_eventtele"), COLOR_WHITE));
-	Icons.push_back(_Brush("light", "Lights", GetTexture("editor_eventlight"), COLOR_WHITE));
+	Icons.push_back(_Brush("door", "Door", Textures["editor_eventdoor"], COLOR_WHITE));
+	Icons.push_back(_Brush("wswitch", "Wall Switch", Textures["editor_eventwswitch"], COLOR_WHITE));
+	Icons.push_back(_Brush("spawn", "Spawn", Textures["editor_eventspawn"], COLOR_WHITE));
+	Icons.push_back(_Brush("check", "Checkpoint", Textures["editor_eventcheck"], COLOR_WHITE));
+	Icons.push_back(_Brush("end", "End of Level", Textures["editor_eventend"], COLOR_WHITE));
+	Icons.push_back(_Brush("text", "Event Message", Textures["editor_eventtext"], COLOR_WHITE));
+	Icons.push_back(_Brush("sound", "Event Sound", Textures["editor_eventsound"], COLOR_WHITE));
+	Icons.push_back(_Brush("fswitch", "Floor Switch", Textures["editor_eventfswitch"], COLOR_WHITE));
+	Icons.push_back(_Brush("enable", "Event Enabler", Textures["editor_eventenable"], COLOR_WHITE));
+	Icons.push_back(_Brush("tele", "Teleporter", Textures["editor_eventtele"], COLOR_WHITE));
+	Icons.push_back(_Brush("light", "Lights", Textures["editor_eventlight"], COLOR_WHITE));
 }
 
 // Generates a list of monster icons
@@ -1687,7 +1773,7 @@ void _Assets::GetArmorList(std::vector<_Brush> &Icons) {
 void _Assets::GetTextureList(std::vector<_Brush> &TextureList, int Group) {
 	for(const auto &Texture : Textures) {
 		if(!Texture.second)
-			throw std::runtime_error("Bad texture in textures list");
+			continue;
 
 		if(Texture.second->Group == Group || Group == -1)
 			TextureList.push_back(_Brush(Texture.first, Texture.second->Name, Texture.second, COLOR_WHITE));
@@ -1711,12 +1797,6 @@ bool _Assets::IsWeaponLoaded(const std::string &Identifier) { return WeaponTable
 bool _Assets::IsArmorLoaded(const std::string &Identifier) { return ArmorTable.find(Identifier) != ArmorTable.end(); }
 bool _Assets::IsItemGroupLoaded(const std::string &Identifier) { return ItemGroupTable.find(Identifier) != ItemGroupTable.end(); }
 
-_Texture *_Assets::GetTexture(const std::string &Identifier) {
-	if(Textures.find(Identifier) == Textures.end())
-		return nullptr;
-
-	return Textures[Identifier];
-}
 std::string _Assets::GetString(const std::string &Identifier) {
 	if(StringTable.find(Identifier) == StringTable.end())
 		return "";

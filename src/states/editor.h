@@ -233,7 +233,7 @@ class _EditorState : public _State {
 		// UI
 		int CurrentLayer;
 		int CurrentPalette;
-		std::vector<_Texture *> EventTextures;
+		std::vector<const _Texture *> EventTextures;
 		_Font *MainFont;
 		_Button *LayerButtons[MAPLAYER_COUNT];
 		_Button *ModeButtons[EDITMODE_COUNT];

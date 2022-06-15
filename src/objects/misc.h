@@ -28,5 +28,5 @@ class _MiscItem : public _Item {
 
 	public:
 
-		_MiscItem(const std::string &Identifier, int Count, const glm::vec2 &Position, const _MiscItemTemplate *MiscItem, _Texture *Texture);
+		_MiscItem(const std::string &Identifier, int Count, const glm::vec2 &Position, const _MiscItemTemplate *MiscItem, const _Texture *Texture);
 };

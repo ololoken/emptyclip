@@ -40,6 +40,6 @@ class _Item : public _Object {
 		int Level;
 		int Count;
 		int Quality;
-		_Texture *Texture;
+		const _Texture *Texture;
 
 };

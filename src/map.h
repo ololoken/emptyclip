@@ -172,7 +172,7 @@ class _Map {
 		int RenderParticles(int Type);
 		void RenderForeground();
 		void RenderLights(const glm::vec2 &PlayerPosition);
-		void RenderEvents(std::vector<_Texture *> &Textures);
+		void RenderEvents(std::vector<const _Texture *> &Textures);
 		void RenderGrid(int Mode);
 		void HighlightBlocks(int Layer);
 

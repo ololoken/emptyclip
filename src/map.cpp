@@ -174,12 +174,12 @@ _Map::_Map(const std::string &Filename) : _Map() {
 		Block.TextureIdentifier = GetCSVText(InputFile);
 		Block.AltTextureIdentifier = GetCSVText(InputFile);
 
-		Block.Texture = Assets.GetTexture(Block.TextureIdentifier);
+		Block.Texture = Assets.Textures[Block.TextureIdentifier];
 		if(!Block.Texture)
 			throw std::runtime_error("Cannot find texture: " + Block.TextureIdentifier);
 
 		if(Block.AltTextureIdentifier != "") {
-			Block.AltTexture = Assets.GetTexture(Block.AltTextureIdentifier);
+			Block.AltTexture = Assets.Textures[Block.AltTextureIdentifier];
 			if(!Block.AltTexture)
 				throw std::runtime_error("Cannot find alt texture: " + Block.AltTextureIdentifier);
 		}
@@ -1422,7 +1422,7 @@ void _Map::RenderFlatWalls() {
 }
 
 // Draws the events
-void _Map::RenderEvents(std::vector<_Texture *> &Textures) {
+void _Map::RenderEvents(std::vector<const _Texture *> &Textures) {
 	if(!Camera)
 		return;
 

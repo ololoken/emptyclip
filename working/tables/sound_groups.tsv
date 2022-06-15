@@ -1,4 +1,4 @@
-identifier	fire sample	triggerdown sample	ricochet sample	empty sample	reload sample	hit sample	take damage sample	death sample	move sample
+id	fire	triggerdown	ricochet	empty	reload	hit	take damage	death	move
 blank0									
 player0	player_swing0					player_punch0	player_hit0	player_die0	player_move0
 knife0	knife_fire0					knife_hit0			

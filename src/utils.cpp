@@ -69,29 +69,6 @@ std::string GetCSVText(std::ifstream &Stream) {
 	return Text;
 }
 
-// Reads in a string that is TSV formatted
-std::string GetTSVText(std::ifstream &Stream, bool *EndOfLine) {
-	std::string Text;
-	char Char;
-
-	while(1) {
-		Stream.get(Char);
-		if(Char == '\r' || Char == '\n') {
-			if(EndOfLine)
-				*EndOfLine = true;
-			return Text;
-		}
-		if(Char == '\t') {
-			return Text;
-		}
-		else {
-			Text += Char;
-		}
-	}
-
-	return Text;
-}
-
 // Write a chunk to a stream
 void WriteChunk(std::ofstream &File, int Type, const char *Data, size_t Size) {
 	File.write((char *)&Type, sizeof(Type));

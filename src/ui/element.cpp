@@ -16,7 +16,6 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 *******************************************************************************/
 #include <ui/element.h>
-#include <ui/style.h>
 #include <graphics.h>
 #include <input.h>
 #include <assets.h>

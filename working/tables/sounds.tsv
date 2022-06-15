@@ -1,4 +1,4 @@
-identifier	sample file	volume	limit
+id	file	volume	limit
 club_hit0	club_hit0.ogg	0.7	5
 dog_die0	dog_die0.ogg	0.7	5
 dog_fire0	dog_fire0.ogg	0.7	5

@@ -17,7 +17,6 @@
 *******************************************************************************/
 #include <ui/button.h>
 #include <ui/label.h>
-#include <ui/style.h>
 #include <texture.h>
 #include <graphics.h>
 #include <assets.h>

@@ -139,7 +139,7 @@ class _HUD {
 
 	private:
 
-		void DrawIndicator(const std::string &String, float Percent=0.0f, _Texture *Texture=nullptr);
+		void DrawIndicator(const std::string &String, float Percent=0.0f, const _Texture *Texture=nullptr);
 		void DrawHUDWeapon(const _Weapon *Weapon, _Element *Element, _Image *Image, _Label *Label);
 		void DrawItemCount(_Item *Item, int X, int Y);
 
@@ -168,5 +168,7 @@ class _HUD {
 		_Font *Fonts[FONT_COUNT];
 
 		// Textures
-		_Texture *CrosshairID, *ReloadTexture, *WeaponSwitchTexture;
+		const _Texture *CrosshairID;
+		const _Texture *ReloadTexture;
+		const _Texture *WeaponSwitchTexture;
 };

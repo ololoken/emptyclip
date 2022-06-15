@@ -34,7 +34,6 @@
 #include <ui/button.h>
 #include <ui/textbox.h>
 #include <ui/label.h>
-#include <ui/style.h>
 #include <objects/monster.h>
 #include <objects/misc.h>
 #include <objects/armor.h>
@@ -1090,14 +1089,26 @@ void _EditorState::LoadPaletteButtons(std::vector<_Brush> &Icons, int Type) {
 	glm::ivec2 Offset(0, 0);
 	int Width = PaletteElement[Type]->Size.x;
 	for(size_t i = 0; i < Icons.size(); i++) {
+
+		_Style *Style = new _Style();
+		Style->Name = Icons[i].Text;
+		Style->HasBackgroundColor = false;
+		Style->HasBorderColor = false;
+		Style->BackgroundColor = COLOR_WHITE;
+		Style->BorderColor = COLOR_WHITE;
+		Style->Program = Assets.Programs["ortho_pos_uv"];
+		Style->Texture = Icons[i].Texture;
+		Style->TextureColor = Icons[i].Color;
+		Style->Stretch = true;
+
 		_Button *Button = new _Button(
 			Icons[i].Identifier,
 			PaletteElement[Type],
 			Offset,
 			glm::ivec2(PaletteSizes[Type], PaletteSizes[Type]),
 			LEFT_TOP,
-			new _Style(Icons[i].Text, false, false, COLOR_WHITE, COLOR_WHITE, Icons[i].Texture, Icons[i].Color, true),
-			Assets.GetStyle("editor_selected0"));
+			Style,
+			Assets.Styles["editor_selected0"]);
 
 		Button->UserData = (void *)(intptr_t)Icons[i].ObjectType;
 
@@ -1120,7 +1131,7 @@ void _EditorState::DrawBrush() {
 	const _Texture *IconTexture = nullptr;
 	if(Brush[CurrentPalette]) {
 		IconIdentifier = Brush[CurrentPalette]->Identifier;
-		IconText = Brush[CurrentPalette]->Style->Identifier;
+		IconText = Brush[CurrentPalette]->Style->Name;
 		IconTexture = Brush[CurrentPalette]->Style->Texture;
 		IconColor = Brush[CurrentPalette]->Style->TextureColor;
 	}
@@ -1199,7 +1210,7 @@ void _EditorState::DrawBrush() {
 				_Button *Button = (_Button *)PaletteElement[EDITMODE_EVENTS]->GetChildren()[SelectedEvent->Type];
 				IconTexture = Button->Style->Texture;
 				IconIdentifier = Button->Identifier;
-				IconText = Button->Style->Identifier;
+				IconText = Button->Style->Name;
 
 				ItemIdentifier = SelectedEvent->ItemIdentifier;
 				MonsterIdentifier = SelectedEvent->MonsterIdentifier;
@@ -1276,7 +1287,7 @@ void _EditorState::DrawObject(float OffsetX, float OffsetY, const _ObjectSpawn *
 	float Scale = ITEM_SCALE;
 	float Depth = ITEM_Z;
 	glm::vec4 Color;
-	_Texture *Texture = nullptr;
+	const _Texture *Texture = nullptr;
 	switch(Object->Type) {
 		case _Object::MONSTER: {
 			_MonsterTemplate *Monster = Assets.GetMonsterTemplate(Object->Identifier);
@@ -1287,32 +1298,32 @@ void _EditorState::DrawObject(float OffsetX, float OffsetY, const _ObjectSpawn *
 		} break;
 		case _Object::MEDKIT: {
 			_MiscItemTemplate *MiscItem = Assets.GetMiscItemTemplate(Object->Identifier);
-			Texture = Assets.GetTexture(MiscItem->IconIdentifier);
+			Texture = Assets.Textures[MiscItem->IconIdentifier];
 			Color = MiscItem->Color;
 		} break;
 		case _Object::AMMO: {
 			_AmmoTemplate *Ammo = Assets.GetAmmoTemplate(Object->Identifier);
-			Texture = Assets.GetTexture(Ammo->IconIdentifier);
+			Texture = Assets.Textures[Ammo->IconIdentifier];
 			Color = Ammo->Color;
 		} break;
 		case _Object::UPGRADE: {
 			_UpgradeTemplate *Upgrade = Assets.GetUpgradeTemplate(Object->Identifier);
-			Texture = Assets.GetTexture(Upgrade->IconIdentifier);
+			Texture = Assets.Textures[Upgrade->IconIdentifier];
 			Color = Upgrade->Color;
 		} break;
 		case _Object::WEAPON: {
 			_WeaponTemplate *Weapon = Assets.GetWeaponTemplate(Object->Identifier);
-			Texture = Assets.GetTexture(Weapon->IconIdentifier);
+			Texture = Assets.Textures[Weapon->IconIdentifier];
 			Color = Weapon->Color;
 		} break;
 		case _Object::ARMOR: {
 			_ArmorTemplate *Armor = Assets.GetArmorTemplate(Object->Identifier);
-			Texture = Assets.GetTexture(Armor->IconIdentifier);
+			Texture = Assets.Textures[Armor->IconIdentifier];
 			Color = Armor->Color;
 		} break;
 		case _Object::KEY: {
 			_MiscItemTemplate *MiscItem = Assets.GetMiscItemTemplate(Object->Identifier);
-			Texture = Assets.GetTexture(MiscItem->IconIdentifier);
+			Texture = Assets.Textures[MiscItem->IconIdentifier];
 			Color = MiscItem->Color;
 		} break;
 

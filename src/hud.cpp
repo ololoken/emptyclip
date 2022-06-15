@@ -57,9 +57,9 @@ _HUD::_HUD(_Player *Player) {
 	Fonts[FONT_LARGE] = Assets.Fonts["hud_large"];
 	Fonts[FONT_LARGER] = Assets.Fonts["hud_larger"];
 	Fonts[FONT_LARGEST] = Assets.Fonts["hud_largest"];
-	CrosshairID = Assets.GetTexture("hud_crosshair");
-	ReloadTexture = Assets.GetTexture("viewport_reload0");
-	WeaponSwitchTexture = Assets.GetTexture("viewport_weaponswitch0");
+	CrosshairID = Assets.Textures["hud_crosshair"];
+	ReloadTexture = Assets.Textures["viewport_reload0"];
+	WeaponSwitchTexture = Assets.Textures["viewport_weaponswitch0"];
 
 	// Elements
 	Labels[LABEL_FPS] = Assets.GetLabel("hud_fps");
@@ -376,7 +376,7 @@ void _HUD::RenderCrosshair(const glm::vec2 &Position) {
 }
 
 // Draws a box and text
-void _HUD::DrawIndicator(const std::string &String, float Percent, _Texture *Texture) {
+void _HUD::DrawIndicator(const std::string &String, float Percent, const _Texture *Texture) {
 
 	// Set text
 	Labels[LABEL_INDICATOR]->SetText(String);

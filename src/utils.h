@@ -24,7 +24,6 @@
 
 const char *LoadFileIntoMemory(const char *Path);
 std::string GetCSVText(std::ifstream &Stream);
-std::string GetTSVText(std::ifstream &Stream, bool *EndOfLine=0);
 glm::vec2 GenerateRandomPointInCircle(float Radius);
 
 void WriteChunk(std::ofstream &File, int Type, const char *Data, size_t Size);

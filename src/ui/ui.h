@@ -17,8 +17,13 @@
 *******************************************************************************/
 #pragma once
 
+#include <string>
 #include <glm/vec2.hpp>
 #include <glm/vec4.hpp>
+
+// Forward Declarations
+class _Texture;
+class _Program;
 
 // Bounds struct
 struct _Bounds {
@@ -55,6 +60,37 @@ struct _Alignment {
 
 	int Horizontal;
 	int Vertical;
+};
+
+// Style struct
+struct _Style {
+
+	_Style() :
+		TextureColor(0.0f),
+		BackgroundColor(0.0f),
+		BorderColor(0.0f),
+		HasBackgroundColor(false),
+		HasBorderColor(false),
+		Program(nullptr),
+		Texture(nullptr),
+		Stretch(false) { }
+
+	// Attributes
+	std::string Name;
+
+	// Colors
+	glm::vec4 TextureColor;
+	glm::vec4 BackgroundColor;
+	glm::vec4 BorderColor;
+	bool HasBackgroundColor;
+	bool HasBorderColor;
+
+	// Graphics
+	const _Program *Program;
+	const _Texture *Texture;
+
+	// Properties
+	bool Stretch;
 };
 
 const _Alignment LEFT_TOP         = _Alignment(_Alignment::LEFT, _Alignment::TOP);
