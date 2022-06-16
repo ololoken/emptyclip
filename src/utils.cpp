@@ -78,6 +78,5 @@ void WriteChunk(std::ofstream &File, int Type, const char *Data, size_t Size) {
 
 // Generates a random point inside of a circle
 glm::vec2 GenerateRandomPointInCircle(float Radius) {
-
-	return glm::rotate(glm::vec2(0, -1), glm::radians((float)Random.Generate() * 360.0f)) * Radius * (float)sqrt(Random.Generate());
+	return glm::rotate(glm::vec2(0, -1), glm::radians((float)(GetRandomReal(0, 1) * 360.0))) * Radius * (float)sqrt(GetRandomReal(0, 1));
 }

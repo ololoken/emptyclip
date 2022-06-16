@@ -38,11 +38,11 @@ _Particle::_Particle(const _ParticleSpawn &Spawn) :
 
 	// Random
 	Position = Spawn.Position;
-	Rotation = Spawn.RotationAdjust + (float)(Random.GenerateRange(Spawn.Template->StartDirection.x, Spawn.Template->StartDirection.y));
-	Velocity = glm::rotate(glm::vec2(0, -1), glm::radians(this->Rotation)) * (float)Random.GenerateRange(Spawn.Template->VelocityScale.x, Spawn.Template->VelocityScale.y);
+	Rotation = Spawn.RotationAdjust + (float)(GetRandomReal(Spawn.Template->StartDirection.x, Spawn.Template->StartDirection.y));
+	Velocity = glm::rotate(glm::vec2(0, -1), glm::radians(this->Rotation)) * (float)GetRandomReal(Spawn.Template->VelocityScale.x, Spawn.Template->VelocityScale.y);
 	Acceleration = Velocity * Spawn.Template->AccelerationScale;
-	TurnSpeed = Random.GenerateRange(Spawn.Template->TurnSpeed.x, Spawn.Template->TurnSpeed.y);
-	float Size = Random.GenerateRange(Spawn.Template->Size.x, Spawn.Template->Size.y);
+	TurnSpeed = GetRandomReal(Spawn.Template->TurnSpeed.x, Spawn.Template->TurnSpeed.y);
+	float Size = GetRandomReal(Spawn.Template->Size.x, Spawn.Template->Size.y);
 	if(ScaleAspect >= 1.0f) {
 		Scale.x = Size;
 		Scale.y = Size / ScaleAspect;
@@ -52,7 +52,7 @@ _Particle::_Particle(const _ParticleSpawn &Spawn) :
 		Scale.y = Size;
 	}
 
-	PositionZ += Random.GenerateRange(-Spawn.Template->DeviationZ, Spawn.Template->DeviationZ);
+	PositionZ += GetRandomReal(-Spawn.Template->DeviationZ, Spawn.Template->DeviationZ);
 
 	if(Type == _Particles::WALL_DECALS) {
 		Position += Spawn.Normal * 0.01f;

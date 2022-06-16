@@ -93,7 +93,7 @@ float _Entity::GenerateShotDirection() {
 	float RandomOffset, NewDirection;
 
 	// Generate the offset
-	RandomOffset = Random.GenerateRange(-CurrentAccuracy * AccuracyModifier / 2.0f, CurrentAccuracy * AccuracyModifier / 2.0f);
+	RandomOffset = GetRandomReal(-CurrentAccuracy * AccuracyModifier / 2.0f, CurrentAccuracy * AccuracyModifier / 2.0f);
 
 	// Figure out new direction
 	NewDirection = Rotation + RandomOffset;
@@ -114,7 +114,7 @@ float _Entity::GenerateShotDirection() {
 
 // Generates damage after defenses
 int _Entity::GenerateDamage(int AttackType, int DamageBlock, float DamageResist) {
-	int Damage = Random.GenerateRange(MinDamage[AttackType], MaxDamage[AttackType]);
+	int Damage = GetRandomInt(MinDamage[AttackType], MaxDamage[AttackType]);
 	Damage -= (int)(Damage * DamageResist);
 	Damage -= DamageBlock;
 

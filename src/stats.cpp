@@ -583,7 +583,7 @@ void _Stats::GetRandomDrop(const _ItemGroup *ItemGroup, _ObjectSpawn *ObjectSpaw
 		return;
 
 	// Generate roll
-	float RandomNumber = Random.GenerateRange(0.0f, ItemGroup->Total);
+	float RandomNumber = GetRandomReal(0.0, ItemGroup->Total);
 
 	// Get item
 	for(size_t i = 0; i < ItemGroupSize; i++) {

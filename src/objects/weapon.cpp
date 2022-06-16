@@ -36,7 +36,7 @@ _Weapon::_Weapon(const std::string &Identifier, int Count, const glm::vec2 &Posi
 		Attributes[Attribute.first] = Attribute.second;
 
 	if(Generate)
-		this->MaxComponents = Random.GenerateRange(Weapon.MinComponents, Weapon.MaxComponents);
+		this->MaxComponents = GetRandomInt(Weapon.MinComponents, Weapon.MaxComponents);
 	else
 		this->MaxComponents = Weapon.MinComponents;
 

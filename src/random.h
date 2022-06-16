@@ -17,103 +17,12 @@
 *******************************************************************************/
 #pragma once
 
-#include <stdint.h>
+#include <random>
+#include <cstdint>
 
-class _Random {
+extern std::mt19937 RandomGenerator;
 
-	public:
-
-		_Random();
-		_Random(uint32_t Seed);
-
-		// Set initial seed
-		void SetSeed(uint32_t Seed);
-
-		// Random functions
-		double Generate();
-		uint32_t Generate(uint32_t Count);
-		int GenerateRange(int Min, int Max);
-		uint32_t GenerateRange(uint32_t Min, uint32_t Max);
-		double GenerateRange(double Min, double Max);
-
-	private:
-
-		// Base function
-		uint32_t GenerateRandomInteger();
-
-		// Seeds
-		uint32_t Q[1024];
-};
-
-// Constructor
-inline _Random::_Random() {
-
-	SetSeed(0);
-}
-
-// Constructor
-inline _Random::_Random(uint32_t Seed) {
-
-	SetSeed(Seed);
-}
-
-// Sets the seed for the generator
-inline void _Random::SetSeed(uint32_t Seed) {
-
-	for(uint32_t i = 0; i < 1024; i++) {
-		Seed ^= Seed << 13;
-		Seed ^= Seed >> 17;
-		Seed ^= Seed << 5;
-		Q[i] = Seed;
-	}
-}
-
-// Generates a random integer
-inline uint32_t _Random::GenerateRandomInteger() {
-	static uint32_t c = 8471623, i = 1023;
-	uint64_t t, a = 123471786LL;
-	uint32_t x, r = 0xfffffffe;
-
-	i = (i + 1) & 1023;
-	t = a * Q[i] + c;
-	c = t >> 32;
-	x = (uint32_t)(t + c);
-	if(x < c) {
-		x++;
-		c++;
-	}
-
-	return Q[i] = r - x;
-}
-
-// Generates a random number [0, 1)
-inline double _Random::Generate() {
-
-	return GenerateRandomInteger() / 4294967296.0;
-}
-
-// Generates a random number [0, Count-1]
-inline uint32_t _Random::Generate(uint32_t Count) {
-
-	return (uint32_t)(Generate() * Count);
-}
-
-// Generates a random number [Min, Max]
-inline int _Random::GenerateRange(int Min, int Max) {
-
-	return (int)(Generate() * (Max - Min + 1)) + Min;
-}
-
-// Generates a random number [Min, Max]
-inline uint32_t _Random::GenerateRange(uint32_t Min, uint32_t Max) {
-
-	return (uint32_t)(Generate() * (Max - Min + 1)) + Min;
-}
-
-// Generates a random number [Min, Max]
-inline double _Random::GenerateRange(double Min, double Max) {
-
-	return (GenerateRandomInteger() / 4294967295.0) * (Max - Min) + Min;
-}
-
-extern _Random Random;
+int GetRandomInt(int Min, int Max);
+uint32_t GetRandomInt(uint32_t Min, uint32_t Max);
+uint64_t GetRandomInt(uint64_t Min, uint64_t Max);
+double GetRandomReal(double Min, double Max);

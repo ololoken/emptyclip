@@ -343,7 +343,7 @@ void _EditorState::KeyEvent(const _KeyEvent &KeyEvent) {
 
 			// Exit
 			case SDL_SCANCODE_ESCAPE:
-				Framework.SetDone(true);
+				Framework.Done = true;
 			break;
 			case SDL_SCANCODE_F1:
 				ExecuteUpdateLayer(0, false);

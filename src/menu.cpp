@@ -197,7 +197,7 @@ void _Menu::KeyEvent(const _KeyEvent &KeyEvent) {
 	switch(State) {
 		case STATE_TITLE: {
 			if(KeyEvent.Pressed && KeyEvent.Key == SDL_SCANCODE_ESCAPE)
-				Framework.SetDone(true);
+				Framework.Done = true;
 		} break;
 		case STATE_SINGLEPLAYER: {
 
@@ -291,7 +291,7 @@ void _Menu::MouseEvent(const _MouseEvent &MouseEvent) {
 					InitOptions();
 				}
 				else if(Clicked->Identifier == "button_title_exit") {
-					Framework.SetDone(true);
+					Framework.Done = true;
 				}
 			} break;
 			case STATE_SINGLEPLAYER: {

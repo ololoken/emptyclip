@@ -217,7 +217,7 @@ void _PlayState::KeyEvent(const _KeyEvent &KeyEvent) {
 						if(FromEditor)
 							Framework.ChangeState(&EditorState);
 						else
-							Framework.SetDone(true);
+							Framework.Done = true;
 
 						Player->Save();
 					}

@@ -24,7 +24,7 @@ _ConvertState ConvertState;
 void _ConvertState::Init() {
 	_Map *Map = new _Map(Param1);
 	Map->SaveLevel(Param1);
-	Framework.SetDone(true);
+	Framework.Done = true;
 }
 
 void _ConvertState::Close() {

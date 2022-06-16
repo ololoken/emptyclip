@@ -43,18 +43,18 @@ class _Framework {
 		void Update();
 		void Render();
 
-		bool GetDone() { return Done; }
-		void SetDone(bool Done) { this->Done = Done; }
-
 		_State *GetState() { return State; }
 		void ChangeState(_State *RequestedState);
+
+		// State
+		bool Done;
 
 	private:
 
 		// States
-		_State *State, *RequestedState;
-		bool Done;
 		StateType FrameworkState;
+		_State *State;
+		_State *RequestedState;
 
 		// Time
 		_FrameLimit *FrameLimit;

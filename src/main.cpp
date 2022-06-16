@@ -27,9 +27,8 @@ int main(int ArgumentCount, char **Arguments) {
 	Framework.Init(ArgumentCount, Arguments);
 
 	// Run framework
-	while(!Framework.GetDone()) {
+	while(!Framework.Done)
 		Framework.Update();
-	}
 
 	// Shutdown
 	Framework.Close();

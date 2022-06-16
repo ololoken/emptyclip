@@ -105,7 +105,7 @@ void _Framework::Init(int ArgumentCount, char **Arguments) {
 
 	FrameLimit = new _FrameLimit(Config.MaxFPS);
 	Timer = SDL_GetPerformanceCounter();
-	Random.SetSeed(SDL_GetPerformanceCounter());
+	RandomGenerator.seed(SDL_GetPerformanceCounter());
 
 	// Load assets
 	Assets.Init();
