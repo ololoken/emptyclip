@@ -163,21 +163,13 @@ struct _WeaponParticleTemplate {
 // Holds information about a weapon
 struct _WeaponTemplate {
 
-	_WeaponTemplate() :
-		WeaponParticles(nullptr),
-		Name("Fists"),
-		Type(WEAPON_MELEE) {
-
-		for(int i = 0; i < SAMPLE_TYPES; i++)
-			Samples[i] = "";
-	}
+	_WeaponTemplate() :	WeaponParticles(nullptr) { }
 
 	_WeaponParticleTemplate *WeaponParticles;
 	glm::vec4 Color;
 	std::string Name;
 	std::string IconIdentifier;
 	std::string Samples[SAMPLE_TYPES];
-	int Type;
 
 	std::unordered_map<std::string, _Value> Attributes;
 };

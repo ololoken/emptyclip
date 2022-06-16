@@ -323,7 +323,7 @@ void _Stats::LoadWeaponTable(const std::string &Path) {
 		std::getline(File, WeaponParticlesIdentifier, '\t');
 		std::getline(File, ColorName, '\t');
 
-		File	>> WeaponTemplate.Type
+		File	>> WeaponTemplate.Attributes["weapon_type"].Int
 				>> WeaponTemplate.Attributes["zoom_scale"].Float
 				>> WeaponTemplate.Attributes["min_accuracy"].Float
 				>> WeaponTemplate.Attributes["max_accuracy"].Float

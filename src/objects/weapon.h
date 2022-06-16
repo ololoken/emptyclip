@@ -44,14 +44,12 @@ class _Weapon : public _Item {
 
 		const std::string &GetSample(int SampleType) const;
 
-		bool IsMelee() const { return WeaponType == WEAPON_MELEE; }
-		virtual std::string GetTypeAsString() const override { return ToString(WeaponType) + " class weapon"; }
+		bool IsMelee() const { return Attributes.at("weapon_type").Int == WEAPON_MELEE; }
+		virtual std::string GetTypeAsString() const override { return ToString(Attributes.at("weapon_type").Int) + " class weapon"; }
 		static std::string ToString(int Type);
 
 		std::vector<_Upgrade *> Upgrades;
 		float Bonus[UPGRADE_TYPES];
-
-		int WeaponType;
 
 	protected:
 

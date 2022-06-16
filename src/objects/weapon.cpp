@@ -24,8 +24,7 @@
 #include <algorithm>
 
 // Constructor
-_Weapon::_Weapon(const std::string &Identifier, int Count, const glm::vec2 &Position, const _WeaponTemplate &Weapon, const _Texture *Texture, bool Generate) :
-	WeaponType(Weapon.Type) {
+_Weapon::_Weapon(const std::string &Identifier, int Count, const glm::vec2 &Position, const _WeaponTemplate &Weapon, const _Texture *Texture, bool Generate) {
 
 	this->Type = _Object::WEAPON;
 	this->ID = Identifier;
@@ -109,7 +108,7 @@ bool _Weapon::AddComponent(_Upgrade *Upgrade) {
 	if((int)Upgrades.size() >= Attributes.at("max_components").Int)
 		return false;
 
-	if(Upgrade->GetWeaponType() != -1 && Upgrade->GetWeaponType() != WeaponType)
+	if(Upgrade->GetWeaponType() != -1 && Upgrade->GetWeaponType() != Attributes.at("weapon_type").Int)
 		return false;
 
 	if(Upgrade->GetUpgradeType() == UPGRADE_CLIP && Stats.Weapons[ID].Attributes.at("rounds").Int == 0)

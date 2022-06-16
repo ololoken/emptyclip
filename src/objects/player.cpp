@@ -1183,7 +1183,7 @@ void _Player::RecalculateStats() {
 		for(const auto &Attribute : GetMainHand()->Attributes)
 			Weapon[WEAPONATTACK_MAIN].Attributes[Attribute.first] = Attribute.second;
 
-		MainWeaponType = GetMainHand()->WeaponType;
+		MainWeaponType = GetMainHand()->Attributes.at("weapon_type").Int;
 	}
 	else
 		MainWeaponType = WEAPON_MELEE;
@@ -1313,7 +1313,7 @@ bool _Player::CanReload() const {
 	return HasMainHand() && !Reloading && !SwitchingWeapons && !IsMeleeAttacking() && GetMainHand()->Attributes.at("ammo").Int != GetMainHand()->Attributes.at("rounds").Int && HasClips();
 }
 
-bool _Player::IsMelee() const { return GetMainHand() == nullptr || GetMainHand()->WeaponType == WEAPON_MELEE; }
+bool _Player::IsMelee() const { return GetMainHand() == nullptr || GetMainHand()->IsMelee(); }
 
 void _Player::SetMainHand(_Weapon *Weapon) { Inventory[INVENTORY_MAINHAND] = Weapon; }
 void _Player::SetOffHand(_Weapon *Weapon) { Inventory[INVENTORY_OFFHAND] = Weapon; }
