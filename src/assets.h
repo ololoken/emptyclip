@@ -20,6 +20,7 @@
 // Libraries
 #include <glm/vec2.hpp>
 #include <objects/templates.h>
+#include <animation.h>
 #include <string>
 #include <unordered_map>
 #include <vector>
@@ -41,7 +42,6 @@ class _Monster;
 class _Program;
 class _Shader;
 struct _Reel;
-struct _ReelTemplate;
 struct _ParticleTemplate;
 struct _MonsterTemplate;
 
