@@ -34,7 +34,6 @@
 #include <objects/weapon.h>
 #include <objects/armor.h>
 #include <objects/upgrade.h>
-#include <objects/ammo.h>
 #include <constants.h>
 #include <stdexcept>
 #include <sstream>

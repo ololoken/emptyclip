@@ -24,7 +24,6 @@
 #include <random.h>
 #include <objects/object.h>
 #include <objects/armor.h>
-#include <objects/ammo.h>
 #include <objects/upgrade.h>
 #include <objects/weapon.h>
 
@@ -144,7 +143,7 @@ void _Stats::LoadAmmoTable(const std::string &Path) {
 		if(Ammo.find(Name) != Ammo.end())
 			throw std::runtime_error(std::string(__FUNCTION__) + " - Duplicate entry: " + Name);
 
-		AmmoTemplate.AmmoType = AmmoNames.size();
+		AmmoTemplate.Type = AmmoNames.size();
 		Ammo[Name] = AmmoTemplate;
 		AmmoNames.push_back(Name);
 	}
@@ -482,10 +481,20 @@ void _Stats::LoadItemDrops(const std::string &Path) {
 }
 
 // Creates ammo
-_Ammo *_Stats::CreateAmmoItem(const std::string &Identifier, int Count, const glm::vec2 &Position) {
+_Item *_Stats::CreateAmmoItem(const std::string &Identifier, int Count, const glm::vec2 &Position) {
 	_AmmoTemplate &AmmoTemplate = Ammo[Identifier];
 
-	return new _Ammo(Identifier, Count, Position, AmmoTemplate,  Assets.Textures[AmmoTemplate.IconIdentifier]);
+	_Item *Item = new _Item();
+	Item->Attributes["ammo_type"].Int = AmmoTemplate.Type;
+	Item->Type = _Object::AMMO;
+	Item->Name = AmmoTemplate.Name;
+	Item->ID = Identifier;
+	Item->Count = Count;
+	Item->Position = Position;
+	Item->Texture = Assets.Textures[AmmoTemplate.IconIdentifier];
+	Item->Color = AmmoTemplate.Color;
+
+	return Item;
 }
 
 // Creates armor

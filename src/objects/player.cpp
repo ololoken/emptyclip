@@ -28,7 +28,6 @@
 #include <utils.h>
 #include <ui/ui.h>
 #include <objects/monster.h>
-#include <objects/ammo.h>
 #include <objects/upgrade.h>
 #include <objects/weapon.h>
 #include <objects/armor.h>
@@ -889,7 +888,7 @@ int _Player::GetWeaponAmmoType() const {
 // Determines what type of ammo an item in the inventory is
 int _Player::GetInventoryAmmoType(int Index) const {
 	if(HasInventory(Index) && Inventory[Index]->Type == _Object::AMMO)
-		return ((_Ammo *)(Inventory[Index]))->AmmoType;
+		return Inventory[Index]->Attributes.at("ammo_type").Int;
 
 	return -1;
 }
@@ -897,8 +896,7 @@ int _Player::GetInventoryAmmoType(int Index) const {
 // Checks if the item is the right ammo for the player's mainhand weapon
 bool _Player::IsRightClip(const _Item *Item) const {
 	if(Item->Type == _Object::AMMO) {
-		const _Ammo *Ammo = (const _Ammo *)Item;
-		if(Ammo->AmmoType == GetWeaponAmmoType())
+		if(Item->Attributes.at("ammo_type").Int == GetWeaponAmmoType())
 			return true;
 	}
 

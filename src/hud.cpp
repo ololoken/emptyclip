@@ -31,7 +31,6 @@
 #include <objects/item.h>
 #include <objects/armor.h>
 #include <objects/weapon.h>
-#include <objects/ammo.h>
 #include <objects/upgrade.h>
 #include <sstream>
 #include <iomanip>

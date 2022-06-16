@@ -24,7 +24,6 @@
 #include <string>
 
 // Forward Declarations
-class _Ammo;
 class _Armor;
 class _Item;
 class _Upgrade;
@@ -82,7 +81,7 @@ class _Stats {
 		void LoadWeaponTable(const std::string &Path);
 		void LoadItemDrops(const std::string &Path);
 
-		_Ammo *CreateAmmoItem(const std::string &Identifier, int Count, const glm::vec2 &Position);
+		_Item *CreateAmmoItem(const std::string &Identifier, int Count, const glm::vec2 &Position);
 		_Armor *CreateArmor(const std::string &Identifier, int Count, const glm::vec2 &Position);
 		_Item *CreateMiscItem(const std::string &Identifier, int Count, const glm::vec2 &Position);
 		_Upgrade *CreateUpgradeItem(const std::string &Identifier, int Count, const glm::vec2 &Position);

@@ -36,7 +36,6 @@
 #include <objects/player.h>
 #include <objects/monster.h>
 #include <objects/particle.h>
-#include <objects/ammo.h>
 #include <objects/upgrade.h>
 #include <objects/weapon.h>
 #include <objects/armor.h>

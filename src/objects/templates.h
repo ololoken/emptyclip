@@ -114,7 +114,7 @@ struct _AmmoTemplate {
 	std::string Name;
 	std::string IconIdentifier;
 	glm::vec4 Color;
-	int AmmoType;
+	int Type;
 };
 
 struct _UpgradeTemplate {
