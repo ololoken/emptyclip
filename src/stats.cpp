@@ -23,7 +23,6 @@
 #include <stdexcept>
 #include <random.h>
 #include <objects/object.h>
-#include <objects/upgrade.h>
 #include <objects/weapon.h>
 
 _Stats Stats;
@@ -272,7 +271,12 @@ void _Stats::LoadUpgradeTable(const std::string &Path) {
 		std::getline(File, UpgradeTemplate.Name, '\t');
 		std::getline(File, UpgradeTemplate.IconIdentifier, '\t');
 		std::getline(File, ColorName, '\t');
-		File >> UpgradeTemplate.UpgradeType >> UpgradeTemplate.WeaponType >> UpgradeTemplate.Bonus;
+
+		File
+			>> UpgradeTemplate.Attributes["upgrade_type"].Int
+			>> UpgradeTemplate.Attributes["weapon_type"].Int
+			>> UpgradeTemplate.Attributes["bonus"].Float;
+
 		File.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
 		// Check for loaded textures
@@ -543,10 +547,20 @@ _Weapon *_Stats::CreateWeapon(const std::string &Identifier, int Count, const gl
 }
 
 // Creates an upgrade item
-_Upgrade *_Stats::CreateUpgradeItem(const std::string &Identifier, int Count, const glm::vec2 &Position) {
+_Item *_Stats::CreateUpgradeItem(const std::string &Identifier, int Count, const glm::vec2 &Position) {
 	_UpgradeTemplate &UpgradeTemplate = Upgrades[Identifier];
 
-	return new _Upgrade(Identifier, Count, Position, UpgradeTemplate, Assets.Textures[UpgradeTemplate.IconIdentifier]);
+	_Item *Item = new _Item();
+	Item->Attributes = UpgradeTemplate.Attributes;
+	Item->Type = _Object::UPGRADE;
+	Item->Name = UpgradeTemplate.Name;
+	Item->ID = Identifier;
+	Item->Count = Count;
+	Item->Position = Position;
+	Item->Texture = Assets.Textures[UpgradeTemplate.IconIdentifier];
+	Item->Color = UpgradeTemplate.Color;
+
+	return Item;
 }
 
 // Returns a valid amount of experience

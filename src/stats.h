@@ -25,7 +25,6 @@
 
 // Forward Declarations
 class _Item;
-class _Upgrade;
 class _Weapon;
 
 // Used for level information
@@ -83,7 +82,7 @@ class _Stats {
 		_Item *CreateAmmoItem(const std::string &Identifier, int Count, const glm::vec2 &Position);
 		_Item *CreateArmor(const std::string &Identifier, int Count, const glm::vec2 &Position);
 		_Item *CreateMiscItem(const std::string &Identifier, int Count, const glm::vec2 &Position);
-		_Upgrade *CreateUpgradeItem(const std::string &Identifier, int Count, const glm::vec2 &Position);
+		_Item *CreateUpgradeItem(const std::string &Identifier, int Count, const glm::vec2 &Position);
 		_Weapon *CreateWeapon(const std::string &Identifier, int Count, const glm::vec2 &Position, bool Generate);
 
 		int GetLevel(int64_t Experience);

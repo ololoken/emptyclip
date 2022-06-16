@@ -30,7 +30,6 @@
 #include <objects/player.h>
 #include <objects/item.h>
 #include <objects/weapon.h>
-#include <objects/upgrade.h>
 #include <sstream>
 #include <iomanip>
 #include <SDL_mouse.h>
@@ -729,7 +728,7 @@ void _HUD::RenderItemInfo(_Item *Item, int DrawX, int DrawY) {
 					if(First)
 						DrawY += 10;
 					DrawY += 20;
-					Buffer << "+" << Weapon->Bonus[i] * 100.0f << "% " << _Upgrade::ToString(i, Weapon->Attributes.at("weapon_type").Int);
+					Buffer << "+" << Weapon->Bonus[i] * 100.0f << "% " << UpgradeTypeToString(i, Weapon->Attributes.at("weapon_type").Int);
 					Fonts[FONT_MEDIUM]->DrawText(Buffer.str(), glm::vec2(DrawX, DrawY), CENTER_BASELINE, TextColor);
 					Buffer.str("");
 
@@ -815,15 +814,14 @@ void _HUD::RenderItemInfo(_Item *Item, int DrawX, int DrawY) {
 			Fonts[FONT_MEDIUM]->DrawText(Buffer.str(), glm::vec2(DrawX, DrawY), CENTER_BASELINE, COLOR_GREEN);
 		} break;
 		case _Object::UPGRADE: {
-			_Upgrade *Upgrade = (_Upgrade *)Item;
 			std::ostringstream Buffer;
 
 			// Bonus
 			DrawY += 20;
-			if(Upgrade->GetUpgradeType() == UPGRADE_ATTACKS)
-				Buffer << "+" << (int)(Upgrade->GetBonus()) << " Attack Count";
+			if(Item->Attributes.at("upgrade_type").Int == UPGRADE_ATTACKS)
+				Buffer << "+" << (int)(Item->Attributes.at("bonus").Float) << " Attack Count";
 			else
-				Buffer << "+" << (int)(Upgrade->GetBonus() * 100.0f + 0.5f) << "% " << _Upgrade::ToString(Upgrade->GetUpgradeType(), -1);
+				Buffer << "+" << (int)(Item->Attributes.at("bonus").Float * 100.0f + 0.5f) << "% " << UpgradeTypeToString(Item->Attributes.at("upgrade_type").Int, -1);
 			Fonts[FONT_MEDIUM]->DrawText(Buffer.str(), glm::vec2(DrawX, DrawY), CENTER_BASELINE);
 		} break;
 	}
@@ -930,4 +928,37 @@ void _HUD::ShowMessageBox(const std::string &Message, double Time) {
 
 	Elements[ELEMENT_MESSAGE]->Fade = 1.0f;
 	MessageBoxTimer = Time;
+}
+
+// Convert an upgrade type to string
+std::string _HUD::UpgradeTypeToString(int Type, int WeaponType) {
+
+	switch(Type) {
+		case UPGRADE_CLIP:
+			return "Round Size";
+		break;
+		case UPGRADE_DAMAGE:
+			return "Damage";
+		break;
+		case UPGRADE_ACCURACY:
+			return "Accuracy";
+		break;
+		case UPGRADE_FIREPERIOD:
+			if(WeaponType == WEAPON_MELEE)
+				return "Attack Rate";
+			else
+				return "Fire Rate";
+		break;
+		case UPGRADE_RELOADPERIOD:
+			return "Reload Speed";
+		break;
+		case UPGRADE_ATTACKS:
+			if(WeaponType == WEAPON_MELEE)
+				return "Attack Count";
+			else
+				return "Bullets/Shot";
+		break;
+	}
+
+	return "";
 }

@@ -24,7 +24,6 @@
 #include <string>
 
 // Forward Declarations
-class _Upgrade;
 struct _ParticleTemplate;
 
 // Classes
@@ -38,7 +37,7 @@ class _Weapon : public _Item {
 		void Serialize(_Buffer &Buffer) override;
 
 		void RecalculateStats();
-		bool AddComponent(_Upgrade *Upgrade);
+		bool AddComponent(_Item *Upgrade);
 
 		void SetAmmo(int Value);
 
@@ -48,7 +47,7 @@ class _Weapon : public _Item {
 		virtual std::string GetTypeAsString() const override { return ToString(Attributes.at("weapon_type").Int) + " class weapon"; }
 		static std::string ToString(int Type);
 
-		std::vector<_Upgrade *> Upgrades;
+		std::vector<_Item *> Upgrades;
 		float Bonus[UPGRADE_TYPES];
 
 	protected:

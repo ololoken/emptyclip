@@ -36,7 +36,6 @@
 #include <objects/player.h>
 #include <objects/monster.h>
 #include <objects/particle.h>
-#include <objects/upgrade.h>
 #include <objects/weapon.h>
 #include <states/editor.h>
 #include <states/null.h>

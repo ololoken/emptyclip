@@ -28,7 +28,6 @@
 #include <utils.h>
 #include <ui/ui.h>
 #include <objects/monster.h>
-#include <objects/upgrade.h>
 #include <objects/weapon.h>
 #include <fstream>
 #include <iostream>
@@ -367,7 +366,7 @@ void _Player::LoadUpgrades(_Buffer &Buffer, _Weapon *Weapon) {
 	// Read data
 	for(int i = 0; i < Components; i++) {
 		std::string Identifier = Buffer.ReadString();
-		_Upgrade *Upgrade = Stats.CreateUpgradeItem(Identifier, 1, glm::vec2(0, 0));
+		_Item *Upgrade = Stats.CreateUpgradeItem(Identifier, 1, glm::vec2(0, 0));
 		if(!Weapon->AddComponent(Upgrade))
 			delete Upgrade;
 	}
@@ -848,7 +847,7 @@ bool _Player::AddComponent(int FromIndex, int ToIndex) {
 	else
 		return false;
 
-	if(Weapon->AddComponent((_Upgrade *)(Inventory[FromIndex]))) {
+	if(Weapon->AddComponent(Inventory[FromIndex])) {
 		ConsumeInventory(FromIndex, false);
 		RecalculateStats();
 		return true;

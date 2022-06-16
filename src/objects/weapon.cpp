@@ -16,7 +16,6 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 *******************************************************************************/
 #include <objects/weapon.h>
-#include <objects/upgrade.h>
 #include <objects/particle.h>
 #include <stats.h>
 #include <random.h>
@@ -87,7 +86,7 @@ void _Weapon::RecalculateStats() {
 
 	// Sum bonuses
 	for(size_t i = 0; i < Upgrades.size(); i++)
-		Bonus[Upgrades[i]->GetUpgradeType()] += Upgrades[i]->GetBonus();
+		Bonus[Upgrades[i]->Attributes.at("upgrade_type").Int] += Upgrades[i]->Attributes.at("bonus").Float;
 
 	// Set stats
 	Attributes["rounds"].Int = (int)(Stats.Weapons[ID].Attributes.at("rounds").Int * (1.0f + Bonus[UPGRADE_CLIP]));
@@ -103,14 +102,14 @@ void _Weapon::RecalculateStats() {
 }
 
 // Adds a component to the weapon
-bool _Weapon::AddComponent(_Upgrade *Upgrade) {
+bool _Weapon::AddComponent(_Item *Upgrade) {
 	if((int)Upgrades.size() >= Attributes.at("max_components").Int)
 		return false;
 
-	if(Upgrade->GetWeaponType() != -1 && Upgrade->GetWeaponType() != Attributes.at("weapon_type").Int)
+	if(Upgrade->Attributes.at("weapon_type").Int != -1 && Upgrade->Attributes.at("weapon_type").Int != Attributes.at("weapon_type").Int)
 		return false;
 
-	if(Upgrade->GetUpgradeType() == UPGRADE_CLIP && Stats.Weapons[ID].Attributes.at("rounds").Int == 0)
+	if(Upgrade->Attributes.at("upgrade_type").Int == UPGRADE_CLIP && Stats.Weapons[ID].Attributes.at("rounds").Int == 0)
 		return false;
 
 	Upgrades.push_back(Upgrade);
