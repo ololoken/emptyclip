@@ -19,6 +19,7 @@
 
 // Libraries
 #include <cmath>
+#include <cstdint>
 
 // Holds a value
 struct _Value {
