@@ -1008,7 +1008,7 @@ void _Map::GetSelectedObject(const glm::vec2 &Position, float RadiusSquared, _Ob
 }
 
 // Returns all the objects that fall inside the rectangle
-void _Map::GetSelectedObjects(const glm::vec2 &Start, const glm::vec2 &End, std::list<_ObjectSpawn *> *SelectedObjects, std::list<size_t> *SelectedObjectIndices) {
+void _Map::GetSelectedObjects(const glm::vec2 &Start, const glm::vec2 &End, std::list<_ObjectSpawn *> *SelectedObjects) {
 
 	glm::vec2 StartPoint, EndPoint;
 	if(End.x < Start.x) {
@@ -1030,10 +1030,8 @@ void _Map::GetSelectedObjects(const glm::vec2 &Start, const glm::vec2 &End, std:
 	}
 
 	for(size_t i = 0; i < ObjectSpawns.size(); i++) {
-
 		if(ObjectSpawns[i]->Position.x > StartPoint.x && ObjectSpawns[i]->Position.y > StartPoint.y && ObjectSpawns[i]->Position.x <= EndPoint.x && ObjectSpawns[i]->Position.y <= EndPoint.y) {
 			SelectedObjects->push_back(ObjectSpawns[i]);
-			SelectedObjectIndices->push_back(i);
 		}
 	}
 
@@ -1050,30 +1048,33 @@ void _Map::RemoveBlock(int Layer, int Index) {
 
 // Deletes a block id from the events list given a block id and layer
 void _Map::DeleteBlockIDFromTiles(int Layer, int Index) {
-
 	for(size_t i = 0; i < Events.size(); i++)
 		Events[i]->DeleteBlockID(Layer, Index);
 }
 // Removes an event from the list
 void _Map::RemoveEvent(int Index) {
+	if(Index < 0 || Index >= (int)Events.size())
+		return;
 
-	if(Index >= 0 && Index < (int)Events.size()) {
-		DeleteBlockIDFromTiles(-1, Index);
-		delete Events[Index];
-		Events.erase(Events.begin() + Index);
-	}
+	DeleteBlockIDFromTiles(-1, Index);
+	delete Events[Index];
+	Events.erase(Events.begin() + Index);
 }
 
-// Removes objects from the list
-void _Map::RemoveObjects(std::list<size_t> &SelectedObjectIndices) {
-	SelectedObjectIndices.sort();
-	for(std::list<size_t>::reverse_iterator Iterator = SelectedObjectIndices.rbegin(); Iterator != SelectedObjectIndices.rend(); ++Iterator)
-		ObjectSpawns.erase(ObjectSpawns.begin() + *Iterator);
+// Remove deleted object spawns
+void _Map::CleanObjectSpawns() {
+	for(auto Iterator = ObjectSpawns.begin(); Iterator != ObjectSpawns.end(); ) {
+		if((*Iterator)->Deleted) {
+			delete *Iterator;
+			Iterator = ObjectSpawns.erase(Iterator);
+		}
+		else
+			++Iterator;
+	}
 }
 
 // Return the block at a given position
 int _Map::GetSelectedBlock(int Layer, const _Coord &Index) {
-
 	for(int i = (int)(Blocks[Layer].size())-1; i >= 0; i--) {
 		if(Index.x >= Blocks[Layer][i].Start.x && Index.y >= Blocks[Layer][i].Start.y && Index.x <= Blocks[Layer][i].End.x && Index.y <= Blocks[Layer][i].End.y)
 			return i;
@@ -1084,7 +1085,6 @@ int _Map::GetSelectedBlock(int Layer, const _Coord &Index) {
 
 // Return the block at a given position
 int _Map::GetSelectedBlock(int Layer, const _Coord &Index, _Block **Block) {
-
 	int BlockIndex = GetSelectedBlock(Layer, Index);
 	if(BlockIndex != -1) {
 		*Block = &Blocks[Layer][BlockIndex];

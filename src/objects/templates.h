@@ -169,14 +169,17 @@ struct _ObjectSpawn {
 	_ObjectSpawn() :
 		Identifier(""),
 		Position{0, 0},
-		Type(-1) { }
+		Type(-1),
+		Deleted(false) { }
 
 	_ObjectSpawn(const std::string &Identifier, const glm::vec2 &Position, int Type) :
 		Identifier(Identifier),
 		Position(Position),
-		Type(Type) { }
+		Type(Type),
+		Deleted(false) { }
 
 	std::string Identifier;
 	glm::vec2 Position;
 	int Type;
+	bool Deleted;
 };

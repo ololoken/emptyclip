@@ -275,7 +275,6 @@ class _EditorState : public _State {
 		// Objects
 		std::list<_ObjectSpawn *> SelectedObjects;
 		std::list<_ObjectSpawn *> ClipboardObjects;
-		std::list<size_t> SelectedObjectIndices;
 		glm::vec2 ClickedPosition;
 		glm::vec2 CopiedPosition;
 		glm::vec2 MoveDelta;

@@ -227,7 +227,6 @@ void _EditorState::ResetEditorState() {
 	Walkable = true;
 	HighlightBlocks = false;
 	SelectedObjects.clear();
-	SelectedObjectIndices.clear();
 	ClipboardObjects.clear();
 
 	IsShiftDown = false;
@@ -1856,7 +1855,10 @@ void _EditorState::ExecuteDelete() {
 		break;
 		default:
 			if(ObjectsSelected()) {
-				Map->RemoveObjects(SelectedObjectIndices);
+				for(auto &Object : SelectedObjects)
+					Object->Deleted = true;
+
+				Map->CleanObjectSpawns();
 				DeselectObjects();
 				ClipboardObjects.clear();
 			}
@@ -2229,7 +2231,6 @@ void _EditorState::SelectObject() {
 		if(!ObjectInSelectedList(SelectedObject)) {
 			DeselectObjects();
 			SelectedObjects.push_back(SelectedObject);
-			SelectedObjectIndices.push_back(Index);
 			if(EventSelected()) {
 				switch(SelectedObject->Type) {
 					case _Object::MONSTER:
@@ -2251,7 +2252,7 @@ void _EditorState::SelectObject() {
 // Selects objects
 void _EditorState::SelectObjects() {
 	DeselectObjects();
-	Map->GetSelectedObjects(ClickedPosition, WorldCursor, &SelectedObjects, &SelectedObjectIndices);
+	Map->GetSelectedObjects(ClickedPosition, WorldCursor, &SelectedObjects);
 }
 
 // Aligns an object to the grid
@@ -2288,7 +2289,6 @@ void _EditorState::ClearClipboard() {
 // Clear object selection
 void _EditorState::DeselectObjects() {
 	SelectedObjects.clear();
-	SelectedObjectIndices.clear();
 }
 
 // Determine if any objects are selected

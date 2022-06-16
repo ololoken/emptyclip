@@ -182,7 +182,7 @@ class _Map {
 		void AddParticle(_Particle *Particle);
 		const std::vector<_ObjectSpawn *> &GetObjectsList() { return ObjectSpawns; }
 		void GetSelectedObject(const glm::vec2 &Position, float RadiusSquared, _ObjectSpawn **Object, size_t *Index);
-		void GetSelectedObjects(const glm::vec2 &Start, const glm::vec2 &End, std::list<_ObjectSpawn *> *SelectedObjects, std::list<std::size_t> *SelectedObjectIndices);
+		void GetSelectedObjects(const glm::vec2 &Start, const glm::vec2 &End, std::list<_ObjectSpawn *> *SelectedObjects);
 		int GetSelectedBlock(int Layer, const _Coord &Index, _Block **Block);
 		int GetSelectedBlock(int Layer, const _Coord &Index);
 		int GetSelectedEvent(const _Coord &Index, _Event **Event);
@@ -193,7 +193,7 @@ class _Map {
 		void RemoveLastBlock(int Layer) { if(Blocks[Layer].size() > 0) Blocks[Layer].pop_back(); }
 		void RemoveBlock(int Layer, int Index);
 		void RemoveEvent(int Index);
-		void RemoveObjects(std::list<std::size_t> &SelectedObjectIndices);
+		void CleanObjectSpawns();
 
 		void ClearEvent(const _Event *Event);
 
