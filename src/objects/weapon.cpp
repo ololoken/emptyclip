@@ -26,6 +26,13 @@
 _Weapon::_Weapon(const std::string &Identifier, int Count, const glm::vec2 &Position, const _WeaponTemplate &Weapon, const _Texture *Texture, bool Generate) :
 	WeaponType(Weapon.Type) {
 
+	this->Type = _Object::WEAPON;
+	this->Identifier = Identifier;
+	this->Texture = Texture;
+	this->Color = Weapon.Color;
+	this->Position = Position;
+	Name = Weapon.Name;
+
 	for(const auto &Attribute : Weapon.Attributes)
 		Attributes[Attribute.first] = Attribute.second;
 
@@ -34,12 +41,7 @@ _Weapon::_Weapon(const std::string &Identifier, int Count, const glm::vec2 &Posi
 	else
 		Attributes["max_components"].Int = Weapon.Attributes.at("min_components").Int;
 
-	Ammo = Weapon.Attributes.at("rounds").Int;
-	this->Type = _Object::WEAPON;
-	this->Identifier = Identifier;
-	this->Texture = Texture;
-	this->Color = Weapon.Color;
-	this->Position = Position;
+	Attributes["ammo"].Int = Weapon.Attributes.at("rounds").Int;
 
 	RecalculateStats();
 }
@@ -58,28 +60,15 @@ void _Weapon::Serialize(_Buffer &Buffer) {
 	Buffer.WriteString(Identifier.c_str());
 
 	// Ammo
-	Buffer.Write(Ammo);
+	Buffer.Write(Attributes.at("ammo").Int);
 
 	// Max upgrades
 	Buffer.Write(Attributes.at("max_components").Int);
 
 	// Upgrades
 	Buffer.Write<int>(Upgrades.size());
-	for(size_t i = 0; i < Upgrades.size(); i++) {
+	for(size_t i = 0; i < Upgrades.size(); i++)
 		Upgrades[i]->Serialize(Buffer);
-	}
-}
-
-// Reduces ammo by 1
-void _Weapon::ReduceAmmo() {
-
-	Ammo--;
-	if(Ammo < 0)
-		Ammo = 0;
-}
-
-const std::string &_Weapon::GetName() const {
-	return Stats.Weapons[Identifier].Name;
 }
 
 float _Weapon::GetAverageDamage() const {
@@ -96,9 +85,9 @@ const std::string &_Weapon::GetSample(int SampleType) const {
 
 // Adds ammo to the gun
 void _Weapon::SetAmmo(int Value) {
-	Ammo = Value;
-	if(Ammo > Attributes["rounds"].Int)
-		Ammo = Attributes["rounds"].Int;
+	Attributes["ammo"].Int = Value;
+	if(Attributes["ammo"].Int > Attributes["rounds"].Int)
+		Attributes["ammo"].Int = Attributes["rounds"].Int;
 }
 
 // Recalculates the weapon stats
@@ -121,7 +110,7 @@ void _Weapon::RecalculateStats() {
 	Attributes["reload_period"].Double = Stats.Weapons[Identifier].Attributes.at("reload_period").Double / (1.0f + Bonus[UPGRADE_RELOADPERIOD]);
 	Attributes["attack_count"].Int = Stats.Weapons[Identifier].Attributes.at("attack_count").Int + (int)(Bonus[UPGRADE_ATTACKS]);
 
-	SetAmmo(Ammo);
+	SetAmmo(Attributes["ammo"].Int);
 }
 
 // Adds a component to the weapon

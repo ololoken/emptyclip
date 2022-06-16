@@ -321,9 +321,8 @@ void _HUD::Render() {
 	Elements[ELEMENT_PLAYERINFO]->Render();
 
 	// Reload indicator
-	if(Player->IsReloading()) {
-		DrawIndicator("Reload", Player->GetReloadPercent(), ReloadTexture);
-	}
+	if(Player->IsReloading())
+		DrawIndicator("Reloading", Player->GetReloadPercent(), ReloadTexture);
 	else if(!Player->HasAmmo() && !Player->IsSwitchingWeapons() && Player->GetMainHand() && Player->GetMainHand()->Attributes.at("rounds").Int > 0)
 		DrawIndicator("Reload");
 
@@ -400,7 +399,7 @@ void _HUD::DrawHUDWeapon(const _Weapon *Weapon, _Element *Element, _Image *Image
 	Image->Color = Weapon->Color;
 	if(Weapon->Attributes.at("rounds").Int) {
 		std::ostringstream Buffer;
-		Buffer << Weapon->Ammo << "/" << Weapon->Attributes.at("rounds").Int;
+		Buffer << Weapon->Attributes.at("ammo").Int << "/" << Weapon->Attributes.at("rounds").Int;
 		Label->Text = Buffer.str();
 	}
 	else
@@ -598,7 +597,7 @@ void _HUD::RenderItemInfo(_Item *Item, int DrawX, int DrawY) {
 						TextColor = COLOR_RED;
 				}
 				DrawY += 20;
-				Buffer << Weapon->Ammo << "/" << Weapon->Attributes.at("rounds").Int;
+				Buffer << Weapon->Attributes.at("ammo").Int << "/" << Weapon->Attributes.at("rounds").Int;
 				Fonts[FONT_MEDIUM]->DrawText("Rounds", glm::vec2(glm::vec2(DrawX - PadX, DrawY)), RIGHT_BASELINE);
 				Fonts[FONT_MEDIUM]->DrawText(Buffer.str(), glm::vec2(glm::vec2(DrawX + PadX, DrawY)), LEFT_BASELINE, TextColor);
 				Buffer.str("");

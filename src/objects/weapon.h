@@ -41,9 +41,7 @@ class _Weapon : public _Item {
 		bool AddComponent(_Upgrade *Upgrade);
 
 		void SetAmmo(int Value);
-		void ReduceAmmo();
 
-		const std::string &GetName() const override;
 		float GetAverageDamage() const;
 		float GetAverageAccuracy() const;
 		const std::string &GetSample(int SampleType) const;
@@ -56,7 +54,6 @@ class _Weapon : public _Item {
 		static std::string ToString(int Type);
 
 		std::vector<_Upgrade *> Upgrades;
-		int Ammo;
 		float Bonus[UPGRADE_TYPES];
 
 		int WeaponType;

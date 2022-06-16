@@ -913,13 +913,10 @@ bool _Player::HasAmmo() const {
 		if(!HasMainHand() || GetMainHand()->Attributes.at("ammo_type").Int == 0)
 			return true;
 
-		return GetMainHand()->Ammo > 0;
+		return GetMainHand()->Attributes.at("ammo").Int > 0;
 	}
 	else if(AttackRequestType == WEAPONATTACK_MELEE) {
-		if(!HasMelee() || GetMelee()->Attributes.at("ammo_type").Int == 0)
-			return true;
-
-		return GetMelee()->Ammo > 0;
+		return true;
 	}
 
 	return false;
@@ -940,10 +937,11 @@ bool _Player::HasClips() const {
 
 // Reduces the weapons ammo by one
 void _Player::ReduceAmmo() {
-	if(HasMainHand() && AttackRequestType == WEAPONATTACK_MAIN)
-		GetMainHand()->ReduceAmmo();
-	else if(HasMelee() && AttackRequestType == WEAPONATTACK_MELEE)
-		GetMelee()->ReduceAmmo();
+	if(HasMainHand() && AttackRequestType == WEAPONATTACK_MAIN) {
+		GetMainHand()->Attributes["ammo"].Int--;
+		if(GetMainHand()->Attributes["ammo"].Int < 0)
+			GetMainHand()->Attributes["ammo"].Int = 0;
+	}
 }
 
 // Uses an item from the player's inventory, return true if a key was used
@@ -1310,7 +1308,9 @@ void _Player::UpdateColor() {
 
 int _Player::GetInventoryMaxStack() const { return Stats.GetSkill(Skills[SKILL_MAXINVENTORY], SKILL_MAXINVENTORY) + 1; }
 bool _Player::CanUseMedkit() const { return (MedkitTimer > PLAYER_MEDKITPERIOD) && Health < MaxHealth; }
-bool _Player::CanReload() const { return HasMainHand() && !Reloading && !SwitchingWeapons && !IsMeleeAttacking() && GetMainHand()->Ammo != GetMainHand()->Attributes.at("rounds").Int && HasClips(); }
+bool _Player::CanReload() const {
+	return HasMainHand() && !Reloading && !SwitchingWeapons && !IsMeleeAttacking() && GetMainHand()->Attributes.at("ammo").Int != GetMainHand()->Attributes.at("rounds").Int && HasClips();
+}
 
 bool _Player::IsMelee() const { return GetMainHand() == nullptr || GetMainHand()->WeaponType == WEAPON_MELEE; }
 
