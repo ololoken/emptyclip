@@ -110,14 +110,6 @@ enum SkillTypes {
 	SKILL_COUNT,
 };
 
-struct _ItemTemplate {
-	std::string Name;
-	std::string IconIdentifier;
-	glm::vec4 Color;
-
-	std::unordered_map<std::string, _Value> Attributes;
-};
-
 struct _MiscItemTemplate {
 	std::string Name;
 	std::string IconIdentifier;

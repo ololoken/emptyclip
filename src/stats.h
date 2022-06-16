@@ -41,9 +41,9 @@ struct _Skill {
 };
 
 // A single entry for an item group
-struct ItemGroupEntryStruct {
-	ItemGroupEntryStruct() { }
-	ItemGroupEntryStruct(const std::string &ItemIdentifier, float Count, int Type) :
+struct _ItemGroupEntry {
+	_ItemGroupEntry() { }
+	_ItemGroupEntry(const std::string &ItemIdentifier, float Count, int Type) :
 		ItemIdentifier(ItemIdentifier),
 		Count(Count),
 		Type(Type) { }
@@ -57,9 +57,23 @@ struct ItemGroupEntryStruct {
 struct _ItemGroup {
 	_ItemGroup() { }
 
-	std::vector<ItemGroupEntryStruct> Entries;
+	std::vector<_ItemGroupEntry> Entries;
 	int Quantity;
 	float Total;
+};
+
+// Item template
+struct _ItemTemplate {
+
+	_ItemTemplate() : Type(-1) { }
+	_ItemTemplate(int Type) : Type(Type) { }
+
+	std::string Name;
+	std::string IconIdentifier;
+	glm::vec4 Color;
+	int Type;
+
+	std::unordered_map<std::string, _Value> Attributes;
 };
 
 // Classes
@@ -99,10 +113,8 @@ class _Stats {
 		_ItemGroup *GetItemGroup(const std::string &Identifier);
 		void GetRandomDrop(const _ItemGroup *ItemGroup, _ObjectSpawn *ObjectSpawn);
 
-		std::unordered_map<std::string, _ItemTemplate> Ammo;
-		std::unordered_map<std::string, _ItemTemplate> Armor;
+		std::unordered_map<std::string, _ItemTemplate> Items;
 		std::unordered_map<std::string, _MiscItemTemplate> MiscItems;
-		std::unordered_map<std::string, _ItemTemplate> Upgrades;
 		std::unordered_map<std::string, _WeaponTemplate> Weapons;
 
 		std::vector<std::string> AmmoNames;

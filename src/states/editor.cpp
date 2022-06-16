@@ -68,7 +68,7 @@ const int PaletteSizes[EDITMODE_COUNT] = {
 	64,
 	64,
 	32,
-	48,
+	32,
 	32,
 	32,
 	32,
@@ -1062,14 +1062,18 @@ void _EditorState::LoadPalettes() {
 	Icons.clear();
 
 	// Load ammo
-	for(const auto &Ammo : Stats.Ammo)
-		Icons.push_back(_Brush(Ammo.first, Ammo.second.Name, Assets.Textures[Ammo.second.IconIdentifier], Ammo.second.Color, _Object::AMMO));
+	for(const auto &Item : Stats.Items) {
+		if(Item.second.Type == _Object::AMMO)
+			Icons.push_back(_Brush(Item.first, Item.second.Name, Assets.Textures[Item.second.IconIdentifier], Item.second.Color, Item.second.Type));
+	}
 	LoadPaletteButtons(Icons, EDITMODE_AMMO);
 	Icons.clear();
 
 	// Load upgrades
-	for(const auto &Upgrade : Stats.Upgrades)
-		Icons.push_back(_Brush(Upgrade.first, Upgrade.second.Name, Assets.Textures[Upgrade.second.IconIdentifier], Upgrade.second.Color, _Object::UPGRADE));
+	for(const auto &Item : Stats.Items) {
+		if(Item.second.Type == _Object::UPGRADE)
+			Icons.push_back(_Brush(Item.first, Item.second.Name, Assets.Textures[Item.second.IconIdentifier], Item.second.Color, Item.second.Type));
+	}
 	LoadPaletteButtons(Icons, EDITMODE_UPGRADES);
 	Icons.clear();
 
@@ -1083,8 +1087,10 @@ void _EditorState::LoadPalettes() {
 	Icons.clear();
 
 	// Load armor
-	for(const auto &Armor : Stats.Armor)
-		Icons.push_back(_Brush(Armor.first, Armor.second.Name, Assets.Textures[Armor.second.IconIdentifier], Armor.second.Color, _Object::ARMOR));
+	for(const auto &Item : Stats.Items) {
+		if(Item.second.Type == _Object::ARMOR)
+			Icons.push_back(_Brush(Item.first, Item.second.Name, Assets.Textures[Item.second.IconIdentifier], Item.second.Color, Item.second.Type));
+	}
 	LoadPaletteButtons(Icons, EDITMODE_ARMOR);
 	Icons.clear();
 }
@@ -1341,25 +1347,17 @@ void _EditorState::DrawObject(float OffsetX, float OffsetY, const _ObjectSpawn *
 			Texture = Assets.Textures[MiscItem.IconIdentifier];
 			Color = MiscItem.Color;
 		} break;
-		case _Object::AMMO: {
-			_ItemTemplate &Ammo = Stats.Ammo[Object->Identifier];
+		case _Object::AMMO:
+		case _Object::UPGRADE:
+		case _Object::ARMOR: {
+			_ItemTemplate &Ammo = Stats.Items[Object->Identifier];
 			Texture = Assets.Textures[Ammo.IconIdentifier];
 			Color = Ammo.Color;
-		} break;
-		case _Object::UPGRADE: {
-			_ItemTemplate &Upgrade = Stats.Upgrades[Object->Identifier];
-			Texture = Assets.Textures[Upgrade.IconIdentifier];
-			Color = Upgrade.Color;
 		} break;
 		case _Object::WEAPON: {
 			_WeaponTemplate &Weapon = Stats.Weapons[Object->Identifier];
 			Texture = Assets.Textures[Weapon.IconIdentifier];
 			Color = Weapon.Color;
-		} break;
-		case _Object::ARMOR: {
-			_ItemTemplate &Armor = Stats.Armor[Object->Identifier];
-			Texture = Assets.Textures[Armor.IconIdentifier];
-			Color = Armor.Color;
 		} break;
 	}
 

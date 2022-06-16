@@ -43,10 +43,8 @@ void _Stats::Init() {
 void _Stats::Close() {
 	Levels.clear();
 	Skills.clear();
-	Ammo.clear();
-	Armor.clear();
+	Items.clear();
 	MiscItems.clear();
-	Upgrades.clear();
 	Weapons.clear();
 	ItemGroupTable.clear();
 }
@@ -115,7 +113,7 @@ void _Stats::LoadAmmoTable(const std::string &Path) {
 	// Read file
 	while(!File.eof() && File.peek() != EOF) {
 
-		_ItemTemplate Template;
+		_ItemTemplate Template(_Object::AMMO);
 		std::string Name;
 		std::string ColorName;
 		std::getline(File, Name, '\t');
@@ -138,11 +136,11 @@ void _Stats::LoadAmmoTable(const std::string &Path) {
 			Template.Color = COLOR_WHITE;
 
 		// Check for duplicates
-		if(Ammo.find(Name) != Ammo.end())
+		if(Items.find(Name) != Items.end())
 			throw std::runtime_error(std::string(__FUNCTION__) + " - Duplicate entry: " + Name);
 
 		Template.Attributes["ammo_type"].Int = AmmoNames.size();
-		Ammo[Name] = Template;
+		Items[Name] = Template;
 		AmmoNames.push_back(Name);
 	}
 
@@ -163,7 +161,7 @@ void _Stats::LoadArmorTable(const std::string &Path) {
 	// Read file
 	while(!File.eof() && File.peek() != EOF) {
 
-		_ItemTemplate Template;
+		_ItemTemplate Template(_Object::ARMOR);
 		std::string Name;
 		std::string ColorName;
 		std::getline(File, Name, '\t');
@@ -176,6 +174,7 @@ void _Stats::LoadArmorTable(const std::string &Path) {
 			>> Template.Attributes["damage_block"].Int
 			>> Template.Attributes["damage_resist"].Float
 			>> Template.Attributes["move_speed"].Float;
+
 		File.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
 		// Check for loaded textures
@@ -193,10 +192,10 @@ void _Stats::LoadArmorTable(const std::string &Path) {
 			Template.Color = COLOR_WHITE;
 
 		// Check for duplicates
-		if(Armor.find(Name) != Armor.end())
+		if(Items.find(Name) != Items.end())
 			throw std::runtime_error(std::string(__FUNCTION__) + " - Duplicate entry: " + Name);
 
-		Armor[Name] = Template;
+		Items[Name] = Template;
 	}
 
 	File.close();
@@ -225,6 +224,7 @@ void _Stats::LoadMiscItemTable(const std::string &Path) {
 		std::getline(File, ColorName, '\t');
 
 		File >> MiscItemTemplate.Type >> MiscItemTemplate.Level;
+
 		File.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
 		// Check for loaded textures
@@ -265,7 +265,7 @@ void _Stats::LoadUpgradeTable(const std::string &Path) {
 	// Read file
 	while(!File.eof() && File.peek() != EOF) {
 
-		_ItemTemplate Template;
+		_ItemTemplate Template(_Object::UPGRADE);
 		std::string Name;
 		std::string ColorName;
 		std::getline(File, Name, '\t');
@@ -295,10 +295,10 @@ void _Stats::LoadUpgradeTable(const std::string &Path) {
 			Template.Color = COLOR_WHITE;
 
 		// Check for duplicates
-		if(Upgrades.find(Name) != Upgrades.end())
+		if(Items.find(Name) != Items.end())
 			throw std::runtime_error(std::string(__FUNCTION__) + " - Duplicate entry: " + Name);
 
-		Upgrades[Name] = Template;
+		Items[Name] = Template;
 	}
 
 	File.close();
@@ -433,7 +433,7 @@ void _Stats::LoadItemDrops(const std::string &Path) {
 	// Read rest of data
 	while(!File.eof() && File.peek() != EOF) {
 
-		ItemGroupEntryStruct ItemGroupEntry;
+		_ItemGroupEntry ItemGroupEntry;
 		File >> ItemGroupEntry.Type;
 		File.ignore(1, '\t');
 		std::getline(File, ItemGroupEntry.ItemIdentifier, '\t');
@@ -447,11 +447,11 @@ void _Stats::LoadItemDrops(const std::string &Path) {
 					throw std::runtime_error(std::string(__FUNCTION__) + " - Cannot find: " + ItemGroupEntry.ItemIdentifier + " in " + Path);
 			break;
 			case _Object::AMMO:
-				if(Ammo.find(ItemGroupEntry.ItemIdentifier) == Ammo.end())
+				if(Items.find(ItemGroupEntry.ItemIdentifier) == Items.end())
 					throw std::runtime_error(std::string(__FUNCTION__) + " - Cannot find: " + ItemGroupEntry.ItemIdentifier + " in " + Path);
 			break;
 			case _Object::UPGRADE:
-				if(Upgrades.find(ItemGroupEntry.ItemIdentifier) == Upgrades.end())
+				if(Items.find(ItemGroupEntry.ItemIdentifier) == Items.end())
 					throw std::runtime_error(std::string(__FUNCTION__) + " - Cannot find: " + ItemGroupEntry.ItemIdentifier + " in " + Path);
 			break;
 			case _Object::WEAPON:
@@ -459,7 +459,7 @@ void _Stats::LoadItemDrops(const std::string &Path) {
 					throw std::runtime_error(std::string(__FUNCTION__) + " - Cannot find: " + ItemGroupEntry.ItemIdentifier + " in " + Path);
 			break;
 			case _Object::ARMOR:
-				if(Armor.find(ItemGroupEntry.ItemIdentifier) == Armor.end())
+				if(Items.find(ItemGroupEntry.ItemIdentifier) == Items.end())
 					throw std::runtime_error(std::string(__FUNCTION__) + " - Cannot find: " + ItemGroupEntry.ItemIdentifier + " in " + Path);
 			break;
 			case _Object::KEY:
@@ -490,7 +490,7 @@ void _Stats::LoadItemDrops(const std::string &Path) {
 
 // Creates ammo
 _Item *_Stats::CreateAmmoItem(const std::string &Identifier, int Count, const glm::vec2 &Position) {
-	_ItemTemplate &Template = Ammo[Identifier];
+	_ItemTemplate &Template = Items[Identifier];
 
 	_Item *Item = new _Item();
 	Item->Attributes = Template.Attributes;
@@ -507,7 +507,7 @@ _Item *_Stats::CreateAmmoItem(const std::string &Identifier, int Count, const gl
 
 // Creates armor
 _Item *_Stats::CreateArmor(const std::string &Identifier, int Count, const glm::vec2 &Position) {
-	_ItemTemplate &Template = Armor[Identifier];
+	_ItemTemplate &Template = Items[Identifier];
 
 	_Item *Item = new _Item();
 	Item->Attributes = Template.Attributes;
@@ -549,7 +549,7 @@ _Weapon *_Stats::CreateWeapon(const std::string &Identifier, int Count, const gl
 
 // Creates an upgrade item
 _Item *_Stats::CreateUpgradeItem(const std::string &Identifier, int Count, const glm::vec2 &Position) {
-	_ItemTemplate &Template = Upgrades[Identifier];
+	_ItemTemplate &Template = Items[Identifier];
 
 	_Item *Item = new _Item();
 	Item->Attributes = Template.Attributes;
