@@ -32,7 +32,6 @@
 #include <objects/particle.h>
 #include <objects/player.h>
 #include <objects/weapon.h>
-#include <objects/armor.h>
 #include <objects/upgrade.h>
 #include <constants.h>
 #include <stdexcept>

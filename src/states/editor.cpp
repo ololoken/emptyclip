@@ -36,7 +36,6 @@
 #include <ui/textbox.h>
 #include <ui/label.h>
 #include <objects/monster.h>
-#include <objects/armor.h>
 #include <objects/weapon.h>
 #include <objects/player.h>
 #include <states/play.h>

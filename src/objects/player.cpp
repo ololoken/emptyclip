@@ -30,7 +30,6 @@
 #include <objects/monster.h>
 #include <objects/upgrade.h>
 #include <objects/weapon.h>
-#include <objects/armor.h>
 #include <fstream>
 #include <iostream>
 #include <stdexcept>
@@ -666,14 +665,13 @@ int _Player::AddItem(_Item *Item) {
 			}
 		} break;
 		case _Object::ARMOR: {
-			_Armor *ArmorItem = (_Armor *)(Item);
-			if(!HasArmor() && Stats.GetSkill(Skills[SKILL_STRENGTH], SKILL_STRENGTH) >= ArmorItem->StrengthRequirement) {
-				SetArmor(ArmorItem);
+			if(!HasArmor() && Stats.GetSkill(Skills[SKILL_STRENGTH], SKILL_STRENGTH) >= Item->Attributes.at("strength_required").Int) {
+				SetArmor(Item);
 				RecalculateStats();
 				return 1;
 			}
 			else {
-				return AddInventory(ArmorItem);
+				return AddInventory(Item);
 			}
 		} break;
 		default:
@@ -718,8 +716,7 @@ bool _Player::CanEquipItem(_Item *Item, int Slot) {
 			if(Item->Type != _Object::ARMOR)
 				return false;
 
-			_Armor *Armor = (_Armor *)Item;
-			return Stats.GetSkill(Skills[SKILL_STRENGTH], SKILL_STRENGTH) >= Armor->StrengthRequirement;
+			return Stats.GetSkill(Skills[SKILL_STRENGTH], SKILL_STRENGTH) >= Item->Attributes.at("strength_required").Int;
 		} break;
 		case INVENTORY_MAINHAND:
 		case INVENTORY_OFFHAND:
@@ -1241,9 +1238,9 @@ void _Player::RecalculateStats() {
 	// Armor
 	DamageBlock = Stats.GetLevelDamageBlock(Level);
 	if(GetArmor()) {
-		DamageBlock += GetArmor()->DamageBlock;
-		DamageResist += GetArmor()->DamageResist;
-		MovementSpeed += GetArmor()->MovementSpeed;
+		DamageBlock += GetArmor()->Attributes.at("damage_block").Int;
+		DamageResist += GetArmor()->Attributes.at("damage_resist").Float;
+		MovementSpeed += GetArmor()->Attributes.at("move_speed").Float;
 	}
 
 	// Get final speed
@@ -1318,7 +1315,7 @@ bool _Player::IsMelee() const { return GetMainHand() == nullptr || GetMainHand()
 void _Player::SetMainHand(_Weapon *Weapon) { Inventory[INVENTORY_MAINHAND] = Weapon; }
 void _Player::SetOffHand(_Weapon *Weapon) { Inventory[INVENTORY_OFFHAND] = Weapon; }
 void _Player::SetMelee(_Weapon *Weapon) { Inventory[INVENTORY_MELEE] = Weapon; }
-void _Player::SetArmor(_Armor *Armor) { Inventory[INVENTORY_ARMOR] = Armor; }
+void _Player::SetArmor(_Item *Armor) { Inventory[INVENTORY_ARMOR] = Armor; }
 
 void _Player::SetTorsoAnimation(const _Animation *NewAnimation) { *this->Animation = *NewAnimation; }
 void _Player::SetLegAnimation(const _Animation *NewAnimation) { *this->LegAnimation = *NewAnimation; }

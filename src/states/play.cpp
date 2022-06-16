@@ -38,7 +38,6 @@
 #include <objects/particle.h>
 #include <objects/upgrade.h>
 #include <objects/weapon.h>
-#include <objects/armor.h>
 #include <states/editor.h>
 #include <states/null.h>
 #include <stdexcept>

@@ -29,7 +29,6 @@
 #include <objects/entity.h>
 #include <objects/player.h>
 #include <objects/item.h>
-#include <objects/armor.h>
 #include <objects/weapon.h>
 #include <objects/upgrade.h>
 #include <sstream>
@@ -533,7 +532,7 @@ void _HUD::RenderItemInfo(_Item *Item, int DrawX, int DrawY) {
 
 	// Get current equipment
 	_Weapon *ExistingWeapon = Player->GetMainHand();
-	_Armor *EquippedArmor = Player->GetArmor();
+	_Item *EquippedArmor = Player->GetArmor();
 
 	// Check weapon type
 	if(Item->Type == _Object::WEAPON) {
@@ -739,74 +738,69 @@ void _HUD::RenderItemInfo(_Item *Item, int DrawX, int DrawY) {
 			}
 		} break;
 		case _Object::ARMOR: {
-			_Armor *Armor = (_Armor *)Item;
 			std::ostringstream Buffer;
 			glm::vec4 TextColor;
 
 			DrawX += 40;
 
 			// Strength required
-			if(Armor->StrengthRequirement != 0) {
+			if(Item->Attributes.at("strength_required").Int != 0) {
 				TextColor = COLOR_WHITE;
-				if(EquippedArmor) {
-					if(Armor->StrengthRequirement < EquippedArmor->StrengthRequirement)
-						TextColor = COLOR_GREEN;
-					else if(Armor->StrengthRequirement > EquippedArmor->StrengthRequirement)
-						TextColor = COLOR_RED;
-				}
+				if(Item->Attributes.at("strength_required").Int > Stats.GetSkill(Player->GetSkill(SKILL_STRENGTH), SKILL_STRENGTH))
+					TextColor = COLOR_RED;
 				DrawY += 20;
-				Buffer << Armor->StrengthRequirement;
+				Buffer << Item->Attributes.at("strength_required").Int;
 				Fonts[FONT_MEDIUM]->DrawText("Strength Required", glm::vec2(DrawX - PadX, DrawY), RIGHT_BASELINE);
 				Fonts[FONT_MEDIUM]->DrawText(Buffer.str(), glm::vec2(DrawX + PadX, DrawY), LEFT_BASELINE, TextColor);
 				Buffer.str("");
 			}
 
 			// Damage Block
-			if(Armor->DamageBlock != 0) {
+			if(Item->Attributes.at("damage_block").Int != 0) {
 				TextColor = COLOR_WHITE;
 				if(EquippedArmor) {
-					if(Armor->DamageBlock > EquippedArmor->DamageBlock)
+					if(Item->Attributes.at("damage_block").Int > EquippedArmor->Attributes.at("damage_block").Int)
 						TextColor = COLOR_GREEN;
-					else if(Armor->DamageBlock < EquippedArmor->DamageBlock)
+					else if(Item->Attributes.at("damage_block").Int < EquippedArmor->Attributes.at("damage_block").Int)
 						TextColor = COLOR_RED;
 				}
 
 				DrawY += 20;
-				Buffer << Armor->DamageBlock;
+				Buffer << Item->Attributes.at("damage_block").Int;
 				Fonts[FONT_MEDIUM]->DrawText("Damage Block", glm::vec2(DrawX - PadX, DrawY), RIGHT_BASELINE);
 				Fonts[FONT_MEDIUM]->DrawText(Buffer.str(), glm::vec2(DrawX + PadX, DrawY), LEFT_BASELINE, TextColor);
 				Buffer.str("");
 			}
 
 			// Damage Resist
-			if(Armor->DamageResist != 0) {
+			if(Item->Attributes.at("damage_resist").Float != 0.0f) {
 				TextColor = COLOR_WHITE;
 				if(EquippedArmor) {
-					if(Armor->DamageResist > EquippedArmor->DamageResist)
+					if(Item->Attributes.at("damage_resist").Float > EquippedArmor->Attributes.at("damage_resist").Float)
 						TextColor = COLOR_GREEN;
-					else if(Armor->DamageResist < EquippedArmor->DamageResist)
+					else if(Item->Attributes.at("damage_resist").Float < EquippedArmor->Attributes.at("damage_resist").Float)
 						TextColor = COLOR_RED;
 				}
 
 				DrawY += 20;
-				Buffer << (Armor->DamageResist < 0 ? "" : "+") << Armor->DamageResist * 100 << "%";
+				Buffer << (Item->Attributes.at("damage_resist").Float < 0 ? "" : "+") << Item->Attributes.at("damage_resist").Float * 100 << "%";
 				Fonts[FONT_MEDIUM]->DrawText("Damage Resist", glm::vec2(DrawX - PadX, DrawY), RIGHT_BASELINE);
 				Fonts[FONT_MEDIUM]->DrawText(Buffer.str(), glm::vec2(DrawX + PadX, DrawY), LEFT_BASELINE, TextColor);
 				Buffer.str("");
 			}
 
 			// Movement Speed
-			if(Armor->MovementSpeed != 0) {
+			if(Item->Attributes.at("move_speed").Float != 0) {
 				TextColor = COLOR_WHITE;
 				if(EquippedArmor) {
-					if(Armor->MovementSpeed > EquippedArmor->MovementSpeed)
+					if(Item->Attributes.at("move_speed").Float > EquippedArmor->Attributes.at("move_speed").Float)
 						TextColor = COLOR_GREEN;
-					else if(Armor->MovementSpeed < EquippedArmor->MovementSpeed)
+					else if(Item->Attributes.at("move_speed").Float < EquippedArmor->Attributes.at("move_speed").Float)
 						TextColor = COLOR_RED;
 				}
 
 				DrawY += 20;
-				Buffer << (Armor->MovementSpeed < 0 ? "" : "+") << Armor->MovementSpeed * 100 << "%";
+				Buffer << (Item->Attributes.at("move_speed").Float < 0 ? "" : "+") << Item->Attributes.at("move_speed").Float * 100 << "%";
 				Fonts[FONT_MEDIUM]->DrawText("Movement Speed", glm::vec2(DrawX - PadX, DrawY), RIGHT_BASELINE);
 				Fonts[FONT_MEDIUM]->DrawText(Buffer.str(), glm::vec2(DrawX + PadX, DrawY), LEFT_BASELINE, TextColor);
 				Buffer.str("");

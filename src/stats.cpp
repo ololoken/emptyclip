@@ -23,7 +23,6 @@
 #include <stdexcept>
 #include <random.h>
 #include <objects/object.h>
-#include <objects/armor.h>
 #include <objects/upgrade.h>
 #include <objects/weapon.h>
 
@@ -173,7 +172,11 @@ void _Stats::LoadArmorTable(const std::string &Path) {
 		std::getline(File, ArmorTemplate.IconIdentifier, '\t');
 		std::getline(File, ColorName, '\t');
 
-		File >> ArmorTemplate.StrengthRequirement >> ArmorTemplate.DamageBlock >> ArmorTemplate.DamageResist >> ArmorTemplate.MovementSpeed;
+		File
+			>> ArmorTemplate.Attributes["strength_required"].Int
+			>> ArmorTemplate.Attributes["damage_block"].Int
+			>> ArmorTemplate.Attributes["damage_resist"].Float
+			>> ArmorTemplate.Attributes["move_speed"].Float;
 		File.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
 		// Check for loaded textures
@@ -498,10 +501,20 @@ _Item *_Stats::CreateAmmoItem(const std::string &Identifier, int Count, const gl
 }
 
 // Creates armor
-_Armor *_Stats::CreateArmor(const std::string &Identifier, int Count, const glm::vec2 &Position) {
+_Item *_Stats::CreateArmor(const std::string &Identifier, int Count, const glm::vec2 &Position) {
 	_ArmorTemplate &ArmorTemplate = Armor[Identifier];
 
-	return new _Armor(Identifier, Count, Position, ArmorTemplate, Assets.Textures[ArmorTemplate.IconIdentifier]);
+	_Item *Item = new _Item();
+	Item->Attributes = ArmorTemplate.Attributes;
+	Item->Type = _Object::ARMOR;
+	Item->Name = ArmorTemplate.Name;
+	Item->ID = Identifier;
+	Item->Count = Count;
+	Item->Position = Position;
+	Item->Texture = Assets.Textures[ArmorTemplate.IconIdentifier];
+	Item->Color = ArmorTemplate.Color;
+
+	return Item;
 }
 
 // Creates a misc item

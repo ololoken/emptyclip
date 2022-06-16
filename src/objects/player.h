@@ -25,7 +25,6 @@
 class _Animation;
 class _Item;
 class _Weapon;
-class _Armor;
 class _Buffer;
 
 // Enumerations
@@ -132,11 +131,11 @@ class _Player : public _Entity {
 		void SetMainHand(_Weapon *Weapon);
 		void SetOffHand(_Weapon *Weapon);
 		void SetMelee(_Weapon *Weapon);
-		void SetArmor(_Armor *Armor);
+		void SetArmor(_Item *Armor);
 		_Weapon *GetMainHand() const { return (_Weapon *)Inventory[INVENTORY_MAINHAND]; }
 		_Weapon *GetOffHand() const { return (_Weapon *)Inventory[INVENTORY_OFFHAND]; }
 		_Weapon *GetMelee() const { return (_Weapon *)Inventory[INVENTORY_MELEE]; }
-		_Armor *GetArmor() const  { return (_Armor *)Inventory[INVENTORY_ARMOR]; }
+		_Item *GetArmor() const  { return Inventory[INVENTORY_ARMOR]; }
 		_Item *GetInventory(int Index)  { return Inventory[Index]; }
 		float GetZoomScale() const { return ZoomScale; }
 		int GetFireRate(int AttackType) const { return FireRate[AttackType]; }

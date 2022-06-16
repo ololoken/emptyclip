@@ -179,10 +179,8 @@ struct _ArmorTemplate {
 	std::string Name;
 	std::string IconIdentifier;
 	glm::vec4 Color;
-	int StrengthRequirement;
-	int DamageBlock;
-	float DamageResist;
-	float MovementSpeed;
+
+	std::unordered_map<std::string, _Value> Attributes;
 };
 
 // Holds information about a monster
