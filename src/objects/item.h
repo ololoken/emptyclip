@@ -38,7 +38,6 @@ class _Item : public _Object {
 
 		virtual std::string GetTypeAsString() const override;
 
-		int Level;
 		int Count;
 		int Quality;
 

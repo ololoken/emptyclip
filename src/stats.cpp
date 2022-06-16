@@ -33,7 +33,8 @@ void _Stats::Init() {
 	LoadSkills("tables/skills.tsv");
 	LoadAmmoTable("tables/ammo.tsv");
 	LoadArmorTable("tables/armor.tsv");
-	LoadMiscItemTable("tables/items.tsv");
+	LoadKeys("tables/keys.tsv");
+	LoadMedkits("tables/medkits.tsv");
 	LoadUpgradeTable("tables/upgrades.tsv");
 	LoadWeaponTable("tables/weapons.tsv");
 	LoadItemDrops("tables/itemdrops.tsv");
@@ -44,7 +45,6 @@ void _Stats::Close() {
 	Levels.clear();
 	Skills.clear();
 	Items.clear();
-	MiscItems.clear();
 	Weapons.clear();
 	ItemGroupTable.clear();
 }
@@ -118,12 +118,12 @@ void _Stats::LoadAmmoTable(const std::string &Path) {
 		std::string ColorName;
 		std::getline(File, Name, '\t');
 		std::getline(File, Template.Name, '\t');
-		std::getline(File, Template.IconIdentifier, '\t');
+		std::getline(File, Template.IconID, '\t');
 		std::getline(File, ColorName, '\n');
 
 		// Check for loaded textures
-		if(!Assets.IsTextureLoaded(Template.IconIdentifier))
-			throw std::runtime_error(std::string(__FUNCTION__) + " - Texture not found: " + Template.IconIdentifier);
+		if(!Assets.IsTextureLoaded(Template.IconID))
+			throw std::runtime_error(std::string(__FUNCTION__) + " - Texture not found: " + Template.IconID);
 
 		// Set color
 		if(ColorName != "") {
@@ -166,7 +166,7 @@ void _Stats::LoadArmorTable(const std::string &Path) {
 		std::string ColorName;
 		std::getline(File, Name, '\t');
 		std::getline(File, Template.Name, '\t');
-		std::getline(File, Template.IconIdentifier, '\t');
+		std::getline(File, Template.IconID, '\t');
 		std::getline(File, ColorName, '\t');
 
 		File
@@ -178,8 +178,8 @@ void _Stats::LoadArmorTable(const std::string &Path) {
 		File.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
 		// Check for loaded textures
-		if(!Assets.IsTextureLoaded(Template.IconIdentifier))
-			throw std::runtime_error(std::string(__FUNCTION__) + " - Texture not found: " + Template.IconIdentifier);
+		if(!Assets.IsTextureLoaded(Template.IconID))
+			throw std::runtime_error(std::string(__FUNCTION__) + " - Texture not found: " + Template.IconID);
 
 		// Set color
 		if(ColorName != "") {
@@ -201,8 +201,7 @@ void _Stats::LoadArmorTable(const std::string &Path) {
 	File.close();
 }
 
-// Loads the misc item table
-void _Stats::LoadMiscItemTable(const std::string &Path) {
+void _Stats::LoadKeys(const std::string &Path) {
 
 	// Load file
 	std::ifstream File(Path, std::ios::in);
@@ -215,37 +214,83 @@ void _Stats::LoadMiscItemTable(const std::string &Path) {
 	// Read file
 	while(!File.eof() && File.peek() != EOF) {
 
-		_MiscItemTemplate MiscItemTemplate;
-		std::string Identifier;
-		std::string ColorName;
-		std::getline(File, Identifier, '\t');
-		std::getline(File, MiscItemTemplate.Name, '\t');
-		std::getline(File, MiscItemTemplate.IconIdentifier, '\t');
-		std::getline(File, ColorName, '\t');
+		_ItemTemplate Template(_Object::KEY);
+		std::string ID;
+		std::string ColorID;
+		std::getline(File, ID, '\t');
+		std::getline(File, Template.Name, '\t');
+		std::getline(File, Template.IconID, '\t');
+		std::getline(File, ColorID, '\n');
 
-		File >> MiscItemTemplate.Type >> MiscItemTemplate.Level;
+		// Check for loaded textures
+		if(!Assets.IsTextureLoaded(Template.IconID))
+			throw std::runtime_error(std::string(__FUNCTION__) + " - Cannot find texture: " + Template.IconID);
+
+		// Set color
+		if(ColorID != "") {
+			if(!Assets.IsColorLoaded(ColorID))
+				throw std::runtime_error(std::string(__FUNCTION__) + " - Cannot find color: " + ColorID);
+
+			Template.Color = Assets.Colors[ColorID];
+		}
+		else
+			Template.Color = COLOR_WHITE;
+
+		// Check for duplicates
+		if(Items.find(ID) != Items.end())
+			throw std::runtime_error(std::string(__FUNCTION__) + " - Duplicate entry: " + ID);
+
+		Items[ID] = Template;
+	}
+
+	File.close();
+}
+
+// Loads the medkits table
+void _Stats::LoadMedkits(const std::string &Path) {
+
+	// Load file
+	std::ifstream File(Path, std::ios::in);
+	if(!File)
+		throw std::runtime_error("Error loading: " + Path);
+
+	// Skip header
+	File.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+
+	// Read file
+	while(!File.eof() && File.peek() != EOF) {
+
+		_ItemTemplate Template(_Object::MEDKIT);
+		std::string ID;
+		std::string ColorID;
+		std::getline(File, ID, '\t');
+		std::getline(File, Template.Name, '\t');
+		std::getline(File, Template.IconID, '\t');
+		std::getline(File, ColorID, '\t');
+
+		File >> Template.Attributes["health_restored"].Int;
 
 		File.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
 		// Check for loaded textures
-		if(!Assets.IsTextureLoaded(MiscItemTemplate.IconIdentifier))
-			throw std::runtime_error(std::string(__FUNCTION__) + " - Cannot find texture: " + MiscItemTemplate.IconIdentifier);
+		if(!Assets.IsTextureLoaded(Template.IconID))
+			throw std::runtime_error(std::string(__FUNCTION__) + " - Cannot find texture: " + Template.IconID);
 
 		// Set color
-		if(ColorName != "") {
-			if(!Assets.IsColorLoaded(ColorName))
-				throw std::runtime_error(std::string(__FUNCTION__) + " - Cannot find color: " + ColorName);
+		if(ColorID != "") {
+			if(!Assets.IsColorLoaded(ColorID))
+				throw std::runtime_error(std::string(__FUNCTION__) + " - Cannot find color: " + ColorID);
 
-			MiscItemTemplate.Color = Assets.Colors[ColorName];
+			Template.Color = Assets.Colors[ColorID];
 		}
 		else
-			MiscItemTemplate.Color = COLOR_WHITE;
+			Template.Color = COLOR_WHITE;
 
 		// Check for duplicates
-		if(MiscItems.find(Identifier) != MiscItems.end())
-			throw std::runtime_error(std::string(__FUNCTION__) + " - Duplicate entry: " + Identifier);
+		if(Items.find(ID) != Items.end())
+			throw std::runtime_error(std::string(__FUNCTION__) + " - Duplicate entry: " + ID);
 
-		MiscItems[Identifier] = MiscItemTemplate;
+		Items[ID] = Template;
 	}
 
 	File.close();
@@ -270,7 +315,7 @@ void _Stats::LoadUpgradeTable(const std::string &Path) {
 		std::string ColorName;
 		std::getline(File, Name, '\t');
 		std::getline(File, Template.Name, '\t');
-		std::getline(File, Template.IconIdentifier, '\t');
+		std::getline(File, Template.IconID, '\t');
 		std::getline(File, ColorName, '\t');
 
 		File
@@ -281,8 +326,8 @@ void _Stats::LoadUpgradeTable(const std::string &Path) {
 		File.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
 		// Check for loaded textures
-		if(!Assets.IsTextureLoaded(Template.IconIdentifier))
-			throw std::runtime_error(std::string(__FUNCTION__) + " - Cannot find texture: " + Template.IconIdentifier);
+		if(!Assets.IsTextureLoaded(Template.IconID))
+			throw std::runtime_error(std::string(__FUNCTION__) + " - Cannot find texture: " + Template.IconID);
 
 		// Set color
 		if(ColorName != "") {
@@ -442,28 +487,16 @@ void _Stats::LoadItemDrops(const std::string &Path) {
 		switch(ItemGroupEntry.Type) {
 			case -1:
 			break;
-			case _Object::MEDKIT:
-				if(MiscItems.find(ItemGroupEntry.ItemIdentifier) == MiscItems.end())
-					throw std::runtime_error(std::string(__FUNCTION__) + " - Cannot find: " + ItemGroupEntry.ItemIdentifier + " in " + Path);
-			break;
+			case _Object::KEY:
 			case _Object::AMMO:
-				if(Items.find(ItemGroupEntry.ItemIdentifier) == Items.end())
-					throw std::runtime_error(std::string(__FUNCTION__) + " - Cannot find: " + ItemGroupEntry.ItemIdentifier + " in " + Path);
-			break;
 			case _Object::UPGRADE:
+			case _Object::ARMOR:
+			case _Object::MEDKIT:
 				if(Items.find(ItemGroupEntry.ItemIdentifier) == Items.end())
 					throw std::runtime_error(std::string(__FUNCTION__) + " - Cannot find: " + ItemGroupEntry.ItemIdentifier + " in " + Path);
 			break;
 			case _Object::WEAPON:
 				if(Weapons.find(ItemGroupEntry.ItemIdentifier) == Weapons.end())
-					throw std::runtime_error(std::string(__FUNCTION__) + " - Cannot find: " + ItemGroupEntry.ItemIdentifier + " in " + Path);
-			break;
-			case _Object::ARMOR:
-				if(Items.find(ItemGroupEntry.ItemIdentifier) == Items.end())
-					throw std::runtime_error(std::string(__FUNCTION__) + " - Cannot find: " + ItemGroupEntry.ItemIdentifier + " in " + Path);
-			break;
-			case _Object::KEY:
-				if(MiscItems.find(ItemGroupEntry.ItemIdentifier) == MiscItems.end())
 					throw std::runtime_error(std::string(__FUNCTION__) + " - Cannot find: " + ItemGroupEntry.ItemIdentifier + " in " + Path);
 			break;
 			default:
@@ -488,53 +521,19 @@ void _Stats::LoadItemDrops(const std::string &Path) {
 	File.close();
 }
 
-// Creates ammo
-_Item *_Stats::CreateAmmoItem(const std::string &Identifier, int Count, const glm::vec2 &Position) {
+// Create item
+_Item *_Stats::CreateItem(const std::string &Identifier, int Count, const glm::vec2 &Position) {
 	_ItemTemplate &Template = Items[Identifier];
 
 	_Item *Item = new _Item();
 	Item->Attributes = Template.Attributes;
-	Item->Type = _Object::AMMO;
+	Item->Type = Template.Type;
 	Item->Name = Template.Name;
 	Item->ID = Identifier;
 	Item->Count = Count;
 	Item->Position = Position;
-	Item->Texture = Assets.Textures[Template.IconIdentifier];
+	Item->Texture = Assets.Textures[Template.IconID];
 	Item->Color = Template.Color;
-
-	return Item;
-}
-
-// Creates armor
-_Item *_Stats::CreateArmor(const std::string &Identifier, int Count, const glm::vec2 &Position) {
-	_ItemTemplate &Template = Items[Identifier];
-
-	_Item *Item = new _Item();
-	Item->Attributes = Template.Attributes;
-	Item->Type = _Object::ARMOR;
-	Item->Name = Template.Name;
-	Item->ID = Identifier;
-	Item->Count = Count;
-	Item->Position = Position;
-	Item->Texture = Assets.Textures[Template.IconIdentifier];
-	Item->Color = Template.Color;
-
-	return Item;
-}
-
-// Creates a misc item
-_Item *_Stats::CreateMiscItem(const std::string &Identifier, int Count, const glm::vec2 &Position) {
-	_MiscItemTemplate &MiscItemTemplate = MiscItems[Identifier];
-
-	_Item *Item = new _Item();
-	Item->Type = MiscItemTemplate.Type;
-	Item->Name = MiscItemTemplate.Name;
-	Item->ID = Identifier;
-	Item->Count = Count;
-	Item->Level = MiscItemTemplate.Level;
-	Item->Position = Position;
-	Item->Texture = Assets.Textures[MiscItemTemplate.IconIdentifier];
-	Item->Color = MiscItemTemplate.Color;
 
 	return Item;
 }
@@ -545,23 +544,6 @@ _Weapon *_Stats::CreateWeapon(const std::string &Identifier, int Count, const gl
 	_Weapon *Weapon = new _Weapon(Identifier, Count, Position, WeaponTemplate, Assets.Textures[WeaponTemplate.IconIdentifier], Generate);
 
 	return Weapon;
-}
-
-// Creates an upgrade item
-_Item *_Stats::CreateUpgradeItem(const std::string &Identifier, int Count, const glm::vec2 &Position) {
-	_ItemTemplate &Template = Items[Identifier];
-
-	_Item *Item = new _Item();
-	Item->Attributes = Template.Attributes;
-	Item->Type = _Object::UPGRADE;
-	Item->Name = Template.Name;
-	Item->ID = Identifier;
-	Item->Count = Count;
-	Item->Position = Position;
-	Item->Texture = Assets.Textures[Template.IconIdentifier];
-	Item->Color = Template.Color;
-
-	return Item;
 }
 
 // Returns a valid amount of experience

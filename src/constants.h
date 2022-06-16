@@ -95,7 +95,6 @@ const  int          INVENTORY_BAGSIZE              =  16;
 //     Items
 const  float        ITEM_SCALE                     =  0.5f;
 const  float        ITEM_Z                         =  0.05f;
-const  int          ITEM_MEDKIT_HEALTH             =  50;
 //     Objects
 const  float        OBJECT_Z                       =  0.3f;
 //     Map

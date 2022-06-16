@@ -95,25 +95,19 @@ _Map::_Map(const std::string &Filename) : _Map() {
 		switch(Object->Type) {
 			case _Object::MONSTER:
 				if(Assets.MonsterTable.find(Object->Identifier) == Assets.MonsterTable.end())
-					throw std::runtime_error("Cannot find monster: " + Object->Identifier);
+					throw std::runtime_error(std::string(__PRETTY_FUNCTION__) + "Cannot find monster: " + Object->Identifier);
 			break;
-			case _Object::MEDKIT:
-				if(Stats.MiscItems.find(Object->Identifier) == Stats.MiscItems.end())
-					throw std::runtime_error("Cannot find medkit: " + Object->Identifier);
-			break;
+			case _Object::KEY:
 			case _Object::AMMO:
 			case _Object::UPGRADE:
 			case _Object::ARMOR:
+			case _Object::MEDKIT:
 				if(Stats.Items.find(Object->Identifier) == Stats.Items.end())
-					throw std::runtime_error("Cannot find item: " + Object->Identifier);
+					throw std::runtime_error(std::string(__PRETTY_FUNCTION__) + "Cannot find item: " + Object->Identifier);
 			break;
 			case _Object::WEAPON:
 				if(Stats.Weapons.find(Object->Identifier) == Stats.Weapons.end())
-					throw std::runtime_error("Cannot find weapon: " + Object->Identifier);
-			break;
-			case _Object::KEY:
-				if(Stats.MiscItems.find(Object->Identifier) == Stats.MiscItems.end())
-					throw std::runtime_error("Cannot find key: " + Object->Identifier);
+					throw std::runtime_error(std::string(__PRETTY_FUNCTION__) + "Cannot find weapon: " + Object->Identifier);
 			break;
 		}
 

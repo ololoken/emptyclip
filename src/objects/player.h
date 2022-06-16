@@ -92,7 +92,7 @@ class _Player : public _Entity {
 		bool AddComponent(int FromIndex, int ToIndex);
 		bool UseItem(int Index, bool Event);
 		bool UseMedkit(int Index);
-		int FindMiscItem(int Index);
+		int FindItem(int Index);
 		int FindItem(const std::string &Identifier);
 		void ResetUseTimer() { UseTimer = 0; }
 		void ConsumeInventory(int Index, bool Delete=true);
@@ -123,7 +123,6 @@ class _Player : public _Entity {
 
 		double GetReloadPercent() const { return std::min(1.0, ReloadTimer / ReloadPeriod); }
 		double GetWeaponSwitchPercent() const { return std::min(1.0, WeaponSwitchTimer / WeaponSwitchPeriod); }
-		int GetMedkitHealAmount(int MedkitLevel) const;
 		float GetCrosshairRadius(const glm::vec2 &Cursor);
 		int GetWeaponAmmoType() const;
 		int GetInventoryAmmoType(int Index) const;

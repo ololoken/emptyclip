@@ -312,28 +312,16 @@ void _Player::LoadItems(_Buffer &Buffer) {
 
 		// Create items
 		switch(Type) {
+			case _Object::KEY:
+			case _Object::AMMO:
+			case _Object::UPGRADE:
+			case _Object::ARMOR:
 			case _Object::MEDKIT:
 				Identifier = Buffer.ReadString();
-				Inventory[Slot] = Stats.CreateMiscItem(Identifier, Count, glm::vec2(0, 0));
-			break;
-			case _Object::AMMO:
-				Identifier = Buffer.ReadString();
-				Inventory[Slot] = Stats.CreateAmmoItem(Identifier, Count, glm::vec2(0, 0));
-			break;
-			case _Object::UPGRADE:
-				Identifier = Buffer.ReadString();
-				Inventory[Slot] = Stats.CreateUpgradeItem(Identifier, Count, glm::vec2(0, 0));
+				Inventory[Slot] = Stats.CreateItem(Identifier, Count, glm::vec2(0, 0));
 			break;
 			case _Object::WEAPON:
 				LoadWeapon(Buffer, Count, Slot);
-			break;
-			case _Object::ARMOR:
-				Identifier = Buffer.ReadString();
-				Inventory[Slot] = Stats.CreateArmor(Identifier, Count, glm::vec2(0, 0));
-			break;
-			case _Object::KEY:
-				Identifier = Buffer.ReadString();
-				Inventory[Slot] = Stats.CreateMiscItem(Identifier, Count, glm::vec2(0, 0));
 			break;
 		}
 	}
@@ -366,9 +354,9 @@ void _Player::LoadUpgrades(_Buffer &Buffer, _Weapon *Weapon) {
 	// Read data
 	for(int i = 0; i < Components; i++) {
 		std::string Identifier = Buffer.ReadString();
-		_Item *Upgrade = Stats.CreateUpgradeItem(Identifier, 1, glm::vec2(0, 0));
-		if(!Weapon->AddComponent(Upgrade))
-			delete Upgrade;
+		_Item *Item = Stats.CreateItem(Identifier, 1, glm::vec2(0, 0));
+		if(!Weapon->AddComponent(Item))
+			delete Item;
 	}
 }
 
@@ -458,7 +446,7 @@ void _Player::Update(double FrameTime) {
 
 	// Use a medkit
 	if(GetMedkitRequested()) {
-		UseMedkit(FindMiscItem(_Object::MEDKIT));
+		UseMedkit(FindItem(_Object::MEDKIT));
 		SetMedkitRequested(false);
 	}
 
@@ -960,8 +948,7 @@ bool _Player::UseItem(int Index, bool Event) {
 // Uses a medkit if one is available
 bool _Player::UseMedkit(int Index) {
 	if(CanUseMedkit() && HasInventory(Index) && Inventory[Index]->Type == _Object::MEDKIT) {
-		int Amount = GetMedkitHealAmount(Inventory[Index]->Level);
-		UpdateHealth(Amount);
+		UpdateHealth(Inventory[Index]->Attributes.at("health_restored").Int);
 		ConsumeInventory(Index);
 		MedkitTimer = 0;
 
@@ -971,14 +958,8 @@ bool _Player::UseMedkit(int Index) {
 	return false;
 }
 
-// Returns the amount of health given from a medkit
-int _Player::GetMedkitHealAmount(int MedkitLevel) const {
-
-	return MedkitLevel * ITEM_MEDKIT_HEALTH;
-}
-
-// Searches for an misc item and returns the index
-int _Player::FindMiscItem(int ItemType) {
+// Searches for an item by type and returns the index
+int _Player::FindItem(int ItemType) {
 
 	for(int i = INVENTORY_BAGSTART; i < INVENTORY_BAGEND; i++) {
 		if(HasInventory(i) && Inventory[i]->Type == ItemType)

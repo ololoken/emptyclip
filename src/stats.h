@@ -69,7 +69,7 @@ struct _ItemTemplate {
 	_ItemTemplate(int Type) : Type(Type) { }
 
 	std::string Name;
-	std::string IconIdentifier;
+	std::string IconID;
 	glm::vec4 Color;
 	int Type;
 
@@ -88,15 +88,13 @@ class _Stats {
 		void LoadSkills(const std::string &Path);
 		void LoadAmmoTable(const std::string &Path);
 		void LoadArmorTable(const std::string &Path);
-		void LoadMiscItemTable(const std::string &Path);
+		void LoadKeys(const std::string &Path);
+		void LoadMedkits(const std::string &Path);
 		void LoadUpgradeTable(const std::string &Path);
 		void LoadWeaponTable(const std::string &Path);
 		void LoadItemDrops(const std::string &Path);
 
-		_Item *CreateAmmoItem(const std::string &Identifier, int Count, const glm::vec2 &Position);
-		_Item *CreateArmor(const std::string &Identifier, int Count, const glm::vec2 &Position);
-		_Item *CreateMiscItem(const std::string &Identifier, int Count, const glm::vec2 &Position);
-		_Item *CreateUpgradeItem(const std::string &Identifier, int Count, const glm::vec2 &Position);
+		_Item *CreateItem(const std::string &Identifier, int Count, const glm::vec2 &Position);
 		_Weapon *CreateWeapon(const std::string &Identifier, int Count, const glm::vec2 &Position, bool Generate);
 
 		int GetLevel(int64_t Experience);
@@ -114,7 +112,6 @@ class _Stats {
 		void GetRandomDrop(const _ItemGroup *ItemGroup, _ObjectSpawn *ObjectSpawn);
 
 		std::unordered_map<std::string, _ItemTemplate> Items;
-		std::unordered_map<std::string, _MiscItemTemplate> MiscItems;
 		std::unordered_map<std::string, _WeaponTemplate> Weapons;
 
 		std::vector<std::string> AmmoNames;

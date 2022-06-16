@@ -1056,15 +1056,17 @@ void _EditorState::LoadPalettes() {
 	LoadMonsterButtons();
 
 	// Load items
-	for(const auto &MiscItem : Stats.MiscItems)
-		Icons.push_back(_Brush(MiscItem.first, MiscItem.second.Name, Assets.Textures[MiscItem.second.IconIdentifier], MiscItem.second.Color, MiscItem.second.Type));
+	for(const auto &Item : Stats.Items) {
+		if(Item.second.Type == _Object::MEDKIT || Item.second.Type == _Object::KEY)
+			Icons.push_back(_Brush(Item.first, Item.second.Name, Assets.Textures[Item.second.IconID], Item.second.Color, Item.second.Type));
+	}
 	LoadPaletteButtons(Icons, EDITMODE_ITEMS);
 	Icons.clear();
 
 	// Load ammo
 	for(const auto &Item : Stats.Items) {
 		if(Item.second.Type == _Object::AMMO)
-			Icons.push_back(_Brush(Item.first, Item.second.Name, Assets.Textures[Item.second.IconIdentifier], Item.second.Color, Item.second.Type));
+			Icons.push_back(_Brush(Item.first, Item.second.Name, Assets.Textures[Item.second.IconID], Item.second.Color, Item.second.Type));
 	}
 	LoadPaletteButtons(Icons, EDITMODE_AMMO);
 	Icons.clear();
@@ -1072,7 +1074,7 @@ void _EditorState::LoadPalettes() {
 	// Load upgrades
 	for(const auto &Item : Stats.Items) {
 		if(Item.second.Type == _Object::UPGRADE)
-			Icons.push_back(_Brush(Item.first, Item.second.Name, Assets.Textures[Item.second.IconIdentifier], Item.second.Color, Item.second.Type));
+			Icons.push_back(_Brush(Item.first, Item.second.Name, Assets.Textures[Item.second.IconID], Item.second.Color, Item.second.Type));
 	}
 	LoadPaletteButtons(Icons, EDITMODE_UPGRADES);
 	Icons.clear();
@@ -1089,7 +1091,7 @@ void _EditorState::LoadPalettes() {
 	// Load armor
 	for(const auto &Item : Stats.Items) {
 		if(Item.second.Type == _Object::ARMOR)
-			Icons.push_back(_Brush(Item.first, Item.second.Name, Assets.Textures[Item.second.IconIdentifier], Item.second.Color, Item.second.Type));
+			Icons.push_back(_Brush(Item.first, Item.second.Name, Assets.Textures[Item.second.IconID], Item.second.Color, Item.second.Type));
 	}
 	LoadPaletteButtons(Icons, EDITMODE_ARMOR);
 	Icons.clear();
@@ -1342,16 +1344,12 @@ void _EditorState::DrawObject(float OffsetX, float OffsetY, const _ObjectSpawn *
 			Depth = OBJECT_Z;
 		} break;
 		case _Object::KEY:
-		case _Object::MEDKIT: {
-			_MiscItemTemplate &MiscItem = Stats.MiscItems[Object->Identifier];
-			Texture = Assets.Textures[MiscItem.IconIdentifier];
-			Color = MiscItem.Color;
-		} break;
 		case _Object::AMMO:
 		case _Object::UPGRADE:
-		case _Object::ARMOR: {
+		case _Object::ARMOR:
+		case _Object::MEDKIT: {
 			_ItemTemplate &Ammo = Stats.Items[Object->Identifier];
-			Texture = Assets.Textures[Ammo.IconIdentifier];
+			Texture = Assets.Textures[Ammo.IconID];
 			Color = Ammo.Color;
 		} break;
 		case _Object::WEAPON: {

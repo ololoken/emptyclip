@@ -810,7 +810,7 @@ void _HUD::RenderItemInfo(_Item *Item, int DrawX, int DrawY) {
 
 			// Heal amount
 			DrawY += 20;
-			Buffer << "+" << Player->GetMedkitHealAmount(Item->Level) << " HP";
+			Buffer << "+" << Item->Attributes.at("health_restored").Int << " HP";
 			Fonts[FONT_MEDIUM]->DrawText(Buffer.str(), glm::vec2(DrawX, DrawY), CENTER_BASELINE, COLOR_GREEN);
 		} break;
 		case _Object::UPGRADE: {

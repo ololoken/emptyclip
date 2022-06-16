@@ -110,13 +110,6 @@ enum SkillTypes {
 	SKILL_COUNT,
 };
 
-struct _MiscItemTemplate {
-	std::string Name;
-	std::string IconIdentifier;
-	glm::vec4 Color;
-	int Type, Level;
-};
-
 struct _ParticleTemplate {
 	glm::vec2 StartDirection;
 	glm::vec2 VelocityScale;

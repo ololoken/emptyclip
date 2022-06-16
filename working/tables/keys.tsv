@@ -1,0 +1,51 @@
+identifier	name	icon identifier	color
+key0	Key	i_key0	
+key1	Red Key	i_key0	shade_red0
+key2	Green Key	i_key0	shade_green0
+key3	Blue Key	i_key0	shade_blue0
+key4	Purple Key	i_key0	purple
+key5	Black Key	i_key0	dark
+skey0	Secret Key	i_key0	shade_black1
+skey1	Ruby Key	i_key0	red
+skey2	Sapphire Key	i_key0	blue
+skey3	Emerald Key	i_key0	green
+skey4	Cavern Key	i_key0	brown
+akey0	Frozen Stars	i_key1	
+akey1	Terrestrial Key	i_key1	shade_green0
+akey2	Plasma Finger	i_key1	shade_blue0
+akey3	Psi Key	i_key1	shade_black1
+dkey0	Symbol of Wrath	i_key2	
+dkey1	Vampire Crest	i_key2	shade_red1
+dkey2	Dark Key	i_key2	shade_blue2
+dkey3	Doom Key	i_key2	dark
+dkey4	Death Key	i_key2	shade_green1
+gkey0	Rubber Key	i_key0	shade_brown0
+gkey1	Plastic Key	i_key0	shade_brown0
+gkey2	Tin Key	i_key0	shade_brown0
+gkey3	Copper Key	i_key0	shade_brown0
+gkey4	Lead Key	i_key0	shade_brown0
+gkey5	Steel Key	i_key0	shade_brown0
+gkey6	Gold Key	i_key0	shade_brown0
+gkey7	Diamond Key	i_key0	shade_brown0
+gkey8	Platinum Key	i_key0	shade_brown0
+gkey9	Merchant's Medallion	i_key0	shade_brown0
+dgkey0	Dungeon Key I	i_key0	shade_brown2
+dgkey1	Dungeon Key II	i_key0	shade_brown2
+dgkey2	Dungeon Key III	i_key0	shade_brown2
+dgkey3	Dungeon Key IV	i_key0	shade_brown2
+dgkey4	Dungeon Key V	i_key0	shade_brown2
+dgkey5	Dungeon Key VI	i_key0	shade_brown2
+dgkey6	Dungeon Key VII	i_key0	shade_brown2
+dgkey7	Dungeon Key VIII	i_key0	shade_brown2
+dgkey8	Dungeon Key IX	i_key0	shade_brown2
+dgkey9	Dungeon Key X	i_key0	shade_brown2
+dgkey10	Dungeon Key XI	i_key0	shade_brown2
+dgkey11	Dungeon Key XII	i_key0	shade_brown2
+dgkey12	Dungeon Key XIII	i_key0	shade_brown2
+dgkey13	Dungeon Key XIV	i_key0	shade_brown2
+dgkey14	Dungeon Key XV	i_key0	shade_brown2
+wkey0	World Key I	i_key0	shade_black0
+wkey1	World Key II	i_key0	shade_black0
+wkey2	World Key III	i_key0	shade_black0
+wkey3	World Key IV	i_key0	shade_black0
+wkey4	World Key V	i_key0	shade_black0

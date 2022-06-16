@@ -695,7 +695,7 @@ void _PlayState::UseObject() {
 			if(Event->ItemIdentifier != "") {
 				int ItemIndex = Player->FindItem(Event->ItemIdentifier);
 				if(ItemIndex == -1) {
-					HUD->ShowMessageBox("You need the " + Stats.MiscItems[Event->ItemIdentifier].Name, HUD_KEYMESSAGETIME);
+					HUD->ShowMessageBox("You need the " + Stats.Items[Event->ItemIdentifier].Name, HUD_KEYMESSAGETIME);
 					return;
 				}
 
@@ -960,23 +960,15 @@ void _PlayState::SpawnObject(_ObjectSpawn *ObjectSpawn, bool GenerateStats) {
 		case _Object::MONSTER:
 			AddMonster(Assets.CreateMonster(ObjectSpawn->Identifier, ObjectSpawn->Position));
 		break;
-		case _Object::MEDKIT:
-			Map->AddItem(Stats.CreateMiscItem(ObjectSpawn->Identifier, 1, ObjectSpawn->Position));
-		break;
+		case _Object::KEY:
 		case _Object::AMMO:
-			Map->AddItem(Stats.CreateAmmoItem(ObjectSpawn->Identifier, 1, ObjectSpawn->Position));
-		break;
 		case _Object::UPGRADE:
-			Map->AddItem(Stats.CreateUpgradeItem(ObjectSpawn->Identifier, 1, ObjectSpawn->Position));
+		case _Object::ARMOR:
+		case _Object::MEDKIT:
+			Map->AddItem(Stats.CreateItem(ObjectSpawn->Identifier, 1, ObjectSpawn->Position));
 		break;
 		case _Object::WEAPON:
 			Map->AddItem(Stats.CreateWeapon(ObjectSpawn->Identifier, 1, ObjectSpawn->Position, GenerateStats));
-		break;
-		case _Object::ARMOR:
-			Map->AddItem(Stats.CreateArmor(ObjectSpawn->Identifier, 1, ObjectSpawn->Position));
-		break;
-		case _Object::KEY:
-			Map->AddItem(Stats.CreateMiscItem(ObjectSpawn->Identifier, 1, ObjectSpawn->Position));
 		break;
 	}
 }

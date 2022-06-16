@@ -11,7 +11,7 @@ mkdir -p temp
 libreoffice --headless --convert-to csv tables/{armor.ods,itemdrops.ods,monsters.ods,weapons.ods} --outdir temp/
 
 # convert from csv to tsv
-find temp/ -iname "*.csv" -exec sh -c 'f="$1";f="${f%.*}"; sed -i "s/\r//g" "${f}.csv"; sed -E -f "scripts/csv2tsv.sed" "${f}.csv" > "${f}.tsv"' shell "{}" \;
+find temp/ -iname "*.csv" -exec sh -c 'f="$1"; f="${f%.*}"; sed -i "s/\r//g" "${f}.csv"; sed -E -f "scripts/csv2tsv.sed" "${f}.csv" > "${f}.tsv"' shell "{}" \;
 
 # move files
 mv temp/*.tsv ../working/tables/
