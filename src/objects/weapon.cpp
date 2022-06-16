@@ -21,6 +21,7 @@
 #include <stats.h>
 #include <random.h>
 #include <buffer.h>
+#include <algorithm>
 
 // Constructor
 _Weapon::_Weapon(const std::string &Identifier, int Count, const glm::vec2 &Position, const _WeaponTemplate &Weapon, const _Texture *Texture, bool Generate) :
@@ -83,11 +84,9 @@ const std::string &_Weapon::GetSample(int SampleType) const {
 	return Stats.Weapons[Identifier].Samples[SampleType];
 }
 
-// Adds ammo to the gun
+// Set ammo amount
 void _Weapon::SetAmmo(int Value) {
-	Attributes["ammo"].Int = Value;
-	if(Attributes["ammo"].Int > Attributes["rounds"].Int)
-		Attributes["ammo"].Int = Attributes["rounds"].Int;
+	Attributes["ammo"].Int = std::clamp(Value, 0, Attributes["rounds"].Int);
 }
 
 // Recalculates the weapon stats
