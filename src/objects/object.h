@@ -21,6 +21,8 @@
 #include <coord.h>
 #include <color.h>
 #include <texture.h>
+#include <value.h>
+#include <unordered_map>
 #include <vector>
 #include <string>
 #include <glm/vec2.hpp>
@@ -85,4 +87,5 @@ class _Object {
 		float Scale;
 		float PositionZ;
 
+		std::unordered_map<std::string, _Value> Attributes;
 };

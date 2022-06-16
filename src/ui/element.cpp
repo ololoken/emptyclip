@@ -17,6 +17,7 @@
 *******************************************************************************/
 #include <ui/element.h>
 #include <graphics.h>
+#include <color.h>
 #include <input.h>
 #include <assets.h>
 #include <program.h>

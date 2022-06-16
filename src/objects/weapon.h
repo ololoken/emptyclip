@@ -50,10 +50,7 @@ class _Weapon : public _Item {
 		int GetMinDamage() const { return MinDamage; }
 		int GetMaxDamage() const { return MaxDamage; }
 		float GetAverageDamage() const { return (MinDamage + MaxDamage) / 2.0f; }
-		float GetMinAccuracy() const { return MinAccuracy; }
-		float GetMaxAccuracy() const { return MaxAccuracy; }
-		float GetAverageAccuracy() const { return (MinAccuracy + MaxAccuracy) / 2.0f; }
-		int GetRoundSize() const { return RoundSize; }
+		float GetAverageAccuracy() const;
 		int GetAmmo() const { return Ammo; }
 		int GetMaxComponents() const { return MaxComponents; }
 		int GetComponents() const { return static_cast<int>(Upgrades.size()); }
@@ -68,24 +65,16 @@ class _Weapon : public _Item {
 
 		std::vector<_Upgrade *> Upgrades;
 		int Ammo;
-		int RoundSize;
 		int MinDamage;
 		int MaxDamage;
-		float MinAccuracy;
-		float MaxAccuracy;
 		float Bonus[UPGRADE_TYPES];
 		double FirePeriod;
 		double ReloadPeriod;
 		int MaxComponents;
-		int BulletsShot;
+		int AttackCount;
 
 		int WeaponType;
-		int FireRate;
 		int AmmoType;
-		int Recoil;
-		int RecoilRegen;
-		float Range;
-		float ZoomScale;
 
 	protected:
 

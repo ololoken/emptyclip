@@ -46,10 +46,10 @@ struct _Skill {
 // A single entry for an item group
 struct ItemGroupEntryStruct {
 	ItemGroupEntryStruct() { }
-	ItemGroupEntryStruct(const std::string &ItemIdentifier, float Count, int Type)
-		:	ItemIdentifier(ItemIdentifier),
-		    Count(Count),
-		    Type(Type) { }
+	ItemGroupEntryStruct(const std::string &ItemIdentifier, float Count, int Type) :
+		ItemIdentifier(ItemIdentifier),
+		Count(Count),
+		Type(Type) { }
 
 	std::string ItemIdentifier;
 	float Count;

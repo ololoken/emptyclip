@@ -1,4 +1,5 @@
 identifier	name	icon identifier	samples identifier	particle identifier	color	weapon type	zoom scale	min accuracy	max accuracy	recoil	recoil regen	range	fire rate	fire period	reload period	min components	max components	min damage	max damage	bullets shot	round size	ammo type
+fists	Fists		club0			0	30	0	90	0	0	0.5	0	0.4	0	1	1	1	3	1	0	0
 special_slash0	Swift Blade	s_knife0	knife0			0	30	0	55	0	0	0.65	0	0.17	0	1	1	17	25	1	0	0
 special_slash1	Venom Blade	s_knife0	knife0			0	30	0	65	0	0	0.7	0	0.25	0	2	2	60	90	1	0	0
 special_slash2	Practice Katana	s_sword0	knife0			0	30	0	95	0	0	0.75	0	0.25	0	2	2	75	120	1	0	0

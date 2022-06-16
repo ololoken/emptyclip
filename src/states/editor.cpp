@@ -1076,8 +1076,11 @@ void _EditorState::LoadPalettes() {
 	Icons.clear();
 
 	// Load weapons
-	for(const auto &Weapon : Stats.Weapons)
-		Icons.push_back(_Brush(Weapon.first, Weapon.second.Name, Assets.Textures[Weapon.second.IconIdentifier], Weapon.second.Color, _Object::WEAPON));
+	for(const auto &Weapon : Stats.Weapons) {
+		const _Texture *Texture = Assets.Textures[Weapon.second.IconIdentifier];
+		if(Texture)
+			Icons.push_back(_Brush(Weapon.first, Weapon.second.Name, Texture, Weapon.second.Color, _Object::WEAPON));
+	}
 	LoadPaletteButtons(Icons, EDITMODE_WEAPONS);
 	Icons.clear();
 

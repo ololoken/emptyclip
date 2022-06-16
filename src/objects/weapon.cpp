@@ -24,28 +24,23 @@
 
 // Constructor
 _Weapon::_Weapon(const std::string &Identifier, int Count, const glm::vec2 &Position, const _WeaponTemplate &Weapon, const _Texture *Texture, bool Generate) :
-	Ammo(Weapon.RoundSize),
-	RoundSize(Weapon.RoundSize),
 	MinDamage(Weapon.MinDamage),
 	MaxDamage(Weapon.MaxDamage),
-	MinAccuracy(Weapon.MinAccuracy),
-	MaxAccuracy(Weapon.MaxAccuracy),
 	FirePeriod(Weapon.FirePeriod),
 	ReloadPeriod(Weapon.ReloadPeriod),
-	BulletsShot(Weapon.BulletsShot),
+	AttackCount(Weapon.BulletsShot),
 	WeaponType(Weapon.Type),
-	FireRate(Weapon.FireRate),
-	AmmoType(Weapon.AmmoType),
-	Recoil(Weapon.Recoil),
-	RecoilRegen(Weapon.RecoilRegen),
-	Range(Weapon.Range),
-	ZoomScale(Weapon.ZoomScale) {
+	AmmoType(Weapon.AmmoType) {
+
+	for(const auto &Attribute : Weapon.Attributes)
+		Attributes[Attribute.first] = Attribute.second;
 
 	if(Generate)
 		this->MaxComponents = Random.GenerateRange(Weapon.MinComponents, Weapon.MaxComponents);
 	else
 		this->MaxComponents = Weapon.MinComponents;
 
+	Ammo = Weapon.Attributes.at("rounds").Int;
 	this->Type = _Object::WEAPON;
 	this->Identifier = Identifier;
 	this->Texture = Texture;
@@ -93,6 +88,10 @@ const std::string &_Weapon::GetName() const {
 	return Stats.Weapons[Identifier].Name;
 }
 
+float _Weapon::GetAverageAccuracy() const {
+	return (Attributes.at("min_accuracy").Float + Attributes.at("max_accuracy").Float) / 2.0f;
+}
+
 const std::string &_Weapon::GetSample(int SampleType) const {
 	return Stats.Weapons[Identifier].Samples[SampleType];
 }
@@ -101,8 +100,8 @@ const std::string &_Weapon::GetSample(int SampleType) const {
 void _Weapon::SetAmmo(int Value) {
 
 	Ammo = Value;
-	if(Ammo > RoundSize)
-		Ammo = RoundSize;
+	if(Ammo > Attributes["rounds"].Int)
+		Ammo = Attributes["rounds"].Int;
 }
 
 // Recalculates the weapon stats
@@ -116,14 +115,14 @@ void _Weapon::RecalculateStats() {
 		Bonus[Upgrades[i]->GetUpgradeType()] += Upgrades[i]->GetBonus();
 
 	// Set stats
-	RoundSize = static_cast<int>(Stats.Weapons[Identifier].RoundSize * (1.0f + Bonus[UPGRADE_CLIP]));
+	Attributes["rounds"].Int = static_cast<int>(Stats.Weapons[Identifier].Attributes.at("rounds").Int * (1.0f + Bonus[UPGRADE_CLIP]));
 	MinDamage = static_cast<int>(Stats.Weapons[Identifier].MinDamage * (1.0f + Bonus[UPGRADE_DAMAGE]));
 	MaxDamage = static_cast<int>(Stats.Weapons[Identifier].MaxDamage * (1.0f + Bonus[UPGRADE_DAMAGE]));
-	MinAccuracy = Stats.Weapons[Identifier].MinAccuracy / (1.0f + Bonus[UPGRADE_ACCURACY]);
-	MaxAccuracy = Stats.Weapons[Identifier].MaxAccuracy / (1.0f + Bonus[UPGRADE_ACCURACY]);
+	Attributes["min_accuracy"].Float = Stats.Weapons[Identifier].Attributes.at("min_accuracy").Float / (1.0f + Bonus[UPGRADE_ACCURACY]);
+	Attributes["max_accuracy"].Float = Stats.Weapons[Identifier].Attributes.at("max_accuracy").Float / (1.0f + Bonus[UPGRADE_ACCURACY]);
 	FirePeriod = Stats.Weapons[Identifier].FirePeriod / (1.0f + Bonus[UPGRADE_FIREPERIOD]);
 	ReloadPeriod = Stats.Weapons[Identifier].ReloadPeriod / (1.0f + Bonus[UPGRADE_RELOADPERIOD]);
-	BulletsShot = Stats.Weapons[Identifier].BulletsShot + static_cast<int>(Bonus[UPGRADE_ATTACKS]);
+	AttackCount = Stats.Weapons[Identifier].BulletsShot + static_cast<int>(Bonus[UPGRADE_ATTACKS]);
 
 	SetAmmo(Ammo);
 }
@@ -133,7 +132,7 @@ bool _Weapon::AddComponent(_Upgrade *Upgrade) {
 
 	if(GetComponents() < MaxComponents &&
 		!(Upgrade->GetWeaponType() != -1 && Upgrade->GetWeaponType() != WeaponType) &&
-		!(Upgrade->GetUpgradeType() == UPGRADE_CLIP && Stats.Weapons[Identifier].RoundSize == 0)) {
+		!(Upgrade->GetUpgradeType() == UPGRADE_CLIP && Stats.Weapons[Identifier].Attributes.at("rounds").Int == 0)) {
 
 		Upgrades.push_back(Upgrade);
 		RecalculateStats();

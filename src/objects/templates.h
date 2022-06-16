@@ -17,10 +17,12 @@
 *******************************************************************************/
 #pragma once
 
-#include <color.h>
+#include <value.h>
 #include <glm/vec2.hpp>
-#include <stdint.h>
+#include <glm/vec4.hpp>
+#include <unordered_map>
 #include <string>
+#include <cstdint>
 
 class _Texture;
 class _Font;
@@ -164,12 +166,6 @@ struct _WeaponTemplate {
 	_WeaponTemplate() :
 		WeaponParticles(nullptr),
 		Name("Fists"),
-		MinAccuracy(0.0f),
-		MaxAccuracy(90.0f),
-		Recoil(0.0f),
-		RecoilRegen(0.0f),
-		Range(0.5f),
-		ZoomScale(15.0f),
 		FirePeriod(0.4),
 		ReloadPeriod(0.0),
 		MinComponents(0),
@@ -177,10 +173,8 @@ struct _WeaponTemplate {
 		MinDamage(1),
 		MaxDamage(3),
 		BulletsShot(1),
-		RoundSize(0),
 		Type(WEAPON_MELEE),
-		AmmoType(0),
-		FireRate(FIRERATE_SEMI) {
+		AmmoType(0) {
 
 		for(int i = 0; i < SAMPLE_TYPES; i++)
 			Samples[i] = "";
@@ -191,12 +185,6 @@ struct _WeaponTemplate {
 	std::string Name;
 	std::string IconIdentifier;
 	std::string Samples[SAMPLE_TYPES];
-	float MinAccuracy;
-	float MaxAccuracy;
-	float Recoil;
-	float RecoilRegen;
-	float Range;
-	float ZoomScale;
 	double FirePeriod;
 	double ReloadPeriod;
 	int MinComponents;
@@ -204,10 +192,10 @@ struct _WeaponTemplate {
 	int MinDamage;
 	int MaxDamage;
 	int BulletsShot;
-	int RoundSize;
 	int Type;
 	int AmmoType;
-	int FireRate;
+
+	std::unordered_map<std::string, _Value> Attributes;
 };
 
 // Holds information about armor
@@ -250,4 +238,3 @@ struct _ObjectSpawn {
 	glm::vec2 Position;
 	int Type;
 };
-

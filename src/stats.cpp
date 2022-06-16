@@ -325,9 +325,24 @@ void _Stats::LoadWeaponTable(const std::string &Path) {
 		std::getline(File, WeaponParticlesIdentifier, '\t');
 		std::getline(File, ColorName, '\t');
 
-		File >> WeaponTemplate.Type >> WeaponTemplate.ZoomScale >> WeaponTemplate.MinAccuracy >> WeaponTemplate.MaxAccuracy >> WeaponTemplate.Recoil >> WeaponTemplate.RecoilRegen >> WeaponTemplate.Range
-				>> WeaponTemplate.FireRate >> WeaponTemplate.FirePeriod >> WeaponTemplate.ReloadPeriod >> WeaponTemplate.MinComponents >> WeaponTemplate.MaxComponents
-				>> WeaponTemplate.MinDamage >> WeaponTemplate.MaxDamage	>> WeaponTemplate.BulletsShot >> WeaponTemplate.RoundSize >> WeaponTemplate.AmmoType;
+		File	>> WeaponTemplate.Type
+				>> WeaponTemplate.Attributes["zoom_scale"].Float
+				>> WeaponTemplate.Attributes["min_accuracy"].Float
+				>> WeaponTemplate.Attributes["max_accuracy"].Float
+				>> WeaponTemplate.Attributes["recoil"].Float
+				>> WeaponTemplate.Attributes["recoil_regen"].Float
+				>> WeaponTemplate.Attributes["range"].Float
+				>> WeaponTemplate.Attributes["fire_rate"].Int
+				>> WeaponTemplate.FirePeriod
+				>> WeaponTemplate.ReloadPeriod
+				>> WeaponTemplate.MinComponents
+				>> WeaponTemplate.MaxComponents
+				>> WeaponTemplate.MinDamage
+				>> WeaponTemplate.MaxDamage
+				>> WeaponTemplate.BulletsShot
+				>> WeaponTemplate.Attributes["rounds"].Int
+				>> WeaponTemplate.AmmoType;
+
 		File.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
 		// Check for loaded textures

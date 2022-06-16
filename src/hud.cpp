@@ -324,7 +324,7 @@ void _HUD::Render() {
 	if(Player->IsReloading()) {
 		DrawIndicator("Reload", Player->GetReloadPercent(), ReloadTexture);
 	}
-	else if(!Player->HasAmmo() && !Player->IsSwitchingWeapons() && Player->GetMainHand() && Player->GetMainHand()->GetRoundSize() > 0)
+	else if(!Player->HasAmmo() && !Player->IsSwitchingWeapons() && Player->GetMainHand() && Player->GetMainHand()->Attributes.at("rounds").Int > 0)
 		DrawIndicator("Reload");
 
 	// Weapon switch indicator
@@ -398,9 +398,9 @@ void _HUD::DrawHUDWeapon(const _Weapon *Weapon, _Element *Element, _Image *Image
 
 	Image->Texture = Weapon->Texture;
 	Image->Color = Weapon->Color;
-	if(Weapon->GetRoundSize()) {
+	if(Weapon->Attributes.at("rounds").Int) {
 		std::ostringstream Buffer;
-		Buffer << Weapon->GetAmmo() << "/" << Weapon->GetRoundSize();
+		Buffer << Weapon->GetAmmo() << "/" << Weapon->Attributes.at("rounds").Int;
 		Label->Text = Buffer.str();
 	}
 	else
@@ -589,33 +589,33 @@ void _HUD::RenderItemInfo(_Item *Item, int DrawX, int DrawY) {
 			Buffer.str("");
 
 			// Clip size
-			if(Weapon->GetRoundSize()) {
+			if(Weapon->Attributes.at("rounds").Int) {
 				TextColor = COLOR_WHITE;
 				if(ExistingWeapon) {
-					if(Weapon->GetRoundSize() > ExistingWeapon->GetRoundSize())
+					if(Weapon->Attributes.at("rounds").Int > ExistingWeapon->Attributes.at("rounds").Int)
 						TextColor = COLOR_GREEN;
-					else if(Weapon->GetRoundSize() < ExistingWeapon->GetRoundSize())
+					else if(Weapon->Attributes.at("rounds").Int < ExistingWeapon->Attributes.at("rounds").Int)
 						TextColor = COLOR_RED;
 				}
 				DrawY += 20;
-				Buffer << Weapon->GetAmmo() << "/" << Weapon->GetRoundSize();
+				Buffer << Weapon->GetAmmo() << "/" << Weapon->Attributes.at("rounds").Int;
 				Fonts[FONT_MEDIUM]->DrawText("Rounds", glm::vec2(glm::vec2(DrawX - PadX, DrawY)), RIGHT_BASELINE);
 				Fonts[FONT_MEDIUM]->DrawText(Buffer.str(), glm::vec2(glm::vec2(DrawX + PadX, DrawY)), LEFT_BASELINE, TextColor);
 				Buffer.str("");
 			}
 
 			// Attacks
-			if(Weapon->BulletsShot > 1) {
+			if(Weapon->AttackCount > 1) {
 				TextColor = COLOR_WHITE;
 				if(ExistingWeapon) {
-					if(Weapon->BulletsShot > ExistingWeapon->BulletsShot)
+					if(Weapon->AttackCount > ExistingWeapon->AttackCount)
 						TextColor = COLOR_GREEN;
-					else if(Weapon->BulletsShot < ExistingWeapon->BulletsShot)
+					else if(Weapon->AttackCount < ExistingWeapon->AttackCount)
 						TextColor = COLOR_RED;
 				}
 
 				DrawY += 20;
-				Buffer << Weapon->BulletsShot;
+				Buffer << Weapon->AttackCount;
 				std::string AttackCountText;
 				if(Weapon->WeaponType == WEAPON_MELEE)
 					AttackCountText = "Attacks/Swing";
@@ -671,11 +671,11 @@ void _HUD::RenderItemInfo(_Item *Item, int DrawX, int DrawY) {
 			}
 			DrawY += 20;
 			if(Weapon->WeaponType == WEAPON_MELEE) {
-				Buffer << Weapon->GetMaxAccuracy() << " degrees";
+				Buffer << Weapon->Attributes.at("max_accuracy").Float << " degrees";
 				Fonts[FONT_MEDIUM]->DrawText("Swing Arc", glm::vec2(DrawX - PadX, DrawY), RIGHT_BASELINE);
 			}
 			else {
-				Buffer << (int)(Weapon->GetMinAccuracy() + 0.5f) << " - " << (int)(Weapon->GetMaxAccuracy() + 0.5f);
+				Buffer << (int)(Weapon->Attributes.at("min_accuracy").Float + 0.5f) << " - " << (int)(Weapon->Attributes.at("max_accuracy").Float + 0.5f);
 				Fonts[FONT_MEDIUM]->DrawText("Spread", glm::vec2(DrawX - PadX, DrawY), RIGHT_BASELINE);
 			}
 			Fonts[FONT_MEDIUM]->DrawText(Buffer.str(), glm::vec2(DrawX + PadX, DrawY), LEFT_BASELINE, TextColor);

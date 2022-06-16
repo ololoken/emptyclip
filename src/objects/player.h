@@ -195,7 +195,6 @@ class _Player : public _Entity {
 
 		// Engine
 		std::string SavePath;
-		int DebugLevel;
 
 		// Animation
 		_Animation *LegAnimation;
