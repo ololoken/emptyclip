@@ -23,15 +23,14 @@
 // Constructor
 _Object::_Object() :
 	Active(true),
-	Name(""),
 	Type(UNDEFINED),
 	Map(nullptr),
 	TileChanged(false),
-	Radius(0.25f),
-	WallState(0),
 	Position(0, 0),
 	LastPosition(0, 0),
 	Direction(0.0, 1.0f),
+	Radius(0.25f),
+	WallState(0),
 	Color(COLOR_WHITE),
 	Rotation(0.0f),
 	Scale(1.0f),

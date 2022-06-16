@@ -29,7 +29,6 @@ class _Upgrade : public _Item {
 	public:
 
 		_Upgrade(const std::string &Identifier, int Count, const glm::vec2 &Position, const _UpgradeTemplate &Upgrade, const _Texture *Texture);
-		~_Upgrade() override;
 
 		void SetUpgradeType(int UpgradeType) { this->UpgradeType = UpgradeType; }
 		void SetWeaponType(int WeaponType) { this->WeaponType = WeaponType; }
@@ -38,7 +37,6 @@ class _Upgrade : public _Item {
 		int GetWeaponType() const { return WeaponType; }
 		float GetBonus() const { return Bonus; }
 
-		virtual std::string GetTypeAsString() const override { return "Upgrade Component"; }
 		static std::string ToString(int Type, int WeaponType);
 
 	protected:

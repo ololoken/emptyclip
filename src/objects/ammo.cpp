@@ -23,7 +23,7 @@
 _Ammo::_Ammo(const std::string &Identifier, int Count, const glm::vec2 &Position, const _AmmoTemplate &Ammo, const _Texture *Texture) {
 	this->AmmoType = Ammo.AmmoType;
 	this->Type = _Object::AMMO;
-	this->Identifier = Identifier;
+	this->ID = Identifier;
 	this->Count = Count;
 	this->Name = Ammo.Name;
 	this->Texture = Texture;

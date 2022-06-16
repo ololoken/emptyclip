@@ -36,7 +36,6 @@
 #include <objects/player.h>
 #include <objects/monster.h>
 #include <objects/particle.h>
-#include <objects/misc.h>
 #include <objects/ammo.h>
 #include <objects/upgrade.h>
 #include <objects/weapon.h>
@@ -699,7 +698,7 @@ void _PlayState::UseObject() {
 			if(Event->ItemIdentifier != "") {
 				int ItemIndex = Player->FindItem(Event->ItemIdentifier);
 				if(ItemIndex == -1) {
-					HUD->ShowMessageBox("You need a " + Stats.MiscItems[Event->ItemIdentifier].Name, HUD_KEYMESSAGETIME);
+					HUD->ShowMessageBox("You need the " + Stats.MiscItems[Event->ItemIdentifier].Name, HUD_KEYMESSAGETIME);
 					return;
 				}
 

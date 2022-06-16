@@ -21,7 +21,7 @@
 // Constructor
 _Upgrade::_Upgrade(const std::string &Identifier, int Count, const glm::vec2 &Position, const _UpgradeTemplate &Upgrade, const _Texture *Texture) {
 	this->Type = _Object::UPGRADE;
-	this->Identifier = Identifier;
+	this->ID = Identifier;
 	this->Count = Count;
 	this->Position = Position;
 	this->Texture = Texture;
@@ -31,10 +31,6 @@ _Upgrade::_Upgrade(const std::string &Identifier, int Count, const glm::vec2 &Po
 	this->WeaponType = Upgrade.WeaponType;
 	this->UpgradeType = Upgrade.UpgradeType;
 	this->Bonus = Upgrade.Bonus;
-}
-
-// Destructor
-_Upgrade::~_Upgrade() {
 }
 
 // Convert an upgrade type to string

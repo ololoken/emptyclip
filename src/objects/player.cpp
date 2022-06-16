@@ -28,7 +28,6 @@
 #include <utils.h>
 #include <ui/ui.h>
 #include <objects/monster.h>
-#include <objects/misc.h>
 #include <objects/ammo.h>
 #include <objects/upgrade.h>
 #include <objects/weapon.h>
@@ -796,7 +795,7 @@ void _Player::SwapInventory(int SlotFrom, int SlotTo) {
 // Return 2 when item was combined and fromitem needs deletion
 int _Player::CombineItems(_Item *FromItem, _Item *ToItem) {
 
-	if(FromItem && ToItem && FromItem->CanStack() && ToItem->CanStack() && FromItem->Identifier == ToItem->Identifier) {
+	if(FromItem && ToItem && FromItem->CanStack() && ToItem->CanStack() && FromItem->ID == ToItem->ID) {
 		ToItem->UpdateCount(FromItem->Count);
 		if(ToItem->Count > GetInventoryMaxStack()) {
 			FromItem->Count = ToItem->Count - GetInventoryMaxStack();
@@ -999,7 +998,7 @@ int _Player::FindMiscItem(int ItemType) {
 int _Player::FindItem(const std::string &Identifier) {
 
 	for(int i = INVENTORY_BAGSTART; i < INVENTORY_BAGEND; i++) {
-		if(HasInventory(i) && Inventory[i]->Identifier == Identifier) {
+		if(HasInventory(i) && Inventory[i]->ID == Identifier) {
 			return i;
 		}
 	}
@@ -1296,7 +1295,7 @@ const std::string &_Player::GetSample(int SampleType) const {
 const _ParticleTemplate *_Player::GetWeaponParticle(int Index) const {
 
 	if(HasMainHand())
-		return Stats.Weapons[GetMainHand()->Identifier].WeaponParticles->ParticleTemplates[Index];
+		return Stats.Weapons[GetMainHand()->ID].WeaponParticles->ParticleTemplates[Index];
 
 	return nullptr;
 }

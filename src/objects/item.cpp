@@ -31,7 +31,7 @@ _Item::_Item() {
 
 // Serialize for saving
 void _Item::Serialize(_Buffer &Buffer) {
-	Buffer.WriteString(Identifier.c_str());
+	Buffer.WriteString(ID.c_str());
 }
 
 // Draws the object
@@ -52,12 +52,16 @@ float _Item::GetAverageAccuracy() const {
 std::string _Item::GetTypeAsString() const {
 
 	switch(Type) {
-		case _Object::MEDKIT:
-			return "Medkit";
-		break;
 		case _Object::KEY:
 			return "Key";
-		break;
+		case _Object::AMMO:
+			return "Ammo";
+		case _Object::UPGRADE:
+			return "Upgrade Component";
+		case _Object::ARMOR:
+			return "Armor";
+		case _Object::MEDKIT:
+			return "Medkit";
 	}
 
 	return "";

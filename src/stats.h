@@ -26,7 +26,7 @@
 // Forward Declarations
 class _Ammo;
 class _Armor;
-class _MiscItem;
+class _Item;
 class _Upgrade;
 class _Weapon;
 
@@ -84,7 +84,7 @@ class _Stats {
 
 		_Ammo *CreateAmmoItem(const std::string &Identifier, int Count, const glm::vec2 &Position);
 		_Armor *CreateArmor(const std::string &Identifier, int Count, const glm::vec2 &Position);
-		_MiscItem *CreateMiscItem(const std::string &Identifier, int Count, const glm::vec2 &Position);
+		_Item *CreateMiscItem(const std::string &Identifier, int Count, const glm::vec2 &Position);
 		_Upgrade *CreateUpgradeItem(const std::string &Identifier, int Count, const glm::vec2 &Position);
 		_Weapon *CreateWeapon(const std::string &Identifier, int Count, const glm::vec2 &Position, bool Generate);
 

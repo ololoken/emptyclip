@@ -29,7 +29,6 @@
 #include <objects/entity.h>
 #include <objects/player.h>
 #include <objects/item.h>
-#include <objects/misc.h>
 #include <objects/armor.h>
 #include <objects/weapon.h>
 #include <objects/ammo.h>

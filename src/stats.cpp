@@ -25,7 +25,6 @@
 #include <objects/object.h>
 #include <objects/armor.h>
 #include <objects/ammo.h>
-#include <objects/misc.h>
 #include <objects/upgrade.h>
 #include <objects/weapon.h>
 
@@ -497,10 +496,20 @@ _Armor *_Stats::CreateArmor(const std::string &Identifier, int Count, const glm:
 }
 
 // Creates a misc item
-_MiscItem *_Stats::CreateMiscItem(const std::string &Identifier, int Count, const glm::vec2 &Position) {
+_Item *_Stats::CreateMiscItem(const std::string &Identifier, int Count, const glm::vec2 &Position) {
 	_MiscItemTemplate &MiscItemTemplate = MiscItems[Identifier];
 
-	return new _MiscItem(Identifier, Count, Position, MiscItemTemplate, Assets.Textures[MiscItemTemplate.IconIdentifier]);
+	_Item *Item = new _Item();
+	Item->Type = MiscItemTemplate.Type;
+	Item->Name = MiscItemTemplate.Name;
+	Item->ID = Identifier;
+	Item->Count = Count;
+	Item->Level = MiscItemTemplate.Level;
+	Item->Position = Position;
+	Item->Texture = Assets.Textures[MiscItemTemplate.IconIdentifier];
+	Item->Color = MiscItemTemplate.Color;
+
+	return Item;
 }
 
 // Creates a weapon

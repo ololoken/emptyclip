@@ -30,8 +30,6 @@ class _Ammo : public _Item {
 
 		_Ammo(const std::string &Identifier, int Count, const glm::vec2 &Position, const _AmmoTemplate &Ammo, const _Texture *Texture);
 
-		virtual std::string GetTypeAsString() const override { return "Ammo"; }
-
 		int AmmoType;
 
 };

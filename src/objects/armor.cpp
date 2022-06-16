@@ -21,7 +21,7 @@
 // Constructor
 _Armor::_Armor(const std::string &Identifier, int Count, const glm::vec2 &Position, const _ArmorTemplate &Armor, const _Texture *Texture) {
 	this->Type = _Object::ARMOR;
-	this->Identifier = Identifier;
+	this->ID = Identifier;
 	this->Count = Count;
 	this->Texture = Texture;
 	this->Position = Position;
@@ -32,8 +32,4 @@ _Armor::_Armor(const std::string &Identifier, int Count, const glm::vec2 &Positi
 	MovementSpeed = Armor.MovementSpeed;
 	Name = Armor.Name;
 	Color = Armor.Color;
-}
-
-// Destructor
-_Armor::~_Armor() {
 }

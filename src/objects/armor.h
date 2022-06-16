@@ -28,9 +28,6 @@ class _Armor : public _Item {
 	public:
 
 		_Armor(const std::string &Identifier, int Count, const glm::vec2 &Position, const _ArmorTemplate &Armor, const _Texture *Texture);
-		~_Armor() override;
-
-		virtual std::string GetTypeAsString() const override { return "Armor"; }
 
 		int StrengthRequirement;
 		int DamageBlock;

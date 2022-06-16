@@ -66,22 +66,24 @@ class _Object {
 		virtual std::string GetTypeAsString() const { return "Object"; }
 
 		// Attributes
-		bool Active;
 		std::string Name;
+		std::string ID;
+		bool Active;
 		int Type;
 
 		// Map
 		_Map *Map;
 		bool TileChanged;
 
-		// Collision
+		// Physics
+		glm::vec2 Position;
+		glm::vec2 LastPosition;
+		glm::vec2 Direction;
 		float Radius;
 		int WallState;
 
 		// Graphics
-		glm::vec2 Position;
-		glm::vec2 LastPosition;
-		glm::vec2 Direction;
+		const _Texture *Texture;
 		glm::vec4 Color;
 		float Rotation;
 		float Scale;

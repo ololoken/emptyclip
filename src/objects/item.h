@@ -38,10 +38,8 @@ class _Item : public _Object {
 
 		virtual std::string GetTypeAsString() const override;
 
-		std::string Identifier;
 		int Level;
 		int Count;
 		int Quality;
-		const _Texture *Texture;
 
 };
