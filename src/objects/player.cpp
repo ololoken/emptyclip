@@ -1222,8 +1222,8 @@ void _Player::RecalculateStats() {
 		float AccuracySkillMultiplier = 1.0f / Stats.GetSkill(Skills[SKILL_ACCURACY], SKILL_ACCURACY);
 		CurrentAccuracyNormal = MinAccuracyNormal = Weapon[WEAPONATTACK_MAIN].Attributes.at("min_accuracy").Float * AccuracySkillMultiplier;
 		MaxAccuracyNormal = Weapon[WEAPONATTACK_MAIN].Attributes.at("max_accuracy").Float * AccuracySkillMultiplier;
-		Recoil = Weapon[WEAPONATTACK_MAIN].Attributes["recoil"].Int;
-		RecoilRegen = Weapon[WEAPONATTACK_MAIN].Attributes["recoil_regen"].Int;
+		Recoil = Weapon[WEAPONATTACK_MAIN].Attributes["recoil"].Float;
+		RecoilRegen = Weapon[WEAPONATTACK_MAIN].Attributes["recoil_regen"].Float;
 	}
 
 	MaxAccuracy[WEAPONATTACK_MELEE] = Weapon[WEAPONATTACK_MELEE].Attributes.at("max_accuracy").Float;
