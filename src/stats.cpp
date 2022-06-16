@@ -544,7 +544,7 @@ int64_t _Stats::GetExperienceForLevel(int Level) {
 }
 
 // Returns a skill value in a valid range
-int _Stats::GetValidSkill(int Level) {
+int _Stats::GetValidSkillLevel(int Level) {
 	if(Level < 0)
 		return 0;
 	else if(Level >= GAME_SKILLLEVELS)

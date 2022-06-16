@@ -95,7 +95,7 @@ class _Stats {
 		int GetLevelDamageBlock(int Level) { return Levels[Level-1].DamageBlockBonus; }
 		int GetSkillPointsRemaining(int Level) { return Levels[Level-1].SkillPoints; }
 
-		int GetValidSkill(int Level);
+		int GetValidSkillLevel(int Level);
 		float GetSkill(int Level, int Type) const { return Skills[Level].Data[Type]; }
 		float GetSkillPercentImprovement(int Level, int Type) const { return (Skills[Level].Data[Type] - 1.0f) * 100.0f; }
 

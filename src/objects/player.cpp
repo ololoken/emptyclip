@@ -604,7 +604,7 @@ void _Player::UpdateSkill(int Index, int Value) {
 	if(TentativeSum > Stats.GetSkillPointsRemaining(Level))
 		return;
 
-	Skills[Index] = Stats.GetValidSkill(Skills[Index] + Value);
+	Skills[Index] = Stats.GetValidSkillLevel(Skills[Index] + Value);
 	CalculateSkillsRemaining();
 
 	// Update player stats

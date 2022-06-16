@@ -54,7 +54,6 @@ const  double       GAME_TIMESTEP                  =  1.0/GAME_FPS;
 const  float        GAME_PAUSE_FADEAMOUNT          =  0.7f;
 const  std::string  GAME_STARTLEVEL                =  "start0.map";
 const  std::string  GAME_FIRSTLEVEL                =  "mansion0.map";
-const  std::string  GAME_TUTORIALLEVEL             =  "tutorial0.map";
 const  int          GAME_MAX_LEVEL                 =  100;
 const  int          GAME_SKILLLEVELS               =  20;
 //     Camera
@@ -65,8 +64,6 @@ const  float        CAMERA_EDITOR_DIVISOR          =  5.0f;
 const  float        CAMERA_FOVY                    =  90.0f;
 const  float        CAMERA_NEAR                    =  0.1f;
 const  float        CAMERA_FAR                     =  500.0f;
-//     Graphics
-const  int          GRAPHICS_CIRCLE_VERTICES       =  32;
 //     Weapons
 const  double       WEAPON_MINFIREPERIOD           =  0.017;
 //     Audio
@@ -124,7 +121,6 @@ const  int          EDITOR_WALL_LAYER              =  5;
 //     Menu
 const  float        MENU_ACCEPTINPUT_FADE          =  0.7f;
 const  double       MENU_DOUBLECLICK_TIME          =  0.250;
-const  double       MENU_CURSOR_PERIOD             =  0.5;
 //     HUD
 const  double       HUD_ENTITYHEALTHDISPLAYPERIOD  =  5.0;
 const  double       HUD_CURSOR_ITEM_WAIT           =  0.5;
@@ -135,5 +131,3 @@ const  double       HUD_CHECKPOINTTIME             =  5.0;
 const  std::string  HUD_CHECKPOINTMESSAGE          =  "CHECKPOINT REACHED";
 const  double       HUD_INVENTORYFULLTIME          =  2.0;
 const  std::string  HUD_INVENTORYFULLMESSAGE       =  "INVENTORY FULL";
-const  double       HUD_KEYUSEDTIME                =  2.0;
-const  std::string  HUD_KEYUSEDMESSAGE             =  "KEY USED";
