@@ -50,40 +50,40 @@ _Monster::~_Monster() {
 }
 
 // Constructor
-_Monster::_Monster(_MonsterTemplate *Monster, _Animation *Animation, const glm::vec2 &Position) :
+_Monster::_Monster(_MonsterTemplate &Monster, _Animation *Animation, const glm::vec2 &Position) :
 	_Entity() {
 
 	Type = _Object::MONSTER;
 
 	// Monster stats
-	Name = Monster->Name;
-	Color = Monster->Color;
-	MovementSpeed = Monster->MovementSpeed / (Monster->CurrentSpeed / 16.6666f);
-	Radius = Monster->Radius;
-	Scale = Monster->Scale;
+	Name = Monster.Name;
+	Color = Monster.Color;
+	MovementSpeed = Monster.MovementSpeed / (Monster.CurrentSpeed / 16.6666f);
+	Radius = Monster.Radius;
+	Scale = Monster.Scale;
 	Recoil = 0;
 	RecoilRegen = 0;
-	Level = Monster->Level;
-	Health = MaxHealth = Monster->Health;
-	DamageBlock = Monster->DamageBlock;
-	ViewRangeFront = Monster->ViewRange;
-	ViewRangeSide = Monster->ViewRange * MONSTER_SIDERANGE;
-	ViewRangeBack = Monster->ViewRange * MONSTER_BACKRANGE;
-	ExperienceGiven = Monster->ExperienceGiven;
-	ItemGroupIdentifier = Monster->ItemGroupIdentifier;
-	MinAccuracy = Monster->Accuracy;
+	Level = Monster.Level;
+	Health = MaxHealth = Monster.Health;
+	DamageBlock = Monster.DamageBlock;
+	ViewRangeFront = Monster.ViewRange;
+	ViewRangeSide = Monster.ViewRange * MONSTER_SIDERANGE;
+	ViewRangeBack = Monster.ViewRange * MONSTER_BACKRANGE;
+	ExperienceGiven = Monster.ExperienceGiven;
+	ItemGroupIdentifier = Monster.ItemGroupIdentifier;
+	MinAccuracy = Monster.Accuracy;
 	for(int i = 0; i < WEAPONATTACK_COUNT; i++) {
-		MinDamage[i] = Monster->MinDamage;
-		MaxDamage[i] = Monster->MaxDamage;
-		FirePeriod[i] = Monster->FirePeriod;
-		MaxAccuracy[i] = Monster->Accuracy;
-		AttackRange[i] = Monster->AttackRange;
+		MinDamage[i] = Monster.MinDamage;
+		MaxDamage[i] = Monster.MaxDamage;
+		FirePeriod[i] = Monster.FirePeriod;
+		MaxAccuracy[i] = Monster.Accuracy;
+		AttackRange[i] = Monster.AttackRange;
 		AttackRange[i] *= AttackRange[i];
 	}
-	MainWeaponType = Monster->WeaponType;
+	MainWeaponType = Monster.WeaponType;
 	this->Position = LastPosition = Position;
 	*this->Animation = *Animation;
-	WeaponParticles = Monster->WeaponParticles;
+	WeaponParticles = Monster.WeaponParticles;
 	MoveSoundDelay = 1000;
 	if(Animation && Animation->Reels[0])
 		MoveSoundDelay = Animation->PlaybackSpeed * Animation->Reels[0]->Textures.size();
@@ -91,7 +91,7 @@ _Monster::_Monster(_MonsterTemplate *Monster, _Animation *Animation, const glm::
 	ViewRangeFront *= ViewRangeFront;
 	ViewRangeSide *= ViewRangeSide;
 	ViewRangeBack *= ViewRangeBack;
-	PersonalityType = Monster->BehaviorType;
+	PersonalityType = Monster.BehaviorType;
 	if(PersonalityType != PERSONALITY_TREASURE)
 		Rotation = GetRandomReal(0.0f, 359.0f);
 

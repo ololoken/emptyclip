@@ -38,12 +38,10 @@ class _Animation;
 class _Particle;
 class _Entity;
 class _Player;
-class _Monster;
 class _Program;
 class _Shader;
 struct _Reel;
 struct _ParticleTemplate;
-struct _MonsterTemplate;
 
 // Stores information about a collection of reel identifiers
 struct AnimationTemplateStruct {
@@ -89,14 +87,12 @@ class _Assets {
 		void LoadReelTable(const std::string &Path);
 		void LoadAnimationTable(const std::string &Path);
 		void LoadSoundGroups(const std::string &Path);
-		void LoadMonsterTable(const std::string &Path);
 		void LoadParticles(const std::string &Path);
 		void LoadPrograms(const std::string &Path);
 		void LoadTextures(const std::string &Path);
 		void LoadSounds(const std::string &Path, const std::string &SamplePath);
 
 		void LoadFonts(const std::string &Path, bool LoadFonts=true);
-		void LoadMonsterSet(const std::string &Path);
 		void LoadReel(const std::string &Identifier, const std::string &Path);
 		void LoadAnimation(const std::string &Identifier, const std::string &Path);
 		void LoadWeaponParticles(const std::string &Path);
@@ -128,8 +124,6 @@ class _Assets {
 		_Animation *GetAnimation(const std::string &Identifier);
 		_ParticleTemplate *GetParticleTemplate(const std::string &Identifier);
 		_WeaponParticleTemplate *GetWeaponParticleTemplate(const std::string &Identifer);
-		_MonsterTemplate *GetMonsterTemplate(const std::string &Identifier);
-		_Monster *CreateMonster(const std::string &Identifier, const glm::vec2 &Position);
 
 		// Data
 		std::unordered_map<std::string, std::string> Strings;
@@ -141,9 +135,6 @@ class _Assets {
 		std::unordered_map<std::string, _Font *> Fonts;
 		std::unordered_map<std::string, _Style *> Styles;
 		std::unordered_map<std::string, _Element *> Elements;
-
-		std::vector<std::string> MonsterSet;
-		std::unordered_map<std::string, _MonsterTemplate> MonsterTable;
 
 		_WeaponParticleTemplate BlankWeaponParticle;
 

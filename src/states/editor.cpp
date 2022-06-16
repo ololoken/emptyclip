@@ -1109,18 +1109,20 @@ void _EditorState::ClearPalette(int Type) {
 
 // Loads the palette buttons from the map's monster set
 void _EditorState::LoadMonsterButtons() {
-	std::vector<_Brush> Icons;
-	_MonsterTemplate *Monster;
+	if(!Map)
+		return;
 
-	for(size_t i = 0; i < Assets.MonsterSet.size(); i++) {
-		if(Assets.MonsterTable.find(Assets.MonsterSet[i]) == Assets.MonsterTable.end()) {
-			throw std::runtime_error(std::string(__PRETTY_FUNCTION__) + " - Cannot find monster: " + Assets.MonsterSet[i]);
+	std::vector<_Brush> Icons;
+	for(size_t i = 0; i < Map->MonsterSet.size(); i++) {
+		if(Stats.Monsters.find(Map->MonsterSet[i]) == Stats.Monsters.end()) {
+			throw std::runtime_error(std::string(__PRETTY_FUNCTION__) + " - Cannot find monster: " + Map->MonsterSet[i]);
 		}
 		else {
-			Monster = Assets.GetMonsterTemplate(Assets.MonsterSet[i]);
-			Icons.push_back(_Brush(Assets.MonsterSet[i], Monster->Name, Assets.Animations[Monster->AnimationIdentifier]->GetStartPositionFrame(), Monster->Color, _Object::MONSTER));
+			_MonsterTemplate &MonsterTemplate = Stats.Monsters.at(Map->MonsterSet[i]);
+			Icons.push_back(_Brush(Map->MonsterSet[i], MonsterTemplate.Name, Assets.Animations[MonsterTemplate.AnimationIdentifier]->GetStartPositionFrame(), MonsterTemplate.Color, _Object::MONSTER));
 		}
 	}
+
 	LoadPaletteButtons(Icons, EDITMODE_MONSTERS);
 }
 
@@ -1337,10 +1339,10 @@ void _EditorState::DrawObject(float OffsetX, float OffsetY, const _ObjectSpawn *
 	const _Texture *Texture = nullptr;
 	switch(Object->Type) {
 		case _Object::MONSTER: {
-			_MonsterTemplate *Monster = Assets.GetMonsterTemplate(Object->Identifier);
-			Texture = Assets.GetAnimation(Monster->AnimationIdentifier)->GetStartPositionFrame();
-			Color = Monster->Color;
-			Scale = Monster->Scale;
+			_MonsterTemplate &Monster = Stats.Monsters.at(Object->Identifier);
+			Texture = Assets.GetAnimation(Monster.AnimationIdentifier)->GetStartPositionFrame();
+			Color = Monster.Color;
+			Scale = Monster.Scale;
 			Depth = OBJECT_Z;
 		} break;
 		case _Object::KEY:

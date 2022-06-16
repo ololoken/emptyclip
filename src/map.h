@@ -221,6 +221,8 @@ class _Map {
 
 		void AddRenderList(_Object *Object, int Layer);
 
+		std::vector<std::string> MonsterSet;
+
 	private:
 
 		bool CheckTileCollision(const glm::vec2 &Position, float Radius, float X, float Y, bool Resolve, glm::vec2 &Push, bool &DiagonalPush);
@@ -245,7 +247,7 @@ class _Map {
 
 		// Graphics
 		_Camera *Camera;
-		std::string MonsterSet;
+		std::string MonsterSetID;
 
 		// Lights
 		glm::vec4 AmbientLight;

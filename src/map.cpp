@@ -43,7 +43,7 @@ _Map::_Map() :
 	Data(nullptr),
 	ObjectManager(new _ObjectManager()),
 	Camera(nullptr),
-	MonsterSet(MAP_DEFAULTMONSTERSET),
+	MonsterSetID(MAP_DEFAULTMONSTERSET),
 	AmbientLight(0.0f, 0.0f, 0.0f, 1.0f),
 	OldAmbientLight(0.0f, 0.0f, 0.0f, 1.0f),
 	AmbientLightBlendFactor(1.0),
@@ -94,7 +94,7 @@ _Map::_Map(const std::string &Filename) : _Map() {
 		// Check for items
 		switch(Object->Type) {
 			case _Object::MONSTER:
-				if(Assets.MonsterTable.find(Object->Identifier) == Assets.MonsterTable.end())
+				if(Stats.Monsters.find(Object->Identifier) == Stats.Monsters.end())
 					throw std::runtime_error(std::string(__PRETTY_FUNCTION__) + "Cannot find monster: " + Object->Identifier);
 			break;
 			case _Object::KEY:
@@ -131,7 +131,7 @@ _Map::_Map(const std::string &Filename) : _Map() {
 		std::string EventParticleIdentifier = GetCSVText(InputFile);
 
 		// Check for existence
-		if(EventMonsterIdentifier != "" && Assets.MonsterTable.find(EventMonsterIdentifier) == Assets.MonsterTable.end())
+		if(EventMonsterIdentifier != "" && Stats.Monsters.find(EventMonsterIdentifier) == Stats.Monsters.end())
 			throw std::runtime_error("Cannot find monster: " + EventMonsterIdentifier);
 		if(EventParticleIdentifier != "" && !Assets.IsParticleLoaded(EventParticleIdentifier))
 			throw std::runtime_error("Cannot find particle: " + EventParticleIdentifier);
@@ -197,15 +197,12 @@ _Map::~_Map() {
 	// Delete particles
 	for(const auto &Particle : Particles)
 		delete Particle;
-	Particles.clear();
 
 	if(Data != nullptr) {
 		for(int i = 0; i < Width; i++)
 			delete[] Data[i];
 		delete[] Data;
 	}
-
-	Assets.MonsterSet.clear();
 }
 
 // Create tile data
@@ -275,7 +272,7 @@ bool _Map::SaveLevel(const std::string &String) {
 	// Header
 	Output << MAP_FILEVERSION << '\n';
 	Output << MapType << '\n';
-	Output << MonsterSet << '\n';
+	Output << MonsterSetID << '\n';
 	Output << Width << " " << Height << '\n';
 
 	// Objects
@@ -332,8 +329,33 @@ bool _Map::SaveLevel(const std::string &String) {
 
 // Loads a monster set
 bool _Map::LoadMonsterSet(const std::string &String) {
-	Assets.LoadMonsterSet("maps/monstersets/" + String);
-	MonsterSet = String;
+
+	// Load file
+	std::string Path = "maps/monstersets/" + String;
+	std::ifstream File(Path, std::ios::in);
+	if(!File)
+		throw std::runtime_error(std::string(__PRETTY_FUNCTION__) + "Failed to open: " + Path);
+
+	MonsterSet.clear();
+
+	// Read file
+	std::string Identifier;
+	while(!File.eof() && File.peek() != EOF) {
+		File >> Identifier;
+		File.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+		if(Stats.Monsters.find(Identifier) == Stats.Monsters.end())
+			throw std::runtime_error("Cannot find monster: " + Identifier);
+
+		MonsterSet.push_back(Identifier);
+	}
+
+	File.close();
+
+	// Load the animation textures
+	for(size_t i = 0; i < MonsterSet.size(); i++)
+		Assets.LoadAnimation(Stats.Monsters.at(MonsterSet[i]).AnimationIdentifier, "textures/monsters/");
+
+	MonsterSetID = String;
 
 	return true;
 }

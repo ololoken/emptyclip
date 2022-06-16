@@ -75,7 +75,7 @@ class _Monster : public _Entity {
 	public:
 
 		_Monster();
-		_Monster(_MonsterTemplate *Monster, _Animation *Animation, const glm::vec2 &Position);
+		_Monster(_MonsterTemplate &Monster, _Animation *Animation, const glm::vec2 &Position);
 		~_Monster();
 
 		bool CalcPath(const glm::vec2 &Goal);

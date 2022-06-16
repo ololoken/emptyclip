@@ -24,6 +24,7 @@
 #include <random.h>
 #include <objects/object.h>
 #include <objects/weapon.h>
+#include <objects/monster.h>
 
 _Stats Stats;
 
@@ -38,6 +39,7 @@ void _Stats::Init() {
 	LoadUpgrades("tables/upgrades.tsv");
 	LoadWeapons("tables/weapons.tsv");
 	LoadItemDrops("tables/itemdrops.tsv");
+	LoadMonsters("tables/monsters.tsv");
 }
 
 // Shutdown
@@ -46,10 +48,15 @@ void _Stats::Close() {
 	Skills.clear();
 	Items.clear();
 	Weapons.clear();
-	ItemGroupTable.clear();
+	ItemGroups.clear();
+
+	for(const auto &Monster : Monsters)
+		Assets.UnloadAnimation(Monster.second.AnimationIdentifier);
+
+	Monsters.clear();
 }
 
-// Loads the level table
+// Load level stats
 void _Stats::LoadLevels(const std::string &Path) {
 
 	// Open file
@@ -73,7 +80,7 @@ void _Stats::LoadLevels(const std::string &Path) {
 	}
 }
 
-// Loads the skill table
+// Load skill stats
 void _Stats::LoadSkills(const std::string &Path) {
 	_Skill Skill;
 
@@ -97,7 +104,7 @@ void _Stats::LoadSkills(const std::string &Path) {
 	}
 }
 
-// Loads the ammo table
+// Load ammo stats
 void _Stats::LoadAmmo(const std::string &Path) {
 
 	// Load file
@@ -135,7 +142,7 @@ void _Stats::LoadAmmo(const std::string &Path) {
 	File.close();
 }
 
-// Loads the armor table
+// Load armor stats
 void _Stats::LoadArmor(const std::string &Path) {
 
 	// Load file
@@ -189,6 +196,7 @@ void _Stats::LoadArmor(const std::string &Path) {
 	File.close();
 }
 
+// Load key stats
 void _Stats::LoadKeys(const std::string &Path) {
 
 	// Load file
@@ -234,7 +242,7 @@ void _Stats::LoadKeys(const std::string &Path) {
 	File.close();
 }
 
-// Loads the medkits table
+// Load medkit stats
 void _Stats::LoadMedkits(const std::string &Path) {
 
 	// Load file
@@ -284,7 +292,7 @@ void _Stats::LoadMedkits(const std::string &Path) {
 	File.close();
 }
 
-// Loads the upgrade table
+// Load upgrade stats
 void _Stats::LoadUpgrades(const std::string &Path) {
 
 	// Load file
@@ -337,7 +345,7 @@ void _Stats::LoadUpgrades(const std::string &Path) {
 	File.close();
 }
 
-// Loads the weapon table
+// Load weapon stats
 void _Stats::LoadWeapons(const std::string &Path) {
 
 	// Load file
@@ -425,7 +433,7 @@ void _Stats::LoadWeapons(const std::string &Path) {
 	File.close();
 }
 
-// Load item drop table
+// Load item drops
 void _Stats::LoadItemDrops(const std::string &Path) {
 
 	// Load file
@@ -452,12 +460,12 @@ void _Stats::LoadItemDrops(const std::string &Path) {
 
 		ItemDropNames.push_back(DropName);
 
-		auto ItemGroupTableIterator = ItemGroupTable.find(DropName);
-		if(ItemGroupTableIterator == ItemGroupTable.end()) {
+		auto ItemGroupTableIterator = ItemGroups.find(DropName);
+		if(ItemGroupTableIterator == ItemGroups.end()) {
 			_ItemGroup ItemGroup;
 			ItemGroup.Total = 0;
 			ItemGroup.Quantity = 1;
-			ItemGroupTable[DropName] = ItemGroup;
+			ItemGroups[DropName] = ItemGroup;
 		}
 
 		ItemDrops++;
@@ -498,12 +506,81 @@ void _Stats::LoadItemDrops(const std::string &Path) {
 			if(ItemGroupEntry.Count <= 0)
 				continue;
 
-			ItemGroupTable[ItemDropNames[i]].Total += ItemGroupEntry.Count;
-			ItemGroupEntry.Count = ItemGroupTable[ItemDropNames[i]].Total;
-			ItemGroupTable[ItemDropNames[i]].Entries.push_back(ItemGroupEntry);
+			ItemGroups[ItemDropNames[i]].Total += ItemGroupEntry.Count;
+			ItemGroupEntry.Count = ItemGroups[ItemDropNames[i]].Total;
+			ItemGroups[ItemDropNames[i]].Entries.push_back(ItemGroupEntry);
 		}
 
 		File.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+	}
+
+	File.close();
+}
+
+// Load monster stats
+void _Stats::LoadMonsters(const std::string &Path) {
+
+	// Load file
+	std::ifstream File(Path, std::ios::in);
+	if(!File)
+		throw std::runtime_error("Error loading: " + Path);
+
+	// Skip header
+	File.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+
+	// Read file
+	while(!File.eof() && File.peek() != EOF) {
+
+		_MonsterTemplate Monster;
+		std::string Name;
+		std::string ColorName;
+		std::string WeaponParticlesIdentifier;
+		std::getline(File, Name, '\t');
+		std::getline(File, Monster.Name, '\t');
+		std::getline(File, Monster.AnimationIdentifier, '\t');
+		std::getline(File, WeaponParticlesIdentifier, '\t');
+		std::getline(File, Monster.SamplesIdentifier, '\t');
+		std::getline(File, Monster.ItemGroupIdentifier, '\t');
+		std::getline(File, ColorName, '\t');
+
+		File >> Monster.Level >> Monster.Health >> Monster.DamageBlock >> Monster.BehaviorType >> Monster.ViewRange >> Monster.ExperienceGiven
+			>> Monster.MovementSpeed >> Monster.Radius >> Monster.Scale >> Monster.CurrentSpeed >> Monster.Accuracy
+			>> Monster.AttackRange >> Monster.MinDamage >> Monster.MaxDamage >> Monster.FirePeriod >> Monster.WeaponType;
+		File.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+
+		// Set color
+		if(ColorName != "") {
+			if(!Assets.IsColorLoaded(ColorName))
+				throw std::runtime_error(std::string(__PRETTY_FUNCTION__) + " - Cannot find color: " + ColorName);
+
+			Monster.Color = Assets.Colors[ColorName];
+		}
+		else
+			Monster.Color = COLOR_WHITE;
+
+		// Check for item group
+		if(Monster.ItemGroupIdentifier != "" && ItemGroups.find(Monster.ItemGroupIdentifier) == ItemGroups.end())
+			throw std::runtime_error(std::string(__PRETTY_FUNCTION__) + " - Cannot find item group: " + Monster.ItemGroupIdentifier + " in " + Name);
+
+		// Check for animation
+		if(!Assets.IsAnimationLoaded(Monster.AnimationIdentifier))
+			throw std::runtime_error(std::string(__PRETTY_FUNCTION__) + " - Cannot find animation: " + Monster.AnimationIdentifier + " in " + Name);
+
+		// Check for samples
+		if(!Assets.IsAttackSampleLoaded(Monster.SamplesIdentifier))
+			throw std::runtime_error(std::string(__PRETTY_FUNCTION__) + " - Cannot find sample: " + Monster.SamplesIdentifier + " in " + Name);
+
+		// Set particles
+		if(Assets.IsWeaponParticleTemplateLoaded(WeaponParticlesIdentifier))
+			Monster.WeaponParticles = Assets.GetWeaponParticleTemplate(WeaponParticlesIdentifier);
+		else
+			Monster.WeaponParticles = &Assets.BlankWeaponParticle;
+
+		// Check for duplicates
+		if(Stats.Monsters.find(Name) != Stats.Monsters.end())
+			throw std::runtime_error(std::string(__PRETTY_FUNCTION__) + " - Duplicate entry: " + Name);
+
+		Monsters[Name] = Monster;
 	}
 
 	File.close();
@@ -532,6 +609,19 @@ _Weapon *_Stats::CreateWeapon(const std::string &Identifier, int Count, const gl
 	_Weapon *Weapon = new _Weapon(Identifier, Count, Position, WeaponTemplate, Assets.Textures[WeaponTemplate.IconIdentifier], Generate);
 
 	return Weapon;
+}
+
+// Creates a monster
+_Monster *_Stats::CreateMonster(const std::string &Identifier, const glm::vec2 &Position) {
+	_MonsterTemplate &MonsterTemplate = Monsters[Identifier];
+	AttackSampleTemplateStruct *AttackSample = Assets.GetAttackSampleTemplate(MonsterTemplate.SamplesIdentifier);
+
+	// Creates a monster
+	_Monster *Monster = new _Monster(MonsterTemplate, Assets.GetAnimation(MonsterTemplate.AnimationIdentifier), Position);
+	for(int i = 0; i < SAMPLE_TYPES; i++)
+		Monster->Samples[i] = AttackSample->Samples[i];
+
+	return Monster;
 }
 
 // Returns a valid amount of experience

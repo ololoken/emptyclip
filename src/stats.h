@@ -26,6 +26,7 @@
 // Forward Declarations
 class _Item;
 class _Weapon;
+class _Monster;
 
 // Used for level information
 struct _Level {
@@ -55,8 +56,6 @@ struct _ItemGroupEntry {
 
 // Item group information
 struct _ItemGroup {
-	_ItemGroup() { }
-
 	std::vector<_ItemGroupEntry> Entries;
 	int Quantity;
 	float Total;
@@ -93,9 +92,11 @@ class _Stats {
 		void LoadUpgrades(const std::string &Path);
 		void LoadWeapons(const std::string &Path);
 		void LoadItemDrops(const std::string &Path);
+		void LoadMonsters(const std::string &Path);
 
 		_Item *CreateItem(const std::string &Identifier, int Count, const glm::vec2 &Position);
 		_Weapon *CreateWeapon(const std::string &Identifier, int Count, const glm::vec2 &Position, bool Generate);
+		_Monster *CreateMonster(const std::string &Identifier, const glm::vec2 &Position);
 
 		int GetLevel(int64_t Experience);
 		int64_t GetValidExperience(int64_t Experience);
@@ -113,10 +114,10 @@ class _Stats {
 
 		std::unordered_map<std::string, _ItemTemplate> Items;
 		std::unordered_map<std::string, _WeaponTemplate> Weapons;
+		std::unordered_map<std::string, _ItemGroup> ItemGroups;
+		std::unordered_map<std::string, _MonsterTemplate> Monsters;
 
 		std::vector<std::string> AmmoNames;
-
-		std::unordered_map<std::string, _ItemGroup> ItemGroupTable;
 
 	private:
 

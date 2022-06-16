@@ -59,7 +59,6 @@ void _Assets::Init() {
 	LoadLabels("tables/ui/labels.tsv");
 	LoadReelTable("tables/reels.tsv");
 	LoadAnimationTable("tables/animation.tsv");
-	LoadMonsterTable("tables/monsters.tsv");
 
 	LoadAnimation("player_torso", "textures/player/");
 	LoadAnimation("player_legs", "textures/player/");
@@ -71,9 +70,6 @@ void _Assets::Init() {
 // Shutdown
 void _Assets::Close() {
 
-	for(const auto &Monster : MonsterTable)
-		UnloadAnimation(Monster.second.AnimationIdentifier);
-	MonsterSet.clear();
 	UnloadAnimation("player_torso");
 	UnloadAnimation("player_legs");
 
@@ -562,102 +558,6 @@ void _Assets::LoadWeaponParticles(const std::string &Path) {
 	File.close();
 }
 
-// Loads the monsters table
-void _Assets::LoadMonsterTable(const std::string &Path) {
-
-	// Load file
-	std::ifstream File(Path, std::ios::in);
-	if(!File)
-		throw std::runtime_error("Error loading: " + Path);
-
-	// Skip header
-	File.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-
-	// Read file
-	while(!File.eof() && File.peek() != EOF) {
-
-		_MonsterTemplate Monster;
-		std::string Name;
-		std::string ColorName;
-		std::string WeaponParticlesIdentifier;
-		std::getline(File, Name, '\t');
-		std::getline(File, Monster.Name, '\t');
-		std::getline(File, Monster.AnimationIdentifier, '\t');
-		std::getline(File, WeaponParticlesIdentifier, '\t');
-		std::getline(File, Monster.SamplesIdentifier, '\t');
-		std::getline(File, Monster.ItemGroupIdentifier, '\t');
-		std::getline(File, ColorName, '\t');
-
-		File >> Monster.Level >> Monster.Health >> Monster.DamageBlock >> Monster.BehaviorType >> Monster.ViewRange >> Monster.ExperienceGiven
-			>> Monster.MovementSpeed >> Monster.Radius >> Monster.Scale >> Monster.CurrentSpeed >> Monster.Accuracy
-			>> Monster.AttackRange >> Monster.MinDamage >> Monster.MaxDamage >> Monster.FirePeriod >> Monster.WeaponType;
-		File.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-
-		// Set color
-		if(ColorName != "") {
-			if(!IsColorLoaded(ColorName))
-				throw std::runtime_error(std::string(__PRETTY_FUNCTION__) + " - Cannot find color: " + ColorName);
-
-			Monster.Color = Colors[ColorName];
-		}
-		else
-			Monster.Color = COLOR_WHITE;
-
-		// Check for item group
-		//if(Monster.ItemGroupIdentifier != "" && ItemGroupTable.find(Monster.ItemGroupIdentifier) == ItemGroupTable.end())
-		//	throw std::runtime_error(std::string(__PRETTY_FUNCTION__) + " - Cannot find item group: " + Monster.ItemGroupIdentifier + " in " + Name);
-
-		// Check for animation
-		if(!IsAnimationLoaded(Monster.AnimationIdentifier))
-			throw std::runtime_error(std::string(__PRETTY_FUNCTION__) + " - Cannot find animation: " + Monster.AnimationIdentifier + " in " + Name);
-
-		// Check for samples
-		if(!IsAttackSampleLoaded(Monster.SamplesIdentifier))
-			throw std::runtime_error(std::string(__PRETTY_FUNCTION__) + " - Cannot find sample: " + Monster.SamplesIdentifier + " in " + Name);
-
-		// Set particles
-		if(IsWeaponParticleTemplateLoaded(WeaponParticlesIdentifier))
-			Monster.WeaponParticles = GetWeaponParticleTemplate(WeaponParticlesIdentifier);
-		else
-			Monster.WeaponParticles = &BlankWeaponParticle;
-
-		// Check for duplicates
-		if(Assets.MonsterTable.find(Name) != Assets.MonsterTable.end())
-			throw std::runtime_error(std::string(__PRETTY_FUNCTION__) + " - Duplicate entry: " + Name);
-
-		MonsterTable[Name] = Monster;
-	}
-
-	File.close();
-}
-
-// Loads a monster set
-void _Assets::LoadMonsterSet(const std::string &Path) {
-
-	// Load file
-	std::ifstream File(Path, std::ios::in);
-	if(!File)
-		return;
-
-	MonsterSet.clear();
-
-	// Read file
-	std::string Identifier;
-	while(!File.eof() && File.peek() != EOF) {
-		File >> Identifier;
-		File.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-		if(Assets.MonsterTable.find(Identifier) == Assets.MonsterTable.end())
-			throw std::runtime_error("Cannot find monster: " + Identifier);
-
-		MonsterSet.push_back(Identifier);
-	}
-
-	File.close();
-
-	// Load the animation textures
-	LoadMonsterAnimation();
-}
-
 // Loads the reel from the given identifier
 void _Assets::LoadReel(const std::string &Identifier, const std::string &Path) {
 
@@ -711,8 +611,6 @@ void _Assets::LoadAnimation(const std::string &Identifier, const std::string &Pa
 
 // Loads all the monster animations in a monster set
 void _Assets::LoadMonsterAnimation() {
-	for(size_t i = 0; i < MonsterSet.size(); i++)
-		LoadAnimation(GetMonsterTemplate(MonsterSet[i])->AnimationIdentifier, "textures/monsters/");
 }
 
 // Loads the styles
@@ -1134,23 +1032,6 @@ void _Assets::UnloadAnimation(const std::string &Identifier) {
 	Animations.erase(AnimationIterator);
 }
 
-
-// Creates a monster
-_Monster *_Assets::CreateMonster(const std::string &Identifier, const glm::vec2 &Position) {
-	_MonsterTemplate *MonsterTemplate;
-	AttackSampleTemplateStruct *AttackSample;
-
-	MonsterTemplate = GetMonsterTemplate(Identifier);
-	AttackSample = GetAttackSampleTemplate(MonsterTemplate->SamplesIdentifier);
-
-	// Creates a monster
-	_Monster *Monster = new _Monster(MonsterTemplate, GetAnimation(MonsterTemplate->AnimationIdentifier), Position);
-	for(int i = 0; i < SAMPLE_TYPES; i++)
-		Monster->Samples[i] = AttackSample->Samples[i];
-
-	return Monster;
-}
-
 bool _Assets::IsColorLoaded(const std::string &Identifier) { return Colors.find(Identifier) != Colors.end(); }
 bool _Assets::IsTextureLoaded(const std::string &Identifier) { return Textures.find(Identifier) != Textures.end(); }
 bool _Assets::IsAttackSampleLoaded(const std::string &Identifier) { return AttackSampleTable.find(Identifier) != AttackSampleTable.end(); }
@@ -1188,12 +1069,6 @@ _WeaponParticleTemplate *_Assets::GetWeaponParticleTemplate(const std::string &I
 		return nullptr;
 
 	return &WeaponParticleTable[Identifier];
-}
-_MonsterTemplate *_Assets::GetMonsterTemplate(const std::string &Identifier) {
-	if(MonsterTable.find(Identifier) == MonsterTable.end())
-		return nullptr;
-
-	return &MonsterTable[Identifier];
 }
 
 _Label *_Assets::GetLabel(const std::string &Identifier) { return (_Label *)Elements[Identifier]; }

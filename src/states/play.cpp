@@ -723,7 +723,7 @@ void _PlayState::CreateItemDrop(const _Entity *Entity) {
 	if(Entity->ItemGroupIdentifier == "")
 		return;
 
-	_ItemGroup *ItemGroup = &Stats.ItemGroupTable[Entity->ItemGroupIdentifier];
+	_ItemGroup *ItemGroup = &Stats.ItemGroups[Entity->ItemGroupIdentifier];
 	for(int i = 0; i < ItemGroup->Quantity; i++) {
 
 		// Spawn random item
@@ -776,7 +776,7 @@ void _PlayState::CheckEvents(const _Entity *Entity) {
 		if(Event->Active) {
 			switch(Event->Type) {
 				case EVENT_SPAWN:
-					if(Assets.MonsterTable.find(Event->MonsterIdentifier) != Assets.MonsterTable.end()) {
+					if(Stats.Monsters.find(Event->MonsterIdentifier) != Stats.Monsters.end()) {
 						Event->StartTimer();
 						ActiveEvents.push_back(Event);
 					}
@@ -894,7 +894,7 @@ void _PlayState::UpdateEvents(double FrameTime) {
 					for(size_t i = 0; i < Tiles.size(); i++) {
 						Position.x = Tiles[i].Coord.x + 0.5f;
 						Position.y = Tiles[i].Coord.y + 0.5f;
-						AddMonster(Assets.CreateMonster(Event->MonsterIdentifier, Position));
+						AddMonster(Stats.CreateMonster(Event->MonsterIdentifier, Position));
 						Particles->Create(_ParticleSpawn(Assets.GetParticleTemplate(Event->ParticleIdentifier), glm::vec2(0), Position, OBJECT_Z, 0));
 					}
 
@@ -958,7 +958,7 @@ void _PlayState::DeleteActiveEvents() {
 void _PlayState::SpawnObject(_ObjectSpawn *ObjectSpawn, bool GenerateStats) {
 	switch(ObjectSpawn->Type) {
 		case _Object::MONSTER:
-			AddMonster(Assets.CreateMonster(ObjectSpawn->Identifier, ObjectSpawn->Position));
+			AddMonster(Stats.CreateMonster(ObjectSpawn->Identifier, ObjectSpawn->Position));
 		break;
 		case _Object::KEY:
 		case _Object::AMMO:
