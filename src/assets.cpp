@@ -127,7 +127,7 @@ void _Assets::LoadStrings(const std::string &Path) {
 
 		// Check for duplicates
 		if(Strings.find(ID) != Strings.end())
-			throw std::runtime_error(std::string(__FUNCTION__) + " - Duplicate entry: " + ID);
+			throw std::runtime_error(std::string(__PRETTY_FUNCTION__) + " - Duplicate entry: " + ID);
 
 		Strings[ID] = Text;
 	}
@@ -263,7 +263,7 @@ void _Assets::LoadReelTable(const std::string &Path) {
 
 		// Check for duplicates
 		if(IsReelLoaded(Identifier))
-			throw std::runtime_error(std::string(__FUNCTION__) + " - Duplicate entry: " + Identifier);
+			throw std::runtime_error(std::string(__PRETTY_FUNCTION__) + " - Duplicate entry: " + Identifier);
 
 		ReelTable[Identifier] = ReelTemplate;
 	}
@@ -303,7 +303,7 @@ void _Assets::LoadAnimationTable(const std::string &Path) {
 
 		// Check for duplicates
 		if(IsAnimationLoaded(Identifier))
-			throw std::runtime_error(std::string(__FUNCTION__) + " - Duplicate entry: " + Identifier);
+			throw std::runtime_error(std::string(__PRETTY_FUNCTION__) + " - Duplicate entry: " + Identifier);
 
 		AnimationTable[Identifier] = AnimationTemplate;
 	}
@@ -387,11 +387,11 @@ void _Assets::LoadTextures(const std::string &Path) {
 		std::string Path = "textures/" + TextureFile;
 		_Texture *Texture = new _Texture(Path, false, Repeat, MipMaps, false);
 		if(!Texture)
-			throw std::runtime_error(std::string(__FUNCTION__) + " - Error loading: " + Path);
+			throw std::runtime_error(std::string(__PRETTY_FUNCTION__) + " - Error loading: " + Path);
 
 		// Check for duplicates
 		if(IsTextureLoaded(Name))
-			throw std::runtime_error(std::string(__FUNCTION__) + " - Duplicate entry: " + Name);
+			throw std::runtime_error(std::string(__PRETTY_FUNCTION__) + " - Duplicate entry: " + Name);
 
 		Textures[Name] = Texture;
 	}
@@ -460,7 +460,7 @@ void _Assets::LoadSoundGroups(const std::string &Path) {
 
 		// Check for duplicates
 		if(IsAttackSampleLoaded(Identifier))
-			throw std::runtime_error(std::string(__FUNCTION__) + " - Duplicate entry: " + Identifier);
+			throw std::runtime_error(std::string(__PRETTY_FUNCTION__) + " - Duplicate entry: " + Identifier);
 
 		AttackSampleTable[Identifier] = SampleTemplate;
 	}
@@ -499,7 +499,7 @@ void _Assets::LoadParticles(const std::string &Path) {
 
 		// Check for duplicates
 		if(IsParticleLoaded(Identifier))
-			throw std::runtime_error(std::string(__FUNCTION__) + " - Duplicate entry: " + Identifier);
+			throw std::runtime_error(std::string(__PRETTY_FUNCTION__) + " - Duplicate entry: " + Identifier);
 
 		// Get texture
 		Particle.Texture = Assets.Textures[TextureIdentifier];
@@ -549,7 +549,7 @@ void _Assets::LoadWeaponParticles(const std::string &Path) {
 			std::getline(Buffer, ParticleIdentifier, '\t');
 
 			if(ParticleIdentifier != "" && !IsParticleLoaded(ParticleIdentifier))
-				throw std::runtime_error(std::string(__FUNCTION__) + " - Cannot find particle: " + ParticleIdentifier);
+				throw std::runtime_error(std::string(__PRETTY_FUNCTION__) + " - Cannot find particle: " + ParticleIdentifier);
 			else if(ParticleIdentifier == "")
 				WeaponParticle.ParticleTemplates[i] = nullptr;
 			else
@@ -596,7 +596,7 @@ void _Assets::LoadMonsterTable(const std::string &Path) {
 		// Set color
 		if(ColorName != "") {
 			if(!IsColorLoaded(ColorName))
-				throw std::runtime_error(std::string(__FUNCTION__) + " - Cannot find color: " + ColorName);
+				throw std::runtime_error(std::string(__PRETTY_FUNCTION__) + " - Cannot find color: " + ColorName);
 
 			Monster.Color = Colors[ColorName];
 		}
@@ -605,15 +605,15 @@ void _Assets::LoadMonsterTable(const std::string &Path) {
 
 		// Check for item group
 		//if(Monster.ItemGroupIdentifier != "" && ItemGroupTable.find(Monster.ItemGroupIdentifier) == ItemGroupTable.end())
-		//	throw std::runtime_error(std::string(__FUNCTION__) + " - Cannot find item group: " + Monster.ItemGroupIdentifier + " in " + Name);
+		//	throw std::runtime_error(std::string(__PRETTY_FUNCTION__) + " - Cannot find item group: " + Monster.ItemGroupIdentifier + " in " + Name);
 
 		// Check for animation
 		if(!IsAnimationLoaded(Monster.AnimationIdentifier))
-			throw std::runtime_error(std::string(__FUNCTION__) + " - Cannot find animation: " + Monster.AnimationIdentifier + " in " + Name);
+			throw std::runtime_error(std::string(__PRETTY_FUNCTION__) + " - Cannot find animation: " + Monster.AnimationIdentifier + " in " + Name);
 
 		// Check for samples
 		if(!IsAttackSampleLoaded(Monster.SamplesIdentifier))
-			throw std::runtime_error(std::string(__FUNCTION__) + " - Cannot find sample: " + Monster.SamplesIdentifier + " in " + Name);
+			throw std::runtime_error(std::string(__PRETTY_FUNCTION__) + " - Cannot find sample: " + Monster.SamplesIdentifier + " in " + Name);
 
 		// Set particles
 		if(IsWeaponParticleTemplateLoaded(WeaponParticlesIdentifier))
@@ -623,7 +623,7 @@ void _Assets::LoadMonsterTable(const std::string &Path) {
 
 		// Check for duplicates
 		if(Assets.MonsterTable.find(Name) != Assets.MonsterTable.end())
-			throw std::runtime_error(std::string(__FUNCTION__) + " - Duplicate entry: " + Name);
+			throw std::runtime_error(std::string(__PRETTY_FUNCTION__) + " - Duplicate entry: " + Name);
 
 		MonsterTable[Name] = Monster;
 	}

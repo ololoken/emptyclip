@@ -31,12 +31,12 @@ _Stats Stats;
 void _Stats::Init() {
 	LoadLevels("tables/levels.tsv");
 	LoadSkills("tables/skills.tsv");
-	LoadAmmoTable("tables/ammo.tsv");
-	LoadArmorTable("tables/armor.tsv");
+	LoadAmmo("tables/ammo.tsv");
+	LoadArmor("tables/armor.tsv");
 	LoadKeys("tables/keys.tsv");
 	LoadMedkits("tables/medkits.tsv");
-	LoadUpgradeTable("tables/upgrades.tsv");
-	LoadWeaponTable("tables/weapons.tsv");
+	LoadUpgrades("tables/upgrades.tsv");
+	LoadWeapons("tables/weapons.tsv");
 	LoadItemDrops("tables/itemdrops.tsv");
 }
 
@@ -98,7 +98,7 @@ void _Stats::LoadSkills(const std::string &Path) {
 }
 
 // Loads the ammo table
-void _Stats::LoadAmmoTable(const std::string &Path) {
+void _Stats::LoadAmmo(const std::string &Path) {
 
 	// Load file
 	std::ifstream File(Path, std::ios::in);
@@ -115,29 +115,17 @@ void _Stats::LoadAmmoTable(const std::string &Path) {
 
 		_ItemTemplate Template(_Object::AMMO);
 		std::string Name;
-		std::string ColorName;
 		std::getline(File, Name, '\t');
 		std::getline(File, Template.Name, '\t');
-		std::getline(File, Template.IconID, '\t');
-		std::getline(File, ColorName, '\n');
+		std::getline(File, Template.IconID, '\n');
 
 		// Check for loaded textures
 		if(!Assets.IsTextureLoaded(Template.IconID))
-			throw std::runtime_error(std::string(__FUNCTION__) + " - Texture not found: " + Template.IconID);
-
-		// Set color
-		if(ColorName != "") {
-			if(!Assets.IsColorLoaded(ColorName))
-				throw std::runtime_error(std::string(__FUNCTION__) + " - Cannot find color: " + ColorName);
-
-			Template.Color = Assets.Colors[ColorName];
-		}
-		else
-			Template.Color = COLOR_WHITE;
+			throw std::runtime_error(std::string(__PRETTY_FUNCTION__) + " - Texture not found: " + Template.IconID);
 
 		// Check for duplicates
 		if(Items.find(Name) != Items.end())
-			throw std::runtime_error(std::string(__FUNCTION__) + " - Duplicate entry: " + Name);
+			throw std::runtime_error(std::string(__PRETTY_FUNCTION__) + " - Duplicate entry: " + Name);
 
 		Template.Attributes["ammo_type"].Int = AmmoNames.size();
 		Items[Name] = Template;
@@ -148,7 +136,7 @@ void _Stats::LoadAmmoTable(const std::string &Path) {
 }
 
 // Loads the armor table
-void _Stats::LoadArmorTable(const std::string &Path) {
+void _Stats::LoadArmor(const std::string &Path) {
 
 	// Load file
 	std::ifstream File(Path, std::ios::in);
@@ -179,12 +167,12 @@ void _Stats::LoadArmorTable(const std::string &Path) {
 
 		// Check for loaded textures
 		if(!Assets.IsTextureLoaded(Template.IconID))
-			throw std::runtime_error(std::string(__FUNCTION__) + " - Texture not found: " + Template.IconID);
+			throw std::runtime_error(std::string(__PRETTY_FUNCTION__) + " - Texture not found: " + Template.IconID);
 
 		// Set color
 		if(ColorName != "") {
 			if(!Assets.IsColorLoaded(ColorName))
-				throw std::runtime_error(std::string(__FUNCTION__) + " - Cannot find color: " + ColorName);
+				throw std::runtime_error(std::string(__PRETTY_FUNCTION__) + " - Cannot find color: " + ColorName);
 
 			Template.Color = Assets.Colors[ColorName];
 		}
@@ -193,7 +181,7 @@ void _Stats::LoadArmorTable(const std::string &Path) {
 
 		// Check for duplicates
 		if(Items.find(Name) != Items.end())
-			throw std::runtime_error(std::string(__FUNCTION__) + " - Duplicate entry: " + Name);
+			throw std::runtime_error(std::string(__PRETTY_FUNCTION__) + " - Duplicate entry: " + Name);
 
 		Items[Name] = Template;
 	}
@@ -224,12 +212,12 @@ void _Stats::LoadKeys(const std::string &Path) {
 
 		// Check for loaded textures
 		if(!Assets.IsTextureLoaded(Template.IconID))
-			throw std::runtime_error(std::string(__FUNCTION__) + " - Cannot find texture: " + Template.IconID);
+			throw std::runtime_error(std::string(__PRETTY_FUNCTION__) + " - Cannot find texture: " + Template.IconID);
 
 		// Set color
 		if(ColorID != "") {
 			if(!Assets.IsColorLoaded(ColorID))
-				throw std::runtime_error(std::string(__FUNCTION__) + " - Cannot find color: " + ColorID);
+				throw std::runtime_error(std::string(__PRETTY_FUNCTION__) + " - Cannot find color: " + ColorID);
 
 			Template.Color = Assets.Colors[ColorID];
 		}
@@ -238,7 +226,7 @@ void _Stats::LoadKeys(const std::string &Path) {
 
 		// Check for duplicates
 		if(Items.find(ID) != Items.end())
-			throw std::runtime_error(std::string(__FUNCTION__) + " - Duplicate entry: " + ID);
+			throw std::runtime_error(std::string(__PRETTY_FUNCTION__) + " - Duplicate entry: " + ID);
 
 		Items[ID] = Template;
 	}
@@ -274,12 +262,12 @@ void _Stats::LoadMedkits(const std::string &Path) {
 
 		// Check for loaded textures
 		if(!Assets.IsTextureLoaded(Template.IconID))
-			throw std::runtime_error(std::string(__FUNCTION__) + " - Cannot find texture: " + Template.IconID);
+			throw std::runtime_error(std::string(__PRETTY_FUNCTION__) + " - Cannot find texture: " + Template.IconID);
 
 		// Set color
 		if(ColorID != "") {
 			if(!Assets.IsColorLoaded(ColorID))
-				throw std::runtime_error(std::string(__FUNCTION__) + " - Cannot find color: " + ColorID);
+				throw std::runtime_error(std::string(__PRETTY_FUNCTION__) + " - Cannot find color: " + ColorID);
 
 			Template.Color = Assets.Colors[ColorID];
 		}
@@ -288,7 +276,7 @@ void _Stats::LoadMedkits(const std::string &Path) {
 
 		// Check for duplicates
 		if(Items.find(ID) != Items.end())
-			throw std::runtime_error(std::string(__FUNCTION__) + " - Duplicate entry: " + ID);
+			throw std::runtime_error(std::string(__PRETTY_FUNCTION__) + " - Duplicate entry: " + ID);
 
 		Items[ID] = Template;
 	}
@@ -297,7 +285,7 @@ void _Stats::LoadMedkits(const std::string &Path) {
 }
 
 // Loads the upgrade table
-void _Stats::LoadUpgradeTable(const std::string &Path) {
+void _Stats::LoadUpgrades(const std::string &Path) {
 
 	// Load file
 	std::ifstream File(Path, std::ios::in);
@@ -327,12 +315,12 @@ void _Stats::LoadUpgradeTable(const std::string &Path) {
 
 		// Check for loaded textures
 		if(!Assets.IsTextureLoaded(Template.IconID))
-			throw std::runtime_error(std::string(__FUNCTION__) + " - Cannot find texture: " + Template.IconID);
+			throw std::runtime_error(std::string(__PRETTY_FUNCTION__) + " - Cannot find texture: " + Template.IconID);
 
 		// Set color
 		if(ColorName != "") {
 			if(!Assets.IsColorLoaded(ColorName))
-				throw std::runtime_error(std::string(__FUNCTION__) + " - Cannot find color: " + ColorName);
+				throw std::runtime_error(std::string(__PRETTY_FUNCTION__) + " - Cannot find color: " + ColorName);
 
 			Template.Color = Assets.Colors[ColorName];
 		}
@@ -341,7 +329,7 @@ void _Stats::LoadUpgradeTable(const std::string &Path) {
 
 		// Check for duplicates
 		if(Items.find(Name) != Items.end())
-			throw std::runtime_error(std::string(__FUNCTION__) + " - Duplicate entry: " + Name);
+			throw std::runtime_error(std::string(__PRETTY_FUNCTION__) + " - Duplicate entry: " + Name);
 
 		Items[Name] = Template;
 	}
@@ -350,7 +338,7 @@ void _Stats::LoadUpgradeTable(const std::string &Path) {
 }
 
 // Loads the weapon table
-void _Stats::LoadWeaponTable(const std::string &Path) {
+void _Stats::LoadWeapons(const std::string &Path) {
 
 	// Load file
 	std::ifstream File(Path, std::ios::in);
@@ -398,12 +386,12 @@ void _Stats::LoadWeaponTable(const std::string &Path) {
 
 		// Check for loaded textures
 		if(!Assets.IsTextureLoaded(WeaponTemplate.IconIdentifier))
-			throw std::runtime_error(std::string(__FUNCTION__) + " - Texture not found: " + WeaponTemplate.IconIdentifier);
+			throw std::runtime_error(std::string(__PRETTY_FUNCTION__) + " - Texture not found: " + WeaponTemplate.IconIdentifier);
 
 		// Set color
 		if(ColorName != "") {
 			if(!Assets.IsColorLoaded(ColorName))
-				throw std::runtime_error(std::string(__FUNCTION__) + " - Cannot find color: " + ColorName);
+				throw std::runtime_error(std::string(__PRETTY_FUNCTION__) + " - Cannot find color: " + ColorName);
 
 			WeaponTemplate.Color = Assets.Colors[ColorName];
 		}
@@ -412,7 +400,7 @@ void _Stats::LoadWeaponTable(const std::string &Path) {
 
 		// Check for attack sample
 		if(!Assets.IsAttackSampleLoaded(SamplesIdentifier))
-			throw std::runtime_error(std::string(__FUNCTION__) + " - Cannot find sample: " + SamplesIdentifier);
+			throw std::runtime_error(std::string(__PRETTY_FUNCTION__) + " - Cannot find sample: " + SamplesIdentifier);
 
 		// Set samples
 		AttackSample = Assets.GetAttackSampleTemplate(SamplesIdentifier);
@@ -429,7 +417,7 @@ void _Stats::LoadWeaponTable(const std::string &Path) {
 
 		// Check for duplicates
 		if(Weapons.find(Name) != Weapons.end())
-			throw std::runtime_error(std::string(__FUNCTION__) + " - Duplicate entry: " + Name);
+			throw std::runtime_error(std::string(__PRETTY_FUNCTION__) + " - Duplicate entry: " + Name);
 
 		Weapons[Name] = WeaponTemplate;
 	}
@@ -493,14 +481,14 @@ void _Stats::LoadItemDrops(const std::string &Path) {
 			case _Object::ARMOR:
 			case _Object::MEDKIT:
 				if(Items.find(ItemGroupEntry.ItemIdentifier) == Items.end())
-					throw std::runtime_error(std::string(__FUNCTION__) + " - Cannot find: " + ItemGroupEntry.ItemIdentifier + " in " + Path);
+					throw std::runtime_error(std::string(__PRETTY_FUNCTION__) + " - Cannot find: " + ItemGroupEntry.ItemIdentifier + " in " + Path);
 			break;
 			case _Object::WEAPON:
 				if(Weapons.find(ItemGroupEntry.ItemIdentifier) == Weapons.end())
-					throw std::runtime_error(std::string(__FUNCTION__) + " - Cannot find: " + ItemGroupEntry.ItemIdentifier + " in " + Path);
+					throw std::runtime_error(std::string(__PRETTY_FUNCTION__) + " - Cannot find: " + ItemGroupEntry.ItemIdentifier + " in " + Path);
 			break;
 			default:
-				throw std::runtime_error(std::string(__FUNCTION__) + " - Bad item type: " + ItemGroupEntry.ItemIdentifier + " in " + Path);
+				throw std::runtime_error(std::string(__PRETTY_FUNCTION__) + " - Bad item type: " + ItemGroupEntry.ItemIdentifier + " in " + Path);
 			break;
 		}
 

@@ -65,8 +65,8 @@ struct _ItemGroup {
 // Item template
 struct _ItemTemplate {
 
-	_ItemTemplate() : Type(-1) { }
-	_ItemTemplate(int Type) : Type(Type) { }
+	_ItemTemplate() : Color(1.0f), Type(-1) { }
+	_ItemTemplate(int Type) : Color(1.0f), Type(Type) { }
 
 	std::string Name;
 	std::string IconID;
@@ -86,12 +86,12 @@ class _Stats {
 
 		void LoadLevels(const std::string &Path);
 		void LoadSkills(const std::string &Path);
-		void LoadAmmoTable(const std::string &Path);
-		void LoadArmorTable(const std::string &Path);
+		void LoadAmmo(const std::string &Path);
+		void LoadArmor(const std::string &Path);
 		void LoadKeys(const std::string &Path);
 		void LoadMedkits(const std::string &Path);
-		void LoadUpgradeTable(const std::string &Path);
-		void LoadWeaponTable(const std::string &Path);
+		void LoadUpgrades(const std::string &Path);
+		void LoadWeapons(const std::string &Path);
 		void LoadItemDrops(const std::string &Path);
 
 		_Item *CreateItem(const std::string &Identifier, int Count, const glm::vec2 &Position);
