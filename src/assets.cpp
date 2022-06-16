@@ -673,10 +673,10 @@ void _Assets::LoadReel(const std::string &Identifier, const std::string &Path) {
 	if(ReelIterator == Reels.end()) {
 		_Reel Reel;
 		Reel.StartPosition = ReelTableIterator->second.StartPosition;
-		Reel.RepeatMode = static_cast<RepeatType>(ReelTableIterator->second.RepeatMode);
+		Reel.RepeatMode = (RepeatType)(ReelTableIterator->second.RepeatMode);
 		Reel.PlaybackSpeed = ReelTableIterator->second.PlaybackSpeed;
 
-		for(int i = 0; i < static_cast<int>(ReelTableIterator->second.TextureFiles.size()); i++) {
+		for(std::size_t i = 0; i < ReelTableIterator->second.TextureFiles.size(); i++) {
 			std::string ReelPath = Path + ReelTableIterator->second.TextureFiles[i];
 			_Texture *Texture = new _Texture(ReelPath, false, false, true, false);
 			if(!Texture)
@@ -702,7 +702,7 @@ void _Assets::LoadAnimation(const std::string &Identifier, const std::string &Pa
 		_Animation *Animation = new _Animation();
 
 		// Load reels
-		for(int i = 0; i < static_cast<int>(AnimationTableIterator->second.Identifiers.size()); i++) {
+		for(std::size_t i = 0; i < AnimationTableIterator->second.Identifiers.size(); i++) {
 			LoadReel(AnimationTableIterator->second.Identifiers[i], Path);
 
 			Animation->Reels.push_back(GetReel(AnimationTableIterator->second.Identifiers[i]));
@@ -1113,7 +1113,7 @@ void _Assets::UnloadReel(const std::string &Identifier) {
 
 	auto ReelIterator = Reels.find(Identifier);
 	if(ReelIterator != Reels.end()) {
-		for(int i = 0; i < static_cast<int>(ReelIterator->second.Textures.size()); i++)
+		for(size_t i = 0; i < ReelIterator->second.Textures.size(); i++)
 			delete ReelIterator->second.Textures[i];
 
 		Reels.erase(ReelIterator);

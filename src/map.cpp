@@ -555,7 +555,7 @@ void _Map::CheckEntityCollisionsInGrid(const glm::vec2 &Position, float Radius, 
 		for(int j = TileBounds.Start.y; j <= TileBounds.End.y; j++) {
 			for(int k = 0; k < 2; k++) {
 				for(auto Iterator = Data[i][j].Objects[k].begin(); Iterator != Data[i][j].Objects[k].end(); ++Iterator) {
-					_Entity *Entity = static_cast<_Entity *>(*Iterator);
+					_Entity *Entity = (_Entity *)*Iterator;
 					if(Entity != SkipObject && !Entity->IsDying()) {
 						float DistanceSquared = glm::distance2(Entity->Position, Position);
 						float RadiiSum = Entity->Radius + Radius;
@@ -581,7 +581,7 @@ _Entity *_Map::CheckMeleeCollisions(_Entity *Attacker, const glm::vec2 &Directio
 	for(int i = TileBounds.Start.x; i <= TileBounds.End.x; i++) {
 		for(int j = TileBounds.Start.y; j <= TileBounds.End.y; j++) {
 			for(auto Iterator = Data[i][j].Objects[GridType].begin(); Iterator != Data[i][j].Objects[GridType].end(); ++Iterator) {
-				_Entity *Entity = static_cast<_Entity *>(*Iterator);
+				_Entity *Entity = (_Entity *)*Iterator;
 				if(!Entity->IsDying()) {
 					float DistanceSquared = glm::distance2(Entity->Position, Attacker->Position);
 					float RadiiSum = Entity->Radius + Attacker->GetWeaponRange(Attacker->AttackRequestType);
@@ -1064,7 +1064,7 @@ void _Map::RemoveObjects(std::list<size_t> &SelectedObjectIndices) {
 // Return the block at a given position
 int _Map::GetSelectedBlock(int Layer, const _Coord &Index) {
 
-	for(int i = static_cast<int>(Blocks[Layer].size())-1; i >= 0; i--) {
+	for(int i = (int)(Blocks[Layer].size())-1; i >= 0; i--) {
 		if(Index.x >= Blocks[Layer][i].Start.x && Index.y >= Blocks[Layer][i].Start.y && Index.x <= Blocks[Layer][i].End.x && Index.y <= Blocks[Layer][i].End.y)
 			return i;
 	}
@@ -1210,7 +1210,7 @@ void _Map::RenderGrid(int Mode) {
 // Draws rectangles around all the blocks
 void _Map::HighlightBlocks(int Layer) {
 	Graphics.SetColor(COLOR_MAGENTA);
-	for(int i = 0; i < static_cast<int>(Blocks[Layer].size()); i++)
+	for(std::size_t i = 0; i < Blocks[Layer].size(); i++)
 		Graphics.DrawRectangle3D(glm::vec2(Blocks[Layer][i].Start.x, Blocks[Layer][i].Start.y), glm::vec2(Blocks[Layer][i].End.x + 1.0f, Blocks[Layer][i].End.y + 1.0f), false);
 }
 
@@ -1341,7 +1341,7 @@ void _Map::RenderFloors() {
 	Graphics.SetDepthMask(true);
 	Graphics.SetDepthTest(true);
 	for(int i = MAPLAYER_FLOOR0; i <= MAPLAYER_FLOOR2; i++) {
-		for(int j = 0; j < static_cast<int>(Blocks[i].size()); j++) {
+		for(int j = 0; j < (int)(Blocks[i].size()); j++) {
 			_Block *Block = &Blocks[i][j];
 			if(Block->MinZ == Block->MaxZ) {
 

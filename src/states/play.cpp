@@ -368,7 +368,7 @@ void _PlayState::Update(double FrameTime) {
 
 	// Get item at cursor
 	PreviousCursorItem = CursorItem;
-	CursorItem = static_cast<_Item *>(Map->CheckCollisionsInGrid(WorldCursor, 0.05f, GRID_ITEM, nullptr));
+	CursorItem = (_Item *)(Map->CheckCollisionsInGrid(WorldCursor, 0.05f, GRID_ITEM, nullptr));
 	if(CursorItem && CursorItem == PreviousCursorItem)
 		CursorItemTimer += FrameTime;
 	else
@@ -896,8 +896,8 @@ void _PlayState::UpdateEvents(double FrameTime) {
 
 					const std::vector<_EventTile> &Tiles = Event->Tiles;
 					for(size_t i = 0; i < Tiles.size(); i++) {
-						Position.x = static_cast<float>(Tiles[i].Coord.x) + 0.5f;
-						Position.y = static_cast<float>(Tiles[i].Coord.y) + 0.5f;
+						Position.x = Tiles[i].Coord.x + 0.5f;
+						Position.y = Tiles[i].Coord.y + 0.5f;
 						AddMonster(Assets.CreateMonster(Event->MonsterIdentifier, Position));
 						Particles->Create(_ParticleSpawn(Assets.GetParticleTemplate(Event->ParticleIdentifier), glm::vec2(0), Position, OBJECT_Z, 0));
 					}

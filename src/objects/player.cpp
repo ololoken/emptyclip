@@ -624,7 +624,7 @@ void _Player::CalculateSkillsRemaining() {
 
 // Calculates the percentage to the player's next level
 void _Player::CalculateLevelPercentage() {
-	LevelPercentage = static_cast<float>(Experience - ExperienceCurrentLevel) / static_cast<float>(ExperienceNextLevel - ExperienceCurrentLevel);
+	LevelPercentage = (float)(Experience - ExperienceCurrentLevel) / (float)(ExperienceNextLevel - ExperienceCurrentLevel);
 }
 
 // Returns the number of skill points the player has spent
@@ -641,7 +641,7 @@ int _Player::AddItem(_Item *Item) {
 
 	switch(Item->Type) {
 		case _Object::WEAPON: {
-			_Weapon *WeaponItem = static_cast<_Weapon *>(Item);
+			_Weapon *WeaponItem = (_Weapon *)(Item);
 			if(WeaponItem->IsMelee()) {
 				if(!HasMelee()) {
 					SetMelee(WeaponItem);
@@ -668,7 +668,7 @@ int _Player::AddItem(_Item *Item) {
 			}
 		} break;
 		case _Object::ARMOR: {
-			_Armor *ArmorItem = static_cast<_Armor *>(Item);
+			_Armor *ArmorItem = (_Armor *)(Item);
 			if(!HasArmor() && Stats.GetSkill(Skills[SKILL_STRENGTH], SKILL_STRENGTH) >= ArmorItem->StrengthRequirement) {
 				SetArmor(ArmorItem);
 				RecalculateStats();
@@ -890,7 +890,7 @@ int _Player::GetWeaponAmmoType() const {
 // Determines what type of ammo an item in the inventory is
 int _Player::GetInventoryAmmoType(int Index) const {
 	if(HasInventory(Index) && Inventory[Index]->Type == _Object::AMMO)
-		return static_cast<_Ammo *>(Inventory[Index])->AmmoType;
+		return ((_Ammo *)(Inventory[Index]))->AmmoType;
 
 	return -1;
 }
@@ -898,7 +898,7 @@ int _Player::GetInventoryAmmoType(int Index) const {
 // Checks if the item is the right ammo for the player's mainhand weapon
 bool _Player::IsRightClip(const _Item *Item) const {
 	if(Item->Type == _Object::AMMO) {
-		const _Ammo *Ammo = static_cast<const _Ammo *>(Item);
+		const _Ammo *Ammo = (const _Ammo *)Item;
 		if(Ammo->AmmoType == GetWeaponAmmoType())
 			return true;
 	}
