@@ -1342,12 +1342,12 @@ void _EditorState::DrawObject(float OffsetX, float OffsetY, const _ObjectSpawn *
 			Color = MiscItem.Color;
 		} break;
 		case _Object::AMMO: {
-			_AmmoTemplate &Ammo = Stats.Ammo[Object->Identifier];
+			_ItemTemplate &Ammo = Stats.Ammo[Object->Identifier];
 			Texture = Assets.Textures[Ammo.IconIdentifier];
 			Color = Ammo.Color;
 		} break;
 		case _Object::UPGRADE: {
-			_UpgradeTemplate &Upgrade = Stats.Upgrades[Object->Identifier];
+			_ItemTemplate &Upgrade = Stats.Upgrades[Object->Identifier];
 			Texture = Assets.Textures[Upgrade.IconIdentifier];
 			Color = Upgrade.Color;
 		} break;
@@ -1357,7 +1357,7 @@ void _EditorState::DrawObject(float OffsetX, float OffsetY, const _ObjectSpawn *
 			Color = Weapon.Color;
 		} break;
 		case _Object::ARMOR: {
-			_ArmorTemplate &Armor = Stats.Armor[Object->Identifier];
+			_ItemTemplate &Armor = Stats.Armor[Object->Identifier];
 			Texture = Assets.Textures[Armor.IconIdentifier];
 			Color = Armor.Color;
 		} break;

@@ -99,10 +99,10 @@ class _Stats {
 		_ItemGroup *GetItemGroup(const std::string &Identifier);
 		void GetRandomDrop(const _ItemGroup *ItemGroup, _ObjectSpawn *ObjectSpawn);
 
-		std::unordered_map<std::string, _AmmoTemplate> Ammo;
-		std::unordered_map<std::string, _ArmorTemplate> Armor;
+		std::unordered_map<std::string, _ItemTemplate> Ammo;
+		std::unordered_map<std::string, _ItemTemplate> Armor;
 		std::unordered_map<std::string, _MiscItemTemplate> MiscItems;
-		std::unordered_map<std::string, _UpgradeTemplate> Upgrades;
+		std::unordered_map<std::string, _ItemTemplate> Upgrades;
 		std::unordered_map<std::string, _WeaponTemplate> Weapons;
 
 		std::vector<std::string> AmmoNames;

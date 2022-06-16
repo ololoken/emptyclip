@@ -110,14 +110,7 @@ enum SkillTypes {
 	SKILL_COUNT,
 };
 
-struct _AmmoTemplate {
-	std::string Name;
-	std::string IconIdentifier;
-	glm::vec4 Color;
-	int Type;
-};
-
-struct _UpgradeTemplate {
+struct _ItemTemplate {
 	std::string Name;
 	std::string IconIdentifier;
 	glm::vec4 Color;
@@ -169,15 +162,6 @@ struct _WeaponTemplate {
 	std::string Name;
 	std::string IconIdentifier;
 	std::string Samples[SAMPLE_TYPES];
-
-	std::unordered_map<std::string, _Value> Attributes;
-};
-
-// Holds information about armor
-struct _ArmorTemplate {
-	std::string Name;
-	std::string IconIdentifier;
-	glm::vec4 Color;
 
 	std::unordered_map<std::string, _Value> Attributes;
 };

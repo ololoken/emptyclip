@@ -115,34 +115,34 @@ void _Stats::LoadAmmoTable(const std::string &Path) {
 	// Read file
 	while(!File.eof() && File.peek() != EOF) {
 
-		_AmmoTemplate AmmoTemplate;
+		_ItemTemplate Template;
 		std::string Name;
 		std::string ColorName;
 		std::getline(File, Name, '\t');
-		std::getline(File, AmmoTemplate.Name, '\t');
-		std::getline(File, AmmoTemplate.IconIdentifier, '\t');
+		std::getline(File, Template.Name, '\t');
+		std::getline(File, Template.IconIdentifier, '\t');
 		std::getline(File, ColorName, '\n');
 
 		// Check for loaded textures
-		if(!Assets.IsTextureLoaded(AmmoTemplate.IconIdentifier))
-			throw std::runtime_error(std::string(__FUNCTION__) + " - Texture not found: " + AmmoTemplate.IconIdentifier);
+		if(!Assets.IsTextureLoaded(Template.IconIdentifier))
+			throw std::runtime_error(std::string(__FUNCTION__) + " - Texture not found: " + Template.IconIdentifier);
 
 		// Set color
 		if(ColorName != "") {
 			if(!Assets.IsColorLoaded(ColorName))
 				throw std::runtime_error(std::string(__FUNCTION__) + " - Cannot find color: " + ColorName);
 
-			AmmoTemplate.Color = Assets.Colors[ColorName];
+			Template.Color = Assets.Colors[ColorName];
 		}
 		else
-			AmmoTemplate.Color = COLOR_WHITE;
+			Template.Color = COLOR_WHITE;
 
 		// Check for duplicates
 		if(Ammo.find(Name) != Ammo.end())
 			throw std::runtime_error(std::string(__FUNCTION__) + " - Duplicate entry: " + Name);
 
-		AmmoTemplate.Type = AmmoNames.size();
-		Ammo[Name] = AmmoTemplate;
+		Template.Attributes["ammo_type"].Int = AmmoNames.size();
+		Ammo[Name] = Template;
 		AmmoNames.push_back(Name);
 	}
 
@@ -163,40 +163,40 @@ void _Stats::LoadArmorTable(const std::string &Path) {
 	// Read file
 	while(!File.eof() && File.peek() != EOF) {
 
-		_ArmorTemplate ArmorTemplate;
+		_ItemTemplate Template;
 		std::string Name;
 		std::string ColorName;
 		std::getline(File, Name, '\t');
-		std::getline(File, ArmorTemplate.Name, '\t');
-		std::getline(File, ArmorTemplate.IconIdentifier, '\t');
+		std::getline(File, Template.Name, '\t');
+		std::getline(File, Template.IconIdentifier, '\t');
 		std::getline(File, ColorName, '\t');
 
 		File
-			>> ArmorTemplate.Attributes["strength_required"].Int
-			>> ArmorTemplate.Attributes["damage_block"].Int
-			>> ArmorTemplate.Attributes["damage_resist"].Float
-			>> ArmorTemplate.Attributes["move_speed"].Float;
+			>> Template.Attributes["strength_required"].Int
+			>> Template.Attributes["damage_block"].Int
+			>> Template.Attributes["damage_resist"].Float
+			>> Template.Attributes["move_speed"].Float;
 		File.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
 		// Check for loaded textures
-		if(!Assets.IsTextureLoaded(ArmorTemplate.IconIdentifier))
-			throw std::runtime_error(std::string(__FUNCTION__) + " - Texture not found: " + ArmorTemplate.IconIdentifier);
+		if(!Assets.IsTextureLoaded(Template.IconIdentifier))
+			throw std::runtime_error(std::string(__FUNCTION__) + " - Texture not found: " + Template.IconIdentifier);
 
 		// Set color
 		if(ColorName != "") {
 			if(!Assets.IsColorLoaded(ColorName))
 				throw std::runtime_error(std::string(__FUNCTION__) + " - Cannot find color: " + ColorName);
 
-			ArmorTemplate.Color = Assets.Colors[ColorName];
+			Template.Color = Assets.Colors[ColorName];
 		}
 		else
-			ArmorTemplate.Color = COLOR_WHITE;
+			Template.Color = COLOR_WHITE;
 
 		// Check for duplicates
 		if(Armor.find(Name) != Armor.end())
 			throw std::runtime_error(std::string(__FUNCTION__) + " - Duplicate entry: " + Name);
 
-		Armor[Name] = ArmorTemplate;
+		Armor[Name] = Template;
 	}
 
 	File.close();
@@ -223,6 +223,7 @@ void _Stats::LoadMiscItemTable(const std::string &Path) {
 		std::getline(File, MiscItemTemplate.Name, '\t');
 		std::getline(File, MiscItemTemplate.IconIdentifier, '\t');
 		std::getline(File, ColorName, '\t');
+
 		File >> MiscItemTemplate.Type >> MiscItemTemplate.Level;
 		File.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
@@ -264,40 +265,40 @@ void _Stats::LoadUpgradeTable(const std::string &Path) {
 	// Read file
 	while(!File.eof() && File.peek() != EOF) {
 
-		_UpgradeTemplate UpgradeTemplate;
+		_ItemTemplate Template;
 		std::string Name;
 		std::string ColorName;
 		std::getline(File, Name, '\t');
-		std::getline(File, UpgradeTemplate.Name, '\t');
-		std::getline(File, UpgradeTemplate.IconIdentifier, '\t');
+		std::getline(File, Template.Name, '\t');
+		std::getline(File, Template.IconIdentifier, '\t');
 		std::getline(File, ColorName, '\t');
 
 		File
-			>> UpgradeTemplate.Attributes["upgrade_type"].Int
-			>> UpgradeTemplate.Attributes["weapon_type"].Int
-			>> UpgradeTemplate.Attributes["bonus"].Float;
+			>> Template.Attributes["upgrade_type"].Int
+			>> Template.Attributes["weapon_type"].Int
+			>> Template.Attributes["bonus"].Float;
 
 		File.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
 		// Check for loaded textures
-		if(!Assets.IsTextureLoaded(UpgradeTemplate.IconIdentifier))
-			throw std::runtime_error(std::string(__FUNCTION__) + " - Cannot find texture: " + UpgradeTemplate.IconIdentifier);
+		if(!Assets.IsTextureLoaded(Template.IconIdentifier))
+			throw std::runtime_error(std::string(__FUNCTION__) + " - Cannot find texture: " + Template.IconIdentifier);
 
 		// Set color
 		if(ColorName != "") {
 			if(!Assets.IsColorLoaded(ColorName))
 				throw std::runtime_error(std::string(__FUNCTION__) + " - Cannot find color: " + ColorName);
 
-			UpgradeTemplate.Color = Assets.Colors[ColorName];
+			Template.Color = Assets.Colors[ColorName];
 		}
 		else
-			UpgradeTemplate.Color = COLOR_WHITE;
+			Template.Color = COLOR_WHITE;
 
 		// Check for duplicates
 		if(Upgrades.find(Name) != Upgrades.end())
 			throw std::runtime_error(std::string(__FUNCTION__) + " - Duplicate entry: " + Name);
 
-		Upgrades[Name] = UpgradeTemplate;
+		Upgrades[Name] = Template;
 	}
 
 	File.close();
@@ -489,34 +490,34 @@ void _Stats::LoadItemDrops(const std::string &Path) {
 
 // Creates ammo
 _Item *_Stats::CreateAmmoItem(const std::string &Identifier, int Count, const glm::vec2 &Position) {
-	_AmmoTemplate &AmmoTemplate = Ammo[Identifier];
+	_ItemTemplate &Template = Ammo[Identifier];
 
 	_Item *Item = new _Item();
-	Item->Attributes["ammo_type"].Int = AmmoTemplate.Type;
+	Item->Attributes = Template.Attributes;
 	Item->Type = _Object::AMMO;
-	Item->Name = AmmoTemplate.Name;
+	Item->Name = Template.Name;
 	Item->ID = Identifier;
 	Item->Count = Count;
 	Item->Position = Position;
-	Item->Texture = Assets.Textures[AmmoTemplate.IconIdentifier];
-	Item->Color = AmmoTemplate.Color;
+	Item->Texture = Assets.Textures[Template.IconIdentifier];
+	Item->Color = Template.Color;
 
 	return Item;
 }
 
 // Creates armor
 _Item *_Stats::CreateArmor(const std::string &Identifier, int Count, const glm::vec2 &Position) {
-	_ArmorTemplate &ArmorTemplate = Armor[Identifier];
+	_ItemTemplate &Template = Armor[Identifier];
 
 	_Item *Item = new _Item();
-	Item->Attributes = ArmorTemplate.Attributes;
+	Item->Attributes = Template.Attributes;
 	Item->Type = _Object::ARMOR;
-	Item->Name = ArmorTemplate.Name;
+	Item->Name = Template.Name;
 	Item->ID = Identifier;
 	Item->Count = Count;
 	Item->Position = Position;
-	Item->Texture = Assets.Textures[ArmorTemplate.IconIdentifier];
-	Item->Color = ArmorTemplate.Color;
+	Item->Texture = Assets.Textures[Template.IconIdentifier];
+	Item->Color = Template.Color;
 
 	return Item;
 }
@@ -548,17 +549,17 @@ _Weapon *_Stats::CreateWeapon(const std::string &Identifier, int Count, const gl
 
 // Creates an upgrade item
 _Item *_Stats::CreateUpgradeItem(const std::string &Identifier, int Count, const glm::vec2 &Position) {
-	_UpgradeTemplate &UpgradeTemplate = Upgrades[Identifier];
+	_ItemTemplate &Template = Upgrades[Identifier];
 
 	_Item *Item = new _Item();
-	Item->Attributes = UpgradeTemplate.Attributes;
+	Item->Attributes = Template.Attributes;
 	Item->Type = _Object::UPGRADE;
-	Item->Name = UpgradeTemplate.Name;
+	Item->Name = Template.Name;
 	Item->ID = Identifier;
 	Item->Count = Count;
 	Item->Position = Position;
-	Item->Texture = Assets.Textures[UpgradeTemplate.IconIdentifier];
-	Item->Color = UpgradeTemplate.Color;
+	Item->Texture = Assets.Textures[Template.IconIdentifier];
+	Item->Color = Template.Color;
 
 	return Item;
 }
