@@ -84,28 +84,6 @@ struct _Brush {
 	int ObjectType;
 };
 
-// A single entry for an item group
-struct ItemGroupEntryStruct {
-	ItemGroupEntryStruct() { }
-	ItemGroupEntryStruct(const std::string &ItemIdentifier, float Count, int Type)
-		:	ItemIdentifier(ItemIdentifier),
-		    Count(Count),
-		    Type(Type) { }
-
-	std::string ItemIdentifier;
-	float Count;
-	int Type;
-};
-
-// Item group information
-struct _ItemGroup {
-	_ItemGroup() { }
-
-	std::vector<ItemGroupEntryStruct> Entries;
-	int Quantity;
-	float Total;
-};
-
 // Classes
 class _Assets {
 
@@ -124,12 +102,6 @@ class _Assets {
 		void LoadPrograms(const std::string &Path);
 		void LoadTextures(const std::string &Path);
 		void LoadSounds(const std::string &Path, const std::string &SamplePath);
-		void LoadMiscItemTable(const std::string &Path);
-		void LoadUpgradeTable(const std::string &Path);
-		void LoadAmmoTable(const std::string &Path);
-		void LoadWeaponTable(const std::string &Path);
-		void LoadArmorTable(const std::string &Path);
-		void LoadItemDrops(const std::string &Path);
 
 		void LoadFonts(const std::string &Path, bool LoadFonts=true);
 		void LoadMonsterSet(const std::string &Path);
@@ -151,13 +123,6 @@ class _Assets {
 		bool IsWeaponParticleTemplateLoaded(const std::string &Identifier);
 		bool IsReelLoaded(const std::string &Identifier);
 		bool IsAnimationLoaded(const std::string &Identifier);
-		bool IsMonsterLoaded(const std::string &Identifier);
-		bool IsMiscItemLoaded(const std::string &Identifier);
-		bool IsUpgradeLoaded(const std::string &Identifier);
-		bool IsAmmoLoaded(const std::string &Identifier);
-		bool IsWeaponLoaded(const std::string &Identifier);
-		bool IsArmorLoaded(const std::string &Identifier);
-		bool IsItemGroupLoaded(const std::string &Identifier);
 
 		void UnloadReel(const std::string &Identifier);
 		void UnloadAnimation(const std::string &Identifier);
@@ -172,20 +137,7 @@ class _Assets {
 		_ParticleTemplate *GetParticleTemplate(const std::string &Identifier);
 		_WeaponParticleTemplate *GetWeaponParticleTemplate(const std::string &Identifer);
 		_MonsterTemplate *GetMonsterTemplate(const std::string &Identifier);
-		_MiscItemTemplate *GetMiscItemTemplate(const std::string &Identifier);
-		_UpgradeTemplate *GetUpgradeTemplate(const std::string &Identifier);
-		_AmmoTemplate *GetAmmoTemplate(const std::string &Identifier);
-		_WeaponTemplate *GetWeaponTemplate(const std::string &Identifier);
-		_ArmorTemplate *GetArmorTemplate(const std::string &Identifier);
-		_ItemGroup *GetItemGroup(const std::string &Identifier);
 		_Monster *CreateMonster(const std::string &Identifier, const glm::vec2 &Position);
-		_MiscItem *CreateMiscItem(const std::string &Identifier, int Count, const glm::vec2 &Position);
-		_Ammo *CreateAmmoItem(const std::string &Identifier, int Count, const glm::vec2 &Position);
-		_Ammo *CreateAmmoItem(int Type);
-		_Upgrade *CreateUpgradeItem(const std::string &Identifier, int Count, const glm::vec2 &Position);
-		_Weapon *CreateWeapon(const std::string &Identifier, int Count, const glm::vec2 &Position, bool Generate);
-		_Armor *CreateArmor(const std::string &Identifier, int Count, const glm::vec2 &Position);
-		void GetRandomDrop(const _ItemGroup *ItemGroup, _ObjectSpawn *ObjectSpawn);
 
 		// Data
 		std::unordered_map<std::string, std::string> Strings;
@@ -200,11 +152,8 @@ class _Assets {
 
 		std::vector<std::string> MonsterSet;
 		std::unordered_map<std::string, _MonsterTemplate> MonsterTable;
-		std::unordered_map<std::string, _MiscItemTemplate> MiscItemTable;
-		std::unordered_map<std::string, _UpgradeTemplate> UpgradeTable;
-		std::unordered_map<std::string, _AmmoTemplate> AmmoTable;
-		std::unordered_map<std::string, _WeaponTemplate> WeaponTable;
-		std::unordered_map<std::string, _ArmorTemplate> ArmorTable;
+
+		_WeaponParticleTemplate BlankWeaponParticle;
 
 	private:
 
@@ -214,13 +163,10 @@ class _Assets {
 		std::unordered_map<std::string, AttackSampleTemplateStruct> AttackSampleTable;
 		std::unordered_map<std::string, _ParticleTemplate> ParticleTable;
 		std::unordered_map<std::string, _WeaponParticleTemplate> WeaponParticleTable;
-		std::unordered_map<std::string, _ItemGroup> ItemGroupTable;
-		std::string AmmoTypeIdentifiers[AMMO_TYPES];
 
 		// Data
 		std::unordered_map<std::string, _Reel> Reels;
 		std::unordered_map<std::string, const _Shader *> Shaders;
-		_WeaponParticleTemplate BlankWeaponParticle;
 };
 
 extern _Assets Assets;

@@ -32,7 +32,7 @@ class _Weapon : public _Item {
 
 	public:
 
-		_Weapon(const std::string &Identifier, int Count, const glm::vec2 &Position, const _WeaponTemplate *Weapon, const _Texture *Texture, bool Generate);
+		_Weapon(const std::string &Identifier, int Count, const glm::vec2 &Position, const _WeaponTemplate &Weapon, const _Texture *Texture, bool Generate);
 		~_Weapon() override;
 
 		void Serialize(_Buffer &Buffer) override;
@@ -42,17 +42,9 @@ class _Weapon : public _Item {
 
 		void SetAmmo(int Value);
 		void SetMaxComponents(int Value) { MaxComponents = Value; }
-		void SetSample(int SampleType, int Sample) { Stats.Samples[SampleType] = Sample; }
 		void ReduceAmmo();
 
-		const std::string &GetName() const override { return Stats.Name; }
-		int GetFireRate() const { return Stats.FireRate; }
-		float GetRecoil() const { return Stats.Recoil; }
-		float GetRecoilRegen() const { return Stats.RecoilRegen; }
-		float GetRange() const { return Stats.Range; }
-		float GetZoomScale() const { return Stats.ZoomScale; }
-		int GetWeaponType() const { return Stats.Type; }
-		int GetAmmoType() const { return Stats.AmmoType; }
+		const std::string &GetName() const override;
 		double GetFirePeriod() const { return FirePeriod; }
 		double GetReloadPeriod() const { return ReloadPeriod; }
 		int GetMinDamage() const { return MinDamage; }
@@ -65,17 +57,16 @@ class _Weapon : public _Item {
 		int GetAmmo() const { return Ammo; }
 		int GetMaxComponents() const { return MaxComponents; }
 		int GetComponents() const { return static_cast<int>(Upgrades.size()); }
-		const std::string &GetSample(int SampleType) const { return Stats.Samples[SampleType]; }
+		const std::string &GetSample(int SampleType) const;
 		float GetBonus(int Index) const { return Bonus[Index]; }
 		_Upgrade *GetUpgrade(int Index) const;
 		_ParticleTemplate *GetWeaponParticle(int Index);
 
-		bool IsMelee() const { return GetWeaponType() == WEAPON_MELEE; }
-		virtual std::string GetTypeAsString() const override { return ToString(Stats.Type) + " class weapon"; }
+		bool IsMelee() const { return WeaponType == WEAPON_MELEE; }
+		virtual std::string GetTypeAsString() const override { return ToString(WeaponType) + " class weapon"; }
 		static std::string ToString(int Type);
 
 		std::vector<_Upgrade *> Upgrades;
-		_WeaponTemplate Stats;
 		int Ammo;
 		int RoundSize;
 		int MinDamage;
@@ -87,6 +78,14 @@ class _Weapon : public _Item {
 		double ReloadPeriod;
 		int MaxComponents;
 		int BulletsShot;
+
+		int WeaponType;
+		int FireRate;
+		int AmmoType;
+		int Recoil;
+		int RecoilRegen;
+		float Range;
+		float ZoomScale;
 
 	protected:
 

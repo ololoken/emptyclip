@@ -24,6 +24,11 @@
 #include <string>
 
 // Forward Declarations
+class _Ammo;
+class _Armor;
+class _MiscItem;
+class _Upgrade;
+class _Weapon;
 
 // Used for level information
 struct _Level {
@@ -38,6 +43,28 @@ struct _Skill {
 	float Data[SKILL_COUNT];
 };
 
+// A single entry for an item group
+struct ItemGroupEntryStruct {
+	ItemGroupEntryStruct() { }
+	ItemGroupEntryStruct(const std::string &ItemIdentifier, float Count, int Type)
+		:	ItemIdentifier(ItemIdentifier),
+		    Count(Count),
+		    Type(Type) { }
+
+	std::string ItemIdentifier;
+	float Count;
+	int Type;
+};
+
+// Item group information
+struct _ItemGroup {
+	_ItemGroup() { }
+
+	std::vector<ItemGroupEntryStruct> Entries;
+	int Quantity;
+	float Total;
+};
+
 // Classes
 class _Stats {
 
@@ -48,6 +75,18 @@ class _Stats {
 
 		void LoadLevels(const std::string &Path);
 		void LoadSkills(const std::string &Path);
+		void LoadAmmoTable(const std::string &Path);
+		void LoadArmorTable(const std::string &Path);
+		void LoadMiscItemTable(const std::string &Path);
+		void LoadUpgradeTable(const std::string &Path);
+		void LoadWeaponTable(const std::string &Path);
+		void LoadItemDrops(const std::string &Path);
+
+		_Ammo *CreateAmmoItem(const std::string &Identifier, int Count, const glm::vec2 &Position);
+		_Armor *CreateArmor(const std::string &Identifier, int Count, const glm::vec2 &Position);
+		_MiscItem *CreateMiscItem(const std::string &Identifier, int Count, const glm::vec2 &Position);
+		_Upgrade *CreateUpgradeItem(const std::string &Identifier, int Count, const glm::vec2 &Position);
+		_Weapon *CreateWeapon(const std::string &Identifier, int Count, const glm::vec2 &Position, bool Generate);
 
 		int GetLevel(int64_t Experience);
 		int64_t GetValidExperience(int64_t Experience);
@@ -60,11 +99,21 @@ class _Stats {
 		float GetSkill(int Level, int Type) const { return Skills[Level].Data[Type]; }
 		float GetSkillPercentImprovement(int Level, int Type) const { return (Skills[Level].Data[Type] - 1.0f) * 100.0f; }
 
-		std::vector<_Level> Levels;
-		std::vector<_Skill> Skills;
+		_ItemGroup *GetItemGroup(const std::string &Identifier);
+		void GetRandomDrop(const _ItemGroup *ItemGroup, _ObjectSpawn *ObjectSpawn);
+
+		std::unordered_map<std::string, _AmmoTemplate> AmmoTable;
+		std::unordered_map<std::string, _ArmorTemplate> ArmorTable;
+		std::unordered_map<std::string, _MiscItemTemplate> MiscItemTable;
+		std::unordered_map<std::string, _UpgradeTemplate> UpgradeTable;
+		std::unordered_map<std::string, _WeaponTemplate> WeaponTable;
+
+		std::unordered_map<std::string, _ItemGroup> ItemGroupTable;
 
 	private:
 
+		std::vector<_Level> Levels;
+		std::vector<_Skill> Skills;
 };
 
 extern _Stats Stats;

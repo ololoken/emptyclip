@@ -19,18 +19,18 @@
 #include <objects/templates.h>
 
 // Constructor
-_Upgrade::_Upgrade(const std::string &Identifier, int Count, const glm::vec2 &Position, const _UpgradeTemplate *Upgrade, const _Texture *Texture) {
+_Upgrade::_Upgrade(const std::string &Identifier, int Count, const glm::vec2 &Position, const _UpgradeTemplate &Upgrade, const _Texture *Texture) {
 	this->Type = _Object::UPGRADE;
 	this->Identifier = Identifier;
 	this->Count = Count;
 	this->Position = Position;
 	this->Texture = Texture;
 
-	this->Name = Upgrade->Name;
-	this->Color = Upgrade->Color;
-	this->WeaponType = Upgrade->WeaponType;
-	this->UpgradeType = Upgrade->UpgradeType;
-	this->Bonus = Upgrade->Bonus;
+	this->Name = Upgrade.Name;
+	this->Color = Upgrade.Color;
+	this->WeaponType = Upgrade.WeaponType;
+	this->UpgradeType = Upgrade.UpgradeType;
+	this->Bonus = Upgrade.Bonus;
 }
 
 // Destructor

@@ -21,6 +21,7 @@
 #include <assets.h>
 #include <camera.h>
 #include <events.h>
+#include <stats.h>
 #include <program.h>
 #include <objectmanager.h>
 #include <objects/entity.h>
@@ -93,31 +94,31 @@ _Map::_Map(const std::string &Filename) : _Map() {
 		// Check for items
 		switch(Object->Type) {
 			case _Object::MONSTER:
-				if(!Assets.IsMonsterLoaded(Object->Identifier))
+				if(Assets.MonsterTable.find(Object->Identifier) == Assets.MonsterTable.end())
 					throw std::runtime_error("Cannot find monster: " + Object->Identifier);
 			break;
 			case _Object::MEDKIT:
-				if(!Assets.IsMiscItemLoaded(Object->Identifier))
+				if(Stats.MiscItemTable.find(Object->Identifier) == Stats.MiscItemTable.end())
 					throw std::runtime_error("Cannot find medkit: " + Object->Identifier);
 			break;
 			case _Object::AMMO:
-				if(!Assets.IsAmmoLoaded(Object->Identifier))
+				if(Stats.AmmoTable.find(Object->Identifier) == Stats.AmmoTable.end())
 					throw std::runtime_error("Cannot find ammo: " + Object->Identifier);
 			break;
 			case _Object::UPGRADE:
-				if(!Assets.IsUpgradeLoaded(Object->Identifier))
+				if(Stats.UpgradeTable.find(Object->Identifier) == Stats.UpgradeTable.end())
 					throw std::runtime_error("Cannot find upgrade: " + Object->Identifier);
 			break;
 			case _Object::WEAPON:
-				if(!Assets.IsWeaponLoaded(Object->Identifier))
+				if(Stats.WeaponTable.find(Object->Identifier) == Stats.WeaponTable.end())
 					throw std::runtime_error("Cannot find weapon: " + Object->Identifier);
 			break;
 			case _Object::ARMOR:
-				if(!Assets.IsArmorLoaded(Object->Identifier))
+				if(Stats.ArmorTable.find(Object->Identifier) == Stats.ArmorTable.end())
 					throw std::runtime_error("Cannot find armor: " + Object->Identifier);
 			break;
 			case _Object::KEY:
-				if(!Assets.IsMiscItemLoaded(Object->Identifier))
+				if(Stats.MiscItemTable.find(Object->Identifier) == Stats.MiscItemTable.end())
 					throw std::runtime_error("Cannot find key: " + Object->Identifier);
 			break;
 		}
@@ -142,7 +143,7 @@ _Map::_Map(const std::string &Filename) : _Map() {
 		std::string EventParticleIdentifier = GetCSVText(InputFile);
 
 		// Check for existence
-		if(EventMonsterIdentifier != "" && !Assets.IsMonsterLoaded(EventMonsterIdentifier))
+		if(EventMonsterIdentifier != "" && Assets.MonsterTable.find(EventMonsterIdentifier) == Assets.MonsterTable.end())
 			throw std::runtime_error("Cannot find monster: " + EventMonsterIdentifier);
 		if(EventParticleIdentifier != "" && !Assets.IsParticleLoaded(EventParticleIdentifier))
 			throw std::runtime_error("Cannot find particle: " + EventParticleIdentifier);

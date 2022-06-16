@@ -16,21 +16,22 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 *******************************************************************************/
 #include <objects/armor.h>
+#include <objects/templates.h>
 
 // Constructor
-_Armor::_Armor(const std::string &Identifier, int Count, const glm::vec2 &Position, const _ArmorTemplate *Armor, const _Texture *Texture) {
+_Armor::_Armor(const std::string &Identifier, int Count, const glm::vec2 &Position, const _ArmorTemplate &Armor, const _Texture *Texture) {
 	this->Type = _Object::ARMOR;
 	this->Identifier = Identifier;
 	this->Count = Count;
 	this->Texture = Texture;
 	this->Position = Position;
 
-	StrengthRequirement = Armor->StrengthRequirement;
-	DamageBlock = Armor->DamageBlock;
-	DamageResist = Armor->DamageResist;
-	MovementSpeed = Armor->MovementSpeed;
-	Name = Armor->Name;
-	Color = Armor->Color;
+	StrengthRequirement = Armor.StrengthRequirement;
+	DamageBlock = Armor.DamageBlock;
+	DamageResist = Armor.DamageResist;
+	MovementSpeed = Armor.MovementSpeed;
+	Name = Armor.Name;
+	Color = Armor.Color;
 }
 
 // Destructor

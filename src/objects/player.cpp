@@ -319,26 +319,26 @@ void _Player::LoadItems(_Buffer &Buffer) {
 		switch(Type) {
 			case _Object::MEDKIT:
 				Identifier = Buffer.ReadString();
-				Inventory[Slot] = Assets.CreateMiscItem(Identifier, Count, glm::vec2(0, 0));
+				Inventory[Slot] = Stats.CreateMiscItem(Identifier, Count, glm::vec2(0, 0));
 			break;
 			case _Object::AMMO:
 				Identifier = Buffer.ReadString();
-				Inventory[Slot] = Assets.CreateAmmoItem(Identifier, Count, glm::vec2(0, 0));
+				Inventory[Slot] = Stats.CreateAmmoItem(Identifier, Count, glm::vec2(0, 0));
 			break;
 			case _Object::UPGRADE:
 				Identifier = Buffer.ReadString();
-				Inventory[Slot] = Assets.CreateUpgradeItem(Identifier, Count, glm::vec2(0, 0));
+				Inventory[Slot] = Stats.CreateUpgradeItem(Identifier, Count, glm::vec2(0, 0));
 			break;
 			case _Object::WEAPON:
 				LoadWeapon(Buffer, Count, Slot);
 			break;
 			case _Object::ARMOR:
 				Identifier = Buffer.ReadString();
-				Inventory[Slot] = Assets.CreateArmor(Identifier, Count, glm::vec2(0, 0));
+				Inventory[Slot] = Stats.CreateArmor(Identifier, Count, glm::vec2(0, 0));
 			break;
 			case _Object::KEY:
 				Identifier = Buffer.ReadString();
-				Inventory[Slot] = Assets.CreateMiscItem(Identifier, Count, glm::vec2(0, 0));
+				Inventory[Slot] = Stats.CreateMiscItem(Identifier, Count, glm::vec2(0, 0));
 			break;
 		}
 	}
@@ -353,7 +353,7 @@ void _Player::LoadWeapon(_Buffer &Buffer, int Count, int InventoryIndex) {
 	int MaxComponents = Buffer.Read<int>();
 
 	// Create weapon
-	_Weapon *Weapon = Assets.CreateWeapon(Identifier, Count, glm::vec2(0, 0), false);
+	_Weapon *Weapon = Stats.CreateWeapon(Identifier, Count, glm::vec2(0, 0), false);
 	Weapon->SetMaxComponents(MaxComponents);
 	LoadUpgrades(Buffer, Weapon);
 	Weapon->RecalculateStats();
@@ -371,7 +371,7 @@ void _Player::LoadUpgrades(_Buffer &Buffer, _Weapon *Weapon) {
 	// Read data
 	for(int i = 0; i < Components; i++) {
 		std::string Identifier = Buffer.ReadString();
-		_Upgrade *Upgrade = Assets.CreateUpgradeItem(Identifier, 1, glm::vec2(0, 0));
+		_Upgrade *Upgrade = Stats.CreateUpgradeItem(Identifier, 1, glm::vec2(0, 0));
 		if(!Weapon->AddComponent(Upgrade))
 			delete Upgrade;
 	}
@@ -885,7 +885,7 @@ int _Player::GetWeaponAmmoType() const {
 	if(!HasMainHand())
 		return AMMO_NONE;
 
-	return GetMainHand()->GetAmmoType();
+	return GetMainHand()->AmmoType;
 }
 
 // Determines what type of ammo an item in the inventory is
@@ -911,13 +911,13 @@ bool _Player::IsRightClip(const _Item *Item) const {
 bool _Player::HasAmmo() const {
 
 	if(AttackRequestType == WEAPONATTACK_MAIN) {
-		if(!HasMainHand() || GetMainHand()->GetAmmoType() == AMMO_NONE)
+		if(!HasMainHand() || GetMainHand()->AmmoType == AMMO_NONE)
 			return true;
 
 		return GetMainHand()->GetAmmo() > 0;
 	}
 	else if(AttackRequestType == WEAPONATTACK_MELEE) {
-		if(!HasMelee() || GetMelee()->GetAmmoType() == AMMO_NONE)
+		if(!HasMelee() || GetMelee()->AmmoType == AMMO_NONE)
 			return true;
 
 		return GetMelee()->GetAmmo() > 0;
@@ -1189,17 +1189,17 @@ void _Player::RecalculateStats() {
 		// Get weapon stats
 		Weapon[WEAPONATTACK_MAIN].MinAccuracy = GetMainHand()->GetMinAccuracy();
 		Weapon[WEAPONATTACK_MAIN].MaxAccuracy = GetMainHand()->GetMaxAccuracy();
-		Weapon[WEAPONATTACK_MAIN].Recoil = GetMainHand()->GetRecoil();
-		Weapon[WEAPONATTACK_MAIN].RecoilRegen = GetMainHand()->GetRecoilRegen();
-		Weapon[WEAPONATTACK_MAIN].Range = GetMainHand()->GetRange();
-		Weapon[WEAPONATTACK_MAIN].FireRate = GetMainHand()->GetFireRate();
+		Weapon[WEAPONATTACK_MAIN].Recoil = GetMainHand()->Recoil;
+		Weapon[WEAPONATTACK_MAIN].RecoilRegen = GetMainHand()->RecoilRegen;
+		Weapon[WEAPONATTACK_MAIN].Range = GetMainHand()->Range;
+		Weapon[WEAPONATTACK_MAIN].FireRate = GetMainHand()->FireRate;
 		Weapon[WEAPONATTACK_MAIN].FirePeriod = GetMainHand()->GetFirePeriod();
 		Weapon[WEAPONATTACK_MAIN].MinDamage = GetMainHand()->GetMinDamage();
 		Weapon[WEAPONATTACK_MAIN].MaxDamage = GetMainHand()->GetMaxDamage();
 		Weapon[WEAPONATTACK_MAIN].ReloadPeriod = GetMainHand()->GetReloadPeriod();
 		Weapon[WEAPONATTACK_MAIN].BulletsShot = GetMainHand()->BulletsShot;
-		Weapon[WEAPONATTACK_MAIN].ZoomScale = GetMainHand()->GetZoomScale();
-		MainWeaponType = GetMainHand()->GetWeaponType();
+		Weapon[WEAPONATTACK_MAIN].ZoomScale = GetMainHand()->ZoomScale;
+		MainWeaponType = GetMainHand()->WeaponType;
 	}
 	else
 		MainWeaponType = WEAPON_MELEE;
@@ -1208,16 +1208,16 @@ void _Player::RecalculateStats() {
 	if(HasMelee()) {
 		Weapon[WEAPONATTACK_MELEE].MinAccuracy = GetMelee()->GetMinAccuracy();
 		Weapon[WEAPONATTACK_MELEE].MaxAccuracy = GetMelee()->GetMaxAccuracy();
-		Weapon[WEAPONATTACK_MELEE].Recoil = GetMelee()->GetRecoil();
-		Weapon[WEAPONATTACK_MELEE].RecoilRegen = GetMelee()->GetRecoilRegen();
-		Weapon[WEAPONATTACK_MELEE].Range = GetMelee()->GetRange();
-		Weapon[WEAPONATTACK_MELEE].FireRate = GetMelee()->GetFireRate();
+		Weapon[WEAPONATTACK_MELEE].Recoil = GetMelee()->Recoil;
+		Weapon[WEAPONATTACK_MELEE].RecoilRegen = GetMelee()->RecoilRegen;
+		Weapon[WEAPONATTACK_MELEE].Range = GetMelee()->Range;
+		Weapon[WEAPONATTACK_MELEE].FireRate = GetMelee()->FireRate;
 		Weapon[WEAPONATTACK_MELEE].FirePeriod = GetMelee()->GetFirePeriod();
 		Weapon[WEAPONATTACK_MELEE].MinDamage = GetMelee()->GetMinDamage();
 		Weapon[WEAPONATTACK_MELEE].MaxDamage = GetMelee()->GetMaxDamage();
 		Weapon[WEAPONATTACK_MELEE].ReloadPeriod = GetMelee()->GetReloadPeriod();
 		Weapon[WEAPONATTACK_MELEE].BulletsShot = GetMelee()->BulletsShot;
-		Weapon[WEAPONATTACK_MELEE].ZoomScale = GetMelee()->GetZoomScale();
+		Weapon[WEAPONATTACK_MELEE].ZoomScale = GetMelee()->ZoomScale;
 	}
 
 	// Set up main stats based on weapon
@@ -1364,7 +1364,7 @@ int _Player::GetInventoryMaxStack() const { return Stats.GetSkill(Skills[SKILL_M
 bool _Player::CanUseMedkit() const { return (MedkitTimer > PLAYER_MEDKITPERIOD) && Health < MaxHealth; }
 bool _Player::CanReload() const { return HasMainHand() && !Reloading && !SwitchingWeapons && !IsMeleeAttacking() && GetMainHand()->GetAmmo() != GetMainHand()->GetRoundSize() && HasClips(); }
 
-bool _Player::IsMelee() const { return GetMainHand() == nullptr || GetMainHand()->GetWeaponType() == WEAPON_MELEE; }
+bool _Player::IsMelee() const { return GetMainHand() == nullptr || GetMainHand()->WeaponType == WEAPON_MELEE; }
 
 void _Player::SetMainHand(_Weapon *Weapon) { Inventory[INVENTORY_MAINHAND] = Weapon; }
 void _Player::SetOffHand(_Weapon *Weapon) { Inventory[INVENTORY_OFFHAND] = Weapon; }

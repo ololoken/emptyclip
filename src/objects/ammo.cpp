@@ -19,14 +19,14 @@
 #include <objects/templates.h>
 
 // Constructor
-_Ammo::_Ammo(const std::string &Identifier, int Count, const glm::vec2 &Position, const _AmmoTemplate *Ammo, const _Texture *Texture) {
-	this->AmmoType = Ammo->AmmoType;
+_Ammo::_Ammo(const std::string &Identifier, int Count, const glm::vec2 &Position, const _AmmoTemplate &Ammo, const _Texture *Texture) {
+	this->AmmoType = Ammo.AmmoType;
 	this->Type = _Object::AMMO;
 	this->Identifier = Identifier;
 	this->Count = Count;
-	this->Name = Ammo->Name;
+	this->Name = Ammo.Name;
 	this->Texture = Texture;
-	this->Color = Ammo->Color;
+	this->Color = Ammo.Color;
 	this->Position = Position;
 }
 

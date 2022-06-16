@@ -19,13 +19,13 @@
 #include <objects/templates.h>
 
 // Constructor
-_MiscItem::_MiscItem(const std::string &Identifier, int Count, const glm::vec2 &Position, const _MiscItemTemplate *MiscItem, const _Texture *Texture) {
+_MiscItem::_MiscItem(const std::string &Identifier, int Count, const glm::vec2 &Position, const _MiscItemTemplate &MiscItem, const _Texture *Texture) {
 	this->Identifier = Identifier;
 	this->Count = Count;
 	this->Texture = Texture;
 	this->Position = Position;
-	this->Name = MiscItem->Name;
-	this->Color = MiscItem->Color;
-	this->Level = MiscItem->Level;
-	this->Type = MiscItem->Type;
+	this->Name = MiscItem.Name;
+	this->Color = MiscItem.Color;
+	this->Level = MiscItem.Level;
+	this->Type = MiscItem.Type;
 }

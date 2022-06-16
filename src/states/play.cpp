@@ -31,6 +31,7 @@
 #include <utils.h>
 #include <particles.h>
 #include <program.h>
+#include <stats.h>
 #include <objects/entity.h>
 #include <objects/player.h>
 #include <objects/monster.h>
@@ -698,15 +699,12 @@ void _PlayState::UseObject() {
 			if(Event->ItemIdentifier != "") {
 				int ItemIndex = Player->FindItem(Event->ItemIdentifier);
 				if(ItemIndex == -1) {
-					if(Assets.IsMiscItemLoaded(Event->ItemIdentifier))
-						HUD->ShowMessageBox("You need a " + Assets.GetMiscItemTemplate(Event->ItemIdentifier)->Name, HUD_KEYMESSAGETIME);
-
+					HUD->ShowMessageBox("You need a " + Stats.MiscItemTable[Event->ItemIdentifier].Name, HUD_KEYMESSAGETIME);
 					return;
 				}
 
-				if(Player->UseItem(ItemIndex, true)) {
+				if(Player->UseItem(ItemIndex, true))
 					HUD->ShowTextMessage("KEY USED", 2.0f);
-				}
 			}
 
 			// Change map
@@ -729,7 +727,7 @@ void _PlayState::CreateItemDrop(const _Entity *Entity) {
 	if(Entity->ItemGroupIdentifier == "")
 		return;
 
-	_ItemGroup *ItemGroup = Assets.GetItemGroup(Entity->ItemGroupIdentifier);
+	_ItemGroup *ItemGroup = &Stats.ItemGroupTable[Entity->ItemGroupIdentifier];
 	for(int i = 0; i < ItemGroup->Quantity; i++) {
 
 		// Spawn random item
@@ -737,7 +735,7 @@ void _PlayState::CreateItemDrop(const _Entity *Entity) {
 		ObjectSpawn.Position = GenerateRandomPointInCircle(PLAYER_RADIUS) + Entity->Position;
 
 		// Roll for drop
-		Assets.GetRandomDrop(ItemGroup, &ObjectSpawn);
+		Stats.GetRandomDrop(ItemGroup, &ObjectSpawn);
 		SpawnObject(&ObjectSpawn, true);
 	}
 }
@@ -782,7 +780,7 @@ void _PlayState::CheckEvents(const _Entity *Entity) {
 		if(Event->Active) {
 			switch(Event->Type) {
 				case EVENT_SPAWN:
-					if(Assets.IsMonsterLoaded(Event->MonsterIdentifier)) {
+					if(Assets.MonsterTable.find(Event->MonsterIdentifier) != Assets.MonsterTable.end()) {
 						Event->StartTimer();
 						ActiveEvents.push_back(Event);
 					}
@@ -967,22 +965,22 @@ void _PlayState::SpawnObject(_ObjectSpawn *ObjectSpawn, bool GenerateStats) {
 			AddMonster(Assets.CreateMonster(ObjectSpawn->Identifier, ObjectSpawn->Position));
 		break;
 		case _Object::MEDKIT:
-			Map->AddItem(Assets.CreateMiscItem(ObjectSpawn->Identifier, 1, ObjectSpawn->Position));
+			Map->AddItem(Stats.CreateMiscItem(ObjectSpawn->Identifier, 1, ObjectSpawn->Position));
 		break;
 		case _Object::AMMO:
-			Map->AddItem(Assets.CreateAmmoItem(ObjectSpawn->Identifier, 1, ObjectSpawn->Position));
+			Map->AddItem(Stats.CreateAmmoItem(ObjectSpawn->Identifier, 1, ObjectSpawn->Position));
 		break;
 		case _Object::UPGRADE:
-			Map->AddItem(Assets.CreateUpgradeItem(ObjectSpawn->Identifier, 1, ObjectSpawn->Position));
+			Map->AddItem(Stats.CreateUpgradeItem(ObjectSpawn->Identifier, 1, ObjectSpawn->Position));
 		break;
 		case _Object::WEAPON:
-			Map->AddItem(Assets.CreateWeapon(ObjectSpawn->Identifier, 1, ObjectSpawn->Position, GenerateStats));
+			Map->AddItem(Stats.CreateWeapon(ObjectSpawn->Identifier, 1, ObjectSpawn->Position, GenerateStats));
 		break;
 		case _Object::ARMOR:
-			Map->AddItem(Assets.CreateArmor(ObjectSpawn->Identifier, 1, ObjectSpawn->Position));
+			Map->AddItem(Stats.CreateArmor(ObjectSpawn->Identifier, 1, ObjectSpawn->Position));
 		break;
 		case _Object::KEY:
-			Map->AddItem(Assets.CreateMiscItem(ObjectSpawn->Identifier, 1, ObjectSpawn->Position));
+			Map->AddItem(Stats.CreateMiscItem(ObjectSpawn->Identifier, 1, ObjectSpawn->Position));
 		break;
 	}
 }

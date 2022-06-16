@@ -225,6 +225,17 @@ struct _WeaponTemplate {
 	int FireRate;
 };
 
+// Holds information about armor
+struct _ArmorTemplate {
+	std::string Name;
+	std::string IconIdentifier;
+	glm::vec4 Color;
+	int StrengthRequirement;
+	int DamageBlock;
+	float DamageResist;
+	float MovementSpeed;
+};
+
 // Holds information about a monster
 struct _MonsterTemplate {
 	glm::vec4 Color;

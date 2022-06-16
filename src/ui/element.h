@@ -23,7 +23,7 @@
 #include <vector>
 
 // Forward Declarations
-class _Style;
+struct _Style;
 struct _KeyEvent;
 
 // Classes

@@ -20,23 +20,14 @@
 // Libraries
 #include <objects/item.h>
 
-// Holds information about armor
-struct _ArmorTemplate {
-	std::string Name;
-	std::string IconIdentifier;
-	glm::vec4 Color;
-	int StrengthRequirement;
-	int DamageBlock;
-	float DamageResist;
-	float MovementSpeed;
-};
+struct _ArmorTemplate;
 
 // Classes
 class _Armor : public _Item {
 
 	public:
 
-		_Armor(const std::string &Identifier, int Count, const glm::vec2 &Position, const _ArmorTemplate *Armor, const _Texture *Texture);
+		_Armor(const std::string &Identifier, int Count, const glm::vec2 &Position, const _ArmorTemplate &Armor, const _Texture *Texture);
 		~_Armor() override;
 
 		virtual std::string GetTypeAsString() const override { return "Armor"; }

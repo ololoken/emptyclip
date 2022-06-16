@@ -346,7 +346,7 @@ void _HUD::Render() {
 		// Compare with equipment
 		if(CursorOverItem->Type == _Object::WEAPON) {
 			_Weapon *Weapon = (_Weapon *)CursorOverItem;
-			if(Weapon->GetWeaponType() == WEAPON_MELEE) {
+			if(Weapon->WeaponType == WEAPON_MELEE) {
 				if(Weapon != Player->GetMelee())
 					RenderItemInfo(Player->GetMelee(), -100, Graphics.CurrentSize.y/2);
 			}
@@ -541,7 +541,7 @@ void _HUD::RenderItemInfo(_Item *Item, int DrawX, int DrawY) {
 	// Check weapon type
 	if(Item->Type == _Object::WEAPON) {
 		_Weapon *CompareWeapon = (_Weapon *)Item;
-		if(CompareWeapon->GetWeaponType() == WEAPON_MELEE)
+		if(CompareWeapon->WeaponType == WEAPON_MELEE)
 			ExistingWeapon = Player->GetMelee();
 	}
 
@@ -617,7 +617,7 @@ void _HUD::RenderItemInfo(_Item *Item, int DrawX, int DrawY) {
 				DrawY += 20;
 				Buffer << Weapon->BulletsShot;
 				std::string AttackCountText;
-				if(Weapon->GetWeaponType() == WEAPON_MELEE)
+				if(Weapon->WeaponType == WEAPON_MELEE)
 					AttackCountText = "Attacks/Swing";
 				else
 					AttackCountText = "Bullets/Shot";
@@ -639,7 +639,7 @@ void _HUD::RenderItemInfo(_Item *Item, int DrawX, int DrawY) {
 				DrawY += 20;
 				Buffer << std::setprecision(3) << 1 / Weapon->GetFirePeriod() << "/s";
 				std::string AttackCountText;
-				if(Weapon->GetWeaponType() == WEAPON_MELEE)
+				if(Weapon->WeaponType == WEAPON_MELEE)
 					AttackCountText = "Attack Rate";
 				else
 					AttackCountText = "Fire Rate";
@@ -655,7 +655,7 @@ void _HUD::RenderItemInfo(_Item *Item, int DrawX, int DrawY) {
 				if(Weapon->GetAverageAccuracy() < ExistingWeapon->GetAverageAccuracy()) {
 
 					// Less is worse for melee
-					if(Weapon->GetWeaponType() == WEAPON_MELEE)
+					if(Weapon->WeaponType == WEAPON_MELEE)
 						TextColor = COLOR_RED;
 					else
 						TextColor = COLOR_GREEN;
@@ -663,14 +663,14 @@ void _HUD::RenderItemInfo(_Item *Item, int DrawX, int DrawY) {
 				else if(Weapon->GetAverageAccuracy() > ExistingWeapon->GetAverageAccuracy()) {
 
 					// Bigger is better for melee
-					if(Weapon->GetWeaponType() == WEAPON_MELEE)
+					if(Weapon->WeaponType == WEAPON_MELEE)
 						TextColor = COLOR_GREEN;
 					else
 						TextColor = COLOR_RED;
 				}
 			}
 			DrawY += 20;
-			if(Weapon->GetWeaponType() == WEAPON_MELEE) {
+			if(Weapon->WeaponType == WEAPON_MELEE) {
 				Buffer << Weapon->GetMaxAccuracy() << " degrees";
 				Fonts[FONT_MEDIUM]->DrawText("Swing Arc", glm::vec2(DrawX - PadX, DrawY), RIGHT_BASELINE);
 			}
@@ -700,9 +700,9 @@ void _HUD::RenderItemInfo(_Item *Item, int DrawX, int DrawY) {
 			}
 
 			// Ammo type
-			if(Weapon->GetAmmoType()) {
+			if(Weapon->AmmoType) {
 				DrawY += 20;
-				Buffer << _Ammo::ToString(Weapon->GetAmmoType());
+				Buffer << _Ammo::ToString(Weapon->AmmoType);
 				Fonts[FONT_MEDIUM]->DrawText("Ammo Type", glm::vec2(DrawX - PadX, DrawY), RIGHT_BASELINE);
 				Fonts[FONT_MEDIUM]->DrawText(Buffer.str(), glm::vec2(DrawX + PadX, DrawY));
 				Buffer.str("");
@@ -733,7 +733,7 @@ void _HUD::RenderItemInfo(_Item *Item, int DrawX, int DrawY) {
 					if(First)
 						DrawY += 10;
 					DrawY += 20;
-					Buffer << "+" << Weapon->GetBonus(i) * 100.0f << "% " << _Upgrade::ToString(i, Weapon->GetWeaponType());
+					Buffer << "+" << Weapon->GetBonus(i) * 100.0f << "% " << _Upgrade::ToString(i, Weapon->WeaponType);
 					Fonts[FONT_MEDIUM]->DrawText(Buffer.str(), glm::vec2(DrawX, DrawY), CENTER_BASELINE, TextColor);
 					Buffer.str("");
 

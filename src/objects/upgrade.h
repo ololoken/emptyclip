@@ -28,7 +28,7 @@ class _Upgrade : public _Item {
 
 	public:
 
-		_Upgrade(const std::string &Identifier, int Count, const glm::vec2 &Position, const _UpgradeTemplate *Upgrade, const _Texture *Texture);
+		_Upgrade(const std::string &Identifier, int Count, const glm::vec2 &Position, const _UpgradeTemplate &Upgrade, const _Texture *Texture);
 		~_Upgrade() override;
 
 		void SetUpgradeType(int UpgradeType) { this->UpgradeType = UpgradeType; }

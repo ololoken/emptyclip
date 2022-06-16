@@ -121,6 +121,7 @@ void _Framework::Close() {
 	if(State)
 		State->Close();
 
+	Stats.Close();
 	Assets.Close();
 	delete FrameLimit;
 

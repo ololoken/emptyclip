@@ -30,6 +30,7 @@
 #include <config.h>
 #include <constants.h>
 #include <program.h>
+#include <stats.h>
 #include <ui/element.h>
 #include <ui/button.h>
 #include <ui/textbox.h>
@@ -1057,31 +1058,31 @@ void _EditorState::LoadPalettes() {
 	LoadMonsterButtons();
 
 	// Load items
-	for(const auto &MiscItem : Assets.MiscItemTable)
+	for(const auto &MiscItem : Stats.MiscItemTable)
 		Icons.push_back(_Brush(MiscItem.first, MiscItem.second.Name, Assets.Textures[MiscItem.second.IconIdentifier], MiscItem.second.Color, MiscItem.second.Type));
 	LoadPaletteButtons(Icons, EDITMODE_ITEMS);
 	Icons.clear();
 
 	// Load ammo
-	for(const auto &Ammo : Assets.AmmoTable)
+	for(const auto &Ammo : Stats.AmmoTable)
 		Icons.push_back(_Brush(Ammo.first, Ammo.second.Name, Assets.Textures[Ammo.second.IconIdentifier], Ammo.second.Color, _Object::AMMO));
 	LoadPaletteButtons(Icons, EDITMODE_AMMO);
 	Icons.clear();
 
 	// Load upgrades
-	for(const auto &Upgrade : Assets.UpgradeTable)
+	for(const auto &Upgrade : Stats.UpgradeTable)
 		Icons.push_back(_Brush(Upgrade.first, Upgrade.second.Name, Assets.Textures[Upgrade.second.IconIdentifier], Upgrade.second.Color, _Object::UPGRADE));
 	LoadPaletteButtons(Icons, EDITMODE_UPGRADES);
 	Icons.clear();
 
 	// Load weapons
-	for(const auto &Weapon : Assets.WeaponTable)
+	for(const auto &Weapon : Stats.WeaponTable)
 		Icons.push_back(_Brush(Weapon.first, Weapon.second.Name, Assets.Textures[Weapon.second.IconIdentifier], Weapon.second.Color, _Object::WEAPON));
 	LoadPaletteButtons(Icons, EDITMODE_WEAPONS);
 	Icons.clear();
 
 	// Load armor
-	for(const auto &Armor : Assets.ArmorTable)
+	for(const auto &Armor : Stats.ArmorTable)
 		Icons.push_back(_Brush(Armor.first, Armor.second.Name, Assets.Textures[Armor.second.IconIdentifier], Armor.second.Color, _Object::ARMOR));
 	LoadPaletteButtons(Icons, EDITMODE_ARMOR);
 	Icons.clear();
@@ -1103,8 +1104,8 @@ void _EditorState::LoadMonsterButtons() {
 	_MonsterTemplate *Monster;
 
 	for(size_t i = 0; i < Assets.MonsterSet.size(); i++) {
-		if(!Assets.IsMonsterLoaded(Assets.MonsterSet[i])) {
-			throw std::runtime_error("_Database::GetMonsterList - Cannot find monster: " + Assets.MonsterSet[i]);
+		if(Assets.MonsterTable.find(Assets.MonsterSet[i]) == Assets.MonsterTable.end()) {
+			throw std::runtime_error(std::string(__PRETTY_FUNCTION__) + " - Cannot find monster: " + Assets.MonsterSet[i]);
 		}
 		else {
 			Monster = Assets.GetMonsterTemplate(Assets.MonsterSet[i]);
@@ -1333,37 +1334,32 @@ void _EditorState::DrawObject(float OffsetX, float OffsetY, const _ObjectSpawn *
 			Scale = Monster->Scale;
 			Depth = OBJECT_Z;
 		} break;
+		case _Object::KEY:
 		case _Object::MEDKIT: {
-			_MiscItemTemplate *MiscItem = Assets.GetMiscItemTemplate(Object->Identifier);
-			Texture = Assets.Textures[MiscItem->IconIdentifier];
-			Color = MiscItem->Color;
+			_MiscItemTemplate &MiscItem = Stats.MiscItemTable[Object->Identifier];
+			Texture = Assets.Textures[MiscItem.IconIdentifier];
+			Color = MiscItem.Color;
 		} break;
 		case _Object::AMMO: {
-			_AmmoTemplate *Ammo = Assets.GetAmmoTemplate(Object->Identifier);
-			Texture = Assets.Textures[Ammo->IconIdentifier];
-			Color = Ammo->Color;
+			_AmmoTemplate &Ammo = Stats.AmmoTable[Object->Identifier];
+			Texture = Assets.Textures[Ammo.IconIdentifier];
+			Color = Ammo.Color;
 		} break;
 		case _Object::UPGRADE: {
-			_UpgradeTemplate *Upgrade = Assets.GetUpgradeTemplate(Object->Identifier);
-			Texture = Assets.Textures[Upgrade->IconIdentifier];
-			Color = Upgrade->Color;
+			_UpgradeTemplate &Upgrade = Stats.UpgradeTable[Object->Identifier];
+			Texture = Assets.Textures[Upgrade.IconIdentifier];
+			Color = Upgrade.Color;
 		} break;
 		case _Object::WEAPON: {
-			_WeaponTemplate *Weapon = Assets.GetWeaponTemplate(Object->Identifier);
-			Texture = Assets.Textures[Weapon->IconIdentifier];
-			Color = Weapon->Color;
+			_WeaponTemplate &Weapon = Stats.WeaponTable[Object->Identifier];
+			Texture = Assets.Textures[Weapon.IconIdentifier];
+			Color = Weapon.Color;
 		} break;
 		case _Object::ARMOR: {
-			_ArmorTemplate *Armor = Assets.GetArmorTemplate(Object->Identifier);
-			Texture = Assets.Textures[Armor->IconIdentifier];
-			Color = Armor->Color;
+			_ArmorTemplate &Armor = Stats.ArmorTable[Object->Identifier];
+			Texture = Assets.Textures[Armor.IconIdentifier];
+			Color = Armor.Color;
 		} break;
-		case _Object::KEY: {
-			_MiscItemTemplate *MiscItem = Assets.GetMiscItemTemplate(Object->Identifier);
-			Texture = Assets.Textures[MiscItem->IconIdentifier];
-			Color = MiscItem->Color;
-		} break;
-
 	}
 
 	glm::vec2 DrawPosition(Object->Position.x + OffsetX, Object->Position.y + OffsetY);

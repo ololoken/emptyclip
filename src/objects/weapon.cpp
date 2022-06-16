@@ -18,31 +18,38 @@
 #include <objects/weapon.h>
 #include <objects/upgrade.h>
 #include <objects/particle.h>
+#include <stats.h>
 #include <random.h>
 #include <buffer.h>
 
 // Constructor
-_Weapon::_Weapon(const std::string &Identifier, int Count, const glm::vec2 &Position, const _WeaponTemplate *Weapon, const _Texture *Texture, bool Generate) :
-	Ammo(Weapon->RoundSize),
-	RoundSize(Weapon->RoundSize),
-	MinDamage(Weapon->MinDamage),
-	MaxDamage(Weapon->MaxDamage),
-	MinAccuracy(Weapon->MinAccuracy),
-	MaxAccuracy(Weapon->MaxAccuracy),
-	FirePeriod(Weapon->FirePeriod),
-	ReloadPeriod(Weapon->ReloadPeriod),
-	BulletsShot(Weapon->BulletsShot) {
+_Weapon::_Weapon(const std::string &Identifier, int Count, const glm::vec2 &Position, const _WeaponTemplate &Weapon, const _Texture *Texture, bool Generate) :
+	Ammo(Weapon.RoundSize),
+	RoundSize(Weapon.RoundSize),
+	MinDamage(Weapon.MinDamage),
+	MaxDamage(Weapon.MaxDamage),
+	MinAccuracy(Weapon.MinAccuracy),
+	MaxAccuracy(Weapon.MaxAccuracy),
+	FirePeriod(Weapon.FirePeriod),
+	ReloadPeriod(Weapon.ReloadPeriod),
+	BulletsShot(Weapon.BulletsShot),
+	WeaponType(Weapon.Type),
+	FireRate(Weapon.FireRate),
+	AmmoType(Weapon.AmmoType),
+	Recoil(Weapon.Recoil),
+	RecoilRegen(Weapon.RecoilRegen),
+	Range(Weapon.Range),
+	ZoomScale(Weapon.ZoomScale) {
 
-	Stats = *Weapon;
 	if(Generate)
-		this->MaxComponents = Random.GenerateRange(Weapon->MinComponents, Weapon->MaxComponents);
+		this->MaxComponents = Random.GenerateRange(Weapon.MinComponents, Weapon.MaxComponents);
 	else
-		this->MaxComponents = Weapon->MinComponents;
+		this->MaxComponents = Weapon.MinComponents;
 
 	this->Type = _Object::WEAPON;
 	this->Identifier = Identifier;
 	this->Texture = Texture;
-	this->Color = Weapon->Color;
+	this->Color = Weapon.Color;
 	this->Position = Position;
 
 	RecalculateStats();
@@ -82,6 +89,14 @@ void _Weapon::ReduceAmmo() {
 		Ammo = 0;
 }
 
+const std::string &_Weapon::GetName() const {
+	return Stats.WeaponTable[Identifier].Name;
+}
+
+const std::string &_Weapon::GetSample(int SampleType) const {
+	return Stats.WeaponTable[Identifier].Samples[SampleType];
+}
+
 // Adds ammo to the gun
 void _Weapon::SetAmmo(int Value) {
 
@@ -101,14 +116,14 @@ void _Weapon::RecalculateStats() {
 		Bonus[Upgrades[i]->GetUpgradeType()] += Upgrades[i]->GetBonus();
 
 	// Set stats
-	RoundSize = static_cast<int>(Stats.RoundSize * (1.0f + Bonus[UPGRADE_CLIP]));
-	MinDamage = static_cast<int>(Stats.MinDamage * (1.0f + Bonus[UPGRADE_DAMAGE]));
-	MaxDamage = static_cast<int>(Stats.MaxDamage * (1.0f + Bonus[UPGRADE_DAMAGE]));
-	MinAccuracy = Stats.MinAccuracy / (1.0f + Bonus[UPGRADE_ACCURACY]);
-	MaxAccuracy = Stats.MaxAccuracy / (1.0f + Bonus[UPGRADE_ACCURACY]);
-	FirePeriod = Stats.FirePeriod / (1.0f + Bonus[UPGRADE_FIREPERIOD]);
-	ReloadPeriod = Stats.ReloadPeriod / (1.0f + Bonus[UPGRADE_RELOADPERIOD]);
-	BulletsShot = Stats.BulletsShot + static_cast<int>(Bonus[UPGRADE_ATTACKS]);
+	RoundSize = static_cast<int>(Stats.WeaponTable[Identifier].RoundSize * (1.0f + Bonus[UPGRADE_CLIP]));
+	MinDamage = static_cast<int>(Stats.WeaponTable[Identifier].MinDamage * (1.0f + Bonus[UPGRADE_DAMAGE]));
+	MaxDamage = static_cast<int>(Stats.WeaponTable[Identifier].MaxDamage * (1.0f + Bonus[UPGRADE_DAMAGE]));
+	MinAccuracy = Stats.WeaponTable[Identifier].MinAccuracy / (1.0f + Bonus[UPGRADE_ACCURACY]);
+	MaxAccuracy = Stats.WeaponTable[Identifier].MaxAccuracy / (1.0f + Bonus[UPGRADE_ACCURACY]);
+	FirePeriod = Stats.WeaponTable[Identifier].FirePeriod / (1.0f + Bonus[UPGRADE_FIREPERIOD]);
+	ReloadPeriod = Stats.WeaponTable[Identifier].ReloadPeriod / (1.0f + Bonus[UPGRADE_RELOADPERIOD]);
+	BulletsShot = Stats.WeaponTable[Identifier].BulletsShot + static_cast<int>(Bonus[UPGRADE_ATTACKS]);
 
 	SetAmmo(Ammo);
 }
@@ -117,8 +132,8 @@ void _Weapon::RecalculateStats() {
 bool _Weapon::AddComponent(_Upgrade *Upgrade) {
 
 	if(GetComponents() < MaxComponents &&
-		!(Upgrade->GetWeaponType() != -1 && Upgrade->GetWeaponType() != Stats.Type) &&
-		!(Upgrade->GetUpgradeType() == UPGRADE_CLIP && Stats.RoundSize == 0)) {
+		!(Upgrade->GetWeaponType() != -1 && Upgrade->GetWeaponType() != WeaponType) &&
+		!(Upgrade->GetUpgradeType() == UPGRADE_CLIP && Stats.WeaponTable[Identifier].RoundSize == 0)) {
 
 		Upgrades.push_back(Upgrade);
 		RecalculateStats();
@@ -154,5 +169,10 @@ std::string _Weapon::ToString(int Type) {
 	return "";
 }
 
-_Upgrade *_Weapon::GetUpgrade(int Index) const { return Upgrades[Index]; }
-_ParticleTemplate *_Weapon::GetWeaponParticle(int Index) { return Stats.WeaponParticles->ParticleTemplates[Index]; }
+_Upgrade *_Weapon::GetUpgrade(int Index) const {
+	return Upgrades[Index];
+}
+
+_ParticleTemplate *_Weapon::GetWeaponParticle(int Index) {
+	return Stats.WeaponTable[Identifier].WeaponParticles->ParticleTemplates[Index];
+}
