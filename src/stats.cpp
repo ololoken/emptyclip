@@ -333,15 +333,15 @@ void _Stats::LoadWeaponTable(const std::string &Path) {
 				>> WeaponTemplate.Attributes["recoil_regen"].Float
 				>> WeaponTemplate.Attributes["range"].Float
 				>> WeaponTemplate.Attributes["fire_rate"].Int
-				>> WeaponTemplate.FirePeriod
-				>> WeaponTemplate.ReloadPeriod
-				>> WeaponTemplate.MinComponents
-				>> WeaponTemplate.MaxComponents
-				>> WeaponTemplate.MinDamage
-				>> WeaponTemplate.MaxDamage
-				>> WeaponTemplate.BulletsShot
+				>> WeaponTemplate.Attributes["fire_period"].Double
+				>> WeaponTemplate.Attributes["reload_period"].Double
+				>> WeaponTemplate.Attributes["min_components"].Int
+				>> WeaponTemplate.Attributes["max_components"].Int
+				>> WeaponTemplate.Attributes["min_damage"].Int
+				>> WeaponTemplate.Attributes["max_damage"].Int
+				>> WeaponTemplate.Attributes["attack_count"].Int
 				>> WeaponTemplate.Attributes["rounds"].Int
-				>> WeaponTemplate.AmmoType;
+				>> WeaponTemplate.Attributes["ammo_type"].Int;
 
 		File.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 

@@ -353,7 +353,7 @@ void _Player::LoadWeapon(_Buffer &Buffer, int Count, int InventoryIndex) {
 
 	// Create weapon
 	_Weapon *Weapon = Stats.CreateWeapon(Identifier, Count, glm::vec2(0, 0), false);
-	Weapon->SetMaxComponents(MaxComponents);
+	Weapon->Attributes["max_components"].Int = MaxComponents;
 	LoadUpgrades(Buffer, Weapon);
 	Weapon->RecalculateStats();
 	Weapon->SetAmmo(Ammo);
@@ -853,7 +853,7 @@ bool _Player::AddComponent(int FromIndex, int ToIndex) {
 	else
 		return false;
 
-	if(Weapon->AddComponent(static_cast<_Upgrade *>(Inventory[FromIndex]))) {
+	if(Weapon->AddComponent((_Upgrade *)(Inventory[FromIndex]))) {
 		ConsumeInventory(FromIndex, false);
 		RecalculateStats();
 		return true;
@@ -884,7 +884,7 @@ int _Player::GetWeaponAmmoType() const {
 	if(!HasMainHand())
 		return 0;
 
-	return GetMainHand()->AmmoType;
+	return GetMainHand()->Attributes.at("ammo_type").Int;
 }
 
 // Determines what type of ammo an item in the inventory is
@@ -910,16 +910,16 @@ bool _Player::IsRightClip(const _Item *Item) const {
 bool _Player::HasAmmo() const {
 
 	if(AttackRequestType == WEAPONATTACK_MAIN) {
-		if(!HasMainHand() || GetMainHand()->AmmoType == 0)
+		if(!HasMainHand() || GetMainHand()->Attributes.at("ammo_type").Int == 0)
 			return true;
 
-		return GetMainHand()->GetAmmo() > 0;
+		return GetMainHand()->Ammo > 0;
 	}
 	else if(AttackRequestType == WEAPONATTACK_MELEE) {
-		if(!HasMelee() || GetMelee()->AmmoType == 0)
+		if(!HasMelee() || GetMelee()->Attributes.at("ammo_type").Int == 0)
 			return true;
 
-		return GetMelee()->GetAmmo() > 0;
+		return GetMelee()->Ammo > 0;
 	}
 
 	return false;
@@ -1181,14 +1181,6 @@ void _Player::RecalculateStats() {
 
 	// See if the player is using a weapon
 	if(HasMainHand()) {
-
-		// Get weapon stats
-		Weapon[WEAPONATTACK_MAIN].FirePeriod = GetMainHand()->GetFirePeriod();
-		Weapon[WEAPONATTACK_MAIN].MinDamage = GetMainHand()->GetMinDamage();
-		Weapon[WEAPONATTACK_MAIN].MaxDamage = GetMainHand()->GetMaxDamage();
-		Weapon[WEAPONATTACK_MAIN].ReloadPeriod = GetMainHand()->GetReloadPeriod();
-		Weapon[WEAPONATTACK_MAIN].BulletsShot = GetMainHand()->AttackCount;
-
 		for(const auto &Attribute : GetMainHand()->Attributes)
 			Weapon[WEAPONATTACK_MAIN].Attributes[Attribute.first] = Attribute.second;
 
@@ -1199,14 +1191,8 @@ void _Player::RecalculateStats() {
 
 	// Get stats of melee weapon
 	if(HasMelee()) {
-		Weapon[WEAPONATTACK_MELEE].FirePeriod = GetMelee()->GetFirePeriod();
-		Weapon[WEAPONATTACK_MELEE].MinDamage = GetMelee()->GetMinDamage();
-		Weapon[WEAPONATTACK_MELEE].MaxDamage = GetMelee()->GetMaxDamage();
-		Weapon[WEAPONATTACK_MELEE].ReloadPeriod = GetMelee()->GetReloadPeriod();
-		Weapon[WEAPONATTACK_MELEE].BulletsShot = GetMelee()->AttackCount;
-
-		for(const auto &Attribute : GetMainHand()->Attributes)
-			Weapon[WEAPONATTACK_MAIN].Attributes[Attribute.first] = Attribute.second;
+		for(const auto &Attribute : GetMelee()->Attributes)
+			Weapon[WEAPONATTACK_MELEE].Attributes[Attribute.first] = Attribute.second;
 	}
 
 	// Set up main stats based on weapon
@@ -1234,13 +1220,13 @@ void _Player::RecalculateStats() {
 	// Attacking
 	for(int i = 0; i < WEAPONATTACK_COUNT; i++) {
 		FireRate[i] = Weapon[i].Attributes["fire_rate"].Int;
-		FirePeriod[i] = Weapon[i].FirePeriod / Stats.GetSkill(Skills[SKILL_ATTACKSPEED], SKILL_ATTACKSPEED);
-		MinDamage[i] = (int)(Weapon[i].MinDamage);
-		MaxDamage[i] = (int)(Weapon[i].MaxDamage);
+		FirePeriod[i] = Weapon[i].Attributes["fire_period"].Double / Stats.GetSkill(Skills[SKILL_ATTACKSPEED], SKILL_ATTACKSPEED);
+		MinDamage[i] = Weapon[i].Attributes["min_damage"].Int;
+		MaxDamage[i] = Weapon[i].Attributes["max_damage"].Int;
 	}
-	ReloadPeriod = Weapon[WEAPONATTACK_MAIN].ReloadPeriod / Stats.GetSkill(Skills[SKILL_RELOADSPEED], SKILL_RELOADSPEED);
+	ReloadPeriod = Weapon[WEAPONATTACK_MAIN].Attributes["reload_period"].Double / Stats.GetSkill(Skills[SKILL_RELOADSPEED], SKILL_RELOADSPEED);
 	WeaponSwitchPeriod = PLAYER_WEAPONSWITCHPERIOD * 1;
-	BulletsShot = Weapon[WEAPONATTACK_MAIN].BulletsShot;
+	AttackCount = Weapon[WEAPONATTACK_MAIN].Attributes["attack_count"].Int;
 	ZoomScale = Weapon[WEAPONATTACK_MAIN].Attributes["zoom_scale"].Float;
 
 	// Cap fire period
@@ -1324,7 +1310,7 @@ void _Player::UpdateColor() {
 
 int _Player::GetInventoryMaxStack() const { return Stats.GetSkill(Skills[SKILL_MAXINVENTORY], SKILL_MAXINVENTORY) + 1; }
 bool _Player::CanUseMedkit() const { return (MedkitTimer > PLAYER_MEDKITPERIOD) && Health < MaxHealth; }
-bool _Player::CanReload() const { return HasMainHand() && !Reloading && !SwitchingWeapons && !IsMeleeAttacking() && GetMainHand()->GetAmmo() != GetMainHand()->Attributes.at("rounds").Int && HasClips(); }
+bool _Player::CanReload() const { return HasMainHand() && !Reloading && !SwitchingWeapons && !IsMeleeAttacking() && GetMainHand()->Ammo != GetMainHand()->Attributes.at("rounds").Int && HasClips(); }
 
 bool _Player::IsMelee() const { return GetMainHand() == nullptr || GetMainHand()->WeaponType == WEAPON_MELEE; }
 

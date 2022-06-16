@@ -559,7 +559,7 @@ void _PlayState::EntityAttack(_Entity *Attacker, int GridType) {
 
 	// For each bullet that the weapon fires
 	bool PlayedHitWallSound = false;
-	for(int i = 0; i < Attacker->BulletsShot; i++) {
+	for(int i = 0; i < Attacker->AttackCount; i++) {
 		Hit.Type = HIT_NONE;
 
 		// Check weapon type

@@ -24,21 +24,15 @@
 
 // Constructor
 _Weapon::_Weapon(const std::string &Identifier, int Count, const glm::vec2 &Position, const _WeaponTemplate &Weapon, const _Texture *Texture, bool Generate) :
-	MinDamage(Weapon.MinDamage),
-	MaxDamage(Weapon.MaxDamage),
-	FirePeriod(Weapon.FirePeriod),
-	ReloadPeriod(Weapon.ReloadPeriod),
-	AttackCount(Weapon.BulletsShot),
-	WeaponType(Weapon.Type),
-	AmmoType(Weapon.AmmoType) {
+	WeaponType(Weapon.Type) {
 
 	for(const auto &Attribute : Weapon.Attributes)
 		Attributes[Attribute.first] = Attribute.second;
 
 	if(Generate)
-		this->MaxComponents = GetRandomInt(Weapon.MinComponents, Weapon.MaxComponents);
+		Attributes["max_components"].Int = GetRandomInt(Weapon.Attributes.at("min_components").Int, Weapon.Attributes.at("max_components").Int);
 	else
-		this->MaxComponents = Weapon.MinComponents;
+		Attributes["max_components"].Int = Weapon.Attributes.at("min_components").Int;
 
 	Ammo = Weapon.Attributes.at("rounds").Int;
 	this->Type = _Object::WEAPON;
@@ -67,7 +61,7 @@ void _Weapon::Serialize(_Buffer &Buffer) {
 	Buffer.Write(Ammo);
 
 	// Max upgrades
-	Buffer.Write(MaxComponents);
+	Buffer.Write(Attributes.at("max_components").Int);
 
 	// Upgrades
 	Buffer.Write<int>(Upgrades.size());
@@ -88,8 +82,12 @@ const std::string &_Weapon::GetName() const {
 	return Stats.Weapons[Identifier].Name;
 }
 
+float _Weapon::GetAverageDamage() const {
+	return (Attributes.at("min_damage").Int + Attributes.at("max_damage").Int) * 0.5f;
+}
+
 float _Weapon::GetAverageAccuracy() const {
-	return (Attributes.at("min_accuracy").Float + Attributes.at("max_accuracy").Float) / 2.0f;
+	return (Attributes.at("min_accuracy").Float + Attributes.at("max_accuracy").Float) * 0.5f;
 }
 
 const std::string &_Weapon::GetSample(int SampleType) const {
@@ -98,7 +96,6 @@ const std::string &_Weapon::GetSample(int SampleType) const {
 
 // Adds ammo to the gun
 void _Weapon::SetAmmo(int Value) {
-
 	Ammo = Value;
 	if(Ammo > Attributes["rounds"].Int)
 		Ammo = Attributes["rounds"].Int;
@@ -115,14 +112,14 @@ void _Weapon::RecalculateStats() {
 		Bonus[Upgrades[i]->GetUpgradeType()] += Upgrades[i]->GetBonus();
 
 	// Set stats
-	Attributes["rounds"].Int = static_cast<int>(Stats.Weapons[Identifier].Attributes.at("rounds").Int * (1.0f + Bonus[UPGRADE_CLIP]));
-	MinDamage = static_cast<int>(Stats.Weapons[Identifier].MinDamage * (1.0f + Bonus[UPGRADE_DAMAGE]));
-	MaxDamage = static_cast<int>(Stats.Weapons[Identifier].MaxDamage * (1.0f + Bonus[UPGRADE_DAMAGE]));
+	Attributes["rounds"].Int = (int)(Stats.Weapons[Identifier].Attributes.at("rounds").Int * (1.0f + Bonus[UPGRADE_CLIP]));
+	Attributes["min_damage"].Int = (int)(Stats.Weapons[Identifier].Attributes.at("min_damage").Int * (1.0f + Bonus[UPGRADE_DAMAGE]));
+	Attributes["max_damage"].Int = (int)(Stats.Weapons[Identifier].Attributes.at("max_damage").Int * (1.0f + Bonus[UPGRADE_DAMAGE]));
 	Attributes["min_accuracy"].Float = Stats.Weapons[Identifier].Attributes.at("min_accuracy").Float / (1.0f + Bonus[UPGRADE_ACCURACY]);
 	Attributes["max_accuracy"].Float = Stats.Weapons[Identifier].Attributes.at("max_accuracy").Float / (1.0f + Bonus[UPGRADE_ACCURACY]);
-	FirePeriod = Stats.Weapons[Identifier].FirePeriod / (1.0f + Bonus[UPGRADE_FIREPERIOD]);
-	ReloadPeriod = Stats.Weapons[Identifier].ReloadPeriod / (1.0f + Bonus[UPGRADE_RELOADPERIOD]);
-	AttackCount = Stats.Weapons[Identifier].BulletsShot + static_cast<int>(Bonus[UPGRADE_ATTACKS]);
+	Attributes["fire_period"].Double = Stats.Weapons[Identifier].Attributes.at("fire_period").Double / (1.0f + Bonus[UPGRADE_FIREPERIOD]);
+	Attributes["reload_period"].Double = Stats.Weapons[Identifier].Attributes.at("reload_period").Double / (1.0f + Bonus[UPGRADE_RELOADPERIOD]);
+	Attributes["attack_count"].Int = Stats.Weapons[Identifier].Attributes.at("attack_count").Int + (int)(Bonus[UPGRADE_ATTACKS]);
 
 	SetAmmo(Ammo);
 }
@@ -130,7 +127,7 @@ void _Weapon::RecalculateStats() {
 // Adds a component to the weapon
 bool _Weapon::AddComponent(_Upgrade *Upgrade) {
 
-	if(GetComponents() < MaxComponents &&
+	if((int)Upgrades.size() < Attributes.at("max_components").Int &&
 		!(Upgrade->GetWeaponType() != -1 && Upgrade->GetWeaponType() != WeaponType) &&
 		!(Upgrade->GetUpgradeType() == UPGRADE_CLIP && Stats.Weapons[Identifier].Attributes.at("rounds").Int == 0)) {
 

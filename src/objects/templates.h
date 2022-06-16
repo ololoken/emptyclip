@@ -166,15 +166,7 @@ struct _WeaponTemplate {
 	_WeaponTemplate() :
 		WeaponParticles(nullptr),
 		Name("Fists"),
-		FirePeriod(0.4),
-		ReloadPeriod(0.0),
-		MinComponents(0),
-		MaxComponents(0),
-		MinDamage(1),
-		MaxDamage(3),
-		BulletsShot(1),
-		Type(WEAPON_MELEE),
-		AmmoType(0) {
+		Type(WEAPON_MELEE) {
 
 		for(int i = 0; i < SAMPLE_TYPES; i++)
 			Samples[i] = "";
@@ -185,15 +177,7 @@ struct _WeaponTemplate {
 	std::string Name;
 	std::string IconIdentifier;
 	std::string Samples[SAMPLE_TYPES];
-	double FirePeriod;
-	double ReloadPeriod;
-	int MinComponents;
-	int	MaxComponents;
-	int MinDamage;
-	int MaxDamage;
-	int BulletsShot;
 	int Type;
-	int AmmoType;
 
 	std::unordered_map<std::string, _Value> Attributes;
 };

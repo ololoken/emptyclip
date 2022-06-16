@@ -400,7 +400,7 @@ void _HUD::DrawHUDWeapon(const _Weapon *Weapon, _Element *Element, _Image *Image
 	Image->Color = Weapon->Color;
 	if(Weapon->Attributes.at("rounds").Int) {
 		std::ostringstream Buffer;
-		Buffer << Weapon->GetAmmo() << "/" << Weapon->Attributes.at("rounds").Int;
+		Buffer << Weapon->Ammo << "/" << Weapon->Attributes.at("rounds").Int;
 		Label->Text = Buffer.str();
 	}
 	else
@@ -583,7 +583,7 @@ void _HUD::RenderItemInfo(_Item *Item, int DrawX, int DrawY) {
 					TextColor = COLOR_RED;
 			}
 			DrawY += 20;
-			Buffer << Weapon->GetMinDamage() << " - " << Weapon->GetMaxDamage();
+			Buffer << Weapon->Attributes.at("min_damage").Int << " - " << Weapon->Attributes.at("max_damage").Int;
 			Fonts[FONT_MEDIUM]->DrawText("Damage", glm::vec2(glm::vec2(DrawX - PadX, DrawY)), RIGHT_BASELINE);
 			Fonts[FONT_MEDIUM]->DrawText(Buffer.str(), glm::vec2(glm::vec2(DrawX + PadX, DrawY)), LEFT_BASELINE, TextColor);
 			Buffer.str("");
@@ -598,24 +598,24 @@ void _HUD::RenderItemInfo(_Item *Item, int DrawX, int DrawY) {
 						TextColor = COLOR_RED;
 				}
 				DrawY += 20;
-				Buffer << Weapon->GetAmmo() << "/" << Weapon->Attributes.at("rounds").Int;
+				Buffer << Weapon->Ammo << "/" << Weapon->Attributes.at("rounds").Int;
 				Fonts[FONT_MEDIUM]->DrawText("Rounds", glm::vec2(glm::vec2(DrawX - PadX, DrawY)), RIGHT_BASELINE);
 				Fonts[FONT_MEDIUM]->DrawText(Buffer.str(), glm::vec2(glm::vec2(DrawX + PadX, DrawY)), LEFT_BASELINE, TextColor);
 				Buffer.str("");
 			}
 
 			// Attacks
-			if(Weapon->AttackCount > 1) {
+			if(Weapon->Attributes.at("attack_count").Int > 1) {
 				TextColor = COLOR_WHITE;
 				if(ExistingWeapon) {
-					if(Weapon->AttackCount > ExistingWeapon->AttackCount)
+					if(Weapon->Attributes.at("attack_count").Int > ExistingWeapon->Attributes.at("attack_count").Int)
 						TextColor = COLOR_GREEN;
-					else if(Weapon->AttackCount < ExistingWeapon->AttackCount)
+					else if(Weapon->Attributes.at("attack_count").Int < ExistingWeapon->Attributes.at("attack_count").Int)
 						TextColor = COLOR_RED;
 				}
 
 				DrawY += 20;
-				Buffer << Weapon->AttackCount;
+				Buffer << Weapon->Attributes.at("attack_count").Int;
 				std::string AttackCountText;
 				if(Weapon->WeaponType == WEAPON_MELEE)
 					AttackCountText = "Attacks/Swing";
@@ -627,17 +627,17 @@ void _HUD::RenderItemInfo(_Item *Item, int DrawX, int DrawY) {
 			}
 
 			// Fire rate
-			if(Weapon->GetFirePeriod()) {
+			if(Weapon->Attributes.at("fire_period").Double) {
 				TextColor = COLOR_WHITE;
 				if(ExistingWeapon) {
-					if(Weapon->GetFirePeriod() < ExistingWeapon->GetFirePeriod())
+					if(Weapon->Attributes.at("fire_period").Double < ExistingWeapon->Attributes.at("fire_period").Double)
 						TextColor = COLOR_GREEN;
-					else if(Weapon->GetFirePeriod() > ExistingWeapon->GetFirePeriod())
+					else if(Weapon->Attributes.at("fire_period").Double > ExistingWeapon->Attributes.at("fire_period").Double)
 						TextColor = COLOR_RED;
 				}
 
 				DrawY += 20;
-				Buffer << std::setprecision(3) << 1 / Weapon->GetFirePeriod() << "/s";
+				Buffer << std::setprecision(3) << 1 / Weapon->Attributes.at("fire_period").Double << "/s";
 				std::string AttackCountText;
 				if(Weapon->WeaponType == WEAPON_MELEE)
 					AttackCountText = "Attack Rate";
@@ -682,17 +682,17 @@ void _HUD::RenderItemInfo(_Item *Item, int DrawX, int DrawY) {
 			Buffer.str("");
 
 			// Reload speed
-			if(Weapon->GetReloadPeriod() > 1) {
+			if(Weapon->Attributes.at("reload_period").Double > 1) {
 				TextColor = COLOR_WHITE;
 				if(ExistingWeapon) {
-					if(Weapon->GetReloadPeriod() < ExistingWeapon->GetReloadPeriod())
+					if(Weapon->Attributes.at("reload_period").Double < ExistingWeapon->Attributes.at("reload_period").Double)
 						TextColor = COLOR_GREEN;
-					else if(Weapon->GetReloadPeriod() > ExistingWeapon->GetReloadPeriod())
+					else if(Weapon->Attributes.at("reload_period").Double > ExistingWeapon->Attributes.at("reload_period").Double)
 						TextColor = COLOR_RED;
 				}
 
 				DrawY += 20;
-				Buffer << Weapon->GetReloadPeriod() << "s";
+				Buffer << Weapon->Attributes.at("reload_period").Double << "s";
 				std::string AttackCountText;
 				Fonts[FONT_MEDIUM]->DrawText("Reload Time", glm::vec2(DrawX - PadX, DrawY), RIGHT_BASELINE);
 				Fonts[FONT_MEDIUM]->DrawText(Buffer.str(), glm::vec2(DrawX + PadX, DrawY), LEFT_BASELINE, TextColor);
@@ -700,26 +700,26 @@ void _HUD::RenderItemInfo(_Item *Item, int DrawX, int DrawY) {
 			}
 
 			// Ammo type
-			if(Weapon->AmmoType) {
+			if(Weapon->Attributes.at("ammo_type").Int) {
 				DrawY += 20;
-				Buffer << Stats.AmmoNames[Weapon->AmmoType];
+				Buffer << Stats.AmmoNames[Weapon->Attributes.at("ammo_type").Int];
 				Fonts[FONT_MEDIUM]->DrawText("Ammo Type", glm::vec2(DrawX - PadX, DrawY), RIGHT_BASELINE);
 				Fonts[FONT_MEDIUM]->DrawText(Buffer.str(), glm::vec2(DrawX + PadX, DrawY));
 				Buffer.str("");
 			}
 
 			// Components
-			if(Weapon->GetMaxComponents() >= 1) {
+			if(Weapon->Attributes.at("max_components").Int >= 1) {
 				TextColor = COLOR_WHITE;
 				if(ExistingWeapon) {
-					if(Weapon->GetMaxComponents() > ExistingWeapon->GetMaxComponents())
+					if(Weapon->Attributes.at("max_components").Int > ExistingWeapon->Attributes.at("max_components").Int)
 						TextColor = COLOR_GREEN;
-					else if(Weapon->GetMaxComponents() < ExistingWeapon->GetMaxComponents())
+					else if(Weapon->Attributes.at("max_components").Int < ExistingWeapon->Attributes.at("max_components").Int)
 						TextColor = COLOR_RED;
 				}
 
 				DrawY += 20;
-				Buffer << Weapon->GetComponents() << "/" << Weapon->GetMaxComponents();
+				Buffer << Weapon->Upgrades.size() << "/" << Weapon->Attributes.at("max_components").Int;
 				Fonts[FONT_MEDIUM]->DrawText("Components", glm::vec2(DrawX - PadX, DrawY), RIGHT_BASELINE);
 				Fonts[FONT_MEDIUM]->DrawText(Buffer.str(), glm::vec2(DrawX + PadX, DrawY), LEFT_BASELINE, TextColor);
 				Buffer.str("");

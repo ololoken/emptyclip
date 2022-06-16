@@ -41,19 +41,11 @@ class _Weapon : public _Item {
 		bool AddComponent(_Upgrade *Upgrade);
 
 		void SetAmmo(int Value);
-		void SetMaxComponents(int Value) { MaxComponents = Value; }
 		void ReduceAmmo();
 
 		const std::string &GetName() const override;
-		double GetFirePeriod() const { return FirePeriod; }
-		double GetReloadPeriod() const { return ReloadPeriod; }
-		int GetMinDamage() const { return MinDamage; }
-		int GetMaxDamage() const { return MaxDamage; }
-		float GetAverageDamage() const { return (MinDamage + MaxDamage) / 2.0f; }
+		float GetAverageDamage() const;
 		float GetAverageAccuracy() const;
-		int GetAmmo() const { return Ammo; }
-		int GetMaxComponents() const { return MaxComponents; }
-		int GetComponents() const { return static_cast<int>(Upgrades.size()); }
 		const std::string &GetSample(int SampleType) const;
 		float GetBonus(int Index) const { return Bonus[Index]; }
 		_Upgrade *GetUpgrade(int Index) const;
@@ -65,16 +57,9 @@ class _Weapon : public _Item {
 
 		std::vector<_Upgrade *> Upgrades;
 		int Ammo;
-		int MinDamage;
-		int MaxDamage;
 		float Bonus[UPGRADE_TYPES];
-		double FirePeriod;
-		double ReloadPeriod;
-		int MaxComponents;
-		int AttackCount;
 
 		int WeaponType;
-		int AmmoType;
 
 	protected:
 

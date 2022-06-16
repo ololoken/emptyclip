@@ -61,7 +61,7 @@ _Entity::_Entity() :
 	AttackRange{0, 0},
 	FireTimer{0, 0},
 	FirePeriod{0,0},
-	BulletsShot(1),
+	AttackCount(1),
 	AttackRequested(false),
 	AttackAllowed{true, true},
 	AttackMade(false),
