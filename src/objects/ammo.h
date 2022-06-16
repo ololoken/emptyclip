@@ -29,10 +29,8 @@ class _Ammo : public _Item {
 	public:
 
 		_Ammo(const std::string &Identifier, int Count, const glm::vec2 &Position, const _AmmoTemplate &Ammo, const _Texture *Texture);
-		~_Ammo() override;
 
 		virtual std::string GetTypeAsString() const override { return "Ammo"; }
-		static std::string ToString(int Type);
 
 		int AmmoType;
 

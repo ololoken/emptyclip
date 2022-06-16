@@ -702,7 +702,7 @@ void _HUD::RenderItemInfo(_Item *Item, int DrawX, int DrawY) {
 			// Ammo type
 			if(Weapon->AmmoType) {
 				DrawY += 20;
-				Buffer << _Ammo::ToString(Weapon->AmmoType);
+				Buffer << Stats.AmmoNames[Weapon->AmmoType];
 				Fonts[FONT_MEDIUM]->DrawText("Ammo Type", glm::vec2(DrawX - PadX, DrawY), RIGHT_BASELINE);
 				Fonts[FONT_MEDIUM]->DrawText(Buffer.str(), glm::vec2(DrawX + PadX, DrawY));
 				Buffer.str("");

@@ -883,7 +883,7 @@ float _Player::GetCrosshairRadius(const glm::vec2 &Cursor) {
 // Determines what type of ammo is required by the weapon the player is using
 int _Player::GetWeaponAmmoType() const {
 	if(!HasMainHand())
-		return AMMO_NONE;
+		return 0;
 
 	return GetMainHand()->AmmoType;
 }
@@ -911,13 +911,13 @@ bool _Player::IsRightClip(const _Item *Item) const {
 bool _Player::HasAmmo() const {
 
 	if(AttackRequestType == WEAPONATTACK_MAIN) {
-		if(!HasMainHand() || GetMainHand()->AmmoType == AMMO_NONE)
+		if(!HasMainHand() || GetMainHand()->AmmoType == 0)
 			return true;
 
 		return GetMainHand()->GetAmmo() > 0;
 	}
 	else if(AttackRequestType == WEAPONATTACK_MELEE) {
-		if(!HasMelee() || GetMelee()->AmmoType == AMMO_NONE)
+		if(!HasMelee() || GetMelee()->AmmoType == 0)
 			return true;
 
 		return GetMelee()->GetAmmo() > 0;

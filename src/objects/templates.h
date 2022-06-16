@@ -25,21 +25,6 @@
 class _Texture;
 class _Font;
 
-// Types of ammo
-enum AmmoType {
-	AMMO_NONE,
-	AMMO_9MM,
-	AMMO_357,
-	AMMO_556MM,
-	AMMO_762MM,
-	AMMO_SHELLS,
-	AMMO_ROCKETS,
-	AMMO_POWERCELLS,
-	AMMO_PLASMACELLS,
-	AMMO_PSI,
-	AMMO_TYPES
-};
-
 // Types of weapons
 enum WeaponType {
 	WEAPON_MELEE,
@@ -194,7 +179,7 @@ struct _WeaponTemplate {
 		BulletsShot(1),
 		RoundSize(0),
 		Type(WEAPON_MELEE),
-		AmmoType(AMMO_NONE),
+		AmmoType(0),
 		FireRate(FIRERATE_SEMI) {
 
 		for(int i = 0; i < SAMPLE_TYPES; i++)

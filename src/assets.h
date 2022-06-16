@@ -38,20 +38,12 @@ class _Particle;
 class _Entity;
 class _Player;
 class _Monster;
-class _Weapon;
-class _Armor;
-class _MiscItem;
-class _Upgrade;
-class _Ammo;
 class _Program;
 class _Shader;
 struct _Reel;
 struct _ReelTemplate;
 struct _ParticleTemplate;
 struct _MonsterTemplate;
-struct _MiscItemTemplate;
-struct _UpgradeTemplate;
-struct _ArmorTemplate;
 
 // Stores information about a collection of reel identifiers
 struct AnimationTemplateStruct {

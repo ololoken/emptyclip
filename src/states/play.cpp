@@ -699,7 +699,7 @@ void _PlayState::UseObject() {
 			if(Event->ItemIdentifier != "") {
 				int ItemIndex = Player->FindItem(Event->ItemIdentifier);
 				if(ItemIndex == -1) {
-					HUD->ShowMessageBox("You need a " + Stats.MiscItemTable[Event->ItemIdentifier].Name, HUD_KEYMESSAGETIME);
+					HUD->ShowMessageBox("You need a " + Stats.MiscItems[Event->ItemIdentifier].Name, HUD_KEYMESSAGETIME);
 					return;
 				}
 

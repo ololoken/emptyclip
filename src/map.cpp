@@ -98,27 +98,27 @@ _Map::_Map(const std::string &Filename) : _Map() {
 					throw std::runtime_error("Cannot find monster: " + Object->Identifier);
 			break;
 			case _Object::MEDKIT:
-				if(Stats.MiscItemTable.find(Object->Identifier) == Stats.MiscItemTable.end())
+				if(Stats.MiscItems.find(Object->Identifier) == Stats.MiscItems.end())
 					throw std::runtime_error("Cannot find medkit: " + Object->Identifier);
 			break;
 			case _Object::AMMO:
-				if(Stats.AmmoTable.find(Object->Identifier) == Stats.AmmoTable.end())
+				if(Stats.Ammo.find(Object->Identifier) == Stats.Ammo.end())
 					throw std::runtime_error("Cannot find ammo: " + Object->Identifier);
 			break;
 			case _Object::UPGRADE:
-				if(Stats.UpgradeTable.find(Object->Identifier) == Stats.UpgradeTable.end())
+				if(Stats.Upgrades.find(Object->Identifier) == Stats.Upgrades.end())
 					throw std::runtime_error("Cannot find upgrade: " + Object->Identifier);
 			break;
 			case _Object::WEAPON:
-				if(Stats.WeaponTable.find(Object->Identifier) == Stats.WeaponTable.end())
+				if(Stats.Weapons.find(Object->Identifier) == Stats.Weapons.end())
 					throw std::runtime_error("Cannot find weapon: " + Object->Identifier);
 			break;
 			case _Object::ARMOR:
-				if(Stats.ArmorTable.find(Object->Identifier) == Stats.ArmorTable.end())
+				if(Stats.Armor.find(Object->Identifier) == Stats.Armor.end())
 					throw std::runtime_error("Cannot find armor: " + Object->Identifier);
 			break;
 			case _Object::KEY:
-				if(Stats.MiscItemTable.find(Object->Identifier) == Stats.MiscItemTable.end())
+				if(Stats.MiscItems.find(Object->Identifier) == Stats.MiscItems.end())
 					throw std::runtime_error("Cannot find key: " + Object->Identifier);
 			break;
 		}

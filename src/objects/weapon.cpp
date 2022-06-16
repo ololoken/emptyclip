@@ -90,11 +90,11 @@ void _Weapon::ReduceAmmo() {
 }
 
 const std::string &_Weapon::GetName() const {
-	return Stats.WeaponTable[Identifier].Name;
+	return Stats.Weapons[Identifier].Name;
 }
 
 const std::string &_Weapon::GetSample(int SampleType) const {
-	return Stats.WeaponTable[Identifier].Samples[SampleType];
+	return Stats.Weapons[Identifier].Samples[SampleType];
 }
 
 // Adds ammo to the gun
@@ -116,14 +116,14 @@ void _Weapon::RecalculateStats() {
 		Bonus[Upgrades[i]->GetUpgradeType()] += Upgrades[i]->GetBonus();
 
 	// Set stats
-	RoundSize = static_cast<int>(Stats.WeaponTable[Identifier].RoundSize * (1.0f + Bonus[UPGRADE_CLIP]));
-	MinDamage = static_cast<int>(Stats.WeaponTable[Identifier].MinDamage * (1.0f + Bonus[UPGRADE_DAMAGE]));
-	MaxDamage = static_cast<int>(Stats.WeaponTable[Identifier].MaxDamage * (1.0f + Bonus[UPGRADE_DAMAGE]));
-	MinAccuracy = Stats.WeaponTable[Identifier].MinAccuracy / (1.0f + Bonus[UPGRADE_ACCURACY]);
-	MaxAccuracy = Stats.WeaponTable[Identifier].MaxAccuracy / (1.0f + Bonus[UPGRADE_ACCURACY]);
-	FirePeriod = Stats.WeaponTable[Identifier].FirePeriod / (1.0f + Bonus[UPGRADE_FIREPERIOD]);
-	ReloadPeriod = Stats.WeaponTable[Identifier].ReloadPeriod / (1.0f + Bonus[UPGRADE_RELOADPERIOD]);
-	BulletsShot = Stats.WeaponTable[Identifier].BulletsShot + static_cast<int>(Bonus[UPGRADE_ATTACKS]);
+	RoundSize = static_cast<int>(Stats.Weapons[Identifier].RoundSize * (1.0f + Bonus[UPGRADE_CLIP]));
+	MinDamage = static_cast<int>(Stats.Weapons[Identifier].MinDamage * (1.0f + Bonus[UPGRADE_DAMAGE]));
+	MaxDamage = static_cast<int>(Stats.Weapons[Identifier].MaxDamage * (1.0f + Bonus[UPGRADE_DAMAGE]));
+	MinAccuracy = Stats.Weapons[Identifier].MinAccuracy / (1.0f + Bonus[UPGRADE_ACCURACY]);
+	MaxAccuracy = Stats.Weapons[Identifier].MaxAccuracy / (1.0f + Bonus[UPGRADE_ACCURACY]);
+	FirePeriod = Stats.Weapons[Identifier].FirePeriod / (1.0f + Bonus[UPGRADE_FIREPERIOD]);
+	ReloadPeriod = Stats.Weapons[Identifier].ReloadPeriod / (1.0f + Bonus[UPGRADE_RELOADPERIOD]);
+	BulletsShot = Stats.Weapons[Identifier].BulletsShot + static_cast<int>(Bonus[UPGRADE_ATTACKS]);
 
 	SetAmmo(Ammo);
 }
@@ -133,7 +133,7 @@ bool _Weapon::AddComponent(_Upgrade *Upgrade) {
 
 	if(GetComponents() < MaxComponents &&
 		!(Upgrade->GetWeaponType() != -1 && Upgrade->GetWeaponType() != WeaponType) &&
-		!(Upgrade->GetUpgradeType() == UPGRADE_CLIP && Stats.WeaponTable[Identifier].RoundSize == 0)) {
+		!(Upgrade->GetUpgradeType() == UPGRADE_CLIP && Stats.Weapons[Identifier].RoundSize == 0)) {
 
 		Upgrades.push_back(Upgrade);
 		RecalculateStats();
@@ -174,5 +174,5 @@ _Upgrade *_Weapon::GetUpgrade(int Index) const {
 }
 
 _ParticleTemplate *_Weapon::GetWeaponParticle(int Index) {
-	return Stats.WeaponTable[Identifier].WeaponParticles->ParticleTemplates[Index];
+	return Stats.Weapons[Identifier].WeaponParticles->ParticleTemplates[Index];
 }

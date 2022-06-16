@@ -17,6 +17,7 @@
 *******************************************************************************/
 #include <objects/ammo.h>
 #include <objects/templates.h>
+#include <stats.h>
 
 // Constructor
 _Ammo::_Ammo(const std::string &Identifier, int Count, const glm::vec2 &Position, const _AmmoTemplate &Ammo, const _Texture *Texture) {
@@ -28,49 +29,4 @@ _Ammo::_Ammo(const std::string &Identifier, int Count, const glm::vec2 &Position
 	this->Texture = Texture;
 	this->Color = Ammo.Color;
 	this->Position = Position;
-}
-
-// Destructor
-_Ammo::~_Ammo() {
-}
-
-// Convert an ammo type to string
-std::string _Ammo::ToString(int Type) {
-
-	switch(Type) {
-		case AMMO_NONE:
-			return "None";
-		break;
-		case AMMO_9MM:
-			return "9mm";
-		break;
-		case AMMO_357:
-			return ".357";
-		break;
-		case AMMO_556MM:
-			return "5.56mm";
-		break;
-		case AMMO_762MM:
-			return "7.62mm";
-		break;
-		case AMMO_SHELLS:
-			return "Shells";
-		break;
-		case AMMO_ROCKETS:
-			return "Rockets";
-		break;
-		case AMMO_POWERCELLS:
-			return "Power Cells";
-		break;
-		case AMMO_PLASMACELLS:
-			return "Plasma Cells";
-		break;
-		case AMMO_PSI:
-			return "Psi";
-		break;
-		default:
-		break;
-	}
-
-	return "";
 }
