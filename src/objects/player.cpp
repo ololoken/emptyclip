@@ -1162,12 +1162,16 @@ void _Player::ResetAccuracy(bool CompleteReset) {
 
 // Consume an item from the inventory
 void _Player::ConsumeInventory(int Index, bool Delete) {
-	if(Index >= INVENTORY_BAGSTART && Index < INVENTORY_BAGEND && Inventory[Index] != nullptr) {
-		if(Inventory[Index]->UpdateCount(-1) <= 0) {
-			if(Delete)
-				delete Inventory[Index];
-			Inventory[Index] = nullptr;
-		}
+	if(Inventory[Index] == nullptr)
+		return;
+
+	if(Index < INVENTORY_BAGSTART || Index >= INVENTORY_BAGEND)
+		return;
+
+	if(Inventory[Index]->UpdateCount(-1) <= 0) {
+		if(Delete)
+			delete Inventory[Index];
+		Inventory[Index] = nullptr;
 	}
 }
 
@@ -1292,7 +1296,7 @@ const std::string &_Player::GetSample(int SampleType) const {
 const _ParticleTemplate *_Player::GetWeaponParticle(int Index) const {
 
 	if(HasMainHand())
-		return GetMainHand()->GetWeaponParticle(Index);
+		return Stats.Weapons[GetMainHand()->Identifier].WeaponParticles->ParticleTemplates[Index];
 
 	return nullptr;
 }

@@ -29,10 +29,6 @@ _Item::_Item() {
 	PositionZ = ITEM_Z;
 }
 
-// Destructor
-_Item::~_Item() {
-}
-
 // Serialize for saving
 void _Item::Serialize(_Buffer &Buffer) {
 	Buffer.WriteString(Identifier.c_str());
@@ -42,6 +38,14 @@ void _Item::Serialize(_Buffer &Buffer) {
 void _Item::Render(double BlendFactor) {
 	Graphics.SetColor(Color);
 	Graphics.DrawSprite(glm::vec3(Position, PositionZ), Texture, Rotation, glm::vec2(ITEM_SCALE));
+}
+
+float _Item::GetAverageDamage() const {
+	return (Attributes.at("min_damage").Int + Attributes.at("max_damage").Int) * 0.5f;
+}
+
+float _Item::GetAverageAccuracy() const {
+	return (Attributes.at("min_accuracy").Float + Attributes.at("max_accuracy").Float) * 0.5f;
 }
 
 // Get type as string

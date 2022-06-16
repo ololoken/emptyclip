@@ -728,11 +728,11 @@ void _HUD::RenderItemInfo(_Item *Item, int DrawX, int DrawY) {
 			TextColor = COLOR_WHITE;
 			bool First = true;
 			for(int i = 0; i < UPGRADE_TYPES; i++) {
-				if(Weapon->GetBonus(i)) {
+				if(Weapon->Bonus[i]) {
 					if(First)
 						DrawY += 10;
 					DrawY += 20;
-					Buffer << "+" << Weapon->GetBonus(i) * 100.0f << "% " << _Upgrade::ToString(i, Weapon->WeaponType);
+					Buffer << "+" << Weapon->Bonus[i] * 100.0f << "% " << _Upgrade::ToString(i, Weapon->WeaponType);
 					Fonts[FONT_MEDIUM]->DrawText(Buffer.str(), glm::vec2(DrawX, DrawY), CENTER_BASELINE, TextColor);
 					Buffer.str("");
 

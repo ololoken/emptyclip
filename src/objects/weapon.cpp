@@ -72,14 +72,6 @@ void _Weapon::Serialize(_Buffer &Buffer) {
 		Upgrades[i]->Serialize(Buffer);
 }
 
-float _Weapon::GetAverageDamage() const {
-	return (Attributes.at("min_damage").Int + Attributes.at("max_damage").Int) * 0.5f;
-}
-
-float _Weapon::GetAverageAccuracy() const {
-	return (Attributes.at("min_accuracy").Float + Attributes.at("max_accuracy").Float) * 0.5f;
-}
-
 const std::string &_Weapon::GetSample(int SampleType) const {
 	return Stats.Weapons[Identifier].Samples[SampleType];
 }
@@ -114,17 +106,19 @@ void _Weapon::RecalculateStats() {
 
 // Adds a component to the weapon
 bool _Weapon::AddComponent(_Upgrade *Upgrade) {
+	if((int)Upgrades.size() >= Attributes.at("max_components").Int)
+		return false;
 
-	if((int)Upgrades.size() < Attributes.at("max_components").Int &&
-		!(Upgrade->GetWeaponType() != -1 && Upgrade->GetWeaponType() != WeaponType) &&
-		!(Upgrade->GetUpgradeType() == UPGRADE_CLIP && Stats.Weapons[Identifier].Attributes.at("rounds").Int == 0)) {
+	if(Upgrade->GetWeaponType() != -1 && Upgrade->GetWeaponType() != WeaponType)
+		return false;
 
-		Upgrades.push_back(Upgrade);
-		RecalculateStats();
-		return true;
-	}
+	if(Upgrade->GetUpgradeType() == UPGRADE_CLIP && Stats.Weapons[Identifier].Attributes.at("rounds").Int == 0)
+		return false;
 
-	return false;
+	Upgrades.push_back(Upgrade);
+	RecalculateStats();
+
+	return true;
 }
 
 // Converts the weapon's type into a string
@@ -151,12 +145,4 @@ std::string _Weapon::ToString(int Type) {
 	}
 
 	return "";
-}
-
-_Upgrade *_Weapon::GetUpgrade(int Index) const {
-	return Upgrades[Index];
-}
-
-_ParticleTemplate *_Weapon::GetWeaponParticle(int Index) {
-	return Stats.Weapons[Identifier].WeaponParticles->ParticleTemplates[Index];
 }

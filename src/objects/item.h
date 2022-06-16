@@ -26,13 +26,15 @@ class _Item : public _Object {
 	public:
 
 		_Item();
-		virtual ~_Item();
 
 		void Serialize(_Buffer &Buffer) override;
 		void Render(double BlendFactor) override;
 
 		int UpdateCount(int Amount) { Count += Amount; return Count; }
-		bool CanStack() { return !(Type == _Object::WEAPON || Type == _Object::ARMOR); }
+		bool CanStack() { return !(Type == _Object::WEAPON || Type == _Object::ARMOR || Type == _Object::UPGRADE); }
+
+		float GetAverageDamage() const;
+		float GetAverageAccuracy() const;
 
 		virtual std::string GetTypeAsString() const override;
 

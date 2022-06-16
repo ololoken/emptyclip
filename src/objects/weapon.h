@@ -42,12 +42,7 @@ class _Weapon : public _Item {
 
 		void SetAmmo(int Value);
 
-		float GetAverageDamage() const;
-		float GetAverageAccuracy() const;
 		const std::string &GetSample(int SampleType) const;
-		float GetBonus(int Index) const { return Bonus[Index]; }
-		_Upgrade *GetUpgrade(int Index) const;
-		_ParticleTemplate *GetWeaponParticle(int Index);
 
 		bool IsMelee() const { return WeaponType == WEAPON_MELEE; }
 		virtual std::string GetTypeAsString() const override { return ToString(WeaponType) + " class weapon"; }

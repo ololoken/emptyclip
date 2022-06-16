@@ -31,9 +31,8 @@ _Save::_Save() {
 
 // Destructor
 _Save::~_Save() {
-	for(size_t i = 0; i < Players.size(); i++) {
+	for(size_t i = 0; i < Players.size(); i++)
 		delete Players[i];
-	}
 }
 
 // Get a save path for a slot
