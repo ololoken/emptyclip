@@ -26,32 +26,3 @@ void _ConvertState::Init() {
 	Map->SaveLevel(Param1);
 	Framework.Done = true;
 }
-
-void _ConvertState::Close() {
-}
-
-// Action handler
-bool _ConvertState::HandleAction(int InputType, int Action, int Value) {
-
-	return false;
-}
-
-// Key handler
-void _ConvertState::KeyEvent(const _KeyEvent &KeyEvent) {
-}
-
-// Text handler
-void _ConvertState::TextEvent(const char *Text) {
-}
-
-// Mouse handler
-void _ConvertState::MouseEvent(const _MouseEvent &MouseEvent) {
-}
-
-// Update
-void _ConvertState::Update(double FrameTime) {
-}
-
-// Render the state
-void _ConvertState::Render(double BlendFactor) {
-}

@@ -87,9 +87,8 @@ class _Menu {
 		void InitPlay();
 		void Close();
 
-		void KeyEvent(const _KeyEvent &KeyEvent);
-		void TextEvent(const char *Text);
-		void MouseEvent(const _MouseEvent &MouseEvent);
+		bool HandleKey(const _KeyEvent &KeyEvent);
+		void HandleMouseButton(const _MouseEvent &MouseEvent);
 
 		void Update(double FrameTime);
 		void Render();
@@ -97,6 +96,8 @@ class _Menu {
 		const StateType &GetState() const { return State; }
 
 	private:
+
+		void ChangeLayout(const std::string &ElementName);
 
 		void InitNewPlayer();
 		void LaunchGame();
@@ -111,10 +112,10 @@ class _Menu {
 		StateType State;
 
 		// UI
-		_Image *Background;
+		_Element *Background;
 		_Element *CurrentLayout;
 		_Element *InputLabels[LABEL_COUNT];
-		_Button *SaveSlots[_Save::SLOT_COUNT], *ColorButtons[4];
+		_Element *SaveSlots[_Save::SLOT_COUNT], *ColorButtons[4];
 
 		// Double click
 		_Element *PreviousClick;

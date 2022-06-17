@@ -59,6 +59,8 @@ _PlayState::_PlayState() {
 // Load level and set up objects
 void _PlayState::Init() {
 	Graphics.SetViewport(Graphics.CurrentSize);
+	Graphics.Element->SetActive(false);
+	Graphics.Element->Active = true;
 
 	CursorItem = nullptr;
 	PreviousCursorItem = nullptr;
@@ -134,7 +136,7 @@ void _PlayState::Close() {
 }
 
 // Action handler
-bool _PlayState::HandleAction(int InputType, int Action, int Value) {
+bool _PlayState::HandleAction(int InputType, std::size_t Action, int Value) {
 	if(!Player || IsPaused())
 		return false;
 
@@ -192,15 +194,20 @@ bool _PlayState::HandleAction(int InputType, int Action, int Value) {
 }
 
 // Key handler
-void _PlayState::KeyEvent(const _KeyEvent &KeyEvent) {
+bool _PlayState::HandleKey(const _KeyEvent &KeyEvent) {
+	bool Handled = Graphics.Element->HandleKey(KeyEvent);
+
+	bool SendAction = true;
 	if(IsPaused()) {
 		Player->StopAudio();
-		Menu.KeyEvent(KeyEvent);
-		return;
+		if(!Handled)
+			SendAction = Menu.HandleKey(KeyEvent);
+
+		return SendAction;
 	}
 
 	if(KeyEvent.Pressed) {
-		switch(KeyEvent.Key) {
+		switch(KeyEvent.Scancode) {
 			case SDL_SCANCODE_ESCAPE:
 				if(Player->IsDead()) {
 					RestartFromDeath();
@@ -234,14 +241,16 @@ void _PlayState::KeyEvent(const _KeyEvent &KeyEvent) {
 			break;
 		}
 	}
+
+	return SendAction;
 }
 
 // Mouse handler
-void _PlayState::MouseEvent(const _MouseEvent &MouseEvent) {
+void _PlayState::HandleMouseButton(const _MouseEvent &MouseEvent) {
 	HUD->MouseEvent(MouseEvent);
 
 	if(IsPaused())
-		Menu.MouseEvent(MouseEvent);
+		Menu.HandleMouseButton(MouseEvent);
 }
 
 // Update

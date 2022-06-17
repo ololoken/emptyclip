@@ -60,10 +60,6 @@ class _HUD {
 			ELEMENT_SKILLS,
 			ELEMENT_MESSAGE,
 			ELEMENT_SKILLINFO,
-			ELEMENT_COUNT
-		};
-
-		enum LabelTypes {
 			LABEL_FPS,
 			LABEL_MESSAGE,
 			LABEL_MESSAGEBOX,
@@ -94,10 +90,6 @@ class _HUD {
 			LABEL_DAMAGERESIST,
 			LABEL_MOVEMENTSPEED,
 			LABEL_KILLS,
-			LABEL_COUNT
-		};
-
-		enum ImageTypes {
 			IMAGE_PLAYERHEALTH,
 			IMAGE_PLAYERSTAMINA,
 			IMAGE_ENEMYHEALTH,
@@ -105,7 +97,7 @@ class _HUD {
 			IMAGE_EXPERIENCE,
 			IMAGE_MAINHAND_ICON,
 			IMAGE_OFFHAND_ICON,
-			IMAGE_COUNT
+			ELEMENT_COUNT,
 		};
 
 		_HUD(_Player *Player);
@@ -139,7 +131,7 @@ class _HUD {
 	private:
 
 		void DrawIndicator(const std::string &String, float Percent=0.0f, const _Texture *Texture=nullptr);
-		void DrawHUDWeapon(const _Weapon *Weapon, _Element *Element, _Image *Image, _Element *Label);
+		void DrawHUDWeapon(const _Weapon *Weapon, _Element *Element, _Element *Image, _Element *Label);
 		void DrawItemCount(_Item *Item, int X, int Y);
 
 		std::string UpgradeTypeToString(int Type, int WeaponType);
@@ -150,8 +142,6 @@ class _HUD {
 
 		// UI
 		_Element *Elements[ELEMENT_COUNT];
-		_Element *Labels[LABEL_COUNT];
-		_Image *Images[IMAGE_COUNT];
 		_Element *DragStart;
 		_Item *CursorItem, *CursorOverItem;
 		glm::ivec2 ClickOffset;

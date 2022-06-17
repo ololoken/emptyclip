@@ -21,10 +21,7 @@
 #include <actions.h>
 #include <graphics.h>
 #include <assets.h>
-#include <ui/element.h>
-#include <ui/button.h>
-#include <ui/image.h>
-#include <ui/textbox.h>
+#include <ui/ui.h>
 #include <objects/player.h>
 #include <config.h>
 #include <animation.h>
@@ -76,19 +73,23 @@ _Menu::_Menu() {
 
 // Initialize
 void _Menu::InitTitle() {
+	Graphics.Element->SetActive(false);
+	Graphics.Element->Active = true;
+
+	ChangeLayout("menu_title");
 
 	std::string BuildVersion;
 	if(std::string(BUILD_VERSION) != "")
 		BuildVersion = std::string("-") + BUILD_VERSION;
-
-	Assets.Elements["game_version"]->Text = GAME_VERSION + BuildVersion;
 	Graphics.SetCursor(true);
 
-	Background = Assets.GetImage("menu_bg");
-	CurrentLayout = Assets.Elements["menu_title"];
+	Assets.Elements["game_version"]->Text = GAME_VERSION + BuildVersion;
+	Assets.Elements["game_version"]->SetActive(true);
 
+	Background = Assets.Elements["menu_bg"];
 	Background->SetWidth(Graphics.CurrentSize.x * ((float)Background->Texture->Size.y / Background->Texture->Size.x));
 	Background->SetHeight(Graphics.CurrentSize.y);
+	Background->SetActive(true);
 
 	State = STATE_TITLE;
 }
@@ -107,11 +108,11 @@ void _Menu::InitTutorial() {
 
 // Init single player
 void _Menu::InitSinglePlayer() {
-	CurrentLayout = Assets.Elements["menu_singleplayer"];
+	ChangeLayout("menu_singleplayer");
 
 	RefreshSaveSlots();
 	for(int i = 0; i <= _Save::SLOT_9; i++)
-		SaveSlots[i]->SetEnabled(false);
+		SaveSlots[i]->Checked = false;;
 	SelectedColor = 0;
 	SelectedSlot = -1;
 
@@ -121,7 +122,7 @@ void _Menu::InitSinglePlayer() {
 
 // Options
 void _Menu::InitOptions() {
-	CurrentLayout = Assets.Elements["menu_options"];
+	ChangeLayout("menu_options");
 
 	RefreshInputLabels();
 	CurrentAction = -1;
@@ -132,7 +133,7 @@ void _Menu::InitOptions() {
 
 // In-game menu
 void _Menu::InitInGame() {
-	CurrentLayout = Assets.Elements["menu_ingame"];
+	ChangeLayout("menu_ingame");
 
 	Graphics.SetCursor(true);
 	Background = nullptr;
@@ -142,6 +143,8 @@ void _Menu::InitInGame() {
 
 // Return to play
 void _Menu::InitPlay() {
+	if(CurrentLayout)
+		CurrentLayout->SetActive(false);
 	CurrentLayout = nullptr;
 
 	State = STATE_NONE;
@@ -149,8 +152,11 @@ void _Menu::InitPlay() {
 
 // Init new player popup
 void _Menu::InitNewPlayer() {
-	_TextBox *Name = Assets.GetTextBox("textbox_new_name");
-	Name->SetFocused(true);
+	CurrentLayout = Assets.Elements["menu_new"];
+	CurrentLayout->SetActive(true);
+
+	_Element *Name = Assets.GetTextBox("textbox_new_name");
+	FocusedElement = Name;
 	Name->Text.clear();
 	Name->ResetCursor();
 
@@ -160,14 +166,13 @@ void _Menu::InitNewPlayer() {
 		Buffer << PlayerColorButtonPrefix << i;
 
 		ColorButtons[i] = Assets.GetButton(Buffer.str());
-		ColorButtons[i]->SetEnabled(false);
-		ColorButtons[i]->ID = i;
+		ColorButtons[i]->Checked = false;
+		ColorButtons[i]->Index = i;
 	}
 
 	SelectedColor = 0;
-	ColorButtons[SelectedColor]->SetEnabled(true);
+	ColorButtons[SelectedColor]->Checked = true;
 
-	CurrentLayout = Assets.Elements["menu_new"];
 	SinglePlayerState = SINGLEPLAYER_NEW_PLAYER;
 }
 
@@ -180,7 +185,7 @@ void _Menu::LaunchGame() {
 	PlayState.SetFromEditor(false);
 	Framework.ChangeState(&PlayState);
 
-	SaveSlots[SelectedSlot]->SetEnabled(false);
+	SaveSlots[SelectedSlot]->Checked = false;
 	State = STATE_NONE;
 }
 
@@ -189,33 +194,33 @@ void _Menu::Close() {
 }
 
 // Handle key event
-void _Menu::KeyEvent(const _KeyEvent &KeyEvent) {
+bool _Menu::HandleKey(const _KeyEvent &KeyEvent) {
 	if(CurrentLayout)
-		CurrentLayout->HandleKeyEvent(KeyEvent);
+		CurrentLayout->HandleKey(KeyEvent);
 
 	switch(State) {
 		case STATE_TITLE: {
-			if(KeyEvent.Pressed && KeyEvent.Key == SDL_SCANCODE_ESCAPE)
+			if(KeyEvent.Pressed && KeyEvent.Scancode == SDL_SCANCODE_ESCAPE)
 				Framework.Done = true;
 		} break;
 		case STATE_SINGLEPLAYER: {
 
 			if(SinglePlayerState == SINGLEPLAYER_NONE) {
-				if(KeyEvent.Pressed && KeyEvent.Key == SDL_SCANCODE_ESCAPE)
+				if(KeyEvent.Pressed && KeyEvent.Scancode == SDL_SCANCODE_ESCAPE)
 					InitTitle();
 			}
 			else {
 				if(KeyEvent.Pressed) {
-					if(KeyEvent.Key == SDL_SCANCODE_ESCAPE)
+					if(KeyEvent.Scancode == SDL_SCANCODE_ESCAPE)
 						CancelCreate();
-					else if(KeyEvent.Key == SDL_SCANCODE_RETURN)
+					else if(KeyEvent.Scancode == SDL_SCANCODE_RETURN)
 						CreatePlayer();
 				}
 			}
 		} break;
 		case STATE_OPTIONS: {
 			if(OptionsState == OPTION_NONE) {
-				if(KeyEvent.Pressed && KeyEvent.Key == SDL_SCANCODE_ESCAPE) {
+				if(KeyEvent.Pressed && KeyEvent.Scancode == SDL_SCANCODE_ESCAPE) {
 					Config.Save();
 					if(Framework.GetState() == &PlayState)
 						InitInGame();
@@ -225,27 +230,24 @@ void _Menu::KeyEvent(const _KeyEvent &KeyEvent) {
 			}
 			else {
 				if(KeyEvent.Pressed) {
-					RemapInput(_Input::KEYBOARD, KeyEvent.Key);
+					RemapInput(_Input::KEYBOARD, KeyEvent.Scancode);
+					return false;
 				}
 			}
 		} break;
 		case STATE_INGAME: {
-			if(KeyEvent.Pressed && KeyEvent.Key == SDL_SCANCODE_ESCAPE)
+			if(KeyEvent.Pressed && KeyEvent.Scancode == SDL_SCANCODE_ESCAPE)
 				InitPlay();
 		} break;
 		default:
 		break;
 	}
-}
 
-// Handle text
-void _Menu::TextEvent(const char *Text) {
-	if(CurrentLayout)
-		CurrentLayout->HandleTextEvent(Text);
+	return true;
 }
 
 // Handle mouse event
-void _Menu::MouseEvent(const _MouseEvent &MouseEvent) {
+void _Menu::HandleMouseButton(const _MouseEvent &MouseEvent) {
 	if(!CurrentLayout)
 		return;
 
@@ -264,7 +266,7 @@ void _Menu::MouseEvent(const _MouseEvent &MouseEvent) {
 	}
 
 	if(MouseEvent.Button == SDL_BUTTON_LEFT)
-		CurrentLayout->HandleInput(MouseEvent.Pressed);
+		CurrentLayout->HandleMouseButton(MouseEvent.Pressed);
 
 	// Get clicked element
 	_Element *Clicked = CurrentLayout->GetClickedElement();
@@ -301,7 +303,7 @@ void _Menu::MouseEvent(const _MouseEvent &MouseEvent) {
 							Save.DeletePlayer(SelectedSlot);
 							RefreshSaveSlots();
 
-							SaveSlots[SelectedSlot]->SetEnabled(false);
+							SaveSlots[SelectedSlot]->Checked = false;
 							SelectedSlot = -1;
 						}
 					}
@@ -317,28 +319,27 @@ void _Menu::MouseEvent(const _MouseEvent &MouseEvent) {
 
 						// Deselect previous slot
 						if(SelectedSlot != -1)
-							SaveSlots[SelectedSlot]->SetEnabled(false);
+							SaveSlots[SelectedSlot]->Checked = false;
 
 						// Set up create player screen
-						if(!Save.GetPlayer(Clicked->ID)) {
+						if(!Save.GetPlayer(Clicked->Index)) {
 							InitNewPlayer();
 						}
 
-						SelectedSlot = Clicked->ID;
-						SaveSlots[SelectedSlot]->SetEnabled(true);
+						SelectedSlot = Clicked->Index;
+						SaveSlots[SelectedSlot]->Checked = true;
 
-						if(DoubleClick) {
+						if(DoubleClick)
 							LaunchGame();
-						}
 					}
 				}
 				else {
 					if(Clicked->Name.substr(0, PlayerColorButtonPrefix.size()) == PlayerColorButtonPrefix) {
 						if(SelectedColor != -1)
-							ColorButtons[SelectedColor]->SetEnabled(false);
+							ColorButtons[SelectedColor]->Checked = false;
 
-						SelectedColor = Clicked->ID;
-						ColorButtons[SelectedColor]->SetEnabled(true);
+						SelectedColor = Clicked->Index;
+						ColorButtons[SelectedColor]->Checked = true;
 					}
 					else if(Clicked->Name == "button_new_create") {
 						CreatePlayer();
@@ -370,7 +371,7 @@ void _Menu::MouseEvent(const _MouseEvent &MouseEvent) {
 					}
 					else if(Clicked->Name.substr(0, InputBoxPrefix.size()) == InputBoxPrefix) {
 						OptionsState = OPTION_ACCEPT_INPUT;
-						CurrentAction = Clicked->ID;
+						CurrentAction = Clicked->Index;
 						Assets.GetLabel("menu_options_accept_text_action")->Text = Actions.GetName(CurrentAction);
 					}
 				}
@@ -446,6 +447,7 @@ void _Menu::Render() {
 
 			if(OptionsState == OPTION_ACCEPT_INPUT) {
 				Graphics.FadeScreen(Assets.Programs["ortho_pos"], MENU_ACCEPTINPUT_FADE);
+				Assets.Elements["menu_popup"]->SetActive(true);
 				Assets.Elements["menu_popup"]->Render();
 			}
 		} break;
@@ -475,6 +477,18 @@ void _Menu::Render() {
 	}
 }
 
+// Change menu layout
+void _Menu::ChangeLayout(const std::string &ElementName) {
+	Assets.Elements["game_version"]->SetActive(false);
+
+	if(CurrentLayout) {
+		CurrentLayout->SetActive(false);
+	}
+
+	CurrentLayout = Assets.Elements[ElementName];
+	CurrentLayout->SetActive(true);
+}
+
 // Refreshes the save slots after player creation
 void _Menu::RefreshSaveSlots() {
 
@@ -496,7 +510,7 @@ void _Menu::RefreshSaveSlots() {
 
 		Buffer << PlayerButtonPrefix << i;
 		SaveSlots[i] = Assets.GetButton(Buffer.str());
-		SaveSlots[i]->ID = i;
+		SaveSlots[i]->Index = i;
 	}
 }
 
@@ -505,7 +519,7 @@ void _Menu::RefreshInputLabels() {
 	for(size_t i = 0; i < LABEL_COUNT; i++) {
 		InputLabels[i] = Assets.GetLabel(KEYLABEL_IDENTIFIERS[i]);
 		InputLabels[i]->Text = Actions.GetInputNameForAction(i);
-		InputLabels[i]->Parent->ID = i;
+		InputLabels[i]->Parent->Index = i;
 	}
 }
 
@@ -514,7 +528,7 @@ void _Menu::CancelCreate() {
 	CurrentLayout = Assets.Elements["menu_singleplayer"];
 	SinglePlayerState = SINGLEPLAYER_NONE;
 
-	SaveSlots[SelectedSlot]->SetEnabled(false);
+	SaveSlots[SelectedSlot]->Checked = false;
 }
 
 // Handle player creation

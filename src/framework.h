@@ -21,6 +21,7 @@
 #include <SDL_stdinc.h>
 
 // Forward Declarations
+union SDL_Event;
 class _State;
 class _FrameLimit;
 
@@ -48,8 +49,11 @@ class _Framework {
 
 		// State
 		bool Done;
+		bool IgnoreNextInputEvent;
 
 	private:
+
+		int GlobalKeyHandler(const SDL_Event &Event);
 
 		// States
 		StateType FrameworkState;

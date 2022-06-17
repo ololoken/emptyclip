@@ -15,36 +15,12 @@
 * You should have received a copy of the GNU General Public License
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 *******************************************************************************/
-#pragma once
+#include <state.h>
 
-// Libraries
-#include <ui/element.h>
-#include <color.h>
+// Constructor
+_State::_State() {
+}
 
-// Forward Declarations
-class _Texture;
-class _Style;
-
-// Classes
-class _Button : public _Element {
-
-	public:
-
-		_Button(const std::string &Identifier, _Element *Parent, const glm::ivec2 &Offset, const glm::ivec2 &Size, const _Alignment &Alignment, const _Style *Style, const _Style *HoverStyle);
-		~_Button();
-
-		void HandleInput(bool Pressed) { }
-		void Render() const;
-
-		void SetTexture(_Texture *Texture);
-		const _Texture *GetTexture() const;
-
-		void SetEnabled(bool Enabled) { this->Enabled = Enabled; }
-		bool GetEnabled() const { return Enabled; }
-
-	private:
-
-		const _Style *HoverStyle;
-
-		bool Enabled;
-};
+// Destructor
+_State::~_State() {
+}

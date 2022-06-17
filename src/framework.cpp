@@ -45,6 +45,7 @@ void _Framework::Init(int ArgumentCount, char **Arguments) {
 	TimeStepAccumulator = 0.0;
 	TimeStep = GAME_TIMESTEP;
 	FrameworkState = INIT;
+	IgnoreNextInputEvent = false;
 	State = &NullState;
 
 	bool AudioEnabled = Config.AudioEnabled;
@@ -144,43 +145,43 @@ void _Framework::Update() {
 	// Loop through events
 	SDL_Event Event;
 	while(SDL_PollEvent(&Event)) {
+		if(!State || FrameworkState != UPDATE)
+			continue;
+
 		switch(Event.type){
 			case SDL_KEYDOWN:
 			case SDL_KEYUP:
-				if(!Event.key.repeat) {
-					if(State && FrameworkState == UPDATE) {
-						_KeyEvent KeyEvent(Event.key.keysym.scancode, Event.type == SDL_KEYDOWN);
-						State->KeyEvent(KeyEvent);
-						Actions.InputEvent(_Input::KEYBOARD, Event.key.keysym.scancode, Event.type == SDL_KEYDOWN);
-					}
+				if(!GlobalKeyHandler(Event)) {
+					_KeyEvent KeyEvent("", Event.key.keysym.scancode, Event.type == SDL_KEYDOWN, Event.key.repeat);
 
-					// Toggle fullscreen
-					if(Event.type == SDL_KEYDOWN && (Event.key.keysym.mod & KMOD_ALT) && Event.key.keysym.scancode == SDL_SCANCODE_RETURN) {
-						//Graphics.ToggleFullScreen();
-					}
-				}
-				else {
-					if(State && FrameworkState == UPDATE && Event.key.keysym.scancode == SDL_SCANCODE_BACKSPACE) {
-						_KeyEvent KeyEvent(Event.key.keysym.scancode, Event.type == SDL_KEYDOWN);
-						State->KeyEvent(KeyEvent);
-					}
+					// Handle console input
+					bool SendAction = true;
+					SendAction = State->HandleKey(KeyEvent);
+
+					// Pass keys to action handler
+					if(!Event.key.repeat && SendAction)
+						Actions.InputEvent(_Input::KEYBOARD, Event.key.keysym.scancode, Event.type == SDL_KEYDOWN);
 				}
 			break;
 			case SDL_TEXTINPUT:
-				if(State)
-					State->TextEvent(Event.text.text);
+				if(!IgnoreNextInputEvent) {
+					_KeyEvent KeyEvent(Event.text.text, 0, 1, 1);
+					State->HandleKey(KeyEvent);
+				}
+
+				IgnoreNextInputEvent = false;
 			break;
 			case SDL_MOUSEBUTTONDOWN:
 			case SDL_MOUSEBUTTONUP:
 				if(State && FrameworkState == UPDATE) {
 					_MouseEvent MouseEvent(glm::ivec2(Event.motion.x, Event.motion.y), Event.button.button, Event.type == SDL_MOUSEBUTTONDOWN);
-					State->MouseEvent(MouseEvent);
+					State->HandleMouseButton(MouseEvent);
 					Actions.InputEvent(_Input::MOUSE_BUTTON, Event.button.button, Event.type == SDL_MOUSEBUTTONDOWN);
 				}
 			break;
 			case SDL_MOUSEWHEEL:
 				if(State)
-					State->MouseWheelEvent(Event.wheel.y);
+					State->HandleMouseWheel(Event.wheel.y);
 			break;
 			case SDL_QUIT:
 				Done = true;
@@ -219,6 +220,29 @@ void _Framework::Update() {
 	Graphics.Flip(FrameTime);
 	if(FrameLimit && !Config.Vsync)
 		FrameLimit->Update();
+}
+
+// Handles global hotkeys
+int _Framework::GlobalKeyHandler(const SDL_Event &Event) {
+
+	if(Event.type == SDL_KEYDOWN) {
+
+		// Handle alt-enter
+		if((Event.key.keysym.mod & KMOD_ALT) && (Event.key.keysym.scancode == SDL_SCANCODE_RETURN || Event.key.keysym.scancode == SDL_SCANCODE_KP_ENTER)) {
+			if(!Event.key.repeat) {
+				//Config.Fullscreen = !Config.Fullscreen;
+				//Graphics.SetFullscreen(Config.Fullscreen);
+
+				//Menu.SetFullscreen(!Config.Fullscreen);
+				//if(Console)
+				//	Console->UpdateSize();
+			}
+
+			return 1;
+		}
+	}
+
+	return 0;
 }
 
 // Change states

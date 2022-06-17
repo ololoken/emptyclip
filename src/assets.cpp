@@ -23,15 +23,14 @@
 #include <utils.h>
 #include <animation.h>
 #include <program.h>
-#include <ui/element.h>
-#include <ui/button.h>
-#include <ui/image.h>
-#include <ui/textbox.h>
+#include <graphics.h>
+#include <ui/ui.h>
 #include <objects/monster.h>
 #include <objects/particle.h>
 #include <objects/player.h>
 #include <objects/weapon.h>
 #include <constants.h>
+#include <tinyxml2/tinyxml2.h>
 #include <stdexcept>
 #include <sstream>
 
@@ -50,17 +49,22 @@ void _Assets::Init() {
 	LoadSoundGroups("tables/sound_groups.tsv");
 	LoadParticles("tables/particles.tsv");
 	LoadWeaponParticles("tables/weaponparticles.tsv");
-	LoadStyles("tables/ui/styles.tsv");
-	LoadElements("tables/ui/elements.tsv");
-	LoadImages("tables/ui/images.tsv");
-	LoadButtons("tables/ui/buttons.tsv");
-	LoadTextBoxes("tables/ui/textboxes.tsv");
-	LoadLabels("tables/ui/labels.tsv");
 	LoadReelTable("tables/reels.tsv");
 	LoadAnimationTable("tables/animation.tsv");
 
 	LoadAnimation("player_torso", "textures/player/");
 	LoadAnimation("player_legs", "textures/player/");
+
+	LoadStyles("tables/ui/styles.tsv");
+	LoadUI("tables/ui.xml");
+	LoadElements("tables/ui/elements.tsv");
+	LoadImages("tables/ui/images.tsv");
+	LoadButtons("tables/ui/buttons.tsv");
+	LoadTextBoxes("tables/ui/textboxes.tsv");
+	LoadLabels("tables/ui/labels.tsv");
+	Graphics.Element->CalculateBounds(false);
+
+	//Assets.SaveUI("tables/ui_new.xml");
 	LoadFonts("tables/fonts.tsv");
 
 	BlankWeaponParticle = _WeaponParticleTemplate();
@@ -75,17 +79,8 @@ void _Assets::Close() {
 	for(const auto &Style : Styles)
 		delete Style.second;
 
-	Styles.clear();
-
-	for(const auto &Element : Elements)
-		delete Element.second;
-
-	Elements.clear();
-
 	for(const auto &Font : Fonts)
 		delete Font.second;
-
-	Fonts.clear();
 
 	for(const auto &Texture : Textures)
 		delete Texture.second;
@@ -96,6 +91,9 @@ void _Assets::Close() {
 	for(const auto &Shader : Shaders)
 		delete Shader.second;
 
+	Styles.clear();
+	Elements.clear();
+	Fonts.clear();
 	Textures.clear();
 	Programs.clear();
 	Shaders.clear();
@@ -722,7 +720,7 @@ void _Assets::LoadElements(const std::string &Path) {
 		File.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
 		// Look for parent
-		_Element *ParentElement = nullptr;
+		_Element *ParentElement = Graphics.Element;
 		if(ParentIdentifier != "") {
 			ParentElement = Elements[ParentIdentifier];
 			if(!ParentElement) {
@@ -739,16 +737,21 @@ void _Assets::LoadElements(const std::string &Path) {
 		}
 
 		// Create
-		_Element *Element = new _Element(Identifier, ParentElement, Offset, Size, Alignment, Style, MaskOutside);
+		_Element *Element = new _Element();
+		Element->Name = Identifier;
+		Element->Parent = ParentElement;
+		Element->BaseOffset = Offset;
+		Element->BaseSize = Size;
+		Element->Alignment = Alignment;
+		Element->Style = Style;
+		Element->MaskOutside = MaskOutside;
 
 		// Check for duplicates
 		if(Elements[Identifier])
 			throw std::runtime_error("Duplicate element identifier: " + Identifier);
 
 		// Add as child for parent
-		if(ParentElement) {
-			ParentElement->AddChild(Element);
-		}
+		ParentElement->Children.push_back(Element);
 
 		Elements[Identifier] = Element;
 	}
@@ -788,12 +791,14 @@ void _Assets::LoadLabels(const std::string &Path) {
 		File.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
 		// Look for parent
-		_Element *ParentElement = nullptr;
+		_Element *ParentElement = Graphics.Element;
 		if(ParentName != "") {
 			ParentElement = Elements[ParentName];
 			if(!ParentElement)
 				throw std::runtime_error("Parent element not found: " + ParentName);
 		}
+		else
+			ParentElement = Graphics.Element;
 
 		// Get font
 		_Font *Font = Fonts[FontName];
@@ -804,7 +809,12 @@ void _Assets::LoadLabels(const std::string &Path) {
 		glm::vec4 Color = Colors[ColorName];
 
 		// Create
-		_Element *Element = new _Element(Name, ParentElement, Offset, Size, Alignment, nullptr, false);
+		_Element *Element = new _Element();
+		Element->Name = Name;
+		Element->Parent = ParentElement;
+		Element->BaseOffset = Offset;
+		Element->BaseSize = Size;
+		Element->Alignment = Alignment;
 		Element->Color = Color;
 		Element->Font = Font;
 		Element->Text = Text;
@@ -814,8 +824,7 @@ void _Assets::LoadLabels(const std::string &Path) {
 			throw std::runtime_error("Duplicate element identifier: " + Name);
 
 		// Add as child for parent
-		if(ParentElement)
-			ParentElement->AddChild(Element);
+		ParentElement->Children.push_back(Element);
 
 		Elements[Name] = Element;
 	}
@@ -854,7 +863,7 @@ void _Assets::LoadImages(const std::string &Path) {
 		File.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
 		// Look for parent
-		_Element *ParentElement = nullptr;
+		_Element *ParentElement = Graphics.Element;
 		if(ParentIdentifier != "") {
 			ParentElement = Elements[ParentIdentifier];
 			if(!ParentElement)
@@ -868,15 +877,23 @@ void _Assets::LoadImages(const std::string &Path) {
 		glm::vec4 Color = Colors[ColorIdentifier];
 
 		// Create
-		_Image *Element = new _Image(Identifier, ParentElement, Offset, Size, Alignment, Texture, Color, Stretch);
+		_Element *Element = new _Element();
+		Element->Name = Identifier;
+		Element->Parent = ParentElement;
+		Element->BaseOffset = Offset;
+		Element->BaseSize = Size;
+		Element->Alignment = Alignment;
+		Element->Color = Color;
+		Element->Texture = Texture;
+		Element->Color = Color;
+		Element->Stretch = Stretch;
 
 		// Check for duplicates
 		if(Elements[Identifier])
 			throw std::runtime_error("Duplicate element identifier: " + Identifier);
 
 		// Add as child for parent
-		if(ParentElement)
-			ParentElement->AddChild(Element);
+		ParentElement->Children.push_back(Element);
 
 		Elements[Identifier] = Element;
 	}
@@ -909,11 +926,12 @@ void _Assets::LoadButtons(const std::string &Path) {
 
 		glm::ivec2 Offset, Size;
 		_Alignment Alignment;
-		File >> Offset.x >> Offset.y >> Size.x >> Size.y >> Alignment.Horizontal >> Alignment.Vertical;
+		int Index;
+		File >> Offset.x >> Offset.y >> Size.x >> Size.y >> Alignment.Horizontal >> Alignment.Vertical >> Index;
 		File.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
 		// Look for parent
-		_Element *ParentElement = nullptr;
+		_Element *ParentElement = Graphics.Element;
 		if(ParentIdentifier != "") {
 			ParentElement = Elements[ParentIdentifier];
 			if(!ParentElement)
@@ -925,15 +943,23 @@ void _Assets::LoadButtons(const std::string &Path) {
 		_Style *HoverStyle = Styles[HoverStyleIdentifier];
 
 		// Create
-		_Button *Element = new _Button(Identifier, ParentElement, Offset, Size, Alignment, Style, HoverStyle);
+		_Element *Element = new _Element();
+		Element->Name = Identifier;
+		Element->Parent = ParentElement;
+		Element->BaseOffset = Offset;
+		Element->BaseSize = Size;
+		Element->Alignment = Alignment;
+		Element->Style = Style;
+		Element->HoverStyle = HoverStyle;
+		Element->Clickable = true;
+		Element->Index = Index;
 
 		// Check for duplicates
 		if(Elements[Identifier])
 			throw std::runtime_error("Duplicate element identifier: " + Identifier);
 
 		// Add as child for parent
-		if(ParentElement)
-			ParentElement->AddChild(Element);
+		ParentElement->Children.push_back(Element);
 
 		Elements[Identifier] = Element;
 	}
@@ -972,7 +998,7 @@ void _Assets::LoadTextBoxes(const std::string &Path) {
 		File.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
 		// Look for parent
-		_Element *ParentElement = nullptr;
+		_Element *ParentElement = Graphics.Element;
 		if(ParentIdentifier != "") {
 			ParentElement = Elements[ParentIdentifier];
 			if(!ParentElement)
@@ -988,20 +1014,65 @@ void _Assets::LoadTextBoxes(const std::string &Path) {
 			throw std::runtime_error("Unable to find font: " + FontIdentifier);
 
 		// Create
-		_TextBox *Element = new _TextBox(Identifier, ParentElement, Offset, Size, Alignment, Style, Font, MaxLength);
+		_Element *Element = new _Element();
+		Element->Name = Identifier;
+		Element->Parent = ParentElement;
+		Element->BaseOffset = Offset;
+		Element->BaseSize = Size;
+		Element->Alignment = Alignment;
+		Element->Style = Style;
+		Element->Font = Font;
+		Element->MaxLength = MaxLength;
 
 		// Check for duplicates
 		if(Elements[Identifier])
 			throw std::runtime_error("Duplicate element identifier: " + Identifier);
 
 		// Add as child for parent
-		if(ParentElement)
-			ParentElement->AddChild(Element);
+		ParentElement->Children.push_back(Element);
 
 		Elements[Identifier] = Element;
 	}
 
 	File.close();
+}
+
+// Load the UI xml file
+void _Assets::LoadUI(const std::string &Path, bool CalculateBounds) {
+/*
+
+	// Load file
+	tinyxml2::XMLDocument Document;
+	if(Document.LoadFile(Path.c_str()) != tinyxml2::XML_SUCCESS)
+		throw std::runtime_error("Error loading: " + Path);
+
+	// Load elements
+	tinyxml2::XMLElement *ChildNode = Document.FirstChildElement();
+	Graphics.Element = new _Element(ChildNode, nullptr);
+	Graphics.Element->Alignment = LEFT_TOP;
+	Graphics.Element->Active = true;
+	Graphics.Element->Size = Graphics.CurrentSize;
+	if(CalculateBounds)
+		Graphics.Element->CalculateBounds(false);
+*/
+	Graphics.Element = new _Element();
+	Graphics.Element->Alignment = LEFT_TOP;
+	Graphics.Element->Active = true;
+	Graphics.Element->Size = Graphics.CurrentSize;
+}
+
+// Save UI to xml
+void _Assets::SaveUI(const std::string &Path) {
+
+	// Create doc
+	tinyxml2::XMLDocument Document;
+	Document.InsertEndChild(Document.NewDeclaration());
+
+	// Serialize root ui element
+	Graphics.Element->SerializeElement(Document, nullptr);
+
+	// Write file
+	Document.SaveFile(Path.c_str());
 }
 
 // Frees memory and textures used by a reel
@@ -1074,6 +1145,6 @@ _WeaponParticleTemplate *_Assets::GetWeaponParticleTemplate(const std::string &I
 }
 
 _Element *_Assets::GetLabel(const std::string &Identifier) { return Elements[Identifier]; }
-_Image *_Assets::GetImage(const std::string &Identifier) { return (_Image *)Elements[Identifier]; }
-_Button *_Assets::GetButton(const std::string &Identifier) { return (_Button *)Elements[Identifier]; }
-_TextBox *_Assets::GetTextBox(const std::string &Identifier) { return (_TextBox *)Elements[Identifier]; }
+_Element *_Assets::GetImage(const std::string &Identifier) { return Elements[Identifier]; }
+_Element *_Assets::GetButton(const std::string &Identifier) { return Elements[Identifier]; }
+_Element *_Assets::GetTextBox(const std::string &Identifier) { return Elements[Identifier]; }

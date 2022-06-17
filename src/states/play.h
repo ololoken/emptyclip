@@ -56,9 +56,9 @@ class _PlayState : public _State {
 		void Close() override;
 
 		// Input
-		bool HandleAction(int InputType, int Action, int Value) override;
-		void KeyEvent(const _KeyEvent &KeyEvent) override;
-		void MouseEvent(const _MouseEvent &MouseEvent) override;
+		bool HandleAction(int InputType, std::size_t Action, int Value) override;
+		bool HandleKey(const _KeyEvent &KeyEvent) override;
+		void HandleMouseButton(const _MouseEvent &MouseEvent) override;
 
 		// Update
 		void Update(double FrameTime) override;

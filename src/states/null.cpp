@@ -17,6 +17,7 @@
 *******************************************************************************/
 #include <states/null.h>
 #include <framework.h>
+#include <graphics.h>
 #include <menu.h>
 
 _NullState NullState;
@@ -28,30 +29,22 @@ void _NullState::Init() {
 void _NullState::Close() {
 };
 
-// Action handler
-bool _NullState::HandleAction(int InputType, int Action, int Value) {
+// Key handler
+bool _NullState::HandleKey(const _KeyEvent &KeyEvent) {
+	bool Handled = Graphics.Element->HandleKey(KeyEvent);
+	if(!Handled)
+		return Menu.HandleKey(KeyEvent);
 
 	return false;
-}
-
-// Key handler
-void _NullState::KeyEvent(const _KeyEvent &KeyEvent) {
-	Menu.KeyEvent(KeyEvent);
-};
-
-// Text handler
-void _NullState::TextEvent(const char *Text) {
-	Menu.TextEvent(Text);
 };
 
 // Mouse handler
-void _NullState::MouseEvent(const _MouseEvent &MouseEvent) {
-	Menu.MouseEvent(MouseEvent);
+void _NullState::HandleMouseButton(const _MouseEvent &MouseEvent) {
+	Menu.HandleMouseButton(MouseEvent);
 };
 
 // Update
 void _NullState::Update(double FrameTime) {
-
 	Menu.Update(FrameTime);
 };
 

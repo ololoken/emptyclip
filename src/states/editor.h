@@ -128,11 +128,9 @@ class _EditorState : public _State {
 		void Close() override;
 
 		// Input
-		bool HandleAction(int InputType, int Action, int Value) override;
-		void KeyEvent(const _KeyEvent &KeyEvent) override;
-		void TextEvent(const char *Text) override;
-		void MouseEvent(const _MouseEvent &MouseEvent) override;
-		void MouseWheelEvent(int Direction) override;
+		bool HandleKey(const _KeyEvent &KeyEvent) override;
+		void HandleMouseButton(const _MouseEvent &MouseEvent) override;
+		void HandleMouseWheel(int Direction) override;
 
 		// Update
 		void Update(double FrameTime) override;
@@ -195,7 +193,7 @@ class _EditorState : public _State {
 		void ExecuteChangePeriod(double Value);
 		void ExecuteChangeActive();
 		void ExecuteUpdateCheckpointIndex(int Value);
-		void ExecuteSelectPalette(_Button *Button, int ClickType);
+		void ExecuteSelectPalette(_Element *Button, int ClickType);
 		void ExecuteUpdateSelectedPalette(int Change);
 		void ExecuteUpdateGridMode(int Change);
 		void ExecuteHighlightBlocks();
@@ -235,14 +233,14 @@ class _EditorState : public _State {
 		int CurrentPalette;
 		std::vector<const _Texture *> EventTextures;
 		_Font *MainFont;
-		_Button *LayerButtons[MAPLAYER_COUNT];
-		_Button *ModeButtons[EDITMODE_COUNT];
-		_Button *Brush[EDITMODE_COUNT];
+		_Element *LayerButtons[MAPLAYER_COUNT];
+		_Element *ModeButtons[EDITMODE_COUNT];
+		_Element *Brush[EDITMODE_COUNT];
 		_Element *CommandElement;
 		_Element *BlockElement;
 		_Element *EventElement;
 		_Element *PaletteElement[EDITMODE_COUNT];
-		_TextBox *InputBox;
+		_Element *InputBox;
 
 		// Blocks
 		_Block *SelectedBlock;

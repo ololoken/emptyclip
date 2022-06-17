@@ -22,7 +22,7 @@
 #include <texture.h>
 #include <stdexcept>
 #include <constants.h>
-#include <ui/element.h>
+#include <ui/ui.h>
 #include <SDL_mouse.h>
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -56,9 +56,6 @@ void _Graphics::Init(const _WindowSettings &WindowSettings) {
 	}
 	else
 		CurrentSize = WindowSize;
-
-	// Set root element
-	Element = new _Element("screen_element", nullptr, glm::ivec2(0, 0), glm::ivec2(CurrentSize.x, CurrentSize.y), _Alignment(0, 0), nullptr, false);
 
 	// Set opengl attributes
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);

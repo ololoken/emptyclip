@@ -96,12 +96,15 @@ class _Assets {
 		void LoadAnimation(const std::string &Identifier, const std::string &Path);
 		void LoadWeaponParticles(const std::string &Path);
 		void LoadMonsterAnimation();
+
 		void LoadStyles(const std::string &Path);
 		void LoadElements(const std::string &Path);
 		void LoadLabels(const std::string &Path);
 		void LoadImages(const std::string &Path);
 		void LoadButtons(const std::string &Path);
 		void LoadTextBoxes(const std::string &Path);
+		void LoadUI(const std::string &Path, bool CalculateBounds=true);
+		void SaveUI(const std::string &Path);
 
 		bool IsColorLoaded(const std::string &Identifier);
 		bool IsTextureLoaded(const std::string &Identifier);
@@ -115,9 +118,9 @@ class _Assets {
 		void UnloadAnimation(const std::string &Identifier);
 
 		_Element *GetLabel(const std::string &Identifier);
-		_Image *GetImage(const std::string &Identifier);
-		_Button *GetButton(const std::string &Identifier);
-		_TextBox *GetTextBox(const std::string &Identifier);
+		_Element *GetImage(const std::string &Identifier);
+		_Element *GetButton(const std::string &Identifier);
+		_Element *GetTextBox(const std::string &Identifier);
 		_Reel *GetReel(const std::string &Identifier);
 		AttackSampleTemplateStruct *GetAttackSampleTemplate(const std::string &Identifier);
 		_Animation *GetAnimation(const std::string &Identifier);
