@@ -155,7 +155,7 @@ void _Menu::InitNewPlayer() {
 	CurrentLayout = Assets.Elements["element_menu_new"];
 	CurrentLayout->SetActive(true);
 
-	_Element *Name = Assets.Elements["textbox_new_name"];
+	_Element *Name = Assets.Elements["textbox_new_name_input"];
 	FocusedElement = Name;
 	Name->Text.clear();
 	Name->ResetCursor();
@@ -533,14 +533,14 @@ void _Menu::CancelCreate() {
 
 // Handle player creation
 void _Menu::CreatePlayer() {
-	if(Assets.Elements["textbox_new_name"]->Text.length() == 0)
+	if(Assets.Elements["textbox_new_name_input"]->Text.length() == 0)
 		return;
 
 	CurrentLayout = Assets.Elements["element_menu_singleplayer"];
 	SinglePlayerState = SINGLEPLAYER_NONE;
 
 	if(SelectedSlot != -1) {
-		Save.CreateNewPlayer(SelectedSlot, Assets.Elements["textbox_new_name"]->Text, COLORS[SelectedColor]);
+		Save.CreateNewPlayer(SelectedSlot, Assets.Elements["textbox_new_name_input"]->Text, COLORS[SelectedColor]);
 		RefreshSaveSlots();
 	}
 }

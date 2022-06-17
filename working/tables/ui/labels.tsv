@@ -69,8 +69,8 @@ label_menu_singleplayer_slot9_text	button_singleplayer_slot9	hud_medium		Empty S
 label_new_title	element_menu_new	hud_larger		Create New Player	0	50	0	0	1	3
 label_new_create	button_new_create	hud_medium		Create	0	21	0	0	1	3
 label_new_cancel	button_new_cancel	hud_medium		Cancel	0	21	0	0	1	3
-label_new_name	textbox_new_name	hud_medium		Name	0	-10	0	0	0	3
-label_new_color	button_new_color0	hud_medium		Color	0	-15	0	0	0	3
+label_new_name_input	textbox_new_name_input	hud_medium		Name	-5	-30	0	0	0	3
+label_new_color	button_new_color0	hud_medium		Color	0	-10	0	0	0	3
 label_options_title	element_menu_options	hud_larger		Options	0	50	0	0	1	3
 label_options_defaults	button_options_defaults	hud_medium		Defaults	0	21	0	0	1	3
 label_options_save	button_options_save	hud_medium		Save	0	21	0	0	1	3
