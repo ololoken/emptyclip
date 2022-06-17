@@ -25,6 +25,7 @@
 
 // Forward Declarations
 struct _ParticleTemplate;
+struct _WeaponTemplate;
 
 // Classes
 class _Weapon : public _Item {

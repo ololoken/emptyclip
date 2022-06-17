@@ -27,16 +27,6 @@
 class _Texture;
 class _Font;
 
-// Types of weapons
-enum WeaponType {
-	WEAPON_MELEE,
-	WEAPON_PISTOL,
-	WEAPON_SHOTGUN,
-	WEAPON_RIFLE,
-	WEAPON_HEAVY,
-	WEAPON_TYPES
-};
-
 // Determines if you can hold down the mouse to fire or not
 enum FireRateType {
 	FIRERATE_SEMI,
@@ -73,17 +63,6 @@ enum SampleTypes {
 	SAMPLE_DEATH,
 	SAMPLE_MOVE,
 	SAMPLE_TYPES,
-};
-
-// Upgrade component types
-enum UpgradeType {
-	UPGRADE_CLIP,
-	UPGRADE_DAMAGE,
-	UPGRADE_ACCURACY,
-	UPGRADE_FIREPERIOD,
-	UPGRADE_RELOADPERIOD,
-	UPGRADE_ATTACKS,
-	UPGRADE_TYPES
 };
 
 // Skill types
@@ -135,51 +114,4 @@ struct _WeaponParticleTemplate {
 	}
 
 	_ParticleTemplate *ParticleTemplates[WEAPONPARTICLE_TYPES];
-};
-
-// Holds information about a weapon
-struct _WeaponTemplate {
-
-	_WeaponTemplate() :	WeaponParticles(nullptr) { }
-
-	_WeaponParticleTemplate *WeaponParticles;
-	glm::vec4 Color;
-	std::string Name;
-	std::string IconIdentifier;
-	std::string Samples[SAMPLE_TYPES];
-
-	std::unordered_map<std::string, _Value> Attributes;
-};
-
-// Holds information about a monster
-struct _MonsterTemplate {
-	glm::vec4 Color;
-	_WeaponParticleTemplate *WeaponParticles;
-	std::string Name, AnimationIdentifier, SamplesIdentifier, ItemGroupIdentifier;
-	float Radius, Scale, MovementSpeed, Accuracy, ViewRange, AttackRange;
-	int Level, Health, DamageBlock, CurrentSpeed, MinDamage, MaxDamage, BehaviorType, WeaponType;
-	int64_t ExperienceGiven;
-	double FirePeriod;
-	std::string FireSample, MissSample, RicochetSample, EmptySample, ReloadSample, HitSample, DeathSample;
-};
-
-// Holds information about object spawns
-struct _ObjectSpawn {
-
-	_ObjectSpawn() :
-		Identifier(""),
-		Position{0, 0},
-		Type(-1),
-		Deleted(false) { }
-
-	_ObjectSpawn(const std::string &Identifier, const glm::vec2 &Position, int Type) :
-		Identifier(Identifier),
-		Position(Position),
-		Type(Type),
-		Deleted(false) { }
-
-	std::string Identifier;
-	glm::vec2 Position;
-	int Type;
-	bool Deleted;
 };

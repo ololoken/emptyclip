@@ -20,6 +20,7 @@
 // Libraries
 #include <objects/object.h>
 #include <objects/templates.h>
+#include <objects/item.h>
 #include <list>
 
 // Forward Declarations

@@ -20,6 +20,27 @@
 // Libraries
 #include <objects/object.h>
 
+// Upgrade component types
+enum UpgradeType {
+	UPGRADE_CLIP,
+	UPGRADE_DAMAGE,
+	UPGRADE_ACCURACY,
+	UPGRADE_FIREPERIOD,
+	UPGRADE_RELOADPERIOD,
+	UPGRADE_ATTACKS,
+	UPGRADE_TYPES
+};
+
+// Types of weapons
+enum WeaponType {
+	WEAPON_MELEE,
+	WEAPON_PISTOL,
+	WEAPON_SHOTGUN,
+	WEAPON_RIFLE,
+	WEAPON_HEAVY,
+	WEAPON_TYPES
+};
+
 // Classes
 class _Item : public _Object {
 

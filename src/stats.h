@@ -27,6 +27,7 @@
 class _Item;
 class _Weapon;
 class _Monster;
+struct _ObjectSpawn;
 
 // Used for level information
 struct _Level {
@@ -61,6 +62,18 @@ struct _ItemGroup {
 	float Total;
 };
 
+// Monster template
+struct _MonsterTemplate {
+	glm::vec4 Color;
+	_WeaponParticleTemplate *WeaponParticles;
+	std::string Name, AnimationIdentifier, SamplesIdentifier, ItemGroupIdentifier;
+	float Radius, Scale, MovementSpeed, Accuracy, ViewRange, AttackRange;
+	int Level, Health, DamageBlock, CurrentSpeed, MinDamage, MaxDamage, BehaviorType, WeaponType;
+	int64_t ExperienceGiven;
+	double FirePeriod;
+	std::string FireSample, MissSample, RicochetSample, EmptySample, ReloadSample, HitSample, DeathSample;
+};
+
 // Item template
 struct _ItemTemplate {
 
@@ -71,6 +84,20 @@ struct _ItemTemplate {
 	std::string IconID;
 	glm::vec4 Color;
 	int Type;
+
+	std::unordered_map<std::string, _Value> Attributes;
+};
+
+// Weapon template
+struct _WeaponTemplate {
+
+	_WeaponTemplate() :	WeaponParticles(nullptr) { }
+
+	_WeaponParticleTemplate *WeaponParticles;
+	glm::vec4 Color;
+	std::string Name;
+	std::string IconIdentifier;
+	std::string Samples[SAMPLE_TYPES];
 
 	std::unordered_map<std::string, _Value> Attributes;
 };

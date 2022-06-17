@@ -17,14 +17,15 @@
 *******************************************************************************/
 #include <stats.h>
 #include <constants.h>
-#include <fstream>
-#include <sstream>
-#include <assets.h>
-#include <stdexcept>
 #include <random.h>
+#include <map.h>
+#include <assets.h>
 #include <objects/object.h>
 #include <objects/weapon.h>
 #include <objects/monster.h>
+#include <fstream>
+#include <sstream>
+#include <stdexcept>
 
 _Stats Stats;
 

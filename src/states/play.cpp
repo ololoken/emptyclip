@@ -993,15 +993,10 @@ void _PlayState::RemoveMonster(_Monster *Monster) {
 	Map->RemoveObjectFromGrid(Monster, GRID_MONSTER);
 }
 
+// Generate particles depending on hit type
 void _PlayState::GenerateBulletEffects(_Entity *Attacker, const int Type, const _Hit &Hit) {
-	glm::vec2 ParticlePosition;
-
 	if(Type == -1) {
-
-		// Particle position
-		ParticlePosition = Attacker->Position + glm::rotate(Attacker->GetWeaponOffset(Attacker->GetWeaponType()), glm::radians(Attacker->Rotation));
-
-		// Particles
+		glm::vec2 ParticlePosition = Attacker->Position + glm::rotate(Attacker->GetWeaponOffset(Attacker->GetWeaponType()), glm::radians(Attacker->Rotation));
 		Particles->Create(_ParticleSpawn(Attacker->GetWeaponParticle(WEAPONPARTICLE_FIRE), glm::vec2(0), ParticlePosition, OBJECT_Z, Attacker->Rotation));
 		Particles->Create(_ParticleSpawn(Attacker->GetWeaponParticle(WEAPONPARTICLE_SMOKE), glm::vec2(0), ParticlePosition, OBJECT_Z, 0));
 	}
@@ -1010,9 +1005,7 @@ void _PlayState::GenerateBulletEffects(_Entity *Attacker, const int Type, const 
 		Particles->Create(_ParticleSpawn(Attacker->GetWeaponParticle(WEAPONPARTICLE_BULLETHOLE), Hit.Normal, Hit.Position, OBJECT_Z, Attacker->Rotation));
 	}
 	else if(Type == HIT_OBJECT) {
-		ParticlePosition = GenerateRandomPointInCircle(0.7f) + Hit.Position;
-
-		// Blood
+		glm::vec2 ParticlePosition = GenerateRandomPointInCircle(0.7f) + Hit.Position;
 		Particles->Create(_ParticleSpawn(Assets.GetParticleTemplate("bloodspurt0"), Hit.Normal, Hit.Position, OBJECT_Z, Attacker->Rotation));
 		Particles->Create(_ParticleSpawn(Assets.GetParticleTemplate("blood0"), Hit.Normal, ParticlePosition, 0.06f, Attacker->Rotation));
 	}

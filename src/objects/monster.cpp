@@ -16,8 +16,8 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 *******************************************************************************/
 #include <objects/monster.h>
-#include <objects/templates.h>
 #include <objects/player.h>
+#include <stats.h>
 #include <map.h>
 #include <animation.h>
 #include <random.h>
