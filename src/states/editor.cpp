@@ -87,9 +87,9 @@ void _EditorState::Init() {
 
 	// Load command buttons
 	MainFont = Assets.Fonts["menu_buttons"];
-	CommandElement = Assets.Elements["editor_command"];
-	BlockElement = Assets.Elements["editor_blocks"];
-	EventElement = Assets.Elements["editor_events"];
+	CommandElement = Assets.Elements["element_editor_command"];
+	BlockElement = Assets.Elements["element_editor_blocks"];
+	EventElement = Assets.Elements["element_editor_events"];
 	InputBox = Assets.GetTextBox("element_editor_input");
 	CommandElement->SetActive(true);
 	BlockElement->SetActive(true);
@@ -97,33 +97,33 @@ void _EditorState::Init() {
 	InputBox->SetActive(false);
 
 	// Create button groups
-	PaletteElement[0] = Assets.Elements["editor_palette_block"];
-	PaletteElement[1] = Assets.Elements["editor_palette_events"];
-	PaletteElement[2] = Assets.Elements["editor_palette_monsters"];
-	PaletteElement[3] = Assets.Elements["editor_palette_items"];
-	PaletteElement[4] = Assets.Elements["editor_palette_ammo"];
-	PaletteElement[5] = Assets.Elements["editor_palette_upgrades"];
-	PaletteElement[6] = Assets.Elements["editor_palette_weapons"];
-	PaletteElement[7] = Assets.Elements["editor_palette_armors"];
+	PaletteElement[0] = Assets.Elements["element_editor_palette_block"];
+	PaletteElement[1] = Assets.Elements["element_editor_palette_events"];
+	PaletteElement[2] = Assets.Elements["element_editor_palette_monsters"];
+	PaletteElement[3] = Assets.Elements["element_editor_palette_items"];
+	PaletteElement[4] = Assets.Elements["element_editor_palette_ammo"];
+	PaletteElement[5] = Assets.Elements["element_editor_palette_upgrades"];
+	PaletteElement[6] = Assets.Elements["element_editor_palette_weapons"];
+	PaletteElement[7] = Assets.Elements["element_editor_palette_armors"];
 
 	// Assign layer buttons
-	LayerButtons[0] = Assets.GetButton("editor_layer_base");
-	LayerButtons[1] = Assets.GetButton("editor_layer_floor0");
-	LayerButtons[2] = Assets.GetButton("editor_layer_floor1");
-	LayerButtons[3] = Assets.GetButton("editor_layer_floor2");
-	LayerButtons[4] = Assets.GetButton("editor_layer_flat");
-	LayerButtons[5] = Assets.GetButton("editor_layer_wall");
-	LayerButtons[6] = Assets.GetButton("editor_layer_fore");
+	LayerButtons[0] = Assets.GetButton("button_editor_layer_base");
+	LayerButtons[1] = Assets.GetButton("button_editor_layer_floor0");
+	LayerButtons[2] = Assets.GetButton("button_editor_layer_floor1");
+	LayerButtons[3] = Assets.GetButton("button_editor_layer_floor2");
+	LayerButtons[4] = Assets.GetButton("button_editor_layer_flat");
+	LayerButtons[5] = Assets.GetButton("button_editor_layer_wall");
+	LayerButtons[6] = Assets.GetButton("button_editor_layer_fore");
 
 	// Assign palette buttons
-	ModeButtons[0] = Assets.GetButton("editor_mode_block");
-	ModeButtons[1] = Assets.GetButton("editor_mode_event");
-	ModeButtons[2] = Assets.GetButton("editor_mode_mons");
-	ModeButtons[3] = Assets.GetButton("editor_mode_item");
-	ModeButtons[4] = Assets.GetButton("editor_mode_ammo");
-	ModeButtons[5] = Assets.GetButton("editor_mode_mod");
-	ModeButtons[6] = Assets.GetButton("editor_mode_weap");
-	ModeButtons[7] = Assets.GetButton("editor_mode_arm");
+	ModeButtons[0] = Assets.GetButton("button_editor_mode_block");
+	ModeButtons[1] = Assets.GetButton("button_editor_mode_event");
+	ModeButtons[2] = Assets.GetButton("button_editor_mode_mons");
+	ModeButtons[3] = Assets.GetButton("button_editor_mode_item");
+	ModeButtons[4] = Assets.GetButton("button_editor_mode_ammo");
+	ModeButtons[5] = Assets.GetButton("button_editor_mode_mod");
+	ModeButtons[6] = Assets.GetButton("button_editor_mode_weap");
+	ModeButtons[7] = Assets.GetButton("button_editor_mode_arm");
 
 	// Reset state
 	ResetEditorState();

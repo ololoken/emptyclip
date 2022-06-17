@@ -11,17 +11,17 @@ hud_messagebox		menu_window	0	-150	275	100	1	2	0
 inventory			-140	0	200	258	1	1	0
 skills		hud_skills	0	0	300	700	2	1	0
 skill_info		hud_skills	0	0	350	200	0	0	0
-editor_command			16	0	700	147	0	2	0
-editor_blocks			382	-81	304	32	0	2	0
-editor_events			382	-81	304	32	0	2	0
-editor_palette_block			0	0	224	560	2	0	1
-editor_palette_events			0	0	224	560	2	0	1
-editor_palette_monsters			0	0	224	560	2	0	1
-editor_palette_items			0	0	224	560	2	0	1
-editor_palette_ammo			0	0	224	560	2	0	1
-editor_palette_upgrades			0	0	224	560	2	0	1
-editor_palette_weapons			0	0	224	560	2	0	1
-editor_palette_armors			0	0	224	560	2	0	1
+element_editor_command			16	0	700	147	0	2	0
+element_editor_blocks			382	-81	304	32	0	2	0
+element_editor_events			382	-81	304	32	0	2	0
+element_editor_palette_block			0	0	224	560	2	0	1
+element_editor_palette_events			0	0	224	560	2	0	1
+element_editor_palette_monsters			0	0	224	560	2	0	1
+element_editor_palette_items			0	0	224	560	2	0	1
+element_editor_palette_ammo			0	0	224	560	2	0	1
+element_editor_palette_upgrades			0	0	224	560	2	0	1
+element_editor_palette_weapons			0	0	224	560	2	0	1
+element_editor_palette_armors			0	0	224	560	2	0	1
 element_editor_input		menu_textbox	150	-10	600	30	0	2	0
 menu_title			0	0	512	650	1	1	0
 menu_singleplayer			0	0	800	750	1	1	0
