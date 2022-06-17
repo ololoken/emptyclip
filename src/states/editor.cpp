@@ -36,6 +36,7 @@
 #include <objects/weapon.h>
 #include <objects/player.h>
 #include <states/play.h>
+#include <iostream>
 #include <sstream>
 #include <SDL_keycode.h>
 #include <SDL_mouse.h>
