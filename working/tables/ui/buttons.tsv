@@ -71,20 +71,20 @@ editor_mset	editor_command	editor_mset	editor_selected0	102	68	32	32	0	0	25
 editor_load	editor_command	editor_load	editor_selected0	136	68	32	32	0	0	26
 editor_save	editor_command	editor_save	editor_selected0	170	68	32	32	0	0	27
 editor_test	editor_command	editor_test	editor_selected0	204	68	32	32	0	0	28
-editor_walk	editor_blocks	editor_walk	editor_selected0	0	0	32	32	0	0	-1
-editor_rotate	editor_blocks	editor_rotate	editor_selected0	34	0	32	32	0	0	-1
-editor_mirror	editor_blocks	editor_mirror	editor_selected0	68	0	32	32	0	0	-1
-editor_raise	editor_blocks	editor_raise	editor_selected0	102	0	32	32	0	0	-1
-editor_lower	editor_blocks	editor_lower	editor_selected0	136	0	32	32	0	0	-1
-editor_tile	editor_events	editor_tile		0	0	32	32	0	0	-1
-editor_levelup	editor_events	editor_levelup	editor_selected0	34	0	32	32	0	0	-1
-editor_leveldown	editor_events	editor_leveldown	editor_selected0	68	0	32	32	0	0	-1
-editor_periodup	editor_events	editor_periodup	editor_selected0	102	0	32	32	0	0	-1
-editor_perioddown	editor_events	editor_perioddown	editor_selected0	136	0	32	32	0	0	-1
-editor_active	editor_events	editor_active	editor_selected0	170	0	32	32	0	0	-1
-editor_itemidentifier	editor_events	editor_itemidentifier	editor_selected0	204	0	32	32	0	0	-1
-editor_monsidentifier	editor_events	editor_monsidentifier	editor_selected0	238	0	32	32	0	0	-1
-editor_partidentifier	editor_events	editor_partidentifier	editor_selected0	272	0	32	32	0	0	-1
+editor_walk	editor_blocks	editor_walk	editor_selected0	0	0	32	32	0	0	0
+editor_rotate	editor_blocks	editor_rotate	editor_selected0	34	0	32	32	0	0	1
+editor_mirror	editor_blocks	editor_mirror	editor_selected0	68	0	32	32	0	0	2
+editor_raise	editor_blocks	editor_raise	editor_selected0	102	0	32	32	0	0	3
+editor_lower	editor_blocks	editor_lower	editor_selected0	136	0	32	32	0	0	4
+editor_tile	editor_events	editor_tile		0	0	32	32	0	0	0
+editor_levelup	editor_events	editor_levelup	editor_selected0	34	0	32	32	0	0	1
+editor_leveldown	editor_events	editor_leveldown	editor_selected0	68	0	32	32	0	0	2
+editor_periodup	editor_events	editor_periodup	editor_selected0	102	0	32	32	0	0	3
+editor_perioddown	editor_events	editor_perioddown	editor_selected0	136	0	32	32	0	0	4
+editor_active	editor_events	editor_active	editor_selected0	170	0	32	32	0	0	5
+editor_itemidentifier	editor_events	editor_itemidentifier	editor_selected0	204	0	32	32	0	0	6
+editor_monsidentifier	editor_events	editor_monsidentifier	editor_selected0	238	0	32	32	0	0	7
+editor_partidentifier	editor_events	editor_partidentifier	editor_selected0	272	0	32	32	0	0	8
 inventory_armor	inventory	hud_inventory_armor		150	210	48	48	0	0	-1
 inventory_mainhand	inventory	hud_inventory_gun		0	210	48	48	0	0	-1
 inventory_offhand	inventory	hud_inventory_gun		50	210	48	48	0	0	-1

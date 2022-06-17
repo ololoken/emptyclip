@@ -6,7 +6,7 @@ menu_textbox	menu_darkred_bg	menu_red_border	ortho_pos			0
 menu_select		menu_red_border	ortho_pos			0
 menu_button			ortho_pos_uv	menu_button		0
 menu_button_hover			ortho_pos_uv	menu_button_hover		0
-editor_selected0			ortho_pos_uv	editor_selected0		0
+editor_selected0	editor_hover		ortho_pos			0
 editor_layer1			ortho_pos_uv	editor_layer1		0
 editor_layer2			ortho_pos_uv	editor_layer2		0
 editor_layer3			ortho_pos_uv	editor_layer3		0

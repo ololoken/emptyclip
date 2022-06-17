@@ -35,3 +35,4 @@ shade_purple2	0.64	0.21	0.73	1
 ambient_night	0	0	0	0.2
 ambient_day	0	0	0	0.8
 ambient_black	0	0	0	0
+editor_hover	1	1	1	0.2

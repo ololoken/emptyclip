@@ -53,8 +53,6 @@ editor_up	editor/up.png	0	0
 editor_walk	editor/walk.png	0	0
 editor_wall	editor/wall.png	0	0
 editor_weap	editor/weap.png	0	0
-editor_selected0	editor/selected0.png	0	0
-editor_selected1	editor/selected1.png	0	0
 editor_paletteprevious	editor/palette_previous.png	0	0
 editor_palettenext	editor/palette_next.png	0	0
 hud_crosshair	hud/crosshair0.png	0	0

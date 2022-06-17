@@ -93,7 +93,7 @@ void _EditorState::Init() {
 	InputBox = Assets.GetTextBox("element_editor_input");
 	CommandElement->SetActive(true);
 	BlockElement->SetActive(true);
-	EventElement->SetActive(true);
+	EventElement->SetActive(false);
 	InputBox->SetActive(false);
 
 	// Create button groups
@@ -663,6 +663,8 @@ void _EditorState::HandleMouseWheel(int Direction) {
 // Update
 void _EditorState::Update(double FrameTime) {
 	Graphics.Element->Update(FrameTime, Input.GetMouse());
+	//if(Graphics.Element->HitElement)
+	//	std::cout << Graphics.Element->HitElement->Name << std::endl;
 
 	// Get modifier key status
 	IsShiftDown = Input.ModKeyDown(KMOD_SHIFT) ? true : false;
@@ -2069,6 +2071,16 @@ void _EditorState::ExecuteSwitchMode(int State) {
 
 		// Set state
 		CurrentPalette = State;
+		BlockElement->SetActive(false);
+		EventElement->SetActive(false);
+		switch(CurrentPalette) {
+			case EDITMODE_BLOCKS:
+				BlockElement->SetActive(true);
+			break;
+			case EDITMODE_EVENTS:
+				EventElement->SetActive(true);
+			break;
+		}
 	}
 }
 
