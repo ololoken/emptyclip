@@ -22,6 +22,7 @@ editor_palette_ammo			0	0	224	560	2	0	1
 editor_palette_upgrades			0	0	224	560	2	0	1
 editor_palette_weapons			0	0	224	560	2	0	1
 editor_palette_armors			0	0	224	560	2	0	1
+element_editor_input		menu_textbox	150	-10	600	30	0	2	0
 menu_title			0	0	512	650	1	1	0
 menu_singleplayer			0	0	800	750	1	1	0
 menu_new		menu_window	0	0	400	350	1	1	0

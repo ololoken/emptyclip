@@ -226,7 +226,6 @@ class _EditorState : public _State {
 		// Text input
 		std::string SavedText[EDITINPUT_COUNT];
 		int EditorInput;
-		bool BlockTextEvent;
 
 		// UI
 		int CurrentLayer;

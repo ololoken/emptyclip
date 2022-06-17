@@ -37,7 +37,6 @@
 #include <objects/player.h>
 #include <states/play.h>
 #include <sstream>
-#include <iostream>
 #include <SDL_keycode.h>
 #include <SDL_mouse.h>
 #include <glm/gtc/type_ptr.hpp>
@@ -90,11 +89,11 @@ void _EditorState::Init() {
 	CommandElement = Assets.Elements["editor_command"];
 	BlockElement = Assets.Elements["editor_blocks"];
 	EventElement = Assets.Elements["editor_events"];
-	InputBox = Assets.GetTextBox("editor_inputbox");
+	InputBox = Assets.GetTextBox("element_editor_input");
 	CommandElement->SetActive(true);
 	BlockElement->SetActive(true);
 	EventElement->SetActive(true);
-	InputBox->SetActive(true);
+	InputBox->SetActive(false);
 
 	// Create button groups
 	PaletteElement[0] = Assets.Elements["editor_palette_block"];
@@ -239,7 +238,6 @@ void _EditorState::ResetEditorState() {
 	IsDrawing = false;
 	IsMoving = false;
 	FinishDrawing = false;
-	BlockTextEvent = false;
 
 	WorldCursorIndex.x = 0;
 	WorldCursorIndex.y = 0;
@@ -281,7 +279,7 @@ bool _EditorState::HandleKey(const _KeyEvent &KeyEvent) {
 	if(EditorInput != -1) {
 		switch(KeyEvent.Scancode) {
 			case SDL_SCANCODE_RETURN: {
-				const std::string InputText = InputBox->Text;
+				const std::string InputText = InputBox->Children.front()->Text;
 				switch(EditorInput) {
 					case EDITINPUT_LOADMONSTERSET:
 
@@ -321,9 +319,11 @@ bool _EditorState::HandleKey(const _KeyEvent &KeyEvent) {
 					break;
 				}
 				EditorInput = -1;
+				InputBox->SetActive(false);
 			} break;
 			case SDL_SCANCODE_ESCAPE:
 				EditorInput = -1;
+				InputBox->SetActive(false);
 			break;
 			default:
 				InputBox->HandleKey(KeyEvent);
@@ -420,7 +420,7 @@ bool _EditorState::HandleKey(const _KeyEvent &KeyEvent) {
 			case SDL_SCANCODE_M:
 				if(IsShiftDown) {
 					ExecuteIOCommand(EDITINPUT_MONSTERIDENTIFIER);
-					BlockTextEvent = true;
+					Framework.IgnoreNextInputEvent = true;
 				}
 				else
 					ExecuteMirror();
@@ -437,7 +437,7 @@ bool _EditorState::HandleKey(const _KeyEvent &KeyEvent) {
 			case SDL_SCANCODE_P:
 				if(IsShiftDown) {
 					ExecuteIOCommand(EDITINPUT_PARTICLEIDENTIFIER);
-					BlockTextEvent = true;
+					Framework.IgnoreNextInputEvent = true;
 				}
 			break;
 			case SDL_SCANCODE_Z:
@@ -451,20 +451,20 @@ bool _EditorState::HandleKey(const _KeyEvent &KeyEvent) {
 			case SDL_SCANCODE_I:
 				if(IsShiftDown) {
 					ExecuteIOCommand(EDITINPUT_ITEMIDENTIFIER);
-					BlockTextEvent = true;
+					Framework.IgnoreNextInputEvent = true;
 				}
 			break;
 			case SDL_SCANCODE_O:
 				ExecuteIOCommand(EDITINPUT_LOADMONSTERSET);
-				BlockTextEvent = true;
+				Framework.IgnoreNextInputEvent = true;
 			break;
 			case SDL_SCANCODE_L:
 				ExecuteIOCommand(EDITINPUT_LOAD);
-				BlockTextEvent = true;
+				Framework.IgnoreNextInputEvent = true;
 			break;
 			case SDL_SCANCODE_S:
 				ExecuteIOCommand(EDITINPUT_SAVE);
-				BlockTextEvent = true;
+				Framework.IgnoreNextInputEvent = true;
 			break;
 			case SDL_SCANCODE_T:
 				ExecuteTest();
@@ -934,9 +934,8 @@ void _EditorState::Render(double BlendFactor) {
 	Graphics.DrawRectangle(glm::vec2(0, 0), Graphics.ViewportSize);
 
 	// Draw text
-	if(EditorInput != -1) {
+	if(EditorInput != -1)
 		InputBox->Render();
-	}
 
 	// Draw filename
 	std::ostringstream Buffer;
@@ -1132,6 +1131,7 @@ void _EditorState::LoadPaletteButtons(std::vector<_Brush> &Icons, int Type) {
 		Button->Style = Style;
 		Button->HoverStyle = Assets.Styles["editor_selected0"];
 		Button->UserData = (void *)(intptr_t)Icons[i].ObjectType;
+		Button->Index = i;
 
 		PaletteElement[Type]->Children.push_back(Button);
 
@@ -1141,6 +1141,10 @@ void _EditorState::LoadPaletteButtons(std::vector<_Brush> &Icons, int Type) {
 			Offset.x = 0;
 		}
 	}
+
+	PaletteElement[Type]->SetClickable(true);
+	PaletteElement[Type]->SetActive(true);
+	PaletteElement[Type]->CalculateBounds();
 }
 
 // Draws the current brush
@@ -1778,13 +1782,16 @@ void _EditorState::ExecuteUpdateCheckpointIndex(int Value) {
 // Executes the an I/O command
 void _EditorState::ExecuteIOCommand(int Type) {
 	EditorInput = Type;
-	FocusedElement = InputBox;
-	_Element *Label = InputBox->Children[0];
+	InputBox->SetActive(true);
+	_Element *TextBox = InputBox->Children.front();
+	_Element *Label = TextBox->Children.front();
 	Label->Text = InputBoxStrings[Type];
 	if(Type >= EDITINPUT_ITEMIDENTIFIER && Type <= EDITINPUT_PARTICLEIDENTIFIER && EventSelected())
 		InputBox->Text = GetEventIdentifier(Type);
 	else
 		InputBox->Text = SavedText[Type];
+
+	FocusedElement = TextBox;
 }
 
 // Executes the clear map command
