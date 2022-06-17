@@ -56,85 +56,85 @@ _HUD::_HUD(_Player *Player) {
 	WeaponSwitchTexture = Assets.Textures["viewport_weaponswitch0"];
 
 	// Elements
-	Elements[LABEL_FPS] = Assets.Elements["hud_fps"];
-	Elements[LABEL_MESSAGE] = Assets.Elements["hud_message"];
-	Elements[LABEL_MESSAGEBOX] = Assets.Elements["hud_messagebox_text"];
+	Elements[LABEL_FPS] = Assets.Elements["label_hud_fps"];
+	Elements[LABEL_MESSAGE] = Assets.Elements["label_hud_message"];
+	Elements[LABEL_MESSAGEBOX] = Assets.Elements["label_hud_messagebox_text"];
 
 	Elements[LABEL_FPS]->SetActive(true);
 	Elements[LABEL_MESSAGE]->SetActive(true);
 	Elements[LABEL_MESSAGEBOX]->SetActive(true);
 
-	Elements[ELEMENT_PLAYERINFO] = Assets.Elements["hud_player_info"];
-	Elements[LABEL_PLAYERNAME] = Assets.Elements["hud_player_name"];
-	Elements[LABEL_PLAYERLEVEL] = Assets.Elements["hud_player_level"];
-	Elements[LABEL_PLAYERHEALTH] = Assets.Elements["hud_player_health"];
+	Elements[ELEMENT_PLAYERINFO] = Assets.Elements["element_hud_player_info"];
+	Elements[LABEL_PLAYERNAME] = Assets.Elements["label_hud_player_name"];
+	Elements[LABEL_PLAYERLEVEL] = Assets.Elements["label_hud_player_level"];
+	Elements[LABEL_PLAYERHEALTH] = Assets.Elements["label_hud_player_health"];
 	Elements[ELEMENT_PLAYERINFO]->SetActive(true);
 
-	Elements[ELEMENT_ENEMYINFO] = Assets.Elements["hud_enemy_info"];
-	Elements[LABEL_ENEMYNAME] = Assets.Elements["hud_enemy_name"];
+	Elements[ELEMENT_ENEMYINFO] = Assets.Elements["element_hud_enemy_info"];
+	Elements[LABEL_ENEMYNAME] = Assets.Elements["label_hud_enemy_name"];
 	Elements[ELEMENT_ENEMYINFO]->SetActive(true);
 
-	Elements[ELEMENT_PLAYERHEALTH] = Assets.Elements["hud_player_health"];
-	Elements[IMAGE_PLAYERHEALTH] = Assets.Elements["player_health_full"];
-	Elements[LABEL_PLAYERHEALTH] = Assets.Elements["hud_player_health_text"];
+	Elements[ELEMENT_PLAYERHEALTH] = Assets.Elements["element_hud_player_health"];
+	Elements[IMAGE_PLAYERHEALTH] = Assets.Elements["image_player_health_full"];
+	Elements[LABEL_PLAYERHEALTH] = Assets.Elements["label_hud_player_health_text"];
 	Elements[ELEMENT_PLAYERHEALTH]->SetActive(true);
 
-	Elements[ELEMENT_PLAYERSTAMINA] = Assets.Elements["hud_player_stamina"];
-	Elements[IMAGE_PLAYERSTAMINA] = Assets.Elements["player_stamina_full"];
+	Elements[ELEMENT_PLAYERSTAMINA] = Assets.Elements["element_hud_player_stamina"];
+	Elements[IMAGE_PLAYERSTAMINA] = Assets.Elements["image_player_stamina_full"];
 	Elements[ELEMENT_PLAYERSTAMINA]->SetActive(true);
 
-	Elements[IMAGE_ENEMYHEALTH] = Assets.Elements["enemy_health_full"];
+	Elements[IMAGE_ENEMYHEALTH] = Assets.Elements["image_enemy_health_full"];
 	Elements[IMAGE_ENEMYHEALTH]->SetActive(true);
 
-	Elements[ELEMENT_INDICATOR] = Assets.Elements["hud_indicator"];
-	Elements[IMAGE_RELOAD] = Assets.Elements["indicator_progress"];
-	Elements[LABEL_INDICATOR] = Assets.Elements["hud_indicator_text"];
+	Elements[ELEMENT_INDICATOR] = Assets.Elements["element_hud_indicator"];
+	Elements[IMAGE_RELOAD] = Assets.Elements["image_indicator_progress"];
+	Elements[LABEL_INDICATOR] = Assets.Elements["label_hud_indicator_text"];
 	Elements[ELEMENT_INDICATOR]->SetActive(true);
 
-	Elements[ELEMENT_EXPERIENCE] = Assets.Elements["hud_experience"];
-	Elements[IMAGE_EXPERIENCE] = Assets.Elements["experience_bar_full"];
-	Elements[LABEL_EXPERIENCE] = Assets.Elements["hud_experience_text"];
+	Elements[ELEMENT_EXPERIENCE] = Assets.Elements["element_hud_experience"];
+	Elements[IMAGE_EXPERIENCE] = Assets.Elements["image_experience_bar_full"];
+	Elements[LABEL_EXPERIENCE] = Assets.Elements["label_hud_experience_text"];
 	Elements[ELEMENT_EXPERIENCE]->SetActive(true);
 
-	Elements[ELEMENT_MAINHAND] = Assets.Elements["hud_mainhand"];
-	Elements[IMAGE_MAINHAND_ICON] = Assets.Elements["weapon0_icon"];
-	Elements[LABEL_MAINHAND_AMMO] = Assets.Elements["hud_mainhand_ammo"];
+	Elements[ELEMENT_MAINHAND] = Assets.Elements["element_hud_mainhand"];
+	Elements[IMAGE_MAINHAND_ICON] = Assets.Elements["image_weapon0_icon"];
+	Elements[LABEL_MAINHAND_AMMO] = Assets.Elements["label_hud_mainhand_ammo"];
 	Elements[ELEMENT_MAINHAND]->SetActive(true);
 
-	Elements[ELEMENT_OFFHAND] = Assets.Elements["hud_offhand"];
-	Elements[IMAGE_OFFHAND_ICON] = Assets.Elements["weapon1_icon"];
-	Elements[LABEL_OFFHAND_AMMO] = Assets.Elements["hud_offhand_ammo"];
+	Elements[ELEMENT_OFFHAND] = Assets.Elements["element_hud_offhand"];
+	Elements[IMAGE_OFFHAND_ICON] = Assets.Elements["image_weapon1_icon"];
+	Elements[LABEL_OFFHAND_AMMO] = Assets.Elements["label_hud_offhand_ammo"];
 	Elements[ELEMENT_OFFHAND]->SetActive(true);
 
-	Elements[ELEMENT_INVENTORY] = Assets.Elements["inventory"];
-	Elements[ELEMENT_SKILLS] = Assets.Elements["skills"];
-	Elements[LABEL_SKILL_REMAINING] = Assets.Elements["hud_skill_remaining_value"];
-	Elements[LABEL_SKILL0] = Assets.Elements["hud_skill0_value"];
-	Elements[LABEL_SKILL1] = Assets.Elements["hud_skill1_value"];
-	Elements[LABEL_SKILL2] = Assets.Elements["hud_skill2_value"];
-	Elements[LABEL_SKILL3] = Assets.Elements["hud_skill3_value"];
-	Elements[LABEL_SKILL4] = Assets.Elements["hud_skill4_value"];
-	Elements[LABEL_SKILL5] = Assets.Elements["hud_skill5_value"];
-	Elements[LABEL_SKILL6] = Assets.Elements["hud_skill6_value"];
-	Elements[LABEL_SKILL7] = Assets.Elements["hud_skill7_value"];
-	Elements[LABEL_SKILL8] = Assets.Elements["hud_skill8_value"];
+	Elements[ELEMENT_INVENTORY] = Assets.Elements["element_inventory"];
+	Elements[ELEMENT_SKILLS] = Assets.Elements["element_skills"];
+	Elements[LABEL_SKILL_REMAINING] = Assets.Elements["label_hud_skill_remaining_value"];
+	Elements[LABEL_SKILL0] = Assets.Elements["label_hud_skill0_value"];
+	Elements[LABEL_SKILL1] = Assets.Elements["label_hud_skill1_value"];
+	Elements[LABEL_SKILL2] = Assets.Elements["label_hud_skill2_value"];
+	Elements[LABEL_SKILL3] = Assets.Elements["label_hud_skill3_value"];
+	Elements[LABEL_SKILL4] = Assets.Elements["label_hud_skill4_value"];
+	Elements[LABEL_SKILL5] = Assets.Elements["label_hud_skill5_value"];
+	Elements[LABEL_SKILL6] = Assets.Elements["label_hud_skill6_value"];
+	Elements[LABEL_SKILL7] = Assets.Elements["label_hud_skill7_value"];
+	Elements[LABEL_SKILL8] = Assets.Elements["label_hud_skill8_value"];
 	Elements[ELEMENT_INVENTORY]->SetActive(true);
 	Elements[ELEMENT_SKILLS]->SetActive(true);
 
-	Elements[LABEL_DAMAGE] = Assets.Elements["hud_player_damage_value"];
-	Elements[LABEL_MELEEDAMAGE] = Assets.Elements["hud_player_meleedamage_value"];
-	Elements[LABEL_DAMAGEBLOCK] = Assets.Elements["hud_player_damageblock_value"];
-	Elements[LABEL_DAMAGERESIST] = Assets.Elements["hud_player_damageresist_value"];
-	Elements[LABEL_MOVEMENTSPEED] = Assets.Elements["hud_player_movementspeed_value"];
-	Elements[LABEL_KILLS] = Assets.Elements["hud_player_kills_value"];
+	Elements[LABEL_DAMAGE] = Assets.Elements["label_hud_player_damage_value"];
+	Elements[LABEL_MELEEDAMAGE] = Assets.Elements["label_hud_player_meleedamage_value"];
+	Elements[LABEL_DAMAGEBLOCK] = Assets.Elements["label_hud_player_damageblock_value"];
+	Elements[LABEL_DAMAGERESIST] = Assets.Elements["label_hud_player_damageresist_value"];
+	Elements[LABEL_MOVEMENTSPEED] = Assets.Elements["label_hud_player_movementspeed_value"];
+	Elements[LABEL_KILLS] = Assets.Elements["label_hud_player_kills_value"];
 
-	Elements[ELEMENT_SKILLINFO] = Assets.Elements["skill_info"];
-	Elements[LABEL_SKILLTEXT] = Assets.Elements["hud_skill_text"];
-	Elements[LABEL_SKILL_LEVEL] = Assets.Elements["hud_skill_level"];
-	Elements[LABEL_SKILL_LEVEL_NEXT] = Assets.Elements["hud_skill_level_next"];
+	Elements[ELEMENT_SKILLINFO] = Assets.Elements["element_skill_info"];
+	Elements[LABEL_SKILLTEXT] = Assets.Elements["label_hud_skill_text"];
+	Elements[LABEL_SKILL_LEVEL] = Assets.Elements["label_hud_skill_level"];
+	Elements[LABEL_SKILL_LEVEL_NEXT] = Assets.Elements["label_hud_skill_level_next"];
 	Elements[ELEMENT_SKILLINFO]->SetActive(true);
 
-	Elements[ELEMENT_MESSAGE] = Assets.Elements["hud_messagebox"];
+	Elements[ELEMENT_MESSAGE] = Assets.Elements["element_hud_messagebox"];
 	Elements[ELEMENT_MESSAGE]->SetActive(true);
 
 }

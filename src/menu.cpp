@@ -76,17 +76,17 @@ void _Menu::InitTitle() {
 	Graphics.Element->SetActive(false);
 	Graphics.Element->Active = true;
 
-	ChangeLayout("menu_title");
+	ChangeLayout("element_menu_title");
 
 	std::string BuildVersion;
 	if(std::string(BUILD_VERSION) != "")
 		BuildVersion = std::string("-") + BUILD_VERSION;
 	Graphics.SetCursor(true);
 
-	Assets.Elements["game_version"]->Text = GAME_VERSION + BuildVersion;
-	Assets.Elements["game_version"]->SetActive(true);
+	Assets.Elements["label_game_version"]->Text = GAME_VERSION + BuildVersion;
+	Assets.Elements["label_game_version"]->SetActive(true);
 
-	Background = Assets.Elements["menu_bg"];
+	Background = Assets.Elements["image_menu_bg"];
 	Background->SetWidth(Graphics.CurrentSize.x * ((float)Background->Texture->Size.y / Background->Texture->Size.x));
 	Background->SetHeight(Graphics.CurrentSize.y);
 	Background->SetActive(true);
@@ -108,7 +108,7 @@ void _Menu::InitTutorial() {
 
 // Init single player
 void _Menu::InitSinglePlayer() {
-	ChangeLayout("menu_singleplayer");
+	ChangeLayout("element_menu_singleplayer");
 
 	RefreshSaveSlots();
 	for(int i = 0; i <= _Save::SLOT_9; i++)
@@ -122,7 +122,7 @@ void _Menu::InitSinglePlayer() {
 
 // Options
 void _Menu::InitOptions() {
-	ChangeLayout("menu_options");
+	ChangeLayout("element_menu_options");
 
 	RefreshInputLabels();
 	CurrentAction = -1;
@@ -133,7 +133,7 @@ void _Menu::InitOptions() {
 
 // In-game menu
 void _Menu::InitInGame() {
-	ChangeLayout("menu_ingame");
+	ChangeLayout("element_menu_ingame");
 
 	Graphics.SetCursor(true);
 	Background = nullptr;
@@ -152,7 +152,7 @@ void _Menu::InitPlay() {
 
 // Init new player popup
 void _Menu::InitNewPlayer() {
-	CurrentLayout = Assets.Elements["menu_new"];
+	CurrentLayout = Assets.Elements["element_menu_new"];
 	CurrentLayout->SetActive(true);
 
 	_Element *Name = Assets.Elements["textbox_new_name"];
@@ -372,7 +372,7 @@ void _Menu::HandleMouseButton(const _MouseEvent &MouseEvent) {
 					else if(Clicked->Name.substr(0, InputBoxPrefix.size()) == InputBoxPrefix) {
 						OptionsState = OPTION_ACCEPT_INPUT;
 						CurrentAction = Clicked->Index;
-						Assets.Elements["menu_options_accept_text_action"]->Text = Actions.GetName(CurrentAction);
+						Assets.Elements["label_menu_options_accept_text_action"]->Text = Actions.GetName(CurrentAction);
 					}
 				}
 			} break;
@@ -439,7 +439,7 @@ void _Menu::Render() {
 		case STATE_TITLE: {
 			if(CurrentLayout)
 				CurrentLayout->Render();
-			Assets.Elements["game_version"]->Render();
+			Assets.Elements["label_game_version"]->Render();
 		} break;
 		case STATE_OPTIONS: {
 			if(CurrentLayout)
@@ -447,12 +447,12 @@ void _Menu::Render() {
 
 			if(OptionsState == OPTION_ACCEPT_INPUT) {
 				Graphics.FadeScreen(Assets.Programs["ortho_pos"], MENU_ACCEPTINPUT_FADE);
-				Assets.Elements["menu_popup"]->SetActive(true);
-				Assets.Elements["menu_popup"]->Render();
+				Assets.Elements["element_menu_popup"]->SetActive(true);
+				Assets.Elements["element_menu_popup"]->Render();
 			}
 		} break;
 		case STATE_SINGLEPLAYER: {
-			Assets.Elements["menu_singleplayer"]->Render();
+			Assets.Elements["element_menu_singleplayer"]->Render();
 
 			Graphics.SetVBO(VBO_QUAD);
 			for(int i = 0; i <= _Save::SLOT_9; i++) {
@@ -479,7 +479,7 @@ void _Menu::Render() {
 
 // Change menu layout
 void _Menu::ChangeLayout(const std::string &ElementName) {
-	Assets.Elements["game_version"]->SetActive(false);
+	Assets.Elements["label_game_version"]->SetActive(false);
 
 	if(CurrentLayout) {
 		CurrentLayout->SetActive(false);
@@ -495,7 +495,7 @@ void _Menu::RefreshSaveSlots() {
 	// Load save slots
 	for(int i = 0; i <= _Save::SLOT_9; i++) {
 		std::stringstream Buffer;
-		Buffer << "menu_singleplayer_slot" << i << "_text";
+		Buffer << "label_menu_singleplayer_slot" << i << "_text";
 		_Element *SlotLabel = Assets.Elements[Buffer.str()];
 		Buffer.str("");
 
@@ -525,7 +525,7 @@ void _Menu::RefreshInputLabels() {
 
 // Cancel create screen
 void _Menu::CancelCreate() {
-	CurrentLayout = Assets.Elements["menu_singleplayer"];
+	CurrentLayout = Assets.Elements["element_menu_singleplayer"];
 	SinglePlayerState = SINGLEPLAYER_NONE;
 
 	SaveSlots[SelectedSlot]->Checked = false;
@@ -536,7 +536,7 @@ void _Menu::CreatePlayer() {
 	if(Assets.Elements["textbox_new_name"]->Text.length() == 0)
 		return;
 
-	CurrentLayout = Assets.Elements["menu_singleplayer"];
+	CurrentLayout = Assets.Elements["element_menu_singleplayer"];
 	SinglePlayerState = SINGLEPLAYER_NONE;
 
 	if(SelectedSlot != -1) {

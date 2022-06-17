@@ -1132,7 +1132,7 @@ void _EditorState::LoadPaletteButtons(std::vector<_Brush> &Icons, int Type) {
 		Button->BaseSize = glm::ivec2(PaletteSizes[Type], PaletteSizes[Type]);
 		Button->Alignment = LEFT_TOP;
 		Button->Style = Style;
-		Button->HoverStyle = Assets.Styles["editor_selected0"];
+		Button->HoverStyle = Assets.Styles["style_editor_button_selected"];
 		Button->UserData = (void *)(intptr_t)Icons[i].ObjectType;
 		Button->Index = i;
 
