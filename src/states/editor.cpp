@@ -90,7 +90,7 @@ void _EditorState::Init() {
 	CommandElement = Assets.Elements["element_editor_command"];
 	BlockElement = Assets.Elements["element_editor_blocks"];
 	EventElement = Assets.Elements["element_editor_events"];
-	InputBox = Assets.GetTextBox("element_editor_input");
+	InputBox = Assets.Elements["element_editor_input"];
 	CommandElement->SetActive(true);
 	BlockElement->SetActive(true);
 	EventElement->SetActive(false);

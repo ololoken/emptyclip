@@ -115,7 +115,8 @@ class _Menu {
 		_Element *Background;
 		_Element *CurrentLayout;
 		_Element *InputLabels[LABEL_COUNT];
-		_Element *SaveSlots[_Save::SLOT_COUNT], *ColorButtons[4];
+		_Element *SaveSlots[_Save::SLOT_COUNT];
+		_Element *ColorButtons[4];
 
 		// Double click
 		_Element *PreviousClick;

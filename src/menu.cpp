@@ -155,7 +155,7 @@ void _Menu::InitNewPlayer() {
 	CurrentLayout = Assets.Elements["menu_new"];
 	CurrentLayout->SetActive(true);
 
-	_Element *Name = Assets.GetTextBox("textbox_new_name");
+	_Element *Name = Assets.Elements["textbox_new_name"];
 	FocusedElement = Name;
 	Name->Text.clear();
 	Name->ResetCursor();
@@ -372,7 +372,7 @@ void _Menu::HandleMouseButton(const _MouseEvent &MouseEvent) {
 					else if(Clicked->Name.substr(0, InputBoxPrefix.size()) == InputBoxPrefix) {
 						OptionsState = OPTION_ACCEPT_INPUT;
 						CurrentAction = Clicked->Index;
-						Assets.GetLabel("menu_options_accept_text_action")->Text = Actions.GetName(CurrentAction);
+						Assets.Elements["menu_options_accept_text_action"]->Text = Actions.GetName(CurrentAction);
 					}
 				}
 			} break;
@@ -439,7 +439,7 @@ void _Menu::Render() {
 		case STATE_TITLE: {
 			if(CurrentLayout)
 				CurrentLayout->Render();
-			Assets.GetLabel("game_version")->Render();
+			Assets.Elements["game_version"]->Render();
 		} break;
 		case STATE_OPTIONS: {
 			if(CurrentLayout)
@@ -496,7 +496,7 @@ void _Menu::RefreshSaveSlots() {
 	for(int i = 0; i <= _Save::SLOT_9; i++) {
 		std::stringstream Buffer;
 		Buffer << "menu_singleplayer_slot" << i << "_text";
-		_Element *SlotLabel = Assets.GetLabel(Buffer.str());
+		_Element *SlotLabel = Assets.Elements[Buffer.str()];
 		Buffer.str("");
 
 		_Player *Player = Save.GetPlayer(i);
@@ -517,7 +517,7 @@ void _Menu::RefreshSaveSlots() {
 // Refreshes the input map labels
 void _Menu::RefreshInputLabels() {
 	for(size_t i = 0; i < LABEL_COUNT; i++) {
-		InputLabels[i] = Assets.GetLabel(KEYLABEL_IDENTIFIERS[i]);
+		InputLabels[i] = Assets.Elements[KEYLABEL_IDENTIFIERS[i]];
 		InputLabels[i]->Text = Actions.GetInputNameForAction(i);
 		InputLabels[i]->Parent->Index = i;
 	}
@@ -533,14 +533,14 @@ void _Menu::CancelCreate() {
 
 // Handle player creation
 void _Menu::CreatePlayer() {
-	if(Assets.GetTextBox("textbox_new_name")->Text.length() == 0)
+	if(Assets.Elements["textbox_new_name"]->Text.length() == 0)
 		return;
 
 	CurrentLayout = Assets.Elements["menu_singleplayer"];
 	SinglePlayerState = SINGLEPLAYER_NONE;
 
 	if(SelectedSlot != -1) {
-		Save.CreateNewPlayer(SelectedSlot, Assets.GetTextBox("textbox_new_name")->Text, COLORS[SelectedColor]);
+		Save.CreateNewPlayer(SelectedSlot, Assets.Elements["textbox_new_name"]->Text, COLORS[SelectedColor]);
 		RefreshSaveSlots();
 	}
 }

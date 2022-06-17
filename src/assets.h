@@ -117,9 +117,6 @@ class _Assets {
 		void UnloadReel(const std::string &Identifier);
 		void UnloadAnimation(const std::string &Identifier);
 
-		_Element *GetLabel(const std::string &Identifier);
-		_Element *GetImage(const std::string &Identifier);
-		_Element *GetTextBox(const std::string &Identifier);
 		_Reel *GetReel(const std::string &Identifier);
 		AttackSampleTemplateStruct *GetAttackSampleTemplate(const std::string &Identifier);
 		_Animation *GetAnimation(const std::string &Identifier);
