@@ -24,7 +24,6 @@
 #include <animation.h>
 #include <program.h>
 #include <ui/element.h>
-#include <ui/label.h>
 #include <ui/button.h>
 #include <ui/image.h>
 #include <ui/textbox.h>
@@ -805,7 +804,10 @@ void _Assets::LoadLabels(const std::string &Path) {
 		glm::vec4 Color = Colors[ColorName];
 
 		// Create
-		_Label *Element = new _Label(Name, ParentElement, Offset, Size, Alignment, Font, Color, Text);
+		_Element *Element = new _Element(Name, ParentElement, Offset, Size, Alignment, nullptr, false);
+		Element->Color = Color;
+		Element->Font = Font;
+		Element->Text = Text;
 
 		// Check for duplicates
 		if(Elements[Name])
@@ -1071,7 +1073,7 @@ _WeaponParticleTemplate *_Assets::GetWeaponParticleTemplate(const std::string &I
 	return &WeaponParticleTable[Identifier];
 }
 
-_Label *_Assets::GetLabel(const std::string &Identifier) { return (_Label *)Elements[Identifier]; }
+_Element *_Assets::GetLabel(const std::string &Identifier) { return Elements[Identifier]; }
 _Image *_Assets::GetImage(const std::string &Identifier) { return (_Image *)Elements[Identifier]; }
 _Button *_Assets::GetButton(const std::string &Identifier) { return (_Button *)Elements[Identifier]; }
 _TextBox *_Assets::GetTextBox(const std::string &Identifier) { return (_TextBox *)Elements[Identifier]; }

@@ -16,7 +16,6 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 *******************************************************************************/
 #include <ui/button.h>
-#include <ui/label.h>
 #include <texture.h>
 #include <graphics.h>
 #include <assets.h>

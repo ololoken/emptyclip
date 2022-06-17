@@ -19,7 +19,7 @@
 #include <framework.h>
 #include <state.h>
 #include <assets.h>
-#include <ui/label.h>
+#include <ui/element.h>
 
 _Actions Actions;
 

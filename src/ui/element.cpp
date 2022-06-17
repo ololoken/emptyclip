@@ -17,6 +17,7 @@
 *******************************************************************************/
 #include <ui/element.h>
 #include <graphics.h>
+#include <font.h>
 #include <color.h>
 #include <input.h>
 #include <assets.h>
@@ -30,7 +31,7 @@ _Element::_Element(const std::string &Identifier, _Element *Parent, const glm::v
 	if(!Parent)
 		Parent = Graphics.Element;
 
-	this->Identifier = Identifier;
+	this->Name = Identifier;
 	this->Parent = Parent;
 	this->Offset = Offset;
 	this->Size = Size;
@@ -38,13 +39,14 @@ _Element::_Element(const std::string &Identifier, _Element *Parent, const glm::v
 	this->Style = Style;
 	this->MaskOutside = MaskOutside;
 	this->Debug = 0;
-	this->UserData = 0;
+	this->UserData = nullptr;
 	this->ID = -1;
 	this->Fade = 1.0f;
 	this->HitElement = nullptr;
 	this->PressedElement = nullptr;
 	this->ReleasedElement = nullptr;
 	this->ChildrenOffset = glm::vec2(0);
+	this->Font = nullptr;
 
 	CalculateBounds();
 }
@@ -199,6 +201,24 @@ void _Element::Render() const {
 		}
 	}
 
+	glm::vec4 RenderColor(Color.r, Color.g, Color.b, Color.a * Fade);
+	if(Font) {
+		if(Texts.size()) {
+
+			// Center box
+			float LineHeight = Font->MaxHeight + 2;
+			float Y = Bounds.Start.y - (int)((LineHeight * Texts.size() - LineHeight) / 2);
+			for(size_t i = 0; i < Texts.size(); i++) {
+				Font->DrawText(Texts[i], glm::vec2(Bounds.Start.x, Y), Alignment, RenderColor);
+
+				Y += LineHeight;
+			}
+		}
+		else {
+			Font->DrawText(Text, Bounds.Start, Alignment,RenderColor);
+		}
+	}
+
 	// Render all children
 	for(size_t i = 0; i < Children.size(); i++) {
 		Children[i]->Fade = Fade;
@@ -222,4 +242,11 @@ void _Element::SetDebug(int Debug) {
 	for(size_t i = 0; i < Children.size(); i++) {
 		Children[i]->SetDebug(Debug + 1);
 	}
+}
+
+// Break up text into multiple strings
+void _Element::SetWrap(float Width) {
+
+	Texts.clear();
+	Font->BreakupString(Text, Width, Texts);
 }

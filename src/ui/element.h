@@ -23,6 +23,7 @@
 #include <vector>
 
 // Forward Declarations
+class _Font;
 struct _Style;
 struct _KeyEvent;
 
@@ -50,7 +51,7 @@ class _Element {
 
 		void SetDebug(int Debug);
 		void SetAlignment(const _Alignment &Alignment) { this->Alignment = Alignment; CalculateBounds(); }
-		void SetIdentifier(const std::string &Identifier) { this->Identifier = Identifier; }
+		void SetIdentifier(const std::string &Identifier) { this->Name = Identifier; }
 		void SetOffset(const glm::vec2 &Offset) { this->Offset = Offset; CalculateBounds(); }
 		void SetChildrenOffset(const glm::vec2 &ChildrenOffset) { this->ChildrenOffset = ChildrenOffset; CalculateChildrenBounds(); }
 		void SetParent(_Element *Parent) { this->Parent = Parent; CalculateBounds(); }
@@ -62,8 +63,10 @@ class _Element {
 		void SetWidth(int Width) { Size.x = Width; CalculateBounds(); }
 		void SetHeight(int Height) { Size.y = Height; CalculateBounds(); }
 
+		void SetWrap(float Width);
+
 		// Attributes
-		std::string Identifier;
+		std::string Name;
 		_Element *Parent;
 		const _Style *Style;
 		glm::vec2 ChildrenOffset;
@@ -85,4 +88,12 @@ class _Element {
 		_Element *HitElement, *PressedElement, *ReleasedElement;
 
 		int Debug;
+
+		// Text
+		const _Font *Font;
+		glm::vec4 Color;
+
+	protected:
+
+		std::vector<std::string> Texts;
 };

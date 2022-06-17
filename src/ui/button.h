@@ -23,7 +23,6 @@
 
 // Forward Declarations
 class _Texture;
-class _Label;
 class _Style;
 
 // Classes

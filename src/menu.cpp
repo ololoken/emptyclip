@@ -22,7 +22,6 @@
 #include <graphics.h>
 #include <assets.h>
 #include <ui/element.h>
-#include <ui/label.h>
 #include <ui/button.h>
 #include <ui/image.h>
 #include <ui/textbox.h>
@@ -281,23 +280,23 @@ void _Menu::MouseEvent(const _MouseEvent &MouseEvent) {
 
 		switch(State) {
 			case STATE_TITLE: {
-				if(Clicked->Identifier == "button_title_tutorial") {
+				if(Clicked->Name == "button_title_tutorial") {
 					InitTutorial();
 				}
-				else if(Clicked->Identifier == "button_title_single") {
+				else if(Clicked->Name == "button_title_single") {
 					InitSinglePlayer();
 				}
-				else if(Clicked->Identifier == "button_title_options") {
+				else if(Clicked->Name == "button_title_options") {
 					InitOptions();
 				}
-				else if(Clicked->Identifier == "button_title_exit") {
+				else if(Clicked->Name == "button_title_exit") {
 					Framework.Done = true;
 				}
 			} break;
 			case STATE_SINGLEPLAYER: {
 				if(SinglePlayerState == SINGLEPLAYER_NONE) {
 
-					if(Clicked->Identifier == "button_singleplayer_delete") {
+					if(Clicked->Name == "button_singleplayer_delete") {
 						if(SelectedSlot != -1) {
 							Save.DeletePlayer(SelectedSlot);
 							RefreshSaveSlots();
@@ -306,15 +305,15 @@ void _Menu::MouseEvent(const _MouseEvent &MouseEvent) {
 							SelectedSlot = -1;
 						}
 					}
-					else if(Clicked->Identifier == "button_singleplayer_play") {
+					else if(Clicked->Name == "button_singleplayer_play") {
 						if(SelectedSlot != -1 && Save.GetPlayer(SelectedSlot)) {
 							LaunchGame();
 						}
 					}
-					else if(Clicked->Identifier == "button_singleplayer_back") {
+					else if(Clicked->Name == "button_singleplayer_back") {
 						InitTitle();
 					}
-					else if(Clicked->Identifier.substr(0, PlayerButtonPrefix.size()) == PlayerButtonPrefix) {
+					else if(Clicked->Name.substr(0, PlayerButtonPrefix.size()) == PlayerButtonPrefix) {
 
 						// Deselect previous slot
 						if(SelectedSlot != -1)
@@ -334,42 +333,42 @@ void _Menu::MouseEvent(const _MouseEvent &MouseEvent) {
 					}
 				}
 				else {
-					if(Clicked->Identifier.substr(0, PlayerColorButtonPrefix.size()) == PlayerColorButtonPrefix) {
+					if(Clicked->Name.substr(0, PlayerColorButtonPrefix.size()) == PlayerColorButtonPrefix) {
 						if(SelectedColor != -1)
 							ColorButtons[SelectedColor]->SetEnabled(false);
 
 						SelectedColor = Clicked->ID;
 						ColorButtons[SelectedColor]->SetEnabled(true);
 					}
-					else if(Clicked->Identifier == "button_new_create") {
+					else if(Clicked->Name == "button_new_create") {
 						CreatePlayer();
 					}
-					else if(Clicked->Identifier == "button_new_cancel") {
+					else if(Clicked->Name == "button_new_cancel") {
 						CancelCreate();
 					}
 				}
 			} break;
 			case STATE_OPTIONS: {
 				if(OptionsState == OPTION_NONE) {
-					if(Clicked->Identifier == "button_options_defaults") {
+					if(Clicked->Name == "button_options_defaults") {
 						Config.LoadDefaultInputBindings();
 						RefreshInputLabels();
 					}
-					else if(Clicked->Identifier == "button_options_save") {
+					else if(Clicked->Name == "button_options_save") {
 						Config.Save();
 						if(Framework.GetState() == &PlayState)
 							InitInGame();
 						else
 							InitTitle();
 					}
-					else if(Clicked->Identifier == "button_options_cancel") {
+					else if(Clicked->Name == "button_options_cancel") {
 						Config.Load();
 						if(Framework.GetState() == &PlayState)
 							InitInGame();
 						else
 							InitTitle();
 					}
-					else if(Clicked->Identifier.substr(0, InputBoxPrefix.size()) == InputBoxPrefix) {
+					else if(Clicked->Name.substr(0, InputBoxPrefix.size()) == InputBoxPrefix) {
 						OptionsState = OPTION_ACCEPT_INPUT;
 						CurrentAction = Clicked->ID;
 						Assets.GetLabel("menu_options_accept_text_action")->Text = Actions.GetName(CurrentAction);
@@ -377,20 +376,20 @@ void _Menu::MouseEvent(const _MouseEvent &MouseEvent) {
 				}
 			} break;
 			case STATE_INGAME: {
-				if(Clicked->Identifier == "button_ingame_restart" && PlayState.GetPlayer()) {
+				if(Clicked->Name == "button_ingame_restart" && PlayState.GetPlayer()) {
 					InitPlay();
 					PlayState.GetPlayer()->SetCheckpointIndex(0);
 					PlayState.GetPlayer()->Save();
 					PlayState.GetPlayer()->Load();
 					Framework.ChangeState(&PlayState);
 				}
-				else if(Clicked->Identifier == "button_ingame_resume") {
+				else if(Clicked->Name == "button_ingame_resume") {
 					InitPlay();
 				}
-				else if(Clicked->Identifier == "button_ingame_options") {
+				else if(Clicked->Name == "button_ingame_options") {
 					InitOptions();
 				}
-				else if(Clicked->Identifier == "button_ingame_menu") {
+				else if(Clicked->Name == "button_ingame_menu") {
 					Framework.ChangeState(&NullState);
 				}
 			} break;
@@ -483,7 +482,7 @@ void _Menu::RefreshSaveSlots() {
 	for(int i = 0; i <= _Save::SLOT_9; i++) {
 		std::stringstream Buffer;
 		Buffer << "menu_singleplayer_slot" << i << "_text";
-		_Label *SlotLabel = Assets.GetLabel(Buffer.str());
+		_Element *SlotLabel = Assets.GetLabel(Buffer.str());
 		Buffer.str("");
 
 		_Player *Player = Save.GetPlayer(i);

@@ -34,7 +34,6 @@
 #include <ui/element.h>
 #include <ui/button.h>
 #include <ui/textbox.h>
-#include <ui/label.h>
 #include <objects/monster.h>
 #include <objects/weapon.h>
 #include <objects/player.h>
@@ -560,7 +559,7 @@ void _EditorState::MouseEvent(const _MouseEvent &MouseEvent) {
 							default: {
 								_Button *Button = Brush[CurrentPalette];
 								if(Button)
-									SpawnObject(Map->GetValidPosition(WorldCursor), (intptr_t)Button->UserData, Button->Identifier, IsShiftDown);
+									SpawnObject(Map->GetValidPosition(WorldCursor), (intptr_t)Button->UserData, Button->Name, IsShiftDown);
 							} break;
 						}
 					}
@@ -768,8 +767,8 @@ void _EditorState::Update(double FrameTime) {
 					Block.MaxZ = MaxZ;
 					Block.Texture = Brush[EDITMODE_BLOCKS]->Style->Texture;
 					Block.AltTexture = AltTexture;
-					Block.TextureIdentifier = Brush[EDITMODE_BLOCKS]->Identifier;
-					Block.AltTextureIdentifier = Brush[EDITMODE_BLOCKS]->Identifier;
+					Block.TextureIdentifier = Brush[EDITMODE_BLOCKS]->Name;
+					Block.AltTextureIdentifier = Brush[EDITMODE_BLOCKS]->Name;
 					Block.Rotation = Rotation;
 					Block.ScaleX = ScaleX;
 					Block.Wall = (CurrentLayer == EDITOR_WALL_LAYER);
@@ -1178,7 +1177,7 @@ void _EditorState::DrawBrush() {
 	glm::vec4 IconColor = COLOR_WHITE;
 	const _Texture *IconTexture = nullptr;
 	if(Brush[CurrentPalette]) {
-		IconIdentifier = Brush[CurrentPalette]->Identifier;
+		IconIdentifier = Brush[CurrentPalette]->Name;
 		IconText = Brush[CurrentPalette]->Style->Name;
 		IconTexture = Brush[CurrentPalette]->Style->Texture;
 		IconColor = Brush[CurrentPalette]->Style->TextureColor;
@@ -1206,7 +1205,7 @@ void _EditorState::DrawBrush() {
 			}
 			else {
 				if(Brush[CurrentPalette])
-					IconText = Brush[CurrentPalette]->Identifier;
+					IconText = Brush[CurrentPalette]->Name;
 				IconRotation = Rotation;
 				IconScaleX = ScaleX;
 				BlockMinZ = MinZ;
@@ -1257,7 +1256,7 @@ void _EditorState::DrawBrush() {
 			if(EventSelected()) {
 				_Button *Button = (_Button *)PaletteElement[EDITMODE_EVENTS]->GetChildren()[SelectedEvent->Type];
 				IconTexture = Button->Style->Texture;
-				IconIdentifier = Button->Identifier;
+				IconIdentifier = Button->Name;
 				IconText = Button->Style->Name;
 
 				ItemIdentifier = SelectedEvent->ItemIdentifier;
@@ -1806,7 +1805,7 @@ void _EditorState::ExecuteUpdateCheckpointIndex(int Value) {
 void _EditorState::ExecuteIOCommand(int Type) {
 	EditorInput = Type;
 	InputBox->SetFocused(true);
-	_Label *Label = (_Label *)InputBox->GetChildren()[0];
+	_Element *Label = InputBox->GetChildren()[0];
 	Label->Text = InputBoxStrings[Type];
 	if(Type >= EDITINPUT_ITEMIDENTIFIER && Type <= EDITINPUT_PARTICLEIDENTIFIER && EventSelected())
 		InputBox->Text = GetEventIdentifier(Type);
@@ -1999,17 +1998,17 @@ void _EditorState::ExecuteSelectPalette(_Button *Button, int ClickType) {
 
 			if(ClickType == 1) {
 				if(BlockSelected()) {
-					SelectedBlock->AltTextureIdentifier = Button->Identifier;
+					SelectedBlock->AltTextureIdentifier = Button->Name;
 					SelectedBlock->AltTexture = Button->Style->Texture;
 				}
 				else {
-					AltTextureIdentifier = Button->Identifier;
+					AltTextureIdentifier = Button->Name;
 					AltTexture = Button->Style->Texture;
 				}
 			}
 			else {
 				if(BlockSelected()) {
-					SelectedBlock->TextureIdentifier = Button->Identifier;
+					SelectedBlock->TextureIdentifier = Button->Name;
 					SelectedBlock->Texture = Button->Style->Texture;
 				}
 			}
@@ -2044,11 +2043,11 @@ void _EditorState::ExecuteSelectPalette(_Button *Button, int ClickType) {
 			if(ClickType == 1 && EventSelected()) {
 				switch(CurrentPalette) {
 					case EDITMODE_MONSTERS:
-						SelectedEvent->MonsterIdentifier = Button->Identifier;
+						SelectedEvent->MonsterIdentifier = Button->Name;
 						ExecuteSwitchMode(EDITMODE_EVENTS);
 					break;
 					case EDITMODE_ITEMS:
-						SelectedEvent->ItemIdentifier = Button->Identifier;
+						SelectedEvent->ItemIdentifier = Button->Name;
 						ExecuteSwitchMode(EDITMODE_EVENTS);
 					break;
 					default:

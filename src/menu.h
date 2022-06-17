@@ -24,7 +24,6 @@
 // Forward Declarations
 class _Element;
 class _Button;
-class _Label;
 class _Image;
 struct _MouseEvent;
 struct _KeyEvent;
@@ -114,7 +113,7 @@ class _Menu {
 		// UI
 		_Image *Background;
 		_Element *CurrentLayout;
-		_Label *InputLabels[LABEL_COUNT];
+		_Element *InputLabels[LABEL_COUNT];
 		_Button *SaveSlots[_Save::SLOT_COUNT], *ColorButtons[4];
 
 		// Double click

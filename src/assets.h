@@ -29,7 +29,6 @@
 class _Style;
 class _Font;
 class _Element;
-class _Label;
 class _Image;
 class _Button;
 class _TextBox;
@@ -115,7 +114,7 @@ class _Assets {
 		void UnloadReel(const std::string &Identifier);
 		void UnloadAnimation(const std::string &Identifier);
 
-		_Label *GetLabel(const std::string &Identifier);
+		_Element *GetLabel(const std::string &Identifier);
 		_Image *GetImage(const std::string &Identifier);
 		_Button *GetButton(const std::string &Identifier);
 		_TextBox *GetTextBox(const std::string &Identifier);

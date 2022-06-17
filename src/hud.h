@@ -25,7 +25,6 @@
 // Forward Declarations
 class _Texture;
 class _Element;
-class _Label;
 class _Image;
 class _Font;
 class _Entity;
@@ -140,7 +139,7 @@ class _HUD {
 	private:
 
 		void DrawIndicator(const std::string &String, float Percent=0.0f, const _Texture *Texture=nullptr);
-		void DrawHUDWeapon(const _Weapon *Weapon, _Element *Element, _Image *Image, _Label *Label);
+		void DrawHUDWeapon(const _Weapon *Weapon, _Element *Element, _Image *Image, _Element *Label);
 		void DrawItemCount(_Item *Item, int X, int Y);
 
 		std::string UpgradeTypeToString(int Type, int WeaponType);
@@ -151,7 +150,7 @@ class _HUD {
 
 		// UI
 		_Element *Elements[ELEMENT_COUNT];
-		_Label *Labels[LABEL_COUNT];
+		_Element *Labels[LABEL_COUNT];
 		_Image *Images[IMAGE_COUNT];
 		_Element *DragStart;
 		_Item *CursorItem, *CursorOverItem;

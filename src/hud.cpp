@@ -23,7 +23,6 @@
 #include <program.h>
 #include <assets.h>
 #include <actions.h>
-#include <ui/label.h>
 #include <ui/image.h>
 #include <ui/button.h>
 #include <objects/entity.h>
@@ -387,7 +386,7 @@ void _HUD::DrawIndicator(const std::string &String, float Percent, const _Textur
 }
 
 // Draw the weapons on the HUD
-void _HUD::DrawHUDWeapon(const _Weapon *Weapon, _Element *Element, _Image *Image, _Label *Label) {
+void _HUD::DrawHUDWeapon(const _Weapon *Weapon, _Element *Element, _Image *Image, _Element *Label) {
 	if(!Weapon)
 		return;
 
