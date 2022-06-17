@@ -119,7 +119,6 @@ class _Assets {
 
 		_Element *GetLabel(const std::string &Identifier);
 		_Element *GetImage(const std::string &Identifier);
-		_Element *GetButton(const std::string &Identifier);
 		_Element *GetTextBox(const std::string &Identifier);
 		_Reel *GetReel(const std::string &Identifier);
 		AttackSampleTemplateStruct *GetAttackSampleTemplate(const std::string &Identifier);

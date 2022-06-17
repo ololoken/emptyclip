@@ -1146,5 +1146,4 @@ _WeaponParticleTemplate *_Assets::GetWeaponParticleTemplate(const std::string &I
 
 _Element *_Assets::GetLabel(const std::string &Identifier) { return Elements[Identifier]; }
 _Element *_Assets::GetImage(const std::string &Identifier) { return Elements[Identifier]; }
-_Element *_Assets::GetButton(const std::string &Identifier) { return Elements[Identifier]; }
 _Element *_Assets::GetTextBox(const std::string &Identifier) { return Elements[Identifier]; }

@@ -165,7 +165,7 @@ void _Menu::InitNewPlayer() {
 		std::stringstream Buffer;
 		Buffer << PlayerColorButtonPrefix << i;
 
-		ColorButtons[i] = Assets.GetButton(Buffer.str());
+		ColorButtons[i] = Assets.Elements[Buffer.str()];
 		ColorButtons[i]->Checked = false;
 		ColorButtons[i]->Index = i;
 	}
@@ -509,7 +509,7 @@ void _Menu::RefreshSaveSlots() {
 			SlotLabel->Text = "Empty Slot";
 
 		Buffer << PlayerButtonPrefix << i;
-		SaveSlots[i] = Assets.GetButton(Buffer.str());
+		SaveSlots[i] = Assets.Elements[Buffer.str()];
 		SaveSlots[i]->Index = i;
 	}
 }
