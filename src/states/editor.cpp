@@ -21,7 +21,6 @@
 #include <camera.h>
 #include <font.h>
 #include <assets.h>
-#include <utils.h>
 #include <map.h>
 #include <events.h>
 #include <menu.h>

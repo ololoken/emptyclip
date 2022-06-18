@@ -17,23 +17,23 @@
 *******************************************************************************/
 #include <assets.h>
 #include <ae/files.h>
+#include <ae/random.h>
 #include <font.h>
 #include <texture.h>
 #include <audio.h>
-#include <ae/random.h>
-#include <utils.h>
 #include <animation.h>
 #include <program.h>
 #include <graphics.h>
 #include <ui/ui.h>
+#include <constants.h>
 #include <objects/monster.h>
 #include <objects/particle.h>
 #include <objects/player.h>
 #include <objects/weapon.h>
-#include <constants.h>
 #include <tinyxml2/tinyxml2.h>
 #include <stdexcept>
 #include <sstream>
+#include <fstream>
 
 _Assets Assets;
 

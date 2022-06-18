@@ -16,7 +16,7 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 *******************************************************************************/
 #include <map.h>
-#include <utils.h>
+#include <ae/random.h>
 #include <graphics.h>
 #include <assets.h>
 #include <camera.h>
@@ -33,6 +33,31 @@
 #include <iomanip>
 #include <iostream>
 #include <glm/gtx/norm.hpp>
+#include <glm/gtx/rotate_vector.hpp>
+
+// Reads in a string that is CSV formatted
+static std::string GetCSVText(std::ifstream &Stream) {
+	std::string Text;
+	char Char;
+
+	// Ignore the first space
+	if(Stream.peek() == ' ')
+		Stream.ignore(1, ' ');
+
+	// If there's a quote, ignore spaces until another quote is read
+	if(Stream.peek() == '\"') {
+		Stream.ignore(1);
+		Stream.get(Char);
+		while(Char != '\"') {
+			Text += Char;
+			Stream.get(Char);
+		}
+	}
+	else
+		return "";
+
+	return Text;
+}
 
 // Initialize
 _Map::_Map() :
@@ -1539,4 +1564,9 @@ void _Map::RemoveItem(_Item *Item) {
 
 void _Map::AddRenderList(_Object *Object, int Layer) {
 	ObjectManager->AddRenderList(Object, Layer);
+}
+
+// Generates a random point inside of a circle
+glm::vec2 _Map::GenerateRandomPointInCircle(float Radius) {
+	return glm::rotate(glm::vec2(0, -1), glm::radians((float)(ae::GetRandomReal(0, 1) * 360.0))) * Radius * (float)sqrt(ae::GetRandomReal(0, 1));
 }

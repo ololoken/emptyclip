@@ -21,11 +21,9 @@
 #include <assets.h>
 #include <stats.h>
 #include <animation.h>
-#include <utils.h>
 #include <map.h>
 #include <constants.h>
 #include <buffer.h>
-#include <utils.h>
 #include <ui/ui.h>
 #include <objects/monster.h>
 #include <objects/weapon.h>
@@ -50,6 +48,13 @@ enum SaveChunkTypes {
 	CHUNK_SKILLS,
 	CHUNK_ITEMS,
 };
+
+// Write a chunk to a stream
+static void WriteChunk(std::ofstream &File, int Type, const char *Data, size_t Size) {
+	File.write((char *)&Type, sizeof(Type));
+	File.write((char *)&Size, sizeof(Size));
+	File.write(Data, Size);
+}
 
 // Constructor
 _Player::_Player(const std::string &SavePath) {
@@ -689,7 +694,7 @@ void _Player::DropItem(int Slot) {
 	}
 
 	// Add item to map
-	Item->SetPosition(Position + GenerateRandomPointInCircle(PLAYER_RADIUS));
+	Item->SetPosition(Position + _Map::GenerateRandomPointInCircle(PLAYER_RADIUS));
 	Map->AddItem(Item);
 }
 

@@ -28,7 +28,6 @@
 #include <events.h>
 #include <audio.h>
 #include <config.h>
-#include <utils.h>
 #include <particles.h>
 #include <program.h>
 #include <stats.h>
@@ -623,7 +622,7 @@ void _PlayState::EntityAttack(_Entity *Attacker, int GridType) {
 				// Create damage number particles
 				glm::vec2 DamagePosition = Hit.Position;
 				if(Hit.Object->Type ==  _Object::PLAYER)
-					DamagePosition += GenerateRandomPointInCircle(0.3f);
+					DamagePosition += _Map::GenerateRandomPointInCircle(0.3f);
 				_Particle *DamageParticle = new _Particle(_ParticleSpawn(Assets.GetParticleTemplate("damage0"), glm::vec2(0), DamagePosition, OBJECT_Z, 0));
 				DamageParticle->Text = std::to_string(Damage);
 				if(Hit.Object->Type ==  _Object::PLAYER)
@@ -741,7 +740,7 @@ void _PlayState::CreateItemDrop(const _Entity *Entity) {
 
 		// Spawn random item
 		_ObjectSpawn ObjectSpawn;
-		ObjectSpawn.Position = GenerateRandomPointInCircle(PLAYER_RADIUS) + Entity->Position;
+		ObjectSpawn.Position = _Map::GenerateRandomPointInCircle(PLAYER_RADIUS) + Entity->Position;
 
 		// Roll for drop
 		Stats.GetRandomDrop(ItemGroup, &ObjectSpawn);
@@ -1018,7 +1017,7 @@ void _PlayState::GenerateBulletEffects(_Entity *Attacker, const int Type, const 
 		Particles->Create(_ParticleSpawn(Attacker->GetWeaponParticle(WEAPONPARTICLE_BULLETHOLE), Hit.Normal, Hit.Position, OBJECT_Z, Attacker->Rotation));
 	}
 	else if(Type == HIT_OBJECT) {
-		glm::vec2 ParticlePosition = GenerateRandomPointInCircle(0.7f) + Hit.Position;
+		glm::vec2 ParticlePosition = _Map::GenerateRandomPointInCircle(0.7f) + Hit.Position;
 		Particles->Create(_ParticleSpawn(Assets.GetParticleTemplate("bloodspurt0"), Hit.Normal, Hit.Position, OBJECT_Z, Attacker->Rotation));
 		Particles->Create(_ParticleSpawn(Assets.GetParticleTemplate("blood0"), Hit.Normal, ParticlePosition, 0.06f, Attacker->Rotation));
 	}

@@ -16,9 +16,9 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 *******************************************************************************/
 #include <program.h>
+#include <ae/util.h>
 #include <graphics.h>
 #include <light.h>
-#include <utils.h>
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <stdexcept>
@@ -152,7 +152,7 @@ void _Program::ResetTextureTransform() {
 _Shader::_Shader(const std::string &Path, GLenum ProgramType) {
 
 	// Load program from file
-	const char *ShaderSource = LoadFileIntoMemory(Path.c_str());
+	const char *ShaderSource = ae::LoadFileIntoMemory(Path.c_str());
 	if(!ShaderSource)
 		throw std::runtime_error("Failed to load shader file: " + Path);
 

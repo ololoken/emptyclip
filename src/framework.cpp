@@ -20,9 +20,9 @@
 #include <ae/random.h>
 #include <ae/state.h>
 #include <ae/input.h>
+#include <ae/actions.h>
 #include <config.h>
 #include <graphics.h>
-#include <ae/actions.h>
 #include <audio.h>
 #include <stdexcept>
 #include <constants.h>

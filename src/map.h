@@ -239,6 +239,7 @@ class _Map {
 		_Camera *GetCamera() { return Camera; }
 
 		void AddRenderList(_Object *Object, int Layer);
+		static glm::vec2 GenerateRandomPointInCircle(float Radius);
 
 		std::vector<std::string> MonsterSet;
 
