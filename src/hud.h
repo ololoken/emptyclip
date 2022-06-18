@@ -118,15 +118,14 @@ class _HUD {
 
 		bool IsDragging() const { return CursorItem != nullptr; }
 
-		void SetCursorOverItem(_Item *CursorOverItem) { this->CursorOverItem = CursorOverItem; }
-		_Item *GetCursorOverItem() { return CursorOverItem; }
-
 		void SetInventoryOpen(bool Value);
 		bool GetInventoryOpen() { return InventoryOpen; }
 
 		void ShowTextMessage(const std::string &Message, double Time);
 		void ShowMessageBox(const std::string &Message, double Time);
 		double GetMessageBoxTimer() { return MessageBoxTimer; }
+
+		_Item *CursorOverItem;
 
 	private:
 
@@ -143,7 +142,7 @@ class _HUD {
 		// UI
 		_Element *Elements[ELEMENT_COUNT];
 		_Element *DragStart;
-		_Item *CursorItem, *CursorOverItem;
+		_Item *CursorItem;
 		glm::ivec2 ClickOffset;
 		int CursorSkill;
 

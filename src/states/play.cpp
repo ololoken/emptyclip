@@ -255,13 +255,16 @@ void _PlayState::HandleMouseButton(const _MouseEvent &MouseEvent) {
 
 // Update
 void _PlayState::Update(double FrameTime) {
+	Graphics.Element->Update(FrameTime, Input.GetMouse());
+	//if(Graphics.Element->HitElement)
+	//	std::cout << Graphics.Element->HitElement->Name << std::endl;
 
 	// Handle pause
 	if(IsPaused()) {
 		Menu.Update(FrameTime);
 		Graphics.SetCursor(true);
 		if(HUD)
-			HUD->SetCursorOverItem(nullptr);
+			HUD->CursorOverItem = nullptr;
 
 		return;
 	}
@@ -383,8 +386,8 @@ void _PlayState::Update(double FrameTime) {
 	HUD->Update(FrameTime, Player->GetCrosshairRadius(WorldCursor));
 
 	// Set cursor item
-	if(CursorItem && !HUD->GetCursorOverItem() && (HUD->GetInventoryOpen() || CursorItemTimer > HUD_CURSOR_ITEM_WAIT))
-		HUD->SetCursorOverItem(CursorItem);
+	if(!Graphics.Element->HitElement && CursorItem && !HUD->CursorOverItem && (HUD->GetInventoryOpen() || CursorItemTimer > HUD_CURSOR_ITEM_WAIT))
+		HUD->CursorOverItem = CursorItem;
 
 	Audio.SetPosition(Player->Position);
 }

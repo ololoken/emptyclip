@@ -152,6 +152,8 @@ void _Menu::InitPlay() {
 
 // Init new player popup
 void _Menu::InitNewPlayer() {
+	CurrentLayout->SetClickable(false);
+
 	CurrentLayout = Assets.Elements["element_menu_new"];
 	CurrentLayout->SetActive(true);
 
@@ -404,13 +406,7 @@ void _Menu::HandleMouseButton(const _MouseEvent &MouseEvent) {
 void _Menu::Update(double FrameTime) {
 	PreviousClickTimer += FrameTime;
 
-	if(CurrentLayout && OptionsState == OPTION_NONE) {
-		CurrentLayout->Update(FrameTime, Input.GetMouse());
-	}
-
 	switch(State) {
-		case STATE_TITLE: {
-		} break;
 		case STATE_SINGLEPLAYER: {
 			for(int i = 0; i <= _Save::SLOT_9; i++) {
 				_Player *Player = Save.GetPlayer(i);
@@ -419,8 +415,6 @@ void _Menu::Update(double FrameTime) {
 					Player->UpdateAnimation(FrameTime);
 				}
 			}
-		} break;
-		case STATE_OPTIONS: {
 		} break;
 		default:
 		break;
@@ -491,6 +485,7 @@ void _Menu::ChangeLayout(const std::string &ElementName) {
 
 // Refreshes the save slots after player creation
 void _Menu::RefreshSaveSlots() {
+	CurrentLayout->SetClickable(true);
 
 	// Load save slots
 	for(int i = 0; i <= _Save::SLOT_9; i++) {
@@ -526,6 +521,7 @@ void _Menu::RefreshInputLabels() {
 // Cancel create screen
 void _Menu::CancelCreate() {
 	CurrentLayout = Assets.Elements["element_menu_singleplayer"];
+	CurrentLayout->SetClickable(true);
 	SinglePlayerState = SINGLEPLAYER_NONE;
 
 	SaveSlots[SelectedSlot]->Checked = false;

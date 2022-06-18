@@ -33,8 +33,9 @@
 #include <glm/gtc/type_ptr.hpp>
 
 // Initialize
-_HUD::_HUD(_Player *Player) {
-	this->Player = Player;
+_HUD::_HUD(_Player *Player) :
+	Player(Player) {
+
 	LastEntityHit = nullptr;
 	DragStart = nullptr;
 	CursorItem = CursorOverItem = nullptr;
@@ -118,8 +119,8 @@ _HUD::_HUD(_Player *Player) {
 	Elements[LABEL_SKILL6] = Assets.Elements["label_hud_skill6_value"];
 	Elements[LABEL_SKILL7] = Assets.Elements["label_hud_skill7_value"];
 	Elements[LABEL_SKILL8] = Assets.Elements["label_hud_skill8_value"];
-	Elements[ELEMENT_INVENTORY]->SetActive(true);
-	Elements[ELEMENT_SKILLS]->SetActive(true);
+	Elements[ELEMENT_INVENTORY]->SetActive(false);
+	Elements[ELEMENT_SKILLS]->SetActive(false);
 
 	Elements[LABEL_DAMAGE] = Assets.Elements["label_hud_player_damage_value"];
 	Elements[LABEL_MELEEDAMAGE] = Assets.Elements["label_hud_player_meleedamage_value"];
@@ -150,9 +151,12 @@ void _HUD::SetInventoryOpen(bool Value) {
 
 	InventoryOpen = Value;
 	if(InventoryOpen) {
-
+		Elements[ELEMENT_INVENTORY]->SetActive(true);
+		Elements[ELEMENT_SKILLS]->SetActive(true);
 	}
 	else {
+		Elements[ELEMENT_INVENTORY]->SetActive(false);
+		Elements[ELEMENT_SKILLS]->SetActive(false);
 		DragStart = nullptr;
 		CursorItem = CursorOverItem = nullptr;
 	}
@@ -194,9 +198,6 @@ void _HUD::MouseEvent(const _MouseEvent &MouseEvent) {
 			CursorItem = nullptr;
 			DragStart = nullptr;
 		}
-
-		//if(HitElement)
-		//	printf("%d %s\n", HitElement->ID, HitElement->Identifier.c_str());
 	}
 	else if(MouseEvent.Button == SDL_BUTTON_RIGHT) {
 		if(MouseEvent.Pressed) {
@@ -237,8 +238,6 @@ void _HUD::Update(double FrameTime, float Radius) {
 	// Update inventory
 	if(GetInventoryOpen()) {
 		Graphics.SetCursor(true);
-		Elements[ELEMENT_INVENTORY]->Update(FrameTime, Input.GetMouse());
-		Elements[ELEMENT_SKILLS]->Update(FrameTime, Input.GetMouse());
 
 		_Element *HitElement;
 		HitElement = Elements[ELEMENT_INVENTORY]->HitElement;
@@ -253,17 +252,14 @@ void _HUD::Update(double FrameTime, float Radius) {
 		Graphics.SetCursor(false);
 
 	// Update health display
-	if(LastEntityHit != nullptr && (LastEntityHitTimer > HUD_ENTITYHEALTHDISPLAYPERIOD || !LastEntityHit->Active)) {
+	if(LastEntityHit != nullptr && (LastEntityHitTimer > HUD_ENTITYHEALTHDISPLAYPERIOD || !LastEntityHit->Active))
 		LastEntityHit = nullptr;
-	}
 
-	if(MessageTimer > 0.0) {
+	if(MessageTimer > 0.0)
 		MessageTimer -= FrameTime;
-	}
 
-	if(MessageBoxTimer > 0.0) {
+	if(MessageBoxTimer > 0.0)
 		MessageBoxTimer -= FrameTime;
-	}
 }
 
 // Draw phase
@@ -338,9 +334,8 @@ void _HUD::Render() {
 		DrawIndicator("Reload");
 
 	// Weapon switch indicator
-	if(Player->IsSwitchingWeapons()) {
+	if(Player->IsSwitchingWeapons())
 		DrawIndicator("Switching Weapons", Player->GetWeaponSwitchPercent(), WeaponSwitchTexture);
-	}
 
 	// Draw weapons
 	DrawHUDWeapon(Player->GetMainHand(), Elements[ELEMENT_MAINHAND], Elements[IMAGE_MAINHAND_ICON], Elements[LABEL_MAINHAND_AMMO]);
@@ -481,9 +476,8 @@ void _HUD::RenderCharacterScreen() {
 					Graphics.SetProgram(Assets.Programs["ortho_pos_uv"]);
 					Graphics.SetColor(Player->GetInventory(i)->Color);
 					Graphics.DrawImage(Button->Bounds.GetMidPoint(), Player->GetInventory(i)->Texture);
-					if(i >= INVENTORY_BAGSTART && Player->GetInventory(i)->CanStack()) {
+					if(i >= INVENTORY_BAGSTART && Player->GetInventory(i)->CanStack())
 						DrawItemCount(Player->GetInventory(i), Button->Bounds.End.x - 2, Button->Bounds.End.y - 2);
-					}
 				}
 			}
 		}
@@ -854,7 +848,8 @@ void _HUD::UpdateSkillInfo(int Skill, int DrawX, int DrawY) {
 		DrawY = 10;
 
 	// Move window
-	Elements[ELEMENT_SKILLINFO]->BaseOffset = glm::ivec2(DrawX, DrawY);
+	Elements[ELEMENT_SKILLINFO]->Offset = glm::ivec2(DrawX, DrawY);
+	Elements[ELEMENT_SKILLINFO]->CalculateBounds(false);
 
 	// Get skill description
 	std::ostringstream Buffer, BufferNext;

@@ -85,33 +85,33 @@ button_editor_active	element_editor_events	style_editor_active	style_editor_butt
 button_editor_itemidentifier	element_editor_events	style_editor_itemidentifier	style_editor_button_selected	204	0	32	32	0	0	6
 button_editor_monsidentifier	element_editor_events	style_editor_monsidentifier	style_editor_button_selected	238	0	32	32	0	0	7
 button_editor_partidentifier	element_editor_events	style_editor_partidentifier	style_editor_button_selected	272	0	32	32	0	0	8
-button_inventory_armor	element_inventory	style_hud_inventory_armor		150	210	48	48	0	0	-1
-button_inventory_mainhand	element_inventory	style_hud_inventory_gun		0	210	48	48	0	0	-1
-button_inventory_offhand	element_inventory	style_hud_inventory_gun		50	210	48	48	0	0	-1
-button_inventory_melee	element_inventory	style_hud_inventory_melee		100	210	48	48	0	0	-1
-button_inventory_bag0	element_inventory	style_hud_inventory		0	0	48	48	0	0	-1
-button_inventory_bag1	element_inventory	style_hud_inventory		50	0	48	48	0	0	-1
-button_inventory_bag2	element_inventory	style_hud_inventory		100	0	48	48	0	0	-1
-button_inventory_bag3	element_inventory	style_hud_inventory		150	0	48	48	0	0	-1
-button_inventory_bag4	element_inventory	style_hud_inventory		0	50	48	48	0	0	-1
-button_inventory_bag5	element_inventory	style_hud_inventory		50	50	48	48	0	0	-1
-button_inventory_bag6	element_inventory	style_hud_inventory		100	50	48	48	0	0	-1
-button_inventory_bag7	element_inventory	style_hud_inventory		150	50	48	48	0	0	-1
-button_inventory_bag8	element_inventory	style_hud_inventory		0	100	48	48	0	0	-1
-button_inventory_bag9	element_inventory	style_hud_inventory		50	100	48	48	0	0	-1
-button_inventory_bag10	element_inventory	style_hud_inventory		100	100	48	48	0	0	-1
-button_inventory_bag11	element_inventory	style_hud_inventory		150	100	48	48	0	0	-1
-button_inventory_bag12	element_inventory	style_hud_inventory		0	150	48	48	0	0	-1
-button_inventory_bag13	element_inventory	style_hud_inventory		50	150	48	48	0	0	-1
-button_inventory_bag14	element_inventory	style_hud_inventory		100	150	48	48	0	0	-1
-button_inventory_bag15	element_inventory	style_hud_inventory		150	150	48	48	0	0	-1
-button_skills_plus0	element_skills	style_hud_plus	style_hud_plus_hover	75	30	16	16	0	0	-1
-button_skills_plus1	element_skills	style_hud_plus	style_hud_plus_hover	75	60	16	16	0	0	-1
-button_skills_plus2	element_skills	style_hud_plus	style_hud_plus_hover	75	90	16	16	0	0	-1
-button_skills_plus3	element_skills	style_hud_plus	style_hud_plus_hover	75	120	16	16	0	0	-1
-button_skills_plus4	element_skills	style_hud_plus	style_hud_plus_hover	75	150	16	16	0	0	-1
-button_skills_plus5	element_skills	style_hud_plus	style_hud_plus_hover	75	180	16	16	0	0	-1
-button_skills_plus6	element_skills	style_hud_plus	style_hud_plus_hover	75	210	16	16	0	0	-1
-button_skills_plus7	element_skills	style_hud_plus	style_hud_plus_hover	75	240	16	16	0	0	-1
-button_skills_plus8	element_skills	style_hud_plus	style_hud_plus_hover	75	270	16	16	0	0	-1
+button_inventory_armor	element_inventory	style_hud_inventory_armor		150	210	48	48	0	0	0
+button_inventory_mainhand	element_inventory	style_hud_inventory_gun		0	210	48	48	0	0	1
+button_inventory_offhand	element_inventory	style_hud_inventory_gun		50	210	48	48	0	0	2
+button_inventory_melee	element_inventory	style_hud_inventory_melee		100	210	48	48	0	0	3
+button_inventory_bag0	element_inventory	style_hud_inventory		0	0	48	48	0	0	4
+button_inventory_bag1	element_inventory	style_hud_inventory		50	0	48	48	0	0	5
+button_inventory_bag2	element_inventory	style_hud_inventory		100	0	48	48	0	0	6
+button_inventory_bag3	element_inventory	style_hud_inventory		150	0	48	48	0	0	7
+button_inventory_bag4	element_inventory	style_hud_inventory		0	50	48	48	0	0	8
+button_inventory_bag5	element_inventory	style_hud_inventory		50	50	48	48	0	0	9
+button_inventory_bag6	element_inventory	style_hud_inventory		100	50	48	48	0	0	10
+button_inventory_bag7	element_inventory	style_hud_inventory		150	50	48	48	0	0	11
+button_inventory_bag8	element_inventory	style_hud_inventory		0	100	48	48	0	0	12
+button_inventory_bag9	element_inventory	style_hud_inventory		50	100	48	48	0	0	13
+button_inventory_bag10	element_inventory	style_hud_inventory		100	100	48	48	0	0	14
+button_inventory_bag11	element_inventory	style_hud_inventory		150	100	48	48	0	0	15
+button_inventory_bag12	element_inventory	style_hud_inventory		0	150	48	48	0	0	16
+button_inventory_bag13	element_inventory	style_hud_inventory		50	150	48	48	0	0	17
+button_inventory_bag14	element_inventory	style_hud_inventory		100	150	48	48	0	0	18
+button_inventory_bag15	element_inventory	style_hud_inventory		150	150	48	48	0	0	19
+button_skills_plus0	element_skills	style_hud_plus	style_hud_plus_hover	75	30	16	16	0	0	0
+button_skills_plus1	element_skills	style_hud_plus	style_hud_plus_hover	75	60	16	16	0	0	1
+button_skills_plus2	element_skills	style_hud_plus	style_hud_plus_hover	75	90	16	16	0	0	2
+button_skills_plus3	element_skills	style_hud_plus	style_hud_plus_hover	75	120	16	16	0	0	3
+button_skills_plus4	element_skills	style_hud_plus	style_hud_plus_hover	75	150	16	16	0	0	4
+button_skills_plus5	element_skills	style_hud_plus	style_hud_plus_hover	75	180	16	16	0	0	5
+button_skills_plus6	element_skills	style_hud_plus	style_hud_plus_hover	75	210	16	16	0	0	6
+button_skills_plus7	element_skills	style_hud_plus	style_hud_plus_hover	75	240	16	16	0	0	7
+button_skills_plus8	element_skills	style_hud_plus	style_hud_plus_hover	75	270	16	16	0	0	8
 button_skills_hidden	element_skills			75	310	16	16	0	0	-1

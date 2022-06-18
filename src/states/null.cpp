@@ -45,6 +45,10 @@ void _NullState::HandleMouseButton(const _MouseEvent &MouseEvent) {
 
 // Update
 void _NullState::Update(double FrameTime) {
+	Graphics.Element->Update(FrameTime, Input.GetMouse());
+	//if(Graphics.Element->HitElement)
+	//	std::cout << Graphics.Element->HitElement->Name << std::endl;
+
 	Menu.Update(FrameTime);
 };
 
