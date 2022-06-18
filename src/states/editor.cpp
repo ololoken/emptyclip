@@ -745,8 +745,6 @@ void _EditorState::Update(double FrameTime) {
 					Block.MaxZ = MaxZ;
 					Block.Texture = Brush[EDITMODE_BLOCKS]->Style->Texture;
 					Block.AltTexture = AltTexture;
-					Block.TextureIdentifier = Brush[EDITMODE_BLOCKS]->Name;
-					Block.AltTextureIdentifier = Brush[EDITMODE_BLOCKS]->Name;
 					Block.Rotation = Rotation;
 					Block.ScaleX = ScaleX;
 					Block.Wall = (CurrentLayer == EDITOR_WALL_LAYER);
@@ -1176,13 +1174,15 @@ void _EditorState::DrawBrush() {
 			bool BlockWalkable;
 			if(BlockSelected()) {
 				IconTexture = SelectedBlock->Texture;
-				IconText = SelectedBlock->TextureIdentifier;
+				if(IconTexture)
+					IconText = IconTexture->Name;
 				IconRotation = SelectedBlock->Rotation;
 				IconScaleX = SelectedBlock->ScaleX;
 				BlockMinZ = SelectedBlock->MinZ;
 				BlockMaxZ = SelectedBlock->MaxZ;
 				BlockWalkable = SelectedBlock->Walkable;
-				BlockAltTextureIdentifier = SelectedBlock->AltTextureIdentifier;
+				if(SelectedBlock->AltTexture)
+					BlockAltTextureIdentifier = SelectedBlock->AltTexture->Name;
 			}
 			else {
 				if(Brush[CurrentPalette])
@@ -1966,7 +1966,6 @@ void _EditorState::ExecuteSelectPalette(_Element *Button, int ClickType) {
 		// Deselect alternate texture
 		if(ClickType == 1 && CurrentPalette == EDITMODE_BLOCKS) {
 			if(BlockSelected()) {
-				SelectedBlock->AltTextureIdentifier = "";
 				SelectedBlock->AltTexture = nullptr;
 			}
 			else {
@@ -1985,7 +1984,6 @@ void _EditorState::ExecuteSelectPalette(_Element *Button, int ClickType) {
 
 			if(ClickType == 1) {
 				if(BlockSelected()) {
-					SelectedBlock->AltTextureIdentifier = Button->Name;
 					SelectedBlock->AltTexture = Button->Style->Texture;
 				}
 				else {
@@ -1995,7 +1993,6 @@ void _EditorState::ExecuteSelectPalette(_Element *Button, int ClickType) {
 			}
 			else {
 				if(BlockSelected()) {
-					SelectedBlock->TextureIdentifier = Button->Name;
 					SelectedBlock->Texture = Button->Style->Texture;
 				}
 			}

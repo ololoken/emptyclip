@@ -160,17 +160,17 @@ _Map::_Map(const std::string &Filename) : _Map() {
 
 		int Layer;
 		InputFile >> Layer >> Block.Start.x >> Block.Start.y >> Block.End.x >> Block.End.y >> Block.MinZ >> Block.MaxZ >> Block.Rotation >> Block.ScaleX >> Block.Wall >> Block.Walkable;
-		Block.TextureIdentifier = GetCSVText(InputFile);
-		Block.AltTextureIdentifier = GetCSVText(InputFile);
+		std::string TexturePath = GetCSVText(InputFile);
+		std::string AltTexturePath = GetCSVText(InputFile);
 
-		Block.Texture = Assets.Textures[Block.TextureIdentifier];
+		Block.Texture = Assets.Textures[TexturePath];
 		if(!Block.Texture)
-			throw std::runtime_error("Cannot find texture: " + Block.TextureIdentifier);
+			throw std::runtime_error("Cannot find texture: " + TexturePath);
 
-		if(Block.AltTextureIdentifier != "") {
-			Block.AltTexture = Assets.Textures[Block.AltTextureIdentifier];
+		if(AltTexturePath != "") {
+			Block.AltTexture = Assets.Textures[AltTexturePath];
 			if(!Block.AltTexture)
-				throw std::runtime_error("Cannot find alt texture: " + Block.AltTextureIdentifier);
+				throw std::runtime_error("Cannot find alt texture: " + AltTexturePath);
 		}
 		else
 			Block.AltTexture = nullptr;
@@ -306,6 +306,11 @@ bool _Map::SaveLevel(const std::string &String) {
 	Output << GetTotalBlockSize() << '\n';
 	for(int i = 0; i < MAPLAYER_COUNT; i++) {
 		for(size_t j = 0; j < Blocks[i].size(); j++) {
+
+			std::string AltTextureID;
+			if(Blocks[i][j].AltTexture)
+				AltTextureID = Blocks[i][j].AltTexture->Name;
+
 			Output << i << " ";
 			Output << Blocks[i][j].Start.x << " ";
 			Output << Blocks[i][j].Start.y << " ";
@@ -317,8 +322,8 @@ bool _Map::SaveLevel(const std::string &String) {
 			Output << Blocks[i][j].ScaleX << " ";
 			Output << Blocks[i][j].Wall << " ";
 			Output << Blocks[i][j].Walkable << " ";
-			Output << '\"' << Blocks[i][j].TextureIdentifier << '\"' << " ";
-			Output << '\"' << Blocks[i][j].AltTextureIdentifier << '\"' << '\n';
+			Output << '\"' << Blocks[i][j].Texture->Name << '\"' << " ";
+			Output << '\"' << AltTextureID << '\"' << '\n';
 		}
 	}
 

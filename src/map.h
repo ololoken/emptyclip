@@ -102,8 +102,6 @@ struct _Block {
 
 	void GetBounds(float *Bounds) { Bounds[0] = (float)Start.x; Bounds[1] = (float)Start.y; Bounds[2] = End.x + 1.0f; Bounds[3] = End.y + 1.0f; }
 
-	std::string TextureIdentifier;
-	std::string AltTextureIdentifier;
 	_Coord Start;
 	_Coord End;
 	const _Texture *Texture;
