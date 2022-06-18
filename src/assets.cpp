@@ -368,16 +368,15 @@ void _Assets::LoadTextures(const std::string &Path) {
 	while(!File.eof() && File.peek() != EOF) {
 
 		std::string Name;
-		std::string TextureFile;
+		std::string Path;
 		std::getline(File, Name, '\t');
-		std::getline(File, TextureFile, '\t');
+		std::getline(File, Path, '\t');
 
 		bool Repeat, MipMaps;
 		File >> Repeat >> MipMaps;
 		File.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
 		// Load texture
-		std::string Path = "textures/" + TextureFile;
 		_Texture *Texture = new _Texture(Path, false, Repeat, MipMaps, false);
 		if(!Texture)
 			throw std::runtime_error(std::string(__PRETTY_FUNCTION__) + " - Error loading: " + Path);
@@ -1039,26 +1038,29 @@ void _Assets::LoadTextBoxes(const std::string &Path) {
 
 // Load the UI xml file
 void _Assets::LoadUI(const std::string &Path, bool CalculateBounds) {
-/*
 
-	// Load file
-	tinyxml2::XMLDocument Document;
-	if(Document.LoadFile(Path.c_str()) != tinyxml2::XML_SUCCESS)
-		throw std::runtime_error("Error loading: " + Path);
+	if(0) {
 
-	// Load elements
-	tinyxml2::XMLElement *ChildNode = Document.FirstChildElement();
-	Graphics.Element = new _Element(ChildNode, nullptr);
-	Graphics.Element->Alignment = LEFT_TOP;
-	Graphics.Element->Active = true;
-	Graphics.Element->Size = Graphics.CurrentSize;
-	if(CalculateBounds)
-		Graphics.Element->CalculateBounds(false);
-*/
-	Graphics.Element = new _Element();
-	Graphics.Element->Alignment = LEFT_TOP;
-	Graphics.Element->Active = true;
-	Graphics.Element->Size = Graphics.CurrentSize;
+		// Load file
+		tinyxml2::XMLDocument Document;
+		if(Document.LoadFile(Path.c_str()) != tinyxml2::XML_SUCCESS)
+			throw std::runtime_error("Error loading: " + Path);
+
+		// Load elements
+		tinyxml2::XMLElement *ChildNode = Document.FirstChildElement();
+		Graphics.Element = new _Element(ChildNode, nullptr);
+		Graphics.Element->Alignment = LEFT_TOP;
+		Graphics.Element->Active = true;
+		Graphics.Element->Size = Graphics.CurrentSize;
+		if(CalculateBounds)
+			Graphics.Element->CalculateBounds(false);
+	}
+	else {
+		Graphics.Element = new _Element();
+		Graphics.Element->Alignment = LEFT_TOP;
+		Graphics.Element->Active = true;
+		Graphics.Element->Size = Graphics.CurrentSize;
+	}
 }
 
 // Save UI to xml
