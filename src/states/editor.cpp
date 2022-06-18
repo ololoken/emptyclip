@@ -1009,17 +1009,17 @@ void _EditorState::LoadPalettes() {
 	Icons.clear();
 
 	// Load events
-	Icons.push_back(_Brush("door", "Door", Assets.Textures["editor_eventdoor"], COLOR_WHITE));
-	Icons.push_back(_Brush("wswitch", "Wall Switch", Assets.Textures["editor_eventwswitch"], COLOR_WHITE));
-	Icons.push_back(_Brush("spawn", "Spawn", Assets.Textures["editor_eventspawn"], COLOR_WHITE));
-	Icons.push_back(_Brush("check", "Checkpoint", Assets.Textures["editor_eventcheck"], COLOR_WHITE));
-	Icons.push_back(_Brush("end", "End of Level", Assets.Textures["editor_eventend"], COLOR_WHITE));
-	Icons.push_back(_Brush("text", "Event Message", Assets.Textures["editor_eventtext"], COLOR_WHITE));
-	Icons.push_back(_Brush("sound", "Event Sound", Assets.Textures["editor_eventsound"], COLOR_WHITE));
-	Icons.push_back(_Brush("fswitch", "Floor Switch", Assets.Textures["editor_eventfswitch"], COLOR_WHITE));
-	Icons.push_back(_Brush("enable", "Event Enabler", Assets.Textures["editor_eventenable"], COLOR_WHITE));
-	Icons.push_back(_Brush("tele", "Teleporter", Assets.Textures["editor_eventtele"], COLOR_WHITE));
-	Icons.push_back(_Brush("light", "Lights", Assets.Textures["editor_eventlight"], COLOR_WHITE));
+	Icons.push_back(_Brush("door", "Door", Assets.Textures["textures/editor_repeat/event_door.png"], COLOR_WHITE));
+	Icons.push_back(_Brush("wswitch", "Wall Switch", Assets.Textures["textures/editor_repeat/event_wswitch.png"], COLOR_WHITE));
+	Icons.push_back(_Brush("spawn", "Spawn", Assets.Textures["textures/editor_repeat/event_spawn.png"], COLOR_WHITE));
+	Icons.push_back(_Brush("check", "Checkpoint", Assets.Textures["textures/editor_repeat/event_check.png"], COLOR_WHITE));
+	Icons.push_back(_Brush("end", "End of Level", Assets.Textures["textures/editor_repeat/event_end.png"], COLOR_WHITE));
+	Icons.push_back(_Brush("text", "Event Message", Assets.Textures["textures/editor_repeat/event_text.png"], COLOR_WHITE));
+	Icons.push_back(_Brush("sound", "Event Sound", Assets.Textures["textures/editor_repeat/event_sound.png"], COLOR_WHITE));
+	Icons.push_back(_Brush("fswitch", "Floor Switch", Assets.Textures["textures/editor_repeat/event_fswitch.png"], COLOR_WHITE));
+	Icons.push_back(_Brush("enable", "Event Enabler", Assets.Textures["textures/editor_repeat/event_enable.png"], COLOR_WHITE));
+	Icons.push_back(_Brush("tele", "Teleporter", Assets.Textures["textures/editor_repeat/event_tele.png"], COLOR_WHITE));
+	Icons.push_back(_Brush("light", "Lights", Assets.Textures["textures/editor_repeat/event_light.png"], COLOR_WHITE));
 	LoadPaletteButtons(Icons, EDITMODE_EVENTS);
 	for(size_t i = 0; i < Icons.size(); i++)
 		EventTextures.push_back(Icons[i].Texture);

@@ -254,8 +254,14 @@ void _Framework::LoadAssets() {
 	Assets.LoadPrograms("tables/programs.tsv");
 	Assets.LoadStrings("tables/strings.tsv");
 	Assets.LoadFonts("tables/fonts.tsv", false);
-	Assets.LoadTextures("tables/textures/main.tsv");
-	Assets.LoadTextureDirectory(MAP_TEXTURE_PATH, false, true, true, false);
+	Assets.LoadTextureDirectory("textures/editor/", false, false, false);
+	Assets.LoadTextureDirectory("textures/editor_repeat/", false, true, true);
+	Assets.LoadTextureDirectory("textures/hud/", false, false, false);
+	Assets.LoadTextureDirectory("textures/hud_repeat/", false, true, false);
+	Assets.LoadTextureDirectory("textures/items/", false, false, true);
+	Assets.LoadTextureDirectory("textures/menu/", false, false, false);
+	Assets.LoadTextureDirectory("textures/particles/", false, false, false);
+	Assets.LoadTextureDirectory(MAP_TEXTURE_PATH, false, true, true);
 	Assets.LoadColors("tables/colors.tsv");
 	Assets.LoadSounds("tables/sounds.tsv", "sounds/");
 	Assets.LoadSoundGroups("tables/sound_groups.tsv");

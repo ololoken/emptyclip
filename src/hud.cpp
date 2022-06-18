@@ -52,9 +52,9 @@ _HUD::_HUD(_Player *Player) :
 	Fonts[FONT_LARGE] = Assets.Fonts["hud_large"];
 	Fonts[FONT_LARGER] = Assets.Fonts["hud_larger"];
 	Fonts[FONT_LARGEST] = Assets.Fonts["hud_largest"];
-	CrosshairID = Assets.Textures["hud_crosshair"];
-	ReloadTexture = Assets.Textures["viewport_reload0"];
-	WeaponSwitchTexture = Assets.Textures["viewport_weaponswitch0"];
+	CrosshairID = Assets.Textures["textures/hud/crosshair0.png"];
+	ReloadTexture = Assets.Textures["textures/hud/reload0.png"];
+	WeaponSwitchTexture = Assets.Textures["textures/hud/weaponswitch0.png"];
 
 	// Elements
 	Elements[LABEL_FPS] = Assets.Elements["label_hud_fps"];

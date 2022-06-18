@@ -1,13 +1,13 @@
 id	name	icon_id	color_id	health_restored
-medkit0	Low Quality Medkit	i_medkit0		50
-medkit1	Low Quality Medkit	i_medkit0	shade_red0	100
-medkit2	Basic Medkit	i_medkit0	shade_red1	150
-medkit3	Basic Medkit	i_medkit0	shade_red2	200
-medkit4	Medkit	i_medkit0	red	250
-medkit5	Medkit	i_medkit0	shade_green0	300
-medkit6	Advanced Medkit	i_medkit0	shade_green1	350
-medkit7	Advanced Medkit	i_medkit0	shade_green2	400
-medkit8	Elite Medkit	i_medkit0	shade_blue0	450
-medkit9	Elite Medkit	i_medkit0	shade_blue1	500
-medkit10	Magical Medkit	s_medkit0		650
-medkit11	Healing Orb	s_medkit0	dark	800
+medkit0	Low Quality Medkit	textures/items/i_medkit0.png		50
+medkit1	Low Quality Medkit	textures/items/i_medkit0.png	shade_red0	100
+medkit2	Basic Medkit	textures/items/i_medkit0.png	shade_red1	150
+medkit3	Basic Medkit	textures/items/i_medkit0.png	shade_red2	200
+medkit4	Medkit	textures/items/i_medkit0.png	red	250
+medkit5	Medkit	textures/items/i_medkit0.png	shade_green0	300
+medkit6	Advanced Medkit	textures/items/i_medkit0.png	shade_green1	350
+medkit7	Advanced Medkit	textures/items/i_medkit0.png	shade_green2	400
+medkit8	Elite Medkit	textures/items/i_medkit0.png	shade_blue0	450
+medkit9	Elite Medkit	textures/items/i_medkit0.png	shade_blue1	500
+medkit10	Magical Medkit	textures/items/s_medkit0.png		650
+medkit11	Healing Orb	textures/items/s_medkit0.png	dark	800
