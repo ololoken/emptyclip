@@ -54,6 +54,7 @@ class _Framework {
 	private:
 
 		int GlobalKeyHandler(const SDL_Event &Event);
+		void LoadAssets();
 
 		// States
 		StateType FrameworkState;

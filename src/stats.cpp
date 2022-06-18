@@ -31,6 +31,8 @@ _Stats Stats;
 
 // Initialize
 void _Stats::Init() {
+	BlankWeaponParticle = _WeaponParticleTemplate();
+
 	LoadLevels("tables/levels.tsv");
 	LoadSkills("tables/skills.tsv");
 	LoadAmmo("tables/ammo.tsv");
@@ -422,7 +424,7 @@ void _Stats::LoadWeapons(const std::string &Path) {
 		if(Assets.IsWeaponParticleTemplateLoaded(WeaponParticlesIdentifier))
 			WeaponTemplate.WeaponParticles = Assets.GetWeaponParticleTemplate(WeaponParticlesIdentifier);
 		else
-			WeaponTemplate.WeaponParticles = &Assets.BlankWeaponParticle;
+			WeaponTemplate.WeaponParticles = &BlankWeaponParticle;
 
 		// Check for duplicates
 		if(Weapons.find(Name) != Weapons.end())
@@ -575,7 +577,7 @@ void _Stats::LoadMonsters(const std::string &Path) {
 		if(Assets.IsWeaponParticleTemplateLoaded(WeaponParticlesIdentifier))
 			Monster.WeaponParticles = Assets.GetWeaponParticleTemplate(WeaponParticlesIdentifier);
 		else
-			Monster.WeaponParticles = &Assets.BlankWeaponParticle;
+			Monster.WeaponParticles = &BlankWeaponParticle;
 
 		// Check for duplicates
 		if(Stats.Monsters.find(Name) != Stats.Monsters.end())

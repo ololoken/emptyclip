@@ -56,23 +56,6 @@ struct AttackSampleTemplateStruct {
 	std::string Samples[SAMPLE_TYPES];
 };
 
-// Used for the map editor
-struct _Brush {
-	_Brush() { }
-	_Brush(const std::string &Identifier, const std::string &Text, const _Texture *Texture, const glm::vec4 &Color, int ObjectType=-1) :
-		Identifier(Identifier),
-		Text(Text),
-		Texture(Texture),
-		Color(Color),
-		ObjectType(ObjectType) { }
-
-	std::string Identifier;
-	std::string Text;
-	const _Texture *Texture;
-	glm::vec4 Color;
-	int ObjectType;
-};
-
 // Classes
 class _Assets {
 
@@ -133,8 +116,6 @@ class _Assets {
 		std::unordered_map<std::string, _Font *> Fonts;
 		std::unordered_map<std::string, _Style *> Styles;
 		std::unordered_map<std::string, _Element *> Elements;
-
-		_WeaponParticleTemplate BlankWeaponParticle;
 
 	private:
 

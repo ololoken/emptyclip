@@ -115,6 +115,23 @@ enum EditorInputTypes {
 	EDITINPUT_COUNT
 };
 
+// Used for the map editor
+struct _Brush {
+	_Brush() { }
+	_Brush(const std::string &Identifier, const std::string &Text, const _Texture *Texture, const glm::vec4 &Color, int ObjectType=-1) :
+		Identifier(Identifier),
+		Text(Text),
+		Texture(Texture),
+		Color(Color),
+		ObjectType(ObjectType) { }
+
+	std::string Identifier;
+	std::string Text;
+	const _Texture *Texture;
+	glm::vec4 Color;
+	int ObjectType;
+};
+
 // Editor state
 class _EditorState : public _State {
 

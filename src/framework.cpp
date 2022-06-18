@@ -109,7 +109,7 @@ void _Framework::Init(int ArgumentCount, char **Arguments) {
 	RandomGenerator.seed(SDL_GetPerformanceCounter());
 
 	// Load assets
-	Assets.Init();
+	LoadAssets();
 	Stats.Init();
 	Actions.LoadActionNames();
 	Save.LoadSaves();
@@ -121,6 +121,9 @@ void _Framework::Close() {
 	// Close the current state
 	if(State)
 		State->Close();
+
+	Assets.UnloadAnimation("player_torso");
+	Assets.UnloadAnimation("player_legs");
 
 	Stats.Close();
 	Assets.Close();
@@ -243,6 +246,38 @@ int _Framework::GlobalKeyHandler(const SDL_Event &Event) {
 	}
 
 	return 0;
+}
+
+// Load game assets
+void _Framework::LoadAssets() {
+
+	Assets.LoadPrograms("tables/programs.tsv");
+	Assets.LoadStrings("tables/strings.tsv");
+	Assets.LoadFonts("tables/fonts.tsv", false);
+	Assets.LoadTextures("tables/textures/main.tsv");
+	Assets.LoadTextures("tables/textures/map.tsv");
+	Assets.LoadColors("tables/colors.tsv");
+	Assets.LoadSounds("tables/sounds.tsv", "sounds/");
+	Assets.LoadSoundGroups("tables/sound_groups.tsv");
+	Assets.LoadParticles("tables/particles.tsv");
+	Assets.LoadWeaponParticles("tables/weaponparticles.tsv");
+	Assets.LoadReelTable("tables/reels.tsv");
+	Assets.LoadAnimationTable("tables/animation.tsv");
+
+	Assets.LoadAnimation("player_torso", "textures/player/");
+	Assets.LoadAnimation("player_legs", "textures/player/");
+
+	Assets.LoadStyles("tables/ui/styles.tsv");
+	Assets.LoadUI("tables/ui.xml");
+	Assets.LoadElements("tables/ui/elements.tsv");
+	Assets.LoadImages("tables/ui/images.tsv");
+	Assets.LoadButtons("tables/ui/buttons.tsv");
+	Assets.LoadTextBoxes("tables/ui/textboxes.tsv");
+	Assets.LoadLabels("tables/ui/labels.tsv");
+	Graphics.Element->CalculateBounds(false);
+
+	//Assets.SaveUI("tables/ui_new.xml");
+	Assets.LoadFonts("tables/fonts.tsv");
 }
 
 // Change states

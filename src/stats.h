@@ -148,6 +148,8 @@ class _Stats {
 
 	private:
 
+		_WeaponParticleTemplate BlankWeaponParticle;
+
 		std::vector<_Level> Levels;
 		std::vector<_Skill> Skills;
 };

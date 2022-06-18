@@ -38,43 +38,10 @@ _Assets Assets;
 
 // Initialize
 void _Assets::Init() {
-
-	LoadPrograms("tables/programs.tsv");
-	LoadStrings("tables/strings.tsv");
-	LoadFonts("tables/fonts.tsv", false);
-	LoadTextures("tables/textures/main.tsv");
-	LoadTextures("tables/textures/map.tsv");
-	LoadColors("tables/colors.tsv");
-	LoadSounds("tables/sounds.tsv", "sounds/");
-	LoadSoundGroups("tables/sound_groups.tsv");
-	LoadParticles("tables/particles.tsv");
-	LoadWeaponParticles("tables/weaponparticles.tsv");
-	LoadReelTable("tables/reels.tsv");
-	LoadAnimationTable("tables/animation.tsv");
-
-	LoadAnimation("player_torso", "textures/player/");
-	LoadAnimation("player_legs", "textures/player/");
-
-	LoadStyles("tables/ui/styles.tsv");
-	LoadUI("tables/ui.xml");
-	LoadElements("tables/ui/elements.tsv");
-	LoadImages("tables/ui/images.tsv");
-	LoadButtons("tables/ui/buttons.tsv");
-	LoadTextBoxes("tables/ui/textboxes.tsv");
-	LoadLabels("tables/ui/labels.tsv");
-	Graphics.Element->CalculateBounds(false);
-
-	//Assets.SaveUI("tables/ui_new.xml");
-	LoadFonts("tables/fonts.tsv");
-
-	BlankWeaponParticle = _WeaponParticleTemplate();
 }
 
 // Shutdown
 void _Assets::Close() {
-
-	UnloadAnimation("player_torso");
-	UnloadAnimation("player_legs");
 
 	for(const auto &Style : Styles)
 		delete Style.second;
