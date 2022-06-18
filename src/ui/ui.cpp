@@ -245,7 +245,7 @@ void _Element::SerializeElement(tinyxml2::XMLDocument &Document, tinyxml2::XMLEl
 			Node->SetAttribute("wrap", Wrap);
 		if(Format)
 			Node->SetAttribute("format", Format);
-		if(Clickable != 1)
+		if(Clickable)
 			Node->SetAttribute("clickable", Clickable);
 		if(Draggable)
 			Node->SetAttribute("draggable", Draggable);

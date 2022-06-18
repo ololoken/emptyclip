@@ -273,16 +273,10 @@ void _Framework::LoadAssets() {
 	Assets.LoadAnimation("player_torso", "textures/player/");
 	Assets.LoadAnimation("player_legs", "textures/player/");
 
-	Assets.LoadStyles("tables/ui/styles.tsv");
+	Assets.LoadStyles("tables/styles.tsv");
 	Assets.LoadUI("tables/ui.xml");
-	Assets.LoadElements("tables/ui/elements.tsv");
-	Assets.LoadImages("tables/ui/images.tsv");
-	Assets.LoadButtons("tables/ui/buttons.tsv");
-	Assets.LoadTextBoxes("tables/ui/textboxes.tsv");
-	Assets.LoadLabels("tables/ui/labels.tsv");
-	Graphics.Element->CalculateBounds(false);
-
 	//Assets.SaveUI("tables/ui_new.xml");
+
 	Assets.LoadFonts("tables/fonts.tsv");
 }
 

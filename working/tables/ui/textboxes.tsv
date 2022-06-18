@@ -1,3 +1,0 @@
-identifier	parent	style	font	offset x	offset y	width	height	alignment x	alignment y	max length
-textbox_new_name_input	element_menu_new_input		hud_medium	5	22	0	0	0	3	15
-textbox_editor_input	element_editor_input		hud_medium	5	22	0	0	0	3	50
