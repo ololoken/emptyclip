@@ -16,6 +16,7 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 *******************************************************************************/
 #include <assets.h>
+#include <ae/files.h>
 #include <font.h>
 #include <texture.h>
 #include <audio.h>
@@ -356,6 +357,20 @@ void _Assets::LoadTextures(const std::string &Path) {
 	}
 
 	File.close();
+}
+
+// Load a directory full of textures
+void _Assets::LoadTextureDirectory(const std::string &Path, bool IsServer, bool Repeat, bool MipMaps, bool Nearest) {
+
+	// Get files
+	ae::_Files Files(Path);
+
+	// Load textures
+	for(const auto &File : Files.Nodes) {
+		std::string Name = Path + File;
+		if(!Assets.Textures[Name])
+			Assets.Textures[Name] = new _Texture(Name, IsServer, Repeat, MipMaps, Nearest);
+	}
 }
 
 // Load sounds

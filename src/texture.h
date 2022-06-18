@@ -17,7 +17,7 @@
 *******************************************************************************/
 #pragma once
 
-#include <opengl.h>
+#include <ae/opengl.h>
 #include <glm/vec2.hpp>
 #include <string>
 

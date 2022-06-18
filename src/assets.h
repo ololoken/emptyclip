@@ -72,6 +72,7 @@ class _Assets {
 		void LoadParticles(const std::string &Path);
 		void LoadPrograms(const std::string &Path);
 		void LoadTextures(const std::string &Path);
+		void LoadTextureDirectory(const std::string &Path, bool IsServer=false, bool Repeat=false, bool MipMaps=false, bool Nearest=false);
 		void LoadSounds(const std::string &Path, const std::string &SamplePath);
 
 		void LoadFonts(const std::string &Path, bool LoadFonts=true);

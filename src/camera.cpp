@@ -18,7 +18,7 @@
 #include <camera.h>
 #include <graphics.h>
 #include <constants.h>
-#include <opengl.h>
+#include <ae/opengl.h>
 #include <ui/ui.h>
 #include <glm/gtx/norm.hpp>
 

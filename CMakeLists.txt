@@ -4,6 +4,8 @@ cmake_minimum_required(VERSION 2.8.12)
 add_definitions(-DGAME_VERSION="2.0.0")
 add_definitions("-DGLM_FORCE_RADIANS")
 add_definitions("-DGLM_ENABLE_EXPERIMENTAL")
+add_definitions("-DAE_NO_DATABASE")
+add_definitions("-DAE_NO_NETWORK")
 
 # projects
 project(emptyclip)
@@ -43,6 +45,7 @@ find_package(Threads REQUIRED)
 
 # set include directories
 include_directories("src")
+include_directories("ext/ae")
 include_directories(${SDL2_INCLUDE_DIR})
 include_directories(${SDL2_IMAGE_INCLUDE_DIR})
 include_directories(${OPENAL_INCLUDE_DIR})
@@ -55,6 +58,9 @@ include_directories(${ZLIB_INCLUDE_DIRS})
 file(GLOB_RECURSE SRC_ALL
 	src/*.cpp
 	src/*.h
+	ext/*.cpp
+	ext/*.h
+	ext/*.hpp
 	deployment/resource.rc
 )
 

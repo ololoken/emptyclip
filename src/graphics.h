@@ -18,7 +18,7 @@
 #pragma once
 
 // Libraries
-#include <opengl.h>
+#include <ae/opengl.h>
 #include <glm/vec2.hpp>
 #include <glm/mat4x4.hpp>
 #include <SDL_video.h>
