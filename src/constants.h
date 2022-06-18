@@ -99,6 +99,7 @@ const  float        ITEM_Z                         =  0.05f;
 const  float        OBJECT_Z                       =  0.3f;
 //     Map
 const  int          MAP_FILEVERSION                =  1;
+const  std::string  MAP_TEXTURE_PATH               =  "textures/map/";
 const  std::string  MAP_DEFAULTMONSTERSET          =  "tutorial0";
 const  float        MAP_MINZ                       =  0.0f;
 const  float        MAP_FLATZ                      =  1.0f;

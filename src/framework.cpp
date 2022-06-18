@@ -255,7 +255,7 @@ void _Framework::LoadAssets() {
 	Assets.LoadStrings("tables/strings.tsv");
 	Assets.LoadFonts("tables/fonts.tsv", false);
 	Assets.LoadTextures("tables/textures/main.tsv");
-	Assets.LoadTextures("tables/textures/map.tsv");
+	Assets.LoadTextureDirectory(MAP_TEXTURE_PATH, false, true, true, false);
 	Assets.LoadColors("tables/colors.tsv");
 	Assets.LoadSounds("tables/sounds.tsv", "sounds/");
 	Assets.LoadSoundGroups("tables/sound_groups.tsv");

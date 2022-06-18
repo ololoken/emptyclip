@@ -1004,7 +1004,7 @@ void _EditorState::LoadPalettes() {
 
 	// Load map textures
 	for(const auto &Texture : Assets.Textures) {
-		if(Texture.second && Texture.second->Name.find("map/") != std::string::npos)
+		if(Texture.second && Texture.second->Name.find(MAP_TEXTURE_PATH) != std::string::npos)
 			Icons.push_back(_Brush(Texture.first, Texture.second->Name, Texture.second, COLOR_WHITE));
 	}
 	LoadPaletteButtons(Icons, EDITMODE_BLOCKS);
@@ -1194,6 +1194,9 @@ void _EditorState::DrawBrush() {
 				BlockWalkable = Walkable;
 				BlockAltTextureIdentifier = AltTextureIdentifier;
 			}
+			IconText.erase(0, std::string(MAP_TEXTURE_PATH).length());
+			BlockAltTextureIdentifier.erase(0, std::string(MAP_TEXTURE_PATH).length());
+
 			IconIdentifier = "";
 
 			int X = (float)Graphics.ViewportSize.x + 100;
