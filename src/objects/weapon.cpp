@@ -18,7 +18,7 @@
 #include <objects/weapon.h>
 #include <objects/particle.h>
 #include <stats.h>
-#include <random.h>
+#include <ae/random.h>
 #include <buffer.h>
 #include <algorithm>
 
@@ -35,7 +35,7 @@ _Weapon::_Weapon(const std::string &Identifier, int Count, const glm::vec2 &Posi
 	Attributes = Weapon.Attributes;
 
 	if(Generate)
-		Attributes["max_components"].Int = GetRandomInt(Weapon.Attributes.at("min_components").Int, Weapon.Attributes.at("max_components").Int);
+		Attributes["max_components"].Int = ae::GetRandomInt(Weapon.Attributes.at("min_components").Int, Weapon.Attributes.at("max_components").Int);
 	else
 		Attributes["max_components"].Int = Weapon.Attributes.at("min_components").Int;
 

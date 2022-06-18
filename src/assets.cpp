@@ -20,7 +20,7 @@
 #include <font.h>
 #include <texture.h>
 #include <audio.h>
-#include <random.h>
+#include <ae/random.h>
 #include <utils.h>
 #include <animation.h>
 #include <program.h>

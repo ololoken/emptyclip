@@ -20,7 +20,7 @@
 #include <particles.h>
 #include <graphics.h>
 #include <font.h>
-#include <random.h>
+#include <ae/random.h>
 #include <glm/gtx/rotate_vector.hpp>
 
 // Constructor
@@ -38,11 +38,11 @@ _Particle::_Particle(const _ParticleSpawn &Spawn) :
 
 	// Random
 	Position = Spawn.Position;
-	Rotation = Spawn.RotationAdjust + (float)(GetRandomReal(Spawn.Template->StartDirection.x, Spawn.Template->StartDirection.y));
-	Velocity = glm::rotate(glm::vec2(0, -1), glm::radians(this->Rotation)) * (float)GetRandomReal(Spawn.Template->VelocityScale.x, Spawn.Template->VelocityScale.y);
+	Rotation = Spawn.RotationAdjust + (float)(ae::GetRandomReal(Spawn.Template->StartDirection.x, Spawn.Template->StartDirection.y));
+	Velocity = glm::rotate(glm::vec2(0, -1), glm::radians(this->Rotation)) * (float)ae::GetRandomReal(Spawn.Template->VelocityScale.x, Spawn.Template->VelocityScale.y);
 	Acceleration = Velocity * Spawn.Template->AccelerationScale;
-	TurnSpeed = GetRandomReal(Spawn.Template->TurnSpeed.x, Spawn.Template->TurnSpeed.y);
-	float Size = GetRandomReal(Spawn.Template->Size.x, Spawn.Template->Size.y);
+	TurnSpeed = ae::GetRandomReal(Spawn.Template->TurnSpeed.x, Spawn.Template->TurnSpeed.y);
+	float Size = ae::GetRandomReal(Spawn.Template->Size.x, Spawn.Template->Size.y);
 	if(ScaleAspect >= 1.0f) {
 		Scale.x = Size;
 		Scale.y = Size / ScaleAspect;
@@ -52,7 +52,7 @@ _Particle::_Particle(const _ParticleSpawn &Spawn) :
 		Scale.y = Size;
 	}
 
-	PositionZ += GetRandomReal(-Spawn.Template->DeviationZ, Spawn.Template->DeviationZ);
+	PositionZ += ae::GetRandomReal(-Spawn.Template->DeviationZ, Spawn.Template->DeviationZ);
 
 	if(Type == _Particles::WALL_DECALS) {
 		Position += Spawn.Normal * 0.01f;

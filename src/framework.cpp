@@ -23,7 +23,7 @@
 #include <audio.h>
 #include <state.h>
 #include <framelimit.h>
-#include <random.h>
+#include <ae/random.h>
 #include <stdexcept>
 #include <constants.h>
 #include <assets.h>
@@ -106,7 +106,7 @@ void _Framework::Init(int ArgumentCount, char **Arguments) {
 
 	FrameLimit = new _FrameLimit(Config.MaxFPS);
 	Timer = SDL_GetPerformanceCounter();
-	RandomGenerator.seed(SDL_GetPerformanceCounter());
+	ae::RandomGenerator.seed(SDL_GetPerformanceCounter());
 
 	// Load assets
 	LoadAssets();

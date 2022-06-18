@@ -17,7 +17,7 @@
 *******************************************************************************/
 #include <stats.h>
 #include <constants.h>
-#include <random.h>
+#include <ae/random.h>
 #include <map.h>
 #include <assets.h>
 #include <objects/object.h>
@@ -692,7 +692,7 @@ void _Stats::GetRandomDrop(const _ItemGroup *ItemGroup, _ObjectSpawn *ObjectSpaw
 		return;
 
 	// Generate roll
-	float RandomNumber = GetRandomReal(0.0, ItemGroup->Total);
+	float RandomNumber = ae::GetRandomReal(0.0, ItemGroup->Total);
 
 	// Get item
 	for(size_t i = 0; i < ItemGroupSize; i++) {

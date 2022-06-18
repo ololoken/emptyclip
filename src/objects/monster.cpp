@@ -20,7 +20,7 @@
 #include <stats.h>
 #include <map.h>
 #include <animation.h>
-#include <random.h>
+#include <ae/random.h>
 #include <glm/gtx/norm.hpp>
 #include <glm/gtx/rotate_vector.hpp>
 
@@ -93,7 +93,7 @@ _Monster::_Monster(_MonsterTemplate &Monster, _Animation *Animation, const glm::
 	ViewRangeBack *= ViewRangeBack;
 	PersonalityType = Monster.BehaviorType;
 	if(PersonalityType != PERSONALITY_TREASURE)
-		Rotation = GetRandomReal(0.0f, 359.0f);
+		Rotation = ae::GetRandomReal(0.0f, 359.0f);
 
 	WeaponParticleOffset[0] = glm::vec2(0, 0);
 	for(int i = 1; i < WEAPON_TYPES; i++)
@@ -270,7 +270,7 @@ void _Monster::UpdateMonster(double FrameTime, _Player *Player) {
 							}
 							break;
 						case PERSONALITY_MINDLESS:
-							if(GetRandomInt(0, 50) == 0)
+							if(ae::GetRandomInt(0, 50) == 0)
 								DoAttack = true;
 							break;
 					}
@@ -414,14 +414,14 @@ void _Monster::Wander() {
 			BehaviorWait.pop_front();
 
 		BehaviorTime = 0;
-		BehaviorWait.push_front(GetRandomReal(0.5f, 1.5f));
+		BehaviorWait.push_front(ae::GetRandomReal(0.5f, 1.5f));
 
-		int Stop = GetRandomInt(0, 4);
+		int Stop = ae::GetRandomInt(0, 4);
 		if(!Stop)
 			SetMoveState(MOVE_NONE);
 		else {
-			MoveDirection.x = GetRandomReal(-1.0f, 1.0f);
-			MoveDirection.y = GetRandomReal(-1.0f, 1.0f);
+			MoveDirection.x = ae::GetRandomReal(-1.0f, 1.0f);
+			MoveDirection.y = ae::GetRandomReal(-1.0f, 1.0f);
 			if(WallState) {
 				if(WallState & WALL_RIGHT && MoveDirection.x > 0)
 					MoveDirection.x = 0;
@@ -454,12 +454,12 @@ void _Monster::Explore() {
 					(WallState & WALL_BOTTOM && MoveDirection.y > 0) ||
 					(MoveDirection == glm::vec2(0, 0))) {
 				if(MoveDirection.x != 0 && (WallState & WALL_LEFT || WallState & WALL_RIGHT))
-					MoveDirection.y = GetRandomReal(-1.0f, 1.0f);
+					MoveDirection.y = ae::GetRandomReal(-1.0f, 1.0f);
 				else if(MoveDirection.y != 0 && (WallState & WALL_TOP || WallState & WALL_BOTTOM))
-					MoveDirection.x = GetRandomReal(-1.0f, 1.0f);
+					MoveDirection.x = ae::GetRandomReal(-1.0f, 1.0f);
 				else {
-					MoveDirection.x = GetRandomReal(-1.0f, 1.0f);
-					MoveDirection.y = GetRandomReal(-1.0f, 1.0f);
+					MoveDirection.x = ae::GetRandomReal(-1.0f, 1.0f);
+					MoveDirection.y = ae::GetRandomReal(-1.0f, 1.0f);
 				}
 
 				if(WallState & WALL_RIGHT && MoveDirection.x > 0)
@@ -506,9 +506,9 @@ void _Monster::Look() {
 			if(!BehaviorWait.empty())
 				BehaviorWait.pop_front();
 			else
-				BehaviorWait.push_front(GetRandomReal(0.5, 1.5));
+				BehaviorWait.push_front(ae::GetRandomReal(0.5, 1.5));
 			BehaviorTime = 0;
-			FacePosition(Position + glm::rotate(glm::vec2(0.0f, -1.0f), glm::radians((float)GetRandomReal(0.0f, 360.0f))));
+			FacePosition(Position + glm::rotate(glm::vec2(0.0f, -1.0f), glm::radians((float)ae::GetRandomReal(0.0f, 360.0f))));
 		}
 	}
 	else

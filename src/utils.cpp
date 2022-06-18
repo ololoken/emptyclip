@@ -16,7 +16,7 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 *******************************************************************************/
 #include <utils.h>
-#include <random.h>
+#include <ae/random.h>
 #include <cmath>
 #include <glm/gtx/rotate_vector.hpp>
 
@@ -78,5 +78,5 @@ void WriteChunk(std::ofstream &File, int Type, const char *Data, size_t Size) {
 
 // Generates a random point inside of a circle
 glm::vec2 GenerateRandomPointInCircle(float Radius) {
-	return glm::rotate(glm::vec2(0, -1), glm::radians((float)(GetRandomReal(0, 1) * 360.0))) * Radius * (float)sqrt(GetRandomReal(0, 1));
+	return glm::rotate(glm::vec2(0, -1), glm::radians((float)(ae::GetRandomReal(0, 1) * 360.0))) * Radius * (float)sqrt(ae::GetRandomReal(0, 1));
 }
