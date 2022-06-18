@@ -28,7 +28,9 @@
 #include <glm/vec2.hpp>
 
 // Forward Declarations
-class _Buffer;
+namespace ae {
+	class _Buffer;
+}
 class _Map;
 
 // Object class
@@ -55,7 +57,7 @@ class _Object {
 
 		virtual void Update(double FrameTime) { }
 		virtual void Render(double BlendFactor) { }
-		virtual void Serialize(_Buffer &Buffer) { }
+		virtual void Serialize(ae::_Buffer &Buffer) { }
 		void FacePosition(const glm::vec2 &Cursor);
 
 		virtual const std::string &GetName() const { return Name; }

@@ -48,7 +48,7 @@ class _Item : public _Object {
 
 		_Item();
 
-		void Serialize(_Buffer &Buffer) override;
+		void Serialize(ae::_Buffer &Buffer) override;
 		void Render(double BlendFactor) override;
 
 		int UpdateCount(int Amount) { Count += Amount; return Count; }

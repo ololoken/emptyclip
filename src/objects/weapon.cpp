@@ -17,9 +17,9 @@
 *******************************************************************************/
 #include <objects/weapon.h>
 #include <objects/particle.h>
-#include <stats.h>
 #include <ae/random.h>
-#include <buffer.h>
+#include <ae/buffer.h>
+#include <stats.h>
 #include <algorithm>
 
 // Constructor
@@ -52,7 +52,7 @@ _Weapon::~_Weapon() {
 }
 
 // Serialize weapon for saving
-void _Weapon::Serialize(_Buffer &Buffer) {
+void _Weapon::Serialize(ae::_Buffer &Buffer) {
 
 	// Write weapons
 	Buffer.WriteString(ID.c_str());

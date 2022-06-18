@@ -16,9 +16,9 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 *******************************************************************************/
 #include <objects/item.h>
+#include <ae/buffer.h>
 #include <graphics.h>
 #include <constants.h>
-#include <buffer.h>
 
 // Constructor
 _Item::_Item() {
@@ -29,7 +29,7 @@ _Item::_Item() {
 }
 
 // Serialize for saving
-void _Item::Serialize(_Buffer &Buffer) {
+void _Item::Serialize(ae::_Buffer &Buffer) {
 	Buffer.WriteString(ID.c_str());
 }
 

@@ -35,7 +35,7 @@ class _Weapon : public _Item {
 		_Weapon(const std::string &Identifier, int Count, const glm::vec2 &Position, const _WeaponTemplate &Weapon, const _Texture *Texture, bool Generate);
 		~_Weapon() override;
 
-		void Serialize(_Buffer &Buffer) override;
+		void Serialize(ae::_Buffer &Buffer) override;
 
 		void RecalculateStats();
 		bool AddComponent(_Item *Upgrade);

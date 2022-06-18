@@ -16,6 +16,7 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 *******************************************************************************/
 #include <objects/player.h>
+#include <ae/buffer.h>
 #include <graphics.h>
 #include <audio.h>
 #include <assets.h>
@@ -23,7 +24,6 @@
 #include <animation.h>
 #include <map.h>
 #include <constants.h>
-#include <buffer.h>
 #include <ui/ui.h>
 #include <objects/monster.h>
 #include <objects/weapon.h>
@@ -245,7 +245,7 @@ void _Player::Load() {
 				//std::cout << "Skills: " << Skills[0] << " " << Skills[1] << " " << Skills[2] << " " << Skills[3] << " " << Skills[4] << std::endl;
 			break;
 			case CHUNK_ITEMS: {
-				_Buffer Buffer(Size);
+				ae::_Buffer Buffer(Size);
 				File.read(&Buffer[0], Size);
 				LoadItems(Buffer);
 			} break;
@@ -298,7 +298,7 @@ void _Player::Save() {
 }
 
 // Loads items from a stream
-void _Player::LoadItems(_Buffer &Buffer) {
+void _Player::LoadItems(ae::_Buffer &Buffer) {
 
 	// Get inventory size
 	int ItemCount = Buffer.Read<int>();
@@ -333,7 +333,7 @@ void _Player::LoadItems(_Buffer &Buffer) {
 }
 
 // Loads weapons from a stream
-void _Player::LoadWeapon(_Buffer &Buffer, int Count, int InventoryIndex) {
+void _Player::LoadWeapon(ae::_Buffer &Buffer, int Count, int InventoryIndex) {
 
 	// Get weapons
 	std::string Identifier = Buffer.ReadString();
@@ -351,7 +351,7 @@ void _Player::LoadWeapon(_Buffer &Buffer, int Count, int InventoryIndex) {
 }
 
 // Loads upgrade components from a stream
-void _Player::LoadUpgrades(_Buffer &Buffer, _Weapon *Weapon) {
+void _Player::LoadUpgrades(ae::_Buffer &Buffer, _Weapon *Weapon) {
 
 	// Get size header
 	int Components = Buffer.Read<int>();
@@ -376,7 +376,7 @@ void _Player::SaveItems(std::ofstream &File) {
 	}
 
 	// Write item count
-	_Buffer Buffer;
+	ae::_Buffer Buffer;
 	Buffer.Write<int>(ItemCount);
 
 	// Write items

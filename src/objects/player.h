@@ -168,9 +168,9 @@ class _Player : public _Entity {
 		bool IsEquipmentIndex(int Index) { return Index <= INVENTORY_BAGSTART; }
 		bool IsHandIndex(int Index) { return Index == INVENTORY_MAINHAND || Index == INVENTORY_OFFHAND; }
 
-		void LoadItems(_Buffer &Buffer);
-		void LoadWeapon(_Buffer &Buffer, int Count, int InventoryIndex);
-		void LoadUpgrades(_Buffer &Buffer, _Weapon *Weapon);
+		void LoadItems(ae::_Buffer &Buffer);
+		void LoadWeapon(ae::_Buffer &Buffer, int Count, int InventoryIndex);
+		void LoadUpgrades(ae::_Buffer &Buffer, _Weapon *Weapon);
 		void SaveItems(std::ofstream &File);
 
 		void SetAnimationPlaybackSpeedFactor() override;
