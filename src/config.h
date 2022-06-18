@@ -18,9 +18,11 @@
 #pragma once
 
 // Libraries
-#include <string>
-#include <map>
 #include <glm/vec2.hpp>
+#include <unordered_map>
+#include <sstream>
+#include <string>
+#include <list>
 
 // Load/save config file
 class _Config {
@@ -33,12 +35,11 @@ class _Config {
 		void Load();
 		void Save();
 		void SetDefaults();
-		void LoadDefaultInputBindings();
-
-		const std::string &GetConfigPath() { return ConfigPath; }
+		void LoadDefaultInputBindings(bool IfNone);
 
 		// State
 		int Version;
+		std::string ConfigPath;
 
 		// Graphics
 		glm::ivec2 WindowSize;
@@ -57,17 +58,16 @@ class _Config {
 
 		template <typename Type>
 		void GetValue(const std::string &Field, Type &Value) {
-			auto MapIterator = Map.find(Field);
+			const auto &MapIterator = Map.find(Field);
 			if(MapIterator != Map.end()) {
-				std::stringstream Stream(MapIterator->second);
+				std::stringstream Stream(MapIterator->second.front());
 				Stream >> Value;
 			}
 		}
 
 		// State
-		std::string ConfigFile;
-		std::string ConfigPath;
-		std::map<std::string, std::string> Map;
+		std::string ConfigFilePath;
+		std::unordered_map<std::string, std::list<std::string>> Map;
 };
 
 extern _Config Config;

@@ -31,7 +31,9 @@ namespace tinyxml2 {
 class _Font;
 class _Texture;
 class _Program;
-struct _KeyEvent;
+namespace ae {
+	struct _KeyEvent;
+}
 
 // Bounds struct
 struct _Bounds {
@@ -116,7 +118,7 @@ class _Element {
 
 		void Update(double FrameTime, const glm::vec2 &Mouse);
 		void Render() const;
-		bool HandleKey(const _KeyEvent &KeyEvent);
+		bool HandleKey(const ae::_KeyEvent &KeyEvent);
 		void HandleMouseButton(bool Pressed);
 		void CalculateBounds(bool Scale=true);
 		_Element *GetClickedElement();

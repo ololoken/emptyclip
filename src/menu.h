@@ -25,8 +25,10 @@
 class _Element;
 class _Button;
 class _Image;
-struct _MouseEvent;
-struct _KeyEvent;
+namespace ae {
+	struct _MouseEvent;
+	struct _KeyEvent;
+}
 
 // Classes
 class _Menu {
@@ -87,8 +89,8 @@ class _Menu {
 		void InitPlay();
 		void Close();
 
-		bool HandleKey(const _KeyEvent &KeyEvent);
-		void HandleMouseButton(const _MouseEvent &MouseEvent);
+		bool HandleKey(const ae::_KeyEvent &KeyEvent);
+		void HandleMouseButton(const ae::_MouseEvent &MouseEvent);
 
 		void Update(double FrameTime);
 		void Render();
@@ -106,6 +108,7 @@ class _Menu {
 		void RefreshSaveSlots();
 		void CancelCreate();
 		void CreatePlayer();
+		void ClearAction(int Action, int Type);
 		void RemapInput(int InputType, int Input);
 
 		// States

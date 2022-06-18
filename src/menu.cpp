@@ -16,9 +16,10 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 *******************************************************************************/
 #include <menu.h>
+#include <ae/input.h>
+#include <ae/actions.h>
+#include <actiontype.h>
 #include <constants.h>
-#include <input.h>
-#include <actions.h>
 #include <graphics.h>
 #include <assets.h>
 #include <ui/ui.h>
@@ -37,6 +38,22 @@ _Menu Menu;
 const std::string InputBoxPrefix = "button_options_input_";
 const std::string PlayerButtonPrefix = "button_singleplayer_slot";
 const std::string PlayerColorButtonPrefix = "button_new_color";
+
+const int KeyBindings[] = {
+	Action::GAME_UP,
+	Action::GAME_DOWN,
+	Action::GAME_LEFT,
+	Action::GAME_RIGHT,
+	Action::GAME_USE,
+	Action::GAME_SPRINT,
+	Action::GAME_FIRE,
+	Action::GAME_AIM,
+	Action::GAME_MELEE,
+	Action::GAME_RELOAD,
+	Action::GAME_WEAPONSWITCH,
+	Action::GAME_HEAL,
+	Action::GAME_INVENTORY,
+};
 
 const std::string KEYLABEL_IDENTIFIERS[] = {
 	"label_options_config_up",
@@ -196,7 +213,7 @@ void _Menu::Close() {
 }
 
 // Handle key event
-bool _Menu::HandleKey(const _KeyEvent &KeyEvent) {
+bool _Menu::HandleKey(const ae::_KeyEvent &KeyEvent) {
 	if(CurrentLayout)
 		CurrentLayout->HandleKey(KeyEvent);
 
@@ -232,7 +249,7 @@ bool _Menu::HandleKey(const _KeyEvent &KeyEvent) {
 			}
 			else {
 				if(KeyEvent.Pressed) {
-					RemapInput(_Input::KEYBOARD, KeyEvent.Scancode);
+					RemapInput(ae::_Input::KEYBOARD, KeyEvent.Scancode);
 					return false;
 				}
 			}
@@ -249,7 +266,7 @@ bool _Menu::HandleKey(const _KeyEvent &KeyEvent) {
 }
 
 // Handle mouse event
-void _Menu::HandleMouseButton(const _MouseEvent &MouseEvent) {
+void _Menu::HandleMouseButton(const ae::_MouseEvent &MouseEvent) {
 	if(!CurrentLayout)
 		return;
 
@@ -258,7 +275,7 @@ void _Menu::HandleMouseButton(const _MouseEvent &MouseEvent) {
 		case STATE_OPTIONS: {
 			if(OptionsState == OPTION_ACCEPT_INPUT) {
 				if(MouseEvent.Pressed) {
-					RemapInput(_Input::MOUSE_BUTTON, MouseEvent.Button);
+					RemapInput(ae::_Input::MOUSE_BUTTON, MouseEvent.Button);
 					return;
 				}
 			}
@@ -354,7 +371,7 @@ void _Menu::HandleMouseButton(const _MouseEvent &MouseEvent) {
 			case STATE_OPTIONS: {
 				if(OptionsState == OPTION_NONE) {
 					if(Clicked->Name == "button_options_defaults") {
-						Config.LoadDefaultInputBindings();
+						Config.LoadDefaultInputBindings(false);
 						RefreshInputLabels();
 					}
 					else if(Clicked->Name == "button_options_save") {
@@ -374,7 +391,7 @@ void _Menu::HandleMouseButton(const _MouseEvent &MouseEvent) {
 					else if(Clicked->Name.substr(0, InputBoxPrefix.size()) == InputBoxPrefix) {
 						OptionsState = OPTION_ACCEPT_INPUT;
 						CurrentAction = Clicked->Index;
-						Assets.Elements["label_menu_options_accept_text_action"]->Text = Actions.GetName(CurrentAction);
+						Assets.Elements["label_menu_options_accept_text_action"]->Text = ae::Actions.GetInputNameForAction(CurrentAction, 0);
 					}
 				}
 			} break;
@@ -513,7 +530,7 @@ void _Menu::RefreshSaveSlots() {
 void _Menu::RefreshInputLabels() {
 	for(size_t i = 0; i < LABEL_COUNT; i++) {
 		InputLabels[i] = Assets.Elements[KEYLABEL_IDENTIFIERS[i]];
-		InputLabels[i]->Text = Actions.GetInputNameForAction(i);
+		InputLabels[i]->Text = ae::Actions.GetInputNameForAction(i);
 		InputLabels[i]->Parent->Index = i;
 	}
 }
@@ -541,25 +558,31 @@ void _Menu::CreatePlayer() {
 	}
 }
 
+// Clear action on keybinding page
+void _Menu::ClearAction(int Action, int Type) {
+	for(int i = 0; i < ae::_Input::INPUT_COUNT; i++) {
+		if(ae::Actions.GetInputForAction(i, Action, Type) != -1)
+			ae::Actions.ClearMappingsForAction(i, Action, Type);
+	}
+}
+
 // Remap a key/button
 void _Menu::RemapInput(int InputType, int Input) {
 	OptionsState = OPTION_NONE;
-	if(InputType == _Input::KEYBOARD && Input == SDL_SCANCODE_ESCAPE)
-		return;
-
-	// Remove duplicate keys/buttons
-	for(int i = 0; i < _Actions::COUNT; i++) {
-		if(Actions.GetInputForAction(InputType, i) == Input) {
-			Actions.ClearMappingsForAction(InputType, i);
-		}
+	if(InputType == ae::_Input::KEYBOARD) {
+		if(Input == SDL_SCANCODE_ESCAPE || Input == SDL_SCANCODE_RETURN || Input == SDL_SCANCODE_KP_ENTER)
+			return;
 	}
 
+	// Remove duplicate keys/buttons
+	for(const auto &Action : KeyBindings)
+		ae::Actions.ClearMappingForInputAction(InputType, Input, Action);
+
 	// Clear out existing action
-	Actions.ClearMappingsForAction(_Input::KEYBOARD, CurrentAction);
-	Actions.ClearMappingsForAction(_Input::MOUSE_BUTTON, CurrentAction);
+	ClearAction(CurrentAction, 0);
 
 	// Add new binding
-	Actions.AddInputMap(InputType, Input, CurrentAction, false);
+	ae::Actions.AddInputMap(0, InputType, Input, CurrentAction, 1.0f, -1.0f, false);
 
 	// Update menu labels
 	RefreshInputLabels();

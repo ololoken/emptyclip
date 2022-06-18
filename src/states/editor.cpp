@@ -19,7 +19,6 @@
 #include <framework.h>
 #include <graphics.h>
 #include <camera.h>
-#include <input.h>
 #include <font.h>
 #include <assets.h>
 #include <utils.h>
@@ -272,7 +271,7 @@ void _EditorState::ResetEditorState() {
 }
 
 // Key handler
-bool _EditorState::HandleKey(const _KeyEvent &KeyEvent) {
+bool _EditorState::HandleKey(const ae::_KeyEvent &KeyEvent) {
 	if(IsMoving || IsDrawing || !KeyEvent.Pressed)
 		return false;
 
@@ -495,7 +494,7 @@ bool _EditorState::HandleKey(const _KeyEvent &KeyEvent) {
 }
 
 // Mouse handler
-void _EditorState::HandleMouseButton(const _MouseEvent &MouseEvent) {
+void _EditorState::HandleMouseButton(const ae::_MouseEvent &MouseEvent) {
 	FocusedElement = nullptr;
 	Graphics.Element->HandleMouseButton(MouseEvent.Pressed);
 
@@ -520,7 +519,7 @@ void _EditorState::HandleMouseButton(const _MouseEvent &MouseEvent) {
 	}
 
 	// Distinguish between interface and viewport clicks
-	if(Input.GetMouse().x < Graphics.ViewportSize.x && Input.GetMouse().y < Graphics.ViewportSize.y) {
+	if(ae::Input.GetMouse().x < Graphics.ViewportSize.x && ae::Input.GetMouse().y < Graphics.ViewportSize.y) {
 		if(MouseEvent.Pressed) {
 
 			// Mouse press
@@ -644,7 +643,7 @@ void _EditorState::HandleMouseButton(const _MouseEvent &MouseEvent) {
 // Mouse wheel handler
 void _EditorState::HandleMouseWheel(int Direction) {
 
-	if(Input.GetMouse().x < Graphics.ViewportSize.x && Input.GetMouse().y < Graphics.ViewportSize.y) {
+	if(ae::Input.GetMouse().x < Graphics.ViewportSize.x && ae::Input.GetMouse().y < Graphics.ViewportSize.y) {
 		float Multiplier = 1.0f * Direction;
 		if(IsShiftDown)
 			Multiplier = 10.0f * Direction;
@@ -662,16 +661,16 @@ void _EditorState::HandleMouseWheel(int Direction) {
 
 // Update
 void _EditorState::Update(double FrameTime) {
-	Graphics.Element->Update(FrameTime, Input.GetMouse());
+	Graphics.Element->Update(FrameTime, ae::Input.GetMouse());
 	//if(Graphics.Element->HitElement)
 	//	std::cout << Graphics.Element->HitElement->Name << std::endl;
 
 	// Get modifier key status
-	IsShiftDown = Input.ModKeyDown(KMOD_SHIFT) ? true : false;
-	IsCtrlDown = Input.ModKeyDown(KMOD_CTRL) ? true : false;
+	IsShiftDown = ae::Input.ModKeyDown(KMOD_SHIFT) ? true : false;
+	IsCtrlDown = ae::Input.ModKeyDown(KMOD_CTRL) ? true : false;
 
 	// Get world cursor
-	Camera->ConvertScreenToWorld(Input.GetMouse(), WorldCursor);
+	Camera->ConvertScreenToWorld(ae::Input.GetMouse(), WorldCursor);
 
 	// Get tile indices for later usage
 	WorldCursorIndex = Map->GetValidCoord(WorldCursor);

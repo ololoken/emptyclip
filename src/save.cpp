@@ -16,8 +16,8 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 *******************************************************************************/
 #include <save.h>
+#include <ae/files.h>
 #include <config.h>
-#include <filesystem.h>
 #include <objects/player.h>
 #include <cstdlib>
 #include <sstream>
@@ -41,7 +41,7 @@ std::string _Save::GetConfigPath(int Slot) {
 		return "";
 
 	std::stringstream Buffer;
-	Buffer << Config.GetConfigPath() << (Slot + 1) << ".save";
+	Buffer << Config.ConfigPath << (Slot + 1) << ".save";
 	return Buffer.str();
 }
 
@@ -80,25 +80,24 @@ void _Save::LoadSaves() {
 
 	// Load test files
 	try {
-		Players[SLOT_TUTORIAL] = new _Player(Config.GetConfigPath() + "tutorial.save");
-		Players[SLOT_TEST] = new _Player(Config.GetConfigPath() + "test.save");
+		Players[SLOT_TUTORIAL] = new _Player(Config.ConfigPath + "tutorial.save");
+		Players[SLOT_TEST] = new _Player(Config.ConfigPath + "test.save");
 		Players[SLOT_TEST]->Load();
 	}
 	catch(std::exception &Error) {
 	}
 
 	// Get directory contents
-	std::vector<std::string> Contents;
-	_FileSystem::GetFiles(Config.GetConfigPath(), Contents);
+	ae::_Files Files(Config.ConfigPath);
 
 	// Load slots with player names
-	for(size_t i = 0; i < Contents.size(); i++) {
-		size_t Extension = Contents[i].find(".save");
-		std::string SlotIndexString = Contents[i].substr(0, Extension);
+	for(size_t i = 0; i < Files.Nodes.size(); i++) {
+		size_t Extension = Files.Nodes[i].find(".save");
+		std::string SlotIndexString = Files.Nodes[i].substr(0, Extension);
 		int SlotIndex = atoi(SlotIndexString.c_str()) - 1;
 		if(SlotIndex >= 0 && SlotIndex <= SLOT_9) {
 			try {
-				Players[SlotIndex] = new _Player(Config.GetConfigPath() + Contents[i]);
+				Players[SlotIndex] = new _Player(Config.ConfigPath + Files.Nodes[i]);
 				Players[SlotIndex]->Load();
 			}
 			catch(std::exception &Error) {

@@ -17,10 +17,9 @@
 *******************************************************************************/
 #pragma once
 
-#include <state.h>
+#include <ae/state.h>
 #include <color.h>
 #include <list>
-#include <glm/vec2.hpp>
 
 // Forward Declarations
 class _Font;
@@ -46,7 +45,7 @@ enum CollisionType {
 };
 
 // Play state
-class _PlayState : public _State {
+class _PlayState : public ae::_State {
 
 	public:
 
@@ -57,8 +56,8 @@ class _PlayState : public _State {
 
 		// Input
 		bool HandleAction(int InputType, std::size_t Action, int Value) override;
-		bool HandleKey(const _KeyEvent &KeyEvent) override;
-		void HandleMouseButton(const _MouseEvent &MouseEvent) override;
+		bool HandleKey(const ae::_KeyEvent &KeyEvent) override;
+		void HandleMouseButton(const ae::_MouseEvent &MouseEvent) override;
 
 		// Update
 		void Update(double FrameTime) override;

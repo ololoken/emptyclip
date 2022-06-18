@@ -16,14 +16,14 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 *******************************************************************************/
 #include <framework.h>
+#include <ae/framelimit.h>
+#include <ae/random.h>
+#include <ae/state.h>
+#include <ae/input.h>
 #include <config.h>
 #include <graphics.h>
-#include <input.h>
-#include <actions.h>
+#include <ae/actions.h>
 #include <audio.h>
-#include <state.h>
-#include <framelimit.h>
-#include <ae/random.h>
 #include <stdexcept>
 #include <constants.h>
 #include <assets.h>
@@ -104,14 +104,13 @@ void _Framework::Init(int ArgumentCount, char **Arguments) {
 	Audio.Init(AudioEnabled);
 	Audio.SetGain(Config.SoundVolume);
 
-	FrameLimit = new _FrameLimit(Config.MaxFPS);
+	FrameLimit = new ae::_FrameLimit(Config.MaxFPS);
 	Timer = SDL_GetPerformanceCounter();
 	ae::RandomGenerator.seed(SDL_GetPerformanceCounter());
 
 	// Load assets
 	LoadAssets();
 	Stats.Init();
-	Actions.LoadActionNames();
 	Save.LoadSaves();
 }
 
@@ -143,7 +142,7 @@ void _Framework::Update() {
 
 	// Get events from SDL
 	SDL_PumpEvents();
-	Input.Update(FrameTime);
+	ae::Input.Update(FrameTime);
 
 	// Loop through events
 	SDL_Event Event;
@@ -155,7 +154,7 @@ void _Framework::Update() {
 			case SDL_KEYDOWN:
 			case SDL_KEYUP:
 				if(!GlobalKeyHandler(Event)) {
-					_KeyEvent KeyEvent("", Event.key.keysym.scancode, Event.type == SDL_KEYDOWN, Event.key.repeat);
+					ae::_KeyEvent KeyEvent("", Event.key.keysym.scancode, Event.type == SDL_KEYDOWN, Event.key.repeat);
 
 					// Handle console input
 					bool SendAction = true;
@@ -163,12 +162,12 @@ void _Framework::Update() {
 
 					// Pass keys to action handler
 					if(!Event.key.repeat && SendAction)
-						Actions.InputEvent(_Input::KEYBOARD, Event.key.keysym.scancode, Event.type == SDL_KEYDOWN);
+						ae::Actions.InputEvent(State, ae::_Input::KEYBOARD, Event.key.keysym.scancode, Event.type == SDL_KEYDOWN);
 				}
 			break;
 			case SDL_TEXTINPUT:
 				if(!IgnoreNextInputEvent) {
-					_KeyEvent KeyEvent(Event.text.text, 0, 1, 1);
+					ae::_KeyEvent KeyEvent(Event.text.text, 0, 1, 1);
 					State->HandleKey(KeyEvent);
 				}
 
@@ -177,9 +176,9 @@ void _Framework::Update() {
 			case SDL_MOUSEBUTTONDOWN:
 			case SDL_MOUSEBUTTONUP:
 				if(State && FrameworkState == UPDATE) {
-					_MouseEvent MouseEvent(glm::ivec2(Event.motion.x, Event.motion.y), Event.button.button, Event.type == SDL_MOUSEBUTTONDOWN);
+					ae::_MouseEvent MouseEvent(glm::ivec2(Event.motion.x, Event.motion.y), Event.button.button, Event.type == SDL_MOUSEBUTTONDOWN);
 					State->HandleMouseButton(MouseEvent);
-					Actions.InputEvent(_Input::MOUSE_BUTTON, Event.button.button, Event.type == SDL_MOUSEBUTTONDOWN);
+					ae::Actions.InputEvent(State, ae::_Input::MOUSE_BUTTON, Event.button.button, Event.type == SDL_MOUSEBUTTONDOWN);
 				}
 			break;
 			case SDL_MOUSEWHEEL:
@@ -281,7 +280,7 @@ void _Framework::LoadAssets() {
 }
 
 // Change states
-void _Framework::ChangeState(_State *RequestedState) {
+void _Framework::ChangeState(ae::_State *RequestedState) {
 	this->RequestedState = RequestedState;
 	FrameworkState = CLOSE;
 }

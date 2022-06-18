@@ -16,13 +16,16 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 *******************************************************************************/
 #include <hud.h>
+#include <ae/input.h>
+#include <ae/actions.h>
+#include <actiontype.h>
 #include <graphics.h>
 #include <font.h>
 #include <config.h>
 #include <stats.h>
 #include <program.h>
 #include <assets.h>
-#include <actions.h>
+#include <ae/actions.h>
 #include <objects/entity.h>
 #include <objects/player.h>
 #include <objects/item.h>
@@ -165,7 +168,7 @@ void _HUD::SetInventoryOpen(bool Value) {
 }
 
 // Handle mouse events
-void _HUD::MouseEvent(const _MouseEvent &MouseEvent) {
+void _HUD::MouseEvent(const ae::_MouseEvent &MouseEvent) {
 	if(!GetInventoryOpen())
 		return;
 
@@ -246,7 +249,7 @@ void _HUD::Update(double FrameTime, float Radius) {
 
 		HitElement = Elements[ELEMENT_SKILLS]->HitElement;
 		if(HitElement && HitElement->Index >= 0)
-			UpdateSkillInfo(HitElement->Index, Input.GetMouse().x, Input.GetMouse().y);
+			UpdateSkillInfo(HitElement->Index, ae::Input.GetMouse().x, ae::Input.GetMouse().y);
 	}
 	else
 		Graphics.SetCursor(false);
@@ -346,7 +349,7 @@ void _HUD::Render() {
 
 	// Draw item tooltip
 	if(CursorOverItem && CursorItem != CursorOverItem) {
-		RenderItemInfo(CursorOverItem, Input.GetMouse().x, Input.GetMouse().y);
+		RenderItemInfo(CursorOverItem, ae::Input.GetMouse().x, ae::Input.GetMouse().y);
 
 		// Compare with equipment
 		if(CursorOverItem->Type == _Object::WEAPON) {
@@ -485,7 +488,7 @@ void _HUD::RenderCharacterScreen() {
 
 	// Draw cursor item
 	if(CursorItem) {
-		glm::ivec2 Position(Input.GetMouse() - ClickOffset);
+		glm::ivec2 Position(ae::Input.GetMouse() - ClickOffset);
 		Graphics.SetProgram(Assets.Programs["ortho_pos_uv"]);
 		Graphics.SetColor(CursorItem->Color);
 		Graphics.DrawImage(Position, CursorItem->Texture);
@@ -915,7 +918,7 @@ void _HUD::UpdateSkillInfo(int Skill, int DrawX, int DrawY) {
 // Draw death message
 void _HUD::RenderDeathScreen() {
 	Fonts[FONT_LARGEST]->DrawText("You Died!", glm::vec2(Graphics.CurrentSize.x / 2, Graphics.CurrentSize.y / 2 - 200), CENTER_MIDDLE);
-	Fonts[FONT_LARGE]->DrawText(std::string("Press [") + Actions.GetInputNameForAction(_Actions::USE) + "] to continue", glm::vec2(Graphics.CurrentSize.x / 2, Graphics.CurrentSize.y / 2 - 150), CENTER_MIDDLE);
+	Fonts[FONT_LARGE]->DrawText(std::string("Press [") + ae::Actions.GetInputNameForAction(Action::GAME_USE) + "] to continue", glm::vec2(Graphics.CurrentSize.x / 2, Graphics.CurrentSize.y / 2 - 150), CENTER_MIDDLE);
 }
 
 // Show hud message

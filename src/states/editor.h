@@ -18,7 +18,7 @@
 #pragma once
 
 // Libraries
-#include <state.h>
+#include <ae/state.h>
 #include <map.h>
 #include <string>
 #include <vector>
@@ -133,7 +133,7 @@ struct _Brush {
 };
 
 // Editor state
-class _EditorState : public _State {
+class _EditorState : public ae::_State {
 
 	public:
 
@@ -145,8 +145,8 @@ class _EditorState : public _State {
 		void Close() override;
 
 		// Input
-		bool HandleKey(const _KeyEvent &KeyEvent) override;
-		void HandleMouseButton(const _MouseEvent &MouseEvent) override;
+		bool HandleKey(const ae::_KeyEvent &KeyEvent) override;
+		void HandleMouseButton(const ae::_MouseEvent &MouseEvent) override;
 		void HandleMouseWheel(int Direction) override;
 
 		// Update

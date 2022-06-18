@@ -16,10 +16,10 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 *******************************************************************************/
 #include <ui/ui.h>
+#include <ae/input.h>
 #include <graphics.h>
 #include <font.h>
 #include <color.h>
-#include <input.h>
 #include <assets.h>
 #include <texture.h>
 #include <program.h>
@@ -267,7 +267,7 @@ void _Element::SerializeElement(tinyxml2::XMLDocument &Document, tinyxml2::XMLEl
 }
 
 // Handle key event, return true if handled
-bool _Element::HandleKey(const _KeyEvent &KeyEvent) {
+bool _Element::HandleKey(const ae::_KeyEvent &KeyEvent) {
 	if(!Active)
 		return false;
 
@@ -301,13 +301,13 @@ bool _Element::HandleKey(const _KeyEvent &KeyEvent) {
 					CursorPosition = Text.length();
 			}
 			else if(KeyEvent.Scancode == SDL_SCANCODE_LEFT) {
-				if(Input.ModKeyDown(KMOD_ALT))
+				if(ae::Input.ModKeyDown(KMOD_ALT))
 					CursorPosition = 0;
 				else if(CursorPosition > 0)
 					CursorPosition--;
 			}
 			else if(KeyEvent.Scancode == SDL_SCANCODE_RIGHT) {
-				if(Input.ModKeyDown(KMOD_ALT))
+				if(ae::Input.ModKeyDown(KMOD_ALT))
 					CursorPosition = Text.length();
 				else if(CursorPosition < Text.length())
 					CursorPosition++;

@@ -17,10 +17,10 @@
 *******************************************************************************/
 #pragma once
 
-#include <state.h>
+#include <ae/state.h>
 
 // Null state
-class _NullState : public _State {
+class _NullState : public ae::_State {
 
 	public:
 
@@ -29,8 +29,8 @@ class _NullState : public _State {
 		void Close() override;
 
 		// Input
-		bool HandleKey(const _KeyEvent &KeyEvent) override;
-		void HandleMouseButton(const _MouseEvent &MouseEvent) override;
+		bool HandleKey(const ae::_KeyEvent &KeyEvent) override;
+		void HandleMouseButton(const ae::_MouseEvent &MouseEvent) override;
 
 		// Update
 		void Update(double FrameTime) override;

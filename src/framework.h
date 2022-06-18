@@ -21,9 +21,11 @@
 #include <SDL_stdinc.h>
 
 // Forward Declarations
+namespace ae {
+	class _FrameLimit;
+	class _State;
+}
 union SDL_Event;
-class _State;
-class _FrameLimit;
 
 // Manages SDL and game state
 class _Framework {
@@ -44,8 +46,8 @@ class _Framework {
 		void Update();
 		void Render();
 
-		_State *GetState() { return State; }
-		void ChangeState(_State *RequestedState);
+		ae::_State *GetState() { return State; }
+		void ChangeState(ae::_State *RequestedState);
 
 		// State
 		bool Done;
@@ -58,11 +60,11 @@ class _Framework {
 
 		// States
 		StateType FrameworkState;
-		_State *State;
-		_State *RequestedState;
+		ae::_State *State;
+		ae::_State *RequestedState;
 
 		// Time
-		_FrameLimit *FrameLimit;
+		ae::_FrameLimit *FrameLimit;
 		Uint64 Timer;
 		double TimeStep;
 		double TimeStepAccumulator;

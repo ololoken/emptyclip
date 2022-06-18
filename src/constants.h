@@ -28,23 +28,6 @@ const  int          DEFAULT_FULLSCREEN             =  1;
 const  int          DEFAULT_AUDIOENABLED           =  1;
 const  int          DEFAULT_VSYNC                  =  1;
 const  double       DEFAULT_MAXFPS                 =  240.0;
-const  int          DEFAULT_KEYUP                  =  SDL_SCANCODE_E;
-const  int          DEFAULT_KEYDOWN                =  SDL_SCANCODE_D;
-const  int          DEFAULT_KEYLEFT                =  SDL_SCANCODE_S;
-const  int          DEFAULT_KEYRIGHT               =  SDL_SCANCODE_F;
-const  int          DEFAULT_KEYSPRINT              =  SDL_SCANCODE_A;
-const  int          DEFAULT_KEYUSE                 =  SDL_SCANCODE_SPACE;
-const  int          DEFAULT_KEYINVENTORY           =  SDL_SCANCODE_C;
-const  int          DEFAULT_KEYMELEE               =  SDL_SCANCODE_Z;
-const  int          DEFAULT_KEYRELOAD              =  SDL_SCANCODE_R;
-const  int          DEFAULT_KEYWEAPONSWITCH        =  SDL_SCANCODE_W;
-const  int          DEFAULT_KEYMEDKIT              =  SDL_SCANCODE_Q;
-const  int          DEFAULT_KEYWEAPON1             =  SDL_SCANCODE_1;
-const  int          DEFAULT_KEYWEAPON2             =  SDL_SCANCODE_2;
-const  int          DEFAULT_KEYWEAPON3             =  SDL_SCANCODE_3;
-const  int          DEFAULT_KEYWEAPON4             =  SDL_SCANCODE_4;
-const  int          DEFAULT_BUTTONFIRE             =  1;
-const  int          DEFAULT_BUTTONAIM              =  3;
 //     Config
 const  int          CONFIG_VERSION                 =  2;
 //     Game

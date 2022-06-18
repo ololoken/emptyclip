@@ -31,7 +31,9 @@ class _Entity;
 class _Player;
 class _Item;
 class _Weapon;
-struct _MouseEvent;
+namespace ae {
+	struct _MouseEvent;
+}
 
 class _HUD {
 
@@ -103,7 +105,7 @@ class _HUD {
 		_HUD(_Player *Player);
 		~_HUD();
 
-		void MouseEvent(const _MouseEvent &MouseEvent);
+		void MouseEvent(const ae::_MouseEvent &MouseEvent);
 
 		void Update(double FrameTime, float Radius);
 

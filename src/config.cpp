@@ -16,10 +16,10 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 *******************************************************************************/
 #include <config.h>
-#include <filesystem.h>
+#include <ae/actions.h>
+#include <ae/util.h>
+#include <actiontype.h>
 #include <constants.h>
-#include <actions.h>
-#include <input.h>
 #include <sstream>
 #include <fstream>
 #include <SDL_filesystem.h>
@@ -29,6 +29,23 @@ _Config Config;
 
 // Initializes the config system
 void _Config::Init(const std::string &ConfigFile) {
+
+	// Set names for actions
+	ae::Actions.State.resize(Action::COUNT);
+	ae::Actions.ResetState();
+	ae::Actions.State[Action::GAME_LEFT].Name = "game_left";
+	ae::Actions.State[Action::GAME_RIGHT].Name = "game_right";
+	ae::Actions.State[Action::GAME_UP].Name = "game_up";
+	ae::Actions.State[Action::GAME_DOWN].Name = "game_down";
+	ae::Actions.State[Action::GAME_USE].Name = "game_use";
+	ae::Actions.State[Action::GAME_SPRINT].Name = "game_sprint";
+	ae::Actions.State[Action::GAME_FIRE].Name = "game_fire";
+	ae::Actions.State[Action::GAME_AIM].Name = "game_aim";
+	ae::Actions.State[Action::GAME_MELEE].Name = "game_melee";
+	ae::Actions.State[Action::GAME_RELOAD].Name = "game_reload";
+	ae::Actions.State[Action::GAME_WEAPONSWITCH].Name = "game_weaponswitch";
+	ae::Actions.State[Action::GAME_HEAL].Name = "game_heal";
+	ae::Actions.State[Action::GAME_INVENTORY].Name = "game_inventory";
 
 	// Create config path
 	char *PrefPath = SDL_GetPrefPath("", "emptyclip");
@@ -40,7 +57,8 @@ void _Config::Init(const std::string &ConfigFile) {
 		throw std::runtime_error("Cannot create config path!");
 	}
 
-	this->ConfigFile = ConfigPath + ConfigFile;
+	ConfigFilePath = ConfigPath + ConfigFile;
+	ae::MakeDirectory(ConfigPath);
 
 	// Load defaults
 	SetDefaults();
@@ -68,41 +86,41 @@ void _Config::SetDefaults() {
 	SoundVolume = 1.0f;
 	MusicVolume = 1.0f;
 
-	LoadDefaultInputBindings();
+	LoadDefaultInputBindings(false);
 }
 
 // Load default key bindings
-void _Config::LoadDefaultInputBindings() {
+void _Config::LoadDefaultInputBindings(bool IfNone) {
 
 	// Clear mappings
-	for(int i = 0; i < _Input::INPUT_COUNT; i++)
-		Actions.ClearMappings(i);
+	if(!IfNone) {
+		for(int i = 0; i < ae::_Input::INPUT_COUNT; i++)
+			ae::Actions.ClearMappings(i);
+	}
 
-	Actions.AddInputMap(_Input::KEYBOARD, DEFAULT_KEYUP, _Actions::UP);
-	Actions.AddInputMap(_Input::KEYBOARD, DEFAULT_KEYDOWN, _Actions::DOWN);
-	Actions.AddInputMap(_Input::KEYBOARD, DEFAULT_KEYLEFT, _Actions::LEFT);
-	Actions.AddInputMap(_Input::KEYBOARD, DEFAULT_KEYRIGHT, _Actions::RIGHT);
-	Actions.AddInputMap(_Input::KEYBOARD, DEFAULT_KEYSPRINT, _Actions::SPRINT);
-	Actions.AddInputMap(_Input::KEYBOARD, DEFAULT_KEYUSE, _Actions::USE);
-	Actions.AddInputMap(_Input::KEYBOARD, DEFAULT_KEYINVENTORY, _Actions::INVENTORY);
-	Actions.AddInputMap(_Input::MOUSE_BUTTON, DEFAULT_BUTTONFIRE, _Actions::FIRE);
-	Actions.AddInputMap(_Input::MOUSE_BUTTON, DEFAULT_BUTTONAIM, _Actions::AIM);
-	Actions.AddInputMap(_Input::KEYBOARD, DEFAULT_KEYMELEE, _Actions::MELEE);
-	Actions.AddInputMap(_Input::KEYBOARD, DEFAULT_KEYRELOAD, _Actions::RELOAD);
-	Actions.AddInputMap(_Input::KEYBOARD, DEFAULT_KEYWEAPONSWITCH, _Actions::WEAPONSWITCH);
-	Actions.AddInputMap(_Input::KEYBOARD, DEFAULT_KEYMEDKIT, _Actions::MEDKIT);
-	Actions.AddInputMap(_Input::KEYBOARD, DEFAULT_KEYWEAPON1, _Actions::WEAPON1);
-	Actions.AddInputMap(_Input::KEYBOARD, DEFAULT_KEYWEAPON2, _Actions::WEAPON2);
-	Actions.AddInputMap(_Input::KEYBOARD, DEFAULT_KEYWEAPON3, _Actions::WEAPON3);
-	Actions.AddInputMap(_Input::KEYBOARD, DEFAULT_KEYWEAPON4, _Actions::WEAPON4);
+	// Movement
+	ae::Actions.AddInputMap(0, ae::_Input::KEYBOARD, SDL_SCANCODE_E, Action::GAME_UP, 1.0f, -1.0f, IfNone);
+	ae::Actions.AddInputMap(0, ae::_Input::KEYBOARD, SDL_SCANCODE_D, Action::GAME_DOWN, 1.0f, -1.0f, IfNone);
+	ae::Actions.AddInputMap(0, ae::_Input::KEYBOARD, SDL_SCANCODE_S, Action::GAME_LEFT, 1.0f, -1.0f, IfNone);
+	ae::Actions.AddInputMap(0, ae::_Input::KEYBOARD, SDL_SCANCODE_F, Action::GAME_RIGHT, 1.0f, -1.0f, IfNone);
+
+	ae::Actions.AddInputMap(0, ae::_Input::KEYBOARD, SDL_SCANCODE_A, Action::GAME_SPRINT, 1.0f, -1.0f, IfNone);
+	ae::Actions.AddInputMap(0, ae::_Input::KEYBOARD, SDL_SCANCODE_SPACE, Action::GAME_USE, 1.0f, -1.0f, IfNone);
+	ae::Actions.AddInputMap(0, ae::_Input::KEYBOARD, SDL_SCANCODE_C, Action::GAME_INVENTORY, 1.0f, -1.0f, IfNone);
+	ae::Actions.AddInputMap(0, ae::_Input::MOUSE_BUTTON, 1, Action::GAME_FIRE, 1.0f, -1.0f, IfNone);
+	ae::Actions.AddInputMap(0, ae::_Input::MOUSE_BUTTON, 3, Action::GAME_AIM, 1.0f, -1.0f, IfNone);
+	ae::Actions.AddInputMap(0, ae::_Input::KEYBOARD, SDL_SCANCODE_Z, Action::GAME_MELEE, 1.0f, -1.0f, IfNone);
+	ae::Actions.AddInputMap(0, ae::_Input::KEYBOARD, SDL_SCANCODE_R, Action::GAME_RELOAD, 1.0f, -1.0f, IfNone);
+	ae::Actions.AddInputMap(0, ae::_Input::KEYBOARD, SDL_SCANCODE_W, Action::GAME_WEAPONSWITCH, 1.0f, -1.0f, IfNone);
+	ae::Actions.AddInputMap(0, ae::_Input::KEYBOARD, SDL_SCANCODE_Q, Action::GAME_HEAL, 1.0f, -1.0f, IfNone);
 }
 
 // Load the config file
 void _Config::Load() {
 
 	// Open file
-	std::ifstream In(ConfigFile.c_str());
-	if(!In.is_open()) {
+	std::ifstream File(ConfigFilePath.c_str());
+	if(!File) {
 		Save();
 		return;
 	}
@@ -110,27 +128,28 @@ void _Config::Load() {
 	// Read data into map
 	Map.clear();
 	char Buffer[256];
-	while(In) {
-
-		In.getline(Buffer, 256);
-		if(In.good()) {
+	while(File) {
+		File.getline(Buffer, 256);
+		if(File.good()) {
 			std::string Line(Buffer);
 			std::size_t Pos = Line.find_first_of('=');
 			if(Pos != std::string::npos) {
 				std::string Field = Line.substr(0, Pos);
 				std::string Value = Line.substr(Pos+1, Line.size());
 
-				Map[Field] = Value;
+				Map[Field].push_back(Value);
 			}
 		}
 	}
-	In.close();
+
+	// Close
+	File.close();
 
 	// Read version
 	int ReadVersion = 0;
 	GetValue("version", ReadVersion);
 	if(ReadVersion != Version) {
-		std::rename(ConfigFile.c_str(), (ConfigFile + "." + std::to_string(ReadVersion)).c_str());
+		std::rename(ConfigFilePath.c_str(), (ConfigFilePath + "." + std::to_string(ReadVersion)).c_str());
 		Save();
 		return;
 	}
@@ -148,63 +167,55 @@ void _Config::Load() {
 	GetValue("music_volume", MusicVolume);
 
 	// Load bindings
-	for(int i = 0; i < _Actions::COUNT; i++) {
+	for(std::size_t i = 0; i < ae::Actions.State.size(); i++) {
 		std::ostringstream Buffer;
-		Buffer << "action_" << i;
+		Buffer << "action_" << ae::Actions.State[i].Name;
 
-		// Get input key/button
-		std::string InputString;
-		GetValue(Buffer.str(), InputString);
+		// Get list of inputs for each action
+		const auto &Values = Map[Buffer.str()];
+		for(auto &Iterator : Values) {
 
-		// Clear out current map
-		Actions.ClearAllMappingsForAction(i);
-
-		// Skip empty
-		if(!InputString.size())
-			continue;
-
-		// Parse input bind
-		int InputType, Input;
-		char Dummy;
-		std::stringstream Stream(InputString);
-		Stream >> InputType >> Dummy >> Input;
-		Actions.AddInputMap(InputType, Input, i);
+			// Parse input bind
+			int Rank;
+			int InputType;
+			int Input;
+			char Dummy;
+			std::stringstream Stream(Iterator);
+			Stream >> Rank >> Dummy >> InputType >> Dummy >> Input;
+			ae::Actions.AddInputMap(Rank, InputType, Input, i, 1.0f, -1.0f, false);
+		}
 	}
+
+	// Add missing bindings
+	LoadDefaultInputBindings(true);
 }
 
 // Save variables to the config file
 void _Config::Save() {
 
-	std::ofstream Out(ConfigFile.c_str());
-	if(!Out.is_open()) {
+	// Open file
+	std::ofstream File(ConfigFilePath.c_str());
+	if(!File.is_open())
 		return;
-	}
 
 	// Write variables
-	Out << "version=" << Version << std::endl;
-	Out << "window_width=" << WindowSize.x << std::endl;
-	Out << "window_height=" << WindowSize.y << std::endl;
-	Out << "fullscreen=" << Fullscreen << std::endl;
-	Out << "vsync=" << Vsync << std::endl;
-	Out << "max_fps=" << MaxFPS << std::endl;
-	Out << "msaa=" << MSAA << std::endl;
-	Out << "aniso=" << Aniso << std::endl;
-	Out << "audio_enabled=" << AudioEnabled << std::endl;
-	Out << "sound_volume=" << SoundVolume << std::endl;
-	Out << "music_volume=" << MusicVolume << std::endl;
+	File << "version=" << Version << std::endl;
+	File << "window_width=" << WindowSize.x << std::endl;
+	File << "window_height=" << WindowSize.y << std::endl;
+	File << "fullscreen=" << Fullscreen << std::endl;
+	File << "vsync=" << Vsync << std::endl;
+	File << "max_fps=" << MaxFPS << std::endl;
+	File << "msaa=" << MSAA << std::endl;
+	File << "aniso=" << Aniso << std::endl;
+	File << "audio_enabled=" << AudioEnabled << std::endl;
+	File << "sound_volume=" << SoundVolume << std::endl;
+	File << "music_volume=" << MusicVolume << std::endl;
+
 
 	// Write out input map
-	for(int i = 0; i < _Actions::COUNT; i++) {
-		Out << "action_" << i << "=";
-		for(int j = 0; j < _Input::INPUT_COUNT; j++) {
-			int Input = Actions.GetInputForAction(j, i);
-			if(Input != -1) {
-				Out << j << "_" << Input;
-				break;
-			}
-		}
-		Out << std::endl;
-	}
+	ae::Actions.Serialize(File, ae::_Input::KEYBOARD);
+	ae::Actions.Serialize(File, ae::_Input::MOUSE_AXIS);
+	ae::Actions.Serialize(File, ae::_Input::MOUSE_BUTTON);
 
-	Out.close();
+	File.close();
 }

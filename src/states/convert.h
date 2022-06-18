@@ -17,10 +17,10 @@
 *******************************************************************************/
 #pragma once
 
-#include <state.h>
+#include <ae/state.h>
 
 // Null state
-class _ConvertState : public _State {
+class _ConvertState : public ae::_State {
 
 	public:
 

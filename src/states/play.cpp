@@ -16,6 +16,7 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 *******************************************************************************/
 #include <states/play.h>
+#include <ae/actions.h>
 #include <graphics.h>
 #include <framework.h>
 #include <menu.h>
@@ -27,11 +28,11 @@
 #include <events.h>
 #include <audio.h>
 #include <config.h>
-#include <actions.h>
 #include <utils.h>
 #include <particles.h>
 #include <program.h>
 #include <stats.h>
+#include <actiontype.h>
 #include <objects/entity.h>
 #include <objects/player.h>
 #include <objects/monster.h>
@@ -113,12 +114,12 @@ void _PlayState::Init() {
 	Map->SetCamera(Camera);
 	Particles->Camera = Camera;
 	Particles->Map = Map;
-	Camera->ConvertScreenToWorld(Input.GetMouse(), WorldCursor);
+	Camera->ConvertScreenToWorld(ae::Input.GetMouse(), WorldCursor);
 	PreviousWorldCursor = WorldCursor;
 
 	Graphics.SetCursor(false);
 
-	Actions.ResetState();
+	ae::Actions.ResetState();
 }
 
 // Close map
@@ -143,12 +144,12 @@ bool _PlayState::HandleAction(int InputType, std::size_t Action, int Value) {
 	if(Value) {
 		if(!Player->IsDying()) {
 			switch(Action) {
-				case _Actions::INVENTORY:
+				case Action::GAME_INVENTORY:
 					HUD->SetInventoryOpen(!HUD->GetInventoryOpen());
 					Player->SetCrouching(false);
 					Player->SetSprinting(false);
 				break;
-				case _Actions::FIRE:
+				case Action::GAME_FIRE:
 					if(!HUD->GetInventoryOpen() && !Player->IsMeleeAttacking()) {
 						if(Player->CanAttack(WEAPONATTACK_MAIN) && !Player->HasAmmo())
 							Audio.Play(new _AudioSource(Audio.GetBuffer(Player->GetSample(SAMPLE_EMPTY))), Player->Position);
@@ -159,7 +160,7 @@ bool _PlayState::HandleAction(int InputType, std::size_t Action, int Value) {
 						}
 					}
 				break;
-				case _Actions::MELEE:
+				case Action::GAME_MELEE:
 					if(!HUD->GetInventoryOpen()) {
 						if(Player->GetFireRate(WEAPONATTACK_MELEE) == FIRERATE_SEMI) {
 							Player->AttackRequested = true;
@@ -167,7 +168,7 @@ bool _PlayState::HandleAction(int InputType, std::size_t Action, int Value) {
 						}
 					}
 				break;
-				case _Actions::RELOAD:
+				case Action::GAME_RELOAD:
 					if(!HUD->IsDragging()) {
 						if(Player->IsReloading())
 							Player->CancelReloading();
@@ -175,17 +176,17 @@ bool _PlayState::HandleAction(int InputType, std::size_t Action, int Value) {
 							Player->StartReloading();
 					}
 				break;
-				case _Actions::WEAPONSWITCH:
+				case Action::GAME_WEAPONSWITCH:
 					if(!HUD->IsDragging())
 						Player->StartWeaponSwitch(INVENTORY_MAINHAND, INVENTORY_OFFHAND);
 				break;
-				case _Actions::MEDKIT:
+				case Action::GAME_HEAL:
 					Player->SetMedkitRequested(true);
 				break;
 			}
 		}
 		else {
-			if(Action == _Actions::USE)
+			if(Action == Action::GAME_USE)
 				RestartFromDeath();
 		}
 	}
@@ -194,7 +195,7 @@ bool _PlayState::HandleAction(int InputType, std::size_t Action, int Value) {
 }
 
 // Key handler
-bool _PlayState::HandleKey(const _KeyEvent &KeyEvent) {
+bool _PlayState::HandleKey(const ae::_KeyEvent &KeyEvent) {
 	bool Handled = Graphics.Element->HandleKey(KeyEvent);
 
 	bool SendAction = true;
@@ -246,7 +247,7 @@ bool _PlayState::HandleKey(const _KeyEvent &KeyEvent) {
 }
 
 // Mouse handler
-void _PlayState::HandleMouseButton(const _MouseEvent &MouseEvent) {
+void _PlayState::HandleMouseButton(const ae::_MouseEvent &MouseEvent) {
 	HUD->MouseEvent(MouseEvent);
 
 	if(IsPaused())
@@ -255,7 +256,7 @@ void _PlayState::HandleMouseButton(const _MouseEvent &MouseEvent) {
 
 // Update
 void _PlayState::Update(double FrameTime) {
-	Graphics.Element->Update(FrameTime, Input.GetMouse());
+	Graphics.Element->Update(FrameTime, ae::Input.GetMouse());
 	//if(Graphics.Element->HitElement)
 	//	std::cout << Graphics.Element->HitElement->Name << std::endl;
 
@@ -271,7 +272,7 @@ void _PlayState::Update(double FrameTime) {
 
 	// Get world cursor
 	PreviousWorldCursor = WorldCursor;
-	Camera->ConvertScreenToWorld(Input.GetMouse(), WorldCursor);
+	Camera->ConvertScreenToWorld(ae::Input.GetMouse(), WorldCursor);
 
 	// Update save timer
 	SaveGameTimer += FrameTime;
@@ -283,21 +284,21 @@ void _PlayState::Update(double FrameTime) {
 		Player->FacePosition(WorldCursor);
 
 		// Move types
-		if(Actions.GetState(_Actions::UP) && Actions.GetState(_Actions::LEFT))
+		if(ae::Actions.State[Action::GAME_UP].Value > 0.0f && ae::Actions.State[Action::GAME_LEFT].Value > 0.0f)
 			Player->SetMoveState(MOVE_FORWARDLEFT);
-		else if(Actions.GetState(_Actions::UP) && Actions.GetState(_Actions::RIGHT))
+		else if(ae::Actions.State[Action::GAME_UP].Value > 0.0f && ae::Actions.State[Action::GAME_RIGHT].Value > 0.0f)
 			Player->SetMoveState(MOVE_FORWARDRIGHT);
-		else if(Actions.GetState(_Actions::DOWN) && Actions.GetState(_Actions::LEFT))
+		else if(ae::Actions.State[Action::GAME_DOWN].Value > 0.0f && ae::Actions.State[Action::GAME_LEFT].Value > 0.0f)
 			Player->SetMoveState(MOVE_BACKWARDLEFT);
-		else if(Actions.GetState(_Actions::DOWN) && Actions.GetState(_Actions::RIGHT))
+		else if(ae::Actions.State[Action::GAME_DOWN].Value > 0.0f && ae::Actions.State[Action::GAME_RIGHT].Value > 0.0f)
 			Player->SetMoveState(MOVE_BACKWARDRIGHT);
-		else if(Actions.GetState(_Actions::LEFT))
+		else if(ae::Actions.State[Action::GAME_LEFT].Value > 0.0f)
 			Player->SetMoveState(MOVE_LEFT);
-		else if(Actions.GetState(_Actions::RIGHT))
+		else if(ae::Actions.State[Action::GAME_RIGHT].Value > 0.0f)
 			Player->SetMoveState(MOVE_RIGHT);
-		else if(Actions.GetState(_Actions::UP))
+		else if(ae::Actions.State[Action::GAME_UP].Value > 0.0f)
 			Player->SetMoveState(MOVE_FORWARD);
-		else if(Actions.GetState(_Actions::DOWN))
+		else if(ae::Actions.State[Action::GAME_DOWN].Value > 0.0f)
 			Player->SetMoveState(MOVE_BACKWARD);
 		else
 			Player->SetMoveState(MOVE_NONE);
@@ -306,21 +307,21 @@ void _PlayState::Update(double FrameTime) {
 		if(!HUD->GetInventoryOpen()) {
 
 			// Attack again
-			if(!Player->IsMeleeAttacking() && Player->GetFireRate(WEAPONATTACK_MAIN) == FIRERATE_AUTO && Actions.GetState(_Actions::FIRE)) {
+			if(!Player->IsMeleeAttacking() && Player->GetFireRate(WEAPONATTACK_MAIN) == FIRERATE_AUTO && ae::Actions.State[Action::GAME_FIRE].Value > 0.0f) {
 				Player->AttackRequested = true;
 				Player->AttackRequestType = WEAPONATTACK_MAIN;
 			}
-			if(Player->GetFireRate(WEAPONATTACK_MELEE) == FIRERATE_AUTO && Actions.GetState(_Actions::MELEE)) {
+			if(Player->GetFireRate(WEAPONATTACK_MELEE) == FIRERATE_AUTO && ae::Actions.State[Action::GAME_MELEE].Value > 0.0f) {
 				Player->AttackRequested = true;
 				Player->AttackRequestType = WEAPONATTACK_MELEE;
 			}
 
 			// Aim
-			Player->SetCrouching(Actions.GetState(_Actions::AIM));
-			Player->SetSprinting(Actions.GetState(_Actions::SPRINT));
+			Player->SetCrouching(ae::Actions.State[Action::GAME_AIM].Value > 0.0f);
+			Player->SetSprinting(ae::Actions.State[Action::GAME_SPRINT].Value > 0.0f);
 		}
 
-		Player->SetUseRequested(Actions.GetState(_Actions::USE));
+		Player->SetUseRequested(ae::Actions.State[Action::GAME_USE].Value);
 	}
 	else {
 		HUD->SetInventoryOpen(false);

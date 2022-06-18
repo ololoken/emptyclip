@@ -18,6 +18,7 @@
 #include <states/null.h>
 #include <framework.h>
 #include <graphics.h>
+#include <ui/ui.h>
 #include <menu.h>
 
 _NullState NullState;
@@ -30,7 +31,7 @@ void _NullState::Close() {
 };
 
 // Key handler
-bool _NullState::HandleKey(const _KeyEvent &KeyEvent) {
+bool _NullState::HandleKey(const ae::_KeyEvent &KeyEvent) {
 	bool Handled = Graphics.Element->HandleKey(KeyEvent);
 	if(!Handled)
 		return Menu.HandleKey(KeyEvent);
@@ -39,13 +40,13 @@ bool _NullState::HandleKey(const _KeyEvent &KeyEvent) {
 };
 
 // Mouse handler
-void _NullState::HandleMouseButton(const _MouseEvent &MouseEvent) {
+void _NullState::HandleMouseButton(const ae::_MouseEvent &MouseEvent) {
 	Menu.HandleMouseButton(MouseEvent);
 };
 
 // Update
 void _NullState::Update(double FrameTime) {
-	Graphics.Element->Update(FrameTime, Input.GetMouse());
+	Graphics.Element->Update(FrameTime, ae::Input.GetMouse());
 	//if(Graphics.Element->HitElement)
 	//	std::cout << Graphics.Element->HitElement->Name << std::endl;
 
