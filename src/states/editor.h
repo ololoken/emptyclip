@@ -154,7 +154,7 @@ class _EditorState : public ae::_State {
 		void Render(double BlendFactor) override;
 
 		// State parameters
-		void SetMapFilename(const std::string &Filename) { MapFilename = Filename; }
+		void SetMapFilename(const std::string &Filename) { MapFilename = Filename; SavedText[EDITINPUT_SAVE] = MapFilename; }
 
 	protected:
 
