@@ -16,11 +16,19 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 *******************************************************************************/
 #include <states/play.h>
+#include <states/editor.h>
+#include <states/null.h>
 #include <ae/actions.h>
 #include <ae/camera.h>
 #include <ae/graphics.h>
 #include <ae/graphics.h>
 #include <ae/assets.h>
+#include <ae/program.h>
+#include <objects/entity.h>
+#include <objects/player.h>
+#include <objects/monster.h>
+#include <objects/particle.h>
+#include <objects/weapon.h>
 #include <framework.h>
 #include <menu.h>
 #include <constants.h>
@@ -31,22 +39,13 @@
 #include <audio.h>
 #include <config.h>
 #include <particles.h>
-#include <ae/program.h>
 #include <stats.h>
 #include <actiontype.h>
-#include <objects/entity.h>
-#include <objects/player.h>
-#include <objects/monster.h>
-#include <objects/particle.h>
-#include <objects/weapon.h>
-#include <states/editor.h>
-#include <states/null.h>
+#include <glm/gtx/rotate_vector.hpp>
+#include <glm/gtc/type_ptr.hpp>
 #include <stdexcept>
 #include <fstream>
 #include <iostream>
-#include <glm/gtx/norm.hpp>
-#include <glm/gtx/rotate_vector.hpp>
-#include <glm/gtc/type_ptr.hpp>
 
 _PlayState PlayState;
 
@@ -239,7 +238,7 @@ bool _PlayState::HandleKey(const ae::_KeyEvent &KeyEvent) {
 				Menu.InitInGame();
 			break;
 			case SDL_SCANCODE_GRAVE:
-				std::cout << WorldCursor.x << " " << WorldCursor.y << std::endl;
+				//std::cout << WorldCursor.x << " " << WorldCursor.y << std::endl;
 				//IsFiring = !IsFiring;
 				//Audio.Play(new _AudioSource(Audio.GetBuffer("player_hit0")), WorldCursor);
 				//HUD->ShowTextMessage("CHECKPOINT REACHED", 5.0f);
@@ -474,9 +473,8 @@ void _PlayState::Render(double BlendFactor) {
 		HUD->RenderCrosshair(WorldCursor * (float)BlendFactor + PreviousWorldCursor * (float)(1.0f - BlendFactor));
 
 	// Debug
-	/*
 	if(0) {
-		ae::Graphics.DisableDepthTest();
+		ae::Graphics.SetDepthTest(false);
 
 		// Draw melee hit range
 		for(int i = 0; i < WEAPONATTACK_COUNT; i++) {
@@ -487,23 +485,16 @@ void _PlayState::Render(double BlendFactor) {
 			float Range = Player->GetWeaponRange(i);
 			if(Range == 0.0f)
 				Range = 100.0f;
-			ae::Graphics.DrawCircle(Player->Position.x, Player->Position.y, 0.2f, Range, Color);
+			ae::Graphics.SetProgram(ae::Assets.Programs["pos"]);
+			ae::Graphics.SetColor(Color);
+			ae::Graphics.DrawCircle(glm::vec3(Player->Position, 0), Range);
 			glm::vec2 t1, t2;
-			t1 = Player->Position + Player->GetDirectionVector(- Player->GetMaxAccuracy(i) / 2) * Range;
-			t2 = Player->Position + Player->GetDirectionVector(+ Player->GetMaxAccuracy(i) / 2) * Range;
-			glBegin(GL_LINES);
-			glVertex2f(Player->Position.x, Player->Position.y);
-			glVertex2f(t1.x, t1.y);
-			glEnd();
-			glBegin(GL_LINES);
-			glVertex2f(Player->Position.x, Player->Position.y);
-			glVertex2f(t2.x, t2.y);
-			glEnd();
+			t1 = Player->Position + Player->GetDirectionVector(-Player->GetMaxAccuracy(i) * 0.5f) * Range;
+			t2 = Player->Position + Player->GetDirectionVector(Player->GetMaxAccuracy(i) * 0.5f) * Range;
+			ae::Graphics.DrawLine(Player->Position, t1);
+			ae::Graphics.DrawLine(Player->Position, t2);
 		}
-
-		ae::Graphics.EnableDepthTest();
 	}
-	*/
 
 	// Setup OpenGL for drawing the HUD
 	ae::Graphics.Setup2D();

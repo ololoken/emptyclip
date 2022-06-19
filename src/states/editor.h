@@ -22,22 +22,22 @@
 #include <map.h>
 #include <string>
 #include <vector>
-#include <list>
 #include <glm/vec2.hpp>
 #include <glm/vec3.hpp>
 
 // Forward Declarations
-namespace ae {
-	class _Camera;
-	class _Element;
-	class _Font;
-}
 class _Event;
 class _Map;
 struct _EventTile;
 struct _Brush;
 struct _ObjectSpawn;
 struct _Block;
+
+namespace ae {
+	class _Camera;
+	class _Element;
+	class _Font;
+}
 
 // Enumerations
 enum EditorIconTypes {

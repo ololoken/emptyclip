@@ -16,6 +16,7 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 *******************************************************************************/
 #include <states/editor.h>
+#include <states/play.h>
 #include <ae/camera.h>
 #include <ae/texture.h>
 #include <ae/graphics.h>
@@ -24,6 +25,9 @@
 #include <ae/ui.h>
 #include <ae/assets.h>
 #include <ae/program.h>
+#include <objects/monster.h>
+#include <objects/weapon.h>
+#include <objects/player.h>
 #include <assets.h>
 #include <framework.h>
 #include <map.h>
@@ -33,15 +37,11 @@
 #include <config.h>
 #include <constants.h>
 #include <stats.h>
-#include <objects/monster.h>
-#include <objects/weapon.h>
-#include <objects/player.h>
-#include <states/play.h>
-#include <iostream>
-#include <sstream>
 #include <SDL_keycode.h>
 #include <SDL_mouse.h>
 #include <glm/gtc/type_ptr.hpp>
+#include <iostream>
+#include <sstream>
 #include <algorithm>
 
 _EditorState EditorState;
