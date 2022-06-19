@@ -186,9 +186,6 @@
     </element>
     <element id="element_menu_title" size_x="512" size_y="650">
         <element id="image_menu_title_logo" texture="textures/menu/title.png" size_x="512" size_y="128" alignment_y="0"/>
-        <element id="button_title_tutorial" style="style_menu_button" hover_style="style_menu_button_hover" offset_y="200" size_x="128" size_y="32" alignment_y="0" clickable="true">
-            <element id="label_menu_title_tutorial" font="hud_medium" text="Tutorial" offset_y="21" alignment_y="3"/>
-        </element>
         <element id="button_title_single" style="style_menu_button" hover_style="style_menu_button_hover" offset_y="250" size_x="128" size_y="32" alignment_y="0" clickable="true">
             <element id="label_menu_title_single" font="hud_medium" text="Single Player" offset_y="21" alignment_y="3"/>
         </element>

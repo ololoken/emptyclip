@@ -1430,9 +1430,6 @@ void _EditorState::ProcessIcons(int Index, int Type) {
 		case ICON_ARMOR:
 			ExecuteSwitchMode(EDITMODE_ARMOR);
 		break;
-		case ICON_NONE:
-			ExecuteDeselect();
-		break;
 		case ICON_DELETE:
 			ExecuteDelete();
 		break;

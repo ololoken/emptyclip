@@ -111,18 +111,6 @@ void _Menu::InitTitle() {
 	State = STATE_TITLE;
 }
 
-// Init tutorial
-void _Menu::InitTutorial() {
-	Save.GetPlayer(_Save::SLOT_TUTORIAL)->Reset();
-	PlayState.Player = Save.GetPlayer(_Save::SLOT_TUTORIAL);
-	PlayState.Level = "tutorial0.map";
-	PlayState.TestMode = false;
-	PlayState.FromEditor = false;
-
-	Framework.ChangeState(&PlayState);
-	State = STATE_NONE;
-}
-
 // Init single player
 void _Menu::InitSinglePlayer() {
 	ChangeLayout("element_menu_singleplayer");
@@ -301,10 +289,7 @@ void _Menu::HandleMouseButton(const ae::_MouseEvent &MouseEvent) {
 
 		switch(State) {
 			case STATE_TITLE: {
-				if(Clicked->Name == "button_title_tutorial") {
-					InitTutorial();
-				}
-				else if(Clicked->Name == "button_title_single") {
+				if(Clicked->Name == "button_title_single") {
 					InitSinglePlayer();
 				}
 				else if(Clicked->Name == "button_title_options") {

@@ -80,7 +80,6 @@ void _Save::LoadSaves() {
 
 	// Load test files
 	try {
-		Players[SLOT_TUTORIAL] = new _Player(Config.ConfigPath + "tutorial.save");
 		Players[SLOT_TEST] = new _Player(Config.ConfigPath + "test.save");
 		Players[SLOT_TEST]->Load();
 	}

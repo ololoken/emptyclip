@@ -40,7 +40,7 @@ class _Save {
 			SLOT_7,
 			SLOT_8,
 			SLOT_9,
-			SLOT_TUTORIAL,
+			SLOT_UNUSED,
 			SLOT_TEST,
 			SLOT_COUNT,
 		};
