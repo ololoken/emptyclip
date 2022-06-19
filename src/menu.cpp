@@ -421,9 +421,11 @@ void _Menu::HandleMouseButton(const ae::_MouseEvent &MouseEvent) {
 
 // Handle window resize
 void _Menu::HandleResize() {
-	Background->SetWidth(ae::Graphics.CurrentSize.x * ((float)Background->Texture->Size.y / Background->Texture->Size.x));
-	Background->SetHeight(ae::Graphics.CurrentSize.y);
-	Background->SetActive(true);
+	if(Background) {
+		Background->SetWidth(ae::Graphics.CurrentSize.x * ((float)Background->Texture->Size.y / Background->Texture->Size.x));
+		Background->SetHeight(ae::Graphics.CurrentSize.y);
+		Background->SetActive(true);
+	}
 }
 
 // Update phase
