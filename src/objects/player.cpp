@@ -21,7 +21,7 @@
 #include <ae/graphics.h>
 #include <ae/assets.h>
 #include <audio.h>
-#include <assets.h>
+#include <gameassets.h>
 #include <stats.h>
 #include <animation.h>
 #include <map.h>
@@ -82,11 +82,11 @@ _Player::_Player(const std::string &SavePath) {
 		Inventory[i] = nullptr;
 
 	// Set animation
-	SetTorsoAnimation(OldAssets.GetAnimation("player_torso"));
-	SetLegAnimation(OldAssets.GetAnimation("player_legs"));
+	SetTorsoAnimation(GameAssets.GetAnimation("player_torso"));
+	SetLegAnimation(GameAssets.GetAnimation("player_legs"));
 
 	// Set samples
-	AttackSampleTemplateStruct *AttackSample = OldAssets.GetAttackSampleTemplate("player0");
+	AttackSampleTemplateStruct *AttackSample = GameAssets.GetAttackSampleTemplate("player0");
 	for(int i = 0; i < SAMPLE_TYPES; i++) {
 		if(AttackSample)
 			Samples[i] = AttackSample->Samples[i];

@@ -48,7 +48,7 @@ struct AttackSampleTemplateStruct {
 };
 
 // Classes
-class _OldAssets {
+class _GameAssets {
 
 	public:
 
@@ -97,4 +97,4 @@ class _OldAssets {
 		std::unordered_map<std::string, _Reel> Reels;
 };
 
-extern _OldAssets OldAssets;
+extern _GameAssets GameAssets;

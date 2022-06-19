@@ -26,7 +26,7 @@
 #include <actiontype.h>
 #include <config.h>
 #include <stats.h>
-#include <assets.h>
+#include <gameassets.h>
 #include <objects/entity.h>
 #include <objects/player.h>
 #include <objects/item.h>

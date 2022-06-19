@@ -28,7 +28,7 @@
 #include <objects/monster.h>
 #include <objects/weapon.h>
 #include <objects/player.h>
-#include <assets.h>
+#include <gameassets.h>
 #include <framework.h>
 #include <map.h>
 #include <events.h>
@@ -1106,7 +1106,7 @@ void _EditorState::LoadMonsterButtons() {
 		}
 		else {
 			_MonsterTemplate &MonsterTemplate = Stats.Monsters.at(Map->MonsterSet[i]);
-			Icons.push_back(_Brush(Map->MonsterSet[i], MonsterTemplate.Name, OldAssets.Animations[MonsterTemplate.AnimationIdentifier]->GetStartPositionFrame(), MonsterTemplate.Color, _Object::MONSTER));
+			Icons.push_back(_Brush(Map->MonsterSet[i], MonsterTemplate.Name, GameAssets.Animations[MonsterTemplate.AnimationIdentifier]->GetStartPositionFrame(), MonsterTemplate.Color, _Object::MONSTER));
 		}
 	}
 
@@ -1336,7 +1336,7 @@ void _EditorState::DrawObject(float OffsetX, float OffsetY, const _ObjectSpawn *
 	switch(Object->Type) {
 		case _Object::MONSTER: {
 			_MonsterTemplate &Monster = Stats.Monsters.at(Object->Identifier);
-			Texture = OldAssets.GetAnimation(Monster.AnimationIdentifier)->GetStartPositionFrame();
+			Texture = GameAssets.GetAnimation(Monster.AnimationIdentifier)->GetStartPositionFrame();
 			Color = Monster.Color;
 			Scale = Monster.Scale;
 			Depth = OBJECT_Z;

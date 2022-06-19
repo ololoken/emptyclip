@@ -26,7 +26,7 @@
 #include <ae/console.h>
 #include <ae/ui.h>
 #include <ae/util.h>
-#include <assets.h>
+#include <gameassets.h>
 #include <config.h>
 #include <audio.h>
 #include <stdexcept>
@@ -143,11 +143,11 @@ void _Framework::Close() {
 	if(State)
 		State->Close();
 
-	OldAssets.UnloadAnimation("player_torso");
-	OldAssets.UnloadAnimation("player_legs");
+	GameAssets.UnloadAnimation("player_torso");
+	GameAssets.UnloadAnimation("player_legs");
 
 	Stats.Close();
-	OldAssets.Close();
+	GameAssets.Close();
 	delete Console;
 	delete FrameLimit;
 
@@ -355,15 +355,15 @@ void _Framework::LoadAssets() {
 	ae::Assets.LoadTextureDirectory("textures/particles/", false, false, false);
 	ae::Assets.LoadTextureDirectory(MAP_TEXTURE_PATH, false, true, true);
 	ae::Assets.LoadColors("tables/colors.tsv");
-	OldAssets.LoadSounds("tables/sounds.tsv", "sounds/");
-	OldAssets.LoadSoundGroups("tables/sound_groups.tsv");
-	OldAssets.LoadParticles("tables/particles.tsv");
-	OldAssets.LoadWeaponParticles("tables/weaponparticles.tsv");
-	OldAssets.LoadReelTable("tables/reels.tsv");
-	OldAssets.LoadAnimationTable("tables/animation.tsv");
+	GameAssets.LoadSounds("tables/sounds.tsv", "sounds/");
+	GameAssets.LoadSoundGroups("tables/sound_groups.tsv");
+	GameAssets.LoadParticles("tables/particles.tsv");
+	GameAssets.LoadWeaponParticles("tables/weaponparticles.tsv");
+	GameAssets.LoadReelTable("tables/reels.tsv");
+	GameAssets.LoadAnimationTable("tables/animation.tsv");
 
-	OldAssets.LoadAnimation("player_torso", "textures/player/");
-	OldAssets.LoadAnimation("player_legs", "textures/player/");
+	GameAssets.LoadAnimation("player_torso", "textures/player/");
+	GameAssets.LoadAnimation("player_legs", "textures/player/");
 
 	ae::Assets.LoadStyles("tables/styles.tsv");
 	ae::Assets.LoadUI("tables/ui.xml");

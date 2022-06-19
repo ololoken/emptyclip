@@ -15,7 +15,7 @@
 * You should have received a copy of the GNU General Public License
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 *******************************************************************************/
-#include <assets.h>
+#include <gameassets.h>
 #include <ae/assets.h>
 #include <ae/files.h>
 #include <ae/random.h>
@@ -36,18 +36,18 @@
 #include <sstream>
 #include <fstream>
 
-_OldAssets OldAssets;
+_GameAssets GameAssets;
 
 // Initialize
-void _OldAssets::Init() {
+void _GameAssets::Init() {
 }
 
 // Shutdown
-void _OldAssets::Close() {
+void _GameAssets::Close() {
 }
 
 // Loads the reels table
-void _OldAssets::LoadReelTable(const std::string &Path) {
+void _GameAssets::LoadReelTable(const std::string &Path) {
 
 	// Load file
 	std::ifstream File(Path, std::ios::in);
@@ -91,7 +91,7 @@ void _OldAssets::LoadReelTable(const std::string &Path) {
 }
 
 // Loads the animation table
-void _OldAssets::LoadAnimationTable(const std::string &Path) {
+void _GameAssets::LoadAnimationTable(const std::string &Path) {
 	AnimationTemplateStruct AnimationTemplate;
 
 	// Load file
@@ -131,7 +131,7 @@ void _OldAssets::LoadAnimationTable(const std::string &Path) {
 }
 
 // Load sounds
-void _OldAssets::LoadSounds(const std::string &Path, const std::string &SamplePath) {
+void _GameAssets::LoadSounds(const std::string &Path, const std::string &SamplePath) {
 
 	// Load file
 	std::ifstream File(Path, std::ios::in);
@@ -163,7 +163,7 @@ void _OldAssets::LoadSounds(const std::string &Path, const std::string &SamplePa
 }
 
 // Loads the attack samples table
-void _OldAssets::LoadSoundGroups(const std::string &Path) {
+void _GameAssets::LoadSoundGroups(const std::string &Path) {
 	AttackSampleTemplateStruct SampleTemplate;
 
 	// Load file
@@ -200,7 +200,7 @@ void _OldAssets::LoadSoundGroups(const std::string &Path) {
 }
 
 // Loads the particle table
-void _OldAssets::LoadParticles(const std::string &Path) {
+void _GameAssets::LoadParticles(const std::string &Path) {
 
 	// Load file
 	std::ifstream File(Path, std::ios::in);
@@ -252,7 +252,7 @@ void _OldAssets::LoadParticles(const std::string &Path) {
 }
 
 // Loads the weapon particles
-void _OldAssets::LoadWeaponParticles(const std::string &Path) {
+void _GameAssets::LoadWeaponParticles(const std::string &Path) {
 
 	// Load file
 	std::ifstream File(Path, std::ios::in);
@@ -294,7 +294,7 @@ void _OldAssets::LoadWeaponParticles(const std::string &Path) {
 }
 
 // Loads the reel from the given identifier
-void _OldAssets::LoadReel(const std::string &Identifier, const std::string &Path) {
+void _GameAssets::LoadReel(const std::string &Identifier, const std::string &Path) {
 
 	auto ReelTableIterator = ReelTable.find(Identifier);
 	if(ReelTableIterator == ReelTable.end())
@@ -321,7 +321,7 @@ void _OldAssets::LoadReel(const std::string &Identifier, const std::string &Path
 }
 
 // Loads the reels for an animation
-void _OldAssets::LoadAnimation(const std::string &Identifier, const std::string &Path) {
+void _GameAssets::LoadAnimation(const std::string &Identifier, const std::string &Path) {
 
 	auto AnimationTableIterator = AnimationTable.find(Identifier);
 	if(AnimationTableIterator == AnimationTable.end())
@@ -345,7 +345,7 @@ void _OldAssets::LoadAnimation(const std::string &Identifier, const std::string 
 }
 
 // Frees memory and textures used by a reel
-void _OldAssets::UnloadReel(const std::string &Identifier) {
+void _GameAssets::UnloadReel(const std::string &Identifier) {
 
 	auto ReelIterator = Reels.find(Identifier);
 	if(ReelIterator != Reels.end()) {
@@ -357,7 +357,7 @@ void _OldAssets::UnloadReel(const std::string &Identifier) {
 }
 
 // Frees memory and textures used by an animation
-void _OldAssets::UnloadAnimation(const std::string &Identifier) {
+void _GameAssets::UnloadAnimation(const std::string &Identifier) {
 
 	auto AnimationIterator = Animations.find(Identifier);
 	if(AnimationIterator == Animations.end())
@@ -374,37 +374,37 @@ void _OldAssets::UnloadAnimation(const std::string &Identifier) {
 	Animations.erase(AnimationIterator);
 }
 
-bool _OldAssets::IsAttackSampleLoaded(const std::string &Identifier) { return AttackSampleTable.find(Identifier) != AttackSampleTable.end(); }
-bool _OldAssets::IsParticleLoaded(const std::string &Identifier) { return ParticleTable.find(Identifier) != ParticleTable.end(); }
-bool _OldAssets::IsWeaponParticleTemplateLoaded(const std::string &Identifier) { return WeaponParticleTable.find(Identifier) != WeaponParticleTable.end(); }
-bool _OldAssets::IsReelLoaded(const std::string &Identifier) { return ReelTable.find(Identifier) != ReelTable.end(); }
-bool _OldAssets::IsAnimationLoaded(const std::string &Identifier) { return AnimationTable.find(Identifier) != AnimationTable.end(); }
+bool _GameAssets::IsAttackSampleLoaded(const std::string &Identifier) { return AttackSampleTable.find(Identifier) != AttackSampleTable.end(); }
+bool _GameAssets::IsParticleLoaded(const std::string &Identifier) { return ParticleTable.find(Identifier) != ParticleTable.end(); }
+bool _GameAssets::IsWeaponParticleTemplateLoaded(const std::string &Identifier) { return WeaponParticleTable.find(Identifier) != WeaponParticleTable.end(); }
+bool _GameAssets::IsReelLoaded(const std::string &Identifier) { return ReelTable.find(Identifier) != ReelTable.end(); }
+bool _GameAssets::IsAnimationLoaded(const std::string &Identifier) { return AnimationTable.find(Identifier) != AnimationTable.end(); }
 
-_Reel *_OldAssets::GetReel(const std::string &Identifier) {
+_Reel *_GameAssets::GetReel(const std::string &Identifier) {
 	if(Reels.find(Identifier) == Reels.end())
 		return nullptr;
 
 	return &Reels[Identifier];
 }
-AttackSampleTemplateStruct *_OldAssets::GetAttackSampleTemplate(const std::string &Identifier) {
+AttackSampleTemplateStruct *_GameAssets::GetAttackSampleTemplate(const std::string &Identifier) {
 	if(AttackSampleTable.find(Identifier) == AttackSampleTable.end())
 		return nullptr;
 
 	return &AttackSampleTable[Identifier];
 }
-_Animation *_OldAssets::GetAnimation(const std::string &Identifier) {
+_Animation *_GameAssets::GetAnimation(const std::string &Identifier) {
 	if(Animations.find(Identifier) == Animations.end())
 		return nullptr;
 
 	return Animations[Identifier];
 }
-_ParticleTemplate *_OldAssets::GetParticleTemplate(const std::string &Identifier) {
+_ParticleTemplate *_GameAssets::GetParticleTemplate(const std::string &Identifier) {
 	if(ParticleTable.find(Identifier) == ParticleTable.end())
 		return nullptr;
 
 	return &ParticleTable[Identifier];
 }
-_WeaponParticleTemplate *_OldAssets::GetWeaponParticleTemplate(const std::string &Identifier) {
+_WeaponParticleTemplate *_GameAssets::GetWeaponParticleTemplate(const std::string &Identifier) {
 	if(WeaponParticleTable.find(Identifier) == WeaponParticleTable.end())
 		return nullptr;
 

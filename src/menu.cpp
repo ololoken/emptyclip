@@ -23,7 +23,7 @@
 #include <actiontype.h>
 #include <constants.h>
 #include <ae/graphics.h>
-#include <assets.h>
+#include <gameassets.h>
 #include <ae/ui.h>
 #include <objects/player.h>
 #include <config.h>

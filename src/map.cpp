@@ -21,7 +21,7 @@
 #include <ae/texture.h>
 #include <ae/graphics.h>
 #include <ae/assets.h>
-#include <assets.h>
+#include <gameassets.h>
 #include <events.h>
 #include <stats.h>
 #include <ae/program.h>
@@ -160,7 +160,7 @@ _Map::_Map(const std::string &Filename) : _Map() {
 		// Check for existence
 		if(EventMonsterIdentifier != "" && Stats.Monsters.find(EventMonsterIdentifier) == Stats.Monsters.end())
 			throw std::runtime_error("Cannot find monster: " + EventMonsterIdentifier);
-		if(EventParticleIdentifier != "" && !OldAssets.IsParticleLoaded(EventParticleIdentifier))
+		if(EventParticleIdentifier != "" && !GameAssets.IsParticleLoaded(EventParticleIdentifier))
 			throw std::runtime_error("Cannot find particle: " + EventParticleIdentifier);
 
 		_Event *Event = new _Event(EventType, EventActive, EventStart, EventEnd, EventLevel, EventActivationPeriod, EventItemIdentifier, EventMonsterIdentifier, EventParticleIdentifier);
@@ -385,7 +385,7 @@ bool _Map::LoadMonsterSet(const std::string &String) {
 
 	// Load the animation textures
 	for(size_t i = 0; i < MonsterSet.size(); i++)
-		OldAssets.LoadAnimation(Stats.Monsters.at(MonsterSet[i]).AnimationIdentifier, "textures/monsters/");
+		GameAssets.LoadAnimation(Stats.Monsters.at(MonsterSet[i]).AnimationIdentifier, "textures/monsters/");
 
 	MonsterSetID = String;
 

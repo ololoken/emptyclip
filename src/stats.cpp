@@ -18,7 +18,7 @@
 #include <stats.h>
 #include <ae/random.h>
 #include <ae/assets.h>
-#include <assets.h>
+#include <gameassets.h>
 #include <constants.h>
 #include <map.h>
 #include <objects/object.h>
@@ -56,7 +56,7 @@ void _Stats::Close() {
 	ItemGroups.clear();
 
 	for(const auto &Monster : Monsters)
-		OldAssets.UnloadAnimation(Monster.second.AnimationIdentifier);
+		GameAssets.UnloadAnimation(Monster.second.AnimationIdentifier);
 
 	Monsters.clear();
 }
@@ -441,19 +441,19 @@ void _Stats::LoadWeapons(const std::string &Path) {
 			WeaponTemplate.Color = COLOR_WHITE;
 
 		// Check for attack sample
-		if(!OldAssets.IsAttackSampleLoaded(SamplesIdentifier))
+		if(!GameAssets.IsAttackSampleLoaded(SamplesIdentifier))
 			throw std::runtime_error(std::string(__PRETTY_FUNCTION__) + " - Cannot find sample: " + SamplesIdentifier);
 
 		// Set samples
-		AttackSample = OldAssets.GetAttackSampleTemplate(SamplesIdentifier);
+		AttackSample = GameAssets.GetAttackSampleTemplate(SamplesIdentifier);
 		for(int i = 0; i < SAMPLE_TYPES; i++) {
 			if(AttackSample)
 				WeaponTemplate.Samples[i] = AttackSample->Samples[i];
 		}
 
 		// Set particles
-		if(OldAssets.IsWeaponParticleTemplateLoaded(WeaponParticlesIdentifier))
-			WeaponTemplate.WeaponParticles = OldAssets.GetWeaponParticleTemplate(WeaponParticlesIdentifier);
+		if(GameAssets.IsWeaponParticleTemplateLoaded(WeaponParticlesIdentifier))
+			WeaponTemplate.WeaponParticles = GameAssets.GetWeaponParticleTemplate(WeaponParticlesIdentifier);
 		else
 			WeaponTemplate.WeaponParticles = &BlankWeaponParticle;
 
@@ -597,16 +597,16 @@ void _Stats::LoadMonsters(const std::string &Path) {
 			throw std::runtime_error(std::string(__PRETTY_FUNCTION__) + " - Cannot find item group: " + Monster.ItemGroupIdentifier + " in " + Name);
 
 		// Check for animation
-		if(!OldAssets.IsAnimationLoaded(Monster.AnimationIdentifier))
+		if(!GameAssets.IsAnimationLoaded(Monster.AnimationIdentifier))
 			throw std::runtime_error(std::string(__PRETTY_FUNCTION__) + " - Cannot find animation: " + Monster.AnimationIdentifier + " in " + Name);
 
 		// Check for samples
-		if(!OldAssets.IsAttackSampleLoaded(Monster.SamplesIdentifier))
+		if(!GameAssets.IsAttackSampleLoaded(Monster.SamplesIdentifier))
 			throw std::runtime_error(std::string(__PRETTY_FUNCTION__) + " - Cannot find sample: " + Monster.SamplesIdentifier + " in " + Name);
 
 		// Set particles
-		if(OldAssets.IsWeaponParticleTemplateLoaded(WeaponParticlesIdentifier))
-			Monster.WeaponParticles = OldAssets.GetWeaponParticleTemplate(WeaponParticlesIdentifier);
+		if(GameAssets.IsWeaponParticleTemplateLoaded(WeaponParticlesIdentifier))
+			Monster.WeaponParticles = GameAssets.GetWeaponParticleTemplate(WeaponParticlesIdentifier);
 		else
 			Monster.WeaponParticles = &BlankWeaponParticle;
 
@@ -648,10 +648,10 @@ _Weapon *_Stats::CreateWeapon(const std::string &Identifier, int Count, const gl
 // Creates a monster
 _Monster *_Stats::CreateMonster(const std::string &Identifier, const glm::vec2 &Position) {
 	_MonsterTemplate &MonsterTemplate = Monsters[Identifier];
-	AttackSampleTemplateStruct *AttackSample = OldAssets.GetAttackSampleTemplate(MonsterTemplate.SamplesIdentifier);
+	AttackSampleTemplateStruct *AttackSample = GameAssets.GetAttackSampleTemplate(MonsterTemplate.SamplesIdentifier);
 
 	// Creates a monster
-	_Monster *Monster = new _Monster(MonsterTemplate, OldAssets.GetAnimation(MonsterTemplate.AnimationIdentifier), Position);
+	_Monster *Monster = new _Monster(MonsterTemplate, GameAssets.GetAnimation(MonsterTemplate.AnimationIdentifier), Position);
 	for(int i = 0; i < SAMPLE_TYPES; i++)
 		Monster->Samples[i] = AttackSample->Samples[i];
 

@@ -33,7 +33,7 @@
 #include <framework.h>
 #include <menu.h>
 #include <constants.h>
-#include <assets.h>
+#include <gameassets.h>
 #include <hud.h>
 #include <map.h>
 #include <events.h>
@@ -627,7 +627,7 @@ void _PlayState::EntityAttack(_Entity *Attacker, int GridType) {
 			else
 				Hit.Type = HIT_WALL;
 
-			_ParticleTemplate *Template = OldAssets.GetParticleTemplate("tracer0");
+			_ParticleTemplate *Template = GameAssets.GetParticleTemplate("tracer0");
 			glm::vec2 ParticleStart = Attacker->Position + glm::rotate(glm::vec2(0, -Template->Size.y * 0.5f) + Attacker->GetWeaponOffset(Attacker->GetWeaponType()), glm::radians(ShotDirection));
 
 			float Distance = glm::length(Hit.Position - Attacker->Position) - Template->Size.y;
@@ -659,7 +659,7 @@ void _PlayState::EntityAttack(_Entity *Attacker, int GridType) {
 				glm::vec2 DamagePosition = Hit.Position;
 				if(Hit.Object->Type ==  _Object::PLAYER)
 					DamagePosition += _Map::GenerateRandomPointInCircle(0.3f);
-				_Particle *DamageParticle = new _Particle(_ParticleSpawn(OldAssets.GetParticleTemplate("damage0"), glm::vec2(0), DamagePosition, OBJECT_Z, 0));
+				_Particle *DamageParticle = new _Particle(_ParticleSpawn(GameAssets.GetParticleTemplate("damage0"), glm::vec2(0), DamagePosition, OBJECT_Z, 0));
 				DamageParticle->Text = std::to_string(Damage);
 				if(Hit.Object->Type ==  _Object::PLAYER)
 					DamageParticle->Color = COLOR_RED;
@@ -903,7 +903,7 @@ void _PlayState::CheckEvents(const _Entity *Entity) {
 
 					if(Event->Tiles.size() > 0) {
 						glm::vec2 NewPosition(Event->Tiles[0].Coord.x + 0.5f, Event->Tiles[0].Coord.y + 0.5f);
-						Particles->Create(_ParticleSpawn(OldAssets.GetParticleTemplate(Event->ParticleIdentifier), glm::vec2(0), NewPosition, OBJECT_Z, 0));
+						Particles->Create(_ParticleSpawn(GameAssets.GetParticleTemplate(Event->ParticleIdentifier), glm::vec2(0), NewPosition, OBJECT_Z, 0));
 
 						Map->RemoveObjectFromGrid(Player, GRID_PLAYER);
 						Player->SetPosition(NewPosition);
@@ -943,7 +943,7 @@ void _PlayState::UpdateEvents(double FrameTime) {
 						Position.x = Tiles[i].Coord.x + 0.5f;
 						Position.y = Tiles[i].Coord.y + 0.5f;
 						AddMonster(Stats.CreateMonster(Event->MonsterIdentifier, Position));
-						Particles->Create(_ParticleSpawn(OldAssets.GetParticleTemplate(Event->ParticleIdentifier), glm::vec2(0), Position, OBJECT_Z, 0));
+						Particles->Create(_ParticleSpawn(GameAssets.GetParticleTemplate(Event->ParticleIdentifier), glm::vec2(0), Position, OBJECT_Z, 0));
 					}
 
 					Decrement = true;
@@ -1054,8 +1054,8 @@ void _PlayState::GenerateBulletEffects(_Entity *Attacker, const int Type, const 
 	}
 	else if(Type == HIT_OBJECT) {
 		glm::vec2 ParticlePosition = _Map::GenerateRandomPointInCircle(0.7f) + Hit.Position;
-		Particles->Create(_ParticleSpawn(OldAssets.GetParticleTemplate("bloodspurt0"), Hit.Normal, Hit.Position, OBJECT_Z, Attacker->Rotation));
-		Particles->Create(_ParticleSpawn(OldAssets.GetParticleTemplate("blood0"), Hit.Normal, ParticlePosition, 0.06f, Attacker->Rotation));
+		Particles->Create(_ParticleSpawn(GameAssets.GetParticleTemplate("bloodspurt0"), Hit.Normal, Hit.Position, OBJECT_Z, Attacker->Rotation));
+		Particles->Create(_ParticleSpawn(GameAssets.GetParticleTemplate("blood0"), Hit.Normal, ParticlePosition, 0.06f, Attacker->Rotation));
 	}
 }
 
