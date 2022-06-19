@@ -134,10 +134,10 @@ void _EditorState::Init() {
 	Camera->ForcePosition(glm::vec3(0, 0, CAMERA_DISTANCE));
 
 	// Load level
-	if(PlayState.GetFromEditor())
+	if(PlayState.FromEditor)
 		MapFilename = EDITOR_TESTLEVEL;
 
-	LoadMap(MapFilename, PlayState.GetFromEditor());
+	LoadMap(MapFilename, PlayState.FromEditor);
 
 	// Set up graphics
 	Graphics.SetViewport(Graphics.CurrentSize - EDITOR_VIEWPORT_OFFSET);
@@ -1818,10 +1818,10 @@ void _EditorState::ExecuteTest() {
 	ExecuteDeselect();
 	ClearClipboard();
 
-	PlayState.SetTestMode(true);
-	PlayState.SetFromEditor(true);
-	PlayState.SetLevel(EDITOR_TESTLEVEL);
-	PlayState.SetCheckpointIndex(CheckpointIndex);
+	PlayState.TestMode = true;
+	PlayState.FromEditor = true;
+	PlayState.Level = EDITOR_TESTLEVEL;
+	PlayState.CheckpointIndex = CheckpointIndex;
 	Framework.ChangeState(&PlayState);
 }
 

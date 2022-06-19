@@ -65,16 +65,15 @@ class _PlayState : public ae::_State {
 		void Update(double FrameTime) override;
 		void Render(double BlendFactor) override;
 
-		void SetLevel(const std::string &Level) { this->Level = Level; }
-		void SetTestMode(bool Value) { TestMode = Value; }
-		void SetFromEditor(bool Value) { FromEditor = Value; }
-		void SetCheckpointIndex(int Value) { CheckpointIndex = Value; }
-		bool GetFromEditor() const { return FromEditor; }
-
 		void GenerateBulletEffects(_Entity *Attacker, const int Type, const _Hit &Hit);
 
-		void SetPlayer(_Player *Player) { this->Player = Player; }
-		_Player *GetPlayer() { return Player; }
+		// Parameters
+		std::string Level;
+		bool TestMode;
+		bool FromEditor;
+		int CheckpointIndex;
+
+		_Player *Player;
 
 	protected:
 
@@ -96,26 +95,22 @@ class _PlayState : public ae::_State {
 		void PickupObject();
 		void UseObject();
 
-		// Parameters
-		std::string Level;
-		bool TestMode, FromEditor;
-		int CheckpointIndex;
-
-		// Game
-		double CursorItemTimer, SaveGameTimer;
+			// Game
+		double CursorItemTimer;
+		double SaveGameTimer;
 
 		// Map
 		_Map *Map;
 		_Event *LastLightEvent;
 
 		// Entities
-		_Player *Player;
 		std::list<_Entity *> Monsters;
 		std::list<_Event *> ActiveEvents;
 
 		// HUD
 		_HUD *HUD;
-		_Item *CursorItem, *PreviousCursorItem;
+		_Item *CursorItem;
+		_Item *PreviousCursorItem;
 
 		// Particles
 		_Particles *Particles;

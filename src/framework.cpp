@@ -74,8 +74,8 @@ void _Framework::Init(int ArgumentCount, char **Arguments) {
 			ConvertState.SetParam1(Arguments[++i]);
 		}
 		else if(Token == "-level" && TokensRemaining > 0) {
-			PlayState.SetLevel(Arguments[++i]);
-			PlayState.SetTestMode(true);
+			PlayState.Level = Arguments[++i];
+			PlayState.TestMode = true;
 
 			State = &PlayState;
 		}

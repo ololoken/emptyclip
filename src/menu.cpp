@@ -114,10 +114,10 @@ void _Menu::InitTitle() {
 // Init tutorial
 void _Menu::InitTutorial() {
 	Save.GetPlayer(_Save::SLOT_TUTORIAL)->Reset();
-	PlayState.SetPlayer(Save.GetPlayer(_Save::SLOT_TUTORIAL));
-	PlayState.SetLevel("tutorial0.map");
-	PlayState.SetTestMode(false);
-	PlayState.SetFromEditor(false);
+	PlayState.Player = Save.GetPlayer(_Save::SLOT_TUTORIAL);
+	PlayState.Level = "tutorial0.map";
+	PlayState.TestMode = false;
+	PlayState.FromEditor = false;
 
 	Framework.ChangeState(&PlayState);
 	State = STATE_NONE;
@@ -198,10 +198,10 @@ void _Menu::InitNewPlayer() {
 // Play the game
 void _Menu::LaunchGame() {
 	Save.GetPlayer(SelectedSlot)->Load();
-	PlayState.SetPlayer(Save.GetPlayer(SelectedSlot));
-	PlayState.SetLevel("");
-	PlayState.SetTestMode(false);
-	PlayState.SetFromEditor(false);
+	PlayState.Player = Save.GetPlayer(SelectedSlot);
+	PlayState.Level = "";
+	PlayState.TestMode = false;
+	PlayState.FromEditor = false;
 	Framework.ChangeState(&PlayState);
 
 	SaveSlots[SelectedSlot]->Checked = false;
@@ -396,11 +396,11 @@ void _Menu::HandleMouseButton(const ae::_MouseEvent &MouseEvent) {
 				}
 			} break;
 			case STATE_INGAME: {
-				if(Clicked->Name == "button_ingame_restart" && PlayState.GetPlayer()) {
+				if(Clicked->Name == "button_ingame_restart" && PlayState.Player) {
 					InitPlay();
-					PlayState.GetPlayer()->SetCheckpointIndex(0);
-					PlayState.GetPlayer()->Save();
-					PlayState.GetPlayer()->Load();
+					PlayState.Player->SetCheckpointIndex(0);
+					PlayState.Player->Save();
+					PlayState.Player->Load();
 					Framework.ChangeState(&PlayState);
 				}
 				else if(Clicked->Name == "button_ingame_resume") {
