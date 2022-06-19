@@ -22,32 +22,32 @@
 #include <ae/graphics.h>
 #include <ae/font.h>
 #include <ae/texture.h>
-#include <audio.h>
-#include <animation.h>
 #include <ae/program.h>
 #include <ae/ui.h>
-#include <constants.h>
+#include <audio.h>
+#include <animation.h>
 #include <objects/monster.h>
 #include <objects/particle.h>
 #include <objects/player.h>
 #include <objects/weapon.h>
+#include <constants.h>
 #include <tinyxml2/tinyxml2.h>
 #include <stdexcept>
 #include <sstream>
 #include <fstream>
 
-_Assets OldAssets;
+_OldAssets OldAssets;
 
 // Initialize
-void _Assets::Init() {
+void _OldAssets::Init() {
 }
 
 // Shutdown
-void _Assets::Close() {
+void _OldAssets::Close() {
 }
 
 // Loads the strings
-void _Assets::LoadStrings(const std::string &Path) {
+void _OldAssets::LoadStrings(const std::string &Path) {
 
 	// Load file
 	std::ifstream File(Path, std::ios::in);
@@ -76,7 +76,7 @@ void _Assets::LoadStrings(const std::string &Path) {
 }
 
 // Loads the reels table
-void _Assets::LoadReelTable(const std::string &Path) {
+void _OldAssets::LoadReelTable(const std::string &Path) {
 
 	// Load file
 	std::ifstream File(Path, std::ios::in);
@@ -120,7 +120,7 @@ void _Assets::LoadReelTable(const std::string &Path) {
 }
 
 // Loads the animation table
-void _Assets::LoadAnimationTable(const std::string &Path) {
+void _OldAssets::LoadAnimationTable(const std::string &Path) {
 	AnimationTemplateStruct AnimationTemplate;
 
 	// Load file
@@ -160,7 +160,7 @@ void _Assets::LoadAnimationTable(const std::string &Path) {
 }
 
 // Load sounds
-void _Assets::LoadSounds(const std::string &Path, const std::string &SamplePath) {
+void _OldAssets::LoadSounds(const std::string &Path, const std::string &SamplePath) {
 
 	// Load file
 	std::ifstream File(Path, std::ios::in);
@@ -192,7 +192,7 @@ void _Assets::LoadSounds(const std::string &Path, const std::string &SamplePath)
 }
 
 // Loads the attack samples table
-void _Assets::LoadSoundGroups(const std::string &Path) {
+void _OldAssets::LoadSoundGroups(const std::string &Path) {
 	AttackSampleTemplateStruct SampleTemplate;
 
 	// Load file
@@ -229,7 +229,7 @@ void _Assets::LoadSoundGroups(const std::string &Path) {
 }
 
 // Loads the particle table
-void _Assets::LoadParticles(const std::string &Path) {
+void _OldAssets::LoadParticles(const std::string &Path) {
 
 	// Load file
 	std::ifstream File(Path, std::ios::in);
@@ -281,7 +281,7 @@ void _Assets::LoadParticles(const std::string &Path) {
 }
 
 // Loads the weapon particles
-void _Assets::LoadWeaponParticles(const std::string &Path) {
+void _OldAssets::LoadWeaponParticles(const std::string &Path) {
 
 	// Load file
 	std::ifstream File(Path, std::ios::in);
@@ -323,7 +323,7 @@ void _Assets::LoadWeaponParticles(const std::string &Path) {
 }
 
 // Loads the reel from the given identifier
-void _Assets::LoadReel(const std::string &Identifier, const std::string &Path) {
+void _OldAssets::LoadReel(const std::string &Identifier, const std::string &Path) {
 
 	auto ReelTableIterator = ReelTable.find(Identifier);
 	if(ReelTableIterator == ReelTable.end())
@@ -350,7 +350,7 @@ void _Assets::LoadReel(const std::string &Identifier, const std::string &Path) {
 }
 
 // Loads the reels for an animation
-void _Assets::LoadAnimation(const std::string &Identifier, const std::string &Path) {
+void _OldAssets::LoadAnimation(const std::string &Identifier, const std::string &Path) {
 
 	auto AnimationTableIterator = AnimationTable.find(Identifier);
 	if(AnimationTableIterator == AnimationTable.end())
@@ -374,7 +374,7 @@ void _Assets::LoadAnimation(const std::string &Identifier, const std::string &Pa
 }
 
 // Frees memory and textures used by a reel
-void _Assets::UnloadReel(const std::string &Identifier) {
+void _OldAssets::UnloadReel(const std::string &Identifier) {
 
 	auto ReelIterator = Reels.find(Identifier);
 	if(ReelIterator != Reels.end()) {
@@ -386,7 +386,7 @@ void _Assets::UnloadReel(const std::string &Identifier) {
 }
 
 // Frees memory and textures used by an animation
-void _Assets::UnloadAnimation(const std::string &Identifier) {
+void _OldAssets::UnloadAnimation(const std::string &Identifier) {
 
 	auto AnimationIterator = Animations.find(Identifier);
 	if(AnimationIterator == Animations.end())
@@ -403,37 +403,37 @@ void _Assets::UnloadAnimation(const std::string &Identifier) {
 	Animations.erase(AnimationIterator);
 }
 
-bool _Assets::IsAttackSampleLoaded(const std::string &Identifier) { return AttackSampleTable.find(Identifier) != AttackSampleTable.end(); }
-bool _Assets::IsParticleLoaded(const std::string &Identifier) { return ParticleTable.find(Identifier) != ParticleTable.end(); }
-bool _Assets::IsWeaponParticleTemplateLoaded(const std::string &Identifier) { return WeaponParticleTable.find(Identifier) != WeaponParticleTable.end(); }
-bool _Assets::IsReelLoaded(const std::string &Identifier) { return ReelTable.find(Identifier) != ReelTable.end(); }
-bool _Assets::IsAnimationLoaded(const std::string &Identifier) { return AnimationTable.find(Identifier) != AnimationTable.end(); }
+bool _OldAssets::IsAttackSampleLoaded(const std::string &Identifier) { return AttackSampleTable.find(Identifier) != AttackSampleTable.end(); }
+bool _OldAssets::IsParticleLoaded(const std::string &Identifier) { return ParticleTable.find(Identifier) != ParticleTable.end(); }
+bool _OldAssets::IsWeaponParticleTemplateLoaded(const std::string &Identifier) { return WeaponParticleTable.find(Identifier) != WeaponParticleTable.end(); }
+bool _OldAssets::IsReelLoaded(const std::string &Identifier) { return ReelTable.find(Identifier) != ReelTable.end(); }
+bool _OldAssets::IsAnimationLoaded(const std::string &Identifier) { return AnimationTable.find(Identifier) != AnimationTable.end(); }
 
-_Reel *_Assets::GetReel(const std::string &Identifier) {
+_Reel *_OldAssets::GetReel(const std::string &Identifier) {
 	if(Reels.find(Identifier) == Reels.end())
 		return nullptr;
 
 	return &Reels[Identifier];
 }
-AttackSampleTemplateStruct *_Assets::GetAttackSampleTemplate(const std::string &Identifier) {
+AttackSampleTemplateStruct *_OldAssets::GetAttackSampleTemplate(const std::string &Identifier) {
 	if(AttackSampleTable.find(Identifier) == AttackSampleTable.end())
 		return nullptr;
 
 	return &AttackSampleTable[Identifier];
 }
-_Animation *_Assets::GetAnimation(const std::string &Identifier) {
+_Animation *_OldAssets::GetAnimation(const std::string &Identifier) {
 	if(Animations.find(Identifier) == Animations.end())
 		return nullptr;
 
 	return Animations[Identifier];
 }
-_ParticleTemplate *_Assets::GetParticleTemplate(const std::string &Identifier) {
+_ParticleTemplate *_OldAssets::GetParticleTemplate(const std::string &Identifier) {
 	if(ParticleTable.find(Identifier) == ParticleTable.end())
 		return nullptr;
 
 	return &ParticleTable[Identifier];
 }
-_WeaponParticleTemplate *_Assets::GetWeaponParticleTemplate(const std::string &Identifier) {
+_WeaponParticleTemplate *_OldAssets::GetWeaponParticleTemplate(const std::string &Identifier) {
 	if(WeaponParticleTable.find(Identifier) == WeaponParticleTable.end())
 		return nullptr;
 

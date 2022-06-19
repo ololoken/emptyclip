@@ -18,22 +18,14 @@
 #pragma once
 
 // Libraries
-#include <glm/vec2.hpp>
 #include <objects/templates.h>
 #include <animation.h>
+#include <glm/vec2.hpp>
 #include <string>
 #include <unordered_map>
 #include <vector>
 
 // Forward Declarations
-namespace ae {
-	class _Texture;
-	class _Font;
-	class _Style;
-	class _Element;
-	class _Program;
-	class _Shader;
-}
 class _Animation;
 class _Particle;
 class _Entity;
@@ -56,7 +48,7 @@ struct AttackSampleTemplateStruct {
 };
 
 // Classes
-class _Assets {
+class _OldAssets {
 
 	public:
 
@@ -105,7 +97,6 @@ class _Assets {
 
 		// Data
 		std::unordered_map<std::string, _Reel> Reels;
-		std::unordered_map<std::string, const ae::_Shader *> Shaders;
 };
 
-extern _Assets OldAssets;
+extern _OldAssets OldAssets;
