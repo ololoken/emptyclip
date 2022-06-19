@@ -19,7 +19,7 @@
 #include <ae/files.h>
 #include <ae/random.h>
 #include <font.h>
-#include <texture.h>
+#include <ae/texture.h>
 #include <audio.h>
 #include <animation.h>
 #include <program.h>
@@ -345,7 +345,7 @@ void _Assets::LoadTextures(const std::string &Path) {
 		File.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
 		// Load texture
-		_Texture *Texture = new _Texture(Path, false, Repeat, MipMaps, false);
+		ae::_Texture *Texture = new ae::_Texture(Path, false, Repeat, MipMaps, false);
 		if(!Texture)
 			throw std::runtime_error(std::string(__PRETTY_FUNCTION__) + " - Error loading: " + Path);
 
@@ -369,7 +369,7 @@ void _Assets::LoadTextureDirectory(const std::string &Path, bool IsServer, bool 
 	for(const auto &File : Files.Nodes) {
 		std::string Name = Path + File;
 		if(!Assets.Textures[Name])
-			Assets.Textures[Name] = new _Texture(Name, IsServer, Repeat, MipMaps, Nearest);
+			Assets.Textures[Name] = new ae::_Texture(Name, IsServer, Repeat, MipMaps, Nearest);
 	}
 }
 
@@ -552,7 +552,7 @@ void _Assets::LoadReel(const std::string &Identifier, const std::string &Path) {
 
 		for(std::size_t i = 0; i < ReelTableIterator->second.TextureFiles.size(); i++) {
 			std::string ReelPath = Path + ReelTableIterator->second.TextureFiles[i];
-			_Texture *Texture = new _Texture(ReelPath, false, false, true, false);
+			ae::_Texture *Texture = new ae::_Texture(ReelPath, false, false, true, false);
 			if(!Texture)
 				throw std::runtime_error("Error loading: " + ReelPath);
 
@@ -648,7 +648,7 @@ void _Assets::LoadStyles(const std::string &Path) {
 		glm::vec4 TextureColor = Colors[TextureColorName];
 
 		// Get textures
-		const _Texture *Texture = Textures[TextureName];
+		const ae::_Texture *Texture = Textures[TextureName];
 
 		// Create style
 		_Style *Style = new _Style();

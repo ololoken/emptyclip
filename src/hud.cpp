@@ -385,7 +385,7 @@ void _HUD::RenderCrosshair(const glm::vec2 &Position) {
 }
 
 // Draws a box and text
-void _HUD::DrawIndicator(const std::string &String, float Percent, const _Texture *Texture) {
+void _HUD::DrawIndicator(const std::string &String, float Percent, const ae::_Texture *Texture) {
 
 	// Set text
 	Elements[LABEL_INDICATOR]->Text = String;
@@ -477,8 +477,7 @@ void _HUD::RenderCharacterScreen() {
 				_Element *Button = Elements[ELEMENT_INVENTORY]->Children[i];
 				if(Button) {
 					Graphics.SetProgram(Assets.Programs["ortho_pos_uv"]);
-					Graphics.SetColor(Player->GetInventory(i)->Color);
-					Graphics.DrawImage(Button->Bounds.GetMidPoint(), Player->GetInventory(i)->Texture);
+					Graphics.DrawScaledImage(Button->Bounds.GetMidPoint(), Player->GetInventory(i)->Texture, UI_INVENTORY_ITEM_SIZE, Player->GetInventory(i)->Color);
 					if(i >= INVENTORY_BAGSTART && Player->GetInventory(i)->CanStack())
 						DrawItemCount(Player->GetInventory(i), Button->Bounds.End.x - 2, Button->Bounds.End.y - 2);
 				}
@@ -490,8 +489,7 @@ void _HUD::RenderCharacterScreen() {
 	if(CursorItem) {
 		glm::ivec2 Position(ae::Input.GetMouse() - ClickOffset);
 		Graphics.SetProgram(Assets.Programs["ortho_pos_uv"]);
-		Graphics.SetColor(CursorItem->Color);
-		Graphics.DrawImage(Position, CursorItem->Texture);
+		Graphics.DrawScaledImage(Position, CursorItem->Texture, UI_INVENTORY_ITEM_SIZE, CursorItem->Color);
 		if(CursorItem->CanStack())
 			DrawItemCount(CursorItem, Position.x + 22, Position.y + 22);
 	}

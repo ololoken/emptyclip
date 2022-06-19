@@ -24,7 +24,9 @@
 #include <string>
 #include <cstdint>
 
-class _Texture;
+namespace ae {
+	class _Texture;
+}
 class _Font;
 
 // Determines if you can hold down the mouse to fire or not
@@ -95,7 +97,7 @@ struct _ParticleTemplate {
 	glm::vec2 TurnSpeed;
 	glm::vec2 Size;
 	glm::vec4 Color;
-	const _Texture *Texture;
+	const ae::_Texture *Texture;
 	const _Font *Font;
 	double Lifetime;
 	float AccelerationScale;

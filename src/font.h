@@ -27,7 +27,9 @@
 #include FT_FREETYPE_H
 
 // Forward Declarations
-class _Texture;
+namespace ae {
+	class _Texture;
+}
 class _Program;
 
 // Contains glyph info
@@ -77,7 +79,7 @@ class _Font {
 
 		// Graphics
 		const _Program *Program;
-		_Texture *Texture;
+		ae::_Texture *Texture;
 
 		// Freetype
 		bool HasKerning;

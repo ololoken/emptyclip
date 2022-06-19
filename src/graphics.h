@@ -25,8 +25,11 @@
 #include <string>
 
 // Forward Declarations
+namespace ae {
+	class _Texture;
+	class _TextureArray;
+}
 struct SDL_Cursor;
-class _Texture;
 class _Program;
 class _Element;
 struct _Bounds;
@@ -91,9 +94,11 @@ class _Graphics {
 		void SetAttribLevel(GLuint AttribLevel);
 		void SetColor(const glm::vec4 &Color);
 		void SetTextureID(GLuint TextureID, GLenum Type=GL_TEXTURE_2D);
+		void SetVertexBufferID(GLuint VertexBufferID);
 		void SetProgram(const _Program *Program);
 		void SetDepthTest(bool DepthTest);
 		void SetCullFace(bool Value);
+		void SetScissor(const _Bounds &Bounds);
 		void SetDepthMask(bool Value);
 		void EnableStencilTest();
 		void DisableStencilTest();
@@ -109,13 +114,16 @@ class _Graphics {
 		void DrawCircle(const glm::vec3 &Position, float Radius);
 		void DrawMask(const _Bounds &Bounds);
 
-		void DrawImage(const glm::ivec2 &Position, const _Texture *Texture);
-		void DrawImage(const _Bounds &Bounds, const _Texture *Texture, bool Stretch=false);
-		void DrawSprite(const glm::vec3 &Position, const _Texture *Texture, float Rotation=0.0f, const glm::vec2 &Scale=glm::vec2(1.0f));
-		void DrawRepeatable(const glm::vec3 &Start, const glm::vec3 &End, const _Texture *Texture, float Rotation, float ScaleX);
-		void DrawWall(const glm::vec3 &Position, const glm::vec3 &Scale, float Rotation, const _Texture *Texture);
-		void DrawCube(const glm::vec3 &Start, const glm::vec3 &Scale, const _Texture *Texture);
-		void DrawWallDecal(const glm::vec3 &Position, const _Texture *Texture, float Rotation=0.0f, const glm::vec2 &Scale=glm::vec2(1.0f));
+		void DrawImage(const _Bounds &Bounds, const ae::_Texture *Texture, bool Stretch=false);
+		void DrawScaledImage(const glm::vec2 &Position, const ae::_Texture *Texture, const glm::vec2 &Size, const glm::vec4 &Color=glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
+		void DrawSprite(const glm::vec3 &Position, const ae::_Texture *Texture, float Rotation=0.0f, const glm::vec2 &Scale=glm::vec2(1.0f));
+		void DrawAnimationFrame(const glm::vec3 &Position, const ae::_Texture *Texture, const glm::vec4 &TextureCoords, float Rotation=0.0f, const glm::vec2 &Scale=glm::vec2(1.0f));
+		void DrawAtlasTexture(const _Bounds &Bounds, const ae::_Texture *Texture, const glm::vec4 &TextureCoords);
+		void DrawTextureArray(const _Bounds &Bounds, const ae::_TextureArray *Texture, uint32_t Index);
+		void DrawRepeatable(const glm::vec3 &Start, const glm::vec3 &End, const ae::_Texture *Texture, float Rotation, float ScaleX);
+		void DrawWall(const glm::vec3 &Position, const glm::vec3 &Scale, float Rotation, const ae::_Texture *Texture);
+		void DrawCube(const glm::vec3 &Start, const glm::vec3 &Scale, const ae::_Texture *Texture);
+		void DrawWallDecal(const glm::vec3 &Position, const ae::_Texture *Texture, float Rotation=0.0f, const glm::vec2 &Scale=glm::vec2(1.0f));
 
 		_Element *Element;
 		glm::ivec2 CurrentSize;

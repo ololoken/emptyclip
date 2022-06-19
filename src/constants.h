@@ -104,6 +104,9 @@ const  int          EDITOR_WALL_LAYER              =  5;
 //     Menu
 const  float        MENU_ACCEPTINPUT_FADE          =  0.7f;
 const  double       MENU_DOUBLECLICK_TIME          =  0.250;
+//     UI
+const  glm::vec2    UI_INVENTORY_ITEM_SIZE         =  glm::vec2(32,32);
+const  glm::vec2    UI_INVENTORY_SLOT_SIZE         =  glm::vec2(48,48);
 //     HUD
 const  double       HUD_ENTITYHEALTHDISPLAYPERIOD  =  5.0;
 const  double       HUD_CURSOR_ITEM_WAIT           =  0.5;

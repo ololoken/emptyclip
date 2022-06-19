@@ -26,13 +26,15 @@
 #include <vector>
 
 // Forward Declarations
+namespace ae {
+	class _Texture;
+}
 class _Style;
 class _Font;
 class _Element;
 class _Image;
 class _Button;
 class _TextBox;
-class _Texture;
 class _Animation;
 class _Particle;
 class _Entity;
@@ -106,7 +108,7 @@ class _Assets {
 		std::unordered_map<std::string, std::string> Strings;
 		std::unordered_map<std::string, _Animation *> Animations;
 
-		std::unordered_map<std::string, const _Texture *> Textures;
+		std::unordered_map<std::string, const ae::_Texture *> Textures;
 		std::unordered_map<std::string, _Program *> Programs;
 		std::unordered_map<std::string, glm::vec4> Colors;
 		std::unordered_map<std::string, _Font *> Fonts;

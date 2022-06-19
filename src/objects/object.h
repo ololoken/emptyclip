@@ -20,7 +20,6 @@
 // Libraries
 #include <coord.h>
 #include <color.h>
-#include <texture.h>
 #include <value.h>
 #include <unordered_map>
 #include <vector>
@@ -30,6 +29,7 @@
 // Forward Declarations
 namespace ae {
 	class _Buffer;
+	class _Texture;
 }
 class _Map;
 
@@ -85,7 +85,7 @@ class _Object {
 		int WallState;
 
 		// Graphics
-		const _Texture *Texture;
+		const ae::_Texture *Texture;
 		glm::vec4 Color;
 		float Rotation;
 		float Scale;

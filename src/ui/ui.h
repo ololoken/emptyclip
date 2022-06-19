@@ -29,9 +29,9 @@ namespace tinyxml2 {
 	class XMLElement;
 }
 class _Font;
-class _Texture;
 class _Program;
 namespace ae {
+	class _Texture;
 	struct _KeyEvent;
 }
 
@@ -97,7 +97,7 @@ struct _Style {
 
 	// Graphics
 	const _Program *Program;
-	const _Texture *Texture;
+	const ae::_Texture *Texture;
 
 	// Properties
 	bool Stretch;
@@ -167,7 +167,7 @@ class _Element {
 		const _Style *Style;
 		const _Style *HoverStyle;
 		const _Style *DisabledStyle;
-		const _Texture *Texture;
+		const ae::_Texture *Texture;
 		uint32_t TextureIndex;
 		float Fade;
 

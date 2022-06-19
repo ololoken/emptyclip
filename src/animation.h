@@ -22,7 +22,9 @@
 #include <vector>
 
 // Forward Declarations
-class _Texture;
+namespace ae {
+	class _Texture;
+}
 
 // Enumerations
 enum PlayType {
@@ -48,7 +50,7 @@ struct _ReelTemplate {
 
 // Used for storing information about an animation sequence
 struct _Reel {
-	std::vector<_Texture *> Textures;
+	std::vector<ae::_Texture *> Textures;
 	double PlaybackSpeed;
 	RepeatType RepeatMode;
 	int StartPosition;
@@ -70,8 +72,8 @@ class _Animation {
 		void SetPlayMode(int Mode);
 		void SetAllowUpdate(bool Value) { AllowUpdate = Value; }
 
-		_Texture *GetCurrentFrame() const;
-		_Texture *GetStartPositionFrame() const;
+		ae::_Texture *GetCurrentFrame() const;
+		ae::_Texture *GetStartPositionFrame() const;
 
 		std::vector<const _Reel *> Reels;
 		int PlayMode;

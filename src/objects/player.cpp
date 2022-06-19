@@ -17,6 +17,7 @@
 *******************************************************************************/
 #include <objects/player.h>
 #include <ae/buffer.h>
+#include <ae/texture.h>
 #include <graphics.h>
 #include <audio.h>
 #include <assets.h>

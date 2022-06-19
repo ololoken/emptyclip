@@ -17,6 +17,7 @@
 *******************************************************************************/
 #include <states/editor.h>
 #include <ae/camera.h>
+#include <ae/texture.h>
 #include <framework.h>
 #include <graphics.h>
 #include <ae/graphics.h>
@@ -1057,7 +1058,7 @@ void _EditorState::LoadPalettes() {
 
 	// Load weapons
 	for(const auto &Weapon : Stats.Weapons) {
-		const _Texture *Texture = Assets.Textures[Weapon.second.IconIdentifier];
+		const ae::_Texture *Texture = Assets.Textures[Weapon.second.IconIdentifier];
 		if(Texture)
 			Icons.push_back(_Brush(Weapon.first, Weapon.second.Name, Texture, Weapon.second.Color, _Object::WEAPON));
 	}
@@ -1157,7 +1158,7 @@ void _EditorState::DrawBrush() {
 	// Get selected palette
 	std::string IconText = "", IconIdentifier = "";
 	glm::vec4 IconColor = COLOR_WHITE;
-	const _Texture *IconTexture = nullptr;
+	const ae::_Texture *IconTexture = nullptr;
 	if(Brush[CurrentPalette]) {
 		IconIdentifier = Brush[CurrentPalette]->Name;
 		IconText = Brush[CurrentPalette]->Style->Name;
@@ -1321,7 +1322,7 @@ void _EditorState::DrawObject(float OffsetX, float OffsetY, const _ObjectSpawn *
 	float Scale = ITEM_SCALE;
 	float Depth = ITEM_Z;
 	glm::vec4 Color;
-	const _Texture *Texture = nullptr;
+	const ae::_Texture *Texture = nullptr;
 	switch(Object->Type) {
 		case _Object::MONSTER: {
 			_MonsterTemplate &Monster = Stats.Monsters.at(Object->Identifier);

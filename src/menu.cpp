@@ -18,6 +18,7 @@
 #include <menu.h>
 #include <ae/input.h>
 #include <ae/actions.h>
+#include <ae/texture.h>
 #include <actiontype.h>
 #include <constants.h>
 #include <graphics.h>

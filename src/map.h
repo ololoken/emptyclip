@@ -64,12 +64,12 @@ const float PARTICLE_GRID_PADDING   = 2;
 // Forward Declarations
 namespace ae {
 	class _Camera;
+	class _Texture;
 }
 class _Event;
 class _Entity;
 class _Object;
 class _Item;
-class _Texture;
 class _Particle;
 class _ObjectManager;
 struct _ObjectSpawn;
@@ -106,8 +106,8 @@ struct _Block {
 
 	_Coord Start;
 	_Coord End;
-	const _Texture *Texture;
-	const _Texture *AltTexture;
+	const ae::_Texture *Texture;
+	const ae::_Texture *AltTexture;
 	float MinZ;
 	float MaxZ;
 	float Rotation;
@@ -193,7 +193,7 @@ class _Map {
 		int RenderParticles(int Type);
 		void RenderForeground();
 		void RenderLights(const glm::vec2 &PlayerPosition);
-		void RenderEvents(std::vector<const _Texture *> &Textures);
+		void RenderEvents(std::vector<const ae::_Texture *> &Textures);
 		void RenderGrid(int Mode);
 		void HighlightBlocks(int Layer);
 

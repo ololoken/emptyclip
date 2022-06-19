@@ -18,6 +18,7 @@
 #include <map.h>
 #include <ae/random.h>
 #include <ae/camera.h>
+#include <ae/texture.h>
 #include <graphics.h>
 #include <assets.h>
 #include <events.h>
@@ -1463,7 +1464,7 @@ void _Map::RenderFlatWalls() {
 }
 
 // Draws the events
-void _Map::RenderEvents(std::vector<const _Texture *> &Textures) {
+void _Map::RenderEvents(std::vector<const ae::_Texture *> &Textures) {
 	if(!Camera)
 		return;
 

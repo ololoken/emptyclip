@@ -21,7 +21,7 @@
 #include <font.h>
 #include <color.h>
 #include <assets.h>
-#include <texture.h>
+#include <ae/texture.h>
 #include <program.h>
 #include <SDL_keycode.h>
 #include <tinyxml2/tinyxml2.h>

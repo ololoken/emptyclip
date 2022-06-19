@@ -17,7 +17,7 @@
 *******************************************************************************/
 #include <font.h>
 #include <graphics.h>
-#include <texture.h>
+#include <ae/texture.h>
 #include <program.h>
 #include <assets.h>
 #include <glm/gtc/type_ptr.hpp>
@@ -261,7 +261,7 @@ void _Font::CreateFontTexture(std::string SortedCharacters, uint32_t TextureWidt
 	}
 
 	// Load texture
-	Texture = new _Texture(Image, glm::ivec2(TextureWidth, TextureHeight), GL_RED, GL_RED);
+	Texture = new ae::_Texture(Image, glm::ivec2(TextureWidth, TextureHeight), GL_RED, GL_RED);
 
 	delete[] Image;
 }

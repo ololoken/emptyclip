@@ -23,7 +23,7 @@
 #include <algorithm>
 
 // Constructor
-_Weapon::_Weapon(const std::string &Identifier, int Count, const glm::vec2 &Position, const _WeaponTemplate &Weapon, const _Texture *Texture, bool Generate) {
+_Weapon::_Weapon(const std::string &Identifier, int Count, const glm::vec2 &Position, const _WeaponTemplate &Weapon, const ae::_Texture *Texture, bool Generate) {
 
 	this->Type = _Object::WEAPON;
 	this->ID = Identifier;

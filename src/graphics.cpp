@@ -16,21 +16,25 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 *******************************************************************************/
 #include <graphics.h>
+#include <ae/texture.h>
+#include <ae/texture_array.h>
 #include <assets.h>
 #include <program.h>
 #include <color.h>
-#include <texture.h>
 #include <stdexcept>
 #include <constants.h>
 #include <ui/ui.h>
 #include <SDL_mouse.h>
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+#include <stdexcept>
 
 _Graphics Graphics;
 
 // Initialize
 void _Graphics::Init(const _WindowSettings &WindowSettings) {
+
+	// Initialize
 	CircleVertices = 32;
 	Anisotropy = 0.0f;
 	FramesPerSecond = 0;
@@ -408,7 +412,7 @@ void _Graphics::SetWindowSize(const glm::ivec2 &Size) {
 
 	// Update UI elements
 	Element->Size = Size;
-	Element->CalculateBounds();
+	Element->CalculateBounds(false);
 
 	// Update actual window
 	SDL_SetWindowSize(Window, Size.x, Size.y);
@@ -525,6 +529,15 @@ void _Graphics::SetTextureID(GLuint TextureID, GLenum Type) {
 	LastTextureID = TextureID;
 }
 
+// Set vertex buffer id
+void _Graphics::SetVertexBufferID(GLuint VertexBufferID) {
+	if(VertexBufferID == LastVertexBufferID)
+		return;
+
+	glBindBuffer(GL_ARRAY_BUFFER, VertexBufferID);
+	LastVertexBufferID = VertexBufferID;
+}
+
 // Enable a program
 void _Graphics::SetProgram(const _Program *Program) {
 	if(Program == LastProgram)
@@ -554,6 +567,11 @@ void _Graphics::SetCullFace(bool Value) {
 		glEnable(GL_CULL_FACE);
 	else
 		glDisable(GL_CULL_FACE);
+}
+
+// Set scissor region
+void _Graphics::SetScissor(const _Bounds &Bounds) {
+	glScissor((GLint)Bounds.Start.x, (GLint)(CurrentSize.y - Bounds.End.y), (GLsizei)(Bounds.End.x - Bounds.Start.x), (GLsizei)(Bounds.End.y - Bounds.Start.y));
 }
 
 // Set depth mask
@@ -613,6 +631,7 @@ void _Graphics::DrawRectangle(const _Bounds &Bounds, bool Filled) {
 // Draw rectangle
 void _Graphics::DrawRectangle(const glm::vec2 &Start, const glm::vec2 &End, bool Filled) {
 
+	// Get transform
 	glm::mat4 Transform(1.0f);
 	if(Filled) {
 		SetVBO(VBO_QUAD);
@@ -635,6 +654,7 @@ void _Graphics::DrawRectangle(const glm::vec2 &Start, const glm::vec2 &End, bool
 // Draw rectangle in 3D space
 void _Graphics::DrawRectangle3D(const glm::vec2 &Start, const glm::vec2 &End, bool Filled) {
 
+	// Get transform
 	glm::mat4 Transform(1.0f);
 	if(Filled) {
 		SetVBO(VBO_QUAD);
@@ -663,7 +683,7 @@ void _Graphics::DrawCircle(const glm::vec3 &Position, float Radius) {
 	ModelTransform = glm::scale(ModelTransform, glm::vec3(Radius, Radius, 0.0f));
 	glUniformMatrix4fv(LastProgram->ModelTransformID, 1, GL_FALSE, glm::value_ptr(ModelTransform));
 
-	glDrawArrays(GL_LINE_LOOP, 0, CircleVertices);
+	glDrawArrays(GL_LINE_LOOP, 0, (GLsizei)CircleVertices);
 }
 
 // Draw stencil mask
@@ -686,17 +706,8 @@ void _Graphics::DrawMask(const _Bounds &Bounds) {
 	glStencilMask(0x00);
 }
 
-// Draw centered image in screen space
-void _Graphics::DrawImage(const glm::ivec2 &Position, const _Texture *Texture) {
-	glm::vec2 TextureSize = glm::vec2(Texture->Size) * 0.5f;
-
-	// Draw image
-	_Bounds Bounds(glm::vec2(Position) - TextureSize, glm::vec2(Position) + TextureSize);
-	DrawImage(Bounds, Texture, true);
-}
-
 // Draw image in screen space
-void _Graphics::DrawImage(const _Bounds &Bounds, const _Texture *Texture, bool Stretch) {
+void _Graphics::DrawImage(const _Bounds &Bounds, const ae::_Texture *Texture, bool Stretch) {
 	SetVBO(VBO_QUAD_UV);
 	SetTextureID(Texture->ID);
 
@@ -723,8 +734,20 @@ void _Graphics::DrawImage(const _Bounds &Bounds, const _Texture *Texture, bool S
 	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 }
 
+// Draw image centered given a size
+void _Graphics::DrawScaledImage(const glm::vec2 &Position, const ae::_Texture *Texture, const glm::vec2 &Size, const glm::vec4 &Color) {
+	Graphics.SetColor(Color);
+
+	// Scale texture by UI scale
+	glm::vec2 TextureSize = Size * 0.5f * _Element::GetUIScale();
+
+	// Draw image
+	_Bounds Bounds(Position - TextureSize, Position + TextureSize);
+	DrawImage(Bounds, Texture, true);
+}
+
 // Draw 3d sprite
-void _Graphics::DrawSprite(const glm::vec3 &Position, const _Texture *Texture, float Rotation, const glm::vec2 &Scale) {
+void _Graphics::DrawSprite(const glm::vec3 &Position, const ae::_Texture *Texture, float Rotation, const glm::vec2 &Scale) {
 	SetVBO(VBO_SPRITE);
 	SetTextureID(Texture->ID);
 
@@ -742,8 +765,33 @@ void _Graphics::DrawSprite(const glm::vec3 &Position, const _Texture *Texture, f
 	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 }
 
+// Draw frame from an animation
+void _Graphics::DrawAnimationFrame(const glm::vec3 &Position, const ae::_Texture *Texture, const glm::vec4 &TextureCoords, float Rotation, const glm::vec2 &Scale) {
+	SetVBO(VBO_ATLAS);
+	SetTextureID(Texture->ID);
+
+	// Set transform
+	glm::mat4 ModelTransform;
+	ModelTransform = glm::translate(glm::mat4(1.0f), Position);
+	Rotation = glm::radians(Rotation);
+	if(Rotation != 0.0f)
+		ModelTransform = glm::rotate(ModelTransform, Rotation, glm::vec3(0, 0, 1));
+	ModelTransform = glm::scale(ModelTransform, glm::vec3(Scale, 0.0f));
+	glUniformMatrix4fv(LastProgram->ModelTransformID, 1, GL_FALSE, glm::value_ptr(ModelTransform));
+
+	// Texture transform
+	glm::mat4 TextureTransform(1.0f);
+	TextureTransform[3][0] = TextureCoords[0];
+	TextureTransform[3][1] = TextureCoords[1];
+	TextureTransform[0][0] = TextureCoords[2] - TextureCoords[0];
+	TextureTransform[1][1] = TextureCoords[3] - TextureCoords[1];
+	glUniformMatrix4fv(LastProgram->TextureTransformID, 1, GL_FALSE, glm::value_ptr(TextureTransform));
+
+	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+}
+
 // Draw quad with repeated textures
-void _Graphics::DrawRepeatable(const glm::vec3 &Start, const glm::vec3 &End, const _Texture *Texture, float Rotation, float ScaleX) {
+void _Graphics::DrawRepeatable(const glm::vec3 &Start, const glm::vec3 &End, const ae::_Texture *Texture, float Rotation, float ScaleX) {
 	SetVBO(VBO_QUAD_UV);
 	SetTextureID(Texture->ID);
 
@@ -767,12 +815,56 @@ void _Graphics::DrawRepeatable(const glm::vec3 &Start, const glm::vec3 &End, con
 	TextureTransform = glm::scale(TextureTransform, glm::vec3(Size.x * ScaleX, Size.y, 1.0f));
 
 	glUniformMatrix4fv(LastProgram->TextureTransformID, 1, GL_FALSE, glm::value_ptr(TextureTransform));
+	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+}
 
+// Draw image from a texture atlas
+void _Graphics::DrawAtlasTexture(const _Bounds &Bounds, const ae::_Texture *Texture, const glm::vec4 &TextureCoords) {
+	SetVBO(VBO_QUAD_UV);
+	SetTextureID(Texture->ID);
+
+	// Get size
+	glm::vec2 Size = Bounds.End - Bounds.Start;
+
+	// Model transform
+	glm::mat4 Transform(1.0f);
+	Transform[3][0] = Bounds.Start.x;
+	Transform[3][1] = Bounds.Start.y;
+	Transform[0][0] = Size.x;
+	Transform[1][1] = Size.y;
+	glUniformMatrix4fv(LastProgram->ModelTransformID, 1, GL_FALSE, glm::value_ptr(Transform));
+
+	// Texture transform
+	glm::mat4 TextureTransform(1.0f);
+	TextureTransform[3][0] = TextureCoords[0];
+	TextureTransform[3][1] = TextureCoords[1];
+	TextureTransform[0][0] = TextureCoords[2] - TextureCoords[0];
+	TextureTransform[1][1] = TextureCoords[3] - TextureCoords[1];
+	glUniformMatrix4fv(LastProgram->TextureTransformID, 1, GL_FALSE, glm::value_ptr(TextureTransform));
+	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+}
+
+// Draw image from texture array
+void _Graphics::DrawTextureArray(const _Bounds &Bounds, const ae::_TextureArray *Texture, uint32_t Index) {
+	SetVBO(VBO_QUAD_UV);
+	SetTextureID(Texture->ID, GL_TEXTURE_2D_ARRAY);
+	LastProgram->SetUniformFloat("texture_index", Index);
+
+	// Get size
+	glm::vec2 Size = Bounds.End - Bounds.Start;
+
+	// Model transform
+	glm::mat4 Transform(1.0f);
+	Transform[3][0] = Bounds.Start.x;
+	Transform[3][1] = Bounds.Start.y;
+	Transform[0][0] = Size.x;
+	Transform[1][1] = Size.y;
+	glUniformMatrix4fv(LastProgram->ModelTransformID, 1, GL_FALSE, glm::value_ptr(Transform));
 	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 }
 
 // Draw double-sided flat wall
-void _Graphics::DrawWall(const glm::vec3 &Position, const glm::vec3 &Scale, float Rotation, const _Texture *Texture) {
+void _Graphics::DrawWall(const glm::vec3 &Position, const glm::vec3 &Scale, float Rotation, const ae::_Texture *Texture) {
 	SetVBO(VBO_CUBE);
 	SetTextureID(Texture->ID);
 
@@ -800,7 +892,7 @@ void _Graphics::DrawWall(const glm::vec3 &Position, const glm::vec3 &Scale, floa
 }
 
 // Draw 3d wall
-void _Graphics::DrawCube(const glm::vec3 &Start, const glm::vec3 &Scale, const _Texture *Texture) {
+void _Graphics::DrawCube(const glm::vec3 &Start, const glm::vec3 &Scale, const ae::_Texture *Texture) {
 	SetVBO(VBO_CUBE);
 	SetTextureID(Texture->ID);
 
@@ -843,7 +935,7 @@ void _Graphics::DrawCube(const glm::vec3 &Start, const glm::vec3 &Scale, const _
 }
 
 // Vertical texture
-void _Graphics::DrawWallDecal(const glm::vec3 &Position, const _Texture *Texture, float Rotation, const glm::vec2 &Scale) {
+void _Graphics::DrawWallDecal(const glm::vec3 &Position, const ae::_Texture *Texture, float Rotation, const glm::vec2 &Scale) {
 	SetVBO(VBO_SPRITE);
 	SetTextureID(Texture->ID);
 

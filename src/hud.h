@@ -23,7 +23,6 @@
 #include <glm/vec2.hpp>
 
 // Forward Declarations
-class _Texture;
 class _Element;
 class _Image;
 class _Font;
@@ -131,7 +130,7 @@ class _HUD {
 
 	private:
 
-		void DrawIndicator(const std::string &String, float Percent=0.0f, const _Texture *Texture=nullptr);
+		void DrawIndicator(const std::string &String, float Percent=0.0f, const ae::_Texture *Texture=nullptr);
 		void DrawHUDWeapon(const _Weapon *Weapon, _Element *Element, _Element *Image, _Element *Label);
 		void DrawItemCount(_Item *Item, int X, int Y);
 
@@ -160,7 +159,7 @@ class _HUD {
 		_Font *Fonts[FONT_COUNT];
 
 		// Textures
-		const _Texture *CrosshairID;
-		const _Texture *ReloadTexture;
-		const _Texture *WeaponSwitchTexture;
+		const ae::_Texture *CrosshairID;
+		const ae::_Texture *ReloadTexture;
+		const ae::_Texture *WeaponSwitchTexture;
 };

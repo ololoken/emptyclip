@@ -17,6 +17,7 @@
 *******************************************************************************/
 #include <objects/item.h>
 #include <ae/buffer.h>
+#include <ae/texture.h>
 #include <graphics.h>
 #include <constants.h>
 

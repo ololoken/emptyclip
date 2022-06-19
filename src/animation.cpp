@@ -121,11 +121,11 @@ void _Animation::SetFramePeriod(double Value) {
 }
 
 // Return texture of start frame
-_Texture *_Animation::GetStartPositionFrame() const {
+ae::_Texture *_Animation::GetStartPositionFrame() const {
 	return Reels[CurrentReel]->Textures[Reels[CurrentReel]->StartPosition];
 }
 
 // Return current frame
-_Texture *_Animation::GetCurrentFrame() const {
+ae::_Texture *_Animation::GetCurrentFrame() const {
 	return Reels[CurrentReel]->Textures[Position];
 }

@@ -31,7 +31,6 @@ namespace ae {
 	class _Camera;
 }
 class _Font;
-class _Texture;
 class _Event;
 class _Element;
 class _Button;
@@ -120,7 +119,7 @@ enum EditorInputTypes {
 // Used for the map editor
 struct _Brush {
 	_Brush() { }
-	_Brush(const std::string &Identifier, const std::string &Text, const _Texture *Texture, const glm::vec4 &Color, int ObjectType=-1) :
+	_Brush(const std::string &Identifier, const std::string &Text, const ae::_Texture *Texture, const glm::vec4 &Color, int ObjectType=-1) :
 		Identifier(Identifier),
 		Text(Text),
 		Texture(Texture),
@@ -129,7 +128,7 @@ struct _Brush {
 
 	std::string Identifier;
 	std::string Text;
-	const _Texture *Texture;
+	const ae::_Texture *Texture;
 	glm::vec4 Color;
 	int ObjectType;
 };
@@ -249,7 +248,7 @@ class _EditorState : public ae::_State {
 		// UI
 		int CurrentLayer;
 		int CurrentPalette;
-		std::vector<const _Texture *> EventTextures;
+		std::vector<const ae::_Texture *> EventTextures;
 		_Font *MainFont;
 		_Element *LayerButtons[MAPLAYER_COUNT];
 		_Element *ModeButtons[EDITMODE_COUNT];
@@ -279,7 +278,7 @@ class _EditorState : public ae::_State {
 		bool HighlightBlocks;
 		bool Walkable;
 		bool BlockCopied;
-		const _Texture *AltTexture;
+		const ae::_Texture *AltTexture;
 
 		// Events
 		_Event *SelectedEvent;

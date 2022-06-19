@@ -23,8 +23,10 @@
 #include <glm/vec2.hpp>
 
 // Forward Declarations
+namespace ae {
+	class _Texture;
+}
 class _Font;
-class _Texture;
 struct _ParticleSpawn;
 
 // Classes
@@ -44,7 +46,7 @@ class _Particle {
 		bool Deleted;
 
 		// Graphics
-		const _Texture *Texture;
+		const ae::_Texture *Texture;
 		const _Font *Font;
 		std::string Text;
 		glm::vec4 Color;
