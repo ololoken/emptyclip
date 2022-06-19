@@ -18,7 +18,7 @@
 #include <events.h>
 
 // Constructor
-_Event::_Event(int Type, int Active, const _Coord &Start, const _Coord &End, int Level, double ActivationPeriod, const std::string &ItemIdentifier, const std::string &MonsterIdentifier, const std::string &ParticleIdentifier) :
+_Event::_Event(int Type, int Active, const glm::ivec2 &Start, const glm::ivec2 &End, int Level, double ActivationPeriod, const std::string &ItemIdentifier, const std::string &MonsterIdentifier, const std::string &ParticleIdentifier) :
 	Type(Type),
 	Active(Active),
 	Level(Level),

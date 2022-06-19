@@ -386,8 +386,8 @@ void _Entity::Move() {
 			Map->RemoveObjectFromGrid(this, AltGridType);
 
 			// Check for updated tile position
-			_Coord LastTilePosition = Map->GetValidCoord(Position);
-			_Coord TilePosition = Map->GetValidCoord(NewPosition);
+			glm::ivec2 LastTilePosition = Map->GetValidCoord(Position);
+			glm::ivec2 TilePosition = Map->GetValidCoord(NewPosition);
 			if(TilePosition != LastTilePosition)
 				TileChanged = true;
 

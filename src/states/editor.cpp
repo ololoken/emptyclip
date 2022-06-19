@@ -719,7 +719,7 @@ void _EditorState::Update(double FrameTime) {
 
 	// Moving a block or event
 	if(IsMoving) {
-		_Coord Offset;
+		glm::ivec2 Offset;
 
 		// Get offsets
 		Offset = WorldCursorIndex - SavedIndex;
@@ -1570,8 +1570,8 @@ void _EditorState::AddEvent(int Type) {
 	}
 
 	int TileLayer = -1;
-	_Coord Start = DrawStart;
-	_Coord End = DrawEnd - 1;
+	glm::ivec2 Start = DrawStart;
+	glm::ivec2 End = DrawEnd - 1;
 	std::string EventItemIdentifier = "";
 	std::string EventMonsterIdentifier = "";
 	std::string EventParticleIdentifier = "";
@@ -1905,8 +1905,8 @@ void _EditorState::ExecutePaste(bool Viewport) {
 			if(BlockCopied) {
 				int Width = ClipboardBlock.End.x - ClipboardBlock.Start.x;
 				int Height = ClipboardBlock.End.y - ClipboardBlock.Start.y;
-				ClipboardBlock.Start = Map->GetValidCoord(_Coord(StartPosition));
-				ClipboardBlock.End = Map->GetValidCoord(_Coord(StartPosition.x + Width, StartPosition.y + Height));
+				ClipboardBlock.Start = Map->GetValidCoord(glm::ivec2(StartPosition));
+				ClipboardBlock.End = Map->GetValidCoord(glm::ivec2(StartPosition.x + Width, StartPosition.y + Height));
 
 				UndoNumber[CurrentLayer]++;
 				Map->AddBlock(CurrentLayer, ClipboardBlock);
@@ -1915,7 +1915,7 @@ void _EditorState::ExecutePaste(bool Viewport) {
 		case EDITMODE_EVENTS:
 			if(ClipboardEvent != nullptr) {
 				DrawStart = Map->GetValidCoord(StartPosition);
-				DrawEnd = Map->GetValidCoord(ClipboardEvent->End - ClipboardEvent->Start + StartPosition);
+				DrawEnd = Map->GetValidCoord(ClipboardEvent->End - ClipboardEvent->Start + glm::ivec2(StartPosition));
 
 				_Event *Event = new _Event(ClipboardEvent->Type, ClipboardEvent->Active, DrawStart, DrawEnd,
 										ClipboardEvent->Level, ClipboardEvent->ActivationPeriod, ClipboardEvent->ItemIdentifier,
@@ -1925,9 +1925,8 @@ void _EditorState::ExecutePaste(bool Viewport) {
 			}
 		break;
 		default:
-			for(auto Iterator : ClipboardObjects) {
+			for(auto Iterator : ClipboardObjects)
 				SpawnObject(GetValidObjectPosition(StartPosition - CopiedPosition + Iterator->Position), Iterator->Type, Iterator->Identifier, IsShiftDown);
-			}
 		break;
 	}
 }
@@ -2159,7 +2158,7 @@ void _EditorState::ExecuteShiftLayer(int Change) {
 
 // Executes the update block limit command
 void _EditorState::ExecuteUpdateBlockLimits(int Direction, bool Expand) {
-	_Coord Start, End;
+	glm::ivec2 Start, End;
 	bool Change = false;
 	if(CurrentPalette == EDITMODE_BLOCKS && BlockSelected()) {
 		Start = SelectedBlock->Start;

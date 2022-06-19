@@ -149,7 +149,7 @@ _Map::_Map(const std::string &Filename) : _Map() {
 	for(size_t i = 0; i < EventCount; i++) {
 
 		int EventType, EventActive, EventLevel;
-		_Coord EventStart, EventEnd;
+		glm::ivec2 EventStart, EventEnd;
 		double EventActivationPeriod;
 		size_t TilesSize;
 		InputFile >> EventType >> EventActive >> EventStart.x >> EventStart.y >> EventEnd.x >> EventEnd.y >> EventLevel >> EventActivationPeriod >> TilesSize;
@@ -165,7 +165,7 @@ _Map::_Map(const std::string &Filename) : _Map() {
 
 		_Event *Event = new _Event(EventType, EventActive, EventStart, EventEnd, EventLevel, EventActivationPeriod, EventItemIdentifier, EventMonsterIdentifier, EventParticleIdentifier);
 		for(size_t j = 0; j < TilesSize; j++) {
-			_Coord Tile;
+			glm::ivec2 Tile;
 			int TileLayer, TileBlockID;
 			InputFile >> Tile.x >> Tile.y >> TileLayer >> TileBlockID;
 			Tile = GetValidCoord(Tile);
@@ -659,7 +659,7 @@ int _Map::GetWallState(const glm::vec2 &Position, float Radius) const {
 
 	// Check left wall
 	int WallState = 0;
-	_Coord TopLeft = GetValidCoord(_Coord((int)(Position.x - Radius - MAP_EPSILON), (int)(Position.y - Radius - MAP_EPSILON)));
+	glm::ivec2 TopLeft = GetValidCoord(glm::ivec2((int)(Position.x - Radius - MAP_EPSILON), (int)(Position.y - Radius - MAP_EPSILON)));
 	for(int i = TileBounds.Start.y; i <= TileBounds.End.y; i++) {
 		if(!Data[TopLeft.x][i].CanWalk()) {
 			WallState |= WALL_LEFT;
@@ -676,7 +676,7 @@ int _Map::GetWallState(const glm::vec2 &Position, float Radius) const {
 	}
 
 	// Check right wall
-	_Coord BottomRight = GetValidCoord(_Coord((int)(Position.x + Radius + MAP_EPSILON), (int)(Position.y + Radius + MAP_EPSILON)));
+	glm::ivec2 BottomRight = GetValidCoord(glm::ivec2((int)(Position.x + Radius + MAP_EPSILON), (int)(Position.y + Radius + MAP_EPSILON)));
 	for(int i = TileBounds.Start.y; i <= TileBounds.End.y; i++) {
 		if(!Data[BottomRight.x][i].CanWalk()) {
 			WallState |= WALL_RIGHT;
@@ -696,20 +696,20 @@ int _Map::GetWallState(const glm::vec2 &Position, float Radius) const {
 }
 
 // Determines what adjacent square the object is facing
-void _Map::GetAdjacentTile(const glm::vec2 &Position, float Direction, _Coord &Coord) const {
+void _Map::GetAdjacentTile(const glm::vec2 &Position, float Direction, glm::ivec2 &Coord) const {
 
 	// Check direction
 	if(Direction > 45.0f && Direction < 135.0f) {
-		Coord = GetValidCoord(_Coord(Position.x + 1.0f, Position.y));
+		Coord = GetValidCoord(glm::ivec2(Position.x + 1.0f, Position.y));
 	}
 	else if(Direction >= 135.0f && Direction < 225.0f) {
-		Coord = GetValidCoord(_Coord(Position.x, Position.y + 1.0f));
+		Coord = GetValidCoord(glm::ivec2(Position.x, Position.y + 1.0f));
 	}
 	else if(Direction >= 225.0f && Direction < 315.0f) {
-		Coord = GetValidCoord(_Coord(Position.x - 1.0f, Position.y));
+		Coord = GetValidCoord(glm::ivec2(Position.x - 1.0f, Position.y));
 	}
 	else {
-		Coord = GetValidCoord(_Coord(Position.x, Position.y - 1.0f));
+		Coord = GetValidCoord(glm::ivec2(Position.x, Position.y - 1.0f));
 	}
 }
 
@@ -722,7 +722,7 @@ void _Map::CheckBulletCollisions(const glm::vec2 &Position, const glm::vec2 &Dir
 	float Slope = Direction.y / Direction.x;
 
 	// Find starting tile
-	_Coord TileTracer = GetValidCoord(_Coord(Position.x, Position.y));
+	glm::ivec2 TileTracer = GetValidCoord(glm::ivec2(Position.x, Position.y));
 
 	// Check x direction
 	int TileIncrementX, FirstBoundaryTileX;
@@ -871,8 +871,8 @@ bool _Map::IsVisible(const glm::vec2 &Start, const glm::vec2 &End) const {
 	int TileIncrementX, TileIncrementY, FirstBoundaryTileX, FirstBoundaryTileY, TileTracerX, TileTracerY;
 
 	// Find starting and ending tiles
-	_Coord StartTile = GetValidCoord(_Coord(Start));
-	_Coord EndTile = GetValidCoord(_Coord(End));
+	glm::ivec2 StartTile = GetValidCoord(glm::ivec2(Start));
+	glm::ivec2 EndTile = GetValidCoord(glm::ivec2(End));
 
 	// Get direction
 	Direction = End - Start;
@@ -1106,7 +1106,7 @@ void _Map::CleanObjectSpawns() {
 }
 
 // Return the block at a given position
-int _Map::GetSelectedBlock(int Layer, const _Coord &Index) {
+int _Map::GetSelectedBlock(int Layer, const glm::ivec2 &Index) {
 	for(int i = (int)(Blocks[Layer].size())-1; i >= 0; i--) {
 		if(Index.x >= Blocks[Layer][i].Start.x && Index.y >= Blocks[Layer][i].Start.y && Index.x <= Blocks[Layer][i].End.x && Index.y <= Blocks[Layer][i].End.y)
 			return i;
@@ -1116,7 +1116,7 @@ int _Map::GetSelectedBlock(int Layer, const _Coord &Index) {
 }
 
 // Return the block at a given position
-int _Map::GetSelectedBlock(int Layer, const _Coord &Index, _Block **Block) {
+int _Map::GetSelectedBlock(int Layer, const glm::ivec2 &Index, _Block **Block) {
 	int BlockIndex = GetSelectedBlock(Layer, Index);
 	if(BlockIndex != -1) {
 		*Block = &Blocks[Layer][BlockIndex];
@@ -1167,7 +1167,7 @@ _Event *_Map::GetEvent(int Index) const {
 }
 
 // Determines if a tile has any events
-bool _Map::HasEvents(const _Coord &Position) const {
+bool _Map::HasEvents(const glm::ivec2 &Position) const {
 	if(!Data)
 		throw std::runtime_error("Tile data uninitialized!");
 
@@ -1175,7 +1175,7 @@ bool _Map::HasEvents(const _Coord &Position) const {
 }
 
 // Gets a list of event based on a position
-std::list<_Event *> &_Map::GetEventList(const _Coord &Position) {
+std::list<_Event *> &_Map::GetEventList(const glm::ivec2 &Position) {
 	if(!Data)
 		throw std::runtime_error("Tile data uninitialized!");
 
@@ -1206,7 +1206,7 @@ glm::vec2 _Map::GetStartingPositionByCheckpoint(int Level) {
 }
 
 // Return the event at a given position
-int _Map::GetSelectedEvent(const _Coord &Index, _Event **ReturnEvent) {
+int _Map::GetSelectedEvent(const glm::ivec2 &Index, _Event **ReturnEvent) {
 
 	// Loop through events
 	for(auto Iterator = Events.rbegin(); Iterator != Events.rend(); ++Iterator) {
@@ -1261,7 +1261,7 @@ void _Map::AddParticle(_Particle *Particle) {
 	if(!Data)
 		throw std::runtime_error("Tile data uninitialized!");
 
-	_Coord Coord = GetValidCoord(_Coord(Particle->Position.x, Particle->Position.y));
+	glm::ivec2 Coord = GetValidCoord(glm::ivec2(Particle->Position.x, Particle->Position.y));
 	Data[Coord.x][Coord.y].Particles.push_back(Particle);
 
 	Particles.push_back(Particle);
@@ -1520,8 +1520,8 @@ void _Map::RenderObjects(double BlendFactor) {
 int _Map::RenderParticles(int Type) {
 
 	// Get start and end range of tiles to render
-	_Coord Start = GetValidCoord(_Coord(Camera->AABB[0] - PARTICLE_GRID_PADDING, Camera->AABB[1] - PARTICLE_GRID_PADDING));
-	_Coord End = GetValidCoord(_Coord(Camera->AABB[2] + PARTICLE_GRID_PADDING, Camera->AABB[3] + PARTICLE_GRID_PADDING));
+	glm::ivec2 Start = GetValidCoord(glm::ivec2(Camera->AABB[0] - PARTICLE_GRID_PADDING, Camera->AABB[1] - PARTICLE_GRID_PADDING));
+	glm::ivec2 End = GetValidCoord(glm::ivec2(Camera->AABB[2] + PARTICLE_GRID_PADDING, Camera->AABB[3] + PARTICLE_GRID_PADDING));
 
 	// Draw particles
 	int Count = 0;

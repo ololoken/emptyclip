@@ -528,8 +528,8 @@ void _PlayState::Render(double BlendFactor) {
 	ae::Graphics.SetDepthMask(false);
 
 	/*
-	_Coord Start(Camera->GetAABB()[0], Camera->GetAABB()[1]);
-	_Coord End(Camera->GetAABB()[2], Camera->GetAABB()[3]);
+	glm::ivec2 Start(Camera->GetAABB()[0], Camera->GetAABB()[1]);
+	glm::ivec2 End(Camera->GetAABB()[2], Camera->GetAABB()[3]);
 
 	for(int X = Start.x; X < End.x; X++) {
 		for(int Y = Start.y; Y < End.y; Y++) {
@@ -538,7 +538,7 @@ void _PlayState::Render(double BlendFactor) {
 				Camera->ConvertWorldToScreen(glm::vec2(X-0.5f, Y-0.5f), P);
 				std::ostringstream Buffer;
 				size_t Count = 0;
-				std::list<_Event *> &Events = Map->GetEventList(_Coord(X, Y));
+				std::list<_Event *> &Events = Map->GetEventList(glm::ivec2(X, Y));
 				for(auto Event : Events) {
 					if(Event->Active)
 						Count++;
@@ -729,7 +729,7 @@ void _PlayState::UseObject() {
 		PickupObject();
 
 	// Open a door if possible
-	_Coord Position;
+	glm::ivec2 Position;
 	Map->GetAdjacentTile(Player->Position, Player->Rotation, Position);
 
 	// Check for events
@@ -814,7 +814,7 @@ void _PlayState::UpdateMonsters(double FrameTime) {
 
 // Checks for the player triggering events
 void _PlayState::CheckEvents(const _Entity *Entity) {
-	_Coord Position = Map->GetValidCoord(Entity->Position);
+	glm::ivec2 Position = Map->GetValidCoord(Entity->Position);
 
 	// Check for events triggered by walking
 	std::list<_Event *> &Events = Map->GetEventList(Position);

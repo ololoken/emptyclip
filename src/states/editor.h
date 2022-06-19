@@ -232,7 +232,7 @@ class _EditorState : public ae::_State {
 		ae::_Camera *Camera;
 		_Map *Map;
 		glm::vec2 WorldCursor;
-		_Coord WorldCursorIndex;
+		glm::ivec2 WorldCursorIndex;
 		int GridMode;
 		int UndoNumber[MAPLAYER_COUNT];
 		bool IsDrawing;
@@ -269,11 +269,11 @@ class _EditorState : public ae::_State {
 		float Rotation;
 		int SelectedBlockIndex;
 		int SelectedEventIndex;
-		_Coord DrawStart;
-		_Coord DrawEnd;
-		_Coord OldStart;
-		_Coord OldEnd;
-		_Coord SavedIndex;
+		glm::ivec2 DrawStart;
+		glm::ivec2 DrawEnd;
+		glm::ivec2 OldStart;
+		glm::ivec2 OldEnd;
+		glm::ivec2 SavedIndex;
 		bool FinishDrawing;
 		bool HighlightBlocks;
 		bool Walkable;

@@ -19,7 +19,6 @@
 
 // Libraries
 #include <glm/vec2.hpp>
-#include <coord.h>
 #include <color.h>
 #include <string>
 #include <list>
@@ -95,8 +94,8 @@ struct _Tile {
 
 // Holds data for a tile bound
 struct _TileBounds {
-	_Coord Start;
-	_Coord End;
+	glm::ivec2 Start;
+	glm::ivec2 End;
 };
 
 // Holds data for a block of tiles
@@ -104,8 +103,8 @@ struct _Block {
 
 	void GetBounds(glm::vec4 &Bounds) { Bounds[0] = (float)Start.x; Bounds[1] = (float)Start.y; Bounds[2] = End.x + 1.0f; Bounds[3] = End.y + 1.0f; }
 
-	_Coord Start;
-	_Coord End;
+	glm::ivec2 Start;
+	glm::ivec2 End;
 	const ae::_Texture *Texture;
 	const ae::_Texture *AltTexture;
 	float MinZ;
@@ -181,7 +180,7 @@ class _Map {
 		bool CanChangeMapState(const _Event *Event);
 		void ToggleEventActive(int Index);
 		void SwapBlockTextures(int Layer, int Index);
-		bool HasEvents(const _Coord &Position) const;
+		bool HasEvents(const glm::ivec2 &Position) const;
 
 		void SetAmbientLight(const glm::vec4 &Color) { OldAmbientLight = AmbientLight; AmbientLight = Color; }
 		void SetAmbientLightChangePeriod(double Value) { AmbientLightPeriod = Value; AmbientLightTimer = AmbientLightBlendFactor = 0.0; }
@@ -204,9 +203,9 @@ class _Map {
 		const std::vector<_ObjectSpawn *> &GetObjectsList() { return ObjectSpawns; }
 		void GetSelectedObject(const glm::vec2 &Position, float RadiusSquared, _ObjectSpawn **Object, size_t *Index);
 		void GetSelectedObjects(const glm::vec2 &Start, const glm::vec2 &End, std::list<_ObjectSpawn *> *SelectedObjects);
-		int GetSelectedBlock(int Layer, const _Coord &Index, _Block **Block);
-		int GetSelectedBlock(int Layer, const _Coord &Index);
-		int GetSelectedEvent(const _Coord &Index, _Event **Event);
+		int GetSelectedBlock(int Layer, const glm::ivec2 &Index, _Block **Block);
+		int GetSelectedBlock(int Layer, const glm::ivec2 &Index);
+		int GetSelectedEvent(const glm::ivec2 &Index, _Event **Event);
 		int GetLastBlock(int Layer, _Block **Block);
 		int GetLayerSize(int Index);
 		void ChangeLayer(int OldLayer, int NewLayer, int Index);
@@ -220,15 +219,15 @@ class _Map {
 
 		const std::string &GetFilename() const { return Filename; }
 		_Event *GetEvent(int Index) const;
-		std::list<_Event *> &GetEventList(const _Coord &Coord);
+		std::list<_Event *> &GetEventList(const glm::ivec2 &Coord);
 		glm::vec2 GetStartingPositionByCheckpoint(int Level);
 		int GetTotalBlockSize() const;
 		int GetMapType() const { return MapType; }
 		int GetWidth() const { return Width; }
 		int GetHeight() const { return Height; }
 		int GetWallState(const glm::vec2 &Position, float Radius) const;
-		void GetAdjacentTile(const glm::vec2 &Position, float Direction, _Coord &Coord) const;
-		_Coord GetValidCoord(const _Coord &Coord) const;
+		void GetAdjacentTile(const glm::vec2 &Position, float Direction, glm::ivec2 &Coord) const;
+		glm::ivec2 GetValidCoord(const glm::ivec2 &Coord) const;
 		bool CanShootThrough(int IndexX, int IndexY) const;
 		void GetTileBounds(const glm::vec2 &Position, float Radius, _TileBounds &TileBounds) const;
 		const _Block *GetBlock(int Layer, const size_t Index) const;
@@ -279,8 +278,8 @@ class _Map {
 };
 
 // Returns a coordinate inside the map
-inline _Coord _Map::GetValidCoord(const _Coord &Coord) const {
-	return _Coord(
+inline glm::ivec2 _Map::GetValidCoord(const glm::ivec2 &Coord) const {
+	return glm::ivec2(
 		std::max(0, std::min(Coord.x, Width-1)),
 		std::max(0, std::min(Coord.y, Height-1))
 	);

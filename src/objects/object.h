@@ -18,7 +18,6 @@
 #pragma once
 
 // Libraries
-#include <coord.h>
 #include <color.h>
 #include <value.h>
 #include <unordered_map>

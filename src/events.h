@@ -21,7 +21,6 @@
 #include <glm/vec2.hpp>
 #include <vector>
 #include <string>
-#include <coord.h>
 
 // Enumerations
 enum EventType {
@@ -40,9 +39,9 @@ enum EventType {
 
 struct _EventTile {
 	_EventTile() { }
-	_EventTile(const _Coord &Coord, int Layer, int BlockID) : Coord(Coord), Layer(Layer), BlockID(BlockID) { }
+	_EventTile(const glm::ivec2 &Coord, int Layer, int BlockID) : Coord(Coord), Layer(Layer), BlockID(BlockID) { }
 
-	_Coord Coord;
+	glm::ivec2 Coord;
 	int Layer;
 	int BlockID;
 };
@@ -52,7 +51,7 @@ class _Event {
 
 	public:
 
-		_Event(int Type, int Active, const _Coord &Start, const _Coord &End, int Level, double ActivationPeriod, const std::string &ItemIdentifier, const std::string &MonsterIdentifier, const std::string &ParticleIdentifier);
+		_Event(int Type, int Active, const glm::ivec2 &Start, const glm::ivec2 &End, int Level, double ActivationPeriod, const std::string &ItemIdentifier, const std::string &MonsterIdentifier, const std::string &ParticleIdentifier);
 		~_Event();
 
 		void Update(double FrameTime);
@@ -68,8 +67,8 @@ class _Event {
 		int Type;
 		int Active;
 		int Level;
-		_Coord Start;
-		_Coord End;
+		glm::ivec2 Start;
+		glm::ivec2 End;
 		std::vector<_EventTile> Tiles;
 		std::string ItemIdentifier;
 		std::string MonsterIdentifier;
