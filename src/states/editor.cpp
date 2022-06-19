@@ -2072,7 +2072,7 @@ void _EditorState::ExecuteUpdateGridMode(int Change) {
 void _EditorState::ExecuteHighlightBlocks() {
 	HighlightBlocks = !HighlightBlocks;
 
-	ae::Assets.Elements["editor_show"]->Checked = HighlightBlocks;
+	ae::Assets.Elements["button_editor_show"]->Checked = HighlightBlocks;
 }
 
 // Executes the toggle editor mode
