@@ -22,6 +22,9 @@
 #include <list>
 
 // Forward Declarations
+namespace ae {
+	class _Camera;
+}
 class _Font;
 class _HUD;
 class _Map;
@@ -31,7 +34,6 @@ class _Monster;
 class _Player;
 class _Item;
 class _Particles;
-class _Camera;
 struct _ObjectSpawn;
 struct _ParticleTemplate;
 struct _EventTile;
@@ -119,7 +121,7 @@ class _PlayState : public ae::_State {
 		_Particles *Particles;
 
 		// Camera
-		_Camera *Camera;
+		ae::_Camera *Camera;
 		glm::vec2 PreviousWorldCursor;
 		glm::vec2 WorldCursor;
 };

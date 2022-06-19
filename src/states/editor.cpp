@@ -16,9 +16,10 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 *******************************************************************************/
 #include <states/editor.h>
+#include <ae/camera.h>
 #include <framework.h>
 #include <graphics.h>
-#include <camera.h>
+#include <ae/graphics.h>
 #include <font.h>
 #include <assets.h>
 #include <map.h>
@@ -127,7 +128,10 @@ void _EditorState::Init() {
 	ResetEditorState();
 
 	// Create camera
-	Camera = new _Camera(glm::vec3(0, 0, CAMERA_DISTANCE), CAMERA_EDITOR_DIVISOR);
+	ae::_CameraSettings CameraSettings;
+	CameraSettings.UpdateDivisor = CAMERA_EDITOR_DIVISOR;
+	Camera = new ae::_Camera(CameraSettings);
+	Camera->ForcePosition(glm::vec3(0, 0, CAMERA_DISTANCE));
 
 	// Load level
 	if(PlayState.GetFromEditor())
@@ -137,6 +141,7 @@ void _EditorState::Init() {
 
 	// Set up graphics
 	Graphics.SetViewport(Graphics.CurrentSize - EDITOR_VIEWPORT_OFFSET);
+	ae::Graphics.SetViewport(Graphics.CurrentSize - EDITOR_VIEWPORT_OFFSET);
 	Camera->CalculateFrustum(Graphics.AspectRatio);
 	Graphics.SetCursor(true);
 
@@ -189,7 +194,7 @@ bool _EditorState::LoadMap(const std::string &File, bool UseSavedCameraPosition)
 		Map->LoadMonsterSet(MAP_DEFAULTMONSTERSET);
 	}
 
-	Map->SetCamera(Camera);
+	Map->Camera = Camera;
 	ResetEditorState();
 
 	// Set camera
@@ -1882,7 +1887,7 @@ void _EditorState::ExecutePaste(bool Viewport) {
 	if(Viewport)
 		StartPosition = WorldCursor;
 	else
-		StartPosition = Camera->Get2DPosition();
+		StartPosition = glm::vec2(Camera->GetPosition().x, Camera->GetPosition().y);
 
 	switch(CurrentPalette) {
 		case EDITMODE_BLOCKS:

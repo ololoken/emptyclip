@@ -24,7 +24,9 @@
 #include <glm/vec2.hpp>
 
 // Forward Declarations
-class _Camera;
+namespace ae {
+	class _Camera;
+}
 class _Map;
 class _Particle;
 struct _ParticleTemplate;
@@ -71,7 +73,7 @@ class _Particles {
 		void Clear();
 
 		// Objects
-		const _Camera *Camera;
+		const ae::_Camera *Camera;
 		_Map *Map;
 
 	private:

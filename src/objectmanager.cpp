@@ -17,7 +17,7 @@
 *******************************************************************************/
 #include <objectmanager.h>
 #include <objects/object.h>
-#include <camera.h>
+#include <ae/camera.h>
 
 // Constructor
 _ObjectManager::_ObjectManager() {
@@ -33,7 +33,7 @@ _ObjectManager::~_ObjectManager() {
 }
 
 // Updates all objects
-void _ObjectManager::Update(double FrameTime, const _Camera *Camera) {
+void _ObjectManager::Update(double FrameTime, const ae::_Camera *Camera) {
 	ItemRenderList[0].clear();
 	ItemRenderList[1].clear();
 	ItemRenderList[2].clear();

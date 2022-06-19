@@ -27,6 +27,9 @@
 #include <glm/vec3.hpp>
 
 // Forward Declarations
+namespace ae {
+	class _Camera;
+}
 class _Font;
 class _Texture;
 class _Event;
@@ -34,7 +37,6 @@ class _Element;
 class _Button;
 class _Map;
 class _TextBox;
-class _Camera;
 struct _EventTile;
 struct _Brush;
 struct _ObjectSpawn;
@@ -228,7 +230,7 @@ class _EditorState : public ae::_State {
 		int SavedPalette;
 
 		// Map editing
-		_Camera *Camera;
+		ae::_Camera *Camera;
 		_Map *Map;
 		glm::vec2 WorldCursor;
 		_Coord WorldCursorIndex;

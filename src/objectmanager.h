@@ -23,7 +23,9 @@
 
 // Forward Declarations
 class _Object;
-class _Camera;
+namespace ae {
+	class _Camera;
+}
 
 // Manages all the objects for a map
 class _ObjectManager {
@@ -34,7 +36,7 @@ class _ObjectManager {
 		~_ObjectManager();
 
 		// Updates
-		void Update(double FrameTime, const _Camera *Camera);
+		void Update(double FrameTime, const ae::_Camera *Camera);
 		void Render(double BlendFactor);
 
 		// Management

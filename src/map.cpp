@@ -17,9 +17,9 @@
 *******************************************************************************/
 #include <map.h>
 #include <ae/random.h>
+#include <ae/camera.h>
 #include <graphics.h>
 #include <assets.h>
-#include <camera.h>
 #include <events.h>
 #include <stats.h>
 #include <program.h>
@@ -61,13 +61,13 @@ static std::string GetCSVText(std::ifstream &Stream) {
 
 // Initialize
 _Map::_Map() :
+	Camera(nullptr),
 	MapType(MAPTYPE_SINGLE),
 	Width(MAP_WIDTH),
 	Height(MAP_HEIGHT),
 	Filename(""),
 	Data(nullptr),
 	ObjectManager(new _ObjectManager()),
-	Camera(nullptr),
 	MonsterSetID(MAP_DEFAULTMONSTERSET),
 	AmbientLight(0.0f, 0.0f, 0.0f, 1.0f),
 	OldAmbientLight(0.0f, 0.0f, 0.0f, 1.0f),
@@ -1357,8 +1357,6 @@ void _Map::RenderFloors() {
 	if(!Camera)
 		return;
 
-	float Bounds[4];
-
 	// Draw base layer
 	Graphics.SetProgram(Assets.Programs["pos_uv"]);
 	Graphics.SetColor(glm::vec4(1.0f));
@@ -1369,6 +1367,7 @@ void _Map::RenderFloors() {
 
 		bool Draw = true;
 		if(Block->MinZ >= 0) {
+			glm::vec4 Bounds;
 			Block->GetBounds(Bounds);
 			Draw = Camera->IsAABBInView(Bounds);
 		}
@@ -1387,6 +1386,7 @@ void _Map::RenderFloors() {
 
 				bool Draw = true;
 				if(Block->MinZ >= 0) {
+					glm::vec4 Bounds;
 					Block->GetBounds(Bounds);
 					Draw = Camera->IsAABBInView(Bounds);
 				}
@@ -1414,13 +1414,13 @@ void _Map::RenderWalls() {
 	Graphics.SetCullFace(true);
 
 	// Draw walls
-	float Bounds[4];
 	for(std::size_t i = 0; i < Blocks[MAPLAYER_WALL].size(); i++) {
 		_Block *Block = &Blocks[MAPLAYER_WALL][i];
 
 		// Always draw walls that go lower than floor
 		bool Draw = true;
 		if(Block->MinZ >= 0) {
+			glm::vec4 Bounds;
 			Block->GetBounds(Bounds);
 			Draw = Camera->IsAABBInView(Bounds);
 		}
@@ -1448,11 +1448,11 @@ void _Map::RenderFlatWalls() {
 	Graphics.SetDepthMask(false);
 	Graphics.SetDepthTest(true);
 
-	float Bounds[4];
 	for(size_t i = 0; i < Blocks[MAPLAYER_FLAT].size(); i++) {
 		_Block *Block = &Blocks[MAPLAYER_FLAT][i];
 		bool Draw = true;
 		if(Block->MinZ >= 0) {
+			glm::vec4 Bounds;
 			Block->GetBounds(Bounds);
 			Draw = Camera->IsAABBInView(Bounds);
 		}
@@ -1473,7 +1473,7 @@ void _Map::RenderEvents(std::vector<const _Texture *> &Textures) {
 
 	// Draw events
 	for(size_t i = 0; i < Events.size(); i++) {
-		float Bounds[4] = { (float)Events[i]->Start.x,(float) Events[i]->Start.y, (float)Events[i]->End.x + 1.0f, (float)Events[i]->End.y + 1.0f };
+		glm::vec4 Bounds((float)Events[i]->Start.x, (float)Events[i]->Start.y, (float)Events[i]->End.x + 1.0f, (float)Events[i]->End.y + 1.0f);
 		if(Camera->IsAABBInView(Bounds))
 			Graphics.DrawRepeatable(glm::vec3(Events[i]->Start.x, Events[i]->Start.y, MAP_LAYEROFFSET), glm::vec3(Events[i]->End.x + 1.0f, Events[i]->End.y + 1.0f, MAP_LAYEROFFSET), Textures[Events[i]->Type], 0, 1.0f);
 	}
@@ -1483,8 +1483,6 @@ void _Map::RenderEvents(std::vector<const _Texture *> &Textures) {
 void _Map::RenderForeground() {
 	if(!Camera)
 		return;
-
-	float Bounds[4];
 
 	// Set up graphics
 	Graphics.SetProgram(Assets.Programs["pos_uv"]);
@@ -1497,6 +1495,7 @@ void _Map::RenderForeground() {
 		_Block *Block = &Blocks[6][i];
 		bool Draw = true;
 		if(Block->MinZ >= 0) {
+			glm::vec4 Bounds;
 			Block->GetBounds(Bounds);
 			Draw = Camera->IsAABBInView(Bounds);
 		}

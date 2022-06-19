@@ -62,11 +62,13 @@ const int WALL_BOTTOM               = 0x8;
 const float PARTICLE_GRID_PADDING   = 2;
 
 // Forward Declarations
+namespace ae {
+	class _Camera;
+}
 class _Event;
 class _Entity;
 class _Object;
 class _Item;
-class _Camera;
 class _Texture;
 class _Particle;
 class _ObjectManager;
@@ -100,7 +102,7 @@ struct _TileBounds {
 // Holds data for a block of tiles
 struct _Block {
 
-	void GetBounds(float *Bounds) { Bounds[0] = (float)Start.x; Bounds[1] = (float)Start.y; Bounds[2] = End.x + 1.0f; Bounds[3] = End.y + 1.0f; }
+	void GetBounds(glm::vec4 &Bounds) { Bounds[0] = (float)Start.x; Bounds[1] = (float)Start.y; Bounds[2] = End.x + 1.0f; Bounds[3] = End.y + 1.0f; }
 
 	_Coord Start;
 	_Coord End;
@@ -235,12 +237,11 @@ class _Map {
 		void AddItem(_Item *Item);
 		void RemoveItem(_Item *Item);
 
-		void SetCamera(_Camera *Camera) { this->Camera = Camera; }
-		_Camera *GetCamera() { return Camera; }
-
 		void AddRenderList(_Object *Object, int Layer);
 		static glm::vec2 GenerateRandomPointInCircle(float Radius);
 
+		// Attributes
+		ae::_Camera *Camera;
 		std::vector<std::string> MonsterSet;
 
 	private:
@@ -266,7 +267,6 @@ class _Map {
 		std::vector<_Particle *> Particles;
 
 		// Graphics
-		_Camera *Camera;
 		std::string MonsterSetID;
 
 		// Lights

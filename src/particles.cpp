@@ -16,10 +16,10 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 *******************************************************************************/
 #include <particles.h>
+#include <ae/camera.h>
 #include <map.h>
 #include <objects/templates.h>
 #include <objects/particle.h>
-#include <camera.h>
 
 // Constructor
 _Particles::_Particles() :

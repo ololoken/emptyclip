@@ -17,10 +17,11 @@
 *******************************************************************************/
 #include <states/play.h>
 #include <ae/actions.h>
+#include <ae/camera.h>
+#include <ae/graphics.h>
 #include <graphics.h>
 #include <framework.h>
 #include <menu.h>
-#include <camera.h>
 #include <constants.h>
 #include <assets.h>
 #include <hud.h>
@@ -59,6 +60,7 @@ _PlayState::_PlayState() {
 // Load level and set up objects
 void _PlayState::Init() {
 	Graphics.SetViewport(Graphics.CurrentSize);
+	ae::Graphics.SetViewport(Graphics.CurrentSize - EDITOR_VIEWPORT_OFFSET);
 	Graphics.Element->SetActive(false);
 	Graphics.Element->Active = true;
 
@@ -108,9 +110,13 @@ void _PlayState::Init() {
 	Particles = new _Particles();
 
 	// Set up camera
-	Camera = new _Camera(glm::vec3(Player->Position, CAMERA_DISTANCE), CAMERA_DIVISOR);
+	ae::_CameraSettings CameraSettings;
+	CameraSettings.UpdateDivisor = CAMERA_DIVISOR;
+	Camera = new ae::_Camera(CameraSettings);
 	Camera->CalculateFrustum(Graphics.AspectRatio);
-	Map->SetCamera(Camera);
+	Camera->ForcePosition(glm::vec3(Player->Position, CAMERA_DISTANCE));
+
+	Map->Camera = Camera;
 	Particles->Camera = Camera;
 	Particles->Map = Map;
 	Camera->ConvertScreenToWorld(ae::Input.GetMouse(), WorldCursor);
