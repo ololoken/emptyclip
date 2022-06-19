@@ -18,7 +18,7 @@
 #include <objects/item.h>
 #include <ae/buffer.h>
 #include <ae/texture.h>
-#include <graphics.h>
+#include <ae/graphics.h>
 #include <constants.h>
 
 // Constructor
@@ -36,8 +36,8 @@ void _Item::Serialize(ae::_Buffer &Buffer) {
 
 // Draws the object
 void _Item::Render(double BlendFactor) {
-	Graphics.SetColor(Color);
-	Graphics.DrawSprite(glm::vec3(Position, PositionZ), Texture, Rotation, glm::vec2(ITEM_SCALE));
+	ae::Graphics.SetColor(Color);
+	ae::Graphics.DrawSprite(glm::vec3(Position, PositionZ), Texture, Rotation, glm::vec2(ITEM_SCALE));
 }
 
 float _Item::GetAverageDamage() const {

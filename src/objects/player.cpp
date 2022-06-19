@@ -18,14 +18,15 @@
 #include <objects/player.h>
 #include <ae/buffer.h>
 #include <ae/texture.h>
-#include <graphics.h>
+#include <ae/graphics.h>
+#include <ae/assets.h>
 #include <audio.h>
 #include <assets.h>
 #include <stats.h>
 #include <animation.h>
 #include <map.h>
 #include <constants.h>
-#include <ui/ui.h>
+#include <ae/ui.h>
 #include <objects/monster.h>
 #include <objects/weapon.h>
 #include <fstream>
@@ -81,11 +82,11 @@ _Player::_Player(const std::string &SavePath) {
 		Inventory[i] = nullptr;
 
 	// Set animation
-	SetTorsoAnimation(Assets.GetAnimation("player_torso"));
-	SetLegAnimation(Assets.GetAnimation("player_legs"));
+	SetTorsoAnimation(OldAssets.GetAnimation("player_torso"));
+	SetLegAnimation(OldAssets.GetAnimation("player_legs"));
 
 	// Set samples
-	AttackSampleTemplateStruct *AttackSample = Assets.GetAttackSampleTemplate("player0");
+	AttackSampleTemplateStruct *AttackSample = OldAssets.GetAttackSampleTemplate("player0");
 	for(int i = 0; i < SAMPLE_TYPES; i++) {
 		if(AttackSample)
 			Samples[i] = AttackSample->Samples[i];
@@ -539,19 +540,19 @@ void _Player::AdjustLegDirection(float Destination) {
 void _Player::Render(double BlendFactor) {
 	glm::vec2 DrawPosition(Position * (float)BlendFactor + LastPosition * (float)(1.0 - BlendFactor));
 
-	Graphics.SetColor(Color);
-	Graphics.DrawSprite(glm::vec3(DrawPosition, PositionZ), LegAnimation->GetCurrentFrame(), LegDirection, glm::vec2(Scale));
-	Graphics.SetColor(COLOR_WHITE);
-	Graphics.DrawSprite(glm::vec3(DrawPosition, PositionZ + 0.01f), Animation->GetCurrentFrame(), Rotation, glm::vec2(Scale));
+	ae::Graphics.SetColor(Color);
+	ae::Graphics.DrawSprite(glm::vec3(DrawPosition, PositionZ), LegAnimation->GetCurrentFrame(), LegDirection, glm::vec2(Scale));
+	ae::Graphics.SetColor(COLOR_WHITE);
+	ae::Graphics.DrawSprite(glm::vec3(DrawPosition, PositionZ + 0.01f), Animation->GetCurrentFrame(), Rotation, glm::vec2(Scale));
 }
 
 // Draws the player in screen space
 void _Player::Render2D(const glm::ivec2 &Position) {
-	Graphics.SetProgram(Assets.Programs["ortho_pos_uv"]);
-	Graphics.SetColor(Color);
-	Graphics.DrawSprite(glm::vec3(Position, 0), LegAnimation->GetCurrentFrame(), Rotation, glm::vec2(LegAnimation->GetCurrentFrame()->Size.x, LegAnimation->GetCurrentFrame()->Size.y));
-	Graphics.SetColor(COLOR_WHITE);
-	Graphics.DrawSprite(glm::vec3(Position, 0.01f), Animation->GetCurrentFrame(), Rotation, glm::vec2(Animation->GetCurrentFrame()->Size.x, Animation->GetCurrentFrame()->Size.y));
+	ae::Graphics.SetProgram(ae::Assets.Programs["ortho_pos_uv"]);
+	ae::Graphics.SetColor(Color);
+	ae::Graphics.DrawSprite(glm::vec3(Position, 0), LegAnimation->GetCurrentFrame(), Rotation, glm::vec2(LegAnimation->GetCurrentFrame()->Size.x, LegAnimation->GetCurrentFrame()->Size.y));
+	ae::Graphics.SetColor(COLOR_WHITE);
+	ae::Graphics.DrawSprite(glm::vec3(Position, 0.01f), Animation->GetCurrentFrame(), Rotation, glm::vec2(Animation->GetCurrentFrame()->Size.x, Animation->GetCurrentFrame()->Size.y));
 }
 
 // Updates the player's experience, leveling up if needed
@@ -1003,7 +1004,6 @@ void _Player::StartReloading() {
 
 // Cancel the reload process
 void _Player::CancelReloading() {
-
 	Reloading = false;
 }
 
@@ -1274,7 +1274,6 @@ const std::string &_Player::GetSample(int SampleType) const {
 
 // Returns the weapon's particle template
 const _ParticleTemplate *_Player::GetWeaponParticle(int Index) const {
-
 	if(HasMainHand())
 		return Stats.Weapons[GetMainHand()->ID].WeaponParticles->ParticleTemplates[Index];
 
@@ -1283,15 +1282,20 @@ const _ParticleTemplate *_Player::GetWeaponParticle(int Index) const {
 
 // Sets the color string and color of the player
 void _Player::UpdateColor() {
-
-	if(Assets.IsColorLoaded(ColorIdentifier))
-		Color = Assets.Colors[ColorIdentifier];
+	if(ae::Assets.Colors.find(ColorIdentifier) != ae::Assets.Colors.end())
+		Color = ae::Assets.Colors[ColorIdentifier];
 	else
 		Color = COLOR_WHITE;
 }
 
-int _Player::GetInventoryMaxStack() const { return Stats.GetSkill(Skills[SKILL_MAXINVENTORY], SKILL_MAXINVENTORY) + 1; }
-bool _Player::CanUseMedkit() const { return (MedkitTimer > PLAYER_MEDKITPERIOD) && Health < MaxHealth; }
+int _Player::GetInventoryMaxStack() const {
+	return Stats.GetSkill(Skills[SKILL_MAXINVENTORY], SKILL_MAXINVENTORY) + 1;
+}
+
+bool _Player::CanUseMedkit() const {
+	return (MedkitTimer > PLAYER_MEDKITPERIOD) && Health < MaxHealth;
+}
+
 bool _Player::CanReload() const {
 	return HasMainHand() && !Reloading && !SwitchingWeapons && !IsMeleeAttacking() && GetMainHand()->Attributes.at("ammo").Int != GetMainHand()->Attributes.at("rounds").Int && HasClips();
 }

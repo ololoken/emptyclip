@@ -22,10 +22,8 @@
 #include <string>
 
 // Forward Declarations
-class _Element;
-class _Button;
-class _Image;
 namespace ae {
+	class _Element;
 	struct _MouseEvent;
 	struct _KeyEvent;
 }
@@ -115,14 +113,14 @@ class _Menu {
 		StateType State;
 
 		// UI
-		_Element *Background;
-		_Element *CurrentLayout;
-		_Element *InputLabels[LABEL_COUNT];
-		_Element *SaveSlots[_Save::SLOT_COUNT];
-		_Element *ColorButtons[4];
+		ae::_Element *Background;
+		ae::_Element *CurrentLayout;
+		ae::_Element *InputLabels[LABEL_COUNT];
+		ae::_Element *SaveSlots[_Save::SLOT_COUNT];
+		ae::_Element *ColorButtons[4];
 
 		// Double click
-		_Element *PreviousClick;
+		ae::_Element *PreviousClick;
 		double PreviousClickTimer;
 
 		// Options

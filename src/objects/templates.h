@@ -26,8 +26,8 @@
 
 namespace ae {
 	class _Texture;
+	class _Font;
 }
-class _Font;
 
 // Determines if you can hold down the mouse to fire or not
 enum FireRateType {
@@ -98,7 +98,7 @@ struct _ParticleTemplate {
 	glm::vec2 Size;
 	glm::vec4 Color;
 	const ae::_Texture *Texture;
-	const _Font *Font;
+	const ae::_Font *Font;
 	double Lifetime;
 	float AccelerationScale;
 	float AlphaSpeed;

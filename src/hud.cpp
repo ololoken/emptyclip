@@ -18,14 +18,15 @@
 #include <hud.h>
 #include <ae/input.h>
 #include <ae/actions.h>
+#include <ae/graphics.h>
+#include <ae/font.h>
+#include <ae/program.h>
+#include <ae/assets.h>
+#include <ae/actions.h>
 #include <actiontype.h>
-#include <graphics.h>
-#include <font.h>
 #include <config.h>
 #include <stats.h>
-#include <program.h>
 #include <assets.h>
-#include <ae/actions.h>
 #include <objects/entity.h>
 #include <objects/player.h>
 #include <objects/item.h>
@@ -49,96 +50,96 @@ _HUD::_HUD(_Player *Player) :
 	InventoryOpen = false;
 
 	// Get textures
-	Fonts[FONT_TINY] = Assets.Fonts["hud_tiny"];
-	Fonts[FONT_SMALL] = Assets.Fonts["hud_small"];
-	Fonts[FONT_MEDIUM] = Assets.Fonts["hud_medium"];
-	Fonts[FONT_LARGE] = Assets.Fonts["hud_large"];
-	Fonts[FONT_LARGER] = Assets.Fonts["hud_larger"];
-	Fonts[FONT_LARGEST] = Assets.Fonts["hud_largest"];
-	CrosshairID = Assets.Textures["textures/hud/crosshair0.png"];
-	ReloadTexture = Assets.Textures["textures/hud/reload0.png"];
-	WeaponSwitchTexture = Assets.Textures["textures/hud/weaponswitch0.png"];
+	Fonts[FONT_TINY] = ae::Assets.Fonts["hud_tiny"];
+	Fonts[FONT_SMALL] = ae::Assets.Fonts["hud_small"];
+	Fonts[FONT_MEDIUM] = ae::Assets.Fonts["hud_medium"];
+	Fonts[FONT_LARGE] = ae::Assets.Fonts["hud_large"];
+	Fonts[FONT_LARGER] = ae::Assets.Fonts["hud_larger"];
+	Fonts[FONT_LARGEST] = ae::Assets.Fonts["hud_largest"];
+	CrosshairTexture = ae::Assets.Textures["textures/hud/crosshair0.png"];
+	ReloadTexture = ae::Assets.Textures["textures/hud/reload0.png"];
+	WeaponSwitchTexture = ae::Assets.Textures["textures/hud/weaponswitch0.png"];
 
 	// Elements
-	Elements[LABEL_FPS] = Assets.Elements["label_hud_fps"];
-	Elements[LABEL_MESSAGE] = Assets.Elements["label_hud_message"];
-	Elements[LABEL_MESSAGEBOX] = Assets.Elements["label_hud_messagebox_text"];
+	Elements[LABEL_FPS] = ae::Assets.Elements["label_hud_fps"];
+	Elements[LABEL_MESSAGE] = ae::Assets.Elements["label_hud_message"];
+	Elements[LABEL_MESSAGEBOX] = ae::Assets.Elements["label_hud_messagebox_text"];
 
 	Elements[LABEL_FPS]->SetActive(true);
 	Elements[LABEL_MESSAGE]->SetActive(true);
 	Elements[LABEL_MESSAGEBOX]->SetActive(true);
 
-	Elements[ELEMENT_PLAYERINFO] = Assets.Elements["element_hud_player_info"];
-	Elements[LABEL_PLAYERNAME] = Assets.Elements["label_hud_player_name"];
-	Elements[LABEL_PLAYERLEVEL] = Assets.Elements["label_hud_player_level"];
-	Elements[LABEL_PLAYERHEALTH] = Assets.Elements["label_hud_player_health"];
+	Elements[ELEMENT_PLAYERINFO] = ae::Assets.Elements["element_hud_player_info"];
+	Elements[LABEL_PLAYERNAME] = ae::Assets.Elements["label_hud_player_name"];
+	Elements[LABEL_PLAYERLEVEL] = ae::Assets.Elements["label_hud_player_level"];
+	Elements[LABEL_PLAYERHEALTH] = ae::Assets.Elements["label_hud_player_health"];
 	Elements[ELEMENT_PLAYERINFO]->SetActive(true);
 
-	Elements[ELEMENT_ENEMYINFO] = Assets.Elements["element_hud_enemy_info"];
-	Elements[LABEL_ENEMYNAME] = Assets.Elements["label_hud_enemy_name"];
+	Elements[ELEMENT_ENEMYINFO] = ae::Assets.Elements["element_hud_enemy_info"];
+	Elements[LABEL_ENEMYNAME] = ae::Assets.Elements["label_hud_enemy_name"];
 	Elements[ELEMENT_ENEMYINFO]->SetActive(true);
 
-	Elements[ELEMENT_PLAYERHEALTH] = Assets.Elements["element_hud_player_health"];
-	Elements[IMAGE_PLAYERHEALTH] = Assets.Elements["image_player_health_full"];
-	Elements[LABEL_PLAYERHEALTH] = Assets.Elements["label_hud_player_health_text"];
+	Elements[ELEMENT_PLAYERHEALTH] = ae::Assets.Elements["element_hud_player_health"];
+	Elements[IMAGE_PLAYERHEALTH] = ae::Assets.Elements["image_player_health_full"];
+	Elements[LABEL_PLAYERHEALTH] = ae::Assets.Elements["label_hud_player_health_text"];
 	Elements[ELEMENT_PLAYERHEALTH]->SetActive(true);
 
-	Elements[ELEMENT_PLAYERSTAMINA] = Assets.Elements["element_hud_player_stamina"];
-	Elements[IMAGE_PLAYERSTAMINA] = Assets.Elements["image_player_stamina_full"];
+	Elements[ELEMENT_PLAYERSTAMINA] = ae::Assets.Elements["element_hud_player_stamina"];
+	Elements[IMAGE_PLAYERSTAMINA] = ae::Assets.Elements["image_player_stamina_full"];
 	Elements[ELEMENT_PLAYERSTAMINA]->SetActive(true);
 
-	Elements[IMAGE_ENEMYHEALTH] = Assets.Elements["image_enemy_health_full"];
+	Elements[IMAGE_ENEMYHEALTH] = ae::Assets.Elements["image_enemy_health_full"];
 	Elements[IMAGE_ENEMYHEALTH]->SetActive(true);
 
-	Elements[ELEMENT_INDICATOR] = Assets.Elements["element_hud_indicator"];
-	Elements[IMAGE_RELOAD] = Assets.Elements["image_indicator_progress"];
-	Elements[LABEL_INDICATOR] = Assets.Elements["label_hud_indicator_text"];
+	Elements[ELEMENT_INDICATOR] = ae::Assets.Elements["element_hud_indicator"];
+	Elements[IMAGE_RELOAD] = ae::Assets.Elements["image_indicator_progress"];
+	Elements[LABEL_INDICATOR] = ae::Assets.Elements["label_hud_indicator_text"];
 	Elements[ELEMENT_INDICATOR]->SetActive(true);
 
-	Elements[ELEMENT_EXPERIENCE] = Assets.Elements["element_hud_experience"];
-	Elements[IMAGE_EXPERIENCE] = Assets.Elements["image_experience_bar_full"];
-	Elements[LABEL_EXPERIENCE] = Assets.Elements["label_hud_experience_text"];
+	Elements[ELEMENT_EXPERIENCE] = ae::Assets.Elements["element_hud_experience"];
+	Elements[IMAGE_EXPERIENCE] = ae::Assets.Elements["image_experience_bar_full"];
+	Elements[LABEL_EXPERIENCE] = ae::Assets.Elements["label_hud_experience_text"];
 	Elements[ELEMENT_EXPERIENCE]->SetActive(true);
 
-	Elements[ELEMENT_MAINHAND] = Assets.Elements["element_hud_mainhand"];
-	Elements[IMAGE_MAINHAND_ICON] = Assets.Elements["image_weapon0_icon"];
-	Elements[LABEL_MAINHAND_AMMO] = Assets.Elements["label_hud_mainhand_ammo"];
+	Elements[ELEMENT_MAINHAND] = ae::Assets.Elements["element_hud_mainhand"];
+	Elements[IMAGE_MAINHAND_ICON] = ae::Assets.Elements["image_weapon0_icon"];
+	Elements[LABEL_MAINHAND_AMMO] = ae::Assets.Elements["label_hud_mainhand_ammo"];
 	Elements[ELEMENT_MAINHAND]->SetActive(true);
 
-	Elements[ELEMENT_OFFHAND] = Assets.Elements["element_hud_offhand"];
-	Elements[IMAGE_OFFHAND_ICON] = Assets.Elements["image_weapon1_icon"];
-	Elements[LABEL_OFFHAND_AMMO] = Assets.Elements["label_hud_offhand_ammo"];
+	Elements[ELEMENT_OFFHAND] = ae::Assets.Elements["element_hud_offhand"];
+	Elements[IMAGE_OFFHAND_ICON] = ae::Assets.Elements["image_weapon1_icon"];
+	Elements[LABEL_OFFHAND_AMMO] = ae::Assets.Elements["label_hud_offhand_ammo"];
 	Elements[ELEMENT_OFFHAND]->SetActive(true);
 
-	Elements[ELEMENT_INVENTORY] = Assets.Elements["element_inventory"];
-	Elements[ELEMENT_SKILLS] = Assets.Elements["element_skills"];
-	Elements[LABEL_SKILL_REMAINING] = Assets.Elements["label_hud_skill_remaining_value"];
-	Elements[LABEL_SKILL0] = Assets.Elements["label_hud_skill0_value"];
-	Elements[LABEL_SKILL1] = Assets.Elements["label_hud_skill1_value"];
-	Elements[LABEL_SKILL2] = Assets.Elements["label_hud_skill2_value"];
-	Elements[LABEL_SKILL3] = Assets.Elements["label_hud_skill3_value"];
-	Elements[LABEL_SKILL4] = Assets.Elements["label_hud_skill4_value"];
-	Elements[LABEL_SKILL5] = Assets.Elements["label_hud_skill5_value"];
-	Elements[LABEL_SKILL6] = Assets.Elements["label_hud_skill6_value"];
-	Elements[LABEL_SKILL7] = Assets.Elements["label_hud_skill7_value"];
-	Elements[LABEL_SKILL8] = Assets.Elements["label_hud_skill8_value"];
+	Elements[ELEMENT_INVENTORY] = ae::Assets.Elements["element_inventory"];
+	Elements[ELEMENT_SKILLS] = ae::Assets.Elements["element_skills"];
+	Elements[LABEL_SKILL_REMAINING] = ae::Assets.Elements["label_hud_skill_remaining_value"];
+	Elements[LABEL_SKILL0] = ae::Assets.Elements["label_hud_skill0_value"];
+	Elements[LABEL_SKILL1] = ae::Assets.Elements["label_hud_skill1_value"];
+	Elements[LABEL_SKILL2] = ae::Assets.Elements["label_hud_skill2_value"];
+	Elements[LABEL_SKILL3] = ae::Assets.Elements["label_hud_skill3_value"];
+	Elements[LABEL_SKILL4] = ae::Assets.Elements["label_hud_skill4_value"];
+	Elements[LABEL_SKILL5] = ae::Assets.Elements["label_hud_skill5_value"];
+	Elements[LABEL_SKILL6] = ae::Assets.Elements["label_hud_skill6_value"];
+	Elements[LABEL_SKILL7] = ae::Assets.Elements["label_hud_skill7_value"];
+	Elements[LABEL_SKILL8] = ae::Assets.Elements["label_hud_skill8_value"];
 	Elements[ELEMENT_INVENTORY]->SetActive(false);
 	Elements[ELEMENT_SKILLS]->SetActive(false);
 
-	Elements[LABEL_DAMAGE] = Assets.Elements["label_hud_player_damage_value"];
-	Elements[LABEL_MELEEDAMAGE] = Assets.Elements["label_hud_player_meleedamage_value"];
-	Elements[LABEL_DAMAGEBLOCK] = Assets.Elements["label_hud_player_damageblock_value"];
-	Elements[LABEL_DAMAGERESIST] = Assets.Elements["label_hud_player_damageresist_value"];
-	Elements[LABEL_MOVEMENTSPEED] = Assets.Elements["label_hud_player_movementspeed_value"];
-	Elements[LABEL_KILLS] = Assets.Elements["label_hud_player_kills_value"];
+	Elements[LABEL_DAMAGE] = ae::Assets.Elements["label_hud_player_damage_value"];
+	Elements[LABEL_MELEEDAMAGE] = ae::Assets.Elements["label_hud_player_meleedamage_value"];
+	Elements[LABEL_DAMAGEBLOCK] = ae::Assets.Elements["label_hud_player_damageblock_value"];
+	Elements[LABEL_DAMAGERESIST] = ae::Assets.Elements["label_hud_player_damageresist_value"];
+	Elements[LABEL_MOVEMENTSPEED] = ae::Assets.Elements["label_hud_player_movementspeed_value"];
+	Elements[LABEL_KILLS] = ae::Assets.Elements["label_hud_player_kills_value"];
 
-	Elements[ELEMENT_SKILLINFO] = Assets.Elements["element_skill_info"];
-	Elements[LABEL_SKILLTEXT] = Assets.Elements["label_hud_skill_text"];
-	Elements[LABEL_SKILL_LEVEL] = Assets.Elements["label_hud_skill_level"];
-	Elements[LABEL_SKILL_LEVEL_NEXT] = Assets.Elements["label_hud_skill_level_next"];
+	Elements[ELEMENT_SKILLINFO] = ae::Assets.Elements["element_skill_info"];
+	Elements[LABEL_SKILLTEXT] = ae::Assets.Elements["label_hud_skill_text"];
+	Elements[LABEL_SKILL_LEVEL] = ae::Assets.Elements["label_hud_skill_level"];
+	Elements[LABEL_SKILL_LEVEL_NEXT] = ae::Assets.Elements["label_hud_skill_level_next"];
 	Elements[ELEMENT_SKILLINFO]->SetActive(true);
 
-	Elements[ELEMENT_MESSAGE] = Assets.Elements["element_hud_messagebox"];
+	Elements[ELEMENT_MESSAGE] = ae::Assets.Elements["element_hud_messagebox"];
 	Elements[ELEMENT_MESSAGE]->SetActive(true);
 
 }
@@ -164,7 +165,7 @@ void _HUD::SetInventoryOpen(bool Value) {
 		CursorItem = CursorOverItem = nullptr;
 	}
 
-	Graphics.SetCursor(InventoryOpen);
+	ae::Graphics.SetCursor(InventoryOpen);
 }
 
 // Handle mouse events
@@ -172,7 +173,7 @@ void _HUD::MouseEvent(const ae::_MouseEvent &MouseEvent) {
 	if(!GetInventoryOpen())
 		return;
 
-	_Element *HitElement = Elements[ELEMENT_INVENTORY]->HitElement;
+	ae::_Element *HitElement = Elements[ELEMENT_INVENTORY]->HitElement;
 	if(MouseEvent.Button == SDL_BUTTON_LEFT) {
 
 		// Start dragging an item
@@ -180,7 +181,7 @@ void _HUD::MouseEvent(const ae::_MouseEvent &MouseEvent) {
 			if(HitElement && HitElement->Index >= 0 && Player->CanDropItem()) {
 				DragStart = HitElement;
 				CursorItem = Player->GetInventory(DragStart->Index);
-				ClickOffset = glm::vec2(MouseEvent.Position) - HitElement->Bounds.GetMidPoint();
+				ClickOffset = glm::vec2(MouseEvent.Position) - HitElement->Bounds.GetCenter();
 			}
 		}
 		else {
@@ -240,9 +241,9 @@ void _HUD::Update(double FrameTime, float Radius) {
 
 	// Update inventory
 	if(GetInventoryOpen()) {
-		Graphics.SetCursor(true);
+		ae::Graphics.SetCursor(true);
 
-		_Element *HitElement;
+		ae::_Element *HitElement;
 		HitElement = Elements[ELEMENT_INVENTORY]->HitElement;
 		if(HitElement && HitElement->Index >= 0)
 			CursorOverItem = Player->GetInventory(HitElement->Index);
@@ -252,7 +253,7 @@ void _HUD::Update(double FrameTime, float Radius) {
 			UpdateSkillInfo(HitElement->Index, ae::Input.GetMouse().x, ae::Input.GetMouse().y);
 	}
 	else
-		Graphics.SetCursor(false);
+		ae::Graphics.SetCursor(false);
 
 	// Update health display
 	if(LastEntityHit != nullptr && (LastEntityHitTimer > HUD_ENTITYHEALTHDISPLAYPERIOD || !LastEntityHit->Active))
@@ -270,7 +271,7 @@ void _HUD::Render() {
 
 	// FPS
 	std::ostringstream Buffer;
-	Buffer << Graphics.FramesPerSecond << " FPS";
+	Buffer << ae::Graphics.FramesPerSecond << " FPS";
 	Elements[LABEL_FPS]->Text = Buffer.str();
 	Elements[LABEL_FPS]->Render();
 	Buffer.str("");
@@ -356,15 +357,15 @@ void _HUD::Render() {
 			_Weapon *Weapon = (_Weapon *)CursorOverItem;
 			if(Weapon->IsMelee()) {
 				if(Weapon != Player->GetMelee())
-					RenderItemInfo(Player->GetMelee(), -100, Graphics.CurrentSize.y/2);
+					RenderItemInfo(Player->GetMelee(), -100, ae::Graphics.CurrentSize.y/2);
 			}
 			else {
 				if(Weapon != Player->GetMainHand())
-					RenderItemInfo(Player->GetMainHand(), -100, Graphics.CurrentSize.y/2);
+					RenderItemInfo(Player->GetMainHand(), -100, ae::Graphics.CurrentSize.y/2);
 			}
 		}
 		else if(CursorOverItem->Type == _Object::ARMOR && CursorOverItem != Player->GetArmor())
-			RenderItemInfo(Player->GetArmor(), -100, Graphics.CurrentSize.y/2);
+			RenderItemInfo(Player->GetArmor(), -100, ae::Graphics.CurrentSize.y/2);
 	}
 }
 
@@ -373,15 +374,16 @@ void _HUD::RenderCrosshair(const glm::vec2 &Position) {
 	if(InventoryOpen)
 		return;
 
-	Graphics.SetDepthTest(false);
+	ae::Graphics.SetDepthTest(false);
 
-	Graphics.SetProgram(Assets.Programs["pos"]);
-	Graphics.SetColor(COLOR_WHITE);
-	Graphics.DrawCircle(glm::vec3(Position, 0.0f), CrosshairScale);
+	ae::Graphics.SetProgram(ae::Assets.Programs["pos"]);
+	ae::Graphics.SetColor(COLOR_WHITE);
+	ae::Graphics.DrawCircle(glm::vec3(Position, 0.0f), CrosshairScale);
 
-	Graphics.SetProgram(Assets.Programs["pos_uv"]);
-	Graphics.SetColor(COLOR_WHITE);
-	Graphics.DrawSprite(glm::vec3(Position, 0.0f), CrosshairID, 0);
+	ae::Graphics.SetProgram(ae::Assets.Programs["pos_uv"]);
+	ae::Graphics.SetColor(COLOR_WHITE);
+	ae::Assets.Programs["pos_uv"]->ResetTextureTransform();
+	ae::Graphics.DrawSprite(glm::vec3(Position, 0.0f), CrosshairTexture, 0);
 }
 
 // Draws a box and text
@@ -389,9 +391,9 @@ void _HUD::DrawIndicator(const std::string &String, float Percent, const ae::_Te
 
 	// Set text
 	Elements[LABEL_INDICATOR]->Text = String;
-	Graphics.SetProgram(Assets.Programs["ortho_pos"]);
-	Graphics.SetColor(COLOR_TGRAY);
-	Graphics.DrawRectangle(Elements[ELEMENT_INDICATOR]->Bounds);
+	ae::Graphics.SetProgram(ae::Assets.Programs["ortho_pos"]);
+	ae::Graphics.SetColor(COLOR_TGRAY);
+	ae::Graphics.DrawRectangle(Elements[ELEMENT_INDICATOR]->Bounds);
 
 	// Set progress size
 	Elements[IMAGE_RELOAD]->Texture = Texture;
@@ -400,7 +402,7 @@ void _HUD::DrawIndicator(const std::string &String, float Percent, const ae::_Te
 }
 
 // Draw the weapons on the HUD
-void _HUD::DrawHUDWeapon(const _Weapon *Weapon, _Element *Element, _Element *Image, _Element *Label) {
+void _HUD::DrawHUDWeapon(const _Weapon *Weapon, ae::_Element *Element, ae::_Element *Image, ae::_Element *Label) {
 	if(!Weapon)
 		return;
 
@@ -474,10 +476,10 @@ void _HUD::RenderCharacterScreen() {
 	for(int i = INVENTORY_ARMOR; i < INVENTORY_BAGEND; i++) {
 		if(Player->HasInventory(i)) {
 			if(Player->GetInventory(i) != CursorItem) {
-				_Element *Button = Elements[ELEMENT_INVENTORY]->Children[i];
+				ae::_Element *Button = Elements[ELEMENT_INVENTORY]->Children[i];
 				if(Button) {
-					Graphics.SetProgram(Assets.Programs["ortho_pos_uv"]);
-					Graphics.DrawScaledImage(Button->Bounds.GetMidPoint(), Player->GetInventory(i)->Texture, UI_INVENTORY_ITEM_SIZE, Player->GetInventory(i)->Color);
+					ae::Graphics.SetProgram(ae::Assets.Programs["ortho_pos_uv"]);
+					ae::Graphics.DrawScaledImage(Button->Bounds.GetCenter(), Player->GetInventory(i)->Texture, UI_INVENTORY_ITEM_SIZE, Player->GetInventory(i)->Color);
 					if(i >= INVENTORY_BAGSTART && Player->GetInventory(i)->CanStack())
 						DrawItemCount(Player->GetInventory(i), Button->Bounds.End.x - 2, Button->Bounds.End.y - 2);
 				}
@@ -488,8 +490,8 @@ void _HUD::RenderCharacterScreen() {
 	// Draw cursor item
 	if(CursorItem) {
 		glm::ivec2 Position(ae::Input.GetMouse() - ClickOffset);
-		Graphics.SetProgram(Assets.Programs["ortho_pos_uv"]);
-		Graphics.DrawScaledImage(Position, CursorItem->Texture, UI_INVENTORY_ITEM_SIZE, CursorItem->Color);
+		ae::Graphics.SetProgram(ae::Assets.Programs["ortho_pos_uv"]);
+		ae::Graphics.DrawScaledImage(Position, CursorItem->Texture, UI_INVENTORY_ITEM_SIZE, CursorItem->Color);
 		if(CursorItem->CanStack())
 			DrawItemCount(CursorItem, Position.x + 22, Position.y + 22);
 	}
@@ -503,7 +505,7 @@ void _HUD::RenderCharacterScreen() {
 void _HUD::DrawItemCount(_Item *Item, int X, int Y) {
 	std::ostringstream Buffer;
 	Buffer << Item->Count;
-	Fonts[FONT_TINY]->DrawText(Buffer.str(), glm::vec2(X, Y), RIGHT_BASELINE, COLOR_WHITE);
+	Fonts[FONT_TINY]->DrawText(Buffer.str(), glm::vec2(X, Y), ae::RIGHT_BASELINE, COLOR_WHITE);
 	Buffer.str("");
 }
 
@@ -531,7 +533,7 @@ void _HUD::RenderItemInfo(_Item *Item, int DrawX, int DrawY) {
 	}
 
 	// Get title width
-	_TextBounds TextBounds;
+	ae::_TextBounds TextBounds;
 	Fonts[FONT_LARGE]->GetStringDimensions(Item->GetName(), TextBounds);
 	Width = std::max(Width, TextBounds.Width) + 20;
 
@@ -556,21 +558,21 @@ void _HUD::RenderItemInfo(_Item *Item, int DrawX, int DrawY) {
 		DrawX = MinX;
 	if(DrawY < MinPadding)
 		DrawY = MinPadding;
-	if(DrawX > Graphics.CurrentSize.x - MinPadding - Width)
-		DrawX = Graphics.CurrentSize.x - MinPadding - Width;
-	if(DrawY > Graphics.CurrentSize.y - MinPadding - Height)
-		DrawY = Graphics.CurrentSize.y - MinPadding - Height;
+	if(DrawX > ae::Graphics.CurrentSize.x - MinPadding - Width)
+		DrawX = ae::Graphics.CurrentSize.x - MinPadding - Width;
+	if(DrawY > ae::Graphics.CurrentSize.y - MinPadding - Height)
+		DrawY = ae::Graphics.CurrentSize.y - MinPadding - Height;
 
-	Graphics.SetProgram(Assets.Programs["ortho_pos"]);
-	Graphics.SetColor(glm::vec4(0, 0, 0, 0.8f));
-	Graphics.DrawRectangle(glm::vec2(DrawX, DrawY), glm::vec2(DrawX + Width, DrawY + Height), true);
+	ae::Graphics.SetProgram(ae::Assets.Programs["ortho_pos"]);
+	ae::Graphics.SetColor(glm::vec4(0, 0, 0, 0.8f));
+	ae::Graphics.DrawRectangle(glm::vec2(DrawX, DrawY), glm::vec2(DrawX + Width, DrawY + Height), true);
 
 	DrawY += 25;
 	DrawX += Width/2;
-	Fonts[FONT_LARGE]->DrawText(Item->GetName(), glm::vec2(DrawX, DrawY), CENTER_BASELINE);
+	Fonts[FONT_LARGE]->DrawText(Item->GetName(), glm::vec2(DrawX, DrawY), ae::CENTER_BASELINE);
 
 	DrawY += 16;
-	Fonts[FONT_SMALL]->DrawText(Item->GetTypeAsString(), glm::vec2(DrawX, DrawY), CENTER_BASELINE);
+	Fonts[FONT_SMALL]->DrawText(Item->GetTypeAsString(), glm::vec2(DrawX, DrawY), ae::CENTER_BASELINE);
 
 	DrawY += 10;
 	switch(Item->Type) {
@@ -589,8 +591,8 @@ void _HUD::RenderItemInfo(_Item *Item, int DrawX, int DrawY) {
 			}
 			DrawY += 20;
 			Buffer << Weapon->Attributes.at("min_damage").Int << " - " << Weapon->Attributes.at("max_damage").Int;
-			Fonts[FONT_MEDIUM]->DrawText("Damage", glm::vec2(glm::vec2(DrawX - PadX, DrawY)), RIGHT_BASELINE);
-			Fonts[FONT_MEDIUM]->DrawText(Buffer.str(), glm::vec2(glm::vec2(DrawX + PadX, DrawY)), LEFT_BASELINE, TextColor);
+			Fonts[FONT_MEDIUM]->DrawText("Damage", glm::vec2(glm::vec2(DrawX - PadX, DrawY)), ae::RIGHT_BASELINE);
+			Fonts[FONT_MEDIUM]->DrawText(Buffer.str(), glm::vec2(glm::vec2(DrawX + PadX, DrawY)), ae::LEFT_BASELINE, TextColor);
 			Buffer.str("");
 
 			// Clip size
@@ -604,8 +606,8 @@ void _HUD::RenderItemInfo(_Item *Item, int DrawX, int DrawY) {
 				}
 				DrawY += 20;
 				Buffer << Weapon->Attributes.at("ammo").Int << "/" << Weapon->Attributes.at("rounds").Int;
-				Fonts[FONT_MEDIUM]->DrawText("Rounds", glm::vec2(glm::vec2(DrawX - PadX, DrawY)), RIGHT_BASELINE);
-				Fonts[FONT_MEDIUM]->DrawText(Buffer.str(), glm::vec2(glm::vec2(DrawX + PadX, DrawY)), LEFT_BASELINE, TextColor);
+				Fonts[FONT_MEDIUM]->DrawText("Rounds", glm::vec2(glm::vec2(DrawX - PadX, DrawY)), ae::RIGHT_BASELINE);
+				Fonts[FONT_MEDIUM]->DrawText(Buffer.str(), glm::vec2(glm::vec2(DrawX + PadX, DrawY)), ae::LEFT_BASELINE, TextColor);
 				Buffer.str("");
 			}
 
@@ -626,8 +628,8 @@ void _HUD::RenderItemInfo(_Item *Item, int DrawX, int DrawY) {
 					AttackCountText = "Attacks/Swing";
 				else
 					AttackCountText = "Bullets/Shot";
-				Fonts[FONT_MEDIUM]->DrawText(AttackCountText, glm::vec2(glm::vec2(DrawX - PadX, DrawY)), RIGHT_BASELINE);
-				Fonts[FONT_MEDIUM]->DrawText(Buffer.str(), glm::vec2(glm::vec2(DrawX + PadX, DrawY)), LEFT_BASELINE, TextColor);
+				Fonts[FONT_MEDIUM]->DrawText(AttackCountText, glm::vec2(glm::vec2(DrawX - PadX, DrawY)), ae::RIGHT_BASELINE);
+				Fonts[FONT_MEDIUM]->DrawText(Buffer.str(), glm::vec2(glm::vec2(DrawX + PadX, DrawY)), ae::LEFT_BASELINE, TextColor);
 				Buffer.str("");
 			}
 
@@ -648,8 +650,8 @@ void _HUD::RenderItemInfo(_Item *Item, int DrawX, int DrawY) {
 					AttackCountText = "Attack Rate";
 				else
 					AttackCountText = "Fire Rate";
-				Fonts[FONT_MEDIUM]->DrawText(AttackCountText, glm::vec2(glm::vec2(DrawX - PadX, DrawY)), RIGHT_BASELINE);
-				Fonts[FONT_MEDIUM]->DrawText(Buffer.str(), glm::vec2(glm::vec2(DrawX + PadX, DrawY)), LEFT_BASELINE, TextColor);
+				Fonts[FONT_MEDIUM]->DrawText(AttackCountText, glm::vec2(glm::vec2(DrawX - PadX, DrawY)), ae::RIGHT_BASELINE);
+				Fonts[FONT_MEDIUM]->DrawText(Buffer.str(), glm::vec2(glm::vec2(DrawX + PadX, DrawY)), ae::LEFT_BASELINE, TextColor);
 				Buffer.str("");
 				Buffer << std::setprecision(6);
 			}
@@ -677,13 +679,13 @@ void _HUD::RenderItemInfo(_Item *Item, int DrawX, int DrawY) {
 			DrawY += 20;
 			if(Weapon->IsMelee()) {
 				Buffer << Weapon->Attributes.at("max_accuracy").Float << " degrees";
-				Fonts[FONT_MEDIUM]->DrawText("Swing Arc", glm::vec2(DrawX - PadX, DrawY), RIGHT_BASELINE);
+				Fonts[FONT_MEDIUM]->DrawText("Swing Arc", glm::vec2(DrawX - PadX, DrawY), ae::RIGHT_BASELINE);
 			}
 			else {
 				Buffer << (int)(Weapon->Attributes.at("min_accuracy").Float + 0.5f) << " - " << (int)(Weapon->Attributes.at("max_accuracy").Float + 0.5f);
-				Fonts[FONT_MEDIUM]->DrawText("Spread", glm::vec2(DrawX - PadX, DrawY), RIGHT_BASELINE);
+				Fonts[FONT_MEDIUM]->DrawText("Spread", glm::vec2(DrawX - PadX, DrawY), ae::RIGHT_BASELINE);
 			}
-			Fonts[FONT_MEDIUM]->DrawText(Buffer.str(), glm::vec2(DrawX + PadX, DrawY), LEFT_BASELINE, TextColor);
+			Fonts[FONT_MEDIUM]->DrawText(Buffer.str(), glm::vec2(DrawX + PadX, DrawY), ae::LEFT_BASELINE, TextColor);
 			Buffer.str("");
 
 			// Reload speed
@@ -699,8 +701,8 @@ void _HUD::RenderItemInfo(_Item *Item, int DrawX, int DrawY) {
 				DrawY += 20;
 				Buffer << Weapon->Attributes.at("reload_period").Double << "s";
 				std::string AttackCountText;
-				Fonts[FONT_MEDIUM]->DrawText("Reload Time", glm::vec2(DrawX - PadX, DrawY), RIGHT_BASELINE);
-				Fonts[FONT_MEDIUM]->DrawText(Buffer.str(), glm::vec2(DrawX + PadX, DrawY), LEFT_BASELINE, TextColor);
+				Fonts[FONT_MEDIUM]->DrawText("Reload Time", glm::vec2(DrawX - PadX, DrawY), ae::RIGHT_BASELINE);
+				Fonts[FONT_MEDIUM]->DrawText(Buffer.str(), glm::vec2(DrawX + PadX, DrawY), ae::LEFT_BASELINE, TextColor);
 				Buffer.str("");
 			}
 
@@ -708,7 +710,7 @@ void _HUD::RenderItemInfo(_Item *Item, int DrawX, int DrawY) {
 			if(Weapon->Attributes.at("ammo_type").Int) {
 				DrawY += 20;
 				Buffer << Stats.AmmoNames[Weapon->Attributes.at("ammo_type").Int];
-				Fonts[FONT_MEDIUM]->DrawText("Ammo Type", glm::vec2(DrawX - PadX, DrawY), RIGHT_BASELINE);
+				Fonts[FONT_MEDIUM]->DrawText("Ammo Type", glm::vec2(DrawX - PadX, DrawY), ae::RIGHT_BASELINE);
 				Fonts[FONT_MEDIUM]->DrawText(Buffer.str(), glm::vec2(DrawX + PadX, DrawY));
 				Buffer.str("");
 			}
@@ -725,8 +727,8 @@ void _HUD::RenderItemInfo(_Item *Item, int DrawX, int DrawY) {
 
 				DrawY += 20;
 				Buffer << Weapon->Upgrades.size() << "/" << Weapon->Attributes.at("max_components").Int;
-				Fonts[FONT_MEDIUM]->DrawText("Components", glm::vec2(DrawX - PadX, DrawY), RIGHT_BASELINE);
-				Fonts[FONT_MEDIUM]->DrawText(Buffer.str(), glm::vec2(DrawX + PadX, DrawY), LEFT_BASELINE, TextColor);
+				Fonts[FONT_MEDIUM]->DrawText("Components", glm::vec2(DrawX - PadX, DrawY), ae::RIGHT_BASELINE);
+				Fonts[FONT_MEDIUM]->DrawText(Buffer.str(), glm::vec2(DrawX + PadX, DrawY), ae::LEFT_BASELINE, TextColor);
 				Buffer.str("");
 			}
 
@@ -739,7 +741,7 @@ void _HUD::RenderItemInfo(_Item *Item, int DrawX, int DrawY) {
 						DrawY += 10;
 					DrawY += 20;
 					Buffer << "+" << Weapon->Bonus[i] * 100.0f << "% " << UpgradeTypeToString(i, Weapon->Attributes.at("weapon_type").Int);
-					Fonts[FONT_MEDIUM]->DrawText(Buffer.str(), glm::vec2(DrawX, DrawY), CENTER_BASELINE, TextColor);
+					Fonts[FONT_MEDIUM]->DrawText(Buffer.str(), glm::vec2(DrawX, DrawY), ae::CENTER_BASELINE, TextColor);
 					Buffer.str("");
 
 					First = false;
@@ -759,8 +761,8 @@ void _HUD::RenderItemInfo(_Item *Item, int DrawX, int DrawY) {
 					TextColor = COLOR_RED;
 				DrawY += 20;
 				Buffer << Item->Attributes.at("strength_required").Int;
-				Fonts[FONT_MEDIUM]->DrawText("Strength Required", glm::vec2(DrawX - PadX, DrawY), RIGHT_BASELINE);
-				Fonts[FONT_MEDIUM]->DrawText(Buffer.str(), glm::vec2(DrawX + PadX, DrawY), LEFT_BASELINE, TextColor);
+				Fonts[FONT_MEDIUM]->DrawText("Strength Required", glm::vec2(DrawX - PadX, DrawY), ae::RIGHT_BASELINE);
+				Fonts[FONT_MEDIUM]->DrawText(Buffer.str(), glm::vec2(DrawX + PadX, DrawY), ae::LEFT_BASELINE, TextColor);
 				Buffer.str("");
 			}
 
@@ -776,8 +778,8 @@ void _HUD::RenderItemInfo(_Item *Item, int DrawX, int DrawY) {
 
 				DrawY += 20;
 				Buffer << Item->Attributes.at("damage_block").Int;
-				Fonts[FONT_MEDIUM]->DrawText("Damage Block", glm::vec2(DrawX - PadX, DrawY), RIGHT_BASELINE);
-				Fonts[FONT_MEDIUM]->DrawText(Buffer.str(), glm::vec2(DrawX + PadX, DrawY), LEFT_BASELINE, TextColor);
+				Fonts[FONT_MEDIUM]->DrawText("Damage Block", glm::vec2(DrawX - PadX, DrawY), ae::RIGHT_BASELINE);
+				Fonts[FONT_MEDIUM]->DrawText(Buffer.str(), glm::vec2(DrawX + PadX, DrawY), ae::LEFT_BASELINE, TextColor);
 				Buffer.str("");
 			}
 
@@ -793,8 +795,8 @@ void _HUD::RenderItemInfo(_Item *Item, int DrawX, int DrawY) {
 
 				DrawY += 20;
 				Buffer << (Item->Attributes.at("damage_resist").Float < 0 ? "" : "+") << Item->Attributes.at("damage_resist").Float * 100 << "%";
-				Fonts[FONT_MEDIUM]->DrawText("Damage Resist", glm::vec2(DrawX - PadX, DrawY), RIGHT_BASELINE);
-				Fonts[FONT_MEDIUM]->DrawText(Buffer.str(), glm::vec2(DrawX + PadX, DrawY), LEFT_BASELINE, TextColor);
+				Fonts[FONT_MEDIUM]->DrawText("Damage Resist", glm::vec2(DrawX - PadX, DrawY), ae::RIGHT_BASELINE);
+				Fonts[FONT_MEDIUM]->DrawText(Buffer.str(), glm::vec2(DrawX + PadX, DrawY), ae::LEFT_BASELINE, TextColor);
 				Buffer.str("");
 			}
 
@@ -810,8 +812,8 @@ void _HUD::RenderItemInfo(_Item *Item, int DrawX, int DrawY) {
 
 				DrawY += 20;
 				Buffer << (Item->Attributes.at("move_speed").Float < 0 ? "" : "+") << Item->Attributes.at("move_speed").Float * 100 << "%";
-				Fonts[FONT_MEDIUM]->DrawText("Movement Speed", glm::vec2(DrawX - PadX, DrawY), RIGHT_BASELINE);
-				Fonts[FONT_MEDIUM]->DrawText(Buffer.str(), glm::vec2(DrawX + PadX, DrawY), LEFT_BASELINE, TextColor);
+				Fonts[FONT_MEDIUM]->DrawText("Movement Speed", glm::vec2(DrawX - PadX, DrawY), ae::RIGHT_BASELINE);
+				Fonts[FONT_MEDIUM]->DrawText(Buffer.str(), glm::vec2(DrawX + PadX, DrawY), ae::LEFT_BASELINE, TextColor);
 				Buffer.str("");
 			}
 		} break;
@@ -821,7 +823,7 @@ void _HUD::RenderItemInfo(_Item *Item, int DrawX, int DrawY) {
 			// Heal amount
 			DrawY += 20;
 			Buffer << "+" << Item->Attributes.at("health_restored").Int << " HP";
-			Fonts[FONT_MEDIUM]->DrawText(Buffer.str(), glm::vec2(DrawX, DrawY), CENTER_BASELINE, COLOR_GREEN);
+			Fonts[FONT_MEDIUM]->DrawText(Buffer.str(), glm::vec2(DrawX, DrawY), ae::CENTER_BASELINE, COLOR_GREEN);
 		} break;
 		case _Object::UPGRADE: {
 			std::ostringstream Buffer;
@@ -832,7 +834,7 @@ void _HUD::RenderItemInfo(_Item *Item, int DrawX, int DrawY) {
 				Buffer << "+" << (int)(Item->Attributes.at("bonus").Float) << " Attack Count";
 			else
 				Buffer << "+" << (int)(Item->Attributes.at("bonus").Float * 100.0f + 0.5f) << "% " << UpgradeTypeToString(Item->Attributes.at("upgrade_type").Int, -1);
-			Fonts[FONT_MEDIUM]->DrawText(Buffer.str(), glm::vec2(DrawX, DrawY), CENTER_BASELINE);
+			Fonts[FONT_MEDIUM]->DrawText(Buffer.str(), glm::vec2(DrawX, DrawY), ae::CENTER_BASELINE);
 		} break;
 	}
 }
@@ -915,8 +917,8 @@ void _HUD::UpdateSkillInfo(int Skill, int DrawX, int DrawY) {
 
 // Draw death message
 void _HUD::RenderDeathScreen() {
-	Fonts[FONT_LARGEST]->DrawText("You Died!", glm::vec2(Graphics.CurrentSize.x / 2, Graphics.CurrentSize.y / 2 - 200), CENTER_MIDDLE);
-	Fonts[FONT_LARGE]->DrawText(std::string("Press [") + ae::Actions.GetInputNameForAction(Action::GAME_USE) + "] to continue", glm::vec2(Graphics.CurrentSize.x / 2, Graphics.CurrentSize.y / 2 - 150), CENTER_MIDDLE);
+	Fonts[FONT_LARGEST]->DrawText("You Died!", glm::vec2(ae::Graphics.CurrentSize.x / 2, ae::Graphics.CurrentSize.y / 2 - 200), ae::CENTER_MIDDLE);
+	Fonts[FONT_LARGE]->DrawText(std::string("Press [") + ae::Actions.GetInputNameForAction(Action::GAME_USE) + "] to continue", glm::vec2(ae::Graphics.CurrentSize.x / 2, ae::Graphics.CurrentSize.y / 2 - 150), ae::CENTER_MIDDLE);
 }
 
 // Show hud message

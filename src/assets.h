@@ -28,19 +28,16 @@
 // Forward Declarations
 namespace ae {
 	class _Texture;
+	class _Font;
+	class _Style;
+	class _Element;
+	class _Program;
+	class _Shader;
 }
-class _Style;
-class _Font;
-class _Element;
-class _Image;
-class _Button;
-class _TextBox;
 class _Animation;
 class _Particle;
 class _Entity;
 class _Player;
-class _Program;
-class _Shader;
 struct _Reel;
 struct _ParticleTemplate;
 
@@ -67,28 +64,17 @@ class _Assets {
 		void Close();
 
 		void LoadStrings(const std::string &Path);
-		void LoadColors(const std::string &Path);
 		void LoadReelTable(const std::string &Path);
 		void LoadAnimationTable(const std::string &Path);
 		void LoadSoundGroups(const std::string &Path);
 		void LoadParticles(const std::string &Path);
-		void LoadPrograms(const std::string &Path);
-		void LoadTextures(const std::string &Path);
-		void LoadTextureDirectory(const std::string &Path, bool IsServer=false, bool Repeat=false, bool MipMaps=false, bool Nearest=false);
 		void LoadSounds(const std::string &Path, const std::string &SamplePath);
 
-		void LoadFonts(const std::string &Path, bool LoadFonts=true);
 		void LoadReel(const std::string &Identifier, const std::string &Path);
 		void LoadAnimation(const std::string &Identifier, const std::string &Path);
 		void LoadWeaponParticles(const std::string &Path);
 		void LoadMonsterAnimation();
 
-		void LoadStyles(const std::string &Path);
-		void LoadUI(const std::string &Path, bool CalculateBounds=true);
-		void SaveUI(const std::string &Path);
-
-		bool IsColorLoaded(const std::string &Identifier);
-		bool IsTextureLoaded(const std::string &Identifier);
 		bool IsAttackSampleLoaded(const std::string &Identifier);
 		bool IsParticleLoaded(const std::string &Identifier);
 		bool IsWeaponParticleTemplateLoaded(const std::string &Identifier);
@@ -108,13 +94,6 @@ class _Assets {
 		std::unordered_map<std::string, std::string> Strings;
 		std::unordered_map<std::string, _Animation *> Animations;
 
-		std::unordered_map<std::string, const ae::_Texture *> Textures;
-		std::unordered_map<std::string, _Program *> Programs;
-		std::unordered_map<std::string, glm::vec4> Colors;
-		std::unordered_map<std::string, _Font *> Fonts;
-		std::unordered_map<std::string, _Style *> Styles;
-		std::unordered_map<std::string, _Element *> Elements;
-
 	private:
 
 		// Tables
@@ -126,7 +105,7 @@ class _Assets {
 
 		// Data
 		std::unordered_map<std::string, _Reel> Reels;
-		std::unordered_map<std::string, const _Shader *> Shaders;
+		std::unordered_map<std::string, const ae::_Shader *> Shaders;
 };
 
-extern _Assets Assets;
+extern _Assets OldAssets;

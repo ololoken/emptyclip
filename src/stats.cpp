@@ -16,10 +16,11 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 *******************************************************************************/
 #include <stats.h>
-#include <constants.h>
 #include <ae/random.h>
-#include <map.h>
+#include <ae/assets.h>
 #include <assets.h>
+#include <constants.h>
+#include <map.h>
 #include <objects/object.h>
 #include <objects/weapon.h>
 #include <objects/monster.h>
@@ -54,7 +55,7 @@ void _Stats::Close() {
 	ItemGroups.clear();
 
 	for(const auto &Monster : Monsters)
-		Assets.UnloadAnimation(Monster.second.AnimationIdentifier);
+		OldAssets.UnloadAnimation(Monster.second.AnimationIdentifier);
 
 	Monsters.clear();
 }
@@ -130,7 +131,7 @@ void _Stats::LoadAmmo(const std::string &Path) {
 		std::getline(File, Template.IconID, '\n');
 
 		// Check for loaded textures
-		if(!Assets.IsTextureLoaded(Template.IconID))
+		if(!ae::Assets.Textures[Template.IconID])
 			throw std::runtime_error(std::string(__PRETTY_FUNCTION__) + " - Texture not found: " + Template.IconID);
 
 		// Check for duplicates
@@ -176,15 +177,15 @@ void _Stats::LoadArmor(const std::string &Path) {
 		File.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
 		// Check for loaded textures
-		if(!Assets.IsTextureLoaded(Template.IconID))
+		if(!ae::Assets.Textures[Template.IconID])
 			throw std::runtime_error(std::string(__PRETTY_FUNCTION__) + " - Texture not found: " + Template.IconID);
 
 		// Set color
 		if(ColorName != "") {
-			if(!Assets.IsColorLoaded(ColorName))
+			if(ae::Assets.Colors.find(ColorName) == ae::Assets.Colors.end())
 				throw std::runtime_error(std::string(__PRETTY_FUNCTION__) + " - Cannot find color: " + ColorName);
 
-			Template.Color = Assets.Colors[ColorName];
+			Template.Color = ae::Assets.Colors[ColorName];
 		}
 		else
 			Template.Color = COLOR_WHITE;
@@ -222,15 +223,15 @@ void _Stats::LoadKeys(const std::string &Path) {
 		std::getline(File, ColorID, '\n');
 
 		// Check for loaded textures
-		if(!Assets.IsTextureLoaded(Template.IconID))
+		if(!ae::Assets.Textures[Template.IconID])
 			throw std::runtime_error(std::string(__PRETTY_FUNCTION__) + " - Cannot find texture: " + Template.IconID);
 
 		// Set color
 		if(ColorID != "") {
-			if(!Assets.IsColorLoaded(ColorID))
+			if(ae::Assets.Colors.find(ColorID) == ae::Assets.Colors.end())
 				throw std::runtime_error(std::string(__PRETTY_FUNCTION__) + " - Cannot find color: " + ColorID);
 
-			Template.Color = Assets.Colors[ColorID];
+			Template.Color = ae::Assets.Colors[ColorID];
 		}
 		else
 			Template.Color = COLOR_WHITE;
@@ -272,15 +273,15 @@ void _Stats::LoadMedkits(const std::string &Path) {
 		File.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
 		// Check for loaded textures
-		if(!Assets.IsTextureLoaded(Template.IconID))
+		if(!ae::Assets.Textures[Template.IconID])
 			throw std::runtime_error(std::string(__PRETTY_FUNCTION__) + " - Cannot find texture: " + Template.IconID);
 
 		// Set color
 		if(ColorID != "") {
-			if(!Assets.IsColorLoaded(ColorID))
+			if(ae::Assets.Colors.find(ColorID) == ae::Assets.Colors.end())
 				throw std::runtime_error(std::string(__PRETTY_FUNCTION__) + " - Cannot find color: " + ColorID);
 
-			Template.Color = Assets.Colors[ColorID];
+			Template.Color = ae::Assets.Colors[ColorID];
 		}
 		else
 			Template.Color = COLOR_WHITE;
@@ -325,15 +326,15 @@ void _Stats::LoadUpgrades(const std::string &Path) {
 		File.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
 		// Check for loaded textures
-		if(!Assets.IsTextureLoaded(Template.IconID))
+		if(!ae::Assets.Textures[Template.IconID])
 			throw std::runtime_error(std::string(__PRETTY_FUNCTION__) + " - Cannot find texture: " + Template.IconID);
 
 		// Set color
 		if(ColorName != "") {
-			if(!Assets.IsColorLoaded(ColorName))
+			if(ae::Assets.Colors.find(ColorName) == ae::Assets.Colors.end())
 				throw std::runtime_error(std::string(__PRETTY_FUNCTION__) + " - Cannot find color: " + ColorName);
 
-			Template.Color = Assets.Colors[ColorName];
+			Template.Color = ae::Assets.Colors[ColorName];
 		}
 		else
 			Template.Color = COLOR_WHITE;
@@ -396,33 +397,33 @@ void _Stats::LoadWeapons(const std::string &Path) {
 		File.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
 		// Check for loaded textures
-		if(!Assets.IsTextureLoaded(WeaponTemplate.IconIdentifier))
+		if(WeaponTemplate.IconIdentifier != "" && !ae::Assets.Textures[WeaponTemplate.IconIdentifier])
 			throw std::runtime_error(std::string(__PRETTY_FUNCTION__) + " - Texture not found: " + WeaponTemplate.IconIdentifier);
 
 		// Set color
 		if(ColorName != "") {
-			if(!Assets.IsColorLoaded(ColorName))
+			if(ae::Assets.Colors.find(ColorName) == ae::Assets.Colors.end())
 				throw std::runtime_error(std::string(__PRETTY_FUNCTION__) + " - Cannot find color: " + ColorName);
 
-			WeaponTemplate.Color = Assets.Colors[ColorName];
+			WeaponTemplate.Color = ae::Assets.Colors[ColorName];
 		}
 		else
 			WeaponTemplate.Color = COLOR_WHITE;
 
 		// Check for attack sample
-		if(!Assets.IsAttackSampleLoaded(SamplesIdentifier))
+		if(!OldAssets.IsAttackSampleLoaded(SamplesIdentifier))
 			throw std::runtime_error(std::string(__PRETTY_FUNCTION__) + " - Cannot find sample: " + SamplesIdentifier);
 
 		// Set samples
-		AttackSample = Assets.GetAttackSampleTemplate(SamplesIdentifier);
+		AttackSample = OldAssets.GetAttackSampleTemplate(SamplesIdentifier);
 		for(int i = 0; i < SAMPLE_TYPES; i++) {
 			if(AttackSample)
 				WeaponTemplate.Samples[i] = AttackSample->Samples[i];
 		}
 
 		// Set particles
-		if(Assets.IsWeaponParticleTemplateLoaded(WeaponParticlesIdentifier))
-			WeaponTemplate.WeaponParticles = Assets.GetWeaponParticleTemplate(WeaponParticlesIdentifier);
+		if(OldAssets.IsWeaponParticleTemplateLoaded(WeaponParticlesIdentifier))
+			WeaponTemplate.WeaponParticles = OldAssets.GetWeaponParticleTemplate(WeaponParticlesIdentifier);
 		else
 			WeaponTemplate.WeaponParticles = &BlankWeaponParticle;
 
@@ -553,10 +554,10 @@ void _Stats::LoadMonsters(const std::string &Path) {
 
 		// Set color
 		if(ColorName != "") {
-			if(!Assets.IsColorLoaded(ColorName))
+			if(ae::Assets.Colors.find(ColorName) == ae::Assets.Colors.end())
 				throw std::runtime_error(std::string(__PRETTY_FUNCTION__) + " - Cannot find color: " + ColorName);
 
-			Monster.Color = Assets.Colors[ColorName];
+			Monster.Color = ae::Assets.Colors[ColorName];
 		}
 		else
 			Monster.Color = COLOR_WHITE;
@@ -566,16 +567,16 @@ void _Stats::LoadMonsters(const std::string &Path) {
 			throw std::runtime_error(std::string(__PRETTY_FUNCTION__) + " - Cannot find item group: " + Monster.ItemGroupIdentifier + " in " + Name);
 
 		// Check for animation
-		if(!Assets.IsAnimationLoaded(Monster.AnimationIdentifier))
+		if(!OldAssets.IsAnimationLoaded(Monster.AnimationIdentifier))
 			throw std::runtime_error(std::string(__PRETTY_FUNCTION__) + " - Cannot find animation: " + Monster.AnimationIdentifier + " in " + Name);
 
 		// Check for samples
-		if(!Assets.IsAttackSampleLoaded(Monster.SamplesIdentifier))
+		if(!OldAssets.IsAttackSampleLoaded(Monster.SamplesIdentifier))
 			throw std::runtime_error(std::string(__PRETTY_FUNCTION__) + " - Cannot find sample: " + Monster.SamplesIdentifier + " in " + Name);
 
 		// Set particles
-		if(Assets.IsWeaponParticleTemplateLoaded(WeaponParticlesIdentifier))
-			Monster.WeaponParticles = Assets.GetWeaponParticleTemplate(WeaponParticlesIdentifier);
+		if(OldAssets.IsWeaponParticleTemplateLoaded(WeaponParticlesIdentifier))
+			Monster.WeaponParticles = OldAssets.GetWeaponParticleTemplate(WeaponParticlesIdentifier);
 		else
 			Monster.WeaponParticles = &BlankWeaponParticle;
 
@@ -600,7 +601,7 @@ _Item *_Stats::CreateItem(const std::string &Identifier, int Count, const glm::v
 	Item->ID = Identifier;
 	Item->Count = Count;
 	Item->Position = Position;
-	Item->Texture = Assets.Textures[Template.IconID];
+	Item->Texture = ae::Assets.Textures[Template.IconID];
 	Item->Color = Template.Color;
 
 	return Item;
@@ -609,7 +610,7 @@ _Item *_Stats::CreateItem(const std::string &Identifier, int Count, const glm::v
 // Creates a weapon
 _Weapon *_Stats::CreateWeapon(const std::string &Identifier, int Count, const glm::vec2 &Position, bool Generate) {
 	_WeaponTemplate &WeaponTemplate = Weapons[Identifier];
-	_Weapon *Weapon = new _Weapon(Identifier, Count, Position, WeaponTemplate, Assets.Textures[WeaponTemplate.IconIdentifier], Generate);
+	_Weapon *Weapon = new _Weapon(Identifier, Count, Position, WeaponTemplate, ae::Assets.Textures[WeaponTemplate.IconIdentifier], Generate);
 
 	return Weapon;
 }
@@ -617,10 +618,10 @@ _Weapon *_Stats::CreateWeapon(const std::string &Identifier, int Count, const gl
 // Creates a monster
 _Monster *_Stats::CreateMonster(const std::string &Identifier, const glm::vec2 &Position) {
 	_MonsterTemplate &MonsterTemplate = Monsters[Identifier];
-	AttackSampleTemplateStruct *AttackSample = Assets.GetAttackSampleTemplate(MonsterTemplate.SamplesIdentifier);
+	AttackSampleTemplateStruct *AttackSample = OldAssets.GetAttackSampleTemplate(MonsterTemplate.SamplesIdentifier);
 
 	// Creates a monster
-	_Monster *Monster = new _Monster(MonsterTemplate, Assets.GetAnimation(MonsterTemplate.AnimationIdentifier), Position);
+	_Monster *Monster = new _Monster(MonsterTemplate, OldAssets.GetAnimation(MonsterTemplate.AnimationIdentifier), Position);
 	for(int i = 0; i < SAMPLE_TYPES; i++)
 		Monster->Samples[i] = AttackSample->Samples[i];
 

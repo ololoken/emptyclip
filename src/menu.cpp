@@ -19,11 +19,12 @@
 #include <ae/input.h>
 #include <ae/actions.h>
 #include <ae/texture.h>
+#include <ae/assets.h>
 #include <actiontype.h>
 #include <constants.h>
-#include <graphics.h>
+#include <ae/graphics.h>
 #include <assets.h>
-#include <ui/ui.h>
+#include <ae/ui.h>
 #include <objects/player.h>
 #include <config.h>
 #include <animation.h>
@@ -91,22 +92,22 @@ _Menu::_Menu() {
 
 // Initialize
 void _Menu::InitTitle() {
-	Graphics.Element->SetActive(false);
-	Graphics.Element->Active = true;
+	ae::Graphics.Element->SetActive(false);
+	ae::Graphics.Element->Active = true;
 
 	ChangeLayout("element_menu_title");
 
 	std::string BuildVersion;
 	if(std::string(BUILD_VERSION) != "")
 		BuildVersion = std::string("-") + BUILD_VERSION;
-	Graphics.SetCursor(true);
+	ae::Graphics.SetCursor(true);
 
-	Assets.Elements["label_game_version"]->Text = GAME_VERSION + BuildVersion;
-	Assets.Elements["label_game_version"]->SetActive(true);
+	ae::Assets.Elements["label_game_version"]->Text = GAME_VERSION + BuildVersion;
+	ae::Assets.Elements["label_game_version"]->SetActive(true);
 
-	Background = Assets.Elements["image_menu_bg"];
-	Background->SetWidth(Graphics.CurrentSize.x * ((float)Background->Texture->Size.y / Background->Texture->Size.x));
-	Background->SetHeight(Graphics.CurrentSize.y);
+	Background = ae::Assets.Elements["image_menu_bg"];
+	Background->SetWidth(ae::Graphics.CurrentSize.x * ((float)Background->Texture->Size.y / Background->Texture->Size.x));
+	Background->SetHeight(ae::Graphics.CurrentSize.y);
 	Background->SetActive(true);
 
 	State = STATE_TITLE;
@@ -153,7 +154,7 @@ void _Menu::InitOptions() {
 void _Menu::InitInGame() {
 	ChangeLayout("element_menu_ingame");
 
-	Graphics.SetCursor(true);
+	ae::Graphics.SetCursor(true);
 	Background = nullptr;
 
 	State = STATE_INGAME;
@@ -172,11 +173,11 @@ void _Menu::InitPlay() {
 void _Menu::InitNewPlayer() {
 	CurrentLayout->SetClickable(false);
 
-	CurrentLayout = Assets.Elements["element_menu_new"];
+	CurrentLayout = ae::Assets.Elements["element_menu_new"];
 	CurrentLayout->SetActive(true);
 
-	_Element *Name = Assets.Elements["textbox_new_name_input"];
-	FocusedElement = Name;
+	ae::_Element *Name = ae::Assets.Elements["textbox_new_name_input"];
+	ae::FocusedElement = Name;
 	Name->Text.clear();
 	Name->ResetCursor();
 
@@ -185,7 +186,7 @@ void _Menu::InitNewPlayer() {
 		std::stringstream Buffer;
 		Buffer << PlayerColorButtonPrefix << i;
 
-		ColorButtons[i] = Assets.Elements[Buffer.str()];
+		ColorButtons[i] = ae::Assets.Elements[Buffer.str()];
 		ColorButtons[i]->Checked = false;
 		ColorButtons[i]->Index = i;
 	}
@@ -289,7 +290,7 @@ void _Menu::HandleMouseButton(const ae::_MouseEvent &MouseEvent) {
 		CurrentLayout->HandleMouseButton(MouseEvent.Pressed);
 
 	// Get clicked element
-	_Element *Clicked = CurrentLayout->GetClickedElement();
+	ae::_Element *Clicked = CurrentLayout->GetClickedElement();
 	if(Clicked) {
 		bool DoubleClick = false;
 		if(PreviousClick == Clicked && PreviousClickTimer < MENU_DOUBLECLICK_TIME) {
@@ -392,7 +393,7 @@ void _Menu::HandleMouseButton(const ae::_MouseEvent &MouseEvent) {
 					else if(Clicked->Name.substr(0, InputBoxPrefix.size()) == InputBoxPrefix) {
 						OptionsState = OPTION_ACCEPT_INPUT;
 						CurrentAction = Clicked->Index;
-						Assets.Elements["label_menu_options_accept_text_action"]->Text = ae::Actions.GetInputNameForAction(CurrentAction, 0);
+						ae::Assets.Elements["label_menu_options_accept_text_action"]->Text = ae::Actions.GetInputNameForAction(CurrentAction, 0);
 					}
 				}
 			} break;
@@ -441,8 +442,8 @@ void _Menu::Update(double FrameTime) {
 
 // Draw phase
 void _Menu::Render() {
-	Graphics.Setup2D();
-	Graphics.SetStaticUniforms();
+	ae::Graphics.Setup2D();
+	ae::Graphics.SetStaticUniforms();
 
 	if(Background)
 		Background->Render();
@@ -451,30 +452,30 @@ void _Menu::Render() {
 		case STATE_TITLE: {
 			if(CurrentLayout)
 				CurrentLayout->Render();
-			Assets.Elements["label_game_version"]->Render();
+			ae::Assets.Elements["label_game_version"]->Render();
 		} break;
 		case STATE_OPTIONS: {
 			if(CurrentLayout)
 				CurrentLayout->Render();
 
 			if(OptionsState == OPTION_ACCEPT_INPUT) {
-				Graphics.FadeScreen(Assets.Programs["ortho_pos"], MENU_ACCEPTINPUT_FADE);
-				Assets.Elements["element_menu_popup"]->SetActive(true);
-				Assets.Elements["element_menu_popup"]->Render();
+				ae::Graphics.FadeScreen(ae::Assets.Programs["ortho_pos"], MENU_ACCEPTINPUT_FADE);
+				ae::Assets.Elements["element_menu_popup"]->SetActive(true);
+				ae::Assets.Elements["element_menu_popup"]->Render();
 			}
 		} break;
 		case STATE_SINGLEPLAYER: {
-			Assets.Elements["element_menu_singleplayer"]->Render();
+			ae::Assets.Elements["element_menu_singleplayer"]->Render();
 
-			Graphics.SetVBO(VBO_QUAD);
+			ae::Graphics.SetVBO(ae::VBO_QUAD);
 			for(int i = 0; i <= _Save::SLOT_9; i++) {
 				_Player *Player = Save.GetPlayer(i);
 				if(Player)
-					Player->Render2D(SaveSlots[i]->Bounds.GetMidPoint());
+					Player->Render2D(SaveSlots[i]->Bounds.GetCenter());
 			}
 
 			if(SinglePlayerState == SINGLEPLAYER_NEW_PLAYER) {
-				Graphics.FadeScreen(Assets.Programs["ortho_pos"], MENU_ACCEPTINPUT_FADE);
+				ae::Graphics.FadeScreen(ae::Assets.Programs["ortho_pos"], MENU_ACCEPTINPUT_FADE);
 				if(CurrentLayout)
 					CurrentLayout->Render();
 			}
@@ -491,13 +492,13 @@ void _Menu::Render() {
 
 // Change menu layout
 void _Menu::ChangeLayout(const std::string &ElementName) {
-	Assets.Elements["label_game_version"]->SetActive(false);
+	ae::Assets.Elements["label_game_version"]->SetActive(false);
 
 	if(CurrentLayout) {
 		CurrentLayout->SetActive(false);
 	}
 
-	CurrentLayout = Assets.Elements[ElementName];
+	CurrentLayout = ae::Assets.Elements[ElementName];
 	CurrentLayout->SetActive(true);
 }
 
@@ -509,7 +510,7 @@ void _Menu::RefreshSaveSlots() {
 	for(int i = 0; i <= _Save::SLOT_9; i++) {
 		std::stringstream Buffer;
 		Buffer << "label_menu_singleplayer_slot" << i << "_text";
-		_Element *SlotLabel = Assets.Elements[Buffer.str()];
+		ae::_Element *SlotLabel = ae::Assets.Elements[Buffer.str()];
 		Buffer.str("");
 
 		_Player *Player = Save.GetPlayer(i);
@@ -522,7 +523,7 @@ void _Menu::RefreshSaveSlots() {
 			SlotLabel->Text = "Empty Slot";
 
 		Buffer << PlayerButtonPrefix << i;
-		SaveSlots[i] = Assets.Elements[Buffer.str()];
+		SaveSlots[i] = ae::Assets.Elements[Buffer.str()];
 		SaveSlots[i]->Index = i;
 	}
 }
@@ -530,7 +531,7 @@ void _Menu::RefreshSaveSlots() {
 // Refreshes the input map labels
 void _Menu::RefreshInputLabels() {
 	for(size_t i = 0; i < LABEL_COUNT; i++) {
-		InputLabels[i] = Assets.Elements[KEYLABEL_IDENTIFIERS[i]];
+		InputLabels[i] = ae::Assets.Elements[KEYLABEL_IDENTIFIERS[i]];
 		InputLabels[i]->Text = ae::Actions.GetInputNameForAction(i);
 		InputLabels[i]->Parent->Index = i;
 	}
@@ -538,7 +539,7 @@ void _Menu::RefreshInputLabels() {
 
 // Cancel create screen
 void _Menu::CancelCreate() {
-	CurrentLayout = Assets.Elements["element_menu_singleplayer"];
+	CurrentLayout = ae::Assets.Elements["element_menu_singleplayer"];
 	CurrentLayout->SetClickable(true);
 	SinglePlayerState = SINGLEPLAYER_NONE;
 
@@ -547,14 +548,14 @@ void _Menu::CancelCreate() {
 
 // Handle player creation
 void _Menu::CreatePlayer() {
-	if(Assets.Elements["textbox_new_name_input"]->Text.length() == 0)
+	if(ae::Assets.Elements["textbox_new_name_input"]->Text.length() == 0)
 		return;
 
-	CurrentLayout = Assets.Elements["element_menu_singleplayer"];
+	CurrentLayout = ae::Assets.Elements["element_menu_singleplayer"];
 	SinglePlayerState = SINGLEPLAYER_NONE;
 
 	if(SelectedSlot != -1) {
-		Save.CreateNewPlayer(SelectedSlot, Assets.Elements["textbox_new_name_input"]->Text, COLORS[SelectedColor]);
+		Save.CreateNewPlayer(SelectedSlot, ae::Assets.Elements["textbox_new_name_input"]->Text, COLORS[SelectedColor]);
 		RefreshSaveSlots();
 	}
 }

@@ -16,9 +16,9 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 *******************************************************************************/
 #include <states/null.h>
+#include <ae/graphics.h>
+#include <ae/ui.h>
 #include <framework.h>
-#include <graphics.h>
-#include <ui/ui.h>
 #include <menu.h>
 
 _NullState NullState;
@@ -32,7 +32,7 @@ void _NullState::Close() {
 
 // Key handler
 bool _NullState::HandleKey(const ae::_KeyEvent &KeyEvent) {
-	bool Handled = Graphics.Element->HandleKey(KeyEvent);
+	bool Handled = ae::Graphics.Element->HandleKey(KeyEvent);
 	if(!Handled)
 		return Menu.HandleKey(KeyEvent);
 
@@ -42,13 +42,22 @@ bool _NullState::HandleKey(const ae::_KeyEvent &KeyEvent) {
 // Mouse handler
 void _NullState::HandleMouseButton(const ae::_MouseEvent &MouseEvent) {
 	Menu.HandleMouseButton(MouseEvent);
+}
+
+// Handle window events
+void _NullState::HandleWindow(uint8_t Event) {
+}
+
+// Handle quit events
+void _NullState::HandleQuit() {
+	Framework.Done = true;
 };
 
 // Update
 void _NullState::Update(double FrameTime) {
-	Graphics.Element->Update(FrameTime, ae::Input.GetMouse());
-	//if(Graphics.Element->HitElement)
-	//	std::cout << Graphics.Element->HitElement->Name << std::endl;
+	ae::Graphics.Element->Update(FrameTime, ae::Input.GetMouse());
+	//if(ae::Graphics.Element->HitElement)
+	//	std::cout << ae::Graphics.Element->HitElement->Name << std::endl;
 
 	Menu.Update(FrameTime);
 };

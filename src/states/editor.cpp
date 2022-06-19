@@ -18,20 +18,21 @@
 #include <states/editor.h>
 #include <ae/camera.h>
 #include <ae/texture.h>
-#include <framework.h>
-#include <graphics.h>
 #include <ae/graphics.h>
-#include <font.h>
+#include <ae/graphics.h>
+#include <ae/font.h>
+#include <ae/ui.h>
+#include <ae/assets.h>
+#include <ae/program.h>
 #include <assets.h>
+#include <framework.h>
 #include <map.h>
 #include <events.h>
 #include <menu.h>
 #include <animation.h>
 #include <config.h>
 #include <constants.h>
-#include <program.h>
 #include <stats.h>
-#include <ui/ui.h>
 #include <objects/monster.h>
 #include <objects/weapon.h>
 #include <objects/player.h>
@@ -82,48 +83,48 @@ _EditorState::_EditorState() :
 }
 
 void _EditorState::Init() {
-	Graphics.Element->SetActive(false);
-	Graphics.Element->Active = true;
+	ae::Graphics.Element->SetActive(false);
+	ae::Graphics.Element->Active = true;
 
 	// Load command buttons
-	MainFont = Assets.Fonts["menu_buttons"];
-	CommandElement = Assets.Elements["element_editor_command"];
-	BlockElement = Assets.Elements["element_editor_blocks"];
-	EventElement = Assets.Elements["element_editor_events"];
-	InputBox = Assets.Elements["element_editor_input"];
+	MainFont = ae::Assets.Fonts["menu_buttons"];
+	CommandElement = ae::Assets.Elements["element_editor_command"];
+	BlockElement = ae::Assets.Elements["element_editor_blocks"];
+	EventElement = ae::Assets.Elements["element_editor_events"];
+	InputBox = ae::Assets.Elements["element_editor_input"];
 	CommandElement->SetActive(true);
 	BlockElement->SetActive(true);
 	EventElement->SetActive(false);
 	InputBox->SetActive(false);
 
 	// Create button groups
-	PaletteElement[0] = Assets.Elements["element_editor_palette_block"];
-	PaletteElement[1] = Assets.Elements["element_editor_palette_events"];
-	PaletteElement[2] = Assets.Elements["element_editor_palette_monsters"];
-	PaletteElement[3] = Assets.Elements["element_editor_palette_items"];
-	PaletteElement[4] = Assets.Elements["element_editor_palette_ammo"];
-	PaletteElement[5] = Assets.Elements["element_editor_palette_upgrades"];
-	PaletteElement[6] = Assets.Elements["element_editor_palette_weapons"];
-	PaletteElement[7] = Assets.Elements["element_editor_palette_armors"];
+	PaletteElement[0] = ae::Assets.Elements["element_editor_palette_block"];
+	PaletteElement[1] = ae::Assets.Elements["element_editor_palette_events"];
+	PaletteElement[2] = ae::Assets.Elements["element_editor_palette_monsters"];
+	PaletteElement[3] = ae::Assets.Elements["element_editor_palette_items"];
+	PaletteElement[4] = ae::Assets.Elements["element_editor_palette_ammo"];
+	PaletteElement[5] = ae::Assets.Elements["element_editor_palette_upgrades"];
+	PaletteElement[6] = ae::Assets.Elements["element_editor_palette_weapons"];
+	PaletteElement[7] = ae::Assets.Elements["element_editor_palette_armors"];
 
 	// Assign layer buttons
-	LayerButtons[0] = Assets.Elements["button_editor_layer_base"];
-	LayerButtons[1] = Assets.Elements["button_editor_layer_floor0"];
-	LayerButtons[2] = Assets.Elements["button_editor_layer_floor1"];
-	LayerButtons[3] = Assets.Elements["button_editor_layer_floor2"];
-	LayerButtons[4] = Assets.Elements["button_editor_layer_flat"];
-	LayerButtons[5] = Assets.Elements["button_editor_layer_wall"];
-	LayerButtons[6] = Assets.Elements["button_editor_layer_fore"];
+	LayerButtons[0] = ae::Assets.Elements["button_editor_layer_base"];
+	LayerButtons[1] = ae::Assets.Elements["button_editor_layer_floor0"];
+	LayerButtons[2] = ae::Assets.Elements["button_editor_layer_floor1"];
+	LayerButtons[3] = ae::Assets.Elements["button_editor_layer_floor2"];
+	LayerButtons[4] = ae::Assets.Elements["button_editor_layer_flat"];
+	LayerButtons[5] = ae::Assets.Elements["button_editor_layer_wall"];
+	LayerButtons[6] = ae::Assets.Elements["button_editor_layer_fore"];
 
 	// Assign palette buttons
-	ModeButtons[0] = Assets.Elements["button_editor_mode_block"];
-	ModeButtons[1] = Assets.Elements["button_editor_mode_event"];
-	ModeButtons[2] = Assets.Elements["button_editor_mode_mons"];
-	ModeButtons[3] = Assets.Elements["button_editor_mode_item"];
-	ModeButtons[4] = Assets.Elements["button_editor_mode_ammo"];
-	ModeButtons[5] = Assets.Elements["button_editor_mode_mod"];
-	ModeButtons[6] = Assets.Elements["button_editor_mode_weap"];
-	ModeButtons[7] = Assets.Elements["button_editor_mode_arm"];
+	ModeButtons[0] = ae::Assets.Elements["button_editor_mode_block"];
+	ModeButtons[1] = ae::Assets.Elements["button_editor_mode_event"];
+	ModeButtons[2] = ae::Assets.Elements["button_editor_mode_mons"];
+	ModeButtons[3] = ae::Assets.Elements["button_editor_mode_item"];
+	ModeButtons[4] = ae::Assets.Elements["button_editor_mode_ammo"];
+	ModeButtons[5] = ae::Assets.Elements["button_editor_mode_mod"];
+	ModeButtons[6] = ae::Assets.Elements["button_editor_mode_weap"];
+	ModeButtons[7] = ae::Assets.Elements["button_editor_mode_arm"];
 
 	// Reset state
 	ResetEditorState();
@@ -141,14 +142,13 @@ void _EditorState::Init() {
 	LoadMap(MapFilename, PlayState.FromEditor);
 
 	// Set up graphics
-	Graphics.SetViewport(Graphics.CurrentSize - EDITOR_VIEWPORT_OFFSET);
-	ae::Graphics.SetViewport(Graphics.CurrentSize - EDITOR_VIEWPORT_OFFSET);
-	Camera->CalculateFrustum(Graphics.AspectRatio);
-	Graphics.SetCursor(true);
+	ae::Graphics.SetViewport(ae::Graphics.CurrentSize - EDITOR_VIEWPORT_OFFSET);
+	Camera->CalculateFrustum(ae::Graphics.AspectRatio);
+	ae::Graphics.SetCursor(true);
 
 	// Adjust UI
 	for(int i = 0; i < EDITMODE_COUNT; i++)
-		PaletteElement[i]->SetHeight(Graphics.ViewportSize.y - 30);
+		PaletteElement[i]->SetHeight(ae::Graphics.ViewportSize.y - 30);
 
 	if(SavedLayer != -1)
 		ExecuteUpdateLayer(SavedLayer, false);
@@ -500,31 +500,31 @@ bool _EditorState::HandleKey(const ae::_KeyEvent &KeyEvent) {
 
 // Mouse handler
 void _EditorState::HandleMouseButton(const ae::_MouseEvent &MouseEvent) {
-	FocusedElement = nullptr;
-	Graphics.Element->HandleMouseButton(MouseEvent.Pressed);
+	ae::FocusedElement = nullptr;
+	ae::Graphics.Element->HandleMouseButton(MouseEvent.Pressed);
 
 	// Handle command group clicks
-	_Element *Clicked = CommandElement->GetClickedElement();
+	ae::_Element *Clicked = CommandElement->GetClickedElement();
 	if(Clicked && Clicked->Index != -1) {
 		ProcessIcons(Clicked->Index, MouseEvent.Button == SDL_BUTTON_RIGHT);
 	}
 
 	if(CurrentPalette == EDITMODE_BLOCKS) {
-		_Element *Clicked = BlockElement->GetClickedElement();
+		ae::_Element *Clicked = BlockElement->GetClickedElement();
 		if(Clicked && Clicked->Index != -1) {
 			ProcessBlockIcons(Clicked->Index, MouseEvent.Button == SDL_BUTTON_RIGHT);
 		}
 	}
 
 	if(CurrentPalette == EDITMODE_EVENTS) {
-		_Element *Clicked = EventElement->GetClickedElement();
+		ae::_Element *Clicked = EventElement->GetClickedElement();
 		if(Clicked && Clicked->Index != -1) {
 			ProcessEventIcons(Clicked->Index, MouseEvent.Button == SDL_BUTTON_RIGHT);
 		}
 	}
 
 	// Distinguish between interface and viewport clicks
-	if(ae::Input.GetMouse().x < Graphics.ViewportSize.x && ae::Input.GetMouse().y < Graphics.ViewportSize.y) {
+	if(ae::Input.GetMouse().x < ae::Graphics.ViewportSize.x && ae::Input.GetMouse().y < ae::Graphics.ViewportSize.y) {
 		if(MouseEvent.Pressed) {
 
 			// Mouse press
@@ -545,7 +545,7 @@ void _EditorState::HandleMouseButton(const ae::_MouseEvent &MouseEvent) {
 
 							break;
 							default: {
-								_Element *Button = Brush[CurrentPalette];
+								ae::_Element *Button = Brush[CurrentPalette];
 								if(Button)
 									SpawnObject(Map->GetValidPosition(WorldCursor), (intptr_t)Button->UserData, Button->Name, IsShiftDown);
 							} break;
@@ -613,7 +613,7 @@ void _EditorState::HandleMouseButton(const ae::_MouseEvent &MouseEvent) {
 	else {
 
 		// Get button click for palette
-		_Element *Button = PaletteElement[CurrentPalette]->GetClickedElement();
+		ae::_Element *Button = PaletteElement[CurrentPalette]->GetClickedElement();
 		if(Button)
 			ExecuteSelectPalette(Button, MouseEvent.Button == SDL_BUTTON_RIGHT);
 	}
@@ -648,7 +648,7 @@ void _EditorState::HandleMouseButton(const ae::_MouseEvent &MouseEvent) {
 // Mouse wheel handler
 void _EditorState::HandleMouseWheel(int Direction) {
 
-	if(ae::Input.GetMouse().x < Graphics.ViewportSize.x && ae::Input.GetMouse().y < Graphics.ViewportSize.y) {
+	if(ae::Input.GetMouse().x < ae::Graphics.ViewportSize.x && ae::Input.GetMouse().y < ae::Graphics.ViewportSize.y) {
 		float Multiplier = 1.0f * Direction;
 		if(IsShiftDown)
 			Multiplier = 10.0f * Direction;
@@ -664,11 +664,24 @@ void _EditorState::HandleMouseWheel(int Direction) {
 	}
 }
 
+// Window size updates
+void _EditorState::HandleWindow(uint8_t Event) {
+	if(Event == SDL_WINDOWEVENT_SIZE_CHANGED) {
+		if(Camera)
+			Camera->CalculateFrustum(ae::Graphics.AspectRatio);
+	}
+}
+
+// Handle quit events
+void _EditorState::HandleQuit() {
+	Framework.Done = true;
+}
+
 // Update
 void _EditorState::Update(double FrameTime) {
-	Graphics.Element->Update(FrameTime, ae::Input.GetMouse());
-	//if(Graphics.Element->HitElement)
-	//	std::cout << Graphics.Element->HitElement->Name << std::endl;
+	ae::Graphics.Element->Update(FrameTime, ae::Input.GetMouse());
+	//if(ae::Graphics.Element->HitElement)
+	//	std::cout << ae::Graphics.Element->HitElement->Name << std::endl;
 
 	// Get modifier key status
 	IsShiftDown = ae::Input.ModKeyDown(KMOD_SHIFT) ? true : false;
@@ -788,17 +801,17 @@ void _EditorState::Update(double FrameTime) {
 void _EditorState::Render(double BlendFactor) {
 
 	// Setup 3D transformation
-	Graphics.Setup3D();
+	ae::Graphics.Setup3D();
 	Camera->Set3DProjection(BlendFactor);
-	Assets.Programs["pos_uv"]->AmbientLight = glm::vec4(1);
+	ae::Assets.Programs["pos_uv"]->AmbientLight = glm::vec4(1);
 
 	// Setup the viewing matrix
-	Graphics.SetProgram(Assets.Programs["pos"]);
-	glUniformMatrix4fv(Assets.Programs["pos"]->ViewProjectionTransformID, 1, GL_FALSE, glm::value_ptr(Camera->Transform));
-	Graphics.SetProgram(Assets.Programs["pos_uv"]);
-	glUniformMatrix4fv(Assets.Programs["pos_uv"]->ViewProjectionTransformID, 1, GL_FALSE, glm::value_ptr(Camera->Transform));
-	Graphics.SetProgram(Assets.Programs["text"]);
-	glUniformMatrix4fv(Assets.Programs["text"]->ViewProjectionTransformID, 1, GL_FALSE, glm::value_ptr(Camera->Transform));
+	ae::Graphics.SetProgram(ae::Assets.Programs["pos"]);
+	glUniformMatrix4fv(ae::Assets.Programs["pos"]->ViewProjectionTransformID, 1, GL_FALSE, glm::value_ptr(Camera->Transform));
+	ae::Graphics.SetProgram(ae::Assets.Programs["pos_uv"]);
+	glUniformMatrix4fv(ae::Assets.Programs["pos_uv"]->ViewProjectionTransformID, 1, GL_FALSE, glm::value_ptr(Camera->Transform));
+	ae::Graphics.SetProgram(ae::Assets.Programs["text"]);
+	glUniformMatrix4fv(ae::Assets.Programs["text"]->ViewProjectionTransformID, 1, GL_FALSE, glm::value_ptr(Camera->Transform));
 
 	// Draw floors
 	Map->RenderFloors();
@@ -807,24 +820,24 @@ void _EditorState::Render(double BlendFactor) {
 	if(IsDrawing) {
 		if(Brush[CurrentPalette]) {
 			if(CurrentPalette == EDITMODE_EVENTS) {
-				Graphics.SetDepthTest(false);
-				Graphics.DrawRepeatable(glm::vec3(DrawStart.x, DrawStart.y, MAP_LAYEROFFSET), glm::vec3(DrawEnd.x, DrawEnd.y, MAP_LAYEROFFSET), Brush[CurrentPalette]->Style->Texture, 0, 1.0f);
-				Graphics.SetDepthTest(true);
+				ae::Graphics.SetDepthTest(false);
+				ae::Graphics.DrawRepeatable(glm::vec3(DrawStart.x, DrawStart.y, MAP_LAYEROFFSET), glm::vec3(DrawEnd.x, DrawEnd.y, MAP_LAYEROFFSET), Brush[CurrentPalette]->Style->Texture, 0, 1.0f);
+				ae::Graphics.SetDepthTest(true);
 			}
 			else {
 				if(CurrentLayer == MAPLAYER_FORE)
-					Graphics.DrawRepeatable(glm::vec3(DrawStart.x, DrawStart.y, MaxZ + MAP_LAYEROFFSET * CurrentLayer), glm::vec3(DrawEnd.x, DrawEnd.y, MaxZ + MAP_LAYEROFFSET * CurrentLayer), Brush[CurrentPalette]->Style->Texture, Rotation, ScaleX);
+					ae::Graphics.DrawRepeatable(glm::vec3(DrawStart.x, DrawStart.y, MaxZ + MAP_LAYEROFFSET * CurrentLayer), glm::vec3(DrawEnd.x, DrawEnd.y, MaxZ + MAP_LAYEROFFSET * CurrentLayer), Brush[CurrentPalette]->Style->Texture, Rotation, ScaleX);
 				else if(CurrentLayer == MAPLAYER_FLAT) {
-					Graphics.SetVBO(VBO_CUBE);
-					Graphics.DrawWall(glm::vec3(DrawStart.x, DrawStart.y, MinZ), glm::vec3(DrawEnd.x - DrawStart.x, DrawEnd.y - DrawStart.y, MaxZ - MinZ), Rotation, Brush[CurrentPalette]->Style->Texture);
+					ae::Graphics.SetVBO(ae::VBO_CUBE);
+					ae::Graphics.DrawWall(glm::vec3(DrawStart.x, DrawStart.y, MinZ), glm::vec3(DrawEnd.x - DrawStart.x, DrawEnd.y - DrawStart.y, MaxZ - MinZ), Rotation, Brush[CurrentPalette]->Style->Texture);
 				}
 				else {
 					if(MaxZ == MinZ) {
-						Graphics.DrawRepeatable(glm::vec3(DrawStart.x, DrawStart.y, MinZ + MAP_LAYEROFFSET * CurrentLayer), glm::vec3(DrawEnd.x, DrawEnd.y, MinZ + MAP_LAYEROFFSET * CurrentLayer), Brush[CurrentPalette]->Style->Texture, Rotation, ScaleX);
+						ae::Graphics.DrawRepeatable(glm::vec3(DrawStart.x, DrawStart.y, MinZ + MAP_LAYEROFFSET * CurrentLayer), glm::vec3(DrawEnd.x, DrawEnd.y, MinZ + MAP_LAYEROFFSET * CurrentLayer), Brush[CurrentPalette]->Style->Texture, Rotation, ScaleX);
 					}
 					else {
-						Graphics.SetVBO(VBO_CUBE);
-						Graphics.DrawCube(glm::vec3(DrawStart.x, DrawStart.y, MinZ), glm::vec3(DrawEnd.x - DrawStart.x, DrawEnd.y - DrawStart.y, MaxZ - MinZ), Brush[CurrentPalette]->Style->Texture);
+						ae::Graphics.SetVBO(ae::VBO_CUBE);
+						ae::Graphics.DrawCube(glm::vec3(DrawStart.x, DrawStart.y, MinZ), glm::vec3(DrawEnd.x - DrawStart.x, DrawEnd.y - DrawStart.y, MaxZ - MinZ), Brush[CurrentPalette]->Style->Texture);
 					}
 				}
 			}
@@ -835,29 +848,29 @@ void _EditorState::Render(double BlendFactor) {
 	Map->RenderWalls();
 
 	// Draw objects
-	Graphics.SetProgram(Assets.Programs["pos_uv"]);
-	Graphics.SetDepthMask(false);
-	Graphics.SetVBO(VBO_QUAD);
+	ae::Graphics.SetProgram(ae::Assets.Programs["pos_uv"]);
+	ae::Graphics.SetDepthMask(false);
+	ae::Graphics.SetVBO(ae::VBO_QUAD);
 	const std::vector<_ObjectSpawn *> &Objects = Map->GetObjectsList();
 	for(size_t i = 0; i < Objects.size(); i++) {
 		DrawObject(0.0f, 0.0f, Objects[i], 1.0f);
 	}
 
 	// Outline selected item
-	Graphics.SetProgram(Assets.Programs["pos"]);
-	Graphics.SetColor(COLOR_WHITE);
+	ae::Graphics.SetProgram(ae::Assets.Programs["pos"]);
+	ae::Graphics.SetColor(COLOR_WHITE);
 	for(auto Iterator : SelectedObjects) {
 		glm::vec2 Position = GetMoveDeltaPosition(Iterator->Position);
-		Graphics.DrawCircle(glm::vec3(Position, ITEM_Z + 0.05f), EDITOR_OBJECTRADIUS);
+		ae::Graphics.DrawCircle(glm::vec3(Position, ITEM_Z + 0.05f), EDITOR_OBJECTRADIUS);
 	}
 
 	// Draw faded items while moving
-	Graphics.SetProgram(Assets.Programs["pos_uv"]);
-	Graphics.SetVBO(VBO_QUAD);
+	ae::Graphics.SetProgram(ae::Assets.Programs["pos_uv"]);
+	ae::Graphics.SetVBO(ae::VBO_QUAD);
 	for(auto Iterator : SelectedObjects) {
 		DrawObject(MoveDelta.x, MoveDelta.y, Iterator, 0.5f);
 	}
-	Graphics.SetDepthMask(true);
+	ae::Graphics.SetDepthMask(true);
 
 	// Draw walls
 	Map->RenderWalls();
@@ -869,13 +882,13 @@ void _EditorState::Render(double BlendFactor) {
 	// Draw the events
 	Map->RenderEvents(EventTextures);
 
-	Graphics.SetDepthMask(false);
-	Graphics.SetDepthTest(false);
+	ae::Graphics.SetDepthMask(false);
+	ae::Graphics.SetDepthTest(false);
 
 	// Draw map boundaries
-	Graphics.SetProgram(Assets.Programs["pos"]);
-	Graphics.SetColor(COLOR_RED);
-	Graphics.DrawRectangle3D(glm::vec2(-0.01f, -0.01f), glm::vec2(Map->GetWidth() + 0.01f, Map->GetHeight() + 0.01f), false);
+	ae::Graphics.SetProgram(ae::Assets.Programs["pos"]);
+	ae::Graphics.SetColor(COLOR_RED);
+	ae::Graphics.DrawRectangle3D(glm::vec2(-0.01f, -0.01f), glm::vec2(Map->GetWidth() + 0.01f, Map->GetHeight() + 0.01f), false);
 
 	// Draw grid
 	Map->RenderGrid(GridMode);
@@ -886,31 +899,31 @@ void _EditorState::Render(double BlendFactor) {
 
 	// Outline selected block
 	if(BlockSelected()) {
-		Graphics.SetColor(COLOR_WHITE);
-		Graphics.DrawRectangle3D(glm::vec2(SelectedBlock->Start.x, SelectedBlock->Start.y), glm::vec2(SelectedBlock->End.x + 1.0f, SelectedBlock->End.y + 1.0f), false);
+		ae::Graphics.SetColor(COLOR_WHITE);
+		ae::Graphics.DrawRectangle3D(glm::vec2(SelectedBlock->Start.x, SelectedBlock->Start.y), glm::vec2(SelectedBlock->End.x + 1.0f, SelectedBlock->End.y + 1.0f), false);
 	}
 
 	// Outline selected event
 	if(EventSelected()) {
-		Graphics.SetColor(COLOR_CYAN);
-		Graphics.DrawRectangle3D(glm::vec2(SelectedEvent->Start.x + 0.02f, SelectedEvent->Start.y + 0.02f), glm::vec2(SelectedEvent->End.x + 0.98f, SelectedEvent->End.y + 0.98f), false);
+		ae::Graphics.SetColor(COLOR_CYAN);
+		ae::Graphics.DrawRectangle3D(glm::vec2(SelectedEvent->Start.x + 0.02f, SelectedEvent->Start.y + 0.02f), glm::vec2(SelectedEvent->End.x + 0.98f, SelectedEvent->End.y + 0.98f), false);
 
 		// Outline affected tiles and blocks
 		const std::vector<_EventTile> &Tiles = SelectedEvent->Tiles;
 		for(size_t i = 0; i < Tiles.size(); i++) {
-			Graphics.SetColor(COLOR_RED);
-			Graphics.DrawRectangle3D(glm::vec2(Tiles[i].Coord.x + 0.2f, Tiles[i].Coord.y + 0.2f), glm::vec2(Tiles[i].Coord.x + 0.8f, Tiles[i].Coord.y + 0.8f), false);
+			ae::Graphics.SetColor(COLOR_RED);
+			ae::Graphics.DrawRectangle3D(glm::vec2(Tiles[i].Coord.x + 0.2f, Tiles[i].Coord.y + 0.2f), glm::vec2(Tiles[i].Coord.x + 0.8f, Tiles[i].Coord.y + 0.8f), false);
 
 			if(Tiles[i].BlockID != -1) {
 				if(SelectedEvent->Type == EVENT_ENABLE) {
 					const _Event *Event = Map->GetEvent(Tiles[i].BlockID);
-					Graphics.SetColor(COLOR_YELLOW);
-					Graphics.DrawRectangle3D(glm::vec2(Event->Start.x, Event->Start.y), glm::vec2(Event->End.x + 1.0f, Event->End.y + 1.0f), false);
+					ae::Graphics.SetColor(COLOR_YELLOW);
+					ae::Graphics.DrawRectangle3D(glm::vec2(Event->Start.x, Event->Start.y), glm::vec2(Event->End.x + 1.0f, Event->End.y + 1.0f), false);
 				}
 				else {
 					const _Block *Block = Map->GetBlock(Tiles[i].Layer, Tiles[i].BlockID);
-					Graphics.SetColor(COLOR_GREEN);
-					Graphics.DrawRectangle3D(glm::vec2(Block->Start.x, Block->Start.y), glm::vec2(Block->End.x + 1.0f, Block->End.y + 1.0f), false);
+					ae::Graphics.SetColor(COLOR_GREEN);
+					ae::Graphics.DrawRectangle3D(glm::vec2(Block->Start.x, Block->Start.y), glm::vec2(Block->End.x + 1.0f, Block->End.y + 1.0f), false);
 				}
 			}
 		}
@@ -918,25 +931,25 @@ void _EditorState::Render(double BlendFactor) {
 
 	// Dragging a box around object
 	if(DraggingBox) {
-		Graphics.SetColor(COLOR_WHITE);
-		Graphics.DrawRectangle3D(ClickedPosition, WorldCursor, false);
+		ae::Graphics.SetColor(COLOR_WHITE);
+		ae::Graphics.DrawRectangle3D(ClickedPosition, WorldCursor, false);
 	}
 
 	// Draw a block
 	if(IsDrawing) {
-		Graphics.SetColor(COLOR_GREEN);
-		Graphics.DrawRectangle3D(glm::vec2(DrawStart.x, DrawStart.y), glm::vec2(DrawEnd.x, DrawEnd.y), false);
+		ae::Graphics.SetColor(COLOR_GREEN);
+		ae::Graphics.DrawRectangle3D(glm::vec2(DrawStart.x, DrawStart.y), glm::vec2(DrawEnd.x, DrawEnd.y), false);
 	}
 
 	// Setup for drawing the HUD
-	Graphics.Setup2D();
-	Graphics.SetStaticUniforms();
-	Graphics.SetDepthTest(false);
-	Graphics.SetDepthMask(false);
+	ae::Graphics.Setup2D();
+	ae::Graphics.SetStaticUniforms();
+	ae::Graphics.SetDepthTest(false);
+	ae::Graphics.SetDepthMask(false);
 
 	// Draw viewport outline
-	Graphics.SetColor(COLOR_DARK);
-	Graphics.DrawRectangle(glm::vec2(0, 0), Graphics.ViewportSize);
+	ae::Graphics.SetColor(COLOR_DARK);
+	ae::Graphics.DrawRectangle(glm::vec2(0, 0), ae::Graphics.ViewportSize);
 
 	// Draw text
 	if(EditorInput != -1)
@@ -950,35 +963,35 @@ void _EditorState::Render(double BlendFactor) {
 
 	// Draw cursor position
 	int X = 16;
-	int Y = Graphics.ViewportSize.y - 25;
+	int Y = ae::Graphics.ViewportSize.y - 25;
 	Buffer << std::fixed << WorldCursor.x << ", " << WorldCursor.y;
 	MainFont->DrawText(Buffer.str(), glm::vec2(X, Y));
 	Buffer.str("");
 
 	// Draw FPS
-	X = Graphics.ViewportSize.x - 45;
+	X = ae::Graphics.ViewportSize.x - 45;
 	Y = 25;
-	Buffer << Graphics.FramesPerSecond << " FPS";
-	MainFont->DrawText(Buffer.str(), glm::vec2(X, Y), RIGHT_BASELINE);
+	Buffer << ae::Graphics.FramesPerSecond << " FPS";
+	MainFont->DrawText(Buffer.str(), glm::vec2(X, Y), ae::RIGHT_BASELINE);
 	Buffer.str("");
 
 	// Draw selection count
 	Buffer << SelectedObjects.size() << " selected";
-	MainFont->DrawText(Buffer.str(), glm::vec2(X, Y + 20), RIGHT_BASELINE);
+	MainFont->DrawText(Buffer.str(), glm::vec2(X, Y + 20), ae::RIGHT_BASELINE);
 	Buffer.str("");
 
 	// Draw checkpoint info
-	X = Graphics.ViewportSize.x - 45;
-	Y = Graphics.ViewportSize.y - 40;
+	X = ae::Graphics.ViewportSize.x - 45;
+	Y = ae::Graphics.ViewportSize.y - 40;
 	Buffer << CheckpointIndex;
-	MainFont->DrawText("Checkpoint:", glm::vec2(X, Y), RIGHT_BASELINE);
+	MainFont->DrawText("Checkpoint:", glm::vec2(X, Y), ae::RIGHT_BASELINE);
 	MainFont->DrawText(Buffer.str(), glm::vec2(X + 5, Y));
 	Buffer.str("");
 
 	// Draw grid size
 	Y += 20;
 	Buffer << GridMode;
-	MainFont->DrawText("Grid:", glm::vec2(X, Y), RIGHT_BASELINE);
+	MainFont->DrawText("Grid:", glm::vec2(X, Y), ae::RIGHT_BASELINE);
 	MainFont->DrawText(Buffer.str(), glm::vec2(X + 5, Y));
 	Buffer.str("");
 
@@ -997,7 +1010,7 @@ void _EditorState::Render(double BlendFactor) {
 	// Draw Palette
 	PaletteElement[CurrentPalette]->Render();
 
-	Graphics.SetDepthMask(true);
+	ae::Graphics.SetDepthMask(true);
 }
 
 // Load palette buttons
@@ -1005,7 +1018,7 @@ void _EditorState::LoadPalettes() {
 	std::vector<_Brush> Icons;
 
 	// Load map textures
-	for(const auto &Texture : Assets.Textures) {
+	for(const auto &Texture : ae::Assets.Textures) {
 		if(Texture.second && Texture.second->Name.find(MAP_TEXTURE_PATH) != std::string::npos)
 			Icons.push_back(_Brush(Texture.first, Texture.second->Name, Texture.second, COLOR_WHITE));
 	}
@@ -1013,17 +1026,17 @@ void _EditorState::LoadPalettes() {
 	Icons.clear();
 
 	// Load events
-	Icons.push_back(_Brush("door", "Door", Assets.Textures["textures/editor_repeat/event_door.png"], COLOR_WHITE));
-	Icons.push_back(_Brush("wswitch", "Wall Switch", Assets.Textures["textures/editor_repeat/event_wswitch.png"], COLOR_WHITE));
-	Icons.push_back(_Brush("spawn", "Spawn", Assets.Textures["textures/editor_repeat/event_spawn.png"], COLOR_WHITE));
-	Icons.push_back(_Brush("check", "Checkpoint", Assets.Textures["textures/editor_repeat/event_check.png"], COLOR_WHITE));
-	Icons.push_back(_Brush("end", "End of Level", Assets.Textures["textures/editor_repeat/event_end.png"], COLOR_WHITE));
-	Icons.push_back(_Brush("text", "Event Message", Assets.Textures["textures/editor_repeat/event_text.png"], COLOR_WHITE));
-	Icons.push_back(_Brush("sound", "Event Sound", Assets.Textures["textures/editor_repeat/event_sound.png"], COLOR_WHITE));
-	Icons.push_back(_Brush("fswitch", "Floor Switch", Assets.Textures["textures/editor_repeat/event_fswitch.png"], COLOR_WHITE));
-	Icons.push_back(_Brush("enable", "Event Enabler", Assets.Textures["textures/editor_repeat/event_enable.png"], COLOR_WHITE));
-	Icons.push_back(_Brush("tele", "Teleporter", Assets.Textures["textures/editor_repeat/event_tele.png"], COLOR_WHITE));
-	Icons.push_back(_Brush("light", "Lights", Assets.Textures["textures/editor_repeat/event_light.png"], COLOR_WHITE));
+	Icons.push_back(_Brush("door", "Door", ae::Assets.Textures["textures/editor_repeat/event_door.png"], COLOR_WHITE));
+	Icons.push_back(_Brush("wswitch", "Wall Switch", ae::Assets.Textures["textures/editor_repeat/event_wswitch.png"], COLOR_WHITE));
+	Icons.push_back(_Brush("spawn", "Spawn", ae::Assets.Textures["textures/editor_repeat/event_spawn.png"], COLOR_WHITE));
+	Icons.push_back(_Brush("check", "Checkpoint", ae::Assets.Textures["textures/editor_repeat/event_check.png"], COLOR_WHITE));
+	Icons.push_back(_Brush("end", "End of Level", ae::Assets.Textures["textures/editor_repeat/event_end.png"], COLOR_WHITE));
+	Icons.push_back(_Brush("text", "Event Message", ae::Assets.Textures["textures/editor_repeat/event_text.png"], COLOR_WHITE));
+	Icons.push_back(_Brush("sound", "Event Sound", ae::Assets.Textures["textures/editor_repeat/event_sound.png"], COLOR_WHITE));
+	Icons.push_back(_Brush("fswitch", "Floor Switch", ae::Assets.Textures["textures/editor_repeat/event_fswitch.png"], COLOR_WHITE));
+	Icons.push_back(_Brush("enable", "Event Enabler", ae::Assets.Textures["textures/editor_repeat/event_enable.png"], COLOR_WHITE));
+	Icons.push_back(_Brush("tele", "Teleporter", ae::Assets.Textures["textures/editor_repeat/event_tele.png"], COLOR_WHITE));
+	Icons.push_back(_Brush("light", "Lights", ae::Assets.Textures["textures/editor_repeat/event_light.png"], COLOR_WHITE));
 	LoadPaletteButtons(Icons, EDITMODE_EVENTS);
 	for(size_t i = 0; i < Icons.size(); i++)
 		EventTextures.push_back(Icons[i].Texture);
@@ -1035,7 +1048,7 @@ void _EditorState::LoadPalettes() {
 	// Load items
 	for(const auto &Item : Stats.Items) {
 		if(Item.second.Type == _Object::MEDKIT || Item.second.Type == _Object::KEY)
-			Icons.push_back(_Brush(Item.first, Item.second.Name, Assets.Textures[Item.second.IconID], Item.second.Color, Item.second.Type));
+			Icons.push_back(_Brush(Item.first, Item.second.Name, ae::Assets.Textures[Item.second.IconID], Item.second.Color, Item.second.Type));
 	}
 	LoadPaletteButtons(Icons, EDITMODE_ITEMS);
 	Icons.clear();
@@ -1043,7 +1056,7 @@ void _EditorState::LoadPalettes() {
 	// Load ammo
 	for(const auto &Item : Stats.Items) {
 		if(Item.second.Type == _Object::AMMO)
-			Icons.push_back(_Brush(Item.first, Item.second.Name, Assets.Textures[Item.second.IconID], Item.second.Color, Item.second.Type));
+			Icons.push_back(_Brush(Item.first, Item.second.Name, ae::Assets.Textures[Item.second.IconID], Item.second.Color, Item.second.Type));
 	}
 	LoadPaletteButtons(Icons, EDITMODE_AMMO);
 	Icons.clear();
@@ -1051,14 +1064,14 @@ void _EditorState::LoadPalettes() {
 	// Load upgrades
 	for(const auto &Item : Stats.Items) {
 		if(Item.second.Type == _Object::UPGRADE)
-			Icons.push_back(_Brush(Item.first, Item.second.Name, Assets.Textures[Item.second.IconID], Item.second.Color, Item.second.Type));
+			Icons.push_back(_Brush(Item.first, Item.second.Name, ae::Assets.Textures[Item.second.IconID], Item.second.Color, Item.second.Type));
 	}
 	LoadPaletteButtons(Icons, EDITMODE_UPGRADES);
 	Icons.clear();
 
 	// Load weapons
 	for(const auto &Weapon : Stats.Weapons) {
-		const ae::_Texture *Texture = Assets.Textures[Weapon.second.IconIdentifier];
+		const ae::_Texture *Texture = ae::Assets.Textures[Weapon.second.IconIdentifier];
 		if(Texture)
 			Icons.push_back(_Brush(Weapon.first, Weapon.second.Name, Texture, Weapon.second.Color, _Object::WEAPON));
 	}
@@ -1068,7 +1081,7 @@ void _EditorState::LoadPalettes() {
 	// Load armor
 	for(const auto &Item : Stats.Items) {
 		if(Item.second.Type == _Object::ARMOR)
-			Icons.push_back(_Brush(Item.first, Item.second.Name, Assets.Textures[Item.second.IconID], Item.second.Color, Item.second.Type));
+			Icons.push_back(_Brush(Item.first, Item.second.Name, ae::Assets.Textures[Item.second.IconID], Item.second.Color, Item.second.Type));
 	}
 	LoadPaletteButtons(Icons, EDITMODE_ARMOR);
 	Icons.clear();
@@ -1076,7 +1089,7 @@ void _EditorState::LoadPalettes() {
 
 // Free memory used by palette
 void _EditorState::ClearPalette(int Type) {
-	std::vector<_Element *> &Children = PaletteElement[Type]->Children;
+	std::vector<ae::_Element *> &Children = PaletteElement[Type]->Children;
 	for(size_t i = 0; i < Children.size(); i++) {
 		delete Children[i]->Style;
 		delete Children[i];
@@ -1096,7 +1109,7 @@ void _EditorState::LoadMonsterButtons() {
 		}
 		else {
 			_MonsterTemplate &MonsterTemplate = Stats.Monsters.at(Map->MonsterSet[i]);
-			Icons.push_back(_Brush(Map->MonsterSet[i], MonsterTemplate.Name, Assets.Animations[MonsterTemplate.AnimationIdentifier]->GetStartPositionFrame(), MonsterTemplate.Color, _Object::MONSTER));
+			Icons.push_back(_Brush(Map->MonsterSet[i], MonsterTemplate.Name, OldAssets.Animations[MonsterTemplate.AnimationIdentifier]->GetStartPositionFrame(), MonsterTemplate.Color, _Object::MONSTER));
 		}
 	}
 
@@ -1116,25 +1129,25 @@ void _EditorState::LoadPaletteButtons(std::vector<_Brush> &Icons, int Type) {
 	int Width = PaletteElement[Type]->Size.x;
 	for(size_t i = 0; i < Icons.size(); i++) {
 
-		_Style *Style = new _Style();
+		ae::_Style *Style = new ae::_Style();
 		Style->Name = Icons[i].Text;
 		Style->HasBackgroundColor = false;
 		Style->HasBorderColor = false;
 		Style->BackgroundColor = COLOR_WHITE;
 		Style->BorderColor = COLOR_WHITE;
-		Style->Program = Assets.Programs["ortho_pos_uv"];
+		Style->Program = ae::Assets.Programs["ortho_pos_uv"];
 		Style->Texture = Icons[i].Texture;
 		Style->TextureColor = Icons[i].Color;
 		Style->Stretch = true;
 
-		_Element *Button = new _Element();
+		ae::_Element *Button = new ae::_Element();
 		Button->Name = Icons[i].Identifier;
 		Button->Parent = PaletteElement[Type];
 		Button->BaseOffset = Offset;
 		Button->BaseSize = glm::ivec2(PaletteSizes[Type], PaletteSizes[Type]);
-		Button->Alignment = LEFT_TOP;
+		Button->Alignment = ae::LEFT_TOP;
 		Button->Style = Style;
-		Button->HoverStyle = Assets.Styles["style_editor_button_selected"];
+		Button->HoverStyle = ae::Assets.Styles["style_editor_button_selected"];
 		Button->UserData = (void *)(intptr_t)Icons[i].ObjectType;
 		Button->Index = i;
 
@@ -1203,37 +1216,37 @@ void _EditorState::DrawBrush() {
 
 			IconIdentifier = "";
 
-			int X = (float)Graphics.ViewportSize.x + 100;
-			int Y = (float)Graphics.ViewportSize.y + 5;
+			int X = (float)ae::Graphics.ViewportSize.x + 100;
+			int Y = (float)ae::Graphics.ViewportSize.y + 5;
 			std::ostringstream Buffer;
 			Buffer << IconRotation;
-			MainFont->DrawText("Rotation:", glm::vec2(X, Y), RIGHT_BASELINE);
+			MainFont->DrawText("Rotation:", glm::vec2(X, Y), ae::RIGHT_BASELINE);
 			MainFont->DrawText(Buffer.str(), glm::vec2(X + 5, Y));
 			Buffer.str("");
 
 			Buffer << BlockMinZ;
-			MainFont->DrawText("Min Z:", glm::vec2(X + 85, Y), RIGHT_BASELINE);
+			MainFont->DrawText("Min Z:", glm::vec2(X + 85, Y), ae::RIGHT_BASELINE);
 			MainFont->DrawText(Buffer.str(), glm::vec2(X + 90, Y));
 			Buffer.str("");
 
 			Y += 15;
 			Buffer << IconScaleX;
-			MainFont->DrawText("ScaleX:", glm::vec2(X, Y), RIGHT_BASELINE);
+			MainFont->DrawText("ScaleX:", glm::vec2(X, Y), ae::RIGHT_BASELINE);
 			MainFont->DrawText(Buffer.str(), glm::vec2(X + 5, Y));
 			Buffer.str("");
 
 			Buffer << BlockMaxZ;
-			MainFont->DrawText("Max Z:", glm::vec2(X + 85, Y), RIGHT_BASELINE);
+			MainFont->DrawText("Max Z:", glm::vec2(X + 85, Y), ae::RIGHT_BASELINE);
 			MainFont->DrawText(Buffer.str(), glm::vec2(X + 90, Y));
 			Buffer.str("");
 
 			Y += 15;
 			Buffer << BlockWalkable;
-			MainFont->DrawText("Walk:", glm::vec2(X, Y), RIGHT_BASELINE);
+			MainFont->DrawText("Walk:", glm::vec2(X, Y), ae::RIGHT_BASELINE);
 			MainFont->DrawText(Buffer.str(), glm::vec2(X + 5, Y));
 			Buffer.str("");
 
-			MainFont->DrawText(BlockAltTextureIdentifier, glm::vec2(Graphics.ViewportSize.x + 112.0f, Graphics.ViewportSize.y + 145.0f), CENTER_MIDDLE);
+			MainFont->DrawText(BlockAltTextureIdentifier, glm::vec2(ae::Graphics.ViewportSize.x + 112.0f, ae::Graphics.ViewportSize.y + 145.0f), ae::CENTER_MIDDLE);
 		} break;
 		case EDITMODE_EVENTS: {
 
@@ -1242,7 +1255,7 @@ void _EditorState::DrawBrush() {
 			double ActivationPeriod;
 			int Active, Level;
 			if(EventSelected()) {
-				_Element *Button = PaletteElement[EDITMODE_EVENTS]->Children[SelectedEvent->Type];
+				ae::_Element *Button = PaletteElement[EDITMODE_EVENTS]->Children[SelectedEvent->Type];
 				IconTexture = Button->Style->Texture;
 				IconIdentifier = Button->Name;
 				IconText = Button->Style->Name;
@@ -1263,30 +1276,30 @@ void _EditorState::DrawBrush() {
 				ActivationPeriod = EventActivationPeriod;
 			}
 
-			int X = Graphics.ViewportSize.x + 75;
-			int Y = Graphics.ViewportSize.y - 15;
+			int X = ae::Graphics.ViewportSize.x + 75;
+			int Y = ae::Graphics.ViewportSize.y - 15;
 
 			std::ostringstream Buffer;
 			Buffer << Active;
-			MainFont->DrawText("Active:", glm::vec2(X, Y), RIGHT_BASELINE);
+			MainFont->DrawText("Active:", glm::vec2(X, Y), ae::RIGHT_BASELINE);
 			MainFont->DrawText(Buffer.str(), glm::vec2(X + 5, Y));
 			Buffer.str("");
 
 			Y += 15;
-			MainFont->DrawText("Item:", glm::vec2(X, Y), RIGHT_BASELINE);
+			MainFont->DrawText("Item:", glm::vec2(X, Y), ae::RIGHT_BASELINE);
 			MainFont->DrawText(ItemIdentifier, glm::vec2(X + 5, Y));
 
 			Y += 15;
-			MainFont->DrawText("Monster:", glm::vec2(X, Y), RIGHT_BASELINE);
+			MainFont->DrawText("Monster:", glm::vec2(X, Y), ae::RIGHT_BASELINE);
 			MainFont->DrawText(MonsterIdentifier, glm::vec2(X + 5, Y));
 
 			Y += 15;
-			MainFont->DrawText("Particle:", glm::vec2(X, Y), RIGHT_BASELINE);
+			MainFont->DrawText("Particle:", glm::vec2(X, Y), ae::RIGHT_BASELINE);
 			MainFont->DrawText(ParticleIdentifier, glm::vec2(X + 5, Y));
 
 			Y += 15;
 			Buffer << Level << ":" << ActivationPeriod;
-			MainFont->DrawText("Level:", glm::vec2(X, Y), RIGHT_BASELINE);
+			MainFont->DrawText("Level:", glm::vec2(X, Y), ae::RIGHT_BASELINE);
 			MainFont->DrawText(Buffer.str(), glm::vec2(X + 5, Y));
 			Buffer.str("");
 		} break;
@@ -1304,16 +1317,16 @@ void _EditorState::DrawBrush() {
 
 	// Bottom information box
 	if(IconText != "")
-		MainFont->DrawText(IconText, glm::vec2(Graphics.ViewportSize.x + 112, Graphics.ViewportSize.y + 130), CENTER_MIDDLE);
+		MainFont->DrawText(IconText, glm::vec2(ae::Graphics.ViewportSize.x + 112, ae::Graphics.ViewportSize.y + 130), ae::CENTER_MIDDLE);
 
 	if(IconIdentifier != "")
-		MainFont->DrawText(IconIdentifier, glm::vec2(Graphics.ViewportSize.x + 112, Graphics.ViewportSize.y + 145), CENTER_MIDDLE);
+		MainFont->DrawText(IconIdentifier, glm::vec2(ae::Graphics.ViewportSize.x + 112, ae::Graphics.ViewportSize.y + 145), ae::CENTER_MIDDLE);
 
 	if(IconTexture) {
-		Assets.Programs["ortho_pos_uv"]->ResetTextureTransform();
-		Graphics.SetProgram(Assets.Programs["ortho_pos_uv"]);
-		Graphics.SetColor(IconColor);
-		Graphics.DrawSprite(glm::vec3((float)Graphics.CurrentSize.x - 112, (float)Graphics.CurrentSize.y - 84, 0.0f), IconTexture, IconRotation * IconScaleX, glm::vec2(IconScaleX * EDITOR_PALETTE_SELECTEDSIZE * 2, EDITOR_PALETTE_SELECTEDSIZE * 2));
+		ae::Assets.Programs["ortho_pos_uv"]->ResetTextureTransform();
+		ae::Graphics.SetProgram(ae::Assets.Programs["ortho_pos_uv"]);
+		ae::Graphics.SetColor(IconColor);
+		ae::Graphics.DrawSprite(glm::vec3((float)ae::Graphics.CurrentSize.x - 112, (float)ae::Graphics.CurrentSize.y - 84, 0.0f), IconTexture, IconRotation * IconScaleX, glm::vec2(IconScaleX * EDITOR_PALETTE_SELECTEDSIZE * 2, EDITOR_PALETTE_SELECTEDSIZE * 2));
 	}
 }
 
@@ -1326,7 +1339,7 @@ void _EditorState::DrawObject(float OffsetX, float OffsetY, const _ObjectSpawn *
 	switch(Object->Type) {
 		case _Object::MONSTER: {
 			_MonsterTemplate &Monster = Stats.Monsters.at(Object->Identifier);
-			Texture = Assets.GetAnimation(Monster.AnimationIdentifier)->GetStartPositionFrame();
+			Texture = OldAssets.GetAnimation(Monster.AnimationIdentifier)->GetStartPositionFrame();
 			Color = Monster.Color;
 			Scale = Monster.Scale;
 			Depth = OBJECT_Z;
@@ -1337,12 +1350,12 @@ void _EditorState::DrawObject(float OffsetX, float OffsetY, const _ObjectSpawn *
 		case _Object::ARMOR:
 		case _Object::MEDKIT: {
 			_ItemTemplate &Ammo = Stats.Items[Object->Identifier];
-			Texture = Assets.Textures[Ammo.IconID];
+			Texture = ae::Assets.Textures[Ammo.IconID];
 			Color = Ammo.Color;
 		} break;
 		case _Object::WEAPON: {
 			_WeaponTemplate &Weapon = Stats.Weapons[Object->Identifier];
-			Texture = Assets.Textures[Weapon.IconIdentifier];
+			Texture = ae::Assets.Textures[Weapon.IconIdentifier];
 			Color = Weapon.Color;
 		} break;
 	}
@@ -1354,10 +1367,10 @@ void _EditorState::DrawObject(float OffsetX, float OffsetY, const _ObjectSpawn *
 
 	Color.a *= Alpha;
 	if(Texture != nullptr) {
-		Assets.Programs["pos_uv"]->ResetTextureTransform();
-		Graphics.SetProgram(Assets.Programs["pos_uv"]);
-		Graphics.SetColor(Color);
-		Graphics.DrawSprite(glm::vec3(DrawPosition, Depth), Texture, 0.0f, glm::vec2(Scale));
+		ae::Assets.Programs["pos_uv"]->ResetTextureTransform();
+		ae::Graphics.SetProgram(ae::Assets.Programs["pos_uv"]);
+		ae::Graphics.SetColor(Color);
+		ae::Graphics.DrawSprite(glm::vec3(DrawPosition, Depth), Texture, 0.0f, glm::vec2(Scale));
 	}
 }
 
@@ -1793,15 +1806,15 @@ void _EditorState::ExecuteUpdateCheckpointIndex(int Value) {
 void _EditorState::ExecuteIOCommand(int Type) {
 	EditorInput = Type;
 	InputBox->SetActive(true);
-	_Element *TextBox = InputBox->Children.front();
-	_Element *Label = TextBox->Children.front();
+	ae::_Element *TextBox = InputBox->Children.front();
+	ae::_Element *Label = TextBox->Children.front();
 	Label->Text = InputBoxStrings[Type];
 	if(Type >= EDITINPUT_ITEMIDENTIFIER && Type <= EDITINPUT_PARTICLEIDENTIFIER && EventSelected())
 		InputBox->Text = GetEventIdentifier(Type);
 	else
 		InputBox->Text = SavedText[Type];
 
-	FocusedElement = TextBox;
+	ae::FocusedElement = TextBox;
 }
 
 // Executes the clear map command
@@ -1944,7 +1957,7 @@ void _EditorState::ExecuteUndo() {
 
 // Executes the update selected palette command
 void _EditorState::ExecuteUpdateSelectedPalette(int Change) {
-	std::vector<_Element *> &Children = PaletteElement[CurrentPalette]->Children;
+	std::vector<ae::_Element *> &Children = PaletteElement[CurrentPalette]->Children;
 	if(!Brush[CurrentPalette]) {
 		Brush[CurrentPalette] = Children[0];
 		return;
@@ -1961,7 +1974,7 @@ void _EditorState::ExecuteUpdateSelectedPalette(int Change) {
 }
 
 // Executes the select palette command
-void _EditorState::ExecuteSelectPalette(_Element *Button, int ClickType) {
+void _EditorState::ExecuteSelectPalette(ae::_Element *Button, int ClickType) {
 	if(!Button)
 		return;
 
@@ -2062,7 +2075,7 @@ void _EditorState::ExecuteUpdateGridMode(int Change) {
 void _EditorState::ExecuteHighlightBlocks() {
 	HighlightBlocks = !HighlightBlocks;
 
-	Assets.Elements["editor_show"]->Checked = HighlightBlocks;
+	ae::Assets.Elements["editor_show"]->Checked = HighlightBlocks;
 }
 
 // Executes the toggle editor mode

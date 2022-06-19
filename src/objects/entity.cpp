@@ -16,7 +16,7 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 *******************************************************************************/
 #include <objects/entity.h>
-#include <graphics.h>
+#include <ae/graphics.h>
 #include <audio.h>
 #include <map.h>
 #include <animation.h>
@@ -409,10 +409,10 @@ void _Entity::Move() {
 
 // Draws the object
 void _Entity::Render(double BlendFactor) {
-	Graphics.SetColor(Color);
+	ae::Graphics.SetColor(Color);
 
 	glm::vec2 DrawPosition(Position * (float)BlendFactor + LastPosition * (float)(1.0f - BlendFactor));
-	Graphics.DrawSprite(glm::vec3(DrawPosition, PositionZ), Animation->GetCurrentFrame(), Rotation, glm::vec2(Scale));
+	ae::Graphics.DrawSprite(glm::vec3(DrawPosition, PositionZ), Animation->GetCurrentFrame(), Rotation, glm::vec2(Scale));
 }
 
 // Updates the Entity's maximum health

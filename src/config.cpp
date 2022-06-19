@@ -166,6 +166,10 @@ void _Config::Load() {
 	GetValue("sound_volume", SoundVolume);
 	GetValue("music_volume", MusicVolume);
 
+	// Clear bindings
+	for(int i = 0; i < ae::_Input::INPUT_COUNT; i++)
+		ae::Actions.ClearMappings(i);
+
 	// Load bindings
 	for(std::size_t i = 0; i < ae::Actions.State.size(); i++) {
 		std::ostringstream Buffer;
@@ -210,7 +214,6 @@ void _Config::Save() {
 	File << "audio_enabled=" << AudioEnabled << std::endl;
 	File << "sound_volume=" << SoundVolume << std::endl;
 	File << "music_volume=" << MusicVolume << std::endl;
-
 
 	// Write out input map
 	ae::Actions.Serialize(File, ae::_Input::KEYBOARD);

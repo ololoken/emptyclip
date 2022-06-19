@@ -31,6 +31,8 @@ class _NullState : public ae::_State {
 		// Input
 		bool HandleKey(const ae::_KeyEvent &KeyEvent) override;
 		void HandleMouseButton(const ae::_MouseEvent &MouseEvent) override;
+		void HandleWindow(uint8_t Event) override;
+		void HandleQuit() override;
 
 		// Update
 		void Update(double FrameTime) override;

@@ -17,10 +17,10 @@
 *******************************************************************************/
 #include <objects/particle.h>
 #include <objects/templates.h>
-#include <particles.h>
-#include <graphics.h>
-#include <font.h>
+#include <ae/graphics.h>
+#include <ae/font.h>
 #include <ae/random.h>
+#include <particles.h>
 #include <glm/gtx/rotate_vector.hpp>
 
 // Constructor
@@ -83,13 +83,13 @@ void _Particle::Update(double FrameTime) {
 void _Particle::Render() {
 
 	if(Texture) {
-		Graphics.SetColor(Color);
+		ae::Graphics.SetColor(Color);
 		if(Type == _Particles::WALL_DECALS)
-			Graphics.DrawWallDecal(glm::vec3(Position, PositionZ), Texture, Rotation, Scale);
+			ae::Graphics.DrawWallDecal(glm::vec3(Position, PositionZ), Texture, Rotation, Scale);
 		else
-			Graphics.DrawSprite(glm::vec3(Position, PositionZ), Texture, Rotation, Scale);
+			ae::Graphics.DrawSprite(glm::vec3(Position, PositionZ), Texture, Rotation, Scale);
 	}
 
 	if(Font && Text != "")
-		Font->DrawText(Text.c_str(), Position, CENTER_BASELINE, Color, 1/64.0f);
+		Font->DrawText(Text.c_str(), Position, ae::CENTER_BASELINE, Color, 1/64.0f);
 }

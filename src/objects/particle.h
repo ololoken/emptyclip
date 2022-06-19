@@ -25,8 +25,8 @@
 // Forward Declarations
 namespace ae {
 	class _Texture;
+	class _Font;
 }
-class _Font;
 struct _ParticleSpawn;
 
 // Classes
@@ -47,7 +47,7 @@ class _Particle {
 
 		// Graphics
 		const ae::_Texture *Texture;
-		const _Font *Font;
+		const ae::_Font *Font;
 		std::string Text;
 		glm::vec4 Color;
 		glm::vec2 Scale;

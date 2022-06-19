@@ -16,15 +16,16 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 *******************************************************************************/
 #include <assets.h>
+#include <ae/assets.h>
 #include <ae/files.h>
 #include <ae/random.h>
-#include <font.h>
+#include <ae/graphics.h>
+#include <ae/font.h>
 #include <ae/texture.h>
 #include <audio.h>
 #include <animation.h>
-#include <program.h>
-#include <graphics.h>
-#include <ui/ui.h>
+#include <ae/program.h>
+#include <ae/ui.h>
 #include <constants.h>
 #include <objects/monster.h>
 #include <objects/particle.h>
@@ -35,7 +36,7 @@
 #include <sstream>
 #include <fstream>
 
-_Assets Assets;
+_Assets OldAssets;
 
 // Initialize
 void _Assets::Init() {
@@ -43,28 +44,6 @@ void _Assets::Init() {
 
 // Shutdown
 void _Assets::Close() {
-
-	for(const auto &Style : Styles)
-		delete Style.second;
-
-	for(const auto &Font : Fonts)
-		delete Font.second;
-
-	for(const auto &Texture : Textures)
-		delete Texture.second;
-
-	for(const auto &Program : Programs)
-		delete Program.second;
-
-	for(const auto &Shader : Shaders)
-		delete Shader.second;
-
-	Styles.clear();
-	Elements.clear();
-	Fonts.clear();
-	Textures.clear();
-	Programs.clear();
-	Shaders.clear();
 }
 
 // Loads the strings
@@ -91,98 +70,6 @@ void _Assets::LoadStrings(const std::string &Path) {
 			throw std::runtime_error(std::string(__PRETTY_FUNCTION__) + " - Duplicate entry: " + ID);
 
 		Strings[ID] = Text;
-	}
-
-	File.close();
-}
-
-// Loads the fonts
-void _Assets::LoadFonts(const std::string &Path, bool LoadFonts) {
-
-	// Load file
-	std::ifstream File(Path, std::ios::in);
-	if(!File)
-		throw std::runtime_error("Error loading: " + Path);
-
-	// Skip header
-	File.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-
-	// Read file
-	while(!File.eof() && File.peek() != EOF) {
-
-		// Read strings
-		std::string Name;
-		std::string FontFile;
-		std::string ProgramName;
-		std::getline(File, Name, '\t');
-		std::getline(File, FontFile, '\t');
-		std::getline(File, ProgramName, '\t');
-
-		// Check for duplicates
-		if(!LoadFonts && Fonts[Name])
-			throw std::runtime_error(std::string(__PRETTY_FUNCTION__) + " - Duplicate entry: " + Name);
-
-		// Find program
-		if(Programs.find(ProgramName) == Programs.end())
-			throw std::runtime_error(std::string(__PRETTY_FUNCTION__) + " - Cannot find program: " + ProgramName);
-
-		// Get size
-		uint32_t Size;
-		File >> Size;
-
-		File.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-
-		// Load font
-		if(LoadFonts) {
-
-			// Check for font name
-			if(Fonts.find(Name) == Fonts.end())
-				throw std::runtime_error(std::string(__PRETTY_FUNCTION__) + " - Cannot find font: " + Name);
-
-			// Load font
-			Fonts[Name]->Load(Name, FontFile, Programs[ProgramName], Size);
-		}
-		else {
-
-			// Create empty font
-			_Font *Font = new _Font();
-			Font->ID = Name;
-			Fonts[Name] = Font;
-		}
-	}
-
-	File.close();
-}
-
-// Loads the color table
-void _Assets::LoadColors(const std::string &Path) {
-
-	// Load file
-	std::ifstream File(Path, std::ios::in);
-	if(!File)
-		throw std::runtime_error("Error loading: " + Path);
-
-	// Skip header
-	File.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-
-	// Add default color
-	glm::vec4 Color(1.0f);
-	Colors[""] = Color;
-
-	// Read table
-	while(!File.eof() && File.peek() != EOF) {
-
-		std::string Name;
-		std::getline(File, Name, '\t');
-
-		File >> Color.r >> Color.g >> Color.b >> Color.a;
-		File.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-
-		// Check for duplicates
-		if(Colors.find(Name) != Colors.end())
-			throw std::runtime_error(std::string(__PRETTY_FUNCTION__) + " - Duplicate entry: " + Name);
-
-		Colors[Name] = Color;
 	}
 
 	File.close();
@@ -270,107 +157,6 @@ void _Assets::LoadAnimationTable(const std::string &Path) {
 	}
 
 	File.close();
-}
-
-// Load shader programs
-void _Assets::LoadPrograms(const std::string &Path) {
-
-	// Load file
-	std::ifstream File(Path.c_str(), std::ios::in);
-	if(!File)
-		throw std::runtime_error("Error loading: " + Path);
-
-	// Skip header
-	File.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-
-	// Read file
-	while(!File.eof() && File.peek() != EOF) {
-		std::string Name;
-		std::string VertexPath;
-		std::string FragmentPath;
-		std::getline(File, Name, '\t');
-		std::getline(File, VertexPath, '\t');
-		std::getline(File, FragmentPath, '\t');
-
-		// Get integer parameters
-		GLuint Attribs;
-		int MaxLights;
-		File >> Attribs >> MaxLights;
-
-		File.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-
-		// Check for duplicates
-		if(Programs[Name])
-			throw std::runtime_error(std::string(__PRETTY_FUNCTION__) + " - Duplicate entry: " + Name);
-
-		// Load vertex shader
-		if(Shaders.find(VertexPath) == Shaders.end())
-			Shaders[VertexPath] = new _Shader(VertexPath, GL_VERTEX_SHADER);
-
-		// Load fragment shader
-		if(Shaders.find(FragmentPath) == Shaders.end())
-			Shaders[FragmentPath] = new _Shader(FragmentPath, GL_FRAGMENT_SHADER);
-
-		// Create program
-		Programs[Name] = new _Program(Name, Shaders[VertexPath], Shaders[FragmentPath], Attribs, MaxLights);
-	}
-
-	File.close();
-}
-
-// Load textures
-void _Assets::LoadTextures(const std::string &Path) {
-
-	// Load file
-	std::ifstream File(Path, std::ios::in);
-	if(!File)
-		throw std::runtime_error("Error loading: " + Path);
-
-	// Skip header
-	File.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-
-	// Add null texture
-	Textures[""] = nullptr;
-
-	// Read file
-	while(!File.eof() && File.peek() != EOF) {
-
-		std::string Name;
-		std::string Path;
-		std::getline(File, Name, '\t');
-		std::getline(File, Path, '\t');
-
-		bool Repeat, MipMaps;
-		File >> Repeat >> MipMaps;
-		File.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-
-		// Load texture
-		ae::_Texture *Texture = new ae::_Texture(Path, false, Repeat, MipMaps, false);
-		if(!Texture)
-			throw std::runtime_error(std::string(__PRETTY_FUNCTION__) + " - Error loading: " + Path);
-
-		// Check for duplicates
-		if(IsTextureLoaded(Name))
-			throw std::runtime_error(std::string(__PRETTY_FUNCTION__) + " - Duplicate entry: " + Name);
-
-		Textures[Name] = Texture;
-	}
-
-	File.close();
-}
-
-// Load a directory full of textures
-void _Assets::LoadTextureDirectory(const std::string &Path, bool IsServer, bool Repeat, bool MipMaps, bool Nearest) {
-
-	// Get files
-	ae::_Files Files(Path);
-
-	// Load textures
-	for(const auto &File : Files.Nodes) {
-		std::string Name = Path + File;
-		if(!Assets.Textures[Name])
-			Assets.Textures[Name] = new ae::_Texture(Name, IsServer, Repeat, MipMaps, Nearest);
-	}
 }
 
 // Load sounds
@@ -476,15 +262,15 @@ void _Assets::LoadParticles(const std::string &Path) {
 			throw std::runtime_error(std::string(__PRETTY_FUNCTION__) + " - Duplicate entry: " + Identifier);
 
 		// Get texture
-		Particle.Texture = Assets.Textures[TextureIdentifier];
+		Particle.Texture = ae::Assets.Textures[TextureIdentifier];
 		if(TextureIdentifier != "" && !Particle.Texture)
 			throw std::runtime_error("Unable to find texture: " + TextureIdentifier);
 
 		// Set color
-		Particle.Color = Colors[ColorIdentifier];
+		Particle.Color = ae::Assets.Colors[ColorIdentifier];
 
 		// Get font
-		Particle.Font = Assets.Fonts[FontIdentifier];
+		Particle.Font = ae::Assets.Fonts[FontIdentifier];
 		if(FontIdentifier != "" && !Particle.Font)
 			throw std::runtime_error("Unable to find font: " + FontIdentifier);
 
@@ -587,123 +373,6 @@ void _Assets::LoadAnimation(const std::string &Identifier, const std::string &Pa
 	}
 }
 
-// Loads all the monster animations in a monster set
-void _Assets::LoadMonsterAnimation() {
-}
-
-// Loads the styles
-void _Assets::LoadStyles(const std::string &Path) {
-
-	// Load file
-	std::ifstream File(Path, std::ios::in);
-	if(!File)
-		throw std::runtime_error("Error loading: " + Path);
-
-	// Skip header
-	File.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-
-	// Read file
-	while(!File.eof() && File.peek() != EOF) {
-
-		std::string Name;
-		std::string BackgroundColorName;
-		std::string BorderColorName;
-		std::string ProgramName;
-		std::string TextureName;
-		std::string TextureColorName;
-		std::getline(File, Name, '\t');
-		std::getline(File, BackgroundColorName, '\t');
-		std::getline(File, BorderColorName, '\t');
-		std::getline(File, ProgramName, '\t');
-		std::getline(File, TextureName, '\t');
-		std::getline(File, TextureColorName, '\t');
-
-		// Check for background color
-		if(BackgroundColorName != "" && Colors.find(BackgroundColorName) == Colors.end())
-			throw std::runtime_error("Unable to find background color: " + BackgroundColorName + " for style: " + Name);
-
-		// Check for border color
-		if(BorderColorName != "" && Colors.find(BorderColorName) == Colors.end())
-			throw std::runtime_error("Unable to find border color: " + BorderColorName + " for style: " + Name);
-
-		// Check for texture color
-		if(TextureColorName != "" && Colors.find(TextureColorName) == Colors.end())
-			throw std::runtime_error("Unable to find texture color: " + TextureColorName + " for style: " + Name);
-
-		// Find program
-		if(Programs.find(ProgramName) == Programs.end())
-			throw std::runtime_error("Cannot find program: " + ProgramName + " for style: " + Name);
-
-		// Check for texture
-		if(TextureName != "" && Textures.find(TextureName) == Textures.end())
-			throw std::runtime_error("Unable to find texture: " + TextureName + " for style: " + Name);
-
-		bool Stretch;
-		File >> Stretch;
-		File.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-
-		// Get colors
-		glm::vec4 BackgroundColor = Colors[BackgroundColorName];
-		glm::vec4 BorderColor = Colors[BorderColorName];
-		glm::vec4 TextureColor = Colors[TextureColorName];
-
-		// Get textures
-		const ae::_Texture *Texture = Textures[TextureName];
-
-		// Create style
-		_Style *Style = new _Style();
-		Style->Name = Name;
-		Style->HasBackgroundColor = BackgroundColorName != "";
-		Style->HasBorderColor = BorderColorName != "";
-		Style->BackgroundColor = BackgroundColor;
-		Style->BorderColor = BorderColor;
-		Style->Program = Programs[ProgramName];
-		Style->Texture = Texture;
-		Style->TextureColor = TextureColor;
-		Style->Stretch = Stretch;
-
-		// Check for duplicates
-		if(Styles.find(Name) != Styles.end())
-			throw std::runtime_error("Duplicate style Name: " + Name);
-
-		Styles[Name] = Style;
-	}
-
-	File.close();
-}
-
-// Load the UI xml file
-void _Assets::LoadUI(const std::string &Path, bool CalculateBounds) {
-
-	// Load file
-	tinyxml2::XMLDocument Document;
-	if(Document.LoadFile(Path.c_str()) != tinyxml2::XML_SUCCESS)
-		throw std::runtime_error("Error loading: " + Path);
-
-	// Load elements
-	tinyxml2::XMLElement *ChildNode = Document.FirstChildElement();
-	Graphics.Element = new _Element(ChildNode, nullptr);
-	Graphics.Element->Alignment = LEFT_TOP;
-	Graphics.Element->Active = true;
-	Graphics.Element->Size = Graphics.CurrentSize;
-	if(CalculateBounds)
-		Graphics.Element->CalculateBounds(false);
-}
-
-// Save UI to xml
-void _Assets::SaveUI(const std::string &Path) {
-
-	// Create doc
-	tinyxml2::XMLDocument Document;
-	Document.InsertEndChild(Document.NewDeclaration());
-
-	// Serialize root ui element
-	Graphics.Element->SerializeElement(Document, nullptr);
-
-	// Write file
-	Document.SaveFile(Path.c_str());
-}
-
 // Frees memory and textures used by a reel
 void _Assets::UnloadReel(const std::string &Identifier) {
 
@@ -734,8 +403,6 @@ void _Assets::UnloadAnimation(const std::string &Identifier) {
 	Animations.erase(AnimationIterator);
 }
 
-bool _Assets::IsColorLoaded(const std::string &Identifier) { return Colors.find(Identifier) != Colors.end(); }
-bool _Assets::IsTextureLoaded(const std::string &Identifier) { return Textures.find(Identifier) != Textures.end(); }
 bool _Assets::IsAttackSampleLoaded(const std::string &Identifier) { return AttackSampleTable.find(Identifier) != AttackSampleTable.end(); }
 bool _Assets::IsParticleLoaded(const std::string &Identifier) { return ParticleTable.find(Identifier) != ParticleTable.end(); }
 bool _Assets::IsWeaponParticleTemplateLoaded(const std::string &Identifier) { return WeaponParticleTable.find(Identifier) != WeaponParticleTable.end(); }

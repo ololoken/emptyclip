@@ -19,11 +19,12 @@
 #include <ae/random.h>
 #include <ae/camera.h>
 #include <ae/texture.h>
-#include <graphics.h>
+#include <ae/graphics.h>
+#include <ae/assets.h>
 #include <assets.h>
 #include <events.h>
 #include <stats.h>
-#include <program.h>
+#include <ae/program.h>
 #include <objectmanager.h>
 #include <objects/entity.h>
 #include <objects/item.h>
@@ -159,7 +160,7 @@ _Map::_Map(const std::string &Filename) : _Map() {
 		// Check for existence
 		if(EventMonsterIdentifier != "" && Stats.Monsters.find(EventMonsterIdentifier) == Stats.Monsters.end())
 			throw std::runtime_error("Cannot find monster: " + EventMonsterIdentifier);
-		if(EventParticleIdentifier != "" && !Assets.IsParticleLoaded(EventParticleIdentifier))
+		if(EventParticleIdentifier != "" && !OldAssets.IsParticleLoaded(EventParticleIdentifier))
 			throw std::runtime_error("Cannot find particle: " + EventParticleIdentifier);
 
 		_Event *Event = new _Event(EventType, EventActive, EventStart, EventEnd, EventLevel, EventActivationPeriod, EventItemIdentifier, EventMonsterIdentifier, EventParticleIdentifier);
@@ -189,12 +190,12 @@ _Map::_Map(const std::string &Filename) : _Map() {
 		std::string TexturePath = GetCSVText(InputFile);
 		std::string AltTexturePath = GetCSVText(InputFile);
 
-		Block.Texture = Assets.Textures[TexturePath];
+		Block.Texture = ae::Assets.Textures[TexturePath];
 		if(!Block.Texture)
 			throw std::runtime_error("Cannot find texture: " + TexturePath);
 
 		if(AltTexturePath != "") {
-			Block.AltTexture = Assets.Textures[AltTexturePath];
+			Block.AltTexture = ae::Assets.Textures[AltTexturePath];
 			if(!Block.AltTexture)
 				throw std::runtime_error("Cannot find alt texture: " + AltTexturePath);
 		}
@@ -384,7 +385,7 @@ bool _Map::LoadMonsterSet(const std::string &String) {
 
 	// Load the animation textures
 	for(size_t i = 0; i < MonsterSet.size(); i++)
-		Assets.LoadAnimation(Stats.Monsters.at(MonsterSet[i]).AnimationIdentifier, "textures/monsters/");
+		OldAssets.LoadAnimation(Stats.Monsters.at(MonsterSet[i]).AnimationIdentifier, "textures/monsters/");
 
 	MonsterSetID = String;
 
@@ -1239,20 +1240,20 @@ void _Map::RenderGrid(int Mode) {
 		return;
 
 	// Draw vertical lines
-	Graphics.SetColor(COLOR_TWHITE);
+	ae::Graphics.SetColor(COLOR_TWHITE);
 	for(int i = Mode; i < Width; i += Mode)
-		Graphics.DrawLine(glm::vec2(i, 0), glm::vec2(i, Height));
+		ae::Graphics.DrawLine(glm::vec2(i, 0), glm::vec2(i, Height));
 
 	// Draw horizontal lines
 	for(int i = Mode; i < Height; i += Mode)
-		Graphics.DrawLine(glm::vec2(0, i), glm::vec2(Width, i));
+		ae::Graphics.DrawLine(glm::vec2(0, i), glm::vec2(Width, i));
 }
 
 // Draws rectangles around all the blocks
 void _Map::HighlightBlocks(int Layer) {
-	Graphics.SetColor(COLOR_MAGENTA);
+	ae::Graphics.SetColor(COLOR_MAGENTA);
 	for(std::size_t i = 0; i < Blocks[Layer].size(); i++)
-		Graphics.DrawRectangle3D(glm::vec2(Blocks[Layer][i].Start.x, Blocks[Layer][i].Start.y), glm::vec2(Blocks[Layer][i].End.x + 1.0f, Blocks[Layer][i].End.y + 1.0f), false);
+		ae::Graphics.DrawRectangle3D(glm::vec2(Blocks[Layer][i].Start.x, Blocks[Layer][i].Start.y), glm::vec2(Blocks[Layer][i].End.x + 1.0f, Blocks[Layer][i].End.y + 1.0f), false);
 }
 
 // Add particle to grid
@@ -1359,10 +1360,10 @@ void _Map::RenderFloors() {
 		return;
 
 	// Draw base layer
-	Graphics.SetProgram(Assets.Programs["pos_uv"]);
-	Graphics.SetColor(glm::vec4(1.0f));
-	Graphics.SetDepthTest(false);
-	Graphics.SetDepthMask(false);
+	ae::Graphics.SetProgram(ae::Assets.Programs["pos_uv"]);
+	ae::Graphics.SetColor(glm::vec4(1.0f));
+	ae::Graphics.SetDepthTest(false);
+	ae::Graphics.SetDepthMask(false);
 	for(std::size_t i = 0; i < Blocks[MAPLAYER_BASE].size(); i++) {
 		_Block *Block = &Blocks[MAPLAYER_BASE][i];
 
@@ -1374,12 +1375,12 @@ void _Map::RenderFloors() {
 		}
 
 		if(Draw)
-			Graphics.DrawRepeatable(glm::vec3(Block->Start.x, Block->Start.y, Block->MinZ + MAP_LAYEROFFSET * i), glm::vec3(Block->End.x + 1.0f, Block->End.y + 1.0f, Block->MinZ + MAP_LAYEROFFSET * i), Block->Texture, Block->Rotation, Block->ScaleX);
+			ae::Graphics.DrawRepeatable(glm::vec3(Block->Start.x, Block->Start.y, Block->MinZ + MAP_LAYEROFFSET * i), glm::vec3(Block->End.x + 1.0f, Block->End.y + 1.0f, Block->MinZ + MAP_LAYEROFFSET * i), Block->Texture, Block->Rotation, Block->ScaleX);
 	}
 
 	// Draw floor layers 0-2
-	Graphics.SetDepthMask(true);
-	Graphics.SetDepthTest(true);
+	ae::Graphics.SetDepthMask(true);
+	ae::Graphics.SetDepthTest(true);
 	for(int i = MAPLAYER_FLOOR0; i <= MAPLAYER_FLOOR2; i++) {
 		for(int j = 0; j < (int)(Blocks[i].size()); j++) {
 			_Block *Block = &Blocks[i][j];
@@ -1393,10 +1394,10 @@ void _Map::RenderFloors() {
 				}
 
 				if(Draw)
-					Graphics.DrawRepeatable(glm::vec3(Block->Start.x, Block->Start.y, Block->MinZ + MAP_LAYEROFFSET * i), glm::vec3(Block->End.x + 1.0f, Block->End.y + 1.0f, Block->MinZ + MAP_LAYEROFFSET * i), Block->Texture, Block->Rotation, Block->ScaleX);
+					ae::Graphics.DrawRepeatable(glm::vec3(Block->Start.x, Block->Start.y, Block->MinZ + MAP_LAYEROFFSET * i), glm::vec3(Block->End.x + 1.0f, Block->End.y + 1.0f, Block->MinZ + MAP_LAYEROFFSET * i), Block->Texture, Block->Rotation, Block->ScaleX);
 			}
 			else
-				Graphics.DrawCube(glm::vec3(Block->Start.x, Block->Start.y, Block->MinZ), glm::vec3(Block->End.x - Block->Start.x + 1.0f, Block->End.y - Block->Start.y + 1.0f, Block->MaxZ - Block->MinZ), Block->Texture);
+				ae::Graphics.DrawCube(glm::vec3(Block->Start.x, Block->Start.y, Block->MinZ), glm::vec3(Block->End.x - Block->Start.x + 1.0f, Block->End.y - Block->Start.y + 1.0f, Block->MaxZ - Block->MinZ), Block->Texture);
 		}
 	}
 }
@@ -1407,12 +1408,12 @@ void _Map::RenderWalls() {
 		return;
 
 	// Set up graphics
-	Graphics.SetProgram(Assets.Programs["pos_uv"]);
-	Graphics.SetColor(glm::vec4(1.0f));
-	Graphics.SetDepthMask(true);
-	Graphics.SetDepthTest(true);
+	ae::Graphics.SetProgram(ae::Assets.Programs["pos_uv"]);
+	ae::Graphics.SetColor(glm::vec4(1.0f));
+	ae::Graphics.SetDepthMask(true);
+	ae::Graphics.SetDepthTest(true);
 
-	Graphics.SetCullFace(true);
+	ae::Graphics.SetCullFace(true);
 
 	// Draw walls
 	for(std::size_t i = 0; i < Blocks[MAPLAYER_WALL].size(); i++) {
@@ -1431,23 +1432,23 @@ void _Map::RenderWalls() {
 			continue;
 
 		// Draw cube
-		Graphics.DrawCube(
+		ae::Graphics.DrawCube(
 			glm::vec3(Block->Start.x, Block->Start.y, Block->MinZ),
 			glm::vec3(Block->End.x - Block->Start.x + 1.0f, Block->End.y - Block->Start.y + 1.0f, Block->MaxZ - Block->MinZ),
 			Block->Texture
 		);
 	}
 
-	Graphics.SetCullFace(false);
+	ae::Graphics.SetCullFace(false);
 }
 
 // Render flat walls
 void _Map::RenderFlatWalls() {
 
-	Graphics.SetProgram(Assets.Programs["pos_uv"]);
-	Graphics.SetColor(glm::vec4(1.0f));
-	Graphics.SetDepthMask(false);
-	Graphics.SetDepthTest(true);
+	ae::Graphics.SetProgram(ae::Assets.Programs["pos_uv"]);
+	ae::Graphics.SetColor(glm::vec4(1.0f));
+	ae::Graphics.SetDepthMask(false);
+	ae::Graphics.SetDepthTest(true);
 
 	for(size_t i = 0; i < Blocks[MAPLAYER_FLAT].size(); i++) {
 		_Block *Block = &Blocks[MAPLAYER_FLAT][i];
@@ -1459,7 +1460,7 @@ void _Map::RenderFlatWalls() {
 		}
 
 		if(Draw)
-			Graphics.DrawWall(glm::vec3(Block->Start.x, Block->Start.y, Block->MinZ), glm::vec3(Block->End.x - Block->Start.x + 1.0f, Block->End.y - Block->Start.y + 1.0f, Block->MaxZ - Block->MinZ), Block->Rotation, Block->Texture);
+			ae::Graphics.DrawWall(glm::vec3(Block->Start.x, Block->Start.y, Block->MinZ), glm::vec3(Block->End.x - Block->Start.x + 1.0f, Block->End.y - Block->Start.y + 1.0f, Block->MaxZ - Block->MinZ), Block->Rotation, Block->Texture);
 	}
 }
 
@@ -1468,15 +1469,15 @@ void _Map::RenderEvents(std::vector<const ae::_Texture *> &Textures) {
 	if(!Camera)
 		return;
 
-	Graphics.SetProgram(Assets.Programs["pos_uv"]);
-	Graphics.SetColor(glm::vec4(1.0f));
-	Graphics.SetDepthTest(false);
+	ae::Graphics.SetProgram(ae::Assets.Programs["pos_uv"]);
+	ae::Graphics.SetColor(glm::vec4(1.0f));
+	ae::Graphics.SetDepthTest(false);
 
 	// Draw events
 	for(size_t i = 0; i < Events.size(); i++) {
 		glm::vec4 Bounds((float)Events[i]->Start.x, (float)Events[i]->Start.y, (float)Events[i]->End.x + 1.0f, (float)Events[i]->End.y + 1.0f);
 		if(Camera->IsAABBInView(Bounds))
-			Graphics.DrawRepeatable(glm::vec3(Events[i]->Start.x, Events[i]->Start.y, MAP_LAYEROFFSET), glm::vec3(Events[i]->End.x + 1.0f, Events[i]->End.y + 1.0f, MAP_LAYEROFFSET), Textures[Events[i]->Type], 0, 1.0f);
+			ae::Graphics.DrawRepeatable(glm::vec3(Events[i]->Start.x, Events[i]->Start.y, MAP_LAYEROFFSET), glm::vec3(Events[i]->End.x + 1.0f, Events[i]->End.y + 1.0f, MAP_LAYEROFFSET), Textures[Events[i]->Type], 0, 1.0f);
 	}
 }
 
@@ -1486,10 +1487,10 @@ void _Map::RenderForeground() {
 		return;
 
 	// Set up graphics
-	Graphics.SetProgram(Assets.Programs["pos_uv"]);
-	Graphics.SetColor(glm::vec4(1.0f));
-	Graphics.SetDepthMask(true);
-	Graphics.SetDepthTest(true);
+	ae::Graphics.SetProgram(ae::Assets.Programs["pos_uv"]);
+	ae::Graphics.SetColor(glm::vec4(1.0f));
+	ae::Graphics.SetDepthMask(true);
+	ae::Graphics.SetDepthTest(true);
 
 	// Draw foreground
 	for(std::size_t i = 0; i < Blocks[6].size(); i++) {
@@ -1502,16 +1503,16 @@ void _Map::RenderForeground() {
 		}
 
 		if(Draw)
-			Graphics.DrawRepeatable(glm::vec3(Block->Start.x, Block->Start.y, Block->MaxZ + 0.01f * i), glm::vec3(Block->End.x + 1.0f, Block->End.y + 1.0f, Block->MaxZ + 0.01f * i), Block->Texture, Block->Rotation, Block->ScaleX);
+			ae::Graphics.DrawRepeatable(glm::vec3(Block->Start.x, Block->Start.y, Block->MaxZ + 0.01f * i), glm::vec3(Block->End.x + 1.0f, Block->End.y + 1.0f, Block->MaxZ + 0.01f * i), Block->Texture, Block->Rotation, Block->ScaleX);
 	}
 }
 
 // Render entities and items
 void _Map::RenderObjects(double BlendFactor) {
-	Assets.Programs["pos_uv"]->ResetTextureTransform();
-	Graphics.SetProgram(Assets.Programs["pos_uv"]);
-	Graphics.SetDepthMask(false);
-	Graphics.SetDepthTest(true);
+	ae::Assets.Programs["pos_uv"]->ResetTextureTransform();
+	ae::Graphics.SetProgram(ae::Assets.Programs["pos_uv"]);
+	ae::Graphics.SetDepthMask(false);
+	ae::Graphics.SetDepthTest(true);
 	ObjectManager->Render(BlendFactor);
 }
 

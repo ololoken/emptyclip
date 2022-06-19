@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<element base_height="1080">
+<element>
     <element id="element_hud_player_info" offset_x="80" offset_y="31" alignment_x="0" alignment_y="0">
         <element id="label_hud_player_name" font="hud_larger" alignment_y="3"/>
         <element id="label_hud_player_level" font="hud_medium" offset_y="20" alignment_y="3"/>

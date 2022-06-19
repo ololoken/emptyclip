@@ -19,12 +19,11 @@
 
 // Libraries
 #include <string>
-#include <ui/ui.h>
+#include <ae/ui.h>
 #include <glm/vec2.hpp>
 
 // Forward Declarations
 class _Element;
-class _Image;
 class _Font;
 class _Entity;
 class _Player;
@@ -131,7 +130,7 @@ class _HUD {
 	private:
 
 		void DrawIndicator(const std::string &String, float Percent=0.0f, const ae::_Texture *Texture=nullptr);
-		void DrawHUDWeapon(const _Weapon *Weapon, _Element *Element, _Element *Image, _Element *Label);
+		void DrawHUDWeapon(const _Weapon *Weapon, ae::_Element *Element, ae::_Element *Image, ae::_Element *Label);
 		void DrawItemCount(_Item *Item, int X, int Y);
 
 		std::string UpgradeTypeToString(int Type, int WeaponType);
@@ -141,8 +140,8 @@ class _HUD {
 		bool InventoryOpen;
 
 		// UI
-		_Element *Elements[ELEMENT_COUNT];
-		_Element *DragStart;
+		ae::_Element *Elements[ELEMENT_COUNT];
+		ae::_Element *DragStart;
 		_Item *CursorItem;
 		glm::ivec2 ClickOffset;
 		int CursorSkill;
@@ -156,10 +155,10 @@ class _HUD {
 		double MessageTimer, MessageBoxTimer;
 
 		// Text
-		_Font *Fonts[FONT_COUNT];
+		ae::_Font *Fonts[FONT_COUNT];
 
 		// Textures
-		const ae::_Texture *CrosshairID;
+		const ae::_Texture *CrosshairTexture;
 		const ae::_Texture *ReloadTexture;
 		const ae::_Texture *WeaponSwitchTexture;
 };

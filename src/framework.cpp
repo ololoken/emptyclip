@@ -21,12 +21,13 @@
 #include <ae/state.h>
 #include <ae/input.h>
 #include <ae/actions.h>
+#include <ae/graphics.h>
+#include <ae/assets.h>
+#include <assets.h>
 #include <config.h>
-#include <graphics.h>
 #include <audio.h>
 #include <stdexcept>
 #include <constants.h>
-#include <assets.h>
 #include <stats.h>
 #include <save.h>
 #include <states/null.h>
@@ -84,13 +85,22 @@ void _Framework::Init(int ArgumentCount, char **Arguments) {
 		}
 	}
 
+	// Set random seed
+	ae::RandomGenerator.seed(SDL_GetPerformanceCounter());
+
+	// Create frame limiter
+	FrameLimit = new ae::_FrameLimit(Config.MaxFPS);
+
 	// Initialize SDL
-	if(SDL_Init(SDL_INIT_VIDEO) < 0) {
+	if(SDL_Init(SDL_INIT_VIDEO) < 0)
 		throw std::runtime_error("Failed to initialize SDL");
-	}
+
+	// Initialize audio
+	Audio.Init(AudioEnabled);
+	Audio.SetGain(Config.SoundVolume);
 
 	// Get window settings
-	_WindowSettings WindowSettings;
+	ae::_WindowSettings WindowSettings;
 	WindowSettings.WindowTitle = GAME_WINDOWTITLE;
 	WindowSettings.Fullscreen = Fullscreen;
 	WindowSettings.Vsync = Config.Vsync;
@@ -99,19 +109,15 @@ void _Framework::Init(int ArgumentCount, char **Arguments) {
 	WindowSettings.Position = glm::ivec2(SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED);
 
 	// Set up subsystems
-	Graphics.Init(WindowSettings);
-	Graphics.SetCullFace(false);
-	Audio.Init(AudioEnabled);
-	Audio.SetGain(Config.SoundVolume);
-
-	FrameLimit = new ae::_FrameLimit(Config.MaxFPS);
-	Timer = SDL_GetPerformanceCounter();
-	ae::RandomGenerator.seed(SDL_GetPerformanceCounter());
+	ae::Graphics.Init(WindowSettings);
+	ae::Graphics.SetCullFace(false);
 
 	// Load assets
 	LoadAssets();
 	Stats.Init();
 	Save.LoadSaves();
+
+	Timer = SDL_GetPerformanceCounter();
 }
 
 // Shutdown
@@ -121,16 +127,22 @@ void _Framework::Close() {
 	if(State)
 		State->Close();
 
-	Assets.UnloadAnimation("player_torso");
-	Assets.UnloadAnimation("player_legs");
+	OldAssets.UnloadAnimation("player_torso");
+	OldAssets.UnloadAnimation("player_legs");
 
 	Stats.Close();
-	Assets.Close();
+	OldAssets.Close();
 	delete FrameLimit;
 
 	Audio.Close();
-	Graphics.Close();
+	ae::Graphics.Close();
 	SDL_Quit();
+}
+
+// Change states
+void _Framework::ChangeState(ae::_State *RequestedState) {
+	this->RequestedState = RequestedState;
+	FrameworkState = CLOSE;
 }
 
 // Update input
@@ -185,8 +197,12 @@ void _Framework::Update() {
 				if(State)
 					State->HandleMouseWheel(Event.wheel.y);
 			break;
+			case SDL_WINDOWEVENT:
+				if(Event.window.event)
+					State->HandleWindow(Event.window.event);
+			break;
 			case SDL_QUIT:
-				Done = true;
+				State->HandleQuit();
 			break;
 		}
 	}
@@ -219,7 +235,7 @@ void _Framework::Update() {
 	}
 
 	Audio.Update(FrameTime);
-	Graphics.Flip(FrameTime);
+	ae::Graphics.Flip(FrameTime);
 	if(FrameLimit && !Config.Vsync)
 		FrameLimit->Update();
 }
@@ -232,8 +248,9 @@ int _Framework::GlobalKeyHandler(const SDL_Event &Event) {
 		// Handle alt-enter
 		if((Event.key.keysym.mod & KMOD_ALT) && (Event.key.keysym.scancode == SDL_SCANCODE_RETURN || Event.key.keysym.scancode == SDL_SCANCODE_KP_ENTER)) {
 			if(!Event.key.repeat) {
-				//Config.Fullscreen = !Config.Fullscreen;
-				//Graphics.SetFullscreen(Config.Fullscreen);
+				Config.Fullscreen = !Config.Fullscreen;
+				Config.Save();
+				ae::Graphics.SetFullscreen(Config.Fullscreen);
 
 				//Menu.SetFullscreen(!Config.Fullscreen);
 				//if(Console)
@@ -250,37 +267,32 @@ int _Framework::GlobalKeyHandler(const SDL_Event &Event) {
 // Load game assets
 void _Framework::LoadAssets() {
 
-	Assets.LoadPrograms("tables/programs.tsv");
-	Assets.LoadStrings("tables/strings.tsv");
-	Assets.LoadFonts("tables/fonts.tsv", false);
-	Assets.LoadTextureDirectory("textures/editor/", false, false, false);
-	Assets.LoadTextureDirectory("textures/editor_repeat/", false, true, true);
-	Assets.LoadTextureDirectory("textures/hud/", false, false, false);
-	Assets.LoadTextureDirectory("textures/hud_repeat/", false, true, false);
-	Assets.LoadTextureDirectory("textures/items/", false, false, true);
-	Assets.LoadTextureDirectory("textures/menu/", false, false, false);
-	Assets.LoadTextureDirectory("textures/particles/", false, false, false);
-	Assets.LoadTextureDirectory(MAP_TEXTURE_PATH, false, true, true);
-	Assets.LoadColors("tables/colors.tsv");
-	Assets.LoadSounds("tables/sounds.tsv", "sounds/");
-	Assets.LoadSoundGroups("tables/sound_groups.tsv");
-	Assets.LoadParticles("tables/particles.tsv");
-	Assets.LoadWeaponParticles("tables/weaponparticles.tsv");
-	Assets.LoadReelTable("tables/reels.tsv");
-	Assets.LoadAnimationTable("tables/animation.tsv");
+	ae::Assets.LoadPrograms("tables/programs.tsv");
+	OldAssets.LoadStrings("tables/strings.tsv");
+	ae::Assets.LoadFonts("tables/fonts.tsv", false);
+	ae::Assets.LoadTextureDirectory("textures/editor/", false, false, false);
+	ae::Assets.LoadTextureDirectory("textures/editor_repeat/", false, true, true);
+	ae::Assets.LoadTextureDirectory("textures/hud/", false, false, false);
+	ae::Assets.LoadTextureDirectory("textures/hud_repeat/", false, true, false);
+	ae::Assets.LoadTextureDirectory("textures/items/", false, false, true);
+	ae::Assets.LoadTextureDirectory("textures/menu/", false, false, false);
+	ae::Assets.LoadTextureDirectory("textures/particles/", false, false, false);
+	ae::Assets.LoadTextureDirectory(MAP_TEXTURE_PATH, false, true, true);
+	ae::Assets.LoadColors("tables/colors.tsv");
+	OldAssets.LoadSounds("tables/sounds.tsv", "sounds/");
+	OldAssets.LoadSoundGroups("tables/sound_groups.tsv");
+	OldAssets.LoadParticles("tables/particles.tsv");
+	OldAssets.LoadWeaponParticles("tables/weaponparticles.tsv");
+	OldAssets.LoadReelTable("tables/reels.tsv");
+	OldAssets.LoadAnimationTable("tables/animation.tsv");
 
-	Assets.LoadAnimation("player_torso", "textures/player/");
-	Assets.LoadAnimation("player_legs", "textures/player/");
+	OldAssets.LoadAnimation("player_torso", "textures/player/");
+	OldAssets.LoadAnimation("player_legs", "textures/player/");
 
-	Assets.LoadStyles("tables/styles.tsv");
-	Assets.LoadUI("tables/ui.xml");
+	ae::Assets.LoadStyles("tables/styles.tsv");
+	ae::Assets.LoadUI("tables/ui.xml");
 	//Assets.SaveUI("tables/ui_new.xml");
 
-	Assets.LoadFonts("tables/fonts.tsv");
+	ae::Assets.LoadFonts("tables/fonts.tsv");
 }
 
-// Change states
-void _Framework::ChangeState(ae::_State *RequestedState) {
-	this->RequestedState = RequestedState;
-	FrameworkState = CLOSE;
-}

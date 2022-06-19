@@ -29,13 +29,11 @@
 // Forward Declarations
 namespace ae {
 	class _Camera;
+	class _Element;
+	class _Font;
 }
-class _Font;
 class _Event;
-class _Element;
-class _Button;
 class _Map;
-class _TextBox;
 struct _EventTile;
 struct _Brush;
 struct _ObjectSpawn;
@@ -149,6 +147,8 @@ class _EditorState : public ae::_State {
 		bool HandleKey(const ae::_KeyEvent &KeyEvent) override;
 		void HandleMouseButton(const ae::_MouseEvent &MouseEvent) override;
 		void HandleMouseWheel(int Direction) override;
+		void HandleWindow(uint8_t Event) override;
+		void HandleQuit() override;
 
 		// Update
 		void Update(double FrameTime) override;
@@ -211,7 +211,7 @@ class _EditorState : public ae::_State {
 		void ExecuteChangePeriod(double Value);
 		void ExecuteChangeActive();
 		void ExecuteUpdateCheckpointIndex(int Value);
-		void ExecuteSelectPalette(_Element *Button, int ClickType);
+		void ExecuteSelectPalette(ae::_Element *Button, int ClickType);
 		void ExecuteUpdateSelectedPalette(int Change);
 		void ExecuteUpdateGridMode(int Change);
 		void ExecuteHighlightBlocks();
@@ -249,15 +249,15 @@ class _EditorState : public ae::_State {
 		int CurrentLayer;
 		int CurrentPalette;
 		std::vector<const ae::_Texture *> EventTextures;
-		_Font *MainFont;
-		_Element *LayerButtons[MAPLAYER_COUNT];
-		_Element *ModeButtons[EDITMODE_COUNT];
-		_Element *Brush[EDITMODE_COUNT];
-		_Element *CommandElement;
-		_Element *BlockElement;
-		_Element *EventElement;
-		_Element *PaletteElement[EDITMODE_COUNT];
-		_Element *InputBox;
+		ae::_Font *MainFont;
+		ae::_Element *LayerButtons[MAPLAYER_COUNT];
+		ae::_Element *ModeButtons[EDITMODE_COUNT];
+		ae::_Element *Brush[EDITMODE_COUNT];
+		ae::_Element *CommandElement;
+		ae::_Element *BlockElement;
+		ae::_Element *EventElement;
+		ae::_Element *PaletteElement[EDITMODE_COUNT];
+		ae::_Element *InputBox;
 
 		// Blocks
 		_Block *SelectedBlock;

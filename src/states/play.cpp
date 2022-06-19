@@ -19,7 +19,8 @@
 #include <ae/actions.h>
 #include <ae/camera.h>
 #include <ae/graphics.h>
-#include <graphics.h>
+#include <ae/graphics.h>
+#include <ae/assets.h>
 #include <framework.h>
 #include <menu.h>
 #include <constants.h>
@@ -30,7 +31,7 @@
 #include <audio.h>
 #include <config.h>
 #include <particles.h>
-#include <program.h>
+#include <ae/program.h>
 #include <stats.h>
 #include <actiontype.h>
 #include <objects/entity.h>
@@ -59,10 +60,9 @@ _PlayState::_PlayState() {
 
 // Load level and set up objects
 void _PlayState::Init() {
-	Graphics.SetViewport(Graphics.CurrentSize);
-	ae::Graphics.SetViewport(Graphics.CurrentSize - EDITOR_VIEWPORT_OFFSET);
-	Graphics.Element->SetActive(false);
-	Graphics.Element->Active = true;
+	ae::Graphics.SetViewport(ae::Graphics.CurrentSize);
+	ae::Graphics.Element->SetActive(false);
+	ae::Graphics.Element->Active = true;
 
 	CursorItem = nullptr;
 	PreviousCursorItem = nullptr;
@@ -113,7 +113,7 @@ void _PlayState::Init() {
 	ae::_CameraSettings CameraSettings;
 	CameraSettings.UpdateDivisor = CAMERA_DIVISOR;
 	Camera = new ae::_Camera(CameraSettings);
-	Camera->CalculateFrustum(Graphics.AspectRatio);
+	Camera->CalculateFrustum(ae::Graphics.AspectRatio);
 	Camera->ForcePosition(glm::vec3(Player->Position, CAMERA_DISTANCE));
 
 	Map->Camera = Camera;
@@ -122,7 +122,7 @@ void _PlayState::Init() {
 	Camera->ConvertScreenToWorld(ae::Input.GetMouse(), WorldCursor);
 	PreviousWorldCursor = WorldCursor;
 
-	Graphics.SetCursor(false);
+	ae::Graphics.SetCursor(false);
 
 	ae::Actions.ResetState();
 }
@@ -143,57 +143,58 @@ void _PlayState::Close() {
 
 // Action handler
 bool _PlayState::HandleAction(int InputType, std::size_t Action, int Value) {
+	if(Value == 0)
+		return false;
+
 	if(!Player || IsPaused())
 		return false;
 
-	if(Value) {
-		if(!Player->IsDying()) {
-			switch(Action) {
-				case Action::GAME_INVENTORY:
-					HUD->SetInventoryOpen(!HUD->GetInventoryOpen());
-					Player->SetCrouching(false);
-					Player->SetSprinting(false);
-				break;
-				case Action::GAME_FIRE:
-					if(!HUD->GetInventoryOpen() && !Player->IsMeleeAttacking()) {
-						if(Player->CanAttack(WEAPONATTACK_MAIN) && !Player->HasAmmo())
-							Audio.Play(new _AudioSource(Audio.GetBuffer(Player->GetSample(SAMPLE_EMPTY))), Player->Position);
+	if(!Player->IsDying()) {
+		switch(Action) {
+			case Action::GAME_INVENTORY:
+				HUD->SetInventoryOpen(!HUD->GetInventoryOpen());
+				Player->SetCrouching(false);
+				Player->SetSprinting(false);
+			break;
+			case Action::GAME_FIRE:
+				if(!HUD->GetInventoryOpen() && !Player->IsMeleeAttacking()) {
+					if(Player->CanAttack(WEAPONATTACK_MAIN) && !Player->HasAmmo())
+						Audio.Play(new _AudioSource(Audio.GetBuffer(Player->GetSample(SAMPLE_EMPTY))), Player->Position);
 
-						if(Player->GetFireRate(WEAPONATTACK_MAIN) == FIRERATE_SEMI) {
-							Player->AttackRequested = true;
-							Player->AttackRequestType = WEAPONATTACK_MAIN;
-						}
+					if(Player->GetFireRate(WEAPONATTACK_MAIN) == FIRERATE_SEMI) {
+						Player->AttackRequested = true;
+						Player->AttackRequestType = WEAPONATTACK_MAIN;
 					}
-				break;
-				case Action::GAME_MELEE:
-					if(!HUD->GetInventoryOpen()) {
-						if(Player->GetFireRate(WEAPONATTACK_MELEE) == FIRERATE_SEMI) {
-							Player->AttackRequested = true;
-							Player->AttackRequestType = WEAPONATTACK_MELEE;
-						}
+				}
+			break;
+			case Action::GAME_MELEE:
+				if(!HUD->GetInventoryOpen()) {
+					if(Player->GetFireRate(WEAPONATTACK_MELEE) == FIRERATE_SEMI) {
+						Player->AttackRequested = true;
+						Player->AttackRequestType = WEAPONATTACK_MELEE;
 					}
-				break;
-				case Action::GAME_RELOAD:
-					if(!HUD->IsDragging()) {
-						if(Player->IsReloading())
-							Player->CancelReloading();
-						else
-							Player->StartReloading();
-					}
-				break;
-				case Action::GAME_WEAPONSWITCH:
-					if(!HUD->IsDragging())
-						Player->StartWeaponSwitch(INVENTORY_MAINHAND, INVENTORY_OFFHAND);
-				break;
-				case Action::GAME_HEAL:
-					Player->SetMedkitRequested(true);
-				break;
-			}
+				}
+			break;
+			case Action::GAME_RELOAD:
+				if(!HUD->IsDragging()) {
+					if(Player->IsReloading())
+						Player->CancelReloading();
+					else
+						Player->StartReloading();
+				}
+			break;
+			case Action::GAME_WEAPONSWITCH:
+				if(!HUD->IsDragging())
+					Player->StartWeaponSwitch(INVENTORY_MAINHAND, INVENTORY_OFFHAND);
+			break;
+			case Action::GAME_HEAL:
+				Player->SetMedkitRequested(true);
+			break;
 		}
-		else {
-			if(Action == Action::GAME_USE)
-				RestartFromDeath();
-		}
+	}
+	else {
+		if(Action == Action::GAME_USE)
+			RestartFromDeath();
 	}
 
 	return false;
@@ -201,7 +202,7 @@ bool _PlayState::HandleAction(int InputType, std::size_t Action, int Value) {
 
 // Key handler
 bool _PlayState::HandleKey(const ae::_KeyEvent &KeyEvent) {
-	bool Handled = Graphics.Element->HandleKey(KeyEvent);
+	bool Handled = ae::Graphics.Element->HandleKey(KeyEvent);
 
 	bool SendAction = true;
 	if(IsPaused()) {
@@ -259,16 +260,29 @@ void _PlayState::HandleMouseButton(const ae::_MouseEvent &MouseEvent) {
 		Menu.HandleMouseButton(MouseEvent);
 }
 
+// Window size updates
+void _PlayState::HandleWindow(uint8_t Event) {
+	if(Event == SDL_WINDOWEVENT_SIZE_CHANGED) {
+		if(Camera)
+			Camera->CalculateFrustum(ae::Graphics.AspectRatio);
+	}
+}
+
+// Handle quit events
+void _PlayState::HandleQuit() {
+	Framework.Done = true;
+}
+
 // Update
 void _PlayState::Update(double FrameTime) {
-	Graphics.Element->Update(FrameTime, ae::Input.GetMouse());
-	//if(Graphics.Element->HitElement)
-	//	std::cout << Graphics.Element->HitElement->Name << std::endl;
+	ae::Graphics.Element->Update(FrameTime, ae::Input.GetMouse());
+	//if(ae::Graphics.Element->HitElement)
+	//	std::cout << ae::Graphics.Element->HitElement->Name << std::endl;
 
 	// Handle pause
 	if(IsPaused()) {
 		Menu.Update(FrameTime);
-		Graphics.SetCursor(true);
+		ae::Graphics.SetCursor(true);
 		if(HUD)
 			HUD->CursorOverItem = nullptr;
 
@@ -392,7 +406,7 @@ void _PlayState::Update(double FrameTime) {
 	HUD->Update(FrameTime, Player->GetCrosshairRadius(WorldCursor));
 
 	// Set cursor item
-	if(!Graphics.Element->HitElement && CursorItem && !HUD->CursorOverItem && (HUD->GetInventoryOpen() || CursorItemTimer > HUD_CURSOR_ITEM_WAIT))
+	if(!ae::Graphics.Element->HitElement && CursorItem && !HUD->CursorOverItem && (HUD->GetInventoryOpen() || CursorItemTimer > HUD_CURSOR_ITEM_WAIT))
 		HUD->CursorOverItem = CursorItem;
 
 	Audio.SetPosition(Player->Position);
@@ -403,27 +417,27 @@ void _PlayState::Render(double BlendFactor) {
 	if(IsPaused())
 		BlendFactor = 0;
 
-	Assets.Programs["pos_uv"]->AmbientLight = glm::vec4(1);
+	ae::Assets.Programs["pos_uv"]->AmbientLight = glm::vec4(1);
 
 	// Setup the viewing matrix
-	Graphics.Setup3D();
+	ae::Graphics.Setup3D();
 	Camera->Set3DProjection(BlendFactor);
 
 	// Setup the viewing matrix
-	Graphics.SetProgram(Assets.Programs["pos"]);
-	glUniformMatrix4fv(Assets.Programs["pos"]->ViewProjectionTransformID, 1, GL_FALSE, glm::value_ptr(Camera->Transform));
-	Graphics.SetProgram(Assets.Programs["pos_uv"]);
-	glUniformMatrix4fv(Assets.Programs["pos_uv"]->ViewProjectionTransformID, 1, GL_FALSE, glm::value_ptr(Camera->Transform));
-	Graphics.SetProgram(Assets.Programs["text"]);
-	glUniformMatrix4fv(Assets.Programs["text"]->ViewProjectionTransformID, 1, GL_FALSE, glm::value_ptr(Camera->Transform));
+	ae::Graphics.SetProgram(ae::Assets.Programs["pos"]);
+	glUniformMatrix4fv(ae::Assets.Programs["pos"]->ViewProjectionTransformID, 1, GL_FALSE, glm::value_ptr(Camera->Transform));
+	ae::Graphics.SetProgram(ae::Assets.Programs["pos_uv"]);
+	glUniformMatrix4fv(ae::Assets.Programs["pos_uv"]->ViewProjectionTransformID, 1, GL_FALSE, glm::value_ptr(Camera->Transform));
+	ae::Graphics.SetProgram(ae::Assets.Programs["text"]);
+	glUniformMatrix4fv(ae::Assets.Programs["text"]->ViewProjectionTransformID, 1, GL_FALSE, glm::value_ptr(Camera->Transform));
 
 	// Draw the floor
 	Map->RenderFloors();
 
 	// Draw floor decals
-	Assets.Programs["pos_uv"]->ResetTextureTransform();
-	Graphics.SetDepthMask(false);
-	Graphics.SetDepthTest(false);
+	ae::Assets.Programs["pos_uv"]->ResetTextureTransform();
+	ae::Graphics.SetDepthMask(false);
+	ae::Graphics.SetDepthTest(false);
 	int ParticleRenderCount = Map->RenderParticles(_Particles::FLOOR_DECALS);
 
 	// Draw walls clipped with MaxZ=OBJECT_Z
@@ -437,19 +451,19 @@ void _PlayState::Render(double BlendFactor) {
 	Map->RenderFlatWalls();
 
 	// Draw wall decals
-	Assets.Programs["pos_uv"]->ResetTextureTransform();
-	Graphics.SetProgram(Assets.Programs["pos_uv"]);
-	Graphics.SetDepthMask(false);
+	ae::Assets.Programs["pos_uv"]->ResetTextureTransform();
+	ae::Graphics.SetProgram(ae::Assets.Programs["pos_uv"]);
+	ae::Graphics.SetDepthMask(false);
 	ParticleRenderCount += Map->RenderParticles(_Particles::WALL_DECALS);
 	//std::cout << ParticleRenderCount << std::endl;
 
 	// Draw particles
-	Graphics.EnableParticleBlending();
+	ae::Graphics.EnableParticleBlending();
 	Particles->Render(_Particles::NORMAL);
 
 	// Draw damage text numbers
-	Graphics.DisableParticleBlending();
-	Graphics.SetDepthTest(false);
+	ae::Graphics.DisableParticleBlending();
+	ae::Graphics.SetDepthTest(false);
 	Particles->Render(_Particles::TEXT);
 
 	// Draw the foreground tiles
@@ -462,7 +476,7 @@ void _PlayState::Render(double BlendFactor) {
 	// Debug
 	/*
 	if(0) {
-		Graphics.DisableDepthTest();
+		ae::Graphics.DisableDepthTest();
 
 		// Draw melee hit range
 		for(int i = 0; i < WEAPONATTACK_COUNT; i++) {
@@ -473,7 +487,7 @@ void _PlayState::Render(double BlendFactor) {
 			float Range = Player->GetWeaponRange(i);
 			if(Range == 0.0f)
 				Range = 100.0f;
-			Graphics.DrawCircle(Player->Position.x, Player->Position.y, 0.2f, Range, Color);
+			ae::Graphics.DrawCircle(Player->Position.x, Player->Position.y, 0.2f, Range, Color);
 			glm::vec2 t1, t2;
 			t1 = Player->Position + Player->GetDirectionVector(- Player->GetMaxAccuracy(i) / 2) * Range;
 			t2 = Player->Position + Player->GetDirectionVector(+ Player->GetMaxAccuracy(i) / 2) * Range;
@@ -487,15 +501,15 @@ void _PlayState::Render(double BlendFactor) {
 			glEnd();
 		}
 
-		Graphics.EnableDepthTest();
+		ae::Graphics.EnableDepthTest();
 	}
 	*/
 
 	// Setup OpenGL for drawing the HUD
-	Graphics.Setup2D();
-	Graphics.SetStaticUniforms();
-	Graphics.SetDepthTest(false);
-	Graphics.SetDepthMask(false);
+	ae::Graphics.Setup2D();
+	ae::Graphics.SetStaticUniforms();
+	ae::Graphics.SetDepthTest(false);
+	ae::Graphics.SetDepthMask(false);
 
 	/*
 	_Coord Start(Camera->GetAABB()[0], Camera->GetAABB()[1]);
@@ -524,14 +538,14 @@ void _PlayState::Render(double BlendFactor) {
 	HUD->Render();
 
 	if(IsPaused() || (Player && Player->IsDead()))
-		Graphics.FadeScreen(Assets.Programs["ortho_pos"], GAME_PAUSE_FADEAMOUNT);
+		ae::Graphics.FadeScreen(ae::Assets.Programs["ortho_pos"], GAME_PAUSE_FADEAMOUNT);
 
 	// Draw in-game menu
 	if(IsPaused()) {
 		Menu.Render();
 	}
 	else if(Player && Player->IsDead()) {
-		Graphics.SetCursor(1);
+		ae::Graphics.SetCursor(1);
 		HUD->RenderDeathScreen();
 	}
 }
@@ -597,7 +611,7 @@ void _PlayState::EntityAttack(_Entity *Attacker, int GridType) {
 			else
 				Hit.Type = HIT_WALL;
 
-			_ParticleTemplate *Template = Assets.GetParticleTemplate("tracer0");
+			_ParticleTemplate *Template = OldAssets.GetParticleTemplate("tracer0");
 			glm::vec2 ParticleStart = Attacker->Position + glm::rotate(glm::vec2(0, -Template->Size.y * 0.5f) + Attacker->GetWeaponOffset(Attacker->GetWeaponType()), glm::radians(ShotDirection));
 
 			float Distance = glm::length(Hit.Position - Attacker->Position) - Template->Size.y;
@@ -629,7 +643,7 @@ void _PlayState::EntityAttack(_Entity *Attacker, int GridType) {
 				glm::vec2 DamagePosition = Hit.Position;
 				if(Hit.Object->Type ==  _Object::PLAYER)
 					DamagePosition += _Map::GenerateRandomPointInCircle(0.3f);
-				_Particle *DamageParticle = new _Particle(_ParticleSpawn(Assets.GetParticleTemplate("damage0"), glm::vec2(0), DamagePosition, OBJECT_Z, 0));
+				_Particle *DamageParticle = new _Particle(_ParticleSpawn(OldAssets.GetParticleTemplate("damage0"), glm::vec2(0), DamagePosition, OBJECT_Z, 0));
 				DamageParticle->Text = std::to_string(Damage);
 				if(Hit.Object->Type ==  _Object::PLAYER)
 					DamageParticle->Color = COLOR_RED;
@@ -847,7 +861,7 @@ void _PlayState::CheckEvents(const _Entity *Entity) {
 					Player->Save();
 				break;
 				case EVENT_TEXT:
-					HUD->ShowMessageBox(Assets.Strings[Event->ItemIdentifier], Event->ActivationPeriod);
+					HUD->ShowMessageBox(OldAssets.Strings[Event->ItemIdentifier], Event->ActivationPeriod);
 					if(Event->Level != 0)
 						Event->Active = false;
 				break;
@@ -873,7 +887,7 @@ void _PlayState::CheckEvents(const _Entity *Entity) {
 
 					if(Event->Tiles.size() > 0) {
 						glm::vec2 NewPosition(Event->Tiles[0].Coord.x + 0.5f, Event->Tiles[0].Coord.y + 0.5f);
-						Particles->Create(_ParticleSpawn(Assets.GetParticleTemplate(Event->ParticleIdentifier), glm::vec2(0), NewPosition, OBJECT_Z, 0));
+						Particles->Create(_ParticleSpawn(OldAssets.GetParticleTemplate(Event->ParticleIdentifier), glm::vec2(0), NewPosition, OBJECT_Z, 0));
 
 						Map->RemoveObjectFromGrid(Player, GRID_PLAYER);
 						Player->SetPosition(NewPosition);
@@ -882,7 +896,7 @@ void _PlayState::CheckEvents(const _Entity *Entity) {
 				} break;
 				case EVENT_LIGHT: {
 					if(LastLightEvent != Event) {
-						Map->SetAmbientLight(Assets.Colors[Event->ItemIdentifier]);
+						Map->SetAmbientLight(ae::Assets.Colors[Event->ItemIdentifier]);
 						Map->SetAmbientLightChangePeriod(Event->ActivationPeriod);
 						LastLightEvent = Event;
 					}
@@ -913,7 +927,7 @@ void _PlayState::UpdateEvents(double FrameTime) {
 						Position.x = Tiles[i].Coord.x + 0.5f;
 						Position.y = Tiles[i].Coord.y + 0.5f;
 						AddMonster(Stats.CreateMonster(Event->MonsterIdentifier, Position));
-						Particles->Create(_ParticleSpawn(Assets.GetParticleTemplate(Event->ParticleIdentifier), glm::vec2(0), Position, OBJECT_Z, 0));
+						Particles->Create(_ParticleSpawn(OldAssets.GetParticleTemplate(Event->ParticleIdentifier), glm::vec2(0), Position, OBJECT_Z, 0));
 					}
 
 					Decrement = true;
@@ -1024,8 +1038,8 @@ void _PlayState::GenerateBulletEffects(_Entity *Attacker, const int Type, const 
 	}
 	else if(Type == HIT_OBJECT) {
 		glm::vec2 ParticlePosition = _Map::GenerateRandomPointInCircle(0.7f) + Hit.Position;
-		Particles->Create(_ParticleSpawn(Assets.GetParticleTemplate("bloodspurt0"), Hit.Normal, Hit.Position, OBJECT_Z, Attacker->Rotation));
-		Particles->Create(_ParticleSpawn(Assets.GetParticleTemplate("blood0"), Hit.Normal, ParticlePosition, 0.06f, Attacker->Rotation));
+		Particles->Create(_ParticleSpawn(OldAssets.GetParticleTemplate("bloodspurt0"), Hit.Normal, Hit.Position, OBJECT_Z, Attacker->Rotation));
+		Particles->Create(_ParticleSpawn(OldAssets.GetParticleTemplate("blood0"), Hit.Normal, ParticlePosition, 0.06f, Attacker->Rotation));
 	}
 }
 
