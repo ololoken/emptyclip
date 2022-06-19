@@ -248,13 +248,13 @@
                 <element id="label_new_name_input" font="hud_medium" text="Name" offset_x="-5" offset_y="-30" alignment_x="0" alignment_y="3"/>
             </element>
         </element>
-        <element id="image_menu_new_player_legs0" texture="textures/menu/legs4.png" offset_x="60" offset_y="200" size_x="64" size_y="64" alignment_x="0" alignment_y="0" stretch="false"/>
+        <element id="image_menu_new_player_legs0" texture="textures/menu/legs4.png" color="dark"offset_x="60" offset_y="200" size_x="64" size_y="64" alignment_x="0" alignment_y="0" stretch="false"/>
         <element id="image_menu_new_player_torso0" texture="textures/menu/walking_onehand4.png" offset_x="60" offset_y="200" size_x="64" size_y="64" alignment_x="0" alignment_y="0" stretch="false"/>
-        <element id="image_menu_new_player_legs1" texture="textures/menu/legs4.png" offset_x="130" offset_y="200" size_x="64" size_y="64" alignment_x="0" alignment_y="0" stretch="false"/>
+        <element id="image_menu_new_player_legs1" texture="textures/menu/legs4.png" color="red" offset_x="130" offset_y="200" size_x="64" size_y="64" alignment_x="0" alignment_y="0" stretch="false"/>
         <element id="image_menu_new_player_torso1" texture="textures/menu/walking_onehand4.png" offset_x="130" offset_y="200" size_x="64" size_y="64" alignment_x="0" alignment_y="0" stretch="false"/>
-        <element id="image_menu_new_player_legs2" texture="textures/menu/legs4.png" offset_x="200" offset_y="200" size_x="64" size_y="64" alignment_x="0" alignment_y="0" stretch="false"/>
+        <element id="image_menu_new_player_legs2" texture="textures/menu/legs4.png" color="green" offset_x="200" offset_y="200" size_x="64" size_y="64" alignment_x="0" alignment_y="0" stretch="false"/>
         <element id="image_menu_new_player_torso2" texture="textures/menu/walking_onehand4.png" offset_x="200" offset_y="200" size_x="64" size_y="64" alignment_x="0" alignment_y="0" stretch="false"/>
-        <element id="image_menu_new_player_legs3" texture="textures/menu/legs4.png" offset_x="270" offset_y="200" size_x="64" size_y="64" alignment_x="0" alignment_y="0" stretch="false"/>
+        <element id="image_menu_new_player_legs3" texture="textures/menu/legs4.png" color="blue" offset_x="270" offset_y="200" size_x="64" size_y="64" alignment_x="0" alignment_y="0" stretch="false"/>
         <element id="image_menu_new_player_torso3" texture="textures/menu/walking_onehand4.png" offset_x="270" offset_y="200" size_x="64" size_y="64" alignment_x="0" alignment_y="0" stretch="false"/>
         <element id="button_new_create" style="style_menu_button" hover_style="style_menu_button_hover" offset_x="-70" offset_y="-25" size_x="128" size_y="32" alignment_y="2" clickable="true">
             <element id="label_new_create" font="hud_medium" text="Create" offset_y="21" alignment_y="3"/>
