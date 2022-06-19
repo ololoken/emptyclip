@@ -25,6 +25,7 @@
 #include <ae/assets.h>
 #include <ae/program.h>
 #include <ae/console.h>
+#include <ae/light.h>
 #include <objects/entity.h>
 #include <objects/player.h>
 #include <objects/monster.h>
@@ -441,7 +442,17 @@ void _PlayState::Render(double BlendFactor) {
 	if(IsPaused())
 		BlendFactor = 0;
 
-	ae::Assets.Programs["pos_uv"]->AmbientLight = glm::vec4(1);
+	glm::vec3 LightPosition(glm::vec2(Player->Position), 1.0f);
+	glm::vec4 AmbientLight(0.4f, 0.4f, 0.4f, 1.0f);
+
+	ae::Assets.Programs["pos_uv"]->LightCount = 1;
+	ae::Assets.Programs["pos_uv"]->Lights[0].Position = LightPosition;
+	ae::Assets.Programs["pos_uv"]->Lights[0].Color = glm::vec4(0.5);
+	ae::Assets.Programs["pos_uv"]->AmbientLight = Map->GetAmbientLight();
+	ae::Assets.Programs["pos_uv_norm"]->LightCount = 1;
+	ae::Assets.Programs["pos_uv_norm"]->Lights[0].Position = LightPosition;
+	ae::Assets.Programs["pos_uv_norm"]->Lights[0].Color = glm::vec4(0.5);
+	ae::Assets.Programs["pos_uv_norm"]->AmbientLight = AmbientLight;
 
 	// Setup the viewing matrix
 	ae::Graphics.Setup3D();
@@ -452,6 +463,8 @@ void _PlayState::Render(double BlendFactor) {
 	glUniformMatrix4fv(ae::Assets.Programs["pos"]->ViewProjectionTransformID, 1, GL_FALSE, glm::value_ptr(Camera->Transform));
 	ae::Graphics.SetProgram(ae::Assets.Programs["pos_uv"]);
 	glUniformMatrix4fv(ae::Assets.Programs["pos_uv"]->ViewProjectionTransformID, 1, GL_FALSE, glm::value_ptr(Camera->Transform));
+	ae::Graphics.SetProgram(ae::Assets.Programs["pos_uv_norm"]);
+	glUniformMatrix4fv(ae::Assets.Programs["pos_uv_norm"]->ViewProjectionTransformID, 1, GL_FALSE, glm::value_ptr(Camera->Transform));
 	ae::Graphics.SetProgram(ae::Assets.Programs["text"]);
 	glUniformMatrix4fv(ae::Assets.Programs["text"]->ViewProjectionTransformID, 1, GL_FALSE, glm::value_ptr(Camera->Transform));
 

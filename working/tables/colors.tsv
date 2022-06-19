@@ -32,7 +32,7 @@ shade_brown2	0.73	0.45	0.21	1
 shade_purple0	0.8	0.27	0.92	1
 shade_purple1	0.72	0.24	0.82	1
 shade_purple2	0.64	0.21	0.73	1
-ambient_night	0	0	0	0.2
-ambient_day	0	0	0	0.8
-ambient_black	0	0	0	0
+ambient_night	0.2	0.2	0.2	1
+ambient_day	0.8	0.8	0.8	1
+ambient_black	0	0	0	1
 editor_hover	1	1	1	0.2

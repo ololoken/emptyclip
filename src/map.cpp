@@ -71,9 +71,9 @@ _Map::_Map() :
 	Data(nullptr),
 	ObjectManager(new _ObjectManager()),
 	MonsterSetID(MAP_DEFAULTMONSTERSET),
-	AmbientLight(0.0f, 0.0f, 0.0f, 1.0f),
-	OldAmbientLight(0.0f, 0.0f, 0.0f, 1.0f),
-	AmbientLightBlendFactor(1.0),
+	AmbientLight(0.5f, 0.5f, 0.5f, 1.0f),
+	OldAmbientLight(0.5f, 0.5f, 0.5f, 1.0f),
+	AmbientLightBlendFactor(1.0f),
 	AmbientLightPeriod(0.0),
 	AmbientLightTimer(0.0) {
 
@@ -1548,7 +1548,7 @@ void _Map::Update(double FrameTime) {
 		AmbientLightTimer += FrameTime;
 	}
 	else
-		AmbientLightBlendFactor = 1.0;
+		AmbientLightBlendFactor = 1.0f;
 }
 
 // Adds an item to the item list and collision grid
