@@ -264,6 +264,8 @@ void _PlayState::HandleWindow(uint8_t Event) {
 	if(Event == SDL_WINDOWEVENT_SIZE_CHANGED) {
 		if(Camera)
 			Camera->CalculateFrustum(ae::Graphics.AspectRatio);
+
+		Menu.HandleResize();
 	}
 }
 

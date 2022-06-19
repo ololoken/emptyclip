@@ -89,6 +89,7 @@ class _Menu {
 
 		bool HandleKey(const ae::_KeyEvent &KeyEvent);
 		void HandleMouseButton(const ae::_MouseEvent &MouseEvent);
+		void HandleResize();
 
 		void Update(double FrameTime);
 		void Render();

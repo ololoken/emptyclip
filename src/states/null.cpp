@@ -46,6 +46,8 @@ void _NullState::HandleMouseButton(const ae::_MouseEvent &MouseEvent) {
 
 // Handle window events
 void _NullState::HandleWindow(uint8_t Event) {
+	if(Event == SDL_WINDOWEVENT_SIZE_CHANGED)
+		Menu.HandleResize();
 }
 
 // Handle quit events

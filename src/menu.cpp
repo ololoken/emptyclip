@@ -106,9 +106,7 @@ void _Menu::InitTitle() {
 	ae::Assets.Elements["label_game_version"]->SetActive(true);
 
 	Background = ae::Assets.Elements["image_menu_bg"];
-	Background->SetWidth(ae::Graphics.CurrentSize.x * ((float)Background->Texture->Size.y / Background->Texture->Size.x));
-	Background->SetHeight(ae::Graphics.CurrentSize.y);
-	Background->SetActive(true);
+	HandleResize();
 
 	State = STATE_TITLE;
 }
@@ -419,6 +417,13 @@ void _Menu::HandleMouseButton(const ae::_MouseEvent &MouseEvent) {
 			break;
 		}
 	}
+}
+
+// Handle window resize
+void _Menu::HandleResize() {
+	Background->SetWidth(ae::Graphics.CurrentSize.x * ((float)Background->Texture->Size.y / Background->Texture->Size.x));
+	Background->SetHeight(ae::Graphics.CurrentSize.y);
+	Background->SetActive(true);
 }
 
 // Update phase
