@@ -549,6 +549,7 @@ void _Menu::CancelCreate() {
 	CurrentLayout = ae::Assets.Elements["element_menu_singleplayer"];
 	CurrentLayout->SetClickable(true);
 	SinglePlayerState = SINGLEPLAYER_NONE;
+	ae::FocusedElement = nullptr;
 
 	SaveSlots[SelectedSlot]->Checked = false;
 }
@@ -564,6 +565,7 @@ void _Menu::CreatePlayer() {
 	if(SelectedSlot != -1) {
 		Save.CreateNewPlayer(SelectedSlot, ae::Assets.Elements["textbox_new_name_input"]->Text, COLORS[SelectedColor]);
 		RefreshSaveSlots();
+		ae::FocusedElement = nullptr;
 	}
 }
 

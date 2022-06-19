@@ -85,6 +85,7 @@ _EditorState::_EditorState() :
 void _EditorState::Init() {
 	ae::Graphics.Element->SetActive(false);
 	ae::Graphics.Element->Active = true;
+	ae::FocusedElement = nullptr;
 
 	// Load command buttons
 	MainFont = ae::Assets.Fonts["menu_buttons"];
@@ -273,6 +274,7 @@ void _EditorState::ResetEditorState() {
 	LoadPalettes();
 	LayerButtons[CurrentLayer]->Checked = true;
 	ModeButtons[CurrentPalette]->Checked = true;
+	ae::FocusedElement = nullptr;
 }
 
 // Key handler
@@ -323,10 +325,12 @@ bool _EditorState::HandleKey(const ae::_KeyEvent &KeyEvent) {
 							SavedText[EditorInput] = InputText;
 					break;
 				}
+				ae::FocusedElement = nullptr;
 				EditorInput = -1;
 				InputBox->SetActive(false);
 			} break;
 			case SDL_SCANCODE_ESCAPE:
+				ae::FocusedElement = nullptr;
 				EditorInput = -1;
 				InputBox->SetActive(false);
 			break;
