@@ -110,6 +110,7 @@ class _Stats {
 		void Init();
 		void Close();
 
+		void LoadStrings(const std::string &Path);
 		void LoadLevels(const std::string &Path);
 		void LoadSkills(const std::string &Path);
 		void LoadAmmo(const std::string &Path);
@@ -139,6 +140,7 @@ class _Stats {
 		_ItemGroup *GetItemGroup(const std::string &Identifier);
 		void GetRandomDrop(const _ItemGroup *ItemGroup, _ObjectSpawn *ObjectSpawn);
 
+		std::unordered_map<std::string, std::string> Strings;
 		std::unordered_map<std::string, _ItemTemplate> Items;
 		std::unordered_map<std::string, _WeaponTemplate> Weapons;
 		std::unordered_map<std::string, _ItemGroup> ItemGroups;

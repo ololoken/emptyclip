@@ -854,7 +854,7 @@ void _PlayState::CheckEvents(const _Entity *Entity) {
 					Player->Save();
 				break;
 				case EVENT_TEXT:
-					HUD->ShowMessageBox(OldAssets.Strings[Event->ItemIdentifier], Event->ActivationPeriod);
+					HUD->ShowMessageBox(Stats.Strings[Event->ItemIdentifier], Event->ActivationPeriod);
 					if(Event->Level != 0)
 						Event->Active = false;
 				break;

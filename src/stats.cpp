@@ -34,6 +34,7 @@ _Stats Stats;
 void _Stats::Init() {
 	BlankWeaponParticle = _WeaponParticleTemplate();
 
+	LoadStrings("tables/strings.tsv");
 	LoadLevels("tables/levels.tsv");
 	LoadSkills("tables/skills.tsv");
 	LoadAmmo("tables/ammo.tsv");
@@ -58,6 +59,35 @@ void _Stats::Close() {
 		OldAssets.UnloadAnimation(Monster.second.AnimationIdentifier);
 
 	Monsters.clear();
+}
+
+// Load strings
+void _Stats::LoadStrings(const std::string &Path) {
+
+	// Load file
+	std::ifstream File(Path, std::ios::in);
+	if(!File)
+		throw std::runtime_error("Error loading: " + Path);
+
+	// Ignore the first line
+	File.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+
+	// Read file
+	while(!File.eof() && File.peek() != EOF) {
+
+		std::string ID;
+		std::string Text;
+		std::getline(File, ID, '\t');
+		std::getline(File, Text, '\n');
+
+		// Check for duplicates
+		if(Strings.find(ID) != Strings.end())
+			throw std::runtime_error(std::string(__PRETTY_FUNCTION__) + " - Duplicate entry: " + ID);
+
+		Strings[ID] = Text;
+	}
+
+	File.close();
 }
 
 // Load level stats

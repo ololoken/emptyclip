@@ -55,7 +55,6 @@ class _OldAssets {
 		void Init();
 		void Close();
 
-		void LoadStrings(const std::string &Path);
 		void LoadReelTable(const std::string &Path);
 		void LoadAnimationTable(const std::string &Path);
 		void LoadSoundGroups(const std::string &Path);
@@ -83,7 +82,6 @@ class _OldAssets {
 		_WeaponParticleTemplate *GetWeaponParticleTemplate(const std::string &Identifer);
 
 		// Data
-		std::unordered_map<std::string, std::string> Strings;
 		std::unordered_map<std::string, _Animation *> Animations;
 
 	private:

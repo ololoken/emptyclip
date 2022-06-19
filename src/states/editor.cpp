@@ -395,9 +395,6 @@ bool _EditorState::HandleKey(const ae::_KeyEvent &KeyEvent) {
 			case SDL_SCANCODE_8:
 				ExecuteSwitchMode(EDITMODE_ARMOR);
 			break;
-			case SDL_SCANCODE_GRAVE:
-				ExecuteDeselect();
-			break;
 			case SDL_SCANCODE_D:
 				ExecuteDelete();
 			break;

@@ -268,7 +268,6 @@ int _Framework::GlobalKeyHandler(const SDL_Event &Event) {
 void _Framework::LoadAssets() {
 
 	ae::Assets.LoadPrograms("tables/programs.tsv");
-	OldAssets.LoadStrings("tables/strings.tsv");
 	ae::Assets.LoadFonts("tables/fonts.tsv", false);
 	ae::Assets.LoadTextureDirectory("textures/editor/", false, false, false);
 	ae::Assets.LoadTextureDirectory("textures/editor_repeat/", false, true, true);

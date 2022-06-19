@@ -46,35 +46,6 @@ void _OldAssets::Init() {
 void _OldAssets::Close() {
 }
 
-// Loads the strings
-void _OldAssets::LoadStrings(const std::string &Path) {
-
-	// Load file
-	std::ifstream File(Path, std::ios::in);
-	if(!File)
-		throw std::runtime_error("Error loading: " + Path);
-
-	// Ignore the first line
-	File.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-
-	// Read file
-	while(!File.eof() && File.peek() != EOF) {
-
-		std::string ID;
-		std::string Text;
-		std::getline(File, ID, '\t');
-		std::getline(File, Text, '\n');
-
-		// Check for duplicates
-		if(Strings.find(ID) != Strings.end())
-			throw std::runtime_error(std::string(__PRETTY_FUNCTION__) + " - Duplicate entry: " + ID);
-
-		Strings[ID] = Text;
-	}
-
-	File.close();
-}
-
 // Loads the reels table
 void _OldAssets::LoadReelTable(const std::string &Path) {
 
