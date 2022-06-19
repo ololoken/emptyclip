@@ -60,6 +60,7 @@ class _PlayState : public ae::_State {
 		bool HandleAction(int InputType, std::size_t Action, int Value) override;
 		bool HandleKey(const ae::_KeyEvent &KeyEvent) override;
 		void HandleMouseButton(const ae::_MouseEvent &MouseEvent) override;
+		bool HandleCommand(ae::_Console *Console);
 		void HandleWindow(uint8_t Event) override;
 		void HandleQuit() override;
 

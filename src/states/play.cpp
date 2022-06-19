@@ -24,6 +24,7 @@
 #include <ae/graphics.h>
 #include <ae/assets.h>
 #include <ae/program.h>
+#include <ae/console.h>
 #include <objects/entity.h>
 #include <objects/player.h>
 #include <objects/monster.h>
@@ -145,6 +146,16 @@ bool _PlayState::HandleAction(int InputType, std::size_t Action, int Value) {
 	if(Value == 0)
 		return false;
 
+	// Handle console toggling
+	if(Action == Action::MISC_CONSOLE) {
+		Framework.Console->Toggle();
+		Framework.IgnoreNextInputEvent = true;
+	}
+
+	// Ignore actions when console is open
+	if(Framework.Console->IsOpen())
+		return false;
+
 	if(!Player || IsPaused())
 		return false;
 
@@ -259,6 +270,18 @@ void _PlayState::HandleMouseButton(const ae::_MouseEvent &MouseEvent) {
 		Menu.HandleMouseButton(MouseEvent);
 }
 
+// Handle console commands
+bool _PlayState::HandleCommand(ae::_Console *Console) {
+
+	// Handle normal commands
+	if(Console->Command == "quit") {
+		HandleQuit();
+		return true;
+	}
+
+	return false;
+}
+
 // Window size updates
 void _PlayState::HandleWindow(uint8_t Event) {
 	if(Event == SDL_WINDOWEVENT_SIZE_CHANGED) {
@@ -298,7 +321,7 @@ void _PlayState::Update(double FrameTime) {
 	SaveGameTimer += FrameTime;
 
 	// Handle input
-	if(!Player->IsDying()) {
+	if(!Player->IsDying() && ae::FocusedElement == nullptr) {
 
 		// Turn character to face the world cursor
 		Player->FacePosition(WorldCursor);

@@ -8,3 +8,4 @@ hud_large	fonts/arimo_regular.ttf	text	20
 hud_larger	fonts/arimo_regular.ttf	text	24
 hud_largest	fonts/arimo_regular.ttf	text	48
 hud_damage	fonts/pt_sans_bold.ttf	text	18
+console	fonts/vera_mono_bold.ttf	text	11

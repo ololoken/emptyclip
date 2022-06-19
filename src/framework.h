@@ -26,6 +26,7 @@ union SDL_Event;
 namespace ae {
 	class _FrameLimit;
 	class _State;
+	class _Console;
 }
 
 // Manages SDL and game state
@@ -50,6 +51,9 @@ class _Framework {
 		ae::_State *GetState() { return State; }
 		void ChangeState(ae::_State *RequestedState);
 
+		// Console
+		ae::_Console *Console;
+
 		// State
 		bool Done;
 		bool IgnoreNextInputEvent;
@@ -57,6 +61,7 @@ class _Framework {
 	private:
 
 		int GlobalKeyHandler(const SDL_Event &Event);
+		void HandleCommand(ae::_Console *Console);
 		void LoadAssets();
 
 		// States

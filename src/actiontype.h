@@ -34,6 +34,7 @@ namespace Action {
 		GAME_WEAPONSWITCH,
 		GAME_HEAL,
 		GAME_INVENTORY,
+		MISC_CONSOLE,
 		COUNT,
 	};
 }

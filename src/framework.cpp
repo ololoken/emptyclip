@@ -23,6 +23,9 @@
 #include <ae/actions.h>
 #include <ae/graphics.h>
 #include <ae/assets.h>
+#include <ae/console.h>
+#include <ae/ui.h>
+#include <ae/util.h>
 #include <assets.h>
 #include <config.h>
 #include <audio.h>
@@ -35,12 +38,14 @@
 #include <states/play.h>
 #include <states/editor.h>
 #include <SDL.h>
+#include <algorithm>
 
 // Global instance
 _Framework Framework;
 
 // Initialize
 void _Framework::Init(int ArgumentCount, char **Arguments) {
+	Console = nullptr;
 	RequestedState = nullptr;
 	Done = false;
 	TimeStepAccumulator = 0.0;
@@ -111,10 +116,21 @@ void _Framework::Init(int ArgumentCount, char **Arguments) {
 	// Set up subsystems
 	ae::Graphics.Init(WindowSettings);
 	ae::Graphics.SetCullFace(false);
-
-	// Load assets
 	LoadAssets();
 	Stats.Init();
+
+	// Setup console
+	Console = new ae::_Console(ae::Assets.Programs["ortho_pos"], ae::Assets.Fonts["console"]);
+	Console->LoadHistory(Config.ConfigPath + "history.txt");
+	Console->CommandList.push_back("maxfps");
+	Console->CommandList.push_back("quit");
+	Console->CommandList.push_back("volume");
+	Console->CommandList.push_back("vsync");
+
+	// Sort commands
+	std::sort(Console->CommandList.begin(), Console->CommandList.end());
+
+	// Load assets
 	Save.LoadSaves();
 
 	Timer = SDL_GetPerformanceCounter();
@@ -132,6 +148,7 @@ void _Framework::Close() {
 
 	Stats.Close();
 	OldAssets.Close();
+	delete Console;
 	delete FrameLimit;
 
 	Audio.Close();
@@ -170,7 +187,10 @@ void _Framework::Update() {
 
 					// Handle console input
 					bool SendAction = true;
-					SendAction = State->HandleKey(KeyEvent);
+					if(Console->IsOpen())
+						ae::Graphics.Element->HandleKey(KeyEvent);
+					else
+						SendAction = State->HandleKey(KeyEvent);
 
 					// Pass keys to action handler
 					if(!Event.key.repeat && SendAction)
@@ -180,21 +200,24 @@ void _Framework::Update() {
 			case SDL_TEXTINPUT:
 				if(!IgnoreNextInputEvent) {
 					ae::_KeyEvent KeyEvent(Event.text.text, 0, 1, 1);
-					State->HandleKey(KeyEvent);
+					if(Console->IsOpen())
+						ae::Graphics.Element->HandleKey(KeyEvent);
+					else
+						State->HandleKey(KeyEvent);
 				}
 
 				IgnoreNextInputEvent = false;
 			break;
 			case SDL_MOUSEBUTTONDOWN:
 			case SDL_MOUSEBUTTONUP:
-				if(State && FrameworkState == UPDATE) {
+				if(!Console->IsOpen()) {
 					ae::_MouseEvent MouseEvent(glm::ivec2(Event.motion.x, Event.motion.y), Event.button.button, Event.type == SDL_MOUSEBUTTONDOWN);
 					State->HandleMouseButton(MouseEvent);
 					ae::Actions.InputEvent(State, ae::_Input::MOUSE_BUTTON, Event.button.button, Event.type == SDL_MOUSEBUTTONDOWN);
 				}
 			break;
 			case SDL_MOUSEWHEEL:
-				if(State)
+				if(!Console->IsOpen())
 					State->HandleMouseWheel(Event.wheel.y);
 			break;
 			case SDL_WINDOWEVENT:
@@ -220,10 +243,23 @@ void _Framework::Update() {
 			TimeStepAccumulator += FrameTime;
 			while(TimeStepAccumulator >= TimeStep) {
 				State->Update(TimeStep);
+				if(Console) {
+					Console->Update(TimeStep);
+					if(!Console->Command.empty()) {
+						bool Handled = State->HandleCommand(Console);
+						if(!Handled)
+							HandleCommand(Console);
+						Console->Command = "";
+					}
+				}
+
 				TimeStepAccumulator -= TimeStep;
 			}
-			State->Render(TimeStepAccumulator / TimeStep);
-			//printf("%f\n", TimeStepAccumulator);
+
+			double BlendFactor = TimeStepAccumulator / TimeStep;
+			State->Render(BlendFactor);
+			if(Console)
+				Console->Render(BlendFactor);
 		} break;
 		case CLOSE: {
 			if(State)
@@ -251,10 +287,8 @@ int _Framework::GlobalKeyHandler(const SDL_Event &Event) {
 				Config.Fullscreen = !Config.Fullscreen;
 				Config.Save();
 				ae::Graphics.SetFullscreen(Config.Fullscreen);
-
-				//Menu.SetFullscreen(!Config.Fullscreen);
-				//if(Console)
-				//	Console->UpdateSize();
+				if(Console)
+					Console->UpdateSize();
 			}
 
 			return 1;
@@ -262,6 +296,49 @@ int _Framework::GlobalKeyHandler(const SDL_Event &Event) {
 	}
 
 	return 0;
+}
+
+// Handle generic console command
+void _Framework::HandleCommand(ae::_Console *Console) {
+
+	// Get parameters
+	std::vector<std::string> Parameters;
+	ae::TokenizeString(Console->Parameters, Parameters);
+
+	if(Console->Command == "maxfps") {
+		if(Parameters.size() == 1) {
+			Config.MaxFPS = ae::ToNumber<int>(Parameters[0]);
+			Framework.FrameLimit->SetFrameRate(Config.MaxFPS);
+			Config.Save();
+		}
+		else {
+			Console->AddMessage("maxfps = " + std::to_string(Config.MaxFPS));
+			Console->AddMessage("usage: maxfps [value]");
+		}
+	}
+	else if(Console->Command == "volume") {
+		if(Parameters.size() == 1) {
+			Config.SoundVolume = Config.MusicVolume = std::clamp(ae::ToNumber<float>(Console->Parameters), 0.0f, 1.0f);
+			//Audio.SetSoundVolume(Config.SoundVolume);
+			Config.Save();
+		}
+		else
+			Console->AddMessage("usage: volume [value]");
+	}
+	else if(Console->Command == "vsync") {
+		if(Parameters.size() == 1) {
+			Config.Vsync = ae::ToNumber<bool>(Console->Parameters);
+			ae::Graphics.SetVsync(Config.Vsync);
+			Config.Save();
+		}
+		else {
+			Console->AddMessage("vsync = " + std::to_string(ae::Graphics.GetVsync()));
+			Console->AddMessage("usage: vsync [value]");
+		}
+	}
+	else {
+		Console->AddMessage("Command \"" + Console->Command + "\" not found");
+	}
 }
 
 // Load game assets

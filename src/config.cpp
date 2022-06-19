@@ -46,6 +46,7 @@ void _Config::Init(const std::string &ConfigFile) {
 	ae::Actions.State[Action::GAME_WEAPONSWITCH].Name = "game_weaponswitch";
 	ae::Actions.State[Action::GAME_HEAL].Name = "game_heal";
 	ae::Actions.State[Action::GAME_INVENTORY].Name = "game_inventory";
+	ae::Actions.State[Action::MISC_CONSOLE].Name = "misc_console";
 
 	// Create config path
 	char *PrefPath = SDL_GetPrefPath("", "emptyclip");
@@ -98,21 +99,23 @@ void _Config::LoadDefaultInputBindings(bool IfNone) {
 			ae::Actions.ClearMappings(i);
 	}
 
-	// Movement
+	// Game
 	ae::Actions.AddInputMap(0, ae::_Input::KEYBOARD, SDL_SCANCODE_E, Action::GAME_UP, 1.0f, -1.0f, IfNone);
 	ae::Actions.AddInputMap(0, ae::_Input::KEYBOARD, SDL_SCANCODE_D, Action::GAME_DOWN, 1.0f, -1.0f, IfNone);
 	ae::Actions.AddInputMap(0, ae::_Input::KEYBOARD, SDL_SCANCODE_S, Action::GAME_LEFT, 1.0f, -1.0f, IfNone);
 	ae::Actions.AddInputMap(0, ae::_Input::KEYBOARD, SDL_SCANCODE_F, Action::GAME_RIGHT, 1.0f, -1.0f, IfNone);
-
 	ae::Actions.AddInputMap(0, ae::_Input::KEYBOARD, SDL_SCANCODE_A, Action::GAME_SPRINT, 1.0f, -1.0f, IfNone);
 	ae::Actions.AddInputMap(0, ae::_Input::KEYBOARD, SDL_SCANCODE_SPACE, Action::GAME_USE, 1.0f, -1.0f, IfNone);
 	ae::Actions.AddInputMap(0, ae::_Input::KEYBOARD, SDL_SCANCODE_C, Action::GAME_INVENTORY, 1.0f, -1.0f, IfNone);
 	ae::Actions.AddInputMap(0, ae::_Input::MOUSE_BUTTON, 1, Action::GAME_FIRE, 1.0f, -1.0f, IfNone);
 	ae::Actions.AddInputMap(0, ae::_Input::MOUSE_BUTTON, 3, Action::GAME_AIM, 1.0f, -1.0f, IfNone);
-	ae::Actions.AddInputMap(0, ae::_Input::KEYBOARD, SDL_SCANCODE_Z, Action::GAME_MELEE, 1.0f, -1.0f, IfNone);
+	ae::Actions.AddInputMap(0, ae::_Input::MOUSE_BUTTON, 4, Action::GAME_MELEE, 1.0f, -1.0f, IfNone);
 	ae::Actions.AddInputMap(0, ae::_Input::KEYBOARD, SDL_SCANCODE_R, Action::GAME_RELOAD, 1.0f, -1.0f, IfNone);
 	ae::Actions.AddInputMap(0, ae::_Input::KEYBOARD, SDL_SCANCODE_W, Action::GAME_WEAPONSWITCH, 1.0f, -1.0f, IfNone);
 	ae::Actions.AddInputMap(0, ae::_Input::KEYBOARD, SDL_SCANCODE_Q, Action::GAME_HEAL, 1.0f, -1.0f, IfNone);
+
+	// Misc
+	ae::Actions.AddInputMap(0, ae::_Input::KEYBOARD, SDL_SCANCODE_GRAVE, Action::MISC_CONSOLE, 1.0f, -1.0f, IfNone);
 }
 
 // Load the config file
