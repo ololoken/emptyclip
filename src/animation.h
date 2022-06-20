@@ -30,7 +30,6 @@ namespace ae {
 enum PlayType {
 	PLAYING,
 	STOPPED,
-	PAUSED
 };
 
 enum RepeatType {
@@ -51,7 +50,7 @@ struct _ReelTemplate {
 // Used for storing information about an animation sequence
 struct _Reel {
 	std::vector<ae::_Texture *> Textures;
-	double PlaybackSpeed;
+	double FramePeriod;
 	RepeatType RepeatMode;
 	int StartPosition;
 };
@@ -68,7 +67,7 @@ class _Animation {
 		void ChangeReel(int Index);
 
 		void SetFramePeriod(double Value);
-		void SetPlaybackSpeedFactor(double Value) { PlaybackSpeed = Reels[CurrentReel]->PlaybackSpeed * Value; }
+		void SetPlaybackSpeedFactor(double Value) { FramePeriod = Reels[CurrentReel]->FramePeriod * Value; }
 		void SetPlayMode(int Mode);
 		void SetAllowUpdate(bool Value) { AllowUpdate = Value; }
 
@@ -81,7 +80,7 @@ class _Animation {
 		int CurrentReel;
 		int Position;
 		double Timer;
-		double PlaybackSpeed;
+		double FramePeriod;
 		bool AllowUpdate;
 
 };

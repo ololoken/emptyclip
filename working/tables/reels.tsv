@@ -1,7 +1,6 @@
-identifier	playback speed	repeat mode	starting position	textures...				
+id	frame_period	repeat_mode	starting_position	textures...				
 crate	0.15	2	0	crate0.png				
 treasure	0.15	2	0	treasure0.png				
-player_legs	0.07	2	2	legs0.png	legs1.png	legs2.png	legs3.png	legs4.png
 player_onehand_walking	0.07	2	2	walking_onehand0.png	walking_onehand1.png	walking_onehand2.png	walking_onehand3.png	walking_onehand4.png
 player_twohand_walking	0.07	2	2	walking_twohand0.png	walking_twohand1.png	walking_twohand2.png	walking_twohand3.png	walking_twohand4.png
 player_melee	0.3	0	0	melee0.png	melee1.png	melee2.png		

@@ -423,7 +423,7 @@ void _Menu::Update(double FrameTime) {
 				_Player *Player = Save.GetPlayer(i);
 				if(Player) {
 					Player->PositionChanged = true;
-					Player->UpdateAnimation(FrameTime);
+					Player->UpdateAnimation(FrameTime, false);
 				}
 			}
 		} break;
@@ -507,6 +507,7 @@ void _Menu::RefreshSaveSlots() {
 
 		_Player *Player = Save.GetPlayer(i);
 		if(Player) {
+			Player->UpdateSpeed(1.0f);
 			Player->SetLegAnimationPlayMode(PLAYING);
 			Player->Animation->SetPlayMode(PLAYING);
 			SlotLabel->Text = Player->GetName();

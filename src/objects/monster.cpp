@@ -84,9 +84,6 @@ _Monster::_Monster(_MonsterTemplate &Monster, _Animation *Animation, const glm::
 	this->Position = LastPosition = Position;
 	*this->Animation = *Animation;
 	WeaponParticles = Monster.WeaponParticles;
-	MoveSoundDelay = 1000;
-	if(Animation && Animation->Reels[0])
-		MoveSoundDelay = Animation->PlaybackSpeed * Animation->Reels[0]->Textures.size();
 
 	ViewRangeFront *= ViewRangeFront;
 	ViewRangeSide *= ViewRangeSide;

@@ -305,7 +305,7 @@ void _GameAssets::LoadReel(const std::string &Identifier, const std::string &Pat
 		_Reel Reel;
 		Reel.StartPosition = ReelTableIterator->second.StartPosition;
 		Reel.RepeatMode = (RepeatType)(ReelTableIterator->second.RepeatMode);
-		Reel.PlaybackSpeed = ReelTableIterator->second.PlaybackSpeed;
+		Reel.FramePeriod = ReelTableIterator->second.PlaybackSpeed;
 
 		for(std::size_t i = 0; i < ReelTableIterator->second.TextureFiles.size(); i++) {
 			std::string ReelPath = Path + ReelTableIterator->second.TextureFiles[i];

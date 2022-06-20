@@ -144,7 +144,6 @@ void _Framework::Close() {
 		State->Close();
 
 	GameAssets.UnloadAnimation("player_torso");
-	GameAssets.UnloadAnimation("player_legs");
 
 	Stats.Close();
 	GameAssets.Close();
@@ -361,9 +360,9 @@ void _Framework::LoadAssets() {
 	GameAssets.LoadWeaponParticles("tables/weaponparticles.tsv");
 	GameAssets.LoadReelTable("tables/reels.tsv");
 	GameAssets.LoadAnimationTable("tables/animation.tsv");
+	ae::Assets.LoadAnimations("tables/animations.tsv", false);
 
 	GameAssets.LoadAnimation("player_torso", "textures/player/");
-	GameAssets.LoadAnimation("player_legs", "textures/player/");
 
 	ae::Assets.LoadStyles("tables/styles.tsv");
 	ae::Assets.LoadUI("tables/ui.xml");

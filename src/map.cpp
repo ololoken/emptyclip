@@ -21,10 +21,10 @@
 #include <ae/texture.h>
 #include <ae/graphics.h>
 #include <ae/assets.h>
+#include <ae/program.h>
 #include <gameassets.h>
 #include <events.h>
 #include <stats.h>
-#include <ae/program.h>
 #include <objectmanager.h>
 #include <objects/entity.h>
 #include <objects/item.h>

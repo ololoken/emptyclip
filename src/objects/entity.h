@@ -24,6 +24,9 @@
 #include <list>
 
 // Forward Declarations
+namespace ae {
+	class _Animation;
+}
 struct _ParticleTemplate;
 class _AudioSource;
 class _Map;
@@ -93,7 +96,7 @@ class _Entity : public _Object {
 
 		virtual void UpdateExperience(int64_t ExperienceGained) { }
 		virtual void UpdateKillCount(int Value) { }
-		virtual void UpdateAnimation(double FrameTime);
+		virtual void UpdateAnimation(double FrameTime, bool PlaySound=true);
 
 		void UpdateMaxHealth(int Adjust);
 		void UpdateHealth(int Adjust);
@@ -126,6 +129,7 @@ class _Entity : public _Object {
 
 		// Graphics
 		_Animation *Animation;
+		ae::_Animation *NewAnimation;
 		glm::vec2 WeaponParticleOffset[WEAPON_TYPES];
 
 		// Audio
@@ -134,8 +138,6 @@ class _Entity : public _Object {
 
 		// Movement
 		MoveType MoveState;
-		double MoveSoundTimer;
-		double MoveSoundDelay;
 		float MovementSpeed;
 		float MovementModifier;
 		glm::vec2 MoveDirection;

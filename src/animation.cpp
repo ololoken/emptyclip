@@ -36,7 +36,7 @@ _Animation &_Animation::operator=(const _Animation &Animation) {
 	Position = Animation.Position;
 	PlayDirection = Animation.PlayDirection;
 	Timer = 0;
-	PlaybackSpeed = Reels[CurrentReel]->PlaybackSpeed;
+	FramePeriod = Reels[CurrentReel]->FramePeriod;
 
 	return *this;
 }
@@ -45,7 +45,7 @@ _Animation &_Animation::operator=(const _Animation &Animation) {
 void _Animation::ChangeReel(int Index) {
 	CurrentReel = Index;
 	Position = Reels[Index]->StartPosition;
-	PlaybackSpeed = Reels[Index]->PlaybackSpeed;
+	FramePeriod = Reels[Index]->FramePeriod;
 	AllowUpdate = false;
 	PlayDirection = 1;
 
@@ -56,7 +56,7 @@ void _Animation::ChangeReel(int Index) {
 void _Animation::Update(double FrameTime) {
 	Timer += FrameTime;
 
-	if(!AllowUpdate && Timer >= PlaybackSpeed)
+	if(!AllowUpdate && Timer >= FramePeriod)
 		AllowUpdate = true;
 
 	// Update position
@@ -109,7 +109,7 @@ void _Animation::SetPlayMode(int Mode) {
 		Position = Reels[CurrentReel]->StartPosition;
 
 	// If resuming, restart timer
-	if((PlayMode == STOPPED || PlayMode == PAUSED) && Mode == PLAYING)
+	if(PlayMode == STOPPED && Mode == PLAYING)
 		Timer = 0;
 
 	PlayMode = Mode;
@@ -117,7 +117,7 @@ void _Animation::SetPlayMode(int Mode) {
 
 // Set playback speed
 void _Animation::SetFramePeriod(double Value) {
-	PlaybackSpeed = Value / Reels[CurrentReel]->Textures.size();
+	FramePeriod = Value / Reels[CurrentReel]->Textures.size();
 }
 
 // Return texture of start frame

@@ -20,6 +20,8 @@
 #include <ae/texture.h>
 #include <ae/graphics.h>
 #include <ae/assets.h>
+#include <ae/animation.h>
+#include <ae/program.h>
 #include <audio.h>
 #include <gameassets.h>
 #include <stats.h>
@@ -64,7 +66,9 @@ _Player::_Player(const std::string &SavePath) {
 	Type = _Object::PLAYER;
 
 	// Set up animations
-	LegAnimation = new _Animation();
+	LegAnimation = new ae::_Animation(nullptr);
+	LegAnimation->Templates.push_back(ae::Assets.AnimationTemplates["player_walking"]);
+
 	WalkingAnimation = PLAYER_ANIMATIONWALKINGONEHAND;
 	MeleeAnimation = PLAYER_ANIMATIONMELEE;
 	ShootingOnehandAnimation = PLAYER_ANIMATIONSHOOTONEHAND;
@@ -83,7 +87,6 @@ _Player::_Player(const std::string &SavePath) {
 
 	// Set animation
 	SetTorsoAnimation(GameAssets.GetAnimation("player_torso"));
-	SetLegAnimation(GameAssets.GetAnimation("player_legs"));
 
 	// Set samples
 	AttackSampleTemplateStruct *AttackSample = GameAssets.GetAttackSampleTemplate("player0");
@@ -97,7 +100,6 @@ _Player::_Player(const std::string &SavePath) {
 
 // Destructor
 _Player::~_Player() {
-
 	delete LegAnimation;
 
 	DeleteItems();
@@ -130,7 +132,6 @@ void _Player::Reset() {
 	Progression = 0;
 	Active = true;
 	Action = ACTION_IDLE;
-	MoveSoundDelay = 0;
 	Reloading = SwitchingWeapons = Crouching = Sprinting = AttackRequested = UseRequested = MedkitRequested = false;
 	for(int i = 0; i < WEAPONATTACK_COUNT; i++) {
 		AttackAllowed[i] = true;
@@ -154,7 +155,7 @@ void _Player::Reset() {
 
 	Animation->ChangeReel(PLAYER_ANIMATIONWALKINGONEHAND);
 	Animation->SetPlayMode(STOPPED);
-	LegAnimation->SetPlayMode(STOPPED);
+	LegAnimation->Stop();
 
 	RecalculateStats();
 	ResetWeaponAnimation();
@@ -244,6 +245,7 @@ void _Player::Load() {
 			break;
 			case CHUNK_SKILLS:
 				File.read((char *)&Skills, sizeof(Skills));
+				//for(int i = 0; i < SKILL_COUNT; i++) Skills[i] = 0;
 				//std::cout << "Skills: " << Skills[0] << " " << Skills[1] << " " << Skills[2] << " " << Skills[3] << " " << Skills[4] << std::endl;
 			break;
 			case CHUNK_ITEMS: {
@@ -473,10 +475,16 @@ void _Player::Update(double FrameTime) {
 }
 
 // Updates the leg's animation and direction
-void _Player::UpdateAnimation(double FrameTime) {
+void _Player::UpdateAnimation(double FrameTime, bool PlaySound) {
 	::_Entity::UpdateAnimation(FrameTime);
 
+	int LastFrame = LegAnimation->Frame;
 	LegAnimation->Update(FrameTime);
+
+	// Play move sound on first and last frame of leg animation
+	if(PlaySound && LastFrame != LegAnimation->Frame && (LegAnimation->Frame == 0 || LegAnimation->Frame == LegAnimation->Templates[LegAnimation->Reel]->EndFrame)) {
+		Audio.Play(new _AudioSource(Audio.GetBuffer(GetSample(SAMPLE_MOVE)), true));
+	}
 
 	switch(MoveState) {
 		case MOVE_FORWARD:
@@ -540,18 +548,43 @@ void _Player::AdjustLegDirection(float Destination) {
 void _Player::Render(double BlendFactor) {
 	glm::vec2 DrawPosition(Position * (float)BlendFactor + LastPosition * (float)(1.0 - BlendFactor));
 
+	// Draw legs
 	ae::Graphics.SetColor(Color);
-	ae::Graphics.DrawSprite(glm::vec3(DrawPosition, PositionZ), LegAnimation->GetCurrentFrame(), LegDirection, glm::vec2(Scale));
+	ae::Assets.Programs["pos_uv"]->ResetTextureTransform();
+	ae::Graphics.DrawAnimationFrame(
+		glm::vec3(DrawPosition, PositionZ),
+		LegAnimation->Templates[LegAnimation->Reel]->Texture,
+		glm::vec4(LegAnimation->TextureCoords),
+		LegDirection,
+		glm::vec2(Scale)
+	);
+
+	// Draw torso
 	ae::Graphics.SetColor(COLOR_WHITE);
+	ae::Assets.Programs["pos_uv"]->ResetTextureTransform();
 	ae::Graphics.DrawSprite(glm::vec3(DrawPosition, PositionZ + 0.01f), Animation->GetCurrentFrame(), Rotation, glm::vec2(Scale));
+
+	//ae::Assets.Fonts["hud_large"]->DrawText(std::to_string(NewLegAnimation->Timer), glm::vec3(DrawPosition, PositionZ), ae::LEFT_BASELINE, glm::vec4(1.0f), 1/64.0f);
 }
 
 // Draws the player in screen space
 void _Player::Render2D(const glm::ivec2 &Position) {
 	ae::Graphics.SetProgram(ae::Assets.Programs["ortho_pos_uv"]);
+
+	// Draw legs
+	const ae::_AnimationTemplate *LegTemplate = LegAnimation->Templates[LegAnimation->Reel];
 	ae::Graphics.SetColor(Color);
-	ae::Graphics.DrawSprite(glm::vec3(Position, 0), LegAnimation->GetCurrentFrame(), Rotation, glm::vec2(LegAnimation->GetCurrentFrame()->Size.x, LegAnimation->GetCurrentFrame()->Size.y));
+	ae::Graphics.DrawAnimationFrame(
+		glm::vec3(Position, 0),
+		LegTemplate->Texture,
+		glm::vec4(LegAnimation->TextureCoords),
+		Rotation,
+		glm::vec2(LegTemplate->FrameSize)
+	);
+
+	// Draw torso
 	ae::Graphics.SetColor(COLOR_WHITE);
+	ae::Assets.Programs["ortho_pos_uv"]->ResetTextureTransform();
 	ae::Graphics.DrawSprite(glm::vec3(Position, 0.01f), Animation->GetCurrentFrame(), Rotation, glm::vec2(Animation->GetCurrentFrame()->Size.x, Animation->GetCurrentFrame()->Size.y));
 }
 
@@ -1073,19 +1106,17 @@ void _Player::UpdateWeaponSwitch() {
 // Updates the states for crouching and running
 void _Player::UpdateSpeed(float Factor) {
 
-	if(Crouching) {
+	if(Crouching)
 		MovementModifier = PLAYER_CROUCHINGSPEEDFACTOR;
-	}
-	else if(Sprinting) {
+	else if(Sprinting)
 		MovementModifier = PLAYER_SPRINTINGSPEEDFACTOR;
-	}
-	else {
+	else
 		MovementModifier = 1.0f;
-	}
+
 	MovementModifier *= Factor;
 
-	MoveSoundDelay = ENTITY_MOVESOUNDDELAYFACTOR / (MovementSpeed * MovementModifier);
-	LegAnimation->SetPlaybackSpeedFactor(1.0f / MovementModifier);
+	double Period = 0.07;
+	LegAnimation->FramePeriod = Period * 1.0f / MovementModifier;
 	if(Animation->CurrentReel == PLAYER_ANIMATIONWALKINGONEHAND || Animation->CurrentReel == PLAYER_ANIMATIONWALKINGTWOHAND)
 		SetAnimationPlaybackSpeedFactor();
 }
@@ -1257,7 +1288,6 @@ void _Player::ResetWeaponAnimation() {
 
 // Applies the death penalty
 void _Player::IncurDeathPenalty() {
-
 	Reloading = SwitchingWeapons = false;
 }
 
@@ -1307,7 +1337,17 @@ void _Player::SetOffHand(_Weapon *Weapon) { Inventory[INVENTORY_OFFHAND] = Weapo
 void _Player::SetMelee(_Weapon *Weapon) { Inventory[INVENTORY_MELEE] = Weapon; }
 void _Player::SetArmor(_Item *Armor) { Inventory[INVENTORY_ARMOR] = Armor; }
 
-void _Player::SetTorsoAnimation(const _Animation *NewAnimation) { *this->Animation = *NewAnimation; }
-void _Player::SetLegAnimation(const _Animation *NewAnimation) { *this->LegAnimation = *NewAnimation; }
-void _Player::SetLegAnimationPlayMode(int Mode) { LegAnimation->SetPlayMode(Mode); }
-void _Player::SetAnimationPlaybackSpeedFactor() { Animation->SetPlaybackSpeedFactor(1.0f / MovementModifier); }
+void _Player::SetTorsoAnimation(const _Animation *Value) {
+	*this->Animation = *Value;
+}
+
+void _Player::SetLegAnimationPlayMode(int Mode) {
+	if(Mode == PLAYING)
+		LegAnimation->Play(0);
+	else if(Mode == STOPPED)
+		LegAnimation->Stop();
+}
+
+void _Player::SetAnimationPlaybackSpeedFactor() {
+	Animation->SetPlaybackSpeedFactor(1.0f / MovementModifier);
+}

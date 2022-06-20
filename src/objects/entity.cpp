@@ -16,12 +16,12 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 *******************************************************************************/
 #include <objects/entity.h>
+#include <objects/monster.h>
 #include <ae/graphics.h>
+#include <ae/random.h>
 #include <audio.h>
 #include <map.h>
 #include <animation.h>
-#include <objects/monster.h>
-#include <ae/random.h>
 #include <constants.h>
 #include <iostream>
 #include <glm/gtx/norm.hpp>
@@ -32,8 +32,6 @@ const double SQRT1_2 = 0.70710678118654752440;
 _Entity::_Entity() :
 	TriggerDownAudio(nullptr),
 	MoveState(MOVE_NONE),
-	MoveSoundTimer(0),
-	MoveSoundDelay(0),
 	MovementSpeed(0),
 	MovementModifier(1.0f),
 	PositionChanged(false),
@@ -76,7 +74,6 @@ _Entity::_Entity() :
 
 	for(int i = 0; i < SAMPLE_TYPES; i++)
 		Samples[i] = -1;
-
 }
 
 // Destructor
@@ -176,14 +173,12 @@ void _Entity::StopAudio() {
 // Update the entity
 void _Entity::Update(double FrameTime) {
 	LastPosition = Position;
-
-	MoveSoundTimer += FrameTime;
 	for(int i = 0; i < WEAPONATTACK_COUNT; i++)
 		FireTimer[i] += FrameTime;
 }
 
 // Updates the animation
-void _Entity::UpdateAnimation(double FrameTime) {
+void _Entity::UpdateAnimation(double FrameTime, bool PlaySound) {
 
 	// Check action
 	switch(Action) {
@@ -371,15 +366,6 @@ void _Entity::Move() {
 
 		// Determine if the object has moved
 		if(Position != NewPosition) {
-
-			if(MoveSoundTimer >= MoveSoundDelay) {
-				if(Type == _Object::PLAYER)
-					Audio.Play(new _AudioSource(Audio.GetBuffer(GetSample(SAMPLE_MOVE)), true));
-				else
-					Audio.Play(new _AudioSource(Audio.GetBuffer(GetSample(SAMPLE_MOVE))), Position);
-				MoveSoundTimer = 0;
-			}
-
 			int AltGridType = (Type == _Object::PLAYER) ? GRID_PLAYER : GRID_MONSTER;
 
 			// Update grid and position

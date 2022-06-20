@@ -67,7 +67,7 @@ class _Player : public _Entity {
 		void Render2D(const glm::ivec2 &Position);
 
 		void Update(double FrameTime) override;
-		void UpdateAnimation(double FrameTime) override;
+		void UpdateAnimation(double FrameTime, bool PlaySound=true) override;
 		void UpdateExperience(int64_t ExperienceGained) override;
 		void UpdateReloading();
 		void UpdateWeaponSwitch();
@@ -112,8 +112,7 @@ class _Player : public _Entity {
 		bool CanReload() const;
 
 		void SetColorIdentifier(const std::string &ColorIdentifier) { this->ColorIdentifier = ColorIdentifier; UpdateColor(); }
-		void SetTorsoAnimation(const _Animation *Animation);
-		void SetLegAnimation(const _Animation *Animation);
+		void SetTorsoAnimation(const _Animation *Value);
 		void SetCrouching(bool State);
 		void SetSprinting(bool State);
 		void SetUseRequested(bool Use) { UseRequested = Use; }
@@ -195,7 +194,7 @@ class _Player : public _Entity {
 		std::string SavePath;
 
 		// Animation
-		_Animation *LegAnimation;
+		ae::_Animation *LegAnimation;
 		std::string ColorIdentifier;
 		float LegDirection;
 		bool Crouching;

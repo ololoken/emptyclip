@@ -1,6 +1,5 @@
 identifier	reels					
 player_torso	player_onehand_walking	player_twohand_walking	player_melee	player_shootonehand	player_shoottwohand	player_dying
-player_legs	player_legs					
 crate0	crate	crate	crate			
 treasure0	treasure	treasure	treasure			
 testing0	testing_walking	testing_walking	testing_walking			
