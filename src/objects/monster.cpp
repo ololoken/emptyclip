@@ -19,7 +19,6 @@
 #include <objects/player.h>
 #include <stats.h>
 #include <map.h>
-#include <animation.h>
 #include <ae/random.h>
 #include <glm/gtx/norm.hpp>
 #include <glm/gtx/rotate_vector.hpp>
@@ -50,7 +49,7 @@ _Monster::~_Monster() {
 }
 
 // Constructor
-_Monster::_Monster(_MonsterTemplate &Monster, _Animation *Animation, const glm::vec2 &Position) :
+_Monster::_Monster(_MonsterTemplate &Monster, const glm::vec2 &Position) :
 	_Entity() {
 
 	Type = _Object::MONSTER;
@@ -82,7 +81,6 @@ _Monster::_Monster(_MonsterTemplate &Monster, _Animation *Animation, const glm::
 	}
 	MainWeaponType = Monster.WeaponType;
 	this->Position = LastPosition = Position;
-	*this->Animation = *Animation;
 	WeaponParticles = Monster.WeaponParticles;
 
 	ViewRangeFront *= ViewRangeFront;

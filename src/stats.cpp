@@ -16,14 +16,15 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 *******************************************************************************/
 #include <stats.h>
-#include <ae/random.h>
-#include <ae/assets.h>
-#include <gameassets.h>
-#include <constants.h>
-#include <map.h>
 #include <objects/object.h>
 #include <objects/weapon.h>
 #include <objects/monster.h>
+#include <ae/random.h>
+#include <ae/assets.h>
+#include <ae/animation.h>
+#include <gameassets.h>
+#include <constants.h>
+#include <map.h>
 #include <fstream>
 #include <sstream>
 #include <stdexcept>
@@ -54,10 +55,6 @@ void _Stats::Close() {
 	Items.clear();
 	Weapons.clear();
 	ItemGroups.clear();
-
-	for(const auto &Monster : Monsters)
-		GameAssets.UnloadAnimation(Monster.second.AnimationIdentifier);
-
 	Monsters.clear();
 }
 
@@ -597,7 +594,7 @@ void _Stats::LoadMonsters(const std::string &Path) {
 			throw std::runtime_error(std::string(__PRETTY_FUNCTION__) + " - Cannot find item group: " + Monster.ItemGroupIdentifier + " in " + Name);
 
 		// Check for animation
-		if(!GameAssets.IsAnimationLoaded(Monster.AnimationIdentifier))
+		if(ae::Assets.Animations.find(Monster.AnimationIdentifier) == ae::Assets.Animations.end())
 			throw std::runtime_error(std::string(__PRETTY_FUNCTION__) + " - Cannot find animation: " + Monster.AnimationIdentifier + " in " + Name);
 
 		// Check for samples
@@ -651,7 +648,8 @@ _Monster *_Stats::CreateMonster(const std::string &Identifier, const glm::vec2 &
 	AttackSampleTemplateStruct *AttackSample = GameAssets.GetAttackSampleTemplate(MonsterTemplate.SamplesIdentifier);
 
 	// Creates a monster
-	_Monster *Monster = new _Monster(MonsterTemplate, GameAssets.GetAnimation(MonsterTemplate.AnimationIdentifier), Position);
+	_Monster *Monster = new _Monster(MonsterTemplate, Position);
+	Monster->Animation->Reels = ae::Assets.Animations[MonsterTemplate.AnimationIdentifier];
 	for(int i = 0; i < SAMPLE_TYPES; i++)
 		Monster->Samples[i] = AttackSample->Samples[i];
 

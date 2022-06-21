@@ -143,8 +143,6 @@ void _Framework::Close() {
 	if(State)
 		State->Close();
 
-	GameAssets.UnloadAnimation("player_torso");
-
 	Stats.Close();
 	GameAssets.Close();
 	delete Console;
@@ -349,6 +347,7 @@ void _Framework::LoadAssets() {
 	ae::Assets.LoadTextureDirectory("textures/editor_repeat/", false, true, true);
 	ae::Assets.LoadTextureDirectory("textures/hud/", false, false, false);
 	ae::Assets.LoadTextureDirectory("textures/hud_repeat/", false, true, false);
+	ae::Assets.LoadTextureDirectory("textures/icons/", false, false, false);
 	ae::Assets.LoadTextureDirectory("textures/items/", false, false, true);
 	ae::Assets.LoadTextureDirectory("textures/menu/", false, false, false);
 	ae::Assets.LoadTextureDirectory("textures/particles/", false, false, false);
@@ -358,11 +357,8 @@ void _Framework::LoadAssets() {
 	GameAssets.LoadSoundGroups("tables/sound_groups.tsv");
 	GameAssets.LoadParticles("tables/particles.tsv");
 	GameAssets.LoadWeaponParticles("tables/weaponparticles.tsv");
-	GameAssets.LoadReelTable("tables/reels.tsv");
-	GameAssets.LoadAnimationTable("tables/animation.tsv");
-	ae::Assets.LoadAnimations("tables/animations.tsv", false);
-
-	GameAssets.LoadAnimation("player_torso", "textures/player/");
+	ae::Assets.LoadReels("tables/reels.tsv", false);
+	ae::Assets.LoadAnimations("tables/animations.tsv");
 
 	ae::Assets.LoadStyles("tables/styles.tsv");
 	ae::Assets.LoadUI("tables/ui.xml");

@@ -16,18 +16,18 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 *******************************************************************************/
 #include <menu.h>
+#include <objects/player.h>
 #include <ae/input.h>
 #include <ae/actions.h>
 #include <ae/texture.h>
 #include <ae/assets.h>
+#include <ae/graphics.h>
+#include <ae/animation.h>
+#include <ae/ui.h>
 #include <actiontype.h>
 #include <constants.h>
-#include <ae/graphics.h>
 #include <gameassets.h>
-#include <ae/ui.h>
-#include <objects/player.h>
 #include <config.h>
-#include <animation.h>
 #include <framework.h>
 #include <version.h>
 #include <states/play.h>
@@ -508,8 +508,8 @@ void _Menu::RefreshSaveSlots() {
 		_Player *Player = Save.GetPlayer(i);
 		if(Player) {
 			Player->UpdateSpeed(1.0f);
-			Player->SetLegAnimationPlayMode(PLAYING);
-			Player->Animation->SetPlayMode(PLAYING);
+			Player->SetLegAnimationPlayMode(ae::_Animation::PLAYING);
+			Player->Animation->Play(0);
 			SlotLabel->Text = Player->GetName();
 		}
 		else

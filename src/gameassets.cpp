@@ -16,6 +16,10 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 *******************************************************************************/
 #include <gameassets.h>
+#include <objects/monster.h>
+#include <objects/particle.h>
+#include <objects/player.h>
+#include <objects/weapon.h>
 #include <ae/assets.h>
 #include <ae/files.h>
 #include <ae/random.h>
@@ -25,11 +29,6 @@
 #include <ae/program.h>
 #include <ae/ui.h>
 #include <audio.h>
-#include <animation.h>
-#include <objects/monster.h>
-#include <objects/particle.h>
-#include <objects/player.h>
-#include <objects/weapon.h>
 #include <constants.h>
 #include <tinyxml2/tinyxml2.h>
 #include <stdexcept>
@@ -44,90 +43,6 @@ void _GameAssets::Init() {
 
 // Shutdown
 void _GameAssets::Close() {
-}
-
-// Loads the reels table
-void _GameAssets::LoadReelTable(const std::string &Path) {
-
-	// Load file
-	std::ifstream File(Path, std::ios::in);
-	if(!File)
-		throw std::runtime_error("Error loading: " + Path);
-
-	// Skip header
-	File.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-
-	// Read file
-	while(!File.eof() && File.peek() != EOF) {
-
-		std::string Identifier;
-		std::getline(File, Identifier, '\t');
-
-		_ReelTemplate ReelTemplate;
-		File >> ReelTemplate.PlaybackSpeed >> ReelTemplate.RepeatMode >> ReelTemplate.StartPosition;
-		File.ignore(1);
-		ReelTemplate.TextureFiles.clear();
-
-		// Read rest of line into buffer
-		std::string Line;
-		std::getline(File, Line, '\n');
-		std::stringstream Buffer(Line);
-
-		// Get textures
-		std::string TextureFile;
-		while(std::getline(Buffer, TextureFile, '\t')) {
-			if(TextureFile != "")
-				ReelTemplate.TextureFiles.push_back(TextureFile);
-		}
-
-		// Check for duplicates
-		if(IsReelLoaded(Identifier))
-			throw std::runtime_error(std::string(__PRETTY_FUNCTION__) + " - Duplicate entry: " + Identifier);
-
-		ReelTable[Identifier] = ReelTemplate;
-	}
-
-	File.close();
-}
-
-// Loads the animation table
-void _GameAssets::LoadAnimationTable(const std::string &Path) {
-	AnimationTemplateStruct AnimationTemplate;
-
-	// Load file
-	std::ifstream File(Path, std::ios::in);
-	if(!File)
-		throw std::runtime_error("Error loading: " + Path);
-
-	// Skip header
-	File.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-
-	// Read file
-	while(!File.eof() && File.peek() != EOF) {
-		std::string Identifier;
-		std::getline(File, Identifier, '\t');
-		AnimationTemplate.Identifiers.clear();
-
-		// Read rest of line into buffer
-		std::string Line;
-		std::getline(File, Line, '\n');
-		std::stringstream Buffer(Line);
-
-		// Get reels
-		std::string ReelIdentifier;
-		while(std::getline(Buffer, ReelIdentifier, '\t')) {
-			if(ReelIdentifier != "")
-				AnimationTemplate.Identifiers.push_back(ReelIdentifier);
-		}
-
-		// Check for duplicates
-		if(IsAnimationLoaded(Identifier))
-			throw std::runtime_error(std::string(__PRETTY_FUNCTION__) + " - Duplicate entry: " + Identifier);
-
-		AnimationTable[Identifier] = AnimationTemplate;
-	}
-
-	File.close();
 }
 
 // Load sounds
@@ -293,110 +208,15 @@ void _GameAssets::LoadWeaponParticles(const std::string &Path) {
 	File.close();
 }
 
-// Loads the reel from the given identifier
-void _GameAssets::LoadReel(const std::string &Identifier, const std::string &Path) {
-
-	auto ReelTableIterator = ReelTable.find(Identifier);
-	if(ReelTableIterator == ReelTable.end())
-		return;
-
-	auto ReelIterator = Reels.find(Identifier);
-	if(ReelIterator == Reels.end()) {
-		_Reel Reel;
-		Reel.StartPosition = ReelTableIterator->second.StartPosition;
-		Reel.RepeatMode = (RepeatType)(ReelTableIterator->second.RepeatMode);
-		Reel.FramePeriod = ReelTableIterator->second.PlaybackSpeed;
-
-		for(std::size_t i = 0; i < ReelTableIterator->second.TextureFiles.size(); i++) {
-			std::string ReelPath = Path + ReelTableIterator->second.TextureFiles[i];
-			ae::_Texture *Texture = new ae::_Texture(ReelPath, false, false, true, false);
-			if(!Texture)
-				throw std::runtime_error("Error loading: " + ReelPath);
-
-			Reel.Textures.push_back(Texture);
-		}
-
-		Reels[Identifier] = Reel;
-	}
-}
-
-// Loads the reels for an animation
-void _GameAssets::LoadAnimation(const std::string &Identifier, const std::string &Path) {
-
-	auto AnimationTableIterator = AnimationTable.find(Identifier);
-	if(AnimationTableIterator == AnimationTable.end())
-		return;
-
-	// Check if animation has already been loaded
-	auto AnimationIterator = Animations.find(Identifier);
-	if(AnimationIterator == Animations.end()) {
-		_Animation *Animation = new _Animation();
-
-		// Load reels
-		for(std::size_t i = 0; i < AnimationTableIterator->second.Identifiers.size(); i++) {
-			LoadReel(AnimationTableIterator->second.Identifiers[i], Path);
-
-			Animation->Reels.push_back(GetReel(AnimationTableIterator->second.Identifiers[i]));
-		}
-
-		Animation->ChangeReel(0);
-		Animations[Identifier] = Animation;
-	}
-}
-
-// Frees memory and textures used by a reel
-void _GameAssets::UnloadReel(const std::string &Identifier) {
-
-	auto ReelIterator = Reels.find(Identifier);
-	if(ReelIterator != Reels.end()) {
-		for(size_t i = 0; i < ReelIterator->second.Textures.size(); i++)
-			delete ReelIterator->second.Textures[i];
-
-		Reels.erase(ReelIterator);
-	}
-}
-
-// Frees memory and textures used by an animation
-void _GameAssets::UnloadAnimation(const std::string &Identifier) {
-
-	auto AnimationIterator = Animations.find(Identifier);
-	if(AnimationIterator == Animations.end())
-		return;
-
-	// Unload reels
-	auto AnimationTableIterator = AnimationTable.find(Identifier);
-	if(AnimationTableIterator != AnimationTable.end()) {
-		for(size_t i = 0; i < AnimationTableIterator->second.Identifiers.size(); i++)
-			UnloadReel(AnimationTableIterator->second.Identifiers[i]);
-	}
-
-	delete AnimationIterator->second;
-	Animations.erase(AnimationIterator);
-}
-
 bool _GameAssets::IsAttackSampleLoaded(const std::string &Identifier) { return AttackSampleTable.find(Identifier) != AttackSampleTable.end(); }
 bool _GameAssets::IsParticleLoaded(const std::string &Identifier) { return ParticleTable.find(Identifier) != ParticleTable.end(); }
 bool _GameAssets::IsWeaponParticleTemplateLoaded(const std::string &Identifier) { return WeaponParticleTable.find(Identifier) != WeaponParticleTable.end(); }
-bool _GameAssets::IsReelLoaded(const std::string &Identifier) { return ReelTable.find(Identifier) != ReelTable.end(); }
-bool _GameAssets::IsAnimationLoaded(const std::string &Identifier) { return AnimationTable.find(Identifier) != AnimationTable.end(); }
 
-_Reel *_GameAssets::GetReel(const std::string &Identifier) {
-	if(Reels.find(Identifier) == Reels.end())
-		return nullptr;
-
-	return &Reels[Identifier];
-}
 AttackSampleTemplateStruct *_GameAssets::GetAttackSampleTemplate(const std::string &Identifier) {
 	if(AttackSampleTable.find(Identifier) == AttackSampleTable.end())
 		return nullptr;
 
 	return &AttackSampleTable[Identifier];
-}
-_Animation *_GameAssets::GetAnimation(const std::string &Identifier) {
-	if(Animations.find(Identifier) == Animations.end())
-		return nullptr;
-
-	return Animations[Identifier];
 }
 _ParticleTemplate *_GameAssets::GetParticleTemplate(const std::string &Identifier) {
 	if(ParticleTable.find(Identifier) == ParticleTable.end())

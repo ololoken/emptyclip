@@ -19,9 +19,11 @@
 #include <objects/monster.h>
 #include <ae/graphics.h>
 #include <ae/random.h>
+#include <ae/assets.h>
+#include <ae/program.h>
+#include <ae/animation.h>
 #include <audio.h>
 #include <map.h>
-#include <animation.h>
 #include <constants.h>
 #include <iostream>
 #include <glm/gtx/norm.hpp>
@@ -66,21 +68,19 @@ _Entity::_Entity() :
 	AttackRequestType(0),
 	ExperienceGiven(0) {
 
-	Animation = new _Animation();
-	Map = nullptr;
-
 	for(int i = 0; i < WEAPON_TYPES; i++)
 		WeaponParticleOffset[i] = glm::vec2(0.0f, 0.0f);
 
 	for(int i = 0; i < SAMPLE_TYPES; i++)
 		Samples[i] = -1;
+
+	Animation = new ae::_Animation(nullptr);
+	Map = nullptr;
 }
 
 // Destructor
 _Entity::~_Entity() {
-
-	if(Animation)
-		delete Animation;
+	delete Animation;
 
 	StopAudio();
 }
@@ -184,78 +184,95 @@ void _Entity::UpdateAnimation(double FrameTime, bool PlaySound) {
 	switch(Action) {
 		case ACTION_IDLE:
 			if(!PositionChanged) {
-				Animation->SetPlayMode(STOPPED);
-				SetLegAnimationPlayMode(STOPPED);
+				SetLegAnimationPlayMode(ae::_Animation::STOPPED);
+				Animation->Stop();
 			}
 			else {
-				Action = ACTION_MOVING;
-				Animation->ChangeReel(WalkingAnimation);
-				Animation->SetPlayMode(PLAYING);
-				SetLegAnimationPlayMode(PLAYING);
+				Animation->Play(WalkingAnimation, MovementSpeed);
+				SetLegAnimationPlayMode(ae::_Animation::PLAYING);
 				SetAnimationPlaybackSpeedFactor();
+
+				Action = ACTION_MOVING;
 			}
 		break;
 		case ACTION_MOVING:
 			if(!PositionChanged) {
+				Animation->Stop();
+				SetLegAnimationPlayMode(ae::_Animation::STOPPED);
+
 				Action = ACTION_IDLE;
-				Animation->SetPlayMode(STOPPED);
-				SetLegAnimationPlayMode(STOPPED);
 			}
 		break;
 		case ACTION_STARTMELEE:
-			Action = ACTION_MELEE;
-			Animation->ChangeReel(MeleeAnimation);
+			Animation->Stop();
+			Animation->Play(MeleeAnimation);
 			if(Type == _Object::PLAYER)
-				Animation->SetFramePeriod(FirePeriod[WEAPONATTACK_MELEE]);
-			Animation->SetPlayMode(PLAYING);
-			SetLegAnimationPlayMode(STOPPED);
+				Animation->FramePeriod = FirePeriod[WEAPONATTACK_MELEE] / (Animation->Reels[MeleeAnimation]->EndFrame + 1);
+			SetLegAnimationPlayMode(ae::_Animation::STOPPED);
+
+			Action = ACTION_MELEE;
 			MoveState = MOVE_NONE;
 		break;
 		case ACTION_MELEE:
-			if(Animation->PlayMode == STOPPED) {
-				Animation->ChangeReel(WalkingAnimation);
+			if(Animation->IsStopped()) {
+				Animation->Stop();
+				Animation->Play(WalkingAnimation, MovementSpeed);
 				SetAnimationPlaybackSpeedFactor();
+
 				Action = ACTION_IDLE;
 				AttackMade = true;
 			}
 		break;
 		case ACTION_STARTSHOOT:
-			Action = ACTION_SHOOT;
-			if(GetWeaponType() == WEAPON_PISTOL)
-				Animation->ChangeReel(ShootingOnehandAnimation);
-			else
-				Animation->ChangeReel(ShootingTwohandAnimation);
+			if(GetWeaponType() == WEAPON_PISTOL) {
+				Animation->Stop();
+				Animation->Play(ShootingOnehandAnimation);
+			}
+			else {
+				Animation->Stop();
+				Animation->Play(ShootingTwohandAnimation);
+			}
 
-			Animation->SetPlayMode(PLAYING);
+			Action = ACTION_SHOOT;
 			AttackMade = true;
 		break;
 		case ACTION_SHOOT:
-			if(Animation->PlayMode == STOPPED) {
-				Action = ACTION_IDLE;
-				Animation->ChangeReel(WalkingAnimation);
+			if(Animation->IsStopped()) {
+				Animation->Stop();
+				Animation->Play(WalkingAnimation, MovementSpeed);
 				SetAnimationPlaybackSpeedFactor();
+
+				Action = ACTION_IDLE;
 			}
 
 			if(PositionChanged)
-				SetLegAnimationPlayMode(PLAYING);
+				SetLegAnimationPlayMode(ae::_Animation::PLAYING);
 			else
-				SetLegAnimationPlayMode(STOPPED);
+				SetLegAnimationPlayMode(ae::_Animation::STOPPED);
 		break;
 		case ACTION_STARTDEATH:
-			Action = ACTION_DYING;
-			Animation->ChangeReel(DyingAnimation);
-			Animation->SetPlayMode(PLAYING);
-			SetLegAnimationPlayMode(STOPPED);
+			Animation->Stop();
+			Animation->Play(DyingAnimation);
+			SetLegAnimationPlayMode(ae::_Animation::STOPPED);
 			MoveState = MOVE_NONE;
 			IncurDeathPenalty();
+
+			Action = ACTION_DYING;
 		break;
 		case ACTION_DYING:
-			if(Animation->PlayMode == STOPPED)
+			if(Animation->IsStopped())
 				Active = false;
 		break;
 	}
 
+	int LastFrame = Animation->Frame;
 	Animation->Update(FrameTime);
+
+	// Play move sound on first and last frame of animation
+	if(Animation->Reel == (size_t)WalkingAnimation && PositionChanged && Action == ACTION_MOVING && PlaySound && LastFrame != Animation->Frame && (Animation->Frame == 0 || Animation->Frame == Animation->Reels[Animation->Reel]->EndFrame)) {
+		Audio.Play(new _AudioSource(Audio.GetBuffer(GetSample(SAMPLE_MOVE)), true));
+	}
+
 }
 
 // Updates the entity's accuracy according to the weapon's recoil
@@ -396,9 +413,18 @@ void _Entity::Move() {
 // Draws the object
 void _Entity::Render(double BlendFactor) {
 	ae::Graphics.SetColor(Color);
-
 	glm::vec2 DrawPosition(Position * (float)BlendFactor + LastPosition * (float)(1.0f - BlendFactor));
-	ae::Graphics.DrawSprite(glm::vec3(DrawPosition, PositionZ), Animation->GetCurrentFrame(), Rotation, glm::vec2(Scale));
+
+	ae::Graphics.SetColor(Color);
+	ae::Assets.Programs["pos_uv"]->ResetTextureTransform();
+	ae::Graphics.DrawAnimationFrame(
+		glm::vec3(DrawPosition, PositionZ),
+		Animation->Reels[Animation->Reel]->Texture,
+		glm::vec4(Animation->TextureCoords),
+		Rotation,
+		glm::vec2(Scale)
+	);
+
 }
 
 // Updates the Entity's maximum health

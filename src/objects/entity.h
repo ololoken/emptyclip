@@ -128,8 +128,7 @@ class _Entity : public _Object {
 		void StopAudio();
 
 		// Graphics
-		_Animation *Animation;
-		ae::_Animation *NewAnimation;
+		ae::_Animation *Animation;
 		glm::vec2 WeaponParticleOffset[WEAPON_TYPES];
 
 		// Audio

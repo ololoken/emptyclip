@@ -1,2 +1,15 @@
-identifier	texture	frame width	frame height	start frame	end frame	default frame	repeat type
-player_walking	textures/animations/human_legs.png	64	64	0	4	2	2
+identifier	reels...					
+test	test	test	test			
+treasure	treasure	treasure	treasure			
+crate	crate	crate	crate			
+player	player_move_1h	player_move_2h	player_melee	player_shoot_1h	player_shoot_2h	player_die
+zombie	zombie_move	zombie_melee	zombie_die			
+bat	bat_move	bat_melee	bat_die			
+skeleton	skeleton_move	skeleton_melee	skeleton_die			
+spider	spider_move	spider_melee	spider_die			
+beast	beast_move	beast_melee	beast_die			
+fighter	fighter_move	fighter_melee	fighter_die			
+dog	dog_move	dog_melee	dog_die			
+gunner	gunner_move	gunner_shoot	gunner_die			
+demon	demon_move	demon_melee	demon_die			
+alien	alien_move	alien_shoot	alien_die			

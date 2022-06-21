@@ -19,26 +19,16 @@
 
 // Libraries
 #include <objects/templates.h>
-#include <animation.h>
 #include <glm/vec2.hpp>
 #include <string>
 #include <unordered_map>
 #include <vector>
 
 // Forward Declarations
-class _Animation;
 class _Particle;
 class _Entity;
 class _Player;
-struct _Reel;
 struct _ParticleTemplate;
-
-// Stores information about a collection of reel identifiers
-struct AnimationTemplateStruct {
-	AnimationTemplateStruct() { }
-
-	std::vector<std::string> Identifiers;
-};
 
 // Stores information about a collection of sound samples used for attacking
 struct AttackSampleTemplateStruct {
@@ -55,46 +45,27 @@ class _GameAssets {
 		void Init();
 		void Close();
 
-		void LoadReelTable(const std::string &Path);
-		void LoadAnimationTable(const std::string &Path);
 		void LoadSoundGroups(const std::string &Path);
 		void LoadParticles(const std::string &Path);
 		void LoadSounds(const std::string &Path, const std::string &SamplePath);
 
-		void LoadReel(const std::string &Identifier, const std::string &Path);
-		void LoadAnimation(const std::string &Identifier, const std::string &Path);
 		void LoadWeaponParticles(const std::string &Path);
 		void LoadMonsterAnimation();
 
 		bool IsAttackSampleLoaded(const std::string &Identifier);
 		bool IsParticleLoaded(const std::string &Identifier);
 		bool IsWeaponParticleTemplateLoaded(const std::string &Identifier);
-		bool IsReelLoaded(const std::string &Identifier);
-		bool IsAnimationLoaded(const std::string &Identifier);
 
-		void UnloadReel(const std::string &Identifier);
-		void UnloadAnimation(const std::string &Identifier);
-
-		_Reel *GetReel(const std::string &Identifier);
 		AttackSampleTemplateStruct *GetAttackSampleTemplate(const std::string &Identifier);
-		_Animation *GetAnimation(const std::string &Identifier);
 		_ParticleTemplate *GetParticleTemplate(const std::string &Identifier);
 		_WeaponParticleTemplate *GetWeaponParticleTemplate(const std::string &Identifer);
-
-		// Data
-		std::unordered_map<std::string, _Animation *> Animations;
 
 	private:
 
 		// Tables
-		std::unordered_map<std::string, _ReelTemplate> ReelTable;
-		std::unordered_map<std::string, AnimationTemplateStruct> AnimationTable;
 		std::unordered_map<std::string, AttackSampleTemplateStruct> AttackSampleTable;
 		std::unordered_map<std::string, _ParticleTemplate> ParticleTable;
 		std::unordered_map<std::string, _WeaponParticleTemplate> WeaponParticleTable;
-
-		// Data
-		std::unordered_map<std::string, _Reel> Reels;
 };
 
 extern _GameAssets GameAssets;

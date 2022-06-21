@@ -25,6 +25,7 @@
 #include <ae/ui.h>
 #include <ae/assets.h>
 #include <ae/program.h>
+#include <ae/animation.h>
 #include <objects/monster.h>
 #include <objects/weapon.h>
 #include <objects/player.h>
@@ -33,7 +34,6 @@
 #include <map.h>
 #include <events.h>
 #include <menu.h>
-#include <animation.h>
 #include <config.h>
 #include <constants.h>
 #include <stats.h>
@@ -1110,7 +1110,8 @@ void _EditorState::LoadMonsterButtons() {
 		}
 		else {
 			_MonsterTemplate &MonsterTemplate = Stats.Monsters.at(Map->MonsterSet[i]);
-			Icons.push_back(_Brush(Map->MonsterSet[i], MonsterTemplate.Name, GameAssets.Animations[MonsterTemplate.AnimationIdentifier]->GetStartPositionFrame(), MonsterTemplate.Color, _Object::MONSTER));
+			const ae::_Texture *MonsterIcon = ae::Assets.Textures["textures/icons/" + MonsterTemplate.AnimationIdentifier + ".png"];
+			Icons.push_back(_Brush(Map->MonsterSet[i], MonsterTemplate.Name, MonsterIcon, MonsterTemplate.Color, _Object::MONSTER));
 		}
 	}
 
@@ -1327,7 +1328,9 @@ void _EditorState::DrawBrush() {
 		ae::Assets.Programs["ortho_pos_uv"]->ResetTextureTransform();
 		ae::Graphics.SetProgram(ae::Assets.Programs["ortho_pos_uv"]);
 		ae::Graphics.SetColor(IconColor);
-		ae::Graphics.DrawSprite(glm::vec3((float)ae::Graphics.CurrentSize.x - 112, (float)ae::Graphics.CurrentSize.y - 84, 0.0f), IconTexture, IconRotation * IconScaleX, glm::vec2(IconScaleX * EDITOR_PALETTE_SELECTEDSIZE * 2, EDITOR_PALETTE_SELECTEDSIZE * 2));
+		glm::vec3 DrawPosition = glm::vec3((float)ae::Graphics.CurrentSize.x - 112, (float)ae::Graphics.CurrentSize.y - 84, 0.0f);
+		glm::vec2 IconScale = glm::vec2(IconScaleX * EDITOR_PALETTE_SELECTEDSIZE * 2, EDITOR_PALETTE_SELECTEDSIZE * 2);
+		ae::Graphics.DrawSprite(DrawPosition, IconTexture, IconRotation * IconScaleX, IconScale);
 	}
 }
 
@@ -1340,7 +1343,7 @@ void _EditorState::DrawObject(float OffsetX, float OffsetY, const _ObjectSpawn *
 	switch(Object->Type) {
 		case _Object::MONSTER: {
 			_MonsterTemplate &Monster = Stats.Monsters.at(Object->Identifier);
-			Texture = GameAssets.GetAnimation(Monster.AnimationIdentifier)->GetStartPositionFrame();
+			Texture = ae::Assets.Textures["textures/icons/" + Monster.AnimationIdentifier + ".png"];
 			Color = Monster.Color;
 			Scale = Monster.Scale;
 			Depth = OBJECT_Z;

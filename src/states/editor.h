@@ -37,6 +37,7 @@ namespace ae {
 	class _Camera;
 	class _Element;
 	class _Font;
+	struct _Reel;
 }
 
 // Enumerations

@@ -383,10 +383,6 @@ bool _Map::LoadMonsterSet(const std::string &String) {
 
 	File.close();
 
-	// Load the animation textures
-	for(size_t i = 0; i < MonsterSet.size(); i++)
-		GameAssets.LoadAnimation(Stats.Monsters.at(MonsterSet[i]).AnimationIdentifier, "textures/monsters/");
-
 	MonsterSetID = String;
 
 	return true;

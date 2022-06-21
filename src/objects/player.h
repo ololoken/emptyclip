@@ -112,7 +112,6 @@ class _Player : public _Entity {
 		bool CanReload() const;
 
 		void SetColorIdentifier(const std::string &ColorIdentifier) { this->ColorIdentifier = ColorIdentifier; UpdateColor(); }
-		void SetTorsoAnimation(const _Animation *Value);
 		void SetCrouching(bool State);
 		void SetSprinting(bool State);
 		void SetUseRequested(bool Use) { UseRequested = Use; }
