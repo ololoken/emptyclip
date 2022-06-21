@@ -575,7 +575,7 @@ void _Stats::LoadMonsters(const std::string &Path) {
 		std::getline(File, ColorName, '\t');
 
 		File >> Monster.Level >> Monster.Health >> Monster.DamageBlock >> Monster.BehaviorType >> Monster.ViewRange >> Monster.ExperienceGiven
-			>> Monster.MovementSpeed >> Monster.Radius >> Monster.Scale >> Monster.CurrentSpeed >> Monster.Accuracy
+			>> Monster.MovementSpeed >> Monster.Radius >> Monster.Scale >> Monster.Accuracy
 			>> Monster.AttackRange >> Monster.MinDamage >> Monster.MaxDamage >> Monster.FirePeriod >> Monster.WeaponType;
 		File.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 

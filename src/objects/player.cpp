@@ -138,7 +138,7 @@ void _Player::Reset() {
 	UsePeriod = PLAYER_USEPERIOD;
 	ZoomScale = PLAYER_ZOOMSCALE;
 	LegDirection = 0.0f;
-	MovementSpeed = PLAYER_MOVEMENTSPEED;
+	MovementSpeed = 0.0f;
 	MoveState = MOVE_NONE;
 	WeaponSwitchTimer = ReloadTimer = UseTimer = MedkitTimer = 0;
 	WeaponSwitchFrom = -1;
@@ -414,15 +414,14 @@ void _Player::Update(double FrameTime) {
 	ReloadTimer += FrameTime;
 	UseTimer += FrameTime;
 	MedkitTimer += FrameTime;
-
 	if(PlayingTimer > 1.0) {
 		TimePlayed++;
 		PlayingTimer -= 1.0;
 	}
 
 	// Update stamina
-	if(!IsDying())
-		Stamina += PLAYER_STAMINAREGEN * StaminaRegenModifier;
+	if(!IsDying() && !IsSprinting())
+		Stamina += PLAYER_STAMINAREGEN * StaminaRegenModifier * FrameTime;
 
 	if(Stamina > MaxStamina)
 	   Stamina = MaxStamina;
@@ -458,10 +457,10 @@ void _Player::Update(double FrameTime) {
 		SetMedkitRequested(false);
 	}
 
-	Move();
+	Move(FrameTime);
 
 	if(Stamina > 0.0f && PositionChanged && IsSprinting()) {
-		Stamina -= PLAYER_SPRINTSTAMINA;
+		Stamina -= PLAYER_SPRINTSTAMINA * FrameTime;
 		if(Stamina < 0.0f) {
 			Stamina = 0.0f;
 			SetSprinting(false);
@@ -524,11 +523,11 @@ void _Player::AdjustLegDirection(float Destination) {
 
 	// Get deltas
 	if(Distance < -180.0f)
-		Adjust = -(Distance + 180.0f) / PLAYER_LEGCHANGEFACTOR;
+		Adjust = -(Distance + 180.0f) * PLAYER_LEGCHANGEFACTOR;
 	else if(Distance > 180.0f)
-		Adjust = -(Distance - 180.0f) / PLAYER_LEGCHANGEFACTOR;
+		Adjust = -(Distance - 180.0f) * PLAYER_LEGCHANGEFACTOR;
 	else
-		Adjust = Distance / PLAYER_LEGCHANGEFACTOR;
+		Adjust = Distance * PLAYER_LEGCHANGEFACTOR;
 
 	// Update leg
 	if(std::abs(Adjust) < 0.1f)

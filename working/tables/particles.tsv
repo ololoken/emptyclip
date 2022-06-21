@@ -1,15 +1,15 @@
 identifier	texture	color	font	type	count	lifetime	direction min	direction max	turn speed min	turn speed max	velocity scale min	velocity scale max	acceleration scale	size min	size max	z deviation	scale aspect	alpha speed
 gun_fire0	textures/particles/bullet_fire0.png			0	1	0.02	0	0	0	0	0	0	0	0.2	0.2	0	1	0
 gun_fire1	textures/particles/bullet_fire0.png			0	1	0.02	0	0	0	0	0	0	0	0.35	0.35	0	1	0
-gun_smoke0	textures/particles/smoke0.png			0	2	1.5	0	359	-1.7	1.7	0	0.002	-0.00333	0.1	0.3	0	1	-0.0133
-bullet_spark0	textures/particles/bullet_spark0.png			0	1	0.15	90	270	0	0	0.22	0.2222	-0.1111	0.2	0.4	0	1	-0.1111
+gun_smoke0	textures/particles/smoke0.png			0	2	1.5	0	359	-100	100	0	0.12	-0.2	0.1	0.3	0	1	-0.8
+bullet_spark0	textures/particles/bullet_spark0.png			0	1	0.15	90	270	0	0	13	13	-6.6	0.2	0.4	0	1	-6.7
 bullet_hole0	textures/particles/bullet_hole0.png			2	1	0	0	359	0	0	0	0	0	0.05	0.1	0.2	1	0
 plasma_fire0	textures/particles/plasma_spark0.png			0	1	0.02	0	0	0	0	0	0	0	0.5	0.7	0	1	0
-plasma_smoke0	textures/particles/plasma_smoke0.png			0	1	2	0	359	0	0	0.033	0.0533	-0.0133	0.05	0.1	0	1	-0.00833
-plasma_spark0	textures/particles/plasma_spark0.png			0	1	0.5	135	225	0	0	0.033	0.133	-0.0667	0.05	0.1	0	1	-0.0333
-plasma_hole0	textures/particles/plasma_spark0.png			2	1	0	0	359	0	0	0	0	0	0.1	0.15	0.2	1	-0.00833
+plasma_smoke0	textures/particles/plasma_smoke0.png			0	1	2	0	359	0	0	2	3.2	-0.8	0.05	0.1	0	1	-0.5
+plasma_spark0	textures/particles/plasma_spark0.png			0	1	0.5	135	225	0	0	0.033	0.133	-4	0.05	0.1	0	1	-2
+plasma_hole0	textures/particles/plasma_spark0.png			2	1	0	0	359	0	0	0	0	0	0.1	0.15	0.2	1	-0.5
 blood0	textures/particles/blood0.png			1	1	0	0	359	0	0	0	0	0	0.5	1.25	0	1	0
-bloodspurt0	textures/particles/bloodspurt0.png			0	2	0.5	-40	40	0	0	0.11	0.1111	-0.04444	0.1	0.3	0	1	-0.0222
-smoke0	textures/particles/smoke0.png			0	10	1.5	0	359	-8.3	8.3	0.01	0.02	0	1	1.5	0	1	-0.0133
-tracer0	textures/particles/bullet_spark0.png			0	1	2	0	0	0	0	1.5	1.5	0	5	5	0	0.02	0
-damage0			hud_damage	3	1	1	0	0	0	0	0.001	0.001	0	1	1	0	1	-0.02
+bloodspurt0	textures/particles/bloodspurt0.png			0	2	0.5	-40	40	0	0	6.6	6.6	-2.6	0.1	0.3	0	1	-1.3
+smoke0	textures/particles/smoke0.png			0	10	1.5	0	359	-500	500	0.6	1.2	0	1	1.5	0	1	-0.8
+tracer0	textures/particles/bullet_spark0.png			0	1	2	0	0	0	0	90	90	0	5	5	0	0.02	0
+damage0			hud_damage	3	1	1	0	0	0	0	0.06	0.06	0	1	1	0	1	-1.2

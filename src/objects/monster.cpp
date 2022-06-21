@@ -57,7 +57,7 @@ _Monster::_Monster(_MonsterTemplate &Monster, const glm::vec2 &Position) :
 	// Monster stats
 	Name = Monster.Name;
 	Color = Monster.Color;
-	MovementSpeed = Monster.MovementSpeed / (Monster.CurrentSpeed / 16.6666f);
+	MovementSpeed = Monster.MovementSpeed;
 	Radius = Monster.Radius;
 	Scale = Monster.Scale;
 	Recoil = 0;
@@ -311,7 +311,7 @@ void _Monster::UpdateMonster(double FrameTime, _Player *Player) {
 		}
 
 		if(!(CurrentActions & AI_ATTACKING))
-			Move();
+			Move(FrameTime);
 	}
 }
 

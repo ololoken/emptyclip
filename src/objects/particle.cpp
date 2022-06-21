@@ -66,10 +66,10 @@ _Particle::~_Particle() {
 
 // Update
 void _Particle::Update(double FrameTime) {
-	Position += Velocity;
-	Velocity += Acceleration;
-	Rotation += TurnSpeed;
-	Color.a += AlphaSpeed;
+	Position += Velocity * (float)FrameTime;
+	Velocity += Acceleration * (float)FrameTime;
+	Rotation += TurnSpeed * FrameTime;
+	Color.a += AlphaSpeed * FrameTime;
 	Lifetime -= FrameTime;
 
 	if(Color.a < 0.0f)

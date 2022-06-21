@@ -289,7 +289,7 @@ void _Entity::UpdateRecoil() {
 }
 
 // Moves the object with collision detection
-void _Entity::Move() {
+void _Entity::Move(double FrameTime) {
 	UpdateSpeed(1.0f);
 	if(MoveState == MOVE_NONE)
 		PositionChanged = false;
@@ -352,9 +352,9 @@ void _Entity::Move() {
 
 		// Moving backwards
 		if(glm::dot(NewDirection, Direction) < 0)
-			UpdateSpeed(PLAYER_BACKWARDSPEED);
+			UpdateSpeed(PLAYER_BACKWARDSPEEDFACTOR);
 
-		float Speed = MovementSpeed * MovementModifier;
+		float Speed = MovementSpeed * MovementModifier * FrameTime;
 		NewDirection *= Speed;
 
 		// Get a list of entities that the object is colliding with

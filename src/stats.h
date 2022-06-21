@@ -68,7 +68,7 @@ struct _MonsterTemplate {
 	_WeaponParticleTemplate *WeaponParticles;
 	std::string Name, AnimationIdentifier, SamplesIdentifier, ItemGroupIdentifier;
 	float Radius, Scale, MovementSpeed, Accuracy, ViewRange, AttackRange;
-	int Level, Health, DamageBlock, CurrentSpeed, MinDamage, MaxDamage, BehaviorType, WeaponType;
+	int Level, Health, DamageBlock, MinDamage, MaxDamage, BehaviorType, WeaponType;
 	int64_t ExperienceGiven;
 	double FirePeriod;
 	std::string FireSample, MissSample, RicochetSample, EmptySample, ReloadSample, HitSample, DeathSample;
