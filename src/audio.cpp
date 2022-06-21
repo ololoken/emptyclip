@@ -16,6 +16,7 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 *******************************************************************************/
 #include <audio.h>
+#include <ae/audio.h>
 #include <vorbis/vorbisfile.h>
 #include <vector>
 #include <stdexcept>
@@ -108,13 +109,14 @@ bool _Audio::LoadBuffer(const std::string &Name, const std::string &File, float 
 	vorbis_info *Info = ov_info(&VorbisStream, -1);
 
 	// Create new buffer
-	_AudioBuffer AudioBuffer;
+	ae::_Sound *Sound = new ae::_Sound();
+	int Format;
 	switch(Info->channels) {
 		case 1:
-			AudioBuffer.Format = AL_FORMAT_MONO16;
+			Format = AL_FORMAT_MONO16;
 		break;
 		case 2:
-			AudioBuffer.Format = AL_FORMAT_STEREO16;
+			Format = AL_FORMAT_STEREO16;
 		break;
 		default:
 			printf("AudioClass::LoadBuffer - Unsupported # of channels for %s\n", Path.c_str());
@@ -123,8 +125,8 @@ bool _Audio::LoadBuffer(const std::string &Name, const std::string &File, float 
 	}
 
 	// Set volume
-	AudioBuffer.Volume = Volume;
-	AudioBuffer.Limit = Limit;
+	Sound->Volume = Volume;
+	Sound->Limit = Limit;
 
 	// Alloc some memory for the samples
 	std::vector<char> Data;
@@ -139,20 +141,20 @@ bool _Audio::LoadBuffer(const std::string &Name, const std::string &File, float 
 	} while(BytesRead > 0);
 
 	// Create buffer
-	alGenBuffers(1, &AudioBuffer.ID);
-	alBufferData(AudioBuffer.ID, AudioBuffer.Format, &Data[0], (ALsizei)Data.size(), Info->rate);
+	alGenBuffers(1, &Sound->ID);
+	alBufferData(Sound->ID, Format, &Data[0], (ALsizei)Data.size(), Info->rate);
 
 	// Close vorbis file
 	ov_clear(&VorbisStream);
 
 	// Add to map
-	Buffers[Name] = AudioBuffer;
+	Buffers[Name] = Sound;
 
 	return true;
 }
 
 // Get a loaded buffer
-const _AudioBuffer *_Audio::GetBuffer(const std::string &Name) {
+const ae::_Sound *_Audio::GetBuffer(const std::string &Name) {
 	if(!Enabled)
 		return nullptr;
 
@@ -161,7 +163,7 @@ const _AudioBuffer *_Audio::GetBuffer(const std::string &Name) {
 	if(BuffersIterator == Buffers.end())
 		return nullptr;
 
-	return &BuffersIterator->second;
+	return BuffersIterator->second;
 }
 
 // Free all loaded buffers
@@ -171,9 +173,8 @@ void _Audio::FreeAllBuffers() {
 
 	// Iterate over map
 	for(auto BuffersIterator = Buffers.begin(); BuffersIterator != Buffers.end(); ++BuffersIterator) {
-		_AudioBuffer &Buffer = BuffersIterator->second;
-
-		alDeleteBuffers(1, &Buffer.ID);
+		const ae::_Sound *Buffer = BuffersIterator->second;
+		delete Buffer;
 	}
 
 	Buffers.clear();
@@ -186,19 +187,19 @@ void _Audio::Play(_AudioSource *AudioSource, const glm::vec2 &Position) {
 		return;
 	}
 
-	if(!AudioSource->AudioBuffer) {
+	if(!AudioSource->Sound) {
 		delete AudioSource;
 		return;
 	}
 
 	float DistanceSquared = glm::distance2(Position, GetListenerPosition());
 	if(AudioSource->IsRelative() || DistanceSquared <= MAX_AUDIO_DISTANCE_SQUARED) {
-		SourcesPlaying[AudioSource->AudioBuffer->ID].Count++;
+		SourcesPlaying[AudioSource->Sound->ID].Count++;
 
-		if(AudioSource->AudioBuffer->Limit > 0 && SourcesPlaying[AudioSource->AudioBuffer->ID].Count > AudioSource->AudioBuffer->Limit) {
+		if(AudioSource->Sound->Limit > 0 && SourcesPlaying[AudioSource->Sound->ID].Count > AudioSource->Sound->Limit) {
 			for(auto Iterator = Sources.begin(); Iterator != Sources.end(); ++Iterator) {
 				_AudioSource *Source = *Iterator;
-				if(Source->IsPlaying() && Source->AudioBuffer->ID == AudioSource->AudioBuffer->ID) {
+				if(Source->IsPlaying() && Source->Sound->ID == AudioSource->Sound->ID) {
 					alSourceStop(Source->ID);
 					break;
 				}
@@ -237,9 +238,9 @@ void _Audio::Update(double FrameTime) {
 
 		// Delete source
 		if(NeedsDelete) {
-			SourcesPlaying[Source->AudioBuffer->ID].Count--;
-			if(SourcesPlaying[Source->AudioBuffer->ID].Count <= 0)
-				SourcesPlaying.erase(Source->AudioBuffer->ID);
+			SourcesPlaying[Source->Sound->ID].Count--;
+			if(SourcesPlaying[Source->Sound->ID].Count <= 0)
+				SourcesPlaying.erase(Source->Sound->ID);
 			delete Source;
 			Iterator = Sources.erase(Iterator);
 		}
@@ -286,8 +287,8 @@ void _Audio::SetGain(float Value) {
 }
 
 // Create an audio source
-_AudioSource::_AudioSource(const _AudioBuffer *AudioBuffer, bool Relative, bool Loop, float MinGain, float MaxGain, float ReferenceDistance, float RollOff) :
-	AudioBuffer(AudioBuffer) {
+_AudioSource::_AudioSource(const ae::_Sound *AudioBuffer, bool Relative, bool Loop, float MinGain, float MaxGain, float ReferenceDistance, float RollOff) :
+	Sound(AudioBuffer) {
 
 	// Create source
 	alGenSources(1, &ID);
@@ -306,8 +307,6 @@ _AudioSource::_AudioSource(const _AudioBuffer *AudioBuffer, bool Relative, bool 
 
 // Free audio source
 _AudioSource::~_AudioSource() {
-
-	// Create source
 	alDeleteSources(1, &ID);
 }
 

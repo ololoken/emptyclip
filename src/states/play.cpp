@@ -172,7 +172,7 @@ bool _PlayState::HandleAction(int InputType, std::size_t Action, int Value) {
 
 					// Play sound
 					if(Player->CanAttack(WEAPONATTACK_MAIN) && !Player->HasAmmo()) {
-						const _AudioBuffer *AudioBuffer = Audio.GetBuffer(Player->GetSample(SAMPLE_EMPTY));
+						const ae::_Sound *AudioBuffer = Audio.GetBuffer(Player->GetSample(SAMPLE_EMPTY));
 						if(AudioBuffer)
 							Audio.Play(new _AudioSource(AudioBuffer), Player->Position);
 					}
@@ -606,7 +606,7 @@ void _PlayState::EntityAttack(_Entity *Attacker, int GridType) {
 	_Hit Hit;
 	if(WeaponType != WEAPON_MELEE) {
 		GenerateBulletEffects(Attacker, -1, Hit);
-		const _AudioBuffer *AudioBuffer = Audio.GetBuffer(Attacker->GetSample(SAMPLE_FIRE));
+		const ae::_Sound *AudioBuffer = Audio.GetBuffer(Attacker->GetSample(SAMPLE_FIRE));
 		if(AudioBuffer)
 			Audio.Play(new _AudioSource(AudioBuffer), Attacker->Position);
 	}
@@ -655,7 +655,7 @@ void _PlayState::EntityAttack(_Entity *Attacker, int GridType) {
 			break;
 			case HIT_WALL:
 				if(!PlayedHitWallSound) {
-					const _AudioBuffer *AudioBuffer = Audio.GetBuffer(Attacker->GetSample(SAMPLE_RICOCHET));
+					const ae::_Sound *AudioBuffer = Audio.GetBuffer(Attacker->GetSample(SAMPLE_RICOCHET));
 					if(AudioBuffer)
 						Audio.Play(new _AudioSource(AudioBuffer), Hit.Position);
 					PlayedHitWallSound = true;
@@ -686,7 +686,7 @@ void _PlayState::EntityAttack(_Entity *Attacker, int GridType) {
 					CreateItemDrop(Hit.Object);
 
 					// Dying sound
-					const _AudioBuffer *AudioBuffer = Audio.GetBuffer(Hit.Object->GetSample(SAMPLE_DEATH));
+					const ae::_Sound *AudioBuffer = Audio.GetBuffer(Hit.Object->GetSample(SAMPLE_DEATH));
 					if(AudioBuffer)
 						Audio.Play(new _AudioSource(AudioBuffer), Hit.Position);
 
@@ -695,7 +695,7 @@ void _PlayState::EntityAttack(_Entity *Attacker, int GridType) {
 				}
 
 				// Weapon hit sound
-				const _AudioBuffer *AudioBuffer = Audio.GetBuffer(Attacker->GetSample(SAMPLE_HIT));
+				const ae::_Sound *AudioBuffer = Audio.GetBuffer(Attacker->GetSample(SAMPLE_HIT));
 				if(AudioBuffer)
 					Audio.Play(new _AudioSource(AudioBuffer), Hit.Position);
 
@@ -969,7 +969,7 @@ void _PlayState::UpdateEvents(double FrameTime) {
 					Decrement = true;
 				} break;
 				case EVENT_SOUND: {
-					const _AudioBuffer *AudioBuffer = Audio.GetBuffer(Event->ItemIdentifier);
+					const ae::_Sound *AudioBuffer = Audio.GetBuffer(Event->ItemIdentifier);
 					if(AudioBuffer)
 						Audio.Play(new _AudioSource(AudioBuffer, true));
 					Decrement = true;

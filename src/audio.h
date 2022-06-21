@@ -25,13 +25,9 @@
 #include <al.h>
 #include <alc.h>
 
-// Struct for OpenAL buffers
-struct _AudioBuffer {
-	ALuint ID;
-	ALenum Format;
-	float Volume;
-	int Limit;
-};
+namespace ae {
+	class _Sound;
+}
 
 struct _SourcePlaying {
 	_SourcePlaying() : Count(0) { }
@@ -43,20 +39,22 @@ class _AudioSource {
 
 	public:
 
-		_AudioSource(const _AudioBuffer *AudioBuffer, bool Relative=false, bool Loop=false, float MinGain=0.0f, float MaxGain=1.0f, float ReferenceDistance=10.0f, float RollOff=2.5f);
+		_AudioSource(const ae::_Sound *AudioBuffer, bool Relative=false, bool Loop=false, float MinGain=0.0f, float MaxGain=1.0f, float ReferenceDistance=10.0f, float RollOff=2.5f);
 		~_AudioSource();
 
 		void Play();
 		void Stop();
+
+		bool IsPlaying();
+		bool IsRelative();
+
 		void SetPitch(float Value);
 		void SetGain(float Value);
 		void SetPosition(const glm::vec2 &Position);
 		glm::vec2 GetPosition();
-		bool IsPlaying();
-		bool IsRelative();
 
 		ALuint ID;
-		const _AudioBuffer *AudioBuffer;
+		const ae::_Sound *Sound;
 };
 
 // Classes
@@ -73,7 +71,7 @@ class _Audio {
 
 		// Buffers
 		bool LoadBuffer(const std::string &Name, const std::string &File, float Volume=1.0f, int Limit=0);
-		const _AudioBuffer *GetBuffer(const std::string &Name);
+		const ae::_Sound *GetBuffer(const std::string &Name);
 		void FreeAllBuffers();
 
 		// 3D Audio
@@ -92,7 +90,7 @@ class _Audio {
 		bool Enabled;
 
 		// Buffers
-		std::unordered_map<std::string, _AudioBuffer> Buffers;
+		std::unordered_map<std::string, const ae::_Sound *> Buffers;
 		std::unordered_map<ALuint, _SourcePlaying> SourcesPlaying;
 
 		// Sources

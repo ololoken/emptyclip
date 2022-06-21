@@ -144,6 +144,7 @@ void _Framework::Close() {
 		State->Close();
 
 	Stats.Close();
+	ae::Assets.Close();
 	GameAssets.Close();
 	delete Console;
 	delete FrameLimit;

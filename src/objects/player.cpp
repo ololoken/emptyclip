@@ -481,7 +481,7 @@ void _Player::UpdateAnimation(double FrameTime, bool PlaySound) {
 
 	// Play move sound on first and last frame of leg animation
 	if(PlaySound && LastFrame != LegAnimation->Frame && (LegAnimation->Frame == 0 || LegAnimation->Frame == LegAnimation->Reels[LegAnimation->Reel]->EndFrame)) {
-		const _AudioBuffer *AudioBuffer = Audio.GetBuffer(GetSample(SAMPLE_MOVE));
+		const ae::_Sound *AudioBuffer = Audio.GetBuffer(GetSample(SAMPLE_MOVE));
 		if(AudioBuffer)
 			Audio.Play(new _AudioSource(AudioBuffer, true));
 	}
@@ -1039,7 +1039,7 @@ void _Player::StartReloading() {
 		return;
 
 	// Play sound
-	const _AudioBuffer *AudioBuffer = Audio.GetBuffer(GetSample(SAMPLE_RELOAD));
+	const ae::_Sound *AudioBuffer = Audio.GetBuffer(GetSample(SAMPLE_RELOAD));
 	if(AudioBuffer)
 		Audio.Play(new _AudioSource(AudioBuffer, true));
 
