@@ -383,7 +383,7 @@ void _Menu::HandleMouseButton(const ae::_MouseEvent &MouseEvent) {
 			case STATE_INGAME: {
 				if(Clicked->Name == "button_ingame_restart" && PlayState.Player) {
 					InitPlay();
-					PlayState.Player->SetCheckpointIndex(0);
+					PlayState.Player->CheckpointIndex = 0;
 					PlayState.Player->Save();
 					PlayState.Player->Load();
 					Framework.ChangeState(&PlayState);

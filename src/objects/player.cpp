@@ -110,7 +110,7 @@ void _Player::Reset() {
 	// Set stats
 	MonsterKills = TimePlayed = 0;
 	Radius = PLAYER_RADIUS;
-	Name = PLAYER_DEFAULTNAME;
+	Name = "test";
 	ColorIdentifier = "white";
 	Level = 1;
 	Gold = 0;
@@ -420,7 +420,7 @@ void _Player::Update(double FrameTime) {
 	}
 
 	// Update stamina
-	if(!IsDying() && !IsSprinting())
+	if(!IsDying() && !Sprinting)
 		Stamina += PLAYER_STAMINAREGEN * StaminaRegenModifier * FrameTime;
 
 	if(Stamina > MaxStamina)
@@ -441,7 +441,7 @@ void _Player::Update(double FrameTime) {
 	UpdateWeaponSwitch();
 
 	// Stop trigger down audio
-	if(TriggerDownAudio && (!AttackRequested || !HasAmmo() || IsDying() || IsSwitchingWeapons() || IsReloading())) {
+	if(TriggerDownAudio && (!AttackRequested || !HasAmmo() || IsDying() || SwitchingWeapons || Reloading)) {
 		StopAudio();
 	}
 
@@ -452,14 +452,14 @@ void _Player::Update(double FrameTime) {
 	}
 
 	// Use a medkit
-	if(GetMedkitRequested()) {
+	if(MedkitRequested) {
 		UseMedkit(FindItem(_Object::MEDKIT));
-		SetMedkitRequested(false);
+		MedkitRequested = false;
 	}
 
 	Move(FrameTime);
 
-	if(Stamina > 0.0f && PositionChanged && IsSprinting()) {
+	if(Stamina > 0.0f && PositionChanged && Sprinting) {
 		Stamina -= PLAYER_SPRINTSTAMINA * FrameTime;
 		if(Stamina < 0.0f) {
 			Stamina = 0.0f;

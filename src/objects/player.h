@@ -60,8 +60,6 @@ class _Player : public _Entity {
 		void Save();
 
 		bool IsMelee() const;
-		bool IsSwitchingWeapons() const { return SwitchingWeapons; }
-		bool IsReloading() const { return Reloading; }
 
 		void Render(double BlendFactor) override;
 		void Render2D(const glm::ivec2 &Position);
@@ -114,10 +112,6 @@ class _Player : public _Entity {
 		void SetColorIdentifier(const std::string &ColorIdentifier) { this->ColorIdentifier = ColorIdentifier; UpdateColor(); }
 		void SetCrouching(bool State);
 		void SetSprinting(bool State);
-		void SetUseRequested(bool Use) { UseRequested = Use; }
-		void SetMedkitRequested(bool Medkit) { MedkitRequested = Medkit; }
-		void SetExprience(int64_t Experience) { this->Experience = Experience; }
-		void SetSkill(int Index, int Value) { Skills[Index] = Value; }
 
 		double GetReloadPercent() const { return std::min(1.0, ReloadTimer / ReloadPeriod); }
 		double GetWeaponSwitchPercent() const { return std::min(1.0, WeaponSwitchTimer / WeaponSwitchPeriod); }
@@ -133,56 +127,13 @@ class _Player : public _Entity {
 		_Weapon *GetOffHand() const { return (_Weapon *)Inventory[INVENTORY_OFFHAND]; }
 		_Weapon *GetMelee() const { return (_Weapon *)Inventory[INVENTORY_MELEE]; }
 		_Item *GetArmor() const  { return Inventory[INVENTORY_ARMOR]; }
-		_Item *GetInventory(int Index)  { return Inventory[Index]; }
-		float GetZoomScale() const { return ZoomScale; }
 		int GetFireRate(int AttackType) const { return FireRate[AttackType]; }
-		int64_t GetExperience() const { return Experience; }
-		int64_t GetExperienceNextLevel() const { return ExperienceNextLevel; }
-		int GetMonsterKills() const { return MonsterKills; }
-		int GetTimePlayed() const { return TimePlayed; }
-		float GetLevelPercentage() const { return LevelPercentage; }
 		int GetSkill(int Index) const { return Skills[Index]; }
-		int GetSkillPointsRemaining() const { return SkillPointsRemaining; }
 		int GetInventoryMaxStack() const;
-		bool IsCrouching() const { return Crouching; }
-		bool IsSprinting() const { return Sprinting; }
-		bool GetUseRequested() const { return UseRequested; }
-		bool GetMedkitRequested() const { return MedkitRequested; }
 		const std::string &GetSample(int Type) const override;
 
 		void AdjustLegDirection(float Destination);
 		void SetLegAnimationPlayMode(int Mode) override;
-		void SetLegDirection(float Rotation) { LegDirection = Rotation; }
-
-		void SetCheckpointIndex(int CheckpointIndex) { this->CheckpointIndex = CheckpointIndex; }
-		int GetCheckpointIndex() const { return CheckpointIndex; }
-
-		void SetMapIdentifier(const std::string &MapIdentifier) { this->MapIdentifier = MapIdentifier; }
-		const std::string &GetMapIdentifier() const { return MapIdentifier; }
-
-	private:
-
-		bool IsBagIndex(int Index) { return Index >= INVENTORY_BAGSTART && Index < INVENTORY_BAGEND; }
-		bool IsEquipmentIndex(int Index) { return Index <= INVENTORY_BAGSTART; }
-		bool IsHandIndex(int Index) { return Index == INVENTORY_MAINHAND || Index == INVENTORY_OFFHAND; }
-
-		void LoadItems(ae::_Buffer &Buffer);
-		void LoadWeapon(ae::_Buffer &Buffer, int Count, int InventoryIndex);
-		void LoadUpgrades(ae::_Buffer &Buffer, _Weapon *Weapon);
-		void SaveItems(std::ofstream &File);
-
-		void SetAnimationPlaybackSpeedFactor() override;
-		void CalculateLevelPercentage();
-		void CalculateExperienceStats();
-		void CalculateSkillsRemaining();
-		void UpdateColor();
-
-		void IncurDeathPenalty() override;
-		void ResetWeaponAnimation();
-
-		bool CanUseMedkit() const;
-		bool IsRightClip(const _Item *Item) const;
-		void DeleteItems();
 
 		// Map
 		std::string MapIdentifier;
@@ -203,8 +154,6 @@ class _Player : public _Entity {
 		_Item *Inventory[INVENTORY_SIZE];
 		bool UseRequested;
 		bool MedkitRequested;
-		bool Used;
-		bool MedkitUsed;
 		int WeaponSwitchFrom;
 		int WeaponSwitchTo;
 
@@ -237,4 +186,29 @@ class _Player : public _Entity {
 		int FireRate[WEAPONATTACK_COUNT];
 		bool Reloading;
 		bool SwitchingWeapons;
+
+	private:
+
+		bool IsBagIndex(int Index) { return Index >= INVENTORY_BAGSTART && Index < INVENTORY_BAGEND; }
+		bool IsEquipmentIndex(int Index) { return Index <= INVENTORY_BAGSTART; }
+		bool IsHandIndex(int Index) { return Index == INVENTORY_MAINHAND || Index == INVENTORY_OFFHAND; }
+
+		void LoadItems(ae::_Buffer &Buffer);
+		void LoadWeapon(ae::_Buffer &Buffer, int Count, int InventoryIndex);
+		void LoadUpgrades(ae::_Buffer &Buffer, _Weapon *Weapon);
+		void SaveItems(std::ofstream &File);
+
+		void SetAnimationPlaybackSpeedFactor() override;
+		void CalculateLevelPercentage();
+		void CalculateExperienceStats();
+		void CalculateSkillsRemaining();
+		void UpdateColor();
+
+		void IncurDeathPenalty() override;
+		void ResetWeaponAnimation();
+
+		bool CanUseMedkit() const;
+		bool IsRightClip(const _Item *Item) const;
+		void DeleteItems();
+
 };

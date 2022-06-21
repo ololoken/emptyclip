@@ -81,20 +81,20 @@ void _PlayState::Init() {
 
 	// Set checkpoint from editor
 	if(FromEditor)
-		Player->SetCheckpointIndex(CheckpointIndex);
+		Player->CheckpointIndex = CheckpointIndex;
 
 	// Check for level override
 	if(Level == "")
-		Level = Player->GetMapIdentifier();
+		Level = Player->MapIdentifier;
 
 	// Load level
 	Map = new _Map(Level);
 	Map->Init();
 	Player->Map = Map;
-	Player->SetMapIdentifier(Map->GetFilename());
+	Player->MapIdentifier = Map->GetFilename();
 
 	// Set starting states
-	Player->SetPosition(Map->GetStartingPositionByCheckpoint(Player->GetCheckpointIndex()));
+	Player->SetPosition(Map->GetStartingPositionByCheckpoint(Player->CheckpointIndex));
 	Player->TileChanged = true;
 	Map->AddObjectToGrid(Player, GRID_PLAYER);
 
@@ -188,7 +188,7 @@ bool _PlayState::HandleAction(int InputType, std::size_t Action, int Value) {
 			break;
 			case Action::GAME_RELOAD:
 				if(!HUD->IsDragging()) {
-					if(Player->IsReloading())
+					if(Player->Reloading)
 						Player->CancelReloading();
 					else
 						Player->StartReloading();
@@ -199,7 +199,7 @@ bool _PlayState::HandleAction(int InputType, std::size_t Action, int Value) {
 					Player->StartWeaponSwitch(INVENTORY_MAINHAND, INVENTORY_OFFHAND);
 			break;
 			case Action::GAME_HEAL:
-				Player->SetMedkitRequested(true);
+				Player->MedkitRequested = true;
 			break;
 		}
 	}
@@ -365,7 +365,7 @@ void _PlayState::Update(double FrameTime) {
 			Player->SetSprinting(ae::Actions.State[Action::GAME_SPRINT].Value > 0.0f);
 		}
 
-		Player->SetUseRequested(ae::Actions.State[Action::GAME_USE].Value);
+		Player->UseRequested = ae::Actions.State[Action::GAME_USE].Value;
 	}
 	else {
 		HUD->SetInventoryOpen(false);
@@ -380,10 +380,10 @@ void _PlayState::Update(double FrameTime) {
 	Player->TileChanged = false;
 
 	// Pickup up an object
-	if(Player->GetUseRequested()) {
+	if(Player->UseRequested) {
 		UseObject();
 
-		Player->SetUseRequested(false);
+		Player->UseRequested = false;
 	}
 
 	// Update objects
@@ -403,14 +403,14 @@ void _PlayState::Update(double FrameTime) {
 	Camera->Set2DPosition(Player->Position);
 
 	// Get zoom state
-	if(Player->IsCrouching()) {
+	if(Player->Crouching) {
 		if(Map->IsVisible(Player->Position, WorldCursor)) {
-			Camera->UpdatePosition((WorldCursor - Player->Position) / Player->GetZoomScale());
+			Camera->UpdatePosition((WorldCursor - Player->Position) / Player->ZoomScale);
 		}
 		else {
 			_Hit Hit;
 			Map->CheckBulletCollisions(Player->Position, WorldCursor - Player->Position, Hit, 0, false);
-			Camera->UpdatePosition((Hit.Position - Player->Position) / Player->GetZoomScale());
+			Camera->UpdatePosition((Hit.Position - Player->Position) / Player->ZoomScale);
 		}
 		Camera->SetDistance(CAMERA_DISTANCE_AIMED);
 	}
@@ -846,8 +846,8 @@ void _PlayState::CheckEvents(const _Entity *Entity) {
 				case EVENT_CHECK:
 					switch(Map->GetMapType()) {
 						case MAPTYPE_SINGLE:
-							if(Event->Level > Player->GetCheckpointIndex()) {
-								Player->SetCheckpointIndex(Event->Level);
+							if(Event->Level > Player->CheckpointIndex) {
+								Player->CheckpointIndex = Event->Level;
 								HUD->ShowTextMessage(HUD_CHECKPOINTMESSAGE, HUD_CHECKPOINTTIME);
 								Player->Save();
 								SaveGameTimer = 0;
@@ -855,16 +855,16 @@ void _PlayState::CheckEvents(const _Entity *Entity) {
 							Event->Active = false;
 						break;
 						case MAPTYPE_TUTORIAL:
-							if(Event->Level > Player->GetCheckpointIndex()) {
-								Player->SetCheckpointIndex(Event->Level);
+							if(Event->Level > Player->CheckpointIndex) {
+								Player->CheckpointIndex = Event->Level;
 								HUD->ShowTextMessage(HUD_CHECKPOINTMESSAGE, HUD_CHECKPOINTTIME);
 								Player->Save();
 							}
 							Event->Active = false;
 						break;
 						case MAPTYPE_ADVENTURE:
-							if(Event->Level != Player->GetCheckpointIndex()) {
-								Player->SetCheckpointIndex(Event->Level);
+							if(Event->Level != Player->CheckpointIndex) {
+								Player->CheckpointIndex = Event->Level;
 								HUD->ShowTextMessage(HUD_CHECKPOINTMESSAGE, HUD_CHECKPOINTTIME);
 								Player->Save();
 							}
@@ -885,8 +885,8 @@ void _PlayState::CheckEvents(const _Entity *Entity) {
 					else
 						Framework.ChangeState(&PlayState);
 
-					Player->SetCheckpointIndex(Event->Level);
-					Player->SetMapIdentifier(Level);
+					Player->CheckpointIndex = Event->Level;
+					Player->MapIdentifier = Level;
 					Player->Save();
 				break;
 				case EVENT_TEXT:

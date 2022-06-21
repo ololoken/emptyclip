@@ -180,7 +180,7 @@ void _HUD::MouseEvent(const ae::_MouseEvent &MouseEvent) {
 		if(MouseEvent.Pressed) {
 			if(HitElement && HitElement->Index >= 0 && Player->CanDropItem()) {
 				DragStart = HitElement;
-				CursorItem = Player->GetInventory(DragStart->Index);
+				CursorItem = Player->Inventory[DragStart->Index];
 				ClickOffset = glm::vec2(MouseEvent.Position) - HitElement->Bounds.GetCenter();
 			}
 		}
@@ -246,7 +246,7 @@ void _HUD::Update(double FrameTime, float Radius) {
 		ae::_Element *HitElement;
 		HitElement = Elements[ELEMENT_INVENTORY]->HitElement;
 		if(HitElement && HitElement->Index >= 0)
-			CursorOverItem = Player->GetInventory(HitElement->Index);
+			CursorOverItem = Player->Inventory[HitElement->Index];
 
 		HitElement = Elements[ELEMENT_SKILLS]->HitElement;
 		if(HitElement && HitElement->Index >= 0)
@@ -318,10 +318,10 @@ void _HUD::Render() {
 	Elements[ELEMENT_PLAYERHEALTH]->Render();
 
 	// Draw experience bar
-	Buffer << Player->GetExperience() << " / " << Player->GetExperienceNextLevel() << " XP";
+	Buffer << Player->Experience << " / " << Player->ExperienceNextLevel << " XP";
 	Elements[LABEL_EXPERIENCE]->Text = Buffer.str();
 	Buffer.str("");
-	Elements[IMAGE_EXPERIENCE]->SetWidth(Elements[ELEMENT_EXPERIENCE]->Size.x * Player->GetLevelPercentage());
+	Elements[IMAGE_EXPERIENCE]->SetWidth(Elements[ELEMENT_EXPERIENCE]->Size.x * Player->LevelPercentage);
 	Elements[ELEMENT_EXPERIENCE]->Render();
 
 	// Draw player name and level
@@ -332,13 +332,13 @@ void _HUD::Render() {
 	Elements[ELEMENT_PLAYERINFO]->Render();
 
 	// Reload indicator
-	if(Player->IsReloading())
+	if(Player->Reloading)
 		DrawIndicator("Reloading", Player->GetReloadPercent(), ReloadTexture);
-	else if(!Player->HasAmmo() && !Player->IsSwitchingWeapons() && Player->GetMainHand() && Player->GetMainHand()->Attributes.at("rounds").Int > 0)
+	else if(!Player->HasAmmo() && !Player->SwitchingWeapons && Player->GetMainHand() && Player->GetMainHand()->Attributes.at("rounds").Int > 0)
 		DrawIndicator("Reload");
 
 	// Weapon switch indicator
-	if(Player->IsSwitchingWeapons())
+	if(Player->SwitchingWeapons)
 		DrawIndicator("Switching Weapons", Player->GetWeaponSwitchPercent(), WeaponSwitchTexture);
 
 	// Draw weapons
@@ -436,7 +436,7 @@ void _HUD::RenderCharacterScreen() {
 
 	// Set skill labels
 	std::ostringstream Buffer;
-	Buffer << Player->GetSkillPointsRemaining();
+	Buffer << Player->SkillPointsRemaining;
 	Elements[LABEL_SKILL_REMAINING]->Text = Buffer.str();
 	Buffer.str("");
 
@@ -466,7 +466,7 @@ void _HUD::RenderCharacterScreen() {
 	Elements[LABEL_MOVEMENTSPEED]->Text = Buffer.str();
 	Buffer.str("");
 
-	Buffer << Player->GetMonsterKills();
+	Buffer << Player->MonsterKills;
 	Elements[LABEL_KILLS]->Text = Buffer.str();
 	Buffer.str("");
 
@@ -475,13 +475,13 @@ void _HUD::RenderCharacterScreen() {
 	// Draw inventory
 	for(int i = INVENTORY_ARMOR; i < INVENTORY_BAGEND; i++) {
 		if(Player->HasInventory(i)) {
-			if(Player->GetInventory(i) != CursorItem) {
+			if(Player->Inventory[i] != CursorItem) {
 				ae::_Element *Button = Elements[ELEMENT_INVENTORY]->Children[i];
 				if(Button) {
 					ae::Graphics.SetProgram(ae::Assets.Programs["ortho_pos_uv"]);
-					ae::Graphics.DrawScaledImage(Button->Bounds.GetCenter(), Player->GetInventory(i)->Texture, UI_INVENTORY_ITEM_SIZE, Player->GetInventory(i)->Color);
-					if(i >= INVENTORY_BAGSTART && Player->GetInventory(i)->CanStack())
-						DrawItemCount(Player->GetInventory(i), Button->Bounds.End.x - 2, Button->Bounds.End.y - 2);
+					ae::Graphics.DrawScaledImage(Button->Bounds.GetCenter(), Player->Inventory[i]->Texture, UI_INVENTORY_ITEM_SIZE, Player->Inventory[i]->Color);
+					if(i >= INVENTORY_BAGSTART && Player->Inventory[i]->CanStack())
+						DrawItemCount(Player->Inventory[i], Button->Bounds.End.x - 2, Button->Bounds.End.y - 2);
 				}
 			}
 		}
