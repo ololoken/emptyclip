@@ -145,7 +145,9 @@ bool _Entity::StartAttack() {
 		Action = ACTION_STARTMELEE;
 
 		// Melee fire sound
-		Audio.Play(new _AudioSource(Audio.GetBuffer(GetSample(SAMPLE_FIRE))), Position);
+		const _AudioBuffer *AudioBuffer = Audio.GetBuffer(GetSample(SAMPLE_FIRE));
+		if(AudioBuffer)
+			Audio.Play(new _AudioSource(AudioBuffer), Position);
 	}
 	else
 		Action = ACTION_STARTSHOOT;
@@ -157,9 +159,12 @@ bool _Entity::StartAttack() {
 
 // Start playing the trigger down audio loop
 void _Entity::StartTriggerDownAudio() {
+	if(TriggerDownAudio)
+		return;
 
-	if(!TriggerDownAudio && GetSample(SAMPLE_TRIGGERDOWN) != "") {
-		TriggerDownAudio = new _AudioSource(Audio.GetBuffer(GetSample(SAMPLE_TRIGGERDOWN)), false, true);
+	const _AudioBuffer *AudioBuffer = Audio.GetBuffer(GetSample(SAMPLE_TRIGGERDOWN));
+	if(AudioBuffer) {
+		TriggerDownAudio = new _AudioSource(AudioBuffer, false, true);
 		TriggerDownAudio->Play();
 	}
 }
@@ -270,10 +275,13 @@ void _Entity::UpdateAnimation(double FrameTime, bool PlaySound) {
 
 	// Play move sound on first and last frame of animation
 	if(Animation->Reel == (size_t)WalkingAnimation && PositionChanged && Action == ACTION_MOVING && PlaySound && LastFrame != Animation->Frame && (Animation->Frame == 0 || Animation->Frame == Animation->Reels[Animation->Reel]->EndFrame)) {
-		if(Type == _Object::PLAYER)
-			Audio.Play(new _AudioSource(Audio.GetBuffer(GetSample(SAMPLE_MOVE)), true));
-		else
-			Audio.Play(new _AudioSource(Audio.GetBuffer(GetSample(SAMPLE_MOVE))), Position);
+		const _AudioBuffer *AudioBuffer = Audio.GetBuffer(GetSample(SAMPLE_MOVE));
+		if(AudioBuffer) {
+			if(Type == _Object::PLAYER)
+				Audio.Play(new _AudioSource(AudioBuffer, true));
+			else
+				Audio.Play(new _AudioSource(AudioBuffer), Position);
+		}
 	}
 }
 

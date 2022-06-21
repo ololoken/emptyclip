@@ -186,19 +186,19 @@ void _Audio::Play(_AudioSource *AudioSource, const glm::vec2 &Position) {
 		return;
 	}
 
-	if(!AudioSource->GetAudioBuffer()) {
+	if(!AudioSource->AudioBuffer) {
 		delete AudioSource;
 		return;
 	}
 
 	float DistanceSquared = glm::distance2(Position, GetListenerPosition());
 	if(AudioSource->IsRelative() || DistanceSquared <= MAX_AUDIO_DISTANCE_SQUARED) {
-		SourcesPlaying[AudioSource->GetAudioBuffer()->ID].Count++;
+		SourcesPlaying[AudioSource->AudioBuffer->ID].Count++;
 
-		if(AudioSource->GetAudioBuffer()->Limit > 0 && SourcesPlaying[AudioSource->GetAudioBuffer()->ID].Count > AudioSource->GetAudioBuffer()->Limit) {
+		if(AudioSource->AudioBuffer->Limit > 0 && SourcesPlaying[AudioSource->AudioBuffer->ID].Count > AudioSource->AudioBuffer->Limit) {
 			for(auto Iterator = Sources.begin(); Iterator != Sources.end(); ++Iterator) {
 				_AudioSource *Source = *Iterator;
-				if(Source->IsPlaying() && Source->GetAudioBuffer()->ID == AudioSource->GetAudioBuffer()->ID) {
+				if(Source->IsPlaying() && Source->AudioBuffer->ID == AudioSource->AudioBuffer->ID) {
 					alSourceStop(Source->ID);
 					break;
 				}
@@ -237,9 +237,9 @@ void _Audio::Update(double FrameTime) {
 
 		// Delete source
 		if(NeedsDelete) {
-			SourcesPlaying[Source->GetAudioBuffer()->ID].Count--;
-			if(SourcesPlaying[Source->GetAudioBuffer()->ID].Count <= 0)
-				SourcesPlaying.erase(Source->GetAudioBuffer()->ID);
+			SourcesPlaying[Source->AudioBuffer->ID].Count--;
+			if(SourcesPlaying[Source->AudioBuffer->ID].Count <= 0)
+				SourcesPlaying.erase(Source->AudioBuffer->ID);
 			delete Source;
 			Iterator = Sources.erase(Iterator);
 		}
@@ -286,63 +286,49 @@ void _Audio::SetGain(float Value) {
 }
 
 // Create an audio source
-_AudioSource::_AudioSource(const _AudioBuffer *Buffer, bool Relative, bool Loop, float MinGain, float MaxGain, float ReferenceDistance, float RollOff) {
-	Loaded = false;
-	AudioBuffer = nullptr;
-	if(Buffer) {
+_AudioSource::_AudioSource(const _AudioBuffer *AudioBuffer, bool Relative, bool Loop, float MinGain, float MaxGain, float ReferenceDistance, float RollOff) :
+	AudioBuffer(AudioBuffer) {
 
-		AudioBuffer = Buffer;
+	// Create source
+	alGenSources(1, &ID);
 
-		// Create source
-		alGenSources(1, &ID);
-
-		// Assign buffer to source
-		alSourcei(ID, AL_BUFFER, Buffer->ID);
-		alSourcef(ID, AL_GAIN, Buffer->Volume);
-		alSourcef(ID, AL_MIN_GAIN, MinGain);
-		alSourcef(ID, AL_MAX_GAIN, 1.0f);
-		alSourcef(ID, AL_REFERENCE_DISTANCE, ReferenceDistance);
-		alSourcef(ID, AL_MAX_DISTANCE, 100.0f);
-		alSourcef(ID, AL_ROLLOFF_FACTOR, RollOff);
-		alSourcei(ID, AL_LOOPING, Loop);
-		alSourcei(ID, AL_SOURCE_RELATIVE, Relative);
-
-		Loaded = true;
-	}
+	// Assign buffer to source
+	alSourcei(ID, AL_BUFFER, AudioBuffer->ID);
+	alSourcef(ID, AL_GAIN, AudioBuffer->Volume);
+	alSourcef(ID, AL_MIN_GAIN, MinGain);
+	alSourcef(ID, AL_MAX_GAIN, 1.0f);
+	alSourcef(ID, AL_REFERENCE_DISTANCE, ReferenceDistance);
+	alSourcef(ID, AL_MAX_DISTANCE, 100.0f);
+	alSourcef(ID, AL_ROLLOFF_FACTOR, RollOff);
+	alSourcei(ID, AL_LOOPING, Loop);
+	alSourcei(ID, AL_SOURCE_RELATIVE, Relative);
 }
 
 // Free audio source
 _AudioSource::~_AudioSource() {
-	if(Loaded) {
 
-		// Create source
-		alDeleteSources(1, &ID);
-		Loaded = false;
-	}
+	// Create source
+	alDeleteSources(1, &ID);
 }
 
 // Play
 void _AudioSource::Play() {
-	if(Loaded) {
 
-		// Get state
-		ALint State;
-		alGetSourcei(ID, AL_SOURCE_STATE, &State);
+	// Get state
+	ALint State;
+	alGetSourcei(ID, AL_SOURCE_STATE, &State);
 
-		// If already playing, stop
-		if(State == AL_PLAYING)
-			alSourceStop(ID);
+	// If already playing, stop
+	if(State == AL_PLAYING)
+		alSourceStop(ID);
 
-		// Play sound
-		alSourcePlay(ID);
-	}
+	// Play sound
+	alSourcePlay(ID);
 }
 
 // Stop
 void _AudioSource::Stop() {
-	if(Loaded) {
-		alSourceStop(ID);
-	}
+	alSourceStop(ID);
 }
 
 // Returns true if the source is playing
@@ -365,30 +351,21 @@ bool _AudioSource::IsRelative() {
 
 // Set pitch
 void _AudioSource::SetPitch(float Value) {
-	if(Loaded) {
-		alSourcef(ID, AL_PITCH, Value);
-	}
+	alSourcef(ID, AL_PITCH, Value);
 }
 
 // Set gain
 void _AudioSource::SetGain(float Value) {
-	if(Loaded) {
-		alSourcef(ID, AL_GAIN, Value);
-	}
+	alSourcef(ID, AL_GAIN, Value);
 }
 
 // Set position
 void _AudioSource::SetPosition(const glm::vec2 &Position) {
-	if(Loaded) {
-		alSource3f(ID, AL_POSITION, Position.x, 0, Position.y);
-	}
+	alSource3f(ID, AL_POSITION, Position.x, 0, Position.y);
 }
 
 // Get source position
 glm::vec2 _AudioSource::GetPosition() {
-	if(!Loaded)
-		return glm::vec2(0, 0);
-
 	float Position[3];
 	alGetSource3f(ID, AL_POSITION, &Position[0], &Position[1], &Position[2]);
 

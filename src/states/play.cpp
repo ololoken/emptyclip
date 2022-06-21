@@ -169,8 +169,13 @@ bool _PlayState::HandleAction(int InputType, std::size_t Action, int Value) {
 			break;
 			case Action::GAME_FIRE:
 				if(!HUD->GetInventoryOpen() && !Player->IsMeleeAttacking()) {
-					if(Player->CanAttack(WEAPONATTACK_MAIN) && !Player->HasAmmo())
-						Audio.Play(new _AudioSource(Audio.GetBuffer(Player->GetSample(SAMPLE_EMPTY))), Player->Position);
+
+					// Play sound
+					if(Player->CanAttack(WEAPONATTACK_MAIN) && !Player->HasAmmo()) {
+						const _AudioBuffer *AudioBuffer = Audio.GetBuffer(Player->GetSample(SAMPLE_EMPTY));
+						if(AudioBuffer)
+							Audio.Play(new _AudioSource(AudioBuffer), Player->Position);
+					}
 
 					if(Player->GetFireRate(WEAPONATTACK_MAIN) == FIRERATE_SEMI) {
 						Player->AttackRequested = true;
@@ -248,14 +253,6 @@ bool _PlayState::HandleKey(const ae::_KeyEvent &KeyEvent) {
 			break;
 			case SDL_SCANCODE_F1:
 				Menu.InitInGame();
-			break;
-			case SDL_SCANCODE_GRAVE:
-				//std::cout << WorldCursor.x << " " << WorldCursor.y << std::endl;
-				//IsFiring = !IsFiring;
-				//Audio.Play(new _AudioSource(Audio.GetBuffer("player_hit0")), WorldCursor);
-				//HUD->ShowTextMessage("CHECKPOINT REACHED", 5.0f);
-				//_ParticleSpawn
-				//Particles->Create(_ParticleSpawn(Assets.GetParticleTemplate("tracer0"), WorldCursor, OBJECT_Z, Player->GetDirection()));
 			break;
 		}
 	}
@@ -609,7 +606,9 @@ void _PlayState::EntityAttack(_Entity *Attacker, int GridType) {
 	_Hit Hit;
 	if(WeaponType != WEAPON_MELEE) {
 		GenerateBulletEffects(Attacker, -1, Hit);
-		Audio.Play(new _AudioSource(Audio.GetBuffer(Attacker->GetSample(SAMPLE_FIRE))), Attacker->Position);
+		const _AudioBuffer *AudioBuffer = Audio.GetBuffer(Attacker->GetSample(SAMPLE_FIRE));
+		if(AudioBuffer)
+			Audio.Play(new _AudioSource(AudioBuffer), Attacker->Position);
 	}
 
 	Attacker->StartTriggerDownAudio();
@@ -656,7 +655,9 @@ void _PlayState::EntityAttack(_Entity *Attacker, int GridType) {
 			break;
 			case HIT_WALL:
 				if(!PlayedHitWallSound) {
-					Audio.Play(new _AudioSource(Audio.GetBuffer(Attacker->GetSample(SAMPLE_RICOCHET))), Hit.Position);
+					const _AudioBuffer *AudioBuffer = Audio.GetBuffer(Attacker->GetSample(SAMPLE_RICOCHET));
+					if(AudioBuffer)
+						Audio.Play(new _AudioSource(AudioBuffer), Hit.Position);
 					PlayedHitWallSound = true;
 				}
 
@@ -685,17 +686,23 @@ void _PlayState::EntityAttack(_Entity *Attacker, int GridType) {
 					CreateItemDrop(Hit.Object);
 
 					// Dying sound
-					Audio.Play(new _AudioSource(Audio.GetBuffer(Hit.Object->GetSample(SAMPLE_DEATH))), Hit.Position);
+					const _AudioBuffer *AudioBuffer = Audio.GetBuffer(Hit.Object->GetSample(SAMPLE_DEATH));
+					if(AudioBuffer)
+						Audio.Play(new _AudioSource(AudioBuffer), Hit.Position);
 
 					if(Attacker->Type == _Object::PLAYER)
 						Attacker->UpdateKillCount(1);
 				}
 
 				// Weapon hit sound
-				Audio.Play(new _AudioSource(Audio.GetBuffer(Attacker->GetSample(SAMPLE_HIT))), Hit.Position);
+				const _AudioBuffer *AudioBuffer = Audio.GetBuffer(Attacker->GetSample(SAMPLE_HIT));
+				if(AudioBuffer)
+					Audio.Play(new _AudioSource(AudioBuffer), Hit.Position);
 
 				// Entity hit sound
-				Audio.Play(new _AudioSource(Audio.GetBuffer(Hit.Object->GetSample(SAMPLE_TAKEDAMAGE))), Hit.Position);
+				AudioBuffer = Audio.GetBuffer(Hit.Object->GetSample(SAMPLE_TAKEDAMAGE));
+				if(AudioBuffer)
+					Audio.Play(new _AudioSource(AudioBuffer), Hit.Position);
 
 				// Set HUD last hit object
 				if(Hit.Object->Type == _Object::MONSTER)
@@ -961,10 +968,12 @@ void _PlayState::UpdateEvents(double FrameTime) {
 
 					Decrement = true;
 				} break;
-				case EVENT_SOUND:
-					Audio.Play(new _AudioSource(Audio.GetBuffer(Event->ItemIdentifier), true));
+				case EVENT_SOUND: {
+					const _AudioBuffer *AudioBuffer = Audio.GetBuffer(Event->ItemIdentifier);
+					if(AudioBuffer)
+						Audio.Play(new _AudioSource(AudioBuffer, true));
 					Decrement = true;
-				break;
+				} break;
 				case EVENT_FSWITCH:
 					if(Map->CanChangeMapState(Event)) {
 						Map->ChangeMapState(Event);

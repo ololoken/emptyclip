@@ -19,7 +19,7 @@
 
 // Libraries
 #include <glm/vec2.hpp>
-#include <map>
+#include <unordered_map>
 #include <list>
 #include <string>
 #include <al.h>
@@ -34,7 +34,7 @@ struct _AudioBuffer {
 };
 
 struct _SourcePlaying {
-	_SourcePlaying() { Count = 0; }
+	_SourcePlaying() : Count(0) { }
 	int Count;
 };
 
@@ -43,7 +43,7 @@ class _AudioSource {
 
 	public:
 
-		_AudioSource(const _AudioBuffer *Buffer, bool Relative=false, bool Loop=false, float MinGain=0.0f, float MaxGain=1.0f, float ReferenceDistance=10.0f, float RollOff=2.5f);
+		_AudioSource(const _AudioBuffer *AudioBuffer, bool Relative=false, bool Loop=false, float MinGain=0.0f, float MaxGain=1.0f, float ReferenceDistance=10.0f, float RollOff=2.5f);
 		~_AudioSource();
 
 		void Play();
@@ -54,13 +54,8 @@ class _AudioSource {
 		glm::vec2 GetPosition();
 		bool IsPlaying();
 		bool IsRelative();
-		const _AudioBuffer *GetAudioBuffer() const { return AudioBuffer; }
 
 		ALuint ID;
-
-	private:
-
-		bool Loaded;
 		const _AudioBuffer *AudioBuffer;
 };
 
@@ -97,8 +92,8 @@ class _Audio {
 		bool Enabled;
 
 		// Buffers
-		std::map<std::string, _AudioBuffer> Buffers;
-		std::map<ALuint, _SourcePlaying> SourcesPlaying;
+		std::unordered_map<std::string, _AudioBuffer> Buffers;
+		std::unordered_map<ALuint, _SourcePlaying> SourcesPlaying;
 
 		// Sources
 		std::list<_AudioSource *> Sources;
