@@ -33,7 +33,7 @@ forest_sign0	Flip the switches to activate the bridges
 test	This is a test message
 tutorial_move	Hit the keys ESDF to move your character.\n\nUse the mouse to look around.
 tutorial_pickup	Hit Spacebar to pickup items.\n\nHit C to open your inventory.
-tutorial_door	While looking towards the door, hit Spacebar to open it.
+tutorial_door	To open the door, hit Spacebar while facing it.
 tutorial_melee	Use Mouse button 4 to attack with your melee weapon.
 tutorial_fire	Use Left-click to shoot your gun. Hold right-click to aim and increase your accuracy at the cost of movement speed.
 tutorial_sprint	Hold A to sprint.

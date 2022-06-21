@@ -270,9 +270,11 @@ void _Entity::UpdateAnimation(double FrameTime, bool PlaySound) {
 
 	// Play move sound on first and last frame of animation
 	if(Animation->Reel == (size_t)WalkingAnimation && PositionChanged && Action == ACTION_MOVING && PlaySound && LastFrame != Animation->Frame && (Animation->Frame == 0 || Animation->Frame == Animation->Reels[Animation->Reel]->EndFrame)) {
-		Audio.Play(new _AudioSource(Audio.GetBuffer(GetSample(SAMPLE_MOVE)), true));
+		if(Type == _Object::PLAYER)
+			Audio.Play(new _AudioSource(Audio.GetBuffer(GetSample(SAMPLE_MOVE)), true));
+		else
+			Audio.Play(new _AudioSource(Audio.GetBuffer(GetSample(SAMPLE_MOVE))), Position);
 	}
-
 }
 
 // Updates the entity's accuracy according to the weapon's recoil

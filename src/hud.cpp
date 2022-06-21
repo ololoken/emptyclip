@@ -279,7 +279,7 @@ void _HUD::Render() {
 	// Message
 	if(MessageTimer > 0.0) {
 		if(MessageTimer < 1.0)
-			Elements[LABEL_MESSAGE]->Fade = MessageTimer;
+			Elements[LABEL_MESSAGE]->SetFade(MessageTimer);
 
 		Elements[LABEL_MESSAGE]->Render();
 	}
@@ -287,7 +287,7 @@ void _HUD::Render() {
 	// Message Box
 	if(MessageBoxTimer > 0.0) {
 		if(MessageBoxTimer < 1.0)
-			Elements[ELEMENT_MESSAGE]->Fade = MessageBoxTimer;
+			Elements[ELEMENT_MESSAGE]->SetFade(MessageBoxTimer);
 
 		Elements[ELEMENT_MESSAGE]->Render();
 	}
@@ -924,7 +924,7 @@ void _HUD::RenderDeathScreen() {
 // Show hud message
 void _HUD::ShowTextMessage(const std::string &Message, double Time) {
 	Elements[LABEL_MESSAGE]->Text = Message;
-	Elements[LABEL_MESSAGE]->Fade = 1.0f;
+	Elements[LABEL_MESSAGE]->SetFade(1.0f);
 	MessageTimer = Time;
 }
 
@@ -939,7 +939,7 @@ void _HUD::ShowMessageBox(const std::string &Message, double Time) {
 	Elements[LABEL_MESSAGEBOX]->Text = Message;
 	Elements[LABEL_MESSAGEBOX]->SetWrap(Elements[ELEMENT_MESSAGE]->Size.x - 25);
 
-	Elements[ELEMENT_MESSAGE]->Fade = 1.0f;
+	Elements[ELEMENT_MESSAGE]->SetFade(1.0f);
 	MessageBoxTimer = Time;
 }
 
