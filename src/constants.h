@@ -55,7 +55,7 @@ const  float        AUDIO_MAX_DISTANCE             =  30.0f;
 const  float        ENTITY_MOVESOUNDDELAYFACTOR    =  0.02625f;
 const  int          ENTITY_MINDAMAGEPOINTS         =  1;
 //     Player
-const  int          PLAYER_SAVEVERSION             =  2;
+const  int          PLAYER_SAVEVERSION             =  3;
 const  float        PLAYER_RADIUS                  =  0.35f;
 const  double       PLAYER_MEDKITPERIOD            =  0.5;
 const  float        PLAYER_LEGCHANGEFACTOR         =  0.2f;
@@ -105,6 +105,7 @@ const  double       MENU_DOUBLECLICK_TIME          =  0.250;
 //     UI
 const  glm::vec2    UI_INVENTORY_ITEM_SIZE         =  glm::vec2(32,32);
 const  glm::vec2    UI_INVENTORY_SLOT_SIZE         =  glm::vec2(48,48);
+const  glm::vec2    UI_HUD_AMMO_SIZE               =  glm::vec2(16,16);
 //     HUD
 const  double       HUD_ENTITYHEALTHDISPLAYPERIOD  =  5.0;
 const  double       HUD_CURSOR_ITEM_WAIT           =  0.5;

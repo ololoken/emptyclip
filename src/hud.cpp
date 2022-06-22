@@ -352,7 +352,7 @@ void _HUD::Render() {
 	// Reload indicator
 	if(Player->Reloading)
 		DrawIndicator("Reloading", Player->GetReloadPercent(), ReloadTexture);
-	else if(!Player->HasAmmo() && !Player->SwitchingWeapons && Player->GetMainHand() && Player->GetMainHand()->Attributes.at("rounds").Int > 0)
+	else if(!Player->WeaponHasAmmo() && !Player->SwitchingWeapons && Player->GetMainHand() && Player->GetMainHand()->Attributes.at("rounds").Int > 0)
 		DrawIndicator("Reload");
 
 	// Weapon switch indicator
@@ -362,6 +362,28 @@ void _HUD::Render() {
 	// Draw weapons
 	DrawHUDWeapon(Player->GetMainHand(), Elements[ELEMENT_MAINHAND], Elements[IMAGE_MAINHAND_ICON], Elements[LABEL_MAINHAND_AMMO]);
 	DrawHUDWeapon(Player->GetOffHand(), Elements[ELEMENT_OFFHAND], Elements[IMAGE_OFFHAND_ICON], Elements[LABEL_OFFHAND_AMMO]);
+
+	// Draw ammo amounts
+	glm::vec2 Spacing = glm::vec2(0, 20) * ae::_Element::GetUIScale();
+	glm::vec2 DrawPosition(15 * ae::_Element::GetUIScale(), ae::Graphics.CurrentSize.y - Spacing.y);
+	for(const auto &AmmoType : Stats.AmmoNames) {
+		if(Player->Ammo.find(AmmoType) == Player->Ammo.end())
+			continue;
+
+		_ItemTemplate &Ammo = Stats.Items[AmmoType];
+		const ae::_Texture *Texture = ae::Assets.Textures[Ammo.IconID];
+		if(!Texture)
+			continue;
+
+		ae::Graphics.SetProgram(ae::Assets.Programs["ortho_pos_uv"]);
+		ae::Graphics.DrawScaledImage(DrawPosition, Texture, UI_HUD_AMMO_SIZE);
+
+		Buffer << Player->Ammo[AmmoType] << " / " << Player->AmmoMax[AmmoType] << "";
+		Fonts[FONT_TINY]->DrawText(Buffer.str(), DrawPosition + glm::vec2(16, 4) * ae::_Element::GetUIScale(), ae::LEFT_BASELINE);
+		Buffer.str("");
+
+		DrawPosition -= Spacing;
+	}
 
 	// Draw character screen
 	RenderCharacterScreen();
@@ -725,9 +747,10 @@ void _HUD::RenderItemInfo(_Item *Item, int DrawX, int DrawY) {
 			}
 
 			// Ammo type
-			if(Weapon->Attributes.at("ammo_type").Int) {
+			std::string AmmoType = Stats.Weapons[Weapon->ID].AmmoType;
+			if(!AmmoType.empty()) {
 				DrawY += 20;
-				Buffer << Stats.AmmoNames[Weapon->Attributes.at("ammo_type").Int];
+				Buffer << Stats.Items[AmmoType].Name;
 				Fonts[FONT_MEDIUM]->DrawText("Ammo Type", glm::vec2(DrawX - PadX, DrawY), ae::RIGHT_BASELINE);
 				Fonts[FONT_MEDIUM]->DrawText(Buffer.str(), glm::vec2(DrawX + PadX, DrawY));
 				Buffer.str("");

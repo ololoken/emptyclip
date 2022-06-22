@@ -92,7 +92,7 @@ class _Entity : public _Object {
 
 		virtual bool CanAttack(int AttackType) const { return AttackAllowed[AttackType] && !IsMeleeAttacking() && !IsDying(); }
 		virtual void ReduceAmmo() { }
-		virtual bool HasAmmo() const { return true; }
+		virtual bool WeaponHasAmmo() const { return true; }
 
 		virtual void UpdateExperience(int64_t ExperienceGained) { }
 		virtual void UpdateKillCount(int Value) { }

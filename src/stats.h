@@ -97,6 +97,7 @@ struct _WeaponTemplate {
 	glm::vec4 Color;
 	std::string Name;
 	std::string IconIdentifier;
+	std::string AmmoType;
 	std::string Samples[SOUND_TYPES];
 
 	std::unordered_map<std::string, _Value> Attributes;

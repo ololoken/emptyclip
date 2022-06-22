@@ -155,7 +155,10 @@ void _Stats::LoadAmmo(const std::string &Path) {
 		std::string Name;
 		std::getline(File, Name, '\t');
 		std::getline(File, Template.Name, '\t');
-		std::getline(File, Template.IconID, '\n');
+		std::getline(File, Template.IconID, '\t');
+
+		File >> Template.Attributes["amount"].Int >> Template.Attributes["amount_max"].Int;
+		File.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
 		// Check for loaded textures
 		if(!ae::Assets.Textures[Template.IconID])
@@ -165,7 +168,6 @@ void _Stats::LoadAmmo(const std::string &Path) {
 		if(Items.find(Name) != Items.end())
 			throw std::runtime_error(std::string(__PRETTY_FUNCTION__) + " - Duplicate entry: " + Name);
 
-		Template.Attributes["ammo_type"].Int = AmmoNames.size();
 		Items[Name] = Template;
 		AmmoNames.push_back(Name);
 	}
@@ -402,6 +404,7 @@ void _Stats::LoadWeapons(const std::string &Path) {
 		std::getline(File, SamplesIdentifier, '\t');
 		std::getline(File, WeaponParticlesIdentifier, '\t');
 		std::getline(File, ColorName, '\t');
+		std::getline(File, WeaponTemplate.AmmoType, '\t');
 
 		File	>> WeaponTemplate.Attributes["weapon_type"].Int
 				>> WeaponTemplate.Attributes["zoom_scale"].Float
@@ -418,8 +421,7 @@ void _Stats::LoadWeapons(const std::string &Path) {
 				>> WeaponTemplate.Attributes["min_damage"].Int
 				>> WeaponTemplate.Attributes["max_damage"].Int
 				>> WeaponTemplate.Attributes["attack_count"].Int
-				>> WeaponTemplate.Attributes["rounds"].Int
-				>> WeaponTemplate.Attributes["ammo_type"].Int;
+				>> WeaponTemplate.Attributes["rounds"].Int;
 
 		File.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 

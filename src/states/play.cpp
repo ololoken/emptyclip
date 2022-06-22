@@ -171,7 +171,7 @@ bool _PlayState::HandleAction(int InputType, std::size_t Action, int Value) {
 				if(!HUD->GetInventoryOpen() && !Player->IsMeleeAttacking()) {
 
 					// Play sound
-					if(Player->CanAttack(WEAPONATTACK_MAIN) && !Player->HasAmmo())
+					if(Player->CanAttack(WEAPONATTACK_MAIN) && !Player->WeaponHasAmmo())
 						ae::Audio.PlaySound(ae::Assets.Sounds[Player->GetSample(SOUND_EMPTY)]);
 
 					if(Player->GetFireRate(WEAPONATTACK_MAIN) == FIRERATE_SEMI) {
@@ -588,7 +588,7 @@ void _PlayState::RestartFromDeath() {
 void _PlayState::EntityAttack(_Entity *Attacker, int GridType) {
 
 	// Check for ammo
-	if(!Attacker->HasAmmo())
+	if(!Attacker->WeaponHasAmmo())
 		return;
 
 	// Reduce ammo
@@ -843,20 +843,12 @@ void _PlayState::CheckEvents(const _Entity *Entity) {
 				break;
 				case EVENT_CHECK:
 					switch(Map->GetMapType()) {
-						case MAPTYPE_SINGLE:
+						case MAPTYPE_CAMPAIGN:
 							if(Event->Level > Player->CheckpointIndex) {
 								Player->CheckpointIndex = Event->Level;
 								HUD->ShowTextMessage(HUD_CHECKPOINTMESSAGE, HUD_CHECKPOINTTIME);
 								Player->Save();
 								SaveGameTimer = 0;
-							}
-							Event->Active = false;
-						break;
-						case MAPTYPE_TUTORIAL:
-							if(Event->Level > Player->CheckpointIndex) {
-								Player->CheckpointIndex = Event->Level;
-								HUD->ShowTextMessage(HUD_CHECKPOINTMESSAGE, HUD_CHECKPOINTTIME);
-								Player->Save();
 							}
 							Event->Active = false;
 						break;

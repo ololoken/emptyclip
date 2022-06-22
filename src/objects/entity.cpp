@@ -137,7 +137,7 @@ bool _Entity::StartAttack() {
 		return false;
 
 	// Check ammo
-	if(!HasAmmo())
+	if(!WeaponHasAmmo())
 		return false;
 
 	// Set animation

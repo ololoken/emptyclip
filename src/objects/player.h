@@ -95,8 +95,8 @@ class _Player : public _Entity {
 		void ResetUseTimer() { UseTimer = 0; }
 		void ConsumeInventory(int Index, bool Delete=true);
 		void ReduceAmmo() override;
-		bool HasAmmo() const override;
-		bool HasClips() const;
+		bool WeaponHasAmmo() const override;
+		bool HasAmmoForMain() const;
 		bool HasMainHand() const { return GetMainHand() != nullptr; }
 		bool HasOffHand() const { return GetOffHand() != nullptr; }
 		bool HasMelee() const { return GetMelee() != nullptr; }
@@ -116,8 +116,7 @@ class _Player : public _Entity {
 		double GetReloadPercent() const { return std::min(1.0, ReloadTimer / ReloadPeriod); }
 		double GetWeaponSwitchPercent() const { return std::min(1.0, WeaponSwitchTimer / WeaponSwitchPeriod); }
 		float GetCrosshairRadius(const glm::vec2 &Cursor);
-		int GetWeaponAmmoType() const;
-		int GetInventoryAmmoType(int Index) const;
+		const std::string &GetWeaponAmmoType() const;
 		const _ParticleTemplate *GetWeaponParticle(int Index) const override;
 		void SetMainHand(_Weapon *Weapon);
 		void SetOffHand(_Weapon *Weapon);
@@ -152,6 +151,8 @@ class _Player : public _Entity {
 
 		// Inventory
 		_Item *Inventory[INVENTORY_SIZE];
+		std::unordered_map<std::string, int> Ammo;
+		std::unordered_map<std::string, int> AmmoMax;
 		bool UseRequested;
 		bool MedkitRequested;
 		int WeaponSwitchFrom;
@@ -194,9 +195,11 @@ class _Player : public _Entity {
 		bool IsHandIndex(int Index) { return Index == INVENTORY_MAINHAND || Index == INVENTORY_OFFHAND; }
 
 		void LoadItems(ae::_Buffer &Buffer);
-		void LoadWeapon(ae::_Buffer &Buffer, int Count, int InventoryIndex);
+		_Weapon *LoadWeapon(ae::_Buffer &Buffer, int Level, int Quality, int Count, int InventoryIndex);
 		void LoadUpgrades(ae::_Buffer &Buffer, _Weapon *Weapon);
+		void LoadAmmo(ae::_Buffer &Buffer);
 		void SaveItems(std::ofstream &File);
+		void SaveAmmo(std::ofstream &File);
 
 		void SetAnimationPlaybackSpeedFactor() override;
 		void CalculateLevelPercentage();
@@ -208,7 +211,6 @@ class _Player : public _Entity {
 		void ResetWeaponAnimation();
 
 		bool CanUseMedkit() const;
-		bool IsRightClip(const _Item *Item) const;
 		void DeleteItems();
 
 };

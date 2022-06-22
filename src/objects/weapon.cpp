@@ -69,6 +69,7 @@ void _Weapon::Serialize(ae::_Buffer &Buffer) {
 		Upgrades[i]->Serialize(Buffer);
 }
 
+// Get weapon sound sample
 const std::string &_Weapon::GetSample(int SampleType) const {
 	return Stats.Weapons[ID].Samples[SampleType];
 }

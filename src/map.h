@@ -48,9 +48,7 @@ enum CollisionGridType {
 
 // Types of maps
 enum MapType {
-	MAPTYPE_SINGLE,
-	MAPTYPE_MULTI,
-	MAPTYPE_TUTORIAL,
+	MAPTYPE_CAMPAIGN,
 	MAPTYPE_ADVENTURE
 };
 

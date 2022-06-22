@@ -33,6 +33,7 @@
 #include <fstream>
 #include <iostream>
 #include <stdexcept>
+#include <algorithm>
 #include <glm/geometric.hpp>
 #include <glm/trigonometric.hpp>
 
@@ -50,6 +51,7 @@ enum SaveChunkTypes {
 	CHUNK_MONSTER_KILLS,
 	CHUNK_SKILLS,
 	CHUNK_ITEMS,
+	CHUNK_AMMO,
 };
 
 // Write a chunk to a stream
@@ -124,6 +126,11 @@ void _Player::Reset() {
 		Skills[i] = 0;
 
 	DeleteItems();
+	Ammo.clear();
+	AmmoMax.clear();
+	for(const auto &AmmoType : Stats.AmmoNames) {
+		AmmoMax[AmmoType] = Stats.Items[AmmoType].Attributes["amount_max"].Int;
+	}
 
 	// Reset state
 	MapIdentifier = GAME_STARTLEVEL;
@@ -196,64 +203,56 @@ void _Player::Load() {
 				File.read(Buffer, Size);
 				Buffer[Size] = 0;
 				Name = Buffer;
-				//std::cout << "Name: " << Name << std::endl;
 			} break;
 			case CHUNK_COLOR: {
 				char Buffer[1024];
 				File.read(Buffer, Size);
 				Buffer[Size] = 0;
 				ColorIdentifier = Buffer;
-				//std::cout << "ColorIdentifier: " << ColorIdentifier << std::endl;
 			} break;
 			case CHUNK_MAP: {
 				char Buffer[1024];
 				File.read(Buffer, Size);
 				Buffer[Size] = 0;
 				MapIdentifier = Buffer;
-				//std::cout << "MapIdentifier: " << MapIdentifier << std::endl;
 			} break;
 			case CHUNK_CHECKPOINT:
 				File.read((char *)&CheckpointIndex, sizeof(CheckpointIndex));
-				//std::cout << "CheckpointIndex: " << CheckpointIndex << std::endl;
 			break;
 			case CHUNK_PROGRESSION:
 				File.read((char *)&Progression, sizeof(Progression));
-				//std::cout << "Progression: " << Progression << std::endl;
 			break;
 			case CHUNK_GOLD:
 				File.read((char *)&Gold, sizeof(Gold));
-				//std::cout << "Gold: " << Gold << std::endl;
 			break;
 			case CHUNK_EXPERIENCE:
 				File.read((char *)&Experience, sizeof(Experience));
-				//std::cout << "Experience: " << Experience << std::endl;
 			break;
 			case CHUNK_HEALTH:
 				File.read((char *)&Health, sizeof(Health));
 				if(Health <= 0)
 					Health = 1;
-				//std::cout << "CurrentHealth: " << CurrentHealth << std::endl;
 			break;
 			case CHUNK_TIME_PLAYED: {
 				File.read((char *)&TimePlayed, sizeof(TimePlayed));
-				//std::cout << "TimePlayed: " << TimePlayed << std::endl;
 			} break;
 			case CHUNK_MONSTER_KILLS:
 				File.read((char *)&MonsterKills, sizeof(MonsterKills));
-				//std::cout << "MonsterKills: " << MonsterKills << std::endl;
 			break;
 			case CHUNK_SKILLS:
 				File.read((char *)&Skills, sizeof(Skills));
-				//for(int i = 0; i < SKILL_COUNT; i++) Skills[i] = 0;
-				//std::cout << "Skills: " << Skills[0] << " " << Skills[1] << " " << Skills[2] << " " << Skills[3] << " " << Skills[4] << std::endl;
 			break;
 			case CHUNK_ITEMS: {
 				ae::_Buffer Buffer(Size);
 				File.read(&Buffer[0], Size);
 				LoadItems(Buffer);
 			} break;
+			case CHUNK_AMMO: {
+				ae::_Buffer Buffer(Size);
+				File.read(&Buffer[0], Size);
+				LoadAmmo(Buffer);
+			} break;
 			default:
-				//std::cout << "Unknown chunk: " << Type << " size: " << Size << std::endl;
 				File.ignore(Size);
 			break;
 		}
@@ -276,9 +275,8 @@ void _Player::Save() {
 
 	// Open file
 	std::ofstream File(SavePath.c_str(), std::ios::out | std::ios::binary);
-	if(!File.is_open()) {
+	if(!File.is_open())
 		throw std::runtime_error("Cannot create save file: " + SavePath);
-	}
 
 	WriteChunk(File, CHUNK_SAVEVERSION, (char *)&PLAYER_SAVEVERSION, sizeof(PLAYER_SAVEVERSION));
 	WriteChunk(File, CHUNK_PLAYERNAME, Name.c_str(), Name.length());
@@ -296,6 +294,7 @@ void _Player::Save() {
 	WriteChunk(File, CHUNK_SKILLS, (char *)&Skills, sizeof(Skills));
 
 	SaveItems(File);
+	SaveAmmo(File);
 
 	File.close();
 }
@@ -313,8 +312,8 @@ void _Player::LoadItems(ae::_Buffer &Buffer) {
 	for(int i = 0; i < ItemCount; i++) {
 		int Slot = Buffer.Read<int>();
 		int Type = Buffer.Read<int>();
-		//int Quality = Buffer.Read<int>();
-		Buffer.Read<int>();
+		int Level = Buffer.Read<int>();
+		int Quality = Buffer.Read<int>();
 		int Count = Buffer.Read<int>();
 		std::string Identifier;
 
@@ -327,16 +326,18 @@ void _Player::LoadItems(ae::_Buffer &Buffer) {
 			case _Object::MEDKIT:
 				Identifier = Buffer.ReadString();
 				Inventory[Slot] = Stats.CreateItem(Identifier, Count, glm::vec2(0, 0));
+				Inventory[Slot]->Level = Level;
+				Inventory[Slot]->Quality = Quality;
 			break;
 			case _Object::WEAPON:
-				LoadWeapon(Buffer, Count, Slot);
+				LoadWeapon(Buffer, Level, Quality, Count, Slot);
 			break;
 		}
 	}
 }
 
 // Loads weapons from a stream
-void _Player::LoadWeapon(ae::_Buffer &Buffer, int Count, int InventoryIndex) {
+_Weapon *_Player::LoadWeapon(ae::_Buffer &Buffer, int Level, int Quality, int Count, int InventoryIndex) {
 
 	// Get weapons
 	std::string Identifier = Buffer.ReadString();
@@ -346,11 +347,15 @@ void _Player::LoadWeapon(ae::_Buffer &Buffer, int Count, int InventoryIndex) {
 	// Create weapon
 	_Weapon *Weapon = Stats.CreateWeapon(Identifier, Count, glm::vec2(0, 0), false);
 	Weapon->Attributes["max_components"].Int = MaxComponents;
+	Weapon->Level = Level;
+	Weapon->Quality = Quality;
 	LoadUpgrades(Buffer, Weapon);
 	Weapon->RecalculateStats();
 	Weapon->SetAmmo(Ammo);
 
 	Inventory[InventoryIndex] = Weapon;
+
+	return Weapon;
 }
 
 // Loads upgrade components from a stream
@@ -365,6 +370,20 @@ void _Player::LoadUpgrades(ae::_Buffer &Buffer, _Weapon *Weapon) {
 		_Item *Item = Stats.CreateItem(Identifier, 1, glm::vec2(0, 0));
 		if(!Weapon->AddComponent(Item))
 			delete Item;
+	}
+}
+
+// Load ammo
+void _Player::LoadAmmo(ae::_Buffer &Buffer) {
+
+	// Read count
+	int AmmoTypeCount = Buffer.Read<int>();
+
+	// Read data
+	for(int i = 0; i < AmmoTypeCount; i++) {
+		std::string Identifier = Buffer.ReadString();
+		int Count = Buffer.Read<int>();
+		Ammo[Identifier] = std::clamp(Count, 0, AmmoMax[Identifier]);
 	}
 }
 
@@ -387,6 +406,7 @@ void _Player::SaveItems(std::ofstream &File) {
 		if(HasInventory(i)) {
 			Buffer.Write(i);
 			Buffer.Write(Inventory[i]->Type);
+			Buffer.Write(Inventory[i]->Level);
 			Buffer.Write(Inventory[i]->Quality);
 			Buffer.Write(Inventory[i]->Count);
 			Inventory[i]->Serialize(Buffer);
@@ -395,6 +415,23 @@ void _Player::SaveItems(std::ofstream &File) {
 
 	// Write chunk
 	WriteChunk(File, CHUNK_ITEMS, &Buffer[0], Buffer.GetCurrentSize());
+}
+
+// Save ammo to a stream
+void _Player::SaveAmmo(std::ofstream &File) {
+
+	// Write ammo type count
+	ae::_Buffer Buffer;
+	Buffer.Write<int>(Ammo.size());
+
+	// Write ammo types
+	for(const auto &AmmoType : Ammo) {
+		Buffer.WriteString(AmmoType.first.c_str());
+		Buffer.Write(AmmoType.second);
+	}
+
+	// Write chunk
+	WriteChunk(File, CHUNK_AMMO, &Buffer[0], Buffer.GetCurrentSize());
 }
 
 // Deletes the item objects
@@ -441,7 +478,7 @@ void _Player::Update(double FrameTime) {
 	UpdateWeaponSwitch();
 
 	// Stop trigger down audio
-	if(TriggerDownAudio && (!AttackRequested || !HasAmmo() || IsDying() || SwitchingWeapons || Reloading)) {
+	if(TriggerDownAudio && (!AttackRequested || !WeaponHasAmmo() || IsDying() || SwitchingWeapons || Reloading)) {
 		StopAudio();
 	}
 
@@ -664,7 +701,7 @@ int _Player::SpentSkillPoints() const {
 	return Sum;
 }
 
-// Adds an item to the player's possession, returns 0 on full, return 2 on combine
+// Adds an item to the player's possession, returns 0 on full, return 1 on delete, return 2 on combine
 int _Player::AddItem(_Item *Item) {
 
 	switch(Item->Type) {
@@ -705,6 +742,16 @@ int _Player::AddItem(_Item *Item) {
 				return AddInventory(Item);
 			}
 		} break;
+		case _Object::AMMO: {
+			if(Ammo[Item->ID] == AmmoMax[Item->ID])
+				return 0;
+
+			Ammo[Item->ID] += Item->Attributes["amount"].Int;
+			if(Ammo[Item->ID] > AmmoMax[Item->ID])
+				Ammo[Item->ID] = AmmoMax[Item->ID];
+
+			return 1;
+		}
 		default:
 			return AddInventory(Item);
 		break;
@@ -905,37 +952,19 @@ float _Player::GetCrosshairRadius(const glm::vec2 &Cursor) {
 	return tan(glm::radians(Accuracy * 0.5f)) * Distance;
 }
 
-// Determines what type of ammo is required by the weapon the player is using
-int _Player::GetWeaponAmmoType() const {
+// Return ammo type of player's main weapon
+const std::string &_Player::GetWeaponAmmoType() const {
 	if(!HasMainHand())
-		return 0;
+		return Stats.Weapons[""].AmmoType;
 
-	return GetMainHand()->Attributes.at("ammo_type").Int;
-}
-
-// Determines what type of ammo an item in the inventory is
-int _Player::GetInventoryAmmoType(int Index) const {
-	if(HasInventory(Index) && Inventory[Index]->Type == _Object::AMMO)
-		return Inventory[Index]->Attributes.at("ammo_type").Int;
-
-	return -1;
-}
-
-// Checks if the item is the right ammo for the player's mainhand weapon
-bool _Player::IsRightClip(const _Item *Item) const {
-	if(Item->Type == _Object::AMMO) {
-		if(Item->Attributes.at("ammo_type").Int == GetWeaponAmmoType())
-			return true;
-	}
-
-	return false;
+	return Stats.Weapons[GetMainHand()->ID].AmmoType;
 }
 
 // Checks if the player's weapon has ammo
-bool _Player::HasAmmo() const {
+bool _Player::WeaponHasAmmo() const {
 
 	if(AttackRequestType == WEAPONATTACK_MAIN) {
-		if(!HasMainHand() || GetMainHand()->Attributes.at("ammo_type").Int == 0)
+		if(!HasMainHand() || GetWeaponAmmoType() == "")
 			return true;
 
 		return GetMainHand()->Attributes.at("ammo").Int > 0;
@@ -947,17 +976,12 @@ bool _Player::HasAmmo() const {
 	return false;
 }
 
-// Checks if the player has ammo for the current weapon
-bool _Player::HasClips() const {
+// Checks if the player has ammo for the main weapon
+bool _Player::HasAmmoForMain() const {
+	if(!HasMainHand())
+		return false;
 
-	// Search inventory for clip
-	for(int i = INVENTORY_BAGSTART; i < INVENTORY_BAGEND; i++) {
-		if(HasInventory(i) && IsRightClip(Inventory[i])) {
-			return true;
-		}
-	}
-
-	return false;
+	return Ammo.at(GetWeaponAmmoType()) > 0;
 }
 
 // Reduces the weapons ammo by one
@@ -1074,17 +1098,17 @@ void _Player::UpdateReloading() {
 		if(!CanReload())
 			return;
 
-		// Search inventory for clip
-		for(int i = INVENTORY_BAGSTART; i < INVENTORY_BAGEND; i++) {
-			if(HasInventory(i) && IsRightClip(Inventory[i])) {
-				GetMainHand()->SetAmmo(GetMainHand()->Attributes.at("rounds").Int);
-				ConsumeInventory(i);
+		// Check for ammo
+		if(HasAmmoForMain()) {
+			const std::string &AmmoType = GetWeaponAmmoType();
+			int AmountNeeded = GetMainHand()->Attributes["rounds"].Int - GetMainHand()->Attributes["ammo"].Int;
+			int AmmoLoadAmount = std::min(Ammo[AmmoType], AmountNeeded);
+			GetMainHand()->Attributes["ammo"].Int += AmmoLoadAmount;
+			Ammo[AmmoType] -= AmmoLoadAmount;
 
-				// Update accuracy
-				ResetAccuracy(true);
-				ResetWeaponAnimation();
-				return;
-			}
+			// Update accuracy
+			ResetAccuracy(true);
+			ResetWeaponAnimation();
 		}
 	}
 }
@@ -1333,7 +1357,7 @@ bool _Player::CanUseMedkit() const {
 }
 
 bool _Player::CanReload() const {
-	return HasMainHand() && !Reloading && !SwitchingWeapons && !IsMeleeAttacking() && GetMainHand()->Attributes.at("ammo").Int != GetMainHand()->Attributes.at("rounds").Int && HasClips();
+	return HasMainHand() && !Reloading && !SwitchingWeapons && !IsMeleeAttacking() && GetMainHand()->Attributes.at("ammo").Int != GetMainHand()->Attributes.at("rounds").Int && HasAmmoForMain();
 }
 
 bool _Player::IsMelee() const { return GetMainHand() == nullptr || GetMainHand()->IsMelee(); }

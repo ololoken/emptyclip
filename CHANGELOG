@@ -12,7 +12,7 @@ Empty Clip 2.0.0 -
 - Improved bullet hole decals
 - The game now pauses while menu is open
 - Mouse buttons can now be remapped
-- Removed ammo containers
+- Ammo is now stored as a number of rounds for each ammo type
 - Removed player profiles
 - Added cmake build system
 - Added console window (open with tilde key)

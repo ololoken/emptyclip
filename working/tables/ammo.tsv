@@ -1,10 +1,10 @@
-id	name	icon_texture
-9mm	9 mm	textures/items/a_9mm.png
-357m	357 Magnum	textures/items/a_357.png
-556mm	5.56 mm	textures/items/a_556mm.png
-762mm	7.62 mm	textures/items/a_762mm.png
-shells	Shotgun Shells	textures/items/a_shells.png
-rockets	Rockets	textures/items/a_rockets.png
-power	Power Cells	textures/items/a_power.png
-plasma	Plasma Cells	textures/items/a_plasma.png
-psi	Psi	textures/items/a_psi.png
+id	name	icon_texture	amount	max
+9mm	9mm	textures/items/a_9mm.png	15	50
+357m	.357 Magnum	textures/items/a_357.png	6	30
+556mm	5.56mm	textures/items/a_556mm.png	30	150
+762mm	7.62mm	textures/items/a_762mm.png	30	150
+shells	Shotgun Shells	textures/items/a_shells.png	10	50
+rockets	Rockets	textures/items/a_rockets.png	1	5
+power	Power Cells	textures/items/a_power.png	15	75
+plasma	Plasma Cells	textures/items/a_plasma.png	15	75
+psi	Psi	textures/items/a_psi.png	3	15

@@ -22,10 +22,12 @@
 #include <constants.h>
 
 // Constructor
-_Item::_Item() {
+_Item::_Item() :
+	Level(0),
+	Quality(0),
+	Count(0) {
+
 	Texture = nullptr;
-	Count = 0;
-	Quality = 0;
 	PositionZ = ITEM_Z;
 }
 

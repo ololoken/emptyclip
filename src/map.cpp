@@ -64,7 +64,7 @@ static std::string GetCSVText(std::ifstream &Stream) {
 // Initialize
 _Map::_Map() :
 	Camera(nullptr),
-	MapType(MAPTYPE_SINGLE),
+	MapType(MAPTYPE_CAMPAIGN),
 	Width(MAP_WIDTH),
 	Height(MAP_HEIGHT),
 	Filename(""),
