@@ -535,15 +535,15 @@ void _EditorState::HandleMouseButton(const ae::_MouseEvent &MouseEvent) {
 						switch(CurrentPalette) {
 							case EDITMODE_BLOCKS:
 							case EDITMODE_EVENTS:
-
 								DeselectBlock();
 								DeselectEvent();
 
-								// Save the indices
-								SavedIndex = WorldCursorIndex;
+								// Save start position
+								DrawStart = SavedIndex = WorldCursorIndex;
+								DrawEnd = DrawStart + 1;
+
 								IsDrawing = true;
 								FinishDrawing = false;
-
 							break;
 							default: {
 								ae::_Element *Button = Brush[CurrentPalette];
@@ -554,10 +554,7 @@ void _EditorState::HandleMouseButton(const ae::_MouseEvent &MouseEvent) {
 					}
 				break;
 				case SDL_BUTTON_RIGHT:
-
-					// Move the camera
 					Camera->Set2DPosition(WorldCursor);
-
 				break;
 				case SDL_BUTTON_MIDDLE:
 					if(!IsDrawing) {
@@ -746,7 +743,6 @@ void _EditorState::Update(double FrameTime) {
 		// Check bounds
 		DrawEnd.x = OldEnd.x + Offset.x + 1;
 		DrawEnd.y = OldEnd.y + Offset.y + 1;
-
 	}
 
 	// Update based on editor state
@@ -827,7 +823,7 @@ void _EditorState::Render(double BlendFactor) {
 			}
 			else {
 				if(CurrentLayer == MAPLAYER_FORE)
-					ae::Graphics.DrawRepeatable(glm::vec3(DrawStart.x, DrawStart.y, MaxZ + MAP_LAYEROFFSET * CurrentLayer), glm::vec3(DrawEnd.x, DrawEnd.y, MaxZ + MAP_LAYEROFFSET * CurrentLayer), Brush[CurrentPalette]->Style->Texture, Rotation, ScaleX);
+					ae::Graphics.DrawRepeatable(glm::vec3(DrawStart.x, DrawStart.y, MaxZ + MAP_LAYEROFFSET), glm::vec3(DrawEnd.x, DrawEnd.y, MaxZ + MAP_LAYEROFFSET), Brush[CurrentPalette]->Style->Texture, Rotation, ScaleX);
 				else if(CurrentLayer == MAPLAYER_FLAT) {
 					ae::Graphics.SetVBO(ae::VBO_CUBE);
 					ae::Graphics.DrawWall(glm::vec3(DrawStart.x, DrawStart.y, MinZ), glm::vec3(DrawEnd.x - DrawStart.x, DrawEnd.y - DrawStart.y, MaxZ - MinZ), Rotation, Brush[CurrentPalette]->Style->Texture);

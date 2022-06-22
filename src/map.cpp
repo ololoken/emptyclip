@@ -1370,8 +1370,15 @@ void _Map::RenderFloors() {
 			Draw = Camera->IsAABBInView(Bounds);
 		}
 
-		if(Draw)
-			ae::Graphics.DrawRepeatable(glm::vec3(Block->Start.x, Block->Start.y, Block->MinZ + MAP_LAYEROFFSET * i), glm::vec3(Block->End.x + 1.0f, Block->End.y + 1.0f, Block->MinZ + MAP_LAYEROFFSET * i), Block->Texture, Block->Rotation, Block->ScaleX);
+		if(Draw) {
+			ae::Graphics.DrawRepeatable(
+				glm::vec3(Block->Start.x, Block->Start.y, Block->MinZ + MAP_LAYEROFFSET * i),
+				glm::vec3(Block->End.x + 1.0f, Block->End.y + 1.0f, Block->MinZ + MAP_LAYEROFFSET * i),
+				Block->Texture,
+				Block->Rotation,
+				Block->ScaleX
+			);
+		}
 	}
 
 	// Draw floor layers 0-2
@@ -1389,11 +1396,23 @@ void _Map::RenderFloors() {
 					Draw = Camera->IsAABBInView(Bounds);
 				}
 
-				if(Draw)
-					ae::Graphics.DrawRepeatable(glm::vec3(Block->Start.x, Block->Start.y, Block->MinZ + MAP_LAYEROFFSET * i), glm::vec3(Block->End.x + 1.0f, Block->End.y + 1.0f, Block->MinZ + MAP_LAYEROFFSET * i), Block->Texture, Block->Rotation, Block->ScaleX);
+				if(Draw) {
+					ae::Graphics.DrawRepeatable(
+						glm::vec3(Block->Start.x, Block->Start.y, Block->MinZ + MAP_LAYEROFFSET * i),
+						glm::vec3(Block->End.x + 1.0f, Block->End.y + 1.0f, Block->MinZ + MAP_LAYEROFFSET * i),
+						Block->Texture,
+						Block->Rotation,
+						Block->ScaleX
+					);
+				}
 			}
-			else
-				ae::Graphics.DrawCube(glm::vec3(Block->Start.x, Block->Start.y, Block->MinZ), glm::vec3(Block->End.x - Block->Start.x + 1.0f, Block->End.y - Block->Start.y + 1.0f, Block->MaxZ - Block->MinZ), Block->Texture);
+			else {
+				ae::Graphics.DrawCube(
+					glm::vec3(Block->Start.x, Block->Start.y, Block->MinZ),
+					glm::vec3(Block->End.x - Block->Start.x + 1.0f, Block->End.y - Block->Start.y + 1.0f, Block->MaxZ - Block->MinZ),
+					Block->Texture
+				);
+			}
 		}
 	}
 }
@@ -1455,8 +1474,14 @@ void _Map::RenderFlatWalls() {
 			Draw = Camera->IsAABBInView(Bounds);
 		}
 
-		if(Draw)
-			ae::Graphics.DrawWall(glm::vec3(Block->Start.x, Block->Start.y, Block->MinZ), glm::vec3(Block->End.x - Block->Start.x + 1.0f, Block->End.y - Block->Start.y + 1.0f, Block->MaxZ - Block->MinZ), Block->Rotation, Block->Texture);
+		if(Draw) {
+			ae::Graphics.DrawWall(
+				glm::vec3(Block->Start.x, Block->Start.y, Block->MinZ),
+				glm::vec3(Block->End.x - Block->Start.x + 1.0f, Block->End.y - Block->Start.y + 1.0f, Block->MaxZ - Block->MinZ),
+				Block->Rotation,
+				Block->Texture
+			);
+		}
 	}
 }
 
@@ -1472,8 +1497,15 @@ void _Map::RenderEvents(std::vector<const ae::_Texture *> &Textures) {
 	// Draw events
 	for(size_t i = 0; i < Events.size(); i++) {
 		glm::vec4 Bounds((float)Events[i]->Start.x, (float)Events[i]->Start.y, (float)Events[i]->End.x + 1.0f, (float)Events[i]->End.y + 1.0f);
-		if(Camera->IsAABBInView(Bounds))
-			ae::Graphics.DrawRepeatable(glm::vec3(Events[i]->Start.x, Events[i]->Start.y, MAP_LAYEROFFSET), glm::vec3(Events[i]->End.x + 1.0f, Events[i]->End.y + 1.0f, MAP_LAYEROFFSET), Textures[Events[i]->Type], 0, 1.0f);
+		if(Camera->IsAABBInView(Bounds)) {
+			ae::Graphics.DrawRepeatable(
+				glm::vec3(Events[i]->Start.x, Events[i]->Start.y, MAP_LAYEROFFSET),
+				glm::vec3(Events[i]->End.x + 1.0f, Events[i]->End.y + 1.0f, MAP_LAYEROFFSET),
+				Textures[Events[i]->Type],
+				0,
+				1.0f
+			);
+		}
 	}
 }
 
@@ -1498,8 +1530,15 @@ void _Map::RenderForeground() {
 			Draw = Camera->IsAABBInView(Bounds);
 		}
 
-		if(Draw)
-			ae::Graphics.DrawRepeatable(glm::vec3(Block->Start.x, Block->Start.y, Block->MaxZ + 0.01f * i), glm::vec3(Block->End.x + 1.0f, Block->End.y + 1.0f, Block->MaxZ + 0.01f * i), Block->Texture, Block->Rotation, Block->ScaleX);
+		if(Draw) {
+			ae::Graphics.DrawRepeatable(
+				glm::vec3(Block->Start.x, Block->Start.y, Block->MaxZ + MAP_LAYEROFFSET),
+				glm::vec3(Block->End.x + 1.0f, Block->End.y + 1.0f, Block->MaxZ + MAP_LAYEROFFSET),
+				Block->Texture,
+				Block->Rotation,
+				Block->ScaleX
+			);
+		}
 	}
 }
 
