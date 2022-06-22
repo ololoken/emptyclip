@@ -206,7 +206,25 @@ void _HUD::MouseEvent(const ae::_MouseEvent &MouseEvent) {
 	else if(MouseEvent.Button == SDL_BUTTON_RIGHT) {
 		if(MouseEvent.Pressed) {
 			if(HitElement && HitElement->Index >= 0) {
-				Player->UseMedkit(HitElement->Index);
+				const _Item *Item = Player->Inventory[HitElement->Index];
+				if(Item) {
+					switch(Item->Type) {
+						case _Object::MEDKIT:
+							Player->UseMedkit(HitElement->Index);
+						break;
+						case _Object::WEAPON: {
+							const _Weapon *Weapon = (const _Weapon *)Item;
+							if(Weapon->IsMelee())
+								Player->SwapInventory(HitElement->Index, INVENTORY_MELEE);
+							else
+								Player->SwapInventory(HitElement->Index, ae::Input.ModKeyDown(KMOD_CTRL) ? INVENTORY_OFFHAND : INVENTORY_MAINHAND);
+						} break;
+						case _Object::ARMOR:
+							Player->SwapInventory(HitElement->Index, INVENTORY_ARMOR);
+						break;
+					}
+				}
+
 				if(!Player->HasInventory(HitElement->Index))
 					CursorOverItem = nullptr;
 			}

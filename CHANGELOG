@@ -1,20 +1,20 @@
 Empty Clip 2.0.0 -
-- Updated engine to use ae, which adds SDL2 and OpenGL 3.3 support
+- Updated engine to use ae, which adds SDL2, OpenGL 3.3, and OpenAL support
 - Optimized rendering code and added support for high refresh monitors
 - Completely redesigned interface and added support for different screen resolutions
 - Inventory is bigger and can now hold equipment
 - Items in inventory can now stack
 - Items can be dropped by clicking the middle mouse button
+- Equipment can be equipped by right-clicking in the inventory
 - Added equipment slot for melee weapons and separate hotkey for melee attacks (Mouse button 4 by default)
 - Updated item tooltip and added equipped item comparison
 - Added damage number particles
+- Improved bullet hole decals
 - The game now pauses while menu is open
 - Mouse buttons can now be remapped
 - Removed ammo containers
 - Removed player profiles
-- Switched audio system to use OpenAL and added more sound effects
 - Added cmake build system
-- Updated font system
 - Added console window (open with tilde key)
 - Save files are now in ~/.local/share/emptyclip for linux
 - Lots of small fixes and cleanup
