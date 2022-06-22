@@ -86,7 +86,7 @@ void _Audio::Close() {
 }
 
 // Loads an ogg file into memory
-bool _Audio::LoadBuffer(const std::string &Name, const std::string &File, float Volume, int Limit) {
+bool _Audio::LoadBuffer(const std::string &File, float Volume, int Limit) {
 	if(!Enabled)
 		return true;
 
@@ -94,7 +94,7 @@ bool _Audio::LoadBuffer(const std::string &Name, const std::string &File, float 
 	std::string Path = File;
 
 	// Find existing buffer in map
-	if(Buffers.find(Name) != Buffers.end())
+	if(Buffers.find(File) != Buffers.end())
 		return true;
 
 	// Open vorbis stream
@@ -148,7 +148,7 @@ bool _Audio::LoadBuffer(const std::string &Name, const std::string &File, float 
 	ov_clear(&VorbisStream);
 
 	// Add to map
-	Buffers[Name] = Sound;
+	Buffers[File] = Sound;
 
 	return true;
 }
@@ -191,7 +191,7 @@ void _Audio::Play(_AudioSource *AudioSource, const glm::vec2 &Position) {
 		delete AudioSource;
 		return;
 	}
-
+/*
 	float DistanceSquared = glm::distance2(Position, GetListenerPosition());
 	if(AudioSource->IsRelative() || DistanceSquared <= MAX_AUDIO_DISTANCE_SQUARED) {
 		SourcesPlaying[AudioSource->Sound->ID].Count++;
@@ -213,6 +213,7 @@ void _Audio::Play(_AudioSource *AudioSource, const glm::vec2 &Position) {
 	else {
 		delete AudioSource;
 	}
+*/
 }
 
 // Update all audio sources
@@ -231,9 +232,9 @@ void _Audio::Update(double FrameTime) {
 		}
 		else if(!Source->IsRelative()) {
 
-			float DistanceSquared = glm::distance2(Source->GetPosition(), GetListenerPosition());
-			if(DistanceSquared > MAX_AUDIO_DISTANCE_SQUARED)
-				NeedsDelete = true;
+			//float DistanceSquared = glm::distance2(Source->GetPosition(), GetListenerPosition());
+			//if(DistanceSquared > MAX_AUDIO_DISTANCE_SQUARED)
+			//	NeedsDelete = true;
 		}
 
 		// Delete source

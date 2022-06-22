@@ -26,9 +26,9 @@
 #include <ae/console.h>
 #include <ae/ui.h>
 #include <ae/util.h>
+#include <ae/audio.h>
 #include <gameassets.h>
 #include <config.h>
-#include <audio.h>
 #include <stdexcept>
 #include <constants.h>
 #include <stats.h>
@@ -101,8 +101,11 @@ void _Framework::Init(int ArgumentCount, char **Arguments) {
 		throw std::runtime_error("Failed to initialize SDL");
 
 	// Initialize audio
-	Audio.Init(AudioEnabled);
-	Audio.SetGain(Config.SoundVolume);
+	ae::Audio.Init(AudioEnabled, false);
+	ae::Audio.SetMaxDistance(AUDIO_MAX_DISTANCE);
+	ae::Audio.SetDirection(glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+	ae::Audio.SetSoundVolume(Config.SoundVolume);
+	ae::Audio.SetMusicVolume(Config.MusicVolume);
 
 	// Get window settings
 	ae::_WindowSettings WindowSettings;
@@ -149,7 +152,7 @@ void _Framework::Close() {
 	delete Console;
 	delete FrameLimit;
 
-	Audio.Close();
+	ae::Audio.Close();
 	ae::Graphics.Close();
 	SDL_Quit();
 }
@@ -268,7 +271,7 @@ void _Framework::Update() {
 		} break;
 	}
 
-	Audio.Update(FrameTime);
+	ae::Audio.Update(FrameTime);
 	ae::Graphics.Flip(FrameTime);
 	if(FrameLimit && !Config.Vsync)
 		FrameLimit->Update();

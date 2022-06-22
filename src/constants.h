@@ -50,8 +50,7 @@ const  float        CAMERA_FAR                     =  500.0f;
 //     Weapons
 const  double       WEAPON_MINFIREPERIOD           =  0.017;
 //     Audio
-const  float        MAX_AUDIO_DISTANCE             =  30.0f;
-const  float        MAX_AUDIO_DISTANCE_SQUARED     =  MAX_AUDIO_DISTANCE*MAX_AUDIO_DISTANCE;
+const  float        AUDIO_MAX_DISTANCE             =  30.0f;
 //     Entities
 const  float        ENTITY_MOVESOUNDDELAYFACTOR    =  0.02625f;
 const  int          ENTITY_MINDAMAGEPOINTS         =  1;

@@ -22,6 +22,7 @@
 #include <ae/assets.h>
 #include <ae/program.h>
 #include <ae/animation.h>
+#include <ae/audio.h>
 #include <audio.h>
 #include <map.h>
 #include <constants.h>
@@ -71,7 +72,7 @@ _Entity::_Entity() :
 	for(int i = 0; i < WEAPON_TYPES; i++)
 		WeaponParticleOffset[i] = glm::vec2(0.0f, 0.0f);
 
-	for(int i = 0; i < SAMPLE_TYPES; i++)
+	for(int i = 0; i < SOUND_TYPES; i++)
 		Samples[i] = -1;
 
 	Animation = new ae::_Animation(nullptr);
@@ -144,10 +145,8 @@ bool _Entity::StartAttack() {
 	if(AttackRequestType == WEAPONATTACK_MELEE || GetWeaponType() == WEAPON_MELEE) {
 		Action = ACTION_STARTMELEE;
 
-		// Melee fire sound
-		const ae::_Sound *AudioBuffer = Audio.GetBuffer(GetSample(SAMPLE_FIRE));
-		if(AudioBuffer)
-			Audio.Play(new _AudioSource(AudioBuffer), Position);
+		// Play weapon sound
+		ae::Audio.PlaySound(ae::Assets.Sounds[GetSample(SOUND_FIRE)], glm::vec3(Position.x, 0.0f, Position.y));
 	}
 	else
 		Action = ACTION_STARTSHOOT;
@@ -162,9 +161,11 @@ void _Entity::StartTriggerDownAudio() {
 	if(TriggerDownAudio)
 		return;
 
-	const ae::_Sound *AudioBuffer = Audio.GetBuffer(GetSample(SAMPLE_TRIGGERDOWN));
-	if(AudioBuffer) {
-		TriggerDownAudio = new _AudioSource(AudioBuffer, false, true);
+	const ae::_Sound *Sound = ae::Assets.Sounds[GetSample(SOUND_TRIGGERDOWN)];
+	if(Sound) {
+		TriggerDownAudio = new ae::_AudioSource(Sound);
+		TriggerDownAudio->SetRelative(true);
+		TriggerDownAudio->SetLooping(true);
 		TriggerDownAudio->Play();
 	}
 }
@@ -274,15 +275,8 @@ void _Entity::UpdateAnimation(double FrameTime, bool PlaySound) {
 	Animation->Update(FrameTime);
 
 	// Play move sound on first and last frame of animation
-	if(Animation->Reel == (size_t)WalkingAnimation && PositionChanged && Action == ACTION_MOVING && PlaySound && LastFrame != Animation->Frame && (Animation->Frame == 0 || Animation->Frame == Animation->Reels[Animation->Reel]->EndFrame)) {
-		const ae::_Sound *AudioBuffer = Audio.GetBuffer(GetSample(SAMPLE_MOVE));
-		if(AudioBuffer) {
-			if(Type == _Object::PLAYER)
-				Audio.Play(new _AudioSource(AudioBuffer, true));
-			else
-				Audio.Play(new _AudioSource(AudioBuffer), Position);
-		}
-	}
+	if(Animation->Reel == (size_t)WalkingAnimation && PositionChanged && Action == ACTION_MOVING && PlaySound && LastFrame != Animation->Frame && (Animation->Frame == 0 || Animation->Frame == Animation->Reels[Animation->Reel]->EndFrame))
+		ae::Audio.PlaySound(ae::Assets.Sounds[GetSample(SOUND_MOVE)], glm::vec3(Position.x, 0.0f, Position.y));
 }
 
 // Updates the entity's accuracy according to the weapon's recoil

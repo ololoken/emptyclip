@@ -31,10 +31,10 @@ class _Player;
 struct _ParticleTemplate;
 
 // Stores information about a collection of sound samples used for attacking
-struct AttackSampleTemplateStruct {
-	AttackSampleTemplateStruct() { }
+struct _SoundGroup {
+	_SoundGroup() { }
 
-	std::string Samples[SAMPLE_TYPES];
+	std::string Sounds[SOUND_TYPES];
 };
 
 // Classes
@@ -56,14 +56,14 @@ class _GameAssets {
 		bool IsParticleLoaded(const std::string &Identifier);
 		bool IsWeaponParticleTemplateLoaded(const std::string &Identifier);
 
-		AttackSampleTemplateStruct *GetAttackSampleTemplate(const std::string &Identifier);
+		_SoundGroup *GetAttackSampleTemplate(const std::string &Identifier);
 		_ParticleTemplate *GetParticleTemplate(const std::string &Identifier);
 		_WeaponParticleTemplate *GetWeaponParticleTemplate(const std::string &Identifer);
 
 	private:
 
 		// Tables
-		std::unordered_map<std::string, AttackSampleTemplateStruct> AttackSampleTable;
+		std::unordered_map<std::string, _SoundGroup> SoundGroups;
 		std::unordered_map<std::string, _ParticleTemplate> ParticleTable;
 		std::unordered_map<std::string, _WeaponParticleTemplate> WeaponParticleTable;
 };

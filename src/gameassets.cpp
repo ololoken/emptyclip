@@ -28,6 +28,7 @@
 #include <ae/texture.h>
 #include <ae/program.h>
 #include <ae/ui.h>
+#include <ae/audio.h>
 #include <audio.h>
 #include <constants.h>
 #include <tinyxml2/tinyxml2.h>
@@ -58,20 +59,26 @@ void _GameAssets::LoadSounds(const std::string &Path, const std::string &SampleP
 
 	// Read file
 	while(!File.eof() && File.peek() != EOF) {
-		std::string Identifier;
-		std::string SampleFile;
-		std::getline(File, Identifier, '\t');
-		std::getline(File, SampleFile, '\t');
+		std::string ID;
+		std::string SoundFile;
+		std::getline(File, ID, '\t');
+		std::getline(File, SoundFile, '\t');
 
+		// Load sound
+		ae::_Sound *Sound = ae::Audio.LoadSound(SamplePath + SoundFile);
+
+		// Read parameters
 		float Volume;
 		int Limit;
 		File >> Volume >> Limit;
 		File.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
-		// Load sample file
-		std::string Path = SamplePath + SampleFile;
-		if(!Audio.LoadBuffer(Identifier, Path, Volume, Limit))
-			throw std::runtime_error("Error loading: " + Path);
+		if(Sound) {
+			Sound->Volume = Volume;
+			Sound->Limit = Limit;
+		}
+
+		ae::Assets.Sounds[ID] = Sound;
 	}
 
 	File.close();
@@ -79,7 +86,7 @@ void _GameAssets::LoadSounds(const std::string &Path, const std::string &SampleP
 
 // Loads the attack samples table
 void _GameAssets::LoadSoundGroups(const std::string &Path) {
-	AttackSampleTemplateStruct SampleTemplate;
+	_SoundGroup SampleTemplate;
 
 	// Load file
 	std::ifstream File(Path, std::ios::in);
@@ -91,9 +98,8 @@ void _GameAssets::LoadSoundGroups(const std::string &Path) {
 
 	// Read file
 	while(!File.eof() && File.peek() != EOF) {
-
-		std::string Identifier;
-		std::getline(File, Identifier, '\t');
+		std::string ID;
+		std::getline(File, ID, '\t');
 
 		// Read rest of line into buffer
 		std::string Line;
@@ -101,14 +107,22 @@ void _GameAssets::LoadSoundGroups(const std::string &Path) {
 		std::stringstream Buffer(Line);
 
 		// Read sounds
-		for(int i = 0; i < SAMPLE_TYPES; i++)
-			std::getline(Buffer, SampleTemplate.Samples[i], '\t');
+		for(int i = 0; i < SOUND_TYPES; i++) {
+			std::string SoundID;
+			std::getline(Buffer, SoundID, '\t');
+
+			// Check for sound
+			if(SoundID != "" && ae::Assets.Sounds.find(SoundID) == ae::Assets.Sounds.end())
+				throw std::runtime_error(std::string(__PRETTY_FUNCTION__) + " - Cannot find: " + SoundID);
+
+			SampleTemplate.Sounds[i] = SoundID;
+		}
 
 		// Check for duplicates
-		if(IsAttackSampleLoaded(Identifier))
-			throw std::runtime_error(std::string(__PRETTY_FUNCTION__) + " - Duplicate entry: " + Identifier);
+		if(SoundGroups.find(ID) != SoundGroups.end())
+			throw std::runtime_error(std::string(__PRETTY_FUNCTION__) + " - Duplicate entry: " + ID);
 
-		AttackSampleTable[Identifier] = SampleTemplate;
+		SoundGroups[ID] = SampleTemplate;
 	}
 
 	File.close();
@@ -208,15 +222,15 @@ void _GameAssets::LoadWeaponParticles(const std::string &Path) {
 	File.close();
 }
 
-bool _GameAssets::IsAttackSampleLoaded(const std::string &Identifier) { return AttackSampleTable.find(Identifier) != AttackSampleTable.end(); }
+bool _GameAssets::IsAttackSampleLoaded(const std::string &Identifier) { return SoundGroups.find(Identifier) != SoundGroups.end(); }
 bool _GameAssets::IsParticleLoaded(const std::string &Identifier) { return ParticleTable.find(Identifier) != ParticleTable.end(); }
 bool _GameAssets::IsWeaponParticleTemplateLoaded(const std::string &Identifier) { return WeaponParticleTable.find(Identifier) != WeaponParticleTable.end(); }
 
-AttackSampleTemplateStruct *_GameAssets::GetAttackSampleTemplate(const std::string &Identifier) {
-	if(AttackSampleTable.find(Identifier) == AttackSampleTable.end())
+_SoundGroup *_GameAssets::GetAttackSampleTemplate(const std::string &Identifier) {
+	if(SoundGroups.find(Identifier) == SoundGroups.end())
 		return nullptr;
 
-	return &AttackSampleTable[Identifier];
+	return &SoundGroups[Identifier];
 }
 _ParticleTemplate *_GameAssets::GetParticleTemplate(const std::string &Identifier) {
 	if(ParticleTable.find(Identifier) == ParticleTable.end())

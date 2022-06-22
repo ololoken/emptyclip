@@ -26,6 +26,7 @@
 #include <ae/program.h>
 #include <ae/console.h>
 #include <ae/light.h>
+#include <ae/audio.h>
 #include <objects/entity.h>
 #include <objects/player.h>
 #include <objects/monster.h>
@@ -171,11 +172,8 @@ bool _PlayState::HandleAction(int InputType, std::size_t Action, int Value) {
 				if(!HUD->GetInventoryOpen() && !Player->IsMeleeAttacking()) {
 
 					// Play sound
-					if(Player->CanAttack(WEAPONATTACK_MAIN) && !Player->HasAmmo()) {
-						const ae::_Sound *AudioBuffer = Audio.GetBuffer(Player->GetSample(SAMPLE_EMPTY));
-						if(AudioBuffer)
-							Audio.Play(new _AudioSource(AudioBuffer), Player->Position);
-					}
+					if(Player->CanAttack(WEAPONATTACK_MAIN) && !Player->HasAmmo())
+						ae::Audio.PlaySound(ae::Assets.Sounds[Player->GetSample(SOUND_EMPTY)]);
 
 					if(Player->GetFireRate(WEAPONATTACK_MAIN) == FIRERATE_SEMI) {
 						Player->AttackRequested = true;
@@ -431,7 +429,7 @@ void _PlayState::Update(double FrameTime) {
 	if(!ae::Graphics.Element->HitElement && CursorItem && !HUD->CursorOverItem && (HUD->GetInventoryOpen() || CursorItemTimer > HUD_CURSOR_ITEM_WAIT))
 		HUD->CursorOverItem = CursorItem;
 
-	Audio.SetPosition(Player->Position);
+	ae::Audio.SetPosition(glm::vec3(Player->Position.x, 10, Player->Position.y));
 }
 
 // Render the state
@@ -606,9 +604,7 @@ void _PlayState::EntityAttack(_Entity *Attacker, int GridType) {
 	_Hit Hit;
 	if(WeaponType != WEAPON_MELEE) {
 		GenerateBulletEffects(Attacker, -1, Hit);
-		const ae::_Sound *AudioBuffer = Audio.GetBuffer(Attacker->GetSample(SAMPLE_FIRE));
-		if(AudioBuffer)
-			Audio.Play(new _AudioSource(AudioBuffer), Attacker->Position);
+		ae::Audio.PlaySound(ae::Assets.Sounds[Attacker->GetSample(SOUND_FIRE)], glm::vec3(Attacker->Position.x, 0.0f, Attacker->Position.y));
 	}
 
 	Attacker->StartTriggerDownAudio();
@@ -655,9 +651,7 @@ void _PlayState::EntityAttack(_Entity *Attacker, int GridType) {
 			break;
 			case HIT_WALL:
 				if(!PlayedHitWallSound) {
-					const ae::_Sound *AudioBuffer = Audio.GetBuffer(Attacker->GetSample(SAMPLE_RICOCHET));
-					if(AudioBuffer)
-						Audio.Play(new _AudioSource(AudioBuffer), Hit.Position);
+					ae::Audio.PlaySound(ae::Assets.Sounds[Attacker->GetSample(SOUND_RICOCHET)], glm::vec3(Hit.Position.x, 0.0f, Hit.Position.y));
 					PlayedHitWallSound = true;
 				}
 
@@ -682,27 +676,25 @@ void _PlayState::EntityAttack(_Entity *Attacker, int GridType) {
 				// Update health
 				Hit.Object->UpdateHealth(-Damage);
 				if(Hit.Object->IsDying()) {
-					Attacker->UpdateExperience(Hit.Object->ExperienceGiven);
+
+					// Handle item drops
 					CreateItemDrop(Hit.Object);
 
 					// Dying sound
-					const ae::_Sound *AudioBuffer = Audio.GetBuffer(Hit.Object->GetSample(SAMPLE_DEATH));
-					if(AudioBuffer)
-						Audio.Play(new _AudioSource(AudioBuffer), Hit.Position);
+					ae::Audio.PlaySound(ae::Assets.Sounds[Hit.Object->GetSample(SOUND_DEATH)], glm::vec3(Hit.Position.x, 0.0f, Hit.Position.y));
 
-					if(Attacker->Type == _Object::PLAYER)
+					// Update stats
+					if(Attacker->Type == _Object::PLAYER) {
 						Attacker->UpdateKillCount(1);
+						Attacker->UpdateExperience(Hit.Object->ExperienceGiven);
+					}
 				}
 
 				// Weapon hit sound
-				const ae::_Sound *AudioBuffer = Audio.GetBuffer(Attacker->GetSample(SAMPLE_HIT));
-				if(AudioBuffer)
-					Audio.Play(new _AudioSource(AudioBuffer), Hit.Position);
+				ae::Audio.PlaySound(ae::Assets.Sounds[Attacker->GetSample(SOUND_HIT)], glm::vec3(Hit.Position.x, 0.0f, Hit.Position.y));
 
 				// Entity hit sound
-				AudioBuffer = Audio.GetBuffer(Hit.Object->GetSample(SAMPLE_TAKEDAMAGE));
-				if(AudioBuffer)
-					Audio.Play(new _AudioSource(AudioBuffer), Hit.Position);
+				ae::Audio.PlaySound(ae::Assets.Sounds[Hit.Object->GetSample(SOUND_TAKEDAMAGE)], glm::vec3(Hit.Position.x, 0.0f, Hit.Position.y));
 
 				// Set HUD last hit object
 				if(Hit.Object->Type == _Object::MONSTER)
@@ -902,7 +894,7 @@ void _PlayState::CheckEvents(const _Entity *Entity) {
 						Event->Active = false;
 				break;
 				case EVENT_SOUND:
-					if(Audio.GetBuffer(Event->ItemIdentifier)) {
+					if(ae::Assets.Sounds[Event->ItemIdentifier]) {
 						Event->StartTimer();
 						ActiveEvents.push_back(Event);
 					}
@@ -951,59 +943,55 @@ void _PlayState::UpdateEvents(double FrameTime) {
 	for(auto ActiveEventIterator = ActiveEvents.begin(); ActiveEventIterator != ActiveEvents.end(); ++ActiveEventIterator) {
 		_Event *Event = *ActiveEventIterator;
 		Event->Update(FrameTime);
+		if(!Event->TimerExpired())
+			continue;
 
-		if(Event->TimerExpired()) {
-			glm::vec2 Position;
-			bool Decrement = false;
-			switch(Event->Type) {
-				case EVENT_SPAWN: {
-
-					const std::vector<_EventTile> &Tiles = Event->Tiles;
-					for(size_t i = 0; i < Tiles.size(); i++) {
-						Position.x = Tiles[i].Coord.x + 0.5f;
-						Position.y = Tiles[i].Coord.y + 0.5f;
-						AddMonster(Stats.CreateMonster(Event->MonsterIdentifier, Position));
-						Particles->Create(_ParticleSpawn(GameAssets.GetParticleTemplate(Event->ParticleIdentifier), glm::vec2(0), Position, OBJECT_Z, 0));
-					}
-
-					Decrement = true;
-				} break;
-				case EVENT_SOUND: {
-					const ae::_Sound *AudioBuffer = Audio.GetBuffer(Event->ItemIdentifier);
-					if(AudioBuffer)
-						Audio.Play(new _AudioSource(AudioBuffer, true));
-					Decrement = true;
-				} break;
-				case EVENT_FSWITCH:
-					if(Map->CanChangeMapState(Event)) {
-						Map->ChangeMapState(Event);
-						Decrement = true;
-					}
-				break;
-				case EVENT_ENABLE: {
-					const std::vector<_EventTile> &Tiles = Event->Tiles;
-					for(size_t i = 0; i < Tiles.size(); i++)
-						Map->ToggleEventActive(Tiles[i].BlockID);
-
-					Decrement = true;
-				} break;
-				default:
-				break;
-			}
-
-			// Decrease the event level
-			if(Decrement) {
-				Event->StartTimer();
-				if(Event->Level != -1)
-					Event->Decrement();
-
-				if(Event->Level == 0) {
-					ActiveEventIterator = ActiveEvents.erase(ActiveEventIterator);
-					if(ActiveEventIterator == ActiveEvents.end())
-						break;
+		glm::vec2 Position;
+		bool Decrement = false;
+		switch(Event->Type) {
+			case EVENT_SPAWN: {
+				const std::vector<_EventTile> &Tiles = Event->Tiles;
+				for(size_t i = 0; i < Tiles.size(); i++) {
+					Position.x = Tiles[i].Coord.x + 0.5f;
+					Position.y = Tiles[i].Coord.y + 0.5f;
+					AddMonster(Stats.CreateMonster(Event->MonsterIdentifier, Position));
+					Particles->Create(_ParticleSpawn(GameAssets.GetParticleTemplate(Event->ParticleIdentifier), glm::vec2(0), Position, OBJECT_Z, 0));
 				}
-			}
 
+				Decrement = true;
+			} break;
+			case EVENT_SOUND: {
+				ae::Audio.PlaySound(ae::Assets.Sounds[Event->ItemIdentifier]);
+				Decrement = true;
+			} break;
+			case EVENT_FSWITCH:
+				if(Map->CanChangeMapState(Event)) {
+					Map->ChangeMapState(Event);
+					Decrement = true;
+				}
+			break;
+			case EVENT_ENABLE: {
+				const std::vector<_EventTile> &Tiles = Event->Tiles;
+				for(size_t i = 0; i < Tiles.size(); i++)
+					Map->ToggleEventActive(Tiles[i].BlockID);
+
+				Decrement = true;
+			} break;
+			default:
+			break;
+		}
+
+		// Decrease the event level
+		if(Decrement) {
+			Event->StartTimer();
+			if(Event->Level != -1)
+				Event->Decrement();
+
+			if(Event->Level == 0) {
+				ActiveEventIterator = ActiveEvents.erase(ActiveEventIterator);
+				if(ActiveEventIterator == ActiveEvents.end())
+					break;
+			}
 		}
 	}
 }

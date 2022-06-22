@@ -26,9 +26,9 @@
 // Forward Declarations
 namespace ae {
 	class _Animation;
+	class _AudioSource;
 }
 struct _ParticleTemplate;
-class _AudioSource;
 class _Map;
 class _Animation;
 
@@ -132,8 +132,8 @@ class _Entity : public _Object {
 		glm::vec2 WeaponParticleOffset[WEAPON_TYPES];
 
 		// Audio
-		std::string Samples[SAMPLE_TYPES];
-		_AudioSource *TriggerDownAudio;
+		std::string Samples[SOUND_TYPES];
+		ae::_AudioSource *TriggerDownAudio;
 
 		// Movement
 		MoveType MoveState;

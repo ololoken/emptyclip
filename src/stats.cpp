@@ -390,7 +390,7 @@ void _Stats::LoadWeapons(const std::string &Path) {
 	// Read file
 	while(!File.eof() && File.peek() != EOF) {
 		_WeaponTemplate WeaponTemplate;
-		AttackSampleTemplateStruct *AttackSample;
+		_SoundGroup *AttackSample;
 
 		std::string Name;
 		std::string ColorName;
@@ -443,9 +443,9 @@ void _Stats::LoadWeapons(const std::string &Path) {
 
 		// Set samples
 		AttackSample = GameAssets.GetAttackSampleTemplate(SamplesIdentifier);
-		for(int i = 0; i < SAMPLE_TYPES; i++) {
+		for(int i = 0; i < SOUND_TYPES; i++) {
 			if(AttackSample)
-				WeaponTemplate.Samples[i] = AttackSample->Samples[i];
+				WeaponTemplate.Samples[i] = AttackSample->Sounds[i];
 		}
 
 		// Set particles
@@ -645,13 +645,13 @@ _Weapon *_Stats::CreateWeapon(const std::string &Identifier, int Count, const gl
 // Creates a monster
 _Monster *_Stats::CreateMonster(const std::string &Identifier, const glm::vec2 &Position) {
 	_MonsterTemplate &MonsterTemplate = Monsters[Identifier];
-	AttackSampleTemplateStruct *AttackSample = GameAssets.GetAttackSampleTemplate(MonsterTemplate.SamplesIdentifier);
+	_SoundGroup *AttackSample = GameAssets.GetAttackSampleTemplate(MonsterTemplate.SamplesIdentifier);
 
 	// Creates a monster
 	_Monster *Monster = new _Monster(MonsterTemplate, Position);
 	Monster->Animation->Reels = ae::Assets.Animations[MonsterTemplate.AnimationIdentifier];
-	for(int i = 0; i < SAMPLE_TYPES; i++)
-		Monster->Samples[i] = AttackSample->Samples[i];
+	for(int i = 0; i < SOUND_TYPES; i++)
+		Monster->Samples[i] = AttackSample->Sounds[i];
 
 	return Monster;
 }

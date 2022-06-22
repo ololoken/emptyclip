@@ -70,7 +70,7 @@ class _Audio {
 		bool IsEnabled() { return Enabled; }
 
 		// Buffers
-		bool LoadBuffer(const std::string &Name, const std::string &File, float Volume=1.0f, int Limit=0);
+		bool LoadBuffer(const std::string &File, float Volume=1.0f, int Limit=0);
 		const ae::_Sound *GetBuffer(const std::string &Name);
 		void FreeAllBuffers();
 

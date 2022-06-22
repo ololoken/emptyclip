@@ -22,6 +22,7 @@
 #include <ae/assets.h>
 #include <ae/animation.h>
 #include <ae/program.h>
+#include <ae/audio.h>
 #include <audio.h>
 #include <gameassets.h>
 #include <stats.h>
@@ -88,10 +89,10 @@ _Player::_Player(const std::string &SavePath) {
 	Animation->Reels = ae::Assets.Animations["player"];
 
 	// Set samples
-	AttackSampleTemplateStruct *AttackSample = GameAssets.GetAttackSampleTemplate("player0");
-	for(int i = 0; i < SAMPLE_TYPES; i++) {
+	_SoundGroup *AttackSample = GameAssets.GetAttackSampleTemplate("player0");
+	for(int i = 0; i < SOUND_TYPES; i++) {
 		if(AttackSample)
-			Samples[i] = AttackSample->Samples[i];
+			Samples[i] = AttackSample->Sounds[i];
 	}
 
 	Reset();
@@ -467,9 +468,6 @@ void _Player::Update(double FrameTime) {
 			Tired = true;
 		}
 	}
-
-	if(TriggerDownAudio)
-		TriggerDownAudio->SetPosition(Position);
 }
 
 // Updates the leg's animation and direction
@@ -480,11 +478,8 @@ void _Player::UpdateAnimation(double FrameTime, bool PlaySound) {
 	LegAnimation->Update(FrameTime);
 
 	// Play move sound on first and last frame of leg animation
-	if(PlaySound && LastFrame != LegAnimation->Frame && (LegAnimation->Frame == 0 || LegAnimation->Frame == LegAnimation->Reels[LegAnimation->Reel]->EndFrame)) {
-		const ae::_Sound *AudioBuffer = Audio.GetBuffer(GetSample(SAMPLE_MOVE));
-		if(AudioBuffer)
-			Audio.Play(new _AudioSource(AudioBuffer, true));
-	}
+	if(PlaySound && LastFrame != LegAnimation->Frame && (LegAnimation->Frame == 0 || LegAnimation->Frame == LegAnimation->Reels[LegAnimation->Reel]->EndFrame))
+		ae::Audio.PlaySound(ae::Assets.Sounds[GetSample(SOUND_MOVE)]);
 
 	switch(MoveState) {
 		case MOVE_FORWARD:
@@ -1039,9 +1034,7 @@ void _Player::StartReloading() {
 		return;
 
 	// Play sound
-	const ae::_Sound *AudioBuffer = Audio.GetBuffer(GetSample(SAMPLE_RELOAD));
-	if(AudioBuffer)
-		Audio.Play(new _AudioSource(AudioBuffer, true));
+	ae::Audio.PlaySound(ae::Assets.Sounds[GetSample(SOUND_RELOAD)]);
 
 	// Start timer
 	ReloadTimer = 0;
@@ -1308,9 +1301,9 @@ void _Player::IncurDeathPenalty() {
 // Returns a sample index
 const std::string &_Player::GetSample(int SampleType) const {
 
-	if(AttackRequestType == 0 && SampleType <= SAMPLE_HIT && HasMainHand())
+	if(AttackRequestType == 0 && SampleType <= SOUND_HIT && HasMainHand())
 		return GetMainHand()->GetSample(SampleType);
-	else if(AttackRequestType == 1 && SampleType <= SAMPLE_HIT && HasMelee())
+	else if(AttackRequestType == 1 && SampleType <= SOUND_HIT && HasMelee())
 		return GetMelee()->GetSample(SampleType);
 	else
 		return Samples[SampleType];
