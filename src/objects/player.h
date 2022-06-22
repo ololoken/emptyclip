@@ -80,7 +80,7 @@ class _Player : public _Entity {
 		void ResetAccuracy(bool CompleteReset);
 		void RecalculateStats();
 
-		int AddItem(_Item *Item);
+		int AddItem(_Item *Item, int &AmountAdded);
 		void DropItem(int Slot);
 		void SwapInventory(int SwapFrom, int SwapTo);
 		bool CanEquipItem(_Item *Item, int Slot);

@@ -378,7 +378,14 @@ void _PlayState::Update(double FrameTime) {
 
 	// Automatically pickup ammo
 	if(NearbyItem && NearbyItem->Type == _Object::AMMO) {
-		PickupObject(NearbyItem);
+		int AmountAdded = 0;
+		PickupObject(NearbyItem, AmountAdded);
+
+		if(AmountAdded) {
+			_Particle *DamageParticle = new _Particle(_ParticleSpawn(GameAssets.GetParticleTemplate("damage0"), glm::vec2(0), Player->Position, OBJECT_Z, 0));
+			DamageParticle->Text = std::string("+") + std::to_string(AmountAdded);
+			Particles->Add(DamageParticle);
+		}
 	}
 	// Manually pickup up an item
 	else if(Player->UseRequested) {
@@ -713,12 +720,12 @@ void _PlayState::EntityAttack(_Entity *Attacker, int GridType) {
 }
 
 // Places an item into the player's inventory
-void _PlayState::PickupObject(_Item *NearbyItem) {
+void _PlayState::PickupObject(_Item *NearbyItem, int &AmountAdded) {
 	if(!NearbyItem)
 		return;
 
 	// Attempt to add item
-	int AddResult = Player->AddItem(NearbyItem);
+	int AddResult = Player->AddItem(NearbyItem, AmountAdded);
 	if(AddResult) {
 		Player->ResetUseTimer();
 		Map->RemoveItem(NearbyItem);
@@ -737,8 +744,10 @@ void _PlayState::UseObject(_Item *NearbyItem) {
 		return;
 
 	// Pick up an item if available
-	if(Player->CanPickup())
-		PickupObject(NearbyItem);
+	if(Player->CanPickup()) {
+		int AmountAdded = 0;
+		PickupObject(NearbyItem, AmountAdded);
+	}
 
 	// Open a door if possible
 	glm::ivec2 Position;

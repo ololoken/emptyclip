@@ -702,7 +702,7 @@ int _Player::SpentSkillPoints() const {
 }
 
 // Adds an item to the player's possession, returns 0 on full, return 1 on delete, return 2 on combine
-int _Player::AddItem(_Item *Item) {
+int _Player::AddItem(_Item *Item, int &AmountAdded) {
 
 	switch(Item->Type) {
 		case _Object::WEAPON: {
@@ -746,9 +746,9 @@ int _Player::AddItem(_Item *Item) {
 			if(Ammo[Item->ID] == AmmoMax[Item->ID])
 				return 0;
 
-			Ammo[Item->ID] += Item->Attributes["amount"].Int;
-			if(Ammo[Item->ID] > AmmoMax[Item->ID])
-				Ammo[Item->ID] = AmmoMax[Item->ID];
+			int AmountToMax = AmmoMax[Item->ID] - Ammo[Item->ID];
+			AmountAdded = std::min(AmountToMax, Item->Attributes["amount"].Int);
+			Ammo[Item->ID] += AmountAdded;
 
 			return 1;
 		}
