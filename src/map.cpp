@@ -555,24 +555,23 @@ _Object *_Map::CheckCollisionsInGrid(const glm::vec2 &Position, float Radius, in
 	if(!Data)
 		throw std::runtime_error("Tile data uninitialized!");
 
-	float DistanceSquared, RadiiSum;
-
 	// Get the object's bounding rectangle
 	_TileBounds TileBounds;
 	GetTileBounds(Position, Radius, TileBounds);
 
+	// Iterate through tiles covered by the bounds
 	for(int i = TileBounds.Start.x; i <= TileBounds.End.x; i++) {
 		for(int j = TileBounds.Start.y; j <= TileBounds.End.y; j++) {
-			for(auto Iterator : Data[i][j].Objects[GridType]) {
-				if(Iterator != SkipObject) {
-					DistanceSquared = glm::distance2(Iterator->Position, Position);
-					RadiiSum = Iterator->Radius + Radius;
 
-					// Check circle intersection
-					if(DistanceSquared < RadiiSum * RadiiSum) {
-						return Iterator;
-					}
-				}
+			// Iterate through objects in each tile
+			for(auto Iterator : Data[i][j].Objects[GridType]) {
+				if(Iterator == SkipObject)
+					continue;
+
+				// Check circle intersection
+				float RadiiSum = Iterator->Radius + Radius;
+				if(glm::distance2(Iterator->Position, Position) < RadiiSum * RadiiSum)
+					return Iterator;
 			}
 		}
 	}

@@ -55,7 +55,7 @@ const  float        AUDIO_MAX_DISTANCE             =  30.0f;
 const  float        ENTITY_MOVESOUNDDELAYFACTOR    =  0.02625f;
 const  int          ENTITY_MINDAMAGEPOINTS         =  1;
 //     Player
-const  int          PLAYER_SAVEVERSION             =  3;
+const  int          PLAYER_SAVEVERSION             =  4;
 const  float        PLAYER_RADIUS                  =  0.35f;
 const  double       PLAYER_MEDKITPERIOD            =  0.5;
 const  float        PLAYER_LEGCHANGEFACTOR         =  0.2f;
@@ -72,7 +72,9 @@ const  float        PLAYER_ZOOMSCALE               =  15.0f;
 const  float        PLAYER_MAXACCURACY             =  170.0f;
 const  double       PLAYER_WEAPONSWITCHPERIOD      =  0.5;
 const  double       PLAYER_USEPERIOD               =  0.2;
+//     Inventory
 const  int          INVENTORY_BAGSIZE              =  16;
+const  int          INVENTORY_MAX_STACK            =  99;
 //     Items
 const  float        ITEM_SCALE                     =  0.5f;
 const  float        ITEM_Z                         =  0.05f;

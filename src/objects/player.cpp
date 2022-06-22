@@ -1349,7 +1349,7 @@ void _Player::UpdateColor() {
 }
 
 int _Player::GetInventoryMaxStack() const {
-	return Stats.GetSkill(Skills[SKILL_MAXINVENTORY], SKILL_MAXINVENTORY) + 1;
+	return INVENTORY_MAX_STACK;
 }
 
 bool _Player::CanUseMedkit() const {

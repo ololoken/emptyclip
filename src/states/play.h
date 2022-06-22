@@ -95,8 +95,8 @@ class _PlayState : public ae::_State {
 		void RemoveMonster(_Monster *Monster);
 		void CreateItemDrop(const _Entity *Entity);
 		void EntityAttack(_Entity *Attacker, int GridType);
-		void PickupObject();
-		void UseObject();
+		void PickupObject(_Item *NearbyItem);
+		void UseObject(_Item *NearbyItem);
 
 			// Game
 		double CursorItemTimer;

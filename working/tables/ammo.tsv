@@ -1,7 +1,7 @@
 id	name	icon_texture	amount	max
 9mm	9mm	textures/items/a_9mm.png	15	50
 357m	.357 Magnum	textures/items/a_357.png	6	30
-556mm	5.56mm	textures/items/a_556mm.png	30	150
+556mm	5.56mm	textures/items/a_556mm.png	20	100
 762mm	7.62mm	textures/items/a_762mm.png	30	150
 shells	Shotgun Shells	textures/items/a_shells.png	10	50
 rockets	Rockets	textures/items/a_rockets.png	1	5

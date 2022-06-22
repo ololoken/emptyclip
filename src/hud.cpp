@@ -480,7 +480,7 @@ void _HUD::RenderCharacterScreen() {
 	Elements[LABEL_SKILL_REMAINING]->Text = Buffer.str();
 	Buffer.str("");
 
-	for(int i = 0; i < SKILL_MAXUSED; i++) {
+	for(int i = 0; i < SKILL_COUNT; i++) {
 		Buffer << Player->GetSkill(i);
 		Elements[LABEL_SKILL0 + i]->Text = Buffer.str();
 		Buffer.str("");
@@ -934,11 +934,6 @@ void _HUD::UpdateSkillInfo(int Skill, int DrawX, int DrawY) {
 			Elements[LABEL_SKILLTEXT]->Text = "Damage Resist";
 			Buffer << "+" << Stats.GetSkillPercentImprovement(Player->GetSkill(Skill), Skill) << "% Damage Resist";
 			BufferNext << "+" << Stats.GetSkillPercentImprovement(Stats.GetValidSkillLevel(Player->GetSkill(Skill)+1), Skill) << "% Damage Resist";
-		break;
-		case SKILL_MAXINVENTORY:
-			Elements[LABEL_SKILLTEXT]->Text = "Increases max inventory stack size";
-			Buffer << "+" << Stats.GetSkill(Player->GetSkill(Skill), Skill) << " Stacks";
-			BufferNext << "+" << Stats.GetSkill(Stats.GetValidSkillLevel(Player->GetSkill(Skill)+1), Skill) << " Stacks";
 		break;
 		case SKILL_MAXSTAMINA:
 			Elements[LABEL_SKILLTEXT]->Text = "Increases max stamina";

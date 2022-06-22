@@ -5,6 +5,7 @@ Empty Clip 2.0.0 -
 - Inventory is bigger and can now hold equipment
 - Items in inventory can now stack
 - Items can be dropped by clicking the middle mouse button
+- Reworked skill system
 - Equipment can be equipped by right-clicking in the inventory
 - Added equipment slot for melee weapons and separate hotkey for melee attacks (Mouse button 4 by default)
 - Updated item tooltip and added equipped item comparison
@@ -13,6 +14,7 @@ Empty Clip 2.0.0 -
 - The game now pauses while menu is open
 - Mouse buttons can now be remapped
 - Ammo is now stored as a number of rounds for each ammo type
+- Ammo is now picked up automatically
 - Removed player profiles
 - Added cmake build system
 - Added console window (open with tilde key)

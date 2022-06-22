@@ -373,9 +373,16 @@ void _PlayState::Update(double FrameTime) {
 		CheckEvents(Player);
 	Player->TileChanged = false;
 
-	// Pickup up an object
-	if(Player->UseRequested) {
-		UseObject();
+	// Find nearest item
+	_Item *NearbyItem = (_Item *)Map->CheckCollisionsInGrid(Player->Position, Player->Radius, GRID_ITEM, nullptr);
+
+	// Automatically pickup ammo
+	if(NearbyItem && NearbyItem->Type == _Object::AMMO) {
+		PickupObject(NearbyItem);
+	}
+	// Manually pickup up an item
+	else if(Player->UseRequested) {
+		UseObject(NearbyItem);
 
 		Player->UseRequested = false;
 	}
@@ -706,38 +713,32 @@ void _PlayState::EntityAttack(_Entity *Attacker, int GridType) {
 }
 
 // Places an item into the player's inventory
-void _PlayState::PickupObject() {
-	_Item *HitItem;
+void _PlayState::PickupObject(_Item *NearbyItem) {
+	if(!NearbyItem)
+		return;
 
-	// Loop through the objects
-	_TileBounds TB;
-	Map->GetTileBounds(glm::vec2(0.8, 0.8), 0.5, TB);
-	HitItem = (_Item *)Map->CheckCollisionsInGrid(Player->Position, Player->Radius, GRID_ITEM, nullptr);
-
-	if(HitItem != nullptr) {
-		int AddResult = Player->AddItem(HitItem);
-		if(AddResult) {
-			Map->RemoveItem(HitItem);
-			if(AddResult == 2) {
-				delete HitItem;
-				CursorItemTimer = 0;
-			}
-			Player->ResetUseTimer();
-		}
-		else {
-			HUD->ShowTextMessage(HUD_INVENTORYFULLMESSAGE, HUD_INVENTORYFULLTIME);
+	// Attempt to add item
+	int AddResult = Player->AddItem(NearbyItem);
+	if(AddResult) {
+		Player->ResetUseTimer();
+		Map->RemoveItem(NearbyItem);
+		if(AddResult == 2) {
+			delete NearbyItem;
+			CursorItemTimer = 0;
 		}
 	}
+	else
+		HUD->ShowTextMessage(HUD_INVENTORYFULLMESSAGE, HUD_INVENTORYFULLTIME);
 }
 
-// Processes the use key to open doors and hit switches
-void _PlayState::UseObject() {
+// Processes the use key to open doors, hit switches, and pickup items
+void _PlayState::UseObject(_Item *NearbyItem) {
 	if(!Player->CanUse())
 		return;
 
 	// Pick up an item if available
 	if(Player->CanPickup())
-		PickupObject();
+		PickupObject(NearbyItem);
 
 	// Open a door if possible
 	glm::ivec2 Position;
