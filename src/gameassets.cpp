@@ -29,7 +29,6 @@
 #include <ae/program.h>
 #include <ae/ui.h>
 #include <ae/audio.h>
-#include <audio.h>
 #include <constants.h>
 #include <tinyxml2/tinyxml2.h>
 #include <stdexcept>
