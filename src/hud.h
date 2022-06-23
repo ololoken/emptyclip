@@ -107,7 +107,6 @@ class _HUD {
 
 		void Render();
 		void RenderCharacterScreen();
-		void DrawMinimap();
 		void UpdateSkillInfo(int Skill, int DrawX, int DrawY);
 		void RenderCrosshair(const glm::vec2 &Position);
 		void RenderDeathScreen();

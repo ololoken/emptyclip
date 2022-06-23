@@ -16,19 +16,20 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 *******************************************************************************/
 #include <map.h>
+#include <objects/entity.h>
+#include <objects/item.h>
+#include <objects/particle.h>
 #include <ae/random.h>
 #include <ae/camera.h>
 #include <ae/texture.h>
 #include <ae/graphics.h>
 #include <ae/assets.h>
 #include <ae/program.h>
+#include <ae/bounds.h>
 #include <gameassets.h>
 #include <events.h>
 #include <stats.h>
 #include <objectmanager.h>
-#include <objects/entity.h>
-#include <objects/item.h>
-#include <objects/particle.h>
 #include <constants.h>
 #include <fstream>
 #include <stdexcept>
@@ -1066,7 +1067,6 @@ void _Map::GetSelectedObjects(const glm::vec2 &Start, const glm::vec2 &End, std:
 
 // Removes a block from the list
 void _Map::RemoveBlock(int Layer, int Index) {
-
 	if(Index >= 0 && Index < (int)Blocks[Layer].size()) {
 		DeleteBlockIDFromTiles(Layer, Index);
 		Blocks[Layer].erase(Blocks[Layer].begin() + Index);
@@ -1078,6 +1078,7 @@ void _Map::DeleteBlockIDFromTiles(int Layer, int Index) {
 	for(size_t i = 0; i < Events.size(); i++)
 		Events[i]->DeleteBlockID(Layer, Index);
 }
+
 // Removes an event from the list
 void _Map::RemoveEvent(int Index) {
 	if(Index < 0 || Index >= (int)Events.size())
@@ -1244,6 +1245,50 @@ void _Map::RenderGrid(int Mode) {
 		ae::Graphics.DrawLine(glm::vec2(0, i), glm::vec2(Width, i));
 }
 
+// Draw the mini map
+void _Map::DrawMinimap() {
+
+	ae::_Bounds CaptureBounds(Camera->GetPosition() - HUD_MINIMAP_CAPTURE_SIZE, Camera->GetPosition() + HUD_MINIMAP_CAPTURE_SIZE);
+	glm::vec2 VisionSize = CaptureBounds.End - CaptureBounds.Start;
+	ae::_Bounds MinimapBounds(glm::ivec2(ae::Graphics.CurrentSize.x - HUD_MINIMAP_SIZE.x - HUD_MINIMAP_PADDING.x, HUD_MINIMAP_PADDING.y),
+					   glm::ivec2(ae::Graphics.CurrentSize.x - HUD_MINIMAP_PADDING.x, HUD_MINIMAP_PADDING.y + HUD_MINIMAP_SIZE.y));
+
+	// Draw minimap background
+	ae::Graphics.SetProgram(ae::Assets.Programs["ortho_pos"]);
+	ae::Graphics.SetColor(glm::vec4(0.0f, 0.0f, 0.0f, 0.5f));
+	ae::Graphics.EnableScissorTest();
+	ae::Graphics.SetScissor(MinimapBounds);
+	ae::Graphics.DrawRectangle(MinimapBounds, true);
+
+	// Draw walls
+	ae::Graphics.SetColor(glm::vec4(0.2f, 0.2f, 0.2f, 0.5f));
+	for(const auto &MinimapLayer : MinimapLayers[MINIMAP_WALLS]) {
+		glm::vec2 Start = MinimapBounds.Start + ((glm::vec2(MinimapLayer.Block->Start) - CaptureBounds.Start) / VisionSize) * HUD_MINIMAP_SIZE;
+		glm::vec2 End = MinimapBounds.Start + ((glm::vec2(MinimapLayer.Block->End + 1) - CaptureBounds.Start) / VisionSize) * HUD_MINIMAP_SIZE;
+
+		ae::Graphics.DrawRectangle(
+			Start,
+			End,
+			true
+		);
+	}
+
+	// Draw doors
+	ae::Graphics.SetColor(glm::vec4(0.2f, 0.2f, 0.5f, 0.5f));
+	for(const auto &MinimapLayer : MinimapLayers[MINIMAP_DOORS]) {
+		glm::vec2 Start = MinimapBounds.Start + ((glm::vec2(MinimapLayer.Event->Start) - CaptureBounds.Start) / VisionSize) * HUD_MINIMAP_SIZE;
+		glm::vec2 End = MinimapBounds.Start + ((glm::vec2(MinimapLayer.Event->End + 1) - CaptureBounds.Start) / VisionSize) * HUD_MINIMAP_SIZE;
+
+		ae::Graphics.DrawRectangle(
+			Start,
+			End,
+			true
+		);
+	}
+
+	ae::Graphics.DisableScissorTest();
+}
+
 // Draws rectangles around all the blocks
 void _Map::HighlightBlocks(int Layer) {
 	ae::Graphics.SetColor(COLOR_MAGENTA);
@@ -1312,7 +1357,6 @@ void _Map::ChangeMapState(const _Event *Event) {
 		// Change all the tiles
 		for(size_t i = StartIndex; i < Tiles.size(); i++) {
 			_Tile *Tile = &Data[Tiles[i].Coord.x][Tiles[i].Coord.y];
-
 			Tile->Collision ^= _Tile::ENTITY;
 
 			// Switch textures
@@ -1426,20 +1470,20 @@ void _Map::RenderWalls() {
 	ae::Graphics.SetColor(glm::vec4(1.0f));
 	ae::Graphics.SetDepthMask(true);
 	ae::Graphics.SetDepthTest(true);
-
 	ae::Graphics.SetCullFace(true);
 
 	// Draw walls
-	MinimapBlocks.clear();
+	MinimapLayers[MINIMAP_WALLS].clear();
 	for(std::size_t i = 0; i < Blocks[MAPLAYER_WALL].size(); i++) {
 		_Block *Block = &Blocks[MAPLAYER_WALL][i];
 
-		// Save blocks surrounding camera for minimap
+		// Add to minimap
 		glm::vec4 Bounds;
 		Block->GetBounds(Bounds);
-		if(!(Bounds[2] < Camera->GetPosition().x - HUD_MINIMAP_CAPTURE_SIZE || Bounds[0] > Camera->GetPosition().x + HUD_MINIMAP_CAPTURE_SIZE) &&
-		   !(Bounds[3] < Camera->GetPosition().y - HUD_MINIMAP_CAPTURE_SIZE || Bounds[1] > Camera->GetPosition().y + HUD_MINIMAP_CAPTURE_SIZE)) {
-			MinimapBlocks.push_back(Block);
+		if(!Block->Walkable && CheckMinimapBounds(Bounds, HUD_MINIMAP_CAPTURE_SIZE)) {
+			_MinimapLayer MinimapLayer;
+			MinimapLayer.Block = Block;
+			MinimapLayers[MINIMAP_WALLS].push_back(MinimapLayer);
 		}
 
 		// Always draw walls that go lower than floor
@@ -1472,12 +1516,19 @@ void _Map::RenderFlatWalls() {
 
 	for(size_t i = 0; i < Blocks[MAPLAYER_FLAT].size(); i++) {
 		_Block *Block = &Blocks[MAPLAYER_FLAT][i];
-		bool Draw = true;
-		if(Block->MinZ >= 0) {
-			glm::vec4 Bounds;
-			Block->GetBounds(Bounds);
-			Draw = Camera->IsAABBInView(Bounds);
+
+		// Add to minimap
+		glm::vec4 Bounds;
+		Block->GetBounds(Bounds);
+		if(Block->MinZ <= 0 && CheckMinimapBounds(Bounds, HUD_MINIMAP_CAPTURE_SIZE)) {
+			_MinimapLayer MinimapLayer;
+			MinimapLayer.Block = Block;
+			MinimapLayers[MINIMAP_WALLS].push_back(MinimapLayer);
 		}
+
+		bool Draw = true;
+		if(Block->MinZ >= 0)
+			Draw = Camera->IsAABBInView(Bounds);
 
 		if(Draw) {
 			ae::Graphics.DrawWall(
@@ -1501,7 +1552,7 @@ void _Map::RenderEvents(std::vector<const ae::_Texture *> &Textures) {
 
 	// Draw events
 	for(size_t i = 0; i < Events.size(); i++) {
-		glm::vec4 Bounds((float)Events[i]->Start.x, (float)Events[i]->Start.y, (float)Events[i]->End.x + 1.0f, (float)Events[i]->End.y + 1.0f);
+		glm::vec4 Bounds(Events[i]->Start.x, Events[i]->Start.y, Events[i]->End.x + 1.0f, Events[i]->End.y + 1.0f);
 		if(Camera->IsAABBInView(Bounds)) {
 			ae::Graphics.DrawRepeatable(
 				glm::vec3(Events[i]->Start.x, Events[i]->Start.y, MAP_LAYEROFFSET),
@@ -1582,6 +1633,7 @@ int _Map::RenderParticles(int Type) {
 
 // Update map
 void _Map::Update(double FrameTime) {
+	GetMinimapObjects();
 	ObjectManager->Update(FrameTime, Camera);
 	if(AmbientLightPeriod > 0 && AmbientLightTimer <= AmbientLightPeriod) {
 		AmbientLightBlendFactor = AmbientLightTimer / AmbientLightPeriod;
@@ -1603,6 +1655,39 @@ void _Map::RemoveItem(_Item *Item) {
 	RemoveObjectFromGrid(Item, GRID_ITEM);
 }
 
+// Check if bounds are in minimap range
+bool _Map::CheckMinimapBounds(const glm::vec4 &Bounds, float Size) {
+
+	if(Bounds[2] < Camera->GetPosition().x - Size || Bounds[0] > Camera->GetPosition().x + Size)
+	   return false;
+	if(Bounds[3] < Camera->GetPosition().y - Size || Bounds[1] > Camera->GetPosition().y + Size)
+	   return false;
+
+	return true;
+}
+
+// Get objects to render in minimap
+void _Map::GetMinimapObjects() {
+	MinimapLayers[MINIMAP_DOORS].clear();
+	MinimapLayers[MINIMAP_OBJECTS].clear();
+
+	// Get doors
+	for(const auto &Event : Events) {
+		if(Event->Type != EVENT_DOOR)
+			continue;
+
+		// Save blocks surrounding camera for minimap
+		glm::vec4 Bounds;
+		Event->GetBounds(Bounds);
+		if(CheckMinimapBounds(Bounds, HUD_MINIMAP_CAPTURE_SIZE)) {
+			_MinimapLayer MinimapLayer;
+			MinimapLayer.Event = Event;
+			MinimapLayers[MINIMAP_DOORS].push_back(MinimapLayer);
+		}
+	}
+}
+
+// Add object to render list
 void _Map::AddRenderList(_Object *Object, int Layer) {
 	ObjectManager->AddRenderList(Object, Layer);
 }

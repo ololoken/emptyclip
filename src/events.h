@@ -19,6 +19,7 @@
 
 // Libraries
 #include <glm/vec2.hpp>
+#include <glm/vec4.hpp>
 #include <vector>
 #include <string>
 
@@ -63,6 +64,8 @@ class _Event {
 		void StartTimer() { Timer = 0; }
 		void Decrement() { Level--; }
 		bool TimerExpired() const { return (Timer > ActivationPeriod); }
+
+		void GetBounds(glm::vec4 &Bounds) { Bounds[0] = Start.x; Bounds[1] = Start.y; Bounds[2] = End.x + 1.0f; Bounds[3] = End.y + 1.0f; }
 
 		int Type;
 		int Active;

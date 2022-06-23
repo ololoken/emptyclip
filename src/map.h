@@ -52,6 +52,14 @@ enum MapType {
 	MAPTYPE_ADVENTURE
 };
 
+// Types of minimap layers
+enum MinimapLayers{
+	MINIMAP_WALLS,
+	MINIMAP_DOORS,
+	MINIMAP_OBJECTS,
+	MINIMAP_COUNT,
+};
+
 const int WALL_LEFT                 = 0x1;
 const int WALL_TOP                  = 0x2;
 const int WALL_RIGHT                = 0x4;
@@ -99,7 +107,7 @@ struct _TileBounds {
 // Holds data for a block of tiles
 struct _Block {
 
-	void GetBounds(glm::vec4 &Bounds) { Bounds[0] = (float)Start.x; Bounds[1] = (float)Start.y; Bounds[2] = End.x + 1.0f; Bounds[3] = End.y + 1.0f; }
+	void GetBounds(glm::vec4 &Bounds) { Bounds[0] = Start.x; Bounds[1] = Start.y; Bounds[2] = End.x + 1.0f; Bounds[3] = End.y + 1.0f; }
 
 	glm::ivec2 Start;
 	glm::ivec2 End;
@@ -149,6 +157,13 @@ struct _ObjectSpawn {
 	bool Deleted;
 };
 
+// Holds minimap layer data
+struct _MinimapLayer {
+	const _Block *Block;
+	const _Event *Event;
+	const _Object *Object;
+};
+
 // Classes
 class _Map {
 
@@ -193,6 +208,7 @@ class _Map {
 		void RenderLights(const glm::vec2 &PlayerPosition);
 		void RenderEvents(std::vector<const ae::_Texture *> &Textures);
 		void RenderGrid(int Mode);
+		void DrawMinimap();
 		void HighlightBlocks(int Layer);
 
 		void AddBlock(int Layer, _Block Block) { Blocks[Layer].push_back(Block); }
@@ -235,6 +251,8 @@ class _Map {
 		void AddItem(_Item *Item);
 		void RemoveItem(_Item *Item);
 
+		bool CheckMinimapBounds(const glm::vec4 &Bounds, float Size);
+		void GetMinimapObjects();
 		void AddRenderList(_Object *Object, int Layer);
 		static glm::vec2 GenerateRandomPointInCircle(float Radius);
 
@@ -243,7 +261,7 @@ class _Map {
 		std::vector<std::string> MonsterSet;
 
 		// Minimap
-		std::vector<const _Block *> MinimapBlocks;
+		std::vector<_MinimapLayer> MinimapLayers[MINIMAP_COUNT];
 
 	private:
 
