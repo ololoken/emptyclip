@@ -97,23 +97,20 @@ class _HUD {
 		_HUD(_Player *Player);
 		~_HUD();
 
-		void MouseEvent(const ae::_MouseEvent &MouseEvent);
+		void SetLastEntityHit(_Entity *Entity);
+		void SetInventoryOpen(bool Value);
+		bool GetInventoryOpen() { return InventoryOpen; }
+		bool IsDragging() const { return CursorItem != nullptr; }
 
+		void MouseEvent(const ae::_MouseEvent &MouseEvent);
 		void Update(double FrameTime, float Radius);
 
 		void Render();
 		void RenderCharacterScreen();
-		void RenderItemInfo(_Item *Item, int DrawX, int DrawY);
+		void DrawMinimap();
 		void UpdateSkillInfo(int Skill, int DrawX, int DrawY);
 		void RenderCrosshair(const glm::vec2 &Position);
 		void RenderDeathScreen();
-
-		void SetLastEntityHit(_Entity *Entity);
-
-		bool IsDragging() const { return CursorItem != nullptr; }
-
-		void SetInventoryOpen(bool Value);
-		bool GetInventoryOpen() { return InventoryOpen; }
 
 		void ShowTextMessage(const std::string &Message, double Time);
 		void ShowMessageBox(const std::string &Message, double Time);

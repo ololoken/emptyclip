@@ -25,9 +25,11 @@
 #include <ae/graphics.h>
 #include <ae/font.h>
 #include <ae/program.h>
+#include <ae/camera.h>
 #include <ae/assets.h>
 #include <ae/actions.h>
 #include <ae/util.h>
+#include <map.h>
 #include <actiontype.h>
 #include <config.h>
 #include <stats.h>
@@ -141,6 +143,12 @@ _HUD::_HUD(_Player *Player) :
 
 // Shut down
 _HUD::~_HUD() {
+}
+
+// Sets the last entity hit object
+void _HUD::SetLastEntityHit(_Entity *Entity) {
+	LastEntityHit = Entity;
+	LastEntityHitTimer = 0;
 }
 
 // Set inventory state
@@ -286,7 +294,7 @@ void _HUD::Render() {
 	std::ostringstream Buffer;
 	Buffer << ae::Graphics.FramesPerSecond << " FPS";
 	Elements[LABEL_FPS]->Text = Buffer.str();
-	Elements[LABEL_FPS]->Render();
+	//Elements[LABEL_FPS]->Render();
 	Buffer.str("");
 
 	// Message
@@ -381,6 +389,9 @@ void _HUD::Render() {
 		DrawPosition -= Spacing;
 	}
 
+	// Draw mini map
+	DrawMinimap();
+
 	// Draw character screen
 	RenderCharacterScreen();
 
@@ -456,13 +467,6 @@ void _HUD::DrawHUDWeapon(const _Weapon *Weapon, ae::_Element *Element, ae::_Elem
 	Element->Render();
 }
 
-// Sets the last entity hit object
-void _HUD::SetLastEntityHit(_Entity *Entity) {
-
-	LastEntityHit = Entity;
-	LastEntityHitTimer = 0;
-}
-
 // Draw the inventory and character screen
 void _HUD::RenderCharacterScreen() {
 	if(!InventoryOpen)
@@ -536,6 +540,36 @@ void _HUD::RenderCharacterScreen() {
 	// Draw cursor skill
 	if(CursorSkill != -1)
 		Elements[ELEMENT_SKILLINFO]->Render();
+}
+
+// Draw the mini map
+void _HUD::DrawMinimap() {
+
+	ae::_Bounds Bounds(glm::ivec2(ae::Graphics.CurrentSize.x - HUD_MINIMAP_SIZE.x - HUD_MINIMAP_PADDING.x, HUD_MINIMAP_PADDING.y),
+					   glm::ivec2(ae::Graphics.CurrentSize.x - HUD_MINIMAP_PADDING.x, HUD_MINIMAP_PADDING.y + HUD_MINIMAP_SIZE.y));
+
+	ae::Graphics.SetProgram(ae::Assets.Programs["ortho_pos"]);
+	ae::Graphics.SetColor(glm::vec4(0.0f, 0.0f, 0.0f, 0.5f));
+	ae::Graphics.EnableScissorTest();
+	ae::Graphics.SetScissor(Bounds);
+	ae::Graphics.DrawRectangle(Bounds, true);
+
+	ae::Graphics.SetColor(glm::vec4(0.2f, 0.2f, 0.2f, 0.5f));
+	ae::_Bounds CaptureBounds(Player->Map->Camera->GetPosition() - HUD_MINIMAP_CAPTURE_SIZE, Player->Map->Camera->GetPosition() + HUD_MINIMAP_CAPTURE_SIZE);
+	glm::vec2 VisionSize = glm::vec2(CaptureBounds.End.x - CaptureBounds.Start.x, CaptureBounds.End.y - CaptureBounds.Start.y);
+	glm::vec2 CameraStart = glm::vec2(CaptureBounds.Start.x, CaptureBounds.Start.y);
+	for(const auto &Block : Player->Map->MinimapBlocks) {
+		glm::vec2 Start = Bounds.Start + ((glm::vec2(Block->Start) - CameraStart) / VisionSize) * HUD_MINIMAP_SIZE;
+		glm::vec2 End = Bounds.Start + ((glm::vec2(Block->End + 1) - CameraStart) / VisionSize) * HUD_MINIMAP_SIZE;
+
+		ae::Graphics.DrawRectangle(
+			Start,
+			End,
+			true
+		);
+	}
+
+	ae::Graphics.DisableScissorTest();
 }
 
 // Draw the item count text

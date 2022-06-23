@@ -1430,16 +1430,22 @@ void _Map::RenderWalls() {
 	ae::Graphics.SetCullFace(true);
 
 	// Draw walls
+	MinimapBlocks.clear();
 	for(std::size_t i = 0; i < Blocks[MAPLAYER_WALL].size(); i++) {
 		_Block *Block = &Blocks[MAPLAYER_WALL][i];
 
+		// Save blocks surrounding camera for minimap
+		glm::vec4 Bounds;
+		Block->GetBounds(Bounds);
+		if(!(Bounds[2] < Camera->GetPosition().x - HUD_MINIMAP_CAPTURE_SIZE || Bounds[0] > Camera->GetPosition().x + HUD_MINIMAP_CAPTURE_SIZE) &&
+		   !(Bounds[3] < Camera->GetPosition().y - HUD_MINIMAP_CAPTURE_SIZE || Bounds[1] > Camera->GetPosition().y + HUD_MINIMAP_CAPTURE_SIZE)) {
+			MinimapBlocks.push_back(Block);
+		}
+
 		// Always draw walls that go lower than floor
 		bool Draw = true;
-		if(Block->MinZ >= 0) {
-			glm::vec4 Bounds;
-			Block->GetBounds(Bounds);
+		if(Block->MinZ >= 0)
 			Draw = Camera->IsAABBInView(Bounds);
-		}
 
 		// Skip
 		if(!Draw)

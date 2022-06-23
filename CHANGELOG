@@ -4,20 +4,21 @@ Empty Clip 2.0.0 -
 - Completely redesigned interface and added support for different screen resolutions
 - Inventory is bigger and can now hold equipment
 - Items in inventory can now stack
-- Items can be dropped by clicking the middle mouse button
 - Reworked skill system
-- Equipment can be equipped by right-clicking in the inventory
+- Added minimap
 - Added equipment slot for melee weapons and separate hotkey for melee attacks (Mouse button 4 by default)
+- Equipment can be equipped by right-clicking in the inventory
+- Items can be dropped by clicking the middle mouse button
 - Updated item tooltip and added equipped item comparison
-- Added damage number particles
-- Improved bullet hole decals
-- The game now pauses while menu is open
-- Mouse buttons can now be remapped
 - Ammo is now stored as a number of rounds for each ammo type
 - Ammo is now picked up automatically
 - Armor now affects movement speed and damage resist
 - Removed strength requirement from armor
 - Removed player profiles
+- Added damage number particles
+- Improved bullet hole decals
+- The game now pauses while menu is open
+- Mouse buttons can now be remapped
 - Added cmake build system
 - Added console window (open with tilde key)
 - Save files are now in ~/.local/share/emptyclip for linux

@@ -118,3 +118,6 @@ const  double       HUD_CHECKPOINTTIME             =  5.0;
 const  std::string  HUD_CHECKPOINTMESSAGE          =  "CHECKPOINT REACHED";
 const  double       HUD_INVENTORYFULLTIME          =  2.0;
 const  std::string  HUD_INVENTORYFULLMESSAGE       =  "INVENTORY FULL";
+const  float        HUD_MINIMAP_CAPTURE_SIZE       =  20.0f;
+const  glm::vec2    HUD_MINIMAP_SIZE               =  glm::vec2(200,200);
+const  glm::vec2    HUD_MINIMAP_PADDING            =  glm::vec2(10,10);

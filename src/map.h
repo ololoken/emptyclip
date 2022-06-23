@@ -242,6 +242,9 @@ class _Map {
 		ae::_Camera *Camera;
 		std::vector<std::string> MonsterSet;
 
+		// Minimap
+		std::vector<const _Block *> MinimapBlocks;
+
 	private:
 
 		bool CheckTileCollision(const glm::vec2 &Position, float Radius, float X, float Y, bool Resolve, glm::vec2 &Push, bool &DiagonalPush);
