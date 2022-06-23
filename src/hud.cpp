@@ -102,15 +102,9 @@ _HUD::_HUD(_Player *Player) :
 	Elements[LABEL_EXPERIENCE] = ae::Assets.Elements["label_hud_experience_text"];
 	Elements[ELEMENT_EXPERIENCE]->SetActive(true);
 
-	Elements[ELEMENT_MAINHAND] = ae::Assets.Elements["element_hud_mainhand"];
-	Elements[IMAGE_MAINHAND_ICON] = ae::Assets.Elements["image_weapon0_icon"];
-	Elements[LABEL_MAINHAND_AMMO] = ae::Assets.Elements["label_hud_mainhand_ammo"];
-	Elements[ELEMENT_MAINHAND]->SetActive(true);
-
-	Elements[ELEMENT_OFFHAND] = ae::Assets.Elements["element_hud_offhand"];
-	Elements[IMAGE_OFFHAND_ICON] = ae::Assets.Elements["image_weapon1_icon"];
-	Elements[LABEL_OFFHAND_AMMO] = ae::Assets.Elements["label_hud_offhand_ammo"];
-	Elements[ELEMENT_OFFHAND]->SetActive(true);
+	ae::Assets.Elements["element_hud_mainhand"]->SetActive(true);
+	ae::Assets.Elements["element_hud_offhand"]->SetActive(true);
+	ae::Assets.Elements["element_hud_melee"]->SetActive(true);
 
 	Elements[ELEMENT_INVENTORY] = ae::Assets.Elements["element_inventory"];
 	Elements[ELEMENT_SKILLS] = ae::Assets.Elements["element_skills"];
@@ -361,8 +355,9 @@ void _HUD::Render() {
 		DrawIndicator("Switching Weapons", Player->GetWeaponSwitchPercent(), WeaponSwitchTexture);
 
 	// Draw weapons
-	DrawHUDWeapon(Player->GetMainHand(), Elements[ELEMENT_MAINHAND], Elements[IMAGE_MAINHAND_ICON], Elements[LABEL_MAINHAND_AMMO]);
-	DrawHUDWeapon(Player->GetOffHand(), Elements[ELEMENT_OFFHAND], Elements[IMAGE_OFFHAND_ICON], Elements[LABEL_OFFHAND_AMMO]);
+	DrawHUDWeapon(Player->GetMainHand(), ae::Assets.Elements["element_hud_mainhand"], ae::Assets.Elements["image_mainhand_icon"], ae::Assets.Elements["label_hud_mainhand_ammo"]);
+	DrawHUDWeapon(Player->GetOffHand(), ae::Assets.Elements["element_hud_offhand"], ae::Assets.Elements["image_offhand_icon"], ae::Assets.Elements["label_hud_offhand_ammo"]);
+	DrawHUDWeapon(Player->GetMelee(), ae::Assets.Elements["element_hud_melee"], ae::Assets.Elements["image_melee_icon"], nullptr);
 
 	// Draw ammo amounts
 	glm::vec2 Spacing = glm::vec2(0, 20) * ae::_Element::GetUIScale();
@@ -397,15 +392,15 @@ void _HUD::Render() {
 		if(CursorOverItem->Type == _Object::WEAPON) {
 			_Weapon *Weapon = (_Weapon *)CursorOverItem;
 			if(Weapon->IsMelee()) {
-				if(Weapon != Player->GetMelee())
+				if(Weapon != Player->GetMelee() && Player->GetMelee())
 					Player->GetMelee()->DrawTooltip(Player, glm::ivec2(-100, ae::Graphics.CurrentSize.y/2));
 			}
 			else {
-				if(Weapon != Player->GetMainHand())
+				if(Weapon != Player->GetMainHand() && Player->GetMainHand())
 					Player->GetMainHand()->DrawTooltip(Player, glm::ivec2(-100, ae::Graphics.CurrentSize.y/2));
 			}
 		}
-		else if(CursorOverItem->Type == _Object::ARMOR && CursorOverItem != Player->GetArmor())
+		else if(CursorOverItem->Type == _Object::ARMOR && CursorOverItem != Player->GetArmor() && Player->GetArmor())
 			Player->GetArmor()->DrawTooltip(Player, glm::ivec2(-100, ae::Graphics.CurrentSize.y/2));
 	}
 }
@@ -452,9 +447,10 @@ void _HUD::DrawHUDWeapon(const _Weapon *Weapon, ae::_Element *Element, ae::_Elem
 	if(Weapon->Attributes.at("rounds").Int) {
 		std::ostringstream Buffer;
 		Buffer << Weapon->Attributes.at("ammo").Int << "/" << Weapon->Attributes.at("rounds").Int;
-		Label->Text = Buffer.str();
+		if(Label)
+			Label->Text = Buffer.str();
 	}
-	else
+	else if(Label)
 		Label->Text = "";
 
 	Element->Render();
