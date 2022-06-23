@@ -1,7 +1,7 @@
 1
 0
 mansion0
-130 130
+130 110
 109
 1 adventure_boss0 64.95 10.05 
 1 dog3 63.02 5.59 
@@ -34,7 +34,7 @@ mansion0
 2 medkit0 76.50 11.91 
 2 medkit0 76.50 9.71 
 2 medkit0 76.55 7.32 
-2 medkit0 45.57 94.92 
+2 medkit0 55.37 78.85 
 3 9mm 78.47 38.40 
 3 9mm 78.92 38.31 
 3 9mm 78.54 38.75 
@@ -108,64 +108,53 @@ mansion0
 5 shotgun0 39.56 32.20 
 5 rifle0 84.04 34.91 
 5 special_slash0 64.99 37.03 
-6 shirt0 44.44 95.52 
+6 shirt0 54.24 79.45 
 6 shirt2 31.36 34.45 
-2 medkit0 45.06 94.33 
+2 medkit0 54.86 78.26 
 3 9mm 91.93 41.10 
-57
-3 1 37 101 37 101 0 0.00 0 "" "" ""
+60
+3 1 45 85 45 85 0 0.00 0 "" "" ""
 3 1 59 63 70 63 5 0.00 1 "" "" ""
 64 62 -1 -1
-0 1 60 64 69 64 0 0.00 10 "" "" ""
-60 64 4 8
-61 64 4 -1
-62 64 4 -1
-63 64 4 -1
-64 64 4 -1
-65 64 4 -1
-66 64 4 -1
-67 64 4 -1
-68 64 4 -1
-69 64 4 -1
 4 1 75 1 76 3 0 0.00 0 "mansion1.map" "" ""
 0 0 64 17 65 17 0 0.00 2 "key2" "" ""
-64 17 4 14
+64 17 4 13
 65 17 4 -1
 0 1 78 40 80 40 0 0.00 3 "" "" ""
-78 40 4 23
+78 40 4 22
 79 40 4 -1
 80 40 4 -1
 0 1 77 33 77 34 0 0.00 2 "" "" ""
-77 33 4 22
+77 33 4 21
 77 34 4 -1
 0 1 77 31 77 31 0 0.00 1 "" "" ""
-77 31 4 21
+77 31 4 20
 0 0 85 26 87 26 0 0.00 3 "" "" ""
-85 26 4 20
+85 26 4 19
 86 26 4 -1
 87 26 4 -1
 0 0 85 50 87 50 0 0.00 3 "" "" ""
-85 50 4 19
+85 50 4 18
 86 50 4 -1
 87 50 4 -1
 0 1 94 16 94 18 0 0.00 3 "" "" ""
-94 16 4 11
+94 16 4 10
 94 17 4 -1
 94 18 4 -1
 0 0 94 26 94 28 0 0.00 3 "" "" ""
-94 26 4 12
+94 26 4 11
 94 27 4 -1
 94 28 4 -1
 0 0 94 36 94 38 0 0.00 3 "" "" ""
-94 36 4 13
+94 36 4 12
 94 37 4 -1
 94 38 4 -1
 0 0 45 49 45 49 0 0.00 1 "" "" ""
-45 49 4 18
+45 49 4 17
 0 1 45 39 45 39 0 0.00 1 "" "" ""
-45 39 4 17
+45 39 4 16
 0 0 45 35 45 37 0 0.00 3 "" "" ""
-45 35 4 16
+45 35 4 15
 45 36 4 -1
 45 37 4 -1
 9 1 32 5 32 5 0 0.00 1 "" "" ""
@@ -173,14 +162,14 @@ mansion0
 9 1 97 5 97 5 0 0.00 1 "" "" ""
 37 5 -1 -1
 0 1 62 54 67 54 0 0.00 6 "key0" "" ""
-62 54 4 9
+62 54 4 8
 63 54 4 -1
 64 54 4 -1
 65 54 4 -1
 67 54 4 -1
 66 54 4 -1
 0 1 62 50 67 50 0 0.00 6 "" "" ""
-62 50 4 10
+62 50 4 9
 63 50 4 -1
 64 50 4 -1
 65 50 4 -1
@@ -199,46 +188,46 @@ mansion0
 3 1 46 38 46 40 16 0.00 1 "" "" ""
 46 39 -1 -1
 8 1 45 39 45 39 1 0.00 17 "" "" ""
-45 37 -1 15
-45 49 -1 13
-65 17 -1 4
-35 20 -1 22
-94 27 -1 11
-94 36 -1 12
-46 39 -1 25
-89 8 -1 30
-86 26 -1 8
-86 50 -1 9
-44 39 -1 32
-43 37 -1 34
-43 41 -1 33
-78 52 -1 40
-82 51 -1 42
-85 25 -1 43
-89 59 -1 41
+45 37 -1 14
+45 49 -1 12
+65 17 -1 3
+35 20 -1 21
+94 27 -1 10
+94 36 -1 11
+46 39 -1 24
+89 8 -1 29
+86 26 -1 7
+86 50 -1 8
+44 39 -1 31
+43 37 -1 33
+43 41 -1 32
+78 52 -1 39
+82 51 -1 41
+85 25 -1 42
+89 59 -1 40
 2 1 52 40 54 42 1 0.00 1 "" "zombie1" "smoke0"
 46 42 -1 -1
 6 1 52 39 53 43 1 0.00 0 "event_rumble1" "" ""
 0 1 88 5 88 6 0 0.00 2 "key1" "" ""
-88 5 4 27
+88 5 4 26
 88 6 4 -1
 8 1 89 2 89 9 1 0.00 16 "" "" ""
-64 17 -1 4
-35 20 -1 22
-45 36 -1 15
-45 49 -1 13
-86 50 -1 9
-86 26 -1 8
-94 28 -1 11
-94 36 -1 12
-84 25 -1 43
-43 41 -1 33
-43 36 -1 34
-43 40 -1 32
-79 52 -1 40
-82 51 -1 42
-89 61 -1 41
-45 39 -1 26
+64 17 -1 3
+35 20 -1 21
+45 36 -1 14
+45 49 -1 12
+86 50 -1 8
+86 26 -1 7
+94 28 -1 10
+94 36 -1 11
+84 25 -1 42
+43 41 -1 32
+43 36 -1 33
+43 40 -1 31
+79 52 -1 39
+82 51 -1 41
+89 61 -1 40
+45 39 -1 25
 3 1 89 3 89 8 20 0.00 0 "" "" ""
 2 0 42 38 44 40 1 0.00 27 "" "zombie0" ""
 44 22 -1 -1
@@ -261,7 +250,7 @@ mansion0
 77 74 -1 -1
 86 86 -1 -1
 76 96 -1 -1
-85 110 -1 -1
+85 109 -1 -1
 100 106 -1 -1
 102 90 -1 -1
 101 68 -1 -1
@@ -355,13 +344,13 @@ mansion0
 64 86 -1 -1
 55 78 -1 -1
 63 107 -1 -1
-110 111 -1 -1
+110 109 -1 -1
 105 82 -1 -1
 2 1 50 39 50 43 1 0.00 7 "" "treasure5" "smoke0"
 64 24 -1 -1
 87 39 -1 -1
-116 116 -1 -1
-22 115 -1 -1
+116 109 -1 -1
+22 109 -1 -1
 15 84 -1 -1
 15 14 -1 -1
 64 46 -1 -1
@@ -423,26 +412,32 @@ mansion0
 63 7 -1 -1
 66 7 -1 -1
 7 1 53 15 76 15 1 60.00 2 "" "" ""
-75 4 4 15
+75 4 4 14
 76 4 4 -1
 1 1 39 5 39 5 1 0.00 6 "" "" ""
-39 5 5 126
-33 2 5 124
-33 1 5 125
+39 5 5 118
+33 2 5 116
+33 1 5 117
 32 2 5 -1
-64 41 5 123
+64 41 5 115
 65 41 5 -1
-5 1 36 100 38 102 1 10.00 0 "tutorial_move" "" ""
-5 1 43 93 46 96 1 10.00 0 "tutorial_pickup" "" ""
-5 1 59 65 70 66 1 10.00 0 "tutorial_door" "" ""
+5 1 44 84 46 86 1 10.00 0 "tutorial_move" "" ""
+5 1 53 77 56 80 1 10.00 0 "tutorial_pickup" "" ""
+5 1 45 77 47 78 1 10.00 0 "tutorial_door" "" ""
 5 1 73 58 76 61 1 10.00 0 "tutorial_melee" "" ""
 5 1 90 40 99 42 1 15.00 0 "tutorial_fire" "" ""
 5 1 90 16 92 18 1 10.00 0 "tutorial_sprint" "" ""
-10 1 61 49 68 49 100 1.00 0 "ambient_night" "" ""
-10 1 53 41 53 41 100 5.00 0 "ambient_day" "" ""
-360
-0 0 0 129 129 0.00 0.00 0.00 1.00 0 1 "textures/map/g_grass1.png" ""
-1 60 65 69 116 0.00 0.00 0.00 1.00 0 1 "textures/map/g_road0.png" ""
+10 1 62 49 67 49 100 1.00 0 "ambient_night" "" ""
+10 0 46 41 46 41 100 5.00 0 "ambient_half" "" ""
+10 1 61 55 68 55 100 1.00 0 "ambient_half" "" ""
+0 1 47 77 47 77 0 0.00 1 "" "" ""
+47 77 4 27
+10 1 43 83 46 86 100 1.00 0 "ambient_half" "" ""
+8 1 52 40 54 42 1 0.00 1 "" "" ""
+46 41 -1 55
+336
+0 0 0 129 109 0.00 0.00 0.00 1.00 0 1 "textures/map/g_grass1.png" ""
+1 60 65 69 95 0.00 0.00 0.00 1.00 0 1 "textures/map/g_road0.png" ""
 1 124 2 124 4 0.00 0.50 180.00 1.00 0 1 "textures/map/g_grass1.png" ""
 1 123 2 125 2 0.00 0.50 180.00 1.00 0 1 "textures/map/g_grass1.png" ""
 1 123 4 123 4 0.00 0.50 180.00 1.00 0 1 "textures/map/g_grass1.png" ""
@@ -460,14 +455,20 @@ mansion0
 1 62 54 67 54 0.00 0.00 90.00 1.00 0 1 "textures/map/g_street1.png" ""
 1 32 1 40 10 0.00 0.00 90.00 1.00 0 1 "textures/map/g_inside0.png" ""
 1 89 1 97 10 0.00 0.00 90.00 1.00 0 1 "textures/map/g_inside0.png" ""
-1 55 89 56 91 0.00 0.00 0.00 1.00 0 1 "textures/map/g_grass0.png" ""
-1 49 92 50 93 0.00 0.00 0.00 1.00 0 1 "textures/map/g_grass0.png" ""
-1 44 94 45 95 0.00 0.00 0.00 1.00 0 1 "textures/map/g_grass0.png" ""
-1 40 98 42 99 0.00 0.00 0.00 1.00 0 1 "textures/map/g_grass0.png" ""
-1 36 100 38 102 0.00 0.00 0.00 1.00 0 1 "textures/map/g_grass0.png" ""
-1 38 99 38 99 0.00 0.00 0.00 1.00 0 1 "textures/map/f_tree0.png" ""
-2 60 65 60 116 0.00 0.00 0.00 1.00 0 1 "textures/map/gt_grass1.png" ""
-2 69 65 69 116 0.00 0.00 0.00 -1.00 0 1 "textures/map/gt_grass1.png" ""
+1 38 77 47 86 0.00 0.00 0.00 1.00 0 1 "textures/map/g_dirt0.png" ""
+1 57 78 58 78 0.00 0.00 0.00 1.00 0 1 "textures/map/g_gravel0.png" ""
+1 51 75 52 76 0.00 0.00 0.00 1.00 0 1 "textures/map/g_gravel0.png" ""
+1 49 77 49 78 0.00 0.00 0.00 1.00 0 1 "textures/map/g_gravel0.png" ""
+1 49 80 50 80 0.00 0.00 0.00 1.00 0 1 "textures/map/g_gravel0.png" ""
+1 55 76 55 76 0.00 0.00 0.00 1.00 0 1 "textures/map/g_gravel0.png" ""
+1 51 78 51 78 0.00 0.00 0.00 1.00 0 1 "textures/map/g_gravel0.png" ""
+1 52 81 52 81 0.00 0.00 0.00 1.00 0 1 "textures/map/g_gravel0.png" ""
+1 54 80 56 80 0.00 0.00 0.00 1.00 0 1 "textures/map/g_gravel0.png" ""
+1 57 76 57 76 0.00 0.00 0.00 1.00 0 1 "textures/map/g_gravel0.png" ""
+1 53 77 53 77 0.00 0.00 0.00 1.00 0 1 "textures/map/g_gravel0.png" ""
+1 58 81 58 81 0.00 0.00 0.00 1.00 0 1 "textures/map/g_gravel0.png" ""
+2 60 65 60 95 0.00 0.00 0.00 1.00 0 1 "textures/map/gt_grass1.png" ""
+2 69 65 69 95 0.00 0.00 0.00 -1.00 0 1 "textures/map/gt_grass1.png" ""
 2 60 32 69 41 0.00 0.00 90.00 1.00 0 1 "textures/map/g_water0.png" ""
 2 63 45 66 53 0.00 0.00 90.00 1.00 0 1 "textures/map/g_carpet1.png" ""
 2 53 1 76 16 0.00 0.00 180.00 1.00 0 1 "textures/map/g_brick0.png" ""
@@ -514,7 +515,6 @@ mansion0
 4 99 12 99 63 5.00 5.50 90.00 1.00 0 0 "textures/map/fl_metalfence1.png" ""
 4 30 12 30 63 5.00 5.50 90.00 1.00 0 0 "textures/map/fl_metalfence1.png" ""
 4 31 64 59 64 5.00 5.50 0.00 1.00 0 0 "textures/map/fl_metalfence1.png" ""
-4 60 64 69 64 0.00 2.50 0.00 1.00 0 0 "textures/map/fl_fence0.png" "textures/map/w_trans0.png"
 4 62 54 67 54 0.00 10.00 0.00 1.00 0 0 "textures/map/fl_fence0.png" "textures/map/w_trans0.png"
 4 62 50 67 50 0.00 10.00 0.00 1.00 0 0 "textures/map/fl_fence0.png" "textures/map/w_trans0.png"
 4 94 16 94 18 0.00 1.00 180.00 1.00 0 0 "textures/map/fl_fence0.png" "textures/map/w_trans0.png"
@@ -534,31 +534,24 @@ mansion0
 4 88 1 88 4 0.00 5.00 90.00 1.00 0 0 "textures/map/fl_fence0.png" "textures/map/w_trans0.png"
 4 88 7 88 10 0.00 5.00 90.00 1.00 0 0 "textures/map/fl_fence0.png" "textures/map/w_trans0.png"
 4 88 5 88 6 0.00 2.00 90.00 1.00 0 0 "textures/map/w_wall0.png" "textures/map/w_trans0.png"
-5 12 117 117 117 0.00 10.00 0.00 1.00 1 0 "textures/map/w_treebark0.png" ""
-5 117 13 117 116 0.00 10.00 0.00 1.00 1 0 "textures/map/w_treebark0.png" ""
-5 12 13 12 116 0.00 10.00 0.00 1.00 1 0 "textures/map/w_treebark0.png" ""
+4 47 77 47 77 0.00 1.00 90.00 1.00 0 0 "textures/map/fl_brick0door1.png" "textures/map/fl_brick0door0.png"
+5 12 96 117 96 0.00 10.00 0.00 1.00 1 0 "textures/map/w_treebark0.png" ""
+5 117 13 117 95 0.00 10.00 0.00 1.00 1 0 "textures/map/w_treebark0.png" ""
+5 12 13 12 95 0.00 10.00 0.00 1.00 1 0 "textures/map/w_treebark0.png" ""
 5 99 64 99 64 0.00 7.00 90.00 1.00 1 0 "textures/map/w_wall0.png" ""
 5 30 64 30 64 0.00 7.00 90.00 1.00 1 0 "textures/map/w_wall0.png" ""
-5 28 97 28 97 0.00 1.50 90.00 1.00 1 0 "textures/map/w_treebark0.png" ""
 5 40 12 40 53 0.00 15.00 90.00 1.00 1 0 "textures/map/w_wall0.png" ""
 5 40 54 61 54 0.00 15.00 90.00 1.00 1 0 "textures/map/w_wall0.png" ""
 5 89 12 89 53 0.00 15.00 90.00 1.00 1 0 "textures/map/w_wall0.png" ""
 5 68 54 89 54 0.00 15.00 90.00 1.00 1 0 "textures/map/w_wall0.png" ""
 5 61 50 61 53 0.00 15.00 90.00 1.00 1 0 "textures/map/w_room0.png" ""
 5 68 50 68 53 0.00 15.00 90.00 1.00 1 0 "textures/map/w_room0.png" ""
-5 86 103 86 103 0.50 0.50 180.00 1.00 1 0 "textures/map/w_treestump0.png" ""
-5 94 89 94 89 0.50 0.50 180.00 1.00 1 0 "textures/map/w_treestump0.png" ""
 5 83 77 83 77 0.50 0.50 180.00 1.00 1 0 "textures/map/w_treestump0.png" ""
-5 98 70 98 70 0.50 0.50 180.00 1.00 1 0 "textures/map/w_treestump0.png" ""
-5 102 72 102 72 0.50 0.50 180.00 1.00 1 0 "textures/map/w_treestump0.png" ""
+5 101 87 101 87 0.50 0.50 180.00 1.00 1 0 "textures/map/w_treestump0.png" ""
+5 81 92 81 92 0.50 0.50 180.00 1.00 1 0 "textures/map/w_treestump0.png" ""
 5 107 47 107 47 0.50 0.50 180.00 1.00 1 0 "textures/map/w_treestump0.png" ""
-5 104 103 104 103 0.50 0.50 180.00 1.00 1 0 "textures/map/w_treestump0.png" ""
-5 34 98 34 98 0.50 0.50 180.00 1.00 1 0 "textures/map/w_treestump0.png" ""
-5 27 92 27 92 0.50 0.50 180.00 1.00 1 0 "textures/map/w_treestump0.png" ""
 5 27 77 27 77 0.50 0.50 180.00 1.00 1 0 "textures/map/w_treestump0.png" ""
 5 21 67 21 67 0.50 0.50 180.00 1.00 1 0 "textures/map/w_treestump0.png" ""
-5 19 105 19 105 0.50 0.50 180.00 1.00 1 0 "textures/map/w_treestump0.png" ""
-5 43 77 43 77 0.50 0.50 180.00 1.00 1 0 "textures/map/w_treestump0.png" ""
 5 19 53 19 53 0.50 0.50 180.00 1.00 1 0 "textures/map/w_treestump0.png" ""
 5 21 33 21 33 0.50 0.50 180.00 1.00 1 0 "textures/map/w_treestump0.png" ""
 5 0 12 39 12 0.00 15.00 90.00 1.00 1 0 "textures/map/w_wall0.png" ""
@@ -673,15 +666,10 @@ mansion0
 5 64 35 65 35 0.00 4.00 90.00 1.00 1 1 "textures/map/g_water0.png" ""
 5 66 36 66 37 0.00 4.00 90.00 1.00 1 1 "textures/map/g_water0.png" ""
 5 64 36 65 37 -5.00 7.00 0.00 1.00 1 1 "textures/map/g_marble0.png" ""
-5 20 99 20 99 0.00 1.50 90.00 1.00 1 0 "textures/map/w_treebark0.png" ""
-5 27 110 27 110 0.00 1.50 90.00 1.00 1 0 "textures/map/w_treebark0.png" ""
-5 42 110 42 110 0.00 1.50 90.00 1.00 1 0 "textures/map/w_treebark0.png" ""
-5 49 105 49 105 0.00 1.50 90.00 1.00 1 0 "textures/map/w_treebark0.png" ""
-5 35 90 35 90 0.00 1.50 90.00 1.00 1 0 "textures/map/w_treebark0.png" ""
 5 21 81 21 81 0.00 1.50 90.00 1.00 1 0 "textures/map/w_treebark0.png" ""
-5 40 82 40 82 0.00 1.50 90.00 1.00 1 0 "textures/map/w_treebark0.png" ""
+5 32 83 32 83 0.00 1.50 90.00 1.00 1 0 "textures/map/w_treebark0.png" ""
 5 34 73 34 73 0.00 1.50 90.00 1.00 1 0 "textures/map/w_treebark0.png" ""
-5 50 81 50 81 0.00 1.50 90.00 1.00 1 0 "textures/map/w_treebark0.png" ""
+5 52 84 52 84 0.00 1.50 90.00 1.00 1 0 "textures/map/w_treebark0.png" ""
 5 52 72 52 72 0.00 1.50 90.00 1.00 1 0 "textures/map/w_treebark0.png" ""
 5 17 74 17 74 0.00 1.50 90.00 1.00 1 0 "textures/map/w_treebark0.png" ""
 5 25 70 25 70 0.00 1.50 90.00 1.00 1 0 "textures/map/w_treebark0.png" ""
@@ -695,19 +683,6 @@ mansion0
 5 25 19 25 19 0.00 1.50 90.00 1.00 1 0 "textures/map/w_treebark0.png" ""
 5 17 18 17 18 0.00 1.50 90.00 1.00 1 0 "textures/map/w_treebark0.png" ""
 5 27 37 27 37 0.00 1.50 90.00 1.00 1 0 "textures/map/w_treebark0.png" ""
-5 45 89 45 89 0.00 1.50 90.00 1.00 1 0 "textures/map/w_treebark0.png" ""
-5 54 98 54 98 0.00 1.50 90.00 1.00 1 0 "textures/map/w_treebark0.png" ""
-5 79 113 79 113 0.00 1.50 90.00 1.00 1 0 "textures/map/w_treebark0.png" ""
-5 87 109 87 109 0.00 1.50 90.00 1.00 1 0 "textures/map/w_treebark0.png" ""
-5 80 105 80 105 0.00 1.50 90.00 1.00 1 0 "textures/map/w_treebark0.png" ""
-5 73 95 73 95 0.00 1.50 90.00 1.00 1 0 "textures/map/w_treebark0.png" ""
-5 82 94 82 94 0.00 1.50 90.00 1.00 1 0 "textures/map/w_treebark0.png" ""
-5 93 99 93 99 0.00 1.50 90.00 1.00 1 0 "textures/map/w_treebark0.png" ""
-5 97 108 97 108 0.00 1.50 90.00 1.00 1 0 "textures/map/w_treebark0.png" ""
-5 105 113 105 113 0.00 1.50 90.00 1.00 1 0 "textures/map/w_treebark0.png" ""
-5 111 109 111 109 0.00 1.50 90.00 1.00 1 0 "textures/map/w_treebark0.png" ""
-5 110 100 110 100 0.00 1.50 90.00 1.00 1 0 "textures/map/w_treebark0.png" ""
-5 102 95 102 95 0.00 1.50 90.00 1.00 1 0 "textures/map/w_treebark0.png" ""
 5 106 83 106 83 0.00 1.50 90.00 1.00 1 0 "textures/map/w_treebark0.png" ""
 5 95 84 95 84 0.00 1.50 90.00 1.00 1 0 "textures/map/w_treebark0.png" ""
 5 86 86 86 86 0.00 1.50 90.00 1.00 1 0 "textures/map/w_treebark0.png" ""
@@ -730,25 +705,26 @@ mansion0
 5 112 16 112 16 0.00 1.50 90.00 1.00 1 0 "textures/map/w_treebark0.png" ""
 5 114 24 114 24 0.00 1.50 90.00 1.00 1 0 "textures/map/w_treebark0.png" ""
 5 106 19 106 19 0.00 1.50 90.00 1.00 1 0 "textures/map/w_treebark0.png" ""
-5 35 107 35 107 0.00 1.50 90.00 1.00 1 0 "textures/map/w_treebark0.png" ""
-5 28 103 28 103 0.00 1.50 90.00 1.00 1 0 "textures/map/w_treebark0.png" ""
-5 46 101 46 101 0.00 1.50 90.00 1.00 1 0 "textures/map/w_treebark0.png" ""
-5 39 94 39 94 0.00 1.50 90.00 1.00 1 0 "textures/map/w_treebark0.png" ""
+5 38 77 38 87 0.00 2.00 0.00 1.00 1 0 "textures/map/w_housebrick0.png" ""
+5 39 87 46 87 0.00 2.00 0.00 1.00 1 0 "textures/map/w_housebrick0.png" ""
+5 38 76 47 76 0.00 2.00 0.00 1.00 1 0 "textures/map/w_housebrick0.png" ""
+5 47 78 47 87 0.00 2.00 0.00 1.00 1 0 "textures/map/w_housebrick0.png" ""
+5 41 79 46 79 0.00 2.00 0.00 1.00 1 0 "textures/map/w_housebrick0.png" ""
+5 28 88 28 88 0.00 1.50 90.00 1.00 1 0 "textures/map/w_treebark0.png" ""
+5 20 90 20 90 0.00 1.50 90.00 1.00 1 0 "textures/map/w_treebark0.png" ""
+5 38 92 38 92 0.00 1.50 90.00 1.00 1 0 "textures/map/w_treebark0.png" ""
+5 48 91 48 91 0.00 1.50 90.00 1.00 1 0 "textures/map/w_treebark0.png" ""
+5 75 89 75 89 0.00 1.50 90.00 1.00 1 0 "textures/map/w_treebark0.png" ""
+5 98 91 98 91 0.00 1.50 90.00 1.00 1 0 "textures/map/w_treebark0.png" ""
+5 112 92 112 92 0.00 1.50 90.00 1.00 1 0 "textures/map/w_treebark0.png" ""
+5 100 71 100 71 0.00 1.50 90.00 1.00 1 0 "textures/map/w_treebark0.png" ""
+5 43 69 43 69 0.00 1.50 90.00 1.00 1 0 "textures/map/w_treebark0.png" ""
 6 90 15 94 19 0.00 2.50 90.00 1.00 0 1 "textures/map/fl_fence0.png" ""
 6 90 25 94 29 0.00 2.50 90.00 1.00 0 1 "textures/map/fl_fence0.png" ""
 6 90 35 94 39 0.00 2.50 90.00 1.00 0 1 "textures/map/fl_fence0.png" ""
-6 26 95 30 99 0.00 1.50 0.00 1.00 0 1 "textures/map/f_tree0.png" ""
 6 32 4 34 6 0.00 1.00 0.00 1.00 0 1 "textures/map/w_room0.png" "textures/map/w_trans0.png"
 6 95 4 97 6 0.00 1.00 0.00 1.00 0 1 "textures/map/w_room0.png" "textures/map/w_trans0.png"
-6 25 108 29 112 0.00 1.50 0.00 1.00 0 1 "textures/map/f_tree0.png" ""
-6 18 97 22 101 0.00 1.50 0.00 1.00 0 1 "textures/map/f_tree0.png" ""
-6 40 108 44 112 0.00 1.50 0.00 1.00 0 1 "textures/map/f_tree0.png" ""
-6 47 103 51 107 0.00 1.50 0.00 1.00 0 1 "textures/map/f_tree0.png" ""
-6 52 96 56 100 0.00 1.50 0.00 1.00 0 1 "textures/map/f_tree0.png" ""
-6 43 87 47 91 0.00 1.50 0.00 1.00 0 1 "textures/map/f_tree0.png" ""
-6 38 80 42 84 0.00 1.50 0.00 1.00 0 1 "textures/map/f_tree0.png" ""
-6 33 88 37 92 0.00 1.50 0.00 1.00 0 1 "textures/map/f_tree0.png" ""
-6 48 79 52 83 0.00 1.50 0.00 1.00 0 1 "textures/map/f_tree0.png" ""
+6 50 82 54 86 0.00 1.50 0.00 1.00 0 1 "textures/map/f_tree0.png" ""
 6 50 70 54 74 0.00 1.50 0.00 1.00 0 1 "textures/map/f_tree0.png" ""
 6 32 71 36 75 0.00 1.50 0.00 1.00 0 1 "textures/map/f_tree0.png" ""
 6 23 68 27 72 0.00 1.50 0.00 1.00 0 1 "textures/map/f_tree0.png" ""
@@ -764,11 +740,6 @@ mansion0
 6 20 24 24 28 0.00 1.50 0.00 1.00 0 1 "textures/map/f_tree0.png" ""
 6 15 16 19 20 0.00 1.50 0.00 1.00 0 1 "textures/map/f_tree0.png" ""
 6 23 17 27 21 0.00 1.50 0.00 1.00 0 1 "textures/map/f_tree0.png" ""
-6 77 111 81 115 0.00 1.50 0.00 1.00 0 1 "textures/map/f_tree0.png" ""
-6 85 107 89 111 0.00 1.50 0.00 1.00 0 1 "textures/map/f_tree0.png" ""
-6 78 103 82 107 0.00 1.50 0.00 1.00 0 1 "textures/map/f_tree0.png" ""
-6 71 93 75 97 0.00 1.50 0.00 1.00 0 1 "textures/map/f_tree0.png" ""
-6 80 92 84 96 0.00 1.50 0.00 1.00 0 1 "textures/map/f_tree0.png" ""
 6 84 84 88 88 0.00 1.50 0.00 1.00 0 1 "textures/map/f_tree0.png" ""
 6 72 79 76 83 0.00 1.50 0.00 1.00 0 1 "textures/map/f_tree0.png" ""
 6 73 69 77 73 0.00 1.50 0.00 1.00 0 1 "textures/map/f_tree0.png" ""
@@ -778,12 +749,6 @@ mansion0
 6 96 77 100 81 0.00 1.50 0.00 1.00 0 1 "textures/map/f_tree0.png" ""
 6 104 81 108 85 0.00 1.50 0.00 1.00 0 1 "textures/map/f_tree0.png" ""
 6 106 76 110 80 0.00 1.50 0.00 1.00 0 1 "textures/map/f_tree0.png" ""
-6 100 93 104 97 0.00 1.50 0.00 1.00 0 1 "textures/map/f_tree0.png" ""
-6 91 97 95 101 0.00 1.50 0.00 1.00 0 1 "textures/map/f_tree0.png" ""
-6 95 106 99 110 0.00 1.50 0.00 1.00 0 1 "textures/map/f_tree0.png" ""
-6 103 111 107 115 0.00 1.50 0.00 1.00 0 1 "textures/map/f_tree0.png" ""
-6 109 107 113 111 0.00 1.50 0.00 1.00 0 1 "textures/map/f_tree0.png" ""
-6 108 98 112 102 0.00 1.50 0.00 1.00 0 1 "textures/map/f_tree0.png" ""
 6 108 67 112 71 0.00 1.50 0.00 1.00 0 1 "textures/map/f_tree0.png" ""
 6 105 60 109 64 0.00 1.50 0.00 1.00 0 1 "textures/map/f_tree0.png" ""
 6 100 52 104 56 0.00 1.50 0.00 1.00 0 1 "textures/map/f_tree0.png" ""
@@ -793,11 +758,17 @@ mansion0
 6 102 40 106 44 0.00 1.50 0.00 1.00 0 1 "textures/map/f_tree0.png" ""
 6 102 31 106 35 0.00 1.50 0.00 1.00 0 1 "textures/map/f_tree0.png" ""
 6 108 28 112 32 0.00 1.50 0.00 1.00 0 1 "textures/map/f_tree0.png" ""
-6 44 99 48 103 0.00 1.00 0.00 1.00 0 1 "textures/map/f_tree0.png" ""
-6 33 105 37 109 0.00 1.00 0.00 1.00 0 1 "textures/map/f_tree0.png" ""
-6 26 101 30 105 0.00 1.00 0.00 1.00 0 1 "textures/map/f_tree0.png" ""
 6 101 21 105 25 0.00 1.50 0.00 1.00 0 1 "textures/map/f_tree0.png" ""
 6 104 17 108 21 0.00 1.50 0.00 1.00 0 1 "textures/map/f_tree0.png" ""
 6 110 14 114 18 0.00 1.50 0.00 1.00 0 1 "textures/map/f_tree0.png" ""
 6 112 22 116 26 0.00 1.50 0.00 1.00 0 1 "textures/map/f_tree0.png" ""
-6 37 92 41 96 0.00 1.00 0.00 1.00 0 1 "textures/map/f_tree0.png" ""
+6 18 88 22 92 0.00 1.50 0.00 1.00 0 1 "textures/map/f_tree0.png" ""
+6 26 86 30 90 0.00 1.50 0.00 1.00 0 1 "textures/map/f_tree0.png" ""
+6 36 90 40 94 0.00 1.50 0.00 1.00 0 1 "textures/map/f_tree0.png" ""
+6 30 81 34 85 0.00 1.50 0.00 1.00 0 1 "textures/map/f_tree0.png" ""
+6 46 89 50 93 0.00 1.50 0.00 1.00 0 1 "textures/map/f_tree0.png" ""
+6 41 67 45 71 0.00 1.50 0.00 1.00 0 1 "textures/map/f_tree0.png" ""
+6 73 87 77 91 0.00 1.50 0.00 1.00 0 1 "textures/map/f_tree0.png" ""
+6 96 89 100 93 0.00 1.50 0.00 1.00 0 1 "textures/map/f_tree0.png" ""
+6 110 90 114 94 0.00 1.50 0.00 1.00 0 1 "textures/map/f_tree0.png" ""
+6 98 69 102 73 0.00 1.50 0.00 1.00 0 1 "textures/map/f_tree0.png" ""
