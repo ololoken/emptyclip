@@ -978,7 +978,11 @@ bool _Player::HasAmmoForMain() const {
 	if(!HasMainHand())
 		return false;
 
-	return Ammo.at(GetWeaponAmmoType()) > 0;
+	const std::string &AmmoType = GetWeaponAmmoType();
+	if(Ammo.find(AmmoType) == Ammo.end())
+		return false;
+
+	return Ammo.at(AmmoType) > 0;
 }
 
 // Reduces the weapons ammo by one
