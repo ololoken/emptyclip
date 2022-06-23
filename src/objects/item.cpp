@@ -46,7 +46,7 @@ void _Item::Serialize(ae::_Buffer &Buffer) {
 }
 
 // Draw the item popup window
-void _Item::DrawTooltip(const _Player *Player, glm::ivec2 DrawPosition) {
+void _Item::DrawTooltip(const _Player *Player, std::size_t CompareSlot, glm::ivec2 DrawPosition) {
 
 	glm::ivec2 Size;
 	if(Type == _Object::WEAPON)
@@ -62,14 +62,11 @@ void _Item::DrawTooltip(const _Player *Player, glm::ivec2 DrawPosition) {
 	Size.x = std::max(Size.x, TextBounds.Width) + 20;
 
 	// Get current equipment
-	_Weapon *ExistingWeapon = Player->GetMainHand();
-	_Item *EquippedArmor = Player->GetArmor();
-
-	// Check weapon type
-	if(Type == _Object::WEAPON) {
-		_Weapon *CompareWeapon = (_Weapon *)this;
-		if(CompareWeapon->IsMelee())
-			ExistingWeapon = Player->GetMelee();
+	_Weapon *EquippedWeapon = nullptr;
+	_Item *EquippedArmor = nullptr;
+	if(CompareSlot < INVENTORY_SIZE) {
+		EquippedWeapon = (_Weapon *)Player->Inventory[CompareSlot];
+		EquippedArmor = Player->Inventory[CompareSlot];
 	}
 
 	// Clamp position of window
@@ -101,10 +98,10 @@ void _Item::DrawTooltip(const _Player *Player, glm::ivec2 DrawPosition) {
 
 			// Damage
 			TextColor = COLOR_WHITE;
-			if(ExistingWeapon) {
-				if(Weapon->GetAverageDamage() > ExistingWeapon->GetAverageDamage())
+			if(EquippedWeapon) {
+				if(Weapon->GetAverageDamage() > EquippedWeapon->GetAverageDamage())
 					TextColor = COLOR_GREEN;
-				else if(Weapon->GetAverageDamage() < ExistingWeapon->GetAverageDamage())
+				else if(Weapon->GetAverageDamage() < EquippedWeapon->GetAverageDamage())
 					TextColor = COLOR_RED;
 			}
 			DrawPosition.y += 20;
@@ -116,10 +113,10 @@ void _Item::DrawTooltip(const _Player *Player, glm::ivec2 DrawPosition) {
 			// Clip size
 			if(Weapon->Attributes.at("rounds").Int) {
 				TextColor = COLOR_WHITE;
-				if(ExistingWeapon) {
-					if(Weapon->Attributes.at("rounds").Int > ExistingWeapon->Attributes.at("rounds").Int)
+				if(EquippedWeapon) {
+					if(Weapon->Attributes.at("rounds").Int > EquippedWeapon->Attributes.at("rounds").Int)
 						TextColor = COLOR_GREEN;
-					else if(Weapon->Attributes.at("rounds").Int < ExistingWeapon->Attributes.at("rounds").Int)
+					else if(Weapon->Attributes.at("rounds").Int < EquippedWeapon->Attributes.at("rounds").Int)
 						TextColor = COLOR_RED;
 				}
 				DrawPosition.y += 20;
@@ -132,10 +129,10 @@ void _Item::DrawTooltip(const _Player *Player, glm::ivec2 DrawPosition) {
 			// Attacks
 			if(Weapon->Attributes.at("attack_count").Int > 1) {
 				TextColor = COLOR_WHITE;
-				if(ExistingWeapon) {
-					if(Weapon->Attributes.at("attack_count").Int > ExistingWeapon->Attributes.at("attack_count").Int)
+				if(EquippedWeapon) {
+					if(Weapon->Attributes.at("attack_count").Int > EquippedWeapon->Attributes.at("attack_count").Int)
 						TextColor = COLOR_GREEN;
-					else if(Weapon->Attributes.at("attack_count").Int < ExistingWeapon->Attributes.at("attack_count").Int)
+					else if(Weapon->Attributes.at("attack_count").Int < EquippedWeapon->Attributes.at("attack_count").Int)
 						TextColor = COLOR_RED;
 				}
 
@@ -154,10 +151,10 @@ void _Item::DrawTooltip(const _Player *Player, glm::ivec2 DrawPosition) {
 			// Fire rate
 			if(Weapon->Attributes.at("fire_period").Double) {
 				TextColor = COLOR_WHITE;
-				if(ExistingWeapon) {
-					if(Weapon->Attributes.at("fire_period").Double < ExistingWeapon->Attributes.at("fire_period").Double)
+				if(EquippedWeapon) {
+					if(Weapon->Attributes.at("fire_period").Double < EquippedWeapon->Attributes.at("fire_period").Double)
 						TextColor = COLOR_GREEN;
-					else if(Weapon->Attributes.at("fire_period").Double > ExistingWeapon->Attributes.at("fire_period").Double)
+					else if(Weapon->Attributes.at("fire_period").Double > EquippedWeapon->Attributes.at("fire_period").Double)
 						TextColor = COLOR_RED;
 				}
 
@@ -176,8 +173,8 @@ void _Item::DrawTooltip(const _Player *Player, glm::ivec2 DrawPosition) {
 
 			// Weapon Spread
 			TextColor = COLOR_WHITE;
-			if(ExistingWeapon && ExistingWeapon->IsMelee() == Weapon->IsMelee()) {
-				if(Weapon->GetAverageAccuracy() < ExistingWeapon->GetAverageAccuracy()) {
+			if(EquippedWeapon && EquippedWeapon->IsMelee() == Weapon->IsMelee()) {
+				if(Weapon->GetAverageAccuracy() < EquippedWeapon->GetAverageAccuracy()) {
 
 					// Less is worse for melee
 					if(Weapon->IsMelee())
@@ -185,7 +182,7 @@ void _Item::DrawTooltip(const _Player *Player, glm::ivec2 DrawPosition) {
 					else
 						TextColor = COLOR_GREEN;
 				}
-				else if(Weapon->GetAverageAccuracy() > ExistingWeapon->GetAverageAccuracy()) {
+				else if(Weapon->GetAverageAccuracy() > EquippedWeapon->GetAverageAccuracy()) {
 
 					// Bigger is better for melee
 					if(Weapon->IsMelee())
@@ -209,10 +206,10 @@ void _Item::DrawTooltip(const _Player *Player, glm::ivec2 DrawPosition) {
 			// Reload speed
 			if(Weapon->Attributes.at("reload_period").Double > 1) {
 				TextColor = COLOR_WHITE;
-				if(ExistingWeapon) {
-					if(Weapon->Attributes.at("reload_period").Double < ExistingWeapon->Attributes.at("reload_period").Double)
+				if(EquippedWeapon) {
+					if(Weapon->Attributes.at("reload_period").Double < EquippedWeapon->Attributes.at("reload_period").Double)
 						TextColor = COLOR_GREEN;
-					else if(Weapon->Attributes.at("reload_period").Double > ExistingWeapon->Attributes.at("reload_period").Double)
+					else if(Weapon->Attributes.at("reload_period").Double > EquippedWeapon->Attributes.at("reload_period").Double)
 						TextColor = COLOR_RED;
 				}
 
@@ -237,10 +234,10 @@ void _Item::DrawTooltip(const _Player *Player, glm::ivec2 DrawPosition) {
 			// Components
 			if(Weapon->Attributes.at("max_components").Int >= 1) {
 				TextColor = COLOR_WHITE;
-				if(ExistingWeapon) {
-					if(Weapon->Attributes.at("max_components").Int > ExistingWeapon->Attributes.at("max_components").Int)
+				if(EquippedWeapon) {
+					if(Weapon->Attributes.at("max_components").Int > EquippedWeapon->Attributes.at("max_components").Int)
 						TextColor = COLOR_GREEN;
-					else if(Weapon->Attributes.at("max_components").Int < ExistingWeapon->Attributes.at("max_components").Int)
+					else if(Weapon->Attributes.at("max_components").Int < EquippedWeapon->Attributes.at("max_components").Int)
 						TextColor = COLOR_RED;
 				}
 

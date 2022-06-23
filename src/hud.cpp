@@ -46,6 +46,7 @@ _HUD::_HUD(_Player *Player) :
 	DragStart = nullptr;
 	CursorItem = CursorOverItem = nullptr;
 	CursorSkill = -1;
+	CursorInventorySlot = -1;
 	CrosshairScale = 0.0f;
 	MessageTimer = 0.0;
 	MessageBoxTimer = 0.0;
@@ -252,6 +253,7 @@ void _HUD::MouseEvent(const ae::_MouseEvent &MouseEvent) {
 void _HUD::Update(double FrameTime, float Radius) {
 	LastEntityHitTimer += FrameTime;
 	CursorOverItem = nullptr;
+	CursorInventorySlot = -1;
 	CursorSkill = -1;
 
 	// Update crosshair
@@ -265,8 +267,10 @@ void _HUD::Update(double FrameTime, float Radius) {
 
 		ae::_Element *HitElement;
 		HitElement = Elements[ELEMENT_INVENTORY]->HitElement;
-		if(HitElement && HitElement->Index >= 0)
+		if(HitElement && HitElement->Index >= 0) {
 			CursorOverItem = Player->Inventory[HitElement->Index];
+			CursorInventorySlot = HitElement->Index;
+		}
 
 		HitElement = Elements[ELEMENT_SKILLS]->HitElement;
 		if(HitElement && HitElement->Index >= 0)
@@ -397,22 +401,37 @@ void _HUD::Render() {
 
 	// Draw item tooltip
 	if(CursorOverItem && CursorItem != CursorOverItem) {
-		CursorOverItem->DrawTooltip(Player, ae::Input.GetMouse());
+		std::size_t CompareSlot = (std::size_t)-1;
 
 		// Compare with equipment
-		if(CursorOverItem->Type == _Object::WEAPON) {
-			_Weapon *Weapon = (_Weapon *)CursorOverItem;
-			if(Weapon->IsMelee()) {
-				if(Weapon != Player->GetMelee() && Player->GetMelee())
-					Player->GetMelee()->DrawTooltip(Player, glm::ivec2(-100, ae::Graphics.CurrentSize.y/2));
+		if(CursorInventorySlot == -1 || CursorInventorySlot >= INVENTORY_BAGSTART) {
+			if(CursorOverItem->Type == _Object::WEAPON) {
+				_Weapon *Weapon = (_Weapon *)CursorOverItem;
+				if(Weapon->IsMelee()) {
+					if(Player->GetMelee()) {
+						Player->GetMelee()->DrawTooltip(Player, std::size_t(-1), glm::ivec2(-100, ae::Graphics.CurrentSize.y/2));
+						CompareSlot = INVENTORY_MELEE;
+					}
+				}
+				else {
+					_Weapon *CompareWeapon = Player->GetMainHand();
+					CompareSlot = INVENTORY_MAINHAND;
+					if(Player->GetOffHand() && Player->GetOffHand()->Attributes.at("weapon_type").Int == Weapon->Attributes.at("weapon_type").Int) {
+						CompareWeapon = Player->GetOffHand();
+						CompareSlot = INVENTORY_OFFHAND;
+					}
+
+					if(CompareWeapon)
+						CompareWeapon->DrawTooltip(Player, std::size_t(-1), glm::ivec2(-100, ae::Graphics.CurrentSize.y/2));
+				}
 			}
-			else {
-				if(Weapon != Player->GetMainHand() && Player->GetMainHand())
-					Player->GetMainHand()->DrawTooltip(Player, glm::ivec2(-100, ae::Graphics.CurrentSize.y/2));
+			else if(CursorOverItem->Type == _Object::ARMOR && Player->GetArmor()) {
+				Player->GetArmor()->DrawTooltip(Player, std::size_t(-1), glm::ivec2(-100, ae::Graphics.CurrentSize.y/2));
+				CompareSlot = INVENTORY_ARMOR;
 			}
 		}
-		else if(CursorOverItem->Type == _Object::ARMOR && CursorOverItem != Player->GetArmor() && Player->GetArmor())
-			Player->GetArmor()->DrawTooltip(Player, glm::ivec2(-100, ae::Graphics.CurrentSize.y/2));
+
+		CursorOverItem->DrawTooltip(Player, CompareSlot, ae::Input.GetMouse());
 	}
 }
 

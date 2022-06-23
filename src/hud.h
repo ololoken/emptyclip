@@ -133,6 +133,7 @@ class _HUD {
 		_Item *CursorItem;
 		glm::ivec2 ClickOffset;
 		int CursorSkill;
+		int CursorInventorySlot;
 
 		// Displays
 		_Entity *LastEntityHit;
@@ -140,7 +141,8 @@ class _HUD {
 		float CrosshairScale;
 
 		// Messages
-		double MessageTimer, MessageBoxTimer;
+		double MessageTimer;
+		double MessageBoxTimer;
 
 		// Text
 		ae::_Font *Fonts[FONT_COUNT];

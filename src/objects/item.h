@@ -52,7 +52,7 @@ class _Item : public _Object {
 		_Item();
 
 		void Serialize(ae::_Buffer &Buffer) override;
-		void DrawTooltip(const _Player *Player, glm::ivec2 DrawPosition);
+		void DrawTooltip(const _Player *Player, std::size_t CompareSlot, glm::ivec2 DrawPosition);
 		void Render(double BlendFactor) override;
 
 		int UpdateCount(int Amount) { Count += Amount; return Count; }
