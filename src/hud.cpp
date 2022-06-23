@@ -829,6 +829,23 @@ void _HUD::RenderItemInfo(_Item *Item, int DrawX, int DrawY) {
 				Buffer.str("");
 			}
 
+			// Damage Resist
+			if(Item->Attributes.at("max_ammo").Int != 0) {
+				TextColor = COLOR_WHITE;
+				if(EquippedArmor) {
+					if(Item->Attributes.at("max_ammo").Int > EquippedArmor->Attributes.at("max_ammo").Int)
+						TextColor = COLOR_GREEN;
+					else if(Item->Attributes.at("max_ammo").Int < EquippedArmor->Attributes.at("max_ammo").Int)
+						TextColor = COLOR_RED;
+				}
+
+				DrawY += 20;
+				Buffer << (Item->Attributes.at("max_ammo").Int < 0 ? "" : "+") << Item->Attributes.at("max_ammo").Int << "%";
+				Fonts[FONT_MEDIUM]->DrawText("Max Ammo", glm::vec2(DrawX - PadX, DrawY), ae::RIGHT_BASELINE);
+				Fonts[FONT_MEDIUM]->DrawText(Buffer.str(), glm::vec2(DrawX + PadX, DrawY), ae::LEFT_BASELINE, TextColor);
+				Buffer.str("");
+			}
+
 			// Movement Speed
 			if(Item->Attributes.at("move_speed").Int != 0) {
 				TextColor = COLOR_WHITE;

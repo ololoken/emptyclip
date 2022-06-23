@@ -127,10 +127,6 @@ void _Player::Reset() {
 
 	DeleteItems();
 	Ammo.clear();
-	AmmoMax.clear();
-	for(const auto &AmmoType : Stats.AmmoNames) {
-		AmmoMax[AmmoType] = Stats.Items[AmmoType].Attributes["amount_max"].Int;
-	}
 
 	// Reset state
 	MapIdentifier = GAME_STARTLEVEL;
@@ -383,7 +379,8 @@ void _Player::LoadAmmo(ae::_Buffer &Buffer) {
 	for(int i = 0; i < AmmoTypeCount; i++) {
 		std::string Identifier = Buffer.ReadString();
 		int Count = Buffer.Read<int>();
-		Ammo[Identifier] = std::clamp(Count, 0, AmmoMax[Identifier]);
+		if(Count > 0)
+			Ammo[Identifier] = std::clamp(Count, 0, AmmoMax[Identifier]);
 	}
 }
 
@@ -1282,14 +1279,24 @@ void _Player::RecalculateStats() {
 
 	// Armor
 	DamageBlock = Stats.GetLevelDamageBlock(Level);
+	Attributes["max_ammo"].Int = 100;
 	if(GetArmor()) {
 		DamageBlock += GetArmor()->Attributes.at("damage_block").Int;
 		DamageResist += GetArmor()->Attributes.at("damage_resist").Int;
 		BaseMovementSpeed += GetArmor()->Attributes.at("move_speed").Int;
+		Attributes["max_ammo"].Int += GetArmor()->Attributes.at("max_ammo").Int;
 	}
 
 	// Get final speed
 	MovementSpeed = BaseMovementSpeed * 0.01f * PLAYER_MOVEMENTSPEED;
+
+	// Handle max ammo
+	AmmoMax.clear();
+	for(const auto &AmmoType : Stats.AmmoNames) {
+		AmmoMax[AmmoType] = Stats.Items[AmmoType].Attributes["amount_max"].Int * Attributes["max_ammo"].Mult();
+		if(Ammo.find(AmmoType) != Ammo.end())
+			Ammo[AmmoType] = std::min(Ammo[AmmoType], AmmoMax[AmmoType]);
+	}
 }
 
 // Sets the weapon animation for the player
