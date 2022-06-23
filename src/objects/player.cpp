@@ -462,15 +462,8 @@ void _Player::Update(double FrameTime) {
 	if(Tired && Stamina > PLAYER_TIREDTHRESHOLD)
 		Tired = false;
 
-	// Check timer to see if the object can attack
-	for(int i = 0; i < WEAPONATTACK_COUNT; i++) {
-		if(!AttackAllowed[i] && FireTimer[i] >= FirePeriod[i])
-			AttackAllowed[i] = true;
-	}
-
 	// Update states
 	UpdateAnimation(FrameTime);
-	UpdateRecoil();
 	UpdateReloading();
 	UpdateWeaponSwitch();
 

@@ -189,7 +189,7 @@ class _Entity : public _Object {
 		virtual void IncurDeathPenalty() { }
 		virtual void SetLegAnimationPlayMode(int Mode) { }
 		virtual void SetAnimationPlaybackSpeedFactor() { }
-		void UpdateRecoil();
+		void UpdateRecoil(double FrameTime);
 
 		// AI
 		std::list<glm::vec2> Goals;

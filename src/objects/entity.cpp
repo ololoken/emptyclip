@@ -177,8 +177,17 @@ void _Entity::StopAudio() {
 // Update the entity
 void _Entity::Update(double FrameTime) {
 	LastPosition = Position;
+
 	for(int i = 0; i < WEAPONATTACK_COUNT; i++)
 		FireTimer[i] += FrameTime;
+
+	// Check timer to see if the object can attack
+	for(int i = 0; i < WEAPONATTACK_COUNT; i++) {
+		if(!AttackAllowed[i] && FireTimer[i] >= FirePeriod[i])
+			AttackAllowed[i] = true;
+	}
+
+	UpdateRecoil(FrameTime);
 }
 
 // Updates the animation
@@ -278,12 +287,10 @@ void _Entity::UpdateAnimation(double FrameTime, bool PlaySound) {
 }
 
 // Updates the entity's accuracy according to the weapon's recoil
-void _Entity::UpdateRecoil() {
+void _Entity::UpdateRecoil(double FrameTime) {
 
-	// Update accuracy based on the weapon's recoil
-	CurrentAccuracy -= RecoilRegen;
-
-	// Check bounds
+	// Update accuracy
+	CurrentAccuracy -= RecoilRegen * FrameTime;
 	if(CurrentAccuracy < MinAccuracy)
 		CurrentAccuracy = MinAccuracy;
 }

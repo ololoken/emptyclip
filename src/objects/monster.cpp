@@ -114,15 +114,6 @@ void _Monster::UpdateMonster(double FrameTime, _Player *Player) {
 	if(Player->IsDying())
 		return;
 
-	// Check timer to see if the object can move
-	for(int i = 0; i < WEAPONATTACK_COUNT; i++) {
-		if(!AttackAllowed[i] && FireTimer[i] >= FirePeriod[i])
-			AttackAllowed[i] = true;
-	}
-
-	// Update accuracy
-	UpdateRecoil();
-
 	// Update animation
 	UpdateAnimation(FrameTime);
 
