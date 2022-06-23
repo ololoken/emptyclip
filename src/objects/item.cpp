@@ -261,7 +261,12 @@ void _Item::DrawTooltip(const _Player *Player, glm::ivec2 DrawPosition) {
 				if(First)
 					DrawPosition.y += 10;
 				DrawPosition.y += 20;
-				Buffer << "+" << Weapon->Bonus[i] << "% " << UpgradeTypeToString(i, Weapon->Attributes.at("weapon_type").Int);
+
+				std::string Percent = "% ";
+				if(i == UPGRADE_ATTACKS)
+					Percent = " ";
+
+				Buffer << "+" << Weapon->Bonus[i] << Percent << UpgradeTypeToString(i, Weapon->Attributes.at("weapon_type").Int);
 				ae::Assets.Fonts["hud_medium"]->DrawText(Buffer.str(), glm::vec2(DrawPosition.x, DrawPosition.y), ae::CENTER_BASELINE, TextColor);
 				Buffer.str("");
 
