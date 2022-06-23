@@ -391,22 +391,22 @@ void _HUD::Render() {
 
 	// Draw item tooltip
 	if(CursorOverItem && CursorItem != CursorOverItem) {
-		CursorOverItem->DrawTooltip(Player, ae::Input.GetMouse().x, ae::Input.GetMouse().y);
+		CursorOverItem->DrawTooltip(Player, ae::Input.GetMouse());
 
 		// Compare with equipment
 		if(CursorOverItem->Type == _Object::WEAPON) {
 			_Weapon *Weapon = (_Weapon *)CursorOverItem;
 			if(Weapon->IsMelee()) {
 				if(Weapon != Player->GetMelee())
-					Player->GetMelee()->DrawTooltip(Player, -100, ae::Graphics.CurrentSize.y/2);
+					Player->GetMelee()->DrawTooltip(Player, glm::ivec2(-100, ae::Graphics.CurrentSize.y/2));
 			}
 			else {
 				if(Weapon != Player->GetMainHand())
-					Player->GetMainHand()->DrawTooltip(Player, -100, ae::Graphics.CurrentSize.y/2);
+					Player->GetMainHand()->DrawTooltip(Player, glm::ivec2(-100, ae::Graphics.CurrentSize.y/2));
 			}
 		}
 		else if(CursorOverItem->Type == _Object::ARMOR && CursorOverItem != Player->GetArmor())
-			Player->GetArmor()->DrawTooltip(Player, -100, ae::Graphics.CurrentSize.y/2);
+			Player->GetArmor()->DrawTooltip(Player, glm::ivec2(-100, ae::Graphics.CurrentSize.y/2));
 	}
 }
 
