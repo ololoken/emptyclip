@@ -20,6 +20,9 @@
 // Libraries
 #include <objects/object.h>
 
+// Forward Declarations
+class _Player;
+
 // Upgrade component types
 enum UpgradeType {
 	UPGRADE_CLIP,
@@ -49,6 +52,7 @@ class _Item : public _Object {
 		_Item();
 
 		void Serialize(ae::_Buffer &Buffer) override;
+		void DrawTooltip(const _Player *Player, int DrawX, int DrawY);
 		void Render(double BlendFactor) override;
 
 		int UpdateCount(int Amount) { Count += Amount; return Count; }
@@ -58,6 +62,7 @@ class _Item : public _Object {
 		float GetAverageAccuracy() const;
 
 		virtual std::string GetTypeAsString() const override;
+		std::string UpgradeTypeToString(int Type, int WeaponType);
 
 		int Level;
 		int Quality;

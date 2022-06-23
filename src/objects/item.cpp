@@ -16,10 +16,18 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 *******************************************************************************/
 #include <objects/item.h>
+#include <objects/weapon.h>
+#include <objects/player.h>
 #include <ae/buffer.h>
 #include <ae/texture.h>
 #include <ae/graphics.h>
+#include <ae/font.h>
+#include <ae/assets.h>
+#include <ae/util.h>
 #include <constants.h>
+#include <stats.h>
+#include <sstream>
+#include <iomanip>
 
 // Constructor
 _Item::_Item() :
@@ -34,6 +42,340 @@ _Item::_Item() :
 // Serialize for saving
 void _Item::Serialize(ae::_Buffer &Buffer) {
 	Buffer.WriteString(ID.c_str());
+}
+
+// Draw the item popup window
+void _Item::DrawTooltip(const _Player *Player, int DrawX, int DrawY) {
+	int PadX = 8;
+	int Width;
+	int Height;
+
+	// TODO cleanup
+	if(Type == _Object::WEAPON) {
+		Width = 245;
+		Height = 375;
+	}
+	else if(Type == _Object::ARMOR) {
+		Width = 220;
+		Height = 170;
+	}
+	else {
+		Width = 150;
+		Height = 100;
+	}
+
+	// Get title width
+	ae::_TextBounds TextBounds;
+	ae::Assets.Fonts["hud_large"]->GetStringDimensions(Name, TextBounds);
+	Width = std::max(Width, TextBounds.Width) + 20;
+
+	int MinPadding = 5;
+	int MinX = 5;
+	int WindowOffsetX = 20;
+
+	// Get current equipment
+	_Weapon *ExistingWeapon = Player->GetMainHand();
+	_Item *EquippedArmor = Player->GetArmor();
+
+	// Check weapon type
+	if(Type == _Object::WEAPON) {
+		_Weapon *CompareWeapon = (_Weapon *)this;
+		if(CompareWeapon->IsMelee())
+			ExistingWeapon = Player->GetMelee();
+	}
+
+	DrawX += WindowOffsetX;
+	DrawY -= Height/2;
+	if(DrawX < MinX)
+		DrawX = MinX;
+	if(DrawY < MinPadding)
+		DrawY = MinPadding;
+	if(DrawX > ae::Graphics.CurrentSize.x - MinPadding - Width)
+		DrawX = ae::Graphics.CurrentSize.x - MinPadding - Width;
+	if(DrawY > ae::Graphics.CurrentSize.y - MinPadding - Height)
+		DrawY = ae::Graphics.CurrentSize.y - MinPadding - Height;
+
+	ae::Graphics.SetProgram(ae::Assets.Programs["ortho_pos"]);
+	ae::Graphics.SetColor(glm::vec4(0, 0, 0, 0.8f));
+	ae::Graphics.DrawRectangle(glm::vec2(DrawX, DrawY), glm::vec2(DrawX + Width, DrawY + Height), true);
+
+	DrawY += 25;
+	DrawX += Width/2;
+	ae::Assets.Fonts["hud_large"]->DrawText(Name, glm::vec2(DrawX, DrawY), ae::CENTER_BASELINE);
+
+	DrawY += 16;
+	ae::Assets.Fonts["hud_small"]->DrawText(GetTypeAsString(), glm::vec2(DrawX, DrawY), ae::CENTER_BASELINE);
+
+	DrawY += 10;
+	switch(Type) {
+		case _Object::WEAPON: {
+			std::ostringstream Buffer;
+			_Weapon *Weapon = (_Weapon *)this;
+			glm::vec4 TextColor;
+
+			// Damage
+			TextColor = COLOR_WHITE;
+			if(ExistingWeapon) {
+				if(Weapon->GetAverageDamage() > ExistingWeapon->GetAverageDamage())
+					TextColor = COLOR_GREEN;
+				else if(Weapon->GetAverageDamage() < ExistingWeapon->GetAverageDamage())
+					TextColor = COLOR_RED;
+			}
+			DrawY += 20;
+			Buffer << Weapon->Attributes.at("min_damage").Int << " - " << Weapon->Attributes.at("max_damage").Int;
+			ae::Assets.Fonts["hud_medium"]->DrawText("Damage", glm::vec2(glm::vec2(DrawX - PadX, DrawY)), ae::RIGHT_BASELINE);
+			ae::Assets.Fonts["hud_medium"]->DrawText(Buffer.str(), glm::vec2(glm::vec2(DrawX + PadX, DrawY)), ae::LEFT_BASELINE, TextColor);
+			Buffer.str("");
+
+			// Clip size
+			if(Weapon->Attributes.at("rounds").Int) {
+				TextColor = COLOR_WHITE;
+				if(ExistingWeapon) {
+					if(Weapon->Attributes.at("rounds").Int > ExistingWeapon->Attributes.at("rounds").Int)
+						TextColor = COLOR_GREEN;
+					else if(Weapon->Attributes.at("rounds").Int < ExistingWeapon->Attributes.at("rounds").Int)
+						TextColor = COLOR_RED;
+				}
+				DrawY += 20;
+				Buffer << Weapon->Attributes.at("ammo").Int << "/" << Weapon->Attributes.at("rounds").Int;
+				ae::Assets.Fonts["hud_medium"]->DrawText("Rounds", glm::vec2(glm::vec2(DrawX - PadX, DrawY)), ae::RIGHT_BASELINE);
+				ae::Assets.Fonts["hud_medium"]->DrawText(Buffer.str(), glm::vec2(glm::vec2(DrawX + PadX, DrawY)), ae::LEFT_BASELINE, TextColor);
+				Buffer.str("");
+			}
+
+			// Attacks
+			if(Weapon->Attributes.at("attack_count").Int > 1) {
+				TextColor = COLOR_WHITE;
+				if(ExistingWeapon) {
+					if(Weapon->Attributes.at("attack_count").Int > ExistingWeapon->Attributes.at("attack_count").Int)
+						TextColor = COLOR_GREEN;
+					else if(Weapon->Attributes.at("attack_count").Int < ExistingWeapon->Attributes.at("attack_count").Int)
+						TextColor = COLOR_RED;
+				}
+
+				DrawY += 20;
+				Buffer << Weapon->Attributes.at("attack_count").Int;
+				std::string AttackCountText;
+				if(Weapon->IsMelee())
+					AttackCountText = "Attacks/Swing";
+				else
+					AttackCountText = "Bullets/Shot";
+				ae::Assets.Fonts["hud_medium"]->DrawText(AttackCountText, glm::vec2(glm::vec2(DrawX - PadX, DrawY)), ae::RIGHT_BASELINE);
+				ae::Assets.Fonts["hud_medium"]->DrawText(Buffer.str(), glm::vec2(glm::vec2(DrawX + PadX, DrawY)), ae::LEFT_BASELINE, TextColor);
+				Buffer.str("");
+			}
+
+			// Fire rate
+			if(Weapon->Attributes.at("fire_period").Double) {
+				TextColor = COLOR_WHITE;
+				if(ExistingWeapon) {
+					if(Weapon->Attributes.at("fire_period").Double < ExistingWeapon->Attributes.at("fire_period").Double)
+						TextColor = COLOR_GREEN;
+					else if(Weapon->Attributes.at("fire_period").Double > ExistingWeapon->Attributes.at("fire_period").Double)
+						TextColor = COLOR_RED;
+				}
+
+				DrawY += 20;
+				Buffer << std::setprecision(3) << 1 / Weapon->Attributes.at("fire_period").Double << "/s";
+				std::string AttackCountText;
+				if(Weapon->IsMelee())
+					AttackCountText = "Attack Rate";
+				else
+					AttackCountText = "Fire Rate";
+				ae::Assets.Fonts["hud_medium"]->DrawText(AttackCountText, glm::vec2(glm::vec2(DrawX - PadX, DrawY)), ae::RIGHT_BASELINE);
+				ae::Assets.Fonts["hud_medium"]->DrawText(Buffer.str(), glm::vec2(glm::vec2(DrawX + PadX, DrawY)), ae::LEFT_BASELINE, TextColor);
+				Buffer.str("");
+				Buffer << std::setprecision(6);
+			}
+
+			// Weapon Spread
+			TextColor = COLOR_WHITE;
+			if(ExistingWeapon && ExistingWeapon->IsMelee() == Weapon->IsMelee()) {
+				if(Weapon->GetAverageAccuracy() < ExistingWeapon->GetAverageAccuracy()) {
+
+					// Less is worse for melee
+					if(Weapon->IsMelee())
+						TextColor = COLOR_RED;
+					else
+						TextColor = COLOR_GREEN;
+				}
+				else if(Weapon->GetAverageAccuracy() > ExistingWeapon->GetAverageAccuracy()) {
+
+					// Bigger is better for melee
+					if(Weapon->IsMelee())
+						TextColor = COLOR_GREEN;
+					else
+						TextColor = COLOR_RED;
+				}
+			}
+			DrawY += 20;
+			if(Weapon->IsMelee()) {
+				Buffer << Weapon->Attributes.at("max_accuracy").Float << " degrees";
+				ae::Assets.Fonts["hud_medium"]->DrawText("Swing Arc", glm::vec2(DrawX - PadX, DrawY), ae::RIGHT_BASELINE);
+			}
+			else {
+				Buffer << (int)(Weapon->Attributes.at("min_accuracy").Float + 0.5f) << " - " << (int)(Weapon->Attributes.at("max_accuracy").Float + 0.5f);
+				ae::Assets.Fonts["hud_medium"]->DrawText("Spread", glm::vec2(DrawX - PadX, DrawY), ae::RIGHT_BASELINE);
+			}
+			ae::Assets.Fonts["hud_medium"]->DrawText(Buffer.str(), glm::vec2(DrawX + PadX, DrawY), ae::LEFT_BASELINE, TextColor);
+			Buffer.str("");
+
+			// Reload speed
+			if(Weapon->Attributes.at("reload_period").Double > 1) {
+				TextColor = COLOR_WHITE;
+				if(ExistingWeapon) {
+					if(Weapon->Attributes.at("reload_period").Double < ExistingWeapon->Attributes.at("reload_period").Double)
+						TextColor = COLOR_GREEN;
+					else if(Weapon->Attributes.at("reload_period").Double > ExistingWeapon->Attributes.at("reload_period").Double)
+						TextColor = COLOR_RED;
+				}
+
+				DrawY += 20;
+				Buffer << ae::Round2(Weapon->Attributes.at("reload_period").Double) << "s";
+				std::string AttackCountText;
+				ae::Assets.Fonts["hud_medium"]->DrawText("Reload Time", glm::vec2(DrawX - PadX, DrawY), ae::RIGHT_BASELINE);
+				ae::Assets.Fonts["hud_medium"]->DrawText(Buffer.str(), glm::vec2(DrawX + PadX, DrawY), ae::LEFT_BASELINE, TextColor);
+				Buffer.str("");
+			}
+
+			// Ammo type
+			std::string AmmoType = Stats.Weapons[Weapon->ID].AmmoType;
+			if(!AmmoType.empty()) {
+				DrawY += 20;
+				Buffer << Stats.Items[AmmoType].Name;
+				ae::Assets.Fonts["hud_medium"]->DrawText("Ammo Type", glm::vec2(DrawX - PadX, DrawY), ae::RIGHT_BASELINE);
+				ae::Assets.Fonts["hud_medium"]->DrawText(Buffer.str(), glm::vec2(DrawX + PadX, DrawY));
+				Buffer.str("");
+			}
+
+			// Components
+			if(Weapon->Attributes.at("max_components").Int >= 1) {
+				TextColor = COLOR_WHITE;
+				if(ExistingWeapon) {
+					if(Weapon->Attributes.at("max_components").Int > ExistingWeapon->Attributes.at("max_components").Int)
+						TextColor = COLOR_GREEN;
+					else if(Weapon->Attributes.at("max_components").Int < ExistingWeapon->Attributes.at("max_components").Int)
+						TextColor = COLOR_RED;
+				}
+
+				DrawY += 20;
+				Buffer << Weapon->Upgrades.size() << "/" << Weapon->Attributes.at("max_components").Int;
+				ae::Assets.Fonts["hud_medium"]->DrawText("Components", glm::vec2(DrawX - PadX, DrawY), ae::RIGHT_BASELINE);
+				ae::Assets.Fonts["hud_medium"]->DrawText(Buffer.str(), glm::vec2(DrawX + PadX, DrawY), ae::LEFT_BASELINE, TextColor);
+				Buffer.str("");
+			}
+
+			// Bonuses
+			TextColor = COLOR_WHITE;
+			bool First = true;
+			for(int i = 0; i < UPGRADE_TYPES; i++) {
+				if(!Weapon->Bonus[i])
+					continue;
+
+				if(First)
+					DrawY += 10;
+				DrawY += 20;
+				Buffer << "+" << Weapon->Bonus[i] << "% " << UpgradeTypeToString(i, Weapon->Attributes.at("weapon_type").Int);
+				ae::Assets.Fonts["hud_medium"]->DrawText(Buffer.str(), glm::vec2(DrawX, DrawY), ae::CENTER_BASELINE, TextColor);
+				Buffer.str("");
+
+				First = false;
+			}
+		} break;
+		case _Object::ARMOR: {
+			std::ostringstream Buffer;
+			glm::vec4 TextColor;
+
+			DrawX += 40;
+
+			// Damage Block
+			if(Attributes.at("damage_block").Int != 0) {
+				TextColor = COLOR_WHITE;
+				if(EquippedArmor) {
+					if(Attributes.at("damage_block").Int > EquippedArmor->Attributes.at("damage_block").Int)
+						TextColor = COLOR_GREEN;
+					else if(Attributes.at("damage_block").Int < EquippedArmor->Attributes.at("damage_block").Int)
+						TextColor = COLOR_RED;
+				}
+
+				DrawY += 20;
+				Buffer << Attributes.at("damage_block").Int;
+				ae::Assets.Fonts["hud_medium"]->DrawText("Damage Block", glm::vec2(DrawX - PadX, DrawY), ae::RIGHT_BASELINE);
+				ae::Assets.Fonts["hud_medium"]->DrawText(Buffer.str(), glm::vec2(DrawX + PadX, DrawY), ae::LEFT_BASELINE, TextColor);
+				Buffer.str("");
+			}
+
+			// Damage Resist
+			if(Attributes.at("damage_resist").Int != 0) {
+				TextColor = COLOR_WHITE;
+				if(EquippedArmor) {
+					if(Attributes.at("damage_resist").Int > EquippedArmor->Attributes.at("damage_resist").Int)
+						TextColor = COLOR_GREEN;
+					else if(Attributes.at("damage_resist").Int < EquippedArmor->Attributes.at("damage_resist").Int)
+						TextColor = COLOR_RED;
+				}
+
+				DrawY += 20;
+				Buffer << (Attributes.at("damage_resist").Int < 0 ? "" : "+") << Attributes.at("damage_resist").Int << "%";
+				ae::Assets.Fonts["hud_medium"]->DrawText("Damage Resist", glm::vec2(DrawX - PadX, DrawY), ae::RIGHT_BASELINE);
+				ae::Assets.Fonts["hud_medium"]->DrawText(Buffer.str(), glm::vec2(DrawX + PadX, DrawY), ae::LEFT_BASELINE, TextColor);
+				Buffer.str("");
+			}
+
+			// Damage Resist
+			if(Attributes.at("max_ammo").Int != 0) {
+				TextColor = COLOR_WHITE;
+				if(EquippedArmor) {
+					if(Attributes.at("max_ammo").Int > EquippedArmor->Attributes.at("max_ammo").Int)
+						TextColor = COLOR_GREEN;
+					else if(Attributes.at("max_ammo").Int < EquippedArmor->Attributes.at("max_ammo").Int)
+						TextColor = COLOR_RED;
+				}
+
+				DrawY += 20;
+				Buffer << (Attributes.at("max_ammo").Int < 0 ? "" : "+") << Attributes.at("max_ammo").Int << "%";
+				ae::Assets.Fonts["hud_medium"]->DrawText("Max Ammo", glm::vec2(DrawX - PadX, DrawY), ae::RIGHT_BASELINE);
+				ae::Assets.Fonts["hud_medium"]->DrawText(Buffer.str(), glm::vec2(DrawX + PadX, DrawY), ae::LEFT_BASELINE, TextColor);
+				Buffer.str("");
+			}
+
+			// Movement Speed
+			if(Attributes.at("move_speed").Int != 0) {
+				TextColor = COLOR_WHITE;
+				if(EquippedArmor) {
+					if(Attributes.at("move_speed").Int > EquippedArmor->Attributes.at("move_speed").Int)
+						TextColor = COLOR_GREEN;
+					else if(Attributes.at("move_speed").Int < EquippedArmor->Attributes.at("move_speed").Int)
+						TextColor = COLOR_RED;
+				}
+
+				DrawY += 20;
+				Buffer << (Attributes.at("move_speed").Int < 0 ? "" : "+") << Attributes.at("move_speed").Int << "%";
+				ae::Assets.Fonts["hud_medium"]->DrawText("Movement Speed", glm::vec2(DrawX - PadX, DrawY), ae::RIGHT_BASELINE);
+				ae::Assets.Fonts["hud_medium"]->DrawText(Buffer.str(), glm::vec2(DrawX + PadX, DrawY), ae::LEFT_BASELINE, TextColor);
+				Buffer.str("");
+			}
+		} break;
+		case _Object::MEDKIT: {
+			std::ostringstream Buffer;
+
+			// Heal amount
+			DrawY += 20;
+			Buffer << "+" << Attributes.at("health_restored").Int << " HP";
+			ae::Assets.Fonts["hud_medium"]->DrawText(Buffer.str(), glm::vec2(DrawX, DrawY), ae::CENTER_BASELINE, COLOR_GREEN);
+		} break;
+		case _Object::UPGRADE: {
+			std::ostringstream Buffer;
+
+			// Bonus
+			DrawY += 20;
+			if(Attributes.at("upgrade_type").Int == UPGRADE_ATTACKS)
+				Buffer << "+" << Attributes.at("bonus").Int << " Attack Count";
+			else
+				Buffer << "+" << Attributes.at("bonus").Int << "% " << UpgradeTypeToString(Attributes.at("upgrade_type").Int, -1);
+			ae::Assets.Fonts["hud_medium"]->DrawText(Buffer.str(), glm::vec2(DrawX, DrawY), ae::CENTER_BASELINE);
+		} break;
+	}
 }
 
 // Draws the object
@@ -64,6 +406,39 @@ std::string _Item::GetTypeAsString() const {
 			return "Armor";
 		case _Object::MEDKIT:
 			return "Medkit";
+	}
+
+	return "";
+}
+
+// Convert an upgrade type to string
+std::string _Item::UpgradeTypeToString(int Type, int WeaponType) {
+
+	switch(Type) {
+		case UPGRADE_CLIP:
+			return "Round Size";
+		break;
+		case UPGRADE_DAMAGE:
+			return "Damage";
+		break;
+		case UPGRADE_ACCURACY:
+			return "Accuracy";
+		break;
+		case UPGRADE_FIREPERIOD:
+			if(WeaponType == WEAPON_MELEE)
+				return "Attack Rate";
+			else
+				return "Fire Rate";
+		break;
+		case UPGRADE_RELOADPERIOD:
+			return "Reload Speed";
+		break;
+		case UPGRADE_ATTACKS:
+			if(WeaponType == WEAPON_MELEE)
+				return "Attack Count";
+			else
+				return "Bullets/Shot";
+		break;
 	}
 
 	return "";

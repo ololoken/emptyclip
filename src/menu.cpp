@@ -510,7 +510,7 @@ void _Menu::RefreshSaveSlots() {
 			Player->UpdateSpeed(1.0f);
 			Player->SetLegAnimationPlayMode(ae::_Animation::PLAYING);
 			Player->Animation->Play(0);
-			SlotLabel->Text = Player->GetName();
+			SlotLabel->Text = Player->Name;
 		}
 		else
 			SlotLabel->Text = "Empty Slot";

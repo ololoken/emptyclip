@@ -133,8 +133,6 @@ class _HUD {
 		void DrawHUDWeapon(const _Weapon *Weapon, ae::_Element *Element, ae::_Element *Image, ae::_Element *Label);
 		void DrawItemCount(_Item *Item, int X, int Y);
 
-		std::string UpgradeTypeToString(int Type, int WeaponType);
-
 		// State
 		_Player *Player;
 		bool InventoryOpen;
