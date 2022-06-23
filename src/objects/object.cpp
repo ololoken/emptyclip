@@ -56,6 +56,14 @@ void _Object::FacePosition(const glm::vec2 &Cursor) {
 		Rotation += 360.0f;
 }
 
+// Get render bounds of object
+void _Object::GetRenderBounds(glm::vec4 &Bounds) {
+	Bounds[0] = Position.x - Scale * 0.5f;
+	Bounds[1] = Position.y - Scale * 0.5f;
+	Bounds[2] = Position.x + Scale * 0.5f;
+	Bounds[3] = Position.y + Scale * 0.5f;
+}
+
 // Force position of object
 void _Object::SetPosition(const glm::vec2 &NewPosition) {
 	LastPosition = Position = NewPosition;

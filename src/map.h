@@ -18,6 +18,7 @@
 #pragma once
 
 // Libraries
+#include <ae/bounds.h>
 #include <glm/vec2.hpp>
 #include <color.h>
 #include <string>
@@ -50,14 +51,6 @@ enum CollisionGridType {
 enum MapType {
 	MAPTYPE_CAMPAIGN,
 	MAPTYPE_ADVENTURE
-};
-
-// Types of minimap layers
-enum MinimapLayers{
-	MINIMAP_WALLS,
-	MINIMAP_DOORS,
-	MINIMAP_OBJECTS,
-	MINIMAP_COUNT,
 };
 
 const int WALL_LEFT                 = 0x1;
@@ -159,9 +152,8 @@ struct _ObjectSpawn {
 
 // Holds minimap layer data
 struct _MinimapLayer {
-	const _Block *Block;
-	const _Event *Event;
-	const _Object *Object;
+	ae::_Bounds Bounds;
+	glm::vec4 Color;
 };
 
 // Classes
@@ -252,7 +244,7 @@ class _Map {
 		void RemoveItem(_Item *Item);
 
 		bool CheckMinimapBounds(const glm::vec4 &Bounds, float Size);
-		void GetMinimapObjects();
+		void AddMinimapLayers();
 		void AddRenderList(_Object *Object, int Layer);
 		static glm::vec2 GenerateRandomPointInCircle(float Radius);
 
@@ -261,7 +253,7 @@ class _Map {
 		std::vector<std::string> MonsterSet;
 
 		// Minimap
-		std::vector<_MinimapLayer> MinimapLayers[MINIMAP_COUNT];
+		std::vector<_MinimapLayer> MinimapLayers;
 
 	private:
 

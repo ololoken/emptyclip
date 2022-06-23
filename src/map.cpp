@@ -1255,35 +1255,18 @@ void _Map::DrawMinimap() {
 
 	// Draw minimap background
 	ae::Graphics.SetProgram(ae::Assets.Programs["ortho_pos"]);
-	ae::Graphics.SetColor(glm::vec4(0.0f, 0.0f, 0.0f, 0.5f));
+	ae::Graphics.SetColor(HUD_MINIMAP_BACKGROUND_COLOR);
 	ae::Graphics.EnableScissorTest();
 	ae::Graphics.SetScissor(MinimapBounds);
 	ae::Graphics.DrawRectangle(MinimapBounds, true);
 
-	// Draw walls
-	ae::Graphics.SetColor(glm::vec4(0.2f, 0.2f, 0.2f, 0.5f));
-	for(const auto &MinimapLayer : MinimapLayers[MINIMAP_WALLS]) {
-		glm::vec2 Start = MinimapBounds.Start + ((glm::vec2(MinimapLayer.Block->Start) - CaptureBounds.Start) / VisionSize) * HUD_MINIMAP_SIZE;
-		glm::vec2 End = MinimapBounds.Start + ((glm::vec2(MinimapLayer.Block->End + 1) - CaptureBounds.Start) / VisionSize) * HUD_MINIMAP_SIZE;
+	// Draw layers
+	for(const auto &MinimapLayer : MinimapLayers) {
+		glm::vec2 Start = MinimapBounds.Start + ((MinimapLayer.Bounds.Start - CaptureBounds.Start) / VisionSize) * HUD_MINIMAP_SIZE;
+		glm::vec2 End = MinimapBounds.Start + ((MinimapLayer.Bounds.End - CaptureBounds.Start) / VisionSize) * HUD_MINIMAP_SIZE;
 
-		ae::Graphics.DrawRectangle(
-			Start,
-			End,
-			true
-		);
-	}
-
-	// Draw doors
-	ae::Graphics.SetColor(glm::vec4(0.2f, 0.2f, 0.5f, 0.5f));
-	for(const auto &MinimapLayer : MinimapLayers[MINIMAP_DOORS]) {
-		glm::vec2 Start = MinimapBounds.Start + ((glm::vec2(MinimapLayer.Event->Start) - CaptureBounds.Start) / VisionSize) * HUD_MINIMAP_SIZE;
-		glm::vec2 End = MinimapBounds.Start + ((glm::vec2(MinimapLayer.Event->End + 1) - CaptureBounds.Start) / VisionSize) * HUD_MINIMAP_SIZE;
-
-		ae::Graphics.DrawRectangle(
-			Start,
-			End,
-			true
-		);
+		ae::Graphics.SetColor(MinimapLayer.Color);
+		ae::Graphics.DrawRectangle(Start, End, true);
 	}
 
 	ae::Graphics.DisableScissorTest();
@@ -1473,23 +1456,16 @@ void _Map::RenderWalls() {
 	ae::Graphics.SetCullFace(true);
 
 	// Draw walls
-	MinimapLayers[MINIMAP_WALLS].clear();
 	for(std::size_t i = 0; i < Blocks[MAPLAYER_WALL].size(); i++) {
 		_Block *Block = &Blocks[MAPLAYER_WALL][i];
 
-		// Add to minimap
-		glm::vec4 Bounds;
-		Block->GetBounds(Bounds);
-		if(!Block->Walkable && CheckMinimapBounds(Bounds, HUD_MINIMAP_CAPTURE_SIZE)) {
-			_MinimapLayer MinimapLayer;
-			MinimapLayer.Block = Block;
-			MinimapLayers[MINIMAP_WALLS].push_back(MinimapLayer);
-		}
-
 		// Always draw walls that go lower than floor
 		bool Draw = true;
-		if(Block->MinZ >= 0)
+		if(Block->MinZ >= 0) {
+			glm::vec4 Bounds;
+			Block->GetBounds(Bounds);
 			Draw = Camera->IsAABBInView(Bounds);
+		}
 
 		// Skip
 		if(!Draw)
@@ -1517,18 +1493,12 @@ void _Map::RenderFlatWalls() {
 	for(size_t i = 0; i < Blocks[MAPLAYER_FLAT].size(); i++) {
 		_Block *Block = &Blocks[MAPLAYER_FLAT][i];
 
-		// Add to minimap
-		glm::vec4 Bounds;
-		Block->GetBounds(Bounds);
-		if(Block->MinZ <= 0 && CheckMinimapBounds(Bounds, HUD_MINIMAP_CAPTURE_SIZE)) {
-			_MinimapLayer MinimapLayer;
-			MinimapLayer.Block = Block;
-			MinimapLayers[MINIMAP_WALLS].push_back(MinimapLayer);
-		}
-
 		bool Draw = true;
-		if(Block->MinZ >= 0)
+		if(Block->MinZ >= 0) {
+			glm::vec4 Bounds;
+			Block->GetBounds(Bounds);
 			Draw = Camera->IsAABBInView(Bounds);
+		}
 
 		if(Draw) {
 			ae::Graphics.DrawWall(
@@ -1633,8 +1603,15 @@ int _Map::RenderParticles(int Type) {
 
 // Update map
 void _Map::Update(double FrameTime) {
-	GetMinimapObjects();
-	ObjectManager->Update(FrameTime, Camera);
+
+	// Add blocks and events to minimap
+	MinimapLayers.clear();
+	AddMinimapLayers();
+
+	// Update objects
+	ObjectManager->Update(FrameTime, this);
+
+	// Update ambient light
 	if(AmbientLightPeriod > 0 && AmbientLightTimer <= AmbientLightPeriod) {
 		AmbientLightBlendFactor = AmbientLightTimer / AmbientLightPeriod;
 		AmbientLightTimer += FrameTime;
@@ -1666,23 +1643,49 @@ bool _Map::CheckMinimapBounds(const glm::vec4 &Bounds, float Size) {
 	return true;
 }
 
-// Get objects to render in minimap
-void _Map::GetMinimapObjects() {
-	MinimapLayers[MINIMAP_DOORS].clear();
-	MinimapLayers[MINIMAP_OBJECTS].clear();
+// Add objects to the minimap
+void _Map::AddMinimapLayers() {
 
-	// Get doors
+	// Add walls
+	for(std::size_t i = 0; i < Blocks[MAPLAYER_WALL].size(); i++) {
+		_Block *Block = &Blocks[MAPLAYER_WALL][i];
+
+		glm::vec4 Bounds;
+		Block->GetBounds(Bounds);
+		if(CheckMinimapBounds(Bounds, HUD_MINIMAP_CAPTURE_SIZE)) {
+			_MinimapLayer MinimapLayer;
+			MinimapLayer.Bounds = Bounds;
+			MinimapLayer.Color = glm::vec4(1, 1, 1, 0.2f);
+			MinimapLayers.push_back(MinimapLayer);
+		}
+	}
+
+	// Add flat walls
+	for(size_t i = 0; i < Blocks[MAPLAYER_FLAT].size(); i++) {
+		_Block *Block = &Blocks[MAPLAYER_FLAT][i];
+
+		glm::vec4 Bounds;
+		Block->GetBounds(Bounds);
+		if(Block->MinZ <= 0 && CheckMinimapBounds(Bounds, HUD_MINIMAP_CAPTURE_SIZE)) {
+			_MinimapLayer MinimapLayer;
+			MinimapLayer.Bounds = Bounds;
+			MinimapLayer.Color = glm::vec4(1, 1, 1, 0.2f);
+			MinimapLayers.push_back(MinimapLayer);
+		}
+	}
+
+	// Add doors to minimap
 	for(const auto &Event : Events) {
 		if(Event->Type != EVENT_DOOR)
 			continue;
 
-		// Save blocks surrounding camera for minimap
 		glm::vec4 Bounds;
 		Event->GetBounds(Bounds);
 		if(CheckMinimapBounds(Bounds, HUD_MINIMAP_CAPTURE_SIZE)) {
 			_MinimapLayer MinimapLayer;
-			MinimapLayer.Event = Event;
-			MinimapLayers[MINIMAP_DOORS].push_back(MinimapLayer);
+			MinimapLayer.Bounds = Bounds;
+			MinimapLayer.Color = glm::vec4(0, 0, 1, 0.2f);
+			MinimapLayers.push_back(MinimapLayer);
 		}
 	}
 }

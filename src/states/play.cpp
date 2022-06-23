@@ -820,13 +820,25 @@ void _PlayState::UpdateMonsters(double FrameTime) {
 		else {
 			Monster->UpdateMonster(FrameTime, Player);
 
-			if(Monster->AttackMade) {
-				EntityAttack(Monster, GRID_PLAYER);
+			// Get bounds
+			glm::vec4 Bounds;
+			Monster->GetRenderBounds(Bounds);
+
+			// Add to minimap
+			if(Map->CheckMinimapBounds(Bounds, HUD_MINIMAP_CAPTURE_SIZE)) {
+				_MinimapLayer MinimapLayer;
+				MinimapLayer.Bounds = Bounds;
+				MinimapLayer.Color = COLOR_RED;
+				Map->MinimapLayers.push_back(MinimapLayer);
 			}
 
-			if(Camera->IsCircleInView(Monster->Position, Monster->Scale)) {
+			// Attack
+			if(Monster->AttackMade)
+				EntityAttack(Monster, GRID_PLAYER);
+
+			// Add to render list
+			if(Camera->IsAABBInView(Bounds))
 				Map->AddRenderList(Monster, 2);
-			}
 
 			++MonsterIterator;
 		}

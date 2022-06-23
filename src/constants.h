@@ -21,6 +21,7 @@
 #include <string>
 #include <SDL_keycode.h>
 #include <glm/vec2.hpp>
+#include <glm/vec4.hpp>
 
 //     Config
 const  glm::ivec2   DEFAULT_WINDOW_SIZE            =  glm::ivec2(1440,900);
@@ -121,3 +122,4 @@ const  std::string  HUD_INVENTORYFULLMESSAGE       =  "INVENTORY FULL";
 const  float        HUD_MINIMAP_CAPTURE_SIZE       =  20.0f;
 const  glm::vec2    HUD_MINIMAP_SIZE               =  glm::vec2(200,200);
 const  glm::vec2    HUD_MINIMAP_PADDING            =  glm::vec2(10,10);
+const  glm::vec4    HUD_MINIMAP_BACKGROUND_COLOR   =  glm::vec4(0.0f, 0.0f, 0.0f, 0.5f);

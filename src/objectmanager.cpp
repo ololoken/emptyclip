@@ -18,6 +18,8 @@
 #include <objectmanager.h>
 #include <objects/object.h>
 #include <ae/camera.h>
+#include <map.h>
+#include <constants.h>
 
 // Constructor
 _ObjectManager::_ObjectManager() {
@@ -33,7 +35,7 @@ _ObjectManager::~_ObjectManager() {
 }
 
 // Updates all objects
-void _ObjectManager::Update(double FrameTime, const ae::_Camera *Camera) {
+void _ObjectManager::Update(double FrameTime, _Map *Map) {
 	ItemRenderList[0].clear();
 	ItemRenderList[1].clear();
 	ItemRenderList[2].clear();
@@ -54,7 +56,41 @@ void _ObjectManager::Update(double FrameTime, const ae::_Camera *Camera) {
 		}
 		else {
 
-			if(Camera->IsCircleInView(Object->Position, Object->Scale)) {
+			// Get object bounds
+			glm::vec4 Bounds;
+			Object->GetRenderBounds(Bounds);
+
+			// Add to minimap
+			if(Map->CheckMinimapBounds(Bounds, HUD_MINIMAP_CAPTURE_SIZE)) {
+				_MinimapLayer MinimapLayer;
+				MinimapLayer.Bounds = glm::vec4(
+					Object->Position.x - Object->Scale * 0.25f,
+					Object->Position.y - Object->Scale * 0.25f,
+					Object->Position.x + Object->Scale * 0.25f,
+					Object->Position.y + Object->Scale * 0.25f
+				);
+
+				MinimapLayer.Color = COLOR_WHITE;
+				switch(Object->Type) {
+					case _Object::KEY:
+						MinimapLayer.Color = COLOR_YELLOW;
+					break;
+					case _Object::AMMO:
+						MinimapLayer.Color = COLOR_CYAN;
+					break;
+					case _Object::UPGRADE:
+					case _Object::WEAPON:
+					case _Object::ARMOR:
+						MinimapLayer.Color = COLOR_GREEN;
+					break;
+					case _Object::MEDKIT:
+					break;
+				}
+				Map->MinimapLayers.push_back(MinimapLayer);
+			}
+
+			// Add to render list
+			if(Map->Camera->IsAABBInView(Bounds)) {
 
 				// Add object to render list
 				switch(Object->Type) {
