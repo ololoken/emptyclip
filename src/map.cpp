@@ -1655,7 +1655,7 @@ void _Map::AddMinimapLayers() {
 		if(CheckMinimapBounds(Bounds, HUD_MINIMAP_CAPTURE_SIZE)) {
 			_MinimapLayer MinimapLayer;
 			MinimapLayer.Bounds = Bounds;
-			MinimapLayer.Color = glm::vec4(1, 1, 1, 0.2f);
+			MinimapLayer.Color = HUD_MINIMAP_WALL_COLOR;
 			MinimapLayers.push_back(MinimapLayer);
 		}
 	}
@@ -1669,7 +1669,7 @@ void _Map::AddMinimapLayers() {
 		if(Block->MinZ <= 0 && CheckMinimapBounds(Bounds, HUD_MINIMAP_CAPTURE_SIZE)) {
 			_MinimapLayer MinimapLayer;
 			MinimapLayer.Bounds = Bounds;
-			MinimapLayer.Color = glm::vec4(1, 1, 1, 0.2f);
+			MinimapLayer.Color = HUD_MINIMAP_WALL_COLOR;
 			MinimapLayers.push_back(MinimapLayer);
 		}
 	}
@@ -1684,7 +1684,7 @@ void _Map::AddMinimapLayers() {
 		if(CheckMinimapBounds(Bounds, HUD_MINIMAP_CAPTURE_SIZE)) {
 			_MinimapLayer MinimapLayer;
 			MinimapLayer.Bounds = Bounds;
-			MinimapLayer.Color = glm::vec4(0, 0, 1, 0.2f);
+			MinimapLayer.Color = HUD_MINIMAP_DOOR_COLOR;
 			MinimapLayers.push_back(MinimapLayer);
 		}
 	}
