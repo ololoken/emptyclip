@@ -56,24 +56,24 @@ treasure31	Ornate Treasure Chest	treasure		blank0	e12	shade_blue0	1	1	0	10	0	0	0
 treasure32	Ornate Treasure Chest	treasure		blank0	e12	shade_red0	1	1	0	10	0	0	0	0.2	0.5	0	0	0	0	0	0
 treasure33	Ornate Treasure Chest	treasure		blank0	e12	shade_green0	1	1	0	10	0	0	0	0.2	0.5	0	0	0	0	0	0
 treasure34	Ornate Treasure Chest	treasure		blank0	e12	shade_blue0	1	1	0	10	0	0	0	0.2	0.5	0	0	0	0	0	0
-adventure_boss0	Zombie Chieftan	zombie		zombie0	b0	dark	7	200	10	5	30	2652	0.1	0.36	1.2	42	0.85	30	50	1.2	0
-adventure_boss1	Black Wolf	dog		dog0	b1	dark	9	180	5	5	35	6961	0.28	0.6	1.2	48	1.44	60	90	0.6	0
-adventure_boss2	Frozen Beast	beast		beast0	b0	blue	11	700	40	5	17.4	13643	0.11	0.55	1.44	132	1.13	62	121	1.1	0
-adventure_boss3	Fang	spider		spider0	b3	shade_purple1	13	1000	15	5	18.9	26741	0.28	0.58	1.12	47	1.04	48	94	0.6	0
-adventure_boss4	Edrick	skeleton		skeleton0	b4	shade_green1	15	1200	30	5	20	52413	0.13	0.59	1.63	56	1.32	79	152	0.9	0
-adventure_boss5	Flesh Eater	bat		bat0	b0	shade_black2	17	1700	15	5	21	88577	0.26	0.5	1.44	53	1.08	65	125	0.9	0
-adventure_boss6	Zombie Leader	zombie		zombie0	b6	blue	19	1900	150	5	26	149696	0.14	0.58	1.61	66	1.37	110	170	1.1	0
-adventure_boss7	Savage Beast	beast		beast0	b7	shade_purple1	21	3500	250	5	25.8	233525	0.14	0.8	2.28	139	1.72	142	269	0.9	0
-adventure_boss8	Rioter	gunner		mercenary0	b0	red	23	5500	150	5	29	336276	0.22	0.61	1.27	19	20	79	314	0.8	1
-adventure_boss9	Zombie Master	zombie		zombie0	b9	dark	25	6000	300	5	28	484238	0.16	0.6	1.68	70	1.44	125	193	1	0
-adventure_boss10	Black Gun	gunner		mercenary0	b0	dark	27	8000	325	5	33	585928	0.24	0.66	1.32	15	21	98	394	0.6	1
-adventure_boss11	Skeletor	skeleton		skeleton0	b11	blue	29	16000	400	5	30	708973	0.18	0.95	2.47	64	1.92	181	343	0.5	0
-adventure_boss12	Wild Beast	beast		beast0	b0	red	31	900000	500	5	34.2	857857	0.17	1.06	3.12	146	2.3	248	469	0.7	0
-adventure_boss13	Drakor	demon		beast0	b13	dark	33	200000	600	5	30	1038007	0.26	1.5	5	143	3.91	350	600	0.975	0
-adventure_boss14	Alien Overlord	demon	plasma0	skeleton0	b0	dark	35	300000	700	5	40	1255989	0.16	1	3	13	13	150	500	0.8	1
-maze0_boss	Frozen Beast	beast		beast0	b2	blue	11	600	20	5	17.4	12000	0.11	0.55	1.44	132	1.13	62	121	1.1	0
-city1_boss	Rioter	gunner		mercenary0	b8	red	23	3800	150	5	29	336276	0.22	0.61	1.27	19	20	79	314	0.8	1
-cave1_boss	Flesh Eater	bat		bat0	b5	shade_black2	17	1700	15	5	21	88577	0.26	0.5	1.44	53	1.08	65	125	0.9	0
+adventure_boss0	Zombie Chieftan	zombie		zombie0	b0	dark	7	200	10	5	30	2652	1.06	0.36	1.2	42	0.85	30	50	1.2	0
+adventure_boss1	Black Wolf	dog		dog0	b1	dark	9	180	5	5	35	6961	10	0.6	1.2	48	1.44	60	90	0.6	0
+adventure_boss2	Frozen Beast	beast		beast0	b0	blue	11	700	40	5	17.4	13643	1.37	0.55	1.44	132	1.13	62	121	1.1	0
+adventure_boss3	Fang	spider		spider0	b3	shade_purple1	13	1000	15	5	18.9	26741	10	0.58	1.12	47	1.04	48	94	0.6	0
+adventure_boss4	Edrick	skeleton		skeleton0	b4	shade_green1	15	1200	30	5	20	52413	2.24	0.59	1.63	56	1.32	79	152	0.9	0
+adventure_boss5	Flesh Eater	bat		bat0	b0	shade_black2	17	1700	15	5	21	88577	6.84	0.5	1.44	53	1.08	65	125	0.9	0
+adventure_boss6	Zombie Leader	zombie		zombie0	b6	blue	19	1900	150	5	26	149696	1.71	0.58	1.61	66	1.37	110	170	1.1	0
+adventure_boss7	Savage Beast	beast		beast0	b7	shade_purple1	21	3500	250	5	25.8	233525	1.8	0.8	2.28	139	1.72	142	269	0.9	0
+adventure_boss8	Rioter	gunner		mercenary0	b0	red	23	5500	150	5	29	336276	3.86	0.61	1.27	19	20	79	314	0.8	1
+adventure_boss9	Zombie Master	zombie		zombie0	b9	dark	25	6000	300	5	28	484238	2	0.6	1.68	70	1.44	125	193	1	0
+adventure_boss10	Black Gun	gunner		mercenary0	b0	dark	27	8000	325	5	33	585928	4.3	0.66	1.32	15	21	98	394	0.6	1
+adventure_boss11	Skeletor	skeleton		skeleton0	b11	blue	29	16000	400	5	30	708973	3.2	0.95	2.47	64	1.92	181	343	0.5	0
+adventure_boss12	Wild Beast	beast		beast0	b0	red	31	900000	500	5	34.2	857857	2.2	1.06	3.12	146	2.3	248	469	0.7	0
+adventure_boss13	Drakor	demon		beast0	b13	dark	33	200000	600	5	30	1038007	3.38	1.5	5	143	3.91	350	600	0.975	0
+adventure_boss14	Alien Overlord	demon	plasma0	skeleton0	b0	dark	35	300000	700	5	40	1255989	2.76	1	3	13	13	150	500	0.8	1
+maze0_boss	Frozen Beast	beast		beast0	b2	blue	11	600	20	5	17.4	12000	1.38	0.55	1.44	132	1.13	62	121	1.1	0
+city1_boss	Rioter	gunner		mercenary0	b8	red	23	3800	150	5	29	336276	3.86	0.61	1.27	19	20	79	314	0.8	1
+cave1_boss	Flesh Eater	bat		bat0	b5	shade_black2	17	1700	15	5	21	88577	6.85	0.5	1.44	53	1.08	65	125	0.9	0
 zombie0	Zombie Child	zombie		zombie0	e0		1	14	1	6	8	5	0.3	0.3	0.8	30	0.65	2	6	1.7	0
 zombie1	Zombie Kid	zombie		zombie0	e0	shade_red0	2	37	2	5	9	13	0.36	0.31	0.83	32	0.68	7	14	1.675	0
 zombie2	Zombie Boy	zombie		zombie0	e1	shade_green0	3	62	3	5	10	35	0.42	0.32	0.86	34	0.71	11	20	1.65	0

@@ -23,6 +23,7 @@
 #include <ae/program.h>
 #include <ae/assets.h>
 #include <ae/actions.h>
+#include <ae/util.h>
 #include <actiontype.h>
 #include <config.h>
 #include <stats.h>
@@ -739,7 +740,7 @@ void _HUD::RenderItemInfo(_Item *Item, int DrawX, int DrawY) {
 				}
 
 				DrawY += 20;
-				Buffer << Weapon->Attributes.at("reload_period").Double << "s";
+				Buffer << ae::Round2(Weapon->Attributes.at("reload_period").Double) << "s";
 				std::string AttackCountText;
 				Fonts[FONT_MEDIUM]->DrawText("Reload Time", glm::vec2(DrawX - PadX, DrawY), ae::RIGHT_BASELINE);
 				Fonts[FONT_MEDIUM]->DrawText(Buffer.str(), glm::vec2(DrawX + PadX, DrawY), ae::LEFT_BASELINE, TextColor);
