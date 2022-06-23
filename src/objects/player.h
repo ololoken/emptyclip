@@ -127,7 +127,6 @@ class _Player : public _Entity {
 		_Weapon *GetMelee() const { return (_Weapon *)Inventory[INVENTORY_MELEE]; }
 		_Item *GetArmor() const  { return Inventory[INVENTORY_ARMOR]; }
 		int GetFireRate(int AttackType) const { return FireRate[AttackType]; }
-		int GetSkill(int Index) const { return Skills[Index]; }
 		int GetInventoryMaxStack() const;
 		const std::string &GetSample(int Type) const override;
 

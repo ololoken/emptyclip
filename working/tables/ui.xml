@@ -68,7 +68,7 @@
             <element id="label_hud_skill0_value" font="hud_medium" text="0" offset_x="-32" offset_y="14" alignment_x="0" alignment_y="3"/>
         </element>
         <element id="button_skills_plus1" style="style_hud_plus" hover_style="style_hud_plus_hover" offset_x="75" offset_y="60" size_x="16" size_y="16" alignment_x="0" alignment_y="0" clickable="true" index="1">
-            <element id="label_hud_skill1_text" font="hud_medium" text="Health" offset_x="25" offset_y="14" alignment_x="0" alignment_y="3"/>
+            <element id="label_hud_skill1_text" font="hud_medium" text="Vitality" offset_x="25" offset_y="14" alignment_x="0" alignment_y="3"/>
             <element id="label_hud_skill1_value" font="hud_medium" text="0" offset_x="-32" offset_y="14" alignment_x="0" alignment_y="3"/>
         </element>
         <element id="button_skills_plus2" style="style_hud_plus" hover_style="style_hud_plus_hover" offset_x="75" offset_y="90" size_x="16" size_y="16" alignment_x="0" alignment_y="0" clickable="true" index="2">

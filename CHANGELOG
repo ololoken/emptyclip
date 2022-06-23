@@ -15,6 +15,8 @@ Empty Clip 2.0.0 -
 - Mouse buttons can now be remapped
 - Ammo is now stored as a number of rounds for each ammo type
 - Ammo is now picked up automatically
+- Armor now affects movement speed and damage resist
+- Removed strength requirement from armor
 - Removed player profiles
 - Added cmake build system
 - Added console window (open with tilde key)

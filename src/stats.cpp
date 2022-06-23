@@ -198,10 +198,10 @@ void _Stats::LoadArmor(const std::string &Path) {
 		std::getline(File, ColorName, '\t');
 
 		File
-			>> Template.Attributes["strength_required"].Int
 			>> Template.Attributes["damage_block"].Int
-			>> Template.Attributes["damage_resist"].Float
-			>> Template.Attributes["move_speed"].Float;
+			>> Template.Attributes["damage_resist"].Int
+			>> Template.Attributes["max_ammo"].Int
+			>> Template.Attributes["move_speed"].Int;
 
 		File.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 

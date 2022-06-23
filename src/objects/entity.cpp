@@ -110,9 +110,9 @@ float _Entity::GenerateShotDirection() {
 }
 
 // Generates damage after defenses
-int _Entity::GenerateDamage(int AttackType, int DamageBlock, float DamageResist) {
+int _Entity::GenerateDamage(int AttackType, int DamageBlock, int DamageResist) {
 	int Damage = ae::GetRandomInt(MinDamage[AttackType], MaxDamage[AttackType]);
-	Damage -= (int)(Damage * DamageResist);
+	Damage -= (int)(Damage * DamageResist * 0.01f);
 	Damage -= DamageBlock;
 
 	// Cap the damage
@@ -124,7 +124,6 @@ int _Entity::GenerateDamage(int AttackType, int DamageBlock, float DamageResist)
 
 // Sets the movement state of the object
 void _Entity::SetMoveState(MoveType State) {
-
 	if(!IsMeleeAttacking())
 		MoveState = State;
 }

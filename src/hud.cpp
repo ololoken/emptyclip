@@ -481,7 +481,7 @@ void _HUD::RenderCharacterScreen() {
 	Buffer.str("");
 
 	for(int i = 0; i < SKILL_COUNT; i++) {
-		Buffer << Player->GetSkill(i);
+		Buffer << Player->Skills[i];
 		Elements[LABEL_SKILL0 + i]->Text = Buffer.str();
 		Buffer.str("");
 	}
@@ -498,7 +498,7 @@ void _HUD::RenderCharacterScreen() {
 	Elements[LABEL_DAMAGEBLOCK]->Text = Buffer.str();
 	Buffer.str("");
 
-	Buffer << int(100 * Player->DamageResist + 0.5f) << "%";
+	Buffer << Player->DamageResist << "%";
 	Elements[LABEL_DAMAGERESIST]->Text = Buffer.str();
 	Buffer.str("");
 
@@ -795,18 +795,6 @@ void _HUD::RenderItemInfo(_Item *Item, int DrawX, int DrawY) {
 
 			DrawX += 40;
 
-			// Strength required
-			if(Item->Attributes.at("strength_required").Int != 0) {
-				TextColor = COLOR_WHITE;
-				if(Item->Attributes.at("strength_required").Int > Stats.GetSkill(Player->GetSkill(SKILL_STRENGTH), SKILL_STRENGTH))
-					TextColor = COLOR_RED;
-				DrawY += 20;
-				Buffer << Item->Attributes.at("strength_required").Int;
-				Fonts[FONT_MEDIUM]->DrawText("Strength Required", glm::vec2(DrawX - PadX, DrawY), ae::RIGHT_BASELINE);
-				Fonts[FONT_MEDIUM]->DrawText(Buffer.str(), glm::vec2(DrawX + PadX, DrawY), ae::LEFT_BASELINE, TextColor);
-				Buffer.str("");
-			}
-
 			// Damage Block
 			if(Item->Attributes.at("damage_block").Int != 0) {
 				TextColor = COLOR_WHITE;
@@ -825,34 +813,34 @@ void _HUD::RenderItemInfo(_Item *Item, int DrawX, int DrawY) {
 			}
 
 			// Damage Resist
-			if(Item->Attributes.at("damage_resist").Float != 0.0f) {
+			if(Item->Attributes.at("damage_resist").Int != 0) {
 				TextColor = COLOR_WHITE;
 				if(EquippedArmor) {
-					if(Item->Attributes.at("damage_resist").Float > EquippedArmor->Attributes.at("damage_resist").Float)
+					if(Item->Attributes.at("damage_resist").Int > EquippedArmor->Attributes.at("damage_resist").Int)
 						TextColor = COLOR_GREEN;
-					else if(Item->Attributes.at("damage_resist").Float < EquippedArmor->Attributes.at("damage_resist").Float)
+					else if(Item->Attributes.at("damage_resist").Int < EquippedArmor->Attributes.at("damage_resist").Int)
 						TextColor = COLOR_RED;
 				}
 
 				DrawY += 20;
-				Buffer << (Item->Attributes.at("damage_resist").Float < 0 ? "" : "+") << Item->Attributes.at("damage_resist").Float * 100 << "%";
+				Buffer << (Item->Attributes.at("damage_resist").Int < 0 ? "" : "+") << Item->Attributes.at("damage_resist").Int << "%";
 				Fonts[FONT_MEDIUM]->DrawText("Damage Resist", glm::vec2(DrawX - PadX, DrawY), ae::RIGHT_BASELINE);
 				Fonts[FONT_MEDIUM]->DrawText(Buffer.str(), glm::vec2(DrawX + PadX, DrawY), ae::LEFT_BASELINE, TextColor);
 				Buffer.str("");
 			}
 
 			// Movement Speed
-			if(Item->Attributes.at("move_speed").Float != 0) {
+			if(Item->Attributes.at("move_speed").Int != 0) {
 				TextColor = COLOR_WHITE;
 				if(EquippedArmor) {
-					if(Item->Attributes.at("move_speed").Float > EquippedArmor->Attributes.at("move_speed").Float)
+					if(Item->Attributes.at("move_speed").Int > EquippedArmor->Attributes.at("move_speed").Int)
 						TextColor = COLOR_GREEN;
-					else if(Item->Attributes.at("move_speed").Float < EquippedArmor->Attributes.at("move_speed").Float)
+					else if(Item->Attributes.at("move_speed").Int < EquippedArmor->Attributes.at("move_speed").Int)
 						TextColor = COLOR_RED;
 				}
 
 				DrawY += 20;
-				Buffer << (Item->Attributes.at("move_speed").Float < 0 ? "" : "+") << Item->Attributes.at("move_speed").Float * 100 << "%";
+				Buffer << (Item->Attributes.at("move_speed").Int < 0 ? "" : "+") << Item->Attributes.at("move_speed").Int << "%";
 				Fonts[FONT_MEDIUM]->DrawText("Movement Speed", glm::vec2(DrawX - PadX, DrawY), ae::RIGHT_BASELINE);
 				Fonts[FONT_MEDIUM]->DrawText(Buffer.str(), glm::vec2(DrawX + PadX, DrawY), ae::LEFT_BASELINE, TextColor);
 				Buffer.str("");
@@ -899,46 +887,47 @@ void _HUD::UpdateSkillInfo(int Skill, int DrawX, int DrawY) {
 	std::ostringstream Buffer, BufferNext;
 	Buffer << std::setprecision(3);
 	BufferNext << std::setprecision(3);
+	int Level = Player->Skills[Skill];
 	switch(Skill) {
 		case SKILL_STRENGTH:
-			Elements[LABEL_SKILLTEXT]->Text = "Allows you to equip heavier armor";
-			Buffer << "+" << Stats.GetSkill(Player->GetSkill(Skill), Skill) << " Strength";
-			BufferNext << "+" << Stats.GetSkill(Stats.GetValidSkillLevel(Player->GetSkill(Skill)+1), Skill) << " Strength";
+			Elements[LABEL_SKILLTEXT]->Text = "Unused";
+			Buffer << "+" << Stats.GetSkill(Level, Skill) << " Strength";
+			BufferNext << "+" << Stats.GetSkill(Stats.GetValidSkillLevel(Player->Skills[Skill]+1), Skill) << " Strength";
 		break;
 		case SKILL_HEALTH:
-			Elements[LABEL_SKILLTEXT]->Text = "Increases health";
-			Buffer << "+" << Stats.GetSkillPercentImprovement(Player->GetSkill(Skill), Skill) << "% Health";
-			BufferNext << "+" << Stats.GetSkillPercentImprovement(Stats.GetValidSkillLevel(Player->GetSkill(Skill)+1), Skill) << "% Health";
+			Elements[LABEL_SKILLTEXT]->Text = "Increases max health";
+			Buffer << "+" << Stats.GetSkill(Level, Skill) << "% Health";
+			BufferNext << "+" << Stats.GetSkill(Stats.GetValidSkillLevel(Level+1), Skill) << "% Health";
 		break;
 		case SKILL_ACCURACY:
 			Elements[LABEL_SKILLTEXT]->Text = "Increases gun accuracy";
-			Buffer << "+" << Stats.GetSkillPercentImprovement(Player->GetSkill(Skill), Skill) << "% Accuracy";
-			BufferNext << "+" << Stats.GetSkillPercentImprovement(Stats.GetValidSkillLevel(Player->GetSkill(Skill)+1), Skill) << "% Accuracy";
+			Buffer << "+" << Stats.GetSkill(Level, Skill) << "% Accuracy";
+			BufferNext << "+" << Stats.GetSkill(Stats.GetValidSkillLevel(Level+1), Skill) << "% Accuracy";
 		break;
 		case SKILL_RELOADSPEED:
 			Elements[LABEL_SKILLTEXT]->Text = "Increases reload speed";
-			Buffer << "+" << Stats.GetSkillPercentImprovement(Player->GetSkill(Skill), Skill) << "% Reload Speed";
-			BufferNext << "+" << Stats.GetSkillPercentImprovement(Stats.GetValidSkillLevel(Player->GetSkill(Skill)+1), Skill) << "% Reload Speed";
+			Buffer << "+" << Stats.GetSkill(Level, Skill) << "% Reload Speed";
+			BufferNext << "+" << Stats.GetSkill(Stats.GetValidSkillLevel(Level+1), Skill) << "% Reload Speed";
 		break;
 		case SKILL_ATTACKSPEED:
 			Elements[LABEL_SKILLTEXT]->Text = "Increases attack speed";
-			Buffer << "+" << Stats.GetSkillPercentImprovement(Player->GetSkill(Skill), Skill) << "% Attack Speed";
-			BufferNext << "+" << Stats.GetSkillPercentImprovement(Stats.GetValidSkillLevel(Player->GetSkill(Skill)+1), Skill) << "% Attack Speed";
+			Buffer << "+" << Stats.GetSkill(Level, Skill) << "% Attack Speed";
+			BufferNext << "+" << Stats.GetSkill(Stats.GetValidSkillLevel(Level+1), Skill) << "% Attack Speed";
 		break;
 		case SKILL_MOVESPEED:
 			Elements[LABEL_SKILLTEXT]->Text = "Increases move speed";
-			Buffer << "+" << Stats.GetSkillPercentImprovement(Player->GetSkill(Skill), Skill) << "% Move Speed";
-			BufferNext << "+" << Stats.GetSkillPercentImprovement(Stats.GetValidSkillLevel(Player->GetSkill(Skill)+1), Skill) << "% Move Speed";
+			Buffer << "+" << Stats.GetSkill(Level, Skill) << "% Move Speed";
+			BufferNext << "+" << Stats.GetSkill(Stats.GetValidSkillLevel(Level+1), Skill) << "% Move Speed";
 		break;
 		case SKILL_DAMAGERESIST:
 			Elements[LABEL_SKILLTEXT]->Text = "Damage Resist";
-			Buffer << "+" << Stats.GetSkillPercentImprovement(Player->GetSkill(Skill), Skill) << "% Damage Resist";
-			BufferNext << "+" << Stats.GetSkillPercentImprovement(Stats.GetValidSkillLevel(Player->GetSkill(Skill)+1), Skill) << "% Damage Resist";
+			Buffer << "+" << Stats.GetSkill(Level, Skill) << "% Damage Resist";
+			BufferNext << "+" << Stats.GetSkill(Stats.GetValidSkillLevel(Level+1), Skill) << "% Damage Resist";
 		break;
 		case SKILL_MAXSTAMINA:
 			Elements[LABEL_SKILLTEXT]->Text = "Increases max stamina";
-			Buffer << "+" << Stats.GetSkillPercentImprovement(Player->GetSkill(Skill), Skill) << "% Max Stamina";
-			BufferNext << "+" << Stats.GetSkillPercentImprovement(Stats.GetValidSkillLevel(Player->GetSkill(Skill)+1), Skill) << "% Max Stamina";
+			Buffer << "+" << Stats.GetSkill(Level, Skill) << "% Max Stamina";
+			BufferNext << "+" << Stats.GetSkill(Stats.GetValidSkillLevel(Level+1), Skill) << "% Max Stamina";
 		break;
 	}
 
@@ -946,7 +935,7 @@ void _HUD::UpdateSkillInfo(int Skill, int DrawX, int DrawY) {
 	Elements[LABEL_SKILLTEXT]->SetWrap(Elements[ELEMENT_SKILLINFO]->Size.x - 20);
 
 	Elements[LABEL_SKILL_LEVEL]->Text = Buffer.str();
-	if(Player->GetSkill(Skill)+1 > GAME_SKILLLEVELS)
+	if(Player->Skills[Skill]+1 > GAME_SKILLLEVELS)
 		BufferNext.str("");
 	Elements[LABEL_SKILL_LEVEL_NEXT]->Text = BufferNext.str();
 }

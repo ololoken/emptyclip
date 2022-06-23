@@ -101,7 +101,7 @@ class _Entity : public _Object {
 		void UpdateMaxHealth(int Adjust);
 		void UpdateHealth(int Adjust);
 		virtual void UpdateSpeed(float Factor) {}
-		int GenerateDamage(int AttackType, int DamageBlock, float DamageResist);
+		int GenerateDamage(int AttackType, int DamageBlock, int DamageResist);
 		bool IsDying() const { return Action == ACTION_DYING || Action == ACTION_STARTDEATH; }
 		bool IsDead() const { return Action == ACTION_DYING && !Active; }
 
@@ -151,7 +151,7 @@ class _Entity : public _Object {
 		int Health;
 		int MaxHealth;
 		int DamageBlock;
-		float DamageResist;
+		int DamageResist;
 
 		// States
 		ActionType Action;

@@ -8,6 +8,10 @@ cd "$script_dir" || exit
 mkdir -p temp
 
 # convert files to csv
+if pgrep soffice.bin >/dev/null; then
+	echo "LibreOffice must be closed first!"
+	exit 1
+fi
 libreoffice --headless --convert-to csv tables/{armor.ods,itemdrops.ods,monsters.ods,weapons.ods} --outdir temp/
 
 # convert from csv to tsv

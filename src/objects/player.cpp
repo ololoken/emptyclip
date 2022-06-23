@@ -733,7 +733,7 @@ int _Player::AddItem(_Item *Item, int &AmountAdded) {
 			}
 		} break;
 		case _Object::ARMOR: {
-			if(!HasArmor() && Stats.GetSkill(Skills[SKILL_STRENGTH], SKILL_STRENGTH) >= Item->Attributes.at("strength_required").Int) {
+			if(!HasArmor()) {
 				SetArmor(Item);
 				RecalculateStats();
 				return 1;
@@ -794,7 +794,7 @@ bool _Player::CanEquipItem(_Item *Item, int Slot) {
 			if(Item->Type != _Object::ARMOR)
 				return false;
 
-			return Stats.GetSkill(Skills[SKILL_STRENGTH], SKILL_STRENGTH) >= Item->Attributes.at("strength_required").Int;
+			return true;
 		} break;
 		case INVENTORY_MAINHAND:
 		case INVENTORY_OFFHAND:
@@ -1246,7 +1246,7 @@ void _Player::RecalculateStats() {
 		MaxAccuracyNormal = Weapon[WEAPONATTACK_MAIN].Attributes.at("max_accuracy").Float;
 	}
 	else {
-		float AccuracySkillMultiplier = 1.0f / Stats.GetSkill(Skills[SKILL_ACCURACY], SKILL_ACCURACY);
+		float AccuracySkillMultiplier = 1.0f / Stats.GetSkillBonusMultiplier(Skills[SKILL_ACCURACY], SKILL_ACCURACY);
 		CurrentAccuracyNormal = MinAccuracyNormal = Weapon[WEAPONATTACK_MAIN].Attributes.at("min_accuracy").Float * AccuracySkillMultiplier;
 		MaxAccuracyNormal = Weapon[WEAPONATTACK_MAIN].Attributes.at("max_accuracy").Float * AccuracySkillMultiplier;
 		Recoil = Weapon[WEAPONATTACK_MAIN].Attributes["recoil"].Float;
@@ -1261,11 +1261,11 @@ void _Player::RecalculateStats() {
 	// Attacking
 	for(int i = 0; i < WEAPONATTACK_COUNT; i++) {
 		FireRate[i] = Weapon[i].Attributes["fire_rate"].Int;
-		FirePeriod[i] = Weapon[i].Attributes["fire_period"].Double / Stats.GetSkill(Skills[SKILL_ATTACKSPEED], SKILL_ATTACKSPEED);
+		FirePeriod[i] = Weapon[i].Attributes["fire_period"].Double / Stats.GetSkillBonusMultiplier(Skills[SKILL_ATTACKSPEED], SKILL_ATTACKSPEED);
 		MinDamage[i] = Weapon[i].Attributes["min_damage"].Int;
 		MaxDamage[i] = Weapon[i].Attributes["max_damage"].Int;
 	}
-	ReloadPeriod = Weapon[WEAPONATTACK_MAIN].Attributes["reload_period"].Double / Stats.GetSkill(Skills[SKILL_RELOADSPEED], SKILL_RELOADSPEED);
+	ReloadPeriod = Weapon[WEAPONATTACK_MAIN].Attributes["reload_period"].Double / Stats.GetSkillBonusMultiplier(Skills[SKILL_RELOADSPEED], SKILL_RELOADSPEED);
 	WeaponSwitchPeriod = PLAYER_WEAPONSWITCHPERIOD * 1;
 	AttackCount = Weapon[WEAPONATTACK_MAIN].Attributes["attack_count"].Int;
 	ZoomScale = Weapon[WEAPONATTACK_MAIN].Attributes["zoom_scale"].Float;
@@ -1274,22 +1274,22 @@ void _Player::RecalculateStats() {
 	if(FirePeriod[WEAPONATTACK_MAIN] < WEAPON_MINFIREPERIOD)
 		FirePeriod[WEAPONATTACK_MAIN] = WEAPON_MINFIREPERIOD;
 
-	MovementSpeed = Stats.GetSkill(Skills[SKILL_MOVESPEED], SKILL_MOVESPEED);
-	DamageResist = Stats.GetSkill(Skills[SKILL_DAMAGERESIST], SKILL_DAMAGERESIST) - 1.0f;
-	MaxHealth = (int)(Stats.GetLevelHealth(Level) * Stats.GetSkill(Skills[SKILL_HEALTH], SKILL_HEALTH));
-	MaxStamina = 1.0f * Stats.GetSkill(Skills[SKILL_MAXSTAMINA], SKILL_MAXSTAMINA);
-	StaminaRegenModifier = 1.0f * Stats.GetSkill(Skills[SKILL_MAXSTAMINA], SKILL_MAXSTAMINA);
+	int BaseMovementSpeed = 100 + Stats.GetSkill(Skills[SKILL_MOVESPEED], SKILL_MOVESPEED);
+	DamageResist = Stats.GetSkill(Skills[SKILL_DAMAGERESIST], SKILL_DAMAGERESIST);
+	MaxHealth = (int)(Stats.GetLevelHealth(Level) * Stats.GetSkillBonusMultiplier(Skills[SKILL_HEALTH], SKILL_HEALTH));
+	MaxStamina = Stats.GetSkillBonusMultiplier(Skills[SKILL_MAXSTAMINA], SKILL_MAXSTAMINA);
+	StaminaRegenModifier = Stats.GetSkillBonusMultiplier(Skills[SKILL_MAXSTAMINA], SKILL_MAXSTAMINA);
 
 	// Armor
 	DamageBlock = Stats.GetLevelDamageBlock(Level);
 	if(GetArmor()) {
 		DamageBlock += GetArmor()->Attributes.at("damage_block").Int;
-		DamageResist += GetArmor()->Attributes.at("damage_resist").Float;
-		MovementSpeed += GetArmor()->Attributes.at("move_speed").Float;
+		DamageResist += GetArmor()->Attributes.at("damage_resist").Int;
+		BaseMovementSpeed += GetArmor()->Attributes.at("move_speed").Int;
 	}
 
 	// Get final speed
-	MovementSpeed *= PLAYER_MOVEMENTSPEED;
+	MovementSpeed = BaseMovementSpeed * 0.01f * PLAYER_MOVEMENTSPEED;
 }
 
 // Sets the weapon animation for the player

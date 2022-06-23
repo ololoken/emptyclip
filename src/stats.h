@@ -39,7 +39,7 @@ struct _Level {
 
 // Holds skill information
 struct _Skill {
-	float Data[SKILL_COUNT];
+	int Data[SKILL_COUNT];
 };
 
 // A single entry for an item group
@@ -135,8 +135,8 @@ class _Stats {
 		int GetSkillPointsRemaining(int Level) { return Levels[Level-1].SkillPoints; }
 
 		int GetValidSkillLevel(int Level);
-		float GetSkill(int Level, int Type) const { return Skills[Level].Data[Type]; }
-		float GetSkillPercentImprovement(int Level, int Type) const { return (Skills[Level].Data[Type] - 1.0f) * 100.0f; }
+		int GetSkill(int Level, int Type) const { return Skills[Level].Data[Type]; }
+		float GetSkillBonusMultiplier(int Level, int Type) const { return (100 + Skills[Level].Data[Type]) * 0.01f; }
 
 		_ItemGroup *GetItemGroup(const std::string &Identifier);
 		void GetRandomDrop(const _ItemGroup *ItemGroup, _ObjectSpawn *ObjectSpawn);
