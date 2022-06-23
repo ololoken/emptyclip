@@ -83,21 +83,21 @@ void _Weapon::SetAmmo(int Value) {
 void _Weapon::RecalculateStats() {
 
 	for(int i = 0; i < UPGRADE_TYPES; i++)
-		Bonus[i] = 0.0f;
+		Bonus[i] = 0;
 
 	// Sum bonuses
 	for(size_t i = 0; i < Upgrades.size(); i++)
-		Bonus[Upgrades[i]->Attributes.at("upgrade_type").Int] += Upgrades[i]->Attributes.at("bonus").Float;
+		Bonus[Upgrades[i]->Attributes.at("upgrade_type").Int] += Upgrades[i]->Attributes.at("bonus").Int;
 
 	// Set stats
-	Attributes["rounds"].Int = (int)(Stats.Weapons[ID].Attributes.at("rounds").Int * (1.0f + Bonus[UPGRADE_CLIP]));
-	Attributes["min_damage"].Int = (int)(Stats.Weapons[ID].Attributes.at("min_damage").Int * (1.0f + Bonus[UPGRADE_DAMAGE]));
-	Attributes["max_damage"].Int = (int)(Stats.Weapons[ID].Attributes.at("max_damage").Int * (1.0f + Bonus[UPGRADE_DAMAGE]));
-	Attributes["min_accuracy"].Float = Stats.Weapons[ID].Attributes.at("min_accuracy").Float / (1.0f + Bonus[UPGRADE_ACCURACY]);
-	Attributes["max_accuracy"].Float = Stats.Weapons[ID].Attributes.at("max_accuracy").Float / (1.0f + Bonus[UPGRADE_ACCURACY]);
-	Attributes["fire_period"].Double = Stats.Weapons[ID].Attributes.at("fire_period").Double / (1.0f + Bonus[UPGRADE_FIREPERIOD]);
-	Attributes["reload_period"].Double = Stats.Weapons[ID].Attributes.at("reload_period").Double / (1.0f + Bonus[UPGRADE_RELOADPERIOD]);
-	Attributes["attack_count"].Int = Stats.Weapons[ID].Attributes.at("attack_count").Int + (int)(Bonus[UPGRADE_ATTACKS]);
+	Attributes["rounds"].Int = std::ceil(Stats.Weapons[ID].Attributes.at("rounds").Int * ((100 + Bonus[UPGRADE_CLIP]) * 0.01f));
+	Attributes["min_damage"].Int = std::ceil(Stats.Weapons[ID].Attributes.at("min_damage").Int * ((100 + Bonus[UPGRADE_DAMAGE]) * 0.01f));
+	Attributes["max_damage"].Int = std::ceil(Stats.Weapons[ID].Attributes.at("max_damage").Int * ((100 + Bonus[UPGRADE_DAMAGE]) * 0.01f));
+	Attributes["min_accuracy"].Float = Stats.Weapons[ID].Attributes.at("min_accuracy").Float / ((100 + Bonus[UPGRADE_ACCURACY]) * 0.01f);
+	Attributes["max_accuracy"].Float = Stats.Weapons[ID].Attributes.at("max_accuracy").Float / ((100 + Bonus[UPGRADE_ACCURACY]) * 0.01f);
+	Attributes["fire_period"].Double = Stats.Weapons[ID].Attributes.at("fire_period").Double / ((100 + Bonus[UPGRADE_FIREPERIOD]) * 0.01f);
+	Attributes["reload_period"].Double = Stats.Weapons[ID].Attributes.at("reload_period").Double / ((100 + Bonus[UPGRADE_RELOADPERIOD]) * 0.01f);
+	Attributes["attack_count"].Int = Stats.Weapons[ID].Attributes.at("attack_count").Int + Bonus[UPGRADE_ATTACKS];
 
 	SetAmmo(Attributes["ammo"].Int);
 }

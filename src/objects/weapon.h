@@ -49,7 +49,7 @@ class _Weapon : public _Item {
 		static std::string ToString(int Type);
 
 		std::vector<_Item *> Upgrades;
-		float Bonus[UPGRADE_TYPES];
+		int Bonus[UPGRADE_TYPES];
 
 	protected:
 

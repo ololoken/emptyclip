@@ -777,16 +777,17 @@ void _HUD::RenderItemInfo(_Item *Item, int DrawX, int DrawY) {
 			TextColor = COLOR_WHITE;
 			bool First = true;
 			for(int i = 0; i < UPGRADE_TYPES; i++) {
-				if(Weapon->Bonus[i]) {
-					if(First)
-						DrawY += 10;
-					DrawY += 20;
-					Buffer << "+" << Weapon->Bonus[i] * 100.0f << "% " << UpgradeTypeToString(i, Weapon->Attributes.at("weapon_type").Int);
-					Fonts[FONT_MEDIUM]->DrawText(Buffer.str(), glm::vec2(DrawX, DrawY), ae::CENTER_BASELINE, TextColor);
-					Buffer.str("");
+				if(!Weapon->Bonus[i])
+					continue;
 
-					First = false;
-				}
+				if(First)
+					DrawY += 10;
+				DrawY += 20;
+				Buffer << "+" << Weapon->Bonus[i] << "% " << UpgradeTypeToString(i, Weapon->Attributes.at("weapon_type").Int);
+				Fonts[FONT_MEDIUM]->DrawText(Buffer.str(), glm::vec2(DrawX, DrawY), ae::CENTER_BASELINE, TextColor);
+				Buffer.str("");
+
+				First = false;
 			}
 		} break;
 		case _Object::ARMOR: {
@@ -877,9 +878,9 @@ void _HUD::RenderItemInfo(_Item *Item, int DrawX, int DrawY) {
 			// Bonus
 			DrawY += 20;
 			if(Item->Attributes.at("upgrade_type").Int == UPGRADE_ATTACKS)
-				Buffer << "+" << (int)(Item->Attributes.at("bonus").Float) << " Attack Count";
+				Buffer << "+" << Item->Attributes.at("bonus").Int << " Attack Count";
 			else
-				Buffer << "+" << (int)(Item->Attributes.at("bonus").Float * 100.0f + 0.5f) << "% " << UpgradeTypeToString(Item->Attributes.at("upgrade_type").Int, -1);
+				Buffer << "+" << Item->Attributes.at("bonus").Int << "% " << UpgradeTypeToString(Item->Attributes.at("upgrade_type").Int, -1);
 			Fonts[FONT_MEDIUM]->DrawText(Buffer.str(), glm::vec2(DrawX, DrawY), ae::CENTER_BASELINE);
 		} break;
 	}

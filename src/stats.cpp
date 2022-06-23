@@ -350,7 +350,7 @@ void _Stats::LoadUpgrades(const std::string &Path) {
 		File
 			>> Template.Attributes["upgrade_type"].Int
 			>> Template.Attributes["weapon_type"].Int
-			>> Template.Attributes["bonus"].Float;
+			>> Template.Attributes["bonus"].Int;
 
 		File.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
