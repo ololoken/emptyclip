@@ -83,7 +83,7 @@ const  int          ITEM_QUALITY_RANGE             =  15;
 //     Objects
 const  float        OBJECT_Z                       =  0.3f;
 //     Map
-const  int          MAP_FILEVERSION                =  1;
+const  int          MAP_FILEVERSION                =  2;
 const  std::string  MAP_TEXTURE_PATH               =  "textures/map/";
 const  std::string  MAP_DEFAULTMONSTERSET          =  "default";
 const  float        MAP_MINZ                       =  0.0f;

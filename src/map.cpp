@@ -38,36 +38,13 @@
 #include <glm/gtx/norm.hpp>
 #include <glm/gtx/rotate_vector.hpp>
 
-// Reads in a string that is CSV formatted
-static std::string GetCSVText(std::ifstream &Stream) {
-	std::string Text;
-	char Char;
-
-	// Ignore the first space
-	if(Stream.peek() == ' ')
-		Stream.ignore(1, ' ');
-
-	// If there's a quote, ignore spaces until another quote is read
-	if(Stream.peek() == '\"') {
-		Stream.ignore(1);
-		Stream.get(Char);
-		while(Char != '\"') {
-			Text += Char;
-			Stream.get(Char);
-		}
-	}
-	else
-		return "";
-
-	return Text;
-}
-
 // Initialize
 _Map::_Map() :
 	Camera(nullptr),
 	MapType(MAPTYPE_CAMPAIGN),
 	Width(MAP_WIDTH),
 	Height(MAP_HEIGHT),
+	Level(1),
 	Filename(""),
 	Data(nullptr),
 	ObjectManager(new _ObjectManager()),
@@ -98,6 +75,9 @@ _Map::_Map(const std::string &Filename) : _Map() {
 	if(FileVersion != MAP_FILEVERSION)
 		throw std::runtime_error("Level version mismatch: ");
 
+	// Level used for default item/monster levels
+	InputFile >> Level;
+
 	// Get map type
 	InputFile >> MapType;
 
@@ -117,7 +97,7 @@ _Map::_Map(const std::string &Filename) : _Map() {
 
 		// Load Data
 		_ObjectSpawn *Object = new _ObjectSpawn();
-		InputFile >> Object->Type >> Object->Identifier >> Object->Position.x >> Object->Position.y;
+		InputFile >> Object->Type >> Object->Identifier >> Object->Level >> Object->Position.x >> Object->Position.y;
 
 		// Check for items
 		switch(Object->Type) {
@@ -153,10 +133,24 @@ _Map::_Map(const std::string &Filename) : _Map() {
 		glm::ivec2 EventStart, EventEnd;
 		double EventActivationPeriod;
 		size_t TilesSize;
-		InputFile >> EventType >> EventActive >> EventStart.x >> EventStart.y >> EventEnd.x >> EventEnd.y >> EventLevel >> EventActivationPeriod >> TilesSize;
-		std::string EventItemIdentifier = GetCSVText(InputFile);
-		std::string EventMonsterIdentifier = GetCSVText(InputFile);
-		std::string EventParticleIdentifier = GetCSVText(InputFile);
+		InputFile
+				>> EventType
+				>> EventActive
+				>> EventStart.x
+				>> EventStart.y
+				>> EventEnd.x
+				>> EventEnd.y
+				>> EventLevel
+				>> EventActivationPeriod
+				>> TilesSize;
+
+		InputFile.ignore(std::numeric_limits<std::streamsize>::max(), ' ');
+		std::string EventItemIdentifier;
+		std::string EventMonsterIdentifier;
+		std::string EventParticleIdentifier;
+		std::getline(InputFile, EventItemIdentifier, '\t');
+		std::getline(InputFile, EventMonsterIdentifier, '\t');
+		std::getline(InputFile, EventParticleIdentifier, '\n');
 
 		// Check for existence
 		if(EventMonsterIdentifier != "" && Stats.Monsters.find(EventMonsterIdentifier) == Stats.Monsters.end())
@@ -187,9 +181,24 @@ _Map::_Map(const std::string &Filename) : _Map() {
 	for(size_t i = 0; i < BlockCount; i++) {
 
 		int Layer;
-		InputFile >> Layer >> Block.Start.x >> Block.Start.y >> Block.End.x >> Block.End.y >> Block.MinZ >> Block.MaxZ >> Block.Rotation >> Block.ScaleX >> Block.Wall >> Block.Walkable;
-		std::string TexturePath = GetCSVText(InputFile);
-		std::string AltTexturePath = GetCSVText(InputFile);
+		InputFile
+			>> Layer
+			>> Block.Start.x
+			>> Block.Start.y
+			>> Block.End.x
+			>> Block.End.y
+			>> Block.MinZ
+			>> Block.MaxZ
+			>> Block.Rotation
+			>> Block.ScaleX
+			>> Block.Wall
+			>> Block.Walkable;
+
+		InputFile.ignore(std::numeric_limits<std::streamsize>::max(), ' ');
+		std::string TexturePath;
+		std::string AltTexturePath;
+		std::getline(InputFile, TexturePath, '\t');
+		std::getline(InputFile, AltTexturePath, '\n');
 
 		Block.Texture = ae::Assets.Textures[TexturePath];
 		if(!Block.Texture)
@@ -298,36 +307,45 @@ bool _Map::Save(const std::string &String) {
 	Output << std::showpoint << std::fixed << std::setprecision(2);
 
 	// Header
-	Output << MAP_FILEVERSION << '\n';
-	Output << MapType << '\n';
-	Output << MonsterSetID << '\n';
-	Output << Width << " " << Height << '\n';
+	Output
+		<< MAP_FILEVERSION << '\n'
+		<< Level << '\n'
+		<< MapType << '\n'
+		<< MonsterSetID << '\n'
+		<< Width << ' ' << Height << '\n';
 
 	// Objects
 	Output << ObjectSpawns.size() << '\n';
 	for(size_t i = 0; i < ObjectSpawns.size(); i++) {
-		Output << ObjectSpawns[i]->Type << " " << ObjectSpawns[i]->Identifier << " " << ObjectSpawns[i]->Position.x << " " << ObjectSpawns[i]->Position.y << " " << '\n';
+		Output
+			<< ObjectSpawns[i]->Type << ' '
+			<< ObjectSpawns[i]->Identifier << ' '
+			<< ObjectSpawns[i]->Level << ' '
+			<< ObjectSpawns[i]->Position.x << ' '
+			<< ObjectSpawns[i]->Position.y
+			<< '\n';
 	}
 
 	// Events
 	Output << Events.size() << '\n';
 	for(size_t i = 0; i < Events.size(); i++) {
-		Output << Events[i]->Type << " ";
-		Output << Events[i]->Active << " ";
-		Output << Events[i]->Start.x << " ";
-		Output << Events[i]->Start.y << " ";
-		Output << Events[i]->End.x << " ";
-		Output << Events[i]->End.y << " ";
-		Output << Events[i]->Level << " ";
-		Output << Events[i]->ActivationPeriod << " ";
-		Output << Events[i]->Tiles.size() << " ";
-		Output << '\"' << Events[i]->ItemIdentifier << '\"' << " ";
-		Output << '\"' << Events[i]->MonsterIdentifier << '\"' << " ";
-		Output << '\"' << Events[i]->ParticleIdentifier << '\"' << '\n';
+		Output
+			<< Events[i]->Type << ' '
+			<< Events[i]->Active << ' '
+			<< Events[i]->Start.x << ' '
+			<< Events[i]->Start.y << ' '
+			<< Events[i]->End.x << ' '
+			<< Events[i]->End.y << ' '
+			<< Events[i]->Level << ' '
+			<< Events[i]->ActivationPeriod << ' '
+			<< Events[i]->Tiles.size() << ' '
+			<< Events[i]->ItemIdentifier << '\t'
+			<< Events[i]->MonsterIdentifier << '\t'
+			<< Events[i]->ParticleIdentifier << '\n';
 
 		// Write tiles
 		for(size_t j = 0; j < Events[i]->Tiles.size(); j++)
-			Output << Events[i]->Tiles[j].Coord.x << " " << Events[i]->Tiles[j].Coord.y << " " << Events[i]->Tiles[j].Layer << " " << Events[i]->Tiles[j].BlockID << '\n';
+			Output << Events[i]->Tiles[j].Coord.x << ' ' << Events[i]->Tiles[j].Coord.y << ' ' << Events[i]->Tiles[j].Layer << ' ' << Events[i]->Tiles[j].BlockID << '\n';
 	}
 
 	// Blocks
@@ -339,19 +357,20 @@ bool _Map::Save(const std::string &String) {
 			if(Blocks[i][j].AltTexture)
 				AltTextureID = Blocks[i][j].AltTexture->Name;
 
-			Output << i << " ";
-			Output << Blocks[i][j].Start.x << " ";
-			Output << Blocks[i][j].Start.y << " ";
-			Output << Blocks[i][j].End.x << " ";
-			Output << Blocks[i][j].End.y << " ";
-			Output << Blocks[i][j].MinZ << " ";
-			Output << Blocks[i][j].MaxZ << " ";
-			Output << Blocks[i][j].Rotation << " ";
-			Output << Blocks[i][j].ScaleX << " ";
-			Output << Blocks[i][j].Wall << " ";
-			Output << Blocks[i][j].Walkable << " ";
-			Output << '\"' << Blocks[i][j].Texture->Name << '\"' << " ";
-			Output << '\"' << AltTextureID << '\"' << '\n';
+			Output
+				<< i << ' '
+				<< Blocks[i][j].Start.x << ' '
+				<< Blocks[i][j].Start.y << ' '
+				<< Blocks[i][j].End.x << ' '
+				<< Blocks[i][j].End.y << ' '
+				<< Blocks[i][j].MinZ << ' '
+				<< Blocks[i][j].MaxZ << ' '
+				<< Blocks[i][j].Rotation << ' '
+				<< Blocks[i][j].ScaleX << ' '
+				<< Blocks[i][j].Wall << ' '
+				<< Blocks[i][j].Walkable << ' '
+				<< Blocks[i][j].Texture->Name << '\t'
+				<< AltTextureID << '\n';
 		}
 	}
 

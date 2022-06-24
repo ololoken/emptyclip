@@ -136,17 +136,20 @@ struct _ObjectSpawn {
 		Identifier(""),
 		Position{0, 0},
 		Type(-1),
+		Level(1),
 		Deleted(false) { }
 
-	_ObjectSpawn(const std::string &Identifier, const glm::vec2 &Position, int Type) :
+	_ObjectSpawn(const std::string &Identifier, const glm::vec2 &Position, int Type, int Level) :
 		Identifier(Identifier),
 		Position(Position),
 		Type(Type),
+		Level(Level),
 		Deleted(false) { }
 
 	std::string Identifier;
 	glm::vec2 Position;
 	int Type;
+	int Level;
 	bool Deleted;
 };
 
@@ -264,6 +267,7 @@ class _Map {
 		int MapType;
 		int Width;
 		int Height;
+		int Level;
 		std::string Filename;
 
 		// Blocks

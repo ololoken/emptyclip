@@ -175,7 +175,7 @@ class _EditorState : public ae::_State {
 
 		void AddEvent(int Type);
 		void UpdateEventIdentifier(int Type, const std::string &Identifier);
-		void SpawnObject(const glm::vec2 &Position, int Type, const std::string &Identifier, bool Align);
+		void SpawnObject(const glm::vec2 &Position, int Type, const std::string &Identifier, int Level, bool Align);
 		void SelectObject();
 		void SelectObjects();
 		void DeselectBlock() { SelectedBlockIndex = -1, SelectedBlock = nullptr; }

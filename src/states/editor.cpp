@@ -548,7 +548,7 @@ void _EditorState::HandleMouseButton(const ae::_MouseEvent &MouseEvent) {
 							default: {
 								ae::_Element *Button = Brush[CurrentPalette];
 								if(Button)
-									SpawnObject(Map->GetValidPosition(WorldCursor), (intptr_t)Button->UserData, Button->Name, IsShiftDown);
+									SpawnObject(Map->GetValidPosition(WorldCursor), (intptr_t)Button->UserData, Button->Name, 1, IsShiftDown);
 							} break;
 						}
 					}
@@ -1537,7 +1537,7 @@ void _EditorState::ProcessEventIcons(int Index, int Type) {
 }
 
 // Adds an object to the list
-void _EditorState::SpawnObject(const glm::vec2 &Position, int Type, const std::string &Identifier, bool Align) {
+void _EditorState::SpawnObject(const glm::vec2 &Position, int Type, const std::string &Identifier, int Level, bool Align) {
 	glm::vec2 SpawnPosition;
 
 	if(Align)
@@ -1545,7 +1545,7 @@ void _EditorState::SpawnObject(const glm::vec2 &Position, int Type, const std::s
 	else
 		SpawnPosition = Position;
 
-	_ObjectSpawn *Object = new _ObjectSpawn(Identifier, SpawnPosition, Type);
+	_ObjectSpawn *Object = new _ObjectSpawn(Identifier, SpawnPosition, Type, 1);
 	Map->AddObject(Object);
 }
 
@@ -1927,7 +1927,7 @@ void _EditorState::ExecutePaste(bool Viewport) {
 		break;
 		default:
 			for(auto Iterator : ClipboardObjects)
-				SpawnObject(GetValidObjectPosition(StartPosition - CopiedPosition + Iterator->Position), Iterator->Type, Iterator->Identifier, IsShiftDown);
+				SpawnObject(GetValidObjectPosition(StartPosition - CopiedPosition + Iterator->Position), Iterator->Type, Iterator->Identifier, 1, IsShiftDown);
 		break;
 	}
 }
