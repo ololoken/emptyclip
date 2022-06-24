@@ -71,6 +71,5 @@ class _Item : public _Object {
 		int Level;
 		int Quality;
 		int Count;
-		bool Old;
 
 };

@@ -123,7 +123,6 @@ class _Stats {
 		void LoadMedkits(const std::string &Path);
 		void LoadUpgrades(const std::string &Path);
 		void LoadWeapons(const std::string &Path);
-		void LoadWeaponsNew(const std::string &Path);
 		void LoadItemDrops(const std::string &Path);
 		void LoadMonsters(const std::string &Path);
 
@@ -150,6 +149,7 @@ class _Stats {
 		std::unordered_map<std::string, _WeaponTemplate> Weapons;
 		std::unordered_map<std::string, _ItemGroup> ItemGroups;
 		std::unordered_map<std::string, _MonsterTemplate> Monsters;
+		_Weapon *FistWeapon;
 
 		std::vector<std::string> AmmoNames;
 

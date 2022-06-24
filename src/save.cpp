@@ -20,6 +20,7 @@
 #include <config.h>
 #include <objects/player.h>
 #include <cstdlib>
+#include <iostream>
 #include <sstream>
 
 _Save Save;
@@ -84,6 +85,7 @@ void _Save::LoadSaves() {
 		Players[SLOT_TEST]->Load();
 	}
 	catch(std::exception &Error) {
+		std::cout << Error.what() << std::endl;
 	}
 
 	// Get directory contents
@@ -100,6 +102,7 @@ void _Save::LoadSaves() {
 				Players[SlotIndex]->Load();
 			}
 			catch(std::exception &Error) {
+				std::cout << Error.what() << std::endl;
 				delete Players[SlotIndex];
 				Players[SlotIndex] = nullptr;
 			}

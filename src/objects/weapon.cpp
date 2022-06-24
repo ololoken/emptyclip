@@ -36,28 +36,14 @@ _Weapon::_Weapon(const std::string &Identifier, int Level, const glm::vec2 &Posi
 
 	Attributes = Weapon.Attributes;
 
-	char LastChar = Identifier[Identifier.size()-1];
-	if(LastChar >= '0' && LastChar <= '9')
-		Old = true;
-
-	GenerateRandom = 1;
-	if(Old) {
+	int Components = TemplateAttributes.at("components").Float + TemplateAttributes.at("components_level").Float * Level;
+	if(GenerateRandom) {
+		Quality = ae::GetRandomInt(-ITEM_QUALITY_RANGE, ITEM_QUALITY_RANGE);
+		Attributes["max_components"].Int = Components + ae::GetRandomInt(0, 1);
 		Attributes["ammo"].Int = TemplateAttributes.at("rounds").Int;
-		if(GenerateRandom)
-			Attributes["max_components"].Int = ae::GetRandomInt(Weapon.Attributes.at("min_components").Int, Weapon.Attributes.at("max_components").Int);
-		else
-			Attributes["max_components"].Int = Weapon.Attributes.at("min_components").Int;
 	}
-	else {
-		int Components = TemplateAttributes.at("components").Float + TemplateAttributes.at("components_level").Float * Level;
-		if(GenerateRandom) {
-			Quality = ae::GetRandomInt(-ITEM_QUALITY_RANGE, ITEM_QUALITY_RANGE);
-			Attributes["max_components"].Int = Components + ae::GetRandomInt(0, 1);
-			Attributes["ammo"].Int = TemplateAttributes.at("rounds").Int;
-		}
-		else
-			Attributes["max_components"].Int = Components;
-	}
+	else
+		Attributes["max_components"].Int = Components;
 
 	RecalculateStats();
 }
@@ -106,18 +92,8 @@ void _Weapon::RecalculateStats() {
 	for(size_t i = 0; i < Upgrades.size(); i++)
 		Bonus[Upgrades[i]->Attributes.at("upgrade_type").Int] += Upgrades[i]->Attributes.at("bonus").Int;
 
-	if(Old) {
-		Attributes["min_damage"].Int = std::ceil(TemplateAttributes.at("min_damage").Int * GetBonusMultiplier(UPGRADE_DAMAGE));
-		Attributes["max_damage"].Int = std::ceil(TemplateAttributes.at("max_damage").Int * GetBonusMultiplier(UPGRADE_DAMAGE));
-		Attributes["min_accuracy"].Int = TemplateAttributes.at("min_accuracy").Float / GetBonusMultiplier(UPGRADE_ACCURACY);
-		Attributes["max_accuracy"].Int= TemplateAttributes.at("max_accuracy").Float / GetBonusMultiplier(UPGRADE_ACCURACY);
-	}
-	else {
-		SetAttributeRange("damage", Level, GetBonusMultiplier(UPGRADE_DAMAGE) + Quality * 0.01f);
-		SetAttributeRange("accuracy", 0, 1.0f / GetBonusMultiplier(UPGRADE_ACCURACY));
-	}
-
-	// Set rounds
+	SetAttributeRange("damage", Level, GetBonusMultiplier(UPGRADE_DAMAGE) + Quality * 0.01f);
+	SetAttributeRange("accuracy", 0, 1.0f / GetBonusMultiplier(UPGRADE_ACCURACY));
 	Attributes["rounds"].Int = std::ceil(TemplateAttributes.at("rounds").Int * GetBonusMultiplier(UPGRADE_CLIP));
 	Attributes["fire_period"].Double = TemplateAttributes.at("fire_period").Double / GetBonusMultiplier(UPGRADE_FIREPERIOD);
 	Attributes["reload_period"].Double = TemplateAttributes.at("reload_period").Double / GetBonusMultiplier(UPGRADE_RELOADPERIOD);

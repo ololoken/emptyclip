@@ -35,8 +35,7 @@ _Item::_Item(const std::unordered_map<std::string, _Value> &TemplateAttributes) 
 	TemplateAttributes(TemplateAttributes),
 	Level(1),
 	Quality(0),
-	Count(0),
-	Old(false) {
+	Count(0) {
 
 	Texture = nullptr;
 	PositionZ = ITEM_Z;

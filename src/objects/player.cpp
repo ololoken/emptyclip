@@ -1212,23 +1212,19 @@ void _Player::ConsumeInventory(int Index, bool Delete) {
 void _Player::RecalculateStats() {
 	_WeaponTemplate Weapon[WEAPONATTACK_COUNT];
 	for(int i = 0; i < WEAPONATTACK_COUNT; i++)
-		Weapon[i] = Stats.Weapons["fists"];
+		Weapon[i].Attributes = Stats.FistWeapon->Attributes;
 
 	// See if the player is using a weapon
 	if(HasMainHand()) {
-		for(const auto &Attribute : GetMainHand()->Attributes)
-			Weapon[WEAPONATTACK_MAIN].Attributes[Attribute.first] = Attribute.second;
-
+		Weapon[WEAPONATTACK_MAIN].Attributes = GetMainHand()->Attributes;
 		MainWeaponType = GetMainHand()->Attributes.at("weapon_type").Int;
 	}
 	else
 		MainWeaponType = WEAPON_MELEE;
 
 	// Get stats of melee weapon
-	if(HasMelee()) {
-		for(const auto &Attribute : GetMelee()->Attributes)
-			Weapon[WEAPONATTACK_MELEE].Attributes[Attribute.first] = Attribute.second;
-	}
+	if(HasMelee())
+		Weapon[WEAPONATTACK_MELEE].Attributes = GetMelee()->Attributes;
 
 	// Set up main stats based on weapon
 	Recoil = 0;
