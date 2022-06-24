@@ -89,7 +89,7 @@ void _PlayState::Init() {
 
 	// Load level
 	Map = new _Map(Level);
-	Map->Init();
+	Map->InitializeTiles();
 	Player->Map = Map;
 	Player->MapIdentifier = Map->GetFilename();
 

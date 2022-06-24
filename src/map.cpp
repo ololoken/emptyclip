@@ -234,7 +234,7 @@ _Map::~_Map() {
 }
 
 // Create tile data
-void _Map::Init() {
+void _Map::InitializeTiles() {
 
 	// Allocate memory
 	Data = new _Tile*[Width];
@@ -288,7 +288,7 @@ void _Map::Init() {
 }
 
 // Saves the level to a file
-bool _Map::SaveLevel(const std::string &String) {
+bool _Map::Save(const std::string &String) {
 
 	Filename = String;
 	std::ofstream Output("maps/" + Filename, std::ios::out);
@@ -1062,7 +1062,6 @@ void _Map::GetSelectedObjects(const glm::vec2 &Start, const glm::vec2 &End, std:
 			SelectedObjects->push_back(ObjectSpawn);
 		}
 	}
-
 }
 
 // Removes a block from the list

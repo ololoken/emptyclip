@@ -165,10 +165,11 @@ class _Map {
 		_Map(const std::string &Filename);
 		~_Map();
 
-		void Init();
+		void InitializeTiles();
+		bool Save(const std::string &String);
+
 		void Update(double FrameTime);
 
-		bool SaveLevel(const std::string &String);
 		bool LoadMonsterSet(const std::string &String);
 		bool CheckCollisions(const glm::vec2 &TargetPosition, float Radius, glm::vec2 &NewPosition);
 		void CheckEntityCollisionsInGrid(const glm::vec2 &Position, float Radius, const _Object *SkipObject, std::list<_Entity *> &Entities) const;

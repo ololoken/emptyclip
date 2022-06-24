@@ -308,7 +308,7 @@ bool _EditorState::HandleKey(const ae::_KeyEvent &KeyEvent) {
 
 					} break;
 					case EDITINPUT_SAVE:
-						if(InputText == "" || !Map->SaveLevel(InputText))
+						if(InputText == "" || !Map->Save(InputText))
 							SavedText[EditorInput] = "";
 						else {
 							SavedText[EditorInput] = InputText;
@@ -1825,7 +1825,7 @@ void _EditorState::ExecuteClear() {
 void _EditorState::ExecuteTest() {
 
 	// TODO catch exception
-	Map->SaveLevel(EDITOR_TESTLEVEL);
+	Map->Save(EDITOR_TESTLEVEL);
 
 	ExecuteDeselect();
 	ClearClipboard();
