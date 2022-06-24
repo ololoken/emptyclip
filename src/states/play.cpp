@@ -400,6 +400,15 @@ void _PlayState::Update(double FrameTime) {
 	Particles->Update(FrameTime);
 	Map->AddRenderList(Player, 1);
 
+	// Add player to minimap
+	_MinimapLayer MinimapLayer;
+	MinimapLayer.Color = COLOR_DARK;
+	MinimapLayer.Bounds = glm::vec4(
+		Player->Position.x - Player->Scale * 0.25f, Player->Position.y - Player->Scale * 0.25f,
+		Player->Position.x + Player->Scale * 0.25f, Player->Position.y + Player->Scale * 0.25f
+	);
+	Map->MinimapLayers.push_back(MinimapLayer);
+
 	// Update events
 	UpdateEvents(FrameTime);
 

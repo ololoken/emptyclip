@@ -64,10 +64,8 @@ void _ObjectManager::Update(double FrameTime, _Map *Map) {
 			if(Map->CheckMinimapBounds(Bounds, HUD_MINIMAP_CAPTURE_SIZE)) {
 				_MinimapLayer MinimapLayer;
 				MinimapLayer.Bounds = glm::vec4(
-					Object->Position.x - Object->Scale * 0.25f,
-					Object->Position.y - Object->Scale * 0.25f,
-					Object->Position.x + Object->Scale * 0.25f,
-					Object->Position.y + Object->Scale * 0.25f
+					Object->Position.x - Object->Scale * 0.25f,	Object->Position.y - Object->Scale * 0.25f,
+					Object->Position.x + Object->Scale * 0.25f, Object->Position.y + Object->Scale * 0.25f
 				);
 
 				MinimapLayer.Color = COLOR_WHITE;
