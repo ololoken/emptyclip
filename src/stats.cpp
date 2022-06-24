@@ -192,33 +192,25 @@ void _Stats::LoadArmor(const std::string &Path) {
 
 		_ItemTemplate Template(_Object::ARMOR);
 		std::string Name;
-		std::string ColorName;
 		std::getline(File, Name, '\t');
 		std::getline(File, Template.Name, '\t');
 		std::getline(File, Template.IconID, '\t');
-		std::getline(File, ColorName, '\t');
 
 		File
-			>> Template.Attributes["damage_block"].Int
-			>> Template.Attributes["damage_resist"].Int
-			>> Template.Attributes["max_ammo"].Int
-			>> Template.Attributes["move_speed"].Int;
+			>> Template.Attributes["damage_block"].Float
+			>> Template.Attributes["damage_block_level"].Float
+			>> Template.Attributes["damage_resist"].Float
+			>> Template.Attributes["damage_resist_level"].Float
+			>> Template.Attributes["max_ammo"].Float
+			>> Template.Attributes["max_ammo_level"].Float
+			>> Template.Attributes["move_speed"].Float
+			>> Template.Attributes["move_speed_level"].Float;
 
 		File.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
 		// Check for loaded textures
 		if(!ae::Assets.Textures[Template.IconID])
 			throw std::runtime_error(std::string(__PRETTY_FUNCTION__) + " - Texture not found: " + Template.IconID);
-
-		// Set color
-		if(ColorName != "") {
-			if(ae::Assets.Colors.find(ColorName) == ae::Assets.Colors.end())
-				throw std::runtime_error(std::string(__PRETTY_FUNCTION__) + " - Cannot find color: " + ColorName);
-
-			Template.Color = ae::Assets.Colors[ColorName];
-		}
-		else
-			Template.Color = COLOR_WHITE;
 
 		// Check for duplicates
 		if(Items.find(Name) != Items.end())
@@ -720,8 +712,7 @@ void _Stats::LoadMonsters(const std::string &Path) {
 _Item *_Stats::CreateItem(const std::string &Identifier, int Count, const glm::vec2 &Position) {
 	_ItemTemplate &Template = Items[Identifier];
 
-	_Item *Item = new _Item();
-	Item->Attributes = Template.Attributes;
+	_Item *Item = new _Item(Template.Attributes);
 	Item->Type = Template.Type;
 	Item->Name = Template.Name;
 	Item->ID = Identifier;
@@ -729,6 +720,18 @@ _Item *_Stats::CreateItem(const std::string &Identifier, int Count, const glm::v
 	Item->Position = Position;
 	Item->Texture = ae::Assets.Textures[Template.IconID];
 	Item->Color = Template.Color;
+
+	switch(Template.Type) {
+		case _Object::ARMOR: {
+			Item->SetAttributeLevel("damage_block", Item->Level, 1.0f);
+			Item->SetAttributeLevel("damage_resist", Item->Level, 1.0f);
+			Item->SetAttributeLevel("max_ammo", Item->Level, 1.0f);
+			Item->SetAttributeLevel("move_speed", Item->Level, 1.0f);
+		} break;
+		default:
+			Item->Attributes = Template.Attributes;
+		break;
+	}
 
 	return Item;
 }

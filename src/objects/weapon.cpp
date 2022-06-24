@@ -25,7 +25,7 @@
 
 // Constructor
 _Weapon::_Weapon(const std::string &Identifier, int Level, const glm::vec2 &Position, const _WeaponTemplate &Weapon, const ae::_Texture *Texture, bool GenerateRandom) :
-	TemplateAttributes(Weapon.Attributes) {
+	_Item(Weapon.Attributes) {
 
 	this->Type = _Object::WEAPON;
 	this->ID = Identifier;
@@ -124,15 +124,6 @@ void _Weapon::RecalculateStats() {
 	Attributes["attack_count"].Int = TemplateAttributes.at("attack_count").Int + Bonus[UPGRADE_ATTACKS];
 
 	SetAmmo(Attributes["ammo"].Int);
-}
-
-// Set two range attributes given a level, spread and multiplier
-void _Weapon::SetAttributeRange(const std::string &AttributeName, int ItemLevel, float Multiplier) {
-	float LevelValue = ItemLevel > 0 ? TemplateAttributes.at(AttributeName + "_level").Float * ItemLevel : 0;
-	int Damage = std::ceil((TemplateAttributes.at(AttributeName).Float + LevelValue) * Multiplier);
-	int DamageRange = std::ceil(Damage * TemplateAttributes.at(AttributeName + "_spread").Float);
-	Attributes["min_" + AttributeName].Int = Damage - DamageRange;
-	Attributes["max_" + AttributeName].Int = Damage + DamageRange;
 }
 
 // Adds a component to the weapon

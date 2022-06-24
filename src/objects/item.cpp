@@ -31,7 +31,8 @@
 #include <iomanip>
 
 // Constructor
-_Item::_Item() :
+_Item::_Item(const std::unordered_map<std::string, _Value> &TemplateAttributes) :
+	TemplateAttributes(TemplateAttributes),
 	Level(1),
 	Quality(0),
 	Count(0),
@@ -39,6 +40,21 @@ _Item::_Item() :
 
 	Texture = nullptr;
 	PositionZ = ITEM_Z;
+}
+
+// Set two range attributes given a level, spread and multiplier
+void _Item::SetAttributeRange(const std::string &AttributeName, int ItemLevel, float Multiplier) {
+	float LevelValue = ItemLevel > 0 ? TemplateAttributes.at(AttributeName + "_level").Float * ItemLevel : 0;
+	int Value = std::ceil((TemplateAttributes.at(AttributeName).Float + LevelValue) * Multiplier);
+	int ValueRange = std::ceil(Value * TemplateAttributes.at(AttributeName + "_spread").Float);
+	Attributes["min_" + AttributeName].Int = Value - ValueRange;
+	Attributes["max_" + AttributeName].Int = Value + ValueRange;
+}
+
+// Set an attribute given a level and multiplier
+void _Item::SetAttributeLevel(const std::string &AttributeName, int ItemLevel, float Multiplier) {
+	float LevelValue = ItemLevel > 0 ? TemplateAttributes.at(AttributeName + "_level").Float * ItemLevel : 0;
+	Attributes[AttributeName].Int = std::ceil((TemplateAttributes.at(AttributeName).Float + LevelValue) * Multiplier);
 }
 
 // Serialize for saving

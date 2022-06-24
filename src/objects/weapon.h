@@ -40,7 +40,6 @@ class _Weapon : public _Item {
 		void RecalculateStats();
 		bool AddComponent(_Item *Upgrade);
 		void SetAmmo(int Value);
-		void SetAttributeRange(const std::string &AttributeName, int ItemLevel, float Multiplier);
 
 		float GetBonusMultiplier(int Type) const { return (100 + Bonus[Type]) * 0.01f; }
 		const std::string &GetSample(int SampleType) const;
@@ -50,8 +49,6 @@ class _Weapon : public _Item {
 
 		std::vector<_Item *> Upgrades;
 		int Bonus[UPGRADE_TYPES];
-
-		const std::unordered_map<std::string, _Value> &TemplateAttributes;
 
 	protected:
 
