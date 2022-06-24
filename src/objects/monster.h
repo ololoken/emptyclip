@@ -75,7 +75,7 @@ class _Monster : public _Entity {
 	public:
 
 		_Monster();
-		_Monster(_MonsterTemplate &Monster, const glm::vec2 &Position);
+		_Monster(_MonsterTemplate &MonsterTemplate, const glm::vec2 &Position);
 		~_Monster();
 
 		bool CalcPath(const glm::vec2 &Goal);
@@ -114,6 +114,8 @@ class _Monster : public _Entity {
 		int CurrentActions;
 
 		// Viewing ranges
-		float ViewRangeFront, ViewRangeSide, ViewRangeBack;
+		float ViewRangeFrontSquared;
+		float ViewRangeSideSquared;
+		float ViewRangeBackSquared;
 		_WeaponParticleTemplate *WeaponParticles;
 };

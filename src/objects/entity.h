@@ -181,7 +181,7 @@ class _Entity : public _Object {
 		int AttackRequestType;
 
 		// Monsters
-		std::string ItemGroupIdentifier;
+		std::string ItemGroupID;
 		int64_t ExperienceGiven;
 
 	protected:

@@ -49,44 +49,47 @@ _Monster::~_Monster() {
 }
 
 // Constructor
-_Monster::_Monster(_MonsterTemplate &Monster, const glm::vec2 &Position) :
+_Monster::_Monster(_MonsterTemplate &MonsterTemplate, const glm::vec2 &Position) :
 	_Entity() {
 
+	const std::unordered_map<std::string, _Value> &TemplateAttributes = MonsterTemplate.Attributes;
+
 	Type = _Object::MONSTER;
+	Level = 1;
 
 	// Monster stats
-	Name = Monster.Name;
-	Color = Monster.Color;
-	MovementSpeed = Monster.MovementSpeed;
-	Radius = Monster.Radius;
-	Scale = Monster.Scale;
+	Name = MonsterTemplate.Name;
+	Color = MonsterTemplate.Color;
+	ItemGroupID = MonsterTemplate.ItemGroupID;
+	MovementSpeed = TemplateAttributes.at("movement_speed").Float;
+	Radius = TemplateAttributes.at("radius").Float;
+	Scale = TemplateAttributes.at("scale").Float;
 	Recoil = 0;
 	RecoilRegen = 0;
-	Level = Monster.Level;
-	Health = MaxHealth = Monster.Health;
-	DamageBlock = Monster.DamageBlock;
-	ViewRangeFront = Monster.ViewRange;
-	ViewRangeSide = Monster.ViewRange * MONSTER_SIDERANGE;
-	ViewRangeBack = Monster.ViewRange * MONSTER_BACKRANGE;
-	ExperienceGiven = Monster.ExperienceGiven;
-	ItemGroupIdentifier = Monster.ItemGroupIdentifier;
-	MinAccuracy = Monster.Accuracy;
+	Health = MaxHealth = TemplateAttributes.at("max_health").Int;
+	DamageBlock = TemplateAttributes.at("damage_block").Int;
+	ExperienceGiven = TemplateAttributes.at("experience").Int;
+	MinAccuracy = TemplateAttributes.at("accuracy").Int;
 	for(int i = 0; i < WEAPONATTACK_COUNT; i++) {
-		MinDamage[i] = Monster.MinDamage;
-		MaxDamage[i] = Monster.MaxDamage;
-		FirePeriod[i] = Monster.FirePeriod;
-		MaxAccuracy[i] = Monster.Accuracy;
-		AttackRange[i] = Monster.AttackRange;
+		int Damage = TemplateAttributes.at("damage").Int;
+		MinDamage[i] = Damage;
+		MaxDamage[i] = Damage;
+		FirePeriod[i] = TemplateAttributes.at("attack_period").Double;
+		MaxAccuracy[i] = TemplateAttributes.at("accuracy").Int;
+		AttackRange[i] = TemplateAttributes.at("attack_range").Float;
 		AttackRange[i] *= AttackRange[i];
 	}
-	MainWeaponType = Monster.WeaponType;
+	MainWeaponType = TemplateAttributes.at("weapon_type").Int;
 	this->Position = LastPosition = Position;
-	WeaponParticles = Monster.WeaponParticles;
+	WeaponParticles = MonsterTemplate.WeaponParticles;
 
-	ViewRangeFront *= ViewRangeFront;
-	ViewRangeSide *= ViewRangeSide;
-	ViewRangeBack *= ViewRangeBack;
-	PersonalityType = Monster.BehaviorType;
+	ViewRangeFrontSquared = TemplateAttributes.at("view_range").Int;
+	ViewRangeSideSquared = ViewRangeFrontSquared * MONSTER_SIDERANGE;
+	ViewRangeBackSquared = ViewRangeFrontSquared * MONSTER_BACKRANGE;
+	ViewRangeFrontSquared *= ViewRangeFrontSquared;
+	ViewRangeSideSquared *= ViewRangeSideSquared;
+	ViewRangeBackSquared *= ViewRangeBackSquared;
+	PersonalityType = TemplateAttributes.at("ai_type").Int;
 	if(PersonalityType != PERSONALITY_TREASURE)
 		Rotation = ae::GetRandomReal(0.0f, 359.0f);
 
@@ -344,15 +347,15 @@ bool _Monster::IsVisible(const glm::vec2 &TargetPosition) {
 	float Distance = glm::distance2(Position, TargetPosition);
 	bool InViewRange = false;
 	if(DegreesDifference < 65 || DegreesDifference > 295) {
-		if(Distance <= ViewRangeFront)
+		if(Distance <= ViewRangeFrontSquared)
 			InViewRange = true;
 	}
 	else if(DegreesDifference > 100 && DegreesDifference < 260) {
-		if(Distance <= ViewRangeBack)
+		if(Distance <= ViewRangeBackSquared)
 			InViewRange = true;
 	}
 	else {
-		if(Distance <= ViewRangeSide)
+		if(Distance <= ViewRangeSideSquared)
 			InViewRange = true;
 	}
 

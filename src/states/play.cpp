@@ -798,10 +798,10 @@ void _PlayState::UseObject(_Item *NearbyItem) {
 
 // Creates a random item from an entity
 void _PlayState::CreateItemDrop(const _Entity *Entity) {
-	if(Entity->ItemGroupIdentifier == "")
+	if(Entity->ItemGroupID == "")
 		return;
 
-	_ItemGroup *ItemGroup = &Stats.ItemGroups[Entity->ItemGroupIdentifier];
+	_ItemGroup *ItemGroup = &Stats.ItemGroups[Entity->ItemGroupID];
 	for(int i = 0; i < ItemGroup->Quantity; i++) {
 
 		// Spawn random item

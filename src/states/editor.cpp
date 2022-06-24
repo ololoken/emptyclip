@@ -1107,7 +1107,7 @@ void _EditorState::LoadMonsterButtons() {
 		}
 		else {
 			_MonsterTemplate &MonsterTemplate = Stats.Monsters.at(Map->MonsterSet[i]);
-			const ae::_Texture *MonsterIcon = ae::Assets.Textures["textures/icons/" + MonsterTemplate.AnimationIdentifier + ".png"];
+			const ae::_Texture *MonsterIcon = ae::Assets.Textures["textures/icons/" + MonsterTemplate.AnimationID + ".png"];
 			Icons.push_back(_Brush(Map->MonsterSet[i], MonsterTemplate.Name, MonsterIcon, MonsterTemplate.Color, _Object::MONSTER));
 		}
 	}
@@ -1340,9 +1340,9 @@ void _EditorState::DrawObject(float OffsetX, float OffsetY, const _ObjectSpawn *
 	switch(Object->Type) {
 		case _Object::MONSTER: {
 			_MonsterTemplate &Monster = Stats.Monsters.at(Object->Identifier);
-			Texture = ae::Assets.Textures["textures/icons/" + Monster.AnimationIdentifier + ".png"];
+			Texture = ae::Assets.Textures["textures/icons/" + Monster.AnimationID + ".png"];
 			Color = Monster.Color;
-			Scale = Monster.Scale;
+			Scale = Monster.Attributes.at("scale").Float;
 			Depth = OBJECT_Z;
 		} break;
 		case _Object::KEY:

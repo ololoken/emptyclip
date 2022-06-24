@@ -114,7 +114,7 @@ void _GameAssets::LoadSoundGroups(const std::string &Path) {
 			if(SoundID != "" && ae::Assets.Sounds.find(SoundID) == ae::Assets.Sounds.end())
 				throw std::runtime_error(std::string(__PRETTY_FUNCTION__) + " - Cannot find: " + SoundID);
 
-			SampleTemplate.Sounds[i] = SoundID;
+			SampleTemplate.SoundID[i] = SoundID;
 		}
 
 		// Check for duplicates
@@ -221,11 +221,11 @@ void _GameAssets::LoadWeaponParticles(const std::string &Path) {
 	File.close();
 }
 
-bool _GameAssets::IsAttackSampleLoaded(const std::string &Identifier) { return SoundGroups.find(Identifier) != SoundGroups.end(); }
+bool _GameAssets::IsSoundGroupLoaded(const std::string &Identifier) { return SoundGroups.find(Identifier) != SoundGroups.end(); }
 bool _GameAssets::IsParticleLoaded(const std::string &Identifier) { return ParticleTable.find(Identifier) != ParticleTable.end(); }
 bool _GameAssets::IsWeaponParticleTemplateLoaded(const std::string &Identifier) { return WeaponParticleTable.find(Identifier) != WeaponParticleTable.end(); }
 
-_SoundGroup *_GameAssets::GetAttackSampleTemplate(const std::string &Identifier) {
+_SoundGroup *_GameAssets::GetSoundGroupTemplate(const std::string &Identifier) {
 	if(SoundGroups.find(Identifier) == SoundGroups.end())
 		return nullptr;
 

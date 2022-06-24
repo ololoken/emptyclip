@@ -64,14 +64,17 @@ struct _ItemGroup {
 
 // Monster template
 struct _MonsterTemplate {
-	glm::vec4 Color;
+
+	_MonsterTemplate() : Color(1.0f) { }
+
+	std::string Name;
+	std::string AnimationID;
+	std::string SoundGroupID;
+	std::string ItemGroupID;
 	_WeaponParticleTemplate *WeaponParticles;
-	std::string Name, AnimationIdentifier, SamplesIdentifier, ItemGroupIdentifier;
-	float Radius, Scale, MovementSpeed, Accuracy, ViewRange, AttackRange;
-	int Level, Health, DamageBlock, MinDamage, MaxDamage, BehaviorType, WeaponType;
-	int64_t ExperienceGiven;
-	double FirePeriod;
-	std::string FireSample, MissSample, RicochetSample, EmptySample, ReloadSample, HitSample, DeathSample;
+	glm::vec4 Color;
+
+	std::unordered_map<std::string, _Value> Attributes;
 };
 
 // Item template
@@ -98,7 +101,7 @@ struct _WeaponTemplate {
 	std::string Name;
 	std::string IconID;
 	std::string AmmoID;
-	std::string SoundGroupID[SOUND_TYPES];
+	std::string SoundID[SOUND_TYPES];
 
 	std::unordered_map<std::string, _Value> Attributes;
 };

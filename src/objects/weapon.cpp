@@ -88,7 +88,7 @@ void _Weapon::Serialize(ae::_Buffer &Buffer) {
 
 // Get weapon sound sample
 const std::string &_Weapon::GetSample(int SampleType) const {
-	return Stats.Weapons[ID].SoundGroupID[SampleType];
+	return Stats.Weapons[ID].SoundID[SampleType];
 }
 
 // Set ammo amount

@@ -34,7 +34,7 @@ struct _ParticleTemplate;
 struct _SoundGroup {
 	_SoundGroup() { }
 
-	std::string Sounds[SOUND_TYPES];
+	std::string SoundID[SOUND_TYPES];
 };
 
 // Classes
@@ -52,11 +52,11 @@ class _GameAssets {
 		void LoadWeaponParticles(const std::string &Path);
 		void LoadMonsterAnimation();
 
-		bool IsAttackSampleLoaded(const std::string &Identifier);
+		bool IsSoundGroupLoaded(const std::string &Identifier);
 		bool IsParticleLoaded(const std::string &Identifier);
 		bool IsWeaponParticleTemplateLoaded(const std::string &Identifier);
 
-		_SoundGroup *GetAttackSampleTemplate(const std::string &Identifier);
+		_SoundGroup *GetSoundGroupTemplate(const std::string &Identifier);
 		_ParticleTemplate *GetParticleTemplate(const std::string &Identifier);
 		_WeaponParticleTemplate *GetWeaponParticleTemplate(const std::string &Identifer);
 
