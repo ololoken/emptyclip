@@ -1039,7 +1039,7 @@ void _PlayState::SpawnObject(_ObjectSpawn *ObjectSpawn, bool GenerateStats) {
 			Map->AddItem(Stats.CreateItem(ObjectSpawn->Identifier, 1, ObjectSpawn->Position));
 		break;
 		case _Object::WEAPON:
-			Map->AddItem(Stats.CreateWeapon(ObjectSpawn->Identifier, 1, ObjectSpawn->Position, GenerateStats));
+			Map->AddItem(Stats.CreateWeapon(ObjectSpawn->Identifier, ObjectSpawn->Position, GenerateStats));
 		break;
 	}
 }

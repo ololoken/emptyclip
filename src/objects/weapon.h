@@ -32,24 +32,26 @@ class _Weapon : public _Item {
 
 	public:
 
-		_Weapon(const std::string &Identifier, int Count, const glm::vec2 &Position, const _WeaponTemplate &Weapon, const ae::_Texture *Texture, bool Generate);
+		_Weapon(const std::string &Identifier, int Level, const glm::vec2 &Position, const _WeaponTemplate &Weapon, const ae::_Texture *Texture, bool GenerateRandom);
 		~_Weapon() override;
 
 		void Serialize(ae::_Buffer &Buffer) override;
 
 		void RecalculateStats();
 		bool AddComponent(_Item *Upgrade);
-
 		void SetAmmo(int Value);
+		void SetAttributeRange(const std::string &AttributeName, int ItemLevel, float Multiplier);
 
+		float GetBonusMultiplier(int Type) const { return (100 + Bonus[Type]) * 0.01f; }
 		const std::string &GetSample(int SampleType) const;
-
 		bool IsMelee() const { return Attributes.at("weapon_type").Int == WEAPON_MELEE; }
 		virtual std::string GetTypeAsString() const override { return ToString(Attributes.at("weapon_type").Int) + " class weapon"; }
 		static std::string ToString(int Type);
 
 		std::vector<_Item *> Upgrades;
 		int Bonus[UPGRADE_TYPES];
+
+		const std::unordered_map<std::string, _Value> &TemplateAttributes;
 
 	protected:
 

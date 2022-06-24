@@ -96,9 +96,9 @@ struct _WeaponTemplate {
 	_WeaponParticleTemplate *WeaponParticles;
 	glm::vec4 Color;
 	std::string Name;
-	std::string IconIdentifier;
-	std::string AmmoType;
-	std::string Samples[SOUND_TYPES];
+	std::string IconID;
+	std::string AmmoID;
+	std::string SoundGroupID[SOUND_TYPES];
 
 	std::unordered_map<std::string, _Value> Attributes;
 };
@@ -120,11 +120,12 @@ class _Stats {
 		void LoadMedkits(const std::string &Path);
 		void LoadUpgrades(const std::string &Path);
 		void LoadWeapons(const std::string &Path);
+		void LoadWeaponsNew(const std::string &Path);
 		void LoadItemDrops(const std::string &Path);
 		void LoadMonsters(const std::string &Path);
 
 		_Item *CreateItem(const std::string &Identifier, int Count, const glm::vec2 &Position);
-		_Weapon *CreateWeapon(const std::string &Identifier, int Count, const glm::vec2 &Position, bool Generate);
+		_Weapon *CreateWeapon(const std::string &Identifier, const glm::vec2 &Position, bool Generate);
 		_Monster *CreateMonster(const std::string &Identifier, const glm::vec2 &Position);
 
 		int GetLevel(int64_t Experience);

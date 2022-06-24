@@ -945,7 +945,8 @@ void _EditorState::Render(double BlendFactor) {
 	ae::Graphics.SetDepthMask(false);
 
 	// Draw viewport outline
-	ae::Graphics.SetColor(COLOR_DARK);
+	ae::Graphics.SetProgram(ae::Assets.Programs["ortho_pos"]);
+	ae::Graphics.SetColor(glm::vec4(0.1f, 0.1f, 0.1f, 1.0f));
 	ae::Graphics.DrawRectangle(glm::vec2(0, 0), ae::Graphics.ViewportSize);
 
 	// Draw text
@@ -1068,7 +1069,7 @@ void _EditorState::LoadPalettes() {
 
 	// Load weapons
 	for(const auto &Weapon : Stats.Weapons) {
-		const ae::_Texture *Texture = ae::Assets.Textures[Weapon.second.IconIdentifier];
+		const ae::_Texture *Texture = ae::Assets.Textures[Weapon.second.IconID];
 		if(Texture)
 			Icons.push_back(_Brush(Weapon.first, Weapon.second.Name, Texture, Weapon.second.Color, _Object::WEAPON));
 	}
@@ -1355,7 +1356,7 @@ void _EditorState::DrawObject(float OffsetX, float OffsetY, const _ObjectSpawn *
 		} break;
 		case _Object::WEAPON: {
 			_WeaponTemplate &Weapon = Stats.Weapons[Object->Identifier];
-			Texture = ae::Assets.Textures[Weapon.IconIdentifier];
+			Texture = ae::Assets.Textures[Weapon.IconID];
 			Color = Weapon.Color;
 		} break;
 	}

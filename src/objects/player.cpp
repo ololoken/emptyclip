@@ -326,14 +326,14 @@ void _Player::LoadItems(ae::_Buffer &Buffer) {
 				Inventory[Slot]->Quality = Quality;
 			break;
 			case _Object::WEAPON:
-				LoadWeapon(Buffer, Level, Quality, Count, Slot);
+				LoadWeapon(Buffer, Level, Quality, Slot);
 			break;
 		}
 	}
 }
 
 // Loads weapons from a stream
-_Weapon *_Player::LoadWeapon(ae::_Buffer &Buffer, int Level, int Quality, int Count, int InventoryIndex) {
+_Weapon *_Player::LoadWeapon(ae::_Buffer &Buffer, int Level, int Quality, int InventoryIndex) {
 
 	// Get weapons
 	std::string Identifier = Buffer.ReadString();
@@ -341,7 +341,7 @@ _Weapon *_Player::LoadWeapon(ae::_Buffer &Buffer, int Level, int Quality, int Co
 	int MaxComponents = Buffer.Read<int>();
 
 	// Create weapon
-	_Weapon *Weapon = Stats.CreateWeapon(Identifier, Count, glm::vec2(0, 0), false);
+	_Weapon *Weapon = Stats.CreateWeapon(Identifier, glm::vec2(0, 0), false);
 	Weapon->Attributes["max_components"].Int = MaxComponents;
 	Weapon->Level = Level;
 	Weapon->Quality = Quality;
@@ -945,9 +945,9 @@ float _Player::GetCrosshairRadius(const glm::vec2 &Cursor) {
 // Return ammo type of player's main weapon
 const std::string &_Player::GetWeaponAmmoType() const {
 	if(!HasMainHand())
-		return Stats.Weapons[""].AmmoType;
+		return Stats.Weapons[""].AmmoID;
 
-	return Stats.Weapons[GetMainHand()->ID].AmmoType;
+	return Stats.Weapons[GetMainHand()->ID].AmmoID;
 }
 
 // Checks if the player's weapon has ammo
@@ -1236,18 +1236,18 @@ void _Player::RecalculateStats() {
 	AttackRange[WEAPONATTACK_MAIN] = Weapon[WEAPONATTACK_MAIN].Attributes["range"].Float;
 	AttackRange[WEAPONATTACK_MELEE] = Weapon[WEAPONATTACK_MELEE].Attributes["range"].Float;
 	if(MainWeaponType == WEAPON_MELEE) {
-		CurrentAccuracyNormal = MinAccuracyNormal = Weapon[WEAPONATTACK_MAIN].Attributes.at("min_accuracy").Float;
-		MaxAccuracyNormal = Weapon[WEAPONATTACK_MAIN].Attributes.at("max_accuracy").Float;
+		CurrentAccuracyNormal = MinAccuracyNormal = Weapon[WEAPONATTACK_MAIN].Attributes.at("min_accuracy").Int;
+		MaxAccuracyNormal = Weapon[WEAPONATTACK_MAIN].Attributes.at("max_accuracy").Int;
 	}
 	else {
 		float AccuracySkillMultiplier = 1.0f / Stats.GetSkillBonusMultiplier(Skills[SKILL_ACCURACY], SKILL_ACCURACY);
-		CurrentAccuracyNormal = MinAccuracyNormal = Weapon[WEAPONATTACK_MAIN].Attributes.at("min_accuracy").Float * AccuracySkillMultiplier;
-		MaxAccuracyNormal = Weapon[WEAPONATTACK_MAIN].Attributes.at("max_accuracy").Float * AccuracySkillMultiplier;
+		CurrentAccuracyNormal = MinAccuracyNormal = Weapon[WEAPONATTACK_MAIN].Attributes.at("min_accuracy").Int * AccuracySkillMultiplier;
+		MaxAccuracyNormal = Weapon[WEAPONATTACK_MAIN].Attributes.at("max_accuracy").Int * AccuracySkillMultiplier;
 		Recoil = Weapon[WEAPONATTACK_MAIN].Attributes["recoil"].Float;
 		RecoilRegen = Weapon[WEAPONATTACK_MAIN].Attributes["recoil_regen"].Float;
 	}
 
-	MaxAccuracy[WEAPONATTACK_MELEE] = Weapon[WEAPONATTACK_MELEE].Attributes.at("max_accuracy").Float;
+	MaxAccuracy[WEAPONATTACK_MELEE] = Weapon[WEAPONATTACK_MELEE].Attributes.at("max_accuracy").Int;
 
 	// Set accuracy
 	ResetAccuracy(true);

@@ -414,11 +414,11 @@ void _HUD::Render() {
 					}
 				}
 				else {
-					_Weapon *CompareWeapon = Player->GetMainHand();
-					CompareSlot = INVENTORY_MAINHAND;
-					if(Player->GetOffHand() && Player->GetOffHand()->Attributes.at("weapon_type").Int == Weapon->Attributes.at("weapon_type").Int) {
-						CompareWeapon = Player->GetOffHand();
-						CompareSlot = INVENTORY_OFFHAND;
+					_Weapon *CompareWeapon = Player->GetOffHand();
+					CompareSlot = INVENTORY_OFFHAND;
+					if(Player->GetMainHand() && Player->GetMainHand()->Attributes.at("weapon_type").Int == Weapon->Attributes.at("weapon_type").Int) {
+						CompareWeapon = Player->GetMainHand();
+						CompareSlot = INVENTORY_MAINHAND;
 					}
 
 					if(CompareWeapon)

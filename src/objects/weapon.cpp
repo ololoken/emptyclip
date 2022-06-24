@@ -19,11 +19,13 @@
 #include <objects/particle.h>
 #include <ae/random.h>
 #include <ae/buffer.h>
+#include <constants.h>
 #include <stats.h>
 #include <algorithm>
 
 // Constructor
-_Weapon::_Weapon(const std::string &Identifier, int Count, const glm::vec2 &Position, const _WeaponTemplate &Weapon, const ae::_Texture *Texture, bool Generate) {
+_Weapon::_Weapon(const std::string &Identifier, int Level, const glm::vec2 &Position, const _WeaponTemplate &Weapon, const ae::_Texture *Texture, bool GenerateRandom) :
+	TemplateAttributes(Weapon.Attributes) {
 
 	this->Type = _Object::WEAPON;
 	this->ID = Identifier;
@@ -34,19 +36,34 @@ _Weapon::_Weapon(const std::string &Identifier, int Count, const glm::vec2 &Posi
 
 	Attributes = Weapon.Attributes;
 
-	if(Generate)
-		Attributes["max_components"].Int = ae::GetRandomInt(Weapon.Attributes.at("min_components").Int, Weapon.Attributes.at("max_components").Int);
-	else
-		Attributes["max_components"].Int = Weapon.Attributes.at("min_components").Int;
+	char LastChar = Identifier[Identifier.size()-1];
+	if(LastChar >= '0' && LastChar <= '9')
+		Old = true;
 
-	Attributes["ammo"].Int = Weapon.Attributes.at("rounds").Int;
+	GenerateRandom = 1;
+	if(Old) {
+		Attributes["ammo"].Int = TemplateAttributes.at("rounds").Int;
+		if(GenerateRandom)
+			Attributes["max_components"].Int = ae::GetRandomInt(Weapon.Attributes.at("min_components").Int, Weapon.Attributes.at("max_components").Int);
+		else
+			Attributes["max_components"].Int = Weapon.Attributes.at("min_components").Int;
+	}
+	else {
+		int Components = TemplateAttributes.at("components").Float + TemplateAttributes.at("components_level").Float * Level;
+		if(GenerateRandom) {
+			Quality = ae::GetRandomInt(-ITEM_QUALITY_RANGE, ITEM_QUALITY_RANGE);
+			Attributes["max_components"].Int = Components + ae::GetRandomInt(0, 1);
+			Attributes["ammo"].Int = TemplateAttributes.at("rounds").Int;
+		}
+		else
+			Attributes["max_components"].Int = Components;
+	}
 
 	RecalculateStats();
 }
 
 // Destructor
 _Weapon::~_Weapon() {
-
 	for(size_t i = 0; i < Upgrades.size(); i++)
 		delete Upgrades[i];
 }
@@ -71,7 +88,7 @@ void _Weapon::Serialize(ae::_Buffer &Buffer) {
 
 // Get weapon sound sample
 const std::string &_Weapon::GetSample(int SampleType) const {
-	return Stats.Weapons[ID].Samples[SampleType];
+	return Stats.Weapons[ID].SoundGroupID[SampleType];
 }
 
 // Set ammo amount
@@ -89,17 +106,33 @@ void _Weapon::RecalculateStats() {
 	for(size_t i = 0; i < Upgrades.size(); i++)
 		Bonus[Upgrades[i]->Attributes.at("upgrade_type").Int] += Upgrades[i]->Attributes.at("bonus").Int;
 
-	// Set stats
-	Attributes["rounds"].Int = std::ceil(Stats.Weapons[ID].Attributes.at("rounds").Int * ((100 + Bonus[UPGRADE_CLIP]) * 0.01f));
-	Attributes["min_damage"].Int = std::ceil(Stats.Weapons[ID].Attributes.at("min_damage").Int * ((100 + Bonus[UPGRADE_DAMAGE]) * 0.01f));
-	Attributes["max_damage"].Int = std::ceil(Stats.Weapons[ID].Attributes.at("max_damage").Int * ((100 + Bonus[UPGRADE_DAMAGE]) * 0.01f));
-	Attributes["min_accuracy"].Float = Stats.Weapons[ID].Attributes.at("min_accuracy").Float / ((100 + Bonus[UPGRADE_ACCURACY]) * 0.01f);
-	Attributes["max_accuracy"].Float = Stats.Weapons[ID].Attributes.at("max_accuracy").Float / ((100 + Bonus[UPGRADE_ACCURACY]) * 0.01f);
-	Attributes["fire_period"].Double = Stats.Weapons[ID].Attributes.at("fire_period").Double / ((100 + Bonus[UPGRADE_FIREPERIOD]) * 0.01f);
-	Attributes["reload_period"].Double = Stats.Weapons[ID].Attributes.at("reload_period").Double / ((100 + Bonus[UPGRADE_RELOADPERIOD]) * 0.01f);
-	Attributes["attack_count"].Int = Stats.Weapons[ID].Attributes.at("attack_count").Int + Bonus[UPGRADE_ATTACKS];
+	if(Old) {
+		Attributes["min_damage"].Int = std::ceil(TemplateAttributes.at("min_damage").Int * GetBonusMultiplier(UPGRADE_DAMAGE));
+		Attributes["max_damage"].Int = std::ceil(TemplateAttributes.at("max_damage").Int * GetBonusMultiplier(UPGRADE_DAMAGE));
+		Attributes["min_accuracy"].Int = TemplateAttributes.at("min_accuracy").Float / GetBonusMultiplier(UPGRADE_ACCURACY);
+		Attributes["max_accuracy"].Int= TemplateAttributes.at("max_accuracy").Float / GetBonusMultiplier(UPGRADE_ACCURACY);
+	}
+	else {
+		SetAttributeRange("damage", Level, GetBonusMultiplier(UPGRADE_DAMAGE) + Quality * 0.01f);
+		SetAttributeRange("accuracy", 0, 1.0f / GetBonusMultiplier(UPGRADE_ACCURACY));
+	}
+
+	// Set rounds
+	Attributes["rounds"].Int = std::ceil(TemplateAttributes.at("rounds").Int * GetBonusMultiplier(UPGRADE_CLIP));
+	Attributes["fire_period"].Double = TemplateAttributes.at("fire_period").Double / GetBonusMultiplier(UPGRADE_FIREPERIOD);
+	Attributes["reload_period"].Double = TemplateAttributes.at("reload_period").Double / GetBonusMultiplier(UPGRADE_RELOADPERIOD);
+	Attributes["attack_count"].Int = TemplateAttributes.at("attack_count").Int + Bonus[UPGRADE_ATTACKS];
 
 	SetAmmo(Attributes["ammo"].Int);
+}
+
+// Set two range attributes given a level, spread and multiplier
+void _Weapon::SetAttributeRange(const std::string &AttributeName, int ItemLevel, float Multiplier) {
+	float LevelValue = ItemLevel > 0 ? TemplateAttributes.at(AttributeName + "_level").Float * ItemLevel : 0;
+	int Damage = std::ceil((TemplateAttributes.at(AttributeName).Float + LevelValue) * Multiplier);
+	int DamageRange = std::ceil(Damage * TemplateAttributes.at(AttributeName + "_spread").Float);
+	Attributes["min_" + AttributeName].Int = Damage - DamageRange;
+	Attributes["max_" + AttributeName].Int = Damage + DamageRange;
 }
 
 // Adds a component to the weapon

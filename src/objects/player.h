@@ -194,7 +194,7 @@ class _Player : public _Entity {
 		bool IsHandIndex(int Index) { return Index == INVENTORY_MAINHAND || Index == INVENTORY_OFFHAND; }
 
 		void LoadItems(ae::_Buffer &Buffer);
-		_Weapon *LoadWeapon(ae::_Buffer &Buffer, int Level, int Quality, int Count, int InventoryIndex);
+		_Weapon *LoadWeapon(ae::_Buffer &Buffer, int Level, int Quality, int InventoryIndex);
 		void LoadUpgrades(ae::_Buffer &Buffer, _Weapon *Weapon);
 		void LoadAmmo(ae::_Buffer &Buffer);
 		void SaveItems(std::ofstream &File);

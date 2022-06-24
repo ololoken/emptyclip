@@ -44,6 +44,7 @@ void _Stats::Init() {
 	LoadMedkits("tables/medkits.tsv");
 	LoadUpgrades("tables/upgrades.tsv");
 	LoadWeapons("tables/weapons.tsv");
+	LoadWeaponsNew("tables/weapons_new.tsv");
 	LoadItemDrops("tables/itemdrops.tsv");
 	LoadMonsters("tables/monsters.tsv");
 }
@@ -400,11 +401,11 @@ void _Stats::LoadWeapons(const std::string &Path) {
 		std::string WeaponParticlesIdentifier;
 		std::getline(File, Name, '\t');
 		std::getline(File, WeaponTemplate.Name, '\t');
-		std::getline(File, WeaponTemplate.IconIdentifier, '\t');
+		std::getline(File, WeaponTemplate.IconID, '\t');
 		std::getline(File, SamplesIdentifier, '\t');
 		std::getline(File, WeaponParticlesIdentifier, '\t');
 		std::getline(File, ColorName, '\t');
-		std::getline(File, WeaponTemplate.AmmoType, '\t');
+		std::getline(File, WeaponTemplate.AmmoID, '\t');
 
 		File	>> WeaponTemplate.Attributes["weapon_type"].Int
 				>> WeaponTemplate.Attributes["zoom_scale"].Float
@@ -426,8 +427,8 @@ void _Stats::LoadWeapons(const std::string &Path) {
 		File.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
 		// Check for loaded textures
-		if(WeaponTemplate.IconIdentifier != "" && !ae::Assets.Textures[WeaponTemplate.IconIdentifier])
-			throw std::runtime_error(std::string(__PRETTY_FUNCTION__) + " - Texture not found: " + WeaponTemplate.IconIdentifier);
+		if(WeaponTemplate.IconID != "" && !ae::Assets.Textures[WeaponTemplate.IconID])
+			throw std::runtime_error(std::string(__PRETTY_FUNCTION__) + " - Texture not found: " + WeaponTemplate.IconID);
 
 		// Set color
 		if(ColorName != "") {
@@ -447,7 +448,97 @@ void _Stats::LoadWeapons(const std::string &Path) {
 		AttackSample = GameAssets.GetAttackSampleTemplate(SamplesIdentifier);
 		for(int i = 0; i < SOUND_TYPES; i++) {
 			if(AttackSample)
-				WeaponTemplate.Samples[i] = AttackSample->Sounds[i];
+				WeaponTemplate.SoundGroupID[i] = AttackSample->Sounds[i];
+		}
+
+		// Set particles
+		if(GameAssets.IsWeaponParticleTemplateLoaded(WeaponParticlesIdentifier))
+			WeaponTemplate.WeaponParticles = GameAssets.GetWeaponParticleTemplate(WeaponParticlesIdentifier);
+		else
+			WeaponTemplate.WeaponParticles = &BlankWeaponParticle;
+
+		// Check for duplicates
+		if(Weapons.find(Name) != Weapons.end())
+			throw std::runtime_error(std::string(__PRETTY_FUNCTION__) + " - Duplicate entry: " + Name);
+
+		Weapons[Name] = WeaponTemplate;
+	}
+
+	File.close();
+}
+
+// Load weapon stats
+void _Stats::LoadWeaponsNew(const std::string &Path) {
+
+	// Load file
+	std::ifstream File(Path, std::ios::in);
+	if(!File)
+		throw std::runtime_error("Error loading: " + Path);
+
+	// Skip header
+	File.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+
+	// Read file
+	while(!File.eof() && File.peek() != EOF) {
+		_WeaponTemplate WeaponTemplate;
+		_SoundGroup *AttackSample;
+
+		std::string Name;
+		std::string ColorName;
+		std::string SamplesIdentifier;
+		std::string WeaponParticlesIdentifier;
+		std::getline(File, Name, '\t');
+		std::getline(File, WeaponTemplate.Name, '\t');
+		std::getline(File, WeaponTemplate.IconID, '\t');
+		std::getline(File, SamplesIdentifier, '\t');
+		std::getline(File, WeaponParticlesIdentifier, '\t');
+		std::getline(File, WeaponTemplate.AmmoID, '\t');
+
+		File	>> WeaponTemplate.Attributes["weapon_type"].Int
+				>> WeaponTemplate.Attributes["damage"].Float
+				>> WeaponTemplate.Attributes["damage_level"].Float
+				>> WeaponTemplate.Attributes["damage_spread"].Float
+				>> WeaponTemplate.Attributes["zoom_scale"].Float
+				>> WeaponTemplate.Attributes["accuracy"].Float
+				>> WeaponTemplate.Attributes["accuracy_spread"].Float
+				>> WeaponTemplate.Attributes["recoil"].Float
+				>> WeaponTemplate.Attributes["recoil_regen"].Float
+				>> WeaponTemplate.Attributes["range"].Float
+				>> WeaponTemplate.Attributes["fire_rate"].Int
+				>> WeaponTemplate.Attributes["fire_period"].Double
+				>> WeaponTemplate.Attributes["reload_rounds"].Int
+				>> WeaponTemplate.Attributes["reload_period"].Double
+				>> WeaponTemplate.Attributes["components"].Float
+				>> WeaponTemplate.Attributes["components_level"].Float
+				>> WeaponTemplate.Attributes["attack_count"].Int
+				>> WeaponTemplate.Attributes["rounds"].Int
+				>> WeaponTemplate.Attributes["penetration"].Int;
+
+		File.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+
+		// Check for loaded textures
+		if(WeaponTemplate.IconID != "" && !ae::Assets.Textures[WeaponTemplate.IconID])
+			throw std::runtime_error(std::string(__PRETTY_FUNCTION__) + " - Texture not found: " + WeaponTemplate.IconID);
+
+		// Set color
+		if(ColorName != "") {
+			if(ae::Assets.Colors.find(ColorName) == ae::Assets.Colors.end())
+				throw std::runtime_error(std::string(__PRETTY_FUNCTION__) + " - Cannot find color: " + ColorName);
+
+			WeaponTemplate.Color = ae::Assets.Colors[ColorName];
+		}
+		else
+			WeaponTemplate.Color = COLOR_WHITE;
+
+		// Check for attack sample
+		if(!GameAssets.IsAttackSampleLoaded(SamplesIdentifier))
+			throw std::runtime_error(std::string(__PRETTY_FUNCTION__) + " - Cannot find sample: " + SamplesIdentifier);
+
+		// Set samples
+		AttackSample = GameAssets.GetAttackSampleTemplate(SamplesIdentifier);
+		for(int i = 0; i < SOUND_TYPES; i++) {
+			if(AttackSample)
+				WeaponTemplate.SoundGroupID[i] = AttackSample->Sounds[i];
 		}
 
 		// Set particles
@@ -637,9 +728,9 @@ _Item *_Stats::CreateItem(const std::string &Identifier, int Count, const glm::v
 }
 
 // Creates a weapon
-_Weapon *_Stats::CreateWeapon(const std::string &Identifier, int Count, const glm::vec2 &Position, bool Generate) {
+_Weapon *_Stats::CreateWeapon(const std::string &Identifier, const glm::vec2 &Position, bool Generate) {
 	_WeaponTemplate &WeaponTemplate = Weapons[Identifier];
-	_Weapon *Weapon = new _Weapon(Identifier, Count, Position, WeaponTemplate, ae::Assets.Textures[WeaponTemplate.IconIdentifier], Generate);
+	_Weapon *Weapon = new _Weapon(Identifier, 1, Position, WeaponTemplate, ae::Assets.Textures[WeaponTemplate.IconID], Generate);
 
 	return Weapon;
 }

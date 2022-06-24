@@ -32,9 +32,10 @@
 
 // Constructor
 _Item::_Item() :
-	Level(0),
+	Level(1),
 	Quality(0),
-	Count(0) {
+	Count(0),
+	Old(false) {
 
 	Texture = nullptr;
 	PositionZ = ITEM_Z;
@@ -95,6 +96,20 @@ void _Item::DrawTooltip(const _Player *Player, std::size_t CompareSlot, glm::ive
 			std::ostringstream Buffer;
 			_Weapon *Weapon = (_Weapon *)this;
 			glm::vec4 TextColor;
+
+			// Quality
+			TextColor = COLOR_WHITE;
+			if(EquippedWeapon) {
+				if(Weapon->Quality > EquippedWeapon->Quality)
+					TextColor = COLOR_GREEN;
+				else if(Weapon->Quality < EquippedWeapon->Quality)
+					TextColor = COLOR_RED;
+			}
+			DrawPosition.y += 20;
+			Buffer << Weapon->Quality << "%";
+			ae::Assets.Fonts["hud_medium"]->DrawText("Quality", DrawPosition - DrawOffset, ae::RIGHT_BASELINE);
+			ae::Assets.Fonts["hud_medium"]->DrawText(Buffer.str(), DrawPosition + DrawOffset, ae::LEFT_BASELINE, TextColor);
+			Buffer.str("");
 
 			// Damage
 			TextColor = COLOR_WHITE;
@@ -193,12 +208,12 @@ void _Item::DrawTooltip(const _Player *Player, std::size_t CompareSlot, glm::ive
 			}
 			DrawPosition.y += 20;
 			if(Weapon->IsMelee()) {
-				Buffer << Weapon->Attributes.at("max_accuracy").Float << " degrees";
+				Buffer << Weapon->Attributes.at("max_accuracy").Int << " degrees";
 				ae::Assets.Fonts["hud_medium"]->DrawText("Swing Arc", DrawPosition - DrawOffset, ae::RIGHT_BASELINE);
 			}
 			else {
-				Buffer << (int)(Weapon->Attributes.at("min_accuracy").Float + 0.5f) << " - " << (int)(Weapon->Attributes.at("max_accuracy").Float + 0.5f);
-				ae::Assets.Fonts["hud_medium"]->DrawText("Spread", DrawPosition - DrawOffset, ae::RIGHT_BASELINE);
+				Buffer << Weapon->Attributes.at("min_accuracy").Int << " - " << Weapon->Attributes.at("max_accuracy").Int;
+				ae::Assets.Fonts["hud_medium"]->DrawText("Accuracy", DrawPosition - DrawOffset, ae::RIGHT_BASELINE);
 			}
 			ae::Assets.Fonts["hud_medium"]->DrawText(Buffer.str(), DrawPosition + DrawOffset, ae::LEFT_BASELINE, TextColor);
 			Buffer.str("");
@@ -222,7 +237,7 @@ void _Item::DrawTooltip(const _Player *Player, std::size_t CompareSlot, glm::ive
 			}
 
 			// Ammo type
-			std::string AmmoType = Stats.Weapons[Weapon->ID].AmmoType;
+			std::string AmmoType = Stats.Weapons[Weapon->ID].AmmoID;
 			if(!AmmoType.empty()) {
 				DrawPosition.y += 20;
 				Buffer << Stats.Items[AmmoType].Name;
@@ -377,7 +392,7 @@ float _Item::GetAverageDamage() const {
 }
 
 float _Item::GetAverageAccuracy() const {
-	return (Attributes.at("min_accuracy").Float + Attributes.at("max_accuracy").Float) * 0.5f;
+	return (Attributes.at("min_accuracy").Int + Attributes.at("max_accuracy").Int) * 0.5f;
 }
 
 // Get type as string

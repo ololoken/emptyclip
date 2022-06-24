@@ -79,6 +79,7 @@ const  int          INVENTORY_MAX_STACK            =  99;
 //     Items
 const  float        ITEM_SCALE                     =  0.5f;
 const  float        ITEM_Z                         =  0.05f;
+const  int          ITEM_QUALITY_RANGE             =  15;
 //     Objects
 const  float        OBJECT_Z                       =  0.3f;
 //     Map
