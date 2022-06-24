@@ -288,8 +288,8 @@ class _EditorState : public ae::_State {
 		int EventLevel;
 
 		// Objects
-		std::list<_ObjectSpawn *> SelectedObjects;
-		std::list<_ObjectSpawn *> ClipboardObjects;
+		std::vector<_ObjectSpawn *> SelectedObjects;
+		std::vector<_ObjectSpawn *> ClipboardObjects;
 		glm::vec2 ClickedPosition;
 		glm::vec2 CopiedPosition;
 		glm::vec2 MoveDelta;
