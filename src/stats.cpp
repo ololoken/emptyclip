@@ -318,17 +318,18 @@ void _Stats::LoadUpgrades(const std::string &Path) {
 	while(!File.eof() && File.peek() != EOF) {
 
 		_ItemTemplate Template(_Object::UPGRADE);
-		std::string Name;
-		std::string ColorName;
-		std::getline(File, Name, '\t');
+		std::string ID;
+		std::string ColorID;
+		std::getline(File, ID, '\t');
 		std::getline(File, Template.Name, '\t');
 		std::getline(File, Template.IconID, '\t');
-		std::getline(File, ColorName, '\t');
+		std::getline(File, ColorID, '\t');
 
 		File
 			>> Template.Attributes["upgrade_type"].Int
 			>> Template.Attributes["weapon_type"].Int
-			>> Template.Attributes["bonus"].Int;
+			>> Template.Attributes["bonus"].Float
+			>> Template.Attributes["bonus_level"].Float;
 
 		File.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
@@ -337,20 +338,13 @@ void _Stats::LoadUpgrades(const std::string &Path) {
 			throw std::runtime_error(std::string(__func__) + " - Cannot find texture: " + Template.IconID);
 
 		// Set color
-		if(ColorName != "") {
-			if(ae::Assets.Colors.find(ColorName) == ae::Assets.Colors.end())
-				throw std::runtime_error(std::string(__func__) + " - Cannot find color: " + ColorName);
-
-			Template.Color = ae::Assets.Colors[ColorName];
-		}
-		else
-			Template.Color = COLOR_WHITE;
+		SetColor(Template.Color, ColorID);
 
 		// Check for duplicates
-		if(Items.find(Name) != Items.end())
-			throw std::runtime_error(std::string(__func__) + " - Duplicate entry: " + Name);
+		if(Items.find(ID) != Items.end())
+			throw std::runtime_error(std::string(__func__) + " - Duplicate entry: " + ID);
 
-		Items[Name] = Template;
+		Items[ID] = Template;
 	}
 
 	File.close();
@@ -369,11 +363,10 @@ void _Stats::LoadWeapons(const std::string &Path) {
 
 	// Read file
 	while(!File.eof() && File.peek() != EOF) {
-		_WeaponTemplate WeaponTemplate;
-		_SoundGroup *SoundGroupTemplate;
 
+		_WeaponTemplate WeaponTemplate;
 		std::string ID;
-		std::string ColorName;
+		std::string ColorID;
 		std::string SoundGroupID;
 		std::string WeaponParticlesID;
 		std::getline(File, ID, '\t');
@@ -411,21 +404,14 @@ void _Stats::LoadWeapons(const std::string &Path) {
 			throw std::runtime_error(std::string(__func__) + " - Texture not found: " + WeaponTemplate.IconID);
 
 		// Set color
-		if(ColorName != "") {
-			if(ae::Assets.Colors.find(ColorName) == ae::Assets.Colors.end())
-				throw std::runtime_error(std::string(__func__) + " - Cannot find color: " + ColorName);
-
-			WeaponTemplate.Color = ae::Assets.Colors[ColorName];
-		}
-		else
-			WeaponTemplate.Color = COLOR_WHITE;
+		SetColor(WeaponTemplate.Color, ColorID);
 
 		// Check for attack sample
 		if(!GameAssets.IsSoundGroupLoaded(SoundGroupID))
 			throw std::runtime_error(std::string(__func__) + " - Cannot find sample: " + SoundGroupID);
 
 		// Set sound ids
-		SoundGroupTemplate = GameAssets.GetSoundGroupTemplate(SoundGroupID);
+		_SoundGroup *SoundGroupTemplate = GameAssets.GetSoundGroupTemplate(SoundGroupID);
 		if(SoundGroupTemplate) {
 			for(int i = 0; i < SOUND_TYPES; i++)
 				WeaponTemplate.SoundID[i] = SoundGroupTemplate->SoundID[i];
@@ -614,6 +600,7 @@ void _Stats::LoadMonsters(const std::string &Path) {
 _Item *_Stats::CreateItem(const std::string &ID, int Count, const glm::vec2 &Position) {
 	_ItemTemplate &Template = Items[ID];
 
+	// Create item
 	_Item *Item = new _Item(Template.Attributes);
 	Item->Type = Template.Type;
 	Item->Name = Template.Name;
@@ -623,7 +610,13 @@ _Item *_Stats::CreateItem(const std::string &ID, int Count, const glm::vec2 &Pos
 	Item->Texture = ae::Assets.Textures[Template.IconID];
 	Item->Color = Template.Color;
 
+	// Set attributes based off level
 	switch(Template.Type) {
+		case _Object::UPGRADE:
+			Item->Attributes["upgrade_type"].Int = Template.Attributes["upgrade_type"].Int;
+			Item->Attributes["weapon_type"].Int = Template.Attributes["weapon_type"].Int;
+			Item->SetAttributeLevel("bonus", Item->Level, 1.0f);
+		break;
 		case _Object::ARMOR:
 			Item->SetAttributeLevel("damage_block", Item->Level, 1.0f);
 			Item->SetAttributeLevel("damage_resist", Item->Level, 1.0f);
