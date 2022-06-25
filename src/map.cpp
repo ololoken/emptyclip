@@ -100,7 +100,7 @@ _Map::_Map(const std::string &Filename) : _Map() {
 		switch(Object->Type) {
 			case _Object::MONSTER:
 				if(Stats.Monsters.find(Object->Identifier) == Stats.Monsters.end())
-					throw std::runtime_error(std::string(__PRETTY_FUNCTION__) + "Cannot find monster: " + Object->Identifier);
+					throw std::runtime_error(std::string(__func__) + "Cannot find monster: " + Object->Identifier);
 			break;
 			case _Object::KEY:
 			case _Object::AMMO:
@@ -108,11 +108,11 @@ _Map::_Map(const std::string &Filename) : _Map() {
 			case _Object::ARMOR:
 			case _Object::MEDKIT:
 				if(Stats.Items.find(Object->Identifier) == Stats.Items.end())
-					throw std::runtime_error(std::string(__PRETTY_FUNCTION__) + "Cannot find item: " + Object->Identifier);
+					throw std::runtime_error(std::string(__func__) + "Cannot find item: " + Object->Identifier);
 			break;
 			case _Object::WEAPON:
 				if(Stats.Weapons.find(Object->Identifier) == Stats.Weapons.end())
-					throw std::runtime_error(std::string(__PRETTY_FUNCTION__) + "Cannot find weapon: " + Object->Identifier);
+					throw std::runtime_error(std::string(__func__) + "Cannot find weapon: " + Object->Identifier);
 			break;
 		}
 

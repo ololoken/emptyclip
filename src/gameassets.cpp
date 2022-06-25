@@ -112,14 +112,14 @@ void _GameAssets::LoadSoundGroups(const std::string &Path) {
 
 			// Check for sound
 			if(SoundID != "" && ae::Assets.Sounds.find(SoundID) == ae::Assets.Sounds.end())
-				throw std::runtime_error(std::string(__PRETTY_FUNCTION__) + " - Cannot find: " + SoundID);
+				throw std::runtime_error(std::string(__func__) + " - Cannot find: " + SoundID);
 
 			SampleTemplate.SoundID[i] = SoundID;
 		}
 
 		// Check for duplicates
 		if(SoundGroups.find(ID) != SoundGroups.end())
-			throw std::runtime_error(std::string(__PRETTY_FUNCTION__) + " - Duplicate entry: " + ID);
+			throw std::runtime_error(std::string(__func__) + " - Duplicate entry: " + ID);
 
 		SoundGroups[ID] = SampleTemplate;
 	}
@@ -158,7 +158,7 @@ void _GameAssets::LoadParticles(const std::string &Path) {
 
 		// Check for duplicates
 		if(IsParticleLoaded(Identifier))
-			throw std::runtime_error(std::string(__PRETTY_FUNCTION__) + " - Duplicate entry: " + Identifier);
+			throw std::runtime_error(std::string(__func__) + " - Duplicate entry: " + Identifier);
 
 		// Get texture
 		Particle.Texture = ae::Assets.Textures[TextureIdentifier];
@@ -208,7 +208,7 @@ void _GameAssets::LoadWeaponParticles(const std::string &Path) {
 			std::getline(Buffer, ParticleIdentifier, '\t');
 
 			if(ParticleIdentifier != "" && !IsParticleLoaded(ParticleIdentifier))
-				throw std::runtime_error(std::string(__PRETTY_FUNCTION__) + " - Cannot find particle: " + ParticleIdentifier);
+				throw std::runtime_error(std::string(__func__) + " - Cannot find particle: " + ParticleIdentifier);
 			else if(ParticleIdentifier == "")
 				WeaponParticle.ParticleTemplates[i] = nullptr;
 			else

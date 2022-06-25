@@ -81,7 +81,7 @@ void _Stats::LoadStrings(const std::string &Path) {
 
 		// Check for duplicates
 		if(Strings.find(ID) != Strings.end())
-			throw std::runtime_error(std::string(__PRETTY_FUNCTION__) + " - Duplicate entry: " + ID);
+			throw std::runtime_error(std::string(__func__) + " - Duplicate entry: " + ID);
 
 		Strings[ID] = Text;
 	}
@@ -164,11 +164,11 @@ void _Stats::LoadAmmo(const std::string &Path) {
 
 		// Check for loaded textures
 		if(!ae::Assets.Textures[Template.IconID])
-			throw std::runtime_error(std::string(__PRETTY_FUNCTION__) + " - Texture not found: " + Template.IconID);
+			throw std::runtime_error(std::string(__func__) + " - Texture not found: " + Template.IconID);
 
 		// Check for duplicates
 		if(Items.find(Name) != Items.end())
-			throw std::runtime_error(std::string(__PRETTY_FUNCTION__) + " - Duplicate entry: " + Name);
+			throw std::runtime_error(std::string(__func__) + " - Duplicate entry: " + Name);
 
 		Items[Name] = Template;
 		AmmoNames.push_back(Name);
@@ -211,11 +211,11 @@ void _Stats::LoadArmor(const std::string &Path) {
 
 		// Check for loaded textures
 		if(!ae::Assets.Textures[Template.IconID])
-			throw std::runtime_error(std::string(__PRETTY_FUNCTION__) + " - Texture not found: " + Template.IconID);
+			throw std::runtime_error(std::string(__func__) + " - Texture not found: " + Template.IconID);
 
 		// Check for duplicates
 		if(Items.find(Name) != Items.end())
-			throw std::runtime_error(std::string(__PRETTY_FUNCTION__) + " - Duplicate entry: " + Name);
+			throw std::runtime_error(std::string(__func__) + " - Duplicate entry: " + Name);
 
 		Items[Name] = Template;
 	}
@@ -247,12 +247,12 @@ void _Stats::LoadKeys(const std::string &Path) {
 
 		// Check for loaded textures
 		if(!ae::Assets.Textures[Template.IconID])
-			throw std::runtime_error(std::string(__PRETTY_FUNCTION__) + " - Cannot find texture: " + Template.IconID);
+			throw std::runtime_error(std::string(__func__) + " - Cannot find texture: " + Template.IconID);
 
 		// Set color
 		if(ColorID != "") {
 			if(ae::Assets.Colors.find(ColorID) == ae::Assets.Colors.end())
-				throw std::runtime_error(std::string(__PRETTY_FUNCTION__) + " - Cannot find color: " + ColorID);
+				throw std::runtime_error(std::string(__func__) + " - Cannot find color: " + ColorID);
 
 			Template.Color = ae::Assets.Colors[ColorID];
 		}
@@ -261,7 +261,7 @@ void _Stats::LoadKeys(const std::string &Path) {
 
 		// Check for duplicates
 		if(Items.find(ID) != Items.end())
-			throw std::runtime_error(std::string(__PRETTY_FUNCTION__) + " - Duplicate entry: " + ID);
+			throw std::runtime_error(std::string(__func__) + " - Duplicate entry: " + ID);
 
 		Items[ID] = Template;
 	}
@@ -297,12 +297,12 @@ void _Stats::LoadMedkits(const std::string &Path) {
 
 		// Check for loaded textures
 		if(!ae::Assets.Textures[Template.IconID])
-			throw std::runtime_error(std::string(__PRETTY_FUNCTION__) + " - Cannot find texture: " + Template.IconID);
+			throw std::runtime_error(std::string(__func__) + " - Cannot find texture: " + Template.IconID);
 
 		// Set color
 		if(ColorID != "") {
 			if(ae::Assets.Colors.find(ColorID) == ae::Assets.Colors.end())
-				throw std::runtime_error(std::string(__PRETTY_FUNCTION__) + " - Cannot find color: " + ColorID);
+				throw std::runtime_error(std::string(__func__) + " - Cannot find color: " + ColorID);
 
 			Template.Color = ae::Assets.Colors[ColorID];
 		}
@@ -311,7 +311,7 @@ void _Stats::LoadMedkits(const std::string &Path) {
 
 		// Check for duplicates
 		if(Items.find(ID) != Items.end())
-			throw std::runtime_error(std::string(__PRETTY_FUNCTION__) + " - Duplicate entry: " + ID);
+			throw std::runtime_error(std::string(__func__) + " - Duplicate entry: " + ID);
 
 		Items[ID] = Template;
 	}
@@ -350,12 +350,12 @@ void _Stats::LoadUpgrades(const std::string &Path) {
 
 		// Check for loaded textures
 		if(!ae::Assets.Textures[Template.IconID])
-			throw std::runtime_error(std::string(__PRETTY_FUNCTION__) + " - Cannot find texture: " + Template.IconID);
+			throw std::runtime_error(std::string(__func__) + " - Cannot find texture: " + Template.IconID);
 
 		// Set color
 		if(ColorName != "") {
 			if(ae::Assets.Colors.find(ColorName) == ae::Assets.Colors.end())
-				throw std::runtime_error(std::string(__PRETTY_FUNCTION__) + " - Cannot find color: " + ColorName);
+				throw std::runtime_error(std::string(__func__) + " - Cannot find color: " + ColorName);
 
 			Template.Color = ae::Assets.Colors[ColorName];
 		}
@@ -364,7 +364,7 @@ void _Stats::LoadUpgrades(const std::string &Path) {
 
 		// Check for duplicates
 		if(Items.find(Name) != Items.end())
-			throw std::runtime_error(std::string(__PRETTY_FUNCTION__) + " - Duplicate entry: " + Name);
+			throw std::runtime_error(std::string(__func__) + " - Duplicate entry: " + Name);
 
 		Items[Name] = Template;
 	}
@@ -424,12 +424,12 @@ void _Stats::LoadWeapons(const std::string &Path) {
 
 		// Check for loaded textures
 		if(WeaponTemplate.IconID != "" && !ae::Assets.Textures[WeaponTemplate.IconID])
-			throw std::runtime_error(std::string(__PRETTY_FUNCTION__) + " - Texture not found: " + WeaponTemplate.IconID);
+			throw std::runtime_error(std::string(__func__) + " - Texture not found: " + WeaponTemplate.IconID);
 
 		// Set color
 		if(ColorName != "") {
 			if(ae::Assets.Colors.find(ColorName) == ae::Assets.Colors.end())
-				throw std::runtime_error(std::string(__PRETTY_FUNCTION__) + " - Cannot find color: " + ColorName);
+				throw std::runtime_error(std::string(__func__) + " - Cannot find color: " + ColorName);
 
 			WeaponTemplate.Color = ae::Assets.Colors[ColorName];
 		}
@@ -438,7 +438,7 @@ void _Stats::LoadWeapons(const std::string &Path) {
 
 		// Check for attack sample
 		if(!GameAssets.IsSoundGroupLoaded(SoundGroupID))
-			throw std::runtime_error(std::string(__PRETTY_FUNCTION__) + " - Cannot find sample: " + SoundGroupID);
+			throw std::runtime_error(std::string(__func__) + " - Cannot find sample: " + SoundGroupID);
 
 		// Set sound ids
 		SoundGroupTemplate = GameAssets.GetSoundGroupTemplate(SoundGroupID);
@@ -455,7 +455,7 @@ void _Stats::LoadWeapons(const std::string &Path) {
 
 		// Check for duplicates
 		if(Weapons.find(ID) != Weapons.end())
-			throw std::runtime_error(std::string(__PRETTY_FUNCTION__) + " - Duplicate entry: " + ID);
+			throw std::runtime_error(std::string(__func__) + " - Duplicate entry: " + ID);
 
 		Weapons[ID] = WeaponTemplate;
 	}
@@ -519,14 +519,14 @@ void _Stats::LoadItemDrops(const std::string &Path) {
 			case _Object::ARMOR:
 			case _Object::MEDKIT:
 				if(Items.find(ItemGroupEntry.ItemIdentifier) == Items.end())
-					throw std::runtime_error(std::string(__PRETTY_FUNCTION__) + " - Cannot find: " + ItemGroupEntry.ItemIdentifier + " in " + Path);
+					throw std::runtime_error(std::string(__func__) + " - Cannot find: " + ItemGroupEntry.ItemIdentifier + " in " + Path);
 			break;
 			case _Object::WEAPON:
 				if(Weapons.find(ItemGroupEntry.ItemIdentifier) == Weapons.end())
-					throw std::runtime_error(std::string(__PRETTY_FUNCTION__) + " - Cannot find: " + ItemGroupEntry.ItemIdentifier + " in " + Path);
+					throw std::runtime_error(std::string(__func__) + " - Cannot find: " + ItemGroupEntry.ItemIdentifier + " in " + Path);
 			break;
 			default:
-				throw std::runtime_error(std::string(__PRETTY_FUNCTION__) + " - Bad item type: " + ItemGroupEntry.ItemIdentifier + " in " + Path);
+				throw std::runtime_error(std::string(__func__) + " - Bad item type: " + ItemGroupEntry.ItemIdentifier + " in " + Path);
 			break;
 		}
 
@@ -597,17 +597,17 @@ void _Stats::LoadMonsters(const std::string &Path) {
 
 		// Check for item group
 		if(MonsterTemplate.ItemGroupID != "" && ItemGroups.find(MonsterTemplate.ItemGroupID) == ItemGroups.end())
-			throw std::runtime_error(std::string(__PRETTY_FUNCTION__) + " - Cannot find item group: '" + MonsterTemplate.ItemGroupID + "' in " + ID);
+			throw std::runtime_error(std::string(__func__) + " - Cannot find item group: '" + MonsterTemplate.ItemGroupID + "' in " + ID);
 
 		// Check for animation
 		if(ae::Assets.Animations.find(MonsterTemplate.AnimationID) == ae::Assets.Animations.end())
-			throw std::runtime_error(std::string(__PRETTY_FUNCTION__) + " - Cannot find animation: '" + MonsterTemplate.AnimationID + "' in " + ID);
+			throw std::runtime_error(std::string(__func__) + " - Cannot find animation: '" + MonsterTemplate.AnimationID + "' in " + ID);
 
 		SetColor(MonsterTemplate.Color, ColorID);
 
 		// Check for samples
 		if(!GameAssets.IsSoundGroupLoaded(MonsterTemplate.SoundGroupID))
-			throw std::runtime_error(std::string(__PRETTY_FUNCTION__) + " - Cannot find sample: '" + MonsterTemplate.SoundGroupID + "' in " + ID);
+			throw std::runtime_error(std::string(__func__) + " - Cannot find sample: '" + MonsterTemplate.SoundGroupID + "' in " + ID);
 
 		// Set particles
 		if(GameAssets.IsWeaponParticleTemplateLoaded(WeaponParticlesID))
@@ -617,7 +617,7 @@ void _Stats::LoadMonsters(const std::string &Path) {
 
 		// Check for duplicates
 		if(Stats.Monsters.find(ID) != Stats.Monsters.end())
-			throw std::runtime_error(std::string(__PRETTY_FUNCTION__) + " - Duplicate entry: " + ID);
+			throw std::runtime_error(std::string(__func__) + " - Duplicate entry: " + ID);
 
 		Monsters[ID] = MonsterTemplate;
 	}
