@@ -147,10 +147,9 @@
         <element id="button_editor_undo" style="style_editor_undo" hover_style="style_editor_button_selected" offset_y="68" size_x="32" size_y="32" alignment_x="0" alignment_y="0" clickable="true" index="21"/>
         <element id="button_editor_new" style="style_editor_new" hover_style="style_editor_button_selected" offset_x="34" offset_y="68" size_x="32" size_y="32" alignment_x="0" alignment_y="0" clickable="true" index="22"/>
         <element id="button_editor_grid" style="style_editor_grid" hover_style="style_editor_button_selected" offset_x="68" offset_y="68" size_x="32" size_y="32" alignment_x="0" alignment_y="0" clickable="true" index="23"/>
-        <element id="button_editor_mset" style="style_editor_mset" hover_style="style_editor_button_selected" offset_x="102" offset_y="68" size_x="32" size_y="32" alignment_x="0" alignment_y="0" clickable="true" index="24"/>
-        <element id="button_editor_load" style="style_editor_load" hover_style="style_editor_button_selected" offset_x="136" offset_y="68" size_x="32" size_y="32" alignment_x="0" alignment_y="0" clickable="true" index="25"/>
-        <element id="button_editor_save" style="style_editor_save" hover_style="style_editor_button_selected" offset_x="170" offset_y="68" size_x="32" size_y="32" alignment_x="0" alignment_y="0" clickable="true" index="26"/>
-        <element id="button_editor_test" style="style_editor_test" hover_style="style_editor_button_selected" offset_x="204" offset_y="68" size_x="32" size_y="32" alignment_x="0" alignment_y="0" clickable="true" index="27"/>
+        <element id="button_editor_load" style="style_editor_load" hover_style="style_editor_button_selected" offset_x="102" offset_y="68" size_x="32" size_y="32" alignment_x="0" alignment_y="0" clickable="true" index="25"/>
+        <element id="button_editor_save" style="style_editor_save" hover_style="style_editor_button_selected" offset_x="136" offset_y="68" size_x="32" size_y="32" alignment_x="0" alignment_y="0" clickable="true" index="26"/>
+        <element id="button_editor_test" style="style_editor_test" hover_style="style_editor_button_selected" offset_x="170" offset_y="68" size_x="32" size_y="32" alignment_x="0" alignment_y="0" clickable="true" index="27"/>
     </element>
     <element id="element_editor_blocks" offset_x="382" offset_y="-81" size_x="304" size_y="32" alignment_x="0" alignment_y="2">
         <element id="button_editor_walk" style="style_editor_walk" hover_style="style_editor_button_selected" size_x="32" size_y="32" alignment_x="0" alignment_y="0" clickable="true" index="0"/>

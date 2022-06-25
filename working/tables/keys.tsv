@@ -5,7 +5,6 @@ key2	Green Key	textures/items/i_key0.png	shade_green0
 key3	Blue Key	textures/items/i_key0.png	shade_blue0
 key4	Purple Key	textures/items/i_key0.png	purple
 key5	Black Key	textures/items/i_key0.png	dark
-skey0	Secret Key	textures/items/i_key0.png	shade_black1
 skey1	Ruby Key	textures/items/i_key0.png	red
 skey2	Sapphire Key	textures/items/i_key0.png	blue
 skey3	Emerald Key	textures/items/i_key0.png	green
@@ -15,37 +14,16 @@ akey1	Terrestrial Key	textures/items/i_key1.png	shade_green0
 akey2	Plasma Finger	textures/items/i_key1.png	shade_blue0
 akey3	Psi Key	textures/items/i_key1.png	shade_black1
 dkey0	Symbol of Wrath	textures/items/i_key2.png	
-dkey1	Vampire Crest	textures/items/i_key2.png	shade_red1
 dkey2	Dark Key	textures/items/i_key2.png	shade_blue2
 dkey3	Doom Key	textures/items/i_key2.png	dark
-dkey4	Death Key	textures/items/i_key2.png	shade_green1
 gkey0	Rubber Key	textures/items/i_key0.png	shade_brown0
 gkey1	Plastic Key	textures/items/i_key0.png	shade_brown0
 gkey2	Tin Key	textures/items/i_key0.png	shade_brown0
 gkey3	Copper Key	textures/items/i_key0.png	shade_brown0
-gkey4	Lead Key	textures/items/i_key0.png	shade_brown0
-gkey5	Steel Key	textures/items/i_key0.png	shade_brown0
-gkey6	Gold Key	textures/items/i_key0.png	shade_brown0
-gkey7	Diamond Key	textures/items/i_key0.png	shade_brown0
-gkey8	Platinum Key	textures/items/i_key0.png	shade_brown0
-gkey9	Merchant's Medallion	textures/items/i_key0.png	shade_brown0
 dgkey0	Dungeon Key I	textures/items/i_key0.png	shade_brown2
 dgkey1	Dungeon Key II	textures/items/i_key0.png	shade_brown2
 dgkey2	Dungeon Key III	textures/items/i_key0.png	shade_brown2
-dgkey3	Dungeon Key IV	textures/items/i_key0.png	shade_brown2
-dgkey4	Dungeon Key V	textures/items/i_key0.png	shade_brown2
-dgkey5	Dungeon Key VI	textures/items/i_key0.png	shade_brown2
-dgkey6	Dungeon Key VII	textures/items/i_key0.png	shade_brown2
-dgkey7	Dungeon Key VIII	textures/items/i_key0.png	shade_brown2
-dgkey8	Dungeon Key IX	textures/items/i_key0.png	shade_brown2
-dgkey9	Dungeon Key X	textures/items/i_key0.png	shade_brown2
-dgkey10	Dungeon Key XI	textures/items/i_key0.png	shade_brown2
-dgkey11	Dungeon Key XII	textures/items/i_key0.png	shade_brown2
-dgkey12	Dungeon Key XIII	textures/items/i_key0.png	shade_brown2
-dgkey13	Dungeon Key XIV	textures/items/i_key0.png	shade_brown2
-dgkey14	Dungeon Key XV	textures/items/i_key0.png	shade_brown2
 wkey0	World Key I	textures/items/i_key0.png	shade_black0
 wkey1	World Key II	textures/items/i_key0.png	shade_black0
 wkey2	World Key III	textures/items/i_key0.png	shade_black0
-wkey3	World Key IV	textures/items/i_key0.png	shade_black0
 wkey4	World Key V	textures/items/i_key0.png	shade_black0

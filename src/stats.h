@@ -155,6 +155,7 @@ class _Stats {
 
 	private:
 
+		void SetColor(glm::vec4 &Color, const std::string &ColorID);
 		_WeaponParticleTemplate BlankWeaponParticle;
 
 		std::vector<_Level> Levels;

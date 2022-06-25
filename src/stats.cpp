@@ -564,9 +564,11 @@ void _Stats::LoadMonsters(const std::string &Path) {
 		_MonsterTemplate MonsterTemplate;
 		std::string ID;
 		std::string WeaponParticlesID;
+		std::string ColorID;
 		std::getline(File, ID, '\t');
 		std::getline(File, MonsterTemplate.Name, '\t');
 		std::getline(File, MonsterTemplate.AnimationID, '\t');
+		std::getline(File, ColorID, '\t');
 		std::getline(File, WeaponParticlesID, '\t');
 		std::getline(File, MonsterTemplate.SoundGroupID, '\t');
 		std::getline(File, MonsterTemplate.ItemGroupID, '\t');
@@ -595,15 +597,17 @@ void _Stats::LoadMonsters(const std::string &Path) {
 
 		// Check for item group
 		if(MonsterTemplate.ItemGroupID != "" && ItemGroups.find(MonsterTemplate.ItemGroupID) == ItemGroups.end())
-			throw std::runtime_error(std::string(__PRETTY_FUNCTION__) + " - Cannot find item group: " + MonsterTemplate.ItemGroupID + " in " + ID);
+			throw std::runtime_error(std::string(__PRETTY_FUNCTION__) + " - Cannot find item group: '" + MonsterTemplate.ItemGroupID + "' in " + ID);
 
 		// Check for animation
 		if(ae::Assets.Animations.find(MonsterTemplate.AnimationID) == ae::Assets.Animations.end())
-			throw std::runtime_error(std::string(__PRETTY_FUNCTION__) + " - Cannot find animation: " + MonsterTemplate.AnimationID + " in " + ID);
+			throw std::runtime_error(std::string(__PRETTY_FUNCTION__) + " - Cannot find animation: '" + MonsterTemplate.AnimationID + "' in " + ID);
+
+		SetColor(MonsterTemplate.Color, ColorID);
 
 		// Check for samples
 		if(!GameAssets.IsSoundGroupLoaded(MonsterTemplate.SoundGroupID))
-			throw std::runtime_error(std::string(__PRETTY_FUNCTION__) + " - Cannot find sample: " + MonsterTemplate.SoundGroupID + " in " + ID);
+			throw std::runtime_error(std::string(__PRETTY_FUNCTION__) + " - Cannot find sample: '" + MonsterTemplate.SoundGroupID + "' in " + ID);
 
 		// Set particles
 		if(GameAssets.IsWeaponParticleTemplateLoaded(WeaponParticlesID))
@@ -746,4 +750,21 @@ void _Stats::GetRandomDrop(const _ItemGroup *ItemGroup, _ObjectSpawn *ObjectSpaw
 			return;
 		}
 	}
+}
+
+// Set optional color from id
+void _Stats::SetColor(glm::vec4 &Color, const std::string &ColorID) {
+
+	// Default to white
+	if(ColorID.empty()) {
+		Color = COLOR_WHITE;
+		return;
+	}
+
+	// Check for color
+	if(ae::Assets.Colors.find(ColorID) == ae::Assets.Colors.end())
+		throw std::runtime_error("Unknown color '" + ColorID + "'");
+
+	// Set color
+	Color = ae::Assets.Colors[ColorID];
 }

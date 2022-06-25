@@ -1,6 +1,4 @@
 id	texture	frame_period	frame_width	frame_height	start_frame	end_frame	default_frame	repeat_type
-test	textures/animations/test.png	0.05	64	64	0	0	0	0
-treasure	textures/animations/treasure.png	0.05	32	32	0	0	0	0
 crate	textures/animations/crate.png	0.05	64	64	0	0	0	0
 player_legs	textures/animations/human_legs.png	0.07	64	64	0	4	2	2
 player_move_1h	textures/animations/player_move_1h.png	0.07	64	64	0	4	2	2

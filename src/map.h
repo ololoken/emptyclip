@@ -173,7 +173,6 @@ class _Map {
 
 		void Update(double FrameTime);
 
-		bool LoadMonsterSet(const std::string &String);
 		bool CheckCollisions(const glm::vec2 &TargetPosition, float Radius, glm::vec2 &NewPosition);
 		void CheckEntityCollisionsInGrid(const glm::vec2 &Position, float Radius, const _Object *SkipObject, std::list<_Entity *> &Entities) const;
 		_Object *CheckCollisionsInGrid(const glm::vec2 &Position, float Radius, int GridType, const _Object *SkipObject) const;
@@ -254,7 +253,6 @@ class _Map {
 
 		// Attributes
 		ae::_Camera *Camera;
-		std::vector<std::string> MonsterSet;
 
 		// Minimap
 		std::vector<_MinimapLayer> MinimapLayers;
@@ -281,9 +279,6 @@ class _Map {
 		std::list<_Object *> Objects;
 		std::vector<_ObjectSpawn *> ObjectSpawns;
 		std::vector<_Particle *> Particles;
-
-		// Graphics
-		std::string MonsterSetID;
 
 		// Lights
 		glm::vec4 AmbientLight;

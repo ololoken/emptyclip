@@ -48,7 +48,6 @@ _Map::_Map() :
 	Filename(""),
 	Data(nullptr),
 	ObjectManager(new _ObjectManager()),
-	MonsterSetID(MAP_DEFAULTMONSTERSET),
 	AmbientLight(0.5f, 0.5f, 0.5f, 1.0f),
 	OldAmbientLight(0.5f, 0.5f, 0.5f, 1.0f),
 	AmbientLightBlendFactor(1.0f),
@@ -81,11 +80,9 @@ _Map::_Map(const std::string &Filename) : _Map() {
 	// Get map type
 	InputFile >> MapType;
 
-	// Load monster set file name
-	std::string SetFilename;
-	InputFile >> SetFilename;
-	if(!LoadMonsterSet(SetFilename))
-		throw std::runtime_error("Cannot load monster set: " + SetFilename);
+	// Unused
+	std::string Dummy;
+	InputFile >> Dummy;
 
 	// Read dimensions
 	InputFile >> Width >> Height;
@@ -311,7 +308,7 @@ bool _Map::Save(const std::string &String) {
 		<< MAP_FILEVERSION << '\n'
 		<< Level << '\n'
 		<< MapType << '\n'
-		<< MonsterSetID << '\n'
+		<< "default" << '\n'
 		<< Width << ' ' << Height << '\n';
 
 	// Objects
@@ -375,35 +372,6 @@ bool _Map::Save(const std::string &String) {
 	}
 
 	Output.close();
-
-	return true;
-}
-
-// Loads a monster set
-bool _Map::LoadMonsterSet(const std::string &String) {
-
-	// Load file
-	std::string Path = "maps/monstersets/" + String;
-	std::ifstream File(Path, std::ios::in);
-	if(!File)
-		throw std::runtime_error(std::string(__PRETTY_FUNCTION__) + "Failed to open: " + Path);
-
-	MonsterSet.clear();
-
-	// Read file
-	std::string Identifier;
-	while(!File.eof() && File.peek() != EOF) {
-		File >> Identifier;
-		File.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-		if(Stats.Monsters.find(Identifier) == Stats.Monsters.end())
-			throw std::runtime_error("Cannot find monster: " + Identifier);
-
-		MonsterSet.push_back(Identifier);
-	}
-
-	File.close();
-
-	MonsterSetID = String;
 
 	return true;
 }

@@ -52,7 +52,6 @@ inline bool CompareBrush(_Brush &First, _Brush &Second) {
 
 // Input box
 const char *InputBoxStrings[EDITINPUT_COUNT] = {
-	"Load monster set",
 	"Load map",
 	"Save map",
 	"Set item",
@@ -193,7 +192,6 @@ bool _EditorState::LoadMap(const std::string &File, bool UseSavedCameraPosition)
 		std::cout << Error.what() << std::endl;
 
 		Map = new _Map();
-		Map->LoadMonsterSet(MAP_DEFAULTMONSTERSET);
 	}
 
 	Map->Camera = Camera;
@@ -288,17 +286,6 @@ bool _EditorState::HandleKey(const ae::_KeyEvent &KeyEvent) {
 			case SDL_SCANCODE_RETURN: {
 				const std::string InputText = InputBox->Children.front()->Text;
 				switch(EditorInput) {
-					case EDITINPUT_LOADMONSTERSET:
-
-						if(!Map->LoadMonsterSet(InputText))
-							SavedText[EditorInput] = "";
-						else {
-							SavedText[EditorInput] = InputText;
-							LoadMonsterButtons();
-						}
-
-						ExecuteDeselect();
-					break;
 					case EDITINPUT_LOAD: {
 						if(InputText == "")
 							break;
@@ -459,10 +446,6 @@ bool _EditorState::HandleKey(const ae::_KeyEvent &KeyEvent) {
 					ExecuteIOCommand(EDITINPUT_ITEMIDENTIFIER);
 					Framework.IgnoreNextInputEvent = true;
 				}
-			break;
-			case SDL_SCANCODE_O:
-				ExecuteIOCommand(EDITINPUT_LOADMONSTERSET);
-				Framework.IgnoreNextInputEvent = true;
 			break;
 			case SDL_SCANCODE_L:
 				ExecuteIOCommand(EDITINPUT_LOAD);
@@ -1101,15 +1084,9 @@ void _EditorState::LoadMonsterButtons() {
 		return;
 
 	std::vector<_Brush> Icons;
-	for(size_t i = 0; i < Map->MonsterSet.size(); i++) {
-		if(Stats.Monsters.find(Map->MonsterSet[i]) == Stats.Monsters.end()) {
-			throw std::runtime_error(std::string(__PRETTY_FUNCTION__) + " - Cannot find monster: " + Map->MonsterSet[i]);
-		}
-		else {
-			_MonsterTemplate &MonsterTemplate = Stats.Monsters.at(Map->MonsterSet[i]);
-			const ae::_Texture *MonsterIcon = ae::Assets.Textures["textures/icons/" + MonsterTemplate.AnimationID + ".png"];
-			Icons.push_back(_Brush(Map->MonsterSet[i], MonsterTemplate.Name, MonsterIcon, MonsterTemplate.Color, _Object::MONSTER));
-		}
+	for(const auto &Monster : Stats.Monsters) {
+		const ae::_Texture *MonsterIcon = ae::Assets.Textures["textures/icons/" + Monster.second.AnimationID + ".png"];
+		Icons.push_back(_Brush(Monster.first, Monster.second.Name, MonsterIcon, COLOR_WHITE, _Object::MONSTER));
 	}
 
 	LoadPaletteButtons(Icons, EDITMODE_MONSTERS);
@@ -1453,9 +1430,6 @@ void _EditorState::ProcessIcons(int Index, int Type) {
 				ExecuteUpdateGridMode(-1);
 			else
 				ExecuteUpdateGridMode(1);
-		break;
-		case ICON_MSET:
-			ExecuteIOCommand(EDITINPUT_LOADMONSTERSET);
 		break;
 		case ICON_LOAD:
 			ExecuteIOCommand(EDITINPUT_LOAD);

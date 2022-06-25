@@ -90,7 +90,7 @@ _Player::_Player(const std::string &SavePath) {
 	Animation->Reels = ae::Assets.Animations["player"];
 
 	// Set samples
-	_SoundGroup *AttackSample = GameAssets.GetSoundGroupTemplate("player0");
+	_SoundGroup *AttackSample = GameAssets.GetSoundGroupTemplate("player");
 	for(int i = 0; i < SOUND_TYPES; i++) {
 		if(AttackSample)
 			Samples[i] = AttackSample->SoundID[i];
