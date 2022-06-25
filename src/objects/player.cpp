@@ -927,17 +927,16 @@ bool _Player::AddComponent(int FromIndex, int ToIndex) {
 
 // Calculates the radius of the crosshair
 float _Player::GetCrosshairRadius(const glm::vec2 &Cursor) {
-	float Distance, Accuracy;
 
 	// Check bounds
-	Accuracy = CurrentAccuracy * AccuracyModifier;
+	float Accuracy = CurrentAccuracy * AccuracyModifier;
 	if(Accuracy < 0.0f)
 		Accuracy = 0.0f;
 	else if(Accuracy > PLAYER_MAXACCURACY)
 		Accuracy = PLAYER_MAXACCURACY;
 
 	// Get distance to cursor
-	Distance = glm::length(Cursor - Position);
+	float Distance = glm::length(Cursor - Position);
 
 	return tan(glm::radians(Accuracy * 0.5f)) * Distance;
 }
