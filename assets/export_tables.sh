@@ -1,4 +1,6 @@
 #!/bin/bash
+echo "unused"
+exit
 
 # cd to script dir
 script_dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
