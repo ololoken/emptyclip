@@ -1,4 +1,4 @@
 id	name	icon_id	damage_block	damage_block_level	damage_resist	damage_resist_level	max_ammo	max_ammo_level	move_speed	move_speed_level
-shirt	Shirt	textures/items/ar_shirt0.png	0	1	0	0	8	2	9.5	0.5
-chain	Chainmail	textures/items/ar_chain0.png	0	2	4	1	0	1	-9.5	-0.5
-plate	Plate Mail	textures/items/ar_plate0.png	0	5	8	2	-0.5	-0.5	-18	-2
+armor_shirt	Shirt	textures/items/ar_shirt0.png	0	1	0	0	8	2	9.5	0.5
+armor_chain	Chainmail	textures/items/ar_chain0.png	0	2	4	1	0	1	-9.5	-0.5
+armor_plate	Plate Mail	textures/items/ar_plate0.png	0	5	8	2	-0.5	-0.5	-18	-2

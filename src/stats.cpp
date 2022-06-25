@@ -46,12 +46,12 @@ void _Stats::Init() {
 	LoadWeapons("tables/weapons.tsv");
 	LoadItemDrops("tables/itemdrops.tsv");
 	LoadMonsters("tables/monsters.tsv");
-	FistWeapon = Stats.CreateWeapon("fists", glm::vec2(0), false);
+	WeaponFists = Stats.CreateWeapon("weapon_fists", glm::vec2(0), false);
 }
 
 // Shutdown
 void _Stats::Close() {
-	delete FistWeapon;
+	delete WeaponFists;
 	Levels.clear();
 	Skills.clear();
 	Items.clear();

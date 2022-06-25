@@ -149,7 +149,7 @@ class _Stats {
 		std::unordered_map<std::string, _WeaponTemplate> Weapons;
 		std::unordered_map<std::string, _ItemGroup> ItemGroups;
 		std::unordered_map<std::string, _MonsterTemplate> Monsters;
-		_Weapon *FistWeapon;
+		_Weapon *WeaponFists;
 
 		std::vector<std::string> AmmoNames;
 

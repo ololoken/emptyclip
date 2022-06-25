@@ -1212,7 +1212,7 @@ void _Player::ConsumeInventory(int Index, bool Delete) {
 void _Player::RecalculateStats() {
 	_WeaponTemplate Weapon[WEAPONATTACK_COUNT];
 	for(int i = 0; i < WEAPONATTACK_COUNT; i++)
-		Weapon[i].Attributes = Stats.FistWeapon->Attributes;
+		Weapon[i].Attributes = Stats.WeaponFists->Attributes;
 
 	// See if the player is using a weapon
 	if(HasMainHand()) {
