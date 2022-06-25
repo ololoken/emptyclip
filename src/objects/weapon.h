@@ -32,7 +32,7 @@ class _Weapon : public _Item {
 
 	public:
 
-		_Weapon(const std::string &Identifier, int Level, const glm::vec2 &Position, const _WeaponTemplate &Weapon, const ae::_Texture *Texture, bool GenerateRandom);
+		_Weapon(const std::string &ID, int Level, const glm::vec2 &Position, const _WeaponTemplate &Weapon, const ae::_Texture *Texture, bool GenerateRandom);
 		~_Weapon() override;
 
 		void Serialize(ae::_Buffer &Buffer) override;

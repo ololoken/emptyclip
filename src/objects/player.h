@@ -91,7 +91,7 @@ class _Player : public _Entity {
 		bool UseItem(int Index, bool Event);
 		bool UseMedkit(int Index);
 		int FindItem(int Index);
-		int FindItem(const std::string &Identifier);
+		int FindItem(const std::string &ID);
 		void ResetUseTimer() { UseTimer = 0; }
 		void ConsumeInventory(int Index, bool Delete=true);
 		void ReduceAmmo() override;
@@ -109,7 +109,7 @@ class _Player : public _Entity {
 		bool CanSwitchWeapons() const { return !SwitchingWeapons && !Reloading && !IsMeleeAttacking() && !IsDying(); }
 		bool CanReload() const;
 
-		void SetColorIdentifier(const std::string &ColorIdentifier) { this->ColorIdentifier = ColorIdentifier; UpdateColor(); }
+		void SetColorID(const std::string &ColorID) { this->ColorID = ColorID; UpdateColor(); }
 		void SetCrouching(bool State);
 		void SetSprinting(bool State);
 
@@ -134,7 +134,7 @@ class _Player : public _Entity {
 		void SetLegAnimationPlayMode(int Mode) override;
 
 		// Map
-		std::string MapIdentifier;
+		std::string MapID;
 		int CheckpointIndex;
 		int Progression;
 
@@ -143,7 +143,7 @@ class _Player : public _Entity {
 
 		// Animation
 		ae::_Animation *LegAnimation;
-		std::string ColorIdentifier;
+		std::string ColorID;
 		float LegDirection;
 		bool Crouching;
 		bool Sprinting;

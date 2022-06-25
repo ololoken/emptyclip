@@ -52,13 +52,13 @@ class _GameAssets {
 		void LoadWeaponParticles(const std::string &Path);
 		void LoadMonsterAnimation();
 
-		bool IsSoundGroupLoaded(const std::string &Identifier);
-		bool IsParticleLoaded(const std::string &Identifier);
-		bool IsWeaponParticleTemplateLoaded(const std::string &Identifier);
+		bool IsSoundGroupLoaded(const std::string &ID);
+		bool IsParticleLoaded(const std::string &ID);
+		bool IsWeaponParticleTemplateLoaded(const std::string &ID);
 
-		_SoundGroup *GetSoundGroupTemplate(const std::string &Identifier);
-		_ParticleTemplate *GetParticleTemplate(const std::string &Identifier);
-		_WeaponParticleTemplate *GetWeaponParticleTemplate(const std::string &Identifer);
+		_SoundGroup *GetSoundGroupTemplate(const std::string &ID);
+		_ParticleTemplate *GetParticleTemplate(const std::string &ID);
+		_WeaponParticleTemplate *GetWeaponParticleTemplate(const std::string &ID);
 
 	private:
 

@@ -113,7 +113,7 @@ void _Player::Reset() {
 	MonsterKills = TimePlayed = 0;
 	Radius = PLAYER_RADIUS;
 	Name = "test";
-	ColorIdentifier = "white";
+	ColorID = "white";
 	Level = 1;
 	Gold = 0;
 	Experience = 0;
@@ -129,7 +129,7 @@ void _Player::Reset() {
 	Ammo.clear();
 
 	// Reset state
-	MapIdentifier = GAME_STARTLEVEL;
+	MapID = GAME_STARTLEVEL;
 	CheckpointIndex = 0;
 	Progression = 0;
 	Active = true;
@@ -204,13 +204,13 @@ void _Player::Load() {
 				char Buffer[1024];
 				File.read(Buffer, Size);
 				Buffer[Size] = 0;
-				ColorIdentifier = Buffer;
+				ColorID = Buffer;
 			} break;
 			case CHUNK_MAP: {
 				char Buffer[1024];
 				File.read(Buffer, Size);
 				Buffer[Size] = 0;
-				MapIdentifier = Buffer;
+				MapID = Buffer;
 			} break;
 			case CHUNK_CHECKPOINT:
 				File.read((char *)&CheckpointIndex, sizeof(CheckpointIndex));
@@ -276,9 +276,9 @@ void _Player::Save() {
 
 	WriteChunk(File, CHUNK_SAVEVERSION, (char *)&PLAYER_SAVEVERSION, sizeof(PLAYER_SAVEVERSION));
 	WriteChunk(File, CHUNK_PLAYERNAME, Name.c_str(), Name.length());
-	WriteChunk(File, CHUNK_COLOR, ColorIdentifier.c_str(), ColorIdentifier.length());
+	WriteChunk(File, CHUNK_COLOR, ColorID.c_str(), ColorID.length());
 	if(Map) {
-		WriteChunk(File, CHUNK_MAP, MapIdentifier.c_str(), MapIdentifier.length());
+		WriteChunk(File, CHUNK_MAP, MapID.c_str(), MapID.length());
 		WriteChunk(File, CHUNK_CHECKPOINT, (char *)&CheckpointIndex, sizeof(CheckpointIndex));
 	}
 	WriteChunk(File, CHUNK_PROGRESSION, (char *)&Progression, sizeof(Progression));
@@ -311,7 +311,7 @@ void _Player::LoadItems(ae::_Buffer &Buffer) {
 		int Level = Buffer.Read<int>();
 		int Quality = Buffer.Read<int>();
 		int Count = Buffer.Read<int>();
-		std::string Identifier;
+		std::string ID;
 
 		// Create items
 		switch(Type) {
@@ -320,8 +320,8 @@ void _Player::LoadItems(ae::_Buffer &Buffer) {
 			case _Object::UPGRADE:
 			case _Object::ARMOR:
 			case _Object::MEDKIT:
-				Identifier = Buffer.ReadString();
-				Inventory[Slot] = Stats.CreateItem(Identifier, Count, glm::vec2(0, 0));
+				ID = Buffer.ReadString();
+				Inventory[Slot] = Stats.CreateItem(ID, Count, glm::vec2(0, 0));
 				Inventory[Slot]->Level = Level;
 				Inventory[Slot]->Quality = Quality;
 			break;
@@ -336,12 +336,12 @@ void _Player::LoadItems(ae::_Buffer &Buffer) {
 _Weapon *_Player::LoadWeapon(ae::_Buffer &Buffer, int Level, int Quality, int InventoryIndex) {
 
 	// Get weapons
-	std::string Identifier = Buffer.ReadString();
+	std::string ID = Buffer.ReadString();
 	int Ammo = Buffer.Read<int>();
 	int MaxComponents = Buffer.Read<int>();
 
 	// Create weapon
-	_Weapon *Weapon = Stats.CreateWeapon(Identifier, glm::vec2(0, 0), false);
+	_Weapon *Weapon = Stats.CreateWeapon(ID, glm::vec2(0, 0), false);
 	Weapon->Attributes["max_components"].Int = MaxComponents;
 	Weapon->Level = Level;
 	Weapon->Quality = Quality;
@@ -362,8 +362,8 @@ void _Player::LoadUpgrades(ae::_Buffer &Buffer, _Weapon *Weapon) {
 
 	// Read data
 	for(int i = 0; i < Components; i++) {
-		std::string Identifier = Buffer.ReadString();
-		_Item *Item = Stats.CreateItem(Identifier, 1, glm::vec2(0, 0));
+		std::string ID = Buffer.ReadString();
+		_Item *Item = Stats.CreateItem(ID, 1, glm::vec2(0, 0));
 		if(!Weapon->AddComponent(Item))
 			delete Item;
 	}
@@ -377,10 +377,10 @@ void _Player::LoadAmmo(ae::_Buffer &Buffer) {
 
 	// Read data
 	for(int i = 0; i < AmmoTypeCount; i++) {
-		std::string Identifier = Buffer.ReadString();
+		std::string ID = Buffer.ReadString();
 		int Count = Buffer.Read<int>();
 		if(Count > 0)
-			Ammo[Identifier] = std::clamp(Count, 0, AmmoMax[Identifier]);
+			Ammo[ID] = std::clamp(Count, 0, AmmoMax[ID]);
 	}
 }
 
@@ -902,11 +902,10 @@ int _Player::AddInventory(_Item *Item) {
 
 // Add an upgrade to a weapon
 bool _Player::AddComponent(int FromIndex, int ToIndex) {
-	_Weapon *Weapon = nullptr;
-
 	if(!HasInventory(FromIndex) || Inventory[FromIndex]->Type != _Object::UPGRADE)
 		return false;
 
+	_Weapon *Weapon = nullptr;
 	if(ToIndex == INVENTORY_MAINHAND && HasMainHand())
 		Weapon = GetMainHand();
 	else if(ToIndex == INVENTORY_OFFHAND && HasOffHand())
@@ -951,7 +950,6 @@ const std::string &_Player::GetWeaponAmmoType() const {
 
 // Checks if the player's weapon has ammo
 bool _Player::WeaponHasAmmo() const {
-
 	if(AttackRequestType == WEAPONATTACK_MAIN) {
 		if(!HasMainHand() || GetWeaponAmmoType() == "")
 			return true;
@@ -988,7 +986,6 @@ void _Player::ReduceAmmo() {
 
 // Uses an item from the player's inventory, return true if a key was used
 bool _Player::UseItem(int Index, bool Event) {
-
 	if(Index >= INVENTORY_BAGSTART && Index < INVENTORY_BAGEND && HasInventory(Index)) {
 		switch(Inventory[Index]->Type) {
 			case _Object::MEDKIT:
@@ -1021,7 +1018,6 @@ bool _Player::UseMedkit(int Index) {
 
 // Searches for an item by type and returns the index
 int _Player::FindItem(int ItemType) {
-
 	for(int i = INVENTORY_BAGSTART; i < INVENTORY_BAGEND; i++) {
 		if(HasInventory(i) && Inventory[i]->Type == ItemType)
 			return i;
@@ -1031,10 +1027,9 @@ int _Player::FindItem(int ItemType) {
 }
 
 // Searchs the inventory for a certain item
-int _Player::FindItem(const std::string &Identifier) {
-
+int _Player::FindItem(const std::string &ID) {
 	for(int i = INVENTORY_BAGSTART; i < INVENTORY_BAGEND; i++) {
-		if(HasInventory(i) && Inventory[i]->ID == Identifier) {
+		if(HasInventory(i) && Inventory[i]->ID == ID) {
 			return i;
 		}
 	}
@@ -1341,10 +1336,7 @@ const _ParticleTemplate *_Player::GetWeaponParticle(int Index) const {
 
 // Sets the color string and color of the player
 void _Player::UpdateColor() {
-	if(ae::Assets.Colors.find(ColorIdentifier) != ae::Assets.Colors.end())
-		Color = ae::Assets.Colors[ColorIdentifier];
-	else
-		Color = COLOR_WHITE;
+	Color = ae::Assets.Colors[ColorID];
 }
 
 int _Player::GetInventoryMaxStack() const {

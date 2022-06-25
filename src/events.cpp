@@ -18,15 +18,15 @@
 #include <events.h>
 
 // Constructor
-_Event::_Event(int Type, int Active, const glm::ivec2 &Start, const glm::ivec2 &End, int Level, double ActivationPeriod, const std::string &ItemIdentifier, const std::string &MonsterIdentifier, const std::string &ParticleIdentifier) :
+_Event::_Event(int Type, int Active, const glm::ivec2 &Start, const glm::ivec2 &End, int Level, double ActivationPeriod, const std::string &ItemID, const std::string &MonsterID, const std::string &ParticleID) :
 	Type(Type),
 	Active(Active),
 	Level(Level),
 	Start(Start),
 	End(End),
-	ItemIdentifier(ItemIdentifier),
-	MonsterIdentifier(MonsterIdentifier),
-	ParticleIdentifier(ParticleIdentifier),
+	ItemID(ItemID),
+	MonsterID(MonsterID),
+	ParticleID(ParticleID),
 	Timer(0),
 	ActivationPeriod(ActivationPeriod) {
 
@@ -52,7 +52,6 @@ void _Event::AddTile(_EventTile Tile) {
 
 // Deletes a block id from the tiles
 void _Event::DeleteBlockID(int Layer, int Index) {
-
 	for(size_t i = 0; i < Tiles.size(); i++) {
 		if(Tiles[i].Layer == Layer) {
 			if(Tiles[i].BlockID == Index)
@@ -64,11 +63,9 @@ void _Event::DeleteBlockID(int Layer, int Index) {
 }
 
 // Searchs for a tile in the list given a position
-std::vector<_EventTile>::iterator _Event::FindTile(int X, int Y) {
-
-	// Search for the tile
+std::vector<_EventTile>::iterator _Event::FindTile(const glm::ivec2 &Position) {
 	for(auto Iterator = Tiles.begin(); Iterator != Tiles.end(); ++Iterator) {
-		if(Iterator->Coord.x == X && Iterator->Coord.y == Y)
+		if(Iterator->Coord == Position)
 			return Iterator;
 	}
 

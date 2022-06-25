@@ -52,7 +52,7 @@ class _Event {
 
 	public:
 
-		_Event(int Type, int Active, const glm::ivec2 &Start, const glm::ivec2 &End, int Level, double ActivationPeriod, const std::string &ItemIdentifier, const std::string &MonsterIdentifier, const std::string &ParticleIdentifier);
+		_Event(int Type, int Active, const glm::ivec2 &Start, const glm::ivec2 &End, int Level, double ActivationPeriod, const std::string &ItemID, const std::string &MonsterID, const std::string &ParticleID);
 		~_Event();
 
 		void Update(double FrameTime);
@@ -60,7 +60,7 @@ class _Event {
 		void AddTile(_EventTile Tile);
 		void RemoveTile(const std::vector<_EventTile>::iterator &Iterator) { Tiles.erase(Iterator); }
 		void DeleteBlockID(int Layer, int Index);
-		std::vector<_EventTile>::iterator FindTile(int X, int Y);
+		std::vector<_EventTile>::iterator FindTile(const glm::ivec2 &Position);
 		void StartTimer() { Timer = 0; }
 		void Decrement() { Level--; }
 		bool TimerExpired() const { return (Timer > ActivationPeriod); }
@@ -73,9 +73,9 @@ class _Event {
 		glm::ivec2 Start;
 		glm::ivec2 End;
 		std::vector<_EventTile> Tiles;
-		std::string ItemIdentifier;
-		std::string MonsterIdentifier;
-		std::string ParticleIdentifier;
+		std::string ItemID;
+		std::string MonsterID;
+		std::string ParticleID;
 		double Timer;
 		double ActivationPeriod;
 };

@@ -45,12 +45,12 @@ struct _Skill {
 // A single entry for an item group
 struct _ItemGroupEntry {
 	_ItemGroupEntry() { }
-	_ItemGroupEntry(const std::string &ItemIdentifier, float Count, int Type) :
-		ItemIdentifier(ItemIdentifier),
+	_ItemGroupEntry(const std::string &ItemID, float Count, int Type) :
+		ItemID(ItemID),
 		Count(Count),
 		Type(Type) { }
 
-	std::string ItemIdentifier;
+	std::string ItemID;
 	float Count;
 	int Type;
 };
@@ -64,7 +64,6 @@ struct _ItemGroup {
 
 // Monster template
 struct _MonsterTemplate {
-
 	_MonsterTemplate() : Color(1.0f) { }
 
 	std::string Name;
@@ -79,7 +78,6 @@ struct _MonsterTemplate {
 
 // Item template
 struct _ItemTemplate {
-
 	_ItemTemplate() : Color(1.0f), Type(-1) { }
 	_ItemTemplate(int Type) : Color(1.0f), Type(Type) { }
 
@@ -93,7 +91,6 @@ struct _ItemTemplate {
 
 // Weapon template
 struct _WeaponTemplate {
-
 	_WeaponTemplate() :	WeaponParticles(nullptr) { }
 
 	_WeaponParticleTemplate *WeaponParticles;
@@ -126,9 +123,9 @@ class _Stats {
 		void LoadItemDrops(const std::string &Path);
 		void LoadMonsters(const std::string &Path);
 
-		_Item *CreateItem(const std::string &Identifier, int Count, const glm::vec2 &Position);
-		_Weapon *CreateWeapon(const std::string &Identifier, const glm::vec2 &Position, bool Generate);
-		_Monster *CreateMonster(const std::string &Identifier, const glm::vec2 &Position);
+		_Item *CreateItem(const std::string &ID, int Count, const glm::vec2 &Position);
+		_Weapon *CreateWeapon(const std::string &ID, const glm::vec2 &Position, bool Generate);
+		_Monster *CreateMonster(const std::string &ID, const glm::vec2 &Position);
 
 		int GetLevel(int64_t Experience);
 		int64_t GetValidExperience(int64_t Experience);
@@ -141,7 +138,6 @@ class _Stats {
 		int GetSkill(int Level, int Type) const { return Skills[Level].Data[Type]; }
 		float GetSkillBonusMultiplier(int Level, int Type) const { return (100 + Skills[Level].Data[Type]) * 0.01f; }
 
-		_ItemGroup *GetItemGroup(const std::string &Identifier);
 		void GetRandomDrop(const _ItemGroup *ItemGroup, _ObjectSpawn *ObjectSpawn);
 
 		std::unordered_map<std::string, std::string> Strings;

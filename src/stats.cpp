@@ -507,7 +507,7 @@ void _Stats::LoadItemDrops(const std::string &Path) {
 		_ItemGroupEntry ItemGroupEntry;
 		File >> ItemGroupEntry.Type;
 		File.ignore(1, '\t');
-		std::getline(File, ItemGroupEntry.ItemIdentifier, '\t');
+		std::getline(File, ItemGroupEntry.ItemID, '\t');
 
 		// See if items exist
 		switch(ItemGroupEntry.Type) {
@@ -518,15 +518,15 @@ void _Stats::LoadItemDrops(const std::string &Path) {
 			case _Object::UPGRADE:
 			case _Object::ARMOR:
 			case _Object::MEDKIT:
-				if(Items.find(ItemGroupEntry.ItemIdentifier) == Items.end())
-					throw std::runtime_error(std::string(__func__) + " - Cannot find: " + ItemGroupEntry.ItemIdentifier + " in " + Path);
+				if(Items.find(ItemGroupEntry.ItemID) == Items.end())
+					throw std::runtime_error(std::string(__func__) + " - Cannot find: " + ItemGroupEntry.ItemID + " in " + Path);
 			break;
 			case _Object::WEAPON:
-				if(Weapons.find(ItemGroupEntry.ItemIdentifier) == Weapons.end())
-					throw std::runtime_error(std::string(__func__) + " - Cannot find: " + ItemGroupEntry.ItemIdentifier + " in " + Path);
+				if(Weapons.find(ItemGroupEntry.ItemID) == Weapons.end())
+					throw std::runtime_error(std::string(__func__) + " - Cannot find: " + ItemGroupEntry.ItemID + " in " + Path);
 			break;
 			default:
-				throw std::runtime_error(std::string(__func__) + " - Bad item type: " + ItemGroupEntry.ItemIdentifier + " in " + Path);
+				throw std::runtime_error(std::string(__func__) + " - Bad item type: " + ItemGroupEntry.ItemID + " in " + Path);
 			break;
 		}
 
@@ -626,13 +626,13 @@ void _Stats::LoadMonsters(const std::string &Path) {
 }
 
 // Create item
-_Item *_Stats::CreateItem(const std::string &Identifier, int Count, const glm::vec2 &Position) {
-	_ItemTemplate &Template = Items[Identifier];
+_Item *_Stats::CreateItem(const std::string &ID, int Count, const glm::vec2 &Position) {
+	_ItemTemplate &Template = Items[ID];
 
 	_Item *Item = new _Item(Template.Attributes);
 	Item->Type = Template.Type;
 	Item->Name = Template.Name;
-	Item->ID = Identifier;
+	Item->ID = ID;
 	Item->Count = Count;
 	Item->Position = Position;
 	Item->Texture = ae::Assets.Textures[Template.IconID];
@@ -654,16 +654,16 @@ _Item *_Stats::CreateItem(const std::string &Identifier, int Count, const glm::v
 }
 
 // Creates a weapon
-_Weapon *_Stats::CreateWeapon(const std::string &Identifier, const glm::vec2 &Position, bool Generate) {
-	_WeaponTemplate &WeaponTemplate = Weapons[Identifier];
-	_Weapon *Weapon = new _Weapon(Identifier, 1, Position, WeaponTemplate, ae::Assets.Textures[WeaponTemplate.IconID], Generate);
+_Weapon *_Stats::CreateWeapon(const std::string &ID, const glm::vec2 &Position, bool Generate) {
+	_WeaponTemplate &WeaponTemplate = Weapons[ID];
+	_Weapon *Weapon = new _Weapon(ID, 1, Position, WeaponTemplate, ae::Assets.Textures[WeaponTemplate.IconID], Generate);
 
 	return Weapon;
 }
 
 // Creates a monster
-_Monster *_Stats::CreateMonster(const std::string &Identifier, const glm::vec2 &Position) {
-	_MonsterTemplate &MonsterTemplate = Monsters[Identifier];
+_Monster *_Stats::CreateMonster(const std::string &ID, const glm::vec2 &Position) {
+	_MonsterTemplate &MonsterTemplate = Monsters[ID];
 	_SoundGroup *AttackSample = GameAssets.GetSoundGroupTemplate(MonsterTemplate.SoundGroupID);
 
 	// Creates a monster
@@ -746,7 +746,7 @@ void _Stats::GetRandomDrop(const _ItemGroup *ItemGroup, _ObjectSpawn *ObjectSpaw
 	for(size_t i = 0; i < ItemGroupSize; i++) {
 		if(RandomNumber <= ItemGroup->Entries[i].Count) {
 			ObjectSpawn->Type = ItemGroup->Entries[i].Type;
-			ObjectSpawn->Identifier = ItemGroup->Entries[i].ItemIdentifier;
+			ObjectSpawn->ID = ItemGroup->Entries[i].ItemID;
 			return;
 		}
 	}

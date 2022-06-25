@@ -47,13 +47,13 @@ std::string _Save::GetConfigPath(int Slot) {
 }
 
 // Create new player
-void _Save::CreateNewPlayer(int Slot, const std::string &Name, const std::string &ColorIdentifier) {
+void _Save::CreateNewPlayer(int Slot, const std::string &Name, const std::string &ColorID) {
 	if(Slot < 0 || Slot >= SLOT_COUNT)
 		return;
 
 	Players[Slot] = new _Player(GetConfigPath(Slot));
 	Players[Slot]->Name = Name;
-	Players[Slot]->SetColorIdentifier(ColorIdentifier);
+	Players[Slot]->SetColorID(ColorID);
 
 	Players[Slot]->Save();
 }

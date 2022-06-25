@@ -141,14 +141,14 @@ void _GameAssets::LoadParticles(const std::string &Path) {
 	// Read file
 	while(!File.eof() && File.peek() != EOF) {
 
-		std::string Identifier;
-		std::string TextureIdentifier;
-		std::string ColorIdentifier;
-		std::string FontIdentifier;
-		std::getline(File, Identifier, '\t');
-		std::getline(File, TextureIdentifier, '\t');
-		std::getline(File, ColorIdentifier, '\t');
-		std::getline(File, FontIdentifier, '\t');
+		std::string ID;
+		std::string TextureID;
+		std::string ColorID;
+		std::string FontID;
+		std::getline(File, ID, '\t');
+		std::getline(File, TextureID, '\t');
+		std::getline(File, ColorID, '\t');
+		std::getline(File, FontID, '\t');
 
 		_ParticleTemplate Particle;
 		File >> Particle.Type >> Particle.Count >> Particle.Lifetime >> Particle.StartDirection.x >> Particle.StartDirection.y >> Particle.TurnSpeed.x
@@ -157,23 +157,23 @@ void _GameAssets::LoadParticles(const std::string &Path) {
 		File.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
 		// Check for duplicates
-		if(IsParticleLoaded(Identifier))
-			throw std::runtime_error(std::string(__func__) + " - Duplicate entry: " + Identifier);
+		if(IsParticleLoaded(ID))
+			throw std::runtime_error(std::string(__func__) + " - Duplicate entry: " + ID);
 
 		// Get texture
-		Particle.Texture = ae::Assets.Textures[TextureIdentifier];
-		if(TextureIdentifier != "" && !Particle.Texture)
-			throw std::runtime_error("Unable to find texture: " + TextureIdentifier);
+		Particle.Texture = ae::Assets.Textures[TextureID];
+		if(TextureID != "" && !Particle.Texture)
+			throw std::runtime_error("Unable to find texture: " + TextureID);
 
 		// Set color
-		Particle.Color = ae::Assets.Colors[ColorIdentifier];
+		Particle.Color = ae::Assets.Colors[ColorID];
 
 		// Get font
-		Particle.Font = ae::Assets.Fonts[FontIdentifier];
-		if(FontIdentifier != "" && !Particle.Font)
-			throw std::runtime_error("Unable to find font: " + FontIdentifier);
+		Particle.Font = ae::Assets.Fonts[FontID];
+		if(FontID != "" && !Particle.Font)
+			throw std::runtime_error("Unable to find font: " + FontID);
 
-		ParticleTable[Identifier] = Particle;
+		ParticleTable[ID] = Particle;
 	}
 
 	File.close();
@@ -204,15 +204,15 @@ void _GameAssets::LoadWeaponParticles(const std::string &Path) {
 
 		_WeaponParticleTemplate WeaponParticle;
 		for(int i = 0; i < WEAPONPARTICLE_TYPES; i++) {
-			std::string ParticleIdentifier;
-			std::getline(Buffer, ParticleIdentifier, '\t');
+			std::string ParticleID;
+			std::getline(Buffer, ParticleID, '\t');
 
-			if(ParticleIdentifier != "" && !IsParticleLoaded(ParticleIdentifier))
-				throw std::runtime_error(std::string(__func__) + " - Cannot find particle: " + ParticleIdentifier);
-			else if(ParticleIdentifier == "")
+			if(ParticleID != "" && !IsParticleLoaded(ParticleID))
+				throw std::runtime_error(std::string(__func__) + " - Cannot find particle: " + ParticleID);
+			else if(ParticleID == "")
 				WeaponParticle.ParticleTemplates[i] = nullptr;
 			else
-				WeaponParticle.ParticleTemplates[i] = GetParticleTemplate(ParticleIdentifier);
+				WeaponParticle.ParticleTemplates[i] = GetParticleTemplate(ParticleID);
 		}
 
 		WeaponParticleTable[Name] = WeaponParticle;
@@ -221,25 +221,25 @@ void _GameAssets::LoadWeaponParticles(const std::string &Path) {
 	File.close();
 }
 
-bool _GameAssets::IsSoundGroupLoaded(const std::string &Identifier) { return SoundGroups.find(Identifier) != SoundGroups.end(); }
-bool _GameAssets::IsParticleLoaded(const std::string &Identifier) { return ParticleTable.find(Identifier) != ParticleTable.end(); }
-bool _GameAssets::IsWeaponParticleTemplateLoaded(const std::string &Identifier) { return WeaponParticleTable.find(Identifier) != WeaponParticleTable.end(); }
+bool _GameAssets::IsSoundGroupLoaded(const std::string &ID) { return SoundGroups.find(ID) != SoundGroups.end(); }
+bool _GameAssets::IsParticleLoaded(const std::string &ID) { return ParticleTable.find(ID) != ParticleTable.end(); }
+bool _GameAssets::IsWeaponParticleTemplateLoaded(const std::string &ID) { return WeaponParticleTable.find(ID) != WeaponParticleTable.end(); }
 
-_SoundGroup *_GameAssets::GetSoundGroupTemplate(const std::string &Identifier) {
-	if(SoundGroups.find(Identifier) == SoundGroups.end())
+_SoundGroup *_GameAssets::GetSoundGroupTemplate(const std::string &ID) {
+	if(SoundGroups.find(ID) == SoundGroups.end())
 		return nullptr;
 
-	return &SoundGroups[Identifier];
+	return &SoundGroups[ID];
 }
-_ParticleTemplate *_GameAssets::GetParticleTemplate(const std::string &Identifier) {
-	if(ParticleTable.find(Identifier) == ParticleTable.end())
+_ParticleTemplate *_GameAssets::GetParticleTemplate(const std::string &ID) {
+	if(ParticleTable.find(ID) == ParticleTable.end())
 		return nullptr;
 
-	return &ParticleTable[Identifier];
+	return &ParticleTable[ID];
 }
-_WeaponParticleTemplate *_GameAssets::GetWeaponParticleTemplate(const std::string &Identifier) {
-	if(WeaponParticleTable.find(Identifier) == WeaponParticleTable.end())
+_WeaponParticleTemplate *_GameAssets::GetWeaponParticleTemplate(const std::string &ID) {
+	if(WeaponParticleTable.find(ID) == WeaponParticleTable.end())
 		return nullptr;
 
-	return &WeaponParticleTable[Identifier];
+	return &WeaponParticleTable[ID];
 }

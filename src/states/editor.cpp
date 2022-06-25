@@ -47,7 +47,7 @@
 _EditorState EditorState;
 
 inline bool CompareBrush(_Brush &First, _Brush &Second) {
-	return First.ObjectType < Second.ObjectType || (First.ObjectType == Second.ObjectType && First.Identifier < Second.Identifier);
+	return First.ObjectType < Second.ObjectType || (First.ObjectType == Second.ObjectType && First.ID < Second.ID);
 }
 
 // Input box
@@ -220,7 +220,7 @@ void _EditorState::ResetEditorState() {
 	EventActivationPeriod = 0;
 	EventActive = 1;
 	EventLevel = 0;
-	AltTextureIdentifier = "";
+	AltTextureID = "";
 	AltTexture = nullptr;
 	EditorInput = -1;
 	CheckpointIndex = 0;
@@ -306,7 +306,7 @@ bool _EditorState::HandleKey(const ae::_KeyEvent &KeyEvent) {
 					case EDITINPUT_ITEMIDENTIFIER:
 					case EDITINPUT_MONSTERIDENTIFIER:
 					case EDITINPUT_PARTICLEIDENTIFIER:
-						UpdateEventIdentifier(EditorInput, InputText);
+						UpdateEventID(EditorInput, InputText);
 
 						if(!EventSelected())
 							SavedText[EditorInput] = InputText;
@@ -1117,7 +1117,7 @@ void _EditorState::LoadPaletteButtons(std::vector<_Brush> &Icons, int Type) {
 		Style->Stretch = true;
 
 		ae::_Element *Button = new ae::_Element();
-		Button->Name = Icons[i].Identifier;
+		Button->Name = Icons[i].ID;
 		Button->Parent = PaletteElement[Type];
 		Button->BaseOffset = Offset;
 		Button->BaseSize = glm::ivec2(PaletteSizes[Type], PaletteSizes[Type]);
@@ -1145,11 +1145,12 @@ void _EditorState::LoadPaletteButtons(std::vector<_Brush> &Icons, int Type) {
 void _EditorState::DrawBrush() {
 
 	// Get selected palette
-	std::string IconText = "", IconIdentifier = "";
+	std::string IconText;
+	std::string IconID;
 	glm::vec4 IconColor = COLOR_WHITE;
 	const ae::_Texture *IconTexture = nullptr;
 	if(Brush[CurrentPalette]) {
-		IconIdentifier = Brush[CurrentPalette]->Name;
+		IconID = Brush[CurrentPalette]->Name;
 		IconText = Brush[CurrentPalette]->Style->Name;
 		IconTexture = Brush[CurrentPalette]->Style->Texture;
 		IconColor = Brush[CurrentPalette]->Style->TextureColor;
@@ -1162,7 +1163,7 @@ void _EditorState::DrawBrush() {
 		case EDITMODE_BLOCKS: {
 
 			// See if there's a selected block
-			std::string BlockAltTextureIdentifier;
+			std::string BlockAltTextureID;
 			float BlockMinZ, BlockMaxZ;
 			bool BlockWalkable;
 			if(BlockSelected()) {
@@ -1175,7 +1176,7 @@ void _EditorState::DrawBrush() {
 				BlockMaxZ = SelectedBlock->MaxZ;
 				BlockWalkable = SelectedBlock->Walkable;
 				if(SelectedBlock->AltTexture)
-					BlockAltTextureIdentifier = SelectedBlock->AltTexture->Name;
+					BlockAltTextureID = SelectedBlock->AltTexture->Name;
 			}
 			else {
 				if(Brush[CurrentPalette])
@@ -1185,12 +1186,12 @@ void _EditorState::DrawBrush() {
 				BlockMinZ = MinZ;
 				BlockMaxZ = MaxZ;
 				BlockWalkable = Walkable;
-				BlockAltTextureIdentifier = AltTextureIdentifier;
+				BlockAltTextureID = AltTextureID;
 			}
 			IconText.erase(0, std::string(MAP_TEXTURE_PATH).length());
-			BlockAltTextureIdentifier.erase(0, std::string(MAP_TEXTURE_PATH).length());
+			BlockAltTextureID.erase(0, std::string(MAP_TEXTURE_PATH).length());
 
-			IconIdentifier = "";
+			IconID = "";
 
 			int X = (float)ae::Graphics.ViewportSize.x + 100;
 			int Y = (float)ae::Graphics.ViewportSize.y + 5;
@@ -1222,31 +1223,33 @@ void _EditorState::DrawBrush() {
 			MainFont->DrawText(Buffer.str(), glm::vec2(X + 5, Y));
 			Buffer.str("");
 
-			MainFont->DrawText(BlockAltTextureIdentifier, glm::vec2(ae::Graphics.ViewportSize.x + 112.0f, ae::Graphics.ViewportSize.y + 145.0f), ae::CENTER_MIDDLE);
+			MainFont->DrawText(BlockAltTextureID, glm::vec2(ae::Graphics.ViewportSize.x + 112.0f, ae::Graphics.ViewportSize.y + 145.0f), ae::CENTER_MIDDLE);
 		} break;
 		case EDITMODE_EVENTS: {
 
 			// Get object identifiers
-			std::string ItemIdentifier, MonsterIdentifier, ParticleIdentifier;
+			std::string ItemID;
+			std::string MonsterID;
+			std::string ParticleID;
 			double ActivationPeriod;
 			int Active, Level;
 			if(EventSelected()) {
 				ae::_Element *Button = PaletteElement[EDITMODE_EVENTS]->Children[SelectedEvent->Type];
 				IconTexture = Button->Style->Texture;
-				IconIdentifier = Button->Name;
+				IconID = Button->Name;
 				IconText = Button->Style->Name;
 
-				ItemIdentifier = SelectedEvent->ItemIdentifier;
-				MonsterIdentifier = SelectedEvent->MonsterIdentifier;
-				ParticleIdentifier = SelectedEvent->ParticleIdentifier;
+				ItemID = SelectedEvent->ItemID;
+				MonsterID = SelectedEvent->MonsterID;
+				ParticleID = SelectedEvent->ParticleID;
 				Active = SelectedEvent->Active;
 				Level = SelectedEvent->Level;
 				ActivationPeriod = SelectedEvent->ActivationPeriod;
 			}
 			else {
-				ItemIdentifier = SavedText[EDITINPUT_ITEMIDENTIFIER];
-				MonsterIdentifier = SavedText[EDITINPUT_MONSTERIDENTIFIER];
-				ParticleIdentifier = SavedText[EDITINPUT_PARTICLEIDENTIFIER];
+				ItemID = SavedText[EDITINPUT_ITEMIDENTIFIER];
+				MonsterID = SavedText[EDITINPUT_MONSTERIDENTIFIER];
+				ParticleID = SavedText[EDITINPUT_PARTICLEIDENTIFIER];
 				Active = EventActive;
 				Level = EventLevel;
 				ActivationPeriod = EventActivationPeriod;
@@ -1263,15 +1266,15 @@ void _EditorState::DrawBrush() {
 
 			Y += 15;
 			MainFont->DrawText("Item:", glm::vec2(X, Y), ae::RIGHT_BASELINE);
-			MainFont->DrawText(ItemIdentifier, glm::vec2(X + 5, Y));
+			MainFont->DrawText(ItemID, glm::vec2(X + 5, Y));
 
 			Y += 15;
 			MainFont->DrawText("Monster:", glm::vec2(X, Y), ae::RIGHT_BASELINE);
-			MainFont->DrawText(MonsterIdentifier, glm::vec2(X + 5, Y));
+			MainFont->DrawText(MonsterID, glm::vec2(X + 5, Y));
 
 			Y += 15;
 			MainFont->DrawText("Particle:", glm::vec2(X, Y), ae::RIGHT_BASELINE);
-			MainFont->DrawText(ParticleIdentifier, glm::vec2(X + 5, Y));
+			MainFont->DrawText(ParticleID, glm::vec2(X + 5, Y));
 
 			Y += 15;
 			Buffer << Level << ":" << ActivationPeriod;
@@ -1284,7 +1287,7 @@ void _EditorState::DrawBrush() {
 			// See if there's a selected object
 			if(SelectedObjects.size() > 0) {
 				auto Iterator = SelectedObjects.begin();
-				IconIdentifier = (*Iterator)->Identifier;
+				IconID = (*Iterator)->ID;
 				IconText = "";
 				IconTexture = nullptr;
 			}
@@ -1295,8 +1298,8 @@ void _EditorState::DrawBrush() {
 	if(IconText != "")
 		MainFont->DrawText(IconText, glm::vec2(ae::Graphics.ViewportSize.x + 112, ae::Graphics.ViewportSize.y + 130), ae::CENTER_MIDDLE);
 
-	if(IconIdentifier != "")
-		MainFont->DrawText(IconIdentifier, glm::vec2(ae::Graphics.ViewportSize.x + 112, ae::Graphics.ViewportSize.y + 145), ae::CENTER_MIDDLE);
+	if(IconID != "")
+		MainFont->DrawText(IconID, glm::vec2(ae::Graphics.ViewportSize.x + 112, ae::Graphics.ViewportSize.y + 145), ae::CENTER_MIDDLE);
 
 	if(IconTexture) {
 		ae::Assets.Programs["ortho_pos_uv"]->ResetTextureTransform();
@@ -1316,7 +1319,7 @@ void _EditorState::DrawObject(float OffsetX, float OffsetY, const _ObjectSpawn *
 	const ae::_Texture *Texture = nullptr;
 	switch(Object->Type) {
 		case _Object::MONSTER: {
-			_MonsterTemplate &Monster = Stats.Monsters.at(Object->Identifier);
+			_MonsterTemplate &Monster = Stats.Monsters.at(Object->ID);
 			Texture = ae::Assets.Textures["textures/icons/" + Monster.AnimationID + ".png"];
 			Color = Monster.Color;
 			Scale = Monster.Attributes.at("scale").Float;
@@ -1327,12 +1330,12 @@ void _EditorState::DrawObject(float OffsetX, float OffsetY, const _ObjectSpawn *
 		case _Object::UPGRADE:
 		case _Object::ARMOR:
 		case _Object::MEDKIT: {
-			_ItemTemplate &Ammo = Stats.Items[Object->Identifier];
+			_ItemTemplate &Ammo = Stats.Items[Object->ID];
 			Texture = ae::Assets.Textures[Ammo.IconID];
 			Color = Ammo.Color;
 		} break;
 		case _Object::WEAPON: {
-			_WeaponTemplate &Weapon = Stats.Weapons[Object->Identifier];
+			_WeaponTemplate &Weapon = Stats.Weapons[Object->ID];
 			Texture = ae::Assets.Textures[Weapon.IconID];
 			Color = Weapon.Color;
 		} break;
@@ -1511,7 +1514,7 @@ void _EditorState::ProcessEventIcons(int Index, int Type) {
 }
 
 // Adds an object to the list
-void _EditorState::SpawnObject(const glm::vec2 &Position, int Type, const std::string &Identifier, int Level, bool Align) {
+void _EditorState::SpawnObject(const glm::vec2 &Position, int Type, const std::string &ID, int Level, bool Align) {
 	glm::vec2 SpawnPosition;
 
 	if(Align)
@@ -1519,7 +1522,7 @@ void _EditorState::SpawnObject(const glm::vec2 &Position, int Type, const std::s
 	else
 		SpawnPosition = Position;
 
-	_ObjectSpawn *Object = new _ObjectSpawn(Identifier, SpawnPosition, Type, 1);
+	_ObjectSpawn *Object = new _ObjectSpawn(ID, SpawnPosition, Type, 1);
 	Map->AddObject(Object);
 }
 
@@ -1527,19 +1530,19 @@ void _EditorState::SpawnObject(const glm::vec2 &Position, int Type, const std::s
 void _EditorState::AddEvent(int Type) {
 
 	// Get object identifiers
-	std::string ItemIdentifier = SavedText[EDITINPUT_ITEMIDENTIFIER];
-	std::string MonsterIdentifier = SavedText[EDITINPUT_MONSTERIDENTIFIER];
-	std::string ParticleIdentifier = SavedText[EDITINPUT_PARTICLEIDENTIFIER];
+	std::string ItemID = SavedText[EDITINPUT_ITEMIDENTIFIER];
+	std::string MonsterID = SavedText[EDITINPUT_MONSTERIDENTIFIER];
+	std::string ParticleID = SavedText[EDITINPUT_PARTICLEIDENTIFIER];
 
 	// Get selected object's identifier
 	if(ObjectsSelected()) {
 		_ObjectSpawn *SelectedObject = *SelectedObjects.begin();
 		switch(SelectedObject->Type) {
 			case _Object::MONSTER:
-				MonsterIdentifier = SelectedObject->Identifier;
+				MonsterID = SelectedObject->ID;
 			break;
 			default:
-				ItemIdentifier = SelectedObject->Identifier;
+				ItemID = SelectedObject->ID;
 			break;
 		}
 	}
@@ -1547,23 +1550,23 @@ void _EditorState::AddEvent(int Type) {
 	int TileLayer = -1;
 	glm::ivec2 Start = DrawStart;
 	glm::ivec2 End = DrawEnd - 1;
-	std::string EventItemIdentifier = "";
-	std::string EventMonsterIdentifier = "";
-	std::string EventParticleIdentifier = "";
+	std::string EventItemID;
+	std::string EventMonsterID;
+	std::string EventParticleID;
 
 	// Setup the event
 	switch(Type) {
 		case EVENT_DOOR:
-			EventItemIdentifier = ItemIdentifier;
+			EventItemID = ItemID;
 			TileLayer = MAPLAYER_FLAT;
 		break;
 		case EVENT_WSWITCH:
-			EventItemIdentifier = ItemIdentifier;
+			EventItemID = ItemID;
 			TileLayer = CurrentLayer;
 		break;
 		case EVENT_SPAWN:
-			EventMonsterIdentifier = MonsterIdentifier;
-			EventParticleIdentifier = ParticleIdentifier;
+			EventMonsterID = MonsterID;
+			EventParticleID = ParticleID;
 			TileLayer = CurrentLayer;
 		break;
 		default:
@@ -1571,7 +1574,7 @@ void _EditorState::AddEvent(int Type) {
 	}
 
 	if(Type != -1) {
-		_Event *Event = new _Event(Type, EventActive, Start, End, EventLevel, EventActivationPeriod, EventItemIdentifier, EventMonsterIdentifier, EventParticleIdentifier);
+		_Event *Event = new _Event(Type, EventActive, Start, End, EventLevel, EventActivationPeriod, EventItemID, EventMonsterID, EventParticleID);
 		if(TileLayer != -1) {
 			int BlockIndex = Map->GetSelectedBlock(TileLayer, Start);
 			Event->AddTile(_EventTile(Start, TileLayer, BlockIndex));
@@ -1582,36 +1585,36 @@ void _EditorState::AddEvent(int Type) {
 }
 
 // Updates the selected event's object identifier
-void _EditorState::UpdateEventIdentifier(int Type, const std::string &Identifier) {
+void _EditorState::UpdateEventID(int Type, const std::string &ID) {
 
 	if(EventSelected()) {
 		switch(Type) {
 			case EDITINPUT_ITEMIDENTIFIER:
-				SelectedEvent->ItemIdentifier = Identifier;
+				SelectedEvent->ItemID = ID;
 			break;
 			case EDITINPUT_MONSTERIDENTIFIER:
-				SelectedEvent->MonsterIdentifier = Identifier;
+				SelectedEvent->MonsterID = ID;
 			break;
 			case EDITINPUT_PARTICLEIDENTIFIER:
-				SelectedEvent->ParticleIdentifier = Identifier;
+				SelectedEvent->ParticleID = ID;
 			break;
 		}
 	}
 }
 
 // Gets the selected event's object identifier
-std::string _EditorState::GetEventIdentifier(int Type) {
+std::string _EditorState::GetEventID(int Type) {
 
 	if(EventSelected()) {
 		switch(Type) {
 			case EDITINPUT_ITEMIDENTIFIER:
-				return SelectedEvent->ItemIdentifier;
+				return SelectedEvent->ItemID;
 			break;
 			case EDITINPUT_MONSTERIDENTIFIER:
-				return SelectedEvent->MonsterIdentifier;
+				return SelectedEvent->MonsterID;
 			break;
 			case EDITINPUT_PARTICLEIDENTIFIER:
-				return SelectedEvent->ParticleIdentifier;
+				return SelectedEvent->ParticleID;
 			break;
 		}
 	}
@@ -1685,7 +1688,7 @@ void _EditorState::ExecuteMirror() {
 void _EditorState::ExecuteToggleTile() {
 
 	if(EventSelected()) {
-		auto Iterator = SelectedEvent->FindTile(WorldCursorIndex.x, WorldCursorIndex.y);
+		auto Iterator = SelectedEvent->FindTile(WorldCursorIndex);
 		if(Iterator != SelectedEvent->Tiles.end()) {
 			SelectedEvent->RemoveTile(Iterator);
 		}
@@ -1782,7 +1785,7 @@ void _EditorState::ExecuteIOCommand(int Type) {
 	ae::_Element *Label = TextBox->Children.front();
 	Label->Text = InputBoxStrings[Type];
 	if(Type >= EDITINPUT_ITEMIDENTIFIER && Type <= EDITINPUT_PARTICLEIDENTIFIER && EventSelected())
-		TextBox->Text = GetEventIdentifier(Type);
+		TextBox->Text = GetEventID(Type);
 	else
 		TextBox->Text = SavedText[Type];
 
@@ -1893,15 +1896,15 @@ void _EditorState::ExecutePaste(bool Viewport) {
 				DrawEnd = Map->GetValidCoord(ClipboardEvent->End - ClipboardEvent->Start + glm::ivec2(StartPosition));
 
 				_Event *Event = new _Event(ClipboardEvent->Type, ClipboardEvent->Active, DrawStart, DrawEnd,
-										ClipboardEvent->Level, ClipboardEvent->ActivationPeriod, ClipboardEvent->ItemIdentifier,
-										ClipboardEvent->MonsterIdentifier, ClipboardEvent->ParticleIdentifier);
+										ClipboardEvent->Level, ClipboardEvent->ActivationPeriod, ClipboardEvent->ItemID,
+										ClipboardEvent->MonsterID, ClipboardEvent->ParticleID);
 
 				Map->AddEvent(Event);
 			}
 		break;
 		default:
 			for(auto Iterator : ClipboardObjects)
-				SpawnObject(GetValidObjectPosition(StartPosition - CopiedPosition + Iterator->Position), Iterator->Type, Iterator->Identifier, 1, IsShiftDown);
+				SpawnObject(GetValidObjectPosition(StartPosition - CopiedPosition + Iterator->Position), Iterator->Type, Iterator->ID, 1, IsShiftDown);
 		break;
 	}
 }
@@ -1957,7 +1960,7 @@ void _EditorState::ExecuteSelectPalette(ae::_Element *Button, int ClickType) {
 				SelectedBlock->AltTexture = nullptr;
 			}
 			else {
-				AltTextureIdentifier = "";
+				AltTextureID = "";
 				AltTexture = nullptr;
 			}
 		}
@@ -1975,7 +1978,7 @@ void _EditorState::ExecuteSelectPalette(ae::_Element *Button, int ClickType) {
 					SelectedBlock->AltTexture = Button->Style->Texture;
 				}
 				else {
-					AltTextureIdentifier = Button->Name;
+					AltTextureID = Button->Name;
 					AltTexture = Button->Style->Texture;
 				}
 			}
@@ -2015,11 +2018,11 @@ void _EditorState::ExecuteSelectPalette(ae::_Element *Button, int ClickType) {
 			if(ClickType == 1 && EventSelected()) {
 				switch(CurrentPalette) {
 					case EDITMODE_MONSTERS:
-						SelectedEvent->MonsterIdentifier = Button->Name;
+						SelectedEvent->MonsterID = Button->Name;
 						ExecuteSwitchMode(EDITMODE_EVENTS);
 					break;
 					case EDITMODE_ITEMS:
-						SelectedEvent->ItemIdentifier = Button->Name;
+						SelectedEvent->ItemID = Button->Name;
 						ExecuteSwitchMode(EDITMODE_EVENTS);
 					break;
 					default:
@@ -2215,10 +2218,10 @@ void _EditorState::SelectObject() {
 			if(EventSelected()) {
 				switch(SelectedObject->Type) {
 					case _Object::MONSTER:
-						UpdateEventIdentifier(EDITINPUT_MONSTERIDENTIFIER, SelectedObject->Identifier);
+						UpdateEventID(EDITINPUT_MONSTERIDENTIFIER, SelectedObject->ID);
 					break;
 					default:
-						UpdateEventIdentifier(EDITINPUT_ITEMIDENTIFIER, SelectedObject->Identifier);
+						UpdateEventID(EDITINPUT_ITEMIDENTIFIER, SelectedObject->ID);
 					break;
 				}
 			}
@@ -2253,11 +2256,11 @@ glm::vec2 _EditorState::GetMoveDeltaPosition(const glm::vec2 &Position) {
 }
 
 // Sets event properties
-void _EditorState::SetEventProperties(double ActivationPeriod, int Level, int Active, const std::string &ParticleIdentifier) {
+void _EditorState::SetEventProperties(double ActivationPeriod, int Level, int Active, const std::string &ParticleID) {
 	EventActivationPeriod = ActivationPeriod;
 	EventLevel = Level;
 	EventActive = Active;
-	SavedText[EDITINPUT_PARTICLEIDENTIFIER] = ParticleIdentifier;
+	SavedText[EDITINPUT_PARTICLEIDENTIFIER] = ParticleID;
 }
 
 // Clears all the objects in the clipboard

@@ -85,13 +85,13 @@ void _PlayState::Init() {
 
 	// Check for level override
 	if(Level == "")
-		Level = Player->MapIdentifier;
+		Level = Player->MapID;
 
 	// Load level
 	Map = new _Map(Level);
 	Map->InitializeTiles();
 	Player->Map = Map;
-	Player->MapIdentifier = Map->GetFilename();
+	Player->MapID = Map->GetFilename();
 
 	// Set starting states
 	Player->SetPosition(Map->GetStartingPositionByCheckpoint(Player->CheckpointIndex));
@@ -770,10 +770,10 @@ void _PlayState::UseObject(_Item *NearbyItem) {
 		if(Event->Active && (Event->Type == EVENT_DOOR || Event->Type == EVENT_WSWITCH) && Map->CanChangeMapState(Event)) {
 
 			// Check for key in inventory and use it
-			if(Event->ItemIdentifier != "") {
-				int ItemIndex = Player->FindItem(Event->ItemIdentifier);
+			if(Event->ItemID != "") {
+				int ItemIndex = Player->FindItem(Event->ItemID);
 				if(ItemIndex == -1) {
-					HUD->ShowMessageBox("You need the " + Stats.Items[Event->ItemIdentifier].Name, HUD_KEYMESSAGETIME);
+					HUD->ShowMessageBox("You need the " + Stats.Items[Event->ItemID].Name, HUD_KEYMESSAGETIME);
 					return;
 				}
 
@@ -866,7 +866,7 @@ void _PlayState::CheckEvents(const _Entity *Entity) {
 		if(Event->Active) {
 			switch(Event->Type) {
 				case EVENT_SPAWN:
-					if(Stats.Monsters.find(Event->MonsterIdentifier) != Stats.Monsters.end()) {
+					if(Stats.Monsters.find(Event->MonsterID) != Stats.Monsters.end()) {
 						Event->StartTimer();
 						ActiveEvents.push_back(Event);
 					}
@@ -895,7 +895,7 @@ void _PlayState::CheckEvents(const _Entity *Entity) {
 					}
 				break;
 				case EVENT_END:
-					Level = Event->ItemIdentifier;
+					Level = Event->ItemID;
 
 					// End of the game
 					if(Level == "") {
@@ -907,16 +907,16 @@ void _PlayState::CheckEvents(const _Entity *Entity) {
 						Framework.ChangeState(&PlayState);
 
 					Player->CheckpointIndex = Event->Level;
-					Player->MapIdentifier = Level;
+					Player->MapID = Level;
 					Player->Save();
 				break;
 				case EVENT_TEXT:
-					HUD->ShowMessageBox(Stats.Strings[Event->ItemIdentifier], Event->ActivationPeriod);
+					HUD->ShowMessageBox(Stats.Strings[Event->ItemID], Event->ActivationPeriod);
 					if(Event->Level != 0)
 						Event->Active = false;
 				break;
 				case EVENT_SOUND:
-					if(ae::Assets.Sounds[Event->ItemIdentifier]) {
+					if(ae::Assets.Sounds[Event->ItemID]) {
 						Event->StartTimer();
 						ActiveEvents.push_back(Event);
 					}
@@ -937,7 +937,7 @@ void _PlayState::CheckEvents(const _Entity *Entity) {
 
 					if(Event->Tiles.size() > 0) {
 						glm::vec2 NewPosition(Event->Tiles[0].Coord.x + 0.5f, Event->Tiles[0].Coord.y + 0.5f);
-						Particles->Create(_ParticleSpawn(GameAssets.GetParticleTemplate(Event->ParticleIdentifier), glm::vec2(0), NewPosition, OBJECT_Z, 0));
+						Particles->Create(_ParticleSpawn(GameAssets.GetParticleTemplate(Event->ParticleID), glm::vec2(0), NewPosition, OBJECT_Z, 0));
 
 						Map->RemoveObjectFromGrid(Player, GRID_PLAYER);
 						Player->SetPosition(NewPosition);
@@ -946,7 +946,7 @@ void _PlayState::CheckEvents(const _Entity *Entity) {
 				} break;
 				case EVENT_LIGHT: {
 					if(LastLightEvent != Event) {
-						Map->SetAmbientLight(ae::Assets.Colors[Event->ItemIdentifier]);
+						Map->SetAmbientLight(ae::Assets.Colors[Event->ItemID]);
 						Map->SetAmbientLightChangePeriod(Event->ActivationPeriod);
 						LastLightEvent = Event;
 					}
@@ -976,14 +976,14 @@ void _PlayState::UpdateEvents(double FrameTime) {
 				for(size_t i = 0; i < Tiles.size(); i++) {
 					Position.x = Tiles[i].Coord.x + 0.5f;
 					Position.y = Tiles[i].Coord.y + 0.5f;
-					AddMonster(Stats.CreateMonster(Event->MonsterIdentifier, Position));
-					Particles->Create(_ParticleSpawn(GameAssets.GetParticleTemplate(Event->ParticleIdentifier), glm::vec2(0), Position, OBJECT_Z, 0));
+					AddMonster(Stats.CreateMonster(Event->MonsterID, Position));
+					Particles->Create(_ParticleSpawn(GameAssets.GetParticleTemplate(Event->ParticleID), glm::vec2(0), Position, OBJECT_Z, 0));
 				}
 
 				Decrement = true;
 			} break;
 			case EVENT_SOUND: {
-				ae::Audio.PlaySound(ae::Assets.Sounds[Event->ItemIdentifier]);
+				ae::Audio.PlaySound(ae::Assets.Sounds[Event->ItemID]);
 				Decrement = true;
 			} break;
 			case EVENT_FSWITCH:
@@ -1038,17 +1038,17 @@ void _PlayState::DeleteActiveEvents() {
 void _PlayState::SpawnObject(_ObjectSpawn *ObjectSpawn, bool GenerateStats) {
 	switch(ObjectSpawn->Type) {
 		case _Object::MONSTER:
-			AddMonster(Stats.CreateMonster(ObjectSpawn->Identifier, ObjectSpawn->Position));
+			AddMonster(Stats.CreateMonster(ObjectSpawn->ID, ObjectSpawn->Position));
 		break;
 		case _Object::KEY:
 		case _Object::AMMO:
 		case _Object::UPGRADE:
 		case _Object::ARMOR:
 		case _Object::MEDKIT:
-			Map->AddItem(Stats.CreateItem(ObjectSpawn->Identifier, 1, ObjectSpawn->Position));
+			Map->AddItem(Stats.CreateItem(ObjectSpawn->ID, 1, ObjectSpawn->Position));
 		break;
 		case _Object::WEAPON:
-			Map->AddItem(Stats.CreateWeapon(ObjectSpawn->Identifier, ObjectSpawn->Position, GenerateStats));
+			Map->AddItem(Stats.CreateWeapon(ObjectSpawn->ID, ObjectSpawn->Position, GenerateStats));
 		break;
 	}
 }

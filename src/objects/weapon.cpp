@@ -24,11 +24,11 @@
 #include <algorithm>
 
 // Constructor
-_Weapon::_Weapon(const std::string &Identifier, int Level, const glm::vec2 &Position, const _WeaponTemplate &Weapon, const ae::_Texture *Texture, bool GenerateRandom) :
+_Weapon::_Weapon(const std::string &ID, int Level, const glm::vec2 &Position, const _WeaponTemplate &Weapon, const ae::_Texture *Texture, bool GenerateRandom) :
 	_Item(Weapon.Attributes) {
 
 	this->Type = _Object::WEAPON;
-	this->ID = Identifier;
+	this->ID = ID;
 	this->Texture = Texture;
 	this->Color = Weapon.Color;
 	this->Position = Position;

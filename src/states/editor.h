@@ -116,14 +116,14 @@ enum EditorInputTypes {
 // Used for the map editor
 struct _Brush {
 	_Brush() { }
-	_Brush(const std::string &Identifier, const std::string &Text, const ae::_Texture *Texture, const glm::vec4 &Color, int ObjectType=-1) :
-		Identifier(Identifier),
+	_Brush(const std::string &ID, const std::string &Text, const ae::_Texture *Texture, const glm::vec4 &Color, int ObjectType=-1) :
+		ID(ID),
 		Text(Text),
 		Texture(Texture),
 		Color(Color),
 		ObjectType(ObjectType) { }
 
-	std::string Identifier;
+	std::string ID;
 	std::string Text;
 	const ae::_Texture *Texture;
 	glm::vec4 Color;
@@ -173,8 +173,8 @@ class _EditorState : public ae::_State {
 		void ClearPalette(int Type);
 
 		void AddEvent(int Type);
-		void UpdateEventIdentifier(int Type, const std::string &Identifier);
-		void SpawnObject(const glm::vec2 &Position, int Type, const std::string &Identifier, int Level, bool Align);
+		void UpdateEventID(int Type, const std::string &ID);
+		void SpawnObject(const glm::vec2 &Position, int Type, const std::string &ID, int Level, bool Align);
 		void SelectObject();
 		void SelectObjects();
 		void DeselectBlock() { SelectedBlockIndex = -1, SelectedBlock = nullptr; }
@@ -185,8 +185,8 @@ class _EditorState : public ae::_State {
 		bool EventSelected() { return SelectedEventIndex != -1; }
 		bool ObjectsSelected();
 
-		void SetEventProperties(double ActivationPeriod, int Level, int Active, const std::string &ParticleIdentifier);
-		std::string GetEventIdentifier(int Type);
+		void SetEventProperties(double ActivationPeriod, int Level, int Active, const std::string &ParticleID);
+		std::string GetEventID(int Type);
 		glm::vec2 GetValidObjectPosition(const glm::vec2 &Position) const;
 		bool ObjectInSelectedList(_ObjectSpawn *Object);
 		glm::vec2 AlignToGrid(const glm::vec2 &Position) const;
@@ -261,7 +261,7 @@ class _EditorState : public ae::_State {
 		// Blocks
 		_Block *SelectedBlock;
 		_Block ClipboardBlock;
-		std::string AltTextureIdentifier;
+		std::string AltTextureID;
 		float MinZ;
 		float MaxZ;
 		float ScaleX;

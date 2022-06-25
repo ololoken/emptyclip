@@ -48,7 +48,7 @@ class _Save {
 		_Save();
 		~_Save();
 
-		void CreateNewPlayer(int Slot, const std::string &Name, const std::string &ColorIdentifier);
+		void CreateNewPlayer(int Slot, const std::string &Name, const std::string &ColorID);
 		void DeletePlayer(int Slot);
 		void LoadSaves();
 

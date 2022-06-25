@@ -94,25 +94,25 @@ _Map::_Map(const std::string &Filename) : _Map() {
 
 		// Load Data
 		_ObjectSpawn *Object = new _ObjectSpawn();
-		InputFile >> Object->Type >> Object->Identifier >> Object->Level >> Object->Position.x >> Object->Position.y;
+		InputFile >> Object->Type >> Object->ID >> Object->Level >> Object->Position.x >> Object->Position.y;
 
 		// Check for items
 		switch(Object->Type) {
 			case _Object::MONSTER:
-				if(Stats.Monsters.find(Object->Identifier) == Stats.Monsters.end())
-					throw std::runtime_error(std::string(__func__) + "Cannot find monster: " + Object->Identifier);
+				if(Stats.Monsters.find(Object->ID) == Stats.Monsters.end())
+					throw std::runtime_error(std::string(__func__) + "Cannot find monster: " + Object->ID);
 			break;
 			case _Object::KEY:
 			case _Object::AMMO:
 			case _Object::UPGRADE:
 			case _Object::ARMOR:
 			case _Object::MEDKIT:
-				if(Stats.Items.find(Object->Identifier) == Stats.Items.end())
-					throw std::runtime_error(std::string(__func__) + "Cannot find item: " + Object->Identifier);
+				if(Stats.Items.find(Object->ID) == Stats.Items.end())
+					throw std::runtime_error(std::string(__func__) + "Cannot find item: " + Object->ID);
 			break;
 			case _Object::WEAPON:
-				if(Stats.Weapons.find(Object->Identifier) == Stats.Weapons.end())
-					throw std::runtime_error(std::string(__func__) + "Cannot find weapon: " + Object->Identifier);
+				if(Stats.Weapons.find(Object->ID) == Stats.Weapons.end())
+					throw std::runtime_error(std::string(__func__) + "Cannot find weapon: " + Object->ID);
 			break;
 		}
 
@@ -142,20 +142,20 @@ _Map::_Map(const std::string &Filename) : _Map() {
 				>> TilesSize;
 
 		InputFile.ignore(std::numeric_limits<std::streamsize>::max(), ' ');
-		std::string EventItemIdentifier;
-		std::string EventMonsterIdentifier;
-		std::string EventParticleIdentifier;
-		std::getline(InputFile, EventItemIdentifier, '\t');
-		std::getline(InputFile, EventMonsterIdentifier, '\t');
-		std::getline(InputFile, EventParticleIdentifier, '\n');
+		std::string EventItemID;
+		std::string EventMonsterID;
+		std::string EventParticleID;
+		std::getline(InputFile, EventItemID, '\t');
+		std::getline(InputFile, EventMonsterID, '\t');
+		std::getline(InputFile, EventParticleID, '\n');
 
 		// Check for existence
-		if(EventMonsterIdentifier != "" && Stats.Monsters.find(EventMonsterIdentifier) == Stats.Monsters.end())
-			throw std::runtime_error("Cannot find monster: " + EventMonsterIdentifier);
-		if(EventParticleIdentifier != "" && !GameAssets.IsParticleLoaded(EventParticleIdentifier))
-			throw std::runtime_error("Cannot find particle: " + EventParticleIdentifier);
+		if(EventMonsterID != "" && Stats.Monsters.find(EventMonsterID) == Stats.Monsters.end())
+			throw std::runtime_error("Cannot find monster: " + EventMonsterID);
+		if(EventParticleID != "" && !GameAssets.IsParticleLoaded(EventParticleID))
+			throw std::runtime_error("Cannot find particle: " + EventParticleID);
 
-		_Event *Event = new _Event(EventType, EventActive, EventStart, EventEnd, EventLevel, EventActivationPeriod, EventItemIdentifier, EventMonsterIdentifier, EventParticleIdentifier);
+		_Event *Event = new _Event(EventType, EventActive, EventStart, EventEnd, EventLevel, EventActivationPeriod, EventItemID, EventMonsterID, EventParticleID);
 		for(size_t j = 0; j < TilesSize; j++) {
 			glm::ivec2 Tile;
 			int TileLayer, TileBlockID;
@@ -316,7 +316,7 @@ bool _Map::Save(const std::string &String) {
 	for(size_t i = 0; i < ObjectSpawns.size(); i++) {
 		Output
 			<< ObjectSpawns[i]->Type << ' '
-			<< ObjectSpawns[i]->Identifier << ' '
+			<< ObjectSpawns[i]->ID << ' '
 			<< ObjectSpawns[i]->Level << ' '
 			<< ObjectSpawns[i]->Position.x << ' '
 			<< ObjectSpawns[i]->Position.y
@@ -336,9 +336,9 @@ bool _Map::Save(const std::string &String) {
 			<< Events[i]->Level << ' '
 			<< Events[i]->ActivationPeriod << ' '
 			<< Events[i]->Tiles.size() << ' '
-			<< Events[i]->ItemIdentifier << '\t'
-			<< Events[i]->MonsterIdentifier << '\t'
-			<< Events[i]->ParticleIdentifier << '\n';
+			<< Events[i]->ItemID << '\t'
+			<< Events[i]->MonsterID << '\t'
+			<< Events[i]->ParticleID << '\n';
 
 		// Write tiles
 		for(size_t j = 0; j < Events[i]->Tiles.size(); j++)

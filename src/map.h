@@ -133,20 +133,20 @@ struct _Hit {
 struct _ObjectSpawn {
 
 	_ObjectSpawn() :
-		Identifier(""),
+		ID(""),
 		Position{0, 0},
 		Type(-1),
 		Level(1),
 		Deleted(false) { }
 
-	_ObjectSpawn(const std::string &Identifier, const glm::vec2 &Position, int Type, int Level) :
-		Identifier(Identifier),
+	_ObjectSpawn(const std::string &ID, const glm::vec2 &Position, int Type, int Level) :
+		ID(ID),
 		Position(Position),
 		Type(Type),
 		Level(Level),
 		Deleted(false) { }
 
-	std::string Identifier;
+	std::string ID;
 	glm::vec2 Position;
 	int Type;
 	int Level;
