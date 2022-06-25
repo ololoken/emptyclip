@@ -784,6 +784,8 @@ void _EditorState::Render(double BlendFactor) {
 	ae::Graphics.Setup3D();
 	Camera->Set3DProjection(BlendFactor);
 	ae::Assets.Programs["pos_uv"]->AmbientLight = glm::vec4(1);
+	ae::Assets.Programs["pos_uv"]->LightCount = 0;
+	ae::Assets.Programs["pos_uv_norm"]->LightCount = 0;
 
 	// Setup the viewing matrix
 	ae::Graphics.SetProgram(ae::Assets.Programs["pos"]);

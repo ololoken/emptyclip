@@ -610,7 +610,7 @@ _Item *_Stats::CreateItem(const std::string &ID, int Count, const glm::vec2 &Pos
 	Item->Texture = ae::Assets.Textures[Template.IconID];
 	Item->Color = Template.Color;
 
-	// Set attributes based off level
+	// Set attributes based off type and item level
 	switch(Template.Type) {
 		case _Object::UPGRADE:
 			Item->Attributes["upgrade_type"].Int = Template.Attributes["upgrade_type"].Int;
