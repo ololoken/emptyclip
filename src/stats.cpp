@@ -282,18 +282,16 @@ void _Stats::LoadMedkits(const std::string &Path) {
 		std::getline(File, ID, '\t');
 		std::getline(File, Template.Name, '\t');
 		std::getline(File, Template.IconID, '\t');
-		std::getline(File, ColorID, '\t');
 
-		File >> Template.Attributes["health_restored"].Int;
+		File
+			>> Template.Attributes["health_restored"].Float
+			>> Template.Attributes["health_restored_level"].Float;
 
 		File.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
 		// Check for loaded textures
 		if(!ae::Assets.Textures[Template.IconID])
 			throw std::runtime_error(std::string(__func__) + " - Cannot find texture: " + Template.IconID);
-
-		// Set color
-		SetColor(Template.Color, ColorID);
 
 		// Check for duplicates
 		if(Items.find(ID) != Items.end())
@@ -626,12 +624,16 @@ _Item *_Stats::CreateItem(const std::string &ID, int Count, const glm::vec2 &Pos
 	Item->Color = Template.Color;
 
 	switch(Template.Type) {
-		case _Object::ARMOR: {
+		case _Object::ARMOR:
 			Item->SetAttributeLevel("damage_block", Item->Level, 1.0f);
 			Item->SetAttributeLevel("damage_resist", Item->Level, 1.0f);
 			Item->SetAttributeLevel("max_ammo", Item->Level, 1.0f);
 			Item->SetAttributeLevel("move_speed", Item->Level, 1.0f);
-		} break;
+		break;
+		case _Object::MEDKIT:
+			Item->SetAttributeLevel("health_restored", Item->Level, 1.0f);
+		break;
+
 		default:
 			Item->Attributes = Template.Attributes;
 		break;
