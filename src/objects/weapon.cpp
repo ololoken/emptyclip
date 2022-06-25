@@ -99,6 +99,10 @@ void _Weapon::RecalculateStats() {
 	Attributes["reload_period"].Double = TemplateAttributes.at("reload_period").Double / GetBonusMultiplier(UPGRADE_RELOADPERIOD);
 	Attributes["attack_count"].Int = TemplateAttributes.at("attack_count").Int + Bonus[UPGRADE_ATTACKS];
 
+	// For melee, min accuracy is 0 and max is swing arc
+	if(IsMelee())
+		Attributes["min_accuracy"].Int = 0;
+
 	SetAmmo(Attributes["ammo"].Int);
 }
 
