@@ -250,14 +250,7 @@ void _Stats::LoadKeys(const std::string &Path) {
 			throw std::runtime_error(std::string(__func__) + " - Cannot find texture: " + Template.IconID);
 
 		// Set color
-		if(ColorID != "") {
-			if(ae::Assets.Colors.find(ColorID) == ae::Assets.Colors.end())
-				throw std::runtime_error(std::string(__func__) + " - Cannot find color: " + ColorID);
-
-			Template.Color = ae::Assets.Colors[ColorID];
-		}
-		else
-			Template.Color = COLOR_WHITE;
+		SetColor(Template.Color, ColorID);
 
 		// Check for duplicates
 		if(Items.find(ID) != Items.end())
@@ -300,14 +293,7 @@ void _Stats::LoadMedkits(const std::string &Path) {
 			throw std::runtime_error(std::string(__func__) + " - Cannot find texture: " + Template.IconID);
 
 		// Set color
-		if(ColorID != "") {
-			if(ae::Assets.Colors.find(ColorID) == ae::Assets.Colors.end())
-				throw std::runtime_error(std::string(__func__) + " - Cannot find color: " + ColorID);
-
-			Template.Color = ae::Assets.Colors[ColorID];
-		}
-		else
-			Template.Color = COLOR_WHITE;
+		SetColor(Template.Color, ColorID);
 
 		// Check for duplicates
 		if(Items.find(ID) != Items.end())
@@ -603,6 +589,7 @@ void _Stats::LoadMonsters(const std::string &Path) {
 		if(ae::Assets.Animations.find(MonsterTemplate.AnimationID) == ae::Assets.Animations.end())
 			throw std::runtime_error(std::string(__func__) + " - Cannot find animation: '" + MonsterTemplate.AnimationID + "' in " + ID);
 
+		// Set color
 		SetColor(MonsterTemplate.Color, ColorID);
 
 		// Check for samples
