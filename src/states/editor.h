@@ -285,6 +285,7 @@ class _EditorState : public ae::_State {
 		double EventActivationPeriod;
 		int EventActive;
 		int EventLevel;
+		int EventSpawnLevel;
 
 		// Objects
 		std::vector<_ObjectSpawn *> SelectedObjects;

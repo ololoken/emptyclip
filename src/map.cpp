@@ -80,10 +80,6 @@ _Map::_Map(const std::string &Filename) : _Map() {
 	// Get map type
 	InputFile >> MapType;
 
-	// Unused
-	std::string Dummy;
-	InputFile >> Dummy;
-
 	// Read dimensions
 	InputFile >> Width >> Height;
 
@@ -126,8 +122,12 @@ _Map::_Map(const std::string &Filename) : _Map() {
 	// Load events
 	for(size_t i = 0; i < EventCount; i++) {
 
-		int EventType, EventActive, EventLevel;
-		glm::ivec2 EventStart, EventEnd;
+		int EventType;
+		int EventActive;
+		int EventLevel;
+		int EventSpawnLevel;
+		glm::ivec2 EventStart;
+		glm::ivec2 EventEnd;
 		double EventActivationPeriod;
 		size_t TilesSize;
 		InputFile
@@ -138,6 +138,7 @@ _Map::_Map(const std::string &Filename) : _Map() {
 				>> EventEnd.x
 				>> EventEnd.y
 				>> EventLevel
+				>> EventSpawnLevel
 				>> EventActivationPeriod
 				>> TilesSize;
 
@@ -155,7 +156,7 @@ _Map::_Map(const std::string &Filename) : _Map() {
 		if(EventParticleID != "" && !GameAssets.IsParticleLoaded(EventParticleID))
 			throw std::runtime_error("Cannot find particle: " + EventParticleID);
 
-		_Event *Event = new _Event(EventType, EventActive, EventStart, EventEnd, EventLevel, EventActivationPeriod, EventItemID, EventMonsterID, EventParticleID);
+		_Event *Event = new _Event(EventType, EventActive, EventStart, EventEnd, EventLevel, EventSpawnLevel, EventActivationPeriod, EventItemID, EventMonsterID, EventParticleID);
 		for(size_t j = 0; j < TilesSize; j++) {
 			glm::ivec2 Tile;
 			int TileLayer, TileBlockID;
@@ -308,7 +309,6 @@ bool _Map::Save(const std::string &String) {
 		<< MAP_FILEVERSION << '\n'
 		<< Level << '\n'
 		<< MapType << '\n'
-		<< "default" << '\n'
 		<< Width << ' ' << Height << '\n';
 
 	// Objects
@@ -334,6 +334,7 @@ bool _Map::Save(const std::string &String) {
 			<< Events[i]->End.x << ' '
 			<< Events[i]->End.y << ' '
 			<< Events[i]->Level << ' '
+			<< Events[i]->SpawnLevel << ' '
 			<< Events[i]->ActivationPeriod << ' '
 			<< Events[i]->Tiles.size() << ' '
 			<< Events[i]->ItemID << '\t'

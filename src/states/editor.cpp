@@ -220,6 +220,7 @@ void _EditorState::ResetEditorState() {
 	EventActivationPeriod = 0;
 	EventActive = 1;
 	EventLevel = 0;
+	EventSpawnLevel = 1;
 	AltTextureID = "";
 	AltTexture = nullptr;
 	EditorInput = -1;
@@ -1234,7 +1235,9 @@ void _EditorState::DrawBrush() {
 			std::string MonsterID;
 			std::string ParticleID;
 			double ActivationPeriod;
-			int Active, Level;
+			int Active;
+			int Level;
+			int SpawnLevel;
 			if(EventSelected()) {
 				ae::_Element *Button = PaletteElement[EDITMODE_EVENTS]->Children[SelectedEvent->Type];
 				IconTexture = Button->Style->Texture;
@@ -1246,6 +1249,7 @@ void _EditorState::DrawBrush() {
 				ParticleID = SelectedEvent->ParticleID;
 				Active = SelectedEvent->Active;
 				Level = SelectedEvent->Level;
+				SpawnLevel = SelectedEvent->SpawnLevel;
 				ActivationPeriod = SelectedEvent->ActivationPeriod;
 			}
 			else {
@@ -1254,11 +1258,12 @@ void _EditorState::DrawBrush() {
 				ParticleID = SavedText[EDITINPUT_PARTICLEIDENTIFIER];
 				Active = EventActive;
 				Level = EventLevel;
+				SpawnLevel = EventSpawnLevel;
 				ActivationPeriod = EventActivationPeriod;
 			}
 
 			int X = ae::Graphics.ViewportSize.x + 75;
-			int Y = ae::Graphics.ViewportSize.y - 15;
+			int Y = ae::Graphics.ViewportSize.y - 30;
 
 			std::ostringstream Buffer;
 			Buffer << Active;
@@ -1281,6 +1286,12 @@ void _EditorState::DrawBrush() {
 			Y += 15;
 			Buffer << Level << ":" << ActivationPeriod;
 			MainFont->DrawText("Level:", glm::vec2(X, Y), ae::RIGHT_BASELINE);
+			MainFont->DrawText(Buffer.str(), glm::vec2(X + 5, Y));
+			Buffer.str("");
+
+			Y += 15;
+			Buffer << SpawnLevel;
+			MainFont->DrawText("Spawn Level:", glm::vec2(X, Y), ae::RIGHT_BASELINE);
 			MainFont->DrawText(Buffer.str(), glm::vec2(X + 5, Y));
 			Buffer.str("");
 		} break;
@@ -1576,7 +1587,7 @@ void _EditorState::AddEvent(int Type) {
 	}
 
 	if(Type != -1) {
-		_Event *Event = new _Event(Type, EventActive, Start, End, EventLevel, EventActivationPeriod, EventItemID, EventMonsterID, EventParticleID);
+		_Event *Event = new _Event(Type, EventActive, Start, End, EventLevel, EventSpawnLevel, EventActivationPeriod, EventItemID, EventMonsterID, EventParticleID);
 		if(TileLayer != -1) {
 			int BlockIndex = Map->GetSelectedBlock(TileLayer, Start);
 			Event->AddTile(_EventTile(Start, TileLayer, BlockIndex));
@@ -1898,7 +1909,7 @@ void _EditorState::ExecutePaste(bool Viewport) {
 				DrawEnd = Map->GetValidCoord(ClipboardEvent->End - ClipboardEvent->Start + glm::ivec2(StartPosition));
 
 				_Event *Event = new _Event(ClipboardEvent->Type, ClipboardEvent->Active, DrawStart, DrawEnd,
-										ClipboardEvent->Level, ClipboardEvent->ActivationPeriod, ClipboardEvent->ItemID,
+										ClipboardEvent->Level, ClipboardEvent->SpawnLevel, ClipboardEvent->ActivationPeriod, ClipboardEvent->ItemID,
 										ClipboardEvent->MonsterID, ClipboardEvent->ParticleID);
 
 				Map->AddEvent(Event);
