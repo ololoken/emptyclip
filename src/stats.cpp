@@ -46,7 +46,7 @@ void _Stats::Init() {
 	LoadWeapons("tables/weapons.tsv");
 	LoadItemDrops("tables/itemdrops.tsv");
 	LoadMonsters("tables/monsters.tsv");
-	WeaponFists = Stats.CreateWeapon("weapon_fists", glm::vec2(0), false);
+	WeaponFists = Stats.CreateWeapon("weapon_fists", 1, 0, glm::vec2(0), false);
 }
 
 // Shutdown
@@ -597,31 +597,37 @@ void _Stats::LoadMonsters(const std::string &Path) {
 }
 
 // Create item
-_Item *_Stats::CreateItem(const std::string &ID, int Count, const glm::vec2 &Position) {
+_Item *_Stats::CreateItem(const std::string &ID, int Level, int Quality, int Count, const glm::vec2 &Position, bool RandomStats) {
 	_ItemTemplate &Template = Items[ID];
 
 	// Create item
 	_Item *Item = new _Item(Template.Attributes);
 	Item->Type = Template.Type;
-	Item->Name = Template.Name;
 	Item->ID = ID;
+	Item->Name = Template.Name;
+	Item->Level = Level;
+	Item->Quality = Quality;
 	Item->Count = Count;
 	Item->Position = Position;
 	Item->Texture = ae::Assets.Textures[Template.IconID];
 	Item->Color = Template.Color;
+
+	// Generate random quality
+	if(RandomStats)
+		Item->Quality = ae::GetRandomInt(-ITEM_QUALITY_RANGE, ITEM_QUALITY_RANGE);
 
 	// Set attributes based off type and item level
 	switch(Template.Type) {
 		case _Object::UPGRADE:
 			Item->Attributes["upgrade_type"].Int = Template.Attributes["upgrade_type"].Int;
 			Item->Attributes["weapon_type"].Int = Template.Attributes["weapon_type"].Int;
-			Item->SetAttributeLevel("bonus", Item->Level, 1.0f);
+			Item->SetAttributeLevel("bonus", Item->Level, 1.0f + Item->Quality * 0.01f);
 		break;
 		case _Object::ARMOR:
-			Item->SetAttributeLevel("damage_block", Item->Level, 1.0f);
-			Item->SetAttributeLevel("damage_resist", Item->Level, 1.0f);
-			Item->SetAttributeLevel("max_ammo", Item->Level, 1.0f);
-			Item->SetAttributeLevel("move_speed", Item->Level, 1.0f);
+			Item->SetAttributeLevel("damage_block", Item->Level, 1.0f + Item->Quality * 0.01f);
+			Item->SetAttributeLevel("damage_resist", Item->Level, 1.0f + Item->Quality * 0.01f);
+			Item->SetAttributeLevel("max_ammo", Item->Level, 1.0f + Item->Quality * 0.01f);
+			Item->SetAttributeLevel("move_speed", Item->Level, 1.0f - Item->Quality * 0.01f);
 		break;
 		case _Object::MEDKIT:
 			Item->SetAttributeLevel("health_restored", Item->Level, 1.0f);
@@ -636,9 +642,9 @@ _Item *_Stats::CreateItem(const std::string &ID, int Count, const glm::vec2 &Pos
 }
 
 // Creates a weapon
-_Weapon *_Stats::CreateWeapon(const std::string &ID, const glm::vec2 &Position, bool Generate) {
+_Weapon *_Stats::CreateWeapon(const std::string &ID, int Level, int Quality, const glm::vec2 &Position, bool RandomStats) {
 	_WeaponTemplate &WeaponTemplate = Weapons[ID];
-	_Weapon *Weapon = new _Weapon(ID, 1, Position, WeaponTemplate, ae::Assets.Textures[WeaponTemplate.IconID], Generate);
+	_Weapon *Weapon = new _Weapon(ID, Level, Position, WeaponTemplate, ae::Assets.Textures[WeaponTemplate.IconID], RandomStats);
 
 	return Weapon;
 }

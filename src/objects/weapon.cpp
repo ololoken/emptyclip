@@ -24,7 +24,7 @@
 #include <algorithm>
 
 // Constructor
-_Weapon::_Weapon(const std::string &ID, int Level, const glm::vec2 &Position, const _WeaponTemplate &Weapon, const ae::_Texture *Texture, bool GenerateRandom) :
+_Weapon::_Weapon(const std::string &ID, int Level, const glm::vec2 &Position, const _WeaponTemplate &Weapon, const ae::_Texture *Texture, bool RandomStats) :
 	_Item(Weapon.Attributes) {
 
 	this->Type = _Object::WEAPON;
@@ -37,7 +37,7 @@ _Weapon::_Weapon(const std::string &ID, int Level, const glm::vec2 &Position, co
 	Attributes = Weapon.Attributes;
 
 	int Components = TemplateAttributes.at("components").Float + TemplateAttributes.at("components_level").Float * Level;
-	if(GenerateRandom) {
+	if(RandomStats) {
 		Quality = ae::GetRandomInt(-ITEM_QUALITY_RANGE, ITEM_QUALITY_RANGE);
 		Attributes["max_components"].Int = Components + ae::GetRandomInt(0, 1);
 		Attributes["ammo"].Int = TemplateAttributes.at("rounds").Int;
@@ -59,6 +59,8 @@ void _Weapon::Serialize(ae::_Buffer &Buffer) {
 
 	// Write weapons
 	Buffer.WriteString(ID.c_str());
+	Buffer.Write<int>(Level);
+	Buffer.Write<int>(Quality);
 
 	// Ammo
 	Buffer.Write(Attributes.at("ammo").Int);

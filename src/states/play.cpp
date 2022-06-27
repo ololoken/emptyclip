@@ -1045,10 +1045,10 @@ void _PlayState::SpawnObject(_ObjectSpawn *ObjectSpawn, bool GenerateStats) {
 		case _Object::UPGRADE:
 		case _Object::ARMOR:
 		case _Object::MEDKIT:
-			Map->AddItem(Stats.CreateItem(ObjectSpawn->ID, 1, ObjectSpawn->Position));
+			Map->AddItem(Stats.CreateItem(ObjectSpawn->ID, ObjectSpawn->Level, 0, 0, ObjectSpawn->Position, GenerateStats));
 		break;
 		case _Object::WEAPON:
-			Map->AddItem(Stats.CreateWeapon(ObjectSpawn->ID, ObjectSpawn->Position, GenerateStats));
+			Map->AddItem(Stats.CreateWeapon(ObjectSpawn->ID, ObjectSpawn->Level, 0, ObjectSpawn->Position, GenerateStats));
 		break;
 	}
 }

@@ -308,10 +308,7 @@ void _Player::LoadItems(ae::_Buffer &Buffer) {
 	for(int i = 0; i < ItemCount; i++) {
 		int Slot = Buffer.Read<int>();
 		int Type = Buffer.Read<int>();
-		int Level = Buffer.Read<int>();
-		int Quality = Buffer.Read<int>();
 		int Count = Buffer.Read<int>();
-		std::string ID;
 
 		// Create items
 		switch(Type) {
@@ -319,32 +316,32 @@ void _Player::LoadItems(ae::_Buffer &Buffer) {
 			case _Object::AMMO:
 			case _Object::UPGRADE:
 			case _Object::ARMOR:
-			case _Object::MEDKIT:
-				ID = Buffer.ReadString();
-				Inventory[Slot] = Stats.CreateItem(ID, Count, glm::vec2(0, 0));
-				Inventory[Slot]->Level = Level;
-				Inventory[Slot]->Quality = Quality;
-			break;
+			case _Object::MEDKIT: {
+				std::string ID = Buffer.ReadString();
+				int Level = Buffer.Read<int>();
+				int Quality = Buffer.Read<int>();
+				Inventory[Slot] = Stats.CreateItem(ID, Level, Quality, Count, glm::vec2(0, 0), false);
+			} break;
 			case _Object::WEAPON:
-				LoadWeapon(Buffer, Level, Quality, Slot);
+				LoadWeapon(Buffer, Slot);
 			break;
 		}
 	}
 }
 
 // Loads weapons from a stream
-_Weapon *_Player::LoadWeapon(ae::_Buffer &Buffer, int Level, int Quality, int InventoryIndex) {
+_Weapon *_Player::LoadWeapon(ae::_Buffer &Buffer, int InventoryIndex) {
 
 	// Get weapons
 	std::string ID = Buffer.ReadString();
+	int Level = Buffer.Read<int>();
+	int Quality = Buffer.Read<int>();
 	int Ammo = Buffer.Read<int>();
 	int MaxComponents = Buffer.Read<int>();
 
 	// Create weapon
-	_Weapon *Weapon = Stats.CreateWeapon(ID, glm::vec2(0, 0), false);
+	_Weapon *Weapon = Stats.CreateWeapon(ID, Level, Quality, glm::vec2(0, 0), false);
 	Weapon->Attributes["max_components"].Int = MaxComponents;
-	Weapon->Level = Level;
-	Weapon->Quality = Quality;
 	LoadUpgrades(Buffer, Weapon);
 	Weapon->RecalculateStats();
 	Weapon->SetAmmo(Ammo);
@@ -363,7 +360,9 @@ void _Player::LoadUpgrades(ae::_Buffer &Buffer, _Weapon *Weapon) {
 	// Read data
 	for(int i = 0; i < Components; i++) {
 		std::string ID = Buffer.ReadString();
-		_Item *Item = Stats.CreateItem(ID, 1, glm::vec2(0, 0));
+		int Level = Buffer.Read<int>();
+		int Quality = Buffer.Read<int>();
+		_Item *Item = Stats.CreateItem(ID, Level, Quality, 0, glm::vec2(0, 0), false);
 		if(!Weapon->AddComponent(Item))
 			delete Item;
 	}
@@ -400,14 +399,13 @@ void _Player::SaveItems(std::ofstream &File) {
 
 	// Write items
 	for(int i = 0; i < INVENTORY_SIZE; i++) {
-		if(HasInventory(i)) {
-			Buffer.Write(i);
-			Buffer.Write(Inventory[i]->Type);
-			Buffer.Write(Inventory[i]->Level);
-			Buffer.Write(Inventory[i]->Quality);
-			Buffer.Write(Inventory[i]->Count);
-			Inventory[i]->Serialize(Buffer);
-		}
+		if(!HasInventory(i))
+			continue;
+
+		Buffer.Write(i);
+		Buffer.Write(Inventory[i]->Type);
+		Buffer.Write(Inventory[i]->Count);
+		Inventory[i]->Serialize(Buffer);
 	}
 
 	// Write chunk

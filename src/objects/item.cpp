@@ -59,18 +59,21 @@ void _Item::SetAttributeLevel(const std::string &AttributeName, int ItemLevel, f
 // Serialize for saving
 void _Item::Serialize(ae::_Buffer &Buffer) {
 	Buffer.WriteString(ID.c_str());
+	Buffer.Write<int>(Level);
+	Buffer.Write<int>(Quality);
 }
 
 // Draw the item popup window
 void _Item::DrawTooltip(const _Player *Player, std::size_t CompareSlot, glm::ivec2 DrawPosition) {
+	std::ostringstream Buffer;
 
-	glm::ivec2 Size;
+	glm::ivec2 Size(300, 120);
 	if(Type == _Object::WEAPON)
-		Size = glm::ivec2(245, 375);
+		Size.y = 400;
 	else if(Type == _Object::ARMOR)
-		Size = glm::ivec2(220, 170);
-	else
-		Size = glm::ivec2(150, 100);
+		Size.y = 320;
+	else if(Type == _Object::UPGRADE)
+		Size.y = 170;
 
 	// Get title width
 	ae::_TextBounds TextBounds;
@@ -93,38 +96,50 @@ void _Item::DrawTooltip(const _Player *Player, std::size_t CompareSlot, glm::ive
 	DrawPosition.x = std::clamp(DrawPosition.x, MinPadding, ae::Graphics.CurrentSize.x - MinPadding - Size.x);
 	DrawPosition.y = std::clamp(DrawPosition.y, MinPadding, ae::Graphics.CurrentSize.y - MinPadding - Size.y);
 
+	// Draw background
 	ae::Graphics.SetProgram(ae::Assets.Programs["ortho_pos"]);
 	ae::Graphics.SetColor(glm::vec4(0, 0, 0, 0.8f));
 	ae::Graphics.DrawRectangle(glm::vec2(DrawPosition.x, DrawPosition.y), DrawPosition + Size, true);
 
+	// Draw name
 	DrawPosition.y += 25;
 	DrawPosition.x += Size.x/2;
-	ae::Assets.Fonts["hud_large"]->DrawText(Name,DrawPosition, ae::CENTER_BASELINE);
+	ae::Assets.Fonts["hud_large"]->DrawText(Name, DrawPosition, ae::CENTER_BASELINE);
 
-	DrawPosition.y += 16;
+	// Draw type
+	DrawPosition.y += 18;
 	ae::Assets.Fonts["hud_small"]->DrawText(GetTypeAsString(), DrawPosition, ae::CENTER_BASELINE);
+
+	// Draw Level
+	if(Type != _Object::KEY) {
+		DrawPosition.y += 16;
+		Buffer << "Level " << Level;
+		ae::Assets.Fonts["hud_small"]->DrawText(Buffer.str(), DrawPosition, ae::CENTER_BASELINE);
+		Buffer.str("");
+	}
 
 	DrawPosition.y += 10;
 	glm::ivec2 DrawOffset(8, 0);
+
+	// Quality
+	glm::vec4 TextColor = COLOR_WHITE;
+	if(Type == _Object::WEAPON || Type == _Object::ARMOR || Type == _Object::UPGRADE) {
+		if(EquippedWeapon) {
+			if(Quality > EquippedWeapon->Quality)
+				TextColor = COLOR_GREEN;
+			else if(Quality < EquippedWeapon->Quality)
+				TextColor = COLOR_RED;
+		}
+		DrawPosition.y += 20;
+		Buffer << Quality << "%";
+		ae::Assets.Fonts["hud_medium"]->DrawText("Quality", DrawPosition - DrawOffset, ae::RIGHT_BASELINE);
+		ae::Assets.Fonts["hud_medium"]->DrawText(Buffer.str(), DrawPosition + DrawOffset, ae::LEFT_BASELINE, TextColor);
+		Buffer.str("");
+	}
+
 	switch(Type) {
 		case _Object::WEAPON: {
-			std::ostringstream Buffer;
 			_Weapon *Weapon = (_Weapon *)this;
-			glm::vec4 TextColor;
-
-			// Quality
-			TextColor = COLOR_WHITE;
-			if(EquippedWeapon) {
-				if(Weapon->Quality > EquippedWeapon->Quality)
-					TextColor = COLOR_GREEN;
-				else if(Weapon->Quality < EquippedWeapon->Quality)
-					TextColor = COLOR_RED;
-			}
-			DrawPosition.y += 20;
-			Buffer << Weapon->Quality << "%";
-			ae::Assets.Fonts["hud_medium"]->DrawText("Quality", DrawPosition - DrawOffset, ae::RIGHT_BASELINE);
-			ae::Assets.Fonts["hud_medium"]->DrawText(Buffer.str(), DrawPosition + DrawOffset, ae::LEFT_BASELINE, TextColor);
-			Buffer.str("");
 
 			// Damage
 			TextColor = COLOR_WHITE;
@@ -301,10 +316,6 @@ void _Item::DrawTooltip(const _Player *Player, std::size_t CompareSlot, glm::ive
 			}
 		} break;
 		case _Object::ARMOR: {
-			std::ostringstream Buffer;
-			glm::vec4 TextColor;
-
-			DrawPosition.x += 40;
 
 			// Damage Block
 			if(Attributes.at("damage_block").Int != 0) {
@@ -375,7 +386,6 @@ void _Item::DrawTooltip(const _Player *Player, std::size_t CompareSlot, glm::ive
 			}
 		} break;
 		case _Object::MEDKIT: {
-			std::ostringstream Buffer;
 
 			// Heal amount
 			DrawPosition.y += 20;
@@ -383,15 +393,16 @@ void _Item::DrawTooltip(const _Player *Player, std::size_t CompareSlot, glm::ive
 			ae::Assets.Fonts["hud_medium"]->DrawText(Buffer.str(), glm::vec2(DrawPosition.x, DrawPosition.y), ae::CENTER_BASELINE, COLOR_GREEN);
 		} break;
 		case _Object::UPGRADE: {
-			std::ostringstream Buffer;
 
 			// Bonus
 			DrawPosition.y += 20;
 			if(Attributes.at("upgrade_type").Int == UPGRADE_ATTACKS)
-				Buffer << "+" << Attributes.at("bonus").Int << " Attack Count";
+				Buffer << "+" << Attributes.at("bonus").Int;
 			else
-				Buffer << "+" << Attributes.at("bonus").Int << "% " << UpgradeTypeToString(Attributes.at("upgrade_type").Int, -1);
-			ae::Assets.Fonts["hud_medium"]->DrawText(Buffer.str(), glm::vec2(DrawPosition.x, DrawPosition.y), ae::CENTER_BASELINE);
+				Buffer << "+" << Attributes.at("bonus").Int << "%";
+
+			ae::Assets.Fonts["hud_medium"]->DrawText(UpgradeTypeToString(Attributes.at("upgrade_type").Int, -1), DrawPosition - DrawOffset, ae::RIGHT_BASELINE);
+			ae::Assets.Fonts["hud_medium"]->DrawText(Buffer.str(), DrawPosition + DrawOffset, ae::LEFT_BASELINE, TextColor);
 		} break;
 	}
 }
