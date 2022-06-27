@@ -416,7 +416,7 @@
 42 6 -1 89
 9 0 42 6 42 6 1 1 0.00 1 		
 42 9 -1 -1
-242
+235
 0 0 0 99 99 0.00 0.00 0.00 1.00 0 1 textures/map/g_brick3.png	
 1 44 1 44 1 0.00 0.00 180.00 1.00 0 1 textures/map/g_blood0.png	
 1 44 1 54 7 0.00 0.00 180.00 1.00 0 1 textures/map/g_blood0.png	
@@ -498,13 +498,6 @@
 1 66 40 67 52 0.00 0.00 0.00 1.00 0 1 textures/map/g_blood0.png	
 1 68 51 75 52 0.00 0.00 0.00 1.00 0 1 textures/map/g_blood0.png	
 1 76 51 76 52 0.00 0.00 0.00 1.00 0 1 textures/map/g_blood0.png	
-1 26 3 26 5 0.00 0.00 0.00 1.00 0 1 textures/map/g_brick1.png	
-1 27 3 27 3 0.00 0.00 0.00 1.00 0 1 textures/map/g_brick1.png	
-1 27 5 27 5 0.00 0.00 0.00 1.00 0 1 textures/map/g_brick1.png	
-1 29 3 30 5 0.00 0.00 0.00 1.00 0 1 textures/map/g_brick1.png	
-1 32 3 33 5 0.00 0.00 0.00 1.00 0 1 textures/map/g_brick1.png	
-1 35 3 35 5 0.00 0.00 0.00 1.00 0 1 textures/map/g_brick1.png	
-1 36 3 36 4 0.00 0.00 0.00 1.00 0 1 textures/map/g_brick1.png	
 1 96 78 98 80 0.00 0.00 0.00 1.00 0 1 textures/map/g_blood0.png	
 1 36 8 36 8 0.00 0.00 0.00 1.00 0 1 textures/map/w_wall1.png	
 4 8 1 8 4 0.00 1.00 180.00 1.00 0 0 textures/map/fl_fence0.png	

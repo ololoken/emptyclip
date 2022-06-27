@@ -362,8 +362,8 @@
 8 1 154 270 155 271 1 1 0.00 1 		
 134 146 -1 66
 3 0 133 146 136 146 11 1 0.00 0 		
-360
-0 0 0 399 399 -70.00 0.00 0.00 1.00 0 1 textures/map/g_grass1.png	
+354
+0 0 0 399 399 -70.00 0.00 0.00 1.00 0 1 textures/map/grass_medium.png	
 1 190 190 209 209 -70.00 0.00 0.00 1.00 0 1 textures/map/w_window1.png	
 1 145 145 149 399 -70.00 -70.00 0.00 1.00 0 1 textures/map/g_road1.png	
 1 250 150 254 254 -70.00 -70.00 0.00 1.00 0 1 textures/map/g_road1.png	
@@ -558,12 +558,6 @@
 2 255 255 274 274 0.00 0.00 0.00 1.00 0 1 textures/map/g_road1.png	
 2 150 255 169 274 0.00 0.00 0.00 1.00 0 1 textures/map/g_road1.png	
 2 255 60 289 144 0.00 0.00 0.00 1.00 0 1 textures/map/g_road1.png	
-2 384 5 388 5 0.00 0.00 0.00 1.00 0 1 textures/map/w_building0.png	textures/map/fl_brick0door0.png
-2 386 6 386 9 0.00 0.00 0.00 1.00 0 1 textures/map/w_building0.png	textures/map/fl_brick0door0.png
-2 384 9 385 9 0.00 0.00 0.00 1.00 0 1 textures/map/w_building0.png	textures/map/fl_brick0door0.png
-2 390 5 394 5 0.00 0.00 0.00 1.00 0 1 textures/map/w_building0.png	textures/map/fl_brick0door0.png
-2 392 6 392 9 0.00 0.00 0.00 1.00 0 1 textures/map/w_building0.png	textures/map/fl_brick0door0.png
-2 390 9 391 9 0.00 0.00 0.00 1.00 0 1 textures/map/w_building0.png	textures/map/fl_brick0door0.png
 2 119 119 119 119 0.00 0.00 0.00 1.00 0 1 textures/map/w_window1.png	textures/map/w_trans0.png
 3 133 133 136 136 0.00 0.00 0.00 1.00 0 1 textures/map/g_road1.png	textures/map/fl_brick0door0.png
 3 138 138 140 140 0.00 0.00 0.00 1.00 0 1 textures/map/g_road1.png	textures/map/fl_brick0door0.png

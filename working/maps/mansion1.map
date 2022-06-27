@@ -41,7 +41,7 @@
 3 1 48 68 51 71 1 1 0.00 1 		
 44 68 -1 -1
 1 1 49 65 50 65 1 1 0.00 17 skey1		
-49 65 5 177
+49 65 5 171
 48 67 4 69
 49 67 4 -1
 50 67 4 -1
@@ -59,7 +59,7 @@
 47 69 4 -1
 47 68 4 -1
 1 1 45 69 45 70 1 1 0.00 25 skey2		
-45 69 5 175
+45 69 5 169
 46 67 4 51
 46 68 4 -1
 46 69 4 -1
@@ -85,7 +85,7 @@
 48 66 4 -1
 47 66 4 -1
 1 1 54 69 54 70 1 1 0.00 9 skey3		
-54 69 5 176
+54 69 5 170
 51 69 4 75
 51 70 4 -1
 50 71 4 74
@@ -159,7 +159,7 @@
 42 49 -1 -1
 0 1 43 49 43 49 1 1 0.00 2 		
 43 49 4 77
-60 36 5 178
+60 36 5 172
 8 1 49 53 50 54 1 1 0.00 2 		
 50 20 -1 -1
 52 23 -1 27
@@ -414,9 +414,9 @@
 57 68 -1 -1
 62 62 -1 -1
 6 1 45 4 54 4 1 1 1.00 0 event_foolish0		
-309
-0 5 0 99 99 0.00 0.00 0.00 1.00 0 1 textures/map/g_grass1.png	
-0 0 5 4 99 0.00 0.00 0.00 1.00 0 1 textures/map/g_grass1.png	textures/map/w_trans0.png
+302
+0 5 0 99 99 0.00 0.00 0.00 1.00 0 1 textures/map/grass_medium.png	
+0 0 5 4 99 0.00 0.00 0.00 1.00 0 1 textures/map/grass_medium.png	textures/map/w_trans0.png
 1 13 59 87 87 0.00 0.00 0.00 1.00 0 1 textures/map/g_wood0.png	
 1 68 20 71 58 0.00 0.00 0.00 1.00 0 1 textures/map/g_road0.png	
 1 48 19 51 44 0.00 0.00 0.00 1.00 0 1 textures/map/g_road0.png	
@@ -429,12 +429,11 @@
 1 2 1 2 2 -1.50 -1.00 0.00 1.00 0 1 textures/map/g_road0.png	textures/map/w_trans0.png
 1 1 1 1 2 -2.00 -1.50 0.00 1.00 0 1 textures/map/g_road0.png	textures/map/w_trans0.png
 1 0 1 0 2 -2.50 -2.00 0.00 1.00 0 1 textures/map/g_road0.png	textures/map/w_trans0.png
-2 81 86 86 87 0.00 0.00 0.00 1.00 0 1 textures/map/g_water0.png	
 2 68 20 68 58 0.00 0.00 0.00 1.00 0 1 textures/map/gt_grass1.png	
 2 71 20 71 58 0.00 0.00 0.00 -1.00 0 1 textures/map/gt_grass1.png	
 2 51 19 51 44 0.00 0.00 0.00 -1.00 0 1 textures/map/gt_grass1.png	
 2 48 19 48 44 0.00 0.00 0.00 1.00 0 1 textures/map/gt_grass1.png	
-2 82 67 85 85 0.00 0.00 0.00 1.00 0 1 textures/map/g_carpet1.png	textures/map/fl_fence0.png
+2 82 67 85 87 0.00 0.00 0.00 1.00 0 1 textures/map/g_carpet1.png	textures/map/fl_fence0.png
 2 18 67 81 72 0.00 0.00 0.00 1.00 0 1 textures/map/g_carpet1.png	textures/map/fl_fence0.png
 2 14 67 17 85 0.00 0.00 0.00 1.00 0 1 textures/map/g_carpet1.png	textures/map/fl_fence0.png
 2 47 59 52 64 0.00 0.00 0.00 1.00 0 1 textures/map/g_carpet1.png	textures/map/fl_fence0.png
@@ -609,12 +608,6 @@
 5 39 80 60 80 0.00 5.00 0.00 1.00 1 0 textures/map/w_room0.png	textures/map/w_trans0.png
 5 39 81 39 83 0.00 5.00 0.00 1.00 1 0 textures/map/w_room0.png	textures/map/w_trans0.png
 5 29 74 29 79 0.00 5.00 0.00 1.00 1 0 textures/map/w_room0.png	textures/map/w_trans0.png
-5 2 97 2 99 0.00 0.50 90.00 1.00 1 0 textures/map/g_grass1.png	textures/map/w_trans0.png
-5 1 97 3 97 0.00 0.50 90.00 1.00 1 0 textures/map/g_grass1.png	textures/map/w_trans0.png
-5 1 99 1 99 0.00 0.50 90.00 1.00 1 0 textures/map/g_grass1.png	textures/map/w_trans0.png
-5 5 97 7 97 0.00 0.50 90.00 1.00 1 0 textures/map/g_grass1.png	textures/map/w_trans0.png
-5 6 97 6 99 0.00 0.50 90.00 1.00 1 0 textures/map/g_grass1.png	textures/map/w_trans0.png
-5 5 99 5 99 0.00 0.50 90.00 1.00 1 0 textures/map/g_grass1.png	textures/map/w_trans0.png
 5 21 84 39 84 0.00 5.00 0.00 1.00 1 0 textures/map/w_room0.png	textures/map/w_trans0.png
 5 29 81 29 83 0.00 5.00 0.00 1.00 1 0 textures/map/w_room0.png	textures/map/w_trans0.png
 5 78 55 78 55 0.00 10.00 0.00 1.00 1 0 textures/map/w_treebark0.png	
@@ -649,7 +642,7 @@
 5 48 54 48 55 0.00 0.50 0.00 1.00 1 0 textures/map/g_sidewalk0.png	
 5 51 54 51 55 0.00 0.50 0.00 1.00 1 0 textures/map/g_sidewalk0.png	
 5 20 74 20 84 0.00 5.00 0.00 1.00 1 0 textures/map/w_room0.png	textures/map/w_trans0.png
-5 42 83 57 83 0.00 1.50 0.00 1.00 1 0 textures/map/g_wood4.png	textures/map/w_trans0.png
+5 42 83 57 83 0.00 1.50 0.00 1.00 1 0 textures/map/w_room0.png	textures/map/w_trans0.png
 5 32 78 32 82 0.00 2.00 0.00 1.00 1 0 textures/map/g_inside0.png	textures/map/w_trans0.png
 5 33 78 36 78 0.00 2.00 0.00 1.00 1 0 textures/map/g_inside0.png	textures/map/w_trans0.png
 5 34 80 35 80 0.00 2.00 0.00 1.00 1 0 textures/map/g_inside0.png	textures/map/w_trans0.png

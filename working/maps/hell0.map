@@ -47,7 +47,7 @@
 78 93 4 8
 78 94 4 -1
 7 0 10 53 10 56 1 1 0.00 2 		
-5 95 1 50
+5 95 1 44
 6 95 1 -1
 0 1 23 19 23 19 0 1 0.00 1 skey1		
 23 19 4 9
@@ -360,7 +360,7 @@
 22 16 -1 31
 3 0 1 91 1 91 4 1 0.00 1 		
 0 91 -1 -1
-174
+168
 0 0 25 99 99 -20.00 0.00 0.00 1.00 0 0 textures/map/w_helldoor0.png	
 1 0 0 44 24 -4.50 -4.50 0.00 1.00 0 0 textures/map/g_fire0.png	
 1 45 1 49 19 -2.00 0.00 0.00 1.00 0 1 textures/map/w_blood1.png	
@@ -403,12 +403,6 @@
 1 50 55 99 59 -16.00 -14.00 0.00 1.00 0 0 textures/map/w_blood1.png	
 1 0 25 9 25 -20.00 0.00 0.00 1.00 0 1 textures/map/g_grid0.png	
 1 0 26 0 99 -20.00 0.00 0.00 1.00 0 1 textures/map/g_grid0.png	
-1 1 80 3 80 0.00 0.00 0.00 1.00 0 1 textures/map/w_windowhell0.png	
-1 2 81 2 82 0.00 0.00 0.00 1.00 0 1 textures/map/w_windowhell0.png	
-1 1 82 1 82 0.00 0.00 0.00 1.00 0 1 textures/map/w_windowhell0.png	
-1 1 84 3 84 0.00 0.00 0.00 1.00 0 1 textures/map/w_windowhell0.png	
-1 2 85 2 86 0.00 0.00 0.00 1.00 0 1 textures/map/w_windowhell0.png	
-1 1 86 1 86 0.00 0.00 0.00 1.00 0 1 textures/map/w_windowhell0.png	
 1 2 98 4 98 0.00 0.00 90.00 1.00 0 1 textures/map/g_fire0.png	
 1 5 95 6 98 0.00 0.00 90.00 1.00 0 1 textures/map/g_fire0.png	
 1 2 87 2 97 0.00 0.00 90.00 1.00 0 1 textures/map/g_fire0.png	
@@ -481,7 +475,7 @@
 4 5 25 6 25 0.00 1.00 0.00 1.00 0 0 textures/map/w_helldoor0.png	textures/map/w_helldoor1.png
 4 78 93 78 94 0.00 1.00 90.00 1.00 0 1 textures/map/w_trans0.png	textures/map/w_blood1.png
 4 23 19 23 19 0.00 1.00 0.00 1.00 0 0 textures/map/w_helldoor0.png	textures/map/w_helldoor1.png
-4 98 89 98 89 0.00 2.00 0.00 1.00 0 0 textures/map/f_blobby0.png	textures/map/w_trans0.png
+4 98 89 98 89 0.00 2.00 0.00 1.00 0 0 textures/map/g_grid0.png	textures/map/w_trans0.png
 4 10 58 10 61 -14.00 5.00 90.00 1.00 0 0 textures/map/w_windowhell0.png	
 4 10 48 10 51 -14.00 5.00 90.00 1.00 0 0 textures/map/w_windowhell0.png	
 4 10 38 10 41 -14.00 5.00 90.00 1.00 0 0 textures/map/w_windowhell0.png	
@@ -532,6 +526,6 @@
 5 45 0 46 0 -5.00 10.00 0.00 1.00 1 0 textures/map/g_grid0.png	
 5 48 0 49 0 -5.00 10.00 0.00 1.00 1 0 textures/map/g_grid0.png	
 5 47 0 47 0 1.00 10.00 0.00 1.00 1 0 textures/map/g_grid0.png	
-5 97 85 97 89 0.00 2.00 90.00 1.00 1 0 textures/map/f_blobby0.png	textures/map/w_trans0.png
+5 97 85 97 89 0.00 2.00 90.00 1.00 1 0 textures/map/g_grid0.png	textures/map/w_trans0.png
 5 99 87 99 99 -20.00 10.00 0.00 1.00 1 0 textures/map/g_grid0.png	
-5 98 85 98 85 0.00 2.00 90.00 1.00 1 0 textures/map/f_blobby0.png	textures/map/w_trans0.png
+5 98 85 98 85 0.00 2.00 90.00 1.00 1 0 textures/map/g_grid0.png	textures/map/w_trans0.png

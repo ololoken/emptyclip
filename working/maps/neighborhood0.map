@@ -302,7 +302,7 @@
 18 72 -1 -1
 8 1 46 70 46 70 1 1 0.00 1 		
 18 70 -1 44
-299
+293
 0 0 0 99 99 0.00 0.00 0.00 1.00 0 1 textures/map/g_worngrass0.png	
 1 30 0 39 89 0.00 0.00 0.00 1.00 0 1 textures/map/g_street1.png	
 1 40 80 59 89 0.00 0.00 0.00 1.00 0 1 textures/map/g_street1.png	
@@ -389,12 +389,6 @@
 2 41 69 42 71 0.00 0.00 0.00 1.00 0 1 textures/map/g_sidewalk0.png	
 3 12 83 12 83 0.00 0.00 0.00 1.00 0 1 textures/map/w_window1.png	textures/map/w_trans0.png
 3 57 10 57 10 0.00 0.00 0.00 1.00 0 1 textures/map/w_window1.png	textures/map/w_trans0.png
-3 91 96 93 96 0.00 0.00 0.00 1.00 0 1 textures/map/w_treebark0.png	textures/map/w_trans0.png
-3 92 97 92 98 0.00 0.00 0.00 1.00 0 1 textures/map/w_treebark0.png	textures/map/w_trans0.png
-3 91 98 91 98 0.00 0.00 0.00 1.00 0 1 textures/map/w_treebark0.png	textures/map/w_trans0.png
-3 95 96 97 96 0.00 0.00 0.00 1.00 0 1 textures/map/w_treebark0.png	textures/map/w_trans0.png
-3 96 97 96 98 0.00 0.00 0.00 1.00 0 1 textures/map/w_treebark0.png	textures/map/w_trans0.png
-3 95 98 95 98 0.00 0.00 0.00 1.00 0 1 textures/map/w_treebark0.png	textures/map/w_trans0.png
 3 46 70 46 70 0.00 0.00 0.00 1.00 0 1 textures/map/g_sidewalk0.png	
 4 13 27 28 27 0.00 1.00 0.00 1.00 0 0 textures/map/f_woodfence0.png	
 4 13 42 28 42 0.00 1.00 0.00 1.00 0 0 textures/map/f_woodfence0.png	
@@ -415,7 +409,7 @@
 4 24 59 24 60 0.00 2.00 90.00 1.00 0 0 textures/map/w_window0.png	textures/map/w_trans0.png
 4 10 93 87 93 0.00 1.00 0.00 1.00 0 0 textures/map/fl_fence0.png	
 4 87 0 87 92 0.00 1.00 90.00 1.00 0 0 textures/map/fl_fence0.png	
-4 23 86 23 86 0.00 1.00 90.00 1.00 0 0 textures/map/f_woodgate0.png	textures/map/f_woodgate1.png
+4 23 86 23 86 0.00 1.00 90.00 1.00 0 0 textures/map/fl_brick0door1.png	textures/map/fl_brick0door0.png
 4 23 83 23 85 0.00 1.00 90.00 1.00 0 0 textures/map/fl_metalfence1.png	
 4 23 87 23 89 0.00 1.00 90.00 1.00 0 0 textures/map/fl_metalfence1.png	
 4 12 90 22 90 0.00 1.00 0.00 1.00 0 0 textures/map/fl_metalfence1.png	
