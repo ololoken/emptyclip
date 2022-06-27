@@ -64,11 +64,11 @@ const int PaletteSizes[EDITMODE_COUNT] = {
 	32,
 	64,
 	64,
-	32,
-	32,
-	32,
-	32,
-	32,
+	64,
+	64,
+	64,
+	64,
+	64,
 };
 
 // Constructor

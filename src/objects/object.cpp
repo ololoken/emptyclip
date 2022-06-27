@@ -23,7 +23,7 @@
 // Constructor
 _Object::_Object() :
 	Active(true),
-	Type(UNDEFINED),
+	Type(NONE),
 	Map(nullptr),
 	TileChanged(false),
 	Position(0, 0),

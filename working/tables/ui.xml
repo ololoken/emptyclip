@@ -30,15 +30,15 @@
         <element id="label_hud_experience_text" font="hud_small" offset_y="-5" alignment_y="3"/>
     </element>
     <element id="element_hud_mainhand" offset_x="-190" offset_y="-90" alignment_y="2">
-        <element id="image_mainhand_icon" size_x="32" size_y="32" alignment_y="0" stretch="false"/>
+        <element id="image_mainhand_icon" size_x="32" size_y="32" alignment_y="0" stretch="true"/>
         <element id="label_hud_mainhand_ammo" font="hud_larger" offset_y="58" alignment_y="3"/>
     </element>
     <element id="element_hud_offhand" offset_x="170" offset_y="-90" alignment_y="2">
-        <element id="image_offhand_icon" size_x="32" size_y="32" alignment_y="0" stretch="false"/>
+        <element id="image_offhand_icon" size_x="32" size_y="32" alignment_y="0" stretch="true"/>
         <element id="label_hud_offhand_ammo" font="hud_larger" offset_y="58" alignment_y="3"/>
     </element>
     <element id="element_hud_melee" offset_x="230" offset_y="-90" alignment_y="2">
-        <element id="image_melee_icon" size_x="32" size_y="32" alignment_y="0" stretch="false"/>
+        <element id="image_melee_icon" size_x="32" size_y="32" alignment_y="0" stretch="true"/>
     </element>
     <element id="element_hud_messagebox" style="style_menu_window" offset_y="-150" size_x="275" size_y="100" alignment_y="2">
         <element id="label_hud_messagebox_text" font="hud_medium"/>

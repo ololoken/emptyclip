@@ -1,6 +1,6 @@
 id	name	icon_id	color_id	type	weapon_type	bonus	bonus_level
-upgrade_clip	Max Rounds Upgrade	textures/items/u_clip0.png		0	-1	0	10
-upgrade_damage	Damage Upgrade	textures/items/u_damage0.png		1	-1	0	10
-upgrade_accuracy	Accuracy Upgrade	textures/items/u_accuracy0.png		2	-1	0	10
-upgrade_attackspeed	Attack Speed Upgrade	textures/items/u_speed0.png		3	-1	0	10
-upgrade_reloadspeed	Reload Speed Upgrade	textures/items/u_reload0.png		4	-1	0	10
+upgrade_maxrounds	Max Rounds Upgrade	textures/items/upgrade_maxrounds.png		1	-1	0	10
+upgrade_damage	Damage Upgrade	textures/items/upgrade_damage.png		2	-1	0	10
+upgrade_accuracy	Accuracy Upgrade	textures/items/upgrade_accuracy.png		3	-1	0	10
+upgrade_attackspeed	Attack Speed Upgrade	textures/items/upgrade_attackspeed.png		4	-1	0	10
+upgrade_reloadspeed	Reload Speed Upgrade	textures/items/upgrade_reloadspeed.png		5	-1	0	10

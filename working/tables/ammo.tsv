@@ -1,10 +1,4 @@
 id	name	icon_texture	amount	max
-ammo_9mm	9mm	textures/items/a_9mm.png	15	50
-ammo_357m	.357 Magnum	textures/items/a_357.png	6	30
-ammo_556mm	5.56mm	textures/items/a_556mm.png	20	100
-ammo_762mm	7.62mm	textures/items/a_762mm.png	30	150
-ammo_shells	Shotgun Shells	textures/items/a_shells.png	10	50
-ammo_rockets	Rockets	textures/items/a_rockets.png	1	5
-ammo_power	Power Cells	textures/items/a_power.png	15	75
-ammo_plasma	Plasma Cells	textures/items/a_plasma.png	15	75
-ammo_psi	Psi	textures/items/a_psi.png	3	15
+ammo_pistol	Pistol Ammo	textures/items/ammo_pistol.png	10	50
+ammo_shells	Shotgun Shells	textures/items/ammo_shotgun.png	5	25
+ammo_rifle	Rifle Ammo	textures/items/ammo_rifle.png	20	100

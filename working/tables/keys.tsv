@@ -27,3 +27,7 @@ wkey0	World Key I	textures/items/i_key0.png	shade_black0
 wkey1	World Key II	textures/items/i_key0.png	shade_black0
 wkey2	World Key III	textures/items/i_key0.png	shade_black0
 wkey4	World Key V	textures/items/i_key0.png	shade_black0
+key_red	Red Key	textures/items/key_red.png	
+key_green	Green Key	textures/items/key_green.png	
+key_blue	Blue Key	textures/items/key_blue.png	
+key_boss	Boss Key	textures/items/key_boss.png	

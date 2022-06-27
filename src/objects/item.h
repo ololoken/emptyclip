@@ -25,6 +25,7 @@ class _Player;
 
 // Upgrade component types
 enum UpgradeType {
+	UPGRADE_NONE,
 	UPGRADE_CLIP,
 	UPGRADE_DAMAGE,
 	UPGRADE_ACCURACY,
@@ -36,6 +37,7 @@ enum UpgradeType {
 
 // Types of weapons
 enum WeaponType {
+	WEAPON_NONE,
 	WEAPON_MELEE,
 	WEAPON_PISTOL,
 	WEAPON_SHOTGUN,

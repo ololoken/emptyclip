@@ -39,7 +39,7 @@ class _Object {
 
 		// Types of objects in the game
 		enum ObjectType {
-			UNDEFINED=-1,
+			NONE=-1,
 			PLAYER,
 			MONSTER,
 			KEY,
