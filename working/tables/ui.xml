@@ -9,7 +9,7 @@
         <element id="image_enemy_health_full" texture="textures/hud_repeat/health0.png" size_y="32" alignment_x="0" alignment_y="0" stretch="false"/>
         <element id="label_hud_enemy_name" font="hud_large" offset_y="-9" alignment_y="3"/>
     </element>
-    <element id="element_hud_player_health" offset_y="-80" size_x="200" alignment_y="2">
+    <element id="element_hud_player_health" offset_y="-90" size_x="200" alignment_y="2">
         <element id="image_player_health_empty" texture="textures/hud_repeat/health1.png" size_x="200" size_y="32" alignment_x="0" alignment_y="0" stretch="false"/>
         <element id="image_player_health_full" texture="textures/hud_repeat/health0.png" size_y="32" alignment_x="0" alignment_y="0" stretch="false"/>
         <element id="image_player_health_cap_start" texture="textures/hud/healthend0.png" offset_x="-108" size_x="16" size_y="32" alignment_y="0" stretch="false"/>
@@ -24,21 +24,21 @@
         <element id="image_indicator_progress" size_x="256" size_y="32" alignment_x="0" alignment_y="0" stretch="false"/>
         <element id="label_hud_indicator_text" font="hud_medium" offset_y="-16" alignment_y="3"/>
     </element>
-    <element id="element_hud_experience" offset_y="-14" size_x="512" size_y="8" alignment_y="2">
-        <element id="image_experience_bar" texture="textures/hud_repeat/experience0.png" size_x="512" size_y="8" alignment_x="0" alignment_y="0" stretch="false"/>
-        <element id="image_experience_bar_full" texture="textures/hud_repeat/experience1.png" size_x="512" size_y="8" alignment_x="0" alignment_y="0" stretch="false"/>
-        <element id="label_hud_experience_text" font="hud_small" offset_y="-5" alignment_y="3"/>
+    <element id="element_hud_experience" offset_y="-6" size_x="550" size_y="8" alignment_y="2">
+        <element id="image_experience_bar" texture="textures/hud_repeat/experience0.png" size_x="550" size_y="8" alignment_x="0" alignment_y="0" stretch="false"/>
+        <element id="image_experience_bar_full" texture="textures/hud_repeat/experience1.png" size_x="550" size_y="8" alignment_x="0" alignment_y="0" stretch="false"/>
+        <element id="label_hud_experience_text" font="hud_small" offset_y="-8" alignment_y="3"/>
     </element>
-    <element id="element_hud_mainhand" offset_x="-190" offset_y="-90" alignment_y="2">
-        <element id="image_mainhand_icon" size_x="32" size_y="32" alignment_y="0" stretch="true"/>
-        <element id="label_hud_mainhand_ammo" font="hud_larger" offset_y="58" alignment_y="3"/>
+    <element id="element_hud_mainhand" offset_x="-190" offset_y="-104" alignment_y="2">
+        <element id="image_mainhand_icon" size_x="64" size_y="64" alignment_y="0" stretch="true"/>
+        <element id="label_hud_mainhand_ammo" font="hud_larger" offset_y="84" alignment_y="3"/>
     </element>
-    <element id="element_hud_offhand" offset_x="170" offset_y="-90" alignment_y="2">
-        <element id="image_offhand_icon" size_x="32" size_y="32" alignment_y="0" stretch="true"/>
-        <element id="label_hud_offhand_ammo" font="hud_larger" offset_y="58" alignment_y="3"/>
+    <element id="element_hud_offhand" offset_x="160" offset_y="-104" alignment_y="2">
+        <element id="image_offhand_icon" size_x="64" size_y="64" alignment_y="0" stretch="true"/>
+        <element id="label_hud_offhand_ammo" font="hud_larger" offset_y="84" alignment_y="3"/>
     </element>
-    <element id="element_hud_melee" offset_x="230" offset_y="-90" alignment_y="2">
-        <element id="image_melee_icon" size_x="32" size_y="32" alignment_y="0" stretch="true"/>
+    <element id="element_hud_melee" offset_x="230" offset_y="-104" alignment_y="2">
+        <element id="image_melee_icon" size_x="64" size_y="64" alignment_y="0" stretch="true"/>
     </element>
     <element id="element_hud_messagebox" style="style_menu_window" offset_y="-150" size_x="275" size_y="100" alignment_y="2">
         <element id="label_hud_messagebox_text" font="hud_medium"/>
