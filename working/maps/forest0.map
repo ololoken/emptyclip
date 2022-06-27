@@ -84,77 +84,77 @@
 2 1 54 68 54 70 1 1 4.00 1 	boss	smoke0
 74 69 -1 -1
 840
-0 0 0 79 79 0.00 0.00 0.00 1.00 0 1 textures/map/g_grass2.png	
-1 15 0 16 6 0.00 -1.00 0.00 1.00 0 1 textures/map/g_water0.png	
-1 17 5 33 6 0.00 -1.00 0.00 1.00 0 1 textures/map/g_water0.png	
-1 25 7 26 22 0.00 -1.00 0.00 1.00 0 1 textures/map/g_water0.png	
-1 5 21 24 22 0.00 -1.00 0.00 1.00 0 1 textures/map/g_water0.png	
-1 5 23 6 39 0.00 -1.00 0.00 1.00 0 1 textures/map/g_water0.png	
-1 0 40 6 41 0.00 -1.00 0.00 1.00 0 1 textures/map/g_water0.png	
-1 23 23 24 39 0.00 -1.00 0.00 1.00 0 1 textures/map/g_water0.png	
-1 25 38 43 39 0.00 -1.00 0.00 1.00 0 1 textures/map/g_water0.png	
-1 42 40 43 57 0.00 -1.00 0.00 1.00 0 1 textures/map/g_water0.png	
-1 9 56 41 57 0.00 -1.00 0.00 1.00 0 1 textures/map/g_water0.png	
-1 9 58 10 79 0.00 -1.00 0.00 1.00 0 1 textures/map/g_water0.png	
-1 42 29 43 37 0.00 -1.00 0.00 1.00 0 1 textures/map/g_water0.png	
-1 65 10 66 28 0.00 -1.00 0.00 1.00 0 1 textures/map/g_water0.png	
-1 34 5 35 8 0.00 -1.00 0.00 1.00 0 1 textures/map/g_water0.png	
-1 36 7 57 8 0.00 -1.00 0.00 1.00 0 1 textures/map/g_water0.png	
-1 56 0 57 6 0.00 -1.00 0.00 1.00 0 1 textures/map/g_water0.png	
-1 67 10 79 11 0.00 -1.00 0.00 1.00 0 1 textures/map/g_water0.png	
-1 75 0 76 9 0.00 -1.00 0.00 1.00 0 1 textures/map/g_water0.png	
-1 42 58 79 59 0.00 -1.00 0.00 1.00 0 1 textures/map/g_water0.png	
-1 15 0 16 6 0.00 0.00 0.00 1.00 0 0 textures/map/g_water0.png	
-1 17 5 35 6 0.00 0.00 0.00 1.00 0 0 textures/map/g_water0.png	
-1 5 21 24 22 0.00 0.00 0.00 1.00 0 0 textures/map/g_water0.png	
-1 5 23 6 41 0.00 0.00 0.00 1.00 0 0 textures/map/g_water0.png	
-1 0 40 4 41 0.00 0.00 0.00 1.00 0 0 textures/map/g_water0.png	
-1 23 23 24 39 0.00 0.00 0.00 1.00 0 0 textures/map/g_water0.png	
-1 42 30 43 59 0.00 0.00 0.00 1.00 0 0 textures/map/g_water0.png	
-1 9 56 41 57 0.00 0.00 0.00 1.00 0 0 textures/map/g_water0.png	
-1 44 58 79 59 0.00 0.00 0.00 1.00 0 0 textures/map/g_water0.png	
-1 65 10 66 28 0.00 0.00 0.00 1.00 0 0 textures/map/g_water0.png	
-1 75 0 76 9 0.00 0.00 0.00 1.00 0 1 textures/map/g_water0.png	
-1 56 0 57 8 0.00 0.00 0.00 1.00 0 0 textures/map/g_water0.png	
-1 13 0 14 8 0.00 0.00 0.00 1.00 0 1 textures/map/g_grass2.png	
-1 15 7 24 8 0.00 0.00 0.00 1.00 0 1 textures/map/g_grass2.png	
-1 23 7 24 20 0.00 0.00 0.00 1.00 0 1 textures/map/g_grass2.png	
-1 3 19 22 20 0.00 0.00 0.00 1.00 0 1 textures/map/g_grass2.png	
-1 3 21 4 39 0.00 0.00 0.00 1.00 0 1 textures/map/g_grass2.png	
-1 0 38 2 39 0.00 0.00 0.00 1.00 0 1 textures/map/g_grass2.png	
-1 0 42 8 43 0.00 0.00 0.00 1.00 0 1 textures/map/g_grass2.png	
-1 7 23 8 41 0.00 0.00 0.00 1.00 0 1 textures/map/g_grass2.png	
-1 9 23 22 24 0.00 0.00 0.00 1.00 0 1 textures/map/g_grass2.png	
-1 21 25 22 41 0.00 0.00 0.00 1.00 0 1 textures/map/g_grass2.png	
-1 23 40 41 41 0.00 0.00 0.00 1.00 0 1 textures/map/g_grass2.png	
-1 40 42 41 54 0.00 0.00 0.00 1.00 0 1 textures/map/g_grass2.png	
-1 7 54 41 55 0.00 0.00 0.00 1.00 0 1 textures/map/g_grass2.png	
-1 7 56 8 79 0.00 0.00 0.00 1.00 0 1 textures/map/g_grass2.png	
-1 11 58 12 79 0.00 0.00 0.00 1.00 0 1 textures/map/g_grass2.png	
-1 13 58 41 59 0.00 0.00 0.00 1.00 0 1 textures/map/g_grass2.png	
-1 40 60 79 61 0.00 0.00 0.00 1.00 0 1 textures/map/g_grass2.png	
-1 44 56 79 57 0.00 0.00 0.00 1.00 0 1 textures/map/g_grass2.png	
-1 44 31 45 55 0.00 0.00 0.00 1.00 0 1 textures/map/g_grass2.png	
-1 46 31 68 32 0.00 0.00 0.00 1.00 0 1 textures/map/g_grass2.png	
-1 67 12 68 30 0.00 0.00 0.00 1.00 0 1 textures/map/g_grass2.png	
-1 69 12 79 13 0.00 0.00 0.00 1.00 0 1 textures/map/g_grass2.png	
-1 77 8 79 9 0.00 0.00 0.00 1.00 0 1 textures/map/g_grass2.png	
-1 77 0 78 7 0.00 0.00 0.00 1.00 0 1 textures/map/g_grass2.png	
-1 73 0 74 9 0.00 0.00 0.00 1.00 0 1 textures/map/g_grass2.png	
-1 63 8 72 9 0.00 0.00 0.00 1.00 0 1 textures/map/g_grass2.png	
-1 63 10 64 28 0.00 0.00 0.00 1.00 0 1 textures/map/g_grass2.png	
-1 40 27 62 28 0.00 0.00 0.00 1.00 0 1 textures/map/g_grass2.png	
-1 40 29 41 37 0.00 0.00 0.00 1.00 0 1 textures/map/g_grass2.png	
-1 25 36 39 37 0.00 0.00 0.00 1.00 0 1 textures/map/g_grass2.png	
-1 25 23 26 35 0.00 0.00 0.00 1.00 0 1 textures/map/g_grass2.png	
-1 27 7 28 24 0.00 0.00 0.00 1.00 0 1 textures/map/g_grass2.png	
-1 29 7 33 8 0.00 0.00 0.00 1.00 0 1 textures/map/g_grass2.png	
-1 32 9 59 9 0.00 0.00 0.00 1.00 0 1 textures/map/g_grass2.png	
-1 58 0 59 8 0.00 0.00 0.00 1.00 0 1 textures/map/g_grass2.png	
-1 54 0 55 6 0.00 0.00 0.00 1.00 0 1 textures/map/g_grass2.png	
-1 36 5 53 6 0.00 0.00 0.00 1.00 0 1 textures/map/g_grass2.png	
-1 17 3 37 4 0.00 0.00 0.00 1.00 0 1 textures/map/g_grass2.png	
-1 17 0 18 2 0.00 0.00 0.00 1.00 0 1 textures/map/g_grass2.png	
+0 0 0 79 79 0.00 0.00 0.00 1.00 0 1 textures/map/grass_light.png	
+1 15 0 16 6 0.00 -1.00 0.00 1.00 0 1 textures/map/water_light.png	
+1 17 5 33 6 0.00 -1.00 0.00 1.00 0 1 textures/map/water_light.png	
+1 25 7 26 22 0.00 -1.00 0.00 1.00 0 1 textures/map/water_light.png	
+1 5 21 24 22 0.00 -1.00 0.00 1.00 0 1 textures/map/water_light.png	
+1 5 23 6 39 0.00 -1.00 0.00 1.00 0 1 textures/map/water_light.png	
+1 0 40 6 41 0.00 -1.00 0.00 1.00 0 1 textures/map/water_light.png	
+1 23 23 24 39 0.00 -1.00 0.00 1.00 0 1 textures/map/water_light.png	
+1 25 38 43 39 0.00 -1.00 0.00 1.00 0 1 textures/map/water_light.png	
+1 42 40 43 57 0.00 -1.00 0.00 1.00 0 1 textures/map/water_light.png	
+1 9 56 41 57 0.00 -1.00 0.00 1.00 0 1 textures/map/water_light.png	
+1 9 58 10 79 0.00 -1.00 0.00 1.00 0 1 textures/map/water_light.png	
+1 42 29 43 37 0.00 -1.00 0.00 1.00 0 1 textures/map/water_light.png	
+1 65 10 66 28 0.00 -1.00 0.00 1.00 0 1 textures/map/water_light.png	
+1 34 5 35 8 0.00 -1.00 0.00 1.00 0 1 textures/map/water_light.png	
+1 36 7 57 8 0.00 -1.00 0.00 1.00 0 1 textures/map/water_light.png	
+1 56 0 57 6 0.00 -1.00 0.00 1.00 0 1 textures/map/water_light.png	
+1 67 10 79 11 0.00 -1.00 0.00 1.00 0 1 textures/map/water_light.png	
+1 75 0 76 9 0.00 -1.00 0.00 1.00 0 1 textures/map/water_light.png	
+1 42 58 79 59 0.00 -1.00 0.00 1.00 0 1 textures/map/water_light.png	
+1 15 0 16 6 0.00 0.00 0.00 1.00 0 0 textures/map/water_light.png	
+1 17 5 35 6 0.00 0.00 0.00 1.00 0 0 textures/map/water_light.png	
+1 5 21 24 22 0.00 0.00 0.00 1.00 0 0 textures/map/water_light.png	
+1 5 23 6 41 0.00 0.00 0.00 1.00 0 0 textures/map/water_light.png	
+1 0 40 4 41 0.00 0.00 0.00 1.00 0 0 textures/map/water_light.png	
+1 23 23 24 39 0.00 0.00 0.00 1.00 0 0 textures/map/water_light.png	
+1 42 30 43 59 0.00 0.00 0.00 1.00 0 0 textures/map/water_light.png	
+1 9 56 41 57 0.00 0.00 0.00 1.00 0 0 textures/map/water_light.png	
+1 44 58 79 59 0.00 0.00 0.00 1.00 0 0 textures/map/water_light.png	
+1 65 10 66 28 0.00 0.00 0.00 1.00 0 0 textures/map/water_light.png	
+1 75 0 76 9 0.00 0.00 0.00 1.00 0 1 textures/map/water_light.png	
+1 56 0 57 8 0.00 0.00 0.00 1.00 0 0 textures/map/water_light.png	
+1 13 0 14 8 0.00 0.00 0.00 1.00 0 1 textures/map/grass_light.png	
+1 15 7 24 8 0.00 0.00 0.00 1.00 0 1 textures/map/grass_light.png	
+1 23 7 24 20 0.00 0.00 0.00 1.00 0 1 textures/map/grass_light.png	
+1 3 19 22 20 0.00 0.00 0.00 1.00 0 1 textures/map/grass_light.png	
+1 3 21 4 39 0.00 0.00 0.00 1.00 0 1 textures/map/grass_light.png	
+1 0 38 2 39 0.00 0.00 0.00 1.00 0 1 textures/map/grass_light.png	
+1 0 42 8 43 0.00 0.00 0.00 1.00 0 1 textures/map/grass_light.png	
+1 7 23 8 41 0.00 0.00 0.00 1.00 0 1 textures/map/grass_light.png	
+1 9 23 22 24 0.00 0.00 0.00 1.00 0 1 textures/map/grass_light.png	
+1 21 25 22 41 0.00 0.00 0.00 1.00 0 1 textures/map/grass_light.png	
+1 23 40 41 41 0.00 0.00 0.00 1.00 0 1 textures/map/grass_light.png	
+1 40 42 41 54 0.00 0.00 0.00 1.00 0 1 textures/map/grass_light.png	
+1 7 54 41 55 0.00 0.00 0.00 1.00 0 1 textures/map/grass_light.png	
+1 7 56 8 79 0.00 0.00 0.00 1.00 0 1 textures/map/grass_light.png	
+1 11 58 12 79 0.00 0.00 0.00 1.00 0 1 textures/map/grass_light.png	
+1 13 58 41 59 0.00 0.00 0.00 1.00 0 1 textures/map/grass_light.png	
+1 40 60 79 61 0.00 0.00 0.00 1.00 0 1 textures/map/grass_light.png	
+1 44 56 79 57 0.00 0.00 0.00 1.00 0 1 textures/map/grass_light.png	
+1 44 31 45 55 0.00 0.00 0.00 1.00 0 1 textures/map/grass_light.png	
+1 46 31 68 32 0.00 0.00 0.00 1.00 0 1 textures/map/grass_light.png	
+1 67 12 68 30 0.00 0.00 0.00 1.00 0 1 textures/map/grass_light.png	
+1 69 12 79 13 0.00 0.00 0.00 1.00 0 1 textures/map/grass_light.png	
+1 77 8 79 9 0.00 0.00 0.00 1.00 0 1 textures/map/grass_light.png	
+1 77 0 78 7 0.00 0.00 0.00 1.00 0 1 textures/map/grass_light.png	
+1 73 0 74 9 0.00 0.00 0.00 1.00 0 1 textures/map/grass_light.png	
+1 63 8 72 9 0.00 0.00 0.00 1.00 0 1 textures/map/grass_light.png	
+1 63 10 64 28 0.00 0.00 0.00 1.00 0 1 textures/map/grass_light.png	
+1 40 27 62 28 0.00 0.00 0.00 1.00 0 1 textures/map/grass_light.png	
+1 40 29 41 37 0.00 0.00 0.00 1.00 0 1 textures/map/grass_light.png	
+1 25 36 39 37 0.00 0.00 0.00 1.00 0 1 textures/map/grass_light.png	
+1 25 23 26 35 0.00 0.00 0.00 1.00 0 1 textures/map/grass_light.png	
+1 27 7 28 24 0.00 0.00 0.00 1.00 0 1 textures/map/grass_light.png	
+1 29 7 33 8 0.00 0.00 0.00 1.00 0 1 textures/map/grass_light.png	
+1 32 9 59 9 0.00 0.00 0.00 1.00 0 1 textures/map/grass_light.png	
+1 58 0 59 8 0.00 0.00 0.00 1.00 0 1 textures/map/grass_light.png	
+1 54 0 55 6 0.00 0.00 0.00 1.00 0 1 textures/map/grass_light.png	
+1 36 5 53 6 0.00 0.00 0.00 1.00 0 1 textures/map/grass_light.png	
+1 17 3 37 4 0.00 0.00 0.00 1.00 0 1 textures/map/grass_light.png	
+1 17 0 18 2 0.00 0.00 0.00 1.00 0 1 textures/map/grass_light.png	
 1 0 3 63 3 0.00 7.00 0.00 1.00 0 1 textures/map/w_treebark0.png	
 1 67 3 74 3 0.00 7.00 0.00 1.00 0 1 textures/map/w_treebark0.png	
 1 75 3 76 3 0.00 7.00 0.00 1.00 0 1 textures/map/w_treebark0.png	
@@ -163,25 +163,25 @@
 1 0 79 75 79 0.00 7.00 0.00 1.00 0 1 textures/map/w_treebark0.png	
 1 0 3 0 78 0.00 7.00 0.00 1.00 0 1 textures/map/w_treebark0.png	
 1 72 68 79 70 0.00 0.00 90.00 1.00 0 1 textures/map/g_gravel0.png	
-1 53 7 55 8 0.00 0.00 0.00 1.00 0 0 textures/map/g_water0.png	
-1 34 7 49 8 0.00 0.00 0.00 1.00 0 0 textures/map/g_water0.png	
-1 50 7 52 8 0.00 0.00 0.00 1.00 0 0 textures/map/g_water0.png	textures/map/g_path0.png
-1 25 7 26 11 0.00 0.00 0.00 1.00 0 0 textures/map/g_water0.png	textures/map/w_stumpswitch1.png
-1 25 15 26 22 0.00 0.00 0.00 1.00 0 0 textures/map/g_water0.png	textures/map/w_stumpswitch1.png
+1 53 7 55 8 0.00 0.00 0.00 1.00 0 0 textures/map/water_light.png	
+1 34 7 49 8 0.00 0.00 0.00 1.00 0 0 textures/map/water_light.png	
+1 50 7 52 8 0.00 0.00 0.00 1.00 0 0 textures/map/water_light.png	textures/map/g_path0.png
+1 25 7 26 11 0.00 0.00 0.00 1.00 0 0 textures/map/water_light.png	textures/map/w_stumpswitch1.png
+1 25 15 26 22 0.00 0.00 0.00 1.00 0 0 textures/map/water_light.png	textures/map/w_stumpswitch1.png
 1 52 7 52 8 0.00 0.00 0.00 1.00 0 0 textures/map/w_stumpswitch0.png	textures/map/w_stumpswitch1.png
 1 50 7 50 8 0.00 0.00 0.00 1.00 0 0 textures/map/w_stumpswitch0.png	textures/map/w_stumpswitch1.png
-1 41 38 41 39 0.00 0.00 0.00 1.00 0 0 textures/map/g_water0.png	textures/map/g_water0.png
-1 44 29 59 30 0.00 -1.00 0.00 1.00 0 1 textures/map/g_water0.png	textures/map/g_path0.png
-1 42 29 59 30 0.00 0.00 0.00 1.00 0 0 textures/map/g_water0.png	textures/map/g_path0.png
-1 63 29 66 30 0.00 -1.00 0.00 1.00 0 1 textures/map/g_water0.png	textures/map/g_path0.png
-1 63 29 66 30 0.00 0.00 0.00 1.00 0 0 textures/map/g_water0.png	textures/map/g_path0.png
-1 60 29 62 30 0.00 -1.00 0.00 1.00 0 1 textures/map/g_water0.png	textures/map/g_path0.png
-1 25 38 37 39 0.00 0.00 0.00 1.00 0 0 textures/map/g_water0.png	textures/map/w_stumpswitch1.png
-1 9 58 10 67 0.00 0.00 0.00 1.00 0 0 textures/map/g_water0.png	textures/map/g_path0.png
-1 9 68 10 68 0.00 0.00 0.00 1.00 0 1 textures/map/g_water0.png	textures/map/g_path0.png
-1 9 69 10 69 0.00 0.00 0.00 1.00 0 0 textures/map/g_water0.png	textures/map/g_path0.png
-1 9 70 10 70 0.00 0.00 0.00 1.00 0 1 textures/map/g_water0.png	textures/map/g_path0.png
-1 9 71 10 78 0.00 0.00 0.00 1.00 0 0 textures/map/g_water0.png	textures/map/g_path0.png
+1 41 38 41 39 0.00 0.00 0.00 1.00 0 0 textures/map/water_light.png	textures/map/water_light.png
+1 44 29 59 30 0.00 -1.00 0.00 1.00 0 1 textures/map/water_light.png	textures/map/g_path0.png
+1 42 29 59 30 0.00 0.00 0.00 1.00 0 0 textures/map/water_light.png	textures/map/g_path0.png
+1 63 29 66 30 0.00 -1.00 0.00 1.00 0 1 textures/map/water_light.png	textures/map/g_path0.png
+1 63 29 66 30 0.00 0.00 0.00 1.00 0 0 textures/map/water_light.png	textures/map/g_path0.png
+1 60 29 62 30 0.00 -1.00 0.00 1.00 0 1 textures/map/water_light.png	textures/map/g_path0.png
+1 25 38 37 39 0.00 0.00 0.00 1.00 0 0 textures/map/water_light.png	textures/map/w_stumpswitch1.png
+1 9 58 10 67 0.00 0.00 0.00 1.00 0 0 textures/map/water_light.png	textures/map/g_path0.png
+1 9 68 10 68 0.00 0.00 0.00 1.00 0 1 textures/map/water_light.png	textures/map/g_path0.png
+1 9 69 10 69 0.00 0.00 0.00 1.00 0 0 textures/map/water_light.png	textures/map/g_path0.png
+1 9 70 10 70 0.00 0.00 0.00 1.00 0 1 textures/map/water_light.png	textures/map/g_path0.png
+1 9 71 10 78 0.00 0.00 0.00 1.00 0 0 textures/map/water_light.png	textures/map/g_path0.png
 1 46 34 46 34 0.00 10.00 0.00 1.00 0 0 textures/map/w_treebark0.png	
 1 52 34 52 34 0.00 10.00 0.00 1.00 0 0 textures/map/w_treebark0.png	
 1 48 36 48 36 0.00 10.00 0.00 1.00 0 0 textures/map/w_treebark0.png	
@@ -569,7 +569,7 @@
 1 71 66 71 66 0.00 10.00 0.00 1.00 0 0 textures/map/w_treebark0.png	
 1 74 73 74 73 0.00 10.00 0.00 1.00 0 0 textures/map/w_treebark0.png	
 1 74 66 74 66 0.00 10.00 0.00 1.00 0 0 textures/map/w_treebark0.png	
-1 67 10 79 11 0.00 0.00 180.00 1.00 0 0 textures/map/g_water0.png	textures/map/fence_metal_top.png
+1 67 10 79 11 0.00 0.00 180.00 1.00 0 0 textures/map/water_light.png	textures/map/fence_metal_top.png
 2 64 0 66 5 0.00 0.00 90.00 1.00 0 1 textures/map/g_gravel0.png	
 2 27 68 71 70 0.00 0.00 90.00 1.00 0 1 textures/map/g_gravel0.png	
 2 60 6 66 8 0.00 0.00 90.00 1.00 0 1 textures/map/g_gravel0.png	
@@ -587,16 +587,16 @@
 2 50 6 52 6 0.00 0.00 90.00 1.00 0 1 textures/map/g_path0.png	
 2 50 9 52 9 0.00 0.00 90.00 1.00 0 1 textures/map/g_path0.png	
 2 50 10 52 11 0.00 0.00 90.00 1.00 0 1 textures/map/g_gravel0.png	
-2 60 29 60 30 0.00 0.00 0.00 1.00 0 1 textures/map/g_water0.png	textures/map/g_path0.png
-2 62 29 62 30 0.00 0.00 0.00 1.00 0 1 textures/map/g_water0.png	textures/map/g_path0.png
-2 61 29 61 30 0.00 0.00 0.00 1.00 0 0 textures/map/g_water0.png	textures/map/g_path0.png
+2 60 29 60 30 0.00 0.00 0.00 1.00 0 1 textures/map/water_light.png	textures/map/g_path0.png
+2 62 29 62 30 0.00 0.00 0.00 1.00 0 1 textures/map/water_light.png	textures/map/g_path0.png
+2 61 29 61 30 0.00 0.00 0.00 1.00 0 0 textures/map/water_light.png	textures/map/g_path0.png
 2 4 39 4 39 0.00 0.00 0.00 1.00 0 0 textures/map/w_stumpswitch0.png	textures/map/w_stumpswitch1.png
 2 73 16 73 16 0.00 0.00 0.00 1.00 0 0 textures/map/w_stumpswitch0.png	textures/map/w_stumpswitch1.png
-2 38 38 38 39 0.00 0.00 0.00 1.00 0 1 textures/map/g_water0.png	textures/map/g_path0.png
-2 39 38 39 39 0.00 0.00 0.00 1.00 0 0 textures/map/g_water0.png	textures/map/g_path0.png
-2 40 38 40 39 0.00 0.00 0.00 1.00 0 1 textures/map/g_water0.png	textures/map/g_path0.png
+2 38 38 38 39 0.00 0.00 0.00 1.00 0 1 textures/map/water_light.png	textures/map/g_path0.png
+2 39 38 39 39 0.00 0.00 0.00 1.00 0 0 textures/map/water_light.png	textures/map/g_path0.png
+2 40 38 40 39 0.00 0.00 0.00 1.00 0 1 textures/map/water_light.png	textures/map/g_path0.png
 2 12 25 12 25 0.00 0.00 0.00 1.00 0 0 textures/map/w_stumpswitch0.png	textures/map/w_stumpswitch1.png
-2 25 12 26 14 0.00 0.00 0.00 1.00 0 0 textures/map/g_water0.png	textures/map/g_path0.png
+2 25 12 26 14 0.00 0.00 0.00 1.00 0 0 textures/map/water_light.png	textures/map/g_path0.png
 2 36 6 36 6 0.00 0.00 0.00 1.00 0 0 textures/map/w_stumpswitch0.png	textures/map/w_stumpswitch1.png
 2 34 9 49 9 0.00 0.00 0.00 1.00 0 1 textures/map/g_gravelbig0.png	
 2 53 9 58 9 0.00 0.00 0.00 1.00 0 1 textures/map/g_gravelbig0.png	
@@ -656,20 +656,20 @@
 3 27 7 27 11 0.00 0.00 0.00 1.00 0 1 textures/map/g_gravelbig0.png	
 3 28 7 33 7 0.00 0.00 0.00 1.00 0 1 textures/map/g_gravelbig0.png	
 3 33 8 33 9 0.00 0.00 0.00 1.00 0 1 textures/map/g_gravelbig0.png	
-4 1 4 63 4 0.00 7.00 0.00 1.00 0 0 textures/map/g_evergreen0.png	
-4 67 4 75 4 0.00 7.00 0.00 1.00 0 0 textures/map/g_evergreen0.png	
-4 1 78 75 78 0.00 7.00 0.00 1.00 0 0 textures/map/g_evergreen0.png	
-4 75 71 75 78 0.00 7.00 90.00 1.00 0 0 textures/map/g_evergreen0.png	
-4 75 4 75 67 0.00 7.00 90.00 1.00 0 0 textures/map/g_evergreen0.png	
-4 1 4 1 78 0.00 7.00 90.00 1.00 0 0 textures/map/g_evergreen0.png	
-4 58 1 76 1 0.00 7.00 0.00 1.00 0 0 textures/map/g_evergreen0.png	
-4 78 66 78 73 0.00 7.00 90.00 1.00 0 0 textures/map/g_evergreen0.png	
-4 79 65 79 73 0.00 7.00 90.00 1.00 0 0 textures/map/g_evergreen0.png	
+4 1 4 63 4 0.00 7.00 0.00 1.00 0 0 textures/map/leaves_light.png	
+4 67 4 75 4 0.00 7.00 0.00 1.00 0 0 textures/map/leaves_light.png	
+4 1 78 75 78 0.00 7.00 0.00 1.00 0 0 textures/map/leaves_light.png	
+4 75 71 75 78 0.00 7.00 90.00 1.00 0 0 textures/map/leaves_light.png	
+4 75 4 75 67 0.00 7.00 90.00 1.00 0 0 textures/map/leaves_light.png	
+4 1 4 1 78 0.00 7.00 90.00 1.00 0 0 textures/map/leaves_light.png	
+4 58 1 76 1 0.00 7.00 0.00 1.00 0 0 textures/map/leaves_light.png	
+4 78 66 78 73 0.00 7.00 90.00 1.00 0 0 textures/map/leaves_light.png	
+4 79 65 79 73 0.00 7.00 90.00 1.00 0 0 textures/map/leaves_light.png	
 4 76 68 76 70 0.00 1.00 90.00 1.00 0 0 textures/map/fence_metal_top.png	textures/map/w_trans0.png
 4 64 3 66 3 0.00 1.00 0.00 1.00 0 0 textures/map/fence_metal_top.png	
-4 47 0 79 0 0.00 7.00 0.00 1.00 0 0 textures/map/g_grass2.png	
-4 63 4 63 4 0.00 7.00 90.00 1.00 0 0 textures/map/g_evergreen0.png	
-4 67 4 67 4 0.00 7.00 90.00 1.00 0 0 textures/map/g_evergreen0.png	
+4 47 0 79 0 0.00 7.00 0.00 1.00 0 0 textures/map/grass_light.png	
+4 63 4 63 4 0.00 7.00 90.00 1.00 0 0 textures/map/leaves_light.png	
+4 67 4 67 4 0.00 7.00 90.00 1.00 0 0 textures/map/leaves_light.png	
 4 24 12 24 12 0.00 1.00 0.00 1.00 0 0 textures/map/fence_metal.png	
 4 24 14 24 14 0.00 1.00 0.00 1.00 0 0 textures/map/fence_metal.png	
 4 27 12 27 12 0.00 1.00 0.00 1.00 0 0 textures/map/fence_metal.png	
@@ -701,13 +701,13 @@
 4 11 70 11 70 0.00 1.00 0.00 1.00 0 0 textures/map/fence_metal.png	
 4 9 68 10 68 0.00 1.00 0.00 1.00 0 1 textures/map/fence_metal.png	
 4 9 70 10 70 0.00 1.00 0.00 1.00 0 1 textures/map/fence_metal.png	
-4 51 60 51 68 0.00 4.00 90.00 1.00 0 0 textures/map/g_evergreen0.png	
-4 51 70 51 79 0.00 4.00 90.00 1.00 0 0 textures/map/g_evergreen0.png	
-4 53 70 53 79 0.00 4.00 90.00 1.00 0 0 textures/map/g_evergreen0.png	
-4 53 60 53 68 0.00 4.00 90.00 1.00 0 0 textures/map/g_evergreen0.png	
-4 51 68 52 68 0.00 4.00 90.00 1.00 0 0 textures/map/g_evergreen0.png	
-4 51 68 53 68 0.00 4.00 0.00 1.00 0 0 textures/map/g_evergreen0.png	
-4 51 70 53 70 0.00 4.00 0.00 1.00 0 0 textures/map/g_evergreen0.png	
+4 51 60 51 68 0.00 4.00 90.00 1.00 0 0 textures/map/leaves_light.png	
+4 51 70 51 79 0.00 4.00 90.00 1.00 0 0 textures/map/leaves_light.png	
+4 53 70 53 79 0.00 4.00 90.00 1.00 0 0 textures/map/leaves_light.png	
+4 53 60 53 68 0.00 4.00 90.00 1.00 0 0 textures/map/leaves_light.png	
+4 51 68 52 68 0.00 4.00 90.00 1.00 0 0 textures/map/leaves_light.png	
+4 51 68 53 68 0.00 4.00 0.00 1.00 0 0 textures/map/leaves_light.png	
+4 51 70 53 70 0.00 4.00 0.00 1.00 0 0 textures/map/leaves_light.png	
 4 51 69 51 69 0.00 1.00 90.00 1.00 0 1 textures/map/w_trans0.png	textures/map/fence_metal_top.png
 4 53 69 53 69 0.00 1.00 180.00 1.00 0 1 textures/map/w_trans0.png	textures/map/fence_metal_top.png
 5 68 2 68 2 0.00 7.00 90.00 1.00 1 0 textures/map/w_treebark0.png	
@@ -716,37 +716,37 @@
 5 77 73 79 73 0.00 7.00 90.00 1.00 1 0 textures/map/w_treebark0.png	
 5 52 71 52 77 0.00 4.00 0.00 1.00 1 0 textures/map/w_treebark0.png	
 5 52 60 52 67 0.00 4.00 0.00 1.00 1 0 textures/map/w_treebark0.png	
-5 59 31 59 31 0.00 0.50 0.00 1.00 1 1 textures/map/g_grassmarsh0.png	
-5 49 6 49 6 0.00 0.50 0.00 1.00 1 1 textures/map/g_grassmarsh0.png	
-5 24 11 24 11 0.00 0.50 0.00 1.00 1 1 textures/map/g_grassmarsh0.png	
-5 37 40 37 40 0.00 0.50 0.00 1.00 1 1 textures/map/g_grassmarsh0.png	
-5 11 67 11 67 0.00 0.50 0.00 1.00 1 1 textures/map/g_grassmarsh0.png	
-6 0 1 63 4 0.00 7.50 90.00 1.00 0 1 textures/map/g_evergreen0.png	
-6 0 1 1 79 0.00 7.50 90.00 1.00 0 1 textures/map/g_evergreen0.png	
-6 0 78 79 79 0.00 7.50 90.00 1.00 0 1 textures/map/g_evergreen0.png	
-6 76 75 76 78 0.00 7.50 90.00 1.00 0 1 textures/map/g_evergreen0.png	
-6 73 0 79 79 0.00 7.50 90.00 1.00 0 1 textures/map/g_evergreen0.png	
-6 64 1 78 3 0.00 7.50 90.00 1.00 0 1 textures/map/g_evergreen0.png	
-6 45 19 54 25 0.00 5.00 90.00 1.00 0 1 textures/map/g_evergreen0.png	textures/map/fence_metal_top.png
-6 17 16 20 18 0.00 5.00 90.00 1.00 0 1 textures/map/g_evergreen0.png	textures/map/fence_metal_top.png
-6 15 30 22 35 0.00 5.00 90.00 1.00 0 1 textures/map/g_evergreen0.png	textures/map/fence_metal_top.png
-6 31 22 39 28 0.00 5.00 90.00 1.00 0 1 textures/map/g_evergreen0.png	textures/map/fence_metal_top.png
-6 51 39 56 43 0.00 5.00 90.00 1.00 0 1 textures/map/g_evergreen0.png	textures/map/fence_metal_top.png
-6 60 52 64 56 0.00 5.00 90.00 1.00 0 1 textures/map/g_evergreen0.png	textures/map/fence_metal_top.png
-6 43 64 50 69 0.00 5.00 90.00 1.00 0 1 textures/map/g_evergreen0.png	textures/map/fence_metal_top.png
-6 63 68 68 72 0.00 5.00 90.00 1.00 0 1 textures/map/g_evergreen0.png	textures/map/fence_metal_top.png
-6 25 63 30 67 0.00 5.00 90.00 1.00 0 1 textures/map/g_evergreen0.png	textures/map/fence_metal_top.png
-6 27 72 32 76 0.00 5.00 90.00 1.00 0 1 textures/map/g_evergreen0.png	textures/map/fence_metal_top.png
-6 16 70 20 74 0.00 5.00 90.00 1.00 0 1 textures/map/g_evergreen0.png	textures/map/fence_metal_top.png
-6 16 45 17 46 0.00 5.00 90.00 1.00 0 1 textures/map/g_evergreen0.png	textures/map/fence_metal_top.png
-6 5 8 10 11 0.00 5.00 90.00 1.00 0 1 textures/map/g_evergreen0.png	textures/map/fence_metal_top.png
-6 33 8 38 12 0.00 5.00 90.00 1.00 0 1 textures/map/g_evergreen0.png	textures/map/fence_metal_top.png
-6 44 5 50 8 0.00 5.00 90.00 1.00 0 1 textures/map/g_evergreen0.png	textures/map/fence_metal_top.png
-6 68 5 75 9 0.00 5.00 90.00 1.00 0 1 textures/map/g_evergreen0.png	textures/map/fence_metal_top.png
-6 35 47 39 51 0.00 5.00 90.00 1.00 0 1 textures/map/g_evergreen0.png	textures/map/fence_metal_top.png
-6 24 52 28 55 0.00 5.00 90.00 1.00 0 1 textures/map/g_evergreen0.png	textures/map/fence_metal_top.png
-6 34 61 40 65 0.00 5.00 90.00 1.00 0 1 textures/map/g_evergreen0.png	textures/map/fence_metal_top.png
-6 49 52 53 54 0.00 5.00 90.00 1.00 0 1 textures/map/g_evergreen0.png	textures/map/fence_metal_top.png
+5 59 31 59 31 0.00 0.50 0.00 1.00 1 1 textures/map/leaves_marsh.png	
+5 49 6 49 6 0.00 0.50 0.00 1.00 1 1 textures/map/leaves_marsh.png	
+5 24 11 24 11 0.00 0.50 0.00 1.00 1 1 textures/map/leaves_marsh.png	
+5 37 40 37 40 0.00 0.50 0.00 1.00 1 1 textures/map/leaves_marsh.png	
+5 11 67 11 67 0.00 0.50 0.00 1.00 1 1 textures/map/leaves_marsh.png	
+6 0 1 63 4 0.00 7.50 90.00 1.00 0 1 textures/map/leaves_light.png	
+6 0 1 1 79 0.00 7.50 90.00 1.00 0 1 textures/map/leaves_light.png	
+6 0 78 79 79 0.00 7.50 90.00 1.00 0 1 textures/map/leaves_light.png	
+6 76 75 76 78 0.00 7.50 90.00 1.00 0 1 textures/map/leaves_light.png	
+6 73 0 79 79 0.00 7.50 90.00 1.00 0 1 textures/map/leaves_light.png	
+6 64 1 78 3 0.00 7.50 90.00 1.00 0 1 textures/map/leaves_light.png	
+6 45 19 54 25 0.00 5.00 90.00 1.00 0 1 textures/map/leaves_light.png	textures/map/fence_metal_top.png
+6 17 16 20 18 0.00 5.00 90.00 1.00 0 1 textures/map/leaves_light.png	textures/map/fence_metal_top.png
+6 15 30 22 35 0.00 5.00 90.00 1.00 0 1 textures/map/leaves_light.png	textures/map/fence_metal_top.png
+6 31 22 39 28 0.00 5.00 90.00 1.00 0 1 textures/map/leaves_light.png	textures/map/fence_metal_top.png
+6 51 39 56 43 0.00 5.00 90.00 1.00 0 1 textures/map/leaves_light.png	textures/map/fence_metal_top.png
+6 60 52 64 56 0.00 5.00 90.00 1.00 0 1 textures/map/leaves_light.png	textures/map/fence_metal_top.png
+6 43 64 50 69 0.00 5.00 90.00 1.00 0 1 textures/map/leaves_light.png	textures/map/fence_metal_top.png
+6 63 68 68 72 0.00 5.00 90.00 1.00 0 1 textures/map/leaves_light.png	textures/map/fence_metal_top.png
+6 25 63 30 67 0.00 5.00 90.00 1.00 0 1 textures/map/leaves_light.png	textures/map/fence_metal_top.png
+6 27 72 32 76 0.00 5.00 90.00 1.00 0 1 textures/map/leaves_light.png	textures/map/fence_metal_top.png
+6 16 70 20 74 0.00 5.00 90.00 1.00 0 1 textures/map/leaves_light.png	textures/map/fence_metal_top.png
+6 16 45 17 46 0.00 5.00 90.00 1.00 0 1 textures/map/leaves_light.png	textures/map/fence_metal_top.png
+6 5 8 10 11 0.00 5.00 90.00 1.00 0 1 textures/map/leaves_light.png	textures/map/fence_metal_top.png
+6 33 8 38 12 0.00 5.00 90.00 1.00 0 1 textures/map/leaves_light.png	textures/map/fence_metal_top.png
+6 44 5 50 8 0.00 5.00 90.00 1.00 0 1 textures/map/leaves_light.png	textures/map/fence_metal_top.png
+6 68 5 75 9 0.00 5.00 90.00 1.00 0 1 textures/map/leaves_light.png	textures/map/fence_metal_top.png
+6 35 47 39 51 0.00 5.00 90.00 1.00 0 1 textures/map/leaves_light.png	textures/map/fence_metal_top.png
+6 24 52 28 55 0.00 5.00 90.00 1.00 0 1 textures/map/leaves_light.png	textures/map/fence_metal_top.png
+6 34 61 40 65 0.00 5.00 90.00 1.00 0 1 textures/map/leaves_light.png	textures/map/fence_metal_top.png
+6 49 52 53 54 0.00 5.00 90.00 1.00 0 1 textures/map/leaves_light.png	textures/map/fence_metal_top.png
 6 53 46 58 49 0.00 5.50 90.00 1.00 0 1 textures/map/leaves.png	textures/map/fence_metal_top.png
 6 39 36 47 42 0.00 5.50 90.00 1.00 0 1 textures/map/leaves.png	textures/map/fence_metal_top.png
 6 24 40 27 43 0.00 5.50 90.00 1.00 0 1 textures/map/leaves.png	textures/map/fence_metal_top.png
@@ -777,30 +777,30 @@
 6 33 26 35 28 0.00 5.50 90.00 1.00 0 1 textures/map/leaves.png	textures/map/fence_metal_top.png
 6 44 16 48 20 0.00 5.50 90.00 1.00 0 1 textures/map/leaves.png	textures/map/fence_metal_top.png
 6 13 13 19 17 0.00 5.50 90.00 1.00 0 1 textures/map/leaves.png	textures/map/fence_metal_top.png
-6 24 12 25 13 0.00 6.00 90.00 1.00 0 1 textures/map/g_evergreen0.png	textures/map/fence_metal_top.png
-6 24 18 28 22 0.00 6.00 90.00 1.00 0 1 textures/map/g_evergreen0.png	textures/map/fence_metal_top.png
-6 12 35 16 39 0.00 6.00 90.00 1.00 0 1 textures/map/g_evergreen0.png	textures/map/fence_metal_top.png
-6 8 27 11 30 0.00 6.00 90.00 1.00 0 1 textures/map/g_evergreen0.png	textures/map/fence_metal_top.png
-6 3 22 7 26 0.00 6.00 90.00 1.00 0 1 textures/map/g_evergreen0.png	textures/map/fence_metal_top.png
-6 1 31 7 35 0.00 6.00 90.00 1.00 0 1 textures/map/g_evergreen0.png	textures/map/fence_metal_top.png
-6 3 50 11 56 0.00 6.00 90.00 1.00 0 1 textures/map/g_evergreen0.png	textures/map/fence_metal_top.png
-6 4 63 8 66 0.00 6.00 90.00 1.00 0 1 textures/map/g_evergreen0.png	textures/map/fence_metal_top.png
-6 12 69 19 74 0.00 6.00 90.00 1.00 0 1 textures/map/g_evergreen0.png	textures/map/fence_metal_top.png
-6 25 61 29 66 0.00 6.00 90.00 1.00 0 1 textures/map/g_evergreen0.png	textures/map/fence_metal_top.png
-6 30 65 35 70 0.00 6.00 90.00 1.00 0 1 textures/map/g_evergreen0.png	textures/map/fence_metal_top.png
-6 39 69 43 73 0.00 6.00 90.00 1.00 0 1 textures/map/g_evergreen0.png	textures/map/fence_metal_top.png
-6 45 45 48 51 0.00 6.00 90.00 1.00 0 1 textures/map/g_evergreen0.png	textures/map/fence_metal_top.png
-6 55 31 60 38 0.00 6.00 90.00 1.00 0 1 textures/map/g_evergreen0.png	textures/map/fence_metal_top.png
-6 64 30 69 34 0.00 6.00 90.00 1.00 0 1 textures/map/g_evergreen0.png	textures/map/fence_metal_top.png
-6 48 18 53 22 0.00 6.00 90.00 1.00 0 1 textures/map/g_evergreen0.png	textures/map/fence_metal_top.png
-6 48 9 52 12 0.00 6.00 90.00 1.00 0 1 textures/map/g_evergreen0.png	textures/map/fence_metal_top.png
-6 39 11 45 16 0.00 6.00 90.00 1.00 0 1 textures/map/g_evergreen0.png	textures/map/fence_metal_top.png
-6 39 18 45 22 0.00 6.00 90.00 1.00 0 1 textures/map/g_evergreen0.png	textures/map/fence_metal_top.png
-6 23 24 24 26 0.00 6.00 90.00 1.00 0 1 textures/map/g_evergreen0.png	textures/map/fence_metal_top.png
-6 28 29 33 33 0.00 6.00 90.00 1.00 0 1 textures/map/g_evergreen0.png	textures/map/fence_metal_top.png
-6 24 42 27 45 0.00 6.00 90.00 1.00 0 1 textures/map/g_evergreen0.png	textures/map/fence_metal_top.png
-6 49 43 55 48 0.00 6.00 90.00 1.00 0 1 textures/map/g_evergreen0.png	textures/map/fence_metal_top.png
-6 63 38 69 42 0.00 6.00 90.00 1.00 0 1 textures/map/g_evergreen0.png	textures/map/fence_metal_top.png
+6 24 12 25 13 0.00 6.00 90.00 1.00 0 1 textures/map/leaves_light.png	textures/map/fence_metal_top.png
+6 24 18 28 22 0.00 6.00 90.00 1.00 0 1 textures/map/leaves_light.png	textures/map/fence_metal_top.png
+6 12 35 16 39 0.00 6.00 90.00 1.00 0 1 textures/map/leaves_light.png	textures/map/fence_metal_top.png
+6 8 27 11 30 0.00 6.00 90.00 1.00 0 1 textures/map/leaves_light.png	textures/map/fence_metal_top.png
+6 3 22 7 26 0.00 6.00 90.00 1.00 0 1 textures/map/leaves_light.png	textures/map/fence_metal_top.png
+6 1 31 7 35 0.00 6.00 90.00 1.00 0 1 textures/map/leaves_light.png	textures/map/fence_metal_top.png
+6 3 50 11 56 0.00 6.00 90.00 1.00 0 1 textures/map/leaves_light.png	textures/map/fence_metal_top.png
+6 4 63 8 66 0.00 6.00 90.00 1.00 0 1 textures/map/leaves_light.png	textures/map/fence_metal_top.png
+6 12 69 19 74 0.00 6.00 90.00 1.00 0 1 textures/map/leaves_light.png	textures/map/fence_metal_top.png
+6 25 61 29 66 0.00 6.00 90.00 1.00 0 1 textures/map/leaves_light.png	textures/map/fence_metal_top.png
+6 30 65 35 70 0.00 6.00 90.00 1.00 0 1 textures/map/leaves_light.png	textures/map/fence_metal_top.png
+6 39 69 43 73 0.00 6.00 90.00 1.00 0 1 textures/map/leaves_light.png	textures/map/fence_metal_top.png
+6 45 45 48 51 0.00 6.00 90.00 1.00 0 1 textures/map/leaves_light.png	textures/map/fence_metal_top.png
+6 55 31 60 38 0.00 6.00 90.00 1.00 0 1 textures/map/leaves_light.png	textures/map/fence_metal_top.png
+6 64 30 69 34 0.00 6.00 90.00 1.00 0 1 textures/map/leaves_light.png	textures/map/fence_metal_top.png
+6 48 18 53 22 0.00 6.00 90.00 1.00 0 1 textures/map/leaves_light.png	textures/map/fence_metal_top.png
+6 48 9 52 12 0.00 6.00 90.00 1.00 0 1 textures/map/leaves_light.png	textures/map/fence_metal_top.png
+6 39 11 45 16 0.00 6.00 90.00 1.00 0 1 textures/map/leaves_light.png	textures/map/fence_metal_top.png
+6 39 18 45 22 0.00 6.00 90.00 1.00 0 1 textures/map/leaves_light.png	textures/map/fence_metal_top.png
+6 23 24 24 26 0.00 6.00 90.00 1.00 0 1 textures/map/leaves_light.png	textures/map/fence_metal_top.png
+6 28 29 33 33 0.00 6.00 90.00 1.00 0 1 textures/map/leaves_light.png	textures/map/fence_metal_top.png
+6 24 42 27 45 0.00 6.00 90.00 1.00 0 1 textures/map/leaves_light.png	textures/map/fence_metal_top.png
+6 49 43 55 48 0.00 6.00 90.00 1.00 0 1 textures/map/leaves_light.png	textures/map/fence_metal_top.png
+6 63 38 69 42 0.00 6.00 90.00 1.00 0 1 textures/map/leaves_light.png	textures/map/fence_metal_top.png
 6 32 12 38 17 0.00 6.50 90.00 1.00 0 1 textures/map/leaves.png	textures/map/fence_metal_top.png
 6 40 22 43 26 0.00 6.50 90.00 1.00 0 1 textures/map/leaves.png	textures/map/fence_metal_top.png
 6 27 34 34 40 0.00 6.50 90.00 1.00 0 1 textures/map/leaves.png	textures/map/fence_metal_top.png
@@ -823,44 +823,44 @@
 6 38 17 42 23 0.00 6.50 90.00 1.00 0 1 textures/map/leaves.png	textures/map/fence_metal_top.png
 6 49 26 53 30 0.00 6.50 90.00 1.00 0 1 textures/map/leaves.png	textures/map/fence_metal_top.png
 6 13 16 24 22 0.00 6.50 90.00 1.00 0 1 textures/map/leaves.png	textures/map/fence_metal_top.png
-6 44 18 49 22 0.00 7.00 90.00 1.00 0 1 textures/map/g_evergreen0.png	textures/map/fence_metal_top.png
-6 24 23 32 29 0.00 7.00 90.00 1.00 0 1 textures/map/g_evergreen0.png	textures/map/fence_metal_top.png
-6 18 40 23 43 0.00 7.00 90.00 1.00 0 1 textures/map/g_evergreen0.png	textures/map/fence_metal_top.png
-6 44 42 50 46 0.00 7.00 90.00 1.00 0 1 textures/map/g_evergreen0.png	textures/map/fence_metal_top.png
-6 60 54 63 57 0.00 7.00 90.00 1.00 0 1 textures/map/g_evergreen0.png	textures/map/fence_metal_top.png
-6 47 66 52 69 0.00 7.00 90.00 1.00 0 1 textures/map/g_evergreen0.png	textures/map/fence_metal_top.png
-6 25 59 31 63 0.00 7.00 90.00 1.00 0 1 textures/map/g_evergreen0.png	textures/map/fence_metal_top.png
-6 14 34 17 38 0.00 7.00 90.00 1.00 0 1 textures/map/g_evergreen0.png	textures/map/fence_metal_top.png
-6 29 40 34 45 0.00 3.50 90.00 1.00 0 1 textures/map/g_evergreen0.png	textures/map/fence_metal_top.png
-6 46 38 48 41 0.00 3.50 90.00 1.00 0 1 textures/map/g_evergreen0.png	textures/map/fence_metal_top.png
-6 61 31 64 35 0.00 3.50 90.00 1.00 0 1 textures/map/g_evergreen0.png	textures/map/fence_metal_top.png
-6 56 43 57 46 0.00 3.50 90.00 1.00 0 1 textures/map/g_evergreen0.png	textures/map/fence_metal_top.png
-6 30 25 33 30 0.00 3.50 90.00 1.00 0 1 textures/map/g_evergreen0.png	textures/map/fence_metal_top.png
-6 22 14 27 18 0.00 3.50 90.00 1.00 0 1 textures/map/g_evergreen0.png	textures/map/fence_metal_top.png
-6 17 14 20 19 0.00 3.50 90.00 1.00 0 1 textures/map/g_evergreen0.png	textures/map/fence_metal_top.png
-6 3 26 10 31 0.00 3.50 90.00 1.00 0 1 textures/map/g_evergreen0.png	textures/map/fence_metal_top.png
-6 9 51 13 55 0.00 3.50 90.00 1.00 0 1 textures/map/g_evergreen0.png	textures/map/fence_metal_top.png
-6 17 68 20 71 0.00 3.50 90.00 1.00 0 1 textures/map/g_evergreen0.png	textures/map/fence_metal_top.png
-6 31 67 34 70 0.00 3.50 90.00 1.00 0 1 textures/map/g_evergreen0.png	textures/map/fence_metal_top.png
-6 39 65 41 67 0.00 3.50 90.00 1.00 0 1 textures/map/g_evergreen0.png	textures/map/fence_metal_top.png
-6 47 71 50 73 0.00 3.50 90.00 1.00 0 1 textures/map/g_evergreen0.png	textures/map/fence_metal_top.png
-6 55 61 60 65 0.00 3.50 90.00 1.00 0 1 textures/map/g_evergreen0.png	textures/map/fence_metal_top.png
-6 70 63 71 66 0.00 3.50 90.00 1.00 0 1 textures/map/g_evergreen0.png	textures/map/fence_metal_top.png
-6 53 51 54 53 0.00 3.50 90.00 1.00 0 1 textures/map/g_evergreen0.png	textures/map/fence_metal_top.png
-6 48 34 51 37 0.00 3.50 90.00 1.00 0 1 textures/map/g_evergreen0.png	textures/map/fence_metal_top.png
-6 35 15 39 18 0.00 3.50 90.00 1.00 0 1 textures/map/g_evergreen0.png	textures/map/fence_metal_top.png
-6 29 19 33 22 0.00 3.50 90.00 1.00 0 1 textures/map/g_evergreen0.png	textures/map/fence_metal_top.png
-6 13 29 19 31 0.00 3.50 90.00 1.00 0 1 textures/map/g_evergreen0.png	textures/map/fence_metal_top.png
-6 16 40 24 45 0.00 3.50 90.00 1.00 0 1 textures/map/g_evergreen0.png	textures/map/fence_metal_top.png
-6 23 52 27 55 0.00 3.50 90.00 1.00 0 1 textures/map/g_evergreen0.png	textures/map/fence_metal_top.png
-6 29 49 29 50 0.00 3.50 90.00 1.00 0 1 textures/map/g_evergreen0.png	textures/map/fence_metal_top.png
-6 32 38 35 42 0.00 3.50 90.00 1.00 0 1 textures/map/g_evergreen0.png	textures/map/fence_metal_top.png
-6 38 40 41 44 0.00 3.50 90.00 1.00 0 1 textures/map/g_evergreen0.png	textures/map/fence_metal_top.png
-6 50 34 54 38 0.00 3.50 90.00 1.00 0 1 textures/map/g_evergreen0.png	textures/map/fence_metal_top.png
-6 57 28 62 32 0.00 3.50 90.00 1.00 0 1 textures/map/g_evergreen0.png	textures/map/fence_metal_top.png
-6 28 15 34 19 0.00 3.50 90.00 1.00 0 1 textures/map/g_evergreen0.png	textures/map/fence_metal_top.png
-6 7 9 11 12 0.00 3.50 90.00 1.00 0 1 textures/map/g_evergreen0.png	textures/map/fence_metal_top.png
-6 0 4 6 9 0.00 3.50 90.00 1.00 0 1 textures/map/g_evergreen0.png	textures/map/fence_metal_top.png
+6 44 18 49 22 0.00 7.00 90.00 1.00 0 1 textures/map/leaves_light.png	textures/map/fence_metal_top.png
+6 24 23 32 29 0.00 7.00 90.00 1.00 0 1 textures/map/leaves_light.png	textures/map/fence_metal_top.png
+6 18 40 23 43 0.00 7.00 90.00 1.00 0 1 textures/map/leaves_light.png	textures/map/fence_metal_top.png
+6 44 42 50 46 0.00 7.00 90.00 1.00 0 1 textures/map/leaves_light.png	textures/map/fence_metal_top.png
+6 60 54 63 57 0.00 7.00 90.00 1.00 0 1 textures/map/leaves_light.png	textures/map/fence_metal_top.png
+6 47 66 52 69 0.00 7.00 90.00 1.00 0 1 textures/map/leaves_light.png	textures/map/fence_metal_top.png
+6 25 59 31 63 0.00 7.00 90.00 1.00 0 1 textures/map/leaves_light.png	textures/map/fence_metal_top.png
+6 14 34 17 38 0.00 7.00 90.00 1.00 0 1 textures/map/leaves_light.png	textures/map/fence_metal_top.png
+6 29 40 34 45 0.00 3.50 90.00 1.00 0 1 textures/map/leaves_light.png	textures/map/fence_metal_top.png
+6 46 38 48 41 0.00 3.50 90.00 1.00 0 1 textures/map/leaves_light.png	textures/map/fence_metal_top.png
+6 61 31 64 35 0.00 3.50 90.00 1.00 0 1 textures/map/leaves_light.png	textures/map/fence_metal_top.png
+6 56 43 57 46 0.00 3.50 90.00 1.00 0 1 textures/map/leaves_light.png	textures/map/fence_metal_top.png
+6 30 25 33 30 0.00 3.50 90.00 1.00 0 1 textures/map/leaves_light.png	textures/map/fence_metal_top.png
+6 22 14 27 18 0.00 3.50 90.00 1.00 0 1 textures/map/leaves_light.png	textures/map/fence_metal_top.png
+6 17 14 20 19 0.00 3.50 90.00 1.00 0 1 textures/map/leaves_light.png	textures/map/fence_metal_top.png
+6 3 26 10 31 0.00 3.50 90.00 1.00 0 1 textures/map/leaves_light.png	textures/map/fence_metal_top.png
+6 9 51 13 55 0.00 3.50 90.00 1.00 0 1 textures/map/leaves_light.png	textures/map/fence_metal_top.png
+6 17 68 20 71 0.00 3.50 90.00 1.00 0 1 textures/map/leaves_light.png	textures/map/fence_metal_top.png
+6 31 67 34 70 0.00 3.50 90.00 1.00 0 1 textures/map/leaves_light.png	textures/map/fence_metal_top.png
+6 39 65 41 67 0.00 3.50 90.00 1.00 0 1 textures/map/leaves_light.png	textures/map/fence_metal_top.png
+6 47 71 50 73 0.00 3.50 90.00 1.00 0 1 textures/map/leaves_light.png	textures/map/fence_metal_top.png
+6 55 61 60 65 0.00 3.50 90.00 1.00 0 1 textures/map/leaves_light.png	textures/map/fence_metal_top.png
+6 70 63 71 66 0.00 3.50 90.00 1.00 0 1 textures/map/leaves_light.png	textures/map/fence_metal_top.png
+6 53 51 54 53 0.00 3.50 90.00 1.00 0 1 textures/map/leaves_light.png	textures/map/fence_metal_top.png
+6 48 34 51 37 0.00 3.50 90.00 1.00 0 1 textures/map/leaves_light.png	textures/map/fence_metal_top.png
+6 35 15 39 18 0.00 3.50 90.00 1.00 0 1 textures/map/leaves_light.png	textures/map/fence_metal_top.png
+6 29 19 33 22 0.00 3.50 90.00 1.00 0 1 textures/map/leaves_light.png	textures/map/fence_metal_top.png
+6 13 29 19 31 0.00 3.50 90.00 1.00 0 1 textures/map/leaves_light.png	textures/map/fence_metal_top.png
+6 16 40 24 45 0.00 3.50 90.00 1.00 0 1 textures/map/leaves_light.png	textures/map/fence_metal_top.png
+6 23 52 27 55 0.00 3.50 90.00 1.00 0 1 textures/map/leaves_light.png	textures/map/fence_metal_top.png
+6 29 49 29 50 0.00 3.50 90.00 1.00 0 1 textures/map/leaves_light.png	textures/map/fence_metal_top.png
+6 32 38 35 42 0.00 3.50 90.00 1.00 0 1 textures/map/leaves_light.png	textures/map/fence_metal_top.png
+6 38 40 41 44 0.00 3.50 90.00 1.00 0 1 textures/map/leaves_light.png	textures/map/fence_metal_top.png
+6 50 34 54 38 0.00 3.50 90.00 1.00 0 1 textures/map/leaves_light.png	textures/map/fence_metal_top.png
+6 57 28 62 32 0.00 3.50 90.00 1.00 0 1 textures/map/leaves_light.png	textures/map/fence_metal_top.png
+6 28 15 34 19 0.00 3.50 90.00 1.00 0 1 textures/map/leaves_light.png	textures/map/fence_metal_top.png
+6 7 9 11 12 0.00 3.50 90.00 1.00 0 1 textures/map/leaves_light.png	textures/map/fence_metal_top.png
+6 0 4 6 9 0.00 3.50 90.00 1.00 0 1 textures/map/leaves_light.png	textures/map/fence_metal_top.png
 6 9 5 12 7 0.00 4.00 90.00 1.00 0 1 textures/map/leaves.png	textures/map/fence_metal_top.png
 6 28 5 32 8 0.00 4.00 90.00 1.00 0 1 textures/map/leaves.png	textures/map/fence_metal_top.png
 6 46 7 48 10 0.00 4.00 90.00 1.00 0 1 textures/map/leaves.png	textures/map/fence_metal_top.png
@@ -919,8 +919,8 @@
 6 63 48 68 52 0.00 4.00 90.00 1.00 0 1 textures/map/leaves.png	textures/map/fence_metal_top.png
 6 37 75 41 78 0.00 4.50 90.00 1.00 0 1 textures/map/leaves.png	textures/map/fence_metal_top.png
 6 29 75 31 78 0.00 4.50 90.00 1.00 0 1 textures/map/leaves.png	textures/map/fence_metal_top.png
-6 26 73 27 74 0.00 4.50 90.00 1.00 0 1 textures/map/g_evergreen0.png	textures/map/fence_metal_top.png
-6 30 76 32 77 0.00 5.00 90.00 1.00 0 1 textures/map/g_evergreen0.png	textures/map/fence_metal_top.png
-6 33 74 35 75 0.00 5.00 90.00 1.00 0 1 textures/map/g_evergreen0.png	textures/map/fence_metal_top.png
-6 38 74 40 77 0.00 5.00 90.00 1.00 0 1 textures/map/g_evergreen0.png	textures/map/fence_metal_top.png
-6 35 76 37 78 0.00 5.00 90.00 1.00 0 1 textures/map/g_evergreen0.png	textures/map/fence_metal_top.png
+6 26 73 27 74 0.00 4.50 90.00 1.00 0 1 textures/map/leaves_light.png	textures/map/fence_metal_top.png
+6 30 76 32 77 0.00 5.00 90.00 1.00 0 1 textures/map/leaves_light.png	textures/map/fence_metal_top.png
+6 33 74 35 75 0.00 5.00 90.00 1.00 0 1 textures/map/leaves_light.png	textures/map/fence_metal_top.png
+6 38 74 40 77 0.00 5.00 90.00 1.00 0 1 textures/map/leaves_light.png	textures/map/fence_metal_top.png
+6 35 76 37 78 0.00 5.00 90.00 1.00 0 1 textures/map/leaves_light.png	textures/map/fence_metal_top.png

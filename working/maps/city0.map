@@ -171,11 +171,11 @@
 1 15 64 43 64 0.00 0.00 90.00 1.00 0 1 textures/map/g_street3.png	
 1 57 59 84 59 0.00 0.00 90.00 1.00 0 1 textures/map/g_street3.png	
 1 57 60 84 60 0.00 0.00 270.00 1.00 0 1 textures/map/g_street3.png	
-1 17 43 42 62 0.00 0.00 0.00 1.00 0 1 textures/map/g_sidewalk0.png	
-1 17 70 42 82 0.00 0.00 0.00 1.00 0 1 textures/map/g_sidewalk0.png	
-1 58 43 73 50 0.00 0.00 0.00 1.00 0 1 textures/map/g_sidewalk0.png	
-1 58 26 68 33 0.00 0.00 0.00 1.00 0 1 textures/map/g_sidewalk0.png	textures/map/w_trans0.png
-1 71 16 82 23 0.00 0.00 0.00 1.00 0 1 textures/map/g_sidewalk0.png	textures/map/w_trans0.png
+1 17 43 42 62 0.00 0.00 0.00 1.00 0 1 textures/map/sidewalk.png	
+1 17 70 42 82 0.00 0.00 0.00 1.00 0 1 textures/map/sidewalk.png	
+1 58 43 73 50 0.00 0.00 0.00 1.00 0 1 textures/map/sidewalk.png	
+1 58 26 68 33 0.00 0.00 0.00 1.00 0 1 textures/map/sidewalk.png	textures/map/w_trans0.png
+1 71 16 82 23 0.00 0.00 0.00 1.00 0 1 textures/map/sidewalk.png	textures/map/w_trans0.png
 2 73 50 73 50 0.00 0.00 0.00 1.00 0 1 textures/map/w_housebrick0.png	
 2 82 16 82 16 0.00 0.00 0.00 1.00 0 1 textures/map/w_housebrick0.png	
 2 30 70 30 70 0.00 0.00 0.00 1.00 0 1 textures/map/w_housebrick0.png	

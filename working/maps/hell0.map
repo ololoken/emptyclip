@@ -361,8 +361,8 @@
 3 0 1 91 1 91 4 1 0.00 1 		
 0 91 -1 -1
 168
-0 0 25 99 99 -20.00 0.00 0.00 1.00 0 0 textures/map/w_helldoor0.png	
-1 0 0 44 24 -4.50 -4.50 0.00 1.00 0 0 textures/map/g_fire0.png	
+0 0 25 99 99 -20.00 0.00 0.00 1.00 0 0 textures/map/door_hell.png	
+1 0 0 44 24 -4.50 -4.50 0.00 1.00 0 0 textures/map/lava.png	
 1 45 1 49 19 -2.00 0.00 0.00 1.00 0 1 textures/map/w_blood1.png	
 1 5 20 94 24 -2.00 0.00 0.00 1.00 0 1 textures/map/w_blood1.png	
 1 23 14 23 19 -2.00 0.00 0.00 1.00 0 1 textures/map/w_blood1.png	
@@ -389,7 +389,7 @@
 1 15 5 15 13 -2.00 0.00 0.00 1.00 0 1 textures/map/w_blood1.png	
 1 15 2 26 2 -2.00 0.00 0.00 1.00 0 1 textures/map/w_blood1.png	
 1 14 1 14 2 -2.00 0.00 0.00 1.00 0 1 textures/map/w_blood1.png	
-1 51 1 98 19 -2.00 -2.00 0.00 1.00 0 0 textures/map/g_fire0.png	
+1 51 1 98 19 -2.00 -2.00 0.00 1.00 0 0 textures/map/lava.png	
 1 55 25 59 25 -20.00 0.00 0.00 1.00 0 1 textures/map/g_grid0.png	
 1 35 35 39 93 -11.50 -10.00 0.00 1.00 0 0 textures/map/w_blood1.png	
 1 65 35 69 94 -11.50 -10.00 0.00 1.00 0 0 textures/map/w_blood1.png	
@@ -403,9 +403,9 @@
 1 50 55 99 59 -16.00 -14.00 0.00 1.00 0 0 textures/map/w_blood1.png	
 1 0 25 9 25 -20.00 0.00 0.00 1.00 0 1 textures/map/g_grid0.png	
 1 0 26 0 99 -20.00 0.00 0.00 1.00 0 1 textures/map/g_grid0.png	
-1 2 98 4 98 0.00 0.00 90.00 1.00 0 1 textures/map/g_fire0.png	
-1 5 95 6 98 0.00 0.00 90.00 1.00 0 1 textures/map/g_fire0.png	
-1 2 87 2 97 0.00 0.00 90.00 1.00 0 1 textures/map/g_fire0.png	
+1 2 98 4 98 0.00 0.00 90.00 1.00 0 1 textures/map/lava.png	
+1 5 95 6 98 0.00 0.00 90.00 1.00 0 1 textures/map/lava.png	
+1 2 87 2 97 0.00 0.00 90.00 1.00 0 1 textures/map/lava.png	
 1 7 95 7 98 -14.00 7.00 0.00 1.00 0 0 textures/map/w_bloodbrick0.png	
 1 5 95 6 95 -14.00 7.00 0.00 1.00 0 0 textures/map/w_bloodbrick0.png	
 1 14 20 35 20 -4.50 0.00 0.00 1.00 0 1 textures/map/w_blood1.png	
@@ -437,7 +437,7 @@
 2 35 93 79 94 -2.00 0.00 0.00 1.00 0 1 textures/map/w_blood1.png	
 2 80 85 98 98 -2.00 0.00 0.00 1.00 0 1 textures/map/w_blood1.png	
 2 25 70 29 74 -2.00 0.00 0.00 1.00 0 1 textures/map/w_blood1.png	
-2 26 69 28 69 -1.00 -1.00 0.00 1.00 0 1 textures/map/g_fire0.png	
+2 26 69 28 69 -1.00 -1.00 0.00 1.00 0 1 textures/map/lava.png	
 2 25 69 25 69 -2.00 1.00 0.00 1.00 0 0 textures/map/w_blood1.png	textures/map/w_blood1.png
 2 29 69 29 69 -2.00 1.00 0.00 1.00 0 0 textures/map/w_blood1.png	textures/map/w_blood1.png
 2 26 69 28 69 0.00 0.00 0.00 1.00 0 0 textures/map/w_trans0.png	textures/map/w_blood1.png
@@ -446,7 +446,7 @@
 2 15 40 29 44 -2.00 0.00 0.00 1.00 0 1 textures/map/w_blood1.png	
 2 30 44 30 44 -2.00 1.00 0.00 1.00 0 0 textures/map/w_blood1.png	textures/map/w_blood1.png
 2 30 40 30 40 -2.00 1.00 0.00 1.00 0 0 textures/map/w_blood1.png	textures/map/w_blood1.png
-2 30 41 30 43 -1.00 -1.00 0.00 1.00 0 1 textures/map/g_fire0.png	
+2 30 41 30 43 -1.00 -1.00 0.00 1.00 0 1 textures/map/lava.png	
 2 30 41 30 43 0.00 0.00 0.00 1.00 0 0 textures/map/w_trans0.png	textures/map/w_blood1.png
 2 35 65 39 71 -2.00 0.00 0.00 1.00 0 1 textures/map/w_blood1.png	
 2 40 68 84 71 -2.00 0.00 0.00 1.00 0 1 textures/map/w_blood1.png	
@@ -465,16 +465,16 @@
 2 10 26 10 27 -2.00 0.00 0.00 1.00 0 1 textures/map/w_blood1.png	
 2 99 86 99 86 0.00 0.00 90.00 1.00 0 1 textures/map/w_windowhell0.png	textures/map/w_trans0.png
 3 10 53 10 56 0.00 0.00 90.00 1.00 0 1 textures/map/w_bloodbrick0.png	
-4 57 25 57 25 0.00 1.00 0.00 1.00 0 0 textures/map/w_helldoor0.png	textures/map/w_helldoor1.png
-4 55 25 56 25 0.00 1.00 0.00 1.00 0 0 textures/map/w_helldoor0.png	textures/map/w_helldoor1.png
-4 58 25 59 25 0.00 1.00 0.00 1.00 0 0 textures/map/w_helldoor0.png	textures/map/w_helldoor1.png
-4 55 25 59 25 1.00 10.00 0.00 1.00 0 0 textures/map/w_helldoor0.png	
-4 5 25 9 25 1.00 10.00 0.00 1.00 0 0 textures/map/w_helldoor0.png	
-4 7 25 7 25 0.00 1.00 0.00 1.00 0 0 textures/map/w_helldoor0.png	textures/map/w_helldoor1.png
-4 8 25 9 25 0.00 1.00 0.00 1.00 0 0 textures/map/w_helldoor0.png	textures/map/w_helldoor1.png
-4 5 25 6 25 0.00 1.00 0.00 1.00 0 0 textures/map/w_helldoor0.png	textures/map/w_helldoor1.png
+4 57 25 57 25 0.00 1.00 0.00 1.00 0 0 textures/map/door_hell.png	textures/map/door_hell_open.png
+4 55 25 56 25 0.00 1.00 0.00 1.00 0 0 textures/map/door_hell.png	textures/map/door_hell_open.png
+4 58 25 59 25 0.00 1.00 0.00 1.00 0 0 textures/map/door_hell.png	textures/map/door_hell_open.png
+4 55 25 59 25 1.00 10.00 0.00 1.00 0 0 textures/map/door_hell.png	
+4 5 25 9 25 1.00 10.00 0.00 1.00 0 0 textures/map/door_hell.png	
+4 7 25 7 25 0.00 1.00 0.00 1.00 0 0 textures/map/door_hell.png	textures/map/door_hell_open.png
+4 8 25 9 25 0.00 1.00 0.00 1.00 0 0 textures/map/door_hell.png	textures/map/door_hell_open.png
+4 5 25 6 25 0.00 1.00 0.00 1.00 0 0 textures/map/door_hell.png	textures/map/door_hell_open.png
 4 78 93 78 94 0.00 1.00 90.00 1.00 0 1 textures/map/w_trans0.png	textures/map/w_blood1.png
-4 23 19 23 19 0.00 1.00 0.00 1.00 0 0 textures/map/w_helldoor0.png	textures/map/w_helldoor1.png
+4 23 19 23 19 0.00 1.00 0.00 1.00 0 0 textures/map/door_hell.png	textures/map/door_hell_open.png
 4 98 89 98 89 0.00 2.00 0.00 1.00 0 0 textures/map/g_grid0.png	textures/map/w_trans0.png
 4 10 58 10 61 -14.00 5.00 90.00 1.00 0 0 textures/map/w_windowhell0.png	
 4 10 48 10 51 -14.00 5.00 90.00 1.00 0 0 textures/map/w_windowhell0.png	

@@ -120,18 +120,18 @@
 13 35 4 66
 14 35 4 -1
 134
-0 0 0 69 69 0.00 0.00 0.00 1.00 0 1 textures/map/g_grass2.png	
-1 16 46 23 53 0.00 0.00 90.00 1.00 0 1 textures/map/g_carpet1.png	textures/map/door_brick.png
+0 0 0 69 69 0.00 0.00 0.00 1.00 0 1 textures/map/grass_light.png	
+1 16 46 23 53 0.00 0.00 90.00 1.00 0 1 textures/map/carpet_red.png	textures/map/door_brick.png
 1 24 49 24 50 0.00 0.00 0.00 1.00 0 1 textures/map/w_brick0.png	textures/map/door_brick.png
 1 34 32 35 69 0.00 0.00 0.00 1.00 0 1 textures/map/w_sand1.png	textures/map/door_brick.png
 1 25 49 44 50 0.00 0.00 0.00 1.00 0 1 textures/map/w_sand1.png	textures/map/door_brick.png
-1 46 46 53 53 0.00 0.00 90.00 1.00 0 1 textures/map/g_carpet1.png	textures/map/door_brick.png
+1 46 46 53 53 0.00 0.00 90.00 1.00 0 1 textures/map/carpet_red.png	textures/map/door_brick.png
 1 45 49 45 50 0.00 0.00 0.00 1.00 0 1 textures/map/w_brick0.png	textures/map/door_brick.png
-1 16 19 22 25 0.00 0.00 0.00 1.00 0 1 textures/map/g_carpet1.png	textures/map/door_brick.png
+1 16 19 22 25 0.00 0.00 0.00 1.00 0 1 textures/map/carpet_red.png	textures/map/door_brick.png
 1 16 26 16 26 0.00 0.00 0.00 1.00 0 1 textures/map/w_brick0.png	textures/map/door_brick.png
-1 26 19 32 25 0.00 0.00 0.00 1.00 0 1 textures/map/g_carpet1.png	textures/map/door_brick.png
-1 37 19 43 25 0.00 0.00 0.00 1.00 0 1 textures/map/g_carpet1.png	textures/map/door_brick.png
-1 47 19 53 25 0.00 0.00 0.00 1.00 0 1 textures/map/g_carpet1.png	textures/map/door_brick.png
+1 26 19 32 25 0.00 0.00 0.00 1.00 0 1 textures/map/carpet_red.png	textures/map/door_brick.png
+1 37 19 43 25 0.00 0.00 0.00 1.00 0 1 textures/map/carpet_red.png	textures/map/door_brick.png
+1 47 19 53 25 0.00 0.00 0.00 1.00 0 1 textures/map/carpet_red.png	textures/map/door_brick.png
 1 16 30 47 31 0.00 0.00 0.00 1.00 0 1 textures/map/w_sand1.png	textures/map/door_brick.png
 1 47 27 47 29 0.00 0.00 0.00 1.00 0 1 textures/map/w_sand1.png	textures/map/door_brick.png
 1 37 27 37 29 0.00 0.00 0.00 1.00 0 1 textures/map/w_sand1.png	textures/map/door_brick.png
@@ -140,13 +140,13 @@
 1 26 26 26 26 0.00 0.00 0.00 1.00 0 1 textures/map/w_brick0.png	textures/map/door_brick.png
 1 37 26 37 26 0.00 0.00 0.00 1.00 0 1 textures/map/w_brick0.png	textures/map/door_brick.png
 1 47 26 47 26 0.00 0.00 0.00 1.00 0 1 textures/map/w_brick0.png	textures/map/door_brick.png
-1 13 34 28 42 0.00 0.00 90.00 1.00 0 1 textures/map/g_carpet1.png	textures/map/door_brick.png
-2 17 47 18 52 0.00 0.00 90.00 1.00 0 1 textures/map/g_carpet0.png	textures/map/door_brick.png
-2 51 47 52 52 0.00 0.00 90.00 1.00 0 1 textures/map/g_carpet0.png	textures/map/door_brick.png
-2 20 20 21 24 0.00 0.00 0.00 1.00 0 1 textures/map/g_carpet0.png	textures/map/door_brick.png
-2 30 20 31 24 0.00 0.00 0.00 1.00 0 1 textures/map/g_carpet0.png	textures/map/door_brick.png
-2 41 20 42 24 0.00 0.00 0.00 1.00 0 1 textures/map/g_carpet0.png	textures/map/door_brick.png
-2 51 20 52 24 0.00 0.00 0.00 1.00 0 1 textures/map/g_carpet0.png	textures/map/door_brick.png
+1 13 34 28 42 0.00 0.00 90.00 1.00 0 1 textures/map/carpet_red.png	textures/map/door_brick.png
+2 17 47 18 52 0.00 0.00 90.00 1.00 0 1 textures/map/carpet_purple.png	textures/map/door_brick.png
+2 51 47 52 52 0.00 0.00 90.00 1.00 0 1 textures/map/carpet_purple.png	textures/map/door_brick.png
+2 20 20 21 24 0.00 0.00 0.00 1.00 0 1 textures/map/carpet_purple.png	textures/map/door_brick.png
+2 30 20 31 24 0.00 0.00 0.00 1.00 0 1 textures/map/carpet_purple.png	textures/map/door_brick.png
+2 41 20 42 24 0.00 0.00 0.00 1.00 0 1 textures/map/carpet_purple.png	textures/map/door_brick.png
+2 51 20 52 24 0.00 0.00 0.00 1.00 0 1 textures/map/carpet_purple.png	textures/map/door_brick.png
 2 29 37 33 38 0.00 0.00 0.00 1.00 0 1 textures/map/w_sand1.png	
 4 37 58 37 69 0.00 7.00 90.00 1.00 0 0 textures/map/gate_grate.png	
 4 32 58 32 69 0.00 7.00 90.00 1.00 0 0 textures/map/gate_grate.png	
@@ -234,7 +234,7 @@
 5 16 18 22 18 0.00 5.00 0.00 1.00 1 0 textures/map/w_brick0.png	
 5 23 18 23 26 0.00 5.00 0.00 1.00 1 0 textures/map/w_brick0.png	
 5 17 26 22 26 0.00 5.00 0.00 1.00 1 0 textures/map/w_brick0.png	
-5 17 20 17 25 0.00 0.50 0.00 1.00 1 0 textures/map/g_wood0.png	
+5 17 20 17 25 0.00 0.50 0.00 1.00 1 0 textures/map/wood_panel.png	
 5 25 18 25 26 0.00 5.00 0.00 1.00 1 0 textures/map/w_brick0.png	
 5 26 18 32 18 0.00 5.00 0.00 1.00 1 0 textures/map/w_brick0.png	
 5 33 18 33 26 0.00 5.00 0.00 1.00 1 0 textures/map/w_brick0.png	
@@ -247,9 +247,9 @@
 5 27 26 32 26 0.00 5.00 0.00 1.00 1 0 textures/map/w_brick0.png	
 5 38 26 43 26 0.00 5.00 0.00 1.00 1 0 textures/map/w_brick0.png	
 5 48 26 53 26 0.00 5.00 0.00 1.00 1 0 textures/map/w_brick0.png	
-5 27 20 27 25 0.00 0.50 0.00 1.00 1 0 textures/map/g_wood0.png	
-5 38 20 38 25 0.00 0.50 0.00 1.00 1 0 textures/map/g_wood0.png	
-5 48 20 48 25 0.00 0.50 0.00 1.00 1 0 textures/map/g_wood0.png	
+5 27 20 27 25 0.00 0.50 0.00 1.00 1 0 textures/map/wood_panel.png	
+5 38 20 38 25 0.00 0.50 0.00 1.00 1 0 textures/map/wood_panel.png	
+5 48 20 48 25 0.00 0.50 0.00 1.00 1 0 textures/map/wood_panel.png	
 5 13 33 29 33 0.00 6.00 0.00 1.00 1 0 textures/map/w_brick0.png	
 5 13 43 29 43 0.00 6.00 0.00 1.00 1 0 textures/map/w_brick0.png	
 5 29 34 29 36 0.00 6.00 0.00 1.00 1 0 textures/map/w_brick0.png	
