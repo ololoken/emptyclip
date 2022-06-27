@@ -46,7 +46,7 @@ enum SaveChunkTypes {
 };
 
 // Write a chunk to a stream
-static void WriteChunk(std::ofstream &File, int Type, const char *Data, size_t Size) {
+static void WriteChunk(std::ofstream &File, int Type, const char *Data, int Size) {
 	File.write((char *)&Type, sizeof(Type));
 	File.write((char *)&Size, sizeof(Size));
 	File.write(Data, Size);
@@ -251,10 +251,10 @@ void _Save::SavePlayer(_Player *Player) {
 		throw std::runtime_error("Cannot create save file: " + Player->SavePath);
 
 	WriteChunk(File, CHUNK_SAVEVERSION, (const char *)&PLAYER_SAVEVERSION, sizeof(PLAYER_SAVEVERSION));
-	WriteChunk(File, CHUNK_PLAYERNAME, Player->Name.c_str(), Player->Name.length());
-	WriteChunk(File, CHUNK_COLOR, Player->ColorID.c_str(), Player->ColorID.length());
+	WriteChunk(File, CHUNK_PLAYERNAME, Player->Name.c_str(), (int)Player->Name.length());
+	WriteChunk(File, CHUNK_COLOR, Player->ColorID.c_str(), (int)Player->ColorID.length());
 	if(Player->Map) {
-		WriteChunk(File, CHUNK_MAP, Player->MapID.c_str(), Player->MapID.length());
+		WriteChunk(File, CHUNK_MAP, Player->MapID.c_str(), (int)Player->MapID.length());
 		WriteChunk(File, CHUNK_CHECKPOINT, (char *)&Player->CheckpointIndex, sizeof(Player->CheckpointIndex));
 	}
 	WriteChunk(File, CHUNK_PROGRESSION, (char *)&Player->Progression, sizeof(Player->Progression));
