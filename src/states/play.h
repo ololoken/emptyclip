@@ -74,6 +74,8 @@ class _PlayState : public ae::_State {
 		std::string Level;
 		bool TestMode;
 		bool FromEditor;
+		bool DevMode;
+		bool GodMode;
 		int CheckpointIndex;
 
 		_Player *Player;

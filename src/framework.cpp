@@ -88,6 +88,11 @@ void _Framework::Init(int ArgumentCount, char **Arguments) {
 		else if(Token == "-noaudio") {
 			AudioEnabled = false;
 		}
+		else if(Token == "-dev") {
+			#ifndef NDEBUG
+				PlayState.DevMode = true;
+			#endif
+		}
 	}
 
 	// Set random seed
@@ -129,6 +134,11 @@ void _Framework::Init(int ArgumentCount, char **Arguments) {
 	Console->CommandList.push_back("quit");
 	Console->CommandList.push_back("volume");
 	Console->CommandList.push_back("vsync");
+
+	// Add dev mode commands
+	if(PlayState.DevMode) {
+		Console->CommandList.push_back("god");
+	}
 
 	// Sort commands
 	std::sort(Console->CommandList.begin(), Console->CommandList.end());

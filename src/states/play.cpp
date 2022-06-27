@@ -56,6 +56,8 @@ _PlayState::_PlayState() {
 	Player = nullptr;
 	Level = "";
 	TestMode = false;
+	DevMode = false;
+	GodMode = false;
 	FromEditor = false;
 }
 
@@ -270,6 +272,10 @@ bool _PlayState::HandleCommand(ae::_Console *Console) {
 	// Handle normal commands
 	if(Console->Command == "quit") {
 		HandleQuit();
+		return true;
+	}
+	else if(Console->Command == "god") {
+		GodMode = !GodMode;
 		return true;
 	}
 
@@ -611,7 +617,8 @@ void _PlayState::EntityAttack(_Entity *Attacker, int GridType) {
 		return;
 
 	// Reduce ammo
-	Attacker->ReduceAmmo();
+	if(!GodMode)
+		Attacker->ReduceAmmo();
 
 	// Weapon type specific code
 	int WeaponType = WEAPON_MELEE;
@@ -680,6 +687,8 @@ void _PlayState::EntityAttack(_Entity *Attacker, int GridType) {
 
 				// Generate damage
 				int Damage = Attacker->GenerateDamage(Attacker->AttackRequestType, Hit.Object->DamageBlock, Hit.Object->DamageResist);
+				if(GodMode && Hit.Object->Type == _Object::PLAYER)
+					Damage = 0;
 
 				// Create damage number particles
 				glm::vec2 DamagePosition = Hit.Position;
