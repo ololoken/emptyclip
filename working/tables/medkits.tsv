@@ -1,2 +1,2 @@
 id	name	icon_id	health_restored	health_restored_level
-medkit	Medkit	textures/items/i_medkit0.png	0	50
+medkit	Medkit	textures/items/medkit.png	0	50
