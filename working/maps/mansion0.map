@@ -14,12 +14,12 @@
 4 ammo_pistol 1 91.70 48.32
 4 ammo_pistol 1 92.08 48.50
 4 ammo_pistol 1 91.79 48.72
-57
+56
 3 1 45 85 45 85 0 1 0.00 0 		
-3 1 59 63 70 63 5 1 0.00 1 		
+3 1 59 63 70 63 1 1 0.00 1 		
 64 62 -1 -1
 4 1 75 1 76 3 0 1 0.00 0 mansion1.map		
-0 0 64 17 65 17 0 1 0.00 2 key_red		
+0 1 64 17 65 17 0 1 0.00 2 key_red		
 64 17 4 10
 65 17 4 -1
 0 1 78 40 80 40 0 1 0.00 3 		
@@ -65,25 +65,21 @@
 65 50 4 -1
 66 50 4 -1
 67 50 4 -1
-3 1 94 39 95 39 10 1 0.00 1 key_green		
+3 1 94 39 95 39 2 1 0.00 1 key_green		
 94 38 -1 -1
 9 1 32 1 32 1 0 1 0.00 1 		
 34 23 -1 -1
-9 0 34 19 35 20 0 1 0.00 1 		
+9 1 34 19 35 20 0 1 0.00 1 		
 37 8 -1 -1
-3 1 61 49 68 49 15 1 0.00 1 		
+3 1 61 49 68 49 3 1 0.00 1 		
 64 49 -1 -1
-3 1 61 16 68 16 25 1 0.00 1 		
+3 1 61 16 68 16 6 1 0.00 1 		
 64 16 -1 -1
-3 1 46 38 46 40 16 1 0.00 1 		
+3 1 46 38 46 40 4 1 0.00 1 		
 46 39 -1 -1
-8 1 45 39 45 39 1 1 0.00 17 		
+8 1 45 39 45 39 1 1 0.00 12 		
 45 37 -1 11
 45 49 -1 9
-65 17 -1 3
-35 20 -1 18
-94 27 -1 -1
-94 36 -1 -1
 46 39 -1 21
 89 8 -1 26
 86 26 -1 7
@@ -92,9 +88,8 @@
 43 37 -1 30
 43 41 -1 29
 78 52 -1 36
-82 51 -1 38
-85 25 -1 39
-89 59 -1 37
+82 51 -1 37
+85 25 -1 38
 2 1 52 40 54 42 1 2 0.00 1 	zombie	smoke0
 46 42 -1 -1
 6 1 52 39 53 43 1 1 0.00 0 event_rumble1		
@@ -110,15 +105,15 @@
 86 26 -1 7
 94 28 -1 -1
 94 36 -1 -1
-84 25 -1 39
+84 25 -1 38
 43 41 -1 29
 43 36 -1 30
 43 40 -1 28
 79 52 -1 36
-82 51 -1 38
-89 61 -1 37
+82 51 -1 37
+89 61 -1 -1
 45 39 -1 22
-3 1 89 3 89 8 20 1 0.00 0 		
+3 1 89 3 89 8 5 1 0.00 0 		
 2 0 42 38 44 40 1 1 0.00 27 	zombie	
 44 22 -1 -1
 52 22 -1 -1
@@ -262,10 +257,6 @@
 78 46 -1 -1
 83 41 -1 -1
 83 44 -1 -1
-2 0 89 55 89 64 1 2 0.00 3 	dog	
-92 27 -1 -1
-92 37 -1 -1
-92 17 -1 -1
 2 0 82 51 82 52 1 1 0.00 13 	dog	
 80 34 -1 -1
 79 28 -1 -1
@@ -324,7 +315,7 @@
 47 77 4 24
 10 1 43 83 46 86 100 1 1.00 0 ambient_half		
 8 1 52 40 54 42 1 1 0.00 1 		
-46 41 -1 52
+46 41 -1 51
 320
 0 0 0 129 109 0.00 0.00 0.00 1.00 0 1 textures/map/grass_medium.png	
 1 60 65 69 95 0.00 0.00 0.00 1.00 0 1 textures/map/dirt.png	
@@ -494,7 +485,7 @@
 5 85 34 85 34 0.00 2.00 90.00 1.00 1 0 textures/map/wood_panel.png	textures/map/blank.png
 5 82 29 84 29 0.00 2.00 90.00 1.00 1 0 textures/map/wood_panel.png	textures/map/blank.png
 5 84 30 84 30 0.00 2.00 90.00 1.00 1 0 textures/map/wood_panel.png	textures/map/blank.png
-5 31 53 38 53 0.00 2.00 90.00 1.00 1 0 textures/map/grass_dark.png	textures/map/blank.png
+5 31 53 39 53 0.00 2.00 90.00 1.00 1 0 textures/map/grass_dark.png	textures/map/blank.png
 5 38 45 38 52 0.00 2.00 90.00 1.00 1 0 textures/map/grass_dark.png	textures/map/blank.png
 5 32 43 38 43 0.00 2.00 90.00 1.00 1 0 textures/map/grass_dark.png	textures/map/blank.png
 5 35 41 39 41 0.00 2.00 90.00 1.00 1 0 textures/map/grass_dark.png	textures/map/blank.png
@@ -531,7 +522,7 @@
 5 64 41 65 41 0.00 0.50 0.00 1.00 1 0 textures/map/marble_light.png	textures/map/blank.png
 5 32 2 33 2 0.00 0.50 0.00 1.00 1 0 textures/map/brick_green.png	textures/map/blank.png
 5 33 1 33 1 0.00 0.50 0.00 1.00 1 0 textures/map/brick_green.png	textures/map/blank.png
-5 39 5 39 5 0.50 0.50 0.00 1.00 1 0 textures/map/switch_brick.png	textures/map/switch_brick_open.png
+5 39 5 39 5 0.50 0.50 0.00 1.00 1 0 textures/map/switch.png	textures/map/switch_open.png
 5 69 10 69 10 0.00 6.50 0.00 1.00 1 0 textures/map/marble_light.png	
 5 66 13 66 13 0.00 6.50 0.00 1.00 1 0 textures/map/marble_light.png	
 5 63 13 63 13 0.00 6.50 0.00 1.00 1 0 textures/map/marble_light.png	

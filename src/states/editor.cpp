@@ -1807,9 +1807,9 @@ void _EditorState::ExecuteIOCommand(int Type) {
 	ae::_Element *Label = TextBox->Children.front();
 	Label->Text = InputBoxStrings[Type];
 	if(Type >= EDITINPUT_ITEMIDENTIFIER && Type <= EDITINPUT_PARTICLEIDENTIFIER && EventSelected())
-		TextBox->Text = GetEventID(Type);
+		TextBox->SetText(GetEventID(Type));
 	else
-		TextBox->Text = SavedText[Type];
+		TextBox->SetText(SavedText[Type]);
 
 	ae::FocusedElement = TextBox;
 }
