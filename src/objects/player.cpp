@@ -110,7 +110,8 @@ _Player::~_Player() {
 void _Player::Reset() {
 
 	// Set stats
-	MonsterKills = TimePlayed = 0;
+	MonsterKills = 0;
+	TimePlayed = 0;
 	Radius = PLAYER_RADIUS;
 	Name = "test";
 	ColorID = "white";
@@ -134,16 +135,25 @@ void _Player::Reset() {
 	Progression = 0;
 	Active = true;
 	Action = ACTION_IDLE;
-	Reloading = SwitchingWeapons = Crouching = Sprinting = AttackRequested = UseRequested = MedkitRequested = false;
-	for(int i = 0; i < WEAPONATTACK_COUNT; i++) {
+	Reloading = false;
+	SwitchingWeapons = false;
+	Crouching = false;
+	Sprinting = false;
+	AttackRequested = false;
+	UseRequested = false;
+	MedkitRequested = false;
+	for(int i = 0; i < WEAPONATTACK_COUNT; i++)
 		AttackAllowed[i] = true;
-	}
+
 	UsePeriod = PLAYER_USEPERIOD;
 	ZoomScale = PLAYER_ZOOMSCALE;
 	LegDirection = 0.0f;
 	MovementSpeed = 0.0f;
 	MoveState = MOVE_NONE;
-	WeaponSwitchTimer = ReloadTimer = UseTimer = MedkitTimer = 0;
+	WeaponSwitchTimer = 0.0;
+	ReloadTimer = 0.0;
+	UseTimer = 0.0;
+	MedkitTimer = 0.0;
 	WeaponSwitchFrom = -1;
 	WeaponSwitchTo = -1;
 	TimePlayed = 0;

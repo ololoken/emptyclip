@@ -36,10 +36,11 @@ const  std::string  GAME_WINDOWTITLE               =  "Empty Clip";
 const  double       GAME_FPS                       =  100.0;
 const  double       GAME_TIMESTEP                  =  1.0/GAME_FPS;
 const  float        GAME_PAUSE_FADEAMOUNT          =  0.7f;
-const  std::string  GAME_STARTLEVEL                =  "start0.map";
+const  std::string  GAME_STARTLEVEL                =  "mansion0.map";
 const  std::string  GAME_FIRSTLEVEL                =  "mansion0.map";
 const  int          GAME_MAX_LEVEL                 =  100;
 const  int          GAME_SKILLLEVELS               =  20;
+const  int          GAME_WIN_PROGRESSION_POINTS    =  20;
 //     Camera
 const  float        CAMERA_DISTANCE                =  6.5f;
 const  float        CAMERA_DISTANCE_AIMED          =  7.0f;

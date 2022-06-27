@@ -900,6 +900,7 @@ void _PlayState::CheckEvents(const _Entity *Entity) {
 					// End of the game
 					if(Level == "") {
 						Level = GAME_FIRSTLEVEL;
+						Player->Progression += GAME_WIN_PROGRESSION_POINTS;
 						Framework.ChangeState(&NullState);
 					}
 					// Next level

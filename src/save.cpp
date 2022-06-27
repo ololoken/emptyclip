@@ -96,16 +96,17 @@ void _Save::LoadSaves() {
 		size_t Extension = Files.Nodes[i].find(".save");
 		std::string SlotIndexString = Files.Nodes[i].substr(0, Extension);
 		int SlotIndex = atoi(SlotIndexString.c_str()) - 1;
-		if(SlotIndex >= 0 && SlotIndex <= SLOT_9) {
-			try {
-				Players[SlotIndex] = new _Player(Config.ConfigPath + Files.Nodes[i]);
-				Players[SlotIndex]->Load();
-			}
-			catch(std::exception &Error) {
-				std::cout << Error.what() << std::endl;
-				delete Players[SlotIndex];
-				Players[SlotIndex] = nullptr;
-			}
+		if(SlotIndex < 0 || SlotIndex > SLOT_9)
+			continue;
+
+		try {
+			Players[SlotIndex] = new _Player(Config.ConfigPath + Files.Nodes[i]);
+			Players[SlotIndex]->Load();
+		}
+		catch(std::exception &Error) {
+			std::cout << Error.what() << std::endl;
+			delete Players[SlotIndex];
+			Players[SlotIndex] = nullptr;
 		}
 	}
 }
