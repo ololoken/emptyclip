@@ -179,29 +179,29 @@
 2 73 50 73 50 0.00 0.00 0.00 1.00 0 1 textures/map/w_housebrick0.png	
 2 82 16 82 16 0.00 0.00 0.00 1.00 0 1 textures/map/w_housebrick0.png	
 2 30 70 30 70 0.00 0.00 0.00 1.00 0 1 textures/map/w_housebrick0.png	
-4 15 15 84 15 0.00 4.00 0.00 1.00 0 0 textures/map/fl_fence0.png	
-4 15 15 15 84 0.00 4.00 90.00 1.00 0 0 textures/map/fl_fence0.png	
-4 15 84 84 84 0.00 4.00 0.00 1.00 0 0 textures/map/fl_fence0.png	
-4 29 63 29 63 0.00 1.00 0.00 1.00 0 0 textures/map/f_frontdoor0.png	textures/map/w_trans0.png
+4 15 15 84 15 0.00 4.00 0.00 1.00 0 0 textures/map/gate_grate.png	
+4 15 15 15 84 0.00 4.00 90.00 1.00 0 0 textures/map/gate_grate.png	
+4 15 84 84 84 0.00 4.00 0.00 1.00 0 0 textures/map/gate_grate.png	
+4 29 63 29 63 0.00 1.00 0.00 1.00 0 0 textures/map/door_window.png	textures/map/w_trans0.png
 4 29 63 29 63 1.00 5.00 0.00 1.00 0 0 textures/map/w_brick0.png	
-4 84 15 84 58 0.00 4.00 90.00 1.00 0 0 textures/map/fl_fence0.png	
-4 22 69 22 69 0.00 1.00 0.00 1.00 0 0 textures/map/f_frontdoor0.png	textures/map/w_trans0.png
-4 43 76 43 76 0.00 1.00 270.00 1.00 0 0 textures/map/f_frontdoor0.png	textures/map/w_trans0.png
-4 29 80 29 80 0.00 1.00 270.00 1.00 0 0 textures/map/f_frontdoor0.png	textures/map/w_trans0.png
+4 84 15 84 58 0.00 4.00 90.00 1.00 0 0 textures/map/gate_grate.png	
+4 22 69 22 69 0.00 1.00 0.00 1.00 0 0 textures/map/door_window.png	textures/map/w_trans0.png
+4 43 76 43 76 0.00 1.00 270.00 1.00 0 0 textures/map/door_window.png	textures/map/w_trans0.png
+4 29 80 29 80 0.00 1.00 270.00 1.00 0 0 textures/map/door_window.png	textures/map/w_trans0.png
 4 22 69 22 69 1.00 2.00 0.00 1.00 0 0 textures/map/w_brick0.png	
 4 43 76 43 76 1.00 2.00 90.00 1.00 0 0 textures/map/w_brick0.png	
 4 29 80 29 80 1.00 2.00 90.00 1.00 0 0 textures/map/w_brick0.png	
-4 67 42 67 42 0.00 1.00 0.00 1.00 0 0 textures/map/f_frontdoor0.png	textures/map/w_trans0.png
+4 67 42 67 42 0.00 1.00 0.00 1.00 0 0 textures/map/door_window.png	textures/map/w_trans0.png
 4 67 42 67 42 1.00 2.50 0.00 1.00 0 0 textures/map/w_brick0.png	
-4 15 38 43 38 0.00 1.00 0.00 1.00 0 0 textures/map/fl_fence0.png	
-4 43 15 43 27 0.00 1.00 90.00 1.00 0 0 textures/map/fl_fence0.png	
-4 43 30 43 38 0.00 1.00 90.00 1.00 0 0 textures/map/fl_fence0.png	
-4 77 24 77 24 0.00 1.00 0.00 1.00 0 0 textures/map/f_frontdoor0.png	textures/map/w_trans0.png
+4 15 38 43 38 0.00 1.00 0.00 1.00 0 0 textures/map/gate_grate.png	
+4 43 15 43 27 0.00 1.00 90.00 1.00 0 0 textures/map/gate_grate.png	
+4 43 30 43 38 0.00 1.00 90.00 1.00 0 0 textures/map/gate_grate.png	
+4 77 24 77 24 0.00 1.00 0.00 1.00 0 0 textures/map/door_window.png	textures/map/w_trans0.png
 4 77 24 77 24 1.00 2.00 0.00 1.00 0 0 textures/map/w_housebrick0.png	textures/map/w_trans0.png
-4 57 30 57 30 0.00 1.00 90.00 1.00 0 0 textures/map/f_frontdoor0.png	textures/map/w_trans0.png
+4 57 30 57 30 0.00 1.00 90.00 1.00 0 0 textures/map/door_window.png	textures/map/w_trans0.png
 4 57 30 57 30 1.00 3.00 90.00 1.00 0 0 textures/map/w_housebrick0.png	textures/map/w_trans0.png
-4 84 61 84 84 0.00 4.00 90.00 1.00 0 0 textures/map/fl_fence0.png	
-4 84 59 84 60 0.00 4.00 90.00 1.00 0 0 textures/map/fl_fence0.png	textures/map/w_trans0.png
+4 84 61 84 84 0.00 4.00 90.00 1.00 0 0 textures/map/gate_grate.png	
+4 84 59 84 60 0.00 4.00 90.00 1.00 0 0 textures/map/gate_grate.png	textures/map/w_trans0.png
 5 16 63 28 63 0.00 5.00 0.00 1.00 1 0 textures/map/w_brick0.png	
 5 16 42 16 62 0.00 5.00 0.00 1.00 1 0 textures/map/w_brick0.png	
 5 17 42 43 42 0.00 5.00 0.00 1.00 1 0 textures/map/w_brick0.png	

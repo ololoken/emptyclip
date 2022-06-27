@@ -473,15 +473,15 @@
 3 92 134 92 134 0.00 0.00 0.00 1.00 0 0 textures/map/w_treestump0.png	
 3 153 142 153 142 0.00 0.00 0.00 1.00 0 0 textures/map/w_treestump0.png	
 3 115 146 115 146 0.00 0.00 0.00 1.00 0 0 textures/map/w_treestump0.png	
-4 34 13 34 20 0.00 5.00 90.00 1.00 0 0 textures/map/fl_metalfence0.png	
-4 30 21 30 21 0.00 1.00 0.00 1.00 0 0 textures/map/fl_sign0.png	
-4 86 78 86 78 0.00 1.00 90.00 1.00 0 0 textures/map/fl_sign0.png	
-4 87 75 87 77 0.00 2.00 90.00 1.00 0 0 textures/map/fl_metalfence0.png	textures/map/w_trans0.png
-4 30 13 30 20 0.00 5.00 90.00 1.00 0 0 textures/map/fl_metalfence0.png	
-4 35 146 35 148 0.00 2.00 90.00 1.00 0 0 textures/map/fl_metalfence0.png	textures/map/w_trans0.png
-4 184 135 184 139 0.00 2.00 90.00 1.00 0 0 textures/map/fl_metalfence0.png	textures/map/w_trans0.png
-4 36 145 36 145 0.00 1.00 90.00 1.00 0 0 textures/map/fl_sign0.png	
-4 185 134 185 134 0.00 1.00 90.00 1.00 0 0 textures/map/fl_sign0.png	
+4 34 13 34 20 0.00 5.00 90.00 1.00 0 0 textures/map/fence_metal.png	
+4 30 21 30 21 0.00 1.00 0.00 1.00 0 0 textures/map/sign.png	
+4 86 78 86 78 0.00 1.00 90.00 1.00 0 0 textures/map/sign.png	
+4 87 75 87 77 0.00 2.00 90.00 1.00 0 0 textures/map/fence_metal.png	textures/map/w_trans0.png
+4 30 13 30 20 0.00 5.00 90.00 1.00 0 0 textures/map/fence_metal.png	
+4 35 146 35 148 0.00 2.00 90.00 1.00 0 0 textures/map/fence_metal.png	textures/map/w_trans0.png
+4 184 135 184 139 0.00 2.00 90.00 1.00 0 0 textures/map/fence_metal.png	textures/map/w_trans0.png
+4 36 145 36 145 0.00 1.00 90.00 1.00 0 0 textures/map/sign.png	
+4 185 134 185 134 0.00 1.00 90.00 1.00 0 0 textures/map/sign.png	
 5 12 12 12 164 0.00 10.00 0.00 1.00 1 0 textures/map/w_treebark0.png	
 5 287 12 287 164 0.00 10.00 0.00 1.00 1 0 textures/map/w_treebark0.png	
 5 34 12 286 12 0.00 10.00 0.00 1.00 1 0 textures/map/w_treebark0.png	

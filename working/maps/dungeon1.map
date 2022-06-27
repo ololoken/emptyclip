@@ -532,7 +532,7 @@
 1 0 0 0 69 -3.50 0.00 180.00 1.00 0 1 textures/map/g_brick3.png	
 1 0 0 10 0 -3.50 0.00 180.00 1.00 0 1 textures/map/g_brick3.png	
 1 0 69 10 69 -3.50 0.00 180.00 1.00 0 1 textures/map/g_brick3.png	
-2 0 0 9 69 0.00 0.00 180.00 1.00 0 1 textures/map/fl_fence0.png	
+2 0 0 9 69 0.00 0.00 180.00 1.00 0 1 textures/map/gate_grate.png	
 2 16 4 33 13 0.00 0.00 180.00 1.00 0 1 textures/map/w_stones1.png	
 2 51 4 64 13 0.00 0.00 180.00 1.00 0 1 textures/map/w_stones1.png	
 2 51 53 63 63 0.00 0.00 180.00 1.00 0 1 textures/map/w_stones1.png	
@@ -541,20 +541,20 @@
 2 22 36 68 38 0.00 0.00 180.00 1.00 0 1 textures/map/w_blood0.png	
 2 22 26 68 28 0.00 0.00 180.00 1.00 0 1 textures/map/w_blood0.png	
 2 68 15 68 15 0.00 0.00 270.00 1.00 0 1 textures/map/g_blood0.png	textures/map/w_trans0.png
-3 9 68 9 68 0.00 0.00 180.00 1.00 0 1 textures/map/w_wall1.png	textures/map/fl_fence0.png
-4 69 30 69 34 0.00 10.00 90.00 1.00 0 0 textures/map/fl_fence0.png	
-4 11 25 11 25 0.00 4.00 0.00 1.00 0 0 textures/map/fl_fence0.png	textures/map/w_trans0.png
-4 11 44 11 44 0.00 4.00 0.00 1.00 0 0 textures/map/fl_fence0.png	textures/map/w_trans0.png
-4 14 42 14 46 0.00 2.00 180.00 1.00 0 0 textures/map/fl_fence0.png	textures/map/w_trans0.png
-4 14 17 14 21 0.00 2.00 90.00 1.00 0 0 textures/map/fl_fence0.png	textures/map/w_trans0.png
-4 32 46 32 46 0.00 2.00 90.00 1.00 0 0 textures/map/fl_fence0.png	textures/map/w_trans0.png
-4 32 17 32 17 0.00 2.00 90.00 1.00 0 0 textures/map/fl_fence0.png	textures/map/w_trans0.png
-4 45 16 49 16 0.00 2.00 0.00 1.00 0 0 textures/map/fl_fence0.png	textures/map/w_trans0.png
-4 45 47 49 47 0.00 2.00 0.00 1.00 0 0 textures/map/fl_fence0.png	textures/map/w_trans0.png
-4 11 45 11 45 0.00 3.00 0.00 1.00 0 0 textures/map/fl_fence0.png	textures/map/w_trans0.png
-4 11 24 11 24 0.00 3.00 0.00 1.00 0 0 textures/map/fl_fence0.png	textures/map/w_trans0.png
-4 10 26 11 43 0.00 1.00 90.00 1.00 0 1 textures/map/w_trans0.png	textures/map/fl_fence0.png
-4 1 60 9 60 0.00 4.50 0.00 1.00 0 0 textures/map/fl_fence0.png	textures/map/w_trans0.png
+3 9 68 9 68 0.00 0.00 180.00 1.00 0 1 textures/map/w_wall1.png	textures/map/gate_grate.png
+4 69 30 69 34 0.00 10.00 90.00 1.00 0 0 textures/map/gate_grate.png	
+4 11 25 11 25 0.00 4.00 0.00 1.00 0 0 textures/map/gate_grate.png	textures/map/w_trans0.png
+4 11 44 11 44 0.00 4.00 0.00 1.00 0 0 textures/map/gate_grate.png	textures/map/w_trans0.png
+4 14 42 14 46 0.00 2.00 180.00 1.00 0 0 textures/map/gate_grate.png	textures/map/w_trans0.png
+4 14 17 14 21 0.00 2.00 90.00 1.00 0 0 textures/map/gate_grate.png	textures/map/w_trans0.png
+4 32 46 32 46 0.00 2.00 90.00 1.00 0 0 textures/map/gate_grate.png	textures/map/w_trans0.png
+4 32 17 32 17 0.00 2.00 90.00 1.00 0 0 textures/map/gate_grate.png	textures/map/w_trans0.png
+4 45 16 49 16 0.00 2.00 0.00 1.00 0 0 textures/map/gate_grate.png	textures/map/w_trans0.png
+4 45 47 49 47 0.00 2.00 0.00 1.00 0 0 textures/map/gate_grate.png	textures/map/w_trans0.png
+4 11 45 11 45 0.00 3.00 0.00 1.00 0 0 textures/map/gate_grate.png	textures/map/w_trans0.png
+4 11 24 11 24 0.00 3.00 0.00 1.00 0 0 textures/map/gate_grate.png	textures/map/w_trans0.png
+4 10 26 11 43 0.00 1.00 90.00 1.00 0 1 textures/map/w_trans0.png	textures/map/gate_grate.png
+4 1 60 9 60 0.00 4.50 0.00 1.00 0 0 textures/map/gate_grate.png	textures/map/w_trans0.png
 5 0 0 0 69 0.00 10.00 0.00 1.00 1 0 textures/map/g_brick3.png	
 5 1 69 69 69 0.00 10.00 0.00 1.00 1 0 textures/map/g_brick3.png	
 5 69 0 69 29 0.00 10.00 0.00 1.00 1 0 textures/map/g_brick3.png	
@@ -699,4 +699,4 @@
 5 53 62 62 62 0.00 2.00 270.00 1.00 1 0 textures/map/g_brick2.png	textures/map/w_trans0.png
 5 62 54 62 61 0.00 2.00 270.00 1.00 1 0 textures/map/g_brick2.png	textures/map/w_trans0.png
 5 54 55 60 55 0.00 2.00 270.00 1.00 1 0 textures/map/g_brick2.png	textures/map/w_trans0.png
-5 8 67 9 67 0.00 2.00 180.00 1.00 1 0 textures/map/g_blood0.png	textures/map/fl_fence0.png
+5 8 67 9 67 0.00 2.00 180.00 1.00 1 0 textures/map/g_blood0.png	textures/map/gate_grate.png

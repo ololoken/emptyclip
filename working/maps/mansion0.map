@@ -396,21 +396,21 @@
 3 34 19 35 20 0.00 0.00 0.00 1.00 0 1 textures/map/g_carpet0.png	
 3 75 1 76 3 0.00 0.00 0.00 1.00 0 1 textures/map/g_water0.png	
 3 97 5 97 5 0.00 0.00 0.00 1.00 0 1 textures/map/g_carpet0.png	textures/map/g_water0.png
-4 30 12 30 63 0.00 5.00 90.00 1.00 0 0 textures/map/fl_metalfence0.png	
-4 99 12 99 63 0.00 5.00 90.00 1.00 0 0 textures/map/fl_metalfence0.png	
-4 31 64 59 64 0.00 5.00 0.00 1.00 0 0 textures/map/fl_metalfence0.png	
-4 70 64 98 64 0.00 5.00 0.00 1.00 0 0 textures/map/fl_metalfence0.png	
-4 70 64 98 64 5.00 5.50 0.00 1.00 0 0 textures/map/fl_metalfence1.png	
-4 99 12 99 63 5.00 5.50 90.00 1.00 0 0 textures/map/fl_metalfence1.png	
-4 30 12 30 63 5.00 5.50 90.00 1.00 0 0 textures/map/fl_metalfence1.png	
-4 31 64 59 64 5.00 5.50 0.00 1.00 0 0 textures/map/fl_metalfence1.png	
-4 62 54 67 54 0.00 10.00 0.00 1.00 0 0 textures/map/fl_fence0.png	textures/map/w_trans0.png
-4 62 50 67 50 0.00 10.00 0.00 1.00 0 0 textures/map/fl_fence0.png	textures/map/w_trans0.png
-4 94 16 94 18 0.00 1.00 180.00 1.00 0 0 textures/map/fl_fence0.png	textures/map/w_trans0.png
-4 94 26 94 28 0.00 1.00 180.00 1.00 0 0 textures/map/fl_fence0.png	textures/map/w_trans0.png
-4 94 36 94 38 0.00 1.00 180.00 1.00 0 0 textures/map/fl_fence0.png	textures/map/w_trans0.png
-4 64 17 65 17 0.00 3.00 0.00 1.00 0 0 textures/map/fl_fence0.png	textures/map/w_trans0.png
-4 75 4 76 4 0.00 2.00 0.00 1.00 0 0 textures/map/fl_fence0.png	textures/map/w_trans0.png
+4 30 12 30 63 0.00 5.00 90.00 1.00 0 0 textures/map/fence_metal.png	
+4 99 12 99 63 0.00 5.00 90.00 1.00 0 0 textures/map/fence_metal.png	
+4 31 64 59 64 0.00 5.00 0.00 1.00 0 0 textures/map/fence_metal.png	
+4 70 64 98 64 0.00 5.00 0.00 1.00 0 0 textures/map/fence_metal.png	
+4 70 64 98 64 5.00 5.50 0.00 1.00 0 0 textures/map/fence_metal_top.png	
+4 99 12 99 63 5.00 5.50 90.00 1.00 0 0 textures/map/fence_metal_top.png	
+4 30 12 30 63 5.00 5.50 90.00 1.00 0 0 textures/map/fence_metal_top.png	
+4 31 64 59 64 5.00 5.50 0.00 1.00 0 0 textures/map/fence_metal_top.png	
+4 62 54 67 54 0.00 10.00 0.00 1.00 0 0 textures/map/gate_grate.png	textures/map/w_trans0.png
+4 62 50 67 50 0.00 10.00 0.00 1.00 0 0 textures/map/gate_grate.png	textures/map/w_trans0.png
+4 94 16 94 18 0.00 1.00 180.00 1.00 0 0 textures/map/gate_grate.png	textures/map/w_trans0.png
+4 94 26 94 28 0.00 1.00 180.00 1.00 0 0 textures/map/gate_grate.png	textures/map/w_trans0.png
+4 94 36 94 38 0.00 1.00 180.00 1.00 0 0 textures/map/gate_grate.png	textures/map/w_trans0.png
+4 64 17 65 17 0.00 3.00 0.00 1.00 0 0 textures/map/gate_grate.png	textures/map/w_trans0.png
+4 75 4 76 4 0.00 2.00 0.00 1.00 0 0 textures/map/gate_grate.png	textures/map/w_trans0.png
 4 45 35 45 37 0.00 2.00 90.00 1.00 0 0 textures/map/w_wall0.png	textures/map/w_trans0.png
 4 45 39 45 39 0.00 2.00 90.00 1.00 0 0 textures/map/w_wall0.png	textures/map/w_trans0.png
 4 45 49 45 49 0.00 2.00 90.00 1.00 0 0 textures/map/w_wall0.png	textures/map/w_trans0.png
@@ -419,11 +419,11 @@
 4 77 31 77 31 0.00 2.00 90.00 1.00 0 0 textures/map/w_wall0.png	textures/map/w_trans0.png
 4 77 33 77 34 0.00 2.00 90.00 1.00 0 0 textures/map/w_wall0.png	textures/map/w_trans0.png
 4 78 40 80 40 0.00 2.00 0.00 1.00 0 0 textures/map/w_wall0.png	textures/map/w_trans0.png
-4 41 1 41 10 0.00 5.00 90.00 1.00 0 0 textures/map/fl_fence0.png	textures/map/w_trans0.png
-4 88 1 88 4 0.00 5.00 90.00 1.00 0 0 textures/map/fl_fence0.png	textures/map/w_trans0.png
-4 88 7 88 10 0.00 5.00 90.00 1.00 0 0 textures/map/fl_fence0.png	textures/map/w_trans0.png
+4 41 1 41 10 0.00 5.00 90.00 1.00 0 0 textures/map/gate_grate.png	textures/map/w_trans0.png
+4 88 1 88 4 0.00 5.00 90.00 1.00 0 0 textures/map/gate_grate.png	textures/map/w_trans0.png
+4 88 7 88 10 0.00 5.00 90.00 1.00 0 0 textures/map/gate_grate.png	textures/map/w_trans0.png
 4 88 5 88 6 0.00 2.00 90.00 1.00 0 0 textures/map/w_wall0.png	textures/map/w_trans0.png
-4 47 77 47 77 0.00 1.00 90.00 1.00 0 0 textures/map/fl_brick0door1.png	textures/map/fl_brick0door0.png
+4 47 77 47 77 0.00 1.00 90.00 1.00 0 0 textures/map/door_brick_open.png	textures/map/door_brick.png
 5 12 96 117 96 0.00 10.00 0.00 1.00 1 0 textures/map/w_treebark0.png	
 5 117 13 117 95 0.00 10.00 0.00 1.00 1 0 textures/map/w_treebark0.png	
 5 12 13 12 95 0.00 10.00 0.00 1.00 1 0 textures/map/w_treebark0.png	
@@ -492,7 +492,7 @@
 5 90 29 94 29 0.00 2.00 90.00 1.00 1 0 textures/map/g_brick0.png	
 5 90 35 94 35 0.00 2.00 90.00 1.00 1 0 textures/map/g_brick0.png	
 5 90 39 94 39 0.00 2.00 90.00 1.00 1 0 textures/map/g_brick0.png	
-5 74 1 74 4 0.00 2.00 0.00 1.00 1 0 textures/map/fl_fence0.png	
+5 74 1 74 4 0.00 2.00 0.00 1.00 1 0 textures/map/gate_grate.png	
 5 32 4 34 4 0.00 2.00 0.00 1.00 1 0 textures/map/w_room0.png	textures/map/w_trans0.png
 5 32 6 34 6 0.00 2.00 0.00 1.00 1 0 textures/map/w_room0.png	textures/map/w_trans0.png
 5 95 4 97 4 0.00 2.00 0.00 1.00 1 0 textures/map/w_room0.png	textures/map/w_trans0.png
@@ -608,51 +608,51 @@
 5 112 92 112 92 0.00 1.50 90.00 1.00 1 0 textures/map/w_treebark0.png	
 5 100 71 100 71 0.00 1.50 90.00 1.00 1 0 textures/map/w_treebark0.png	
 5 43 69 43 69 0.00 1.50 90.00 1.00 1 0 textures/map/w_treebark0.png	
-6 50 82 54 86 0.00 1.50 0.00 1.00 0 1 textures/map/f_tree0.png	
-6 50 70 54 74 0.00 1.50 0.00 1.00 0 1 textures/map/f_tree0.png	
-6 32 71 36 75 0.00 1.50 0.00 1.00 0 1 textures/map/f_tree0.png	
-6 23 68 27 72 0.00 1.50 0.00 1.00 0 1 textures/map/f_tree0.png	
-6 15 72 19 76 0.00 1.50 0.00 1.00 0 1 textures/map/f_tree0.png	
-6 19 79 23 83 0.00 1.50 0.00 1.00 0 1 textures/map/f_tree0.png	
-6 16 57 20 61 0.00 1.50 0.00 1.00 0 1 textures/map/f_tree0.png	
-6 22 56 26 60 0.00 1.50 0.00 1.00 0 1 textures/map/f_tree0.png	
-6 23 49 27 53 0.00 1.50 0.00 1.00 0 1 textures/map/f_tree0.png	
-6 16 45 20 49 0.00 1.50 0.00 1.00 0 1 textures/map/f_tree0.png	
-6 19 37 23 41 0.00 1.50 0.00 1.00 0 1 textures/map/f_tree0.png	
-6 25 35 29 39 0.00 1.50 0.00 1.00 0 1 textures/map/f_tree0.png	
-6 12 26 16 30 0.00 1.50 0.00 1.00 0 1 textures/map/f_tree0.png	
-6 20 24 24 28 0.00 1.50 0.00 1.00 0 1 textures/map/f_tree0.png	
-6 15 16 19 20 0.00 1.50 0.00 1.00 0 1 textures/map/f_tree0.png	
-6 23 17 27 21 0.00 1.50 0.00 1.00 0 1 textures/map/f_tree0.png	
-6 84 84 88 88 0.00 1.50 0.00 1.00 0 1 textures/map/f_tree0.png	
-6 72 79 76 83 0.00 1.50 0.00 1.00 0 1 textures/map/f_tree0.png	
-6 73 69 77 73 0.00 1.50 0.00 1.00 0 1 textures/map/f_tree0.png	
-6 85 69 89 73 0.00 1.50 0.00 1.00 0 1 textures/map/f_tree0.png	
-6 88 78 92 82 0.00 1.50 0.00 1.00 0 1 textures/map/f_tree0.png	
-6 93 82 97 86 0.00 1.50 0.00 1.00 0 1 textures/map/f_tree0.png	
-6 96 77 100 81 0.00 1.50 0.00 1.00 0 1 textures/map/f_tree0.png	
-6 104 81 108 85 0.00 1.50 0.00 1.00 0 1 textures/map/f_tree0.png	
-6 106 76 110 80 0.00 1.50 0.00 1.00 0 1 textures/map/f_tree0.png	
-6 108 67 112 71 0.00 1.50 0.00 1.00 0 1 textures/map/f_tree0.png	
-6 105 60 109 64 0.00 1.50 0.00 1.00 0 1 textures/map/f_tree0.png	
-6 100 52 104 56 0.00 1.50 0.00 1.00 0 1 textures/map/f_tree0.png	
-6 106 54 110 58 0.00 1.50 0.00 1.00 0 1 textures/map/f_tree0.png	
-6 110 48 114 52 0.00 1.50 0.00 1.00 0 1 textures/map/f_tree0.png	
-6 109 38 113 42 0.00 1.50 0.00 1.00 0 1 textures/map/f_tree0.png	
-6 102 40 106 44 0.00 1.50 0.00 1.00 0 1 textures/map/f_tree0.png	
-6 102 31 106 35 0.00 1.50 0.00 1.00 0 1 textures/map/f_tree0.png	
-6 108 28 112 32 0.00 1.50 0.00 1.00 0 1 textures/map/f_tree0.png	
-6 101 21 105 25 0.00 1.50 0.00 1.00 0 1 textures/map/f_tree0.png	
-6 104 17 108 21 0.00 1.50 0.00 1.00 0 1 textures/map/f_tree0.png	
-6 110 14 114 18 0.00 1.50 0.00 1.00 0 1 textures/map/f_tree0.png	
-6 112 22 116 26 0.00 1.50 0.00 1.00 0 1 textures/map/f_tree0.png	
-6 18 88 22 92 0.00 1.50 0.00 1.00 0 1 textures/map/f_tree0.png	
-6 26 86 30 90 0.00 1.50 0.00 1.00 0 1 textures/map/f_tree0.png	
-6 36 90 40 94 0.00 1.50 0.00 1.00 0 1 textures/map/f_tree0.png	
-6 30 81 34 85 0.00 1.50 0.00 1.00 0 1 textures/map/f_tree0.png	
-6 46 89 50 93 0.00 1.50 0.00 1.00 0 1 textures/map/f_tree0.png	
-6 41 67 45 71 0.00 1.50 0.00 1.00 0 1 textures/map/f_tree0.png	
-6 73 87 77 91 0.00 1.50 0.00 1.00 0 1 textures/map/f_tree0.png	
-6 96 89 100 93 0.00 1.50 0.00 1.00 0 1 textures/map/f_tree0.png	
-6 110 90 114 94 0.00 1.50 0.00 1.00 0 1 textures/map/f_tree0.png	
-6 98 69 102 73 0.00 1.50 0.00 1.00 0 1 textures/map/f_tree0.png	
+6 50 82 54 86 0.00 1.50 0.00 1.00 0 1 textures/map/leaves.png	
+6 50 70 54 74 0.00 1.50 0.00 1.00 0 1 textures/map/leaves.png	
+6 32 71 36 75 0.00 1.50 0.00 1.00 0 1 textures/map/leaves.png	
+6 23 68 27 72 0.00 1.50 0.00 1.00 0 1 textures/map/leaves.png	
+6 15 72 19 76 0.00 1.50 0.00 1.00 0 1 textures/map/leaves.png	
+6 19 79 23 83 0.00 1.50 0.00 1.00 0 1 textures/map/leaves.png	
+6 16 57 20 61 0.00 1.50 0.00 1.00 0 1 textures/map/leaves.png	
+6 22 56 26 60 0.00 1.50 0.00 1.00 0 1 textures/map/leaves.png	
+6 23 49 27 53 0.00 1.50 0.00 1.00 0 1 textures/map/leaves.png	
+6 16 45 20 49 0.00 1.50 0.00 1.00 0 1 textures/map/leaves.png	
+6 19 37 23 41 0.00 1.50 0.00 1.00 0 1 textures/map/leaves.png	
+6 25 35 29 39 0.00 1.50 0.00 1.00 0 1 textures/map/leaves.png	
+6 12 26 16 30 0.00 1.50 0.00 1.00 0 1 textures/map/leaves.png	
+6 20 24 24 28 0.00 1.50 0.00 1.00 0 1 textures/map/leaves.png	
+6 15 16 19 20 0.00 1.50 0.00 1.00 0 1 textures/map/leaves.png	
+6 23 17 27 21 0.00 1.50 0.00 1.00 0 1 textures/map/leaves.png	
+6 84 84 88 88 0.00 1.50 0.00 1.00 0 1 textures/map/leaves.png	
+6 72 79 76 83 0.00 1.50 0.00 1.00 0 1 textures/map/leaves.png	
+6 73 69 77 73 0.00 1.50 0.00 1.00 0 1 textures/map/leaves.png	
+6 85 69 89 73 0.00 1.50 0.00 1.00 0 1 textures/map/leaves.png	
+6 88 78 92 82 0.00 1.50 0.00 1.00 0 1 textures/map/leaves.png	
+6 93 82 97 86 0.00 1.50 0.00 1.00 0 1 textures/map/leaves.png	
+6 96 77 100 81 0.00 1.50 0.00 1.00 0 1 textures/map/leaves.png	
+6 104 81 108 85 0.00 1.50 0.00 1.00 0 1 textures/map/leaves.png	
+6 106 76 110 80 0.00 1.50 0.00 1.00 0 1 textures/map/leaves.png	
+6 108 67 112 71 0.00 1.50 0.00 1.00 0 1 textures/map/leaves.png	
+6 105 60 109 64 0.00 1.50 0.00 1.00 0 1 textures/map/leaves.png	
+6 100 52 104 56 0.00 1.50 0.00 1.00 0 1 textures/map/leaves.png	
+6 106 54 110 58 0.00 1.50 0.00 1.00 0 1 textures/map/leaves.png	
+6 110 48 114 52 0.00 1.50 0.00 1.00 0 1 textures/map/leaves.png	
+6 109 38 113 42 0.00 1.50 0.00 1.00 0 1 textures/map/leaves.png	
+6 102 40 106 44 0.00 1.50 0.00 1.00 0 1 textures/map/leaves.png	
+6 102 31 106 35 0.00 1.50 0.00 1.00 0 1 textures/map/leaves.png	
+6 108 28 112 32 0.00 1.50 0.00 1.00 0 1 textures/map/leaves.png	
+6 101 21 105 25 0.00 1.50 0.00 1.00 0 1 textures/map/leaves.png	
+6 104 17 108 21 0.00 1.50 0.00 1.00 0 1 textures/map/leaves.png	
+6 110 14 114 18 0.00 1.50 0.00 1.00 0 1 textures/map/leaves.png	
+6 112 22 116 26 0.00 1.50 0.00 1.00 0 1 textures/map/leaves.png	
+6 18 88 22 92 0.00 1.50 0.00 1.00 0 1 textures/map/leaves.png	
+6 26 86 30 90 0.00 1.50 0.00 1.00 0 1 textures/map/leaves.png	
+6 36 90 40 94 0.00 1.50 0.00 1.00 0 1 textures/map/leaves.png	
+6 30 81 34 85 0.00 1.50 0.00 1.00 0 1 textures/map/leaves.png	
+6 46 89 50 93 0.00 1.50 0.00 1.00 0 1 textures/map/leaves.png	
+6 41 67 45 71 0.00 1.50 0.00 1.00 0 1 textures/map/leaves.png	
+6 73 87 77 91 0.00 1.50 0.00 1.00 0 1 textures/map/leaves.png	
+6 96 89 100 93 0.00 1.50 0.00 1.00 0 1 textures/map/leaves.png	
+6 110 90 114 94 0.00 1.50 0.00 1.00 0 1 textures/map/leaves.png	
+6 98 69 102 73 0.00 1.50 0.00 1.00 0 1 textures/map/leaves.png	

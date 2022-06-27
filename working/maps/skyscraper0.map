@@ -559,52 +559,52 @@
 2 150 255 169 274 0.00 0.00 0.00 1.00 0 1 textures/map/g_road1.png	
 2 255 60 289 144 0.00 0.00 0.00 1.00 0 1 textures/map/g_road1.png	
 2 119 119 119 119 0.00 0.00 0.00 1.00 0 1 textures/map/w_window1.png	textures/map/w_trans0.png
-3 133 133 136 136 0.00 0.00 0.00 1.00 0 1 textures/map/g_road1.png	textures/map/fl_brick0door0.png
-3 138 138 140 140 0.00 0.00 0.00 1.00 0 1 textures/map/g_road1.png	textures/map/fl_brick0door0.png
-3 128 128 131 131 0.00 0.00 0.00 1.00 0 1 textures/map/g_road1.png	textures/map/fl_brick0door0.png
-3 136 136 138 138 0.00 0.00 0.00 1.00 0 1 textures/map/g_road1.png	textures/map/fl_brick0door0.png
-3 131 131 133 133 0.00 0.00 0.00 1.00 0 1 textures/map/g_road1.png	textures/map/fl_brick0door0.png
-3 264 139 265 143 0.00 0.00 0.00 1.00 0 1 textures/map/g_marble1.png	textures/map/fl_brick0door0.png
-3 266 139 285 140 0.00 0.00 0.00 1.00 0 1 textures/map/g_marble1.png	textures/map/fl_brick0door0.png
-3 284 117 285 138 0.00 0.00 0.00 1.00 0 1 textures/map/g_marble1.png	textures/map/fl_brick0door0.png
-3 256 134 262 135 0.00 0.00 0.00 1.00 0 1 textures/map/g_marble1.png	textures/map/fl_brick0door0.png
-3 261 117 262 133 0.00 0.00 0.00 1.00 0 1 textures/map/g_marble1.png	textures/map/fl_brick0door0.png
-3 263 117 279 118 0.00 0.00 0.00 1.00 0 1 textures/map/g_marble1.png	textures/map/fl_brick0door0.png
+3 133 133 136 136 0.00 0.00 0.00 1.00 0 1 textures/map/g_road1.png	textures/map/door_brick.png
+3 138 138 140 140 0.00 0.00 0.00 1.00 0 1 textures/map/g_road1.png	textures/map/door_brick.png
+3 128 128 131 131 0.00 0.00 0.00 1.00 0 1 textures/map/g_road1.png	textures/map/door_brick.png
+3 136 136 138 138 0.00 0.00 0.00 1.00 0 1 textures/map/g_road1.png	textures/map/door_brick.png
+3 131 131 133 133 0.00 0.00 0.00 1.00 0 1 textures/map/g_road1.png	textures/map/door_brick.png
+3 264 139 265 143 0.00 0.00 0.00 1.00 0 1 textures/map/g_marble1.png	textures/map/door_brick.png
+3 266 139 285 140 0.00 0.00 0.00 1.00 0 1 textures/map/g_marble1.png	textures/map/door_brick.png
+3 284 117 285 138 0.00 0.00 0.00 1.00 0 1 textures/map/g_marble1.png	textures/map/door_brick.png
+3 256 134 262 135 0.00 0.00 0.00 1.00 0 1 textures/map/g_marble1.png	textures/map/door_brick.png
+3 261 117 262 133 0.00 0.00 0.00 1.00 0 1 textures/map/g_marble1.png	textures/map/door_brick.png
+3 263 117 279 118 0.00 0.00 0.00 1.00 0 1 textures/map/g_marble1.png	textures/map/door_brick.png
 3 229 266 229 266 0.00 0.00 0.00 1.00 0 1 textures/map/w_window1.png	textures/map/w_trans0.png
 4 144 134 144 135 1.00 10.00 90.00 1.00 0 0 textures/map/w_brick0.png	
-4 144 134 144 135 0.00 1.00 90.00 1.00 0 0 textures/map/fl_brick0door1.png	textures/map/fl_brick0door0.png
+4 144 134 144 135 0.00 1.00 90.00 1.00 0 0 textures/map/door_brick_open.png	textures/map/door_brick.png
 4 150 264 150 265 1.00 10.00 90.00 1.00 0 0 textures/map/w_brick0.png	
 4 169 264 169 265 1.00 10.00 90.00 1.00 0 0 textures/map/w_brick0.png	
-4 150 264 150 265 0.00 1.00 90.00 1.00 0 0 textures/map/fl_brick0door1.png	textures/map/fl_brick0door0.png
-4 169 264 169 265 0.00 1.00 90.00 1.00 0 0 textures/map/fl_brick0door1.png	textures/map/fl_brick0door0.png
+4 150 264 150 265 0.00 1.00 90.00 1.00 0 0 textures/map/door_brick_open.png	textures/map/door_brick.png
+4 169 264 169 265 0.00 1.00 90.00 1.00 0 0 textures/map/door_brick_open.png	textures/map/door_brick.png
 4 264 144 265 144 1.00 10.00 0.00 1.00 0 0 textures/map/w_brick0.png	
 4 264 255 265 255 1.00 10.00 0.00 1.00 0 0 textures/map/w_brick0.png	
 4 255 264 255 265 1.00 10.00 90.00 1.00 0 0 textures/map/w_brick0.png	
 4 255 134 255 135 1.00 10.00 90.00 1.00 0 0 textures/map/w_brick0.png	
-4 255 264 255 265 0.00 1.00 90.00 1.00 0 0 textures/map/fl_brick0door1.png	textures/map/fl_brick0door0.png
-4 255 134 255 135 0.00 1.00 90.00 1.00 0 0 textures/map/fl_brick0door1.png	textures/map/fl_brick0door0.png
+4 255 264 255 265 0.00 1.00 90.00 1.00 0 0 textures/map/door_brick_open.png	textures/map/door_brick.png
+4 255 134 255 135 0.00 1.00 90.00 1.00 0 0 textures/map/door_brick_open.png	textures/map/door_brick.png
 4 134 144 135 144 1.00 10.00 0.00 1.00 0 0 textures/map/w_brick0.png	
-4 134 144 135 144 0.00 1.00 0.00 1.00 0 0 textures/map/fl_brick0door1.png	textures/map/fl_brick0door0.png
-4 264 144 265 144 0.00 1.00 0.00 1.00 0 0 textures/map/fl_brick0door1.png	textures/map/fl_brick0door0.png
-4 264 255 265 255 0.00 1.00 0.00 1.00 0 0 textures/map/fl_brick0door1.png	textures/map/fl_brick0door0.png
-4 259 260 259 269 0.00 1.00 90.00 1.00 0 0 textures/map/fl_fence0.png	textures/map/fl_brick0door0.png
-4 270 260 270 268 0.00 1.00 90.00 1.00 0 0 textures/map/fl_fence0.png	textures/map/fl_brick0door0.png
-4 260 259 269 259 0.00 1.00 0.00 1.00 0 0 textures/map/fl_fence0.png	textures/map/fl_brick0door0.png
-4 260 270 269 270 0.00 1.00 0.00 1.00 0 0 textures/map/fl_fence0.png	textures/map/fl_brick0door0.png
-4 261 261 261 267 0.00 2.00 90.00 1.00 0 0 textures/map/fl_fence0.png	textures/map/fl_brick0door0.png
-4 268 261 268 266 0.00 3.00 90.00 1.00 0 0 textures/map/fl_fence0.png	textures/map/fl_brick0door0.png
-4 261 268 269 268 0.00 1.50 0.00 1.00 0 0 textures/map/fl_fence0.png	textures/map/fl_brick0door0.png
-4 263 263 263 266 0.00 4.00 90.00 1.00 0 0 textures/map/fl_fence0.png	textures/map/fl_brick0door0.png
-4 264 263 266 263 0.00 4.50 0.00 1.00 0 0 textures/map/fl_fence0.png	textures/map/fl_brick0door0.png
-4 266 264 266 264 0.00 4.00 90.00 1.00 0 0 textures/map/fl_fence0.png	textures/map/fl_brick0door0.png
-4 264 266 267 266 0.00 3.50 0.00 1.00 0 0 textures/map/fl_fence0.png	textures/map/fl_brick0door0.png
-4 257 90 257 90 0.00 1.00 0.00 1.00 0 0 textures/map/fl_brick0door1.png	textures/map/fl_brick0door0.png
+4 134 144 135 144 0.00 1.00 0.00 1.00 0 0 textures/map/door_brick_open.png	textures/map/door_brick.png
+4 264 144 265 144 0.00 1.00 0.00 1.00 0 0 textures/map/door_brick_open.png	textures/map/door_brick.png
+4 264 255 265 255 0.00 1.00 0.00 1.00 0 0 textures/map/door_brick_open.png	textures/map/door_brick.png
+4 259 260 259 269 0.00 1.00 90.00 1.00 0 0 textures/map/gate_grate.png	textures/map/door_brick.png
+4 270 260 270 268 0.00 1.00 90.00 1.00 0 0 textures/map/gate_grate.png	textures/map/door_brick.png
+4 260 259 269 259 0.00 1.00 0.00 1.00 0 0 textures/map/gate_grate.png	textures/map/door_brick.png
+4 260 270 269 270 0.00 1.00 0.00 1.00 0 0 textures/map/gate_grate.png	textures/map/door_brick.png
+4 261 261 261 267 0.00 2.00 90.00 1.00 0 0 textures/map/gate_grate.png	textures/map/door_brick.png
+4 268 261 268 266 0.00 3.00 90.00 1.00 0 0 textures/map/gate_grate.png	textures/map/door_brick.png
+4 261 268 269 268 0.00 1.50 0.00 1.00 0 0 textures/map/gate_grate.png	textures/map/door_brick.png
+4 263 263 263 266 0.00 4.00 90.00 1.00 0 0 textures/map/gate_grate.png	textures/map/door_brick.png
+4 264 263 266 263 0.00 4.50 0.00 1.00 0 0 textures/map/gate_grate.png	textures/map/door_brick.png
+4 266 264 266 264 0.00 4.00 90.00 1.00 0 0 textures/map/gate_grate.png	textures/map/door_brick.png
+4 264 266 267 266 0.00 3.50 0.00 1.00 0 0 textures/map/gate_grate.png	textures/map/door_brick.png
+4 257 90 257 90 0.00 1.00 0.00 1.00 0 0 textures/map/door_brick_open.png	textures/map/door_brick.png
 4 257 90 257 90 1.00 10.00 0.00 1.00 0 0 textures/map/w_brick0.png	
-4 262 261 267 261 0.00 2.50 0.00 1.00 0 0 textures/map/fl_fence0.png	textures/map/fl_brick0door0.png
-4 280 115 280 115 0.00 2.00 0.00 1.00 0 0 textures/map/fl_fence0.png	textures/map/w_trans0.png
-4 282 115 282 115 0.00 2.00 0.00 1.00 0 0 textures/map/fl_fence0.png	textures/map/w_trans0.png
-4 281 96 281 102 0.00 5.00 90.00 1.00 0 1 textures/map/w_trans0.png	textures/map/fl_fence0.png
-4 259 96 259 96 0.00 3.00 90.00 1.00 0 0 textures/map/fl_fence0.png	textures/map/w_trans0.png
+4 262 261 267 261 0.00 2.50 0.00 1.00 0 0 textures/map/gate_grate.png	textures/map/door_brick.png
+4 280 115 280 115 0.00 2.00 0.00 1.00 0 0 textures/map/gate_grate.png	textures/map/w_trans0.png
+4 282 115 282 115 0.00 2.00 0.00 1.00 0 0 textures/map/gate_grate.png	textures/map/w_trans0.png
+4 281 96 281 102 0.00 5.00 90.00 1.00 0 1 textures/map/w_trans0.png	textures/map/gate_grate.png
+4 259 96 259 96 0.00 3.00 90.00 1.00 0 0 textures/map/gate_grate.png	textures/map/w_trans0.png
 5 190 190 209 190 0.00 1.00 0.00 1.00 1 0 textures/map/w_vent0.png	
 5 209 191 209 209 0.00 1.00 0.00 1.00 1 0 textures/map/w_vent0.png	
 5 190 209 208 209 0.00 1.00 0.00 1.00 1 0 textures/map/w_vent0.png	
@@ -647,38 +647,38 @@
 5 256 144 263 144 0.00 10.00 0.00 1.00 1 0 textures/map/w_brick0.png	
 5 266 144 288 144 0.00 10.00 0.00 1.00 1 0 textures/map/w_brick0.png	
 5 258 90 288 90 0.00 10.00 0.00 1.00 1 0 textures/map/w_brick0.png	
-5 130 133 130 139 0.00 10.00 0.00 1.00 1 0 textures/map/w_building0.png	textures/map/fl_brick0door0.png
-5 131 139 136 139 0.00 10.00 0.00 1.00 1 0 textures/map/w_building0.png	textures/map/fl_brick0door0.png
-5 139 130 139 136 0.00 10.00 0.00 1.00 1 0 textures/map/w_building0.png	textures/map/fl_brick0door0.png
-5 133 130 138 130 0.00 10.00 0.00 1.00 1 0 textures/map/w_building0.png	textures/map/fl_brick0door0.png
-5 128 142 142 142 0.00 5.50 0.00 1.00 1 0 textures/map/w_building0.png	textures/map/fl_brick0door0.png
-5 126 134 129 135 0.00 10.00 0.00 1.00 1 0 textures/map/w_building0.png	textures/map/fl_brick0door0.png
-5 134 126 135 129 0.00 10.00 0.00 1.00 1 0 textures/map/w_building0.png	textures/map/fl_brick0door0.png
-5 142 128 142 141 0.00 5.50 0.00 1.00 1 0 textures/map/w_building0.png	textures/map/fl_brick0door0.png
-5 156 261 158 263 0.00 2.00 0.00 1.00 1 0 textures/map/w_window1.png	textures/map/fl_brick0door0.png
-5 156 266 158 268 0.00 2.00 0.00 1.00 1 0 textures/map/w_window1.png	textures/map/fl_brick0door0.png
-5 161 266 163 268 0.00 2.00 0.00 1.00 1 0 textures/map/w_window1.png	textures/map/fl_brick0door0.png
-5 161 261 163 263 0.00 2.00 0.00 1.00 1 0 textures/map/w_window1.png	textures/map/fl_brick0door0.png
-5 156 270 156 272 0.00 3.50 0.00 1.00 1 0 textures/map/g_marble1.png	textures/map/fl_brick0door0.png
-5 156 257 156 260 0.00 3.50 0.00 1.00 1 0 textures/map/g_marble1.png	textures/map/fl_brick0door0.png
-5 151 260 155 260 0.00 2.00 0.00 1.00 1 0 textures/map/g_marble1.png	textures/map/fl_brick0door0.png
-5 151 269 156 269 0.00 2.00 0.00 1.00 1 0 textures/map/g_marble1.png	textures/map/fl_brick0door0.png
-5 163 257 163 260 0.00 3.50 0.00 1.00 1 0 textures/map/g_marble1.png	textures/map/fl_brick0door0.png
-5 164 260 168 260 0.00 2.00 0.00 1.00 1 0 textures/map/g_marble1.png	textures/map/fl_brick0door0.png
-5 164 269 168 269 0.00 2.00 0.00 1.00 1 0 textures/map/g_marble1.png	textures/map/fl_brick0door0.png
-5 163 269 163 272 0.00 3.50 0.00 1.00 1 0 textures/map/g_marble1.png	textures/map/fl_brick0door0.png
-5 204 204 205 205 0.00 2.00 0.00 1.00 1 0 textures/map/w_vent0.png	textures/map/fl_brick0door0.png
-5 194 204 195 205 0.00 2.00 0.00 1.00 1 0 textures/map/w_vent0.png	textures/map/fl_brick0door0.png
-5 194 194 195 195 0.00 2.00 0.00 1.00 1 0 textures/map/w_vent0.png	textures/map/fl_brick0door0.png
-5 204 194 205 195 0.00 2.00 0.00 1.00 1 0 textures/map/w_vent0.png	textures/map/fl_brick0door0.png
-5 256 137 264 137 0.00 2.00 0.00 1.00 1 0 textures/map/w_building0.png	textures/map/fl_brick0door0.png
-5 264 130 264 136 0.00 2.00 0.00 1.00 1 0 textures/map/w_building0.png	textures/map/fl_brick0door0.png
-5 265 130 273 130 0.00 2.00 0.00 1.00 1 0 textures/map/w_building0.png	textures/map/fl_brick0door0.png
-5 273 123 273 129 0.00 2.00 0.00 1.00 1 0 textures/map/w_building0.png	textures/map/fl_brick0door0.png
-5 273 122 281 122 0.00 2.00 0.00 1.00 1 0 textures/map/w_building0.png	textures/map/fl_brick0door0.png
-5 281 115 281 121 0.00 2.00 0.00 1.00 1 0 textures/map/w_building0.png	textures/map/fl_brick0door0.png
+5 130 133 130 139 0.00 10.00 0.00 1.00 1 0 textures/map/w_building0.png	textures/map/door_brick.png
+5 131 139 136 139 0.00 10.00 0.00 1.00 1 0 textures/map/w_building0.png	textures/map/door_brick.png
+5 139 130 139 136 0.00 10.00 0.00 1.00 1 0 textures/map/w_building0.png	textures/map/door_brick.png
+5 133 130 138 130 0.00 10.00 0.00 1.00 1 0 textures/map/w_building0.png	textures/map/door_brick.png
+5 128 142 142 142 0.00 5.50 0.00 1.00 1 0 textures/map/w_building0.png	textures/map/door_brick.png
+5 126 134 129 135 0.00 10.00 0.00 1.00 1 0 textures/map/w_building0.png	textures/map/door_brick.png
+5 134 126 135 129 0.00 10.00 0.00 1.00 1 0 textures/map/w_building0.png	textures/map/door_brick.png
+5 142 128 142 141 0.00 5.50 0.00 1.00 1 0 textures/map/w_building0.png	textures/map/door_brick.png
+5 156 261 158 263 0.00 2.00 0.00 1.00 1 0 textures/map/w_window1.png	textures/map/door_brick.png
+5 156 266 158 268 0.00 2.00 0.00 1.00 1 0 textures/map/w_window1.png	textures/map/door_brick.png
+5 161 266 163 268 0.00 2.00 0.00 1.00 1 0 textures/map/w_window1.png	textures/map/door_brick.png
+5 161 261 163 263 0.00 2.00 0.00 1.00 1 0 textures/map/w_window1.png	textures/map/door_brick.png
+5 156 270 156 272 0.00 3.50 0.00 1.00 1 0 textures/map/g_marble1.png	textures/map/door_brick.png
+5 156 257 156 260 0.00 3.50 0.00 1.00 1 0 textures/map/g_marble1.png	textures/map/door_brick.png
+5 151 260 155 260 0.00 2.00 0.00 1.00 1 0 textures/map/g_marble1.png	textures/map/door_brick.png
+5 151 269 156 269 0.00 2.00 0.00 1.00 1 0 textures/map/g_marble1.png	textures/map/door_brick.png
+5 163 257 163 260 0.00 3.50 0.00 1.00 1 0 textures/map/g_marble1.png	textures/map/door_brick.png
+5 164 260 168 260 0.00 2.00 0.00 1.00 1 0 textures/map/g_marble1.png	textures/map/door_brick.png
+5 164 269 168 269 0.00 2.00 0.00 1.00 1 0 textures/map/g_marble1.png	textures/map/door_brick.png
+5 163 269 163 272 0.00 3.50 0.00 1.00 1 0 textures/map/g_marble1.png	textures/map/door_brick.png
+5 204 204 205 205 0.00 2.00 0.00 1.00 1 0 textures/map/w_vent0.png	textures/map/door_brick.png
+5 194 204 195 205 0.00 2.00 0.00 1.00 1 0 textures/map/w_vent0.png	textures/map/door_brick.png
+5 194 194 195 195 0.00 2.00 0.00 1.00 1 0 textures/map/w_vent0.png	textures/map/door_brick.png
+5 204 194 205 195 0.00 2.00 0.00 1.00 1 0 textures/map/w_vent0.png	textures/map/door_brick.png
+5 256 137 264 137 0.00 2.00 0.00 1.00 1 0 textures/map/w_building0.png	textures/map/door_brick.png
+5 264 130 264 136 0.00 2.00 0.00 1.00 1 0 textures/map/w_building0.png	textures/map/door_brick.png
+5 265 130 273 130 0.00 2.00 0.00 1.00 1 0 textures/map/w_building0.png	textures/map/door_brick.png
+5 273 123 273 129 0.00 2.00 0.00 1.00 1 0 textures/map/w_building0.png	textures/map/door_brick.png
+5 273 122 281 122 0.00 2.00 0.00 1.00 1 0 textures/map/w_building0.png	textures/map/door_brick.png
+5 281 115 281 121 0.00 2.00 0.00 1.00 1 0 textures/map/w_building0.png	textures/map/door_brick.png
 5 256 115 279 115 0.00 10.00 0.00 1.00 1 0 textures/map/w_building0.png	
-5 283 115 288 115 0.00 10.00 0.00 1.00 1 0 textures/map/w_building0.png	textures/map/fl_brick0door0.png
+5 283 115 288 115 0.00 10.00 0.00 1.00 1 0 textures/map/w_building0.png	textures/map/door_brick.png
 5 278 103 278 114 0.00 10.00 0.00 1.00 1 0 textures/map/w_building0.png	
 5 283 95 283 114 0.00 10.00 0.00 1.00 1 0 textures/map/w_building0.png	
 5 259 95 282 95 0.00 10.00 0.00 1.00 1 0 textures/map/w_building0.png	

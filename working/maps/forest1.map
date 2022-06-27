@@ -239,7 +239,7 @@
 3 38 33 39 33 0.00 0.00 0.00 1.00 0 1 textures/map/g_grassmarsh0.png	
 3 38 31 38 32 0.00 0.00 0.00 1.00 0 1 textures/map/g_grassmarsh0.png	
 3 39 31 40 31 0.00 0.00 0.00 1.00 0 1 textures/map/g_grassmarsh0.png	
-3 40 30 40 30 0.00 0.00 0.00 1.00 0 1 textures/map/g_bigrock0.png	
+3 40 30 40 30 0.00 0.00 0.00 1.00 0 1 textures/map/rock.png	
 3 34 45 34 45 0.00 0.00 0.00 1.00 0 1 textures/map/g_grassmarsh0.png	
 3 36 47 36 47 0.00 0.00 0.00 1.00 0 1 textures/map/g_grassmarsh0.png	
 3 37 43 37 44 0.00 0.00 0.00 1.00 0 1 textures/map/g_grassmarsh0.png	
@@ -252,15 +252,15 @@
 3 47 28 47 33 0.00 0.00 0.00 1.00 0 1 textures/map/g_grassmarsh0.png	
 3 45 27 47 27 0.00 0.00 0.00 1.00 0 1 textures/map/g_grassmarsh0.png	
 3 45 25 45 26 0.00 0.00 0.00 1.00 0 1 textures/map/g_grassmarsh0.png	
-3 34 36 34 36 0.00 0.00 0.00 1.00 0 1 textures/map/g_bigrock0.png	
-3 26 48 26 48 0.00 0.00 0.00 1.00 0 1 textures/map/g_bigrock0.png	
-3 22 42 22 42 0.00 0.00 90.00 1.00 0 1 textures/map/g_bigrock0.png	
-3 15 22 15 22 0.00 0.00 180.00 1.00 0 1 textures/map/g_bigrock0.png	
-3 23 14 23 14 0.00 0.00 270.00 1.00 0 1 textures/map/g_bigrock0.png	
-3 37 10 37 10 0.00 0.00 0.00 1.00 0 1 textures/map/g_bigrock0.png	
-3 30 28 30 28 0.00 0.00 90.00 1.00 0 1 textures/map/g_bigrock0.png	
-3 38 22 38 22 0.00 0.00 90.00 1.00 0 1 textures/map/g_bigrock0.png	
-3 38 28 38 28 0.00 0.00 270.00 1.00 0 1 textures/map/g_bigrock0.png	
+3 34 36 34 36 0.00 0.00 0.00 1.00 0 1 textures/map/rock.png	
+3 26 48 26 48 0.00 0.00 0.00 1.00 0 1 textures/map/rock.png	
+3 22 42 22 42 0.00 0.00 90.00 1.00 0 1 textures/map/rock.png	
+3 15 22 15 22 0.00 0.00 180.00 1.00 0 1 textures/map/rock.png	
+3 23 14 23 14 0.00 0.00 270.00 1.00 0 1 textures/map/rock.png	
+3 37 10 37 10 0.00 0.00 0.00 1.00 0 1 textures/map/rock.png	
+3 30 28 30 28 0.00 0.00 90.00 1.00 0 1 textures/map/rock.png	
+3 38 22 38 22 0.00 0.00 90.00 1.00 0 1 textures/map/rock.png	
+3 38 28 38 28 0.00 0.00 270.00 1.00 0 1 textures/map/rock.png	
 3 38 23 38 27 0.00 0.00 0.00 1.00 0 1 textures/map/w_treebark0.png	
 3 26 19 26 22 0.00 0.00 0.00 1.00 0 1 textures/map/w_treebark0.png	
 3 26 35 32 35 0.00 0.00 270.00 1.00 0 1 textures/map/w_treebark0.png	
@@ -269,21 +269,21 @@
 3 13 29 13 29 0.00 0.00 270.00 1.00 0 1 textures/map/g_grassmarsh0.png	
 3 23 21 23 21 0.00 0.00 270.00 1.00 0 1 textures/map/g_grassmarsh0.png	
 3 30 20 30 20 0.00 0.00 270.00 1.00 0 1 textures/map/g_grassmarsh0.png	
-3 30 22 30 22 0.00 0.00 270.00 1.00 0 1 textures/map/g_bigrock0.png	
-3 19 36 19 36 0.00 0.00 0.00 1.00 0 1 textures/map/g_bigrock0.png	
-3 29 39 29 39 0.00 0.00 0.00 1.00 0 1 textures/map/g_bigrock0.png	
-3 37 40 37 40 0.00 0.00 0.00 1.00 0 1 textures/map/g_bigrock0.png	
-3 34 48 34 48 0.00 0.00 0.00 1.00 0 1 textures/map/g_bigrock0.png	
-3 37 32 37 32 0.00 0.00 0.00 1.00 0 1 textures/map/g_bigrock0.png	
-3 35 21 35 21 0.00 0.00 90.00 1.00 0 1 textures/map/g_bigrock0.png	
-3 36 14 36 14 0.00 0.00 90.00 1.00 0 1 textures/map/g_bigrock0.png	
+3 30 22 30 22 0.00 0.00 270.00 1.00 0 1 textures/map/rock.png	
+3 19 36 19 36 0.00 0.00 0.00 1.00 0 1 textures/map/rock.png	
+3 29 39 29 39 0.00 0.00 0.00 1.00 0 1 textures/map/rock.png	
+3 37 40 37 40 0.00 0.00 0.00 1.00 0 1 textures/map/rock.png	
+3 34 48 34 48 0.00 0.00 0.00 1.00 0 1 textures/map/rock.png	
+3 37 32 37 32 0.00 0.00 0.00 1.00 0 1 textures/map/rock.png	
+3 35 21 35 21 0.00 0.00 90.00 1.00 0 1 textures/map/rock.png	
+3 36 14 36 14 0.00 0.00 90.00 1.00 0 1 textures/map/rock.png	
 3 33 12 35 12 0.00 0.00 90.00 1.00 0 1 textures/map/w_treebark0.png	
 3 37 36 39 36 0.00 0.00 90.00 1.00 0 1 textures/map/w_treebark0.png	
 3 30 46 31 46 0.00 0.00 90.00 1.00 0 1 textures/map/w_treebark0.png	
 3 43 34 47 34 0.00 0.00 90.00 1.00 0 1 textures/map/w_treebark0.png	
 3 23 33 23 40 0.00 0.00 90.00 1.00 0 1 textures/map/g_grassmarsh0.png	
 3 34 13 34 17 0.00 0.00 90.00 1.00 0 1 textures/map/g_grassmarsh0.png	
-3 34 11 34 11 0.00 0.00 90.00 1.00 0 1 textures/map/g_bigrock0.png	
+3 34 11 34 11 0.00 0.00 90.00 1.00 0 1 textures/map/rock.png	
 3 3 2 3 2 0.00 0.00 0.00 1.00 0 0 textures/map/w_stumpswitch0.png	textures/map/w_stumpswitch1.png
 3 5 21 5 24 0.00 0.00 0.00 1.00 0 1 textures/map/g_grass0.png	
 3 6 21 6 21 0.00 0.00 0.00 1.00 0 1 textures/map/g_grass0.png	
@@ -291,8 +291,8 @@
 3 5 20 5 20 0.00 0.00 0.00 1.00 0 1 textures/map/g_grass0.png	
 3 4 21 4 21 0.00 0.00 0.00 1.00 0 1 textures/map/g_grass0.png	
 3 3 22 3 22 0.00 0.00 0.00 1.00 0 1 textures/map/g_grass0.png	
-4 4 51 4 54 1.00 2.00 90.00 1.00 0 0 textures/map/fl_metalfence1.png	
-4 4 51 4 54 0.00 1.00 90.00 1.00 0 0 textures/map/fl_metalfence0.png	
+4 4 51 4 54 1.00 2.00 90.00 1.00 0 0 textures/map/fence_metal_top.png	
+4 4 51 4 54 0.00 1.00 90.00 1.00 0 0 textures/map/fence_metal.png	
 4 5 45 5 46 0.00 10.00 90.00 1.00 0 0 textures/map/g_evergreen0.png	
 4 1 1 1 45 0.00 10.00 90.00 1.00 0 0 textures/map/g_evergreen0.png	
 4 14 1 14 5 0.00 10.00 90.00 1.00 0 0 textures/map/g_evergreen0.png	
@@ -322,7 +322,7 @@
 4 1 18 9 18 0.00 4.00 0.00 1.00 0 0 textures/map/g_evergreen0.png	
 4 1 17 9 17 0.00 4.00 0.00 1.00 0 1 textures/map/g_evergreen0.png	
 4 1 16 9 16 0.00 4.00 0.00 1.00 0 1 textures/map/g_evergreen0.png	
-4 51 5 54 5 0.00 1.00 0.00 1.00 0 0 textures/map/fl_metalfence1.png	textures/map/w_trans0.png
+4 51 5 54 5 0.00 1.00 0.00 1.00 0 0 textures/map/fence_metal_top.png	textures/map/w_trans0.png
 5 4 46 4 50 0.00 10.00 0.00 1.00 1 0 textures/map/w_treebark1.png	
 5 0 46 3 46 0.00 10.00 0.00 1.00 1 0 textures/map/w_treebark1.png	
 5 4 55 4 59 0.00 10.00 0.00 1.00 1 0 textures/map/w_treebark1.png	
