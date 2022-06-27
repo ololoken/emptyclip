@@ -40,10 +40,11 @@ _Weapon::_Weapon(const std::string &ID, int Level, const glm::vec2 &Position, co
 	if(RandomStats) {
 		Quality = ae::GetRandomInt(-ITEM_QUALITY_RANGE, ITEM_QUALITY_RANGE);
 		Attributes["max_components"].Int = Components + ae::GetRandomInt(0, 1);
-		Attributes["ammo"].Int = TemplateAttributes.at("rounds").Int;
 	}
 	else
 		Attributes["max_components"].Int = Components;
+
+	Attributes["ammo"].Int = TemplateAttributes.at("rounds").Int;
 
 	RecalculateStats();
 }

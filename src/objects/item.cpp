@@ -80,21 +80,25 @@ void _Item::DrawTooltip(const _Player *Player, std::size_t CompareSlot, glm::ive
 	ae::Assets.Fonts["hud_large"]->GetStringDimensions(Name, TextBounds);
 	Size.x = std::max(Size.x, TextBounds.Width) + 20;
 
+	// Offset position
+	int WindowOffsetX = 20;
+	int MinX = 0;
+	DrawPosition.x += WindowOffsetX;
+	DrawPosition.y -= Size.y/2;
+
 	// Get current equipment
 	_Weapon *EquippedWeapon = nullptr;
 	_Item *EquippedArmor = nullptr;
 	if(CompareSlot < INVENTORY_SIZE) {
 		EquippedWeapon = (_Weapon *)Player->Inventory[CompareSlot];
 		EquippedArmor = Player->Inventory[CompareSlot];
+
+		MinX = Size.x;
 	}
 
 	// Clamp position of window
-	int WindowOffsetX = 20;
-	int MinPadding = 5;
-	DrawPosition.x += WindowOffsetX;
-	DrawPosition.y -= Size.y/2;
-	DrawPosition.x = std::clamp(DrawPosition.x, MinPadding, ae::Graphics.CurrentSize.x - MinPadding - Size.x);
-	DrawPosition.y = std::clamp(DrawPosition.y, MinPadding, ae::Graphics.CurrentSize.y - MinPadding - Size.y);
+	DrawPosition.x = std::clamp(DrawPosition.x, MinX, ae::Graphics.CurrentSize.x - Size.x);
+	DrawPosition.y = std::clamp(DrawPosition.y, 0, ae::Graphics.CurrentSize.y - Size.y);
 
 	// Draw background
 	ae::Graphics.SetProgram(ae::Assets.Programs["ortho_pos"]);
@@ -413,10 +417,12 @@ void _Item::Render(double BlendFactor) {
 	ae::Graphics.DrawSprite(glm::vec3(Position, PositionZ), Texture, Rotation, glm::vec2(ITEM_SCALE));
 }
 
+// Get average damage from range
 float _Item::GetAverageDamage() const {
 	return (Attributes.at("min_damage").Int + Attributes.at("max_damage").Int) * 0.5f;
 }
 
+// Get average accuracy from range
 float _Item::GetAverageAccuracy() const {
 	return (Attributes.at("min_accuracy").Int + Attributes.at("max_accuracy").Int) * 0.5f;
 }
