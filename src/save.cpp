@@ -56,7 +56,7 @@ _Save Save;
 
 // Constructor
 _Save::_Save() {
-	Players.insert(Players.begin(), SLOT_COUNT, (_Player *)0);
+	Players.insert(Players.begin(), SLOT_COUNT, nullptr);
 }
 
 // Destructor
@@ -66,8 +66,8 @@ _Save::~_Save() {
 }
 
 // Get a save path for a slot
-std::string _Save::GetConfigPath(int Slot) {
-	if(Slot < 0 || Slot >= SLOT_COUNT)
+std::string _Save::GetConfigPath(std::size_t Slot) {
+	if(Slot >= SLOT_COUNT)
 		return "";
 
 	std::stringstream Buffer;
@@ -76,8 +76,8 @@ std::string _Save::GetConfigPath(int Slot) {
 }
 
 // Create new player
-void _Save::CreateNewPlayer(int Slot, const std::string &Name, const std::string &ColorID) {
-	if(Slot < 0 || Slot >= SLOT_COUNT)
+void _Save::CreateNewPlayer(std::size_t Slot, const std::string &Name, const std::string &ColorID) {
+	if(Slot >= SLOT_COUNT)
 		return;
 
 	Players[Slot] = new _Player();
@@ -89,8 +89,8 @@ void _Save::CreateNewPlayer(int Slot, const std::string &Name, const std::string
 }
 
 // Deletes a player
-void _Save::DeletePlayer(int Slot) {
-	if(Slot < 0 || Slot >= SLOT_COUNT)
+void _Save::DeletePlayer(std::size_t Slot) {
+	if(Slot >= SLOT_COUNT)
 		return;
 
 	// Build save name
@@ -126,8 +126,8 @@ void _Save::LoadSaves() {
 	for(size_t i = 0; i < Files.Nodes.size(); i++) {
 		size_t Extension = Files.Nodes[i].find(".save");
 		std::string SlotIndexString = Files.Nodes[i].substr(0, Extension);
-		int SlotIndex = atoi(SlotIndexString.c_str()) - 1;
-		if(SlotIndex < 0 || SlotIndex > SLOT_9)
+		std::size_t SlotIndex = atoi(SlotIndexString.c_str()) - 1;
+		if(SlotIndex > SLOT_9)
 			continue;
 
 		try {
@@ -160,7 +160,7 @@ void _Save::LoadPlayer(_Player *Player) {
 		File.read((char *)&Type, sizeof(Type));
 
 		// Get chunk size
-		size_t Size;
+		int Size;
 		File.read((char *)&Size, sizeof(Size));
 
 		switch(Type) {
@@ -250,7 +250,7 @@ void _Save::SavePlayer(_Player *Player) {
 	if(!File.is_open())
 		throw std::runtime_error("Cannot create save file: " + Player->SavePath);
 
-	WriteChunk(File, CHUNK_SAVEVERSION, (char *)&PLAYER_SAVEVERSION, sizeof(PLAYER_SAVEVERSION));
+	WriteChunk(File, CHUNK_SAVEVERSION, (const char *)&PLAYER_SAVEVERSION, sizeof(PLAYER_SAVEVERSION));
 	WriteChunk(File, CHUNK_PLAYERNAME, Player->Name.c_str(), Player->Name.length());
 	WriteChunk(File, CHUNK_COLOR, Player->ColorID.c_str(), Player->ColorID.length());
 	if(Player->Map) {
@@ -318,7 +318,7 @@ _Weapon *_Save::LoadWeapon(_Player *Player, ae::_Buffer &Buffer, int InventoryIn
 	// Create weapon
 	_Weapon *Weapon = Stats.CreateWeapon(ID, Level, Quality, glm::vec2(0, 0), false);
 	Weapon->Attributes["max_components"].Int = MaxComponents;
-	LoadUpgrades(Player, Buffer, Weapon);
+	LoadUpgrades(Buffer, Weapon);
 	Weapon->RecalculateStats();
 	Weapon->SetAmmo(Ammo);
 
@@ -328,7 +328,7 @@ _Weapon *_Save::LoadWeapon(_Player *Player, ae::_Buffer &Buffer, int InventoryIn
 }
 
 // Loads upgrade components from a stream
-void _Save::LoadUpgrades(_Player *Player, ae::_Buffer &Buffer, _Weapon *Weapon) {
+void _Save::LoadUpgrades(ae::_Buffer &Buffer, _Weapon *Weapon) {
 
 	// Get size header
 	int Components = Buffer.Read<int>();
@@ -393,7 +393,7 @@ void _Save::SaveAmmo(_Player *Player, std::ofstream &File) {
 
 	// Write ammo type count
 	ae::_Buffer Buffer;
-	Buffer.Write<int>(Player->Ammo.size());
+	Buffer.Write<int>((int)Player->Ammo.size());
 
 	// Write ammo types
 	for(const auto &AmmoType : Player->Ammo) {
