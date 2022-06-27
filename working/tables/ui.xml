@@ -43,7 +43,7 @@
     <element id="element_hud_messagebox" style="style_menu_window" offset_y="-150" size_x="275" size_y="100" alignment_y="2">
         <element id="label_hud_messagebox_text" font="hud_medium"/>
     </element>
-    <element id="element_inventory" offset_x="-340" size_x="384" size_y="480">
+    <element id="element_inventory" offset_x="-320" size_x="384" size_y="480">
         <element id="button_inventory_mainhand" style="style_hud_inventory_gun" offset_y="384" size_x="96" size_y="96" alignment_x="0" alignment_y="0" clickable="true" index="0"/>
         <element id="button_inventory_offhand" style="style_hud_inventory_gun" offset_x="96" offset_y="384" size_x="96" size_y="96" alignment_x="0" alignment_y="0" clickable="true" index="1"/>
         <element id="button_inventory_melee" style="style_hud_inventory_melee" offset_x="192" offset_y="384" size_x="96" size_y="96" alignment_x="0" alignment_y="0" clickable="true" index="2"/>
@@ -169,14 +169,14 @@
         <element id="button_editor_monsidentifier" style="style_editor_monsidentifier" hover_style="style_editor_button_selected" offset_x="238" size_x="32" size_y="32" alignment_x="0" alignment_y="0" clickable="true" index="7"/>
         <element id="button_editor_partidentifier" style="style_editor_partidentifier" hover_style="style_editor_button_selected" offset_x="272" size_x="32" size_y="32" alignment_x="0" alignment_y="0" clickable="true" index="8"/>
     </element>
-    <element id="element_editor_palette_block" size_x="224" size_y="560" alignment_x="2" alignment_y="0"/>
-    <element id="element_editor_palette_events" size_x="224" size_y="560" alignment_x="2" alignment_y="0"/>
-    <element id="element_editor_palette_monsters" size_x="224" size_y="560" alignment_x="2" alignment_y="0"/>
-    <element id="element_editor_palette_items" size_x="224" size_y="560" alignment_x="2" alignment_y="0"/>
-    <element id="element_editor_palette_ammo" size_x="224" size_y="560" alignment_x="2" alignment_y="0"/>
-    <element id="element_editor_palette_upgrades" size_x="224" size_y="560" alignment_x="2" alignment_y="0"/>
-    <element id="element_editor_palette_weapons" size_x="224" size_y="560" alignment_x="2" alignment_y="0"/>
-    <element id="element_editor_palette_armors" size_x="224" size_y="560" alignment_x="2" alignment_y="0"/>
+    <element id="element_editor_palette_block" size_x="256" size_y="560" alignment_x="2" alignment_y="0"/>
+    <element id="element_editor_palette_events" size_x="256" size_y="560" alignment_x="2" alignment_y="0"/>
+    <element id="element_editor_palette_monsters" size_x="256" size_y="560" alignment_x="2" alignment_y="0"/>
+    <element id="element_editor_palette_items" size_x="256" size_y="560" alignment_x="2" alignment_y="0"/>
+    <element id="element_editor_palette_ammo" size_x="256" size_y="560" alignment_x="2" alignment_y="0"/>
+    <element id="element_editor_palette_upgrades" size_x="256" size_y="560" alignment_x="2" alignment_y="0"/>
+    <element id="element_editor_palette_weapons" size_x="256" size_y="560" alignment_x="2" alignment_y="0"/>
+    <element id="element_editor_palette_armors" size_x="256" size_y="560" alignment_x="2" alignment_y="0"/>
     <element id="element_editor_input" style="style_menu_textbox" offset_x="150" offset_y="-10" size_x="600" size_y="30" alignment_x="0" alignment_y="2">
         <element id="textbox_editor_input" font="hud_medium" offset_x="5" offset_y="22" alignment_x="0" alignment_y="3" maxlength="50">
             <element id="label_editor_input" font="hud_medium" offset_x="-10" alignment_x="2" alignment_y="3"/>
