@@ -371,7 +371,7 @@ void _HUD::Render() {
 	DrawHUDWeapon(Player->GetMelee(), ae::Assets.Elements["element_hud_melee"], ae::Assets.Elements["image_melee_icon"], nullptr);
 
 	// Draw ammo amounts
-	glm::vec2 Spacing = glm::vec2(0, 20) * ae::_Element::GetUIScale();
+	glm::vec2 Spacing = glm::vec2(0, 22) * ae::_Element::GetUIScale();
 	glm::vec2 DrawPosition(15 * ae::_Element::GetUIScale(), ae::Graphics.CurrentSize.y - Spacing.y);
 	for(const auto &AmmoType : Stats.AmmoNames) {
 		if(Player->Ammo.find(AmmoType) == Player->Ammo.end())
@@ -386,7 +386,7 @@ void _HUD::Render() {
 		ae::Graphics.DrawScaledImage(DrawPosition, Texture, UI_HUD_AMMO_SIZE);
 
 		Buffer << Player->Ammo[AmmoType] << " / " << Player->AmmoMax[AmmoType] << "";
-		Fonts[FONT_TINY]->DrawText(Buffer.str(), DrawPosition + glm::vec2(16, 4) * ae::_Element::GetUIScale(), ae::LEFT_BASELINE);
+		Fonts[FONT_SMALL]->DrawText(Buffer.str(), DrawPosition + glm::vec2(16, 5) * ae::_Element::GetUIScale(), ae::LEFT_BASELINE);
 		Buffer.str("");
 
 		DrawPosition -= Spacing;
@@ -533,7 +533,7 @@ void _HUD::RenderCharacterScreen() {
 	Elements[ELEMENT_SKILLS]->Render();
 
 	// Draw inventory
-	for(int i = INVENTORY_ARMOR; i < INVENTORY_BAGEND; i++) {
+	for(int i = INVENTORY_MAINHAND; i < INVENTORY_BAGEND; i++) {
 		if(Player->HasInventory(i)) {
 			if(Player->Inventory[i] != CursorItem) {
 				ae::_Element *Button = Elements[ELEMENT_INVENTORY]->Children[i];

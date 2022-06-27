@@ -53,7 +53,7 @@ style_editor_partidentifier			ortho_pos_uv	textures/editor/part_identifier.png		
 style_editor_paletteprevious			ortho_pos_uv	textures/editor/palette_previous.png		0
 style_editor_palettenext			ortho_pos_uv	textures/editor/palette_next.png		0
 style_editor_palette	black	white	ortho_pos			0
-style_hud_inventory			ortho_pos_uv	textures/hud/inventory0.png		0
+style_hud_inventory			ortho_pos_uv	textures/hud/inventory_slot.png		0
 style_hud_inventory_armor			ortho_pos_uv	textures/hud/inventory_armor.png		0
 style_hud_inventory_gun			ortho_pos_uv	textures/hud/inventory_gun.png		0
 style_hud_inventory_melee			ortho_pos_uv	textures/hud/inventory_melee.png		0
