@@ -16,54 +16,25 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 *******************************************************************************/
 #include <objects/player.h>
-#include <ae/buffer.h>
+#include <objects/monster.h>
+#include <objects/weapon.h>
 #include <ae/texture.h>
 #include <ae/graphics.h>
 #include <ae/assets.h>
 #include <ae/animation.h>
 #include <ae/program.h>
 #include <ae/audio.h>
+#include <ae/ui.h>
 #include <gameassets.h>
 #include <stats.h>
 #include <map.h>
-#include <constants.h>
-#include <ae/ui.h>
-#include <objects/monster.h>
-#include <objects/weapon.h>
-#include <fstream>
 #include <iostream>
 #include <stdexcept>
-#include <algorithm>
 #include <glm/geometric.hpp>
 #include <glm/trigonometric.hpp>
 
-enum SaveChunkTypes {
-	CHUNK_SAVEVERSION,
-	CHUNK_PLAYERNAME,
-	CHUNK_COLOR,
-	CHUNK_MAP,
-	CHUNK_PROGRESSION,
-	CHUNK_CHECKPOINT,
-	CHUNK_EXPERIENCE,
-	CHUNK_GOLD,
-	CHUNK_HEALTH,
-	CHUNK_TIME_PLAYED,
-	CHUNK_MONSTER_KILLS,
-	CHUNK_SKILLS,
-	CHUNK_ITEMS,
-	CHUNK_AMMO,
-};
-
-// Write a chunk to a stream
-static void WriteChunk(std::ofstream &File, int Type, const char *Data, size_t Size) {
-	File.write((char *)&Type, sizeof(Type));
-	File.write((char *)&Size, sizeof(Size));
-	File.write(Data, Size);
-}
-
 // Constructor
-_Player::_Player(const std::string &SavePath) {
-	this->SavePath = SavePath;
+_Player::_Player() {
 	Type = _Object::PLAYER;
 
 	// Set up animations
@@ -174,269 +145,6 @@ void _Player::Reset() {
 	StopAudio();
 
 	Health = MaxHealth;
-}
-
-// Loads information from a file
-void _Player::Load() {
-	Reset();
-
-	// Open file
-	std::ifstream File(SavePath.c_str(), std::ios::in | std::ios::binary);
-	if(!File)
-		throw std::runtime_error("Cannot load save file: " + SavePath);
-
-	// Read file
-	while(!File.eof() && File.peek() != EOF) {
-
-		// Get chunk type
-		int Type;
-		File.read((char *)&Type, sizeof(Type));
-
-		// Get chunk size
-		size_t Size;
-		File.read((char *)&Size, sizeof(Size));
-
-		switch(Type) {
-			case CHUNK_SAVEVERSION: {
-				int SaveVersion;
-				File.read((char *)&SaveVersion, sizeof(SaveVersion));
-
-				if(SaveVersion != PLAYER_SAVEVERSION)
-					throw std::runtime_error("Save version mismatch");
-			} break;
-			case CHUNK_PLAYERNAME: {
-				char Buffer[1024];
-				File.read(Buffer, Size);
-				Buffer[Size] = 0;
-				Name = Buffer;
-			} break;
-			case CHUNK_COLOR: {
-				char Buffer[1024];
-				File.read(Buffer, Size);
-				Buffer[Size] = 0;
-				ColorID = Buffer;
-			} break;
-			case CHUNK_MAP: {
-				char Buffer[1024];
-				File.read(Buffer, Size);
-				Buffer[Size] = 0;
-				MapID = Buffer;
-			} break;
-			case CHUNK_CHECKPOINT:
-				File.read((char *)&CheckpointIndex, sizeof(CheckpointIndex));
-			break;
-			case CHUNK_PROGRESSION:
-				File.read((char *)&Progression, sizeof(Progression));
-			break;
-			case CHUNK_GOLD:
-				File.read((char *)&Gold, sizeof(Gold));
-			break;
-			case CHUNK_EXPERIENCE:
-				File.read((char *)&Experience, sizeof(Experience));
-			break;
-			case CHUNK_HEALTH:
-				File.read((char *)&Health, sizeof(Health));
-				if(Health <= 0)
-					Health = 1;
-			break;
-			case CHUNK_TIME_PLAYED: {
-				File.read((char *)&TimePlayed, sizeof(TimePlayed));
-			} break;
-			case CHUNK_MONSTER_KILLS:
-				File.read((char *)&MonsterKills, sizeof(MonsterKills));
-			break;
-			case CHUNK_SKILLS:
-				File.read((char *)&Skills, sizeof(Skills));
-			break;
-			case CHUNK_ITEMS: {
-				ae::_Buffer Buffer(Size);
-				File.read(&Buffer[0], Size);
-				LoadItems(Buffer);
-			} break;
-			case CHUNK_AMMO: {
-				ae::_Buffer Buffer(Size);
-				File.read(&Buffer[0], Size);
-				LoadAmmo(Buffer);
-			} break;
-			default:
-				File.ignore(Size);
-			break;
-		}
-	}
-
-	File.close();
-	//std::cout << std::endl;
-
-	CalculateExperienceStats();
-	CalculateLevelPercentage();
-	CalculateSkillsRemaining();
-	UpdateColor();
-	RecalculateStats();
-	ResetWeaponAnimation();
-	UpdateHealth(0);
-}
-
-// Saves information to a file
-void _Player::Save() {
-
-	// Open file
-	std::ofstream File(SavePath.c_str(), std::ios::out | std::ios::binary);
-	if(!File.is_open())
-		throw std::runtime_error("Cannot create save file: " + SavePath);
-
-	WriteChunk(File, CHUNK_SAVEVERSION, (char *)&PLAYER_SAVEVERSION, sizeof(PLAYER_SAVEVERSION));
-	WriteChunk(File, CHUNK_PLAYERNAME, Name.c_str(), Name.length());
-	WriteChunk(File, CHUNK_COLOR, ColorID.c_str(), ColorID.length());
-	if(Map) {
-		WriteChunk(File, CHUNK_MAP, MapID.c_str(), MapID.length());
-		WriteChunk(File, CHUNK_CHECKPOINT, (char *)&CheckpointIndex, sizeof(CheckpointIndex));
-	}
-	WriteChunk(File, CHUNK_PROGRESSION, (char *)&Progression, sizeof(Progression));
-	WriteChunk(File, CHUNK_EXPERIENCE, (char *)&Experience, sizeof(Experience));
-	WriteChunk(File, CHUNK_GOLD, (char *)&Gold, sizeof(Gold));
-	WriteChunk(File, CHUNK_HEALTH, (char *)&Health, sizeof(Health));
-	WriteChunk(File, CHUNK_TIME_PLAYED, (char *)&TimePlayed, sizeof(TimePlayed));
-	WriteChunk(File, CHUNK_MONSTER_KILLS, (char *)&MonsterKills, sizeof(MonsterKills));
-	WriteChunk(File, CHUNK_SKILLS, (char *)&Skills, sizeof(Skills));
-
-	SaveItems(File);
-	SaveAmmo(File);
-
-	File.close();
-}
-
-// Loads items from a stream
-void _Player::LoadItems(ae::_Buffer &Buffer) {
-
-	// Get inventory size
-	int ItemCount = Buffer.Read<int>();
-	if(ItemCount > INVENTORY_SIZE) {
-		throw std::runtime_error("Too many items");
-	}
-
-	// Get items
-	for(int i = 0; i < ItemCount; i++) {
-		int Slot = Buffer.Read<int>();
-		int Type = Buffer.Read<int>();
-		int Count = Buffer.Read<int>();
-
-		// Create items
-		switch(Type) {
-			case _Object::KEY:
-			case _Object::AMMO:
-			case _Object::UPGRADE:
-			case _Object::ARMOR:
-			case _Object::MEDKIT: {
-				std::string ID = Buffer.ReadString();
-				int Level = Buffer.Read<int>();
-				int Quality = Buffer.Read<int>();
-				Inventory[Slot] = Stats.CreateItem(ID, Level, Quality, Count, glm::vec2(0, 0), false);
-			} break;
-			case _Object::WEAPON:
-				LoadWeapon(Buffer, Slot);
-			break;
-		}
-	}
-}
-
-// Loads weapons from a stream
-_Weapon *_Player::LoadWeapon(ae::_Buffer &Buffer, int InventoryIndex) {
-
-	// Get weapons
-	std::string ID = Buffer.ReadString();
-	int Level = Buffer.Read<int>();
-	int Quality = Buffer.Read<int>();
-	int Ammo = Buffer.Read<int>();
-	int MaxComponents = Buffer.Read<int>();
-
-	// Create weapon
-	_Weapon *Weapon = Stats.CreateWeapon(ID, Level, Quality, glm::vec2(0, 0), false);
-	Weapon->Attributes["max_components"].Int = MaxComponents;
-	LoadUpgrades(Buffer, Weapon);
-	Weapon->RecalculateStats();
-	Weapon->SetAmmo(Ammo);
-
-	Inventory[InventoryIndex] = Weapon;
-
-	return Weapon;
-}
-
-// Loads upgrade components from a stream
-void _Player::LoadUpgrades(ae::_Buffer &Buffer, _Weapon *Weapon) {
-
-	// Get size header
-	int Components = Buffer.Read<int>();
-
-	// Read data
-	for(int i = 0; i < Components; i++) {
-		std::string ID = Buffer.ReadString();
-		int Level = Buffer.Read<int>();
-		int Quality = Buffer.Read<int>();
-		_Item *Item = Stats.CreateItem(ID, Level, Quality, 0, glm::vec2(0, 0), false);
-		if(!Weapon->AddComponent(Item))
-			delete Item;
-	}
-}
-
-// Load ammo
-void _Player::LoadAmmo(ae::_Buffer &Buffer) {
-
-	// Read count
-	int AmmoTypeCount = Buffer.Read<int>();
-
-	// Read data
-	for(int i = 0; i < AmmoTypeCount; i++) {
-		std::string ID = Buffer.ReadString();
-		int Count = Buffer.Read<int>();
-		if(Count > 0)
-			Ammo[ID] = std::clamp(Count, 0, AmmoMax[ID]);
-	}
-}
-
-// Saves items to a stream
-void _Player::SaveItems(std::ofstream &File) {
-
-	// Buffer
-	int ItemCount = 0;
-	for(int i = 0; i < INVENTORY_SIZE; i++) {
-		if(HasInventory(i))
-			ItemCount++;
-	}
-
-	// Write item count
-	ae::_Buffer Buffer;
-	Buffer.Write<int>(ItemCount);
-
-	// Write items
-	for(int i = 0; i < INVENTORY_SIZE; i++) {
-		if(!HasInventory(i))
-			continue;
-
-		Buffer.Write(i);
-		Buffer.Write(Inventory[i]->Type);
-		Buffer.Write(Inventory[i]->Count);
-		Inventory[i]->Serialize(Buffer);
-	}
-
-	// Write chunk
-	WriteChunk(File, CHUNK_ITEMS, &Buffer[0], Buffer.GetCurrentSize());
-}
-
-// Save ammo to a stream
-void _Player::SaveAmmo(std::ofstream &File) {
-
-	// Write ammo type count
-	ae::_Buffer Buffer;
-	Buffer.Write<int>(Ammo.size());
-
-	// Write ammo types
-	for(const auto &AmmoType : Ammo) {
-		Buffer.WriteString(AmmoType.first.c_str());
-		Buffer.Write(AmmoType.second);
-	}
-
-	// Write chunk
-	WriteChunk(File, CHUNK_AMMO, &Buffer[0], Buffer.GetCurrentSize());
 }
 
 // Deletes the item objects

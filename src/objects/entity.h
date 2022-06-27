@@ -20,7 +20,7 @@
 // Libraries
 #include <objects/object.h>
 #include <objects/templates.h>
-#include <objects/item.h>
+#include <objects/weapon.h>
 #include <list>
 
 // Forward Declarations
@@ -30,7 +30,6 @@ namespace ae {
 }
 struct _ParticleTemplate;
 class _Map;
-class _Animation;
 
 // Used to determine what direction an entity wants to go
 enum MoveType {

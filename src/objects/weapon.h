@@ -24,8 +24,18 @@
 #include <string>
 
 // Forward Declarations
-struct _ParticleTemplate;
 struct _WeaponTemplate;
+
+// Types of weapons
+enum WeaponType {
+	WEAPON_NONE,
+	WEAPON_MELEE,
+	WEAPON_PISTOL,
+	WEAPON_SHOTGUN,
+	WEAPON_RIFLE,
+	WEAPON_HEAVY,
+	WEAPON_TYPES
+};
 
 // Classes
 class _Weapon : public _Item {

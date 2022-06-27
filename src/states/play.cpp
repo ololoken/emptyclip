@@ -68,7 +68,6 @@ void _PlayState::Init() {
 	CursorItem = nullptr;
 	PreviousCursorItem = nullptr;
 	LastLightEvent = nullptr;
-	SaveGameTimer = 0;
 
 	// Check for player
 	if(TestMode) {
@@ -242,7 +241,7 @@ bool _PlayState::HandleKey(const ae::_KeyEvent &KeyEvent) {
 						else
 							Framework.Done = true;
 
-						Player->Save();
+						Save.SavePlayer(Player);
 					}
 					else
 						Menu.InitInGame();
@@ -311,9 +310,6 @@ void _PlayState::Update(double FrameTime) {
 	// Get world cursor
 	PreviousWorldCursor = WorldCursor;
 	Camera->ConvertScreenToWorld(ae::Input.GetMouse(), WorldCursor);
-
-	// Update save timer
-	SaveGameTimer += FrameTime;
 
 	// Handle input
 	if(!Player->IsDying() && ae::FocusedElement == nullptr) {
@@ -599,7 +595,7 @@ void _PlayState::Render(double BlendFactor) {
 // Restart the level after death
 void _PlayState::RestartFromDeath() {
 	try {
-		Player->Load();
+		Save.LoadPlayer(Player);
 	}
 	catch(std::exception &Error) {
 	}
@@ -878,8 +874,7 @@ void _PlayState::CheckEvents(const _Entity *Entity) {
 							if(Event->Level > Player->CheckpointIndex) {
 								Player->CheckpointIndex = Event->Level;
 								HUD->ShowTextMessage(HUD_CHECKPOINTMESSAGE, HUD_CHECKPOINTTIME);
-								Player->Save();
-								SaveGameTimer = 0;
+								Save.SavePlayer(Player);
 							}
 							Event->Active = false;
 						break;
@@ -887,7 +882,7 @@ void _PlayState::CheckEvents(const _Entity *Entity) {
 							if(Event->Level != Player->CheckpointIndex) {
 								Player->CheckpointIndex = Event->Level;
 								HUD->ShowTextMessage(HUD_CHECKPOINTMESSAGE, HUD_CHECKPOINTTIME);
-								Player->Save();
+								Save.SavePlayer(Player);
 							}
 						break;
 						default:
@@ -909,7 +904,7 @@ void _PlayState::CheckEvents(const _Entity *Entity) {
 
 					Player->CheckpointIndex = Event->Level;
 					Player->MapID = Level;
-					Player->Save();
+					Save.SavePlayer(Player);
 				break;
 				case EVENT_TEXT:
 					HUD->ShowMessageBox(Stats.Strings[Event->ItemID], Event->ActivationPeriod);

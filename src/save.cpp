@@ -16,12 +16,41 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 *******************************************************************************/
 #include <save.h>
-#include <ae/files.h>
-#include <config.h>
 #include <objects/player.h>
+#include <objects/weapon.h>
+#include <ae/files.h>
+#include <ae/buffer.h>
+#include <config.h>
+#include <stats.h>
 #include <cstdlib>
-#include <iostream>
 #include <sstream>
+#include <iostream>
+#include <fstream>
+#include <algorithm>
+
+enum SaveChunkTypes {
+	CHUNK_SAVEVERSION,
+	CHUNK_PLAYERNAME,
+	CHUNK_COLOR,
+	CHUNK_MAP,
+	CHUNK_PROGRESSION,
+	CHUNK_CHECKPOINT,
+	CHUNK_EXPERIENCE,
+	CHUNK_GOLD,
+	CHUNK_HEALTH,
+	CHUNK_TIME_PLAYED,
+	CHUNK_MONSTER_KILLS,
+	CHUNK_SKILLS,
+	CHUNK_ITEMS,
+	CHUNK_AMMO,
+};
+
+// Write a chunk to a stream
+static void WriteChunk(std::ofstream &File, int Type, const char *Data, size_t Size) {
+	File.write((char *)&Type, sizeof(Type));
+	File.write((char *)&Size, sizeof(Size));
+	File.write(Data, Size);
+}
 
 _Save Save;
 
@@ -51,11 +80,12 @@ void _Save::CreateNewPlayer(int Slot, const std::string &Name, const std::string
 	if(Slot < 0 || Slot >= SLOT_COUNT)
 		return;
 
-	Players[Slot] = new _Player(GetConfigPath(Slot));
+	Players[Slot] = new _Player();
+	Players[Slot]->SavePath = GetConfigPath(Slot);
 	Players[Slot]->Name = Name;
 	Players[Slot]->SetColorID(ColorID);
 
-	Players[Slot]->Save();
+	SavePlayer(Players[Slot]);
 }
 
 // Deletes a player
@@ -81,8 +111,9 @@ void _Save::LoadSaves() {
 
 	// Load test files
 	try {
-		Players[SLOT_TEST] = new _Player(Config.ConfigPath + "test.save");
-		Players[SLOT_TEST]->Load();
+		Players[SLOT_TEST] = new _Player();
+		Players[SLOT_TEST]->SavePath = Config.ConfigPath + "test.save";
+		LoadPlayer(Players[SLOT_TEST]);
 	}
 	catch(std::exception &Error) {
 		std::cout << Error.what() << std::endl;
@@ -100,8 +131,9 @@ void _Save::LoadSaves() {
 			continue;
 
 		try {
-			Players[SlotIndex] = new _Player(Config.ConfigPath + Files.Nodes[i]);
-			Players[SlotIndex]->Load();
+			Players[SlotIndex] = new _Player();
+			Players[SlotIndex]->SavePath = Config.ConfigPath + Files.Nodes[i];
+			LoadPlayer(Players[SlotIndex]);
 		}
 		catch(std::exception &Error) {
 			std::cout << Error.what() << std::endl;
@@ -109,4 +141,266 @@ void _Save::LoadSaves() {
 			Players[SlotIndex] = nullptr;
 		}
 	}
+}
+
+// Loads information from a file
+void _Save::LoadPlayer(_Player *Player) {
+	Player->Reset();
+
+	// Open file
+	std::ifstream File(Player->SavePath.c_str(), std::ios::in | std::ios::binary);
+	if(!File)
+		throw std::runtime_error("Cannot load save file: " + Player->SavePath);
+
+	// Read file
+	while(!File.eof() && File.peek() != EOF) {
+
+		// Get chunk type
+		int Type;
+		File.read((char *)&Type, sizeof(Type));
+
+		// Get chunk size
+		size_t Size;
+		File.read((char *)&Size, sizeof(Size));
+
+		switch(Type) {
+			case CHUNK_SAVEVERSION: {
+				int SaveVersion;
+				File.read((char *)&SaveVersion, sizeof(SaveVersion));
+
+				if(SaveVersion != PLAYER_SAVEVERSION)
+					throw std::runtime_error("Save version mismatch");
+			} break;
+			case CHUNK_PLAYERNAME: {
+				char Buffer[1024];
+				File.read(Buffer, Size);
+				Buffer[Size] = 0;
+				Player->Name = Buffer;
+			} break;
+			case CHUNK_COLOR: {
+				char Buffer[1024];
+				File.read(Buffer, Size);
+				Buffer[Size] = 0;
+				Player->ColorID = Buffer;
+			} break;
+			case CHUNK_MAP: {
+				char Buffer[1024];
+				File.read(Buffer, Size);
+				Buffer[Size] = 0;
+				Player->MapID = Buffer;
+			} break;
+			case CHUNK_CHECKPOINT:
+				File.read((char *)&Player->CheckpointIndex, sizeof(Player->CheckpointIndex));
+			break;
+			case CHUNK_PROGRESSION:
+				File.read((char *)&Player->Progression, sizeof(Player->Progression));
+			break;
+			case CHUNK_GOLD:
+				File.read((char *)&Player->Gold, sizeof(Player->Gold));
+			break;
+			case CHUNK_EXPERIENCE:
+				File.read((char *)&Player->Experience, sizeof(Player->Experience));
+			break;
+			case CHUNK_HEALTH:
+				File.read((char *)&Player->Health, sizeof(Player->Health));
+				if(Player->Health <= 0)
+					Player->Health = 1;
+			break;
+			case CHUNK_TIME_PLAYED: {
+				File.read((char *)&Player->TimePlayed, sizeof(Player->TimePlayed));
+			} break;
+			case CHUNK_MONSTER_KILLS:
+				File.read((char *)&Player->MonsterKills, sizeof(Player->MonsterKills));
+			break;
+			case CHUNK_SKILLS:
+				File.read((char *)&Player->Skills, sizeof(Player->Skills));
+			break;
+			case CHUNK_ITEMS: {
+				ae::_Buffer Buffer(Size);
+				File.read(&Buffer[0], Size);
+				LoadItems(Player, Buffer);
+			} break;
+			case CHUNK_AMMO: {
+				ae::_Buffer Buffer(Size);
+				File.read(&Buffer[0], Size);
+				LoadAmmo(Player, Buffer);
+			} break;
+			default:
+				File.ignore(Size);
+			break;
+		}
+	}
+
+	File.close();
+
+	Player->CalculateExperienceStats();
+	Player->CalculateLevelPercentage();
+	Player->CalculateSkillsRemaining();
+	Player->UpdateColor();
+	Player->RecalculateStats();
+	Player->ResetWeaponAnimation();
+	Player->UpdateHealth(0);
+}
+
+// Saves information to a file
+void _Save::SavePlayer(_Player *Player) {
+
+	// Open file
+	std::ofstream File(Player->SavePath.c_str(), std::ios::out | std::ios::binary);
+	if(!File.is_open())
+		throw std::runtime_error("Cannot create save file: " + Player->SavePath);
+
+	WriteChunk(File, CHUNK_SAVEVERSION, (char *)&PLAYER_SAVEVERSION, sizeof(PLAYER_SAVEVERSION));
+	WriteChunk(File, CHUNK_PLAYERNAME, Player->Name.c_str(), Player->Name.length());
+	WriteChunk(File, CHUNK_COLOR, Player->ColorID.c_str(), Player->ColorID.length());
+	if(Player->Map) {
+		WriteChunk(File, CHUNK_MAP, Player->MapID.c_str(), Player->MapID.length());
+		WriteChunk(File, CHUNK_CHECKPOINT, (char *)&Player->CheckpointIndex, sizeof(Player->CheckpointIndex));
+	}
+	WriteChunk(File, CHUNK_PROGRESSION, (char *)&Player->Progression, sizeof(Player->Progression));
+	WriteChunk(File, CHUNK_EXPERIENCE, (char *)&Player->Experience, sizeof(Player->Experience));
+	WriteChunk(File, CHUNK_GOLD, (char *)&Player->Gold, sizeof(Player->Gold));
+	WriteChunk(File, CHUNK_HEALTH, (char *)&Player->Health, sizeof(Player->Health));
+	WriteChunk(File, CHUNK_TIME_PLAYED, (char *)&Player->TimePlayed, sizeof(Player->TimePlayed));
+	WriteChunk(File, CHUNK_MONSTER_KILLS, (char *)&Player->MonsterKills, sizeof(Player->MonsterKills));
+	WriteChunk(File, CHUNK_SKILLS, (char *)&Player->Skills, sizeof(Player->Skills));
+
+	SaveItems(Player, File);
+	SaveAmmo(Player, File);
+
+	File.close();
+}
+
+// Loads items from a stream
+void _Save::LoadItems(_Player *Player, ae::_Buffer &Buffer) {
+
+	// Get inventory size
+	int ItemCount = Buffer.Read<int>();
+	if(ItemCount > INVENTORY_SIZE) {
+		throw std::runtime_error("Too many items");
+	}
+
+	// Get items
+	for(int i = 0; i < ItemCount; i++) {
+		int Slot = Buffer.Read<int>();
+		int Type = Buffer.Read<int>();
+		int Count = Buffer.Read<int>();
+
+		// Create items
+		switch(Type) {
+			case _Object::KEY:
+			case _Object::AMMO:
+			case _Object::UPGRADE:
+			case _Object::ARMOR:
+			case _Object::MEDKIT: {
+				std::string ID = Buffer.ReadString();
+				int Level = Buffer.Read<int>();
+				int Quality = Buffer.Read<int>();
+				Player->Inventory[Slot] = Stats.CreateItem(ID, Level, Quality, Count, glm::vec2(0, 0), false);
+			} break;
+			case _Object::WEAPON:
+				LoadWeapon(Player, Buffer, Slot);
+			break;
+		}
+	}
+}
+
+// Loads weapons from a stream
+_Weapon *_Save::LoadWeapon(_Player *Player, ae::_Buffer &Buffer, int InventoryIndex) {
+
+	// Get weapons
+	std::string ID = Buffer.ReadString();
+	int Level = Buffer.Read<int>();
+	int Quality = Buffer.Read<int>();
+	int Ammo = Buffer.Read<int>();
+	int MaxComponents = Buffer.Read<int>();
+
+	// Create weapon
+	_Weapon *Weapon = Stats.CreateWeapon(ID, Level, Quality, glm::vec2(0, 0), false);
+	Weapon->Attributes["max_components"].Int = MaxComponents;
+	LoadUpgrades(Player, Buffer, Weapon);
+	Weapon->RecalculateStats();
+	Weapon->SetAmmo(Ammo);
+
+	Player->Inventory[InventoryIndex] = Weapon;
+
+	return Weapon;
+}
+
+// Loads upgrade components from a stream
+void _Save::LoadUpgrades(_Player *Player, ae::_Buffer &Buffer, _Weapon *Weapon) {
+
+	// Get size header
+	int Components = Buffer.Read<int>();
+
+	// Read data
+	for(int i = 0; i < Components; i++) {
+		std::string ID = Buffer.ReadString();
+		int Level = Buffer.Read<int>();
+		int Quality = Buffer.Read<int>();
+		_Item *Item = Stats.CreateItem(ID, Level, Quality, 0, glm::vec2(0, 0), false);
+		if(!Weapon->AddComponent(Item))
+			delete Item;
+	}
+}
+
+// Load ammo
+void _Save::LoadAmmo(_Player *Player, ae::_Buffer &Buffer) {
+
+	// Read count
+	int AmmoTypeCount = Buffer.Read<int>();
+
+	// Read data
+	for(int i = 0; i < AmmoTypeCount; i++) {
+		std::string ID = Buffer.ReadString();
+		int Count = Buffer.Read<int>();
+		if(Count > 0)
+			Player->Ammo[ID] = std::clamp(Count, 0, Player->AmmoMax[ID]);
+	}
+}
+
+// Saves items to a stream
+void _Save::SaveItems(_Player *Player, std::ofstream &File) {
+
+	// Get item count
+	int ItemCount = 0;
+	for(int i = 0; i < INVENTORY_SIZE; i++) {
+		if(Player->HasInventory(i))
+			ItemCount++;
+	}
+
+	// Write item count
+	ae::_Buffer Buffer;
+	Buffer.Write<int>(ItemCount);
+
+	// Write items
+	for(int i = 0; i < INVENTORY_SIZE; i++) {
+		if(!Player->HasInventory(i))
+			continue;
+
+		Buffer.Write(i);
+		Buffer.Write(Player->Inventory[i]->Type);
+		Buffer.Write(Player->Inventory[i]->Count);
+		Player->Inventory[i]->Serialize(Buffer);
+	}
+
+	// Write chunk
+	WriteChunk(File, CHUNK_ITEMS, &Buffer[0], Buffer.GetCurrentSize());
+}
+
+// Save ammo to a stream
+void _Save::SaveAmmo(_Player *Player, std::ofstream &File) {
+
+	// Write ammo type count
+	ae::_Buffer Buffer;
+	Buffer.Write<int>(Player->Ammo.size());
+
+	// Write ammo types
+	for(const auto &AmmoType : Player->Ammo) {
+		Buffer.WriteString(AmmoType.first.c_str());
+		Buffer.Write(AmmoType.second);
+	}
+
+	// Write chunk
+	WriteChunk(File, CHUNK_AMMO, &Buffer[0], Buffer.GetCurrentSize());
 }

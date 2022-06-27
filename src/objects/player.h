@@ -22,10 +22,8 @@
 #include <constants.h>
 
 // Forward Declarations
-class _Animation;
 class _Item;
 class _Weapon;
-class _Buffer;
 
 // Enumerations
 enum PlayerAnimationTypes {
@@ -50,14 +48,14 @@ enum InventoryTypes {
 // Classes
 class _Player : public _Entity {
 
+	friend class _Save;
+
 	public:
 
-		_Player(const std::string &SavePath);
+		_Player();
 		~_Player() override;
 
 		void Reset();
-		void Load();
-		void Save();
 
 		bool IsMelee() const;
 
@@ -138,7 +136,7 @@ class _Player : public _Entity {
 		int CheckpointIndex;
 		int Progression;
 
-		// Engine
+		// Saves
 		std::string SavePath;
 
 		// Animation
@@ -192,13 +190,6 @@ class _Player : public _Entity {
 		bool IsBagIndex(int Index) { return Index >= INVENTORY_BAGSTART && Index < INVENTORY_BAGEND; }
 		bool IsEquipmentIndex(int Index) { return Index <= INVENTORY_BAGSTART; }
 		bool IsHandIndex(int Index) { return Index == INVENTORY_MAINHAND || Index == INVENTORY_OFFHAND; }
-
-		void LoadItems(ae::_Buffer &Buffer);
-		_Weapon *LoadWeapon(ae::_Buffer &Buffer, int InventoryIndex);
-		void LoadUpgrades(ae::_Buffer &Buffer, _Weapon *Weapon);
-		void LoadAmmo(ae::_Buffer &Buffer);
-		void SaveItems(std::ofstream &File);
-		void SaveAmmo(std::ofstream &File);
 
 		void SetAnimationPlaybackSpeedFactor() override;
 		void CalculateLevelPercentage();

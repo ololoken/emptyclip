@@ -23,6 +23,10 @@
 
 // Forward Declarations
 class _Player;
+class _Weapon;
+namespace ae {
+	class _Buffer;
+}
 
 // Classes
 class _Save {
@@ -50,12 +54,21 @@ class _Save {
 		void CreateNewPlayer(int Slot, const std::string &Name, const std::string &ColorID);
 		void DeletePlayer(int Slot);
 		void LoadSaves();
+		void LoadPlayer(_Player *Player);
+		void SavePlayer(_Player *Player);
 
 		_Player *GetPlayer(std::size_t Slot) { return Players[Slot]; }
 
 	private:
 
 		std::string GetConfigPath(int Slot);
+
+		void LoadItems(_Player *Player, ae::_Buffer &Buffer);
+		_Weapon *LoadWeapon(_Player *Player, ae::_Buffer &Buffer, int InventoryIndex);
+		void LoadUpgrades(_Player *Player, ae::_Buffer &Buffer, _Weapon *Weapon);
+		void LoadAmmo(_Player *Player, ae::_Buffer &Buffer);
+		void SaveItems(_Player *Player, std::ofstream &File);
+		void SaveAmmo(_Player *Player, std::ofstream &File);
 
 		// Players
 		std::vector<_Player *> Players;

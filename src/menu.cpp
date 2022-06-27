@@ -185,7 +185,7 @@ void _Menu::InitNewPlayer() {
 
 // Play the game
 void _Menu::LaunchGame() {
-	Save.GetPlayer(SelectedSlot)->Load();
+	Save.LoadPlayer(Save.GetPlayer(SelectedSlot));
 	PlayState.Player = Save.GetPlayer(SelectedSlot);
 	PlayState.Level = "";
 	PlayState.TestMode = false;
@@ -384,8 +384,8 @@ void _Menu::HandleMouseButton(const ae::_MouseEvent &MouseEvent) {
 				if(Clicked->Name == "button_ingame_restart" && PlayState.Player) {
 					InitPlay();
 					PlayState.Player->CheckpointIndex = 0;
-					PlayState.Player->Save();
-					PlayState.Player->Load();
+					Save.SavePlayer(PlayState.Player);
+					Save.LoadPlayer(PlayState.Player);
 					Framework.ChangeState(&PlayState);
 				}
 				else if(Clicked->Name == "button_ingame_resume") {
