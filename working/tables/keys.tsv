@@ -7,22 +7,12 @@ key4	Purple Key	textures/items/i_key0.png	purple
 key5	Black Key	textures/items/i_key0.png	dark
 skey1	Ruby Key	textures/items/i_key0.png	red
 skey2	Sapphire Key	textures/items/i_key0.png	blue
-skey3	Emerald Key	textures/items/i_key0.png	green
 skey4	Cavern Key	textures/items/i_key0.png	brown
 akey0	Frozen Stars	textures/items/i_key1.png	
 akey1	Terrestrial Key	textures/items/i_key1.png	shade_green0
 akey2	Plasma Finger	textures/items/i_key1.png	shade_blue0
-akey3	Psi Key	textures/items/i_key1.png	shade_black1
 dkey0	Symbol of Wrath	textures/items/i_key2.png	
-dkey2	Dark Key	textures/items/i_key2.png	shade_blue2
 dkey3	Doom Key	textures/items/i_key2.png	dark
-gkey0	Rubber Key	textures/items/i_key0.png	shade_brown0
-gkey1	Plastic Key	textures/items/i_key0.png	shade_brown0
-gkey2	Tin Key	textures/items/i_key0.png	shade_brown0
-gkey3	Copper Key	textures/items/i_key0.png	shade_brown0
-dgkey0	Dungeon Key I	textures/items/i_key0.png	shade_brown2
-dgkey1	Dungeon Key II	textures/items/i_key0.png	shade_brown2
-dgkey2	Dungeon Key III	textures/items/i_key0.png	shade_brown2
 wkey0	World Key I	textures/items/i_key0.png	shade_black0
 wkey1	World Key II	textures/items/i_key0.png	shade_black0
 wkey2	World Key III	textures/items/i_key0.png	shade_black0
