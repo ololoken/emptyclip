@@ -111,7 +111,7 @@ bool _Weapon::AddComponent(_Item *Upgrade) {
 	if((int)Upgrades.size() >= Attributes.at("max_components").Int)
 		return false;
 
-	if(Upgrade->Attributes.at("weapon_type").Int != -1 && Upgrade->Attributes.at("weapon_type").Int != Attributes.at("weapon_type").Int)
+	if(Upgrade->Attributes.at("weapon_type").Int != 0 && Upgrade->Attributes.at("weapon_type").Int != Attributes.at("weapon_type").Int)
 		return false;
 
 	if(Upgrade->Attributes.at("upgrade_type").Int == UPGRADE_CLIP && Stats.Weapons[ID].Attributes.at("rounds").Int == 0)
