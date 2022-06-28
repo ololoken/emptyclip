@@ -20,10 +20,7 @@ style_editor_block			ortho_pos_uv	textures/editor/block.png		0
 style_editor_event			ortho_pos_uv	textures/editor/event.png		0
 style_editor_mons			ortho_pos_uv	textures/editor/mons.png		0
 style_editor_item			ortho_pos_uv	textures/editor/item.png		0
-style_editor_ammo			ortho_pos_uv	textures/editor/ammo.png		0
-style_editor_mod			ortho_pos_uv	textures/editor/mod.png		0
 style_editor_weap			ortho_pos_uv	textures/editor/weap.png		0
-style_editor_arm			ortho_pos_uv	textures/editor/arm.png		0
 style_editor_none			ortho_pos_uv	textures/editor/none.png		0
 style_editor_del			ortho_pos_uv	textures/editor/del.png		0
 style_editor_copy			ortho_pos_uv	textures/editor/copy.png		0

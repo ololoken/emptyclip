@@ -66,9 +66,6 @@ const int PaletteSizes[EDITMODE_COUNT] = {
 	64,
 	64,
 	64,
-	64,
-	64,
-	64,
 };
 
 // Constructor
@@ -102,10 +99,7 @@ void _EditorState::Init() {
 	PaletteElement[1] = ae::Assets.Elements["element_editor_palette_events"];
 	PaletteElement[2] = ae::Assets.Elements["element_editor_palette_monsters"];
 	PaletteElement[3] = ae::Assets.Elements["element_editor_palette_items"];
-	PaletteElement[4] = ae::Assets.Elements["element_editor_palette_ammo"];
-	PaletteElement[5] = ae::Assets.Elements["element_editor_palette_upgrades"];
-	PaletteElement[6] = ae::Assets.Elements["element_editor_palette_weapons"];
-	PaletteElement[7] = ae::Assets.Elements["element_editor_palette_armors"];
+	PaletteElement[4] = ae::Assets.Elements["element_editor_palette_weapons"];
 
 	// Assign layer buttons
 	LayerButtons[0] = ae::Assets.Elements["button_editor_layer_base"];
@@ -121,10 +115,7 @@ void _EditorState::Init() {
 	ModeButtons[1] = ae::Assets.Elements["button_editor_mode_event"];
 	ModeButtons[2] = ae::Assets.Elements["button_editor_mode_mons"];
 	ModeButtons[3] = ae::Assets.Elements["button_editor_mode_item"];
-	ModeButtons[4] = ae::Assets.Elements["button_editor_mode_ammo"];
-	ModeButtons[5] = ae::Assets.Elements["button_editor_mode_mod"];
-	ModeButtons[6] = ae::Assets.Elements["button_editor_mode_weap"];
-	ModeButtons[7] = ae::Assets.Elements["button_editor_mode_arm"];
+	ModeButtons[4] = ae::Assets.Elements["button_editor_mode_weap"];
 
 	// Reset state
 	ResetEditorState();
@@ -376,16 +367,7 @@ bool _EditorState::HandleKey(const ae::_KeyEvent &KeyEvent) {
 				ExecuteSwitchMode(EDITMODE_ITEMS);
 			break;
 			case SDL_SCANCODE_5:
-				ExecuteSwitchMode(EDITMODE_AMMO);
-			break;
-			case SDL_SCANCODE_6:
-				ExecuteSwitchMode(EDITMODE_UPGRADES);
-			break;
-			case SDL_SCANCODE_7:
 				ExecuteSwitchMode(EDITMODE_WEAPONS);
-			break;
-			case SDL_SCANCODE_8:
-				ExecuteSwitchMode(EDITMODE_ARMOR);
 			break;
 			case SDL_SCANCODE_GRAVE:
 			    ExecuteDeselect();
@@ -1034,26 +1016,10 @@ void _EditorState::LoadPalettes() {
 
 	// Load items
 	for(const auto &Item : Stats.Items) {
-		if(Item.second.Type == _Object::MEDKIT || Item.second.Type == _Object::KEY)
+		if(Item.second.Type != _Object::NONE)
 			Icons.push_back(_Brush(Item.first, Item.second.Name, ae::Assets.Textures[Item.second.IconID], Item.second.Color, Item.second.Type));
 	}
 	LoadPaletteButtons(Icons, EDITMODE_ITEMS);
-	Icons.clear();
-
-	// Load ammo
-	for(const auto &Item : Stats.Items) {
-		if(Item.second.Type == _Object::AMMO)
-			Icons.push_back(_Brush(Item.first, Item.second.Name, ae::Assets.Textures[Item.second.IconID], Item.second.Color, Item.second.Type));
-	}
-	LoadPaletteButtons(Icons, EDITMODE_AMMO);
-	Icons.clear();
-
-	// Load upgrades
-	for(const auto &Item : Stats.Items) {
-		if(Item.second.Type == _Object::UPGRADE)
-			Icons.push_back(_Brush(Item.first, Item.second.Name, ae::Assets.Textures[Item.second.IconID], Item.second.Color, Item.second.Type));
-	}
-	LoadPaletteButtons(Icons, EDITMODE_UPGRADES);
 	Icons.clear();
 
 	// Load weapons
@@ -1063,14 +1029,6 @@ void _EditorState::LoadPalettes() {
 			Icons.push_back(_Brush(Weapon.first, Weapon.second.Name, Texture, Weapon.second.Color, _Object::WEAPON));
 	}
 	LoadPaletteButtons(Icons, EDITMODE_WEAPONS);
-	Icons.clear();
-
-	// Load armor
-	for(const auto &Item : Stats.Items) {
-		if(Item.second.Type == _Object::ARMOR)
-			Icons.push_back(_Brush(Item.first, Item.second.Name, ae::Assets.Textures[Item.second.IconID], Item.second.Color, Item.second.Type));
-	}
-	LoadPaletteButtons(Icons, EDITMODE_ARMOR);
 	Icons.clear();
 }
 
@@ -1420,20 +1378,11 @@ void _EditorState::ProcessIcons(int Index, int Type) {
 		case ICON_ITEM:
 			ExecuteSwitchMode(EDITMODE_ITEMS);
 		break;
-		case ICON_AMMO:
-			ExecuteSwitchMode(EDITMODE_AMMO);
-		break;
-		case ICON_UPGRADE:
-			ExecuteSwitchMode(EDITMODE_UPGRADES);
-		break;
 		case ICON_MONSTER:
 			ExecuteSwitchMode(EDITMODE_MONSTERS);
 		break;
 		case ICON_WEAPON:
 			ExecuteSwitchMode(EDITMODE_WEAPONS);
-		break;
-		case ICON_ARMOR:
-			ExecuteSwitchMode(EDITMODE_ARMOR);
 		break;
 		case ICON_DELETE:
 			ExecuteDelete();

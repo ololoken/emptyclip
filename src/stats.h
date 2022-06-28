@@ -77,7 +77,7 @@ struct _MonsterTemplate {
 
 // Item template
 struct _ItemTemplate {
-	_ItemTemplate() : Color(1.0f), Type(-1) { }
+	_ItemTemplate() : Color(1.0f), Type(0) { }
 	_ItemTemplate(int Type) : Color(1.0f), Type(Type) { }
 
 	std::string Name;
