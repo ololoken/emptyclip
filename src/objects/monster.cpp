@@ -36,9 +36,9 @@ enum AITypes {
 // Constructor
 _Monster::_Monster(_MonsterTemplate &MonsterTemplate) :
 	_Entity(),
-	Player(nullptr) {
-
-	const std::unordered_map<std::string, _Value> &TemplateAttributes = MonsterTemplate.Attributes;
+	TemplateAttributes(MonsterTemplate.Attributes),
+	Player(nullptr),
+	ItemDrop(nullptr) {
 
 	Type = _Object::MONSTER;
 	Level = 1;
@@ -46,7 +46,6 @@ _Monster::_Monster(_MonsterTemplate &MonsterTemplate) :
 	// Monster stats
 	Name = MonsterTemplate.Name;
 	Color = MonsterTemplate.Color;
-	ItemGroupID = MonsterTemplate.ItemGroupID;
 	MovementSpeed = TemplateAttributes.at("movement_speed").Float;
 	Radius = TemplateAttributes.at("radius").Float;
 	Scale = TemplateAttributes.at("scale").Float;
@@ -75,6 +74,10 @@ _Monster::_Monster(_MonsterTemplate &MonsterTemplate) :
 
 	//AIType = TemplateAttributes.at("ai_type").Int;
 	Rotation = ae::GetRandomReal(0.0f, 359.0f);
+
+	// Item drops
+	if(MonsterTemplate.ItemDropID != "")
+		ItemDrop = &Stats.ItemDrops[MonsterTemplate.ItemDropID];
 
 	// Set weapon offsets
 	WeaponParticleOffset[0] = glm::vec2(0, 0);

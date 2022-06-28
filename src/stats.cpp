@@ -56,7 +56,7 @@ void _Stats::Close() {
 	Skills.clear();
 	Items.clear();
 	Weapons.clear();
-	ItemGroups.clear();
+	ItemDrops.clear();
 	Monsters.clear();
 }
 
@@ -451,7 +451,7 @@ void _Stats::LoadItemDrops(const std::string &Path) {
 	std::stringstream Buffer(Line);
 
 	// Get item drop names first
-	int ItemDrops = 0;
+	int Drops = 0;
 	std::vector<std::string> ItemDropNames;
 	std::string DropName;
 	while(std::getline(Buffer, DropName, '\t')) {
@@ -460,55 +460,54 @@ void _Stats::LoadItemDrops(const std::string &Path) {
 
 		ItemDropNames.push_back(DropName);
 
-		auto ItemGroupTableIterator = ItemGroups.find(DropName);
-		if(ItemGroupTableIterator == ItemGroups.end()) {
-			_ItemGroup ItemGroup;
-			ItemGroup.Total = 0;
-			ItemGroup.Quantity = 1;
-			ItemGroups[DropName] = ItemGroup;
+		auto ItemDropIterator = ItemDrops.find(DropName);
+		if(ItemDropIterator == ItemDrops.end()) {
+			_ItemDrop ItemDrop;
+			ItemDrop.Total = 0;
+			ItemDrops[DropName] = ItemDrop;
 		}
 
-		ItemDrops++;
+		Drops++;
 	}
 
 	// Read rest of data
 	while(!File.eof() && File.peek() != EOF) {
 
-		_ItemGroupEntry ItemGroupEntry;
-		File >> ItemGroupEntry.Type;
+		_ItemDropEntry ItemDropEntry;
+		File >> ItemDropEntry.Type;
 		File.ignore(1, '\t');
-		std::getline(File, ItemGroupEntry.ItemID, '\t');
+		std::getline(File, ItemDropEntry.ItemID, '\t');
 
 		// See if items exist
-		switch(ItemGroupEntry.Type) {
-			case -1:
+		switch(ItemDropEntry.Type) {
+			case _Object::NONE:
 			break;
 			case _Object::KEY:
 			case _Object::AMMO:
 			case _Object::UPGRADE:
 			case _Object::ARMOR:
 			case _Object::MEDKIT:
-				if(Items.find(ItemGroupEntry.ItemID) == Items.end())
-					throw std::runtime_error(std::string(__func__) + " - Cannot find: " + ItemGroupEntry.ItemID + " in " + Path);
+				if(Items.find(ItemDropEntry.ItemID) == Items.end())
+					throw std::runtime_error(std::string(__func__) + " - Cannot find: " + ItemDropEntry.ItemID + " in " + Path);
 			break;
 			case _Object::WEAPON:
-				if(Weapons.find(ItemGroupEntry.ItemID) == Weapons.end())
-					throw std::runtime_error(std::string(__func__) + " - Cannot find: " + ItemGroupEntry.ItemID + " in " + Path);
+				if(Weapons.find(ItemDropEntry.ItemID) == Weapons.end())
+					throw std::runtime_error(std::string(__func__) + " - Cannot find: " + ItemDropEntry.ItemID + " in " + Path);
 			break;
 			default:
-				throw std::runtime_error(std::string(__func__) + " - Bad item type: " + ItemGroupEntry.ItemID + " in " + Path);
+				throw std::runtime_error(std::string(__func__) + " - Bad item type: " + ItemDropEntry.ItemID + " in " + Path);
 			break;
 		}
 
-		// Add counts to item groups
-		for(int i = 0; i < ItemDrops; i++) {
-			File >> ItemGroupEntry.Count;
-			if(ItemGroupEntry.Count <= 0)
+		// Add counts to item drops
+		for(int i = 0; i < Drops; i++) {
+			File >> ItemDropEntry.Count;
+			if(ItemDropEntry.Count <= 0)
 				continue;
 
-			ItemGroups[ItemDropNames[i]].Total += ItemGroupEntry.Count;
-			ItemGroupEntry.Count = ItemGroups[ItemDropNames[i]].Total;
-			ItemGroups[ItemDropNames[i]].Entries.push_back(ItemGroupEntry);
+			ItemDrops[ItemDropNames[i]].Total += ItemDropEntry.Count;
+			ItemDropEntry.Count = ItemDrops[ItemDropNames[i]].Total;
+			ItemDrops[ItemDropNames[i]].Entries.push_back(ItemDropEntry);
 		}
 
 		File.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
@@ -541,9 +540,10 @@ void _Stats::LoadMonsters(const std::string &Path) {
 		std::getline(File, ColorID, '\t');
 		std::getline(File, WeaponParticlesID, '\t');
 		std::getline(File, MonsterTemplate.SoundGroupID, '\t');
-		std::getline(File, MonsterTemplate.ItemGroupID, '\t');
+		std::getline(File, MonsterTemplate.ItemDropID, '\t');
 
 		File
+			>> MonsterTemplate.Attributes["drop_count"].Int
 			>> MonsterTemplate.Attributes["max_health"].Int
 			>> MonsterTemplate.Attributes["max_health_level"].Int
 			>> MonsterTemplate.Attributes["damage_block"].Int
@@ -565,20 +565,12 @@ void _Stats::LoadMonsters(const std::string &Path) {
 
 		File.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
-		// Check for item group
-		if(MonsterTemplate.ItemGroupID != "" && ItemGroups.find(MonsterTemplate.ItemGroupID) == ItemGroups.end())
-			throw std::runtime_error(std::string(__func__) + " - Cannot find item group: '" + MonsterTemplate.ItemGroupID + "' in " + ID);
-
 		// Check for animation
 		if(ae::Assets.Animations.find(MonsterTemplate.AnimationID) == ae::Assets.Animations.end())
-			throw std::runtime_error(std::string(__func__) + " - Cannot find animation: '" + MonsterTemplate.AnimationID + "' in " + ID);
+			throw std::runtime_error(std::string(__func__) + " - Unknown animation_id: '" + MonsterTemplate.AnimationID + "' for " + ID);
 
 		// Set color
 		SetColor(MonsterTemplate.Color, ColorID);
-
-		// Check for samples
-		if(!GameAssets.IsSoundGroupLoaded(MonsterTemplate.SoundGroupID))
-			throw std::runtime_error(std::string(__func__) + " - Cannot find sample: '" + MonsterTemplate.SoundGroupID + "' in " + ID);
 
 		// Set particles
 		if(GameAssets.IsWeaponParticleTemplateLoaded(WeaponParticlesID))
@@ -586,9 +578,17 @@ void _Stats::LoadMonsters(const std::string &Path) {
 		else
 			MonsterTemplate.WeaponParticles = &BlankWeaponParticle;
 
+		// Check for sound group
+		if(!GameAssets.IsSoundGroupLoaded(MonsterTemplate.SoundGroupID))
+			throw std::runtime_error(std::string(__func__) + " - Unknown sound_group_id: '" + MonsterTemplate.SoundGroupID + "' for " + ID);
+
+		// Check for item group
+		if(MonsterTemplate.ItemDropID != "" && ItemDrops.find(MonsterTemplate.ItemDropID) == ItemDrops.end())
+			throw std::runtime_error(std::string(__func__) + " - Unknown itemdrop_id: '" + MonsterTemplate.ItemDropID + "' for " + ID);
+
 		// Check for duplicates
 		if(Stats.Monsters.find(ID) != Stats.Monsters.end())
-			throw std::runtime_error(std::string(__func__) + " - Duplicate entry: " + ID);
+			throw std::runtime_error(std::string(__func__) + " - Duplicate id: '" + ID + "'");
 
 		Monsters[ID] = MonsterTemplate;
 	}
@@ -713,26 +713,26 @@ int _Stats::GetValidSkillLevel(int Level) {
 }
 
 // Returns a random item identifier from an item group
-void _Stats::GetRandomDrop(const _ItemGroup *ItemGroup, _ObjectSpawn *ObjectSpawn) {
+void _Stats::GetRandomDrop(const _ItemDrop *ItemDrop, _ObjectSpawn *ObjectSpawn) {
 	ObjectSpawn->Type = -1;
 
 	// Get item group
-	size_t ItemGroupSize = ItemGroup->Entries.size();
-	if(ItemGroupSize == 0)
+	size_t ItemDropSize = ItemDrop->Entries.size();
+	if(ItemDropSize == 0)
 		return;
 
 	// Get total
-	if(ItemGroup->Total <= 0.0f)
+	if(ItemDrop->Total <= 0.0f)
 		return;
 
 	// Generate roll
-	float RandomNumber = ae::GetRandomReal(0.0, ItemGroup->Total);
+	float RandomNumber = ae::GetRandomReal(0.0, ItemDrop->Total);
 
 	// Get item
-	for(size_t i = 0; i < ItemGroupSize; i++) {
-		if(RandomNumber <= ItemGroup->Entries[i].Count) {
-			ObjectSpawn->Type = ItemGroup->Entries[i].Type;
-			ObjectSpawn->ID = ItemGroup->Entries[i].ItemID;
+	for(size_t i = 0; i < ItemDropSize; i++) {
+		if(RandomNumber <= ItemDrop->Entries[i].Count) {
+			ObjectSpawn->Type = ItemDrop->Entries[i].Type;
+			ObjectSpawn->ID = ItemDrop->Entries[i].ItemID;
 			return;
 		}
 	}

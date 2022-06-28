@@ -803,18 +803,23 @@ void _PlayState::UseObject(_Item *NearbyItem) {
 
 // Creates a random item from an entity
 void _PlayState::CreateItemDrop(const _Entity *Entity) {
-	if(Entity->ItemGroupID == "")
+	if(Entity->Type != _Object::MONSTER)
 		return;
 
-	_ItemGroup *ItemGroup = &Stats.ItemGroups[Entity->ItemGroupID];
-	for(int i = 0; i < ItemGroup->Quantity; i++) {
+	// Get monster
+	_Monster *Monster = (_Monster *)Entity;
+	if(!Monster->ItemDrop)
+		return;
+
+	// Roll for items
+	for(int i = 0; i < Monster->TemplateAttributes.at("drop_count").Int; i++) {
 
 		// Spawn random item
 		_ObjectSpawn ObjectSpawn;
-		ObjectSpawn.Position = _Map::GenerateRandomPointInCircle(PLAYER_RADIUS) + Entity->Position;
+		ObjectSpawn.Position = _Map::GenerateRandomPointInCircle(PLAYER_RADIUS) + Monster->Position;
 
 		// Roll for drop
-		Stats.GetRandomDrop(ItemGroup, &ObjectSpawn);
+		Stats.GetRandomDrop(Monster->ItemDrop, &ObjectSpawn);
 		SpawnObject(&ObjectSpawn, true);
 	}
 }

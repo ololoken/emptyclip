@@ -23,6 +23,7 @@
 struct _MonsterTemplate;
 struct _WeaponParticleTemplate;
 class _Player;
+struct _ItemDrop;
 
 // Classes
 class _Monster : public _Entity {
@@ -35,8 +36,12 @@ class _Monster : public _Entity {
 		void Update(double FrameTime) override;
 		const _ParticleTemplate *GetWeaponParticle(int Index) const override;
 
+		// Object
+		const std::unordered_map<std::string, _Value> &TemplateAttributes;
+
 		// AI
 		const _Player *Player;
+		const _ItemDrop *ItemDrop;
 
 	private:
 

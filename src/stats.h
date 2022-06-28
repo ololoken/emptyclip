@@ -42,10 +42,10 @@ struct _Skill {
 	int Data[SKILL_COUNT];
 };
 
-// A single entry for an item group
-struct _ItemGroupEntry {
-	_ItemGroupEntry() { }
-	_ItemGroupEntry(const std::string &ItemID, float Count, int Type) :
+// A single entry for an item drop
+struct _ItemDropEntry {
+	_ItemDropEntry() { }
+	_ItemDropEntry(const std::string &ItemID, float Count, int Type) :
 		ItemID(ItemID),
 		Count(Count),
 		Type(Type) { }
@@ -55,10 +55,9 @@ struct _ItemGroupEntry {
 	int Type;
 };
 
-// Item group information
-struct _ItemGroup {
-	std::vector<_ItemGroupEntry> Entries;
-	int Quantity;
+// Item drop information
+struct _ItemDrop {
+	std::vector<_ItemDropEntry> Entries;
 	float Total;
 };
 
@@ -69,7 +68,7 @@ struct _MonsterTemplate {
 	std::string Name;
 	std::string AnimationID;
 	std::string SoundGroupID;
-	std::string ItemGroupID;
+	std::string ItemDropID;
 	_WeaponParticleTemplate *WeaponParticles;
 	glm::vec4 Color;
 
@@ -138,12 +137,12 @@ class _Stats {
 		int GetSkill(int Level, int Type) const { return Skills[Level].Data[Type]; }
 		float GetSkillBonusMultiplier(int Level, int Type) const { return (100 + Skills[Level].Data[Type]) * 0.01f; }
 
-		void GetRandomDrop(const _ItemGroup *ItemGroup, _ObjectSpawn *ObjectSpawn);
+		void GetRandomDrop(const _ItemDrop *ItemDrop, _ObjectSpawn *ObjectSpawn);
 
 		std::unordered_map<std::string, std::string> Strings;
 		std::unordered_map<std::string, _ItemTemplate> Items;
 		std::unordered_map<std::string, _WeaponTemplate> Weapons;
-		std::unordered_map<std::string, _ItemGroup> ItemGroups;
+		std::unordered_map<std::string, _ItemDrop> ItemDrops;
 		std::unordered_map<std::string, _MonsterTemplate> Monsters;
 		_Weapon *WeaponFists;
 

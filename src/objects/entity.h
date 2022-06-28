@@ -175,7 +175,6 @@ class _Entity : public _Object {
 		int AttackRequestType;
 
 		// Monsters
-		std::string ItemGroupID;
 		int64_t ExperienceGiven;
 		glm::vec2 TargetPosition;
 

@@ -1,2 +1,7 @@
-type	id	none
--1	none	1
+type	id	monster	boss
+0	none	88	0
+3	key_boss	0	1
+4	ammo_pistol	3	0
+4	ammo_shells	3	0
+4	ammo_rifle	3	0
+8	medkit	3	0
