@@ -969,44 +969,6 @@ bool _Map::IsVisible(const glm::vec2 &Start, const glm::vec2 &End) const {
 	return true;
 }
 
-// Determines if a rectangle can travel to a position without hitting a wall
-bool _Map::IsVisibleWithBounds(const glm::vec2 &Start, const glm::vec2 &End, float BoundSize) const {
-
-	// Get x components of the starting corners
-	glm::vec2 LeftStartPosition, RightStartPosition;
-	LeftStartPosition.x = Start.x - BoundSize;
-	RightStartPosition.x = Start.x + BoundSize;
-
-	// Get direction
-	glm::vec2 Direction(End - Start);
-
-	// Get y components of the starting corners
-	if((Direction.x < 0 && Direction.y < 0) || (Direction.x >= 0 && Direction.y >= 0)) {
-		LeftStartPosition.y = Start.y + BoundSize;
-		RightStartPosition.y = Start.y - BoundSize;
-	}
-	else {
-		LeftStartPosition.y = Start.y - BoundSize;
-		RightStartPosition.y = Start.y + BoundSize;
-	}
-
-	// Get ending positions
-	glm::vec2 LeftEndPosition = LeftStartPosition + Direction;
-	glm::vec2 RightEndPosition = RightStartPosition + Direction;
-
-	// Check the first corner
-	if(IsVisible(LeftStartPosition, LeftEndPosition)) {
-
-		// No wall, so check the second corner
-		if(IsVisible(RightStartPosition, RightEndPosition))
-			return true;
-		else
-			return false;
-	}
-	else
-		return false;
-}
-
 // Return an object at a given position
 void _Map::GetSelectedObject(const glm::vec2 &Position, float RadiusSquared, _ObjectSpawn **Object, size_t *Index) {
 

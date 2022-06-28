@@ -46,7 +46,7 @@ void _GameAssets::Close() {
 }
 
 // Load sounds
-void _GameAssets::LoadSounds(const std::string &Path, const std::string &SamplePath) {
+void _GameAssets::LoadSounds(const std::string &Path, const std::string &SoundPath) {
 
 	// Load file
 	std::ifstream File(Path, std::ios::in);
@@ -64,7 +64,7 @@ void _GameAssets::LoadSounds(const std::string &Path, const std::string &SampleP
 		std::getline(File, SoundFile, '\t');
 
 		// Load sound
-		ae::_Sound *Sound = ae::Audio.LoadSound(SamplePath + SoundFile);
+		ae::_Sound *Sound = ae::Audio.LoadSound(SoundPath + SoundFile);
 
 		// Read parameters
 		float Volume;
@@ -83,9 +83,9 @@ void _GameAssets::LoadSounds(const std::string &Path, const std::string &SampleP
 	File.close();
 }
 
-// Loads the attack samples table
+// Load sound groups
 void _GameAssets::LoadSoundGroups(const std::string &Path) {
-	_SoundGroup SampleTemplate;
+	_SoundGroup SoundGroup;
 
 	// Load file
 	std::ifstream File(Path, std::ios::in);
@@ -114,14 +114,14 @@ void _GameAssets::LoadSoundGroups(const std::string &Path) {
 			if(SoundID != "" && ae::Assets.Sounds.find(SoundID) == ae::Assets.Sounds.end())
 				throw std::runtime_error(std::string(__func__) + " - Cannot find: " + SoundID);
 
-			SampleTemplate.SoundID[i] = SoundID;
+			SoundGroup.SoundID[i] = SoundID;
 		}
 
 		// Check for duplicates
 		if(SoundGroups.find(ID) != SoundGroups.end())
 			throw std::runtime_error(std::string(__func__) + " - Duplicate entry: " + ID);
 
-		SoundGroups[ID] = SampleTemplate;
+		SoundGroups[ID] = SoundGroup;
 	}
 
 	File.close();

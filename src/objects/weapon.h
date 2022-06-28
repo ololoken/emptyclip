@@ -52,7 +52,7 @@ class _Weapon : public _Item {
 		void SetAmmo(int Value);
 
 		float GetBonusMultiplier(int Type) const { return (100 + Bonus[Type]) * 0.01f; }
-		const std::string &GetSample(int SampleType) const;
+		const std::string &GetSound(int SoundType) const;
 		bool IsMelee() const { return Attributes.at("weapon_type").Int == WEAPON_MELEE; }
 		virtual std::string GetTypeAsString() const override { return ToString(Attributes.at("weapon_type").Int) + " class weapon"; }
 		static std::string ToString(int Type);

@@ -35,13 +35,13 @@ enum FireRateType {
 	FIRERATE_AUTO
 };
 
-// Types of weapon samples
-enum WeaponSampleTypes {
-	WEAPON_FIRESAMPLE,
-	WEAPON_MISSSAMPLE,
-	WEAPON_RICOCHETSAMPLE,
-	WEAPON_EMPTYSAMPLE,
-	WEAPON_RELOADSAMPLE
+// Types of weapon sounds
+enum WeaponSoundTypes {
+	WEAPONSOUND_FIRE,
+	WEAPONSOUND_MISS,
+	WEAPONSOUND_RICOCHET,
+	WEAPONSOUND_EMPTY,
+	WEAPONSOUND_RELOAD
 };
 
 // Types of weapon particles
@@ -53,7 +53,7 @@ enum WeaponParticleTypes {
 	WEAPONPARTICLE_TYPES
 };
 
-// Types of samples
+// Types of sounds
 enum SoundTypes {
 	SOUND_FIRE,
 	SOUND_TRIGGERDOWN,

@@ -406,9 +406,9 @@ void _Stats::LoadWeapons(const std::string &Path) {
 		// Set color
 		SetColor(WeaponTemplate.Color, ColorID);
 
-		// Check for attack sample
+		// Check for attack sound
 		if(!GameAssets.IsSoundGroupLoaded(SoundGroupID))
-			throw std::runtime_error(std::string(__func__) + " - Cannot find sample: " + SoundGroupID);
+			throw std::runtime_error(std::string(__func__) + " Unknown sound group: " + SoundGroupID);
 
 		// Set sound ids
 		_SoundGroup *SoundGroupTemplate = GameAssets.GetSoundGroupTemplate(SoundGroupID);
@@ -652,13 +652,11 @@ _Weapon *_Stats::CreateWeapon(const std::string &ID, int Level, int Quality, con
 // Creates a monster
 _Monster *_Stats::CreateMonster(const std::string &ID, const glm::vec2 &Position) {
 	_MonsterTemplate &MonsterTemplate = Monsters[ID];
-	_SoundGroup *AttackSample = GameAssets.GetSoundGroupTemplate(MonsterTemplate.SoundGroupID);
 
 	// Creates a monster
-	_Monster *Monster = new _Monster(MonsterTemplate, Position);
+	_Monster *Monster = new _Monster(MonsterTemplate);
+	Monster->SetPosition(Position);
 	Monster->Animation->Reels = ae::Assets.Animations[MonsterTemplate.AnimationID];
-	for(int i = 0; i < SOUND_TYPES; i++)
-		Monster->Samples[i] = AttackSample->SoundID[i];
 
 	return Monster;
 }

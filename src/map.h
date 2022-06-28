@@ -180,7 +180,6 @@ class _Map {
 		void CheckBulletCollisions(const glm::vec2 &Position, const glm::vec2 &Direction, _Hit &Hit, int GridType, bool CheckObjects) const;
 		float RayObjectIntersection(const glm::vec2 &Origin, const glm::vec2 &Direction, const _Object *Object) const;
 		bool IsVisible(const glm::vec2 &Start, const glm::vec2 &End) const;
-		bool IsVisibleWithBounds(const glm::vec2 &Start, const glm::vec2 &End, float BoundSize) const;
 		void AddObjectToGrid(_Object *Object, int Type);
 		void RemoveObjectFromGrid(_Object *Object, int Type);
 

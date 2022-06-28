@@ -19,103 +19,25 @@
 
 // Libraries
 #include <objects/entity.h>
-#include <list>
-#include <vector>
-
-// Constants
-const glm::vec2 MONSTER_WEAPONOFFSET    = glm::vec2(32.0f / 64.0f - 0.5f, -0.5f);
-
-const float MONSTER_SIDERANGE 	        = 0.80f;
-const float MONSTER_BACKRANGE 	        = 0.50f;
-
-const int MONSTER_STOP			        = 0x1;
-const int MONSTER_MOVE			        = 0x2;
-const int MONSTER_RETREAT		        = 0x4;
-const int MONSTER_INVESTIGATE	        = 0x8;
-const int MONSTER_EXPLORE		        = 0x10;
-const int MONSTER_WANDER		        = 0x20;
-const int MONSTER_SEARCH		        = 0x40;
-const int MONSTER_ATTACK		        = 0x80;
-const int MONSTER_FOLLOW		        = 0x100;
-const int MONSTER_LOOK			        = 0x200;
-
-const int AI_STOPPED			        = 0x1;
-const int AI_FOLLOWING_PLAYER	        = 0x2;
-const int AI_FOLLOWING_PATH		        = 0x4;
-const int AI_MOVING				        = 0x8;
-const int AI_RETREATING			        = 0x10;
-const int AI_INVESTIGATING		        = 0x20;
-const int AI_EXPLORING			        = 0x40;
-const int AI_WANDERING			        = 0x80;
-const int AI_ATTACKING			        = 0x100;
-const int AI_LOOKING			        = 0x200;
 
 struct _MonsterTemplate;
 struct _WeaponParticleTemplate;
 class _Player;
-
-enum PersonalityTypes {
-	PERSONALITY_AGGRESSOR, 	// 0 Likes to be on the offensive, but will retreat if needed			ATTACK, INVESTIGATE
-	PERSONALITY_COWARD, 	// 1 Avoids confrontation as much as possible							RETREAT
-	PERSONALITY_CURIOUS, 	// 2 Wanderer, searcher													ATTACK, WANDER, INVESTIGATE
-	PERSONALITY_GUARD, 		// 3 Protects their point of origin										ATTACK, INVESTIGATE
-	PERSONALITY_IMMOVABLE, 	// 4 Will never move from spot, but will protect it						ATTACK
-	PERSONALITY_KAMIKAZE, 	// 5 Extremely aggressive, doesn't care if it dies						ATTACK, INVESTIGATE
-	PERSONALITY_MINDLESS, 	// 6 Moves aimlessly, may attack if near player, but may not. basically has no goal	WANDER
-	PERSONALITY_LEMMING, 	// 7 Seeks to do whatever the group is doing							ATTACK, GROUP
-	PERSONALITY_LOOKOUT, 	// 8 Looks around, pursues player if seen, alerts others				ATTACK, LOOK, INVESTIGATE
-	PERSONALITY_SPY, 		// 9 Seeks out player, when found returns to others and then they all go after the player	SEARCH, RETREAT
-	PERSONALITY_TREASURE,	// 10 Treasure chest (does nothing)
-	PERSONALITY_COUNT,
-};
 
 // Classes
 class _Monster : public _Entity {
 
 	public:
 
-		_Monster();
-		_Monster(_MonsterTemplate &MonsterTemplate, const glm::vec2 &Position);
-		~_Monster();
+		_Monster(_MonsterTemplate &MonsterTemplate);
+		~_Monster() override { }
 
-		bool CalcPath(const glm::vec2 &Goal);
-		bool VisiblePath(const glm::vec2 &Goal);
-
-		bool Passed(const glm::vec2 &Pos);
 		void UpdateMonster(double FrameTime, _Player *Player);
-		bool IsVisible(const glm::vec2 &TargetPosition);
-		bool InRange(const glm::vec2 &Pos);
 
-		bool Investigate(_Player *Player, bool PlayerVisible);
-		void Patrol();
-		void Wander();
-		void Explore();
-		bool MovePath();
-		void Look();
-		void Retreat(_Player *Player, bool PlayerVisible);
-		void Follow(_Player *Player, bool PlayerVisible);
-
-		bool CheckGoal();
-
-		const _ParticleTemplate *GetWeaponParticle(int Index) const;
-		int GetBehavior();
-
-		glm::vec2 ReturnPosition;
+		const _ParticleTemplate *GetWeaponParticle(int Index) const override;
 
 	private:
 
-		float AITimer;
-
-		int PersonalityType;
-		std::list<int> BehaviorList;
-		std::list<float> BehaviorWait;
-		float BehaviorTime;
-		int BaseBehavior;
-		int CurrentActions;
-
 		// Viewing ranges
-		float ViewRangeFrontSquared;
-		float ViewRangeSideSquared;
-		float ViewRangeBackSquared;
 		_WeaponParticleTemplate *WeaponParticles;
 };

@@ -30,7 +30,7 @@ class _Entity;
 class _Player;
 struct _ParticleTemplate;
 
-// Stores information about a collection of sound samples used for attacking
+// Stores a list of sounds used for attacking
 struct _SoundGroup {
 	_SoundGroup() { }
 
@@ -47,7 +47,7 @@ class _GameAssets {
 
 		void LoadSoundGroups(const std::string &Path);
 		void LoadParticles(const std::string &Path);
-		void LoadSounds(const std::string &Path, const std::string &SamplePath);
+		void LoadSounds(const std::string &Path, const std::string &SoundPath);
 
 		void LoadWeaponParticles(const std::string &Path);
 		void LoadMonsterAnimation();

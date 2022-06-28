@@ -120,7 +120,7 @@ class _Entity : public _Object {
 		void AddGoal(const glm::vec2 &Goal) { Goals.push_front(Goal); }
 		void PopGoal() { if(!Goals.empty()) Goals.pop_front(); }
 
-		virtual const std::string &GetSample(int Type) const { return Samples[Type]; }
+		virtual const std::string &GetSound(int Type) const { return Sounds[Type]; }
 		glm::vec2 WallInPath(const glm::vec2 &Delta) const;
 
 		void StartTriggerDownAudio();
@@ -131,7 +131,7 @@ class _Entity : public _Object {
 		glm::vec2 WeaponParticleOffset[WEAPON_TYPES];
 
 		// Audio
-		std::string Samples[SOUND_TYPES];
+		std::string Sounds[SOUND_TYPES];
 		ae::_AudioSource *TriggerDownAudio;
 
 		// Movement

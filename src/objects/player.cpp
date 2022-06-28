@@ -60,11 +60,11 @@ _Player::_Player() {
 	// Set animation
 	Animation->Reels = ae::Assets.Animations["player"];
 
-	// Set samples
-	_SoundGroup *AttackSample = GameAssets.GetSoundGroupTemplate("player");
+	// Set sounds
+	_SoundGroup *SoundGroup = GameAssets.GetSoundGroupTemplate("player");
 	for(int i = 0; i < SOUND_TYPES; i++) {
-		if(AttackSample)
-			Samples[i] = AttackSample->SoundID[i];
+		if(SoundGroup)
+			Sounds[i] = SoundGroup->SoundID[i];
 	}
 
 	Reset();
@@ -221,7 +221,7 @@ void _Player::UpdateAnimation(double FrameTime, bool PlaySound) {
 
 	// Play move sound on first and last frame of leg animation
 	if(PlaySound && LastFrame != LegAnimation->Frame && (LegAnimation->Frame == 0 || LegAnimation->Frame == LegAnimation->Reels[LegAnimation->Reel]->EndFrame))
-		ae::Audio.PlaySound(ae::Assets.Sounds[GetSample(SOUND_MOVE)]);
+		ae::Audio.PlaySound(ae::Assets.Sounds[GetSound(SOUND_MOVE)]);
 
 	switch(MoveState) {
 		case MOVE_FORWARD:
@@ -761,7 +761,7 @@ void _Player::StartReloading() {
 		return;
 
 	// Play sound
-	ae::Audio.PlaySound(ae::Assets.Sounds[GetSample(SOUND_RELOAD)]);
+	ae::Audio.PlaySound(ae::Assets.Sounds[GetSound(SOUND_RELOAD)]);
 
 	// Start timer
 	ReloadTimer = 0;
@@ -1031,15 +1031,15 @@ void _Player::IncurDeathPenalty() {
 	Reloading = SwitchingWeapons = false;
 }
 
-// Returns a sample index
-const std::string &_Player::GetSample(int SampleType) const {
+// Returns a sound index
+const std::string &_Player::GetSound(int SoundType) const {
 
-	if(AttackRequestType == 0 && SampleType <= SOUND_HIT && HasMainHand())
-		return GetMainHand()->GetSample(SampleType);
-	else if(AttackRequestType == 1 && SampleType <= SOUND_HIT && HasMelee())
-		return GetMelee()->GetSample(SampleType);
+	if(AttackRequestType == 0 && SoundType <= SOUND_HIT && HasMainHand())
+		return GetMainHand()->GetSound(SoundType);
+	else if(AttackRequestType == 1 && SoundType <= SOUND_HIT && HasMelee())
+		return GetMelee()->GetSound(SoundType);
 	else
-		return Samples[SampleType];
+		return Sounds[SoundType];
 }
 
 // Returns the weapon's particle template

@@ -126,7 +126,7 @@ class _Player : public _Entity {
 		_Item *GetArmor() const  { return Inventory[INVENTORY_ARMOR]; }
 		int GetFireRate(int AttackType) const { return FireRate[AttackType]; }
 		int GetInventoryMaxStack() const;
-		const std::string &GetSample(int Type) const override;
+		const std::string &GetSound(int SoundType) const override;
 
 		void AdjustLegDirection(float Destination);
 		void SetLegAnimationPlayMode(int Mode) override;
