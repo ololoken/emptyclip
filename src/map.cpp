@@ -41,13 +41,13 @@
 // Initialize
 _Map::_Map() :
 	Camera(nullptr),
+	ObjectManager(new _ObjectManager()),
 	MapType(MAPTYPE_CAMPAIGN),
 	Width(MAP_WIDTH),
 	Height(MAP_HEIGHT),
 	Level(1),
 	Filename(""),
 	Data(nullptr),
-	ObjectManager(new _ObjectManager()),
 	AmbientLight(0.5f, 0.5f, 0.5f, 1.0f),
 	OldAmbientLight(0.5f, 0.5f, 0.5f, 1.0f),
 	AmbientLightBlendFactor(1.0f),
@@ -1326,15 +1326,17 @@ void _Map::SwapBlockTextures(int Layer, int Index) {
 }
 
 // Renders the floor
-void _Map::RenderFloors() {
+int _Map::RenderFloors() {
 	if(!Camera)
-		return;
+		return 0;
 
 	// Draw base layer
 	ae::Graphics.SetProgram(ae::Assets.Programs["pos_uv"]);
 	ae::Graphics.SetColor(glm::vec4(1.0f));
 	ae::Graphics.SetDepthTest(false);
 	ae::Graphics.SetDepthMask(false);
+
+	int Count = 0;
 	for(std::size_t i = 0; i < Blocks[MAPLAYER_BASE].size(); i++) {
 		_Block *Block = &Blocks[MAPLAYER_BASE][i];
 
@@ -1345,15 +1347,18 @@ void _Map::RenderFloors() {
 			Draw = Camera->IsAABBInView(Bounds);
 		}
 
-		if(Draw) {
-			ae::Graphics.DrawRepeatable(
-				glm::vec3(Block->Start.x, Block->Start.y, Block->MinZ + MAP_LAYEROFFSET * i),
-				glm::vec3(Block->End.x + 1.0f, Block->End.y + 1.0f, Block->MinZ + MAP_LAYEROFFSET * i),
-				Block->Texture,
-				Block->Rotation,
-				Block->ScaleX
-			);
-		}
+		if(!Draw)
+			continue;
+
+		ae::Graphics.DrawRepeatable(
+			glm::vec3(Block->Start.x, Block->Start.y, Block->MinZ + MAP_LAYEROFFSET * i),
+			glm::vec3(Block->End.x + 1.0f, Block->End.y + 1.0f, Block->MinZ + MAP_LAYEROFFSET * i),
+			Block->Texture,
+			Block->Rotation,
+			Block->ScaleX
+		);
+
+		Count++;
 	}
 
 	// Draw floor layers 0-2
@@ -1371,15 +1376,18 @@ void _Map::RenderFloors() {
 					Draw = Camera->IsAABBInView(Bounds);
 				}
 
-				if(Draw) {
-					ae::Graphics.DrawRepeatable(
-						glm::vec3(Block->Start.x, Block->Start.y, Block->MinZ + MAP_LAYEROFFSET * i),
-						glm::vec3(Block->End.x + 1.0f, Block->End.y + 1.0f, Block->MinZ + MAP_LAYEROFFSET * i),
-						Block->Texture,
-						Block->Rotation,
-						Block->ScaleX
-					);
-				}
+				if(!Draw)
+					continue;
+
+				ae::Graphics.DrawRepeatable(
+					glm::vec3(Block->Start.x, Block->Start.y, Block->MinZ + MAP_LAYEROFFSET * i),
+					glm::vec3(Block->End.x + 1.0f, Block->End.y + 1.0f, Block->MinZ + MAP_LAYEROFFSET * i),
+					Block->Texture,
+					Block->Rotation,
+					Block->ScaleX
+				);
+
+				Count++;
 			}
 			else {
 				ae::Graphics.DrawCube(
@@ -1387,15 +1395,19 @@ void _Map::RenderFloors() {
 					glm::vec3(Block->End.x - Block->Start.x + 1.0f, Block->End.y - Block->Start.y + 1.0f, Block->MaxZ - Block->MinZ),
 					Block->Texture
 				);
+
+				Count++;
 			}
 		}
 	}
+
+	return Count;
 }
 
 // Renders the walls
-void _Map::RenderWalls() {
+int _Map::RenderWalls() {
 	if(!Camera)
-		return;
+		return 0;
 
 	// Set up graphics
 	ae::Graphics.SetProgram(ae::Assets.Programs["pos_uv"]);
@@ -1405,6 +1417,7 @@ void _Map::RenderWalls() {
 	ae::Graphics.SetCullFace(true);
 
 	// Draw walls
+	int Count = 0;
 	for(std::size_t i = 0; i < Blocks[MAPLAYER_WALL].size(); i++) {
 		_Block *Block = &Blocks[MAPLAYER_WALL][i];
 
@@ -1426,22 +1439,28 @@ void _Map::RenderWalls() {
 			glm::vec3(Block->End.x - Block->Start.x + 1.0f, Block->End.y - Block->Start.y + 1.0f, Block->MaxZ - Block->MinZ),
 			Block->Texture
 		);
+
+		Count++;
 	}
 
 	ae::Graphics.SetCullFace(false);
+
+	return Count;
 }
 
 // Render flat walls
-void _Map::RenderFlatWalls() {
+int _Map::RenderFlatWalls() {
 
 	ae::Graphics.SetProgram(ae::Assets.Programs["pos_uv"]);
 	ae::Graphics.SetColor(glm::vec4(1.0f));
 	ae::Graphics.SetDepthMask(false);
 	ae::Graphics.SetDepthTest(true);
 
+	int Count = 0;
 	for(size_t i = 0; i < Blocks[MAPLAYER_FLAT].size(); i++) {
 		_Block *Block = &Blocks[MAPLAYER_FLAT][i];
 
+		// Check bounds
 		bool Draw = true;
 		if(Block->MinZ >= 0) {
 			glm::vec4 Bounds;
@@ -1449,15 +1468,21 @@ void _Map::RenderFlatWalls() {
 			Draw = Camera->IsAABBInView(Bounds);
 		}
 
-		if(Draw) {
-			ae::Graphics.DrawWall(
-				glm::vec3(Block->Start.x, Block->Start.y, Block->MinZ),
-				glm::vec3(Block->End.x - Block->Start.x + 1.0f, Block->End.y - Block->Start.y + 1.0f, Block->MaxZ - Block->MinZ),
-				Block->Rotation,
-				Block->Texture
-			);
-		}
+		if(!Draw)
+			continue;
+
+		// Draw
+		ae::Graphics.DrawWall(
+			glm::vec3(Block->Start.x, Block->Start.y, Block->MinZ),
+			glm::vec3(Block->End.x - Block->Start.x + 1.0f, Block->End.y - Block->Start.y + 1.0f, Block->MaxZ - Block->MinZ),
+			Block->Rotation,
+			Block->Texture
+		);
+
+		Count++;
 	}
+
+	return Count;
 }
 
 // Draws the events
@@ -1485,9 +1510,9 @@ void _Map::RenderEvents(std::vector<const ae::_Texture *> &Textures) {
 }
 
 // Renders the foreground tiles
-void _Map::RenderForeground() {
+int _Map::RenderForeground() {
 	if(!Camera)
-		return;
+		return 0;
 
 	// Set up graphics
 	ae::Graphics.SetProgram(ae::Assets.Programs["pos_uv"]);
@@ -1496,8 +1521,11 @@ void _Map::RenderForeground() {
 	ae::Graphics.SetDepthTest(true);
 
 	// Draw foreground
+	int Count = 0;
 	for(std::size_t i = 0; i < Blocks[6].size(); i++) {
 		_Block *Block = &Blocks[6][i];
+
+		// Check bounds
 		bool Draw = true;
 		if(Block->MinZ >= 0) {
 			glm::vec4 Bounds;
@@ -1505,16 +1533,22 @@ void _Map::RenderForeground() {
 			Draw = Camera->IsAABBInView(Bounds);
 		}
 
-		if(Draw) {
-			ae::Graphics.DrawRepeatable(
-				glm::vec3(Block->Start.x, Block->Start.y, Block->MaxZ + MAP_LAYEROFFSET),
-				glm::vec3(Block->End.x + 1.0f, Block->End.y + 1.0f, Block->MaxZ + MAP_LAYEROFFSET),
-				Block->Texture,
-				Block->Rotation,
-				Block->ScaleX
-			);
-		}
+		if(!Draw)
+			continue;
+
+		// Draw
+		ae::Graphics.DrawRepeatable(
+			glm::vec3(Block->Start.x, Block->Start.y, Block->MaxZ + MAP_LAYEROFFSET),
+			glm::vec3(Block->End.x + 1.0f, Block->End.y + 1.0f, Block->MaxZ + MAP_LAYEROFFSET),
+			Block->Texture,
+			Block->Rotation,
+			Block->ScaleX
+		);
+
+		Count++;
 	}
+
+	return Count;
 }
 
 // Render entities and items
@@ -1637,11 +1671,6 @@ void _Map::AddMinimapLayers() {
 			MinimapLayers.push_back(MinimapLayer);
 		}
 	}
-}
-
-// Add object to render list
-void _Map::AddRenderList(_Object *Object, int Layer) {
-	ObjectManager->AddRenderList(Object, Layer);
 }
 
 // Generates a random point inside of a circle

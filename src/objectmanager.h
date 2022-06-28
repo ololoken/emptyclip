@@ -42,13 +42,9 @@ class _ObjectManager {
 		void RemoveObject(_Object *Object);
 		void ClearObjects();
 
-		void AddRenderList(_Object *Object, int Layer);
+		std::list<_Object *> Objects;
+		std::vector<_Object *> RenderList[3];
 
 	private:
 
-		// Objects
-		std::list<_Object *> Objects;
-
-		// Rendering
-		std::vector<_Object *> ItemRenderList[3];
 };

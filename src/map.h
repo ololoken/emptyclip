@@ -193,13 +193,12 @@ class _Map {
 		void SetAmbientLight(const glm::vec4 &Color) { OldAmbientLight = AmbientLight; AmbientLight = Color; }
 		void SetAmbientLightChangePeriod(double Value) { AmbientLightPeriod = Value; AmbientLightTimer = AmbientLightBlendFactor = 0.0; }
 
-		void RenderFloors();
-		void RenderWalls();
-		void RenderFlatWalls();
+		int RenderFloors();
+		int RenderWalls();
+		int RenderFlatWalls();
 		void RenderObjects(double BlendFactor);
 		int RenderParticles(int Type);
-		void RenderForeground();
-		void RenderLights(const glm::vec2 &PlayerPosition);
+		int RenderForeground();
 		void RenderEvents(std::vector<const ae::_Texture *> &Textures);
 		void RenderGrid(int Mode);
 		void DrawMinimap();
@@ -247,11 +246,11 @@ class _Map {
 
 		bool CheckMinimapBounds(const glm::vec4 &Bounds, float Size);
 		void AddMinimapLayers();
-		void AddRenderList(_Object *Object, int Layer);
 		static glm::vec2 GenerateRandomPointInCircle(float Radius);
 
-		// Attributes
+		// Objects
 		ae::_Camera *Camera;
+		std::unique_ptr<_ObjectManager> ObjectManager;
 
 		// Minimap
 		std::vector<_MinimapLayer> MinimapLayers;
@@ -274,7 +273,6 @@ class _Map {
 		std::vector<_Event *> CheckpointEvents;
 
 		// Objects
-		std::unique_ptr<_ObjectManager> ObjectManager;
 		std::list<_Object *> Objects;
 		std::vector<_ObjectSpawn *> ObjectSpawns;
 		std::vector<_Particle *> Particles;

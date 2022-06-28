@@ -18,6 +18,11 @@
 #include <states/play.h>
 #include <states/editor.h>
 #include <states/null.h>
+#include <objects/entity.h>
+#include <objects/player.h>
+#include <objects/monster.h>
+#include <objects/particle.h>
+#include <objects/weapon.h>
 #include <ae/actions.h>
 #include <ae/camera.h>
 #include <ae/graphics.h>
@@ -27,11 +32,8 @@
 #include <ae/console.h>
 #include <ae/light.h>
 #include <ae/audio.h>
-#include <objects/entity.h>
-#include <objects/player.h>
-#include <objects/monster.h>
-#include <objects/particle.h>
-#include <objects/weapon.h>
+#include <ae/font.h>
+#include <objectmanager.h>
 #include <framework.h>
 #include <menu.h>
 #include <constants.h>
@@ -58,6 +60,7 @@ _PlayState::_PlayState() {
 	TestMode = false;
 	DevMode = false;
 	GodMode = false;
+	DebugMode = false;
 	FromEditor = false;
 }
 
@@ -157,6 +160,12 @@ bool _PlayState::HandleAction(int InputType, std::size_t Action, int Value) {
 	// Ignore actions when console is open
 	if(Framework.Console->IsOpen())
 		return false;
+
+	// Handle console toggling
+	if(Action == Action::MISC_DEBUG) {
+		DebugMode = !DebugMode;
+		return false;
+	}
 
 	if(!Player || IsPaused())
 		return false;
@@ -400,7 +409,7 @@ void _PlayState::Update(double FrameTime) {
 	Map->Update(FrameTime);
 	UpdateMonsters(FrameTime);
 	Particles->Update(FrameTime);
-	Map->AddRenderList(Player, 1);
+	Map->ObjectManager->RenderList[1].push_back(Player);
 
 	// Add player to minimap
 	_MinimapLayer MinimapLayer;
@@ -488,7 +497,7 @@ void _PlayState::Render(double BlendFactor) {
 	glUniformMatrix4fv(ae::Assets.Programs["text"]->ViewProjectionTransformID, 1, GL_FALSE, glm::value_ptr(Camera->Transform));
 
 	// Draw the floor
-	Map->RenderFloors();
+	int BlockRenderCount = Map->RenderFloors();
 
 	// Draw floor decals
 	ae::Assets.Programs["pos_uv"]->ResetTextureTransform();
@@ -497,14 +506,14 @@ void _PlayState::Render(double BlendFactor) {
 	int ParticleRenderCount = Map->RenderParticles(_Particles::FLOOR_DECALS);
 
 	// Draw walls clipped with MaxZ=OBJECT_Z
-	Map->RenderWalls();
+	BlockRenderCount += Map->RenderWalls();
 
 	// Draw objects
 	Map->RenderObjects(BlendFactor);
 
 	// Draw the rest of the walls
-	Map->RenderWalls();
-	Map->RenderFlatWalls();
+	BlockRenderCount += Map->RenderWalls();
+	BlockRenderCount += Map->RenderFlatWalls();
 
 	// Draw wall decals
 	ae::Assets.Programs["pos_uv"]->ResetTextureTransform();
@@ -523,7 +532,7 @@ void _PlayState::Render(double BlendFactor) {
 	Particles->Render(_Particles::TEXT);
 
 	// Draw the foreground tiles
-	Map->RenderForeground();
+	BlockRenderCount += Map->RenderForeground();
 
 	// Draw the crosshair
 	if(!Player->IsDying())
@@ -583,8 +592,39 @@ void _PlayState::Render(double BlendFactor) {
 		}
 	}*/
 
+	// Render HUD
 	HUD->Render();
 
+	// Debug mode
+	if(DebugMode) {
+		glm::vec2 DrawPosition(10, 200);
+		std::stringstream Buffer;
+		Buffer << ae::Graphics.FramesPerSecond << " FPS";
+		ae::Assets.Fonts["hud_tiny"]->DrawText(Buffer.str(), DrawPosition);
+		Buffer.str("");
+
+		DrawPosition.y += 15;
+		Buffer << BlockRenderCount << " blocks rendered";
+		ae::Assets.Fonts["hud_tiny"]->DrawText(Buffer.str(), DrawPosition);
+		Buffer.str("");
+
+		DrawPosition.y += 15;
+		Buffer << Map->ObjectManager->RenderList[0].size() << " items rendered";
+		ae::Assets.Fonts["hud_tiny"]->DrawText(Buffer.str(), DrawPosition);
+		Buffer.str("");
+
+		DrawPosition.y += 15;
+		Buffer << Map->ObjectManager->RenderList[2].size() << " monsters rendered";
+		ae::Assets.Fonts["hud_tiny"]->DrawText(Buffer.str(), DrawPosition);
+		Buffer.str("");
+
+		DrawPosition.y += 15;
+		Buffer << ParticleRenderCount << " decals rendered";
+		ae::Assets.Fonts["hud_tiny"]->DrawText(Buffer.str(), DrawPosition);
+		Buffer.str("");
+	}
+
+	// Fade screen when paused
 	if(IsPaused() || (Player && Player->IsDead()))
 		ae::Graphics.FadeScreen(ae::Assets.Programs["ortho_pos"], GAME_PAUSE_FADEAMOUNT);
 
@@ -592,7 +632,8 @@ void _PlayState::Render(double BlendFactor) {
 	if(IsPaused()) {
 		Menu.Render();
 	}
-	else if(Player && Player->IsDead()) {
+	// Draw death screen
+	else if(Player->IsDead()) {
 		ae::Graphics.SetCursor(1);
 		HUD->RenderDeathScreen();
 	}
@@ -857,7 +898,7 @@ void _PlayState::UpdateMonsters(double FrameTime) {
 
 			// Add to render list
 			if(Camera->IsAABBInView(Bounds))
-				Map->AddRenderList(Monster, 2);
+				Map->ObjectManager->RenderList[2].push_back(Monster);
 
 			++MonsterIterator;
 		}

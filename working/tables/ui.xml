@@ -347,6 +347,5 @@
     </element>
     <element id="image_menu_bg" texture="textures/menu/sky.png" size_x="1024" size_y="768"/>
     <element id="label_game_version" font="hud_small" offset_x="20" offset_y="-20" alignment_x="0" alignment_y="2"/>
-    <element id="label_hud_fps" font="hud_small" offset_x="-12" offset_y="22" alignment_x="2" alignment_y="3"/>
     <element id="label_hud_message" font="hud_message" offset_y="100" alignment_y="0"/>
 </element>

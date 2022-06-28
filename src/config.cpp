@@ -116,6 +116,7 @@ void _Config::LoadDefaultInputBindings(bool IfNone) {
 
 	// Misc
 	ae::Actions.AddInputMap(0, ae::_Input::KEYBOARD, SDL_SCANCODE_GRAVE, Action::MISC_CONSOLE, 1.0f, -1.0f, IfNone);
+	ae::Actions.AddInputMap(0, ae::_Input::KEYBOARD, SDL_SCANCODE_F2, Action::MISC_DEBUG, 1.0f, -1.0f, IfNone);
 }
 
 // Load the config file

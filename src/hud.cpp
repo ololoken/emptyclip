@@ -64,11 +64,9 @@ _HUD::_HUD(_Player *Player) :
 	WeaponSwitchTexture = ae::Assets.Textures["textures/hud/weaponswitch0.png"];
 
 	// Elements
-	Elements[LABEL_FPS] = ae::Assets.Elements["label_hud_fps"];
 	Elements[LABEL_MESSAGE] = ae::Assets.Elements["label_hud_message"];
 	Elements[LABEL_MESSAGEBOX] = ae::Assets.Elements["label_hud_messagebox_text"];
 
-	Elements[LABEL_FPS]->SetActive(true);
 	Elements[LABEL_MESSAGE]->SetActive(true);
 	Elements[LABEL_MESSAGEBOX]->SetActive(true);
 
@@ -293,13 +291,6 @@ void _HUD::Update(double FrameTime, float Radius) {
 // Draw phase
 void _HUD::Render() {
 
-	// FPS
-	std::ostringstream Buffer;
-	Buffer << ae::Graphics.FramesPerSecond << " FPS";
-	Elements[LABEL_FPS]->Text = Buffer.str();
-	//Elements[LABEL_FPS]->Render();
-	Buffer.str("");
-
 	// Message
 	if(MessageTimer > 0.0) {
 		if(MessageTimer < 1.0)
@@ -334,6 +325,7 @@ void _HUD::Render() {
 		Elements[ELEMENT_PLAYERSTAMINA]->Render();
 
 	// Draw player health
+	std::ostringstream Buffer;
 	Buffer << Player->Health << "/" << Player->MaxHealth;
 	Elements[LABEL_PLAYERHEALTH]->Text = Buffer.str();
 	Buffer.str("");

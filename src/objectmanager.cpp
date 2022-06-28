@@ -23,9 +23,9 @@
 
 // Constructor
 _ObjectManager::_ObjectManager() {
-	ItemRenderList[0].reserve(5000);
-	ItemRenderList[1].reserve(5000);
-	ItemRenderList[2].reserve(5000);
+	RenderList[0].reserve(5000);
+	RenderList[1].reserve(5000);
+	RenderList[2].reserve(5000);
 }
 
 // Destructor
@@ -36,9 +36,9 @@ _ObjectManager::~_ObjectManager() {
 
 // Updates all objects
 void _ObjectManager::Update(double FrameTime, _Map *Map) {
-	ItemRenderList[0].clear();
-	ItemRenderList[1].clear();
-	ItemRenderList[2].clear();
+	RenderList[0].clear();
+	RenderList[1].clear();
+	RenderList[2].clear();
 
 	// Update objects
 	for(auto Iterator = Objects.begin(); Iterator != Objects.end(); ) {
@@ -98,7 +98,7 @@ void _ObjectManager::Update(double FrameTime, _Map *Map) {
 					case _Object::WEAPON:
 					case _Object::ARMOR:
 					case _Object::MEDKIT:
-						ItemRenderList[0].push_back(Object);
+						RenderList[0].push_back(Object);
 					break;
 				}
 			}
@@ -112,15 +112,15 @@ void _ObjectManager::Update(double FrameTime, _Map *Map) {
 void _ObjectManager::Render(double BlendFactor) {
 
 	// Draw items
-	for(auto Iterator : ItemRenderList[0])
+	for(auto Iterator : RenderList[0])
 		Iterator->Render(BlendFactor);
 
 	// Draw player
-	for(auto Iterator : ItemRenderList[1])
+	for(auto Iterator : RenderList[1])
 		Iterator->Render(BlendFactor);
 
 	// Draw monsters
-	for(auto Iterator : ItemRenderList[2])
+	for(auto Iterator : RenderList[2])
 		Iterator->Render(BlendFactor);
 }
 
@@ -132,9 +132,9 @@ void _ObjectManager::ClearObjects() {
 		delete Iterator;
 
 	Objects.clear();
-	ItemRenderList[0].clear();
-	ItemRenderList[1].clear();
-	ItemRenderList[2].clear();
+	RenderList[0].clear();
+	RenderList[1].clear();
+	RenderList[2].clear();
 }
 
 // Adds an object to the manager
@@ -151,8 +151,4 @@ void _ObjectManager::RemoveObject(_Object *Object) {
 			break;
 		}
 	}
-}
-
-void _ObjectManager::AddRenderList(_Object *Object, int Layer) {
-	ItemRenderList[Layer].push_back(Object);
 }

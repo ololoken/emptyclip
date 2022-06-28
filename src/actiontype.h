@@ -35,6 +35,7 @@ namespace Action {
 		GAME_HEAL,
 		GAME_INVENTORY,
 		MISC_CONSOLE,
+		MISC_DEBUG,
 		COUNT,
 	};
 }
