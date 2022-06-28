@@ -42,21 +42,21 @@ _Monster::_Monster(_MonsterTemplate &MonsterTemplate) :
 
 	Type = _Object::MONSTER;
 	Level = 1;
+	Recoil = 0;
+	RecoilRegen = 0;
+	DamageBlock = 0;
 
 	// Monster stats
 	Name = MonsterTemplate.Name;
 	Color = MonsterTemplate.Color;
-	MovementSpeed = TemplateAttributes.at("movement_speed").Float;
+	MovementSpeed = TemplateAttributes.at("move_speed").Float;
 	Radius = TemplateAttributes.at("radius").Float;
 	Scale = TemplateAttributes.at("scale").Float;
-	Recoil = 0;
-	RecoilRegen = 0;
-	Health = MaxHealth = TemplateAttributes.at("max_health").Int;
-	DamageBlock = TemplateAttributes.at("damage_block").Int;
-	ExperienceGiven = TemplateAttributes.at("experience").Int;
+	Health = MaxHealth = TemplateAttributes.at("health").Float;
+	ExperienceGiven = TemplateAttributes.at("xp").Float;
 	MinAccuracy = TemplateAttributes.at("accuracy").Int;
 	for(int i = 0; i < WEAPONATTACK_COUNT; i++) {
-		int Damage = TemplateAttributes.at("damage").Int;
+		int Damage = TemplateAttributes.at("damage").Float;
 		MinDamage[i] = Damage;
 		MaxDamage[i] = Damage;
 		FirePeriod[i] = TemplateAttributes.at("attack_period").Double;

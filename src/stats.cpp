@@ -544,21 +544,20 @@ void _Stats::LoadMonsters(const std::string &Path) {
 
 		File
 			>> MonsterTemplate.Attributes["drop_count"].Int
-			>> MonsterTemplate.Attributes["max_health"].Int
-			>> MonsterTemplate.Attributes["max_health_level"].Int
-			>> MonsterTemplate.Attributes["damage_block"].Int
+			>> MonsterTemplate.Attributes["health"].Float
+			>> MonsterTemplate.Attributes["health_level"].Float
 			>> MonsterTemplate.Attributes["ai_type"].Int
 			>> MonsterTemplate.Attributes["view_range"].Float
-			>> MonsterTemplate.Attributes["experience"].Int
-			>> MonsterTemplate.Attributes["experience_level"].Int
-			>> MonsterTemplate.Attributes["movement_speed"].Float
-			>> MonsterTemplate.Attributes["movement_speed_level"].Float
+			>> MonsterTemplate.Attributes["xp"].Float
+			>> MonsterTemplate.Attributes["xp_level"].Float
+			>> MonsterTemplate.Attributes["move_speed"].Float
+			>> MonsterTemplate.Attributes["move_speed_level"].Float
 			>> MonsterTemplate.Attributes["radius"].Float
 			>> MonsterTemplate.Attributes["scale"].Float
 			>> MonsterTemplate.Attributes["accuracy"].Int
 			>> MonsterTemplate.Attributes["attack_range"].Float
-			>> MonsterTemplate.Attributes["damage"].Int
-			>> MonsterTemplate.Attributes["damage_level"].Int
+			>> MonsterTemplate.Attributes["damage"].Float
+			>> MonsterTemplate.Attributes["damage_level"].Float
 			>> MonsterTemplate.Attributes["damage_spread"].Float
 			>> MonsterTemplate.Attributes["attack_period"].Double
 			>> MonsterTemplate.Attributes["weapon_type"].Int;
