@@ -287,6 +287,7 @@ class _EditorState : public ae::_State {
 		glm::vec2 ClickedPosition;
 		glm::vec2 CopiedPosition;
 		glm::vec2 MoveDelta;
+		int ObjectLevel;
 };
 
 extern _EditorState EditorState;

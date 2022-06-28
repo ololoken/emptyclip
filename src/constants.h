@@ -83,6 +83,7 @@ const  float        ITEM_Z                         =  0.05f;
 const  int          ITEM_QUALITY_RANGE             =  15;
 //     Objects
 const  float        OBJECT_Z                       =  0.3f;
+const  int          OBJECT_MAX_LEVEL               =  1000;
 //     Map
 const  int          MAP_FILEVERSION                =  2;
 const  std::string  MAP_TEXTURE_PATH               =  "textures/map/";
