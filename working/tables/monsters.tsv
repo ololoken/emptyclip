@@ -1,5 +1,5 @@
 id	name	animation_id	color_id	particles_id	sound_group_id	itemdrop_id	max_health	max_health_level	damage_block	ai_type	view_range	experience	experience_level	movement_speed	movement_speed_level	radius	scale	accuracy	attack_range	damage	damage_level	damage_spread	attack_period	weapon_type
-zombie	Zombie	zombie			zombie	none	5	15	0	5	8	5	10	0.3	0.05	0.3	0.8	30	0.65	5	5	0.1	1.7	0
+zombie	Zombie	zombie			zombie	none	5	15	0	5	8	5	10	0.3	0.05	0.3	0.8	30	0.65	5	5	0.1	1.7	1
 dog	Dog	dog			dog	none	5	15	0	5	8	5	10	0.3	0.05	0.3	0.8	30	0.65	5	5	0.1	1.7	0
 bat	Bat	bat			bat	none	5	15	0	5	8	5	10	0.3	0.05	0.3	0.8	30	0.65	5	5	0.1	1.7	0
 spider	Spider	spider			spider	none	5	15	0	5	8	5	10	0.3	0.05	0.3	0.8	30	0.65	5	5	0.1	1.7	0

@@ -832,7 +832,7 @@ void _PlayState::UpdateMonsters(double FrameTime) {
 			MonsterIterator = Monsters.erase(MonsterIterator);
 		}
 		else {
-			Monster->UpdateMonster(FrameTime, Player);
+			Monster->Update(FrameTime);
 
 			// Get bounds
 			glm::vec4 Bounds;
@@ -981,7 +981,9 @@ void _PlayState::UpdateEvents(double FrameTime) {
 				for(size_t i = 0; i < Tiles.size(); i++) {
 					Position.x = Tiles[i].Coord.x + 0.5f;
 					Position.y = Tiles[i].Coord.y + 0.5f;
-					AddMonster(Stats.CreateMonster(Event->MonsterID, Position));
+					_Monster *Monster = Stats.CreateMonster(Event->MonsterID, Position);
+					Monster->Player = Player;
+					AddMonster(Monster);
 					Particles->Create(_ParticleSpawn(GameAssets.GetParticleTemplate(Event->ParticleID), glm::vec2(0), Position, OBJECT_Z, 0));
 				}
 
@@ -1042,15 +1044,17 @@ void _PlayState::DeleteActiveEvents() {
 // Spawn an object in the map
 void _PlayState::SpawnObject(_ObjectSpawn *ObjectSpawn, bool GenerateStats) {
 	switch(ObjectSpawn->Type) {
-		case _Object::MONSTER:
-			AddMonster(Stats.CreateMonster(ObjectSpawn->ID, ObjectSpawn->Position));
-		break;
+		case _Object::MONSTER: {
+			_Monster *Monster = Stats.CreateMonster(ObjectSpawn->ID, ObjectSpawn->Position);
+			Monster->Player = Player;
+			AddMonster(Monster);
+		} break;
 		case _Object::KEY:
 		case _Object::AMMO:
 		case _Object::UPGRADE:
 		case _Object::ARMOR:
 		case _Object::MEDKIT:
-			Map->AddItem(Stats.CreateItem(ObjectSpawn->ID, ObjectSpawn->Level, 0, 0, ObjectSpawn->Position, GenerateStats));
+			Map->AddItem(Stats.CreateItem(ObjectSpawn->ID, ObjectSpawn->Level, 0, 1, ObjectSpawn->Position, GenerateStats));
 		break;
 		case _Object::WEAPON:
 			Map->AddItem(Stats.CreateWeapon(ObjectSpawn->ID, ObjectSpawn->Level, 0, ObjectSpawn->Position, GenerateStats));

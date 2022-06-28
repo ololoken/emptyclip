@@ -214,7 +214,7 @@ void _Player::Update(double FrameTime) {
 
 // Updates the leg's animation and direction
 void _Player::UpdateAnimation(double FrameTime, bool PlaySound) {
-	::_Entity::UpdateAnimation(FrameTime, false);
+	_Entity::UpdateAnimation(FrameTime, false);
 
 	int LastFrame = LegAnimation->Frame;
 	LegAnimation->Update(FrameTime);

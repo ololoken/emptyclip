@@ -299,125 +299,116 @@ void _Entity::UpdateRecoil(double FrameTime) {
 // Moves the object with collision detection
 void _Entity::Move(double FrameTime) {
 	UpdateSpeed(1.0f);
-	if(MoveState == MOVE_NONE)
+
+	// Check for moving
+	if(MoveState == MOVE_NONE) {
 		PositionChanged = false;
-
-	// Make a move
-	if(MoveState != MOVE_NONE) {
-
-		// Get direction
-		glm::vec2 Goal = GetGoal();
-		glm::vec2 NewDirection(0);
-		glm::vec2 Delta;
-		switch(MoveState) {
-			case MOVE_DIRECTION:
-				if(MoveDirection.x != 0 || MoveDirection.y != 0) {
-					Delta = WallInPath(MoveDirection);
-					NewDirection = Delta;
-				}
-			break;
-			case MOVE_GOAL:
-				Delta = (Goal - Position);
-				if(glm::distance2(Delta, Delta) >= 0.01f) {
-					Delta = WallInPath(Delta);
-					NewDirection = Delta;
-				}
-				else {
-					Position = Goal;
-				}
-			break;
-			case MOVE_FORWARD:
-				NewDirection.y = -1;
-			break;
-			case MOVE_BACKWARD:
-				NewDirection.y = 1;
-			break;
-			case MOVE_LEFT:
-				NewDirection.x = -1;
-			break;
-			case MOVE_RIGHT:
-				NewDirection.x = 1;
-			break;
-			case MOVE_FORWARDLEFT:
-				NewDirection.x = -SQRT1_2;
-				NewDirection.y = -SQRT1_2;
-			break;
-			case MOVE_FORWARDRIGHT:
-				NewDirection.x = SQRT1_2;
-				NewDirection.y = -SQRT1_2;
-			break;
-			case MOVE_BACKWARDLEFT:
-				NewDirection.x = -SQRT1_2;
-				NewDirection.y = SQRT1_2;
-			break;
-			case MOVE_BACKWARDRIGHT:
-				NewDirection.x = SQRT1_2;
-				NewDirection.y = SQRT1_2;
-			break;
-			default:
-			break;
-		}
-
-		// Moving backwards
-		if(glm::dot(NewDirection, Direction) < 0)
-			UpdateSpeed(PLAYER_BACKWARDSPEEDFACTOR);
-
-		float Speed = MovementSpeed * MovementModifier * FrameTime;
-		NewDirection *= Speed;
-
-		// Get a list of entities that the object is colliding with
-		std::list<_Entity *> HitEntities;
-		Map->CheckEntityCollisionsInGrid(Position, Radius, this, HitEntities);
-
-		// Limit movement
-		for(auto Iterator : HitEntities) {
-			glm::vec2 HitObjectDirection = Iterator->Position - Position;
-
-			// Determine if we need to clip the direction
-			if(glm::dot(HitObjectDirection, NewDirection) > 0) {
-				glm::vec2 DividingLine;
-
-				// Rotate vector
-				DividingLine.x = -HitObjectDirection.y;
-				DividingLine.y = HitObjectDirection.x;
-				DividingLine = glm::normalize(DividingLine);
-
-				// Project the direction onto the dividing line
-				NewDirection = DividingLine * glm::dot(NewDirection, DividingLine);
-			}
-		}
-
-		// Check collisions with walls and map boundaries
-		glm::vec2 NewPosition;
-		Map->CheckCollisions(Position + NewDirection, Radius, NewPosition);
-
-		// Determine if the object has moved
-		if(Position != NewPosition) {
-			int AltGridType = (Type == _Object::PLAYER) ? GRID_PLAYER : GRID_MONSTER;
-
-			// Update grid and position
-			Map->RemoveObjectFromGrid(this, AltGridType);
-
-			// Check for updated tile position
-			glm::ivec2 LastTilePosition = Map->GetValidCoord(Position);
-			glm::ivec2 TilePosition = Map->GetValidCoord(NewPosition);
-			if(TilePosition != LastTilePosition)
-				TileChanged = true;
-
-			Position = NewPosition;
-
-			Map->AddObjectToGrid(this, AltGridType);
-
-			PositionChanged = true;
-		}
-		else {
-			Action = ACTION_IDLE;
-			PositionChanged = false;
-		}
-
-		// Determine which walls are adjacent to the object
-		WallState = Map->GetWallState(Position, Radius);
+		return;
 	}
+
+	// Get direction
+	glm::vec2 NewDirection(0);
+	switch(MoveState) {
+		case MOVE_TARGET: {
+			/*if(MoveDirection.x != 0 || MoveDirection.y != 0) {
+				Delta = WallInPath(MoveDirection);
+				NewDirection = Delta;
+			}*/
+
+			glm::vec2 Delta = TargetPosition - Position;
+			if(Delta.x != 0 || Delta.y != 0)
+				NewDirection = glm::normalize(Delta);
+		} break;
+		case MOVE_FORWARD:
+			NewDirection.y = -1;
+		break;
+		case MOVE_BACKWARD:
+			NewDirection.y = 1;
+		break;
+		case MOVE_LEFT:
+			NewDirection.x = -1;
+		break;
+		case MOVE_RIGHT:
+			NewDirection.x = 1;
+		break;
+		case MOVE_FORWARDLEFT:
+			NewDirection.x = -SQRT1_2;
+			NewDirection.y = -SQRT1_2;
+		break;
+		case MOVE_FORWARDRIGHT:
+			NewDirection.x = SQRT1_2;
+			NewDirection.y = -SQRT1_2;
+		break;
+		case MOVE_BACKWARDLEFT:
+			NewDirection.x = -SQRT1_2;
+			NewDirection.y = SQRT1_2;
+		break;
+		case MOVE_BACKWARDRIGHT:
+			NewDirection.x = SQRT1_2;
+			NewDirection.y = SQRT1_2;
+		break;
+		default:
+		break;
+	}
+
+	// Moving backwards
+	if(glm::dot(NewDirection, Direction) < 0)
+		UpdateSpeed(PLAYER_BACKWARDSPEEDFACTOR);
+
+	float Speed = MovementSpeed * MovementModifier * FrameTime;
+	NewDirection *= Speed;
+
+	// Get a list of entities that the object is colliding with
+	std::list<_Entity *> HitEntities;
+	Map->CheckEntityCollisionsInGrid(Position, Radius, this, HitEntities);
+
+	// Limit movement
+	for(auto Iterator : HitEntities) {
+		glm::vec2 HitObjectDirection = Iterator->Position - Position;
+
+		// Determine if we need to clip the direction
+		if(glm::dot(HitObjectDirection, NewDirection) > 0) {
+			glm::vec2 DividingLine;
+
+			// Rotate vector
+			DividingLine.x = -HitObjectDirection.y;
+			DividingLine.y = HitObjectDirection.x;
+			DividingLine = glm::normalize(DividingLine);
+
+			// Project the direction onto the dividing line
+			NewDirection = DividingLine * glm::dot(NewDirection, DividingLine);
+		}
+	}
+
+	// Check collisions with walls and map boundaries
+	glm::vec2 NewPosition;
+	Map->CheckCollisions(Position + NewDirection, Radius, NewPosition);
+
+	// Determine if the object has moved
+	if(Position != NewPosition) {
+		int AltGridType = (Type == _Object::PLAYER) ? GRID_PLAYER : GRID_MONSTER;
+
+		// Update grid and position
+		Map->RemoveObjectFromGrid(this, AltGridType);
+
+		// Check for updated tile position
+		glm::ivec2 LastTilePosition = Map->GetValidCoord(Position);
+		glm::ivec2 TilePosition = Map->GetValidCoord(NewPosition);
+		if(TilePosition != LastTilePosition)
+			TileChanged = true;
+
+		Position = NewPosition;
+
+		Map->AddObjectToGrid(this, AltGridType);
+
+		PositionChanged = true;
+	}
+	else {
+		PositionChanged = false;
+	}
+
+	// Determine which walls are adjacent to the object
+	WallState = Map->GetWallState(Position, Radius);
 }
 
 // Draws the object
@@ -465,13 +456,6 @@ void _Entity::UpdateHealth(int Adjust) {
 	if(Health == 0 && !IsDying()) {
 		Action = ACTION_STARTDEATH;
 	}
-}
-
-glm::vec2 _Entity::GetGoal() const {
-	if(Goals.empty())
-		return Position;
-	else
-		return Goals.front();
 }
 
 glm::vec2 _Entity::WallInPath(const glm::vec2 &Delta) const {

@@ -548,7 +548,7 @@ void _Stats::LoadMonsters(const std::string &Path) {
 			>> MonsterTemplate.Attributes["max_health_level"].Int
 			>> MonsterTemplate.Attributes["damage_block"].Int
 			>> MonsterTemplate.Attributes["ai_type"].Int
-			>> MonsterTemplate.Attributes["view_range"].Int
+			>> MonsterTemplate.Attributes["view_range"].Float
 			>> MonsterTemplate.Attributes["experience"].Int
 			>> MonsterTemplate.Attributes["experience_level"].Int
 			>> MonsterTemplate.Attributes["movement_speed"].Float

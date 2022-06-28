@@ -42,8 +42,7 @@ enum MoveType {
 	MOVE_FORWARDLEFT,
 	MOVE_BACKWARDRIGHT,
 	MOVE_BACKWARDLEFT,
-	MOVE_GOAL,
-	MOVE_DIRECTION,
+	MOVE_TARGET,
 };
 
 enum WeaponAttackType {
@@ -89,7 +88,7 @@ class _Entity : public _Object {
 		void ResetAttackAllowed(int AttackType) { AttackAllowed[AttackType] = false; FireTimer[AttackType] = 0; }
 		bool IsMeleeAttacking() const { return Action == ACTION_MELEE || Action == ACTION_STARTMELEE; }
 
-		virtual bool CanAttack(int AttackType) const { return AttackAllowed[AttackType] && !IsMeleeAttacking() && !IsDying(); }
+		virtual bool CanAttack(int AttackType) const { return AttackAllowed[AttackType] && !IsMeleeAttacking() && !IsDying() && GetWeaponType() != WEAPON_NONE; }
 		virtual void ReduceAmmo() { }
 		virtual bool WeaponHasAmmo() const { return true; }
 
@@ -114,11 +113,7 @@ class _Entity : public _Object {
 		float GetMaxAccuracy(int AttackType) const { return MaxAccuracy[AttackType]; }
 		int GetMinDamage(int Type) const { return MinDamage[Type]; }
 		int GetMaxDamage(int Type) const { return MaxDamage[Type]; }
-		virtual glm::vec2 GetGoal() const;
 		virtual const _ParticleTemplate *GetWeaponParticle(int Index) const { return nullptr; }
-
-		void AddGoal(const glm::vec2 &Goal) { Goals.push_front(Goal); }
-		void PopGoal() { if(!Goals.empty()) Goals.pop_front(); }
 
 		virtual const std::string &GetSound(int Type) const { return Sounds[Type]; }
 		glm::vec2 WallInPath(const glm::vec2 &Delta) const;
@@ -182,6 +177,7 @@ class _Entity : public _Object {
 		// Monsters
 		std::string ItemGroupID;
 		int64_t ExperienceGiven;
+		glm::vec2 TargetPosition;
 
 	protected:
 
@@ -189,8 +185,5 @@ class _Entity : public _Object {
 		virtual void SetLegAnimationPlayMode(int Mode) { }
 		virtual void SetAnimationPlaybackSpeedFactor() { }
 		void UpdateRecoil(double FrameTime);
-
-		// AI
-		std::list<glm::vec2> Goals;
 
 };

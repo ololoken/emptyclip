@@ -32,12 +32,16 @@ class _Monster : public _Entity {
 		_Monster(_MonsterTemplate &MonsterTemplate);
 		~_Monster() override { }
 
-		void UpdateMonster(double FrameTime, _Player *Player);
-
+		void Update(double FrameTime) override;
 		const _ParticleTemplate *GetWeaponParticle(int Index) const override;
+
+		// AI
+		const _Player *Player;
 
 	private:
 
-		// Viewing ranges
+		float AttackRangeSquared;
+		float ViewRangeSquared;
+
 		_WeaponParticleTemplate *WeaponParticles;
 };

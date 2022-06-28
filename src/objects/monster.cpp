@@ -35,7 +35,8 @@ enum AITypes {
 
 // Constructor
 _Monster::_Monster(_MonsterTemplate &MonsterTemplate) :
-	_Entity() {
+	_Entity(),
+	Player(nullptr) {
 
 	const std::unordered_map<std::string, _Value> &TemplateAttributes = MonsterTemplate.Attributes;
 
@@ -66,26 +67,30 @@ _Monster::_Monster(_MonsterTemplate &MonsterTemplate) :
 	MainWeaponType = TemplateAttributes.at("weapon_type").Int;
 	WeaponParticles = MonsterTemplate.WeaponParticles;
 
-	//PersonalityType = TemplateAttributes.at("ai_type").Int;
+	// Cache distances
+	AttackRangeSquared = TemplateAttributes.at("attack_range").Float;
+	AttackRangeSquared *= AttackRangeSquared;
+	ViewRangeSquared = TemplateAttributes.at("view_range").Float;
+	ViewRangeSquared *= ViewRangeSquared;
+
+	//AIType = TemplateAttributes.at("ai_type").Int;
 	Rotation = ae::GetRandomReal(0.0f, 359.0f);
 
+	// Set weapon offsets
 	WeaponParticleOffset[0] = glm::vec2(0, 0);
 	for(int i = 1; i < WEAPON_TYPES; i++)
 		WeaponParticleOffset[i] = MONSTER_WEAPONOFFSET * Scale;
-
 
 	// Set attack sounds
 	_SoundGroup *SoundGroup = GameAssets.GetSoundGroupTemplate(MonsterTemplate.SoundGroupID);
 	for(int i = 0; i < SOUND_TYPES; i++)
 		Sounds[i] = SoundGroup->SoundID[i];
-
 }
 
-// Updates the entity's states
-void _Monster::UpdateMonster(double FrameTime, _Player *Player) {
+// Update
+void _Monster::Update(double FrameTime) {
 	_Entity::Update(FrameTime);
-
-	if(Player->IsDying())
+	if(!Player || Player->IsDying())
 		return;
 
 	// Update animation
@@ -95,11 +100,30 @@ void _Monster::UpdateMonster(double FrameTime, _Player *Player) {
 	if(IsDying())
 		return;
 
-	//WallState & WALL_TOP
-	//PlayerVisible = IsVisible(Player->Position);
-	//FacePosition(Player->Position);
-	//StartAttack();
-	//Move(FrameTime);
+	// Check for player in range
+	float PlayerDistanceSquared = glm::distance2(Position, Player->Position);
+	if(PlayerDistanceSquared <= ViewRangeSquared) {
+
+		// Check if player is visible
+		bool PlayerVisible = Map->IsVisible(Position, Player->Position);
+		if(PlayerVisible) {
+			FacePosition(Player->Position);
+			TargetPosition = Player->Position;
+			MoveState = MOVE_TARGET;
+		}
+	}
+
+	// Check for reaching target
+	float TargetDistanceSquared = glm::distance2(Position, TargetPosition);
+	if(TargetDistanceSquared <= 0.1f)
+		MoveState = MOVE_NONE;
+
+	// Check for attack range
+	if(PlayerDistanceSquared <= AttackRangeSquared)
+		StartAttack();
+
+	// Move
+	Move(FrameTime);
 }
 
 // Get weapon particles used by monster
