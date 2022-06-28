@@ -387,6 +387,9 @@ bool _EditorState::HandleKey(const ae::_KeyEvent &KeyEvent) {
 			case SDL_SCANCODE_8:
 				ExecuteSwitchMode(EDITMODE_ARMOR);
 			break;
+			case SDL_SCANCODE_GRAVE:
+			    ExecuteDeselect();
+			break;
 			case SDL_SCANCODE_D:
 				ExecuteDelete();
 			break;
@@ -1318,7 +1321,7 @@ void _EditorState::DrawBrush() {
 	}
 
 	// Brush information name and id
-	if(CurrentPalette == EDITMODE_BLOCKS && IconID != "")
+	if(IconID != "")
 		MainFont->DrawText(IconID, IconPosition + glm::vec2(EDITOR_PALETTE_SELECTEDSIZE + 16, 20), ae::LEFT_BASELINE);
 	if(IconText != "")
 		MainFont->DrawText(IconText, IconPosition + glm::vec2(EDITOR_PALETTE_SELECTEDSIZE + 16, -EDITOR_PALETTE_SELECTEDSIZE/2), ae::LEFT_BASELINE);

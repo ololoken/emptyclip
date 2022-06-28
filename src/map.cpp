@@ -96,7 +96,7 @@ _Map::_Map(const std::string &Filename) : _Map() {
 		switch(Object->Type) {
 			case _Object::MONSTER:
 				if(Stats.Monsters.find(Object->ID) == Stats.Monsters.end())
-					throw std::runtime_error(std::string(__func__) + "Cannot find monster: " + Object->ID);
+					throw std::runtime_error(std::string(__func__) + " Unknown monster '" + Object->ID + "'");
 			break;
 			case _Object::KEY:
 			case _Object::AMMO:
@@ -104,11 +104,11 @@ _Map::_Map(const std::string &Filename) : _Map() {
 			case _Object::ARMOR:
 			case _Object::MEDKIT:
 				if(Stats.Items.find(Object->ID) == Stats.Items.end())
-					throw std::runtime_error(std::string(__func__) + "Cannot find item: " + Object->ID);
+					throw std::runtime_error(std::string(__func__) + " Unknown item '" + Object->ID + "'");
 			break;
 			case _Object::WEAPON:
 				if(Stats.Weapons.find(Object->ID) == Stats.Weapons.end())
-					throw std::runtime_error(std::string(__func__) + "Cannot find weapon: " + Object->ID);
+					throw std::runtime_error(std::string(__func__) + " Unknown weapon '" + Object->ID + "'");
 			break;
 		}
 

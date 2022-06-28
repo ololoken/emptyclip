@@ -1,22 +1,4 @@
-identifier	name	icon identifier	color
-key0	Key	textures/items/i_key0.png	
-key1	Red Key	textures/items/i_key0.png	shade_red0
-key2	Green Key	textures/items/i_key0.png	shade_green0
-key3	Blue Key	textures/items/i_key0.png	shade_blue0
-key4	Purple Key	textures/items/i_key0.png	purple
-key5	Black Key	textures/items/i_key0.png	dark
-skey1	Ruby Key	textures/items/i_key0.png	red
-skey2	Sapphire Key	textures/items/i_key0.png	blue
-skey4	Cavern Key	textures/items/i_key0.png	brown
-akey0	Frozen Stars	textures/items/i_key1.png	
-akey1	Terrestrial Key	textures/items/i_key1.png	shade_green0
-akey2	Plasma Finger	textures/items/i_key1.png	shade_blue0
-dkey0	Symbol of Wrath	textures/items/i_key2.png	
-dkey3	Doom Key	textures/items/i_key2.png	dark
-wkey0	World Key I	textures/items/i_key0.png	shade_black0
-wkey1	World Key II	textures/items/i_key0.png	shade_black0
-wkey2	World Key III	textures/items/i_key0.png	shade_black0
-wkey4	World Key V	textures/items/i_key0.png	shade_black0
+id	name	icon_id	color_id
 key_red	Red Key	textures/items/key_red.png	
 key_green	Green Key	textures/items/key_green.png	
 key_blue	Blue Key	textures/items/key_blue.png	
