@@ -130,6 +130,7 @@ void _PlayState::Init() {
 	ae::Graphics.SetCursor(false);
 
 	ae::Actions.ResetState();
+	ae::Audio.Stop();
 }
 
 // Close map
@@ -542,7 +543,7 @@ void _PlayState::Render(double BlendFactor) {
 	if(0) {
 		ae::Graphics.SetDepthTest(false);
 
-		// Draw melee hit range
+		// Draw weapon ranges
 		for(int i = 0; i < WEAPONATTACK_COUNT; i++) {
 			glm::vec4 Color = COLOR_WHITE;
 			if(i == 1)
@@ -551,14 +552,15 @@ void _PlayState::Render(double BlendFactor) {
 			float Range = Player->GetWeaponRange(i);
 			if(Range == 0.0f)
 				Range = 100.0f;
+
 			ae::Graphics.SetProgram(ae::Assets.Programs["pos"]);
 			ae::Graphics.SetColor(Color);
 			ae::Graphics.DrawCircle(glm::vec3(Player->Position, 0), Range);
-			glm::vec2 t1, t2;
-			t1 = Player->Position + Player->GetDirectionVector(-Player->GetMaxAccuracy(i) * 0.5f) * Range;
-			t2 = Player->Position + Player->GetDirectionVector(Player->GetMaxAccuracy(i) * 0.5f) * Range;
-			ae::Graphics.DrawLine(Player->Position, t1);
-			ae::Graphics.DrawLine(Player->Position, t2);
+
+			glm::vec2 LeftLine = Player->Position + Player->GetDirectionVector(-Player->GetMaxAccuracy(i) * 0.5f) * Range;
+			glm::vec2 RightLine = Player->Position + Player->GetDirectionVector(Player->GetMaxAccuracy(i) * 0.5f) * Range;
+			ae::Graphics.DrawLine(Player->Position, LeftLine);
+			ae::Graphics.DrawLine(Player->Position, RightLine);
 		}
 	}
 
@@ -767,6 +769,7 @@ void _PlayState::EntityAttack(_Entity *Attacker, int GridType) {
 				// Set HUD last hit object
 				if(Hit.Object->Type == _Object::MONSTER)
 					HUD->SetLastEntityHit(Hit.Object);
+
 			break;
 		}
 	}

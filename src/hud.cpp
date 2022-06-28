@@ -291,6 +291,10 @@ void _HUD::Update(double FrameTime, float Radius) {
 // Draw phase
 void _HUD::Render() {
 
+	// Set labels
+	ae::Assets.Elements["label_hud_offhand_switch_key"]->Text = ae::Actions.GetInputNameForAction(Action::GAME_WEAPONSWITCH);
+	ae::Assets.Elements["label_hud_melee_key"]->Text = ae::Actions.GetInputNameForAction(Action::GAME_MELEE);
+
 	// Message
 	if(MessageTimer > 0.0) {
 		if(MessageTimer < 1.0)

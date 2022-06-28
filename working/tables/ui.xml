@@ -36,9 +36,11 @@
     <element id="element_hud_offhand" offset_x="160" offset_y="-104" alignment_y="2">
         <element id="image_offhand_icon" size_x="64" size_y="64" alignment_y="0" stretch="true"/>
         <element id="label_hud_offhand_ammo" font="hud_larger" offset_y="84" alignment_y="3"/>
+        <element id="label_hud_offhand_switch_key" font="hud_damage" offset_x="24" offset_y="58" alignment_y="3"/>
     </element>
     <element id="element_hud_melee" offset_x="230" offset_y="-104" alignment_y="2">
         <element id="image_melee_icon" size_x="64" size_y="64" alignment_y="0" stretch="true"/>
+		<element id="label_hud_melee_key" font="hud_damage" offset_x="24" offset_y="58" alignment_y="3"/>
     </element>
     <element id="element_hud_messagebox" style="style_menu_window" offset_y="-150" size_x="275" size_y="100" alignment_y="2">
         <element id="label_hud_messagebox_text" font="hud_medium"/>
