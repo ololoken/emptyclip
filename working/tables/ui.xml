@@ -8,6 +8,7 @@
         <element id="image_enemy_health_empty" texture="textures/hud_repeat/health1.png" size_x="150" size_y="32" alignment_x="0" alignment_y="0" stretch="false"/>
         <element id="image_enemy_health_full" texture="textures/hud_repeat/health0.png" size_y="32" alignment_x="0" alignment_y="0" stretch="false"/>
         <element id="label_hud_enemy_name" font="hud_large" offset_y="-9" alignment_y="3"/>
+        <element id="label_hud_enemy_health_text" font="hud_large" offset_y="23" alignment_y="3"/>
     </element>
     <element id="element_hud_player_health" offset_y="-90" size_x="200" alignment_y="2">
         <element id="image_player_health_empty" texture="textures/hud_repeat/health1.png" size_x="200" size_y="32" alignment_x="0" alignment_y="0" stretch="false"/>

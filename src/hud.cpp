@@ -89,6 +89,7 @@ _HUD::_HUD(_Player *Player) :
 	Elements[IMAGE_PLAYERSTAMINA] = ae::Assets.Elements["image_player_stamina_full"];
 	Elements[ELEMENT_PLAYERSTAMINA]->SetActive(true);
 
+	Elements[LABEL_ENEMYHEALTH] = ae::Assets.Elements["label_hud_enemy_health_text"];
 	Elements[IMAGE_ENEMYHEALTH] = ae::Assets.Elements["image_enemy_health_full"];
 	Elements[IMAGE_ENEMYHEALTH]->SetActive(true);
 
@@ -312,10 +313,14 @@ void _HUD::Render() {
 	}
 
 	// Draw enemy health
+	std::ostringstream Buffer;
 	if(LastEntityHit != nullptr) {
+		Buffer << LastEntityHit->Health << "/" << LastEntityHit->MaxHealth;
+		Elements[LABEL_ENEMYHEALTH]->Text = Buffer.str();
 		Elements[LABEL_ENEMYNAME]->Text = LastEntityHit->Name;
 		Elements[IMAGE_ENEMYHEALTH]->SetWidth(Elements[ELEMENT_ENEMYINFO]->Size.x * LastEntityHit->GetHealthPercentage());
 		Elements[ELEMENT_ENEMYINFO]->Render();
+		Buffer.str("");
 	}
 
 	// Draw stamina
@@ -329,7 +334,6 @@ void _HUD::Render() {
 		Elements[ELEMENT_PLAYERSTAMINA]->Render();
 
 	// Draw player health
-	std::ostringstream Buffer;
 	Buffer << Player->Health << "/" << Player->MaxHealth;
 	Elements[LABEL_PLAYERHEALTH]->Text = Buffer.str();
 	Buffer.str("");
