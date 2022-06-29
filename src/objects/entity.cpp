@@ -31,8 +31,8 @@
 const double SQRT1_2 = 0.70710678118654752440;
 
 // Constructor
-_Entity::_Entity(const _ObjectTemplate &Template) :
-	_Object(Template),
+_Entity::_Entity(const _ObjectTemplate &EntityTemplate) :
+	_Object(EntityTemplate),
 	TriggerDownAudio(nullptr),
 	MoveState(MOVE_NONE),
 	MovementSpeed(0),
@@ -327,7 +327,7 @@ void _Entity::Move(double FrameTime) {
 
 			// Set move direction
 			if(TargetVector.x != 0 || TargetVector.y != 0) {
-				MoveDirection = glm::normalize(TargetVector);
+				Direction = MoveDirection = glm::normalize(TargetVector);
 				Rotation = glm::degrees(atan2(MoveDirection.y, MoveDirection.x)) + 90.0f;
 				if(Rotation < 0.0f)
 					Rotation += 360.0f;

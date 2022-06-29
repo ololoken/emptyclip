@@ -627,18 +627,18 @@ _Item *_Stats::CreateItem(const std::string &ID, int Level, int Quality, int Cou
 			Item->Attributes["ammo"].Int = Template.Attributes.at("rounds").Int;
 		} break;
 		case _Object::ARMOR:
-			Item->SetAttributeLevel("damage_block", Item->Level, 1.0f + Item->Quality * 0.01f);
-			Item->SetAttributeLevel("damage_resist", Item->Level, 1.0f + Item->Quality * 0.01f);
-			Item->SetAttributeLevel("max_ammo", Item->Level, 1.0f + Item->Quality * 0.01f);
-			Item->SetAttributeLevel("move_speed", Item->Level, 1.0f - Item->Quality * 0.01f);
+			Item->SetAttributeLevel("damage_block", 1.0f + Item->Quality * 0.01f);
+			Item->SetAttributeLevel("damage_resist", 1.0f + Item->Quality * 0.01f);
+			Item->SetAttributeLevel("max_ammo", 1.0f + Item->Quality * 0.01f);
+			Item->SetAttributeLevel("move_speed",  1.0f - Item->Quality * 0.01f);
 		break;
 		case _Object::MOD:
 			Item->Attributes["mod_type"].Int = Template.Attributes["mod_type"].Int;
 			Item->Attributes["weapon_type"].Int = Template.Attributes["weapon_type"].Int;
-			Item->SetAttributeLevel("bonus", Item->Level, 1.0f + Item->Quality * 0.01f);
+			Item->SetAttributeLevel("bonus", 1.0f + Item->Quality * 0.01f);
 		break;
 		case _Object::MEDKIT:
-			Item->SetAttributeLevel("health_restored", Item->Level, 1.0f);
+			Item->SetAttributeLevel("health_restored", 1.0f);
 		break;
 		default:
 			Item->Attributes = Template.Attributes;
@@ -650,14 +650,34 @@ _Item *_Stats::CreateItem(const std::string &ID, int Level, int Quality, int Cou
 	return Item;
 }
 
-// Creates a monster
-_Monster *_Stats::CreateMonster(const std::string &ID, const glm::vec2 &Position) {
-	_ObjectTemplate &MonsterTemplate = Objects.at(ID);
+// Create monster
+_Monster *_Stats::CreateMonster(const std::string &ID, int Level, const glm::vec2 &Position) {
+	_ObjectTemplate &Template = Objects.at(ID);
 
-	// Creates a monster
-	_Monster *Monster = new _Monster(MonsterTemplate);
+	// Create object
+	_Monster *Monster = new _Monster(Template);
 	Monster->SetPosition(Position);
-	Monster->Animation->Reels = ae::Assets.Animations[MonsterTemplate.AnimationID];
+	Monster->Animation->Reels = ae::Assets.Animations[Template.AnimationID];
+	Monster->Level = Level;
+	if(Template.ItemDropID != "")
+		Monster->ItemDrop = &ItemDrops[Template.ItemDropID];
+
+	// Set stats
+	Monster->Recoil = 0;
+	Monster->RecoilRegen = 0;
+	Monster->DamageBlock = 0;
+	Monster->MovementSpeed = Monster->GetAttributeLevel("move_speed", 1.0f);
+	Monster->Radius = Template.Attributes.at("radius").Float;
+	Monster->Scale = Template.Attributes.at("scale").Float;
+	Monster->Health = std::ceil(Monster->MaxHealth = Monster->GetAttributeLevel("health", 1.0f));
+	Monster->ExperienceGiven = std::ceil(Monster->GetAttributeLevel("xp", 1.0f));
+	Monster->MinAccuracy = Template.Attributes.at("accuracy").Int;
+	for(int i = 0; i < WEAPONATTACK_COUNT; i++) {
+		Monster->GetAttributeRange("damage", 1.0f, Monster->MinDamage[i], Monster->MaxDamage[i]);
+		Monster->FirePeriod[i] = Template.Attributes.at("attack_period").Double;
+		Monster->MaxAccuracy[i] = Template.Attributes.at("accuracy").Int;
+		Monster->AttackRange[i] = Template.Attributes.at("attack_range").Float;
+	}
 
 	return Monster;
 }

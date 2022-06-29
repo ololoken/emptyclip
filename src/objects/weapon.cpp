@@ -64,8 +64,8 @@ void _Weapon::RecalculateStats() {
 	for(size_t i = 0; i < Mods.size(); i++)
 		Bonus[Mods[i]->Attributes.at("mod_type").Int] += Mods[i]->Attributes.at("bonus").Int;
 
-	SetAttributeRange("damage", Level, GetBonusMultiplier(MOD_DAMAGE) + Quality * 0.01f);
-	SetAttributeRange("accuracy", 0, 1.0f / GetBonusMultiplier(MOD_ACCURACY));
+	SetAttributeRange("damage", GetBonusMultiplier(MOD_DAMAGE) + Quality * 0.01f);
+	SetAttributeSpread("accuracy", 1.0f / GetBonusMultiplier(MOD_ACCURACY));
 	Attributes["rounds"].Int = std::ceil(Template.Attributes.at("rounds").Int * GetBonusMultiplier(MOD_CLIP));
 	Attributes["fire_period"].Double = Template.Attributes.at("fire_period").Double / GetBonusMultiplier(MOD_FIREPERIOD);
 	Attributes["reload_period"].Double = Template.Attributes.at("reload_period").Double / GetBonusMultiplier(MOD_RELOADPERIOD);

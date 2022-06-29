@@ -31,8 +31,8 @@
 #include <iomanip>
 
 // Constructor
-_Item::_Item(const _ObjectTemplate &Template) :
-	_Object(Template),
+_Item::_Item(const _ObjectTemplate &ItemTemplate) :
+	_Object(ItemTemplate),
 	Quality(0),
 	Count(1) {
 

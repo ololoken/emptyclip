@@ -44,18 +44,36 @@ _Object::_Object(const _ObjectTemplate &Template) :
 }
 
 // Set two range attributes given a level, spread and multiplier
-void _Object::SetAttributeRange(const std::string &AttributeName, int ItemLevel, float Multiplier) {
-	float LevelValue = ItemLevel > 0 ? Template.Attributes.at(AttributeName + "_level").Float * ItemLevel : 0;
-	int Value = std::ceil((Template.Attributes.at(AttributeName).Float + LevelValue) * Multiplier);
-	int ValueRange = std::ceil(Value * Template.Attributes.at(AttributeName + "_spread").Float);
-	Attributes["min_" + AttributeName].Int = Value - ValueRange;
-	Attributes["max_" + AttributeName].Int = Value + ValueRange;
+void _Object::SetAttributeRange(const std::string &AttributeName, float Multiplier) {
+	GetAttributeRange(AttributeName, Multiplier, Attributes["min_" + AttributeName].Int, Attributes["max_" + AttributeName].Int);
 }
 
 // Set an attribute given a level and multiplier
-void _Object::SetAttributeLevel(const std::string &AttributeName, int ItemLevel, float Multiplier) {
-	float LevelValue = ItemLevel > 0 ? Template.Attributes.at(AttributeName + "_level").Float * ItemLevel : 0;
-	Attributes[AttributeName].Int = std::ceil((Template.Attributes.at(AttributeName).Float + LevelValue) * Multiplier);
+void _Object::SetAttributeLevel(const std::string &AttributeName, float Multiplier) {
+	Attributes[AttributeName].Int = std::ceil(GetAttributeLevel(AttributeName, Multiplier));
+}
+
+// Set attribute range given a spread
+void _Object::SetAttributeSpread(const std::string &AttributeName, float Multiplier) {
+	int Value = std::ceil(Template.Attributes.at(AttributeName).Float * Multiplier);
+	int ValueRange = std::ceil(Value * Template.Attributes.at(AttributeName + "_spread").Float);
+	Attributes["min_" + AttributeName].Int = std::ceil(Value - ValueRange);
+	Attributes["max_" + AttributeName].Int = std::ceil(Value + ValueRange);
+}
+
+// Get an attribute value given a level and multiplier
+float _Object::GetAttributeLevel(const std::string &AttributeName, float Multiplier) {
+	float LevelValue = Level > 0 ? Template.Attributes.at(AttributeName + "_level").Float * Level : 0;
+	return (Template.Attributes.at(AttributeName).Float + LevelValue) * Multiplier;
+}
+
+// Get two range attributes given a level, spread and multiplier
+void _Object::GetAttributeRange(const std::string &AttributeName, float Multiplier, int &Min, int &Max) {
+	float LevelValue = Level > 0 ? Template.Attributes.at(AttributeName + "_level").Float * Level : 0;
+	int Value = std::ceil((Template.Attributes.at(AttributeName).Float + LevelValue) * Multiplier);
+	int ValueRange = std::ceil(Value * Template.Attributes.at(AttributeName + "_spread").Float);
+	Min = Value - ValueRange;
+	Max = Value + ValueRange;
 }
 
 // Set the max number of mods based on level

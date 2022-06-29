@@ -34,8 +34,8 @@
 #include <glm/trigonometric.hpp>
 
 // Constructor
-_Player::_Player(const _ObjectTemplate &Template) :
-	_Entity(Template) {
+_Player::_Player(const _ObjectTemplate &PlayerTemplate) :
+	_Entity(PlayerTemplate) {
 
 	// Set up animations
 	LegAnimation = new ae::_Animation(nullptr);

@@ -40,7 +40,7 @@ class _Item : public _Object {
 
 	public:
 
-		_Item(const _ObjectTemplate &Template);
+		_Item(const _ObjectTemplate &ItemTemplate);
 
 		virtual void RecalculateStats() { }
 		void Serialize(ae::_Buffer &Buffer) override;

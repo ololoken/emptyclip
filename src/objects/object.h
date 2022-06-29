@@ -66,8 +66,11 @@ class _Object {
 		glm::vec2 GetDirectionVector(float RotationOffset = 0.0f) const;
 
 		virtual std::string GetTypeAsString() const { return "Object"; }
-		void SetAttributeRange(const std::string &AttributeName, int ItemLevel, float Multiplier);
-		void SetAttributeLevel(const std::string &AttributeName, int ItemLevel, float Multiplier);
+		void SetAttributeRange(const std::string &AttributeName, float Multiplier);
+		void SetAttributeLevel(const std::string &AttributeName, float Multiplier);
+		void SetAttributeSpread(const std::string &AttributeName, float Multiplier);
+		float GetAttributeLevel(const std::string &AttributeName, float Multiplier);
+		void GetAttributeRange(const std::string &AttributeName, float Multiplier, int &Min, int &Max);
 		void SetMaxMods();
 
 		// Template

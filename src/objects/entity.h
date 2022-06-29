@@ -75,7 +75,7 @@ class _Entity : public _Object {
 
 	public:
 
-		_Entity(const _ObjectTemplate &Template);
+		_Entity(const _ObjectTemplate &EntityTemplate);
 		~_Entity() override;
 
 		virtual void Update(double FrameTime) override;

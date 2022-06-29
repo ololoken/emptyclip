@@ -102,7 +102,7 @@ class _Stats {
 		void LoadMonsters(const std::string &Path);
 
 		_Item *CreateItem(const std::string &ID, int Level, int Quality, int Count, const glm::vec2 &Position, bool RandomStats);
-		_Monster *CreateMonster(const std::string &ID, const glm::vec2 &Position);
+		_Monster *CreateMonster(const std::string &ID, int Level, const glm::vec2 &Position);
 
 		int GetLevel(int64_t Experience);
 		int64_t GetValidExperience(int64_t Experience);

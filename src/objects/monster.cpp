@@ -34,36 +34,13 @@ enum AITypes {
 };
 
 // Constructor
-_Monster::_Monster(const _ObjectTemplate &Template) :
-	_Entity(Template),
+_Monster::_Monster(const _ObjectTemplate &MonsterTemplate) :
+	_Entity(MonsterTemplate),
 	Player(nullptr),
 	ItemDrop(nullptr) {
 
-	Type = _Object::MONSTER;
-	Level = 1;
-	Recoil = 0;
-	RecoilRegen = 0;
-	DamageBlock = 0;
-
-	// Monster stats
-	Name = Template.Name;
-	Color = Template.Color;
-	MovementSpeed = Template.Attributes.at("move_speed").Float;
-	Radius = Template.Attributes.at("radius").Float;
-	Scale = Template.Attributes.at("scale").Float;
-	Health = MaxHealth = Template.Attributes.at("health").Float;
-	ExperienceGiven = Template.Attributes.at("xp").Float;
-	MinAccuracy = Template.Attributes.at("accuracy").Int;
-	for(int i = 0; i < WEAPONATTACK_COUNT; i++) {
-		int Damage = Template.Attributes.at("damage").Float;
-		MinDamage[i] = Damage;
-		MaxDamage[i] = Damage;
-		FirePeriod[i] = Template.Attributes.at("attack_period").Double;
-		MaxAccuracy[i] = Template.Attributes.at("accuracy").Int;
-		AttackRange[i] = Template.Attributes.at("attack_range").Float;
-	}
+	// Set stats
 	MainWeaponType = Template.Attributes.at("weapon_type").Int;
-	WeaponParticles = Template.WeaponParticles;
 
 	// Cache distances
 	AttackRangeSquared = Template.Attributes.at("attack_range").Float;
@@ -71,14 +48,8 @@ _Monster::_Monster(const _ObjectTemplate &Template) :
 	ViewRangeSquared = Template.Attributes.at("view_range").Float;
 	ViewRangeSquared *= ViewRangeSquared;
 
-	//AIType = TemplateAttributes.at("ai_type").Int;
-	Rotation = ae::GetRandomReal(0.0f, 359.0f);
-
-	// Item drops
-	if(Template.ItemDropID != "")
-		ItemDrop = &Stats.ItemDrops[Template.ItemDropID];
-
 	// Set weapon offsets
+	WeaponParticles = Template.WeaponParticles;
 	WeaponParticleOffset[0] = glm::vec2(0, 0);
 	for(int i = 1; i < WEAPON_TYPES; i++)
 		WeaponParticleOffset[i] = MONSTER_WEAPONOFFSET * Scale;
@@ -87,6 +58,9 @@ _Monster::_Monster(const _ObjectTemplate &Template) :
 	_SoundGroup *SoundGroup = GameAssets.GetSoundGroupTemplate(Template.SoundGroupID);
 	for(int i = 0; i < SOUND_TYPES; i++)
 		Sounds[i] = SoundGroup->SoundID[i];
+
+	//AIType = TemplateAttributes.at("ai_type").Int;
+	Rotation = ae::GetRandomReal(0.0f, 359.0f);
 }
 
 // Update

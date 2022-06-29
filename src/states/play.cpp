@@ -861,7 +861,8 @@ void _PlayState::CreateItemDrop(const _Entity *Entity) {
 
 		// Roll for drop
 		Stats.GetRandomDrop(Monster->ItemDrop, &ObjectSpawn);
-		SpawnObject(&ObjectSpawn, true);
+		if(ObjectSpawn.Type)
+			SpawnObject(&ObjectSpawn, true);
 	}
 }
 
@@ -1027,7 +1028,7 @@ void _PlayState::UpdateEvents(double FrameTime) {
 				for(size_t i = 0; i < Tiles.size(); i++) {
 					Position.x = Tiles[i].Coord.x + 0.5f;
 					Position.y = Tiles[i].Coord.y + 0.5f;
-					_Monster *Monster = Stats.CreateMonster(Event->MonsterID, Position);
+					_Monster *Monster = Stats.CreateMonster(Event->MonsterID, Event->SpawnLevel, Position);
 					Monster->Player = Player;
 					AddMonster(Monster);
 					Particles->Create(_ParticleSpawn(GameAssets.GetParticleTemplate(Event->ParticleID), glm::vec2(0), Position, OBJECT_Z, 0));
@@ -1084,7 +1085,7 @@ void _PlayState::DeleteMonsters() {
 // Spawn an object in the map
 void _PlayState::SpawnObject(_ObjectSpawn *ObjectSpawn, bool GenerateStats) {
 	if(ObjectSpawn->Type == _Object::MONSTER) {
-		_Monster *Monster = Stats.CreateMonster(ObjectSpawn->ID, ObjectSpawn->Position);
+		_Monster *Monster = Stats.CreateMonster(ObjectSpawn->ID, ObjectSpawn->Level, ObjectSpawn->Position);
 		Monster->Player = Player;
 		AddMonster(Monster);
 	}
