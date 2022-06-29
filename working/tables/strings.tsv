@@ -1,39 +1,24 @@
 identifier	text
+test	This is a test message
 start_campaign	Campaign mode is similar to a linear first-person shooter game, with secrets and bosses.
 start_adventure	Adventure mode is an open-ended game where you can explore dungeons, find new towns, gamble for items, etc.
 town_gamble0	Low Gambling Room
 town_gamble1	Basic Gambling Room
 town_gamble2	Medium Gambling Room
 town_gamble3	Advanced Gambling Room
-town_gamble4	High Gambling Room
-town_gamble5	Elite Gambling Room
-town_gamble6	Unique Gambling Room
 town_medkit	Medkits
 town_ammo	Weapons and Ammunition
 town_dungeon0	Secret Dungeon
 town_shop	Shop
 town_name0	Woodshire
-town_name1	Ghost town
-town_name2	Underground City
 world_name0	Woodshire Forest
-world_name1	Scary Marsh
 world_dungeon0	Old Dungeon
 world_dungeon1	Emerald Dungeon
 world_dungeon2	Ruby Dungeon
 world_dungeon3	Sapphire Dungeon
-world_dungeon4	Glass Dungeon
-world_dungeon5	Sacred Dungeon
-world_dungeon6	Foreboding Dungeon
-world_dungeon7	Dusty Dungeon
-world_dungeon8	Deserted Dungeon
-world_dungeon9	Diamond Dungeon
-world_dungeon10	Azure Dungeon
-maze0_beware	Enter at your own risk! No turning back! For advanced players only!
-forest_sign0	Flip the switches to activate the bridges
-test	This is a test message
-tutorial_move	Hit the keys ESDF to move your character.\n\nUse the mouse to look around.
-tutorial_pickup	Hit Spacebar to pickup items.\n\nHit C to open your inventory.
-tutorial_door	To open the door, hit Spacebar while facing it.
-tutorial_melee	Use Mouse button 4 to attack with your melee weapon.
-tutorial_fire	Use Left-click to shoot your gun. Hold right-click to aim and increase your accuracy at the cost of movement speed.
-tutorial_sprint	Hold A to sprint.
+tutorial_move	Hit the keys [c red]ESDF[c white] to move your character.\n\nUse the [c red]mouse[c white] to look around.
+tutorial_pickup	Hit [c red]Spacebar[c white] to pickup items.\n\nHit [c red]C[c white] to open your inventory.
+tutorial_door	To open the door, hit [c red]Spacebar[c white] while facing it.
+tutorial_melee	Use [c red]Mouse button 4[c white] to attack with your melee weapon.
+tutorial_fire	Use [c red]Left-click[c white] to shoot your gun. Hold [c red]right-click[c white] to aim and increase your accuracy at the cost of movement speed.
+tutorial_sprint	Hold [c red]A[c white] to sprint.
