@@ -612,17 +612,6 @@ _Item *_Stats::CreateItem(const std::string &ID, int Level, int Quality, int Cou
 
 	// Set attributes based off type and item level
 	switch(Template.Type) {
-		case _Object::UPGRADE:
-			Item->Attributes["upgrade_type"].Int = Template.Attributes["upgrade_type"].Int;
-			Item->Attributes["weapon_type"].Int = Template.Attributes["weapon_type"].Int;
-			Item->SetAttributeLevel("bonus", Item->Level, 1.0f + Item->Quality * 0.01f);
-		break;
-		case _Object::ARMOR:
-			Item->SetAttributeLevel("damage_block", Item->Level, 1.0f + Item->Quality * 0.01f);
-			Item->SetAttributeLevel("damage_resist", Item->Level, 1.0f + Item->Quality * 0.01f);
-			Item->SetAttributeLevel("max_ammo", Item->Level, 1.0f + Item->Quality * 0.01f);
-			Item->SetAttributeLevel("move_speed", Item->Level, 1.0f - Item->Quality * 0.01f);
-		break;
 		case _Object::WEAPON: {
 			Item->Attributes["weapon_type"].Int = Template.Attributes["weapon_type"].Int;
 			Item->Attributes["zoom_scale"].Float = Template.Attributes["zoom_scale"].Float;
@@ -637,6 +626,17 @@ _Item *_Stats::CreateItem(const std::string &ID, int Level, int Quality, int Cou
 
 			Item->Attributes["ammo"].Int = Template.Attributes.at("rounds").Int;
 		} break;
+		case _Object::ARMOR:
+			Item->SetAttributeLevel("damage_block", Item->Level, 1.0f + Item->Quality * 0.01f);
+			Item->SetAttributeLevel("damage_resist", Item->Level, 1.0f + Item->Quality * 0.01f);
+			Item->SetAttributeLevel("max_ammo", Item->Level, 1.0f + Item->Quality * 0.01f);
+			Item->SetAttributeLevel("move_speed", Item->Level, 1.0f - Item->Quality * 0.01f);
+		break;
+		case _Object::UPGRADE:
+			Item->Attributes["upgrade_type"].Int = Template.Attributes["upgrade_type"].Int;
+			Item->Attributes["weapon_type"].Int = Template.Attributes["weapon_type"].Int;
+			Item->SetAttributeLevel("bonus", Item->Level, 1.0f + Item->Quality * 0.01f);
+		break;
 		case _Object::MEDKIT:
 			Item->SetAttributeLevel("health_restored", Item->Level, 1.0f);
 		break;

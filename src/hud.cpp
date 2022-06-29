@@ -211,9 +211,6 @@ void _HUD::MouseEvent(const ae::_MouseEvent &MouseEvent) {
 				const _Item *Item = Player->Inventory[HitElement->Index];
 				if(Item) {
 					switch(Item->Type) {
-						case _Object::MEDKIT:
-							Player->UseMedkit(HitElement->Index);
-						break;
 						case _Object::WEAPON: {
 							const _Weapon *Weapon = (const _Weapon *)Item;
 							if(Weapon->IsMelee())
@@ -223,6 +220,9 @@ void _HUD::MouseEvent(const ae::_MouseEvent &MouseEvent) {
 						} break;
 						case _Object::ARMOR:
 							Player->SwapInventory(HitElement->Index, INVENTORY_ARMOR);
+						break;
+						case _Object::MEDKIT:
+							Player->UseMedkit(HitElement->Index);
 						break;
 					}
 				}

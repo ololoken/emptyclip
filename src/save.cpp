@@ -285,46 +285,25 @@ void _Save::LoadItems(_Player *Player, ae::_Buffer &Buffer) {
 		int Slot = Buffer.Read<int>();
 		int Type = Buffer.Read<int>();
 		int Count = Buffer.Read<int>();
+		std::string ID = Buffer.ReadString();
+		int Level = Buffer.Read<int>();
+		int Quality = Buffer.Read<int>();
 
-		// Create items
-		switch(Type) {
-			case _Object::KEY:
-			case _Object::AMMO:
-			case _Object::UPGRADE:
-			case _Object::ARMOR:
-			case _Object::MEDKIT: {
-				std::string ID = Buffer.ReadString();
-				int Level = Buffer.Read<int>();
-				int Quality = Buffer.Read<int>();
-				Player->Inventory[Slot] = Stats.CreateItem(ID, Level, Quality, Count, glm::vec2(0, 0), false);
-			} break;
-			case _Object::WEAPON:
-				LoadWeapon(Player, Buffer, Slot);
-			break;
+		// Create item
+		_Item *Item = Stats.CreateItem(ID, Level, Quality, Count, glm::vec2(0, 0), false);
+		if(Type == _Object::WEAPON) {
+			_Weapon *Weapon = (_Weapon *)Item;
+
+			// Read weapon data
+			int Ammo = Buffer.Read<int>();
+			Weapon->Attributes["max_components"].Int = Buffer.Read<int>();
+			LoadUpgrades(Buffer, Weapon);
+			Weapon->RecalculateStats();
+			Weapon->SetAmmo(Ammo);
 		}
+
+		Player->Inventory[Slot] = Item;
 	}
-}
-
-// Loads weapons from a stream
-_Weapon *_Save::LoadWeapon(_Player *Player, ae::_Buffer &Buffer, int InventoryIndex) {
-
-	// Get weapons
-	std::string ID = Buffer.ReadString();
-	int Level = Buffer.Read<int>();
-	int Quality = Buffer.Read<int>();
-	int Ammo = Buffer.Read<int>();
-	int MaxComponents = Buffer.Read<int>();
-
-	// Create weapon
-	_Weapon *Weapon = (_Weapon *)Stats.CreateItem(ID, Level, Quality, 1, glm::vec2(0, 0), false);
-	Weapon->Attributes["max_components"].Int = MaxComponents;
-	LoadUpgrades(Buffer, Weapon);
-	Weapon->RecalculateStats();
-	Weapon->SetAmmo(Ammo);
-
-	Player->Inventory[InventoryIndex] = Weapon;
-
-	return Weapon;
 }
 
 // Loads upgrade components from a stream

@@ -372,13 +372,6 @@ void _Item::DrawTooltip(const _Player *Player, std::size_t CompareSlot, glm::ive
 				Buffer.str("");
 			}
 		} break;
-		case _Object::MEDKIT: {
-
-			// Heal amount
-			DrawPosition.y += 20;
-			Buffer << "+" << Attributes.at("health_restored").Int << " HP";
-			ae::Assets.Fonts["hud_medium"]->DrawText(Buffer.str(), glm::vec2(DrawPosition.x, DrawPosition.y), ae::CENTER_BASELINE, COLOR_GREEN);
-		} break;
 		case _Object::UPGRADE: {
 
 			// Bonus
@@ -390,6 +383,13 @@ void _Item::DrawTooltip(const _Player *Player, std::size_t CompareSlot, glm::ive
 
 			ae::Assets.Fonts["hud_medium"]->DrawText(UpgradeTypeToString(Attributes.at("upgrade_type").Int, -1), DrawPosition - DrawOffset, ae::RIGHT_BASELINE);
 			ae::Assets.Fonts["hud_medium"]->DrawText(Buffer.str(), DrawPosition + DrawOffset, ae::LEFT_BASELINE, TextColor);
+		} break;
+		case _Object::MEDKIT: {
+
+			// Heal amount
+			DrawPosition.y += 20;
+			Buffer << "+" << Attributes.at("health_restored").Int << " HP";
+			ae::Assets.Fonts["hud_medium"]->DrawText(Buffer.str(), glm::vec2(DrawPosition.x, DrawPosition.y), ae::CENTER_BASELINE, COLOR_GREEN);
 		} break;
 	}
 }

@@ -19,6 +19,7 @@
 #include <objects/object.h>
 #include <ae/camera.h>
 #include <map.h>
+#include <stats.h>
 #include <constants.h>
 
 // Constructor
@@ -70,16 +71,16 @@ void _ObjectManager::Update(double FrameTime, _Map *Map) {
 
 				MinimapLayer.Color = COLOR_WHITE;
 				switch(Object->Type) {
+					case _Object::WEAPON:
+					case _Object::ARMOR:
+					case _Object::UPGRADE:
+						MinimapLayer.Color = COLOR_GREEN;
+					break;
 					case _Object::KEY:
 						MinimapLayer.Color = COLOR_YELLOW;
 					break;
 					case _Object::AMMO:
 						MinimapLayer.Color = COLOR_CYAN;
-					break;
-					case _Object::UPGRADE:
-					case _Object::WEAPON:
-					case _Object::ARMOR:
-						MinimapLayer.Color = COLOR_GREEN;
 					break;
 					case _Object::MEDKIT:
 					break;
@@ -89,18 +90,8 @@ void _ObjectManager::Update(double FrameTime, _Map *Map) {
 
 			// Add to render list
 			if(Map->Camera->IsAABBInView(Bounds)) {
-
-				// Add object to render list
-				switch(Object->Type) {
-					case _Object::KEY:
-					case _Object::AMMO:
-					case _Object::UPGRADE:
-					case _Object::WEAPON:
-					case _Object::ARMOR:
-					case _Object::MEDKIT:
-						RenderList[0].push_back(Object);
-					break;
-				}
+				if(Object->Template.IsItem())
+					RenderList[0].push_back(Object);
 			}
 
 			++Iterator;

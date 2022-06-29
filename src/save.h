@@ -64,7 +64,6 @@ class _Save {
 		std::string GetConfigPath(std::size_t Slot);
 
 		void LoadItems(_Player *Player, ae::_Buffer &Buffer);
-		_Weapon *LoadWeapon(_Player *Player, ae::_Buffer &Buffer, int InventoryIndex);
 		void LoadUpgrades(ae::_Buffer &Buffer, _Weapon *Weapon);
 		void LoadAmmo(_Player *Player, ae::_Buffer &Buffer);
 		void SaveItems(_Player *Player, std::ofstream &File);

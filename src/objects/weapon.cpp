@@ -31,11 +31,7 @@ _Weapon::~_Weapon() {
 
 // Serialize weapon for saving
 void _Weapon::Serialize(ae::_Buffer &Buffer) {
-
-	// Write weapons
-	Buffer.WriteString(ID.c_str());
-	Buffer.Write<int>(Level);
-	Buffer.Write<int>(Quality);
+	_Item::Serialize(Buffer);
 
 	// Ammo
 	Buffer.Write(Attributes.at("ammo").Int);
