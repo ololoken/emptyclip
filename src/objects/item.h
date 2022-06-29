@@ -42,6 +42,7 @@ class _Item : public _Object {
 
 		_Item(const _ObjectTemplate &Template);
 
+		virtual void RecalculateStats() { }
 		void Serialize(ae::_Buffer &Buffer) override;
 		void DrawTooltip(const _Player *Player, std::size_t CompareSlot, glm::ivec2 DrawPosition);
 		void Render(double BlendFactor) override;

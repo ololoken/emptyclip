@@ -34,9 +34,8 @@
 _Item::_Item(const _ObjectTemplate &Template) :
 	_Object(Template),
 	Quality(0),
-	Count(0) {
+	Count(1) {
 
-	Texture = nullptr;
 	PositionZ = ITEM_Z;
 }
 

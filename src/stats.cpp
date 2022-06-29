@@ -47,7 +47,7 @@ void _Stats::Init() {
 	LoadItemDrops("tables/itemdrops.tsv");
 	LoadMonsters("tables/monsters.tsv");
 	Objects.insert(std::make_pair("player", _ObjectTemplate(_Object::PLAYER)));
-	WeaponFists = Stats.CreateWeapon("weapon_fists", 1, 0, glm::vec2(0), false);
+	WeaponFists = (_Weapon *)Stats.CreateItem("weapon_fists", 1, 0, 1, glm::vec2(0), false);
 }
 
 // Shutdown
@@ -594,16 +594,17 @@ _Item *_Stats::CreateItem(const std::string &ID, int Level, int Quality, int Cou
 	_ObjectTemplate &Template = Objects.at(ID);
 
 	// Create item
-	_Item *Item = new _Item(Template);
-	Item->Type = Template.Type;
+	_Item *Item;
+	if(Template.Type == _Object::WEAPON)
+		Item = new _Weapon(Template);
+	else
+		Item = new _Item(Template);
 	Item->ID = ID;
-	Item->Name = Template.Name;
 	Item->Level = Level;
 	Item->Quality = Quality;
 	Item->Count = Count;
 	Item->Position = Position;
 	Item->Texture = ae::Assets.Textures[Template.IconID];
-	Item->Color = Template.Color;
 
 	// Generate random quality
 	if(RandomStats)
@@ -622,24 +623,31 @@ _Item *_Stats::CreateItem(const std::string &ID, int Level, int Quality, int Cou
 			Item->SetAttributeLevel("max_ammo", Item->Level, 1.0f + Item->Quality * 0.01f);
 			Item->SetAttributeLevel("move_speed", Item->Level, 1.0f - Item->Quality * 0.01f);
 		break;
+		case _Object::WEAPON: {
+			Item->Attributes["weapon_type"].Int = Template.Attributes["weapon_type"].Int;
+			Item->Attributes["zoom_scale"].Float = Template.Attributes["zoom_scale"].Float;
+			Item->Attributes["recoil"].Float = Template.Attributes["recoil"].Float;
+			Item->Attributes["recoil_regen"].Float = Template.Attributes["recoil_regen"].Float;
+			Item->Attributes["range"].Float = Template.Attributes["range"].Float;
+			Item->Attributes["fire_rate"].Int = Template.Attributes["fire_rate"].Int;
+			Item->SetMaxComponents();
+
+			if(RandomStats)
+				Item->Attributes["max_components"].Int += ae::GetRandomInt(0, 1);
+
+			Item->Attributes["ammo"].Int = Template.Attributes.at("rounds").Int;
+		} break;
 		case _Object::MEDKIT:
 			Item->SetAttributeLevel("health_restored", Item->Level, 1.0f);
 		break;
-
 		default:
 			Item->Attributes = Template.Attributes;
 		break;
 	}
 
+	Item->RecalculateStats();
+
 	return Item;
-}
-
-// Creates a weapon
-_Weapon *_Stats::CreateWeapon(const std::string &ID, int Level, int Quality, const glm::vec2 &Position, bool RandomStats) {
-	_ObjectTemplate &Template = Objects.at(ID);
-	_Weapon *Weapon = new _Weapon(ID, Level, Position, Template, ae::Assets.Textures[Template.IconID], RandomStats);
-
-	return Weapon;
 }
 
 // Creates a monster

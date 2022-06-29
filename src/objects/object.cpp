@@ -24,6 +24,7 @@
 // Constructor
 _Object::_Object(const _ObjectTemplate &Template) :
 	Template(Template),
+	Name(Template.Name),
 	Type(Template.Type),
 	Level(1),
 	Active(true),
@@ -34,6 +35,7 @@ _Object::_Object(const _ObjectTemplate &Template) :
 	Direction(0.0, 1.0f),
 	Radius(0.25f),
 	WallState(0),
+	Texture(nullptr),
 	Color(Template.Color),
 	Rotation(0.0f),
 	Scale(1.0f),
@@ -54,6 +56,11 @@ void _Object::SetAttributeRange(const std::string &AttributeName, int ItemLevel,
 void _Object::SetAttributeLevel(const std::string &AttributeName, int ItemLevel, float Multiplier) {
 	float LevelValue = ItemLevel > 0 ? Template.Attributes.at(AttributeName + "_level").Float * ItemLevel : 0;
 	Attributes[AttributeName].Int = std::ceil((Template.Attributes.at(AttributeName).Float + LevelValue) * Multiplier);
+}
+
+// Set the max number of components based on level
+void _Object::SetMaxComponents() {
+	Attributes["max_components"].Int = Template.Attributes.at("components").Float + Template.Attributes.at("components_level").Float * Level;
 }
 
 // Get render bounds of object

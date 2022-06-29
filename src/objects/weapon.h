@@ -39,16 +39,16 @@ class _Weapon : public _Item {
 
 	public:
 
-		_Weapon(const std::string &ID, int Level, const glm::vec2 &Position, const _ObjectTemplate &Template, const ae::_Texture *Texture, bool RandomStats);
+		_Weapon(const _ObjectTemplate &Template) : _Item(Template) { }
 		~_Weapon() override;
 
 		void Serialize(ae::_Buffer &Buffer) override;
 
-		void RecalculateStats();
+		void RecalculateStats() override;
 		bool AddComponent(_Item *Upgrade);
 		void SetAmmo(int Value);
 
-		float GetBonusMultiplier(int Type) const { return (100 + Bonus[Type]) * 0.01f; }
+		float GetBonusMultiplier(int UpgradeType) const { return (100 + Bonus[UpgradeType]) * 0.01f; }
 		const std::string &GetSound(int SoundType) const;
 		bool IsMelee() const { return Attributes.at("weapon_type").Int == WEAPON_MELEE; }
 		virtual std::string GetTypeAsString() const override { return ToString(Attributes.at("weapon_type").Int) + " class weapon"; }

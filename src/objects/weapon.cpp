@@ -23,32 +23,6 @@
 #include <stats.h>
 #include <algorithm>
 
-// Constructor
-_Weapon::_Weapon(const std::string &ID, int Level, const glm::vec2 &Position, const _ObjectTemplate &Template, const ae::_Texture *Texture, bool RandomStats) :
-	_Item(Template) {
-
-	this->Type = _Object::WEAPON;
-	this->ID = ID;
-	this->Texture = Texture;
-	this->Color = Template.Color;
-	this->Position = Position;
-	Name = Template.Name;
-
-	Attributes = Template.Attributes;
-
-	int Components = Template.Attributes.at("components").Float + Template.Attributes.at("components_level").Float * Level;
-	if(RandomStats) {
-		Quality = ae::GetRandomInt(-ITEM_QUALITY_RANGE, ITEM_QUALITY_RANGE);
-		Attributes["max_components"].Int = Components + ae::GetRandomInt(0, 1);
-	}
-	else
-		Attributes["max_components"].Int = Components;
-
-	Attributes["ammo"].Int = Template.Attributes.at("rounds").Int;
-
-	RecalculateStats();
-}
-
 // Destructor
 _Weapon::~_Weapon() {
 	for(size_t i = 0; i < Upgrades.size(); i++)
@@ -87,7 +61,6 @@ void _Weapon::SetAmmo(int Value) {
 
 // Recalculates the weapon stats
 void _Weapon::RecalculateStats() {
-
 	for(int i = 0; i < UPGRADE_TYPES; i++)
 		Bonus[i] = 0;
 
@@ -101,6 +74,8 @@ void _Weapon::RecalculateStats() {
 	Attributes["fire_period"].Double = Template.Attributes.at("fire_period").Double / GetBonusMultiplier(UPGRADE_FIREPERIOD);
 	Attributes["reload_period"].Double = Template.Attributes.at("reload_period").Double / GetBonusMultiplier(UPGRADE_RELOADPERIOD);
 	Attributes["attack_count"].Int = Template.Attributes.at("attack_count").Int + Bonus[UPGRADE_ATTACKS];
+	Attributes["reload_rounds"].Int = Template.Attributes.at("reload_rounds").Int;
+	Attributes["penetration"].Int = Template.Attributes.at("penetration").Int;
 
 	// For melee, min accuracy is 0 and max is swing arc
 	if(IsMelee())

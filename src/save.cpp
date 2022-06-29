@@ -316,7 +316,7 @@ _Weapon *_Save::LoadWeapon(_Player *Player, ae::_Buffer &Buffer, int InventoryIn
 	int MaxComponents = Buffer.Read<int>();
 
 	// Create weapon
-	_Weapon *Weapon = Stats.CreateWeapon(ID, Level, Quality, glm::vec2(0, 0), false);
+	_Weapon *Weapon = (_Weapon *)Stats.CreateItem(ID, Level, Quality, 1, glm::vec2(0, 0), false);
 	Weapon->Attributes["max_components"].Int = MaxComponents;
 	LoadUpgrades(Buffer, Weapon);
 	Weapon->RecalculateStats();
