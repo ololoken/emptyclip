@@ -707,7 +707,7 @@ int _Stats::GetValidSkillLevel(int Level) {
 
 // Returns a random item identifier from an item group
 void _Stats::GetRandomDrop(const _ItemDrop *ItemDrop, _ObjectSpawn *ObjectSpawn) {
-	ObjectSpawn->Type = -1;
+	ObjectSpawn->Type = 0;
 
 	// Get item group
 	size_t ItemDropSize = ItemDrop->Entries.size();

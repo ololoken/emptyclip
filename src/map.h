@@ -135,7 +135,7 @@ struct _ObjectSpawn {
 	_ObjectSpawn() :
 		ID(""),
 		Position{0, 0},
-		Type(-1),
+		Type(0),
 		Level(1),
 		Deleted(false) { }
 

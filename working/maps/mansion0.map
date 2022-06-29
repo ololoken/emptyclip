@@ -3,17 +3,17 @@
 0
 130 110
 11
-3 key_green 1 90.98 37.13
-3 key_blue 1 53.50 41.50
-3 key_red 1 32.47 10.51
-7 armor_light 1 54.55 79.56
-8 medkit 1 54.68 78.60
-8 medkit 1 55.27 79.00
-6 weapon_melee 1 75.02 60.02
-6 weapon_pistol 1 90.87 48.49
-4 ammo_pistol 1 91.70 48.32
-4 ammo_pistol 1 92.08 48.50
-4 ammo_pistol 1 91.79 48.72
+key_green 1 90.98 37.13
+key_blue 1 53.50 41.50
+key_red 1 32.47 10.51
+armor_light 1 54.55 79.56
+medkit 1 54.68 78.60
+medkit 1 55.27 79.00
+weapon_melee 1 75.02 60.02
+weapon_pistol 1 90.87 48.49
+ammo_pistol 1 91.70 48.32
+ammo_pistol 1 92.08 48.50
+ammo_pistol 1 91.79 48.72
 56
 3 1 45 85 45 85 0 1 0.00 0 		
 3 1 59 63 70 63 1 1 0.00 1 		

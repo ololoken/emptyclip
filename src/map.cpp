@@ -90,12 +90,13 @@ _Map::_Map(const std::string &Filename) : _Map() {
 
 		// Load Data
 		_ObjectSpawn *Object = new _ObjectSpawn();
-		InputFile >> Object->Type >> Object->ID >> Object->Level >> Object->Position.x >> Object->Position.y;
+		InputFile >> Object->ID >> Object->Level >> Object->Position.x >> Object->Position.y;
 
 		// Check for object
 		if(Stats.Objects.find(Object->ID) == Stats.Objects.end())
 			throw std::runtime_error(std::string(__func__) + " Unknown object '" + Object->ID + "'");
 
+		Object->Type = Stats.Objects.at(Object->ID).Type;
 		ObjectSpawns.push_back(Object);
 	}
 
@@ -299,7 +300,6 @@ bool _Map::Save(const std::string &String) {
 	Output << ObjectSpawns.size() << '\n';
 	for(size_t i = 0; i < ObjectSpawns.size(); i++) {
 		Output
-			<< ObjectSpawns[i]->Type << ' '
 			<< ObjectSpawns[i]->ID << ' '
 			<< ObjectSpawns[i]->Level << ' '
 			<< ObjectSpawns[i]->Position.x << ' '
