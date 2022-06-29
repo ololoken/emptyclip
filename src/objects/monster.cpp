@@ -21,6 +21,7 @@
 #include <gameassets.h>
 #include <stats.h>
 #include <map.h>
+#include <iostream>
 #include <glm/gtx/norm.hpp>
 
 // Constants
@@ -61,6 +62,7 @@ _Monster::_Monster(const _ObjectTemplate &MonsterTemplate) :
 
 	//AIType = TemplateAttributes.at("ai_type").Int;
 	Rotation = ae::GetRandomReal(0.0f, 359.0f);
+	LastPlayerVisible = false;
 }
 
 // Update
@@ -77,17 +79,23 @@ void _Monster::Update(double FrameTime) {
 		return;
 
 	// Check for player in range
+	bool PlayerVisible = false;
 	float PlayerDistanceSquared = glm::distance2(Position, Player->Position);
 	if(PlayerDistanceSquared <= ViewRangeSquared) {
 
 		// Check if player is visible
-		bool PlayerVisible = Map->IsVisible(Position, Player->Position);
+		PlayerVisible = Map->IsVisible(Position, Player->Position);
 		if(PlayerVisible) {
 			FacePosition(Player->Position);
 			TargetPosition = Player->Position;
 			MoveState = MOVE_TARGET;
 		}
 	}
+
+	// Center target position when vision is lost
+	if(!PlayerVisible && PlayerVisible != LastPlayerVisible)
+		TargetPosition = glm::vec2(glm::ivec2(TargetPosition)) + glm::vec2(0.5f);
+	LastPlayerVisible = PlayerVisible;
 
 	// Check for reaching target
 	float TargetDistanceSquared = glm::distance2(Position, TargetPosition);

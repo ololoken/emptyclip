@@ -41,6 +41,7 @@ class _Monster : public _Entity {
 
 	private:
 
+		bool LastPlayerVisible;
 		float AttackRangeSquared;
 		float ViewRangeSquared;
 
