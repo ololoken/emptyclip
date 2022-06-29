@@ -779,26 +779,36 @@ void _Player::StartWeaponSwitch(int SlotFrom, int SlotTo) {
 void _Player::UpdateReloading() {
 
 	// Check the timer
-	if(Reloading && (ReloadTimer > ReloadPeriod)) {
-		Reloading = false;
+	if(!Reloading || ReloadTimer <= ReloadPeriod)
+		return;
 
-		// Check weapon type
-		if(!CanReload())
-			return;
+	Reloading = false;
 
-		// Check for ammo
-		if(HasAmmoForMain()) {
-			const std::string &AmmoType = Stats.Objects.at(GetMainHand()->ID).AmmoID;
-			int AmountNeeded = GetMainHand()->Attributes["rounds"].Int - GetMainHand()->Attributes["ammo"].Int;
-			int AmmoLoadAmount = std::min(Ammo[AmmoType], AmountNeeded);
-			GetMainHand()->Attributes["ammo"].Int += AmmoLoadAmount;
-			Ammo[AmmoType] -= AmmoLoadAmount;
+	// Check weapon type
+	if(!CanReload())
+		return;
 
-			// Update accuracy
-			ResetAccuracy(true);
-			ResetWeaponAnimation();
-		}
+	// Get amounts
+	const std::string &AmmoType = Stats.Objects.at(GetMainHand()->ID).AmmoID;
+	int AmountNeeded = GetMainHand()->Attributes["rounds"].Int - GetMainHand()->Attributes["ammo"].Int;
+	int AmmoLoadAmount = std::min(Ammo[AmmoType], AmountNeeded);
+
+	// Handle different reload amounts
+	bool ReloadAgain = false;
+	if(GetMainHand()->Attributes["reload_rounds"].Int) {
+		AmmoLoadAmount = std::min(GetMainHand()->Attributes["reload_rounds"].Int, AmmoLoadAmount);
+		ReloadAgain = true;
 	}
+
+	// Update ammo
+	GetMainHand()->Attributes["ammo"].Int += AmmoLoadAmount;
+	Ammo[AmmoType] -= AmmoLoadAmount;
+
+	// Reset player
+	ResetAccuracy(true);
+	ResetWeaponAnimation();
+	if(ReloadAgain)
+		StartReloading();
 }
 
 // Switches the weapon when the timer goes off
