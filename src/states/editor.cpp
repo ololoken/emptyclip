@@ -927,7 +927,7 @@ void _EditorState::Render(double BlendFactor) {
 
 			glm::vec2 TextPosition;
 			Camera->ConvertWorldToScreen(Object->Position + glm::vec2(0.25, 0.25), TextPosition);
-			ae::Assets.Fonts["hud_small"]->DrawText("1", TextPosition, ae::CENTER_BASELINE);
+			ae::Assets.Fonts["hud_small"]->DrawText(std::to_string(Object->Level), TextPosition, ae::CENTER_BASELINE);
 		}
 	}
 
@@ -1031,7 +1031,7 @@ void _EditorState::LoadPalettes() {
 	LoadMonsterButtons();
 
 	// Load items
-	for(const auto &Item : Stats.Items) {
+	for(const auto &Item : Stats.Objects) {
 		if(Item.second.Type >= _Object::KEY && Item.second.Type <= _Object::MEDKIT && Item.second.IconID != "")
 			Icons.push_back(_Brush(Item.first, Item.second.Name, ae::Assets.Textures[Item.second.IconID], Item.second.Color, Item.second.Type));
 	}
@@ -1055,7 +1055,10 @@ void _EditorState::LoadMonsterButtons() {
 		return;
 
 	std::vector<_Brush> Icons;
-	for(const auto &Monster : Stats.Monsters) {
+	for(const auto &Monster : Stats.Objects) {
+		if(Monster.second.Type != _Object::MONSTER)
+			continue;
+
 		const ae::_Texture *MonsterIcon = ae::Assets.Textures["textures/icons/" + Monster.second.AnimationID + ".png"];
 		Icons.push_back(_Brush(Monster.first, Monster.second.Name, MonsterIcon, COLOR_WHITE, _Object::MONSTER));
 	}
@@ -1318,7 +1321,7 @@ void _EditorState::DrawObject(float OffsetX, float OffsetY, const _ObjectSpawn *
 	const ae::_Texture *Texture = nullptr;
 	switch(Object->Type) {
 		case _Object::MONSTER: {
-			_ObjectTemplate &Monster = Stats.Monsters.at(Object->ID);
+			_ObjectTemplate &Monster = Stats.Objects.at(Object->ID);
 			Texture = ae::Assets.Textures["textures/icons/" + Monster.AnimationID + ".png"];
 			Color = Monster.Color;
 			Scale = Monster.Attributes.at("scale").Float;
@@ -1329,12 +1332,12 @@ void _EditorState::DrawObject(float OffsetX, float OffsetY, const _ObjectSpawn *
 		case _Object::UPGRADE:
 		case _Object::ARMOR:
 		case _Object::MEDKIT: {
-			_ObjectTemplate &Ammo = Stats.Items.at(Object->ID);
+			_ObjectTemplate &Ammo = Stats.Objects.at(Object->ID);
 			Texture = ae::Assets.Textures[Ammo.IconID];
 			Color = Ammo.Color;
 		} break;
 		case _Object::WEAPON: {
-			_ObjectTemplate &Weapon = Stats.Items.at(Object->ID);
+			_ObjectTemplate &Weapon = Stats.Objects.at(Object->ID);
 			Texture = ae::Assets.Textures[Weapon.IconID];
 			Color = Weapon.Color;
 		} break;

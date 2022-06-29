@@ -659,7 +659,7 @@ float _Player::GetCrosshairRadius(const glm::vec2 &Cursor) {
 // Checks if the player's weapon has ammo
 bool _Player::WeaponHasAmmo() const {
 	if(AttackRequestType == WEAPONATTACK_MAIN) {
-		if(!HasMainHand() || Stats.Items.at(GetMainHand()->ID).AmmoID == "")
+		if(!HasMainHand() || Stats.Objects.at(GetMainHand()->ID).AmmoID == "")
 			return true;
 
 		return GetMainHand()->Attributes.at("ammo").Int > 0;
@@ -676,7 +676,7 @@ bool _Player::HasAmmoForMain() const {
 	if(!HasMainHand())
 		return false;
 
-	const std::string &AmmoType = Stats.Items.at(GetMainHand()->ID).AmmoID;
+	const std::string &AmmoType = Stats.Objects.at(GetMainHand()->ID).AmmoID;
 	if(Ammo.find(AmmoType) == Ammo.end())
 		return false;
 
@@ -796,7 +796,7 @@ void _Player::UpdateReloading() {
 
 		// Check for ammo
 		if(HasAmmoForMain()) {
-			const std::string &AmmoType = Stats.Items.at(GetMainHand()->ID).AmmoID;
+			const std::string &AmmoType = Stats.Objects.at(GetMainHand()->ID).AmmoID;
 			int AmountNeeded = GetMainHand()->Attributes["rounds"].Int - GetMainHand()->Attributes["ammo"].Int;
 			int AmmoLoadAmount = std::min(Ammo[AmmoType], AmountNeeded);
 			GetMainHand()->Attributes["ammo"].Int += AmmoLoadAmount;
@@ -988,7 +988,7 @@ void _Player::RecalculateStats() {
 	// Handle max ammo
 	AmmoMax.clear();
 	for(const auto &AmmoType : Stats.AmmoNames) {
-		AmmoMax[AmmoType] = Stats.Items.at(AmmoType).Attributes["amount_max"].Int * Attributes["max_ammo"].Mult();
+		AmmoMax[AmmoType] = Stats.Objects.at(AmmoType).Attributes["amount_max"].Int * Attributes["max_ammo"].Mult();
 		if(Ammo.find(AmmoType) != Ammo.end())
 			Ammo[AmmoType] = std::min(Ammo[AmmoType], AmmoMax[AmmoType]);
 	}
@@ -1037,7 +1037,7 @@ const std::string &_Player::GetSound(int SoundType) const {
 // Returns the weapon's particle template
 const _ParticleTemplate *_Player::GetWeaponParticle(int Index) const {
 	if(HasMainHand())
-		return Stats.Items.at(GetMainHand()->ID).WeaponParticles->ParticleTemplates[Index];
+		return Stats.Objects.at(GetMainHand()->ID).WeaponParticles->ParticleTemplates[Index];
 
 	return nullptr;
 }

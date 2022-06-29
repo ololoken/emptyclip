@@ -141,7 +141,6 @@ class _Entity : public _Object {
 		bool Tired;
 
 		// Stats
-		int Level;
 		int Health;
 		int MaxHealth;
 		int DamageBlock;

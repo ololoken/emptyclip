@@ -95,7 +95,7 @@ _Map::_Map(const std::string &Filename) : _Map() {
 		// Check for items
 		switch(Object->Type) {
 			case _Object::MONSTER:
-				if(Stats.Monsters.find(Object->ID) == Stats.Monsters.end())
+				if(Stats.Objects.find(Object->ID) == Stats.Objects.end())
 					throw std::runtime_error(std::string(__func__) + " Unknown monster '" + Object->ID + "'");
 			break;
 			case _Object::KEY:
@@ -103,11 +103,11 @@ _Map::_Map(const std::string &Filename) : _Map() {
 			case _Object::UPGRADE:
 			case _Object::ARMOR:
 			case _Object::MEDKIT:
-				if(Stats.Items.find(Object->ID) == Stats.Items.end())
+				if(Stats.Objects.find(Object->ID) == Stats.Objects.end())
 					throw std::runtime_error(std::string(__func__) + " Unknown item '" + Object->ID + "'");
 			break;
 			case _Object::WEAPON:
-				if(Stats.Items.find(Object->ID) == Stats.Items.end())
+				if(Stats.Objects.find(Object->ID) == Stats.Objects.end())
 					throw std::runtime_error(std::string(__func__) + " Unknown weapon '" + Object->ID + "'");
 			break;
 		}
@@ -151,7 +151,7 @@ _Map::_Map(const std::string &Filename) : _Map() {
 		std::getline(InputFile, EventParticleID, '\n');
 
 		// Check for existence
-		if(EventMonsterID != "" && Stats.Monsters.find(EventMonsterID) == Stats.Monsters.end())
+		if(EventMonsterID != "" && Stats.Objects.find(EventMonsterID) == Stats.Objects.end())
 			throw std::runtime_error("Cannot find monster: " + EventMonsterID);
 		if(EventParticleID != "" && !GameAssets.IsParticleLoaded(EventParticleID))
 			throw std::runtime_error("Cannot find particle: " + EventParticleID);

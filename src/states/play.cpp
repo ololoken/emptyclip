@@ -822,7 +822,7 @@ void _PlayState::UseObject(_Item *NearbyItem) {
 			if(Event->ItemID != "") {
 				int ItemIndex = Player->FindItem(Event->ItemID);
 				if(ItemIndex == -1) {
-					HUD->ShowMessageBox("You need the " + Stats.Items.at(Event->ItemID).Name, HUD_KEYMESSAGETIME);
+					HUD->ShowMessageBox("You need the " + Stats.Objects.at(Event->ItemID).Name, HUD_KEYMESSAGETIME);
 					return;
 				}
 
@@ -920,7 +920,7 @@ void _PlayState::CheckEvents(const _Entity *Entity) {
 		if(Event->Active) {
 			switch(Event->Type) {
 				case EVENT_SPAWN:
-					if(Stats.Monsters.find(Event->MonsterID) != Stats.Monsters.end()) {
+					if(Stats.Objects.find(Event->MonsterID) != Stats.Objects.end()) {
 						Event->StartTimer();
 						ActiveEvents.push_back(Event);
 					}

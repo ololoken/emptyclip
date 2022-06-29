@@ -77,7 +77,7 @@ void _Weapon::Serialize(ae::_Buffer &Buffer) {
 
 // Get weapon sound
 const std::string &_Weapon::GetSound(int SoundType) const {
-	return Stats.Items.at(ID).SoundID[SoundType];
+	return Stats.Objects.at(ID).SoundID[SoundType];
 }
 
 // Set ammo amount
@@ -117,7 +117,7 @@ bool _Weapon::AddComponent(_Item *Upgrade) {
 	if(Upgrade->Attributes.at("weapon_type").Int != 0 && Upgrade->Attributes.at("weapon_type").Int != Attributes.at("weapon_type").Int)
 		return false;
 
-	if(Upgrade->Attributes.at("upgrade_type").Int == UPGRADE_CLIP && Stats.Items.at(ID).Attributes.at("rounds").Int == 0)
+	if(Upgrade->Attributes.at("upgrade_type").Int == UPGRADE_CLIP && Stats.Objects.at(ID).Attributes.at("rounds").Int == 0)
 		return false;
 
 	Upgrades.push_back(Upgrade);

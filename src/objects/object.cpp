@@ -24,8 +24,9 @@
 // Constructor
 _Object::_Object(const _ObjectTemplate &Template) :
 	Template(Template),
-	Active(true),
 	Type(Template.Type),
+	Level(1),
+	Active(true),
 	Map(nullptr),
 	TileChanged(false),
 	Position(0, 0),
@@ -40,6 +41,29 @@ _Object::_Object(const _ObjectTemplate &Template) :
 
 }
 
+// Set two range attributes given a level, spread and multiplier
+void _Object::SetAttributeRange(const std::string &AttributeName, int ItemLevel, float Multiplier) {
+	float LevelValue = ItemLevel > 0 ? Template.Attributes.at(AttributeName + "_level").Float * ItemLevel : 0;
+	int Value = std::ceil((Template.Attributes.at(AttributeName).Float + LevelValue) * Multiplier);
+	int ValueRange = std::ceil(Value * Template.Attributes.at(AttributeName + "_spread").Float);
+	Attributes["min_" + AttributeName].Int = Value - ValueRange;
+	Attributes["max_" + AttributeName].Int = Value + ValueRange;
+}
+
+// Set an attribute given a level and multiplier
+void _Object::SetAttributeLevel(const std::string &AttributeName, int ItemLevel, float Multiplier) {
+	float LevelValue = ItemLevel > 0 ? Template.Attributes.at(AttributeName + "_level").Float * ItemLevel : 0;
+	Attributes[AttributeName].Int = std::ceil((Template.Attributes.at(AttributeName).Float + LevelValue) * Multiplier);
+}
+
+// Get render bounds of object
+void _Object::GetRenderBounds(glm::vec4 &Bounds) {
+	Bounds[0] = Position.x - Scale * 0.5f;
+	Bounds[1] = Position.y - Scale * 0.5f;
+	Bounds[2] = Position.x + Scale * 0.5f;
+	Bounds[3] = Position.y + Scale * 0.5f;
+}
+
 // Calculates the angle from a slope
 void _Object::FacePosition(const glm::vec2 &Cursor) {
 
@@ -52,14 +76,6 @@ void _Object::FacePosition(const glm::vec2 &Cursor) {
 	Rotation = glm::degrees(atan2(Direction.y, Direction.x)) + 90.0f;
 	if(Rotation < 0.0f)
 		Rotation += 360.0f;
-}
-
-// Get render bounds of object
-void _Object::GetRenderBounds(glm::vec4 &Bounds) {
-	Bounds[0] = Position.x - Scale * 0.5f;
-	Bounds[1] = Position.y - Scale * 0.5f;
-	Bounds[2] = Position.x + Scale * 0.5f;
-	Bounds[3] = Position.y + Scale * 0.5f;
 }
 
 // Force position of object

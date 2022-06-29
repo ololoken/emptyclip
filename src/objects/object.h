@@ -58,13 +58,15 @@ class _Object {
 		virtual void Update(double FrameTime) { }
 		virtual void Render(double BlendFactor) { }
 		virtual void Serialize(ae::_Buffer &Buffer) { }
-		void FacePosition(const glm::vec2 &Cursor);
 
 		void GetRenderBounds(glm::vec4 &Bounds);
+		void FacePosition(const glm::vec2 &Cursor);
 		void SetPosition(const glm::vec2 &NewPosition);
 		glm::vec2 GetDirectionVector(float RotationOffset = 0.0f) const;
 
 		virtual std::string GetTypeAsString() const { return "Object"; }
+		void SetAttributeRange(const std::string &AttributeName, int ItemLevel, float Multiplier);
+		void SetAttributeLevel(const std::string &AttributeName, int ItemLevel, float Multiplier);
 
 		// Template
 		const _ObjectTemplate &Template;
@@ -73,8 +75,9 @@ class _Object {
 		std::unordered_map<std::string, _Value> Attributes;
 		std::string Name;
 		std::string ID;
-		bool Active;
 		int Type;
+		int Level;
+		bool Active;
 
 		// Map
 		_Map *Map;

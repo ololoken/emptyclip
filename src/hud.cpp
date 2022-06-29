@@ -377,7 +377,7 @@ void _HUD::Render() {
 		if(Player->Ammo.find(AmmoType) == Player->Ammo.end())
 			continue;
 
-		_ObjectTemplate &Ammo = Stats.Items.at(AmmoType);
+		_ObjectTemplate &Ammo = Stats.Objects.at(AmmoType);
 		const ae::_Texture *Texture = ae::Assets.Textures[Ammo.IconID];
 		if(!Texture)
 			continue;

@@ -33,27 +33,11 @@
 // Constructor
 _Item::_Item(const _ObjectTemplate &Template) :
 	_Object(Template),
-	Level(1),
 	Quality(0),
 	Count(0) {
 
 	Texture = nullptr;
 	PositionZ = ITEM_Z;
-}
-
-// Set two range attributes given a level, spread and multiplier
-void _Item::SetAttributeRange(const std::string &AttributeName, int ItemLevel, float Multiplier) {
-	float LevelValue = ItemLevel > 0 ? Template.Attributes.at(AttributeName + "_level").Float * ItemLevel : 0;
-	int Value = std::ceil((Template.Attributes.at(AttributeName).Float + LevelValue) * Multiplier);
-	int ValueRange = std::ceil(Value * Template.Attributes.at(AttributeName + "_spread").Float);
-	Attributes["min_" + AttributeName].Int = Value - ValueRange;
-	Attributes["max_" + AttributeName].Int = Value + ValueRange;
-}
-
-// Set an attribute given a level and multiplier
-void _Item::SetAttributeLevel(const std::string &AttributeName, int ItemLevel, float Multiplier) {
-	float LevelValue = ItemLevel > 0 ? Template.Attributes.at(AttributeName + "_level").Float * ItemLevel : 0;
-	Attributes[AttributeName].Int = std::ceil((Template.Attributes.at(AttributeName).Float + LevelValue) * Multiplier);
 }
 
 // Serialize for saving
@@ -271,10 +255,10 @@ void _Item::DrawTooltip(const _Player *Player, std::size_t CompareSlot, glm::ive
 			}
 
 			// Ammo type
-			std::string AmmoType = Stats.Items.at(Weapon->ID).AmmoID;
+			std::string AmmoType = Stats.Objects.at(Weapon->ID).AmmoID;
 			if(!AmmoType.empty()) {
 				DrawPosition.y += 20;
-				Buffer << Stats.Items.at(AmmoType).Name;
+				Buffer << Stats.Objects.at(AmmoType).Name;
 				ae::Assets.Fonts["hud_medium"]->DrawText("Ammo Type", DrawPosition - DrawOffset, ae::RIGHT_BASELINE);
 				ae::Assets.Fonts["hud_medium"]->DrawText(Buffer.str(), DrawPosition + DrawOffset);
 				Buffer.str("");

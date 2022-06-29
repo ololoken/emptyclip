@@ -46,8 +46,6 @@ class _Item : public _Object {
 		void DrawTooltip(const _Player *Player, std::size_t CompareSlot, glm::ivec2 DrawPosition);
 		void Render(double BlendFactor) override;
 
-		void SetAttributeRange(const std::string &AttributeName, int ItemLevel, float Multiplier);
-		void SetAttributeLevel(const std::string &AttributeName, int ItemLevel, float Multiplier);
 		int UpdateCount(int Amount) { Count += Amount; return Count; }
 		bool CanStack() { return !(Type == _Object::WEAPON || Type == _Object::ARMOR || Type == _Object::UPGRADE); }
 
@@ -57,7 +55,6 @@ class _Item : public _Object {
 		virtual std::string GetTypeAsString() const override;
 		std::string UpgradeTypeToString(int Type, int WeaponType);
 
-		int Level;
 		int Quality;
 		int Count;
 

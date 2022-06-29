@@ -43,7 +43,6 @@ _Entity::_Entity(const _ObjectTemplate &Template) :
 	MaxStamina(1),
 	StaminaRegenModifier(1.0f),
 	Tired(false),
-	Level(1),
 	Health(0),
 	MaxHealth(0),
 	DamageBlock(0),

@@ -118,8 +118,6 @@ class _Stats {
 		void GetRandomDrop(const _ItemDrop *ItemDrop, _ObjectSpawn *ObjectSpawn);
 
 		std::unordered_map<std::string, std::string> Strings;
-		std::unordered_map<std::string, _ObjectTemplate> Items;
-		std::unordered_map<std::string, _ObjectTemplate> Monsters;
 		std::unordered_map<std::string, _ObjectTemplate> Objects;
 		std::unordered_map<std::string, _ItemDrop> ItemDrops;
 		_Weapon *WeaponFists;

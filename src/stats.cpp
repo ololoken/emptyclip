@@ -55,9 +55,8 @@ void _Stats::Close() {
 	delete WeaponFists;
 	Levels.clear();
 	Skills.clear();
-	Items.clear();
+	Objects.clear();
 	ItemDrops.clear();
-	Monsters.clear();
 }
 
 // Load strings
@@ -165,10 +164,10 @@ void _Stats::LoadAmmo(const std::string &Path) {
 			throw std::runtime_error(std::string(__func__) + " - Texture not found: " + Template.IconID);
 
 		// Check for duplicates
-		if(Items.find(ID) != Items.end())
+		if(Objects.find(ID) != Objects.end())
 			throw std::runtime_error(std::string(__func__) + " - Duplicate entry: " + ID);
 
-		Items.insert(std::make_pair(ID, Template));
+		Objects.insert(std::make_pair(ID, Template));
 		AmmoNames.push_back(ID);
 	}
 
@@ -212,10 +211,10 @@ void _Stats::LoadArmor(const std::string &Path) {
 			throw std::runtime_error(std::string(__func__) + " - Texture not found: " + Template.IconID);
 
 		// Check for duplicates
-		if(Items.find(ID) != Items.end())
+		if(Objects.find(ID) != Objects.end())
 			throw std::runtime_error(std::string(__func__) + " - Duplicate entry: " + ID);
 
-		Items.insert(std::make_pair(ID, Template));
+		Objects.insert(std::make_pair(ID, Template));
 	}
 
 	File.close();
@@ -251,10 +250,10 @@ void _Stats::LoadKeys(const std::string &Path) {
 		SetColor(Template.Color, ColorID);
 
 		// Check for duplicates
-		if(Items.find(ID) != Items.end())
+		if(Objects.find(ID) != Objects.end())
 			throw std::runtime_error(std::string(__func__) + " - Duplicate entry: " + ID);
 
-		Items.insert(std::make_pair(ID, Template));
+		Objects.insert(std::make_pair(ID, Template));
 	}
 
 	File.close();
@@ -292,10 +291,10 @@ void _Stats::LoadMedkits(const std::string &Path) {
 			throw std::runtime_error(std::string(__func__) + " - Cannot find texture: " + Template.IconID);
 
 		// Check for duplicates
-		if(Items.find(ID) != Items.end())
+		if(Objects.find(ID) != Objects.end())
 			throw std::runtime_error(std::string(__func__) + " - Duplicate entry: " + ID);
 
-		Items.insert(std::make_pair(ID, Template));
+		Objects.insert(std::make_pair(ID, Template));
 	}
 
 	File.close();
@@ -339,10 +338,10 @@ void _Stats::LoadUpgrades(const std::string &Path) {
 		SetColor(Template.Color, ColorID);
 
 		// Check for duplicates
-		if(Items.find(ID) != Items.end())
+		if(Objects.find(ID) != Objects.end())
 			throw std::runtime_error(std::string(__func__) + " - Duplicate entry: " + ID);
 
-		Items.insert(std::make_pair(ID, Template));
+		Objects.insert(std::make_pair(ID, Template));
 	}
 
 	File.close();
@@ -422,10 +421,10 @@ void _Stats::LoadWeapons(const std::string &Path) {
 			Template.WeaponParticles = &BlankWeaponParticle;
 
 		// Check for duplicates
-		if(Items.find(ID) != Items.end())
+		if(Objects.find(ID) != Objects.end())
 			throw std::runtime_error(std::string(__func__) + " - Duplicate entry: " + ID);
 
-		Items.insert(std::make_pair(ID, Template));
+		Objects.insert(std::make_pair(ID, Template));
 	}
 
 	File.close();
@@ -486,7 +485,7 @@ void _Stats::LoadItemDrops(const std::string &Path) {
 			case _Object::ARMOR:
 			case _Object::WEAPON:
 			case _Object::MEDKIT:
-				if(Items.find(ItemDropEntry.ItemID) == Items.end())
+				if(Objects.find(ItemDropEntry.ItemID) == Objects.end())
 					throw std::runtime_error(std::string(__func__) + " - Cannot find: " + ItemDropEntry.ItemID + " in " + Path);
 			break;
 			default:
@@ -581,10 +580,10 @@ void _Stats::LoadMonsters(const std::string &Path) {
 			throw std::runtime_error(std::string(__func__) + " - Unknown itemdrop_id: '" + Template.ItemDropID + "' for " + ID);
 
 		// Check for duplicates
-		if(Stats.Monsters.find(ID) != Stats.Monsters.end())
+		if(Stats.Objects.find(ID) != Stats.Objects.end())
 			throw std::runtime_error(std::string(__func__) + " - Duplicate id: '" + ID + "'");
 
-		Monsters.insert(std::make_pair(ID, Template));
+		Objects.insert(std::make_pair(ID, Template));
 	}
 
 	File.close();
@@ -592,7 +591,7 @@ void _Stats::LoadMonsters(const std::string &Path) {
 
 // Create item
 _Item *_Stats::CreateItem(const std::string &ID, int Level, int Quality, int Count, const glm::vec2 &Position, bool RandomStats) {
-	_ObjectTemplate &Template = Items.at(ID);
+	_ObjectTemplate &Template = Objects.at(ID);
 
 	// Create item
 	_Item *Item = new _Item(Template);
@@ -637,7 +636,7 @@ _Item *_Stats::CreateItem(const std::string &ID, int Level, int Quality, int Cou
 
 // Creates a weapon
 _Weapon *_Stats::CreateWeapon(const std::string &ID, int Level, int Quality, const glm::vec2 &Position, bool RandomStats) {
-	_ObjectTemplate &Template = Items.at(ID);
+	_ObjectTemplate &Template = Objects.at(ID);
 	_Weapon *Weapon = new _Weapon(ID, Level, Position, Template, ae::Assets.Textures[Template.IconID], RandomStats);
 
 	return Weapon;
@@ -645,7 +644,7 @@ _Weapon *_Stats::CreateWeapon(const std::string &ID, int Level, int Quality, con
 
 // Creates a monster
 _Monster *_Stats::CreateMonster(const std::string &ID, const glm::vec2 &Position) {
-	_ObjectTemplate &MonsterTemplate = Monsters.at(ID);
+	_ObjectTemplate &MonsterTemplate = Objects.at(ID);
 
 	// Creates a monster
 	_Monster *Monster = new _Monster(MonsterTemplate);
