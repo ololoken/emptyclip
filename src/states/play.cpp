@@ -434,7 +434,7 @@ void _PlayState::Update(double FrameTime) {
 
 	// Apply the damage
 	if(Player->AttackMade)
-		EntityAttack(Player, GRID_MONSTER);
+		ResolveAttack(Player, GRID_MONSTER);
 
 	// Update camera
 	Camera->Set2DPosition(Player->Position);
@@ -650,7 +650,7 @@ void _PlayState::Render(double BlendFactor) {
 }
 
 // Fires a gun or swings a weapon
-void _PlayState::EntityAttack(_Entity *Attacker, int GridType) {
+void _PlayState::ResolveAttack(_Entity *Attacker, int GridType) {
 
 	// Check for ammo
 	if(!Attacker->WeaponHasAmmo())
@@ -895,7 +895,7 @@ void _PlayState::UpdateMonsters(double FrameTime) {
 
 			// Attack
 			if(Monster->AttackMade)
-				EntityAttack(Monster, GRID_PLAYER);
+				ResolveAttack(Monster, GRID_PLAYER);
 
 			// Add to render list
 			if(Camera->IsAABBInView(Bounds))

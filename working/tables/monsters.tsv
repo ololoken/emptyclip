@@ -1,12 +1,23 @@
 id	name	animation_id	color_id	particles_id	sound_group_id	itemdrop_id	drop_count	health	health_level	ai_type	view_range	xp	xp_level	move_speed	move_speed_level	radius	scale	accuracy	attack_range	damage	damage_level	damage_spread	attack_period	weapon_type
-monster_zombie	Zombie	zombie			zombie	monster	1	5	15	5	8	0	10	0.3	0.05	0.3	0.8	30	0.65	5	5	0.1	1.7	1
-monster_dog	Dog	dog			dog	monster	1	5	15	5	8	0	10	0.3	0.05	0.3	0.8	30	0.65	5	5	0.1	1.7	0
-monster_bat	Bat	bat			bat	monster	1	5	15	5	8	0	10	0.3	0.05	0.3	0.8	30	0.65	5	5	0.1	1.7	0
-monster_spider	Spider	spider			spider	monster	1	5	15	5	8	0	10	0.3	0.05	0.3	0.8	30	0.65	5	5	0.1	1.7	0
-monster_skeleton	Skeleton	skeleton			skeleton	monster	1	5	15	5	8	0	10	0.3	0.05	0.3	0.8	30	0.65	5	5	0.1	1.7	0
-monster_beast	Beast	beast			beast	monster	1	5	15	5	8	0	10	0.3	0.05	0.3	0.8	30	0.65	5	5	0.1	1.7	0
-monster_fighter	Fighter	fighter			fighter	monster	1	5	15	5	8	0	10	0.3	0.05	0.3	0.8	30	0.65	5	5	0.1	1.7	0
-monster_gunner	Gunner	gunner			gunner	monster	1	5	15	5	8	0	10	0.3	0.05	0.3	0.8	30	0.65	5	5	0.1	1.7	0
-monster_demon	Demon	demon			player	monster	1	5	15	5	8	0	10	0.3	0.05	0.3	0.8	30	0.65	5	5	0.1	1.7	0
-monster_alien	Alien	alien			player	monster	1	5	15	5	8	0	10	0.3	0.05	0.3	0.8	30	0.65	5	5	0.1	1.7	0
-monster_boss	Boss	alien			player	boss	1	5	15	5	8	0	10	0.3	0.05	0.3	0.8	30	0.65	5	5	0.1	1.7	0
+monster_zombie	Zombie	zombie			zombie	monster	1	35	15	0	10	0	10	0.3	0.05	0.3	0.8	90	0.7	0	10	0.1	1.7	1
+monster_dog	Dog	dog			dog	monster	1	5	10	0	25	0	7	7	0.1	0.2	0.7	90	0.9	5	10	0.1	0.8	1
+monster_bat	Bat	bat			bat	monster	1	0	10	0	8	0	5	4	0.1	0.2	0.5	90	0.7	0	8	0.1	1.1	1
+monster_spider	Spider	spider			spider	monster	1	0	10	0	8	0	5	5	0.07	0.2	0.5	90	0.7	0	7	0.1	1	1
+monster_skeleton	Skeleton	skeleton			skeleton	monster	1	35	20	0	10	0	12	1.3	0.05	0.3	0.8	90	0.7	0	10	0.1	1.2	1
+monster_beast	Beast	beast			beast	monster	1	100	50	0	12	0	30	1	0.03	0.4	2	90	1.2	5	30	0.1	2.5	1
+monster_fighter	Fighter	fighter			fighter	monster	1	50	20	0	15	0	15	2.3	0.07	0.3	1	90	0.9	5	12	0.1	0.7	1
+monster_gunner	Gunner	gunner			gunner	monster	1	30	20	0	20	0	15	2	0.08	0.3	1	15	10	5	15	0.1	1.5	2
+monster_demon	Demon	demon			player	monster	1	40	25	0	12	0	20	2.6	0.05	0.3	1	90	3	5	20	0.1	1.3	1
+monster_alien	Alien	alien			player	monster	1	50	20	0	20	0	30	2	0.05	0.3	1	15	10	5	15	0.1	1.2	2
+boss_01	Zombie Chieftain	zombie	dark		zombie	boss	1	500	0	0	50	500	0	0.75	0	0.4	1.5	90	0.7	0	0	0.1	1.7	1
+boss_02	Black Wolf	dog	dark		dog	boss	1	500	0	0	50	500	0	1	0	0.3	0.8	90	0.7	0	0	0.1	1.7	1
+boss_03	Frozen Beast	beast	blue		beast	boss	1	500	0	0	50	500	0	1	0	0.3	0.8	90	0.7	0	0	0.1	1.7	1
+boss_04	Boss	zombie			player	boss	1	500	0	0	50	500	0	1	0	0.3	0.8	90	0.7	0	0	0.1	1.7	1
+boss_05	Boss	zombie			player	boss	1	500	0	0	50	500	0	1	0	0.3	0.8	90	0.7	0	0	0.1	1.7	1
+boss_06	Boss	zombie			player	boss	1	500	0	0	50	500	0	1	0	0.3	0.8	90	0.7	0	0	0.1	1.7	1
+boss_07	Boss	zombie			player	boss	1	500	0	0	50	500	0	1	0	0.3	0.8	90	0.7	0	0	0.1	1.7	1
+boss_08	Boss	zombie			player	boss	1	500	0	0	50	500	0	1	0	0.3	0.8	90	0.7	0	0	0.1	1.7	1
+boss_09	Boss	zombie			player	boss	1	500	0	0	50	500	0	1	0	0.3	0.8	90	0.7	0	0	0.1	1.7	1
+boss_10	Boss	zombie			player	boss	1	500	0	0	50	500	0	1	0	0.3	0.8	90	0.7	0	0	0.1	1.7	1
+boss_11	Boss	zombie			player	boss	1	500	0	0	50	500	0	1	0	0.3	0.8	90	0.7	0	0	0.1	1.7	1
+boss_12	Boss	zombie			player	boss	1	500	0	0	50	500	0	1	0	0.3	0.8	90	0.7	0	0	0.1	1.7	1

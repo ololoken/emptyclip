@@ -592,22 +592,24 @@ _Entity *_Map::CheckMeleeCollisions(_Entity *Attacker, const glm::vec2 &Directio
 		for(int j = TileBounds.Start.y; j <= TileBounds.End.y; j++) {
 			for(auto Iterator = Data[i][j].Objects[GridType].begin(); Iterator != Data[i][j].Objects[GridType].end(); ++Iterator) {
 				_Entity *Entity = (_Entity *)*Iterator;
-				if(!Entity->IsDying()) {
-					float DistanceSquared = glm::distance2(Entity->Position, Attacker->Position);
-					float RadiiSum = Entity->Radius + Attacker->GetWeaponRange(Attacker->AttackRequestType);
+				if(Entity->IsDying())
+					continue;
 
-					// Check circle intersection
-					if(DistanceSquared < RadiiSum * RadiiSum) {
-						glm::vec2 ObjectDirection(glm::normalize(Entity->Position - Attacker->Position));
+				float DistanceSquared = glm::distance2(Entity->Position, Attacker->Position);
+				float RadiiSum = Entity->Radius + Attacker->GetWeaponRange(Attacker->AttackRequestType);
 
-						// Compare angles
-						if(glm::dot(Direction, ObjectDirection) > cosf(glm::radians(Attacker->GetMaxAccuracy(Attacker->AttackRequestType) * 0.5f))) {
+				// Check circle intersection
+				if(DistanceSquared >= RadiiSum * RadiiSum)
+					continue;
 
-							// Check for walls
-							if(IsVisible(Attacker->Position, Entity->Position))
-								return Entity;
-						}
-					}
+				glm::vec2 ObjectDirection(glm::normalize(Entity->Position - Attacker->Position));
+
+				// Compare angles
+				if(glm::dot(Direction, ObjectDirection) > cosf(glm::radians(Attacker->GetMaxAccuracy(Attacker->AttackRequestType) * 0.5f))) {
+
+					// Check for walls
+					if(IsVisible(Attacker->Position, Entity->Position))
+						return Entity;
 				}
 			}
 		}
