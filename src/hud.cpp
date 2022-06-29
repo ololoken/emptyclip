@@ -342,10 +342,16 @@ void _HUD::Render() {
 	Elements[ELEMENT_PLAYERHEALTH]->Render();
 
 	// Draw experience bar
-	Buffer << Player->Experience << " / " << Player->ExperienceNextLevel << " XP";
+	float LevelPercentage = 1.0f;
+	if(Player->ExperienceNeeded) {
+		LevelPercentage = Player->ExperienceNextLevel > 0 ? 1.0f - (float)Player->ExperienceNeeded / Player->ExperienceNextLevel : 0;
+		Buffer << Player->ExperienceNextLevel - Player->ExperienceNeeded << " / " << Player->ExperienceNextLevel << " XP";
+	}
+	else
+		Buffer.str("");
 	Elements[LABEL_EXPERIENCE]->Text = Buffer.str();
 	Buffer.str("");
-	Elements[IMAGE_EXPERIENCE]->SetWidth(Elements[ELEMENT_EXPERIENCE]->Size.x * Player->LevelPercentage);
+	Elements[IMAGE_EXPERIENCE]->SetWidth(Elements[ELEMENT_EXPERIENCE]->Size.x * LevelPercentage);
 	Elements[ELEMENT_EXPERIENCE]->Render();
 
 	// Draw player name and level

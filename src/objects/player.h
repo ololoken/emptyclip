@@ -156,14 +156,13 @@ class _Player : public _Entity {
 		int WeaponSwitchTo;
 
 		// Character information
-		float LevelPercentage;
 		double PlayingTimer;
 		int MonsterKills;
 		int TimePlayed;
 		int64_t Gold;
 		int64_t Experience;
 		int64_t ExperienceNextLevel;
-		int64_t ExperienceCurrentLevel;
+		int64_t ExperienceNeeded;
 
 		// Skills
 		int Skills[SKILL_COUNT];
@@ -192,7 +191,6 @@ class _Player : public _Entity {
 		bool IsHandIndex(int Index) { return Index == INVENTORY_MAINHAND || Index == INVENTORY_OFFHAND; }
 
 		void SetAnimationPlaybackSpeedFactor() override;
-		void CalculateLevelPercentage();
 		void CalculateExperienceStats();
 		void CalculateSkillsRemaining();
 		void UpdateColor();

@@ -89,9 +89,8 @@ void _Player::Reset() {
 	Level = 1;
 	Gold = 0;
 	Experience = 0;
-	ExperienceCurrentLevel = 0;
+	ExperienceNeeded = 0;
 	ExperienceNextLevel = 0;
-	LevelPercentage = 0.0f;
 	SkillPointsRemaining = 0;
 
 	for(int i = 0; i < SKILL_COUNT; i++)
@@ -132,7 +131,6 @@ void _Player::Reset() {
 	Stamina = 100.0f;
 
 	CalculateExperienceStats();
-	CalculateLevelPercentage();
 	CalculateSkillsRemaining();
 	UpdateColor();
 
@@ -338,17 +336,15 @@ void _Player::Render2D(const glm::ivec2 &Position) {
 // Updates the player's experience, leveling up if needed
 void _Player::UpdateExperience(int64_t ExperienceGained) {
 	Experience = Stats.GetValidExperience(Experience + ExperienceGained);
+	CalculateExperienceStats();
 
 	// Check if enough experience has been reached for a new level.
 	if(Experience >= ExperienceNextLevel)
 		UpdateLevel();
-
-	CalculateLevelPercentage();
 }
 
 // Advance the player levels
 void _Player::UpdateLevel() {
-	int OldLevel = Level;
 
 	// Get new level
 	CalculateExperienceStats();
@@ -360,7 +356,7 @@ void _Player::UpdateLevel() {
 	RecalculateStats();
 
 	// Update current health
-	UpdateHealth(Stats.GetLevelHealth(Level) - Stats.GetLevelHealth(OldLevel));
+	Health = MaxHealth;
 }
 
 // Updates a skill
@@ -383,19 +379,15 @@ void _Player::UpdateSkill(int Index, int Value) {
 
 // Calculates the level and experience variables
 void _Player::CalculateExperienceStats() {
-	Level = Stats.GetLevel(Experience);
-	ExperienceCurrentLevel = Stats.GetExperienceForLevel(Level);
-	ExperienceNextLevel = Stats.GetExperienceForLevel(Level + 1);
+	const _Level &LevelStat = Stats.FindLevel(Experience);
+	Level = LevelStat.Level;
+	ExperienceNextLevel = LevelStat.NextLevel;
+	ExperienceNeeded = (Level == Stats.GetMaxLevel()) ? 0 : LevelStat.NextLevel - (Experience - LevelStat.Experience);
 }
 
 // Calculates the number of skills points remaining
 void _Player::CalculateSkillsRemaining() {
 	SkillPointsRemaining = Stats.GetSkillPointsRemaining(Level) - SpentSkillPoints();
-}
-
-// Calculates the percentage to the player's next level
-void _Player::CalculateLevelPercentage() {
-	LevelPercentage = (float)(Experience - ExperienceCurrentLevel) / (float)(ExperienceNextLevel - ExperienceCurrentLevel);
 }
 
 // Returns the number of skill points the player has spent
@@ -973,7 +965,7 @@ void _Player::RecalculateStats() {
 	StaminaRegenModifier = Stats.GetSkillBonusMultiplier(Skills[SKILL_MAXSTAMINA], SKILL_MAXSTAMINA);
 
 	// Armor
-	DamageBlock = Stats.GetLevelDamageBlock(Level);
+	DamageBlock = 0;
 	Attributes["max_ammo"].Int = 100;
 	if(GetArmor()) {
 		DamageBlock += GetArmor()->Attributes.at("damage_block").Int;

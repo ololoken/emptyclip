@@ -32,8 +32,9 @@ struct _ObjectSpawn;
 // Used for level information
 struct _Level {
 	int64_t Experience;
+	int64_t NextLevel;
+	int Level;
 	int HealthBonus;
-	int DamageBlockBonus;
 	int SkillPoints;
 };
 
@@ -104,12 +105,11 @@ class _Stats {
 		_Item *CreateItem(const std::string &ID, int Level, int Quality, int Count, const glm::vec2 &Position, bool RandomStats);
 		_Monster *CreateMonster(const std::string &ID, int Level, const glm::vec2 &Position);
 
-		int GetLevel(int64_t Experience);
+		const _Level &FindLevel(int64_t Experience);
 		int64_t GetValidExperience(int64_t Experience);
-		int64_t GetExperienceForLevel(int Level);
 		int GetLevelHealth(int Level) { return Levels[Level-1].HealthBonus; }
-		int GetLevelDamageBlock(int Level) { return Levels[Level-1].DamageBlockBonus; }
 		int GetSkillPointsRemaining(int Level) { return Levels[Level-1].SkillPoints; }
+		int GetMaxLevel() const { return (int)Levels.size(); }
 
 		int GetValidSkillLevel(int Level);
 		int GetSkill(int Level, int Type) const { return Skills[Level].Data[Type]; }

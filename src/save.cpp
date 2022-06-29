@@ -234,7 +234,6 @@ void _Save::LoadPlayer(_Player *Player) {
 	File.close();
 
 	Player->CalculateExperienceStats();
-	Player->CalculateLevelPercentage();
 	Player->CalculateSkillsRemaining();
 	Player->UpdateColor();
 	Player->RecalculateStats();

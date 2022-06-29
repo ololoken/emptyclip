@@ -99,17 +99,22 @@ void _Stats::LoadLevels(const std::string &Path) {
 	// Skip header
 	File.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
-	// Load data
-	Levels.clear();
-	for(int i = 0; i < GAME_MAX_LEVEL; i++) {
-		if(File.eof())
-			throw std::runtime_error("LoadLevels - Premature end of file");
-
+	// Read file
+	while(!File.eof() && File.peek() != EOF) {
 		_Level Level;
-		File >> Level.Experience >> Level.HealthBonus >> Level.DamageBlockBonus >> Level.SkillPoints;
+		Level.Level = (int)Levels.size() + 1;
+		File >> Level.Experience >> Level.HealthBonus >> Level.SkillPoints;
+		File.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
 		Levels.push_back(Level);
 	}
+
+	// Calculate next level
+	for(std::size_t i = 1; i < Levels.size(); i++)
+		Levels[i - 1].NextLevel = Levels[i].Experience - Levels[i - 1].Experience;
+
+	// Cap next level
+	Levels[Levels.size() - 1].NextLevel = 0;
 }
 
 // Load skill stats
@@ -684,43 +689,24 @@ _Monster *_Stats::CreateMonster(const std::string &ID, int Level, const glm::vec
 
 // Returns a valid amount of experience
 int64_t _Stats::GetValidExperience(int64_t Experience) {
-
 	if(Experience < 0)
 		return 0;
-	else if(Experience > Levels[GAME_MAX_LEVEL-1].Experience)
-		return Levels[GAME_MAX_LEVEL-1].Experience;
+	else if(Experience > Levels.back().Experience)
+		return Levels.back().Experience;
 
 	return Experience;
 }
 
 // Returns the level given the experience number
-int _Stats::GetLevel(int64_t Experience) {
+const _Level &_Stats::FindLevel(int64_t Experience) {
 
-	// Degenerate case
-	if(Experience <= 0)
-		return 1;
-	else if(Experience >= Levels[GAME_MAX_LEVEL-1].Experience)
-		return GAME_MAX_LEVEL;
-
-	// Perform linear search through array
-	for(int i = 1; i < GAME_MAX_LEVEL; i++) {
-		if(Experience < Levels[i].Experience)
-			return i;
+	// Search through levels
+	for(std::size_t i = 1; i < Levels.size(); i++) {
+		if(Levels[i].Experience > Experience)
+			return Levels[i-1];
 	}
 
-	return 1;
-}
-
-// Returns the total experience required for a level
-int64_t _Stats::GetExperienceForLevel(int Level) {
-
-	// Degenerate case
-	if(Level <= 0)
-		return Levels[0].Experience;
-	else if(Level > GAME_MAX_LEVEL)
-		return 0;
-
-	return  Levels[Level-1].Experience;
+	return Levels[Levels.size()-1];
 }
 
 // Returns a skill value in a valid range
