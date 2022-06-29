@@ -994,28 +994,41 @@ void _Player::RecalculateStats() {
 	}
 }
 
+// Reset after death
+void _Player::Respawn() {
+	Health = MaxHealth;
+	Action = ACTION_IDLE;
+	Animation->Play(0);
+	Animation->Stop();
+	LegAnimation->Stop();
+
+	RecalculateStats();
+	ResetWeaponAnimation();
+	StopAudio();
+	SetPosition(Map->GetStartingPositionByCheckpoint(CheckpointIndex));
+}
+
 // Sets the weapon animation for the player
 void _Player::ResetWeaponAnimation() {
+	if(IsDying())
+		return;
 
-	if(!IsDying()) {
-
-		// Get walking animation
-		switch(GetWeaponType()) {
-			case WEAPON_MELEE:
-			case WEAPON_PISTOL:
-				WalkingAnimation = PLAYER_ANIMATIONWALKINGONEHAND;
-			break;
-			default:
-				WalkingAnimation = PLAYER_ANIMATIONWALKINGTWOHAND;
-			break;
-		}
-
-		Action = ACTION_IDLE;
-		Animation->Stop();
-		Animation->Play(WalkingAnimation, MovementSpeed);
-		Animation->CalculateTextureCoords();
-		SetAnimationPlaybackSpeedFactor();
+	// Get walking animation
+	switch(GetWeaponType()) {
+		case WEAPON_MELEE:
+		case WEAPON_PISTOL:
+			WalkingAnimation = PLAYER_ANIMATIONWALKINGONEHAND;
+		break;
+		default:
+			WalkingAnimation = PLAYER_ANIMATIONWALKINGTWOHAND;
+		break;
 	}
+
+	Action = ACTION_IDLE;
+	Animation->Stop();
+	Animation->Play(WalkingAnimation, MovementSpeed);
+	Animation->CalculateTextureCoords();
+	SetAnimationPlaybackSpeedFactor();
 }
 
 // Applies the death penalty

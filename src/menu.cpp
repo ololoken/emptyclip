@@ -381,14 +381,7 @@ void _Menu::HandleMouseButton(const ae::_MouseEvent &MouseEvent) {
 				}
 			} break;
 			case STATE_INGAME: {
-				if(Clicked->Name == "button_ingame_restart" && PlayState.Player) {
-					InitPlay();
-					PlayState.Player->CheckpointIndex = 0;
-					Save.SavePlayer(PlayState.Player);
-					Save.LoadPlayer(PlayState.Player);
-					Framework.ChangeState(&PlayState);
-				}
-				else if(Clicked->Name == "button_ingame_resume") {
+				if(Clicked->Name == "button_ingame_resume") {
 					InitPlay();
 				}
 				else if(Clicked->Name == "button_ingame_options") {

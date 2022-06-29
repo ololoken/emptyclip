@@ -467,7 +467,6 @@ void _Entity::UpdateHealth(int Adjust) {
 	if(Health < 0)
 		Health = 0;
 
-	if(Health == 0 && !IsDying()) {
+	if(Health == 0 && !IsDying())
 		Action = ACTION_STARTDEATH;
-	}
 }

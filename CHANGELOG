@@ -5,6 +5,7 @@ Empty Clip 2.0.0 -
 - Inventory is bigger and can now hold equipment
 - Items in inventory can now stack
 - Reworked skill system
+- Rewrote AI system
 - Added minimap
 - Added equipment slot for melee weapons and separate hotkey for melee attacks (Mouse button 4 by default)
 - Equipment can be equipped by right-clicking in the inventory
@@ -15,6 +16,7 @@ Empty Clip 2.0.0 -
 - Armor now affects movement speed and damage resist
 - Removed strength requirement from armor
 - Removed player profiles
+- Players now respawn at their last checkpoint
 - Added damage number particles
 - Improved bullet hole decals
 - The game now pauses while menu is open

@@ -97,13 +97,12 @@ const  int          MAP_HEIGHT                     =  100;
 const  float        MAP_EPSILON                    =  0.0001f;
 //     Editor
 const  std::string  EDITOR_TESTLEVEL               =  "test.map";
-const  float        EDITOR_OBJECTRADIUS            =  0.4f;
+const  float        EDITOR_OBJECTRADIUS            =  0.3f;
 const  double       EDITOR_PERIODADJUST            =  0.1;
 const  int          EDITOR_DEFAULT_LAYER           =  1;
 const  int          EDITOR_DEFAULT_GRIDMODE        =  5;
 const  glm::ivec2   EDITOR_VIEWPORT_OFFSET         =  glm::ivec2(256,168);
 const  int          EDITOR_PALETTE_SELECTEDSIZE    =  32;
-const  int          EDITOR_WALL_LAYER              =  5;
 //     Menu
 const  float        MENU_ACCEPTINPUT_FADE          =  0.7f;
 const  double       MENU_DOUBLECLICK_TIME          =  0.250;

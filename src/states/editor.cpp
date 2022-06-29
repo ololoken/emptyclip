@@ -735,7 +735,7 @@ void _EditorState::Update(double FrameTime) {
 					Block.AltTexture = AltTexture;
 					Block.Rotation = Rotation;
 					Block.ScaleX = ScaleX;
-					Block.Wall = (CurrentLayer == EDITOR_WALL_LAYER);
+					Block.Wall = (CurrentLayer == MAPLAYER_WALL);
 					Block.Walkable = Walkable;
 
 					Map->AddBlock(CurrentLayer, Block);
@@ -1786,8 +1786,13 @@ void _EditorState::ExecuteClear() {
 // Executes the test command
 void _EditorState::ExecuteTest() {
 
-	// TODO catch exception
-	Map->Save(EDITOR_TESTLEVEL);
+	try {
+		Map->Save(EDITOR_TESTLEVEL);
+	}
+	catch(std::exception &Error) {
+		std::cout << Error.what() << std::endl;
+		return;
+	}
 
 	ExecuteDeselect();
 	ClearClipboard();

@@ -330,9 +330,6 @@
         <element id="label_options_controls" font="hud_large" text="Controls" offset_y="200" alignment_y="3"/>
     </element>
     <element id="element_menu_ingame" size_x="512" size_y="150">
-        <element id="button_ingame_restart" style="style_menu_button" hover_style="style_menu_button_hover" offset_y="-100" size_x="128" size_y="32" alignment_y="0" clickable="true">
-            <element id="label_menu_ingame_restart_text" font="hud_medium" text="Restart Level" offset_y="21" alignment_y="3"/>
-        </element>
         <element id="button_ingame_resume" style="style_menu_button" hover_style="style_menu_button_hover" size_x="128" size_y="32" alignment_y="0" clickable="true">
             <element id="label_menu_ingame_resume_text" font="hud_medium" text="Resume" offset_y="21" alignment_y="3"/>
         </element>

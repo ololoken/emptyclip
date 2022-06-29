@@ -22,9 +22,6 @@
 #include <list>
 
 // Forward Declarations
-namespace ae {
-	class _Camera;
-}
 class _Font;
 class _HUD;
 class _Map;
@@ -38,6 +35,9 @@ struct _ObjectSpawn;
 struct _ParticleTemplate;
 struct _EventTile;
 struct _Hit;
+namespace ae {
+	class _Camera;
+}
 
 // Types of entity attack outcomes
 enum CollisionType {
@@ -84,10 +84,8 @@ class _PlayState : public ae::_State {
 	protected:
 
 		bool IsPaused();
-		void RestartFromDeath();
 
 		void DeleteMonsters();
-		void DeleteActiveEvents();
 
 		void UpdateMonsters(double FrameTime);
 		void CheckEvents(const _Entity *Entity);

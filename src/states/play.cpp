@@ -137,7 +137,7 @@ void _PlayState::Init() {
 void _PlayState::Close() {
 
 	DeleteMonsters();
-	DeleteActiveEvents();
+	ActiveEvents.clear();;
 
 	Player->StopAudio();
 
@@ -218,7 +218,7 @@ bool _PlayState::HandleAction(int InputType, std::size_t Action, int Value) {
 	}
 	else {
 		if(Action == Action::GAME_USE)
-			RestartFromDeath();
+			Player->Respawn();
 	}
 
 	return false;
@@ -241,7 +241,7 @@ bool _PlayState::HandleKey(const ae::_KeyEvent &KeyEvent) {
 		switch(KeyEvent.Scancode) {
 			case SDL_SCANCODE_ESCAPE:
 				if(Player->IsDead()) {
-					RestartFromDeath();
+					Player->Respawn();
 				}
 				else if(!Player->IsDying()) {
 					if(HUD->GetInventoryOpen()) {
@@ -282,6 +282,14 @@ bool _PlayState::HandleCommand(ae::_Console *Console) {
 	// Handle normal commands
 	if(Console->Command == "quit") {
 		HandleQuit();
+		return true;
+	}
+	else if(Console->Command == "suicide") {
+		if(Player) {
+			Player->UpdateHealth(-10000000);
+			ae::Audio.PlaySound(ae::Assets.Sounds[Player->GetSound(SOUND_DEATH)], glm::vec3(Player->Position.x, 0.0f, Player->Position.y));
+		}
+
 		return true;
 	}
 	else if(Console->Command == "god") {
@@ -639,17 +647,6 @@ void _PlayState::Render(double BlendFactor) {
 		ae::Graphics.SetCursor(1);
 		HUD->RenderDeathScreen();
 	}
-}
-
-// Restart the level after death
-void _PlayState::RestartFromDeath() {
-	try {
-		Save.LoadPlayer(Player);
-	}
-	catch(std::exception &Error) {
-	}
-
-	Framework.ChangeState(&PlayState);
 }
 
 // Fires a gun or swings a weapon
@@ -1076,36 +1073,23 @@ void _PlayState::UpdateEvents(double FrameTime) {
 
 // Deletes the monsters
 void _PlayState::DeleteMonsters() {
-
-	for(auto Iterator : Monsters)
+	for(auto Iterator : Monsters) {
 		if(Iterator)
 			delete Iterator;
+	}
 
 	Monsters.clear();
 }
 
-// Deletes the active events
-void _PlayState::DeleteActiveEvents() {
-
-	ActiveEvents.clear();
-}
-
 // Spawn an object in the map
 void _PlayState::SpawnObject(_ObjectSpawn *ObjectSpawn, bool GenerateStats) {
-	switch(ObjectSpawn->Type) {
-		case _Object::MONSTER: {
-			_Monster *Monster = Stats.CreateMonster(ObjectSpawn->ID, ObjectSpawn->Position);
-			Monster->Player = Player;
-			AddMonster(Monster);
-		} break;
-		case _Object::KEY:
-		case _Object::AMMO:
-		case _Object::UPGRADE:
-		case _Object::ARMOR:
-		case _Object::WEAPON:
-		case _Object::MEDKIT:
-			Map->AddItem(Stats.CreateItem(ObjectSpawn->ID, ObjectSpawn->Level, 0, 1, ObjectSpawn->Position, GenerateStats));
-		break;
+	if(ObjectSpawn->Type == _Object::MONSTER) {
+		_Monster *Monster = Stats.CreateMonster(ObjectSpawn->ID, ObjectSpawn->Position);
+		Monster->Player = Player;
+		AddMonster(Monster);
+	}
+	else {
+		Map->AddItem(Stats.CreateItem(ObjectSpawn->ID, ObjectSpawn->Level, 0, 1, ObjectSpawn->Position, GenerateStats));
 	}
 }
 
@@ -1147,4 +1131,7 @@ void _PlayState::GenerateBulletEffects(_Entity *Attacker, const int Type, const 
 	}
 }
 
-bool _PlayState::IsPaused() { return Menu.GetState() != _Menu::STATE_NONE; }
+// Determine if game is paused
+bool _PlayState::IsPaused() {
+	return Menu.GetState() != _Menu::STATE_NONE;
+}

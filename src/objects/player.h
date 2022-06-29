@@ -77,6 +77,7 @@ class _Player : public _Entity {
 		int SpentSkillPoints() const;
 		void ResetAccuracy(bool CompleteReset);
 		void RecalculateStats();
+		void Respawn();
 
 		int AddItem(_Item *Item, int &AmountAdded);
 		void DropItem(int Slot);
