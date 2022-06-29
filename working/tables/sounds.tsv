@@ -30,6 +30,7 @@ shotgun_fire0	shotgun_fire0.ogg	0.7	3
 shotgun_reload0	shotgun_reload0.ogg	0.7	1
 minigun_fire0	minigun_fire0.ogg	0.5	1
 sniper_fire0	sniper_fire0.ogg	0.45	2
+spider_attack0	spider_attack0.ogg	0.7	5
 spider_die0	spider_die0.ogg	0.7	5
 skeleton_die0	skeleton_die0.ogg	0.7	5
 zombie_attack0	zombie_attack0.ogg	0.8	5
