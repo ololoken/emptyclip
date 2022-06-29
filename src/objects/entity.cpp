@@ -31,7 +31,8 @@
 const double SQRT1_2 = 0.70710678118654752440;
 
 // Constructor
-_Entity::_Entity() :
+_Entity::_Entity(const _ObjectTemplate &Template) :
+	_Object(Template),
 	TriggerDownAudio(nullptr),
 	MoveState(MOVE_NONE),
 	MovementSpeed(0),

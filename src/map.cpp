@@ -107,7 +107,7 @@ _Map::_Map(const std::string &Filename) : _Map() {
 					throw std::runtime_error(std::string(__func__) + " Unknown item '" + Object->ID + "'");
 			break;
 			case _Object::WEAPON:
-				if(Stats.Weapons.find(Object->ID) == Stats.Weapons.end())
+				if(Stats.Items.find(Object->ID) == Stats.Items.end())
 					throw std::runtime_error(std::string(__func__) + " Unknown weapon '" + Object->ID + "'");
 			break;
 		}

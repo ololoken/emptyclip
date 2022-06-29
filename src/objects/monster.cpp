@@ -34,9 +34,8 @@ enum AITypes {
 };
 
 // Constructor
-_Monster::_Monster(_ObjectTemplate &Template) :
-	_Entity(),
-	TemplateAttributes(Template.Attributes),
+_Monster::_Monster(const _ObjectTemplate &Template) :
+	_Entity(Template),
 	Player(nullptr),
 	ItemDrop(nullptr) {
 
@@ -49,27 +48,27 @@ _Monster::_Monster(_ObjectTemplate &Template) :
 	// Monster stats
 	Name = Template.Name;
 	Color = Template.Color;
-	MovementSpeed = TemplateAttributes.at("move_speed").Float;
-	Radius = TemplateAttributes.at("radius").Float;
-	Scale = TemplateAttributes.at("scale").Float;
-	Health = MaxHealth = TemplateAttributes.at("health").Float;
-	ExperienceGiven = TemplateAttributes.at("xp").Float;
-	MinAccuracy = TemplateAttributes.at("accuracy").Int;
+	MovementSpeed = Template.Attributes.at("move_speed").Float;
+	Radius = Template.Attributes.at("radius").Float;
+	Scale = Template.Attributes.at("scale").Float;
+	Health = MaxHealth = Template.Attributes.at("health").Float;
+	ExperienceGiven = Template.Attributes.at("xp").Float;
+	MinAccuracy = Template.Attributes.at("accuracy").Int;
 	for(int i = 0; i < WEAPONATTACK_COUNT; i++) {
-		int Damage = TemplateAttributes.at("damage").Float;
+		int Damage = Template.Attributes.at("damage").Float;
 		MinDamage[i] = Damage;
 		MaxDamage[i] = Damage;
-		FirePeriod[i] = TemplateAttributes.at("attack_period").Double;
-		MaxAccuracy[i] = TemplateAttributes.at("accuracy").Int;
-		AttackRange[i] = TemplateAttributes.at("attack_range").Float;
+		FirePeriod[i] = Template.Attributes.at("attack_period").Double;
+		MaxAccuracy[i] = Template.Attributes.at("accuracy").Int;
+		AttackRange[i] = Template.Attributes.at("attack_range").Float;
 	}
-	MainWeaponType = TemplateAttributes.at("weapon_type").Int;
+	MainWeaponType = Template.Attributes.at("weapon_type").Int;
 	WeaponParticles = Template.WeaponParticles;
 
 	// Cache distances
-	AttackRangeSquared = TemplateAttributes.at("attack_range").Float;
+	AttackRangeSquared = Template.Attributes.at("attack_range").Float;
 	AttackRangeSquared *= AttackRangeSquared;
-	ViewRangeSquared = TemplateAttributes.at("view_range").Float;
+	ViewRangeSquared = Template.Attributes.at("view_range").Float;
 	ViewRangeSquared *= ViewRangeSquared;
 
 	//AIType = TemplateAttributes.at("ai_type").Int;

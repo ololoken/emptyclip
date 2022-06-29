@@ -52,8 +52,8 @@ class _Object {
 			COUNT
 		};
 
-		_Object();
-		virtual ~_Object();
+		_Object(const _ObjectTemplate &Template);
+		virtual ~_Object() { }
 
 		virtual void Update(double FrameTime) { }
 		virtual void Render(double BlendFactor) { }
@@ -66,7 +66,11 @@ class _Object {
 
 		virtual std::string GetTypeAsString() const { return "Object"; }
 
+		// Template
+		const _ObjectTemplate &Template;
+
 		// Attributes
+		std::unordered_map<std::string, _Value> Attributes;
 		std::string Name;
 		std::string ID;
 		bool Active;
@@ -90,5 +94,4 @@ class _Object {
 		float Scale;
 		float PositionZ;
 
-		std::unordered_map<std::string, _Value> Attributes;
 };

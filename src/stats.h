@@ -119,8 +119,8 @@ class _Stats {
 
 		std::unordered_map<std::string, std::string> Strings;
 		std::unordered_map<std::string, _ObjectTemplate> Items;
-		std::unordered_map<std::string, _ObjectTemplate> Weapons;
 		std::unordered_map<std::string, _ObjectTemplate> Monsters;
+		std::unordered_map<std::string, _ObjectTemplate> Objects;
 		std::unordered_map<std::string, _ItemDrop> ItemDrops;
 		_Weapon *WeaponFists;
 

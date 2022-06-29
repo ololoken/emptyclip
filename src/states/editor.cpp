@@ -65,7 +65,6 @@ const int PaletteSizes[EDITMODE_COUNT] = {
 	64,
 	64,
 	64,
-	64,
 };
 
 // Constructor
@@ -95,27 +94,25 @@ void _EditorState::Init() {
 	InputBox->SetActive(false);
 
 	// Create button groups
-	PaletteElement[0] = ae::Assets.Elements["element_editor_palette_block"];
-	PaletteElement[1] = ae::Assets.Elements["element_editor_palette_events"];
-	PaletteElement[2] = ae::Assets.Elements["element_editor_palette_monsters"];
-	PaletteElement[3] = ae::Assets.Elements["element_editor_palette_items"];
-	PaletteElement[4] = ae::Assets.Elements["element_editor_palette_weapons"];
+	PaletteElement[EDITMODE_BLOCKS] = ae::Assets.Elements["element_editor_palette_block"];
+	PaletteElement[EDITMODE_EVENTS] = ae::Assets.Elements["element_editor_palette_events"];
+	PaletteElement[EDITMODE_MONSTERS] = ae::Assets.Elements["element_editor_palette_monsters"];
+	PaletteElement[EDITMODE_ITEMS] = ae::Assets.Elements["element_editor_palette_items"];
 
 	// Assign layer buttons
-	LayerButtons[0] = ae::Assets.Elements["button_editor_layer_base"];
-	LayerButtons[1] = ae::Assets.Elements["button_editor_layer_floor0"];
-	LayerButtons[2] = ae::Assets.Elements["button_editor_layer_floor1"];
-	LayerButtons[3] = ae::Assets.Elements["button_editor_layer_floor2"];
-	LayerButtons[4] = ae::Assets.Elements["button_editor_layer_flat"];
-	LayerButtons[5] = ae::Assets.Elements["button_editor_layer_wall"];
-	LayerButtons[6] = ae::Assets.Elements["button_editor_layer_fore"];
+	LayerButtons[MAPLAYER_BASE] = ae::Assets.Elements["button_editor_layer_base"];
+	LayerButtons[MAPLAYER_FLOOR0] = ae::Assets.Elements["button_editor_layer_floor0"];
+	LayerButtons[MAPLAYER_FLOOR1] = ae::Assets.Elements["button_editor_layer_floor1"];
+	LayerButtons[MAPLAYER_FLOOR2] = ae::Assets.Elements["button_editor_layer_floor2"];
+	LayerButtons[MAPLAYER_FLAT] = ae::Assets.Elements["button_editor_layer_flat"];
+	LayerButtons[MAPLAYER_WALL] = ae::Assets.Elements["button_editor_layer_wall"];
+	LayerButtons[MAPLAYER_FORE] = ae::Assets.Elements["button_editor_layer_fore"];
 
 	// Assign palette buttons
-	ModeButtons[0] = ae::Assets.Elements["button_editor_mode_block"];
-	ModeButtons[1] = ae::Assets.Elements["button_editor_mode_event"];
-	ModeButtons[2] = ae::Assets.Elements["button_editor_mode_mons"];
-	ModeButtons[3] = ae::Assets.Elements["button_editor_mode_item"];
-	ModeButtons[4] = ae::Assets.Elements["button_editor_mode_weap"];
+	ModeButtons[EDITMODE_BLOCKS] = ae::Assets.Elements["button_editor_mode_block"];
+	ModeButtons[EDITMODE_EVENTS] = ae::Assets.Elements["button_editor_mode_event"];
+	ModeButtons[EDITMODE_MONSTERS] = ae::Assets.Elements["button_editor_mode_mons"];
+	ModeButtons[EDITMODE_ITEMS] = ae::Assets.Elements["button_editor_mode_item"];
 
 	// Reset state
 	ResetEditorState();
@@ -366,9 +363,6 @@ bool _EditorState::HandleKey(const ae::_KeyEvent &KeyEvent) {
 			break;
 			case SDL_SCANCODE_4:
 				ExecuteSwitchMode(EDITMODE_ITEMS);
-			break;
-			case SDL_SCANCODE_5:
-				ExecuteSwitchMode(EDITMODE_WEAPONS);
 			break;
 			case SDL_SCANCODE_GRAVE:
 			    ExecuteDeselect();
@@ -1038,19 +1032,10 @@ void _EditorState::LoadPalettes() {
 
 	// Load items
 	for(const auto &Item : Stats.Items) {
-		if(Item.second.Type != _Object::NONE)
+		if(Item.second.Type >= _Object::KEY && Item.second.Type <= _Object::MEDKIT && Item.second.IconID != "")
 			Icons.push_back(_Brush(Item.first, Item.second.Name, ae::Assets.Textures[Item.second.IconID], Item.second.Color, Item.second.Type));
 	}
 	LoadPaletteButtons(Icons, EDITMODE_ITEMS);
-	Icons.clear();
-
-	// Load weapons
-	for(const auto &Weapon : Stats.Weapons) {
-		const ae::_Texture *Texture = ae::Assets.Textures[Weapon.second.IconID];
-		if(Texture)
-			Icons.push_back(_Brush(Weapon.first, Weapon.second.Name, Texture, Weapon.second.Color, _Object::WEAPON));
-	}
-	LoadPaletteButtons(Icons, EDITMODE_WEAPONS);
 	Icons.clear();
 }
 
@@ -1349,7 +1334,7 @@ void _EditorState::DrawObject(float OffsetX, float OffsetY, const _ObjectSpawn *
 			Color = Ammo.Color;
 		} break;
 		case _Object::WEAPON: {
-			_ObjectTemplate &Weapon = Stats.Weapons.at(Object->ID);
+			_ObjectTemplate &Weapon = Stats.Items.at(Object->ID);
 			Texture = ae::Assets.Textures[Weapon.IconID];
 			Color = Weapon.Color;
 		} break;
@@ -1410,9 +1395,6 @@ void _EditorState::ProcessIcons(int Index, int Type) {
 		break;
 		case ICON_MONSTER:
 			ExecuteSwitchMode(EDITMODE_MONSTERS);
-		break;
-		case ICON_WEAPON:
-			ExecuteSwitchMode(EDITMODE_WEAPONS);
 		break;
 		case ICON_DELETE:
 			ExecuteDelete();

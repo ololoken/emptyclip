@@ -30,14 +30,10 @@ class _Monster : public _Entity {
 
 	public:
 
-		_Monster(_ObjectTemplate &Template);
-		~_Monster() override { }
+		_Monster(const _ObjectTemplate &Template);
 
 		void Update(double FrameTime) override;
 		const _ParticleTemplate *GetWeaponParticle(int Index) const override;
-
-		// Object
-		const std::unordered_map<std::string, _Value> &TemplateAttributes;
 
 		// AI
 		const _Player *Player;

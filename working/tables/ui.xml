@@ -139,17 +139,16 @@
         <element id="button_editor_mode_event" style="style_editor_event" hover_style="style_editor_button_selected" offset_x="400" size_x="32" size_y="32" alignment_x="0" alignment_y="0" clickable="true" index="10"/>
         <element id="button_editor_mode_mons" style="style_editor_mons" hover_style="style_editor_button_selected" offset_x="434" size_x="32" size_y="32" alignment_x="0" alignment_y="0" clickable="true" index="11"/>
         <element id="button_editor_mode_item" style="style_editor_item" hover_style="style_editor_button_selected" offset_x="468" size_x="32" size_y="32" alignment_x="0" alignment_y="0" clickable="true" index="12"/>
-        <element id="button_editor_mode_weap" style="style_editor_weap" hover_style="style_editor_button_selected" offset_x="502" size_x="32" size_y="32" alignment_x="0" alignment_y="0" clickable="true" index="13"/>
-        <element id="button_editor_del" style="style_editor_del" hover_style="style_editor_button_selected" offset_y="34" size_x="32" size_y="32" alignment_x="0" alignment_y="0" clickable="true" index="14"/>
-        <element id="button_editor_copy" style="style_editor_copy" hover_style="style_editor_button_selected" offset_x="34" offset_y="34" size_x="32" size_y="32" alignment_x="0" alignment_y="0" clickable="true" index="15"/>
-        <element id="button_editor_paste" style="style_editor_paste" offset_x="68" offset_y="34" size_x="32" size_y="32" alignment_x="0" alignment_y="0" clickable="false" index="16"/>
-        <element id="button_editor_show" style="style_editor_show" hover_style="style_editor_button_selected" offset_x="102" offset_y="34" size_x="32" size_y="32" alignment_x="0" alignment_y="0" clickable="true" index="17"/>
-        <element id="button_editor_undo" style="style_editor_undo" hover_style="style_editor_button_selected" offset_y="68" size_x="32" size_y="32" alignment_x="0" alignment_y="0" clickable="true" index="18"/>
-        <element id="button_editor_new" style="style_editor_new" hover_style="style_editor_button_selected" offset_x="34" offset_y="68" size_x="32" size_y="32" alignment_x="0" alignment_y="0" clickable="true" index="19"/>
-        <element id="button_editor_grid" style="style_editor_grid" hover_style="style_editor_button_selected" offset_x="68" offset_y="68" size_x="32" size_y="32" alignment_x="0" alignment_y="0" clickable="true" index="20"/>
-        <element id="button_editor_load" style="style_editor_load" hover_style="style_editor_button_selected" offset_x="102" offset_y="68" size_x="32" size_y="32" alignment_x="0" alignment_y="0" clickable="true" index="21"/>
-        <element id="button_editor_save" style="style_editor_save" hover_style="style_editor_button_selected" offset_x="136" offset_y="68" size_x="32" size_y="32" alignment_x="0" alignment_y="0" clickable="true" index="22"/>
-        <element id="button_editor_test" style="style_editor_test" hover_style="style_editor_button_selected" offset_x="170" offset_y="68" size_x="32" size_y="32" alignment_x="0" alignment_y="0" clickable="true" index="23"/>
+        <element id="button_editor_del" style="style_editor_del" hover_style="style_editor_button_selected" offset_y="34" size_x="32" size_y="32" alignment_x="0" alignment_y="0" clickable="true" index="13"/>
+        <element id="button_editor_copy" style="style_editor_copy" hover_style="style_editor_button_selected" offset_x="34" offset_y="34" size_x="32" size_y="32" alignment_x="0" alignment_y="0" clickable="true" index="14"/>
+        <element id="button_editor_paste" style="style_editor_paste" offset_x="68" offset_y="34" size_x="32" size_y="32" alignment_x="0" alignment_y="0" clickable="false" index="15"/>
+        <element id="button_editor_show" style="style_editor_show" hover_style="style_editor_button_selected" offset_x="102" offset_y="34" size_x="32" size_y="32" alignment_x="0" alignment_y="0" clickable="true" index="16"/>
+        <element id="button_editor_undo" style="style_editor_undo" hover_style="style_editor_button_selected" offset_y="68" size_x="32" size_y="32" alignment_x="0" alignment_y="0" clickable="true" index="17"/>
+        <element id="button_editor_new" style="style_editor_new" hover_style="style_editor_button_selected" offset_x="34" offset_y="68" size_x="32" size_y="32" alignment_x="0" alignment_y="0" clickable="true" index="18"/>
+        <element id="button_editor_grid" style="style_editor_grid" hover_style="style_editor_button_selected" offset_x="68" offset_y="68" size_x="32" size_y="32" alignment_x="0" alignment_y="0" clickable="true" index="19"/>
+        <element id="button_editor_load" style="style_editor_load" hover_style="style_editor_button_selected" offset_x="102" offset_y="68" size_x="32" size_y="32" alignment_x="0" alignment_y="0" clickable="true" index="20"/>
+        <element id="button_editor_save" style="style_editor_save" hover_style="style_editor_button_selected" offset_x="136" offset_y="68" size_x="32" size_y="32" alignment_x="0" alignment_y="0" clickable="true" index="21"/>
+        <element id="button_editor_test" style="style_editor_test" hover_style="style_editor_button_selected" offset_x="170" offset_y="68" size_x="32" size_y="32" alignment_x="0" alignment_y="0" clickable="true" index="22"/>
     </element>
     <element id="element_editor_blocks" offset_x="382" offset_y="-81" size_x="304" size_y="32" alignment_x="0" alignment_y="2">
         <element id="button_editor_walk" style="style_editor_walk" hover_style="style_editor_button_selected" size_x="32" size_y="32" alignment_x="0" alignment_y="0" clickable="true" index="0"/>

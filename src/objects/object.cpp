@@ -17,13 +17,15 @@
 *******************************************************************************/
 #include <objects/object.h>
 #include <constants.h>
+#include <stats.h>
 #include <glm/geometric.hpp>
 #include <glm/gtx/rotate_vector.hpp>
 
 // Constructor
-_Object::_Object() :
+_Object::_Object(const _ObjectTemplate &Template) :
+	Template(Template),
 	Active(true),
-	Type(NONE),
+	Type(Template.Type),
 	Map(nullptr),
 	TileChanged(false),
 	Position(0, 0),
@@ -31,15 +33,11 @@ _Object::_Object() :
 	Direction(0.0, 1.0f),
 	Radius(0.25f),
 	WallState(0),
-	Color(COLOR_WHITE),
+	Color(Template.Color),
 	Rotation(0.0f),
 	Scale(1.0f),
 	PositionZ(OBJECT_Z)	{
 
-}
-
-// Destructor
-_Object::~_Object() {
 }
 
 // Calculates the angle from a slope

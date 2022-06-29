@@ -34,8 +34,8 @@
 #include <glm/trigonometric.hpp>
 
 // Constructor
-_Player::_Player() {
-	Type = _Object::PLAYER;
+_Player::_Player(const _ObjectTemplate &Template) :
+	_Entity(Template) {
 
 	// Set up animations
 	LegAnimation = new ae::_Animation(nullptr);
@@ -659,7 +659,7 @@ float _Player::GetCrosshairRadius(const glm::vec2 &Cursor) {
 // Checks if the player's weapon has ammo
 bool _Player::WeaponHasAmmo() const {
 	if(AttackRequestType == WEAPONATTACK_MAIN) {
-		if(!HasMainHand() || Stats.Weapons.at(GetMainHand()->ID).AmmoID == "")
+		if(!HasMainHand() || Stats.Items.at(GetMainHand()->ID).AmmoID == "")
 			return true;
 
 		return GetMainHand()->Attributes.at("ammo").Int > 0;
@@ -676,7 +676,7 @@ bool _Player::HasAmmoForMain() const {
 	if(!HasMainHand())
 		return false;
 
-	const std::string &AmmoType = Stats.Weapons.at(GetMainHand()->ID).AmmoID;
+	const std::string &AmmoType = Stats.Items.at(GetMainHand()->ID).AmmoID;
 	if(Ammo.find(AmmoType) == Ammo.end())
 		return false;
 
@@ -796,7 +796,7 @@ void _Player::UpdateReloading() {
 
 		// Check for ammo
 		if(HasAmmoForMain()) {
-			const std::string &AmmoType = Stats.Weapons.at(GetMainHand()->ID).AmmoID;
+			const std::string &AmmoType = Stats.Items.at(GetMainHand()->ID).AmmoID;
 			int AmountNeeded = GetMainHand()->Attributes["rounds"].Int - GetMainHand()->Attributes["ammo"].Int;
 			int AmmoLoadAmount = std::min(Ammo[AmmoType], AmountNeeded);
 			GetMainHand()->Attributes["ammo"].Int += AmmoLoadAmount;
@@ -1037,7 +1037,7 @@ const std::string &_Player::GetSound(int SoundType) const {
 // Returns the weapon's particle template
 const _ParticleTemplate *_Player::GetWeaponParticle(int Index) const {
 	if(HasMainHand())
-		return Stats.Weapons.at(GetMainHand()->ID).WeaponParticles->ParticleTemplates[Index];
+		return Stats.Items.at(GetMainHand()->ID).WeaponParticles->ParticleTemplates[Index];
 
 	return nullptr;
 }

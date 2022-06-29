@@ -24,19 +24,19 @@
 #include <algorithm>
 
 // Constructor
-_Weapon::_Weapon(const std::string &ID, int Level, const glm::vec2 &Position, const _ObjectTemplate &Weapon, const ae::_Texture *Texture, bool RandomStats) :
-	_Item(Weapon.Attributes) {
+_Weapon::_Weapon(const std::string &ID, int Level, const glm::vec2 &Position, const _ObjectTemplate &Template, const ae::_Texture *Texture, bool RandomStats) :
+	_Item(Template) {
 
 	this->Type = _Object::WEAPON;
 	this->ID = ID;
 	this->Texture = Texture;
-	this->Color = Weapon.Color;
+	this->Color = Template.Color;
 	this->Position = Position;
-	Name = Weapon.Name;
+	Name = Template.Name;
 
-	Attributes = Weapon.Attributes;
+	Attributes = Template.Attributes;
 
-	int Components = TemplateAttributes.at("components").Float + TemplateAttributes.at("components_level").Float * Level;
+	int Components = Template.Attributes.at("components").Float + Template.Attributes.at("components_level").Float * Level;
 	if(RandomStats) {
 		Quality = ae::GetRandomInt(-ITEM_QUALITY_RANGE, ITEM_QUALITY_RANGE);
 		Attributes["max_components"].Int = Components + ae::GetRandomInt(0, 1);
@@ -44,7 +44,7 @@ _Weapon::_Weapon(const std::string &ID, int Level, const glm::vec2 &Position, co
 	else
 		Attributes["max_components"].Int = Components;
 
-	Attributes["ammo"].Int = TemplateAttributes.at("rounds").Int;
+	Attributes["ammo"].Int = Template.Attributes.at("rounds").Int;
 
 	RecalculateStats();
 }
@@ -77,7 +77,7 @@ void _Weapon::Serialize(ae::_Buffer &Buffer) {
 
 // Get weapon sound
 const std::string &_Weapon::GetSound(int SoundType) const {
-	return Stats.Weapons.at(ID).SoundID[SoundType];
+	return Stats.Items.at(ID).SoundID[SoundType];
 }
 
 // Set ammo amount
@@ -97,10 +97,10 @@ void _Weapon::RecalculateStats() {
 
 	SetAttributeRange("damage", Level, GetBonusMultiplier(UPGRADE_DAMAGE) + Quality * 0.01f);
 	SetAttributeRange("accuracy", 0, 1.0f / GetBonusMultiplier(UPGRADE_ACCURACY));
-	Attributes["rounds"].Int = std::ceil(TemplateAttributes.at("rounds").Int * GetBonusMultiplier(UPGRADE_CLIP));
-	Attributes["fire_period"].Double = TemplateAttributes.at("fire_period").Double / GetBonusMultiplier(UPGRADE_FIREPERIOD);
-	Attributes["reload_period"].Double = TemplateAttributes.at("reload_period").Double / GetBonusMultiplier(UPGRADE_RELOADPERIOD);
-	Attributes["attack_count"].Int = TemplateAttributes.at("attack_count").Int + Bonus[UPGRADE_ATTACKS];
+	Attributes["rounds"].Int = std::ceil(Template.Attributes.at("rounds").Int * GetBonusMultiplier(UPGRADE_CLIP));
+	Attributes["fire_period"].Double = Template.Attributes.at("fire_period").Double / GetBonusMultiplier(UPGRADE_FIREPERIOD);
+	Attributes["reload_period"].Double = Template.Attributes.at("reload_period").Double / GetBonusMultiplier(UPGRADE_RELOADPERIOD);
+	Attributes["attack_count"].Int = Template.Attributes.at("attack_count").Int + Bonus[UPGRADE_ATTACKS];
 
 	// For melee, min accuracy is 0 and max is swing arc
 	if(IsMelee())
@@ -117,7 +117,7 @@ bool _Weapon::AddComponent(_Item *Upgrade) {
 	if(Upgrade->Attributes.at("weapon_type").Int != 0 && Upgrade->Attributes.at("weapon_type").Int != Attributes.at("weapon_type").Int)
 		return false;
 
-	if(Upgrade->Attributes.at("upgrade_type").Int == UPGRADE_CLIP && Stats.Weapons.at(ID).Attributes.at("rounds").Int == 0)
+	if(Upgrade->Attributes.at("upgrade_type").Int == UPGRADE_CLIP && Stats.Items.at(ID).Attributes.at("rounds").Int == 0)
 		return false;
 
 	Upgrades.push_back(Upgrade);

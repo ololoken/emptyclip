@@ -46,6 +46,7 @@ void _Stats::Init() {
 	LoadWeapons("tables/weapons.tsv");
 	LoadItemDrops("tables/itemdrops.tsv");
 	LoadMonsters("tables/monsters.tsv");
+	Objects.insert(std::make_pair("player", _ObjectTemplate(_Object::PLAYER)));
 	WeaponFists = Stats.CreateWeapon("weapon_fists", 1, 0, glm::vec2(0), false);
 }
 
@@ -55,7 +56,6 @@ void _Stats::Close() {
 	Levels.clear();
 	Skills.clear();
 	Items.clear();
-	Weapons.clear();
 	ItemDrops.clear();
 	Monsters.clear();
 }
@@ -422,10 +422,10 @@ void _Stats::LoadWeapons(const std::string &Path) {
 			Template.WeaponParticles = &BlankWeaponParticle;
 
 		// Check for duplicates
-		if(Weapons.find(ID) != Weapons.end())
+		if(Items.find(ID) != Items.end())
 			throw std::runtime_error(std::string(__func__) + " - Duplicate entry: " + ID);
 
-		Weapons.insert(std::make_pair(ID, Template));
+		Items.insert(std::make_pair(ID, Template));
 	}
 
 	File.close();
@@ -484,12 +484,9 @@ void _Stats::LoadItemDrops(const std::string &Path) {
 			case _Object::AMMO:
 			case _Object::UPGRADE:
 			case _Object::ARMOR:
+			case _Object::WEAPON:
 			case _Object::MEDKIT:
 				if(Items.find(ItemDropEntry.ItemID) == Items.end())
-					throw std::runtime_error(std::string(__func__) + " - Cannot find: " + ItemDropEntry.ItemID + " in " + Path);
-			break;
-			case _Object::WEAPON:
-				if(Weapons.find(ItemDropEntry.ItemID) == Weapons.end())
 					throw std::runtime_error(std::string(__func__) + " - Cannot find: " + ItemDropEntry.ItemID + " in " + Path);
 			break;
 			default:
@@ -598,7 +595,7 @@ _Item *_Stats::CreateItem(const std::string &ID, int Level, int Quality, int Cou
 	_ObjectTemplate &Template = Items.at(ID);
 
 	// Create item
-	_Item *Item = new _Item(Template.Attributes);
+	_Item *Item = new _Item(Template);
 	Item->Type = Template.Type;
 	Item->ID = ID;
 	Item->Name = Template.Name;
@@ -640,7 +637,7 @@ _Item *_Stats::CreateItem(const std::string &ID, int Level, int Quality, int Cou
 
 // Creates a weapon
 _Weapon *_Stats::CreateWeapon(const std::string &ID, int Level, int Quality, const glm::vec2 &Position, bool RandomStats) {
-	_ObjectTemplate &Template = Weapons.at(ID);
+	_ObjectTemplate &Template = Items.at(ID);
 	_Weapon *Weapon = new _Weapon(ID, Level, Position, Template, ae::Assets.Textures[Template.IconID], RandomStats);
 
 	return Weapon;

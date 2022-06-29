@@ -80,7 +80,7 @@ void _Save::CreateNewPlayer(std::size_t Slot, const std::string &Name, const std
 	if(Slot >= SLOT_COUNT)
 		return;
 
-	Players[Slot] = new _Player();
+	Players[Slot] = new _Player(Stats.Objects.at("player"));
 	Players[Slot]->SavePath = GetConfigPath(Slot);
 	Players[Slot]->Name = Name;
 	Players[Slot]->SetColorID(ColorID);
@@ -111,7 +111,7 @@ void _Save::LoadSaves() {
 
 	// Load test files
 	try {
-		Players[SLOT_TEST] = new _Player();
+		Players[SLOT_TEST] = new _Player(Stats.Objects.at("player"));
 		Players[SLOT_TEST]->SavePath = Config.ConfigPath + "test.save";
 		LoadPlayer(Players[SLOT_TEST]);
 	}
@@ -131,7 +131,7 @@ void _Save::LoadSaves() {
 			continue;
 
 		try {
-			Players[SlotIndex] = new _Player();
+			Players[SlotIndex] = new _Player(Stats.Objects.at("player"));
 			Players[SlotIndex]->SavePath = Config.ConfigPath + Files.Nodes[i];
 			LoadPlayer(Players[SlotIndex]);
 		}

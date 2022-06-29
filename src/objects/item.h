@@ -40,7 +40,7 @@ class _Item : public _Object {
 
 	public:
 
-		_Item(const std::unordered_map<std::string, _Value> &TemplateAttributes);
+		_Item(const _ObjectTemplate &Template);
 
 		void Serialize(ae::_Buffer &Buffer) override;
 		void DrawTooltip(const _Player *Player, std::size_t CompareSlot, glm::ivec2 DrawPosition);
@@ -56,8 +56,6 @@ class _Item : public _Object {
 
 		virtual std::string GetTypeAsString() const override;
 		std::string UpgradeTypeToString(int Type, int WeaponType);
-
-		const std::unordered_map<std::string, _Value> &TemplateAttributes;
 
 		int Level;
 		int Quality;

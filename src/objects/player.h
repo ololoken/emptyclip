@@ -52,7 +52,7 @@ class _Player : public _Entity {
 
 	public:
 
-		_Player();
+		_Player(const _ObjectTemplate &Template);
 		~_Player() override;
 
 		void Reset();

@@ -856,7 +856,7 @@ void _PlayState::CreateItemDrop(const _Entity *Entity) {
 		return;
 
 	// Roll for items
-	for(int i = 0; i < Monster->TemplateAttributes.at("drop_count").Int; i++) {
+	for(int i = 0; i < Monster->Template.Attributes.at("drop_count").Int; i++) {
 
 		// Spawn random item
 		_ObjectSpawn ObjectSpawn;
