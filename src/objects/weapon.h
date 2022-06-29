@@ -45,17 +45,17 @@ class _Weapon : public _Item {
 		void Serialize(ae::_Buffer &Buffer) override;
 
 		void RecalculateStats() override;
-		bool AddComponent(_Item *Upgrade);
+		bool AddMod(_Item *Mod);
 		void SetAmmo(int Value);
 
-		float GetBonusMultiplier(int UpgradeType) const { return (100 + Bonus[UpgradeType]) * 0.01f; }
+		float GetBonusMultiplier(int ModType) const { return (100 + Bonus[ModType]) * 0.01f; }
 		const std::string &GetSound(int SoundType) const;
 		bool IsMelee() const { return Attributes.at("weapon_type").Int == WEAPON_MELEE; }
 		virtual std::string GetTypeAsString() const override { return ToString(Attributes.at("weapon_type").Int) + " class weapon"; }
 		static std::string ToString(int Type);
 
-		std::vector<_Item *> Upgrades;
-		int Bonus[UPGRADE_TYPES];
+		std::vector<_Item *> Mods;
+		int Bonus[MOD_TYPES];
 
 	protected:
 

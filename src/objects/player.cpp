@@ -535,8 +535,8 @@ void _Player::SwapInventory(int SlotFrom, int SlotTo) {
 	else if((IsEquipmentIndex(SlotFrom) && IsBagIndex(SlotTo)) || (IsEquipmentIndex(SlotTo) && IsBagIndex(SlotFrom)) || (IsEquipmentIndex(SlotTo) && IsEquipmentIndex(SlotFrom))) {
 		if(IsEquipmentIndex(SlotTo)) {
 
-			// Try component
-			if(!AddComponent(SlotFrom, SlotTo)) {
+			// Try mod
+			if(!AddMod(SlotFrom, SlotTo)) {
 				CanSwap = CanEquipItem(Inventory[SlotFrom], SlotTo);
 			}
 		}
@@ -616,9 +616,9 @@ int _Player::AddInventory(_Item *Item) {
 	return 0;
 }
 
-// Add an upgrade to a weapon
-bool _Player::AddComponent(int FromIndex, int ToIndex) {
-	if(!HasInventory(FromIndex) || Inventory[FromIndex]->Type != _Object::UPGRADE)
+// Add a mod to a weapon
+bool _Player::AddMod(int FromIndex, int ToIndex) {
+	if(!HasInventory(FromIndex) || Inventory[FromIndex]->Type != _Object::MOD)
 		return false;
 
 	_Weapon *Weapon = nullptr;
@@ -631,7 +631,7 @@ bool _Player::AddComponent(int FromIndex, int ToIndex) {
 	else
 		return false;
 
-	if(Weapon->AddComponent(Inventory[FromIndex])) {
+	if(Weapon->AddMod(Inventory[FromIndex])) {
 		ConsumeInventory(FromIndex, false);
 		RecalculateStats();
 		return true;

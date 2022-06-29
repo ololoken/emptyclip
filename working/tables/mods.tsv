@@ -1,0 +1,6 @@
+id	name	icon_id	color_id	mod_type	weapon_type	bonus	bonus_level
+mod_maxrounds	Max Rounds Mod	textures/items/mod_maxrounds.png		1	0	0	10
+mod_damage	Damage Mod	textures/items/mod_damage.png		2	0	0	10
+mod_accuracy	Accuracy Mod	textures/items/mod_accuracy.png		3	0	0	10
+mod_attackspeed	Attack Speed Mod	textures/items/mod_attackspeed.png		4	0	0	10
+mod_reloadspeed	Reload Speed Mod	textures/items/mod_reloadspeed.png		5	0	0	10

@@ -296,8 +296,8 @@ void _Save::LoadItems(_Player *Player, ae::_Buffer &Buffer) {
 
 			// Read weapon data
 			int Ammo = Buffer.Read<int>();
-			Weapon->Attributes["max_components"].Int = Buffer.Read<int>();
-			LoadUpgrades(Buffer, Weapon);
+			Weapon->Attributes["max_mods"].Int = Buffer.Read<int>();
+			LoadMods(Buffer, Weapon);
 			Weapon->RecalculateStats();
 			Weapon->SetAmmo(Ammo);
 		}
@@ -306,19 +306,19 @@ void _Save::LoadItems(_Player *Player, ae::_Buffer &Buffer) {
 	}
 }
 
-// Loads upgrade components from a stream
-void _Save::LoadUpgrades(ae::_Buffer &Buffer, _Weapon *Weapon) {
+// Load mods from a stream
+void _Save::LoadMods(ae::_Buffer &Buffer, _Weapon *Weapon) {
 
 	// Get size header
-	int Components = Buffer.Read<int>();
+	int Mods = Buffer.Read<int>();
 
 	// Read data
-	for(int i = 0; i < Components; i++) {
+	for(int i = 0; i < Mods; i++) {
 		std::string ID = Buffer.ReadString();
 		int Level = Buffer.Read<int>();
 		int Quality = Buffer.Read<int>();
 		_Item *Item = Stats.CreateItem(ID, Level, Quality, 0, glm::vec2(0, 0), false);
-		if(!Weapon->AddComponent(Item))
+		if(!Weapon->AddMod(Item))
 			delete Item;
 	}
 }

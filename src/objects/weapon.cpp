@@ -25,8 +25,8 @@
 
 // Destructor
 _Weapon::~_Weapon() {
-	for(size_t i = 0; i < Upgrades.size(); i++)
-		delete Upgrades[i];
+	for(size_t i = 0; i < Mods.size(); i++)
+		delete Mods[i];
 }
 
 // Serialize weapon for saving
@@ -36,13 +36,13 @@ void _Weapon::Serialize(ae::_Buffer &Buffer) {
 	// Ammo
 	Buffer.Write(Attributes.at("ammo").Int);
 
-	// Max upgrades
-	Buffer.Write(Attributes.at("max_components").Int);
+	// Max mods
+	Buffer.Write(Attributes.at("max_mods").Int);
 
-	// Upgrades
-	Buffer.Write<int>(Upgrades.size());
-	for(size_t i = 0; i < Upgrades.size(); i++)
-		Upgrades[i]->Serialize(Buffer);
+	// Mods
+	Buffer.Write<int>(Mods.size());
+	for(size_t i = 0; i < Mods.size(); i++)
+		Mods[i]->Serialize(Buffer);
 }
 
 // Get weapon sound
@@ -57,19 +57,19 @@ void _Weapon::SetAmmo(int Value) {
 
 // Recalculates the weapon stats
 void _Weapon::RecalculateStats() {
-	for(int i = 0; i < UPGRADE_TYPES; i++)
+	for(int i = 0; i < MOD_TYPES; i++)
 		Bonus[i] = 0;
 
 	// Sum bonuses
-	for(size_t i = 0; i < Upgrades.size(); i++)
-		Bonus[Upgrades[i]->Attributes.at("upgrade_type").Int] += Upgrades[i]->Attributes.at("bonus").Int;
+	for(size_t i = 0; i < Mods.size(); i++)
+		Bonus[Mods[i]->Attributes.at("mod_type").Int] += Mods[i]->Attributes.at("bonus").Int;
 
-	SetAttributeRange("damage", Level, GetBonusMultiplier(UPGRADE_DAMAGE) + Quality * 0.01f);
-	SetAttributeRange("accuracy", 0, 1.0f / GetBonusMultiplier(UPGRADE_ACCURACY));
-	Attributes["rounds"].Int = std::ceil(Template.Attributes.at("rounds").Int * GetBonusMultiplier(UPGRADE_CLIP));
-	Attributes["fire_period"].Double = Template.Attributes.at("fire_period").Double / GetBonusMultiplier(UPGRADE_FIREPERIOD);
-	Attributes["reload_period"].Double = Template.Attributes.at("reload_period").Double / GetBonusMultiplier(UPGRADE_RELOADPERIOD);
-	Attributes["attack_count"].Int = Template.Attributes.at("attack_count").Int + Bonus[UPGRADE_ATTACKS];
+	SetAttributeRange("damage", Level, GetBonusMultiplier(MOD_DAMAGE) + Quality * 0.01f);
+	SetAttributeRange("accuracy", 0, 1.0f / GetBonusMultiplier(MOD_ACCURACY));
+	Attributes["rounds"].Int = std::ceil(Template.Attributes.at("rounds").Int * GetBonusMultiplier(MOD_CLIP));
+	Attributes["fire_period"].Double = Template.Attributes.at("fire_period").Double / GetBonusMultiplier(MOD_FIREPERIOD);
+	Attributes["reload_period"].Double = Template.Attributes.at("reload_period").Double / GetBonusMultiplier(MOD_RELOADPERIOD);
+	Attributes["attack_count"].Int = Template.Attributes.at("attack_count").Int + Bonus[MOD_ATTACKCOUNT];
 	Attributes["reload_rounds"].Int = Template.Attributes.at("reload_rounds").Int;
 	Attributes["penetration"].Int = Template.Attributes.at("penetration").Int;
 
@@ -80,18 +80,18 @@ void _Weapon::RecalculateStats() {
 	SetAmmo(Attributes["ammo"].Int);
 }
 
-// Adds a component to the weapon
-bool _Weapon::AddComponent(_Item *Upgrade) {
-	if((int)Upgrades.size() >= Attributes.at("max_components").Int)
+// Adds a mod to the weapon
+bool _Weapon::AddMod(_Item *Mod) {
+	if((int)Mods.size() >= Attributes.at("max_mods").Int)
 		return false;
 
-	if(Upgrade->Attributes.at("weapon_type").Int != 0 && Upgrade->Attributes.at("weapon_type").Int != Attributes.at("weapon_type").Int)
+	if(Mod->Attributes.at("weapon_type").Int != 0 && Mod->Attributes.at("weapon_type").Int != Attributes.at("weapon_type").Int)
 		return false;
 
-	if(Upgrade->Attributes.at("upgrade_type").Int == UPGRADE_CLIP && Stats.Objects.at(ID).Attributes.at("rounds").Int == 0)
+	if(Mod->Attributes.at("mod_type").Int == MOD_CLIP && Stats.Objects.at(ID).Attributes.at("rounds").Int == 0)
 		return false;
 
-	Upgrades.push_back(Upgrade);
+	Mods.push_back(Mod);
 	RecalculateStats();
 
 	return true;

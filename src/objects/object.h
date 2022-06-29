@@ -46,7 +46,7 @@ class _Object {
 			WEAPON,
 			ARMOR,
 			JEWELRY,
-			UPGRADE,
+			MOD,
 			KEY,
 			AMMO,
 			MEDKIT,
@@ -68,7 +68,7 @@ class _Object {
 		virtual std::string GetTypeAsString() const { return "Object"; }
 		void SetAttributeRange(const std::string &AttributeName, int ItemLevel, float Multiplier);
 		void SetAttributeLevel(const std::string &AttributeName, int ItemLevel, float Multiplier);
-		void SetMaxComponents();
+		void SetMaxMods();
 
 		// Template
 		const _ObjectTemplate &Template;

@@ -55,7 +55,7 @@ void _Item::DrawTooltip(const _Player *Player, std::size_t CompareSlot, glm::ive
 		Size.y = 400;
 	else if(Type == _Object::ARMOR)
 		Size.y = 320;
-	else if(Type == _Object::UPGRADE)
+	else if(Type == _Object::MOD)
 		Size.y = 170;
 
 	// Get title width
@@ -110,7 +110,7 @@ void _Item::DrawTooltip(const _Player *Player, std::size_t CompareSlot, glm::ive
 
 	// Quality
 	glm::vec4 TextColor = COLOR_WHITE;
-	if(Type == _Object::WEAPON || Type == _Object::ARMOR || Type == _Object::UPGRADE) {
+	if(Type == _Object::WEAPON || Type == _Object::ARMOR || Type == _Object::MOD) {
 		if(EquippedWeapon) {
 			if(Quality > EquippedWeapon->Quality)
 				TextColor = COLOR_GREEN;
@@ -263,19 +263,19 @@ void _Item::DrawTooltip(const _Player *Player, std::size_t CompareSlot, glm::ive
 				Buffer.str("");
 			}
 
-			// Components
-			if(Weapon->Attributes.at("max_components").Int >= 1) {
+			// Mods
+			if(Weapon->Attributes.at("max_mods").Int >= 1) {
 				TextColor = COLOR_WHITE;
 				if(EquippedWeapon) {
-					if(Weapon->Attributes.at("max_components").Int > EquippedWeapon->Attributes.at("max_components").Int)
+					if(Weapon->Attributes.at("max_mods").Int > EquippedWeapon->Attributes.at("max_mods").Int)
 						TextColor = COLOR_GREEN;
-					else if(Weapon->Attributes.at("max_components").Int < EquippedWeapon->Attributes.at("max_components").Int)
+					else if(Weapon->Attributes.at("max_mods").Int < EquippedWeapon->Attributes.at("max_mods").Int)
 						TextColor = COLOR_RED;
 				}
 
 				DrawPosition.y += 20;
-				Buffer << Weapon->Upgrades.size() << "/" << Weapon->Attributes.at("max_components").Int;
-				ae::Assets.Fonts["hud_medium"]->DrawText("Components", DrawPosition - DrawOffset, ae::RIGHT_BASELINE);
+				Buffer << Weapon->Mods.size() << "/" << Weapon->Attributes.at("max_mods").Int;
+				ae::Assets.Fonts["hud_medium"]->DrawText("Mods", DrawPosition - DrawOffset, ae::RIGHT_BASELINE);
 				ae::Assets.Fonts["hud_medium"]->DrawText(Buffer.str(), DrawPosition + DrawOffset, ae::LEFT_BASELINE, TextColor);
 				Buffer.str("");
 			}
@@ -283,7 +283,7 @@ void _Item::DrawTooltip(const _Player *Player, std::size_t CompareSlot, glm::ive
 			// Bonuses
 			TextColor = COLOR_WHITE;
 			bool First = true;
-			for(int i = 0; i < UPGRADE_TYPES; i++) {
+			for(int i = 0; i < MOD_TYPES; i++) {
 				if(!Weapon->Bonus[i])
 					continue;
 
@@ -292,10 +292,10 @@ void _Item::DrawTooltip(const _Player *Player, std::size_t CompareSlot, glm::ive
 				DrawPosition.y += 20;
 
 				std::string Percent = "% ";
-				if(i == UPGRADE_ATTACKS)
+				if(i == MOD_ATTACKCOUNT)
 					Percent = " ";
 
-				Buffer << "+" << Weapon->Bonus[i] << Percent << UpgradeTypeToString(i, Weapon->Attributes.at("weapon_type").Int);
+				Buffer << "+" << Weapon->Bonus[i] << Percent << ModTypeToString(i, Weapon->Attributes.at("weapon_type").Int);
 				ae::Assets.Fonts["hud_medium"]->DrawText(Buffer.str(), glm::vec2(DrawPosition.x, DrawPosition.y), ae::CENTER_BASELINE, TextColor);
 				Buffer.str("");
 
@@ -372,16 +372,16 @@ void _Item::DrawTooltip(const _Player *Player, std::size_t CompareSlot, glm::ive
 				Buffer.str("");
 			}
 		} break;
-		case _Object::UPGRADE: {
+		case _Object::MOD: {
 
 			// Bonus
 			DrawPosition.y += 20;
-			if(Attributes.at("upgrade_type").Int == UPGRADE_ATTACKS)
+			if(Attributes.at("mod_type").Int == MOD_ATTACKCOUNT)
 				Buffer << "+" << Attributes.at("bonus").Int;
 			else
 				Buffer << "+" << Attributes.at("bonus").Int << "%";
 
-			ae::Assets.Fonts["hud_medium"]->DrawText(UpgradeTypeToString(Attributes.at("upgrade_type").Int, -1), DrawPosition - DrawOffset, ae::RIGHT_BASELINE);
+			ae::Assets.Fonts["hud_medium"]->DrawText(ModTypeToString(Attributes.at("mod_type").Int, -1), DrawPosition - DrawOffset, ae::RIGHT_BASELINE);
 			ae::Assets.Fonts["hud_medium"]->DrawText(Buffer.str(), DrawPosition + DrawOffset, ae::LEFT_BASELINE, TextColor);
 		} break;
 		case _Object::MEDKIT: {
@@ -418,8 +418,8 @@ std::string _Item::GetTypeAsString() const {
 			return "Key";
 		case _Object::AMMO:
 			return "Ammo";
-		case _Object::UPGRADE:
-			return "Upgrade Component";
+		case _Object::MOD:
+			return "Weapon Mod";
 		case _Object::ARMOR:
 			return "Armor";
 		case _Object::MEDKIT:
@@ -429,29 +429,29 @@ std::string _Item::GetTypeAsString() const {
 	return "";
 }
 
-// Convert an upgrade type to string
-std::string _Item::UpgradeTypeToString(int Type, int WeaponType) {
+// Convert a mod type to string
+std::string _Item::ModTypeToString(int Type, int WeaponType) {
 
 	switch(Type) {
-		case UPGRADE_CLIP:
+		case MOD_CLIP:
 			return "Round Size";
 		break;
-		case UPGRADE_DAMAGE:
+		case MOD_DAMAGE:
 			return "Damage";
 		break;
-		case UPGRADE_ACCURACY:
+		case MOD_ACCURACY:
 			return "Accuracy";
 		break;
-		case UPGRADE_FIREPERIOD:
+		case MOD_FIREPERIOD:
 			if(WeaponType == WEAPON_MELEE)
 				return "Attack Rate";
 			else
 				return "Fire Rate";
 		break;
-		case UPGRADE_RELOADPERIOD:
+		case MOD_RELOADPERIOD:
 			return "Reload Speed";
 		break;
-		case UPGRADE_ATTACKS:
+		case MOD_ATTACKCOUNT:
 			if(WeaponType == WEAPON_MELEE)
 				return "Attack Count";
 			else

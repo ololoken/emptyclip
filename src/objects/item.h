@@ -23,16 +23,16 @@
 // Forward Declarations
 class _Player;
 
-// Upgrade component types
-enum UpgradeType {
-	UPGRADE_NONE,
-	UPGRADE_CLIP,
-	UPGRADE_DAMAGE,
-	UPGRADE_ACCURACY,
-	UPGRADE_FIREPERIOD,
-	UPGRADE_RELOADPERIOD,
-	UPGRADE_ATTACKS,
-	UPGRADE_TYPES
+// Mod types
+enum ModType {
+	MOD_NONE,
+	MOD_CLIP,
+	MOD_DAMAGE,
+	MOD_ACCURACY,
+	MOD_FIREPERIOD,
+	MOD_RELOADPERIOD,
+	MOD_ATTACKCOUNT,
+	MOD_TYPES
 };
 
 // Classes
@@ -54,7 +54,7 @@ class _Item : public _Object {
 		float GetAverageAccuracy() const;
 
 		virtual std::string GetTypeAsString() const override;
-		std::string UpgradeTypeToString(int Type, int WeaponType);
+		std::string ModTypeToString(int Type, int WeaponType);
 
 		int Quality;
 		int Count;

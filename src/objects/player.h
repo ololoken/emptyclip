@@ -86,7 +86,7 @@ class _Player : public _Entity {
 
 		int AddInventory(_Item *Item);
 		int CombineItems(_Item *FromItem, _Item *ToItem);
-		bool AddComponent(int FromIndex, int ToIndex);
+		bool AddMod(int FromIndex, int ToIndex);
 		bool UseItem(int Index, bool Event);
 		bool UseMedkit(int Index);
 		int FindItem(int Index);

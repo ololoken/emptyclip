@@ -96,7 +96,7 @@ class _Stats {
 		void LoadArmor(const std::string &Path);
 		void LoadKeys(const std::string &Path);
 		void LoadMedkits(const std::string &Path);
-		void LoadUpgrades(const std::string &Path);
+		void LoadMods(const std::string &Path);
 		void LoadWeapons(const std::string &Path);
 		void LoadItemDrops(const std::string &Path);
 		void LoadMonsters(const std::string &Path);

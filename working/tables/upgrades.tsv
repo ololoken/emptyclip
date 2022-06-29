@@ -1,6 +1,0 @@
-id	name	icon_id	color_id	type	weapon_type	bonus	bonus_level
-upgrade_maxrounds	Max Rounds Upgrade	textures/items/upgrade_maxrounds.png		1	0	0	10
-upgrade_damage	Damage Upgrade	textures/items/upgrade_damage.png		2	0	0	10
-upgrade_accuracy	Accuracy Upgrade	textures/items/upgrade_accuracy.png		3	0	0	10
-upgrade_attackspeed	Attack Speed Upgrade	textures/items/upgrade_attackspeed.png		4	0	0	10
-upgrade_reloadspeed	Reload Speed Upgrade	textures/items/upgrade_reloadspeed.png		5	0	0	10

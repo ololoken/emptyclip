@@ -42,7 +42,7 @@ void _Stats::Init() {
 	LoadArmor("tables/armor.tsv");
 	LoadKeys("tables/keys.tsv");
 	LoadMedkits("tables/medkits.tsv");
-	LoadUpgrades("tables/upgrades.tsv");
+	LoadMods("tables/mods.tsv");
 	LoadWeapons("tables/weapons.tsv");
 	LoadItemDrops("tables/itemdrops.tsv");
 	LoadMonsters("tables/monsters.tsv");
@@ -300,8 +300,8 @@ void _Stats::LoadMedkits(const std::string &Path) {
 	File.close();
 }
 
-// Load upgrade stats
-void _Stats::LoadUpgrades(const std::string &Path) {
+// Load mod stats
+void _Stats::LoadMods(const std::string &Path) {
 
 	// Load file
 	std::ifstream File(Path, std::ios::in);
@@ -314,7 +314,7 @@ void _Stats::LoadUpgrades(const std::string &Path) {
 	// Read file
 	while(!File.eof() && File.peek() != EOF) {
 
-		_ObjectTemplate Template(_Object::UPGRADE);
+		_ObjectTemplate Template(_Object::MOD);
 		std::string ID;
 		std::string ColorID;
 		std::getline(File, ID, '\t');
@@ -323,7 +323,7 @@ void _Stats::LoadUpgrades(const std::string &Path) {
 		std::getline(File, ColorID, '\t');
 
 		File
-			>> Template.Attributes["upgrade_type"].Int
+			>> Template.Attributes["mod_type"].Int
 			>> Template.Attributes["weapon_type"].Int
 			>> Template.Attributes["bonus"].Float
 			>> Template.Attributes["bonus_level"].Float;
@@ -388,8 +388,8 @@ void _Stats::LoadWeapons(const std::string &Path) {
 			>> Template.Attributes["fire_period"].Double
 			>> Template.Attributes["reload_rounds"].Int
 			>> Template.Attributes["reload_period"].Double
-			>> Template.Attributes["components"].Float
-			>> Template.Attributes["components_level"].Float
+			>> Template.Attributes["mods"].Float
+			>> Template.Attributes["mods_level"].Float
 			>> Template.Attributes["attack_count"].Int
 			>> Template.Attributes["rounds"].Int
 			>> Template.Attributes["penetration"].Int;
@@ -481,7 +481,7 @@ void _Stats::LoadItemDrops(const std::string &Path) {
 			break;
 			case _Object::KEY:
 			case _Object::AMMO:
-			case _Object::UPGRADE:
+			case _Object::MOD:
 			case _Object::ARMOR:
 			case _Object::WEAPON:
 			case _Object::MEDKIT:
@@ -619,10 +619,10 @@ _Item *_Stats::CreateItem(const std::string &ID, int Level, int Quality, int Cou
 			Item->Attributes["recoil_regen"].Float = Template.Attributes["recoil_regen"].Float;
 			Item->Attributes["range"].Float = Template.Attributes["range"].Float;
 			Item->Attributes["fire_rate"].Int = Template.Attributes["fire_rate"].Int;
-			Item->SetMaxComponents();
+			Item->SetMaxMods();
 
 			if(RandomStats)
-				Item->Attributes["max_components"].Int += ae::GetRandomInt(0, 1);
+				Item->Attributes["max_mods"].Int += ae::GetRandomInt(0, 1);
 
 			Item->Attributes["ammo"].Int = Template.Attributes.at("rounds").Int;
 		} break;
@@ -632,8 +632,8 @@ _Item *_Stats::CreateItem(const std::string &ID, int Level, int Quality, int Cou
 			Item->SetAttributeLevel("max_ammo", Item->Level, 1.0f + Item->Quality * 0.01f);
 			Item->SetAttributeLevel("move_speed", Item->Level, 1.0f - Item->Quality * 0.01f);
 		break;
-		case _Object::UPGRADE:
-			Item->Attributes["upgrade_type"].Int = Template.Attributes["upgrade_type"].Int;
+		case _Object::MOD:
+			Item->Attributes["mod_type"].Int = Template.Attributes["mod_type"].Int;
 			Item->Attributes["weapon_type"].Int = Template.Attributes["weapon_type"].Int;
 			Item->SetAttributeLevel("bonus", Item->Level, 1.0f + Item->Quality * 0.01f);
 		break;

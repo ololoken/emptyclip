@@ -73,7 +73,7 @@ void _ObjectManager::Update(double FrameTime, _Map *Map) {
 				switch(Object->Type) {
 					case _Object::WEAPON:
 					case _Object::ARMOR:
-					case _Object::UPGRADE:
+					case _Object::MOD:
 						MinimapLayer.Color = COLOR_GREEN;
 					break;
 					case _Object::KEY:

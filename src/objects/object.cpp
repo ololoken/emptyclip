@@ -58,9 +58,9 @@ void _Object::SetAttributeLevel(const std::string &AttributeName, int ItemLevel,
 	Attributes[AttributeName].Int = std::ceil((Template.Attributes.at(AttributeName).Float + LevelValue) * Multiplier);
 }
 
-// Set the max number of components based on level
-void _Object::SetMaxComponents() {
-	Attributes["max_components"].Int = Template.Attributes.at("components").Float + Template.Attributes.at("components_level").Float * Level;
+// Set the max number of mods based on level
+void _Object::SetMaxMods() {
+	Attributes["max_mods"].Int = Template.Attributes.at("mods").Float + Template.Attributes.at("mods_level").Float * Level;
 }
 
 // Get render bounds of object

@@ -1329,7 +1329,7 @@ void _EditorState::DrawObject(float OffsetX, float OffsetY, const _ObjectSpawn *
 		} break;
 		case _Object::KEY:
 		case _Object::AMMO:
-		case _Object::UPGRADE:
+		case _Object::MOD:
 		case _Object::ARMOR:
 		case _Object::WEAPON:
 		case _Object::MEDKIT: {
