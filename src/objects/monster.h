@@ -30,7 +30,7 @@ class _Monster : public _Entity {
 
 	public:
 
-		_Monster(const _ObjectTemplate &Template);
+		_Monster(const _ObjectTemplate &MonsterTemplate);
 
 		void Update(double FrameTime) override;
 		const _ParticleTemplate *GetWeaponParticle(int Index) const override;

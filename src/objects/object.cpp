@@ -22,10 +22,10 @@
 #include <glm/gtx/rotate_vector.hpp>
 
 // Constructor
-_Object::_Object(const _ObjectTemplate &Template) :
-	Template(Template),
-	Name(Template.Name),
-	Type(Template.Type),
+_Object::_Object(const _ObjectTemplate &ObjectTemplate) :
+	Template(ObjectTemplate),
+	Name(ObjectTemplate.Name),
+	Type(ObjectTemplate.Type),
 	Level(1),
 	Active(true),
 	Map(nullptr),
@@ -36,7 +36,7 @@ _Object::_Object(const _ObjectTemplate &Template) :
 	Radius(0.25f),
 	WallState(0),
 	Texture(nullptr),
-	Color(Template.Color),
+	Color(ObjectTemplate.Color),
 	Rotation(0.0f),
 	Scale(1.0f),
 	PositionZ(OBJECT_Z)	{

@@ -53,7 +53,7 @@ class _Object {
 			COUNT
 		};
 
-		_Object(const _ObjectTemplate &Template);
+		_Object(const _ObjectTemplate &ObjectTemplate);
 		virtual ~_Object() { }
 
 		virtual void Update(double FrameTime) { }

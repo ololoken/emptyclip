@@ -39,7 +39,7 @@ class _Weapon : public _Item {
 
 	public:
 
-		_Weapon(const _ObjectTemplate &Template) : _Item(Template) { }
+		_Weapon(const _ObjectTemplate &WeaponTemplate) : _Item(WeaponTemplate) { }
 		~_Weapon() override;
 
 		void Serialize(ae::_Buffer &Buffer) override;
