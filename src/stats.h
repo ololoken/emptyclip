@@ -61,43 +61,21 @@ struct _ItemDrop {
 	float Total;
 };
 
-// Monster template
-struct _MonsterTemplate {
-	_MonsterTemplate() : Color(1.0f) { }
+// Object template
+struct _ObjectTemplate {
 
-	std::string Name;
-	std::string AnimationID;
-	std::string SoundGroupID;
-	std::string ItemDropID;
-	_WeaponParticleTemplate *WeaponParticles;
-	glm::vec4 Color;
+	_ObjectTemplate(int Type) : WeaponParticles(nullptr), Color(1.0f), Type(Type) { }
 
-	std::unordered_map<std::string, _Value> Attributes;
-};
-
-// Item template
-struct _ItemTemplate {
-	_ItemTemplate() : Color(1.0f), Type(0) { }
-	_ItemTemplate(int Type) : Color(1.0f), Type(Type) { }
-
-	std::string Name;
-	std::string IconID;
-	glm::vec4 Color;
-	int Type;
-
-	std::unordered_map<std::string, _Value> Attributes;
-};
-
-// Weapon template
-struct _WeaponTemplate {
-	_WeaponTemplate() :	WeaponParticles(nullptr) { }
-
-	_WeaponParticleTemplate *WeaponParticles;
-	glm::vec4 Color;
 	std::string Name;
 	std::string IconID;
 	std::string AmmoID;
+	std::string AnimationID;
+	std::string SoundGroupID;
+	std::string ItemDropID;
 	std::string SoundID[SOUND_TYPES];
+	_WeaponParticleTemplate *WeaponParticles;
+	glm::vec4 Color;
+	int Type;
 
 	std::unordered_map<std::string, _Value> Attributes;
 };
@@ -140,10 +118,10 @@ class _Stats {
 		void GetRandomDrop(const _ItemDrop *ItemDrop, _ObjectSpawn *ObjectSpawn);
 
 		std::unordered_map<std::string, std::string> Strings;
-		std::unordered_map<std::string, _ItemTemplate> Items;
-		std::unordered_map<std::string, _WeaponTemplate> Weapons;
+		std::unordered_map<std::string, _ObjectTemplate> Items;
+		std::unordered_map<std::string, _ObjectTemplate> Weapons;
+		std::unordered_map<std::string, _ObjectTemplate> Monsters;
 		std::unordered_map<std::string, _ItemDrop> ItemDrops;
-		std::unordered_map<std::string, _MonsterTemplate> Monsters;
 		_Weapon *WeaponFists;
 
 		std::vector<std::string> AmmoNames;

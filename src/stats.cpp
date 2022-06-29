@@ -145,17 +145,15 @@ void _Stats::LoadAmmo(const std::string &Path) {
 	if(!File)
 		throw std::runtime_error("Error loading: " + Path);
 
-	AmmoNames.push_back("None");
-
 	// Skip header
 	File.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
 	// Read file
 	while(!File.eof() && File.peek() != EOF) {
 
-		_ItemTemplate Template(_Object::AMMO);
-		std::string Name;
-		std::getline(File, Name, '\t');
+		_ObjectTemplate Template(_Object::AMMO);
+		std::string ID;
+		std::getline(File, ID, '\t');
 		std::getline(File, Template.Name, '\t');
 		std::getline(File, Template.IconID, '\t');
 
@@ -167,11 +165,11 @@ void _Stats::LoadAmmo(const std::string &Path) {
 			throw std::runtime_error(std::string(__func__) + " - Texture not found: " + Template.IconID);
 
 		// Check for duplicates
-		if(Items.find(Name) != Items.end())
-			throw std::runtime_error(std::string(__func__) + " - Duplicate entry: " + Name);
+		if(Items.find(ID) != Items.end())
+			throw std::runtime_error(std::string(__func__) + " - Duplicate entry: " + ID);
 
-		Items[Name] = Template;
-		AmmoNames.push_back(Name);
+		Items.insert(std::make_pair(ID, Template));
+		AmmoNames.push_back(ID);
 	}
 
 	File.close();
@@ -191,9 +189,9 @@ void _Stats::LoadArmor(const std::string &Path) {
 	// Read file
 	while(!File.eof() && File.peek() != EOF) {
 
-		_ItemTemplate Template(_Object::ARMOR);
-		std::string Name;
-		std::getline(File, Name, '\t');
+		_ObjectTemplate Template(_Object::ARMOR);
+		std::string ID;
+		std::getline(File, ID, '\t');
 		std::getline(File, Template.Name, '\t');
 		std::getline(File, Template.IconID, '\t');
 
@@ -214,10 +212,10 @@ void _Stats::LoadArmor(const std::string &Path) {
 			throw std::runtime_error(std::string(__func__) + " - Texture not found: " + Template.IconID);
 
 		// Check for duplicates
-		if(Items.find(Name) != Items.end())
-			throw std::runtime_error(std::string(__func__) + " - Duplicate entry: " + Name);
+		if(Items.find(ID) != Items.end())
+			throw std::runtime_error(std::string(__func__) + " - Duplicate entry: " + ID);
 
-		Items[Name] = Template;
+		Items.insert(std::make_pair(ID, Template));
 	}
 
 	File.close();
@@ -237,7 +235,7 @@ void _Stats::LoadKeys(const std::string &Path) {
 	// Read file
 	while(!File.eof() && File.peek() != EOF) {
 
-		_ItemTemplate Template(_Object::KEY);
+		_ObjectTemplate Template(_Object::KEY);
 		std::string ID;
 		std::string ColorID;
 		std::getline(File, ID, '\t');
@@ -256,7 +254,7 @@ void _Stats::LoadKeys(const std::string &Path) {
 		if(Items.find(ID) != Items.end())
 			throw std::runtime_error(std::string(__func__) + " - Duplicate entry: " + ID);
 
-		Items[ID] = Template;
+		Items.insert(std::make_pair(ID, Template));
 	}
 
 	File.close();
@@ -276,7 +274,7 @@ void _Stats::LoadMedkits(const std::string &Path) {
 	// Read file
 	while(!File.eof() && File.peek() != EOF) {
 
-		_ItemTemplate Template(_Object::MEDKIT);
+		_ObjectTemplate Template(_Object::MEDKIT);
 		std::string ID;
 		std::string ColorID;
 		std::getline(File, ID, '\t');
@@ -297,7 +295,7 @@ void _Stats::LoadMedkits(const std::string &Path) {
 		if(Items.find(ID) != Items.end())
 			throw std::runtime_error(std::string(__func__) + " - Duplicate entry: " + ID);
 
-		Items[ID] = Template;
+		Items.insert(std::make_pair(ID, Template));
 	}
 
 	File.close();
@@ -317,7 +315,7 @@ void _Stats::LoadUpgrades(const std::string &Path) {
 	// Read file
 	while(!File.eof() && File.peek() != EOF) {
 
-		_ItemTemplate Template(_Object::UPGRADE);
+		_ObjectTemplate Template(_Object::UPGRADE);
 		std::string ID;
 		std::string ColorID;
 		std::getline(File, ID, '\t');
@@ -344,7 +342,7 @@ void _Stats::LoadUpgrades(const std::string &Path) {
 		if(Items.find(ID) != Items.end())
 			throw std::runtime_error(std::string(__func__) + " - Duplicate entry: " + ID);
 
-		Items[ID] = Template;
+		Items.insert(std::make_pair(ID, Template));
 	}
 
 	File.close();
@@ -364,47 +362,47 @@ void _Stats::LoadWeapons(const std::string &Path) {
 	// Read file
 	while(!File.eof() && File.peek() != EOF) {
 
-		_WeaponTemplate WeaponTemplate;
+		_ObjectTemplate Template(_Object::WEAPON);
 		std::string ID;
 		std::string ColorID;
 		std::string SoundGroupID;
 		std::string WeaponParticlesID;
 		std::getline(File, ID, '\t');
-		std::getline(File, WeaponTemplate.Name, '\t');
-		std::getline(File, WeaponTemplate.IconID, '\t');
+		std::getline(File, Template.Name, '\t');
+		std::getline(File, Template.IconID, '\t');
 		std::getline(File, SoundGroupID, '\t');
 		std::getline(File, WeaponParticlesID, '\t');
-		std::getline(File, WeaponTemplate.AmmoID, '\t');
+		std::getline(File, Template.AmmoID, '\t');
 
 		File
-			>> WeaponTemplate.Attributes["weapon_type"].Int
-			>> WeaponTemplate.Attributes["damage"].Float
-			>> WeaponTemplate.Attributes["damage_level"].Float
-			>> WeaponTemplate.Attributes["damage_spread"].Float
-			>> WeaponTemplate.Attributes["zoom_scale"].Float
-			>> WeaponTemplate.Attributes["accuracy"].Float
-			>> WeaponTemplate.Attributes["accuracy_spread"].Float
-			>> WeaponTemplate.Attributes["recoil"].Float
-			>> WeaponTemplate.Attributes["recoil_regen"].Float
-			>> WeaponTemplate.Attributes["range"].Float
-			>> WeaponTemplate.Attributes["fire_rate"].Int
-			>> WeaponTemplate.Attributes["fire_period"].Double
-			>> WeaponTemplate.Attributes["reload_rounds"].Int
-			>> WeaponTemplate.Attributes["reload_period"].Double
-			>> WeaponTemplate.Attributes["components"].Float
-			>> WeaponTemplate.Attributes["components_level"].Float
-			>> WeaponTemplate.Attributes["attack_count"].Int
-			>> WeaponTemplate.Attributes["rounds"].Int
-			>> WeaponTemplate.Attributes["penetration"].Int;
+			>> Template.Attributes["weapon_type"].Int
+			>> Template.Attributes["damage"].Float
+			>> Template.Attributes["damage_level"].Float
+			>> Template.Attributes["damage_spread"].Float
+			>> Template.Attributes["zoom_scale"].Float
+			>> Template.Attributes["accuracy"].Float
+			>> Template.Attributes["accuracy_spread"].Float
+			>> Template.Attributes["recoil"].Float
+			>> Template.Attributes["recoil_regen"].Float
+			>> Template.Attributes["range"].Float
+			>> Template.Attributes["fire_rate"].Int
+			>> Template.Attributes["fire_period"].Double
+			>> Template.Attributes["reload_rounds"].Int
+			>> Template.Attributes["reload_period"].Double
+			>> Template.Attributes["components"].Float
+			>> Template.Attributes["components_level"].Float
+			>> Template.Attributes["attack_count"].Int
+			>> Template.Attributes["rounds"].Int
+			>> Template.Attributes["penetration"].Int;
 
 		File.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
 		// Check for loaded textures
-		if(WeaponTemplate.IconID != "" && !ae::Assets.Textures[WeaponTemplate.IconID])
-			throw std::runtime_error(std::string(__func__) + " - Texture not found: " + WeaponTemplate.IconID);
+		if(Template.IconID != "" && !ae::Assets.Textures[Template.IconID])
+			throw std::runtime_error(std::string(__func__) + " - Texture not found: " + Template.IconID);
 
 		// Set color
-		SetColor(WeaponTemplate.Color, ColorID);
+		SetColor(Template.Color, ColorID);
 
 		// Check for attack sound
 		if(!GameAssets.IsSoundGroupLoaded(SoundGroupID))
@@ -414,20 +412,20 @@ void _Stats::LoadWeapons(const std::string &Path) {
 		_SoundGroup *SoundGroupTemplate = GameAssets.GetSoundGroupTemplate(SoundGroupID);
 		if(SoundGroupTemplate) {
 			for(int i = 0; i < SOUND_TYPES; i++)
-				WeaponTemplate.SoundID[i] = SoundGroupTemplate->SoundID[i];
+				Template.SoundID[i] = SoundGroupTemplate->SoundID[i];
 		}
 
 		// Set particles
 		if(GameAssets.IsWeaponParticleTemplateLoaded(WeaponParticlesID))
-			WeaponTemplate.WeaponParticles = GameAssets.GetWeaponParticleTemplate(WeaponParticlesID);
+			Template.WeaponParticles = GameAssets.GetWeaponParticleTemplate(WeaponParticlesID);
 		else
-			WeaponTemplate.WeaponParticles = &BlankWeaponParticle;
+			Template.WeaponParticles = &BlankWeaponParticle;
 
 		// Check for duplicates
 		if(Weapons.find(ID) != Weapons.end())
 			throw std::runtime_error(std::string(__func__) + " - Duplicate entry: " + ID);
 
-		Weapons[ID] = WeaponTemplate;
+		Weapons.insert(std::make_pair(ID, Template));
 	}
 
 	File.close();
@@ -530,66 +528,66 @@ void _Stats::LoadMonsters(const std::string &Path) {
 	// Read file
 	while(!File.eof() && File.peek() != EOF) {
 
-		_MonsterTemplate MonsterTemplate;
+		_ObjectTemplate Template(_Object::MONSTER);
 		std::string ID;
 		std::string WeaponParticlesID;
 		std::string ColorID;
 		std::getline(File, ID, '\t');
-		std::getline(File, MonsterTemplate.Name, '\t');
-		std::getline(File, MonsterTemplate.AnimationID, '\t');
+		std::getline(File, Template.Name, '\t');
+		std::getline(File, Template.AnimationID, '\t');
 		std::getline(File, ColorID, '\t');
 		std::getline(File, WeaponParticlesID, '\t');
-		std::getline(File, MonsterTemplate.SoundGroupID, '\t');
-		std::getline(File, MonsterTemplate.ItemDropID, '\t');
+		std::getline(File, Template.SoundGroupID, '\t');
+		std::getline(File, Template.ItemDropID, '\t');
 
 		File
-			>> MonsterTemplate.Attributes["drop_count"].Int
-			>> MonsterTemplate.Attributes["health"].Float
-			>> MonsterTemplate.Attributes["health_level"].Float
-			>> MonsterTemplate.Attributes["ai_type"].Int
-			>> MonsterTemplate.Attributes["view_range"].Float
-			>> MonsterTemplate.Attributes["xp"].Float
-			>> MonsterTemplate.Attributes["xp_level"].Float
-			>> MonsterTemplate.Attributes["move_speed"].Float
-			>> MonsterTemplate.Attributes["move_speed_level"].Float
-			>> MonsterTemplate.Attributes["radius"].Float
-			>> MonsterTemplate.Attributes["scale"].Float
-			>> MonsterTemplate.Attributes["accuracy"].Int
-			>> MonsterTemplate.Attributes["attack_range"].Float
-			>> MonsterTemplate.Attributes["damage"].Float
-			>> MonsterTemplate.Attributes["damage_level"].Float
-			>> MonsterTemplate.Attributes["damage_spread"].Float
-			>> MonsterTemplate.Attributes["attack_period"].Double
-			>> MonsterTemplate.Attributes["weapon_type"].Int;
+			>> Template.Attributes["drop_count"].Int
+			>> Template.Attributes["health"].Float
+			>> Template.Attributes["health_level"].Float
+			>> Template.Attributes["ai_type"].Int
+			>> Template.Attributes["view_range"].Float
+			>> Template.Attributes["xp"].Float
+			>> Template.Attributes["xp_level"].Float
+			>> Template.Attributes["move_speed"].Float
+			>> Template.Attributes["move_speed_level"].Float
+			>> Template.Attributes["radius"].Float
+			>> Template.Attributes["scale"].Float
+			>> Template.Attributes["accuracy"].Int
+			>> Template.Attributes["attack_range"].Float
+			>> Template.Attributes["damage"].Float
+			>> Template.Attributes["damage_level"].Float
+			>> Template.Attributes["damage_spread"].Float
+			>> Template.Attributes["attack_period"].Double
+			>> Template.Attributes["weapon_type"].Int;
 
 		File.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
 		// Check for animation
-		if(ae::Assets.Animations.find(MonsterTemplate.AnimationID) == ae::Assets.Animations.end())
-			throw std::runtime_error(std::string(__func__) + " - Unknown animation_id: '" + MonsterTemplate.AnimationID + "' for " + ID);
+		if(ae::Assets.Animations.find(Template.AnimationID) == ae::Assets.Animations.end())
+			throw std::runtime_error(std::string(__func__) + " - Unknown animation_id: '" + Template.AnimationID + "' for " + ID);
 
 		// Set color
-		SetColor(MonsterTemplate.Color, ColorID);
+		SetColor(Template.Color, ColorID);
 
 		// Set particles
 		if(GameAssets.IsWeaponParticleTemplateLoaded(WeaponParticlesID))
-			MonsterTemplate.WeaponParticles = GameAssets.GetWeaponParticleTemplate(WeaponParticlesID);
+			Template.WeaponParticles = GameAssets.GetWeaponParticleTemplate(WeaponParticlesID);
 		else
-			MonsterTemplate.WeaponParticles = &BlankWeaponParticle;
+			Template.WeaponParticles = &BlankWeaponParticle;
 
 		// Check for sound group
-		if(!GameAssets.IsSoundGroupLoaded(MonsterTemplate.SoundGroupID))
-			throw std::runtime_error(std::string(__func__) + " - Unknown sound_group_id: '" + MonsterTemplate.SoundGroupID + "' for " + ID);
+		if(!GameAssets.IsSoundGroupLoaded(Template.SoundGroupID))
+			throw std::runtime_error(std::string(__func__) + " - Unknown sound_group_id: '" + Template.SoundGroupID + "' for " + ID);
 
 		// Check for item group
-		if(MonsterTemplate.ItemDropID != "" && ItemDrops.find(MonsterTemplate.ItemDropID) == ItemDrops.end())
-			throw std::runtime_error(std::string(__func__) + " - Unknown itemdrop_id: '" + MonsterTemplate.ItemDropID + "' for " + ID);
+		if(Template.ItemDropID != "" && ItemDrops.find(Template.ItemDropID) == ItemDrops.end())
+			throw std::runtime_error(std::string(__func__) + " - Unknown itemdrop_id: '" + Template.ItemDropID + "' for " + ID);
 
 		// Check for duplicates
 		if(Stats.Monsters.find(ID) != Stats.Monsters.end())
 			throw std::runtime_error(std::string(__func__) + " - Duplicate id: '" + ID + "'");
 
-		Monsters[ID] = MonsterTemplate;
+		Monsters.insert(std::make_pair(ID, Template));
 	}
 
 	File.close();
@@ -597,7 +595,7 @@ void _Stats::LoadMonsters(const std::string &Path) {
 
 // Create item
 _Item *_Stats::CreateItem(const std::string &ID, int Level, int Quality, int Count, const glm::vec2 &Position, bool RandomStats) {
-	_ItemTemplate &Template = Items[ID];
+	_ObjectTemplate &Template = Items.at(ID);
 
 	// Create item
 	_Item *Item = new _Item(Template.Attributes);
@@ -642,15 +640,15 @@ _Item *_Stats::CreateItem(const std::string &ID, int Level, int Quality, int Cou
 
 // Creates a weapon
 _Weapon *_Stats::CreateWeapon(const std::string &ID, int Level, int Quality, const glm::vec2 &Position, bool RandomStats) {
-	_WeaponTemplate &WeaponTemplate = Weapons[ID];
-	_Weapon *Weapon = new _Weapon(ID, Level, Position, WeaponTemplate, ae::Assets.Textures[WeaponTemplate.IconID], RandomStats);
+	_ObjectTemplate &Template = Weapons.at(ID);
+	_Weapon *Weapon = new _Weapon(ID, Level, Position, Template, ae::Assets.Textures[Template.IconID], RandomStats);
 
 	return Weapon;
 }
 
 // Creates a monster
 _Monster *_Stats::CreateMonster(const std::string &ID, const glm::vec2 &Position) {
-	_MonsterTemplate &MonsterTemplate = Monsters[ID];
+	_ObjectTemplate &MonsterTemplate = Monsters.at(ID);
 
 	// Creates a monster
 	_Monster *Monster = new _Monster(MonsterTemplate);

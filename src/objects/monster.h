@@ -30,7 +30,7 @@ class _Monster : public _Entity {
 
 	public:
 
-		_Monster(_MonsterTemplate &MonsterTemplate);
+		_Monster(_ObjectTemplate &Template);
 		~_Monster() override { }
 
 		void Update(double FrameTime) override;

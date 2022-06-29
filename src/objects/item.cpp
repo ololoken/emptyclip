@@ -271,10 +271,10 @@ void _Item::DrawTooltip(const _Player *Player, std::size_t CompareSlot, glm::ive
 			}
 
 			// Ammo type
-			std::string AmmoType = Stats.Weapons[Weapon->ID].AmmoID;
+			std::string AmmoType = Stats.Weapons.at(Weapon->ID).AmmoID;
 			if(!AmmoType.empty()) {
 				DrawPosition.y += 20;
-				Buffer << Stats.Items[AmmoType].Name;
+				Buffer << Stats.Items.at(AmmoType).Name;
 				ae::Assets.Fonts["hud_medium"]->DrawText("Ammo Type", DrawPosition - DrawOffset, ae::RIGHT_BASELINE);
 				ae::Assets.Fonts["hud_medium"]->DrawText(Buffer.str(), DrawPosition + DrawOffset);
 				Buffer.str("");

@@ -26,11 +26,12 @@
 #include <glm/vec2.hpp>
 
 // Forward Declarations
+class _Map;
+struct _ObjectTemplate;
 namespace ae {
 	class _Buffer;
 	class _Texture;
 }
-class _Map;
 
 // Object class
 class _Object {

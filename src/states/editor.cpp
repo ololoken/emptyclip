@@ -1333,7 +1333,7 @@ void _EditorState::DrawObject(float OffsetX, float OffsetY, const _ObjectSpawn *
 	const ae::_Texture *Texture = nullptr;
 	switch(Object->Type) {
 		case _Object::MONSTER: {
-			_MonsterTemplate &Monster = Stats.Monsters.at(Object->ID);
+			_ObjectTemplate &Monster = Stats.Monsters.at(Object->ID);
 			Texture = ae::Assets.Textures["textures/icons/" + Monster.AnimationID + ".png"];
 			Color = Monster.Color;
 			Scale = Monster.Attributes.at("scale").Float;
@@ -1344,12 +1344,12 @@ void _EditorState::DrawObject(float OffsetX, float OffsetY, const _ObjectSpawn *
 		case _Object::UPGRADE:
 		case _Object::ARMOR:
 		case _Object::MEDKIT: {
-			_ItemTemplate &Ammo = Stats.Items[Object->ID];
+			_ObjectTemplate &Ammo = Stats.Items.at(Object->ID);
 			Texture = ae::Assets.Textures[Ammo.IconID];
 			Color = Ammo.Color;
 		} break;
 		case _Object::WEAPON: {
-			_WeaponTemplate &Weapon = Stats.Weapons[Object->ID];
+			_ObjectTemplate &Weapon = Stats.Weapons.at(Object->ID);
 			Texture = ae::Assets.Textures[Weapon.IconID];
 			Color = Weapon.Color;
 		} break;

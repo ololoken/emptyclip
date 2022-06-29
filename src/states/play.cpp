@@ -822,7 +822,7 @@ void _PlayState::UseObject(_Item *NearbyItem) {
 			if(Event->ItemID != "") {
 				int ItemIndex = Player->FindItem(Event->ItemID);
 				if(ItemIndex == -1) {
-					HUD->ShowMessageBox("You need the " + Stats.Items[Event->ItemID].Name, HUD_KEYMESSAGETIME);
+					HUD->ShowMessageBox("You need the " + Stats.Items.at(Event->ItemID).Name, HUD_KEYMESSAGETIME);
 					return;
 				}
 

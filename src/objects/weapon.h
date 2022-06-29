@@ -23,9 +23,6 @@
 #include <vector>
 #include <string>
 
-// Forward Declarations
-struct _WeaponTemplate;
-
 // Types of weapons
 enum WeaponType {
 	WEAPON_NONE,
@@ -42,7 +39,7 @@ class _Weapon : public _Item {
 
 	public:
 
-		_Weapon(const std::string &ID, int Level, const glm::vec2 &Position, const _WeaponTemplate &Weapon, const ae::_Texture *Texture, bool RandomStats);
+		_Weapon(const std::string &ID, int Level, const glm::vec2 &Position, const _ObjectTemplate &Weapon, const ae::_Texture *Texture, bool RandomStats);
 		~_Weapon() override;
 
 		void Serialize(ae::_Buffer &Buffer) override;

@@ -34,9 +34,9 @@ enum AITypes {
 };
 
 // Constructor
-_Monster::_Monster(_MonsterTemplate &MonsterTemplate) :
+_Monster::_Monster(_ObjectTemplate &Template) :
 	_Entity(),
-	TemplateAttributes(MonsterTemplate.Attributes),
+	TemplateAttributes(Template.Attributes),
 	Player(nullptr),
 	ItemDrop(nullptr) {
 
@@ -47,8 +47,8 @@ _Monster::_Monster(_MonsterTemplate &MonsterTemplate) :
 	DamageBlock = 0;
 
 	// Monster stats
-	Name = MonsterTemplate.Name;
-	Color = MonsterTemplate.Color;
+	Name = Template.Name;
+	Color = Template.Color;
 	MovementSpeed = TemplateAttributes.at("move_speed").Float;
 	Radius = TemplateAttributes.at("radius").Float;
 	Scale = TemplateAttributes.at("scale").Float;
@@ -64,7 +64,7 @@ _Monster::_Monster(_MonsterTemplate &MonsterTemplate) :
 		AttackRange[i] = TemplateAttributes.at("attack_range").Float;
 	}
 	MainWeaponType = TemplateAttributes.at("weapon_type").Int;
-	WeaponParticles = MonsterTemplate.WeaponParticles;
+	WeaponParticles = Template.WeaponParticles;
 
 	// Cache distances
 	AttackRangeSquared = TemplateAttributes.at("attack_range").Float;
@@ -76,8 +76,8 @@ _Monster::_Monster(_MonsterTemplate &MonsterTemplate) :
 	Rotation = ae::GetRandomReal(0.0f, 359.0f);
 
 	// Item drops
-	if(MonsterTemplate.ItemDropID != "")
-		ItemDrop = &Stats.ItemDrops[MonsterTemplate.ItemDropID];
+	if(Template.ItemDropID != "")
+		ItemDrop = &Stats.ItemDrops[Template.ItemDropID];
 
 	// Set weapon offsets
 	WeaponParticleOffset[0] = glm::vec2(0, 0);
@@ -85,7 +85,7 @@ _Monster::_Monster(_MonsterTemplate &MonsterTemplate) :
 		WeaponParticleOffset[i] = MONSTER_WEAPONOFFSET * Scale;
 
 	// Set attack sounds
-	_SoundGroup *SoundGroup = GameAssets.GetSoundGroupTemplate(MonsterTemplate.SoundGroupID);
+	_SoundGroup *SoundGroup = GameAssets.GetSoundGroupTemplate(Template.SoundGroupID);
 	for(int i = 0; i < SOUND_TYPES; i++)
 		Sounds[i] = SoundGroup->SoundID[i];
 }
