@@ -72,12 +72,11 @@ void _Object::GetRenderBounds(glm::vec4 &Bounds) {
 }
 
 // Calculates the angle from a slope
-void _Object::FacePosition(const glm::vec2 &Cursor) {
-
-	Direction.x = Cursor.x - Position.x;
-	Direction.y = Cursor.y - Position.y;
+void _Object::FacePosition(const glm::vec2 &Target) {
+	Direction = Target - Position;
 	if(Direction.x == 0 && Direction.y == 0.0f)
 		Direction.y = 1.0f;
+
 	Direction = glm::normalize(Direction);
 
 	Rotation = glm::degrees(atan2(Direction.y, Direction.x)) + 90.0f;

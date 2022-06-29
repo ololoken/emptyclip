@@ -116,7 +116,6 @@ class _Entity : public _Object {
 		virtual const _ParticleTemplate *GetWeaponParticle(int Index) const { return nullptr; }
 
 		virtual const std::string &GetSound(int Type) const { return Sounds[Type]; }
-		glm::vec2 WallInPath(const glm::vec2 &Delta) const;
 
 		void StartTriggerDownAudio();
 		void StopAudio();
@@ -133,7 +132,6 @@ class _Entity : public _Object {
 		MoveType MoveState;
 		float MovementSpeed;
 		float MovementModifier;
-		glm::vec2 MoveDirection;
 		bool PositionChanged;
 		float Stamina;
 		float MaxStamina;

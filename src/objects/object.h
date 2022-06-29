@@ -60,7 +60,7 @@ class _Object {
 		virtual void Serialize(ae::_Buffer &Buffer) { }
 
 		void GetRenderBounds(glm::vec4 &Bounds);
-		void FacePosition(const glm::vec2 &Cursor);
+		void FacePosition(const glm::vec2 &Target);
 		void SetPosition(const glm::vec2 &NewPosition);
 		glm::vec2 GetDirectionVector(float RotationOffset = 0.0f) const;
 

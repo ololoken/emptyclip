@@ -621,44 +621,27 @@ int _Map::GetWallState(const glm::vec2 &Position, float Radius) const {
 	if(!Data)
 		throw std::runtime_error("Tile data uninitialized!");
 
-	// Get the object's bounding rectangle
-	_TileBounds TileBounds;
-	GetTileBounds(Position, Radius, TileBounds);
+	// Get the tile the object is standing on
+	glm::ivec2 TileCoord = GetValidCoord(Position);
+	int WallState = 0;
 
 	// Check left wall
-	int WallState = 0;
-	glm::ivec2 TopLeft = GetValidCoord(glm::ivec2((int)(Position.x - Radius - MAP_EPSILON), (int)(Position.y - Radius - MAP_EPSILON)));
-	for(int i = TileBounds.Start.y; i <= TileBounds.End.y; i++) {
-		if(!Data[TopLeft.x][i].CanWalk()) {
-			WallState |= WALL_LEFT;
-			break;
-		}
-	}
+	glm::ivec2 TopLeft = GetValidCoord(glm::ivec2(Position.x - Radius - MAP_EPSILON, Position.y - Radius - MAP_EPSILON));
+	if(!Data[TopLeft.x][TileCoord.y].CanWalk())
+		WallState |= WALL_LEFT;
 
 	// Check top wall
-	for(int i = TileBounds.Start.x; i <= TileBounds.End.x; i++) {
-		if(!Data[i][TopLeft.y].CanWalk()) {
-			WallState |= WALL_TOP;
-			break;
-		}
-	}
+	if(!Data[TileCoord.x][TopLeft.y].CanWalk())
+		WallState |= WALL_TOP;
 
 	// Check right wall
-	glm::ivec2 BottomRight = GetValidCoord(glm::ivec2((int)(Position.x + Radius + MAP_EPSILON), (int)(Position.y + Radius + MAP_EPSILON)));
-	for(int i = TileBounds.Start.y; i <= TileBounds.End.y; i++) {
-		if(!Data[BottomRight.x][i].CanWalk()) {
-			WallState |= WALL_RIGHT;
-			break;
-		}
-	}
+	glm::ivec2 BottomRight = GetValidCoord(glm::ivec2(Position.x + Radius + MAP_EPSILON, Position.y + Radius + MAP_EPSILON));
+	if(!Data[BottomRight.x][TileCoord.y].CanWalk())
+		WallState |= WALL_RIGHT;
 
 	// Check bottom wall
-	for(int i = TileBounds.Start.x; i <= TileBounds.End.x; i++) {
-		if(!Data[i][BottomRight.y].CanWalk()) {
-			WallState |= WALL_BOTTOM;
-			break;
-		}
-	}
+	if(!Data[TileCoord.x][BottomRight.y].CanWalk())
+		WallState |= WALL_BOTTOM;
 
 	return WallState;
 }

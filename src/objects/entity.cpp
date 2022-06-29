@@ -37,7 +37,6 @@ _Entity::_Entity(const _ObjectTemplate &Template) :
 	MoveState(MOVE_NONE),
 	MovementSpeed(0),
 	MovementModifier(1.0f),
-	MoveDirection(0.0f),
 	PositionChanged(false),
 	Stamina(1),
 	MaxStamina(1),
@@ -306,57 +305,72 @@ void _Entity::Move(double FrameTime) {
 		return;
 	}
 
-	// Get direction
-	glm::vec2 NewDirection(0);
+	// Get move direction
+	glm::vec2 MoveDirection(0);
 	switch(MoveState) {
 		case MOVE_TARGET: {
-			/*if(MoveDirection.x != 0 || MoveDirection.y != 0) {
-				Delta = WallInPath(MoveDirection);
-				NewDirection = Delta;
-			}*/
 
-			glm::vec2 Delta = TargetPosition - Position;
-			if(Delta.x != 0 || Delta.y != 0)
-				NewDirection = glm::normalize(Delta);
+			// Get vector to target
+			glm::vec2 TargetVector = TargetPosition - Position;
+
+			// Correct move direction based on wall state
+			if(WallState) {
+				if((WallState & WALL_RIGHT) && TargetVector.x > 0)
+					TargetVector.x = 0;
+				if((WallState & WALL_LEFT) && TargetVector.x < 0)
+					TargetVector.x = 0;
+				if((WallState & WALL_TOP) && TargetVector.y < 0)
+					TargetVector.y = 0;
+				if((WallState & WALL_BOTTOM) && TargetVector.y > 0)
+					TargetVector.y = 0;
+			}
+
+			// Set move direction
+			if(TargetVector.x != 0 || TargetVector.y != 0) {
+				MoveDirection = glm::normalize(TargetVector);
+				Rotation = glm::degrees(atan2(MoveDirection.y, MoveDirection.x)) + 90.0f;
+				if(Rotation < 0.0f)
+					Rotation += 360.0f;
+			}
 		} break;
 		case MOVE_FORWARD:
-			NewDirection.y = -1;
+			MoveDirection.y = -1;
 		break;
 		case MOVE_BACKWARD:
-			NewDirection.y = 1;
+			MoveDirection.y = 1;
 		break;
 		case MOVE_LEFT:
-			NewDirection.x = -1;
+			MoveDirection.x = -1;
 		break;
 		case MOVE_RIGHT:
-			NewDirection.x = 1;
+			MoveDirection.x = 1;
 		break;
 		case MOVE_FORWARDLEFT:
-			NewDirection.x = -SQRT1_2;
-			NewDirection.y = -SQRT1_2;
+			MoveDirection.x = -SQRT1_2;
+			MoveDirection.y = -SQRT1_2;
 		break;
 		case MOVE_FORWARDRIGHT:
-			NewDirection.x = SQRT1_2;
-			NewDirection.y = -SQRT1_2;
+			MoveDirection.x = SQRT1_2;
+			MoveDirection.y = -SQRT1_2;
 		break;
 		case MOVE_BACKWARDLEFT:
-			NewDirection.x = -SQRT1_2;
-			NewDirection.y = SQRT1_2;
+			MoveDirection.x = -SQRT1_2;
+			MoveDirection.y = SQRT1_2;
 		break;
 		case MOVE_BACKWARDRIGHT:
-			NewDirection.x = SQRT1_2;
-			NewDirection.y = SQRT1_2;
+			MoveDirection.x = SQRT1_2;
+			MoveDirection.y = SQRT1_2;
 		break;
 		default:
 		break;
 	}
 
 	// Moving backwards
-	if(glm::dot(NewDirection, Direction) < 0)
+	if(glm::dot(MoveDirection, Direction) < 0)
 		UpdateSpeed(PLAYER_BACKWARDSPEEDFACTOR);
 
 	float Speed = MovementSpeed * MovementModifier * FrameTime;
-	NewDirection *= Speed;
+	MoveDirection *= Speed;
 
 	// Get a list of entities that the object is colliding with
 	std::list<_Entity *> HitEntities;
@@ -367,7 +381,7 @@ void _Entity::Move(double FrameTime) {
 		glm::vec2 HitObjectDirection = Iterator->Position - Position;
 
 		// Determine if we need to clip the direction
-		if(glm::dot(HitObjectDirection, NewDirection) > 0) {
+		if(glm::dot(HitObjectDirection, MoveDirection) > 0) {
 			glm::vec2 DividingLine;
 
 			// Rotate vector
@@ -376,13 +390,13 @@ void _Entity::Move(double FrameTime) {
 			DividingLine = glm::normalize(DividingLine);
 
 			// Project the direction onto the dividing line
-			NewDirection = DividingLine * glm::dot(NewDirection, DividingLine);
+			MoveDirection = DividingLine * glm::dot(MoveDirection, DividingLine);
 		}
 	}
 
 	// Check collisions with walls and map boundaries
 	glm::vec2 NewPosition;
-	Map->CheckCollisions(Position + NewDirection, Radius, NewPosition);
+	Map->CheckCollisions(Position + MoveDirection, Radius, NewPosition);
 
 	// Determine if the object has moved
 	if(Position != NewPosition) {
@@ -456,25 +470,4 @@ void _Entity::UpdateHealth(int Adjust) {
 	if(Health == 0 && !IsDying()) {
 		Action = ACTION_STARTDEATH;
 	}
-}
-
-glm::vec2 _Entity::WallInPath(const glm::vec2 &Delta) const {
-	int WallState = Map->GetWallState(Position, Radius);
-	if(!WallState)
-		return glm::normalize(Delta);
-
-	glm::vec2 NewDelta = Delta;
-	if((WallState & WALL_RIGHT) && NewDelta.x > 0)
-		NewDelta.x = 0;
-	if((WallState & WALL_LEFT) && NewDelta.x < 0)
-		NewDelta.x = 0;
-	if((WallState & WALL_TOP) && NewDelta.y < 0)
-		NewDelta.y = 0;
-	if((WallState & WALL_BOTTOM) && NewDelta.y > 0)
-		NewDelta.y = 0;
-
-	if(!(NewDelta.x == 0 && NewDelta.y == 0))
-		NewDelta = glm::normalize(NewDelta);
-
-	return NewDelta;
 }
