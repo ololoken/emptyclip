@@ -1,12 +1,12 @@
 id	name	animation_id	color_id	particles_id	sound_group_id	itemdrop_id	drop_count	health	health_level	ai_type	view_range	xp	xp_level	move_speed	move_speed_level	radius	scale	accuracy	attack_range	damage	damage_level	damage_spread	attack_period	weapon_type
-zombie	Zombie	zombie			zombie	monster	1	5	15	5	8	5	10	0.3	0.05	0.3	0.8	30	0.65	5	5	0.1	1.7	1
-dog	Dog	dog			dog	monster	1	5	15	5	8	5	10	0.3	0.05	0.3	0.8	30	0.65	5	5	0.1	1.7	0
-bat	Bat	bat			bat	monster	1	5	15	5	8	5	10	0.3	0.05	0.3	0.8	30	0.65	5	5	0.1	1.7	0
-spider	Spider	spider			spider	monster	1	5	15	5	8	5	10	0.3	0.05	0.3	0.8	30	0.65	5	5	0.1	1.7	0
-skeleton	Skeleton	skeleton			skeleton	monster	1	5	15	5	8	5	10	0.3	0.05	0.3	0.8	30	0.65	5	5	0.1	1.7	0
-beast	Beast	beast			beast	monster	1	5	15	5	8	5	10	0.3	0.05	0.3	0.8	30	0.65	5	5	0.1	1.7	0
-fighter	Fighter	fighter			fighter	monster	1	5	15	5	8	5	10	0.3	0.05	0.3	0.8	30	0.65	5	5	0.1	1.7	0
-gunner	Gunner	gunner			gunner	monster	1	5	15	5	8	5	10	0.3	0.05	0.3	0.8	30	0.65	5	5	0.1	1.7	0
-demon	Demon	demon			player	monster	1	5	15	5	8	5	10	0.3	0.05	0.3	0.8	30	0.65	5	5	0.1	1.7	0
-alien	Alien	alien			player	monster	1	5	15	5	8	5	10	0.3	0.05	0.3	0.8	30	0.65	5	5	0.1	1.7	0
-boss	Boss	alien			player	boss	1	5	15	5	8	5	10	0.3	0.05	0.3	0.8	30	0.65	5	5	0.1	1.7	0
+monster_zombie	Zombie	zombie			zombie	monster	1	5	15	5	8	5	10	0.3	0.05	0.3	0.8	30	0.65	5	5	0.1	1.7	1
+monster_dog	Dog	dog			dog	monster	1	5	15	5	8	5	10	0.3	0.05	0.3	0.8	30	0.65	5	5	0.1	1.7	0
+monster_bat	Bat	bat			bat	monster	1	5	15	5	8	5	10	0.3	0.05	0.3	0.8	30	0.65	5	5	0.1	1.7	0
+monster_spider	Spider	spider			spider	monster	1	5	15	5	8	5	10	0.3	0.05	0.3	0.8	30	0.65	5	5	0.1	1.7	0
+monster_skeleton	Skeleton	skeleton			skeleton	monster	1	5	15	5	8	5	10	0.3	0.05	0.3	0.8	30	0.65	5	5	0.1	1.7	0
+monster_beast	Beast	beast			beast	monster	1	5	15	5	8	5	10	0.3	0.05	0.3	0.8	30	0.65	5	5	0.1	1.7	0
+monster_fighter	Fighter	fighter			fighter	monster	1	5	15	5	8	5	10	0.3	0.05	0.3	0.8	30	0.65	5	5	0.1	1.7	0
+monster_gunner	Gunner	gunner			gunner	monster	1	5	15	5	8	5	10	0.3	0.05	0.3	0.8	30	0.65	5	5	0.1	1.7	0
+monster_demon	Demon	demon			player	monster	1	5	15	5	8	5	10	0.3	0.05	0.3	0.8	30	0.65	5	5	0.1	1.7	0
+monster_alien	Alien	alien			player	monster	1	5	15	5	8	5	10	0.3	0.05	0.3	0.8	30	0.65	5	5	0.1	1.7	0
+monster_boss	Boss	alien			player	boss	1	5	15	5	8	5	10	0.3	0.05	0.3	0.8	30	0.65	5	5	0.1	1.7	0
