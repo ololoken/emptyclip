@@ -92,25 +92,9 @@ _Map::_Map(const std::string &Filename) : _Map() {
 		_ObjectSpawn *Object = new _ObjectSpawn();
 		InputFile >> Object->Type >> Object->ID >> Object->Level >> Object->Position.x >> Object->Position.y;
 
-		// Check for items
-		switch(Object->Type) {
-			case _Object::MONSTER:
-				if(Stats.Objects.find(Object->ID) == Stats.Objects.end())
-					throw std::runtime_error(std::string(__func__) + " Unknown monster '" + Object->ID + "'");
-			break;
-			case _Object::KEY:
-			case _Object::AMMO:
-			case _Object::UPGRADE:
-			case _Object::ARMOR:
-			case _Object::MEDKIT:
-				if(Stats.Objects.find(Object->ID) == Stats.Objects.end())
-					throw std::runtime_error(std::string(__func__) + " Unknown item '" + Object->ID + "'");
-			break;
-			case _Object::WEAPON:
-				if(Stats.Objects.find(Object->ID) == Stats.Objects.end())
-					throw std::runtime_error(std::string(__func__) + " Unknown weapon '" + Object->ID + "'");
-			break;
-		}
+		// Check for object
+		if(Stats.Objects.find(Object->ID) == Stats.Objects.end())
+			throw std::runtime_error(std::string(__func__) + " Unknown object '" + Object->ID + "'");
 
 		ObjectSpawns.push_back(Object);
 	}

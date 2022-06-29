@@ -1331,15 +1331,11 @@ void _EditorState::DrawObject(float OffsetX, float OffsetY, const _ObjectSpawn *
 		case _Object::AMMO:
 		case _Object::UPGRADE:
 		case _Object::ARMOR:
+		case _Object::WEAPON:
 		case _Object::MEDKIT: {
-			_ObjectTemplate &Ammo = Stats.Objects.at(Object->ID);
-			Texture = ae::Assets.Textures[Ammo.IconID];
-			Color = Ammo.Color;
-		} break;
-		case _Object::WEAPON: {
-			_ObjectTemplate &Weapon = Stats.Objects.at(Object->ID);
-			Texture = ae::Assets.Textures[Weapon.IconID];
-			Color = Weapon.Color;
+			_ObjectTemplate &Item = Stats.Objects.at(Object->ID);
+			Texture = ae::Assets.Textures[Item.IconID];
+			Color = Item.Color;
 		} break;
 	}
 
