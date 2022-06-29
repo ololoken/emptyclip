@@ -355,7 +355,7 @@ void _Item::DrawTooltip(const _Player *Player, std::size_t CompareSlot, glm::ive
 				Buffer.str("");
 			}
 
-			// Movement Speed
+			// Move Speed
 			if(Attributes.at("move_speed").Int != 0) {
 				TextColor = COLOR_WHITE;
 				if(EquippedArmor) {
@@ -367,7 +367,7 @@ void _Item::DrawTooltip(const _Player *Player, std::size_t CompareSlot, glm::ive
 
 				DrawPosition.y += 20;
 				Buffer << (Attributes.at("move_speed").Int < 0 ? "" : "+") << Attributes.at("move_speed").Int << "%";
-				ae::Assets.Fonts["hud_medium"]->DrawText("Movement Speed", DrawPosition - DrawOffset, ae::RIGHT_BASELINE);
+				ae::Assets.Fonts["hud_medium"]->DrawText("Move Speed", DrawPosition - DrawOffset, ae::RIGHT_BASELINE);
 				ae::Assets.Fonts["hud_medium"]->DrawText(Buffer.str(), DrawPosition + DrawOffset, ae::LEFT_BASELINE, TextColor);
 				Buffer.str("");
 			}
