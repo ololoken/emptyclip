@@ -65,6 +65,7 @@ struct _ItemDrop {
 struct _ObjectTemplate {
 
 	_ObjectTemplate(int Type) : WeaponParticles(nullptr), Color(1.0f), Type(Type) { }
+	bool IsItem() const;
 
 	std::string Name;
 	std::string IconID;

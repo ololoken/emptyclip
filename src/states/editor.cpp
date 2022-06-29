@@ -1032,7 +1032,7 @@ void _EditorState::LoadPalettes() {
 
 	// Load items
 	for(const auto &Item : Stats.Objects) {
-		if(Item.second.Type >= _Object::KEY && Item.second.Type <= _Object::MEDKIT && Item.second.IconID != "")
+		if(Item.second.IsItem() && Item.second.IconID != "")
 			Icons.push_back(_Brush(Item.first, Item.second.Name, ae::Assets.Textures[Item.second.IconID], Item.second.Color, Item.second.Type));
 	}
 	LoadPaletteButtons(Icons, EDITMODE_ITEMS);

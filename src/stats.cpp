@@ -755,3 +755,8 @@ void _Stats::SetColor(glm::vec4 &Color, const std::string &ColorID) {
 	// Set color
 	Color = ae::Assets.Colors[ColorID];
 }
+
+// Determine if template is an item
+bool _ObjectTemplate::IsItem() const {
+	return Type > _Object::MONSTER;
+}

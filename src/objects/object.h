@@ -43,11 +43,12 @@ class _Object {
 			NONE,
 			PLAYER,
 			MONSTER,
-			KEY,
-			AMMO,
-			UPGRADE,
 			WEAPON,
 			ARMOR,
+			JEWELRY,
+			UPGRADE,
+			KEY,
+			AMMO,
 			MEDKIT,
 			COUNT
 		};
