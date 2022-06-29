@@ -22,9 +22,9 @@
 #include <unordered_map>
 #include <sstream>
 #include <string>
-#include <list>
+#include <vector>
 
-// Load/save config file
+// Stores configuration data
 class _Config {
 
 	public:
@@ -67,7 +67,7 @@ class _Config {
 
 		// State
 		std::string ConfigFilePath;
-		std::unordered_map<std::string, std::list<std::string>> Map;
+		std::unordered_map<std::string, std::vector<std::string>> Map;
 };
 
 extern _Config Config;

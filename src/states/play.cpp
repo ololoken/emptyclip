@@ -581,7 +581,7 @@ void _PlayState::Render(double BlendFactor) {
 				Camera->ConvertWorldToScreen(glm::vec2(X-0.5f, Y-0.5f), P);
 				std::ostringstream Buffer;
 				size_t Count = 0;
-				std::list<_Event *> &Events = Map->GetEventList(glm::ivec2(X, Y));
+				std::vector<_Event *> &Events = Map->GetEventList(glm::ivec2(X, Y));
 				for(auto Event : Events) {
 					if(Event->Active)
 						Count++;
@@ -812,7 +812,7 @@ void _PlayState::UseObject(_Item *NearbyItem) {
 	Map->GetAdjacentTile(Player->Position, Player->Rotation, Position);
 
 	// Check for events
-	std::list<_Event *> &Events = Map->GetEventList(Position);
+	std::vector<_Event *> &Events = Map->GetEventList(Position);
 	for(auto Event : Events) {
 
 		// Check for doors or switches
@@ -913,7 +913,7 @@ void _PlayState::CheckEvents(const _Entity *Entity) {
 	glm::ivec2 Position = Map->GetValidCoord(Entity->Position);
 
 	// Check for events triggered by walking
-	std::list<_Event *> &Events = Map->GetEventList(Position);
+	std::vector<_Event *> &Events = Map->GetEventList(Position);
 	for(auto Event : Events) {
 
 		// Perform action

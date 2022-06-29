@@ -373,7 +373,7 @@ void _Entity::Move(double FrameTime) {
 	MoveDirection *= Speed;
 
 	// Get a list of entities that the object is colliding with
-	std::list<_Entity *> HitEntities;
+	std::vector<_Entity *> HitEntities;
 	Map->CheckEntityCollisionsInGrid(Position, Radius, this, HitEntities);
 
 	// Limit movement

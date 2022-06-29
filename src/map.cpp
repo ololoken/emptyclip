@@ -434,7 +434,7 @@ bool _Map::CheckCollisions(const glm::vec2 &TargetPosition, float Radius, glm::v
 	int TopTile = (int)Top;
 	int BottomTile = (int)Bottom;
 
-	std::list<glm::vec2> Pushes;
+	std::vector<glm::vec2> Pushes;
 	bool NoDiag = false;
 	for(int i = LeftTile; i <= RightTile; i++) {
 		for(int j = TopTile; j <= BottomTile; j++) {
@@ -553,7 +553,7 @@ _Object *_Map::CheckCollisionsInGrid(const glm::vec2 &Position, float Radius, in
 }
 
 // Returns a list of entities that an object is colliding with
-void _Map::CheckEntityCollisionsInGrid(const glm::vec2 &Position, float Radius, const _Object *SkipObject, std::list<_Entity *> &Entities) const {
+void _Map::CheckEntityCollisionsInGrid(const glm::vec2 &Position, float Radius, const _Object *SkipObject, std::vector<_Entity *> &Entities) const {
 	if(!Data)
 		throw std::runtime_error("Tile data uninitialized!");
 
@@ -1087,7 +1087,7 @@ bool _Map::HasEvents(const glm::ivec2 &Position) const {
 }
 
 // Gets a list of event based on a position
-std::list<_Event *> &_Map::GetEventList(const glm::ivec2 &Position) {
+std::vector<_Event *> &_Map::GetEventList(const glm::ivec2 &Position) {
 	if(!Data)
 		throw std::runtime_error("Tile data uninitialized!");
 

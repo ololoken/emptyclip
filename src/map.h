@@ -86,7 +86,7 @@ struct _Tile {
 	bool CanShoot() { return !(Collision & BULLET); }
 
 	std::list<_Object *> Objects[GRID_COUNT];
-	std::list<_Event *> Events;
+	std::vector<_Event *> Events;
 	std::vector<_Particle *> Particles;
 	int Collision;
 };
@@ -174,7 +174,7 @@ class _Map {
 		void Update(double FrameTime);
 
 		bool CheckCollisions(const glm::vec2 &TargetPosition, float Radius, glm::vec2 &NewPosition);
-		void CheckEntityCollisionsInGrid(const glm::vec2 &Position, float Radius, const _Object *SkipObject, std::list<_Entity *> &Entities) const;
+		void CheckEntityCollisionsInGrid(const glm::vec2 &Position, float Radius, const _Object *SkipObject, std::vector<_Entity *> &Entities) const;
 		_Object *CheckCollisionsInGrid(const glm::vec2 &Position, float Radius, int GridType, const _Object *SkipObject) const;
 		_Entity *CheckMeleeCollisions(_Entity *Attacker, const glm::vec2 &Direction, int GridType) const;
 		void CheckBulletCollisions(const glm::vec2 &Position, const glm::vec2 &Direction, _Hit &Hit, int GridType, bool CheckObjects) const;
@@ -227,7 +227,7 @@ class _Map {
 
 		const std::string &GetFilename() const { return Filename; }
 		_Event *GetEvent(int Index) const;
-		std::list<_Event *> &GetEventList(const glm::ivec2 &Coord);
+		std::vector<_Event *> &GetEventList(const glm::ivec2 &Coord);
 		glm::vec2 GetStartingPositionByCheckpoint(int Level);
 		int GetTotalBlockSize() const;
 		int GetMapType() const { return MapType; }
