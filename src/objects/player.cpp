@@ -575,7 +575,7 @@ void _Player::SwapInventory(int SlotFrom, int SlotTo) {
 // Return 2 when item was combined and fromitem needs deletion
 int _Player::CombineItems(_Item *FromItem, _Item *ToItem) {
 
-	if(FromItem && ToItem && FromItem->CanStack() && ToItem->CanStack() && FromItem->ID == ToItem->ID) {
+	if(FromItem && ToItem && FromItem->CanStack() && ToItem->CanStack() && FromItem->ID == ToItem->ID && FromItem->Level == ToItem->Level) {
 		ToItem->UpdateCount(FromItem->Count);
 		if(ToItem->Count > GetInventoryMaxStack()) {
 			FromItem->Count = ToItem->Count - GetInventoryMaxStack();

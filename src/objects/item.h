@@ -48,7 +48,7 @@ class _Item : public _Object {
 		void Render(double BlendFactor) override;
 
 		int UpdateCount(int Amount) { Count += Amount; return Count; }
-		bool CanStack() { return !(Type == _Object::WEAPON || Type == _Object::ARMOR || Type == _Object::UPGRADE); }
+		bool CanStack() { return Type == _Object::MEDKIT; }
 
 		float GetAverageDamage() const;
 		float GetAverageAccuracy() const;
