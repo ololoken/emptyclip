@@ -89,7 +89,7 @@ class _Entity : public _Object {
 		bool IsMeleeAttacking() const { return Action == ACTION_MELEE || Action == ACTION_STARTMELEE; }
 
 		virtual bool CanAttack(int AttackType) const { return AttackAllowed[AttackType] && !IsMeleeAttacking() && !IsDying() && GetWeaponType() != WEAPON_NONE; }
-		virtual void ReduceAmmo() { }
+		virtual int ReduceAmmo(int Amount) { return Amount; }
 		virtual bool WeaponHasAmmo(int AttackType) const { return true; }
 
 		virtual void UpdateExperience(int64_t ExperienceGained) { }
@@ -123,7 +123,7 @@ class _Entity : public _Object {
 
 		// Graphics
 		ae::_Animation *Animation;
-		glm::vec2 WeaponParticleOffset[WEAPON_TYPES];
+		glm::vec2 WeaponParticleOffset[WEAPON_COUNT];
 
 		// Audio
 		std::string Sounds[SOUND_TYPES];

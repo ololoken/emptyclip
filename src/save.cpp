@@ -290,15 +290,17 @@ void _Save::LoadItems(_Player *Player, ae::_Buffer &Buffer) {
 
 		// Create item
 		_Item *Item = Stats.CreateItem(ID, Level, Quality, Count, glm::vec2(0, 0), false);
-		if(Type == _Object::WEAPON) {
-			_Weapon *Weapon = (_Weapon *)Item;
 
-			// Read weapon data
-			int Ammo = Buffer.Read<int>();
-			Weapon->Attributes["max_mods"].Int = Buffer.Read<int>();
-			LoadMods(Buffer, Weapon);
-			Weapon->RecalculateStats();
-			Weapon->SetAmmo(Ammo);
+		// Read mods
+		if(Type == _Object::WEAPON || Type == _Object::ARMOR) {
+			Item->Attributes["max_mods"].Int = Buffer.Read<int>();
+			LoadMods(Buffer, Item);
+			Item->RecalculateStats();
+		}
+
+		// Read ammo
+		if(Type == _Object::WEAPON) {
+			Item->SetAmmo(Buffer.Read<int>());
 		}
 
 		Player->Inventory[Slot] = Item;
@@ -306,7 +308,7 @@ void _Save::LoadItems(_Player *Player, ae::_Buffer &Buffer) {
 }
 
 // Load mods from a stream
-void _Save::LoadMods(ae::_Buffer &Buffer, _Weapon *Weapon) {
+void _Save::LoadMods(ae::_Buffer &Buffer, _Item *Item) {
 
 	// Get size header
 	int Mods = Buffer.Read<int>();
@@ -316,9 +318,9 @@ void _Save::LoadMods(ae::_Buffer &Buffer, _Weapon *Weapon) {
 		std::string ID = Buffer.ReadString();
 		int Level = Buffer.Read<int>();
 		int Quality = Buffer.Read<int>();
-		_Item *Item = Stats.CreateItem(ID, Level, Quality, 0, glm::vec2(0, 0), false);
-		if(!Weapon->AddMod(Item))
-			delete Item;
+		_Item *Mod = Stats.CreateItem(ID, Level, Quality, 0, glm::vec2(0, 0), false);
+		if(!Item->AddMod(Mod))
+			delete Mod;
 	}
 }
 

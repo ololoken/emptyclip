@@ -95,11 +95,11 @@ class _Stats {
 		void LoadLevels(const std::string &Path);
 		void LoadSkills(const std::string &Path);
 		void LoadAmmo(const std::string &Path);
+		void LoadWeapons(const std::string &Path);
 		void LoadArmor(const std::string &Path);
 		void LoadKeys(const std::string &Path);
 		void LoadMedkits(const std::string &Path);
 		void LoadMods(const std::string &Path);
-		void LoadWeapons(const std::string &Path);
 		void LoadItemDrops(const std::string &Path);
 		void LoadMonsters(const std::string &Path);
 
@@ -124,6 +124,7 @@ class _Stats {
 		_Weapon *WeaponFists;
 
 		std::vector<std::string> AmmoNames;
+		std::vector<std::string> ModNames;
 
 	private:
 

@@ -26,13 +26,30 @@ class _Player;
 // Mod types
 enum ModType {
 	MOD_NONE,
-	MOD_CLIP,
+	MOD_MAXROUNDS,
 	MOD_DAMAGE,
 	MOD_ACCURACY,
-	MOD_FIREPERIOD,
-	MOD_RELOADPERIOD,
-	MOD_ATTACKCOUNT,
-	MOD_TYPES
+	MOD_ATTACKSPEED,
+	MOD_RELOADSPEED,
+	MOD_RELOADAMOUNT,
+	MOD_PENETRATION,
+	MOD_HANDLING,
+	MOD_DAMAGEBLOCK,
+	MOD_DAMAGERESIST,
+	MOD_MAXAMMO,
+	MOD_MOVESPEED,
+	MOD_COUNT
+};
+
+// Types of weapons
+enum WeaponType {
+	WEAPON_NONE,
+	WEAPON_MELEE,
+	WEAPON_PISTOL,
+	WEAPON_SHOTGUN,
+	WEAPON_RIFLE,
+	WEAPON_HEAVY,
+	WEAPON_COUNT
 };
 
 // Classes
@@ -41,22 +58,31 @@ class _Item : public _Object {
 	public:
 
 		_Item(const _ObjectTemplate &ItemTemplate);
+		~_Item() override;
 
-		virtual void RecalculateStats() { }
+		void RecalculateStats();
 		void Serialize(ae::_Buffer &Buffer) override;
 		void DrawTooltip(const _Player *Player, std::size_t CompareSlot, glm::ivec2 DrawPosition);
 		void Render(double BlendFactor) override;
 
+		bool AddMod(_Item *Mod);
+		float GetBonusMultiplier(int ModType) const { return (100 + Bonus[ModType]) * 0.01f; }
+
 		int UpdateCount(int Amount) { Count += Amount; return Count; }
 		bool CanStack() { return Type == _Object::MEDKIT; }
 
+		void SetAmmo(int Value);
+		bool IsMelee() const { return Attributes.at("weapon_type").Int == WEAPON_MELEE; }
 		float GetAverageDamage() const;
 		float GetAverageAccuracy() const;
 
 		virtual std::string GetTypeAsString() const override;
-		std::string ModTypeToString(int Type, int WeaponType);
+		std::string ModTypeToString(int ModType);
 
 		int Quality;
 		int Count;
+
+		std::vector<_Item *> Mods;
+		int Bonus[MOD_COUNT];
 
 };

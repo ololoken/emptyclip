@@ -39,11 +39,10 @@ _Item::_Item(const _ObjectTemplate &ItemTemplate) :
 	PositionZ = ITEM_Z;
 }
 
-// Serialize for saving
-void _Item::Serialize(ae::_Buffer &Buffer) {
-	Buffer.WriteString(ID.c_str());
-	Buffer.Write<int>(Level);
-	Buffer.Write<int>(Quality);
+// Destructor
+_Item::~_Item() {
+	for(size_t i = 0; i < Mods.size(); i++)
+		delete Mods[i];
 }
 
 // Draw the item popup window
@@ -52,11 +51,17 @@ void _Item::DrawTooltip(const _Player *Player, std::size_t CompareSlot, glm::ive
 
 	glm::ivec2 Size(300, 120);
 	if(Type == _Object::WEAPON)
-		Size.y = 400;
+		Size.y = 280;
 	else if(Type == _Object::ARMOR)
-		Size.y = 320;
+		Size.y = 220;
 	else if(Type == _Object::MOD)
 		Size.y = 170;
+
+	// Increase size for each unique mod
+	for(int i = 1; i < MOD_COUNT; i++) {
+		if(Bonus[i])
+			Size.y += 20;
+	}
 
 	// Get title width
 	ae::_TextBounds TextBounds;
@@ -71,10 +76,10 @@ void _Item::DrawTooltip(const _Player *Player, std::size_t CompareSlot, glm::ive
 
 	// Get current equipment
 	_Weapon *EquippedWeapon = nullptr;
-	_Item *EquippedArmor = nullptr;
+	_Item *EquippedItem = nullptr;
 	if(CompareSlot < INVENTORY_SIZE) {
 		EquippedWeapon = (_Weapon *)Player->Inventory[CompareSlot];
-		EquippedArmor = Player->Inventory[CompareSlot];
+		EquippedItem = Player->Inventory[CompareSlot];
 
 		MinX = Size.x;
 	}
@@ -281,55 +286,16 @@ void _Item::DrawTooltip(const _Player *Player, std::size_t CompareSlot, glm::ive
 				ae::Assets.Fonts["hud_medium"]->DrawText(Buffer.str(), DrawPosition + DrawOffset);
 				Buffer.str("");
 			}
-
-			// Mods
-			if(Weapon->Attributes.at("max_mods").Int >= 1) {
-				TextColor = COLOR_WHITE;
-				if(EquippedWeapon) {
-					if(Weapon->Attributes.at("max_mods").Int > EquippedWeapon->Attributes.at("max_mods").Int)
-						TextColor = COLOR_GREEN;
-					else if(Weapon->Attributes.at("max_mods").Int < EquippedWeapon->Attributes.at("max_mods").Int)
-						TextColor = COLOR_RED;
-				}
-
-				DrawPosition.y += 20;
-				Buffer << Weapon->Mods.size() << "/" << Weapon->Attributes.at("max_mods").Int;
-				ae::Assets.Fonts["hud_medium"]->DrawText("Mods", DrawPosition - DrawOffset, ae::RIGHT_BASELINE);
-				ae::Assets.Fonts["hud_medium"]->DrawText(Buffer.str(), DrawPosition + DrawOffset, ae::LEFT_BASELINE, TextColor);
-				Buffer.str("");
-			}
-
-			// Bonuses
-			TextColor = COLOR_WHITE;
-			bool First = true;
-			for(int i = 0; i < MOD_TYPES; i++) {
-				if(!Weapon->Bonus[i])
-					continue;
-
-				if(First)
-					DrawPosition.y += 10;
-				DrawPosition.y += 20;
-
-				std::string Percent = "% ";
-				if(i == MOD_ATTACKCOUNT)
-					Percent = " ";
-
-				Buffer << "+" << Weapon->Bonus[i] << Percent << ModTypeToString(i, Weapon->Attributes.at("weapon_type").Int);
-				ae::Assets.Fonts["hud_medium"]->DrawText(Buffer.str(), glm::vec2(DrawPosition.x, DrawPosition.y), ae::CENTER_BASELINE, TextColor);
-				Buffer.str("");
-
-				First = false;
-			}
 		} break;
 		case _Object::ARMOR: {
 
 			// Damage Block
 			if(Attributes.at("damage_block").Int != 0) {
 				TextColor = COLOR_WHITE;
-				if(EquippedArmor) {
-					if(Attributes.at("damage_block").Int > EquippedArmor->Attributes.at("damage_block").Int)
+				if(EquippedItem) {
+					if(Attributes.at("damage_block").Int > EquippedItem->Attributes.at("damage_block").Int)
 						TextColor = COLOR_GREEN;
-					else if(Attributes.at("damage_block").Int < EquippedArmor->Attributes.at("damage_block").Int)
+					else if(Attributes.at("damage_block").Int < EquippedItem->Attributes.at("damage_block").Int)
 						TextColor = COLOR_RED;
 				}
 
@@ -343,10 +309,10 @@ void _Item::DrawTooltip(const _Player *Player, std::size_t CompareSlot, glm::ive
 			// Damage Resist
 			if(Attributes.at("damage_resist").Int != 0) {
 				TextColor = COLOR_WHITE;
-				if(EquippedArmor) {
-					if(Attributes.at("damage_resist").Int > EquippedArmor->Attributes.at("damage_resist").Int)
+				if(EquippedItem) {
+					if(Attributes.at("damage_resist").Int > EquippedItem->Attributes.at("damage_resist").Int)
 						TextColor = COLOR_GREEN;
-					else if(Attributes.at("damage_resist").Int < EquippedArmor->Attributes.at("damage_resist").Int)
+					else if(Attributes.at("damage_resist").Int < EquippedItem->Attributes.at("damage_resist").Int)
 						TextColor = COLOR_RED;
 				}
 
@@ -360,10 +326,10 @@ void _Item::DrawTooltip(const _Player *Player, std::size_t CompareSlot, glm::ive
 			// Damage Resist
 			if(Attributes.at("max_ammo").Int != 0) {
 				TextColor = COLOR_WHITE;
-				if(EquippedArmor) {
-					if(Attributes.at("max_ammo").Int > EquippedArmor->Attributes.at("max_ammo").Int)
+				if(EquippedItem) {
+					if(Attributes.at("max_ammo").Int > EquippedItem->Attributes.at("max_ammo").Int)
 						TextColor = COLOR_GREEN;
-					else if(Attributes.at("max_ammo").Int < EquippedArmor->Attributes.at("max_ammo").Int)
+					else if(Attributes.at("max_ammo").Int < EquippedItem->Attributes.at("max_ammo").Int)
 						TextColor = COLOR_RED;
 				}
 
@@ -377,10 +343,10 @@ void _Item::DrawTooltip(const _Player *Player, std::size_t CompareSlot, glm::ive
 			// Move Speed
 			if(Attributes.at("move_speed").Int != 0) {
 				TextColor = COLOR_WHITE;
-				if(EquippedArmor) {
-					if(Attributes.at("move_speed").Int > EquippedArmor->Attributes.at("move_speed").Int)
+				if(EquippedItem) {
+					if(Attributes.at("move_speed").Int > EquippedItem->Attributes.at("move_speed").Int)
 						TextColor = COLOR_GREEN;
-					else if(Attributes.at("move_speed").Int < EquippedArmor->Attributes.at("move_speed").Int)
+					else if(Attributes.at("move_speed").Int < EquippedItem->Attributes.at("move_speed").Int)
 						TextColor = COLOR_RED;
 				}
 
@@ -392,24 +358,56 @@ void _Item::DrawTooltip(const _Player *Player, std::size_t CompareSlot, glm::ive
 			}
 		} break;
 		case _Object::MOD: {
-
-			// Bonus
 			DrawPosition.y += 20;
-			if(Attributes.at("mod_type").Int == MOD_ATTACKCOUNT)
-				Buffer << "+" << Attributes.at("bonus").Int;
-			else
-				Buffer << "+" << Attributes.at("bonus").Int << "%";
-
-			ae::Assets.Fonts["hud_medium"]->DrawText(ModTypeToString(Attributes.at("mod_type").Int, -1), DrawPosition - DrawOffset, ae::RIGHT_BASELINE);
+			std::string Percent = Template.Attributes.at("percent_sign").Int ? "%" : "";
+			Buffer << "+" << Attributes.at("bonus").Int << Percent;
+			ae::Assets.Fonts["hud_medium"]->DrawText(ModTypeToString(Attributes.at("mod_type").Int), DrawPosition - DrawOffset, ae::RIGHT_BASELINE);
 			ae::Assets.Fonts["hud_medium"]->DrawText(Buffer.str(), DrawPosition + DrawOffset, ae::LEFT_BASELINE, TextColor);
 		} break;
 		case _Object::MEDKIT: {
-
-			// Heal amount
 			DrawPosition.y += 20;
 			Buffer << "+" << Attributes.at("health_restored").Int << " HP";
 			ae::Assets.Fonts["hud_medium"]->DrawText(Buffer.str(), glm::vec2(DrawPosition.x, DrawPosition.y), ae::CENTER_BASELINE, COLOR_GREEN);
 		} break;
+	}
+
+	// Mods
+	if(Attributes.find("max_mods") != Attributes.end() && Attributes.at("max_mods").Int >= 1) {
+		TextColor = COLOR_WHITE;
+		if(EquippedItem) {
+			if(Attributes.at("max_mods").Int > EquippedItem->Attributes.at("max_mods").Int)
+				TextColor = COLOR_GREEN;
+			else if(Attributes.at("max_mods").Int < EquippedItem->Attributes.at("max_mods").Int)
+				TextColor = COLOR_RED;
+		}
+
+		DrawPosition.y += 20;
+		Buffer << Mods.size() << "/" << Attributes.at("max_mods").Int;
+		ae::Assets.Fonts["hud_medium"]->DrawText("Mods", DrawPosition - DrawOffset, ae::RIGHT_BASELINE);
+		ae::Assets.Fonts["hud_medium"]->DrawText(Buffer.str(), DrawPosition + DrawOffset, ae::LEFT_BASELINE, TextColor);
+		Buffer.str("");
+	}
+
+	// Bonuses
+	TextColor = COLOR_WHITE;
+	bool First = true;
+	for(int i = 1; i < MOD_COUNT; i++) {
+		if(!Bonus[i])
+			continue;
+
+		if(First)
+			DrawPosition.y += 10;
+		DrawPosition.y += 20;
+
+		std::string Percent = " ";
+		if(Stats.Objects.at(Stats.ModNames[i]).Attributes.at("percent_sign").Int)
+			Percent = "% ";
+
+		Buffer << "+" << Bonus[i] << Percent << ModTypeToString(i);
+		ae::Assets.Fonts["hud_medium"]->DrawText(Buffer.str(), glm::vec2(DrawPosition.x, DrawPosition.y), ae::CENTER_BASELINE, TextColor);
+		Buffer.str("");
+
+		First = false;
 	}
 }
 
@@ -417,6 +415,93 @@ void _Item::DrawTooltip(const _Player *Player, std::size_t CompareSlot, glm::ive
 void _Item::Render(double BlendFactor) {
 	ae::Graphics.SetColor(Color);
 	ae::Graphics.DrawSprite(glm::vec3(Position, PositionZ), Texture, Rotation, glm::vec2(ITEM_SCALE));
+}
+
+// Serialize for saving
+void _Item::Serialize(ae::_Buffer &Buffer) {
+	Buffer.WriteString(ID.c_str());
+	Buffer.Write<int>(Level);
+	Buffer.Write<int>(Quality);
+
+	// Write mods
+	if(Type == _Object::WEAPON || Type == _Object::ARMOR) {
+		Buffer.Write(Attributes.at("max_mods").Int);
+		Buffer.Write<int>(Mods.size());
+		for(size_t i = 0; i < Mods.size(); i++)
+			Mods[i]->Serialize(Buffer);
+	}
+
+	// Write ammo
+	if(Type == _Object::WEAPON)
+		Buffer.Write(Attributes.at("ammo").Int);
+}
+
+// Recalulate stats for item
+void _Item::RecalculateStats() {
+	for(int i = 0; i < MOD_COUNT; i++)
+		Bonus[i] = 0;
+
+	// Sum bonuses
+	for(size_t i = 0; i < Mods.size(); i++)
+		Bonus[Mods[i]->Attributes.at("mod_type").Int] += Mods[i]->Attributes.at("bonus").Int;
+
+	switch(Type) {
+		case _Object::WEAPON:
+
+			SetAttributeRange("damage", GetBonusMultiplier(MOD_DAMAGE) + Quality * 0.01f);
+			SetAttributeSpread("accuracy", 1.0f / GetBonusMultiplier(MOD_ACCURACY));
+			Attributes["rounds"].Int = std::ceil(Template.Attributes.at("rounds").Int * GetBonusMultiplier(MOD_MAXROUNDS));
+			Attributes["fire_period"].Double = Template.Attributes.at("fire_period").Double / GetBonusMultiplier(MOD_ATTACKSPEED);
+			Attributes["reload_period"].Double = Template.Attributes.at("reload_period").Double / GetBonusMultiplier(MOD_RELOADSPEED);
+			Attributes["attack_count"].Int = Template.Attributes.at("attack_count").Int;
+			Attributes["reload_amount"].Int = Template.Attributes.at("reload_amount").Int + Bonus[MOD_RELOADAMOUNT];
+			Attributes["penetration"].Int = Template.Attributes.at("penetration").Int + Bonus[MOD_PENETRATION];
+
+			// For melee, min accuracy is 0 and max is swing arc
+			if(IsMelee())
+				Attributes["min_accuracy"].Int = 0;
+
+			SetAmmo(Attributes["ammo"].Int);
+		break;
+		case _Object::ARMOR:
+			SetAttributeLevel("damage_block", 1.0f + Quality * 0.01f);
+			SetAttributeLevel("damage_resist", 1.0f + Quality * 0.01f);
+			SetAttributeLevel("max_ammo", 1.0f + Quality * 0.01f);
+			SetAttributeLevel("move_speed",  1.0f - Quality * 0.01f);
+			Attributes.at("damage_block").Int += Bonus[MOD_DAMAGEBLOCK];
+			Attributes.at("damage_resist").Int += Bonus[MOD_DAMAGERESIST];
+			Attributes.at("max_ammo").Int += Bonus[MOD_MAXAMMO];
+			Attributes.at("move_speed").Int += Bonus[MOD_MOVESPEED];
+		break;
+	}
+}
+
+// Add mod to item
+bool _Item::AddMod(_Item *Mod) {
+	if(Mod->Template.Attributes.at("object_type").Int != Type)
+		return false;
+
+	if((int)Mods.size() >= Attributes.at("max_mods").Int)
+		return false;
+
+	switch(Type) {
+		case _Object::WEAPON:
+
+			// Check weapon type
+			if(Mod->Template.Attributes.at("weapon_type").Int != 0 && Mod->Attributes.at("weapon_type").Int != Attributes.at("weapon_type").Int)
+				return false;
+
+			// Check for ammo
+			if(Mod->Template.Attributes.at("mod_type").Int == MOD_MAXROUNDS && Template.Attributes.at("rounds").Int == 0)
+				return false;
+		break;
+		case _Object::ARMOR:
+		break;
+	}
+	Mods.push_back(Mod);
+	RecalculateStats();
+
+	return true;
 }
 
 // Get average damage from range
@@ -449,10 +534,10 @@ std::string _Item::GetTypeAsString() const {
 }
 
 // Convert a mod type to string
-std::string _Item::ModTypeToString(int Type, int WeaponType) {
+std::string _Item::ModTypeToString(int ModType) {
 
-	switch(Type) {
-		case MOD_CLIP:
+	switch(ModType) {
+		case MOD_MAXROUNDS:
 			return "Round Size";
 		break;
 		case MOD_DAMAGE:
@@ -461,22 +546,45 @@ std::string _Item::ModTypeToString(int Type, int WeaponType) {
 		case MOD_ACCURACY:
 			return "Accuracy";
 		break;
-		case MOD_FIREPERIOD:
-			if(WeaponType == WEAPON_MELEE)
+		case MOD_ATTACKSPEED:
+			if(Attributes.at("weapon_type").Int == WEAPON_MELEE)
 				return "Attack Rate";
 			else
 				return "Fire Rate";
 		break;
-		case MOD_RELOADPERIOD:
+		case MOD_RELOADSPEED:
 			return "Reload Speed";
 		break;
-		case MOD_ATTACKCOUNT:
-			if(WeaponType == WEAPON_MELEE)
-				return "Attack Count";
-			else
-				return "Bullets/Shot";
+		case MOD_RELOADAMOUNT:
+			return "Reload Amount";
+		break;
+		case MOD_PENETRATION:
+			return "Penetration";
+		break;
+		case MOD_HANDLING:
+			return "Handling";
+		break;
+		case MOD_DAMAGEBLOCK:
+			return "Damage Block";
+		break;
+		case MOD_DAMAGERESIST:
+			return "Damage Resist";
+		break;
+		case MOD_MAXAMMO:
+			return "Max Ammo";
+		break;
+		case MOD_MOVESPEED:
+			return "Move Speed";
 		break;
 	}
 
 	return "";
+}
+
+// Set ammo for weapon
+void _Item::SetAmmo(int Value) {
+	if(Type != _Object::WEAPON)
+		return;
+
+	Attributes["ammo"].Int = std::clamp(Value, 0, Attributes["rounds"].Int);
 }

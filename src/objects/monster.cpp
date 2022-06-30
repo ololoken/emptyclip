@@ -51,7 +51,7 @@ _Monster::_Monster(const _ObjectTemplate &MonsterTemplate) :
 	// Set weapon offsets
 	WeaponParticles = Template.WeaponParticles;
 	WeaponParticleOffset[0] = glm::vec2(0, 0);
-	for(int i = 1; i < WEAPON_TYPES; i++)
+	for(int i = 1; i < WEAPON_COUNT; i++)
 		WeaponParticleOffset[i] = MONSTER_WEAPONOFFSET * Scale;
 
 	// Set attack sounds

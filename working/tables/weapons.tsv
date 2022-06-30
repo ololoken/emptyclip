@@ -1,4 +1,4 @@
-id	name	icon_id	sound_group_id	particles_id	ammo_id	weapon_type	damage	damage_level	damage_spread	zoom_scale	accuracy	accuracy_spread	recoil	recoil_regen	range	fire_rate	fire_period	reload_rounds	reload_period	mods	mods_level	attack_count	rounds	penetration	attack_movespeed
+id	name	icon_id	sound_group_id	particles_id	ammo_id	weapon_type	damage	damage_level	damage_spread	zoom_scale	accuracy	accuracy_spread	recoil	recoil_regen	range	fire_rate	fire_period	reload_amount	reload_period	mods	mods_level	attack_count	rounds	penetration	attack_movespeed
 weapon_fists	Fists		club			1	5	0	0.1	13	90	0	0	0	0.5	0	0.4	0	0	0	0	1	0	1	0.2
 weapon_melee	Knife	textures/items/weapon_melee.png	knife			1	0	10	0.1	13	45	0	0	0	0.5	0	0.4	0	0	1	0.25	1	0	1	0.1
 weapon_pistol	Pistol	textures/items/weapon_pistol.png	pistol	gun0	ammo_pistol	2	0	10	0.1	5	20	0.5	5	10	0	0	0.2	0	1.7	1	0.25	1	10	1	1

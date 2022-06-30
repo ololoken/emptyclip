@@ -92,7 +92,7 @@ class _Player : public _Entity {
 		int FindItem(const std::string &ID);
 		void ResetUseTimer() { UseTimer = 0; }
 		void ConsumeInventory(int Index, bool Delete=true);
-		void ReduceAmmo() override;
+		int ReduceAmmo(int Amount) override;
 		bool WeaponHasAmmo(int AttackType) const override;
 		bool HasAmmoForMain() const;
 		bool HasMainHand() const { return GetMainHand() != nullptr; }

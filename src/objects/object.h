@@ -71,7 +71,7 @@ class _Object {
 		void SetAttributeSpread(const std::string &AttributeName, float Multiplier);
 		float GetAttributeLevel(const std::string &AttributeName, float Multiplier);
 		void GetAttributeRange(const std::string &AttributeName, float Multiplier, int &Min, int &Max);
-		void SetMaxMods();
+		void SetMaxMods(bool RandomStats=false);
 
 		// Template
 		const _ObjectTemplate &Template;

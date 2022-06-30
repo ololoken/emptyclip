@@ -52,7 +52,7 @@ _Player::_Player(const _ObjectTemplate &PlayerTemplate) :
 	// Weapon offsets
 	WeaponParticleOffset[0] = glm::vec2(0, 0);
 	WeaponParticleOffset[1] = PLAYER_PISTOLOFFSET;
-	for(int i = 2; i < WEAPON_TYPES; i++)
+	for(int i = 2; i < WEAPON_COUNT; i++)
 		WeaponParticleOffset[i] = PLAYER_WEAPONOFFSET;
 
 	// Inventory
@@ -604,17 +604,11 @@ bool _Player::AddMod(int FromIndex, int ToIndex) {
 	if(!HasInventory(FromIndex) || Inventory[FromIndex]->Type != _Object::MOD)
 		return false;
 
-	_Weapon *Weapon = nullptr;
-	if(ToIndex == INVENTORY_MAINHAND && HasMainHand())
-		Weapon = GetMainHand();
-	else if(ToIndex == INVENTORY_OFFHAND && HasOffHand())
-		Weapon = GetOffHand();
-	else if(ToIndex == INVENTORY_MELEE && HasOffHand())
-		Weapon = GetOffHand();
-	else
+	_Item *Item = Inventory[ToIndex];
+	if(!Item)
 		return false;
 
-	if(Weapon->AddMod(Inventory[FromIndex])) {
+	if(Item->AddMod(Inventory[FromIndex])) {
 		ConsumeInventory(FromIndex, false);
 		RecalculateStats();
 		return true;
@@ -666,13 +660,14 @@ bool _Player::HasAmmoForMain() const {
 	return Ammo.at(AmmoType) > 0;
 }
 
-// Reduces the weapons ammo by one
-void _Player::ReduceAmmo() {
+// Reduces the player's mainhand weapon ammo and returns the amount reduced
+int _Player::ReduceAmmo(int Amount) {
 	if(HasMainHand() && AttackRequestType == WEAPONATTACK_MAIN) {
-		GetMainHand()->Attributes["ammo"].Int--;
-		if(GetMainHand()->Attributes["ammo"].Int < 0)
-			GetMainHand()->Attributes["ammo"].Int = 0;
+		Amount = std::min(GetMainHand()->Attributes["ammo"].Int, Amount);
+		GetMainHand()->Attributes["ammo"].Int = std::max(GetMainHand()->Attributes["ammo"].Int - Amount, 0);
 	}
+
+	return Amount;
 }
 
 // Uses an item from the player's inventory, return true if a key was used
@@ -795,8 +790,8 @@ void _Player::UpdateReloading() {
 
 	// Handle different reload amounts
 	bool ReloadAgain = false;
-	if(GetMainHand()->Attributes["reload_rounds"].Int) {
-		AmmoLoadAmount = std::min(GetMainHand()->Attributes["reload_rounds"].Int, AmmoLoadAmount);
+	if(GetMainHand()->Attributes["reload_amount"].Int) {
+		AmmoLoadAmount = std::min(GetMainHand()->Attributes["reload_amount"].Int, AmmoLoadAmount);
 		ReloadAgain = true;
 	}
 
@@ -1046,9 +1041,9 @@ const std::string &_Player::GetSound(int SoundType, int AttackType) const {
 		return Sounds[SoundType];
 
 	if(AttackType == WEAPONATTACK_MAIN && HasMainHand())
-		return GetMainHand()->GetSound(SoundType);
+		return GetMainHand()->Template.SoundID[SoundType];
 	else if(AttackType == WEAPONATTACK_MELEE && HasMelee())
-		return GetMelee()->GetSound(SoundType);
+		return GetMelee()->Template.SoundID[SoundType];
 
 	return Sounds[SoundType];
 }

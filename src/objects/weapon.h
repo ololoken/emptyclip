@@ -23,39 +23,15 @@
 #include <vector>
 #include <string>
 
-// Types of weapons
-enum WeaponType {
-	WEAPON_NONE,
-	WEAPON_MELEE,
-	WEAPON_PISTOL,
-	WEAPON_SHOTGUN,
-	WEAPON_RIFLE,
-	WEAPON_HEAVY,
-	WEAPON_TYPES
-};
-
 // Classes
 class _Weapon : public _Item {
 
 	public:
 
 		_Weapon(const _ObjectTemplate &WeaponTemplate) : _Item(WeaponTemplate) { }
-		~_Weapon() override;
 
-		void Serialize(ae::_Buffer &Buffer) override;
-
-		void RecalculateStats() override;
-		bool AddMod(_Item *Mod);
-		void SetAmmo(int Value);
-
-		float GetBonusMultiplier(int ModType) const { return (100 + Bonus[ModType]) * 0.01f; }
-		const std::string &GetSound(int SoundType) const;
-		bool IsMelee() const { return Attributes.at("weapon_type").Int == WEAPON_MELEE; }
 		virtual std::string GetTypeAsString() const override { return ToString(Attributes.at("weapon_type").Int) + " class weapon"; }
-		static std::string ToString(int Type);
-
-		std::vector<_Item *> Mods;
-		int Bonus[MOD_TYPES];
+		static std::string ToString(int WeaponType);
 
 	protected:
 

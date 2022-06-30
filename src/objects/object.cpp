@@ -16,6 +16,7 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 *******************************************************************************/
 #include <objects/object.h>
+#include <ae/random.h>
 #include <constants.h>
 #include <stats.h>
 #include <glm/geometric.hpp>
@@ -77,8 +78,11 @@ void _Object::GetAttributeRange(const std::string &AttributeName, float Multipli
 }
 
 // Set the max number of mods based on level
-void _Object::SetMaxMods() {
+void _Object::SetMaxMods(bool RandomStats) {
 	Attributes["max_mods"].Int = Template.Attributes.at("mods").Float + Template.Attributes.at("mods_level").Float * Level;
+
+	if(RandomStats)
+		Attributes["max_mods"].Int += ae::GetRandomInt(0, 1);
 }
 
 // Get render bounds of object

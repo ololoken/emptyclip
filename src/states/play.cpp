@@ -662,7 +662,7 @@ void _PlayState::ResolveAttack(_Entity *Attacker, int GridType) {
 
 	// Reduce ammo
 	if(!GodMode)
-		Attacker->ReduceAmmo();
+		Attacker->ReduceAmmo(1);
 
 	// Weapon type specific code
 	int WeaponType = WEAPON_MELEE;
