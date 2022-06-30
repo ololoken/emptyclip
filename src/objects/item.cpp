@@ -446,10 +446,10 @@ void _Item::RecalculateStats() {
 		Bonus[Mods[i]->Attributes.at("mod_type").Int] += Mods[i]->Attributes.at("bonus").Int;
 
 	switch(Type) {
-		case _Object::WEAPON:
+		case _Object::WEAPON: {
 
 			SetAttributeRange("damage", GetBonusMultiplier(MOD_DAMAGE) + Quality * 0.01f);
-			SetAttributeSpread("accuracy", 1.0f / GetBonusMultiplier(MOD_ACCURACY));
+			SetAttributeSpread("accuracy", IsMelee() ? GetBonusMultiplier(MOD_ACCURACY) : 1.0f / GetBonusMultiplier(MOD_ACCURACY));
 			Attributes["rounds"].Int = std::ceil(Template.Attributes.at("rounds").Int * GetBonusMultiplier(MOD_MAXROUNDS));
 			Attributes["fire_period"].Double = Template.Attributes.at("fire_period").Double / GetBonusMultiplier(MOD_ATTACKSPEED);
 			Attributes["reload_period"].Double = Template.Attributes.at("reload_period").Double / GetBonusMultiplier(MOD_RELOADSPEED);
@@ -462,7 +462,7 @@ void _Item::RecalculateStats() {
 				Attributes["min_accuracy"].Int = 0;
 
 			SetAmmo(Attributes["ammo"].Int);
-		break;
+		} break;
 		case _Object::ARMOR:
 			SetAttributeLevel("damage_block", 1.0f + Quality * 0.01f);
 			SetAttributeLevel("damage_resist", 1.0f + Quality * 0.01f);
@@ -485,18 +485,18 @@ bool _Item::AddMod(_Item *Mod) {
 		return false;
 
 	switch(Type) {
-		case _Object::WEAPON:
+		case _Object::WEAPON: {
 
 			// Check weapon type
 			if(Mod->Template.Attributes.at("weapon_type").Int != 0 && Mod->Attributes.at("weapon_type").Int != Attributes.at("weapon_type").Int)
 				return false;
 
 			// Check for ammo
-			if(Mod->Template.Attributes.at("mod_type").Int == MOD_MAXROUNDS && Template.Attributes.at("rounds").Int == 0)
+			int ModType = Mod->Template.Attributes.at("mod_type").Int;
+			if(Template.Attributes.at("rounds").Int == 0 && (ModType == MOD_MAXROUNDS || ModType == MOD_RELOADSPEED || ModType == MOD_RELOADAMOUNT || ModType == MOD_HANDLING))
 				return false;
-		break;
-		case _Object::ARMOR:
-		break;
+
+		} break;
 	}
 	Mods.push_back(Mod);
 	RecalculateStats();
@@ -544,10 +544,13 @@ std::string _Item::ModTypeToString(int ModType) {
 			return "Damage";
 		break;
 		case MOD_ACCURACY:
-			return "Accuracy";
+			if(IsMelee())
+				return "Swing Arc";
+			else
+				return "Accuracy";
 		break;
 		case MOD_ATTACKSPEED:
-			if(Attributes.at("weapon_type").Int == WEAPON_MELEE)
+			if(IsMelee())
 				return "Attack Rate";
 			else
 				return "Fire Rate";
