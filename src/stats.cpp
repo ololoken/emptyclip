@@ -397,7 +397,8 @@ void _Stats::LoadWeapons(const std::string &Path) {
 			>> Template.Attributes["mods_level"].Float
 			>> Template.Attributes["attack_count"].Int
 			>> Template.Attributes["rounds"].Int
-			>> Template.Attributes["penetration"].Int;
+			>> Template.Attributes["penetration"].Int
+			>> Template.Attributes["attack_movespeed"].Float;
 
 		File.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
@@ -559,7 +560,8 @@ void _Stats::LoadMonsters(const std::string &Path) {
 			>> Template.Attributes["damage_level"].Float
 			>> Template.Attributes["damage_spread"].Float
 			>> Template.Attributes["attack_period"].Double
-			>> Template.Attributes["weapon_type"].Int;
+			>> Template.Attributes["weapon_type"].Int
+			>> Template.Attributes["attack_movespeed"].Float;
 
 		File.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
@@ -624,6 +626,7 @@ _Item *_Stats::CreateItem(const std::string &ID, int Level, int Quality, int Cou
 			Item->Attributes["recoil_regen"].Float = Template.Attributes["recoil_regen"].Float;
 			Item->Attributes["range"].Float = Template.Attributes["range"].Float;
 			Item->Attributes["fire_rate"].Int = Template.Attributes["fire_rate"].Int;
+			Item->Attributes["attack_movespeed"].Float = Template.Attributes["attack_movespeed"].Float;
 			Item->SetMaxMods();
 
 			if(RandomStats)
@@ -682,6 +685,7 @@ _Monster *_Stats::CreateMonster(const std::string &ID, int Level, const glm::vec
 		Monster->FirePeriod[i] = Template.Attributes.at("attack_period").Double;
 		Monster->MaxAccuracy[i] = Template.Attributes.at("accuracy").Int;
 		Monster->AttackRange[i] = Template.Attributes.at("attack_range").Float;
+		Monster->AttackMoveSpeed[i] = Template.Attributes.at("attack_movespeed").Float;
 	}
 
 	return Monster;

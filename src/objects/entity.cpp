@@ -226,7 +226,6 @@ void _Entity::UpdateAnimation(double FrameTime, bool PlaySound) {
 			SetLegAnimationPlayMode(ae::_Animation::STOPPED);
 
 			Action = ACTION_MELEE;
-			MoveState = MOVE_NONE;
 		break;
 		case ACTION_MELEE:
 			if(Animation->IsStopped()) {
@@ -371,7 +370,14 @@ void _Entity::Move(double FrameTime) {
 	if(glm::dot(MoveDirection, Direction) < 0)
 		UpdateSpeed(PLAYER_BACKWARDSPEEDFACTOR);
 
+	// Get speed
 	float Speed = MovementSpeed * MovementModifier * FrameTime;
+
+	// Update speed while attacking
+	if(Action == ACTION_SHOOT || Action == ACTION_MELEE)
+		Speed *= AttackMoveSpeed[AttackRequestType];
+
+	// Update move vector
 	MoveDirection *= Speed;
 
 	// Get a list of entities that the object is colliding with

@@ -164,6 +164,7 @@ class _Entity : public _Object {
 		double FirePeriod[WEAPONATTACK_COUNT];
 		int MinDamage[WEAPONATTACK_COUNT];
 		int MaxDamage[WEAPONATTACK_COUNT];
+		float AttackMoveSpeed[WEAPONATTACK_COUNT];
 		int AttackCount;
 		int MainWeaponType;
 		int AttackRequestType;
