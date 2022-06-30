@@ -106,6 +106,7 @@ void _Monster::Update(double FrameTime) {
 		StartAttack();
 
 	// Move
+	MoveState = MOVE_NONE;
 	Move(FrameTime);
 }
 

@@ -39,13 +39,6 @@ namespace ae {
 	class _Camera;
 }
 
-// Types of entity attack outcomes
-enum CollisionType {
-	HIT_NONE,
-	HIT_WALL,
-	HIT_OBJECT
-};
-
 // Play state
 class _PlayState : public ae::_State {
 

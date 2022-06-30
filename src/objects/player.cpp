@@ -959,6 +959,7 @@ void _Player::RecalculateStats() {
 		MinDamage[i] = Weapon[i].Attributes["min_damage"].Int;
 		MaxDamage[i] = Weapon[i].Attributes["max_damage"].Int;
 		AttackMoveSpeed[i] = Weapon[i].Attributes["attack_movespeed"].Float;
+		Penetration[i] = Weapon[i].Attributes["penetration"].Int;
 	}
 	ReloadPeriod = Weapon[WEAPONATTACK_MAIN].Attributes["reload_period"].Double / Stats.GetSkillBonusMultiplier(Skills[SKILL_RELOADSPEED], SKILL_RELOADSPEED);
 	WeaponSwitchPeriod = PLAYER_WEAPONSWITCHPERIOD * 1;

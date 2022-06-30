@@ -15,6 +15,7 @@ Empty Clip 2.0.0 -
 - Ammo is now picked up automatically
 - Armor now affects movement speed and damage resist
 - Shotguns now reload one shell at a time
+- Added bullet penetration for certain weapons
 - Removed strength requirement from armor
 - Removed player profiles
 - Players now respawn at their last checkpoint

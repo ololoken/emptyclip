@@ -448,9 +448,10 @@ void _PlayState::Update(double FrameTime) {
 			Camera->UpdatePosition((WorldCursor - Player->Position) / Player->ZoomScale);
 		}
 		else {
-			_Hit Hit;
-			Map->CheckBulletCollisions(Player->Position, WorldCursor - Player->Position, Hit, 0, false);
-			Camera->UpdatePosition((Hit.Position - Player->Position) / Player->ZoomScale);
+			std::vector<_Hit> Hits;
+			Map->CheckBulletCollisions(Player->Position, WorldCursor - Player->Position, Hits, 0, false, 1);
+			if(Hits.size())
+				Camera->UpdatePosition((Hits.front().Position - Player->Position) / Player->ZoomScale);
 		}
 		Camera->SetDistance(CAMERA_DISTANCE_AIMED);
 	}
@@ -669,8 +670,8 @@ void _PlayState::ResolveAttack(_Entity *Attacker, int GridType) {
 		WeaponType = Attacker->GetWeaponType();
 
 	// Play fire sound and generate fire/smoke particles
-	_Hit Hit;
 	if(WeaponType != WEAPON_MELEE) {
+		_Hit Hit(HIT_NONE);
 		GenerateBulletEffects(Attacker, -1, Hit);
 		ae::Audio.PlaySound(ae::Assets.Sounds[Attacker->GetSound(SOUND_FIRE, WEAPONATTACK_MAIN)], glm::vec3(Attacker->Position.x, 0.0f, Attacker->Position.y));
 	}
@@ -680,15 +681,12 @@ void _PlayState::ResolveAttack(_Entity *Attacker, int GridType) {
 	// For each bullet that the weapon fires
 	bool PlayedHitWallSound = false;
 	for(int i = 0; i < Attacker->AttackCount; i++) {
-		Hit.Type = HIT_NONE;
+		std::vector<_Hit> Hits;
+		Hits.reserve(Attacker->GetPenetration(Attacker->AttackRequestType));
 
 		// Check weapon type
 		if(WeaponType == WEAPON_MELEE) {
-			Hit.Object = Map->CheckMeleeCollisions(Attacker, Attacker->GetDirectionVector(), GridType);
-			if(Hit.Object != nullptr) {
-				Hit.Type = HIT_OBJECT;
-				Hit.Position = Hit.Object->Position;
-			}
+			Map->CheckMeleeCollisions(Attacker, Attacker->GetDirectionVector(), GridType, Attacker->GetPenetration(Attacker->AttackRequestType), Hits);
 		}
 		else {
 
@@ -696,16 +694,12 @@ void _PlayState::ResolveAttack(_Entity *Attacker, int GridType) {
 			float ShotDirection = Attacker->GenerateShotDirection();
 
 			// Check distance to the wall
-			Map->CheckBulletCollisions(Attacker->Position, glm::rotate(glm::vec2(0, -1), glm::radians(ShotDirection)), Hit, GridType, true);
-			if(Hit.Object != nullptr)
-				Hit.Type = HIT_OBJECT;
-			else
-				Hit.Type = HIT_WALL;
+			Map->CheckBulletCollisions(Attacker->Position, glm::rotate(glm::vec2(0, -1), glm::radians(ShotDirection)), Hits, GridType, true, Attacker->GetPenetration(Attacker->AttackRequestType));
 
 			_ParticleTemplate *Template = GameAssets.GetParticleTemplate("tracer0");
 			glm::vec2 ParticleStart = Attacker->Position + glm::rotate(glm::vec2(0, -Template->Size.y * 0.5f) + Attacker->GetWeaponOffset(Attacker->GetWeaponType()), glm::radians(ShotDirection));
 
-			float Distance = glm::length(Hit.Position - Attacker->Position) - Template->Size.y;
+			float Distance = glm::length(Hits.front().Position - Attacker->Position) - Template->Size.y;
 
 			_Particle *Tracer = new _Particle(_ParticleSpawn(Template, glm::vec2(0), ParticleStart, OBJECT_Z, ShotDirection));
 			Tracer->Lifetime = Distance * Template->VelocityScale.y * GAME_FPS;
@@ -713,63 +707,65 @@ void _PlayState::ResolveAttack(_Entity *Attacker, int GridType) {
 		}
 
 		// Generate particle effects and reduce health
-		switch(Hit.Type) {
-			case HIT_NONE:
-			break;
-			case HIT_WALL:
-				if(!PlayedHitWallSound) {
-					ae::Audio.PlaySound(ae::Assets.Sounds[Attacker->GetSound(SOUND_RICOCHET, WEAPONATTACK_MAIN)], glm::vec3(Hit.Position.x, 0.0f, Hit.Position.y));
-					PlayedHitWallSound = true;
-				}
-
-				GenerateBulletEffects(Attacker, HIT_WALL, Hit);
-			break;
-			case HIT_OBJECT:
-				GenerateBulletEffects(Attacker, HIT_OBJECT, Hit);
-
-				// Generate damage
-				int Damage = Attacker->GenerateDamage(Attacker->AttackRequestType, Hit.Object->DamageBlock, Hit.Object->DamageResist);
-				if(GodMode && Hit.Object->Type == _Object::PLAYER)
-					Damage = 0;
-
-				// Create damage number particles
-				glm::vec2 DamagePosition = Hit.Position;
-				if(Hit.Object->Type ==  _Object::PLAYER)
-					DamagePosition += _Map::GenerateRandomPointInCircle(0.3f);
-				_Particle *DamageParticle = new _Particle(_ParticleSpawn(GameAssets.GetParticleTemplate("damage0"), glm::vec2(0), DamagePosition, OBJECT_Z, 0));
-				DamageParticle->Text = std::to_string(Damage);
-				if(Hit.Object->Type ==  _Object::PLAYER)
-					DamageParticle->Color = COLOR_RED;
-				Particles->Add(DamageParticle);
-
-				// Update health
-				Hit.Object->UpdateHealth(-Damage);
-				if(Hit.Object->IsDying()) {
-
-					// Handle item drops
-					CreateItemDrop(Hit.Object);
-
-					// Dying sound
-					ae::Audio.PlaySound(ae::Assets.Sounds[Hit.Object->GetSound(SOUND_DEATH, -1)], glm::vec3(Hit.Position.x, 0.0f, Hit.Position.y));
-
-					// Update stats
-					if(Attacker->Type == _Object::PLAYER) {
-						Attacker->UpdateKillCount(1);
-						Attacker->UpdateExperience(Hit.Object->ExperienceGiven);
+		for(const auto &Hit : Hits) {
+			switch(Hit.Type) {
+				case HIT_NONE:
+				break;
+				case HIT_WALL:
+					if(!PlayedHitWallSound) {
+						ae::Audio.PlaySound(ae::Assets.Sounds[Attacker->GetSound(SOUND_RICOCHET, WEAPONATTACK_MAIN)], glm::vec3(Hit.Position.x, 0.0f, Hit.Position.y));
+						PlayedHitWallSound = true;
 					}
-				}
 
-				// Weapon hit sound
-				ae::Audio.PlaySound(ae::Assets.Sounds[Attacker->GetSound(SOUND_HIT, Attacker->AttackRequestType)], glm::vec3(Hit.Position.x, 0.0f, Hit.Position.y));
+					GenerateBulletEffects(Attacker, HIT_WALL, Hit);
+				break;
+				case HIT_OBJECT:
+					GenerateBulletEffects(Attacker, HIT_OBJECT, Hit);
 
-				// Entity hit sound
-				ae::Audio.PlaySound(ae::Assets.Sounds[Hit.Object->GetSound(SOUND_TAKEDAMAGE, -1)], glm::vec3(Hit.Position.x, 0.0f, Hit.Position.y));
+					// Generate damage
+					int Damage = Attacker->GenerateDamage(Attacker->AttackRequestType, Hit.Object->DamageBlock, Hit.Object->DamageResist);
+					if(GodMode && Hit.Object->Type == _Object::PLAYER)
+						Damage = 0;
 
-				// Set HUD last hit object
-				if(Hit.Object->Type == _Object::MONSTER)
-					HUD->SetLastEntityHit(Hit.Object);
+					// Create damage number particles
+					glm::vec2 DamagePosition = Hit.Position;
+					if(Hit.Object->Type ==  _Object::PLAYER)
+						DamagePosition += _Map::GenerateRandomPointInCircle(0.3f);
+					_Particle *DamageParticle = new _Particle(_ParticleSpawn(GameAssets.GetParticleTemplate("damage0"), glm::vec2(0), DamagePosition, OBJECT_Z, 0));
+					DamageParticle->Text = std::to_string(Damage);
+					if(Hit.Object->Type ==  _Object::PLAYER)
+						DamageParticle->Color = COLOR_RED;
+					Particles->Add(DamageParticle);
 
-			break;
+					// Update health
+					Hit.Object->UpdateHealth(-Damage);
+					if(Hit.Object->IsDying()) {
+
+						// Handle item drops
+						CreateItemDrop(Hit.Object);
+
+						// Dying sound
+						ae::Audio.PlaySound(ae::Assets.Sounds[Hit.Object->GetSound(SOUND_DEATH, -1)], glm::vec3(Hit.Position.x, 0.0f, Hit.Position.y));
+
+						// Update stats
+						if(Attacker->Type == _Object::PLAYER) {
+							Attacker->UpdateKillCount(1);
+							Attacker->UpdateExperience(Hit.Object->ExperienceGiven);
+						}
+					}
+
+					// Weapon hit sound
+					ae::Audio.PlaySound(ae::Assets.Sounds[Attacker->GetSound(SOUND_HIT, Attacker->AttackRequestType)], glm::vec3(Hit.Position.x, 0.0f, Hit.Position.y));
+
+					// Entity hit sound
+					ae::Audio.PlaySound(ae::Assets.Sounds[Hit.Object->GetSound(SOUND_TAKEDAMAGE, -1)], glm::vec3(Hit.Position.x, 0.0f, Hit.Position.y));
+
+					// Set HUD last hit object
+					if(Hit.Object->Type == _Object::MONSTER)
+						HUD->SetLastEntityHit(Hit.Object);
+
+				break;
+			}
 		}
 	}
 

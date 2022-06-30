@@ -68,8 +68,10 @@ _Entity::_Entity(const _ObjectTemplate &EntityTemplate) :
 	AttackMade(false),
 	ExperienceGiven(0) {
 
-	for(int i = 0; i < WEAPON_TYPES; i++)
+	for(int i = 0; i < WEAPON_TYPES; i++) {
 		WeaponParticleOffset[i] = glm::vec2(0.0f, 0.0f);
+		Penetration[i] = 1;
+	}
 
 	for(int i = 0; i < SOUND_TYPES; i++)
 		Sounds[i] = -1;

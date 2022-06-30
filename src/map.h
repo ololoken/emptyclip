@@ -24,6 +24,7 @@
 #include <string>
 #include <list>
 #include <vector>
+#include <unordered_map>
 #include <memory>
 #include <stdexcept>
 
@@ -51,6 +52,13 @@ enum CollisionGridType {
 enum MapType {
 	MAPTYPE_CAMPAIGN,
 	MAPTYPE_ADVENTURE
+};
+
+// Types of attack outcomes
+enum CollisionType {
+	HIT_NONE,
+	HIT_WALL,
+	HIT_OBJECT
 };
 
 const int WALL_LEFT                 = 0x1;
@@ -117,11 +125,7 @@ struct _Block {
 // Holds information about a hit entity
 struct _Hit {
 
-	_Hit() { }
-	_Hit(_Entity *Object, const glm::vec2 &Position, int Type) :
-		Object(Object),
-		Position(Position),
-		Type(Type) { }
+	_Hit(int Type) : Object(nullptr), Type(Type) { }
 
 	_Entity *Object;
 	glm::vec2 Normal;
@@ -176,8 +180,8 @@ class _Map {
 		bool CheckCollisions(const glm::vec2 &TargetPosition, float Radius, glm::vec2 &NewPosition);
 		void CheckEntityCollisionsInGrid(const glm::vec2 &Position, float Radius, const _Object *SkipObject, std::vector<_Entity *> &Entities) const;
 		_Object *CheckCollisionsInGrid(const glm::vec2 &Position, float Radius, int GridType, const _Object *SkipObject) const;
-		_Entity *CheckMeleeCollisions(_Entity *Attacker, const glm::vec2 &Direction, int GridType) const;
-		void CheckBulletCollisions(const glm::vec2 &Position, const glm::vec2 &Direction, _Hit &Hit, int GridType, bool CheckObjects) const;
+		void CheckMeleeCollisions(_Entity *Attacker, const glm::vec2 &Direction, int GridType, int Penetration, std::vector<_Hit> &Hits) const;
+		void CheckBulletCollisions(const glm::vec2 &Position, const glm::vec2 &Direction, std::vector<_Hit> &Hits, int GridType, bool CheckObjects, int Penetration) const;
 		float RayObjectIntersection(const glm::vec2 &Origin, const glm::vec2 &Direction, const _Object *Object) const;
 		bool IsVisible(const glm::vec2 &Start, const glm::vec2 &End) const;
 		void AddObjectToGrid(_Object *Object, int Type);

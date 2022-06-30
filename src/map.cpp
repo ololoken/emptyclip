@@ -581,7 +581,7 @@ void _Map::CheckEntityCollisionsInGrid(const glm::vec2 &Position, float Radius, 
 }
 
 // Checks for melee collisions with entities in the collision grid
-_Entity *_Map::CheckMeleeCollisions(_Entity *Attacker, const glm::vec2 &Direction, int GridType) const {
+void _Map::CheckMeleeCollisions(_Entity *Attacker, const glm::vec2 &Direction, int GridType, int Penetration, std::vector<_Hit> &Hits) const {
 	if(!Data)
 		throw std::runtime_error("Tile data uninitialized!");
 
@@ -608,14 +608,22 @@ _Entity *_Map::CheckMeleeCollisions(_Entity *Attacker, const glm::vec2 &Directio
 				if(glm::dot(Direction, ObjectDirection) > cosf(glm::radians(Attacker->GetMaxAccuracy(Attacker->AttackRequestType) * 0.5f))) {
 
 					// Check for walls
-					if(IsVisible(Attacker->Position, Entity->Position))
-						return Entity;
+					if(IsVisible(Attacker->Position, Entity->Position)) {
+						_Hit Hit(HIT_OBJECT);
+						Hit.Object = Entity;
+						Hit.Position = Entity->Position;
+						Hits.push_back(Hit);
+
+						Penetration--;
+						if(Penetration <= 0)
+							return;
+					}
 				}
 			}
 		}
 	}
 
-	return nullptr;
+	return;
 }
 
 // Determines which walls are adjacent to the object
@@ -667,7 +675,7 @@ void _Map::GetAdjacentTile(const glm::vec2 &Position, float Direction, glm::ivec
 }
 
 // Checks bullet collisions with objects and walls
-void _Map::CheckBulletCollisions(const glm::vec2 &Position, const glm::vec2 &Direction, _Hit &Hit, int GridType, bool CheckObjects) const {
+void _Map::CheckBulletCollisions(const glm::vec2 &Position, const glm::vec2 &Direction, std::vector<_Hit> &Hits, int GridType, bool CheckObjects, int Penetration) const {
 	if(!Data)
 		throw std::runtime_error("Tile data uninitialized!");
 
@@ -709,17 +717,17 @@ void _Map::CheckBulletCollisions(const glm::vec2 &Position, const glm::vec2 &Dir
 	glm::vec2 Tracer((FirstBoundaryTileX - Position.x) * Ratio.x, (FirstBoundaryTileY - Position.y) * Ratio.y);
 
 	// Traverse tiles
-	if(CheckObjects)
-		Hit.Object = nullptr;
-	float MinDistance = HUGE_VAL;
 	bool EndedOnX = false;
+	std::unordered_map<_Entity *, int> HitObjects;
 	while(TileTracer.x >= 0 && TileTracer.y >= 0 && TileTracer.x < Width && TileTracer.y < Height && CanShootThrough(TileTracer.x, TileTracer.y)) {
 
 		// Check for object intersections
+		_Hit Hit(HIT_OBJECT);
+		float MinDistance = HUGE_VAL;
 		if(CheckObjects) {
 			for(auto Iterator = Data[TileTracer.x][TileTracer.y].Objects[GridType].begin(); Iterator != Data[TileTracer.x][TileTracer.y].Objects[GridType].end(); ++Iterator) {
 				_Entity *Entity = (_Entity *)(*Iterator);
-				if(Entity->IsDying())
+				if(Entity->IsDying() || HitObjects.find(Entity) != HitObjects.end())
 					continue;
 
 				float Distance = RayObjectIntersection(Position, Direction, Entity);
@@ -731,10 +739,16 @@ void _Map::CheckBulletCollisions(const glm::vec2 &Position, const glm::vec2 &Dir
 		}
 
 		// An object was hit
-		if(CheckObjects && Hit.Object != nullptr) {
+		if(CheckObjects && Hit.Object) {
 			Hit.Position = Direction * MinDistance + Position;
 			Hit.Normal = glm::normalize(-Direction);
-			return;
+			Hits.push_back(Hit);
+			HitObjects[Hit.Object] = 1;
+
+			// Update depth count
+			Penetration--;
+			if(!Penetration)
+				return;
 		}
 
 		// Determine which direction needs an update
@@ -748,11 +762,12 @@ void _Map::CheckBulletCollisions(const glm::vec2 &Position, const glm::vec2 &Dir
 			TileTracer.y += TileIncrementY;
 			EndedOnX = false;
 		}
-
 	}
 
 	// Determine which side has hit
-	glm::vec2 WallHitPosition, WallBoundary;
+	glm::vec2 WallHitPosition;
+	glm::vec2 WallBoundary;
+	_Hit Hit(HIT_WALL);
 	if(EndedOnX) {
 
 		// Get correct side of the wall
@@ -793,8 +808,7 @@ void _Map::CheckBulletCollisions(const glm::vec2 &Position, const glm::vec2 &Dir
 	}
 
 	Hit.Position = WallHitPosition + Position;
-	if(CheckObjects)
-		Hit.Object = nullptr;
+	Hits.push_back(Hit);
 }
 
 // Returns a t value for when a ray intersects a circle

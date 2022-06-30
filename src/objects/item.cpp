@@ -180,6 +180,25 @@ void _Item::DrawTooltip(const _Player *Player, std::size_t CompareSlot, glm::ive
 				Buffer.str("");
 			}
 
+			// Penetration
+			if(Weapon->Attributes.at("penetration").Int > 1) {
+				TextColor = COLOR_WHITE;
+				if(EquippedWeapon) {
+					if(Weapon->Attributes.at("penetration").Int > EquippedWeapon->Attributes.at("penetration").Int)
+						TextColor = COLOR_GREEN;
+					else if(Weapon->Attributes.at("penetration").Int < EquippedWeapon->Attributes.at("penetration").Int)
+						TextColor = COLOR_RED;
+				}
+
+				DrawPosition.y += 20;
+				Buffer << Weapon->Attributes.at("penetration").Int;
+				std::string AttackCountText;
+				AttackCountText = "Penetration";
+				ae::Assets.Fonts["hud_medium"]->DrawText(AttackCountText, DrawPosition - DrawOffset, ae::RIGHT_BASELINE);
+				ae::Assets.Fonts["hud_medium"]->DrawText(Buffer.str(), DrawPosition + DrawOffset, ae::LEFT_BASELINE, TextColor);
+				Buffer.str("");
+			}
+
 			// Fire rate
 			if(Weapon->Attributes.at("fire_period").Double) {
 				TextColor = COLOR_WHITE;
