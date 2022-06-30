@@ -378,7 +378,7 @@ void _PlayState::Update(double FrameTime) {
 			}
 
 			// Aim
-			Player->SetCrouching(ae::Actions.State[Action::GAME_AIM].Value > 0.0f);
+			Player->SetCrouching(ae::Actions.State[Action::GAME_AIM].Value > 0.0f && !Player->Reloading && !Player->SwitchingWeapons);
 			Player->SetSprinting(ae::Actions.State[Action::GAME_SPRINT].Value > 0.0f);
 		}
 
