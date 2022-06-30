@@ -1636,7 +1636,7 @@ void _Map::AddMinimapLayers() {
 		if(CheckMinimapBounds(Bounds, HUD_MINIMAP_CAPTURE_SIZE)) {
 			_MinimapLayer MinimapLayer;
 			MinimapLayer.Bounds = Bounds;
-			MinimapLayer.Color = HUD_MINIMAP_DOOR_COLOR;
+			MinimapLayer.Color = Event->ItemID.empty() ? HUD_MINIMAP_DOOR_COLOR : Stats.Objects.at(Event->ItemID).DoorColor;
 			MinimapLayers.push_back(MinimapLayer);
 		}
 	}

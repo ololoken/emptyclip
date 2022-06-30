@@ -30,6 +30,7 @@
 #include <map.h>
 #include <iostream>
 #include <stdexcept>
+#include <algorithm>
 #include <glm/geometric.hpp>
 #include <glm/trigonometric.hpp>
 
@@ -335,28 +336,22 @@ void _Player::Render2D(const glm::ivec2 &Position) {
 
 // Updates the player's experience, leveling up if needed
 void _Player::UpdateExperience(int64_t ExperienceGained) {
-	Experience = Stats.GetValidExperience(Experience + ExperienceGained);
+	Experience = std::clamp(Experience + ExperienceGained, (int64_t)0, Stats.Levels.back().Experience);
+
+	int OldLevel = Level;
 	CalculateExperienceStats();
 
-	// Check if enough experience has been reached for a new level.
-	if(Experience >= ExperienceNextLevel)
-		UpdateLevel();
+	// Check for new level
+	if(Level > OldLevel) {
+		CalculateSkillsRemaining();
+		RecalculateStats();
+		Health = MaxHealth;
+	}
 }
 
 // Advance the player levels
 void _Player::UpdateLevel() {
 
-	// Get new level
-	CalculateExperienceStats();
-
-	// Get the number of skill points to spend
-	CalculateSkillsRemaining();
-
-	// Reset stats
-	RecalculateStats();
-
-	// Update current health
-	Health = MaxHealth;
 }
 
 // Updates a skill

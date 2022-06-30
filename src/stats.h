@@ -65,7 +65,7 @@ struct _ItemDrop {
 // Object template
 struct _ObjectTemplate {
 
-	_ObjectTemplate(int Type) : WeaponParticles(nullptr), Color(1.0f), Type(Type) { }
+	_ObjectTemplate(int Type) : WeaponParticles(nullptr), Color(1.0f), DoorColor(1.0f), Type(Type) { }
 	bool IsItem() const;
 
 	std::string Name;
@@ -77,6 +77,7 @@ struct _ObjectTemplate {
 	std::string SoundID[SOUND_TYPES];
 	_WeaponParticleTemplate *WeaponParticles;
 	glm::vec4 Color;
+	glm::vec4 DoorColor;
 	int Type;
 
 	std::unordered_map<std::string, _Value> Attributes;
@@ -106,7 +107,6 @@ class _Stats {
 		_Monster *CreateMonster(const std::string &ID, int Level, const glm::vec2 &Position);
 
 		const _Level &FindLevel(int64_t Experience);
-		int64_t GetValidExperience(int64_t Experience);
 		int GetLevelHealth(int Level) { return Levels[Level-1].HealthBonus; }
 		int GetSkillPointsRemaining(int Level) { return Levels[Level-1].SkillPoints; }
 		int GetMaxLevel() const { return (int)Levels.size(); }
@@ -120,6 +120,7 @@ class _Stats {
 		std::unordered_map<std::string, std::string> Strings;
 		std::unordered_map<std::string, _ObjectTemplate> Objects;
 		std::unordered_map<std::string, _ItemDrop> ItemDrops;
+		std::vector<_Level> Levels;
 		_Weapon *WeaponFists;
 
 		std::vector<std::string> AmmoNames;
@@ -129,7 +130,6 @@ class _Stats {
 		void SetColor(glm::vec4 &Color, const std::string &ColorID);
 		_WeaponParticleTemplate BlankWeaponParticle;
 
-		std::vector<_Level> Levels;
 		std::vector<_Skill> Skills;
 };
 

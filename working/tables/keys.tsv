@@ -1,5 +1,5 @@
-id	name	icon_id	color_id
-key_red	Red Key	textures/items/key_red.png	
-key_green	Green Key	textures/items/key_green.png	
-key_blue	Blue Key	textures/items/key_blue.png	
-key_boss	Boss Key	textures/items/key_boss.png	
+do	name	icon_id	doorcolor_id
+key_red	Red Key	textures/items/key_red.png	red
+key_green	Green Key	textures/items/key_green.png	green
+key_blue	Blue Key	textures/items/key_blue.png	blue
+key_boss	Boss Key	textures/items/key_boss.png	black

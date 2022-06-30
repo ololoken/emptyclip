@@ -241,18 +241,18 @@ void _Stats::LoadKeys(const std::string &Path) {
 
 		_ObjectTemplate Template(_Object::KEY);
 		std::string ID;
-		std::string ColorID;
+		std::string DoorColorID;
 		std::getline(File, ID, '\t');
 		std::getline(File, Template.Name, '\t');
 		std::getline(File, Template.IconID, '\t');
-		std::getline(File, ColorID, '\n');
+		std::getline(File, DoorColorID, '\n');
 
 		// Check for loaded textures
 		if(!ae::Assets.Textures[Template.IconID])
 			throw std::runtime_error(std::string(__func__) + " - Cannot find texture: " + Template.IconID);
 
 		// Set color
-		SetColor(Template.Color, ColorID);
+		SetColor(Template.DoorColor, DoorColorID);
 
 		// Check for duplicates
 		if(Objects.find(ID) != Objects.end())
@@ -685,16 +685,6 @@ _Monster *_Stats::CreateMonster(const std::string &ID, int Level, const glm::vec
 	}
 
 	return Monster;
-}
-
-// Returns a valid amount of experience
-int64_t _Stats::GetValidExperience(int64_t Experience) {
-	if(Experience < 0)
-		return 0;
-	else if(Experience > Levels.back().Experience)
-		return Levels.back().Experience;
-
-	return Experience;
 }
 
 // Returns the level given the experience number
