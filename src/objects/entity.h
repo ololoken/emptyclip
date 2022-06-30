@@ -113,9 +113,9 @@ class _Entity : public _Object {
 		float GetMaxAccuracy(int AttackType) const { return MaxAccuracy[AttackType]; }
 		int GetMinDamage(int Type) const { return MinDamage[Type]; }
 		int GetMaxDamage(int Type) const { return MaxDamage[Type]; }
-		virtual const _ParticleTemplate *GetWeaponParticle(int Index) const { return nullptr; }
 
-		virtual const std::string &GetSound(int Type) const { return Sounds[Type]; }
+		virtual const _ParticleTemplate *GetWeaponParticle(int Index) const { return nullptr; }
+		virtual const std::string &GetSound(int Type, int AttackType) const { return Sounds[Type]; }
 
 		void StartTriggerDownAudio();
 		void StopAudio();

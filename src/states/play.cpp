@@ -187,7 +187,7 @@ bool _PlayState::HandleAction(int InputType, std::size_t Action, int Value) {
 
 					// Play sound
 					if(Player->CanAttack(WEAPONATTACK_MAIN) && !Player->WeaponHasAmmo())
-						ae::Audio.PlaySound(ae::Assets.Sounds[Player->GetSound(SOUND_EMPTY)]);
+						ae::Audio.PlaySound(ae::Assets.Sounds[Player->GetSound(SOUND_EMPTY, WEAPONATTACK_MAIN)]);
 
 					if(Player->GetFireRate(WEAPONATTACK_MAIN) == FIRERATE_SEMI) {
 						Player->AttackRequested = true;
@@ -197,6 +197,9 @@ bool _PlayState::HandleAction(int InputType, std::size_t Action, int Value) {
 			break;
 			case Action::GAME_MELEE:
 				if(!HUD->GetInventoryOpen()) {
+					if(Player->Reloading)
+						Player->CancelReloading();
+
 					if(Player->GetFireRate(WEAPONATTACK_MELEE) == FIRERATE_SEMI) {
 						Player->AttackRequested = true;
 						Player->AttackRequestType = WEAPONATTACK_MELEE;
@@ -287,7 +290,7 @@ bool _PlayState::HandleCommand(ae::_Console *Console) {
 	else if(Console->Command == "suicide") {
 		if(Player) {
 			Player->UpdateHealth(-10000000);
-			ae::Audio.PlaySound(ae::Assets.Sounds[Player->GetSound(SOUND_DEATH)], glm::vec3(Player->Position.x, 0.0f, Player->Position.y));
+			ae::Audio.PlaySound(ae::Assets.Sounds[Player->GetSound(SOUND_DEATH, -1)], glm::vec3(Player->Position.x, 0.0f, Player->Position.y));
 		}
 
 		return true;
@@ -669,7 +672,7 @@ void _PlayState::ResolveAttack(_Entity *Attacker, int GridType) {
 	_Hit Hit;
 	if(WeaponType != WEAPON_MELEE) {
 		GenerateBulletEffects(Attacker, -1, Hit);
-		ae::Audio.PlaySound(ae::Assets.Sounds[Attacker->GetSound(SOUND_FIRE)], glm::vec3(Attacker->Position.x, 0.0f, Attacker->Position.y));
+		ae::Audio.PlaySound(ae::Assets.Sounds[Attacker->GetSound(SOUND_FIRE, WEAPONATTACK_MAIN)], glm::vec3(Attacker->Position.x, 0.0f, Attacker->Position.y));
 	}
 
 	Attacker->StartTriggerDownAudio();
@@ -681,7 +684,6 @@ void _PlayState::ResolveAttack(_Entity *Attacker, int GridType) {
 
 		// Check weapon type
 		if(WeaponType == WEAPON_MELEE) {
-
 			Hit.Object = Map->CheckMeleeCollisions(Attacker, Attacker->GetDirectionVector(), GridType);
 			if(Hit.Object != nullptr) {
 				Hit.Type = HIT_OBJECT;
@@ -716,7 +718,7 @@ void _PlayState::ResolveAttack(_Entity *Attacker, int GridType) {
 			break;
 			case HIT_WALL:
 				if(!PlayedHitWallSound) {
-					ae::Audio.PlaySound(ae::Assets.Sounds[Attacker->GetSound(SOUND_RICOCHET)], glm::vec3(Hit.Position.x, 0.0f, Hit.Position.y));
+					ae::Audio.PlaySound(ae::Assets.Sounds[Attacker->GetSound(SOUND_RICOCHET, WEAPONATTACK_MAIN)], glm::vec3(Hit.Position.x, 0.0f, Hit.Position.y));
 					PlayedHitWallSound = true;
 				}
 
@@ -748,7 +750,7 @@ void _PlayState::ResolveAttack(_Entity *Attacker, int GridType) {
 					CreateItemDrop(Hit.Object);
 
 					// Dying sound
-					ae::Audio.PlaySound(ae::Assets.Sounds[Hit.Object->GetSound(SOUND_DEATH)], glm::vec3(Hit.Position.x, 0.0f, Hit.Position.y));
+					ae::Audio.PlaySound(ae::Assets.Sounds[Hit.Object->GetSound(SOUND_DEATH, -1)], glm::vec3(Hit.Position.x, 0.0f, Hit.Position.y));
 
 					// Update stats
 					if(Attacker->Type == _Object::PLAYER) {
@@ -758,10 +760,10 @@ void _PlayState::ResolveAttack(_Entity *Attacker, int GridType) {
 				}
 
 				// Weapon hit sound
-				ae::Audio.PlaySound(ae::Assets.Sounds[Attacker->GetSound(SOUND_HIT)], glm::vec3(Hit.Position.x, 0.0f, Hit.Position.y));
+				ae::Audio.PlaySound(ae::Assets.Sounds[Attacker->GetSound(SOUND_HIT, Attacker->AttackRequestType)], glm::vec3(Hit.Position.x, 0.0f, Hit.Position.y));
 
 				// Entity hit sound
-				ae::Audio.PlaySound(ae::Assets.Sounds[Hit.Object->GetSound(SOUND_TAKEDAMAGE)], glm::vec3(Hit.Position.x, 0.0f, Hit.Position.y));
+				ae::Audio.PlaySound(ae::Assets.Sounds[Hit.Object->GetSound(SOUND_TAKEDAMAGE, -1)], glm::vec3(Hit.Position.x, 0.0f, Hit.Position.y));
 
 				// Set HUD last hit object
 				if(Hit.Object->Type == _Object::MONSTER)

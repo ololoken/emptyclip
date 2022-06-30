@@ -221,7 +221,7 @@ void _Player::UpdateAnimation(double FrameTime, bool PlaySound) {
 
 	// Play move sound on first and last frame of leg animation
 	if(PlaySound && LastFrame != LegAnimation->Frame && (LegAnimation->Frame == 0 || LegAnimation->Frame == LegAnimation->Reels[LegAnimation->Reel]->EndFrame))
-		ae::Audio.PlaySound(ae::Assets.Sounds[GetSound(SOUND_MOVE)]);
+		ae::Audio.PlaySound(ae::Assets.Sounds[GetSound(SOUND_MOVE, -1)]);
 
 	switch(MoveState) {
 		case MOVE_FORWARD:
@@ -739,7 +739,7 @@ void _Player::StartReloading() {
 	CancelReloading();
 
 	// Play sound
-	ReloadSound = ae::Audio.PlaySound(ae::Assets.Sounds[GetSound(SOUND_RELOAD)]);
+	ReloadSound = ae::Audio.PlaySound(ae::Assets.Sounds[GetSound(SOUND_RELOAD, WEAPONATTACK_MAIN)]);
 
 	// Start timer
 	ReloadTimer = 0;
@@ -1039,14 +1039,16 @@ void _Player::IncurDeathPenalty() {
 }
 
 // Returns a sound index
-const std::string &_Player::GetSound(int SoundType) const {
-
-	if(AttackRequestType == 0 && SoundType <= SOUND_HIT && HasMainHand())
-		return GetMainHand()->GetSound(SoundType);
-	else if(AttackRequestType == 1 && SoundType <= SOUND_HIT && HasMelee())
-		return GetMelee()->GetSound(SoundType);
-	else
+const std::string &_Player::GetSound(int SoundType, int AttackType) const {
+	if(AttackType < 0)
 		return Sounds[SoundType];
+
+	if(AttackType == WEAPONATTACK_MAIN && HasMainHand())
+		return GetMainHand()->GetSound(SoundType);
+	else if(AttackType == WEAPONATTACK_MELEE && HasMelee())
+		return GetMelee()->GetSound(SoundType);
+
+	return Sounds[SoundType];
 }
 
 // Returns the weapon's particle template
