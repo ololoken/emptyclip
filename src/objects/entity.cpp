@@ -365,7 +365,7 @@ void _Entity::Move(double FrameTime) {
 
 	// Moving backwards
 	if(glm::dot(MoveDirection, Direction) < 0)
-		UpdateSpeed(PLAYER_BACKWARDSPEEDFACTOR);
+		UpdateSpeed(PLAYER_BACKWARDS_SPEEDFACTOR);
 
 	// Get speed
 	float Speed = MovementSpeed * MovementModifier * FrameTime;

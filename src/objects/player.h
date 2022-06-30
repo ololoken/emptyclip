@@ -108,7 +108,7 @@ class _Player : public _Entity {
 		bool CanReload() const;
 
 		void SetColorID(const std::string &ColorID) { this->ColorID = ColorID; UpdateColor(); }
-		void SetCrouching(bool State);
+		void SetAiming(bool State);
 		void SetSprinting(bool State);
 
 		double GetReloadPercent() const { return std::min(1.0, ReloadTimer / ReloadPeriod); }
@@ -138,7 +138,7 @@ class _Player : public _Entity {
 		ae::_Animation *LegAnimation;
 		std::string ColorID;
 		float LegDirection;
-		bool Crouching;
+		bool Aiming;
 		bool Sprinting;
 
 		// Inventory

@@ -108,7 +108,7 @@ void _Player::Reset() {
 	Action = ACTION_IDLE;
 	Reloading = false;
 	SwitchingWeapons = false;
-	Crouching = false;
+	Aiming = false;
 	Sprinting = false;
 	AttackRequested = false;
 	UseRequested = false;
@@ -822,13 +822,13 @@ void _Player::UpdateWeaponSwitch() {
 	}
 }
 
-// Updates the states for crouching and running
+// Updates the move speed modifier for aiming and running
 void _Player::UpdateSpeed(float Factor) {
 
-	if(Crouching)
-		MovementModifier = PLAYER_CROUCHINGSPEEDFACTOR;
+	if(Aiming)
+		MovementModifier = PLAYER_AIM_MOVESPEEDFACTOR;
 	else if(Sprinting)
-		MovementModifier = PLAYER_SPRINTINGSPEEDFACTOR;
+		MovementModifier = PLAYER_SPRINT_SPEEDFACTOR;
 	else
 		MovementModifier = 1.0f;
 
@@ -839,17 +839,18 @@ void _Player::UpdateSpeed(float Factor) {
 		SetAnimationPlaybackSpeedFactor();
 }
 
-// Updates the states for crouching
-void _Player::SetCrouching(bool State) {
+// Updates the states for aiming
+void _Player::SetAiming(bool State) {
 
 	// Update state
-	if(Crouching != State) {
-		Crouching = State;
+	if(Aiming != State) {
+		Aiming = State;
 		ResetAccuracy(false);
 		UpdateSpeed(1.0f);
 	}
 
-	if(Crouching)
+	// Disable sprint
+	if(Aiming)
 		SetSprinting(false);
 }
 
@@ -866,13 +867,13 @@ void _Player::SetSprinting(bool State) {
 	}
 
 	if(Sprinting)
-		SetCrouching(false);
+		SetAiming(false);
 }
 
-// Resets the accuracy depending on crouching states
+// Resets the accuracy depending on aiming state
 void _Player::ResetAccuracy(bool CompleteReset) {
 
-	if(Crouching && !IsMelee()) {
+	if(Aiming && !IsMelee()) {
 		AccuracyModifier = 0.5f;
 	}
 	else if(Sprinting && !IsMelee()) {

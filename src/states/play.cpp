@@ -174,7 +174,7 @@ bool _PlayState::HandleAction(int InputType, std::size_t Action, int Value) {
 		switch(Action) {
 			case Action::GAME_INVENTORY:
 				HUD->SetInventoryOpen(!HUD->GetInventoryOpen());
-				Player->SetCrouching(false);
+				Player->SetAiming(false);
 				Player->SetSprinting(false);
 			break;
 			case Action::GAME_FIRE:
@@ -377,7 +377,7 @@ void _PlayState::Update(double FrameTime) {
 			}
 
 			// Aim
-			Player->SetCrouching(ae::Actions.State[Action::GAME_AIM].Value > 0.0f && !Player->Reloading && !Player->SwitchingWeapons);
+			Player->SetAiming(ae::Actions.State[Action::GAME_AIM].Value > 0.0f && !Player->Reloading && !Player->SwitchingWeapons);
 			Player->SetSprinting(ae::Actions.State[Action::GAME_SPRINT].Value > 0.0f);
 		}
 
@@ -442,7 +442,7 @@ void _PlayState::Update(double FrameTime) {
 	Camera->Set2DPosition(Player->Position);
 
 	// Get zoom state
-	if(Player->Crouching) {
+	if(Player->Aiming) {
 		if(Map->IsVisible(Player->Position, WorldCursor)) {
 			Camera->UpdatePosition((WorldCursor - Player->Position) / Player->ZoomScale);
 		}
