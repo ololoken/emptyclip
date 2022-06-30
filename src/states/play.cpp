@@ -345,23 +345,23 @@ void _PlayState::Update(double FrameTime) {
 
 		// Move types
 		if(ae::Actions.State[Action::GAME_UP].Value > 0.0f && ae::Actions.State[Action::GAME_LEFT].Value > 0.0f)
-			Player->SetMoveState(MOVE_FORWARDLEFT);
+			Player->MoveState = MOVE_FORWARDLEFT;
 		else if(ae::Actions.State[Action::GAME_UP].Value > 0.0f && ae::Actions.State[Action::GAME_RIGHT].Value > 0.0f)
-			Player->SetMoveState(MOVE_FORWARDRIGHT);
+			Player->MoveState = MOVE_FORWARDRIGHT;
 		else if(ae::Actions.State[Action::GAME_DOWN].Value > 0.0f && ae::Actions.State[Action::GAME_LEFT].Value > 0.0f)
-			Player->SetMoveState(MOVE_BACKWARDLEFT);
+			Player->MoveState = MOVE_BACKWARDLEFT;
 		else if(ae::Actions.State[Action::GAME_DOWN].Value > 0.0f && ae::Actions.State[Action::GAME_RIGHT].Value > 0.0f)
-			Player->SetMoveState(MOVE_BACKWARDRIGHT);
+			Player->MoveState = MOVE_BACKWARDRIGHT;
 		else if(ae::Actions.State[Action::GAME_LEFT].Value > 0.0f)
-			Player->SetMoveState(MOVE_LEFT);
+			Player->MoveState = MOVE_LEFT;
 		else if(ae::Actions.State[Action::GAME_RIGHT].Value > 0.0f)
-			Player->SetMoveState(MOVE_RIGHT);
+			Player->MoveState = MOVE_RIGHT;
 		else if(ae::Actions.State[Action::GAME_UP].Value > 0.0f)
-			Player->SetMoveState(MOVE_FORWARD);
+			Player->MoveState = MOVE_FORWARD;
 		else if(ae::Actions.State[Action::GAME_DOWN].Value > 0.0f)
-			Player->SetMoveState(MOVE_BACKWARD);
+			Player->MoveState = MOVE_BACKWARD;
 		else
-			Player->SetMoveState(MOVE_NONE);
+			Player->MoveState = MOVE_NONE;
 
 		// Attack or aim
 		if(!HUD->GetInventoryOpen()) {

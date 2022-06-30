@@ -102,8 +102,6 @@ class _Entity : public _Object {
 		bool IsDying() const { return Action == ACTION_DYING || Action == ACTION_STARTDEATH; }
 		bool IsDead() const { return Action == ACTION_DYING && !Active; }
 
-		void SetMoveState(MoveType State);
-
 		float GetHealthPercentage() const { return (float)Health / MaxHealth; }
 		float GetStaminaPercentage() const { return Stamina / MaxStamina; }
 		int GetWeaponType() const { return MainWeaponType; }

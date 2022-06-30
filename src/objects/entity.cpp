@@ -125,12 +125,6 @@ int _Entity::GenerateDamage(int AttackType, int DamageBlock, int DamageResist) {
 	return Damage;
 }
 
-// Sets the movement state of the object
-void _Entity::SetMoveState(MoveType State) {
-	if(!IsMeleeAttacking())
-		MoveState = State;
-}
-
 // Starts the attack animation
 bool _Entity::StartAttack() {
 
