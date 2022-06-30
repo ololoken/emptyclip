@@ -62,10 +62,10 @@ _Entity::_Entity(const _ObjectTemplate &EntityTemplate) :
 	FireTimer{0, 0},
 	FirePeriod{0,0},
 	AttackCount(1),
+	AttackRequestType(0),
 	AttackRequested(false),
 	AttackAllowed{true, true},
 	AttackMade(false),
-	AttackRequestType(0),
 	ExperienceGiven(0) {
 
 	for(int i = 0; i < WEAPON_TYPES; i++)
@@ -136,7 +136,7 @@ bool _Entity::StartAttack() {
 		return false;
 
 	// Check ammo
-	if(!WeaponHasAmmo())
+	if(!WeaponHasAmmo(AttackRequestType))
 		return false;
 
 	// Set animation
@@ -146,8 +146,10 @@ bool _Entity::StartAttack() {
 		// Play weapon sound
 		ae::Audio.PlaySound(ae::Assets.Sounds[GetSound(SOUND_FIRE, AttackRequestType)], glm::vec3(Position.x, 0.0f, Position.y));
 	}
-	else
+	else {
 		Action = ACTION_STARTSHOOT;
+		ResetAttackAllowed(WEAPONATTACK_MELEE);
+	}
 
 	ResetAttackAllowed(AttackRequestType);
 

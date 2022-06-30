@@ -93,7 +93,7 @@ class _Player : public _Entity {
 		void ResetUseTimer() { UseTimer = 0; }
 		void ConsumeInventory(int Index, bool Delete=true);
 		void ReduceAmmo() override;
-		bool WeaponHasAmmo() const override;
+		bool WeaponHasAmmo(int AttackType) const override;
 		bool HasAmmoForMain() const;
 		bool HasMainHand() const { return GetMainHand() != nullptr; }
 		bool HasOffHand() const { return GetOffHand() != nullptr; }

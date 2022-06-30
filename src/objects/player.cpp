@@ -184,7 +184,7 @@ void _Player::Update(double FrameTime) {
 	UpdateWeaponSwitch();
 
 	// Stop trigger down audio
-	if(TriggerDownAudio && (!AttackRequested || !WeaponHasAmmo() || IsDying() || SwitchingWeapons || Reloading)) {
+	if(TriggerDownAudio && (!AttackRequested || !WeaponHasAmmo(WEAPONATTACK_MAIN) || IsDying() || SwitchingWeapons || Reloading)) {
 		StopAudio();
 	}
 
@@ -640,14 +640,14 @@ float _Player::GetCrosshairRadius(const glm::vec2 &Cursor) {
 }
 
 // Checks if the player's weapon has ammo
-bool _Player::WeaponHasAmmo() const {
-	if(AttackRequestType == WEAPONATTACK_MAIN) {
+bool _Player::WeaponHasAmmo(int AttackType) const {
+	if(AttackType == WEAPONATTACK_MAIN) {
 		if(!HasMainHand() || Stats.Objects.at(GetMainHand()->ID).AmmoID == "")
 			return true;
 
 		return GetMainHand()->Attributes.at("ammo").Int > 0;
 	}
-	else if(AttackRequestType == WEAPONATTACK_MELEE) {
+	else if(AttackType == WEAPONATTACK_MELEE) {
 		return true;
 	}
 

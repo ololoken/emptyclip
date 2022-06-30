@@ -90,7 +90,7 @@ class _Entity : public _Object {
 
 		virtual bool CanAttack(int AttackType) const { return AttackAllowed[AttackType] && !IsMeleeAttacking() && !IsDying() && GetWeaponType() != WEAPON_NONE; }
 		virtual void ReduceAmmo() { }
-		virtual bool WeaponHasAmmo() const { return true; }
+		virtual bool WeaponHasAmmo(int AttackType) const { return true; }
 
 		virtual void UpdateExperience(int64_t ExperienceGained) { }
 		virtual void UpdateKillCount(int Value) { }
@@ -166,10 +166,10 @@ class _Entity : public _Object {
 		int MaxDamage[WEAPONATTACK_COUNT];
 		int AttackCount;
 		int MainWeaponType;
+		int AttackRequestType;
 		bool AttackRequested;
 		bool AttackAllowed[WEAPONATTACK_COUNT];
 		bool AttackMade;
-		int AttackRequestType;
 
 		// Monsters
 		int64_t ExperienceGiven;

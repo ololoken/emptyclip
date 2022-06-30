@@ -186,7 +186,7 @@ bool _PlayState::HandleAction(int InputType, std::size_t Action, int Value) {
 						Player->CancelReloading();
 
 					// Play sound
-					if(Player->CanAttack(WEAPONATTACK_MAIN) && !Player->WeaponHasAmmo())
+					if(Player->CanAttack(WEAPONATTACK_MAIN) && !Player->WeaponHasAmmo(WEAPONATTACK_MAIN))
 						ae::Audio.PlaySound(ae::Assets.Sounds[Player->GetSound(SOUND_EMPTY, WEAPONATTACK_MAIN)]);
 
 					if(Player->GetFireRate(WEAPONATTACK_MAIN) == FIRERATE_SEMI) {
@@ -656,7 +656,7 @@ void _PlayState::Render(double BlendFactor) {
 void _PlayState::ResolveAttack(_Entity *Attacker, int GridType) {
 
 	// Check for ammo
-	if(!Attacker->WeaponHasAmmo())
+	if(!Attacker->WeaponHasAmmo(Attacker->AttackRequestType))
 		return;
 
 	// Reduce ammo
@@ -665,7 +665,7 @@ void _PlayState::ResolveAttack(_Entity *Attacker, int GridType) {
 
 	// Weapon type specific code
 	int WeaponType = WEAPON_MELEE;
-	if(Attacker->AttackRequestType == 0)
+	if(Attacker->AttackRequestType == WEAPONATTACK_MAIN)
 		WeaponType = Attacker->GetWeaponType();
 
 	// Play fire sound and generate fire/smoke particles
