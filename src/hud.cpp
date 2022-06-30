@@ -19,7 +19,6 @@
 #include <objects/entity.h>
 #include <objects/player.h>
 #include <objects/item.h>
-#include <objects/weapon.h>
 #include <ae/input.h>
 #include <ae/actions.h>
 #include <ae/graphics.h>
@@ -212,8 +211,7 @@ void _HUD::MouseEvent(const ae::_MouseEvent &MouseEvent) {
 				if(Item) {
 					switch(Item->Type) {
 						case _Object::WEAPON: {
-							const _Weapon *Weapon = (const _Weapon *)Item;
-							if(Weapon->IsMelee())
+							if(Item->IsMelee())
 								Player->SwapInventory(HitElement->Index, INVENTORY_MELEE);
 							else
 								Player->SwapInventory(HitElement->Index, ae::Input.ModKeyDown(KMOD_CTRL) ? INVENTORY_OFFHAND : INVENTORY_MAINHAND);
@@ -416,17 +414,16 @@ void _HUD::Render() {
 		// Compare with equipment
 		if(CursorInventorySlot == -1 || CursorInventorySlot >= INVENTORY_BAGSTART) {
 			if(CursorOverItem->Type == _Object::WEAPON) {
-				_Weapon *Weapon = (_Weapon *)CursorOverItem;
-				if(Weapon->IsMelee()) {
+				if(CursorOverItem->IsMelee()) {
 					if(Player->GetMelee()) {
 						Player->GetMelee()->DrawTooltip(Player, std::size_t(-1), glm::ivec2(-100, ae::Graphics.CurrentSize.y/2));
 						CompareSlot = INVENTORY_MELEE;
 					}
 				}
 				else {
-					_Weapon *CompareWeapon = Player->GetOffHand();
+					_Item *CompareWeapon = Player->GetOffHand();
 					CompareSlot = INVENTORY_OFFHAND;
-					if(Player->GetMainHand() && Player->GetMainHand()->Attributes.at("weapon_type").Int == Weapon->Attributes.at("weapon_type").Int) {
+					if(Player->GetMainHand() && Player->GetMainHand()->Attributes.at("weapon_type").Int == CursorOverItem->Attributes.at("weapon_type").Int) {
 						CompareWeapon = Player->GetMainHand();
 						CompareSlot = INVENTORY_MAINHAND;
 					}
@@ -478,7 +475,7 @@ void _HUD::DrawIndicator(const std::string &String, float Percent, const ae::_Te
 }
 
 // Draw the weapons on the HUD
-void _HUD::DrawHUDWeapon(const _Weapon *Weapon, ae::_Element *Element, ae::_Element *Image, ae::_Element *Label) {
+void _HUD::DrawHUDWeapon(const _Item *Weapon, ae::_Element *Element, ae::_Element *Image, ae::_Element *Label) {
 	if(!Weapon)
 		return;
 

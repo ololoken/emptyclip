@@ -17,7 +17,6 @@
 *******************************************************************************/
 #include <objects/player.h>
 #include <objects/monster.h>
-#include <objects/weapon.h>
 #include <ae/texture.h>
 #include <ae/graphics.h>
 #include <ae/assets.h>
@@ -395,10 +394,9 @@ int _Player::AddItem(_Item *Item, int &AmountAdded) {
 
 	switch(Item->Type) {
 		case _Object::WEAPON: {
-			_Weapon *WeaponItem = (_Weapon *)(Item);
-			if(WeaponItem->IsMelee()) {
+			if(Item->IsMelee()) {
 				if(!HasMelee()) {
-					SetMelee(WeaponItem);
+					Inventory[INVENTORY_MELEE] = Item;
 					RecalculateStats();
 					ResetWeaponAnimation();
 					return 1;
@@ -408,13 +406,13 @@ int _Player::AddItem(_Item *Item, int &AmountAdded) {
 			}
 			else {
 				if(!HasMainHand()) {
-					SetMainHand(WeaponItem);
+					Inventory[INVENTORY_MAINHAND] = Item;
 					RecalculateStats();
 					ResetWeaponAnimation();
 					return 1;
 				}
 				else if(!HasOffHand()) {
-					SetOffHand(WeaponItem);
+					Inventory[INVENTORY_OFFHAND] = Item;
 					return 1;
 				}
 				else
@@ -423,7 +421,7 @@ int _Player::AddItem(_Item *Item, int &AmountAdded) {
 		} break;
 		case _Object::ARMOR: {
 			if(!HasArmor()) {
-				SetArmor(Item);
+				Inventory[INVENTORY_ARMOR] = Item;
 				RecalculateStats();
 				return 1;
 			}
@@ -489,13 +487,12 @@ bool _Player::CanEquipItem(_Item *Item, int Slot) {
 		case INVENTORY_OFFHAND:
 		case INVENTORY_MELEE: {
 			if(Item->Type == _Object::WEAPON) {
-				_Weapon *Weapon = (_Weapon *)Item;
 				if(Slot == INVENTORY_MELEE) {
-					if(Weapon->IsMelee())
+					if(Item->IsMelee())
 						return true;
 				}
 				else
-					return !Weapon->IsMelee();
+					return !Item->IsMelee();
 			}
 		} break;
 	}
@@ -1074,11 +1071,6 @@ bool _Player::CanReload() const {
 }
 
 bool _Player::IsMelee() const { return GetMainHand() == nullptr || GetMainHand()->IsMelee(); }
-
-void _Player::SetMainHand(_Weapon *Weapon) { Inventory[INVENTORY_MAINHAND] = Weapon; }
-void _Player::SetOffHand(_Weapon *Weapon) { Inventory[INVENTORY_OFFHAND] = Weapon; }
-void _Player::SetMelee(_Weapon *Weapon) { Inventory[INVENTORY_MELEE] = Weapon; }
-void _Player::SetArmor(_Item *Armor) { Inventory[INVENTORY_ARMOR] = Armor; }
 
 void _Player::SetLegAnimationPlayMode(int Mode) {
 	if(Mode == ae::_Animation::PLAYING)

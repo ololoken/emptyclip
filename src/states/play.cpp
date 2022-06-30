@@ -22,7 +22,6 @@
 #include <objects/player.h>
 #include <objects/monster.h>
 #include <objects/particle.h>
-#include <objects/weapon.h>
 #include <ae/actions.h>
 #include <ae/camera.h>
 #include <ae/graphics.h>

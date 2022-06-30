@@ -17,7 +17,6 @@
 *******************************************************************************/
 #include <save.h>
 #include <objects/player.h>
-#include <objects/weapon.h>
 #include <ae/files.h>
 #include <ae/buffer.h>
 #include <config.h>

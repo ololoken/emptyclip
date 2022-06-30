@@ -115,13 +115,9 @@ class _Player : public _Entity {
 		double GetWeaponSwitchPercent() const { return std::min(1.0, WeaponSwitchTimer / WeaponSwitchPeriod); }
 		float GetCrosshairRadius(const glm::vec2 &Cursor);
 		const _ParticleTemplate *GetWeaponParticle(int Index) const override;
-		void SetMainHand(_Weapon *Weapon);
-		void SetOffHand(_Weapon *Weapon);
-		void SetMelee(_Weapon *Weapon);
-		void SetArmor(_Item *Armor);
-		_Weapon *GetMainHand() const { return (_Weapon *)Inventory[INVENTORY_MAINHAND]; }
-		_Weapon *GetOffHand() const { return (_Weapon *)Inventory[INVENTORY_OFFHAND]; }
-		_Weapon *GetMelee() const { return (_Weapon *)Inventory[INVENTORY_MELEE]; }
+		_Item *GetMainHand() const { return Inventory[INVENTORY_MAINHAND]; }
+		_Item *GetOffHand() const { return Inventory[INVENTORY_OFFHAND]; }
+		_Item *GetMelee() const { return Inventory[INVENTORY_MELEE]; }
 		_Item *GetArmor() const  { return Inventory[INVENTORY_ARMOR]; }
 		int GetFireRate(int AttackType) const { return FireRate[AttackType]; }
 		int GetInventoryMaxStack() const;

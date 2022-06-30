@@ -27,7 +27,6 @@
 #include <ae/program.h>
 #include <ae/animation.h>
 #include <objects/monster.h>
-#include <objects/weapon.h>
 #include <objects/player.h>
 #include <gameassets.h>
 #include <framework.h>

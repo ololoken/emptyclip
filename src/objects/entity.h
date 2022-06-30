@@ -18,9 +18,8 @@
 #pragma once
 
 // Libraries
-#include <objects/object.h>
+#include <objects/item.h>
 #include <objects/templates.h>
-#include <objects/weapon.h>
 #include <list>
 
 // Forward Declarations

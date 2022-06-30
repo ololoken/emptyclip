@@ -19,7 +19,6 @@
 #include <objects/monster.h>
 #include <objects/particle.h>
 #include <objects/player.h>
-#include <objects/weapon.h>
 #include <ae/assets.h>
 #include <ae/files.h>
 #include <ae/random.h>

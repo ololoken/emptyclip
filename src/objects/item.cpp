@@ -16,7 +16,6 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 *******************************************************************************/
 #include <objects/item.h>
-#include <objects/weapon.h>
 #include <objects/player.h>
 #include <ae/buffer.h>
 #include <ae/texture.h>
@@ -75,12 +74,9 @@ void _Item::DrawTooltip(const _Player *Player, std::size_t CompareSlot, glm::ive
 	DrawPosition.y -= Size.y/2;
 
 	// Get current equipment
-	_Weapon *EquippedWeapon = nullptr;
 	_Item *EquippedItem = nullptr;
 	if(CompareSlot < INVENTORY_SIZE) {
-		EquippedWeapon = (_Weapon *)Player->Inventory[CompareSlot];
 		EquippedItem = Player->Inventory[CompareSlot];
-
 		MinX = Size.x;
 	}
 
@@ -116,10 +112,10 @@ void _Item::DrawTooltip(const _Player *Player, std::size_t CompareSlot, glm::ive
 	// Quality
 	glm::vec4 TextColor = COLOR_WHITE;
 	if(Type == _Object::WEAPON || Type == _Object::ARMOR || Type == _Object::MOD) {
-		if(EquippedWeapon) {
-			if(Quality > EquippedWeapon->Quality)
+		if(EquippedItem) {
+			if(Quality > EquippedItem->Quality)
 				TextColor = COLOR_GREEN;
-			else if(Quality < EquippedWeapon->Quality)
+			else if(Quality < EquippedItem->Quality)
 				TextColor = COLOR_RED;
 		}
 		DrawPosition.y += 20;
@@ -131,52 +127,51 @@ void _Item::DrawTooltip(const _Player *Player, std::size_t CompareSlot, glm::ive
 
 	switch(Type) {
 		case _Object::WEAPON: {
-			_Weapon *Weapon = (_Weapon *)this;
 
 			// Damage
 			TextColor = COLOR_WHITE;
-			if(EquippedWeapon) {
-				if(Weapon->GetAverageDamage() > EquippedWeapon->GetAverageDamage())
+			if(EquippedItem) {
+				if(GetAverageDamage() > EquippedItem->GetAverageDamage())
 					TextColor = COLOR_GREEN;
-				else if(Weapon->GetAverageDamage() < EquippedWeapon->GetAverageDamage())
+				else if(GetAverageDamage() < EquippedItem->GetAverageDamage())
 					TextColor = COLOR_RED;
 			}
 			DrawPosition.y += 20;
-			Buffer << Weapon->Attributes.at("min_damage").Int << " - " << Weapon->Attributes.at("max_damage").Int;
+			Buffer << Attributes.at("min_damage").Int << " - " << Attributes.at("max_damage").Int;
 			ae::Assets.Fonts["hud_medium"]->DrawText("Damage", DrawPosition - DrawOffset, ae::RIGHT_BASELINE);
 			ae::Assets.Fonts["hud_medium"]->DrawText(Buffer.str(), DrawPosition + DrawOffset, ae::LEFT_BASELINE, TextColor);
 			Buffer.str("");
 
 			// Clip size
-			if(Weapon->Attributes.at("rounds").Int) {
+			if(Attributes.at("rounds").Int) {
 				TextColor = COLOR_WHITE;
-				if(EquippedWeapon) {
-					if(Weapon->Attributes.at("rounds").Int > EquippedWeapon->Attributes.at("rounds").Int)
+				if(EquippedItem) {
+					if(Attributes.at("rounds").Int > EquippedItem->Attributes.at("rounds").Int)
 						TextColor = COLOR_GREEN;
-					else if(Weapon->Attributes.at("rounds").Int < EquippedWeapon->Attributes.at("rounds").Int)
+					else if(Attributes.at("rounds").Int < EquippedItem->Attributes.at("rounds").Int)
 						TextColor = COLOR_RED;
 				}
 				DrawPosition.y += 20;
-				Buffer << Weapon->Attributes.at("ammo").Int << "/" << Weapon->Attributes.at("rounds").Int;
+				Buffer << Attributes.at("ammo").Int << "/" << Attributes.at("rounds").Int;
 				ae::Assets.Fonts["hud_medium"]->DrawText("Rounds", DrawPosition - DrawOffset, ae::RIGHT_BASELINE);
 				ae::Assets.Fonts["hud_medium"]->DrawText(Buffer.str(), DrawPosition + DrawOffset, ae::LEFT_BASELINE, TextColor);
 				Buffer.str("");
 			}
 
 			// Attacks
-			if(Weapon->Attributes.at("attack_count").Int > 1) {
+			if(Attributes.at("attack_count").Int > 1) {
 				TextColor = COLOR_WHITE;
-				if(EquippedWeapon) {
-					if(Weapon->Attributes.at("attack_count").Int > EquippedWeapon->Attributes.at("attack_count").Int)
+				if(EquippedItem) {
+					if(Attributes.at("attack_count").Int > EquippedItem->Attributes.at("attack_count").Int)
 						TextColor = COLOR_GREEN;
-					else if(Weapon->Attributes.at("attack_count").Int < EquippedWeapon->Attributes.at("attack_count").Int)
+					else if(Attributes.at("attack_count").Int < EquippedItem->Attributes.at("attack_count").Int)
 						TextColor = COLOR_RED;
 				}
 
 				DrawPosition.y += 20;
-				Buffer << Weapon->Attributes.at("attack_count").Int;
+				Buffer << Attributes.at("attack_count").Int;
 				std::string AttackCountText;
-				if(Weapon->IsMelee())
+				if(IsMelee())
 					AttackCountText = "Attacks/Swing";
 				else
 					AttackCountText = "Bullets/Shot";
@@ -186,17 +181,17 @@ void _Item::DrawTooltip(const _Player *Player, std::size_t CompareSlot, glm::ive
 			}
 
 			// Penetration
-			if(Weapon->Attributes.at("penetration").Int > 1) {
+			if(Attributes.at("penetration").Int > 1) {
 				TextColor = COLOR_WHITE;
-				if(EquippedWeapon) {
-					if(Weapon->Attributes.at("penetration").Int > EquippedWeapon->Attributes.at("penetration").Int)
+				if(EquippedItem) {
+					if(Attributes.at("penetration").Int > EquippedItem->Attributes.at("penetration").Int)
 						TextColor = COLOR_GREEN;
-					else if(Weapon->Attributes.at("penetration").Int < EquippedWeapon->Attributes.at("penetration").Int)
+					else if(Attributes.at("penetration").Int < EquippedItem->Attributes.at("penetration").Int)
 						TextColor = COLOR_RED;
 				}
 
 				DrawPosition.y += 20;
-				Buffer << Weapon->Attributes.at("penetration").Int;
+				Buffer << Attributes.at("penetration").Int;
 				std::string AttackCountText;
 				AttackCountText = "Penetration";
 				ae::Assets.Fonts["hud_medium"]->DrawText(AttackCountText, DrawPosition - DrawOffset, ae::RIGHT_BASELINE);
@@ -205,19 +200,19 @@ void _Item::DrawTooltip(const _Player *Player, std::size_t CompareSlot, glm::ive
 			}
 
 			// Fire rate
-			if(Weapon->Attributes.at("fire_period").Double) {
+			if(Attributes.at("fire_period").Double) {
 				TextColor = COLOR_WHITE;
-				if(EquippedWeapon) {
-					if(Weapon->Attributes.at("fire_period").Double < EquippedWeapon->Attributes.at("fire_period").Double)
+				if(EquippedItem) {
+					if(Attributes.at("fire_period").Double < EquippedItem->Attributes.at("fire_period").Double)
 						TextColor = COLOR_GREEN;
-					else if(Weapon->Attributes.at("fire_period").Double > EquippedWeapon->Attributes.at("fire_period").Double)
+					else if(Attributes.at("fire_period").Double > EquippedItem->Attributes.at("fire_period").Double)
 						TextColor = COLOR_RED;
 				}
 
 				DrawPosition.y += 20;
-				Buffer << std::setprecision(3) << 1 / Weapon->Attributes.at("fire_period").Double << "/s";
+				Buffer << std::setprecision(3) << 1 / Attributes.at("fire_period").Double << "/s";
 				std::string AttackCountText;
-				if(Weapon->IsMelee())
+				if(IsMelee())
 					AttackCountText = "Attack Rate";
 				else
 					AttackCountText = "Fire Rate";
@@ -229,48 +224,48 @@ void _Item::DrawTooltip(const _Player *Player, std::size_t CompareSlot, glm::ive
 
 			// Weapon Spread
 			TextColor = COLOR_WHITE;
-			if(EquippedWeapon && EquippedWeapon->IsMelee() == Weapon->IsMelee()) {
-				if(Weapon->GetAverageAccuracy() < EquippedWeapon->GetAverageAccuracy()) {
+			if(EquippedItem && EquippedItem->IsMelee() == IsMelee()) {
+				if(GetAverageAccuracy() < EquippedItem->GetAverageAccuracy()) {
 
 					// Less is worse for melee
-					if(Weapon->IsMelee())
+					if(IsMelee())
 						TextColor = COLOR_RED;
 					else
 						TextColor = COLOR_GREEN;
 				}
-				else if(Weapon->GetAverageAccuracy() > EquippedWeapon->GetAverageAccuracy()) {
+				else if(GetAverageAccuracy() > EquippedItem->GetAverageAccuracy()) {
 
 					// Bigger is better for melee
-					if(Weapon->IsMelee())
+					if(IsMelee())
 						TextColor = COLOR_GREEN;
 					else
 						TextColor = COLOR_RED;
 				}
 			}
 			DrawPosition.y += 20;
-			if(Weapon->IsMelee()) {
-				Buffer << Weapon->Attributes.at("max_accuracy").Int << " degrees";
+			if(IsMelee()) {
+				Buffer << Attributes.at("max_accuracy").Int << " degrees";
 				ae::Assets.Fonts["hud_medium"]->DrawText("Swing Arc", DrawPosition - DrawOffset, ae::RIGHT_BASELINE);
 			}
 			else {
-				Buffer << Weapon->Attributes.at("min_accuracy").Int << " - " << Weapon->Attributes.at("max_accuracy").Int;
+				Buffer << Attributes.at("min_accuracy").Int << " - " << Attributes.at("max_accuracy").Int;
 				ae::Assets.Fonts["hud_medium"]->DrawText("Accuracy", DrawPosition - DrawOffset, ae::RIGHT_BASELINE);
 			}
 			ae::Assets.Fonts["hud_medium"]->DrawText(Buffer.str(), DrawPosition + DrawOffset, ae::LEFT_BASELINE, TextColor);
 			Buffer.str("");
 
 			// Reload speed
-			if(Weapon->Attributes.at("reload_period").Double > 1) {
+			if(Attributes.at("reload_period").Double > 1) {
 				TextColor = COLOR_WHITE;
-				if(EquippedWeapon) {
-					if(Weapon->Attributes.at("reload_period").Double < EquippedWeapon->Attributes.at("reload_period").Double)
+				if(EquippedItem) {
+					if(Attributes.at("reload_period").Double < EquippedItem->Attributes.at("reload_period").Double)
 						TextColor = COLOR_GREEN;
-					else if(Weapon->Attributes.at("reload_period").Double > EquippedWeapon->Attributes.at("reload_period").Double)
+					else if(Attributes.at("reload_period").Double > EquippedItem->Attributes.at("reload_period").Double)
 						TextColor = COLOR_RED;
 				}
 
 				DrawPosition.y += 20;
-				Buffer << ae::Round2(Weapon->Attributes.at("reload_period").Double) << "s";
+				Buffer << ae::Round2(Attributes.at("reload_period").Double) << "s";
 				std::string AttackCountText;
 				ae::Assets.Fonts["hud_medium"]->DrawText("Reload Time", DrawPosition - DrawOffset, ae::RIGHT_BASELINE);
 				ae::Assets.Fonts["hud_medium"]->DrawText(Buffer.str(), DrawPosition + DrawOffset, ae::LEFT_BASELINE, TextColor);
@@ -278,10 +273,9 @@ void _Item::DrawTooltip(const _Player *Player, std::size_t CompareSlot, glm::ive
 			}
 
 			// Ammo type
-			std::string AmmoType = Stats.Objects.at(Weapon->ID).AmmoID;
-			if(!AmmoType.empty()) {
+			if(!Template.AmmoID.empty()) {
 				DrawPosition.y += 20;
-				Buffer << Stats.Objects.at(AmmoType).Name;
+				Buffer << Template.Name;
 				ae::Assets.Fonts["hud_medium"]->DrawText("Ammo Type", DrawPosition - DrawOffset, ae::RIGHT_BASELINE);
 				ae::Assets.Fonts["hud_medium"]->DrawText(Buffer.str(), DrawPosition + DrawOffset);
 				Buffer.str("");
@@ -518,14 +512,35 @@ float _Item::GetAverageAccuracy() const {
 std::string _Item::GetTypeAsString() const {
 
 	switch(Type) {
-		case _Object::KEY:
-			return "Key";
-		case _Object::AMMO:
-			return "Ammo";
-		case _Object::MOD:
-			return "Weapon Mod";
+		case _Object::WEAPON: {
+			std::string WeaponTypeString;
+			switch(Attributes.at("weapon_type").Int) {
+				case WEAPON_MELEE:
+					WeaponTypeString = "Melee";
+				break;
+				case WEAPON_PISTOL:
+					WeaponTypeString = "Pistol";
+				break;
+				case WEAPON_SHOTGUN:
+					WeaponTypeString = "Shotgun";
+				break;
+				case WEAPON_RIFLE:
+					WeaponTypeString = "Rifle";
+				break;
+				case WEAPON_HEAVY:
+					WeaponTypeString = "Heavy";
+				break;
+			}
+			return WeaponTypeString + " class weapon";
+		} break;
 		case _Object::ARMOR:
 			return "Armor";
+		case _Object::MOD:
+			return "Weapon Mod";
+		case _Object::AMMO:
+			return "Ammo";
+		case _Object::KEY:
+			return "Key";
 		case _Object::MEDKIT:
 			return "Medkit";
 	}

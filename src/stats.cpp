@@ -17,7 +17,6 @@
 *******************************************************************************/
 #include <stats.h>
 #include <objects/object.h>
-#include <objects/weapon.h>
 #include <objects/monster.h>
 #include <ae/random.h>
 #include <ae/assets.h>
@@ -47,7 +46,7 @@ void _Stats::Init() {
 	LoadItemDrops("tables/itemdrops.tsv");
 	LoadMonsters("tables/monsters.tsv");
 	Objects.insert(std::make_pair("player", _ObjectTemplate(_Object::PLAYER)));
-	WeaponFists = (_Weapon *)Stats.CreateItem("weapon_fists", 1, 0, 1, glm::vec2(0), false);
+	WeaponFists = Stats.CreateItem("weapon_fists", 1, 0, 1, glm::vec2(0), false);
 }
 
 // Shutdown
@@ -602,11 +601,7 @@ _Item *_Stats::CreateItem(const std::string &ID, int Level, int Quality, int Cou
 	_ObjectTemplate &Template = Objects.at(ID);
 
 	// Create item
-	_Item *Item;
-	if(Template.Type == _Object::WEAPON)
-		Item = new _Weapon(Template);
-	else
-		Item = new _Item(Template);
+	_Item *Item = new _Item(Template);
 	Item->ID = ID;
 	Item->Level = Level;
 	Item->Quality = Quality;

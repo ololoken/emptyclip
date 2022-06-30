@@ -121,7 +121,7 @@ class _Stats {
 		std::unordered_map<std::string, _ObjectTemplate> Objects;
 		std::unordered_map<std::string, _ItemDrop> ItemDrops;
 		std::vector<_Level> Levels;
-		_Weapon *WeaponFists;
+		_Item *WeaponFists;
 
 		std::vector<std::string> AmmoNames;
 		std::vector<std::string> ModNames;
