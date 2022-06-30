@@ -36,7 +36,8 @@
 
 // Constructor
 _Player::_Player(const _ObjectTemplate &PlayerTemplate) :
-	_Entity(PlayerTemplate) {
+	_Entity(PlayerTemplate),
+	ReloadSound(nullptr) {
 
 	// Set up animations
 	LegAnimation = new ae::_Animation(nullptr);
@@ -347,11 +348,6 @@ void _Player::UpdateExperience(int64_t ExperienceGained) {
 		RecalculateStats();
 		Health = MaxHealth;
 	}
-}
-
-// Advance the player levels
-void _Player::UpdateLevel() {
-
 }
 
 // Updates a skill
@@ -739,8 +735,11 @@ void _Player::StartReloading() {
 	if(!CanReload())
 		return;
 
+	// Stop reloading sound
+	CancelReloading();
+
 	// Play sound
-	ae::Audio.PlaySound(ae::Assets.Sounds[GetSound(SOUND_RELOAD)]);
+	ReloadSound = ae::Audio.PlaySound(ae::Assets.Sounds[GetSound(SOUND_RELOAD)]);
 
 	// Start timer
 	ReloadTimer = 0;
@@ -749,6 +748,12 @@ void _Player::StartReloading() {
 
 // Cancel the reload process
 void _Player::CancelReloading() {
+
+	// Stop existing sound
+	if(ReloadSound && ReloadSound->IsPlaying())
+		ReloadSound->Stop();
+
+	ReloadSound = nullptr;
 	Reloading = false;
 }
 

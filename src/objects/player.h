@@ -68,7 +68,6 @@ class _Player : public _Entity {
 		void UpdateReloading();
 		void UpdateWeaponSwitch();
 		void UpdateSpeed(float Factor) override;
-		void UpdateLevel();
 		void UpdateKillCount(int Value) override { MonsterKills += Value; }
 		void UpdateSkill(int Index, int Value);
 		void StartReloading();
@@ -183,6 +182,9 @@ class _Player : public _Entity {
 		int FireRate[WEAPONATTACK_COUNT];
 		bool Reloading;
 		bool SwitchingWeapons;
+
+		// Sounds
+		const ae::_AudioSource *ReloadSound;
 
 	private:
 

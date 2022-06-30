@@ -181,6 +181,10 @@ bool _PlayState::HandleAction(int InputType, std::size_t Action, int Value) {
 			case Action::GAME_FIRE:
 				if(!HUD->GetInventoryOpen() && !Player->IsMeleeAttacking()) {
 
+					// Can reload
+					if(Player->Reloading)
+						Player->CancelReloading();
+
 					// Play sound
 					if(Player->CanAttack(WEAPONATTACK_MAIN) && !Player->WeaponHasAmmo())
 						ae::Audio.PlaySound(ae::Assets.Sounds[Player->GetSound(SOUND_EMPTY)]);
@@ -200,12 +204,8 @@ bool _PlayState::HandleAction(int InputType, std::size_t Action, int Value) {
 				}
 			break;
 			case Action::GAME_RELOAD:
-				if(!HUD->IsDragging()) {
-					if(Player->Reloading)
-						Player->CancelReloading();
-					else
-						Player->StartReloading();
-				}
+				if(!HUD->IsDragging())
+					Player->StartReloading();
 			break;
 			case Action::GAME_WEAPONSWITCH:
 				if(!HUD->IsDragging())
