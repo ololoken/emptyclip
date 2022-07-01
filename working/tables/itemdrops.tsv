@@ -1,14 +1,26 @@
-id	crate_ammo	crate_health	crate_gun	crate_armor	monster	boss
-none	0	0	0	0	88	0
-key_boss	0	0	0	0	0	1
-ammo_pistol	1	0	0	0	3	0
-ammo_shells	1	0	0	0	3	0
-ammo_rifle	1	0	0	0	3	0
-medkit	0	1	0	0	3	0
-weapon_knife	0	0	1	0	0	0
-weapon_pistol	0	0	1	0	0	0
-weapon_shotgun	0	0	1	0	0	0
-weapon_boltrifle	0	0	1	0	0	0
-armor_light	0	0	0	1	0	0
-armor_medium	0	0	0	1	0	0
-armor_heavy	0	0	0	1	0	0
+id	crate_ammo	crate_health	crate_gun	crate_melee	crate_armor	crate_mod	monster	boss
+none	0	0	0	0	0	0	88	0
+key_boss	0	0	0	0	0	0	0	1
+ammo_pistol	1	0	0	0	0	0	3	0
+ammo_shells	1	0	0	0	0	0	3	0
+ammo_rifle	1	0	0	0	0	0	3	0
+medkit	0	1	0	0	0	0	3	0
+weapon_knife	0	0	0	1	0	0	0	0
+weapon_pistol	0	0	1	0	0	0	0	0
+weapon_shotgun	0	0	1	0	0	0	0	0
+weapon_boltrifle	0	0	1	0	0	0	0	0
+armor_light	0	0	0	0	1	0	0	0
+armor_medium	0	0	0	0	1	0	0	0
+armor_heavy	0	0	0	0	1	0	0	0
+mod_maxrounds	0	0	0	0	0	1	0	0
+mod_damage	0	0	0	0	0	1	0	0
+mod_accuracy	0	0	0	0	0	1	0	0
+mod_attackspeed	0	0	0	0	0	1	0	0
+mod_reloadspeed	0	0	0	0	0	1	0	0
+mod_reloadamount	0	0	0	0	0	1	0	0
+mod_penetration	0	0	0	0	0	1	0	0
+mod_handling	0	0	0	0	0	1	0	0
+mod_damageblock	0	0	0	0	0	1	0	0
+mod_damageresist	0	0	0	0	0	1	0	0
+mod_maxammo	0	0	0	0	0	1	0	0
+mod_movespeed	0	0	0	0	0	1	0	0
