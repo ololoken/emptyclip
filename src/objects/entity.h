@@ -166,7 +166,7 @@ class _Entity : public _Object {
 		int MaxDamage[WEAPONATTACK_COUNT];
 		int Penetration[WEAPONATTACK_COUNT];
 		float AttackMoveSpeed[WEAPONATTACK_COUNT];
-		int AttackCount;
+		int AttackCount[WEAPONATTACK_COUNT];
 		int MainWeaponType;
 		int AttackRequestType;
 		bool AttackRequested;

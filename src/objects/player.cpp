@@ -876,7 +876,7 @@ void _Player::ResetAccuracy(bool CompleteReset) {
 	else
 		RecoilModifier = 1.0f;
 
-	if(CompleteReset)
+	if(CompleteReset && !IsMelee())
 		CurrentAccuracy = MaxAccuracyNormal;
 
 	MinAccuracy = MinAccuracyNormal;
@@ -948,10 +948,10 @@ void _Player::RecalculateStats() {
 		MaxDamage[i] = Weapon[i].Attributes["max_damage"].Int;
 		AttackMoveSpeed[i] = Weapon[i].Attributes["attack_movespeed"].Float;
 		Penetration[i] = Weapon[i].Attributes["penetration"].Int;
+		AttackCount[i] = Weapon[i].Attributes["attack_count"].Int;
 	}
 	ReloadPeriod = Weapon[WEAPONATTACK_MAIN].Attributes["reload_period"].Double / Stats.GetSkillBonusMultiplier(Skills[SKILL_RELOADSPEED], SKILL_RELOADSPEED);
 	WeaponSwitchPeriod = PLAYER_WEAPONSWITCHPERIOD * 1;
-	AttackCount = Weapon[WEAPONATTACK_MAIN].Attributes["attack_count"].Int;
 	ZoomScale = Weapon[WEAPONATTACK_MAIN].Attributes["zoom_scale"].Float;
 
 	int BaseMovementSpeed = 100 + Stats.GetSkill(Skills[SKILL_MOVESPEED], SKILL_MOVESPEED);

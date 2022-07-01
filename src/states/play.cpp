@@ -551,7 +551,7 @@ void _PlayState::Render(double BlendFactor) {
 		HUD->RenderCrosshair(WorldCursor * (float)BlendFactor + PreviousWorldCursor * (float)(1.0f - BlendFactor));
 
 	// Debug
-	if(0) {
+	if(GodMode && DevMode && DebugMode) {
 		ae::Graphics.SetDepthTest(false);
 
 		// Draw weapon ranges
@@ -679,7 +679,7 @@ void _PlayState::ResolveAttack(_Entity *Attacker, int GridType) {
 
 	// For each bullet that the weapon fires
 	bool PlayedHitWallSound = false;
-	for(int i = 0; i < Attacker->AttackCount; i++) {
+	for(int i = 0; i < Attacker->AttackCount[Attacker->AttackRequestType]; i++) {
 		std::vector<_Hit> Hits;
 		Hits.reserve(Attacker->GetPenetration(Attacker->AttackRequestType));
 
