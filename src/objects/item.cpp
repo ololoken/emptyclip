@@ -44,6 +44,35 @@ _Item::~_Item() {
 		delete Mods[i];
 }
 
+// Draw attribute text
+void _Item::DrawAttribute(const std::string &Attribute, const std::string &Label, glm::ivec2 &DrawPosition, const _Item *EquippedItem, bool Plus, bool Percent) const {
+	if(!Attributes.at(Attribute).Int)
+		return;
+
+	// Get color
+	glm::vec4 TextColor = COLOR_WHITE;
+	if(EquippedItem) {
+		if(Attributes.at(Attribute).Int > EquippedItem->Attributes.at(Attribute).Int)
+			TextColor = COLOR_GREEN;
+		else if(Attributes.at(Attribute).Int < EquippedItem->Attributes.at(Attribute).Int)
+			TextColor = COLOR_RED;
+	}
+
+	// Get text
+	std::ostringstream Buffer;
+	if(Plus && Attributes.at(Attribute).Int > 0)
+		Buffer << "+";
+	Buffer << Attributes.at(Attribute).Int;
+	if(Percent)
+		Buffer << "%";
+
+	// Draw
+	glm::ivec2 DrawOffset(8, 0);
+	DrawPosition.y += 20;
+	ae::Assets.Fonts["hud_medium"]->DrawText(Label, DrawPosition - DrawOffset, ae::RIGHT_BASELINE);
+	ae::Assets.Fonts["hud_medium"]->DrawText(Buffer.str(), DrawPosition + DrawOffset, ae::LEFT_BASELINE, TextColor);
+}
+
 // Draw the item popup window
 void _Item::DrawTooltip(const _Player *Player, std::size_t CompareSlot, glm::ivec2 DrawPosition) {
 	std::ostringstream Buffer;
@@ -99,7 +128,7 @@ void _Item::DrawTooltip(const _Player *Player, std::size_t CompareSlot, glm::ive
 	ae::Assets.Fonts["hud_small"]->DrawText(GetTypeAsString(), DrawPosition, ae::CENTER_BASELINE);
 
 	// Draw Level
-	if(Type != _Object::KEY) {
+	if(Type != _Object::KEY && Type != _Object::AMMO) {
 		DrawPosition.y += 16;
 		Buffer << "Level " << Level;
 		ae::Assets.Fonts["hud_small"]->DrawText(Buffer.str(), DrawPosition, ae::CENTER_BASELINE);
@@ -158,46 +187,13 @@ void _Item::DrawTooltip(const _Player *Player, std::size_t CompareSlot, glm::ive
 				Buffer.str("");
 			}
 
-			// Attacks
-			if(Attributes.at("attack_count").Int > 1) {
-				TextColor = COLOR_WHITE;
-				if(EquippedItem) {
-					if(Attributes.at("attack_count").Int > EquippedItem->Attributes.at("attack_count").Int)
-						TextColor = COLOR_GREEN;
-					else if(Attributes.at("attack_count").Int < EquippedItem->Attributes.at("attack_count").Int)
-						TextColor = COLOR_RED;
-				}
-
-				DrawPosition.y += 20;
-				Buffer << Attributes.at("attack_count").Int;
-				std::string AttackCountText;
-				if(IsMelee())
-					AttackCountText = "Attacks/Swing";
-				else
-					AttackCountText = "Bullets/Shot";
-				ae::Assets.Fonts["hud_medium"]->DrawText(AttackCountText, DrawPosition - DrawOffset, ae::RIGHT_BASELINE);
-				ae::Assets.Fonts["hud_medium"]->DrawText(Buffer.str(), DrawPosition + DrawOffset, ae::LEFT_BASELINE, TextColor);
-				Buffer.str("");
-			}
+			// Attack count
+			if(Attributes.at("attack_count").Int > 1)
+				DrawAttribute("attack_count", IsMelee() ? "Attacks" : "Bullets Shot", DrawPosition, EquippedItem, false, false);
 
 			// Penetration
-			if(Attributes.at("penetration").Int > 1) {
-				TextColor = COLOR_WHITE;
-				if(EquippedItem) {
-					if(Attributes.at("penetration").Int > EquippedItem->Attributes.at("penetration").Int)
-						TextColor = COLOR_GREEN;
-					else if(Attributes.at("penetration").Int < EquippedItem->Attributes.at("penetration").Int)
-						TextColor = COLOR_RED;
-				}
-
-				DrawPosition.y += 20;
-				Buffer << Attributes.at("penetration").Int;
-				std::string AttackCountText;
-				AttackCountText = "Penetration";
-				ae::Assets.Fonts["hud_medium"]->DrawText(AttackCountText, DrawPosition - DrawOffset, ae::RIGHT_BASELINE);
-				ae::Assets.Fonts["hud_medium"]->DrawText(Buffer.str(), DrawPosition + DrawOffset, ae::LEFT_BASELINE, TextColor);
-				Buffer.str("");
-			}
+			if(Attributes.at("penetration").Int > 1)
+				DrawAttribute("penetration", "Penetration", DrawPosition, EquippedItem, false, false);
 
 			// Fire rate
 			if(Attributes.at("fire_period").Double) {
@@ -282,74 +278,10 @@ void _Item::DrawTooltip(const _Player *Player, std::size_t CompareSlot, glm::ive
 			}
 		} break;
 		case _Object::ARMOR: {
-
-			// Damage Block
-			if(Attributes.at("damage_block").Int != 0) {
-				TextColor = COLOR_WHITE;
-				if(EquippedItem) {
-					if(Attributes.at("damage_block").Int > EquippedItem->Attributes.at("damage_block").Int)
-						TextColor = COLOR_GREEN;
-					else if(Attributes.at("damage_block").Int < EquippedItem->Attributes.at("damage_block").Int)
-						TextColor = COLOR_RED;
-				}
-
-				DrawPosition.y += 20;
-				Buffer << Attributes.at("damage_block").Int;
-				ae::Assets.Fonts["hud_medium"]->DrawText("Damage Block", DrawPosition - DrawOffset, ae::RIGHT_BASELINE);
-				ae::Assets.Fonts["hud_medium"]->DrawText(Buffer.str(), DrawPosition + DrawOffset, ae::LEFT_BASELINE, TextColor);
-				Buffer.str("");
-			}
-
-			// Damage Resist
-			if(Attributes.at("damage_resist").Int != 0) {
-				TextColor = COLOR_WHITE;
-				if(EquippedItem) {
-					if(Attributes.at("damage_resist").Int > EquippedItem->Attributes.at("damage_resist").Int)
-						TextColor = COLOR_GREEN;
-					else if(Attributes.at("damage_resist").Int < EquippedItem->Attributes.at("damage_resist").Int)
-						TextColor = COLOR_RED;
-				}
-
-				DrawPosition.y += 20;
-				Buffer << (Attributes.at("damage_resist").Int < 0 ? "" : "+") << Attributes.at("damage_resist").Int << "%";
-				ae::Assets.Fonts["hud_medium"]->DrawText("Damage Resist", DrawPosition - DrawOffset, ae::RIGHT_BASELINE);
-				ae::Assets.Fonts["hud_medium"]->DrawText(Buffer.str(), DrawPosition + DrawOffset, ae::LEFT_BASELINE, TextColor);
-				Buffer.str("");
-			}
-
-			// Damage Resist
-			if(Attributes.at("max_ammo").Int != 0) {
-				TextColor = COLOR_WHITE;
-				if(EquippedItem) {
-					if(Attributes.at("max_ammo").Int > EquippedItem->Attributes.at("max_ammo").Int)
-						TextColor = COLOR_GREEN;
-					else if(Attributes.at("max_ammo").Int < EquippedItem->Attributes.at("max_ammo").Int)
-						TextColor = COLOR_RED;
-				}
-
-				DrawPosition.y += 20;
-				Buffer << (Attributes.at("max_ammo").Int < 0 ? "" : "+") << Attributes.at("max_ammo").Int << "%";
-				ae::Assets.Fonts["hud_medium"]->DrawText("Max Ammo", DrawPosition - DrawOffset, ae::RIGHT_BASELINE);
-				ae::Assets.Fonts["hud_medium"]->DrawText(Buffer.str(), DrawPosition + DrawOffset, ae::LEFT_BASELINE, TextColor);
-				Buffer.str("");
-			}
-
-			// Move Speed
-			if(Attributes.at("move_speed").Int != 0) {
-				TextColor = COLOR_WHITE;
-				if(EquippedItem) {
-					if(Attributes.at("move_speed").Int > EquippedItem->Attributes.at("move_speed").Int)
-						TextColor = COLOR_GREEN;
-					else if(Attributes.at("move_speed").Int < EquippedItem->Attributes.at("move_speed").Int)
-						TextColor = COLOR_RED;
-				}
-
-				DrawPosition.y += 20;
-				Buffer << (Attributes.at("move_speed").Int < 0 ? "" : "+") << Attributes.at("move_speed").Int << "%";
-				ae::Assets.Fonts["hud_medium"]->DrawText("Move Speed", DrawPosition - DrawOffset, ae::RIGHT_BASELINE);
-				ae::Assets.Fonts["hud_medium"]->DrawText(Buffer.str(), DrawPosition + DrawOffset, ae::LEFT_BASELINE, TextColor);
-				Buffer.str("");
-			}
+			DrawAttribute("damage_block", "Damage Block", DrawPosition, EquippedItem, false, false);
+			DrawAttribute("damage_resist", "Damage Resist", DrawPosition, EquippedItem, true, true);
+			DrawAttribute("max_ammo", "Max Ammo", DrawPosition, EquippedItem, true, true);
+			DrawAttribute("move_speed", "Move Speed", DrawPosition, EquippedItem, true, true);
 		} break;
 		case _Object::MOD: {
 			DrawPosition.y += 20;

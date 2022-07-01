@@ -85,4 +85,8 @@ class _Item : public _Object {
 		std::vector<_Item *> Mods;
 		int Bonus[MOD_COUNT];
 
+	private:
+
+		void DrawAttribute(const std::string &Attribute, const std::string &Label, glm::ivec2 &DrawPosition, const _Item *EquippedItem, bool Plus, bool Percent) const;
+
 };
