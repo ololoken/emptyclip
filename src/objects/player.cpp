@@ -877,8 +877,11 @@ void _Player::ResetAccuracy(bool CompleteReset) {
 	else
 		RecoilModifier = 1.0f;
 
-	if(CompleteReset && !IsMelee())
-		CurrentAccuracy = MaxAccuracyNormal;
+	if(CompleteReset) {
+		CurrentAccuracy = 0;
+		if(!IsMelee())
+			CurrentAccuracy = MaxAccuracyNormal;
+	}
 
 	MinAccuracy = MinAccuracyNormal;
 	MaxAccuracy[WEAPONATTACK_MAIN] = MaxAccuracyNormal;
