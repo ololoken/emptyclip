@@ -121,14 +121,6 @@ _HUD::_HUD(_Player *Player) :
 	Elements[ELEMENT_INVENTORY]->SetActive(false);
 	Elements[ELEMENT_SKILLS]->SetActive(false);
 
-	Elements[LABEL_DAMAGE] = ae::Assets.Elements["label_hud_player_damage_value"];
-	Elements[LABEL_MELEEDAMAGE] = ae::Assets.Elements["label_hud_player_meleedamage_value"];
-	Elements[LABEL_DAMAGEBLOCK] = ae::Assets.Elements["label_hud_player_damageblock_value"];
-	Elements[LABEL_DAMAGERESIST] = ae::Assets.Elements["label_hud_player_damageresist_value"];
-	Elements[LABEL_MOVEMENTSPEED] = ae::Assets.Elements["label_hud_player_movementspeed_value"];
-	Elements[LABEL_KILLS] = ae::Assets.Elements["label_hud_player_kills_value"];
-	Elements[LABEL_DROPRATE] = ae::Assets.Elements["label_hud_player_droprate_value"];
-
 	Elements[ELEMENT_SKILLINFO] = ae::Assets.Elements["element_skill_info"];
 	Elements[LABEL_SKILLTEXT] = ae::Assets.Elements["label_hud_skill_text"];
 	Elements[LABEL_SKILLTEXTALT] = ae::Assets.Elements["label_hud_skill_textalt"];
@@ -514,36 +506,49 @@ void _HUD::RenderCharacterScreen() {
 		Elements[LABEL_SKILL0 + i]->Text = Buffer.str();
 		Buffer.str("");
 	}
+	Elements[ELEMENT_SKILLS]->Render();
 
+	// Draw stats
+	glm::vec2 DrawPosition(ae::Graphics.CurrentSize.x - 160, ae::Graphics.CurrentSize.y/2 + 40);
+
+	// Offense
 	Buffer << Player->GetMinDamage(WEAPONATTACK_MAIN) << " - " << Player->GetMaxDamage(WEAPONATTACK_MAIN);
-	Elements[LABEL_DAMAGE]->Text = Buffer.str();
-	Buffer.str("");
+	DrawAttribute("Damage", Buffer, DrawPosition);
 
 	Buffer << Player->GetMinDamage(WEAPONATTACK_MELEE) << " - " << Player->GetMaxDamage(WEAPONATTACK_MELEE);
-	Elements[LABEL_MELEEDAMAGE]->Text = Buffer.str();
-	Buffer.str("");
+	DrawAttribute("Melee Damage", Buffer, DrawPosition);
 
+	if(Player->HasMainHand()) {
+		Buffer << ae::Round1(Player->MinAccuracyNormal) << " - " << ae::Round1(Player->MaxAccuracyNormal);
+		DrawAttribute("Accuracy", Buffer, DrawPosition);
+
+		Buffer << ae::Round1(1.0 / Player->FirePeriod[WEAPONATTACK_MAIN]) << "/s";
+		DrawAttribute("Fire Rate", Buffer, DrawPosition);
+	}
+
+	DrawPosition.y += 20;
+
+	// Defense
 	Buffer << Player->DamageBlock;
-	Elements[LABEL_DAMAGEBLOCK]->Text = Buffer.str();
-	Buffer.str("");
+	DrawAttribute("Damage Block", Buffer, DrawPosition);
 
 	Buffer << Player->DamageResist << "%";
-	Elements[LABEL_DAMAGERESIST]->Text = Buffer.str();
-	Buffer.str("");
+	DrawAttribute("Damage Resist", Buffer, DrawPosition);
 
 	Buffer << int(100 * Player->MovementSpeed / PLAYER_MOVEMENTSPEED + 0.5f) << "%";
-	Elements[LABEL_MOVEMENTSPEED]->Text = Buffer.str();
-	Buffer.str("");
+	DrawAttribute("Move Speed", Buffer, DrawPosition);
 
+	Buffer << int(100 * Player->MaxStamina + 0.5f) << "%";
+	DrawAttribute("Stamina", Buffer, DrawPosition);
+
+	DrawPosition.y += 20;
+
+	// Misc
 	Buffer << Player->DropRate << "%";
-	Elements[LABEL_DROPRATE]->Text = Buffer.str();
-	Buffer.str("");
+	DrawAttribute("Drop Rate", Buffer, DrawPosition);
 
 	Buffer << Player->MonsterKills;
-	Elements[LABEL_KILLS]->Text = Buffer.str();
-	Buffer.str("");
-
-	Elements[ELEMENT_SKILLS]->Render();
+	DrawAttribute("Kills", Buffer, DrawPosition);
 
 	// Draw inventory
 	for(int i = INVENTORY_MAINHAND; i < INVENTORY_BAGEND; i++) {
@@ -572,6 +577,16 @@ void _HUD::RenderCharacterScreen() {
 	// Draw cursor skill
 	if(CursorSkill != -1)
 		Elements[ELEMENT_SKILLINFO]->Render();
+}
+
+// Draw character stat on character screen
+void _HUD::DrawAttribute(const std::string &Label, std::ostringstream &Buffer, glm::vec2 &DrawPosition) const {
+	glm::vec2 DrawOffset(10, 0);
+	ae::Assets.Fonts["hud_medium"]->DrawText(Label, DrawPosition, ae::RIGHT_BASELINE);
+	ae::Assets.Fonts["hud_medium"]->DrawText(Buffer.str(), DrawPosition + DrawOffset, ae::LEFT_BASELINE);
+	Buffer.str("");
+
+	DrawPosition.y += 20;
 }
 
 // Draw the item count text

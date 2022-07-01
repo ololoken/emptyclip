@@ -81,13 +81,6 @@ class _HUD {
 			LABEL_SKILLTEXTALT,
 			LABEL_SKILL_LEVEL,
 			LABEL_SKILL_LEVEL_NEXT,
-			LABEL_DAMAGE,
-			LABEL_MELEEDAMAGE,
-			LABEL_DAMAGEBLOCK,
-			LABEL_DAMAGERESIST,
-			LABEL_MOVEMENTSPEED,
-			LABEL_DROPRATE,
-			LABEL_KILLS,
 			IMAGE_PLAYERHEALTH,
 			IMAGE_PLAYERSTAMINA,
 			IMAGE_ENEMYHEALTH,
@@ -124,6 +117,7 @@ class _HUD {
 		void DrawIndicator(const std::string &String, float Percent=0.0f, const ae::_Texture *Texture=nullptr);
 		void DrawHUDWeapon(const _Item *Weapon, ae::_Element *Element, ae::_Element *Image, ae::_Element *Label);
 		void DrawItemCount(_Item *Item, int X, int Y);
+		void DrawAttribute(const std::string &Label, std::ostringstream &Buffer, glm::vec2 &DrawPosition) const;
 
 		// State
 		_Player *Player;
