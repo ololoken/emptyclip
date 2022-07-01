@@ -13,3 +13,5 @@ tutorial_melee	Use [c red]Mouse button 4[c white] to attack with your melee weap
 tutorial_switch	Hit [c red]Spacebar[c white] to activate the switch.
 tutorial_fire	Use [c red]Left-click[c white] to shoot your gun. Hold [c red]right-click[c white] to aim and reduce recoil at the cost of movement speed.
 tutorial_sprint	Hold [c red]A[c white] to sprint.
+tutorial_crate	Attack the crate to open it.
+tutorial_swap	Hit [c red]W[c white] to switch weapons.

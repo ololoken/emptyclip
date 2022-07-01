@@ -470,8 +470,13 @@ void _PlayState::Update(double FrameTime) {
 	UpdateEvents(FrameTime);
 
 	// Apply the damage
+	int OldLevel = Player->Level;
 	if(Player->AttackMade)
 		ResolveAttack(Player, GRID_MONSTER);
+
+	// Level up screen
+	if(Player->Level > OldLevel)
+		HUD->ShowTextMessage("LEVEL UP! YOU HAVE UNSPENT SKILL POINTS", 5.0);
 
 	// Update camera
 	Camera->Set2DPosition(Player->Position);
@@ -714,6 +719,7 @@ void _PlayState::ResolveAttack(_Entity *Attacker, int GridType) {
 
 	// For each bullet that the weapon fires
 	bool PlayedHitWallSound = false;
+	bool GeneratedDecal = false;
 	for(int i = 0; i < Attacker->AttackCount[Attacker->AttackRequestType]; i++) {
 		std::vector<_Hit> Hits;
 		Hits.reserve(Attacker->GetPenetration(Attacker->AttackRequestType));
@@ -753,8 +759,11 @@ void _PlayState::ResolveAttack(_Entity *Attacker, int GridType) {
 
 					GenerateBulletEffects(Attacker, HIT_WALL, Hit);
 				break;
-				case HIT_OBJECT:
-					GenerateBulletEffects(Attacker, HIT_OBJECT, Hit);
+				case HIT_OBJECT: {
+					if(!GeneratedDecal) {
+						GenerateBulletEffects(Attacker, HIT_OBJECT, Hit);
+						GeneratedDecal = true;
+					}
 
 					// Generate damage
 					int Damage = Attacker->GenerateDamage(Attacker->AttackRequestType, Hit.Object->DamageBlock, Hit.Object->DamageResist);
@@ -798,7 +807,7 @@ void _PlayState::ResolveAttack(_Entity *Attacker, int GridType) {
 					if(Hit.Object->Type == _Object::MONSTER)
 						HUD->SetLastEntityHit(Hit.Object);
 
-				break;
+				} break;
 			}
 		}
 	}
@@ -932,7 +941,7 @@ void _PlayState::UpdateMonsters(double FrameTime) {
 			if(Map->CheckMinimapBounds(Bounds, HUD_MINIMAP_CAPTURE_SIZE)) {
 				_MinimapLayer MinimapLayer;
 				MinimapLayer.Bounds = Bounds;
-				MinimapLayer.Color = COLOR_RED;
+				MinimapLayer.Color = Monster->AIType ? COLOR_RED : COLOR_MAGENTA;
 				Map->MinimapLayers.push_back(MinimapLayer);
 			}
 
