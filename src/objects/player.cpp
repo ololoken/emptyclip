@@ -927,7 +927,7 @@ void _Player::RecalculateStats() {
 		MaxAccuracyNormal = Weapon[WEAPONATTACK_MAIN].Attributes.at("max_accuracy").Int;
 	}
 	else {
-		float AccuracySkillMultiplier = 1.0f / Stats.GetSkillBonusMultiplier(Skills[SKILL_ACCURACY], SKILL_ACCURACY);
+		float AccuracySkillMultiplier = 1.0f / Stats.GetSkillBonusMultiplier(Skills[SKILL_PERCEPTION], SKILL_PERCEPTION);
 		CurrentAccuracyNormal = MinAccuracyNormal = Weapon[WEAPONATTACK_MAIN].Attributes.at("min_accuracy").Int * AccuracySkillMultiplier;
 		MaxAccuracyNormal = Weapon[WEAPONATTACK_MAIN].Attributes.at("max_accuracy").Int * AccuracySkillMultiplier;
 		Recoil = Weapon[WEAPONATTACK_MAIN].Attributes["recoil"].Float;
@@ -942,23 +942,27 @@ void _Player::RecalculateStats() {
 
 	// Attacking
 	for(int i = 0; i < WEAPONATTACK_COUNT; i++) {
+		float MeleeDamageModifier = 1.0f;
+		if((i == WEAPONATTACK_MAIN && MainWeaponType == WEAPON_MELEE) || i == WEAPONATTACK_MELEE)
+			MeleeDamageModifier = Stats.GetSkillBonusMultiplier(Skills[SKILL_STRENGTH], SKILL_STRENGTH);
+
 		FireRate[i] = Weapon[i].Attributes["fire_rate"].Int;
-		FirePeriod[i] = std::max(Weapon[i].Attributes["fire_period"].Double / Stats.GetSkillBonusMultiplier(Skills[SKILL_ATTACKSPEED], SKILL_ATTACKSPEED), WEAPON_MINFIREPERIOD);
-		MinDamage[i] = Weapon[i].Attributes["min_damage"].Int;
-		MaxDamage[i] = Weapon[i].Attributes["max_damage"].Int;
+		FirePeriod[i] = std::max(Weapon[i].Attributes["fire_period"].Double / Stats.GetSkillBonusMultiplier(Skills[SKILL_AGILITY], SKILL_AGILITY), WEAPON_MINFIREPERIOD);
+		MinDamage[i] = std::ceil(Weapon[i].Attributes["min_damage"].Int * MeleeDamageModifier);
+		MaxDamage[i] = std::ceil(Weapon[i].Attributes["max_damage"].Int * MeleeDamageModifier);
 		AttackMoveSpeed[i] = Weapon[i].Attributes["attack_movespeed"].Float;
 		Penetration[i] = Weapon[i].Attributes["penetration"].Int;
 		AttackCount[i] = Weapon[i].Attributes["attack_count"].Int;
 	}
-	ReloadPeriod = Weapon[WEAPONATTACK_MAIN].Attributes["reload_period"].Double / Stats.GetSkillBonusMultiplier(Skills[SKILL_RELOADSPEED], SKILL_RELOADSPEED);
-	WeaponSwitchPeriod = PLAYER_WEAPONSWITCHPERIOD * 1;
+	ReloadPeriod = Weapon[WEAPONATTACK_MAIN].Attributes["reload_period"].Double / Stats.GetSkillBonusMultiplier(Skills[SKILL_DEXTERITY], SKILL_DEXTERITY);
+	WeaponSwitchPeriod = PLAYER_WEAPONSWITCHPERIOD / Stats.GetSkillBonusMultiplier(Skills[SKILL_DEXTERITY], SKILL_DEXTERITY);
 	ZoomScale = Weapon[WEAPONATTACK_MAIN].Attributes["zoom_scale"].Float;
 
-	int BaseMovementSpeed = 100 + Stats.GetSkill(Skills[SKILL_MOVESPEED], SKILL_MOVESPEED);
-	DamageResist = Stats.GetSkill(Skills[SKILL_DAMAGERESIST], SKILL_DAMAGERESIST);
-	MaxHealth = (int)(Stats.GetLevelHealth(Level) * Stats.GetSkillBonusMultiplier(Skills[SKILL_HEALTH], SKILL_HEALTH));
-	MaxStamina = Stats.GetSkillBonusMultiplier(Skills[SKILL_MAXSTAMINA], SKILL_MAXSTAMINA);
-	StaminaRegenModifier = Stats.GetSkillBonusMultiplier(Skills[SKILL_MAXSTAMINA], SKILL_MAXSTAMINA);
+	int BaseMovementSpeed = 100 + Stats.GetSkill(Skills[SKILL_CUNNING], SKILL_CUNNING);
+	DamageResist = Stats.GetSkill(Skills[SKILL_FORTITUDE], SKILL_FORTITUDE);
+	MaxHealth = (int)(Stats.GetLevelHealth(Level) * Stats.GetSkillBonusMultiplier(Skills[SKILL_VITALITY], SKILL_VITALITY));
+	MaxStamina = Stats.GetSkillBonusMultiplier(Skills[SKILL_ENDURANCE], SKILL_ENDURANCE);
+	StaminaRegenModifier = Stats.GetSkillBonusMultiplier(Skills[SKILL_ENDURANCE], SKILL_ENDURANCE);
 
 	// Armor
 	DamageBlock = 0;
