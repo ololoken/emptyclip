@@ -1545,7 +1545,7 @@ void _EditorState::AddEvent(int Type) {
 			EventItemID = ItemID;
 			TileLayer = MAPLAYER_FLAT;
 		break;
-		case EVENT_WSWITCH:
+		case EVENT_WALLSWITCH:
 			EventItemID = ItemID;
 			TileLayer = CurrentLayer;
 		break;
@@ -1680,8 +1680,8 @@ void _EditorState::ExecuteToggleTile() {
 		else {
 			switch(SelectedEvent->Type) {
 				case EVENT_DOOR:
-				case EVENT_WSWITCH:
-				case EVENT_FSWITCH: {
+				case EVENT_WALLSWITCH:
+				case EVENT_FLOORSWITCH: {
 					_Block *Block;
 					int BlockIndex = Map->GetSelectedBlock(CurrentLayer, WorldCursorIndex, &Block);
 					SelectedEvent->AddTile(_EventTile(WorldCursorIndex, CurrentLayer, BlockIndex));
@@ -1988,11 +1988,11 @@ void _EditorState::ExecuteSelectPalette(ae::_Element *Button, int ClickType) {
 						SetEventProperties(5, 1, 1, "");
 					break;
 					case EVENT_SOUND:
-					case EVENT_FSWITCH:
+					case EVENT_FLOORSWITCH:
 					case EVENT_ENABLE:
 						SetEventProperties(0, 1, 1, "");
 					break;
-					case EVENT_TELE:
+					case EVENT_TELEPORT:
 						SetEventProperties(0, 0, 1, "smoke0");
 					break;
 					case EVENT_LIGHT:

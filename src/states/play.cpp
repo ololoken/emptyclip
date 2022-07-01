@@ -845,7 +845,7 @@ void _PlayState::UseObject(_Item *NearbyItem) {
 	for(auto Event : Events) {
 
 		// Check for doors or switches
-		if(Event->Active && (Event->Type == EVENT_DOOR || Event->Type == EVENT_WSWITCH) && Map->CanChangeMapState(Event)) {
+		if(Event->Active && (Event->Type == EVENT_DOOR || Event->Type == EVENT_WALLSWITCH) && Map->CanChangeMapState(Event)) {
 
 			// Check for key in inventory and use it
 			if(!Event->ItemID.empty()) {
@@ -988,7 +988,7 @@ void _PlayState::CheckEvents(const _Entity *Entity) {
 						break;
 					}
 				break;
-				case EVENT_END:
+				case EVENT_ENDLEVEL:
 					Level = Event->ItemID;
 
 					// End of the game
@@ -1003,6 +1003,8 @@ void _PlayState::CheckEvents(const _Entity *Entity) {
 
 					Player->CheckpointIndex = Event->Level;
 					Player->MapID = Level;
+					if(Map->MapType == MAPTYPE_CAMPAIGN)
+						Player->RemoveKeys();
 					Save.SavePlayer(Player);
 				break;
 				case EVENT_TEXT:
@@ -1017,13 +1019,13 @@ void _PlayState::CheckEvents(const _Entity *Entity) {
 					}
 					Event->Active = false;
 				break;
-				case EVENT_FSWITCH:
+				case EVENT_FLOORSWITCH:
 				case EVENT_ENABLE:
 					Event->StartTimer();
 					ActiveEvents.push_back(Event);
 					Event->Active = false;
 				break;
-				case EVENT_TELE: {
+				case EVENT_TELEPORT: {
 					if(Event->Level > 0) {
 						Event->Decrement();
 						if(Event->Level == 0)
@@ -1083,7 +1085,7 @@ void _PlayState::UpdateEvents(double FrameTime) {
 				ae::Audio.PlaySound(ae::Assets.Sounds[Event->ItemID]);
 				Decrement = true;
 			} break;
-			case EVENT_FSWITCH:
+			case EVENT_FLOORSWITCH:
 				if(Map->CanChangeMapState(Event)) {
 					Map->ChangeMapState(Event);
 					Decrement = true;

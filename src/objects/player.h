@@ -90,6 +90,7 @@ class _Player : public _Entity {
 		bool UseMedkit(int Index);
 		int FindItem(int Index);
 		int FindItem(const std::string &ID);
+		void RemoveKeys();
 		void ResetUseTimer() { UseTimer = 0; }
 		void ConsumeInventory(int Index, bool Delete=true);
 		int ReduceAmmo(int Amount) override;

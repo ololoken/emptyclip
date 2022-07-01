@@ -1258,14 +1258,14 @@ void _Map::ChangeMapState(const _Event *Event) {
 		throw std::runtime_error("Tile data uninitialized!");
 
 	// Check for the proper event
-	if(!(Event->Type == EVENT_DOOR || Event->Type == EVENT_WSWITCH || Event->Type == EVENT_FSWITCH))
+	if(!(Event->Type == EVENT_DOOR || Event->Type == EVENT_WALLSWITCH || Event->Type == EVENT_FLOORSWITCH))
 		return;
 
 	const std::vector<_EventTile> &Tiles = Event->Tiles;
 
 	// Switch the texture of the first block for wall switches
 	int StartIndex = 0;
-	if(Event->Type == EVENT_WSWITCH && Tiles.size() > 0 && Tiles[0].BlockID != -1) {
+	if(Event->Type == EVENT_WALLSWITCH && Tiles.size() > 0 && Tiles[0].BlockID != -1) {
 		SwapBlockTextures(Tiles[0].Layer, Tiles[0].BlockID);
 		StartIndex = 1;
 	}

@@ -716,12 +716,21 @@ int _Player::FindItem(int ItemType) {
 // Searchs the inventory for a certain item
 int _Player::FindItem(const std::string &ID) {
 	for(int i = INVENTORY_BAGSTART; i < INVENTORY_BAGEND; i++) {
-		if(HasInventory(i) && Inventory[i]->ID == ID) {
+		if(HasInventory(i) && Inventory[i]->ID == ID)
 			return i;
-		}
 	}
 
 	return -1;
+}
+
+// Remove all keys from inventory
+void _Player::RemoveKeys() {
+	for(int i = INVENTORY_BAGSTART; i < INVENTORY_BAGEND; i++) {
+		if(HasInventory(i) && Inventory[i]->Type == _Object::KEY) {
+			delete Inventory[i];
+			Inventory[i] = nullptr;
+		}
+	}
 }
 
 // Begins the reloading process
