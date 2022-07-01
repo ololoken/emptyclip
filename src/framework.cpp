@@ -122,6 +122,7 @@ void _Framework::Init(int ArgumentCount, char **Arguments) {
 	WindowSettings.Position = glm::ivec2(SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED);
 
 	// Set up subsystems
+	ae::Graphics.CircleVertices = 64;
 	ae::Graphics.Init(WindowSettings);
 	ae::Graphics.SetCullFace(false);
 	LoadAssets();
