@@ -20,5 +20,5 @@ tutorial_move	Hit the keys [c red]ESDF[c white] to move your character.\n\nUse t
 tutorial_pickup	Hit [c red]Spacebar[c white] to pickup items.\n\nHit [c red]C[c white] to open your inventory.
 tutorial_door	To open the door, hit [c red]Spacebar[c white] while facing it.
 tutorial_melee	Use [c red]Mouse button 4[c white] to attack with your melee weapon.
-tutorial_fire	Use [c red]Left-click[c white] to shoot your gun. Hold [c red]right-click[c white] to aim and increase your accuracy at the cost of movement speed.
+tutorial_fire	Use [c red]Left-click[c white] to shoot your gun. Hold [c red]right-click[c white] to aim and reduce recoil at the cost of movement speed.
 tutorial_sprint	Hold [c red]A[c white] to sprint.

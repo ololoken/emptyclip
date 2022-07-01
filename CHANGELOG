@@ -6,6 +6,7 @@ Empty Clip 2.0.0 -
 - Added equipment slot for melee weapons and separate hotkey for melee attacks (Mouse button 4 by default)
 - Reworked skill system
 - Rewrote AI system
+- Aiming now modifies recoil and recoil regen
 - Added minimap
 - Equipment can be equipped by right-clicking in the inventory
 - Items can be dropped by clicking the middle mouse button
@@ -19,6 +20,7 @@ Empty Clip 2.0.0 -
 - Added bullet penetration for certain weapons
 - Removed strength requirement from armor
 - Removed player profiles
+- Added sprinting and a stamina bar
 - Players now respawn at their last checkpoint
 - Added damage number particles
 - Improved bullet hole decals

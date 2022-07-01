@@ -49,7 +49,7 @@ const  float        CAMERA_FOVY                    =  90.0f;
 const  float        CAMERA_NEAR                    =  0.1f;
 const  float        CAMERA_FAR                     =  500.0f;
 //     Weapons
-const  double       WEAPON_MINFIREPERIOD           =  0.017;
+const  double       WEAPON_MINFIREPERIOD           =  GAME_TIMESTEP;
 //     Audio
 const  float        AUDIO_MAX_DISTANCE             =  30.0f;
 //     Entities
@@ -63,6 +63,8 @@ const  float        PLAYER_LEGCHANGEFACTOR         =  0.2f;
 const  float        PLAYER_MOVEMENTSPEED           =  4.5f;
 const  float        PLAYER_BACKWARDS_SPEEDFACTOR   =  0.5f;
 const  float        PLAYER_AIM_MOVESPEEDFACTOR     =  0.333333f;
+const  float        PLAYER_AIM_RECOIL_MODIFIER     =  0.5f;
+const  float        PLAYER_SPRINT_RECOIL_MODIFIER  =  2.0f;
 const  float        PLAYER_SPRINT_SPEEDFACTOR      =  1.65f;
 const  glm::vec2    PLAYER_PISTOLOFFSET            =  glm::vec2(36.0f/64.0f-0.5f,-0.5f);
 const  glm::vec2    PLAYER_WEAPONOFFSET            =  glm::vec2(30.0f/64.0f-0.5f,-0.5f);

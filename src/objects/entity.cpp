@@ -55,9 +55,10 @@ _Entity::_Entity(const _ObjectTemplate &EntityTemplate) :
 	CurrentAccuracy(0),
 	MinAccuracy(0),
 	MaxAccuracy{0, 0},
-	AccuracyModifier(1.0f),
 	Recoil(0),
 	RecoilRegen(0),
+	RecoilModifier(1.0f),
+	MoveRecoil(0.0f),
 	AttackRange{0, 0},
 	FireTimer{0, 0},
 	FirePeriod{0,0},
@@ -90,10 +91,11 @@ _Entity::~_Entity() {
 
 // Generates a direction (in degrees) and updates the entity's accuracy
 float _Entity::GenerateShotDirection() {
-	float RandomOffset, NewDirection;
+	float RandomOffset;
+	float NewDirection;
 
 	// Generate the offset
-	RandomOffset = ae::GetRandomReal(-CurrentAccuracy * AccuracyModifier / 2.0f, CurrentAccuracy * AccuracyModifier / 2.0f);
+	RandomOffset = ae::GetRandomReal(-CurrentAccuracy / 2.0f, CurrentAccuracy / 2.0f);
 
 	// Figure out new direction
 	NewDirection = Rotation + RandomOffset;
@@ -105,7 +107,7 @@ float _Entity::GenerateShotDirection() {
 		NewDirection -= 360.0f;
 
 	// Update accuracy based on the weapon's recoil
-	CurrentAccuracy += Recoil;
+	CurrentAccuracy += Recoil * RecoilModifier;
 	if(CurrentAccuracy > MaxAccuracy[WEAPONATTACK_MAIN])
 		CurrentAccuracy = MaxAccuracy[WEAPONATTACK_MAIN];
 
@@ -288,7 +290,7 @@ void _Entity::UpdateAnimation(double FrameTime, bool PlaySound) {
 void _Entity::UpdateRecoil(double FrameTime) {
 
 	// Update accuracy
-	CurrentAccuracy -= RecoilRegen * FrameTime;
+	CurrentAccuracy -= RecoilRegen * FrameTime / RecoilModifier;
 	if(CurrentAccuracy < MinAccuracy)
 		CurrentAccuracy = MinAccuracy;
 }
@@ -376,6 +378,13 @@ void _Entity::Move(double FrameTime) {
 
 	// Update move vector
 	MoveDirection *= Speed;
+
+	// Update accuracy
+	if(MoveState) {
+		CurrentAccuracy += Speed * MoveRecoil;
+		if(CurrentAccuracy > MaxAccuracy[WEAPONATTACK_MAIN])
+			CurrentAccuracy = MaxAccuracy[WEAPONATTACK_MAIN];
+	}
 
 	// Get a list of entities that the object is colliding with
 	std::vector<_Entity *> HitEntities;

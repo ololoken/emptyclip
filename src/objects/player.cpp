@@ -618,7 +618,7 @@ bool _Player::AddMod(int FromIndex, int ToIndex) {
 float _Player::GetCrosshairRadius(const glm::vec2 &Cursor) {
 
 	// Check bounds
-	float Accuracy = CurrentAccuracy * AccuracyModifier;
+	float Accuracy = CurrentAccuracy;
 	if(Accuracy < 0.0f)
 		Accuracy = 0.0f;
 	else if(Accuracy > PLAYER_MAXACCURACY)
@@ -797,7 +797,7 @@ void _Player::UpdateReloading() {
 	Ammo[AmmoType] -= AmmoLoadAmount;
 
 	// Reset player
-	ResetAccuracy(true);
+	ResetAccuracy(false);
 	ResetWeaponAnimation();
 	if(ReloadAgain)
 		StartReloading();
@@ -873,16 +873,13 @@ void _Player::SetSprinting(bool State) {
 // Resets the accuracy depending on aiming state
 void _Player::ResetAccuracy(bool CompleteReset) {
 
-	if(Aiming && !IsMelee()) {
-		AccuracyModifier = 0.5f;
-	}
-	else if(Sprinting && !IsMelee()) {
-		AccuracyModifier = 2.0f;
-	}
-	else {
-		AccuracyModifier = 1.0f;
+	if(Aiming && !IsMelee())
+		RecoilModifier = PLAYER_AIM_RECOIL_MODIFIER;
+	else if(Sprinting && !IsMelee())
+		RecoilModifier = PLAYER_SPRINT_RECOIL_MODIFIER;
+	else
+		RecoilModifier = 1.0f;
 
-	}
 	if(CompleteReset)
 		CurrentAccuracy = MinAccuracyNormal;
 
@@ -926,6 +923,7 @@ void _Player::RecalculateStats() {
 	// Set up main stats based on weapon
 	Recoil = 0;
 	RecoilRegen = 0;
+	MoveRecoil = 0.0f;
 	AttackRange[WEAPONATTACK_MAIN] = Weapon[WEAPONATTACK_MAIN].Attributes["range"].Float;
 	AttackRange[WEAPONATTACK_MELEE] = Weapon[WEAPONATTACK_MELEE].Attributes["range"].Float;
 	if(MainWeaponType == WEAPON_MELEE) {
@@ -938,6 +936,7 @@ void _Player::RecalculateStats() {
 		MaxAccuracyNormal = Weapon[WEAPONATTACK_MAIN].Attributes.at("max_accuracy").Int * AccuracySkillMultiplier;
 		Recoil = Weapon[WEAPONATTACK_MAIN].Attributes["recoil"].Float;
 		RecoilRegen = Weapon[WEAPONATTACK_MAIN].Attributes["recoil_regen"].Float;
+		MoveRecoil = Weapon[WEAPONATTACK_MAIN].Attributes["move_recoil"].Float;
 	}
 
 	MaxAccuracy[WEAPONATTACK_MELEE] = Weapon[WEAPONATTACK_MELEE].Attributes.at("max_accuracy").Int;
@@ -948,7 +947,7 @@ void _Player::RecalculateStats() {
 	// Attacking
 	for(int i = 0; i < WEAPONATTACK_COUNT; i++) {
 		FireRate[i] = Weapon[i].Attributes["fire_rate"].Int;
-		FirePeriod[i] = Weapon[i].Attributes["fire_period"].Double / Stats.GetSkillBonusMultiplier(Skills[SKILL_ATTACKSPEED], SKILL_ATTACKSPEED);
+		FirePeriod[i] = std::max(Weapon[i].Attributes["fire_period"].Double / Stats.GetSkillBonusMultiplier(Skills[SKILL_ATTACKSPEED], SKILL_ATTACKSPEED), WEAPON_MINFIREPERIOD);
 		MinDamage[i] = Weapon[i].Attributes["min_damage"].Int;
 		MaxDamage[i] = Weapon[i].Attributes["max_damage"].Int;
 		AttackMoveSpeed[i] = Weapon[i].Attributes["attack_movespeed"].Float;
@@ -958,10 +957,6 @@ void _Player::RecalculateStats() {
 	WeaponSwitchPeriod = PLAYER_WEAPONSWITCHPERIOD * 1;
 	AttackCount = Weapon[WEAPONATTACK_MAIN].Attributes["attack_count"].Int;
 	ZoomScale = Weapon[WEAPONATTACK_MAIN].Attributes["zoom_scale"].Float;
-
-	// Cap fire period
-	if(FirePeriod[WEAPONATTACK_MAIN] < WEAPON_MINFIREPERIOD)
-		FirePeriod[WEAPONATTACK_MAIN] = WEAPON_MINFIREPERIOD;
 
 	int BaseMovementSpeed = 100 + Stats.GetSkill(Skills[SKILL_MOVESPEED], SKILL_MOVESPEED);
 	DamageResist = Stats.GetSkill(Skills[SKILL_DAMAGERESIST], SKILL_DAMAGERESIST);

@@ -154,9 +154,10 @@ class _Entity : public _Object {
 		float CurrentAccuracy;
 		float MinAccuracy;
 		float MaxAccuracy[WEAPONATTACK_COUNT];
-		float AccuracyModifier;
 		float Recoil;
 		float RecoilRegen;
+		float RecoilModifier;
+		float MoveRecoil;
 		float AttackRange[WEAPONATTACK_COUNT];
 		double FireTimer[WEAPONATTACK_COUNT];
 		double FirePeriod[WEAPONATTACK_COUNT];

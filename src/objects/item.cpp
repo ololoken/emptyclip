@@ -275,7 +275,7 @@ void _Item::DrawTooltip(const _Player *Player, std::size_t CompareSlot, glm::ive
 			// Ammo type
 			if(!Template.AmmoID.empty()) {
 				DrawPosition.y += 20;
-				Buffer << Template.Name;
+				Buffer << Stats.Objects.at(Template.AmmoID).Name;
 				ae::Assets.Fonts["hud_medium"]->DrawText("Ammo Type", DrawPosition - DrawOffset, ae::RIGHT_BASELINE);
 				ae::Assets.Fonts["hud_medium"]->DrawText(Buffer.str(), DrawPosition + DrawOffset);
 				Buffer.str("");
@@ -446,9 +446,10 @@ void _Item::RecalculateStats() {
 			SetAttributeSpread("accuracy", IsMelee() ? GetBonusMultiplier(MOD_ACCURACY) : 1.0f / GetBonusMultiplier(MOD_ACCURACY));
 			Attributes["rounds"].Int = std::ceil(Template.Attributes.at("rounds").Int * GetBonusMultiplier(MOD_MAXROUNDS));
 			Attributes["fire_period"].Double = Template.Attributes.at("fire_period").Double / GetBonusMultiplier(MOD_ATTACKSPEED);
-			Attributes["reload_period"].Double = Template.Attributes.at("reload_period").Double / GetBonusMultiplier(MOD_RELOADSPEED);
 			Attributes["attack_count"].Int = Template.Attributes.at("attack_count").Int;
+			Attributes["reload_period"].Double = Template.Attributes.at("reload_period").Double / GetBonusMultiplier(MOD_RELOADSPEED);
 			Attributes["reload_amount"].Int = Template.Attributes.at("reload_amount").Int + Bonus[MOD_RELOADAMOUNT];
+			Attributes["move_recoil"].Float = Template.Attributes.at("move_recoil").Float;
 			Attributes["penetration"].Int = Template.Attributes.at("penetration").Int + Bonus[MOD_PENETRATION];
 
 			// For melee, min accuracy is 0 and max is swing arc

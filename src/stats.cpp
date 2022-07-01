@@ -214,6 +214,7 @@ void _Stats::LoadWeapons(const std::string &Path) {
 			>> Template.Attributes["accuracy_spread"].Float
 			>> Template.Attributes["recoil"].Float
 			>> Template.Attributes["recoil_regen"].Float
+			>> Template.Attributes["move_recoil"].Float
 			>> Template.Attributes["range"].Float
 			>> Template.Attributes["fire_rate"].Int
 			>> Template.Attributes["fire_period"].Double
