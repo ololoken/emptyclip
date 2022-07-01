@@ -237,21 +237,19 @@ void _Stats::LoadWeapons(const std::string &Path) {
 		SetColor(Template.Color, ColorID);
 
 		// Check for attack sound
-		if(!GameAssets.IsSoundGroupLoaded(SoundGroupID))
+		if(GameAssets.SoundGroups.find(SoundGroupID) == GameAssets.SoundGroups.end())
 			throw std::runtime_error(std::string(__func__) + " Unknown sound group: " + SoundGroupID);
 
 		// Set sound ids
-		_SoundGroup *SoundGroupTemplate = GameAssets.GetSoundGroupTemplate(SoundGroupID);
-		if(SoundGroupTemplate) {
-			for(int i = 0; i < SOUND_COUNT; i++)
-				Template.SoundID[i] = SoundGroupTemplate->SoundID[i];
-		}
+		_SoundGroup &SoundGroupTemplate = GameAssets.SoundGroups.at(SoundGroupID);
+		for(int i = 0; i < SOUND_COUNT; i++)
+			Template.SoundID[i] = SoundGroupTemplate.SoundID[i];
 
 		// Set particles
-		if(GameAssets.IsWeaponParticleTemplateLoaded(WeaponParticlesID))
-			Template.WeaponParticles = GameAssets.GetWeaponParticleTemplate(WeaponParticlesID);
+		if(GameAssets.ParticleGroups.find(WeaponParticlesID) != GameAssets.ParticleGroups.end())
+			Template.ParticleGroup = &GameAssets.ParticleGroups.at(WeaponParticlesID);
 		else
-			Template.WeaponParticles = &BlankWeaponParticle;
+			Template.ParticleGroup = &BlankWeaponParticle;
 
 		// Check for duplicates
 		if(Objects.find(ID) != Objects.end())
@@ -564,22 +562,22 @@ void _Stats::LoadMonsters(const std::string &Path) {
 		SetColor(Template.Color, ColorID);
 
 		// Set particles
-		if(GameAssets.IsWeaponParticleTemplateLoaded(WeaponParticlesID))
-			Template.WeaponParticles = GameAssets.GetWeaponParticleTemplate(WeaponParticlesID);
+		if(GameAssets.ParticleGroups.find(WeaponParticlesID) != GameAssets.ParticleGroups.end())
+			Template.ParticleGroup = &GameAssets.ParticleGroups.at(WeaponParticlesID);
 		else
-			Template.WeaponParticles = &BlankWeaponParticle;
+			Template.ParticleGroup = &BlankWeaponParticle;
 
 		// Check for sound group
-		if(!GameAssets.IsSoundGroupLoaded(Template.SoundGroupID))
-			throw std::runtime_error(std::string(__func__) + " - Unknown sound_group_id: '" + Template.SoundGroupID + "' for " + ID);
+		if(GameAssets.SoundGroups.find(Template.SoundGroupID) == GameAssets.SoundGroups.end())
+			throw std::runtime_error(std::string(__func__) + " Unknown soundgroup_id: '" + Template.SoundGroupID + "' for " + ID);
 
 		// Check for item group
 		if(Template.ItemDropID != "" && ItemDrops.find(Template.ItemDropID) == ItemDrops.end())
-			throw std::runtime_error(std::string(__func__) + " - Unknown itemdrop_id: '" + Template.ItemDropID + "' for " + ID);
+			throw std::runtime_error(std::string(__func__) + " Unknown itemdrop_id: '" + Template.ItemDropID + "' for " + ID);
 
 		// Check for duplicates
 		if(Stats.Objects.find(ID) != Stats.Objects.end())
-			throw std::runtime_error(std::string(__func__) + " - Duplicate id: '" + ID + "'");
+			throw std::runtime_error(std::string(__func__) + " Duplicate id: '" + ID + "'");
 
 		Objects.insert(std::make_pair(ID, Template));
 	}

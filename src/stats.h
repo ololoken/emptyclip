@@ -28,6 +28,9 @@ class _Item;
 class _Weapon;
 class _Monster;
 struct _ObjectSpawn;
+namespace ae {
+	class _Sound;
+}
 
 // Used for level information
 struct _Level {
@@ -63,7 +66,7 @@ struct _ItemDrop {
 // Object template
 struct _ObjectTemplate {
 
-	_ObjectTemplate(int Type) : WeaponParticles(nullptr), Color(1.0f), DoorColor(1.0f), Type(Type) { }
+	_ObjectTemplate(int Type) : ParticleGroup(nullptr), Color(1.0f), DoorColor(1.0f), Type(Type) { }
 	bool IsItem() const;
 
 	std::string Name;
@@ -72,8 +75,8 @@ struct _ObjectTemplate {
 	std::string AnimationID;
 	std::string SoundGroupID;
 	std::string ItemDropID;
-	std::string SoundID[SOUND_COUNT];
-	_ParticleGroup *WeaponParticles;
+	const ae::_Sound *SoundID[SOUND_COUNT];
+	const _ParticleGroup *ParticleGroup;
 	glm::vec4 Color;
 	glm::vec4 DoorColor;
 	int Type;

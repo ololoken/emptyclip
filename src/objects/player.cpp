@@ -62,11 +62,9 @@ _Player::_Player(const _ObjectTemplate &PlayerTemplate) :
 	Animation->Reels = ae::Assets.Animations["player"];
 
 	// Set sounds
-	_SoundGroup *SoundGroup = GameAssets.GetSoundGroupTemplate("player");
-	for(int i = 0; i < SOUND_COUNT; i++) {
-		if(SoundGroup)
-			Sounds[i] = SoundGroup->SoundID[i];
-	}
+	_SoundGroup &SoundGroup = GameAssets.SoundGroups.at("player");
+	for(int i = 0; i < SOUND_COUNT; i++)
+		Sounds[i] = SoundGroup.SoundID[i];
 
 	Reset();
 }
@@ -220,7 +218,7 @@ void _Player::UpdateAnimation(double FrameTime, bool PlaySound) {
 
 	// Play move sound on first and last frame of leg animation
 	if(PlaySound && LastFrame != LegAnimation->Frame && (LegAnimation->Frame == 0 || LegAnimation->Frame == LegAnimation->Reels[LegAnimation->Reel]->EndFrame))
-		ae::Audio.PlaySound(ae::Assets.Sounds[GetSound(SOUND_MOVE, -1)]);
+		ae::Audio.PlaySound(GetSound(SOUND_MOVE, -1));
 
 	switch(MoveState) {
 		case MOVE_FORWARD:
@@ -731,7 +729,7 @@ void _Player::StartReloading() {
 	CancelReloading();
 
 	// Play sound
-	ReloadSound = ae::Audio.PlaySound(ae::Assets.Sounds[GetSound(SOUND_RELOAD, WEAPONATTACK_MAIN)]);
+	ReloadSound = ae::Audio.PlaySound(GetSound(SOUND_RELOAD, WEAPONATTACK_MAIN));
 
 	// Start timer
 	ReloadTimer = 0;
@@ -1027,7 +1025,7 @@ void _Player::IncurDeathPenalty() {
 }
 
 // Returns a sound index
-const std::string &_Player::GetSound(int SoundType, int AttackType) const {
+const ae::_Sound *_Player::GetSound(int SoundType, int AttackType) const {
 	if(AttackType < 0)
 		return Sounds[SoundType];
 
@@ -1039,10 +1037,13 @@ const std::string &_Player::GetSound(int SoundType, int AttackType) const {
 	return Sounds[SoundType];
 }
 
-// Get a particle from the main weapon particle group
+// Get a particle from either the main weapon or player group
 const _ParticleTemplate *_Player::GetParticle(int Index) const {
+	if(Index == PARTICLE_HIT || Index == PARTICLE_FLOORDECAL)
+		return GameAssets.ParticleGroups.at("player").ParticleTemplates[Index];
+
 	if(HasMainHand())
-		return Stats.Objects.at(GetMainHand()->ID).WeaponParticles->ParticleTemplates[Index];
+		return Stats.Objects.at(GetMainHand()->ID).ParticleGroup->ParticleTemplates[Index];
 
 	return nullptr;
 }

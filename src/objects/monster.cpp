@@ -49,15 +49,14 @@ _Monster::_Monster(const _ObjectTemplate &MonsterTemplate) :
 	ViewRangeSquared *= ViewRangeSquared;
 
 	// Set weapon offsets
-	WeaponParticles = Template.WeaponParticles;
 	WeaponParticleOffset[0] = glm::vec2(0, 0);
 	for(int i = 1; i < WEAPON_COUNT; i++)
 		WeaponParticleOffset[i] = MONSTER_WEAPONOFFSET * Scale;
 
 	// Set attack sounds
-	_SoundGroup *SoundGroup = GameAssets.GetSoundGroupTemplate(Template.SoundGroupID);
+	_SoundGroup &SoundGroup = GameAssets.SoundGroups.at(Template.SoundGroupID);
 	for(int i = 0; i < SOUND_COUNT; i++)
-		Sounds[i] = SoundGroup->SoundID[i];
+		Sounds[i] = SoundGroup.SoundID[i];
 
 	AIType = Template.Attributes.at("ai_type").Int;
 	if(AIType)
@@ -116,5 +115,5 @@ void _Monster::Update(double FrameTime) {
 
 // Get weapon particles used by monster
 const _ParticleTemplate *_Monster::GetParticle(int Index) const {
-	return WeaponParticles->ParticleTemplates[Index];
+	return Template.ParticleGroup->ParticleTemplates[Index];
 }

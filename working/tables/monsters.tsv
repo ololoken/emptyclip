@@ -1,10 +1,10 @@
 id	name	animation_id	color_id	particlegroup_id	soundgroup_id	itemdrop_id	drop_count	health	health_level	ai_type	view_range	xp	xp_level	move_speed	move_speed_level	radius	scale	accuracy	attack_range	damage	damage_level	damage_spread	attack_period	weapon_type	attack_movespeed
-crate_ammo	Ammo Crate	crate_ammo		crate	crate	crate_ammo	5	20	0	0	0	0	0	0	0	0.5	1	0	0	0	0	0	0	0	0
-crate_health	Health Crate	crate_health		crate	crate	crate_health	3	20	0	0	0	0	0	0	0	0.5	1	0	0	0	0	0	0	0	0
-crate_gun	Gun Crate	crate_gun		crate	crate	crate_gun	1	20	0	0	0	0	0	0	0	0.5	1	0	0	0	0	0	0	0	0
-crate_melee	Melee Crate	crate_melee		crate	crate	crate_melee	1	20	0	0	0	0	0	0	0	0.5	1	0	0	0	0	0	0	0	0
-crate_armor	Armor Crate	crate_armor		crate	crate	crate_armor	1	20	0	0	0	0	0	0	0	0.5	1	0	0	0	0	0	0	0	0
-crate_mod	Mod Crate	crate_mod		crate	crate	crate_mod	1	20	0	0	0	0	0	0	0	0.5	1	0	0	0	0	0	0	0	0
+crate_ammo	Ammo Crate	crate_ammo		crate	crate	crate_ammo	5	25	25	0	0	0	0	0	0	0.5	1	0	0	0	0	0	0	0	0
+crate_health	Health Crate	crate_health		crate	crate	crate_health	3	25	25	0	0	0	0	0	0	0.5	1	0	0	0	0	0	0	0	0
+crate_gun	Gun Crate	crate_gun		crate	crate	crate_gun	1	25	25	0	0	0	0	0	0	0.5	1	0	0	0	0	0	0	0	0
+crate_melee	Melee Crate	crate_melee		crate	crate	crate_melee	1	25	25	0	0	0	0	0	0	0.5	1	0	0	0	0	0	0	0	0
+crate_armor	Armor Crate	crate_armor		crate	crate	crate_armor	1	25	25	0	0	0	0	0	0	0.5	1	0	0	0	0	0	0	0	0
+crate_mod	Mod Crate	crate_mod		crate	crate	crate_mod	1	25	25	0	0	0	0	0	0	0.5	1	0	0	0	0	0	0	0	0
 monster_zombie	Zombie	zombie		monster	zombie	monster	1	35	15	1	10	0	10	0.3	0.05	0.3	0.8	90	0.7	0	10	0.1	1.7	1	0.1
 monster_dog	Dog	dog		monster	dog	monster	1	5	10	1	25	0	7	7	0.1	0.2	0.7	90	0.9	5	10	0.1	0.8	1	0.5
 monster_bat	Bat	bat	dark	monster	bat	monster	1	0	10	1	8	0	5	4	0.1	0.2	0.5	90	0.7	0	8	0.1	1.1	1	0.25

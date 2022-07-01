@@ -84,7 +84,6 @@ void _GameAssets::LoadSounds(const std::string &Path, const std::string &SoundPa
 
 // Load sound groups
 void _GameAssets::LoadSoundGroups(const std::string &Path) {
-	_SoundGroup SoundGroup;
 
 	// Load file
 	std::ifstream File(Path, std::ios::in);
@@ -105,15 +104,20 @@ void _GameAssets::LoadSoundGroups(const std::string &Path) {
 		std::stringstream Buffer(Line);
 
 		// Read sounds
+		_SoundGroup SoundGroup;
 		for(int i = 0; i < SOUND_COUNT; i++) {
 			std::string SoundID;
 			std::getline(Buffer, SoundID, '\t');
 
 			// Check for sound
-			if(SoundID != "" && ae::Assets.Sounds.find(SoundID) == ae::Assets.Sounds.end())
-				throw std::runtime_error(std::string(__func__) + " - Cannot find: " + SoundID);
+			if(SoundID != "") {
+				if(ae::Assets.Sounds.find(SoundID) == ae::Assets.Sounds.end())
+					throw std::runtime_error(std::string(__func__) + " Unknown sound_id '" + SoundID + "'");
 
-			SoundGroup.SoundID[i] = SoundID;
+				SoundGroup.SoundID[i] = ae::Assets.Sounds.at(SoundID);
+			}
+			else
+				SoundGroup.SoundID[i] = nullptr;
 		}
 
 		// Check for duplicates
@@ -220,25 +224,11 @@ void _GameAssets::LoadParticleGroups(const std::string &Path) {
 	File.close();
 }
 
-bool _GameAssets::IsSoundGroupLoaded(const std::string &ID) { return SoundGroups.find(ID) != SoundGroups.end(); }
 bool _GameAssets::IsParticleLoaded(const std::string &ID) { return Particles.find(ID) != Particles.end(); }
-bool _GameAssets::IsWeaponParticleTemplateLoaded(const std::string &ID) { return ParticleGroups.find(ID) != ParticleGroups.end(); }
 
-_SoundGroup *_GameAssets::GetSoundGroupTemplate(const std::string &ID) {
-	if(SoundGroups.find(ID) == SoundGroups.end())
-		return nullptr;
-
-	return &SoundGroups[ID];
-}
 _ParticleTemplate *_GameAssets::GetParticleTemplate(const std::string &ID) {
 	if(Particles.find(ID) == Particles.end())
 		return nullptr;
 
 	return &Particles[ID];
-}
-_ParticleGroup *_GameAssets::GetWeaponParticleTemplate(const std::string &ID) {
-	if(ParticleGroups.find(ID) == ParticleGroups.end())
-		return nullptr;
-
-	return &ParticleGroups[ID];
 }

@@ -23,12 +23,13 @@
 #include <list>
 
 // Forward Declarations
+struct _ParticleTemplate;
+class _Map;
 namespace ae {
 	class _Animation;
 	class _AudioSource;
+	class _Sound;
 }
-struct _ParticleTemplate;
-class _Map;
 
 // Used to determine what direction an entity wants to go
 enum MoveType {
@@ -113,7 +114,7 @@ class _Entity : public _Object {
 		int GetPenetration(int Type) const { return Penetration[Type]; }
 
 		virtual const _ParticleTemplate *GetParticle(int Index) const { return nullptr; }
-		virtual const std::string &GetSound(int Type, int AttackType) const { return Sounds[Type]; }
+		virtual const ae::_Sound *GetSound(int Type, int AttackType) const { return Sounds[Type]; }
 
 		void StartTriggerDownAudio();
 		void StopAudio();
@@ -123,7 +124,7 @@ class _Entity : public _Object {
 		glm::vec2 WeaponParticleOffset[WEAPON_COUNT];
 
 		// Audio
-		std::string Sounds[SOUND_COUNT];
+		const ae::_Sound *Sounds[SOUND_COUNT];
 		ae::_AudioSource *TriggerDownAudio;
 
 		// Movement

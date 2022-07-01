@@ -29,12 +29,15 @@ class _Particle;
 class _Entity;
 class _Player;
 struct _ParticleTemplate;
+namespace ae {
+	class _Sound;
+}
 
 // Stores a list of sounds
 struct _SoundGroup {
 	_SoundGroup() { }
 
-	std::string SoundID[SOUND_COUNT];
+	const ae::_Sound *SoundID[SOUND_COUNT];
 };
 
 // Classes
@@ -45,26 +48,22 @@ class _GameAssets {
 		void Init();
 		void Close();
 
+		void LoadSounds(const std::string &Path, const std::string &SoundPath);
 		void LoadSoundGroups(const std::string &Path);
 		void LoadParticles(const std::string &Path);
-		void LoadSounds(const std::string &Path, const std::string &SoundPath);
-
 		void LoadParticleGroups(const std::string &Path);
 
-		bool IsSoundGroupLoaded(const std::string &ID);
 		bool IsParticleLoaded(const std::string &ID);
-		bool IsWeaponParticleTemplateLoaded(const std::string &ID);
 
-		_SoundGroup *GetSoundGroupTemplate(const std::string &ID);
 		_ParticleTemplate *GetParticleTemplate(const std::string &ID);
-		_ParticleGroup *GetWeaponParticleTemplate(const std::string &ID);
-
-	private:
 
 		// Tables
 		std::unordered_map<std::string, _SoundGroup> SoundGroups;
 		std::unordered_map<std::string, _ParticleTemplate> Particles;
 		std::unordered_map<std::string, _ParticleGroup> ParticleGroups;
+
+	private:
+
 };
 
 extern _GameAssets GameAssets;
