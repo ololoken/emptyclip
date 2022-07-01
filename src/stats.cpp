@@ -619,8 +619,6 @@ _Item *_Stats::CreateItem(const std::string &ID, int Level, int Quality, int Cou
 		case _Object::WEAPON: {
 			Item->Attributes["weapon_type"].Int = Template.Attributes["weapon_type"].Int;
 			Item->Attributes["zoom_scale"].Float = Template.Attributes["zoom_scale"].Float;
-			Item->Attributes["recoil"].Float = Template.Attributes["recoil"].Float;
-			Item->Attributes["recoil_regen"].Float = Template.Attributes["recoil_regen"].Float;
 			Item->Attributes["range"].Float = Template.Attributes["range"].Float;
 			Item->Attributes["fire_rate"].Int = Template.Attributes["fire_rate"].Int;
 			Item->Attributes["attack_movespeed"].Float = Template.Attributes["attack_movespeed"].Float;

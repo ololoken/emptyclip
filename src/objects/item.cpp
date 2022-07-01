@@ -381,7 +381,9 @@ void _Item::RecalculateStats() {
 			Attributes["attack_count"].Int = Template.Attributes.at("attack_count").Int;
 			Attributes["reload_period"].Double = Template.Attributes.at("reload_period").Double / GetBonusMultiplier(MOD_RELOADSPEED);
 			Attributes["reload_amount"].Int = Template.Attributes.at("reload_amount").Int + Bonus[MOD_RELOADAMOUNT];
-			Attributes["move_recoil"].Float = Template.Attributes.at("move_recoil").Float;
+			Attributes["recoil"].Float = Template.Attributes.at("recoil").Float / GetBonusMultiplier(MOD_HANDLING);
+			Attributes["recoil_regen"].Float = Template.Attributes.at("recoil_regen").Float * GetBonusMultiplier(MOD_HANDLING);
+			Attributes["move_recoil"].Float = Template.Attributes.at("move_recoil").Float / GetBonusMultiplier(MOD_HANDLING);
 			Attributes["penetration"].Int = Template.Attributes.at("penetration").Int + Bonus[MOD_PENETRATION];
 
 			// For melee, min accuracy is 0 and max is swing arc
@@ -421,6 +423,10 @@ bool _Item::AddMod(_Item *Mod) {
 			// Check for ammo
 			int ModType = Mod->Template.Attributes.at("mod_type").Int;
 			if(Template.Attributes.at("rounds").Int == 0 && (ModType == MOD_MAXROUNDS || ModType == MOD_RELOADSPEED || ModType == MOD_RELOADAMOUNT || ModType == MOD_HANDLING))
+				return false;
+
+			// Reload amount only affects manual reload weapons
+			if(ModType == MOD_RELOADAMOUNT && !Template.Attributes.at("reload_amount").Int)
 				return false;
 
 		} break;

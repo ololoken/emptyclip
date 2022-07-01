@@ -769,8 +769,6 @@ void _Player::StartWeaponSwitch(int SlotFrom, int SlotTo) {
 
 // Reloads the weapon when the timer goes off
 void _Player::UpdateReloading() {
-
-	// Check the timer
 	if(!Reloading || ReloadTimer <= ReloadPeriod)
 		return;
 
@@ -803,23 +801,23 @@ void _Player::UpdateReloading() {
 		StartReloading();
 }
 
-// Switches the weapon when the timer goes off
+// Switches weapons when the timer goes off
 void _Player::UpdateWeaponSwitch() {
+	if(!SwitchingWeapons || WeaponSwitchTimer <= WeaponSwitchPeriod)
+		return;
 
-	// Check the timer
-	if(SwitchingWeapons && (WeaponSwitchTimer > WeaponSwitchPeriod)) {
-		SwitchingWeapons = false;
+	SwitchingWeapons = false;
 
-		// Check weapon type
-		if(CanSwitchWeapons()) {
-			_Item *Temp = Inventory[WeaponSwitchFrom];
-			Inventory[WeaponSwitchFrom] = Inventory[WeaponSwitchTo];
-			Inventory[WeaponSwitchTo] = Temp;
+	// Check weapon type
+	if(!CanSwitchWeapons())
+	   return;
 
-			RecalculateStats();
-			ResetWeaponAnimation();
-		}
-	}
+	_Item *Temp = Inventory[WeaponSwitchFrom];
+	Inventory[WeaponSwitchFrom] = Inventory[WeaponSwitchTo];
+	Inventory[WeaponSwitchTo] = Temp;
+
+	RecalculateStats();
+	ResetWeaponAnimation();
 }
 
 // Updates the move speed modifier for aiming and running
@@ -881,7 +879,7 @@ void _Player::ResetAccuracy(bool CompleteReset) {
 		RecoilModifier = 1.0f;
 
 	if(CompleteReset)
-		CurrentAccuracy = MinAccuracyNormal;
+		CurrentAccuracy = MaxAccuracyNormal;
 
 	MinAccuracy = MinAccuracyNormal;
 	MaxAccuracy[WEAPONATTACK_MAIN] = MaxAccuracyNormal;
