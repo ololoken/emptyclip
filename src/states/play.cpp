@@ -858,8 +858,10 @@ void _PlayState::CreateItemDrop(const _Entity *Entity) {
 
 		// Roll for drop
 		Stats.GetRandomDrop(Monster->ItemDrop, &ObjectSpawn);
-		if(ObjectSpawn.Type)
+		if(ObjectSpawn.Type) {
+			ObjectSpawn.Level = Monster->Level;
 			SpawnObject(&ObjectSpawn, true);
+		}
 	}
 }
 

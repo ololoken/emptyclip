@@ -59,8 +59,10 @@ _Monster::_Monster(const _ObjectTemplate &MonsterTemplate) :
 	for(int i = 0; i < SOUND_TYPES; i++)
 		Sounds[i] = SoundGroup->SoundID[i];
 
-	//AIType = TemplateAttributes.at("ai_type").Int;
-	Rotation = ae::GetRandomReal(0.0f, 359.0f);
+	AIType = Template.Attributes.at("ai_type").Int;
+	if(AIType)
+		Rotation = ae::GetRandomReal(0.0f, 359.0f);
+
 	LastPlayerVisible = false;
 }
 
@@ -75,6 +77,9 @@ void _Monster::Update(double FrameTime) {
 
 	// Move the monster
 	if(IsDying())
+		return;
+
+	if(!AIType)
 		return;
 
 	// Check for player in range

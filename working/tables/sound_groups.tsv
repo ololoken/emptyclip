@@ -18,3 +18,4 @@ skeleton						player_punch0		skeleton_die0
 beast	player_swing0					monster_punch0	monster_hit0	monster_hit0	player_move1
 fighter						player_punch0		zombie_die0	
 gunner	rifle_fire0		pistol_ricochet0					zombie_die0	
+crate								crate_die0	

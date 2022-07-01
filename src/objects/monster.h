@@ -38,6 +38,7 @@ class _Monster : public _Entity {
 		// AI
 		const _Player *Player;
 		const _ItemDrop *ItemDrop;
+		int AIType;
 
 	private:
 
