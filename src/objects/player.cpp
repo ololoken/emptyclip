@@ -900,6 +900,9 @@ void _Player::ConsumeInventory(int Index, bool Delete) {
 
 // Calculates the player's stats from weapons and skills
 void _Player::RecalculateStats() {
+	CalculateExperienceStats();
+	CalculateSkillsRemaining();
+
 	_ObjectTemplate Weapon[WEAPONATTACK_COUNT] = { _Object::WEAPON, _Object::WEAPON };
 	for(int i = 0; i < WEAPONATTACK_COUNT; i++)
 		Weapon[i].Attributes = Stats.WeaponFists->Attributes;

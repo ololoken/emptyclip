@@ -139,6 +139,7 @@ void _Framework::Init(int ArgumentCount, char **Arguments) {
 
 	// Add dev mode commands
 	if(PlayState.DevMode) {
+		Console->CommandList.push_back("experience");
 		Console->CommandList.push_back("god");
 	}
 

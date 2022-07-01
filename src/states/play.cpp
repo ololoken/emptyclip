@@ -32,6 +32,7 @@
 #include <ae/light.h>
 #include <ae/audio.h>
 #include <ae/font.h>
+#include <ae/util.h>
 #include <objectmanager.h>
 #include <framework.h>
 #include <menu.h>
@@ -281,6 +282,10 @@ void _PlayState::HandleMouseButton(const ae::_MouseEvent &MouseEvent) {
 // Handle console commands
 bool _PlayState::HandleCommand(ae::_Console *Console) {
 
+	// Get parameters
+	std::vector<std::string> Parameters;
+	ae::TokenizeString(Console->Parameters, Parameters);
+
 	// Handle normal commands
 	if(Console->Command == "quit") {
 		HandleQuit();
@@ -294,12 +299,36 @@ bool _PlayState::HandleCommand(ae::_Console *Console) {
 
 		return true;
 	}
-	else if(Console->Command == "god") {
-		GodMode = !GodMode;
-		return true;
-	}
 
-	return false;
+	// Handle dev commands
+	if(DevMode) {
+		if(Console->Command == "experience") {
+			if(Parameters.size() == 1) {
+				if(!Player)
+					return true;
+
+				bool Adjust = false;
+				if(Parameters[0][0] == '+' || Parameters[0][0] == '-')
+					Adjust = true;
+
+				int64_t Change = ae::ToNumber<int64_t>(Parameters[0]);
+				Player->Experience = std::max((int64_t)0, Adjust ? Player->Experience + Change : Change);
+				Player->RecalculateStats();
+			}
+			else
+				Console->AddMessage("usage: " + Console->Command + " [+-][amount]");
+		}
+		else if(Console->Command == "god") {
+			GodMode = !GodMode;
+			Console->AddMessage("god = " + std::to_string(GodMode));
+		}
+		else
+			return false;
+	}
+	else
+		return false;
+
+	return true;
 }
 
 // Window size updates
