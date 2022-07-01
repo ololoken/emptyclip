@@ -62,7 +62,7 @@ _Entity::_Entity(const _ObjectTemplate &EntityTemplate) :
 	AttackRange{0, 0},
 	FireTimer{0, 0},
 	FirePeriod{0, 0},
-	AttackCount{0, 0},
+	AttackCount{1, 1},
 	AttackRequestType(0),
 	AttackRequested(false),
 	AttackAllowed{true, true},

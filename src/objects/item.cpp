@@ -84,6 +84,8 @@ void _Item::DrawTooltip(const _Player *Player, std::size_t CompareSlot, glm::ive
 		Size.y = 220;
 	else if(Type == _Object::MOD)
 		Size.y = 170;
+	else if(Type == _Object::MEDKIT)
+		Size.y = 150;
 
 	// Increase size for each unique mod
 	for(int i = 1; i < MOD_COUNT; i++) {
@@ -294,6 +296,9 @@ void _Item::DrawTooltip(const _Player *Player, std::size_t CompareSlot, glm::ive
 			DrawPosition.y += 20;
 			Buffer << "+" << Attributes.at("health_restored").Int << " HP";
 			ae::Assets.Fonts["hud_medium"]->DrawText(Buffer.str(), glm::vec2(DrawPosition.x, DrawPosition.y), ae::CENTER_BASELINE, COLOR_GREEN);
+
+			DrawPosition.y += 35;
+			ae::Assets.Fonts["hud_medium"]->DrawText("Right-click to use", glm::vec2(DrawPosition.x, DrawPosition.y), ae::CENTER_BASELINE, COLOR_GRAY);
 		} break;
 	}
 

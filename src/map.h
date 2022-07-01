@@ -252,6 +252,13 @@ class _Map {
 		void AddMinimapLayers();
 		static glm::vec2 GenerateRandomPointInCircle(float Radius);
 
+		// Stats
+		int MapType;
+		int Width;
+		int Height;
+		int Level;
+		std::string Filename;
+
 		// Objects
 		ae::_Camera *Camera;
 		std::unique_ptr<_ObjectManager> ObjectManager;
@@ -262,13 +269,6 @@ class _Map {
 	private:
 
 		bool CheckTileCollision(const glm::vec2 &Position, float Radius, float X, float Y, bool Resolve, glm::vec2 &Push, bool &DiagonalPush);
-
-		// Map
-		int MapType;
-		int Width;
-		int Height;
-		int Level;
-		std::string Filename;
 
 		// Blocks
 		_Tile **Data;

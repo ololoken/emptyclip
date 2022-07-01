@@ -624,12 +624,13 @@ void _EditorState::HandleMouseWheel(int Direction) {
 		}
 		else {
 			if(CurrentPalette == EDITMODE_EVENTS) {
-				EventSpawnLevel += Direction;
-				EventSpawnLevel = std::clamp(EventSpawnLevel, 1, OBJECT_MAX_LEVEL);
+				if(SelectedEvent)
+					SelectedEvent->SpawnLevel = std::clamp(SelectedEvent->SpawnLevel + Direction, 1, OBJECT_MAX_LEVEL);
+				else
+					EventSpawnLevel = std::clamp(EventSpawnLevel + Direction, 1, OBJECT_MAX_LEVEL);
 			}
 			else {
-				ObjectLevel += Direction;
-				ObjectLevel = std::clamp(ObjectLevel, 1, OBJECT_MAX_LEVEL);
+				ObjectLevel = std::clamp(ObjectLevel + Direction, 1, OBJECT_MAX_LEVEL);
 			}
 		}
 	}

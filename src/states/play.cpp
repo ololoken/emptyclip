@@ -848,7 +848,7 @@ void _PlayState::UseObject(_Item *NearbyItem) {
 		if(Event->Active && (Event->Type == EVENT_DOOR || Event->Type == EVENT_WSWITCH) && Map->CanChangeMapState(Event)) {
 
 			// Check for key in inventory and use it
-			if(Event->ItemID != "") {
+			if(!Event->ItemID.empty()) {
 				int ItemIndex = Player->FindItem(Event->ItemID);
 				if(ItemIndex == -1) {
 					HUD->ShowMessageBox("You need the " + Stats.Objects.at(Event->ItemID).Name, HUD_KEYMESSAGETIME);

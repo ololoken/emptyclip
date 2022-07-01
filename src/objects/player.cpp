@@ -668,18 +668,23 @@ int _Player::ReduceAmmo(int Amount) {
 
 // Uses an item from the player's inventory, return true if a key was used
 bool _Player::UseItem(int Index, bool Event) {
-	if(Index >= INVENTORY_BAGSTART && Index < INVENTORY_BAGEND && HasInventory(Index)) {
-		switch(Inventory[Index]->Type) {
-			case _Object::MEDKIT:
-				UseMedkit(Index);
-			break;
-			case _Object::KEY:
-				if(Event) {
+	if(Index < INVENTORY_BAGSTART || Index >= INVENTORY_BAGEND)
+		return false;
+
+	if(!HasInventory(Index))
+		return false;
+
+	switch(Inventory[Index]->Type) {
+		case _Object::MEDKIT:
+			UseMedkit(Index);
+		break;
+		case _Object::KEY:
+			if(Event) {
+				if(Map->MapType != MAPTYPE_CAMPAIGN)
 					ConsumeInventory(Index);
-					return true;
-				}
-			break;
-		}
+				return true;
+			}
+		break;
 	}
 
 	return false;

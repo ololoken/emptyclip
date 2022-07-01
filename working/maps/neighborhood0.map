@@ -404,7 +404,7 @@
 4 24 59 24 60 0.00 2.00 90.00 1.00 0 0 textures/map/window_castle.png	textures/map/blank.png
 4 10 93 87 93 0.00 1.00 0.00 1.00 0 0 textures/map/gate_grate.png	
 4 87 0 87 92 0.00 1.00 90.00 1.00 0 0 textures/map/gate_grate.png	
-4 23 86 23 86 0.00 1.00 90.00 1.00 0 0 textures/map/door_brick_open.png	textures/map/door_brick.png
+4 23 86 23 86 0.00 1.00 90.00 1.00 0 0 textures/map/door_brick_open.png	textures/map/door_brick_open.png
 4 23 83 23 85 0.00 1.00 90.00 1.00 0 0 textures/map/fence_metal_top.png	
 4 23 87 23 89 0.00 1.00 90.00 1.00 0 0 textures/map/fence_metal_top.png	
 4 12 90 22 90 0.00 1.00 0.00 1.00 0 0 textures/map/fence_metal_top.png	

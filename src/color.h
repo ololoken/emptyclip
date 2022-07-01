@@ -22,6 +22,7 @@
 const glm::vec4 COLOR_WHITE    = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 const glm::vec4 COLOR_TWHITE   = glm::vec4(1.0f, 1.0f, 1.0f, 0.5f);
 const glm::vec4 COLOR_DARK     = glm::vec4(0.3f, 0.3f, 0.3f, 1.0f);
+const glm::vec4 COLOR_GRAY     = glm::vec4(0.6f, 0.6f, 0.6f, 1.0f);
 const glm::vec4 COLOR_TGRAY    = glm::vec4(1.0f, 1.0f, 1.0f, 0.2f);
 const glm::vec4 COLOR_RED      = glm::vec4(1.0f, 0.0f, 0.0f, 1.0f);
 const glm::vec4 COLOR_GREEN    = glm::vec4(0.0f, 1.0f, 0.0f, 1.0f);

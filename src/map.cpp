@@ -40,13 +40,12 @@
 
 // Initialize
 _Map::_Map() :
-	Camera(nullptr),
-	ObjectManager(new _ObjectManager()),
 	MapType(MAPTYPE_CAMPAIGN),
 	Width(MAP_WIDTH),
 	Height(MAP_HEIGHT),
 	Level(1),
-	Filename(""),
+	Camera(nullptr),
+	ObjectManager(new _ObjectManager()),
 	Data(nullptr),
 	AmbientLight(0.5f, 0.5f, 0.5f, 1.0f),
 	OldAmbientLight(0.5f, 0.5f, 0.5f, 1.0f),
@@ -1259,24 +1258,25 @@ void _Map::ChangeMapState(const _Event *Event) {
 		throw std::runtime_error("Tile data uninitialized!");
 
 	// Check for the proper event
-	if(Event->Type == EVENT_DOOR || Event->Type == EVENT_WSWITCH || Event->Type == EVENT_FSWITCH) {
-		const std::vector<_EventTile> &Tiles = Event->Tiles;
+	if(!(Event->Type == EVENT_DOOR || Event->Type == EVENT_WSWITCH || Event->Type == EVENT_FSWITCH))
+		return;
 
-		// Switch the texture of the first block for wall switches
-		int StartIndex = 0;
-		if(Event->Type == EVENT_WSWITCH && Tiles.size() > 0 && Tiles[0].BlockID != -1) {
-			SwapBlockTextures(Tiles[0].Layer, Tiles[0].BlockID);
-			StartIndex = 1;
-		}
+	const std::vector<_EventTile> &Tiles = Event->Tiles;
 
-		// Change all the tiles
-		for(size_t i = StartIndex; i < Tiles.size(); i++) {
-			_Tile *Tile = &Data[Tiles[i].Coord.x][Tiles[i].Coord.y];
-			Tile->Collision ^= _Tile::ENTITY;
+	// Switch the texture of the first block for wall switches
+	int StartIndex = 0;
+	if(Event->Type == EVENT_WSWITCH && Tiles.size() > 0 && Tiles[0].BlockID != -1) {
+		SwapBlockTextures(Tiles[0].Layer, Tiles[0].BlockID);
+		StartIndex = 1;
+	}
 
-			// Switch textures
-			SwapBlockTextures(Tiles[i].Layer, Tiles[i].BlockID);
-		}
+	// Change all the tiles
+	for(size_t i = StartIndex; i < Tiles.size(); i++) {
+		_Tile *Tile = &Data[Tiles[i].Coord.x][Tiles[i].Coord.y];
+		Tile->Collision ^= _Tile::ENTITY;
+
+		// Switch textures
+		SwapBlockTextures(Tiles[i].Layer, Tiles[i].BlockID);
 	}
 }
 
@@ -1304,8 +1304,7 @@ void _Map::SwapBlockTextures(int Layer, int Index) {
 		return;
 
 	_Block *Block = &Blocks[Layer][Index];
-	if(Block->AltTexture)
-		std::swap(Block->Texture, Block->AltTexture);
+	std::swap(Block->Texture, Block->AltTexture);
 }
 
 // Renders the floor
@@ -1330,7 +1329,7 @@ int _Map::RenderFloors() {
 			Draw = Camera->IsAABBInView(Bounds);
 		}
 
-		if(!Draw)
+		if(!Draw || !Block->Texture)
 			continue;
 
 		ae::Graphics.DrawRepeatable(
@@ -1359,7 +1358,7 @@ int _Map::RenderFloors() {
 					Draw = Camera->IsAABBInView(Bounds);
 				}
 
-				if(!Draw)
+				if(!Draw || !Block->Texture)
 					continue;
 
 				ae::Graphics.DrawRepeatable(
@@ -1372,7 +1371,7 @@ int _Map::RenderFloors() {
 
 				Count++;
 			}
-			else {
+			else if(Block->Texture) {
 				ae::Graphics.DrawCube(
 					glm::vec3(Block->Start.x, Block->Start.y, Block->MinZ),
 					glm::vec3(Block->End.x - Block->Start.x + 1.0f, Block->End.y - Block->Start.y + 1.0f, Block->MaxZ - Block->MinZ),
@@ -1413,7 +1412,7 @@ int _Map::RenderWalls() {
 		}
 
 		// Skip
-		if(!Draw)
+		if(!Draw || !Block->Texture)
 			continue;
 
 		// Draw cube
@@ -1451,7 +1450,7 @@ int _Map::RenderFlatWalls() {
 			Draw = Camera->IsAABBInView(Bounds);
 		}
 
-		if(!Draw)
+		if(!Draw || !Block->Texture)
 			continue;
 
 		// Draw
