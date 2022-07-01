@@ -56,7 +56,7 @@ _Monster::_Monster(const _ObjectTemplate &MonsterTemplate) :
 
 	// Set attack sounds
 	_SoundGroup *SoundGroup = GameAssets.GetSoundGroupTemplate(Template.SoundGroupID);
-	for(int i = 0; i < SOUND_TYPES; i++)
+	for(int i = 0; i < SOUND_COUNT; i++)
 		Sounds[i] = SoundGroup->SoundID[i];
 
 	AIType = Template.Attributes.at("ai_type").Int;
@@ -115,6 +115,6 @@ void _Monster::Update(double FrameTime) {
 }
 
 // Get weapon particles used by monster
-const _ParticleTemplate *_Monster::GetWeaponParticle(int Index) const {
+const _ParticleTemplate *_Monster::GetParticle(int Index) const {
 	return WeaponParticles->ParticleTemplates[Index];
 }

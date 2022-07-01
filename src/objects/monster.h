@@ -21,7 +21,7 @@
 #include <objects/entity.h>
 
 struct _MonsterTemplate;
-struct _WeaponParticleTemplate;
+struct _ParticleGroup;
 class _Player;
 struct _ItemDrop;
 
@@ -33,7 +33,7 @@ class _Monster : public _Entity {
 		_Monster(const _ObjectTemplate &MonsterTemplate);
 
 		void Update(double FrameTime) override;
-		const _ParticleTemplate *GetWeaponParticle(int Index) const override;
+		const _ParticleTemplate *GetParticle(int Index) const override;
 
 		// AI
 		const _Player *Player;
@@ -46,5 +46,5 @@ class _Monster : public _Entity {
 		float AttackRangeSquared;
 		float ViewRangeSquared;
 
-		_WeaponParticleTemplate *WeaponParticles;
+		_ParticleGroup *WeaponParticles;
 };

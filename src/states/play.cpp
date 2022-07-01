@@ -1117,17 +1117,17 @@ void _PlayState::RemoveMonster(_Monster *Monster) {
 void _PlayState::GenerateBulletEffects(_Entity *Attacker, const int Type, const _Hit &Hit) {
 	if(Type == -1) {
 		glm::vec2 ParticlePosition = Attacker->Position + glm::rotate(Attacker->GetWeaponOffset(Attacker->GetWeaponType()), glm::radians(Attacker->Rotation));
-		Particles->Create(_ParticleSpawn(Attacker->GetWeaponParticle(WEAPONPARTICLE_FIRE), glm::vec2(0), ParticlePosition, OBJECT_Z, Attacker->Rotation));
-		Particles->Create(_ParticleSpawn(Attacker->GetWeaponParticle(WEAPONPARTICLE_SMOKE), glm::vec2(0), ParticlePosition, OBJECT_Z, 0));
+		Particles->Create(_ParticleSpawn(Attacker->GetParticle(PARTICLE_FIRE), glm::vec2(0), ParticlePosition, OBJECT_Z, Attacker->Rotation));
+		Particles->Create(_ParticleSpawn(Attacker->GetParticle(PARTICLE_SMOKE), glm::vec2(0), ParticlePosition, OBJECT_Z, 0));
 	}
 	else if(Type == HIT_WALL) {
-		Particles->Create(_ParticleSpawn(Attacker->GetWeaponParticle(WEAPONPARTICLE_RICOCHET), Hit.Normal, Hit.Position, OBJECT_Z, Attacker->Rotation));
-		Particles->Create(_ParticleSpawn(Attacker->GetWeaponParticle(WEAPONPARTICLE_BULLETHOLE), Hit.Normal, Hit.Position, OBJECT_Z, Attacker->Rotation));
+		Particles->Create(_ParticleSpawn(Attacker->GetParticle(PARTICLE_RICOCHET), Hit.Normal, Hit.Position, OBJECT_Z, Attacker->Rotation));
+		Particles->Create(_ParticleSpawn(Attacker->GetParticle(PARTICLE_BULLETHOLE), Hit.Normal, Hit.Position, OBJECT_Z, Attacker->Rotation));
 	}
 	else if(Type == HIT_OBJECT) {
-		glm::vec2 ParticlePosition = _Map::GenerateRandomPointInCircle(0.7f) + Hit.Position;
-		Particles->Create(_ParticleSpawn(GameAssets.GetParticleTemplate("bloodspurt0"), Hit.Normal, Hit.Position, OBJECT_Z, Attacker->Rotation));
-		Particles->Create(_ParticleSpawn(GameAssets.GetParticleTemplate("blood0"), Hit.Normal, ParticlePosition, 0.06f, Attacker->Rotation));
+		glm::vec2 ParticlePosition = _Map::GenerateRandomPointInCircle(0.2f) + Hit.Object->Position;
+		Particles->Create(_ParticleSpawn(Hit.Object->GetParticle(PARTICLE_HIT), Hit.Normal, Hit.Position, OBJECT_Z, Attacker->Rotation));
+		Particles->Create(_ParticleSpawn(Hit.Object->GetParticle(PARTICLE_FLOORDECAL), Hit.Normal, ParticlePosition, 0.06f, Attacker->Rotation));
 	}
 }
 

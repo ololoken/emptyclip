@@ -32,7 +32,7 @@ _Stats Stats;
 
 // Initialize
 void _Stats::Init() {
-	BlankWeaponParticle = _WeaponParticleTemplate();
+	BlankWeaponParticle = _ParticleGroup();
 
 	LoadStrings("tables/strings.tsv");
 	LoadLevels("tables/levels.tsv");
@@ -243,7 +243,7 @@ void _Stats::LoadWeapons(const std::string &Path) {
 		// Set sound ids
 		_SoundGroup *SoundGroupTemplate = GameAssets.GetSoundGroupTemplate(SoundGroupID);
 		if(SoundGroupTemplate) {
-			for(int i = 0; i < SOUND_TYPES; i++)
+			for(int i = 0; i < SOUND_COUNT; i++)
 				Template.SoundID[i] = SoundGroupTemplate->SoundID[i];
 		}
 
@@ -445,8 +445,7 @@ void _Stats::LoadItemDrops(const std::string &Path) {
 	if(!File)
 		throw std::runtime_error("Error loading: " + Path);
 
-	// Skip first two fields
-	File.ignore(std::numeric_limits<std::streamsize>::max(), '\t');
+	// Skip first field
 	File.ignore(std::numeric_limits<std::streamsize>::max(), '\t');
 
 	// Read rest of line into buffer
@@ -478,26 +477,17 @@ void _Stats::LoadItemDrops(const std::string &Path) {
 	while(!File.eof() && File.peek() != EOF) {
 
 		_ItemDropEntry ItemDropEntry;
-		File >> ItemDropEntry.Type;
-		File.ignore(1, '\t');
 		std::getline(File, ItemDropEntry.ItemID, '\t');
 
-		// See if items exist
-		switch(ItemDropEntry.Type) {
-			case _Object::NONE:
-			break;
-			case _Object::KEY:
-			case _Object::AMMO:
-			case _Object::MOD:
-			case _Object::ARMOR:
-			case _Object::WEAPON:
-			case _Object::MEDKIT:
-				if(Objects.find(ItemDropEntry.ItemID) == Objects.end())
-					throw std::runtime_error(std::string(__func__) + " - Cannot find: " + ItemDropEntry.ItemID + " in " + Path);
-			break;
-			default:
-				throw std::runtime_error(std::string(__func__) + " - Bad item type: " + ItemDropEntry.ItemID + " in " + Path);
-			break;
+		// Check for object
+		if(ItemDropEntry.ItemID == "none") {
+			ItemDropEntry.Type = 0;
+		}
+		else {
+			if(Objects.find(ItemDropEntry.ItemID) == Objects.end())
+				throw std::runtime_error(std::string(__func__) + " Unknown item_id '" + ItemDropEntry.ItemID + "' in " + Path);
+
+			ItemDropEntry.Type = Objects.at(ItemDropEntry.ItemID).Type;
 		}
 
 		// Add counts to item drops

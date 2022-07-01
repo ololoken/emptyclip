@@ -2,6 +2,7 @@ identifier	reels...
 crate_ammo	crate_ammo	crate_ammo	crate_ammo			
 crate_health	crate_health	crate_health	crate_health			
 crate_gun	crate_gun	crate_gun	crate_gun			
+crate_armor	crate_armor	crate_armor	crate_armor			
 player	player_move_1h	player_move_2h	player_melee	player_shoot_1h	player_shoot_2h	player_die
 zombie	zombie_move	zombie_melee	zombie_die			
 dog	dog_move	dog_melee	dog_die			

@@ -45,11 +45,9 @@ struct _Skill {
 
 // A single entry for an item drop
 struct _ItemDropEntry {
+
 	_ItemDropEntry() { }
-	_ItemDropEntry(const std::string &ItemID, float Count, int Type) :
-		ItemID(ItemID),
-		Count(Count),
-		Type(Type) { }
+	_ItemDropEntry(const std::string &ItemID, float Count, int Type) : ItemID(ItemID), Count(Count), Type(Type) { }
 
 	std::string ItemID;
 	float Count;
@@ -74,8 +72,8 @@ struct _ObjectTemplate {
 	std::string AnimationID;
 	std::string SoundGroupID;
 	std::string ItemDropID;
-	std::string SoundID[SOUND_TYPES];
-	_WeaponParticleTemplate *WeaponParticles;
+	std::string SoundID[SOUND_COUNT];
+	_ParticleGroup *WeaponParticles;
 	glm::vec4 Color;
 	glm::vec4 DoorColor;
 	int Type;
@@ -129,7 +127,7 @@ class _Stats {
 	private:
 
 		void SetColor(glm::vec4 &Color, const std::string &ColorID);
-		_WeaponParticleTemplate BlankWeaponParticle;
+		_ParticleGroup BlankWeaponParticle;
 
 		std::vector<_Skill> Skills;
 };

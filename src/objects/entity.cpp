@@ -75,7 +75,7 @@ _Entity::_Entity(const _ObjectTemplate &EntityTemplate) :
 	for(int i = 0; i < WEAPONATTACK_COUNT; i++)
 		Penetration[i] = 1;
 
-	for(int i = 0; i < SOUND_TYPES; i++)
+	for(int i = 0; i < SOUND_COUNT; i++)
 		Sounds[i] = -1;
 
 	Animation = new ae::_Animation(nullptr);

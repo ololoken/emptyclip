@@ -372,7 +372,7 @@ void _Framework::LoadAssets() {
 	GameAssets.LoadSounds("tables/sounds.tsv", "sounds/");
 	GameAssets.LoadSoundGroups("tables/sound_groups.tsv");
 	GameAssets.LoadParticles("tables/particles.tsv");
-	GameAssets.LoadWeaponParticles("tables/weaponparticles.tsv");
+	GameAssets.LoadParticleGroups("tables/particle_groups.tsv");
 	ae::Assets.LoadReels("tables/reels.tsv", false);
 	ae::Assets.LoadAnimations("tables/animations.tsv");
 

@@ -35,22 +35,15 @@ enum FireRateType {
 	FIRERATE_AUTO
 };
 
-// Types of weapon sounds
-enum WeaponSoundTypes {
-	WEAPONSOUND_FIRE,
-	WEAPONSOUND_MISS,
-	WEAPONSOUND_RICOCHET,
-	WEAPONSOUND_EMPTY,
-	WEAPONSOUND_RELOAD
-};
-
 // Types of weapon particles
-enum WeaponParticleTypes {
-	WEAPONPARTICLE_FIRE,
-	WEAPONPARTICLE_SMOKE,
-	WEAPONPARTICLE_RICOCHET,
-	WEAPONPARTICLE_BULLETHOLE,
-	WEAPONPARTICLE_TYPES
+enum ParticleTypes {
+	PARTICLE_FIRE,
+	PARTICLE_SMOKE,
+	PARTICLE_RICOCHET,
+	PARTICLE_BULLETHOLE,
+	PARTICLE_HIT,
+	PARTICLE_FLOORDECAL,
+	PARTICLE_COUNT
 };
 
 // Types of sounds
@@ -64,7 +57,7 @@ enum SoundTypes {
 	SOUND_TAKEDAMAGE,
 	SOUND_DEATH,
 	SOUND_MOVE,
-	SOUND_TYPES,
+	SOUND_COUNT,
 };
 
 // Skill types
@@ -80,6 +73,7 @@ enum SkillTypes {
 	SKILL_COUNT,
 };
 
+// Particle
 struct _ParticleTemplate {
 	glm::vec2 StartDirection;
 	glm::vec2 VelocityScale;
@@ -97,12 +91,13 @@ struct _ParticleTemplate {
 	int Type;
 };
 
-struct _WeaponParticleTemplate {
+// Group of particles
+struct _ParticleGroup {
 
-	_WeaponParticleTemplate() {
-		for(int i = 0; i < WEAPONPARTICLE_TYPES; i++)
+	_ParticleGroup() {
+		for(int i = 0; i < PARTICLE_COUNT; i++)
 			ParticleTemplates[i] = nullptr;
 	}
 
-	_ParticleTemplate *ParticleTemplates[WEAPONPARTICLE_TYPES];
+	_ParticleTemplate *ParticleTemplates[PARTICLE_COUNT];
 };

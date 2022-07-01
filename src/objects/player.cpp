@@ -63,7 +63,7 @@ _Player::_Player(const _ObjectTemplate &PlayerTemplate) :
 
 	// Set sounds
 	_SoundGroup *SoundGroup = GameAssets.GetSoundGroupTemplate("player");
-	for(int i = 0; i < SOUND_TYPES; i++) {
+	for(int i = 0; i < SOUND_COUNT; i++) {
 		if(SoundGroup)
 			Sounds[i] = SoundGroup->SoundID[i];
 	}
@@ -1039,8 +1039,8 @@ const std::string &_Player::GetSound(int SoundType, int AttackType) const {
 	return Sounds[SoundType];
 }
 
-// Returns the weapon's particle template
-const _ParticleTemplate *_Player::GetWeaponParticle(int Index) const {
+// Get a particle from the main weapon particle group
+const _ParticleTemplate *_Player::GetParticle(int Index) const {
 	if(HasMainHand())
 		return Stats.Objects.at(GetMainHand()->ID).WeaponParticles->ParticleTemplates[Index];
 

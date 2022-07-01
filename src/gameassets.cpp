@@ -105,7 +105,7 @@ void _GameAssets::LoadSoundGroups(const std::string &Path) {
 		std::stringstream Buffer(Line);
 
 		// Read sounds
-		for(int i = 0; i < SOUND_TYPES; i++) {
+		for(int i = 0; i < SOUND_COUNT; i++) {
 			std::string SoundID;
 			std::getline(Buffer, SoundID, '\t');
 
@@ -172,14 +172,14 @@ void _GameAssets::LoadParticles(const std::string &Path) {
 		if(FontID != "" && !Particle.Font)
 			throw std::runtime_error("Unable to find font: " + FontID);
 
-		ParticleTable[ID] = Particle;
+		Particles[ID] = Particle;
 	}
 
 	File.close();
 }
 
 // Loads the weapon particles
-void _GameAssets::LoadWeaponParticles(const std::string &Path) {
+void _GameAssets::LoadParticleGroups(const std::string &Path) {
 
 	// Load file
 	std::ifstream File(Path, std::ios::in);
@@ -201,8 +201,8 @@ void _GameAssets::LoadWeaponParticles(const std::string &Path) {
 		std::getline(File, Line, '\n');
 		std::stringstream Buffer(Line);
 
-		_WeaponParticleTemplate WeaponParticle;
-		for(int i = 0; i < WEAPONPARTICLE_TYPES; i++) {
+		_ParticleGroup WeaponParticle;
+		for(int i = 0; i < PARTICLE_COUNT; i++) {
 			std::string ParticleID;
 			std::getline(Buffer, ParticleID, '\t');
 
@@ -214,15 +214,15 @@ void _GameAssets::LoadWeaponParticles(const std::string &Path) {
 				WeaponParticle.ParticleTemplates[i] = GetParticleTemplate(ParticleID);
 		}
 
-		WeaponParticleTable[Name] = WeaponParticle;
+		ParticleGroups[Name] = WeaponParticle;
 	}
 
 	File.close();
 }
 
 bool _GameAssets::IsSoundGroupLoaded(const std::string &ID) { return SoundGroups.find(ID) != SoundGroups.end(); }
-bool _GameAssets::IsParticleLoaded(const std::string &ID) { return ParticleTable.find(ID) != ParticleTable.end(); }
-bool _GameAssets::IsWeaponParticleTemplateLoaded(const std::string &ID) { return WeaponParticleTable.find(ID) != WeaponParticleTable.end(); }
+bool _GameAssets::IsParticleLoaded(const std::string &ID) { return Particles.find(ID) != Particles.end(); }
+bool _GameAssets::IsWeaponParticleTemplateLoaded(const std::string &ID) { return ParticleGroups.find(ID) != ParticleGroups.end(); }
 
 _SoundGroup *_GameAssets::GetSoundGroupTemplate(const std::string &ID) {
 	if(SoundGroups.find(ID) == SoundGroups.end())
@@ -231,14 +231,14 @@ _SoundGroup *_GameAssets::GetSoundGroupTemplate(const std::string &ID) {
 	return &SoundGroups[ID];
 }
 _ParticleTemplate *_GameAssets::GetParticleTemplate(const std::string &ID) {
-	if(ParticleTable.find(ID) == ParticleTable.end())
+	if(Particles.find(ID) == Particles.end())
 		return nullptr;
 
-	return &ParticleTable[ID];
+	return &Particles[ID];
 }
-_WeaponParticleTemplate *_GameAssets::GetWeaponParticleTemplate(const std::string &ID) {
-	if(WeaponParticleTable.find(ID) == WeaponParticleTable.end())
+_ParticleGroup *_GameAssets::GetWeaponParticleTemplate(const std::string &ID) {
+	if(ParticleGroups.find(ID) == ParticleGroups.end())
 		return nullptr;
 
-	return &WeaponParticleTable[ID];
+	return &ParticleGroups[ID];
 }

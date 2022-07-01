@@ -112,7 +112,7 @@ class _Entity : public _Object {
 		int GetMaxDamage(int Type) const { return MaxDamage[Type]; }
 		int GetPenetration(int Type) const { return Penetration[Type]; }
 
-		virtual const _ParticleTemplate *GetWeaponParticle(int Index) const { return nullptr; }
+		virtual const _ParticleTemplate *GetParticle(int Index) const { return nullptr; }
 		virtual const std::string &GetSound(int Type, int AttackType) const { return Sounds[Type]; }
 
 		void StartTriggerDownAudio();
@@ -123,7 +123,7 @@ class _Entity : public _Object {
 		glm::vec2 WeaponParticleOffset[WEAPON_COUNT];
 
 		// Audio
-		std::string Sounds[SOUND_TYPES];
+		std::string Sounds[SOUND_COUNT];
 		ae::_AudioSource *TriggerDownAudio;
 
 		// Movement
