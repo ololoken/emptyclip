@@ -127,6 +127,7 @@ _HUD::_HUD(_Player *Player) :
 	Elements[LABEL_DAMAGERESIST] = ae::Assets.Elements["label_hud_player_damageresist_value"];
 	Elements[LABEL_MOVEMENTSPEED] = ae::Assets.Elements["label_hud_player_movementspeed_value"];
 	Elements[LABEL_KILLS] = ae::Assets.Elements["label_hud_player_kills_value"];
+	Elements[LABEL_DROPRATE] = ae::Assets.Elements["label_hud_player_droprate_value"];
 
 	Elements[ELEMENT_SKILLINFO] = ae::Assets.Elements["element_skill_info"];
 	Elements[LABEL_SKILLTEXT] = ae::Assets.Elements["label_hud_skill_text"];
@@ -532,6 +533,10 @@ void _HUD::RenderCharacterScreen() {
 
 	Buffer << int(100 * Player->MovementSpeed / PLAYER_MOVEMENTSPEED + 0.5f) << "%";
 	Elements[LABEL_MOVEMENTSPEED]->Text = Buffer.str();
+	Buffer.str("");
+
+	Buffer << Player->DropRate << "%";
+	Elements[LABEL_DROPRATE]->Text = Buffer.str();
 	Buffer.str("");
 
 	Buffer << Player->MonsterKills;

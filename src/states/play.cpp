@@ -33,6 +33,7 @@
 #include <ae/audio.h>
 #include <ae/font.h>
 #include <ae/util.h>
+#include <ae/random.h>
 #include <objectmanager.h>
 #include <framework.h>
 #include <menu.h>
@@ -770,7 +771,7 @@ void _PlayState::ResolveAttack(_Entity *Attacker, int GridType) {
 					if(Hit.Object->IsDying()) {
 
 						// Handle item drops
-						CreateItemDrop(Hit.Object);
+						CreateItemDrop(Hit.Object, Player->DropRate * 0.01f);
 
 						// Dying sound
 						ae::Audio.PlaySound(Hit.Object->GetSound(SOUND_DEATH, -1), glm::vec3(Hit.Position.x, 0.0f, Hit.Position.y));
@@ -869,7 +870,7 @@ void _PlayState::UseObject(_Item *NearbyItem) {
 }
 
 // Creates a random item from an entity
-void _PlayState::CreateItemDrop(const _Entity *Entity) {
+void _PlayState::CreateItemDrop(const _Entity *Entity, float DropRate) {
 	if(Entity->Type != _Object::MONSTER)
 		return;
 
@@ -880,16 +881,25 @@ void _PlayState::CreateItemDrop(const _Entity *Entity) {
 
 	// Roll for items
 	for(int i = 0; i < Monster->Template.Attributes.at("drop_count").Int; i++) {
+		int Rolls = (int)DropRate;
 
-		// Spawn random item
-		_ObjectSpawn ObjectSpawn;
-		ObjectSpawn.Position = _Map::GenerateRandomPointInCircle(PLAYER_RADIUS) + Monster->Position;
+		// Check for extra roll
+		double MultiOdds = DropRate - (int)DropRate;
+		double MultiRoll = ae::GetRandomReal(0, 1);
+		if(MultiRoll <= MultiOdds)
+			Rolls++;
 
-		// Roll for drop
-		Stats.GetRandomDrop(Monster->ItemDrop, &ObjectSpawn);
-		if(ObjectSpawn.Type) {
-			ObjectSpawn.Level = Monster->Level;
-			SpawnObject(&ObjectSpawn, true);
+		// Roll for each item
+		for(int j = 0; j < Rolls; j++) {
+
+			// Roll for drop
+			_ObjectSpawn ObjectSpawn;
+			Stats.GetRandomDrop(Monster->ItemDrop, &ObjectSpawn);
+			if(ObjectSpawn.Type) {
+				ObjectSpawn.Position = _Map::GenerateRandomPointInCircle(PLAYER_RADIUS) + Monster->Position;
+				ObjectSpawn.Level = Monster->Level;
+				SpawnObject(&ObjectSpawn, true);
+			}
 		}
 	}
 }

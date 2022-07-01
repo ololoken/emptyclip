@@ -91,6 +91,7 @@ void _Player::Reset() {
 	ExperienceNeeded = 0;
 	ExperienceNextLevel = 0;
 	SkillPointsRemaining = 0;
+	DropRate = 100;
 
 	for(int i = 0; i < SKILL_COUNT; i++)
 		Skills[i] = 0;
@@ -987,6 +988,9 @@ void _Player::RecalculateStats() {
 		if(Ammo.find(AmmoType) != Ammo.end())
 			Ammo[AmmoType] = std::min(Ammo[AmmoType], AmmoMax[AmmoType]);
 	}
+
+	// Drop Rate
+	DropRate = 100 + Skills[SKILL_LUCK];
 }
 
 // Reset after death

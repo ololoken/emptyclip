@@ -87,7 +87,7 @@ class _PlayState : public ae::_State {
 		void SpawnObject(_ObjectSpawn *ObjectSpawn, bool GenerateStats=false);
 		void AddMonster(_Monster *Monster);
 		void RemoveMonster(_Monster *Monster);
-		void CreateItemDrop(const _Entity *Entity);
+		void CreateItemDrop(const _Entity *Entity, float DropRate);
 		void ResolveAttack(_Entity *Attacker, int GridType);
 		void PickupObject(_Item *NearbyItem, int &AmountAdded);
 		void UseObject(_Item *NearbyItem);

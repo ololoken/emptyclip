@@ -119,8 +119,10 @@
         <element id="label_hud_player_damageresist_value" font="hud_medium" text="0" offset_x="155" offset_y="460" alignment_x="0" alignment_y="3"/>
         <element id="label_hud_player_movementspeed_text" font="hud_medium" text="Move Speed" offset_x="-160" offset_y="480" alignment_x="2" alignment_y="3"/>
         <element id="label_hud_player_movementspeed_value" font="hud_medium" text="0" offset_x="155" offset_y="480" alignment_x="0" alignment_y="3"/>
-        <element id="label_hud_player_kills_text" font="hud_medium" text="Kills" offset_x="-160" offset_y="500" alignment_x="2" alignment_y="3"/>
-        <element id="label_hud_player_kills_value" font="hud_medium" text="0" offset_x="155" offset_y="500" alignment_x="0" alignment_y="3"/>
+        <element id="label_hud_player_droprate_text" font="hud_medium" text="Drop Rate" offset_x="-160" offset_y="500" alignment_x="2" alignment_y="3"/>
+        <element id="label_hud_player_droprate_value" font="hud_medium" text="0" offset_x="155" offset_y="500" alignment_x="0" alignment_y="3"/>
+        <element id="label_hud_player_kills_text" font="hud_medium" text="Kills" offset_x="-160" offset_y="520" alignment_x="2" alignment_y="3"/>
+        <element id="label_hud_player_kills_value" font="hud_medium" text="0" offset_x="155" offset_y="520" alignment_x="0" alignment_y="3"/>
     </element>
     <element id="element_skill_info" style="style_hud_skills" size_x="450" size_y="200" alignment_x="0" alignment_y="0">
         <element id="label_hud_skill_text" font="hud_large" offset_x="15" offset_y="30" alignment_x="0" alignment_y="3"/>
