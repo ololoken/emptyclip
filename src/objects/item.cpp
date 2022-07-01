@@ -470,12 +470,24 @@ std::string _Item::GetTypeAsString() const {
 					WeaponTypeString = "Heavy";
 				break;
 			}
+
 			return WeaponTypeString + " class weapon";
 		} break;
 		case _Object::ARMOR:
 			return "Armor";
-		case _Object::MOD:
-			return "Weapon Mod";
+		case _Object::MOD: {
+			std::string TypeString;
+			switch(Template.Attributes.at("object_type").Int) {
+				case _Object::WEAPON:
+					TypeString = "Weapon";
+				break;
+				case _Object::ARMOR:
+					TypeString = "Armor";
+				break;
+			}
+
+			return TypeString + " Mod";
+		} break;
 		case _Object::AMMO:
 			return "Ammo";
 		case _Object::KEY:
