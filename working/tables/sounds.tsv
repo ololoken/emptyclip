@@ -27,6 +27,7 @@ player_move0	player_move0.ogg	0.1	1
 player_move1	player_move1.ogg	0.2	1
 player_punch0	player_punch0.ogg	0.7	1
 player_swing0	player_swing0.ogg	0.7	1
+boltrifle_fire0	boltrifle_fire0.ogg	0.7	3
 rifle_fire0	rifle_fire0.ogg	0.7	3
 shotgun_fire0	shotgun_fire0.ogg	0.7	3
 shotgun_reload0	shotgun_reload0.ogg	0.7	1

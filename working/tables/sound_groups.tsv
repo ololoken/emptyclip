@@ -7,6 +7,7 @@ pistol_heavy	pistol_fire1		pistol_ricochet0	pistol_empty0	pistol_reload0
 plasma	plasma_fire0			pistol_empty0	pistol_reload0				
 magnum	magnum_fire0		pistol_ricochet0	pistol_empty0	pistol_reload0				
 shotgun	shotgun_fire0		pistol_ricochet0	pistol_empty0	shotgun_reload0				
+boltrifle	boltrifle_fire0		pistol_ricochet0	pistol_empty0	shotgun_reload0				
 rifle	rifle_fire0		pistol_ricochet0	pistol_empty0	pistol_reload0				
 sniper	sniper_fire0		pistol_ricochet0	pistol_empty0	pistol_reload0				
 minigun		minigun_fire0	pistol_ricochet0	pistol_empty0	pistol_reload0				

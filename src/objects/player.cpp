@@ -1062,7 +1062,7 @@ bool _Player::CanUseMedkit() const {
 }
 
 bool _Player::CanReload() const {
-	return HasMainHand() && !Reloading && !SwitchingWeapons && !IsMeleeAttacking() && GetMainHand()->Attributes.at("ammo").Int != GetMainHand()->Attributes.at("rounds").Int && HasAmmoForMain();
+	return HasMainHand() && AttackAllowed[WEAPONATTACK_MAIN] && !Reloading && !SwitchingWeapons && !IsMeleeAttacking() && GetMainHand()->Attributes.at("ammo").Int != GetMainHand()->Attributes.at("rounds").Int && HasAmmoForMain();
 }
 
 bool _Player::IsMelee() const { return GetMainHand() == nullptr || GetMainHand()->IsMelee(); }
