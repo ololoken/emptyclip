@@ -182,17 +182,22 @@ bool _PlayState::HandleAction(int InputType, std::size_t Action, int Value) {
 			case Action::GAME_FIRE:
 				if(!HUD->GetInventoryOpen() && !Player->IsMeleeAttacking()) {
 
+					// Use melee weapon if player has no main hand
+					int AttackType = WEAPONATTACK_MAIN;
+					if(!Player->HasMainHand() && Player->HasMelee())
+						AttackType = WEAPONATTACK_MELEE;
+
 					// Can reload
 					if(Player->Reloading)
 						Player->CancelReloading();
 
 					// Play sound
-					if(Player->CanAttack(WEAPONATTACK_MAIN) && !Player->WeaponHasAmmo(WEAPONATTACK_MAIN))
-						ae::Audio.PlaySound(Player->GetSound(SOUND_EMPTY, WEAPONATTACK_MAIN));
+					if(Player->CanAttack(AttackType) && !Player->WeaponHasAmmo(AttackType))
+						ae::Audio.PlaySound(Player->GetSound(SOUND_EMPTY, AttackType));
 
-					if(Player->GetFireRate(WEAPONATTACK_MAIN) == FIRERATE_SEMI) {
+					if(Player->GetFireRate(AttackType) == FIRERATE_SEMI) {
 						Player->AttackRequested = true;
-						Player->AttackRequestType = WEAPONATTACK_MAIN;
+						Player->AttackRequestType = AttackType;
 					}
 				}
 			break;
