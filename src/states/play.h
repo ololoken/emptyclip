@@ -91,8 +91,9 @@ class _PlayState : public ae::_State {
 		void ResolveAttack(_Entity *Attacker, int GridType);
 		void PickupObject(_Item *NearbyItem, int &AmountAdded);
 		void UseObject(_Item *NearbyItem);
+		void ActivateEvent();
 
-			// Game
+		// Game
 		double CursorItemTimer;
 		double SaveGameTimer;
 

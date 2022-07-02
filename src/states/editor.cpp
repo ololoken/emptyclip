@@ -942,7 +942,7 @@ void _EditorState::Render(double BlendFactor) {
 
 	// Draw filename
 	std::ostringstream Buffer;
-	Buffer << Map->GetFilename();
+	Buffer << Map->Filename;
 	MainFont->DrawText(Buffer.str(), glm::vec2(25, 25));
 	Buffer.str("");
 

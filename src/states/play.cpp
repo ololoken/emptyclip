@@ -96,7 +96,7 @@ void _PlayState::Init() {
 	Map = new _Map(Level);
 	Map->InitializeTiles();
 	Player->Map = Map;
-	Player->MapID = Map->GetFilename();
+	Player->MapID = Map->Filename;
 
 	// Set starting states
 	Player->SetPosition(Map->GetStartingPositionByCheckpoint(Player->CheckpointIndex));
@@ -138,7 +138,7 @@ void _PlayState::Init() {
 void _PlayState::Close() {
 
 	DeleteMonsters();
-	ActiveEvents.clear();;
+	ActiveEvents.clear();
 
 	Player->StopAudio();
 
@@ -448,11 +448,14 @@ void _PlayState::Update(double FrameTime) {
 			}
 		}
 		// Manually pickup up an item
-		else if(Player->UseRequested) {
+		else if(Player->UseRequested)
 			UseObject(NearbyItem);
+	}
 
-			Player->UseRequested = false;
-		}
+	// Activate events
+	if(Player->UseRequested && Player->CanUse()) {
+		ActivateEvent();
+		Player->UseRequested = false;
 	}
 
 	// Update objects
@@ -843,14 +846,16 @@ void _PlayState::PickupObject(_Item *NearbyItem, int &AmountAdded) {
 
 // Processes the use key to open doors, hit switches, and pickup items
 void _PlayState::UseObject(_Item *NearbyItem) {
-	if(!Player->CanUse())
+	if(!Player->CanPickup())
 		return;
 
 	// Pick up an item if available
-	if(Player->CanPickup()) {
-		int AmountAdded = 0;
-		PickupObject(NearbyItem, AmountAdded);
-	}
+	int AmountAdded = 0;
+	PickupObject(NearbyItem, AmountAdded);
+}
+
+// Open door or handle switches
+void _PlayState::ActivateEvent() {
 
 	// Open a door if possible
 	glm::ivec2 Position;

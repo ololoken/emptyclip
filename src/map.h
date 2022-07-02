@@ -230,7 +230,6 @@ class _Map {
 
 		void ClearEvent(const _Event *Event);
 
-		const std::string &GetFilename() const { return Filename; }
 		_Event *GetEvent(int Index) const;
 		std::vector<_Event *> &GetEventList(const glm::ivec2 &Coord);
 		glm::vec2 GetStartingPositionByCheckpoint(int Level);
@@ -278,7 +277,6 @@ class _Map {
 		std::vector<_Event *> CheckpointEvents;
 
 		// Objects
-		std::list<_Object *> Objects;
 		std::vector<_ObjectSpawn *> ObjectSpawns;
 		std::vector<_Particle *> Particles;
 

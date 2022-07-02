@@ -117,7 +117,7 @@ void _Menu::InitSinglePlayer() {
 
 	RefreshSaveSlots();
 	for(int i = 0; i <= _Save::SLOT_9; i++)
-		SaveSlots[i]->Checked = false;;
+		SaveSlots[i]->Checked = false;
 	SelectedColor = 0;
 	SelectedSlot = -1;
 
