@@ -101,7 +101,7 @@ class _HUD {
 		void Update(double FrameTime, float Radius);
 
 		void Render(bool FullMap);
-		void RenderCharacterScreen();
+		void DrawCharacterScreen();
 		void UpdateSkillInfo(int Skill, int DrawX, int DrawY);
 		void RenderCrosshair(const glm::vec2 &Position);
 		void RenderDeathScreen();

@@ -400,7 +400,7 @@ void _HUD::Render(bool FullMap) {
 	}
 
 	// Draw character screen
-	RenderCharacterScreen();
+	DrawCharacterScreen();
 
 	// Draw item tooltip
 	if(CursorOverItem && CursorItem != CursorOverItem) {
@@ -489,7 +489,7 @@ void _HUD::DrawHUDWeapon(const _Item *Weapon, ae::_Element *Element, ae::_Elemen
 }
 
 // Draw the inventory and character screen
-void _HUD::RenderCharacterScreen() {
+void _HUD::DrawCharacterScreen() {
 	if(!InventoryOpen)
 		return;
 
@@ -513,19 +513,24 @@ void _HUD::RenderCharacterScreen() {
 	glm::vec2 DrawPosition(ae::Graphics.CurrentSize.x - 160, ae::Graphics.CurrentSize.y/2 + 40);
 
 	// Offense
-	Buffer << Player->MinDamage[WEAPONATTACK_MAIN] << " - " << Player->MaxDamage[WEAPONATTACK_MAIN];
-	DrawAttribute("Damage", Buffer, DrawPosition);
-
-	Buffer << Player->MinDamage[WEAPONATTACK_MELEE] << " - " << Player->MaxDamage[WEAPONATTACK_MELEE];
-	DrawAttribute("Melee Damage", Buffer, DrawPosition);
-
 	if(Player->HasMainHand()) {
+		Buffer << Player->MinDamage[WEAPONATTACK_MAIN] << " - " << Player->MaxDamage[WEAPONATTACK_MAIN];
+		DrawAttribute("Damage", Buffer, DrawPosition);
+
 		Buffer << ae::Round1(Player->MinAccuracyNormal) << " - " << ae::Round1(Player->MaxAccuracyNormal);
 		DrawAttribute("Accuracy", Buffer, DrawPosition);
 
 		Buffer << ae::Round1(1.0 / Player->FirePeriod[WEAPONATTACK_MAIN]) << "/s";
 		DrawAttribute("Fire Rate", Buffer, DrawPosition);
 	}
+
+	DrawPosition.y += 20;
+
+	Buffer << Player->MinDamage[WEAPONATTACK_MELEE] << " - " << Player->MaxDamage[WEAPONATTACK_MELEE];
+	DrawAttribute("Melee Damage", Buffer, DrawPosition);
+
+	Buffer << ae::Round1(1.0 / Player->FirePeriod[WEAPONATTACK_MELEE]) << "/s";
+	DrawAttribute("Attack Speed", Buffer, DrawPosition);
 
 	DrawPosition.y += 20;
 
@@ -643,6 +648,7 @@ void _HUD::UpdateSkillInfo(int Skill, int DrawX, int DrawY) {
 		break;
 		case SKILL_AGILITY:
 			Elements[LABEL_SKILLTEXT]->Text = "Increases Attack Speed";
+			Elements[LABEL_SKILLTEXTALT]->Text = "Increases Fire Rate";
 			Buffer << "+" << Stats.GetSkill(Level, Skill) << "%";
 			BufferNext << "+" << Stats.GetSkill(Stats.GetValidSkillLevel(Level+1), Skill) << "%";
 		break;

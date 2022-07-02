@@ -82,10 +82,12 @@ void _Item::DrawTooltip(const _Player *Player, std::size_t CompareSlot, int Inve
 		Size.y = 300;
 	else if(Type == _Object::ARMOR)
 		Size.y = 240;
-	else if(Type == _Object::MOD)
-		Size.y = 190;
 	else if(Type == _Object::MEDKIT)
 		Size.y = 150;
+	else if(Type == _Object::MOD) {
+		Size.x = 310;
+		Size.y = 190;
+	}
 
 	// Increase size for each unique mod
 	for(int i = 1; i < MOD_COUNT; i++) {
@@ -214,7 +216,7 @@ void _Item::DrawTooltip(const _Player *Player, std::size_t CompareSlot, int Inve
 				Buffer << std::setprecision(3) << 1 / Attributes.at("fire_period").Double << "/s";
 				std::string AttackCountText;
 				if(IsMelee())
-					AttackCountText = "Attack Rate";
+					AttackCountText = "Attack Speed";
 				else
 					AttackCountText = "Fire Rate";
 				ae::Assets.Fonts["hud_medium"]->DrawText(AttackCountText, DrawPosition - DrawOffset, ae::RIGHT_BASELINE);
@@ -531,14 +533,18 @@ std::string _Item::ModTypeToString(int ModType) {
 			return "Damage";
 		break;
 		case MOD_ACCURACY:
-			if(IsMelee())
+			if(Type == _Object::MOD)
+				return "Accuracy/Swing Arc";
+			else if(IsMelee())
 				return "Swing Arc";
 			else
 				return "Accuracy";
 		break;
 		case MOD_ATTACKSPEED:
-			if(IsMelee())
-				return "Attack Rate";
+			if(Type == _Object::MOD)
+				return "Attack/Fire Rate";
+			else if(IsMelee())
+				return "Attack Speed";
 			else
 				return "Fire Rate";
 		break;
