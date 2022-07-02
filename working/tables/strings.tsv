@@ -15,3 +15,4 @@ tutorial_fire	Use [c red]Left-click[c white] to shoot your gun. Hold [c red]righ
 tutorial_sprint	Hold [c red]A[c white] to sprint.
 tutorial_crate	Attack the crate to open it.
 tutorial_swap	Hit [c red]W[c white] to switch weapons.
+tutorial_map	Hold [c red]Tab[c white] to view the map.\n\nYellow icons are keys.
