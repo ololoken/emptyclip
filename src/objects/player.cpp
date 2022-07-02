@@ -49,10 +49,10 @@ _Player::_Player(const _ObjectTemplate &PlayerTemplate) :
 	DyingAnimation = PLAYER_ANIMATIONDYING;
 
 	// Weapon offsets
-	WeaponParticleOffset[0] = glm::vec2(0, 0);
-	WeaponParticleOffset[1] = PLAYER_PISTOLOFFSET;
+	WeaponOffset[0] = glm::vec2(0, 0);
+	WeaponOffset[1] = PLAYER_PISTOLOFFSET;
 	for(int i = 2; i < WEAPON_COUNT; i++)
-		WeaponParticleOffset[i] = PLAYER_WEAPONOFFSET;
+		WeaponOffset[i] = PLAYER_WEAPONOFFSET;
 
 	// Inventory
 	for(int i = 0; i < INVENTORY_SIZE; i++)
@@ -967,7 +967,7 @@ void _Player::RecalculateStats() {
 		if((i == WEAPONATTACK_MAIN && MainWeaponType == WEAPON_MELEE) || i == WEAPONATTACK_MELEE)
 			MeleeDamageModifier = Stats.GetSkillBonusMultiplier(Skills[SKILL_STRENGTH], SKILL_STRENGTH);
 
-		FireRate[i] = Weapon[i].Attributes["fire_rate"].Int;
+		FireRateType[i] = Weapon[i].Attributes["fire_rate"].Int;
 		FirePeriod[i] = std::max(Weapon[i].Attributes["fire_period"].Double / Stats.GetSkillBonusMultiplier(Skills[SKILL_AGILITY], SKILL_AGILITY), WEAPON_MINFIREPERIOD);
 		MinDamage[i] = std::ceil(Weapon[i].Attributes["min_damage"].Int * MeleeDamageModifier);
 		MaxDamage[i] = std::ceil(Weapon[i].Attributes["max_damage"].Int * MeleeDamageModifier);
@@ -1030,7 +1030,7 @@ void _Player::ResetWeaponAnimation() {
 		return;
 
 	// Get walking animation
-	switch(GetWeaponType()) {
+	switch(MainWeaponType) {
 		case WEAPON_MELEE:
 		case WEAPON_PISTOL:
 			WalkingAnimation = PLAYER_ANIMATIONWALKINGONEHAND;

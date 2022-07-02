@@ -70,7 +70,7 @@ _Entity::_Entity(const _ObjectTemplate &EntityTemplate) :
 	ExperienceGiven(0) {
 
 	for(int i = 0; i < WEAPON_COUNT; i++)
-		WeaponParticleOffset[i] = glm::vec2(0.0f, 0.0f);
+		WeaponOffset[i] = glm::vec2(0.0f, 0.0f);
 
 	for(int i = 0; i < WEAPONATTACK_COUNT; i++)
 		Penetration[i] = 1;
@@ -139,7 +139,7 @@ bool _Entity::StartAttack() {
 		return false;
 
 	// Set animation
-	if(AttackRequestType == WEAPONATTACK_MELEE || GetWeaponType() == WEAPON_MELEE) {
+	if(AttackRequestType == WEAPONATTACK_MELEE || MainWeaponType == WEAPON_MELEE) {
 		Action = ACTION_STARTMELEE;
 
 		// Play weapon sound
@@ -237,7 +237,7 @@ void _Entity::UpdateAnimation(double FrameTime, bool PlaySound) {
 			}
 		break;
 		case ACTION_STARTSHOOT:
-			if(GetWeaponType() == WEAPON_PISTOL) {
+			if(MainWeaponType == WEAPON_PISTOL) {
 				Animation->Stop();
 				Animation->Play(ShootingOnehandAnimation);
 			}

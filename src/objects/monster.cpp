@@ -49,9 +49,9 @@ _Monster::_Monster(const _ObjectTemplate &MonsterTemplate) :
 	ViewRangeSquared *= ViewRangeSquared;
 
 	// Set weapon offsets
-	WeaponParticleOffset[0] = glm::vec2(0, 0);
+	WeaponOffset[0] = glm::vec2(0, 0);
 	for(int i = 1; i < WEAPON_COUNT; i++)
-		WeaponParticleOffset[i] = MONSTER_WEAPONOFFSET * Scale;
+		WeaponOffset[i] = MONSTER_WEAPONOFFSET * Scale;
 
 	// Set attack sounds
 	_SoundGroup &SoundGroup = GameAssets.SoundGroups.at(Template.SoundGroupID);

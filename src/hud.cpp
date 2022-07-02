@@ -512,10 +512,10 @@ void _HUD::RenderCharacterScreen() {
 	glm::vec2 DrawPosition(ae::Graphics.CurrentSize.x - 160, ae::Graphics.CurrentSize.y/2 + 40);
 
 	// Offense
-	Buffer << Player->GetMinDamage(WEAPONATTACK_MAIN) << " - " << Player->GetMaxDamage(WEAPONATTACK_MAIN);
+	Buffer << Player->MinDamage[WEAPONATTACK_MAIN] << " - " << Player->MaxDamage[WEAPONATTACK_MAIN];
 	DrawAttribute("Damage", Buffer, DrawPosition);
 
-	Buffer << Player->GetMinDamage(WEAPONATTACK_MELEE) << " - " << Player->GetMaxDamage(WEAPONATTACK_MELEE);
+	Buffer << Player->MinDamage[WEAPONATTACK_MELEE] << " - " << Player->MaxDamage[WEAPONATTACK_MELEE];
 	DrawAttribute("Melee Damage", Buffer, DrawPosition);
 
 	if(Player->HasMainHand()) {

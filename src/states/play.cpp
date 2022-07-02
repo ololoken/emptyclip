@@ -195,7 +195,7 @@ bool _PlayState::HandleAction(int InputType, std::size_t Action, int Value) {
 					if(Player->CanAttack(AttackType) && !Player->WeaponHasAmmo(AttackType))
 						ae::Audio.PlaySound(Player->GetSound(SOUND_EMPTY, AttackType));
 
-					if(Player->GetFireRate(AttackType) == FIRERATE_SEMI) {
+					if(Player->FireRateType[AttackType] == FIRERATE_SEMI) {
 						Player->AttackRequested = true;
 						Player->AttackRequestType = AttackType;
 					}
@@ -206,7 +206,7 @@ bool _PlayState::HandleAction(int InputType, std::size_t Action, int Value) {
 					if(Player->Reloading)
 						Player->CancelReloading();
 
-					if(Player->GetFireRate(WEAPONATTACK_MELEE) == FIRERATE_SEMI) {
+					if(Player->FireRateType[WEAPONATTACK_MELEE] == FIRERATE_SEMI) {
 						Player->AttackRequested = true;
 						Player->AttackRequestType = WEAPONATTACK_MELEE;
 					}
@@ -402,11 +402,11 @@ void _PlayState::Update(double FrameTime) {
 		if(!HUD->GetInventoryOpen()) {
 
 			// Attack again
-			if(!Player->IsMeleeAttacking() && Player->GetFireRate(WEAPONATTACK_MAIN) == FIRERATE_AUTO && ae::Actions.State[Action::GAME_FIRE].Value > 0.0f) {
+			if(!Player->IsMeleeAttacking() && Player->FireRateType[WEAPONATTACK_MAIN] == FIRERATE_AUTO && ae::Actions.State[Action::GAME_FIRE].Value > 0.0f) {
 				Player->AttackRequested = true;
 				Player->AttackRequestType = WEAPONATTACK_MAIN;
 			}
-			if(Player->GetFireRate(WEAPONATTACK_MELEE) == FIRERATE_AUTO && ae::Actions.State[Action::GAME_MELEE].Value > 0.0f) {
+			if(Player->FireRateType[WEAPONATTACK_MELEE] == FIRERATE_AUTO && ae::Actions.State[Action::GAME_MELEE].Value > 0.0f) {
 				Player->AttackRequested = true;
 				Player->AttackRequestType = WEAPONATTACK_MELEE;
 			}
@@ -607,7 +607,7 @@ void _PlayState::Render(double BlendFactor) {
 			if(i == 1)
 				Color = COLOR_GREEN;
 
-			float Range = Player->GetWeaponRange(i);
+			float Range = Player->AttackRange[i];
 			if(Range == 0.0f)
 				Range = 100.0f;
 
@@ -615,8 +615,8 @@ void _PlayState::Render(double BlendFactor) {
 			ae::Graphics.SetColor(Color);
 			ae::Graphics.DrawCircle(glm::vec3(Player->Position, 0), Range);
 
-			glm::vec2 LeftLine = Player->Position + Player->GetDirectionVector(-Player->GetMaxAccuracy(i) * 0.5f) * Range;
-			glm::vec2 RightLine = Player->Position + Player->GetDirectionVector(Player->GetMaxAccuracy(i) * 0.5f) * Range;
+			glm::vec2 LeftLine = Player->Position + Player->GetDirectionVector(-Player->MaxAccuracy[i] * 0.5f) * Range;
+			glm::vec2 RightLine = Player->Position + Player->GetDirectionVector(Player->MaxAccuracy[i] * 0.5f) * Range;
 			ae::Graphics.DrawLine(Player->Position, LeftLine);
 			ae::Graphics.DrawLine(Player->Position, RightLine);
 		}
@@ -713,7 +713,7 @@ void _PlayState::ResolveAttack(_Entity *Attacker, int GridType) {
 	// Weapon type specific code
 	int WeaponType = WEAPON_MELEE;
 	if(Attacker->AttackRequestType == WEAPONATTACK_MAIN)
-		WeaponType = Attacker->GetWeaponType();
+		WeaponType = Attacker->MainWeaponType;
 
 	// Play fire sound and generate fire/smoke particles
 	if(WeaponType != WEAPON_MELEE) {
@@ -730,23 +730,24 @@ void _PlayState::ResolveAttack(_Entity *Attacker, int GridType) {
 	// For each bullet that the weapon fires
 	bool PlayedHitWallSound = false;
 	std::unordered_map<_Object *, int> DecalObjects;
+	std::vector<_Hit> Hits;
+	Hits.reserve(Attacker->Penetration[Attacker->AttackRequestType]);
 	for(int i = 0; i < Attacker->AttackCount[Attacker->AttackRequestType]; i++) {
-		std::vector<_Hit> Hits;
-		Hits.reserve(Attacker->GetPenetration(Attacker->AttackRequestType));
+		Hits.clear();
 
 		// Check weapon type
 		if(WeaponType == WEAPON_MELEE) {
-			Map->CheckMeleeCollisions(Attacker, Attacker->GetDirectionVector(), GridType, Attacker->GetPenetration(Attacker->AttackRequestType), Hits);
+			Map->CheckMeleeCollisions(Attacker, Attacker->GetDirectionVector(), GridType, Attacker->Penetration[Attacker->AttackRequestType], Hits);
 		}
 		else {
 
 			// Check distance to the wall
 			float ShotDirection = Attacker->GenerateShotDirection();
-			Map->CheckBulletCollisions(Attacker->Position, glm::rotate(glm::vec2(0, -1), glm::radians(ShotDirection)), Hits, GridType, true, Attacker->GetPenetration(Attacker->AttackRequestType));
+			Map->CheckBulletCollisions(Attacker->Position, glm::rotate(glm::vec2(0, -1), glm::radians(ShotDirection)), Hits, GridType, true, Attacker->Penetration[Attacker->AttackRequestType]);
 
 			// Generate tracer particle
 			_ParticleTemplate *Template = &GameAssets.Particles["tracer0"];
-			glm::vec2 ParticleStart = Attacker->Position + glm::rotate(glm::vec2(0, -Template->Size.y * 0.5f) + Attacker->GetWeaponOffset(Attacker->GetWeaponType()), glm::radians(ShotDirection));
+			glm::vec2 ParticleStart = Attacker->Position + glm::rotate(glm::vec2(0, -Template->Size.y * 0.5f) + Attacker->WeaponOffset[Attacker->MainWeaponType], glm::radians(ShotDirection));
 			_Particle *Tracer = new _Particle(_ParticleSpawn(Template, glm::vec2(0), ParticleStart, OBJECT_Z, ShotDirection));
 			float Distance = glm::length(Hits.front().Position - Attacker->Position) - Template->Size.y;
 			Tracer->Lifetime = Distance * Template->VelocityScale.y * GAME_FPS;
@@ -1182,7 +1183,7 @@ void _PlayState::RemoveMonster(_Monster *Monster) {
 // Generate particles depending on hit type
 void _PlayState::GenerateBulletEffects(_Entity *Attacker, const int Type, const _Hit &Hit) {
 	if(Type == -1) {
-		glm::vec2 ParticlePosition = Attacker->Position + glm::rotate(Attacker->GetWeaponOffset(Attacker->GetWeaponType()), glm::radians(Attacker->Rotation));
+		glm::vec2 ParticlePosition = Attacker->Position + glm::rotate(Attacker->WeaponOffset[Attacker->MainWeaponType], glm::radians(Attacker->Rotation));
 		Particles->Create(_ParticleSpawn(Attacker->GetParticle(PARTICLE_FIRE), glm::vec2(0), ParticlePosition, OBJECT_Z, Attacker->Rotation));
 		Particles->Create(_ParticleSpawn(Attacker->GetParticle(PARTICLE_SMOKE), glm::vec2(0), ParticlePosition, OBJECT_Z, 0));
 	}

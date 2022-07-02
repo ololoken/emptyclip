@@ -607,7 +607,7 @@ void _Map::CheckMeleeCollisions(_Entity *Attacker, const glm::vec2 &Direction, i
 
 	// Get the object's bounding rectangle
 	_TileBounds TileBounds;
-	GetTileBounds(Attacker->Position, Attacker->GetWeaponRange(Attacker->AttackRequestType), TileBounds);
+	GetTileBounds(Attacker->Position, Attacker->AttackRange[Attacker->AttackRequestType], TileBounds);
 	for(int i = TileBounds.Start.x; i <= TileBounds.End.x; i++) {
 		for(int j = TileBounds.Start.y; j <= TileBounds.End.y; j++) {
 			for(auto Iterator = Data[i][j].Objects[GridType].begin(); Iterator != Data[i][j].Objects[GridType].end(); ++Iterator) {
@@ -616,7 +616,7 @@ void _Map::CheckMeleeCollisions(_Entity *Attacker, const glm::vec2 &Direction, i
 					continue;
 
 				float DistanceSquared = glm::distance2(Entity->Position, Attacker->Position);
-				float RadiiSum = Entity->Radius + Attacker->GetWeaponRange(Attacker->AttackRequestType);
+				float RadiiSum = Entity->Radius + Attacker->AttackRange[Attacker->AttackRequestType];
 
 				// Check circle intersection
 				if(DistanceSquared >= RadiiSum * RadiiSum)
@@ -625,7 +625,7 @@ void _Map::CheckMeleeCollisions(_Entity *Attacker, const glm::vec2 &Direction, i
 				glm::vec2 ObjectDirection(glm::normalize(Entity->Position - Attacker->Position));
 
 				// Compare angles
-				if(glm::dot(Direction, ObjectDirection) > cosf(glm::radians(Attacker->GetMaxAccuracy(Attacker->AttackRequestType) * 0.5f))) {
+				if(glm::dot(Direction, ObjectDirection) > cosf(glm::radians(Attacker->MaxAccuracy[Attacker->AttackRequestType] * 0.5f))) {
 
 					// Check for walls
 					if(IsVisible(Attacker->Position, Entity->Position)) {

@@ -120,7 +120,6 @@ class _Player : public _Entity {
 		_Item *GetOffHand() const { return Inventory[INVENTORY_OFFHAND]; }
 		_Item *GetMelee() const { return Inventory[INVENTORY_MELEE]; }
 		_Item *GetArmor() const  { return Inventory[INVENTORY_ARMOR]; }
-		int GetFireRate(int AttackType) const { return FireRate[AttackType]; }
 		int GetInventoryMaxStack() const;
 		const ae::_Sound *GetSound(int SoundType, int AttackType) const override;
 
@@ -177,7 +176,7 @@ class _Player : public _Entity {
 		double WeaponSwitchPeriod;
 		double ReloadPeriod;
 		double UsePeriod;
-		int FireRate[WEAPONATTACK_COUNT];
+		int FireRateType[WEAPONATTACK_COUNT];
 		bool Reloading;
 		bool SwitchingWeapons;
 

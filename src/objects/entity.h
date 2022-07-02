@@ -88,7 +88,7 @@ class _Entity : public _Object {
 		void ResetAttackAllowed(int AttackType) { AttackAllowed[AttackType] = false; FireTimer[AttackType] = 0; }
 		bool IsMeleeAttacking() const { return Action == ACTION_MELEE || Action == ACTION_STARTMELEE; }
 
-		virtual bool CanAttack(int AttackType) const { return AttackAllowed[AttackType] && !IsMeleeAttacking() && !IsDying() && GetWeaponType() != WEAPON_NONE; }
+		virtual bool CanAttack(int AttackType) const { return AttackAllowed[AttackType] && !IsMeleeAttacking() && !IsDying() && MainWeaponType != WEAPON_NONE; }
 		virtual int ReduceAmmo(int Amount) { return Amount; }
 		virtual bool WeaponHasAmmo(int AttackType) const { return true; }
 
@@ -105,13 +105,6 @@ class _Entity : public _Object {
 
 		float GetHealthPercentage() const { return (float)Health / MaxHealth; }
 		float GetStaminaPercentage() const { return Stamina / MaxStamina; }
-		int GetWeaponType() const { return MainWeaponType; }
-		glm::vec2 GetWeaponOffset(int WeaponType) const { return WeaponParticleOffset[WeaponType]; }
-		float GetWeaponRange(int AttackType) const { return AttackRange[AttackType]; }
-		float GetMaxAccuracy(int AttackType) const { return MaxAccuracy[AttackType]; }
-		int GetMinDamage(int Type) const { return MinDamage[Type]; }
-		int GetMaxDamage(int Type) const { return MaxDamage[Type]; }
-		int GetPenetration(int Type) const { return Penetration[Type]; }
 
 		virtual const _ParticleTemplate *GetParticle(int Index) const { return nullptr; }
 		virtual const ae::_Sound *GetSound(int Type, int AttackType) const { return Sounds[Type]; }
@@ -121,7 +114,7 @@ class _Entity : public _Object {
 
 		// Graphics
 		ae::_Animation *Animation;
-		glm::vec2 WeaponParticleOffset[WEAPON_COUNT];
+		glm::vec2 WeaponOffset[WEAPON_COUNT];
 
 		// Audio
 		const ae::_Sound *Sounds[SOUND_COUNT];
