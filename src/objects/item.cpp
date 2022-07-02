@@ -74,16 +74,16 @@ void _Item::DrawAttribute(const std::string &Attribute, const std::string &Label
 }
 
 // Draw the item popup window
-void _Item::DrawTooltip(const _Player *Player, std::size_t CompareSlot, glm::ivec2 DrawPosition) {
+void _Item::DrawTooltip(const _Player *Player, std::size_t CompareSlot, int InventorySlot, glm::ivec2 DrawPosition) {
 	std::ostringstream Buffer;
 
 	glm::ivec2 Size(300, 120);
 	if(Type == _Object::WEAPON)
-		Size.y = 280;
+		Size.y = 300;
 	else if(Type == _Object::ARMOR)
-		Size.y = 220;
+		Size.y = 240;
 	else if(Type == _Object::MOD)
-		Size.y = 170;
+		Size.y = 190;
 	else if(Type == _Object::MEDKIT)
 		Size.y = 150;
 
@@ -156,8 +156,11 @@ void _Item::DrawTooltip(const _Player *Player, std::size_t CompareSlot, glm::ive
 		Buffer.str("");
 	}
 
+	std::vector<std::string> HelpTextList;
 	switch(Type) {
 		case _Object::WEAPON: {
+			if(InventorySlot >= INVENTORY_BAGSTART)
+				HelpTextList.push_back("Right-click to equip");
 
 			// Damage
 			TextColor = COLOR_WHITE;
@@ -280,12 +283,20 @@ void _Item::DrawTooltip(const _Player *Player, std::size_t CompareSlot, glm::ive
 			}
 		} break;
 		case _Object::ARMOR: {
+			if(InventorySlot >= INVENTORY_BAGSTART)
+				HelpTextList.push_back("Right-click to equip");
+
 			DrawAttribute("damage_block", "Damage Block", DrawPosition, EquippedItem, false, false);
 			DrawAttribute("damage_resist", "Damage Resist", DrawPosition, EquippedItem, true, true);
 			DrawAttribute("max_ammo", "Max Ammo", DrawPosition, EquippedItem, true, true);
 			DrawAttribute("move_speed", "Move Speed", DrawPosition, EquippedItem, true, true);
 		} break;
 		case _Object::MOD: {
+			if(Template.Attributes.at("object_type").Int == _Object::WEAPON)
+				HelpTextList.push_back("Drag to equipped weapon");
+			else if(Template.Attributes.at("object_type").Int == _Object::ARMOR)
+				HelpTextList.push_back("Drag to equipped armor");
+
 			DrawPosition.y += 20;
 			std::string Percent = Template.Attributes.at("percent_sign").Int ? "%" : "";
 			Buffer << "+" << Attributes.at("bonus").Int << Percent;
@@ -293,12 +304,10 @@ void _Item::DrawTooltip(const _Player *Player, std::size_t CompareSlot, glm::ive
 			ae::Assets.Fonts["hud_medium"]->DrawText(Buffer.str(), DrawPosition + DrawOffset, ae::LEFT_BASELINE, TextColor);
 		} break;
 		case _Object::MEDKIT: {
+			HelpTextList.push_back("Right-click to use");
 			DrawPosition.y += 20;
 			Buffer << "+" << Attributes.at("health_restored").Int << " HP";
 			ae::Assets.Fonts["hud_medium"]->DrawText(Buffer.str(), glm::vec2(DrawPosition.x, DrawPosition.y), ae::CENTER_BASELINE, COLOR_GREEN);
-
-			DrawPosition.y += 35;
-			ae::Assets.Fonts["hud_medium"]->DrawText("Right-click to use", glm::vec2(DrawPosition.x, DrawPosition.y), ae::CENTER_BASELINE, COLOR_GRAY);
 		} break;
 	}
 
@@ -339,6 +348,13 @@ void _Item::DrawTooltip(const _Player *Player, std::size_t CompareSlot, glm::ive
 		Buffer.str("");
 
 		First = false;
+	}
+
+	// Draw ui hints
+	DrawPosition.y += 35;
+	for(const auto &Text : HelpTextList) {
+		ae::Assets.Fonts["hud_medium"]->DrawText(Text, glm::vec2(DrawPosition.x, DrawPosition.y), ae::CENTER_BASELINE, COLOR_GRAY);
+		DrawPosition.y += 20;
 	}
 }
 
