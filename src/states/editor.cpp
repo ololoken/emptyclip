@@ -1001,6 +1001,7 @@ void _EditorState::Render(double BlendFactor) {
 // Load palette buttons
 void _EditorState::LoadPalettes() {
 	std::vector<_Brush> Icons;
+	Icons.reserve(100);
 
 	// Load map textures
 	for(const auto &Texture : ae::Assets.Textures) {
@@ -1028,7 +1029,15 @@ void _EditorState::LoadPalettes() {
 	Icons.clear();
 
 	// Load monsters
-	LoadMonsterButtons();
+	for(const auto &Monster : Stats.Objects) {
+		if(Monster.second.Type != _Object::MONSTER)
+			continue;
+
+		const ae::_Texture *MonsterIcon = ae::Assets.Textures["textures/icons/" + Monster.second.AnimationID + ".png"];
+		Icons.push_back(_Brush(Monster.first, Monster.second.Name, MonsterIcon, Monster.second.Color, _Object::MONSTER));
+	}
+	LoadPaletteButtons(Icons, EDITMODE_MONSTERS);
+	Icons.clear();
 
 	// Load items
 	for(const auto &Item : Stats.Objects) {
@@ -1036,7 +1045,6 @@ void _EditorState::LoadPalettes() {
 			Icons.push_back(_Brush(Item.first, Item.second.Name, ae::Assets.Textures[Item.second.IconID], Item.second.Color, Item.second.Type));
 	}
 	LoadPaletteButtons(Icons, EDITMODE_ITEMS);
-	Icons.clear();
 }
 
 // Free memory used by palette
@@ -1047,23 +1055,6 @@ void _EditorState::ClearPalette(int Type) {
 		delete Children[i];
 	}
 	Children.clear();
-}
-
-// Loads the palette buttons from the map's monster set
-void _EditorState::LoadMonsterButtons() {
-	if(!Map)
-		return;
-
-	std::vector<_Brush> Icons;
-	for(const auto &Monster : Stats.Objects) {
-		if(Monster.second.Type != _Object::MONSTER)
-			continue;
-
-		const ae::_Texture *MonsterIcon = ae::Assets.Textures["textures/icons/" + Monster.second.AnimationID + ".png"];
-		Icons.push_back(_Brush(Monster.first, Monster.second.Name, MonsterIcon, COLOR_WHITE, _Object::MONSTER));
-	}
-
-	LoadPaletteButtons(Icons, EDITMODE_MONSTERS);
 }
 
 // Loads the palette

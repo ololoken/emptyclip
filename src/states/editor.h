@@ -160,7 +160,6 @@ class _EditorState : public ae::_State {
 		void ProcessEventIcons(int Index, int Type);
 
 		void LoadPalettes();
-		void LoadMonsterButtons();
 		void LoadPaletteButtons(std::vector<_Brush> &Icons, int Type);
 		void ClearPalette(int Type);
 
