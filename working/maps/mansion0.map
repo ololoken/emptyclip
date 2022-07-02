@@ -283,7 +283,7 @@ crate_ammo 1 68.50 10.50
 65 18 -1 -1
 9 1 63 16 63 16 0 1 0.00 1 		
 64 18 -1 -1
-320
+321
 0 0 0 129 109 0.00 0.00 0.00 1.00 0 1 textures/map/grass_medium.png	
 1 60 65 69 95 0.00 0.00 0.00 1.00 0 1 textures/map/dirt.png	
 1 30 13 39 64 0.00 0.00 0.00 1.00 0 1 textures/map/asphalt.png	
@@ -554,6 +554,7 @@ crate_ammo 1 68.50 10.50
 5 88 5 88 6 1.00 15.00 0.00 1.00 1 0 textures/map/brick_green.png	
 5 77 0 98 0 0.00 10.00 90.00 1.00 1 0 textures/map/brick_green.png	
 5 75 0 76 0 1.00 10.00 90.00 1.00 1 0 textures/map/brick_green.png	
+5 75 1 76 1 0.00 2.00 0.00 1.00 1 0 textures/map/brick_dark.png	
 6 50 82 54 86 0.00 1.50 0.00 1.00 0 1 textures/map/leaves.png	
 6 51 70 55 74 0.00 1.50 0.00 1.00 0 1 textures/map/leaves.png	
 6 32 71 36 75 0.00 1.50 0.00 1.00 0 1 textures/map/leaves.png	

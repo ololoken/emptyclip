@@ -729,7 +729,7 @@ void _PlayState::ResolveAttack(_Entity *Attacker, int GridType) {
 
 	// For each bullet that the weapon fires
 	bool PlayedHitWallSound = false;
-	bool GeneratedDecal = false;
+	std::unordered_map<_Object *, int> DecalObjects;
 	for(int i = 0; i < Attacker->AttackCount[Attacker->AttackRequestType]; i++) {
 		std::vector<_Hit> Hits;
 		Hits.reserve(Attacker->GetPenetration(Attacker->AttackRequestType));
@@ -740,18 +740,15 @@ void _PlayState::ResolveAttack(_Entity *Attacker, int GridType) {
 		}
 		else {
 
-			// Get bullet direction
-			float ShotDirection = Attacker->GenerateShotDirection();
-
 			// Check distance to the wall
+			float ShotDirection = Attacker->GenerateShotDirection();
 			Map->CheckBulletCollisions(Attacker->Position, glm::rotate(glm::vec2(0, -1), glm::radians(ShotDirection)), Hits, GridType, true, Attacker->GetPenetration(Attacker->AttackRequestType));
 
-			_ParticleTemplate *Template = GameAssets.GetParticleTemplate("tracer0");
+			// Generate tracer particle
+			_ParticleTemplate *Template = &GameAssets.Particles["tracer0"];
 			glm::vec2 ParticleStart = Attacker->Position + glm::rotate(glm::vec2(0, -Template->Size.y * 0.5f) + Attacker->GetWeaponOffset(Attacker->GetWeaponType()), glm::radians(ShotDirection));
-
-			float Distance = glm::length(Hits.front().Position - Attacker->Position) - Template->Size.y;
-
 			_Particle *Tracer = new _Particle(_ParticleSpawn(Template, glm::vec2(0), ParticleStart, OBJECT_Z, ShotDirection));
+			float Distance = glm::length(Hits.front().Position - Attacker->Position) - Template->Size.y;
 			Tracer->Lifetime = Distance * Template->VelocityScale.y * GAME_FPS;
 			Particles->Add(Tracer);
 		}
@@ -770,10 +767,6 @@ void _PlayState::ResolveAttack(_Entity *Attacker, int GridType) {
 					GenerateBulletEffects(Attacker, HIT_WALL, Hit);
 				break;
 				case HIT_OBJECT: {
-					if(!GeneratedDecal) {
-						GenerateBulletEffects(Attacker, HIT_OBJECT, Hit);
-						GeneratedDecal = true;
-					}
 
 					// Generate damage
 					int Damage = Attacker->GenerateDamage(Attacker->AttackRequestType, Hit.Object->DamageBlock, Hit.Object->DamageResist);
@@ -805,6 +798,12 @@ void _PlayState::ResolveAttack(_Entity *Attacker, int GridType) {
 							Attacker->UpdateKillCount(1);
 							Attacker->UpdateExperience(Hit.Object->ExperienceGiven);
 						}
+					}
+
+					// Generate bullet effects once for each hit object
+					if(DecalObjects.find(Hit.Object) == DecalObjects.end()) {
+						GenerateBulletEffects(Attacker, HIT_OBJECT, Hit);
+						DecalObjects[Hit.Object] = 1;
 					}
 
 					// Weapon hit sound
