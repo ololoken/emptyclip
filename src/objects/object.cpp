@@ -35,7 +35,7 @@ _Object::_Object(const _ObjectTemplate &ObjectTemplate) :
 	LastPosition(0, 0),
 	Direction(0.0, 1.0f),
 	Radius(0.25f),
-	WallState(0),
+	Circle(true),
 	Texture(nullptr),
 	Color(ObjectTemplate.Color),
 	Rotation(0.0f),

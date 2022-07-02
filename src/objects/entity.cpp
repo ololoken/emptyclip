@@ -41,6 +41,7 @@ _Entity::_Entity(const _ObjectTemplate &EntityTemplate) :
 	Stamina(1),
 	MaxStamina(1),
 	StaminaRegenModifier(1.0f),
+	WallState(0),
 	Tired(false),
 	Health(0),
 	MaxHealth(0),
@@ -387,30 +388,20 @@ void _Entity::Move(double FrameTime) {
 	}
 
 	// Get a list of entities that the object is colliding with
-	std::vector<_Entity *> HitEntities;
-	Map->CheckEntityCollisionsInGrid(Position, Radius, this, HitEntities);
+	std::vector<_Hit> Hits;
+	Hits.reserve(10);
+	glm::vec2 NewPosition = Position + MoveDirection;
+	bool AxisAlignedPush = false;
+	Map->CheckEntityCollisionsInGrid(NewPosition, Radius, this, Hits, AxisAlignedPush);
 
-	// Limit movement
-	for(auto Iterator : HitEntities) {
-		glm::vec2 HitObjectDirection = Iterator->Position - Position;
-
-		// Determine if we need to clip the direction
-		if(glm::dot(HitObjectDirection, MoveDirection) > 0) {
-			glm::vec2 DividingLine;
-
-			// Rotate vector
-			DividingLine.x = -HitObjectDirection.y;
-			DividingLine.y = HitObjectDirection.x;
-			DividingLine = glm::normalize(DividingLine);
-
-			// Project the direction onto the dividing line
-			MoveDirection = DividingLine * glm::dot(MoveDirection, DividingLine);
-		}
+	// Resolve pushes
+	for(auto Hit : Hits) {
+		if(!(AxisAlignedPush && Hit.Push.x != 0 && Hit.Push.y != 0))
+			NewPosition += Hit.Push;
 	}
 
 	// Check collisions with walls and map boundaries
-	glm::vec2 NewPosition;
-	Map->CheckCollisions(Position + MoveDirection, Radius, NewPosition);
+	Map->CheckTileCollisions(NewPosition, Radius, NewPosition);
 
 	// Determine if the object has moved
 	if(Position != NewPosition) {
@@ -431,9 +422,8 @@ void _Entity::Move(double FrameTime) {
 
 		PositionChanged = true;
 	}
-	else {
+	else
 		PositionChanged = false;
-	}
 
 	// Determine which walls are adjacent to the object
 	WallState = Map->GetWallState(Position, Radius);

@@ -61,6 +61,8 @@ _Monster::_Monster(const _ObjectTemplate &MonsterTemplate) :
 	AIType = Template.Attributes.at("ai_type").Int;
 	if(AIType)
 		Rotation = ae::GetRandomReal(0.0f, 359.0f);
+	else
+		Circle = false;
 
 	LastPlayerVisible = false;
 }

@@ -125,11 +125,14 @@ struct _Block {
 // Holds information about a hit entity
 struct _Hit {
 
+	_Hit() { }
 	_Hit(int Type) : Object(nullptr), Type(Type) { }
 
 	_Entity *Object;
 	glm::vec2 Normal;
 	glm::vec2 Position;
+	glm::vec2 Push;
+	bool AxisAlignedPush;
 	int Type;
 };
 
@@ -177,9 +180,9 @@ class _Map {
 
 		void Update(double FrameTime);
 
-		bool CheckCollisions(const glm::vec2 &TargetPosition, float Radius, glm::vec2 &NewPosition);
-		void CheckEntityCollisionsInGrid(const glm::vec2 &Position, float Radius, const _Object *SkipObject, std::vector<_Entity *> &Entities) const;
-		_Object *CheckCollisionsInGrid(const glm::vec2 &Position, float Radius, int GridType, const _Object *SkipObject) const;
+		bool CheckTileCollisions(const glm::vec2 &TargetPosition, float Radius, glm::vec2 &NewPosition);
+		void CheckEntityCollisionsInGrid(const glm::vec2 &Position, float Radius, const _Object *SkipObject, std::vector<_Hit> &Hits, bool &AxisAlignedPush) const;
+		_Object *GetCloseObject(const glm::vec2 &Position, float Radius, int GridType) const;
 		void GetCloseObjects(const glm::vec2 &Position, float Radius, int GridType, std::unordered_map<_Object *, int> &TouchedObjects) const;
 		void CheckMeleeCollisions(_Entity *Attacker, const glm::vec2 &Direction, int GridType, int Penetration, std::vector<_Hit> &Hits) const;
 		void CheckBulletCollisions(const glm::vec2 &Position, const glm::vec2 &Direction, std::vector<_Hit> &Hits, int GridType, bool CheckObjects, int Penetration) const;
@@ -269,7 +272,7 @@ class _Map {
 
 	private:
 
-		bool CheckTileCollision(const glm::vec2 &Position, float Radius, float X, float Y, bool Resolve, glm::vec2 &Push, bool &DiagonalPush);
+		bool CheckAABBCollision(const glm::vec2 &Position, float Radius, const float *AABB, bool Resolve, _Hit &Hit) const;
 
 		// Blocks
 		_Tile **Data;

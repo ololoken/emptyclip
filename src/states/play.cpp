@@ -512,7 +512,7 @@ void _PlayState::Update(double FrameTime) {
 
 	// Get item at cursor
 	PreviousCursorItem = CursorItem;
-	CursorItem = (_Item *)(Map->CheckCollisionsInGrid(WorldCursor, 0.05f, GRID_ITEM, nullptr));
+	CursorItem = (_Item *)(Map->GetCloseObject(WorldCursor, 0.05f, GRID_ITEM));
 	if(CursorItem && CursorItem == PreviousCursorItem)
 		CursorItemTimer += FrameTime;
 	else

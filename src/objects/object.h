@@ -93,7 +93,7 @@ class _Object {
 		glm::vec2 LastPosition;
 		glm::vec2 Direction;
 		float Radius;
-		int WallState;
+		bool Circle;
 
 		// Graphics
 		const ae::_Texture *Texture;

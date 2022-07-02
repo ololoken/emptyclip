@@ -128,6 +128,7 @@ class _Entity : public _Object {
 		float Stamina;
 		float MaxStamina;
 		float StaminaRegenModifier;
+		int WallState;
 		bool Tired;
 
 		// Stats

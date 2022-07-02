@@ -399,7 +399,7 @@ void _Map::RemoveObjectFromGrid(_Object *Object, int Type) {
 }
 
 // Check collision with tiles and resolve
-bool _Map::CheckCollisions(const glm::vec2 &TargetPosition, float Radius, glm::vec2 &NewPosition) {
+bool _Map::CheckTileCollisions(const glm::vec2 &TargetPosition, float Radius, glm::vec2 &NewPosition) {
 	if(!Data)
 		throw std::runtime_error("Tile data uninitialized!");
 
@@ -410,22 +410,22 @@ bool _Map::CheckCollisions(const glm::vec2 &TargetPosition, float Radius, glm::v
 	float Bottom = NewPosition.y + Radius;
 
 	// Check boundaries
-	bool Hit = false;
+	bool Touching = false;
 	if(Left < 0) {
 		Left = NewPosition.x = Radius;
-		Hit = true;
+		Touching = true;
 	}
 	if(Top < 0) {
 		Top = NewPosition.y = Radius;
-		Hit = true;
+		Touching = true;
 	}
 	if(Right >= (float)Width) {
 		Right = NewPosition.x = (float)Width - Radius;
-		Hit = true;
+		Touching = true;
 	}
 	if(Bottom >= (float)Height) {
 		Bottom = NewPosition.y = (float)Height - Radius;
-		Hit = true;
+		Touching = true;
 	}
 
 	// Check tiles
@@ -435,38 +435,37 @@ bool _Map::CheckCollisions(const glm::vec2 &TargetPosition, float Radius, glm::v
 	int BottomTile = (int)Bottom;
 
 	std::vector<glm::vec2> Pushes;
-	bool NoDiag = false;
+	bool AxisAlignedPush = false;
 	for(int i = LeftTile; i <= RightTile; i++) {
 		for(int j = TopTile; j <= BottomTile; j++) {
-			if(!Data[i][j].CanWalk()) {
+			if(Data[i][j].CanWalk())
+				continue;
 
-				bool DiagonalPush = false;
-				glm::vec2 Push(0, 0);
-				if(CheckTileCollision(NewPosition, Radius, (float)i, (float)j, true, Push, DiagonalPush)) {
-					Hit = true;
-					Pushes.push_back(Push);
+			float AABB[4] = { (float)i, (float)j, i + 1.0f, j + 1.0f };
+			_Hit Hit;
+			if(CheckAABBCollision(NewPosition, Radius, AABB, true, Hit)) {
+				Touching = true;
+				Pushes.push_back(Hit.Push);
 
-					// If any non-diagonal vectors, flag it
-					if(!DiagonalPush)
-						NoDiag = true;
-				}
+				// Flag at least one axis aligned push
+				if(Hit.AxisAlignedPush)
+					AxisAlignedPush = true;
 			}
 		}
 	}
 
 	// Resolve collision
 	for(const auto &Push : Pushes) {
-		if(!(NoDiag && Push.x != 0 && Push.y != 0)) {
+		if(!(AxisAlignedPush && Push.x != 0 && Push.y != 0)) {
 			NewPosition += Push;
 		}
 	}
 
-	return Hit;
+	return Touching;
 }
 
-// Resolve collision with a tile
-bool _Map::CheckTileCollision(const glm::vec2 &Position, float Radius, float X, float Y, bool Resolve, glm::vec2 &Push, bool &DiagonalPush) {
-	float AABB[4] = { X, Y, X + 1, Y + 1 };
+// Resolve collision with an axis aligned bounding box
+bool _Map::CheckAABBCollision(const glm::vec2 &Position, float Radius, const float *AABB, bool Resolve, _Hit &Hit) const {
 	int ClampCount = 0;
 
 	// Get closest point on AABB
@@ -490,41 +489,44 @@ bool _Map::CheckTileCollision(const glm::vec2 &Position, float Radius, float X, 
 
 	// Test circle collision with point
 	float DistanceSquared = glm::distance2(Point, Position);
-	bool Hit = DistanceSquared < Radius * Radius;
+	bool Touching = DistanceSquared < Radius * Radius;
 
 	// Push object out
-	if(Hit && Resolve) {
+	if(Touching && Resolve) {
 
 		// Check if object is inside the AABB
 		if(ClampCount == 0) {
-			glm::vec2 Center(X + 0.5f, Y + 0.5f);
+			glm::vec2 Center((AABB[0] + AABB[2]) * 0.5f, (AABB[1] + AABB[3]) * 0.5f);
 			if(Position.x <= Center.x)
-				Push.x = -(X - Position.x - Radius);
+				Hit.Push.x = -(AABB[0] - Position.x - Radius);
 			else if(Position.x > Center.x)
-				Push.x = (X - Position.x) + 1 + Radius;
+				Hit.Push.x = (AABB[0] - Position.x) + 1 + Radius;
+
+			Hit.Push.y = 0.0f;
 		}
 		else {
 
 			// Get push direction
-			Push = Position - Point;
+			Hit.Push = Position - Point;
 
 			// Get push amount
-			float Amount = Radius - glm::length(Push);
+			float Amount = Radius - glm::length(Hit.Push);
 
 			// Scale push vector
-			Push = glm::normalize(Push);
-			Push *= Amount;
+			Hit.Push = glm::normalize(Hit.Push);
+			Hit.Push *= Amount;
 
-			// Set whether the push is diagnol or not
-			DiagonalPush = ClampCount > 1;
+			// Flag axis aligned pushes
+			if(ClampCount == 1)
+				Hit.AxisAlignedPush = true;
 		}
 	}
 
-	return Hit;
+	return Touching;
 }
 
-// Checks for collisions with an object in the collision grid
-_Object *_Map::CheckCollisionsInGrid(const glm::vec2 &Position, float Radius, int GridType, const _Object *SkipObject) const {
+// Get the first object that collides with a circle
+_Object *_Map::GetCloseObject(const glm::vec2 &Position, float Radius, int GridType) const {
 	if(!Data)
 		throw std::runtime_error("Tile data uninitialized!");
 
@@ -535,11 +537,7 @@ _Object *_Map::CheckCollisionsInGrid(const glm::vec2 &Position, float Radius, in
 	// Iterate through tiles covered by the bounds
 	for(int i = TileBounds.Start.x; i <= TileBounds.End.x; i++) {
 		for(int j = TileBounds.Start.y; j <= TileBounds.End.y; j++) {
-
-			// Iterate through objects in each tile
 			for(auto Iterator : Data[i][j].Objects[GridType]) {
-				if(Iterator == SkipObject)
-					continue;
 
 				// Check circle intersection
 				float RadiiSum = Iterator->Radius + Radius;
@@ -552,7 +550,7 @@ _Object *_Map::CheckCollisionsInGrid(const glm::vec2 &Position, float Radius, in
 	return nullptr;
 }
 
-// Return nearby objects
+// Return objects that are touching a circle
 void _Map::GetCloseObjects(const glm::vec2 &Position, float Radius, int GridType, std::unordered_map<_Object *, int> &TouchedObjects) const {
 	if(!Data)
 		throw std::runtime_error("Tile data uninitialized!");
@@ -574,7 +572,7 @@ void _Map::GetCloseObjects(const glm::vec2 &Position, float Radius, int GridType
 }
 
 // Returns a list of entities that an object is colliding with
-void _Map::CheckEntityCollisionsInGrid(const glm::vec2 &Position, float Radius, const _Object *SkipObject, std::vector<_Entity *> &Entities) const {
+void _Map::CheckEntityCollisionsInGrid(const glm::vec2 &Position, float Radius, const _Object *SkipObject, std::vector<_Hit> &Hits, bool &AxisAlignedPush) const {
 	if(!Data)
 		throw std::runtime_error("Tile data uninitialized!");
 
@@ -582,20 +580,61 @@ void _Map::CheckEntityCollisionsInGrid(const glm::vec2 &Position, float Radius, 
 	_TileBounds TileBounds;
 	GetTileBounds(Position, Radius, TileBounds);
 
+	// Get unique list of objects to check against
+	std::unordered_map<_Entity *, int> HitEntities;
 	for(int i = TileBounds.Start.x; i <= TileBounds.End.x; i++) {
 		for(int j = TileBounds.Start.y; j <= TileBounds.End.y; j++) {
 			for(int k = 0; k < 2; k++) {
 				for(auto Iterator = Data[i][j].Objects[k].begin(); Iterator != Data[i][j].Objects[k].end(); ++Iterator) {
 					_Entity *Entity = (_Entity *)*Iterator;
-					if(Entity != SkipObject && !Entity->IsDying()) {
-						float DistanceSquared = glm::distance2(Entity->Position, Position);
-						float RadiiSum = Entity->Radius + Radius;
+					if(Entity == SkipObject || Entity->IsDying())
+						continue;
 
-						// Check circle intersection
-						if(DistanceSquared < RadiiSum * RadiiSum)
-							Entities.push_back(Entity);
-					}
+					HitEntities[Entity] = 1;
 				}
+			}
+		}
+	}
+
+	// Get push vectors for each hit object
+	for(const auto &HitEntity : HitEntities) {
+		_Entity *Entity = HitEntity.first;
+		if(Entity->Circle) {
+			float DistanceSquared = glm::distance2(Entity->Position, Position);
+			float RadiiSum = Entity->Radius + Radius;
+
+			// Check circle intersection
+			if(DistanceSquared < RadiiSum * RadiiSum) {
+				glm::vec2 CenterVector = Position - Entity->Position;
+
+				_Hit Hit;
+				if(CenterVector.x == 0.0f && CenterVector.y == 0.0f) {
+					Hit.Push.x = 1.0f;
+					Hit.Push.y = 0.0f;
+				}
+				else {
+					Hit.Push = glm::normalize(CenterVector);
+					Hit.Push *= RadiiSum - sqrtf(DistanceSquared);
+				}
+				Hits.push_back(Hit);
+			}
+		}
+		else {
+
+			// Get AABB of object
+			float AABB[4] = {
+				Entity->Position.x - Entity->Radius,
+				Entity->Position.y - Entity->Radius,
+				Entity->Position.x + Entity->Radius,
+				Entity->Position.y + Entity->Radius
+			};
+
+			_Hit Hit;
+			Hit.AxisAlignedPush = false;
+			if(CheckAABBCollision(Position, Radius, AABB, true, Hit)) {
+				Hits.push_back(Hit);
+				if(Hit.AxisAlignedPush)
+					AxisAlignedPush = true;
 			}
 		}
 	}
