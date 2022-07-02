@@ -30,7 +30,7 @@ const  int          DEFAULT_AUDIOENABLED           =  1;
 const  int          DEFAULT_VSYNC                  =  1;
 const  double       DEFAULT_MAXFPS                 =  240.0;
 //     Config
-const  int          CONFIG_VERSION                 =  2;
+const  int          CONFIG_VERSION                 =  3;
 //     Game
 const  std::string  GAME_WINDOWTITLE               =  "Empty Clip";
 const  double       GAME_FPS                       =  100.0;
@@ -121,6 +121,7 @@ const  std::string  HUD_CHECKPOINTMESSAGE          =  "CHECKPOINT REACHED";
 const  double       HUD_INVENTORYFULLTIME          =  2.0;
 const  std::string  HUD_INVENTORYFULLMESSAGE       =  "INVENTORY FULL";
 const  float        HUD_MINIMAP_CAPTURE_SIZE       =  20.0f;
+const  float        HUD_MINIMAP_FULL_CAPTURE_SIZE  =  50.0f;
 const  glm::vec2    HUD_MINIMAP_SIZE               =  glm::vec2(200,200);
 const  glm::vec2    HUD_MINIMAP_PADDING            =  glm::vec2(10,10);
 const  glm::vec4    HUD_MINIMAP_BACKGROUND_COLOR   =  glm::vec4(0.0f, 0.0f, 0.0f, 0.5f);

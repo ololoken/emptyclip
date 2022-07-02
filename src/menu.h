@@ -59,6 +59,7 @@ class _Menu {
 			LABEL_RIGHT,
 			LABEL_USE,
 			LABEL_SPRINT,
+			LABEL_MAP,
 			LABEL_FIRE,
 			LABEL_AIM,
 			LABEL_MELEE,

@@ -113,6 +113,7 @@ void _Config::LoadDefaultInputBindings(bool IfNone) {
 	ae::Actions.AddInputMap(0, ae::_Input::KEYBOARD, SDL_SCANCODE_R, Action::GAME_RELOAD, 1.0f, -1.0f, IfNone);
 	ae::Actions.AddInputMap(0, ae::_Input::KEYBOARD, SDL_SCANCODE_W, Action::GAME_WEAPONSWITCH, 1.0f, -1.0f, IfNone);
 	ae::Actions.AddInputMap(0, ae::_Input::KEYBOARD, SDL_SCANCODE_Q, Action::GAME_HEAL, 1.0f, -1.0f, IfNone);
+	ae::Actions.AddInputMap(0, ae::_Input::KEYBOARD, SDL_SCANCODE_TAB, Action::GAME_MAP, 1.0f, -1.0f, IfNone);
 
 	// Misc
 	ae::Actions.AddInputMap(0, ae::_Input::KEYBOARD, SDL_SCANCODE_GRAVE, Action::MISC_CONSOLE, 1.0f, -1.0f, IfNone);

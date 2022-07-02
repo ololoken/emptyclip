@@ -206,7 +206,7 @@ class _Map {
 		int RenderForeground();
 		void RenderEvents(std::vector<const ae::_Texture *> &Textures);
 		void RenderGrid(int Mode);
-		void DrawMinimap();
+		void DrawMinimap(bool FullMap);
 		void HighlightBlocks(int Layer);
 
 		void AddBlock(int Layer, _Block Block) { Blocks[Layer].push_back(Block); }
@@ -248,7 +248,7 @@ class _Map {
 		void AddItem(_Item *Item);
 		void RemoveItem(_Item *Item);
 
-		bool CheckMinimapBounds(const glm::vec4 &Bounds, float Size);
+		bool CheckMinimapBounds(const glm::vec4 &Bounds);
 		void AddMinimapLayers();
 		static glm::vec2 GenerateRandomPointInCircle(float Radius);
 
@@ -265,6 +265,7 @@ class _Map {
 
 		// Minimap
 		std::vector<_MinimapLayer> MinimapLayers;
+		float MinimapCaptureSize;
 
 	private:
 

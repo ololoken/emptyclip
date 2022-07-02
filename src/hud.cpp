@@ -282,7 +282,7 @@ void _HUD::Update(double FrameTime, float Radius) {
 }
 
 // Draw phase
-void _HUD::Render() {
+void _HUD::Render(bool FullMap) {
 
 	// Set labels
 	ae::Assets.Elements["label_hud_offhand_switch_key"]->Text = ae::Actions.GetInputNameForAction(Action::GAME_WEAPONSWITCH);
@@ -395,8 +395,9 @@ void _HUD::Render() {
 	}
 
 	// Draw mini map
-	if(Player->Map)
-		Player->Map->DrawMinimap();
+	if(Player->Map) {
+		Player->Map->DrawMinimap(FullMap);
+	}
 
 	// Draw character screen
 	RenderCharacterScreen();

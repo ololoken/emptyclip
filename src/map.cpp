@@ -46,6 +46,7 @@ _Map::_Map() :
 	Level(1),
 	Camera(nullptr),
 	ObjectManager(new _ObjectManager()),
+	MinimapCaptureSize(HUD_MINIMAP_CAPTURE_SIZE),
 	Data(nullptr),
 	AmbientLight(0.5f, 0.5f, 0.5f, 1.0f),
 	OldAmbientLight(0.5f, 0.5f, 0.5f, 1.0f),
@@ -1198,12 +1199,23 @@ void _Map::RenderGrid(int Mode) {
 }
 
 // Draw the mini map
-void _Map::DrawMinimap() {
+void _Map::DrawMinimap(bool FullMap) {
 
-	ae::_Bounds CaptureBounds(Camera->GetPosition() - HUD_MINIMAP_CAPTURE_SIZE, Camera->GetPosition() + HUD_MINIMAP_CAPTURE_SIZE);
-	glm::vec2 VisionSize = CaptureBounds.End - CaptureBounds.Start;
-	ae::_Bounds MinimapBounds(glm::ivec2(ae::Graphics.CurrentSize.x - HUD_MINIMAP_SIZE.x - HUD_MINIMAP_PADDING.x, HUD_MINIMAP_PADDING.y),
-					   glm::ivec2(ae::Graphics.CurrentSize.x - HUD_MINIMAP_PADDING.x, HUD_MINIMAP_PADDING.y + HUD_MINIMAP_SIZE.y));
+	// Get bounds of minimap window
+	glm::vec2 DrawSize = FullMap ? glm::vec2(ae::Graphics.CurrentSize.y, ae::Graphics.CurrentSize.y) : HUD_MINIMAP_SIZE;
+	ae::_Bounds MinimapBounds;
+	if(FullMap) {
+		MinimapBounds = ae::_Bounds(
+							glm::ivec2((ae::Graphics.CurrentSize - glm::ivec2(DrawSize))/2),
+							glm::ivec2((ae::Graphics.CurrentSize + glm::ivec2(DrawSize))/2)
+						);
+	}
+	else {
+		MinimapBounds = ae::_Bounds(
+							glm::ivec2(ae::Graphics.CurrentSize.x - DrawSize.x - HUD_MINIMAP_PADDING.x, HUD_MINIMAP_PADDING.y),
+							glm::ivec2(ae::Graphics.CurrentSize.x - HUD_MINIMAP_PADDING.x, HUD_MINIMAP_PADDING.y + DrawSize.y)
+						);
+	}
 
 	// Draw minimap background
 	ae::Graphics.SetProgram(ae::Assets.Programs["ortho_pos"]);
@@ -1213,9 +1225,11 @@ void _Map::DrawMinimap() {
 	ae::Graphics.DrawRectangle(MinimapBounds, true);
 
 	// Draw layers
+	ae::_Bounds CaptureBounds(Camera->GetPosition() - MinimapCaptureSize, Camera->GetPosition() + MinimapCaptureSize);
+	glm::vec2 VisionSize = CaptureBounds.End - CaptureBounds.Start;
 	for(const auto &MinimapLayer : MinimapLayers) {
-		glm::vec2 Start = MinimapBounds.Start + ((MinimapLayer.Bounds.Start - CaptureBounds.Start) / VisionSize) * HUD_MINIMAP_SIZE;
-		glm::vec2 End = MinimapBounds.Start + ((MinimapLayer.Bounds.End - CaptureBounds.Start) / VisionSize) * HUD_MINIMAP_SIZE;
+		glm::vec2 Start = MinimapBounds.Start + ((MinimapLayer.Bounds.Start - CaptureBounds.Start) / VisionSize) * DrawSize;
+		glm::vec2 End = MinimapBounds.Start + ((MinimapLayer.Bounds.End - CaptureBounds.Start) / VisionSize) * DrawSize;
 
 		ae::Graphics.SetColor(MinimapLayer.Color);
 		ae::Graphics.DrawRectangle(Start, End, true);
@@ -1619,11 +1633,11 @@ void _Map::RemoveItem(_Item *Item) {
 }
 
 // Check if bounds are in minimap range
-bool _Map::CheckMinimapBounds(const glm::vec4 &Bounds, float Size) {
+bool _Map::CheckMinimapBounds(const glm::vec4 &Bounds) {
 
-	if(Bounds[2] < Camera->GetPosition().x - Size || Bounds[0] > Camera->GetPosition().x + Size)
+	if(Bounds[2] < Camera->GetPosition().x - MinimapCaptureSize || Bounds[0] > Camera->GetPosition().x + MinimapCaptureSize)
 	   return false;
-	if(Bounds[3] < Camera->GetPosition().y - Size || Bounds[1] > Camera->GetPosition().y + Size)
+	if(Bounds[3] < Camera->GetPosition().y - MinimapCaptureSize || Bounds[1] > Camera->GetPosition().y + MinimapCaptureSize)
 	   return false;
 
 	return true;
@@ -1638,7 +1652,7 @@ void _Map::AddMinimapLayers() {
 
 		glm::vec4 Bounds;
 		Block->GetBounds(Bounds);
-		if(CheckMinimapBounds(Bounds, HUD_MINIMAP_CAPTURE_SIZE)) {
+		if(CheckMinimapBounds(Bounds)) {
 			_MinimapLayer MinimapLayer;
 			MinimapLayer.Bounds = Bounds;
 			MinimapLayer.Color = HUD_MINIMAP_WALL_COLOR;
@@ -1652,7 +1666,7 @@ void _Map::AddMinimapLayers() {
 
 		glm::vec4 Bounds;
 		Block->GetBounds(Bounds);
-		if(Block->MinZ <= 0 && CheckMinimapBounds(Bounds, HUD_MINIMAP_CAPTURE_SIZE)) {
+		if(Block->MinZ <= 0 && CheckMinimapBounds(Bounds)) {
 			_MinimapLayer MinimapLayer;
 			MinimapLayer.Bounds = Bounds;
 			MinimapLayer.Color = HUD_MINIMAP_WALL_COLOR;
@@ -1667,7 +1681,7 @@ void _Map::AddMinimapLayers() {
 
 		glm::vec4 Bounds;
 		Event->GetBounds(Bounds);
-		if(CheckMinimapBounds(Bounds, HUD_MINIMAP_CAPTURE_SIZE)) {
+		if(CheckMinimapBounds(Bounds)) {
 			_MinimapLayer MinimapLayer;
 			MinimapLayer.Bounds = Bounds;
 			MinimapLayer.Color = Event->ItemID.empty() ? HUD_MINIMAP_DOOR_COLOR : Stats.Objects.at(Event->ItemID).DoorColor;

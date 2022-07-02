@@ -27,6 +27,7 @@ namespace Action {
 		GAME_RIGHT,
 		GAME_USE,
 		GAME_SPRINT,
+		GAME_MAP,
 		GAME_FIRE,
 		GAME_AIM,
 		GAME_MELEE,

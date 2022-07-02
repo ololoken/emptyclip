@@ -62,7 +62,7 @@ void _ObjectManager::Update(double FrameTime, _Map *Map) {
 			Object->GetRenderBounds(Bounds);
 
 			// Add to minimap
-			if(Map->CheckMinimapBounds(Bounds, HUD_MINIMAP_CAPTURE_SIZE)) {
+			if(Map->CheckMinimapBounds(Bounds)) {
 				_MinimapLayer MinimapLayer;
 				MinimapLayer.Bounds = glm::vec4(
 					Object->Position.x - Object->Scale * 0.25f,	Object->Position.y - Object->Scale * 0.25f,

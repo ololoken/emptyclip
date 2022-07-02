@@ -286,6 +286,10 @@
             <element id="label_options_sprint" font="hud_medium" text="Sprint" offset_x="-150" offset_y="21" alignment_y="3"/>
             <element id="label_options_config_sprint" font="hud_medium" offset_y="21" alignment_y="3"/>
         </element>
+        <element id="button_options_input_map" style="style_menu_box" hover_style="style_menu_hover" offset_x="-125" offset_y="550" size_x="128" size_y="32" alignment_y="0" clickable="true">
+            <element id="label_options_map" font="hud_medium" text="View Map" offset_x="-150" offset_y="21" alignment_y="3"/>
+            <element id="label_options_config_map" font="hud_medium" offset_y="21" alignment_y="3"/>
+        </element>
         <element id="button_options_input_fire" style="style_menu_box" hover_style="style_menu_hover" offset_x="225" offset_y="250" size_x="128" size_y="32" alignment_y="0" clickable="true">
             <element id="label_options_fire" font="hud_medium" text="Fire" offset_x="-150" offset_y="21" alignment_y="3"/>
             <element id="label_options_config_fire" font="hud_medium" offset_y="21" alignment_y="3"/>
