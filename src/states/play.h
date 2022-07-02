@@ -94,8 +94,8 @@ class _PlayState : public ae::_State {
 		void ActivateEvent();
 
 		// Game
+		double Timer;
 		double CursorItemTimer;
-		double SaveGameTimer;
 
 		// Map
 		_Map *Map;

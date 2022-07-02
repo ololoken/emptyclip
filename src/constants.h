@@ -112,6 +112,10 @@ const  glm::vec2    UI_INVENTORY_ITEM_SIZE         =  glm::vec2(64,64);
 const  glm::vec2    UI_HUD_AMMO_SIZE               =  glm::vec2(32,32);
 //     HUD
 const  double       HUD_ENTITYHEALTHDISPLAYPERIOD  =  5.0;
+const  float        HUD_PLAYER_HEALTH_WARNING      =  0.5f;
+const  float        HUD_PLAYER_HEALTH_FADE         =  0.4f;
+const  float        HUD_PLAYER_HEALTH_PULSE_AMOUNT =  0.025f;
+const  double       HUD_PLAYER_HEALTH_PULSE_FACTOR =  10.0;
 const  double       HUD_CURSOR_ITEM_WAIT           =  0.5;
 const  float        HUD_CROSSHAIRDIVISOR           =  5.0f;
 const  float        HUD_MINCROSSHAIRSCALE          =  0.0f;

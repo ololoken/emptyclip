@@ -132,6 +132,8 @@ void _PlayState::Init() {
 
 	ae::Actions.ResetState();
 	ae::Audio.Stop();
+
+	Timer = 0;
 }
 
 // Close map
@@ -357,6 +359,8 @@ void _PlayState::Update(double FrameTime) {
 	ae::Graphics.Element->Update(FrameTime, ae::Input.GetMouse());
 	//if(ae::Graphics.Element->HitElement)
 	//	std::cout << ae::Graphics.Element->HitElement->Name << std::endl;
+
+	Timer += FrameTime;
 
 	// Handle pause
 	if(IsPaused()) {
@@ -687,8 +691,17 @@ void _PlayState::Render(double BlendFactor) {
 		Buffer.str("");
 	}
 
+	// Show red overlay when player's health is low
+	if(Player->GetHealthPercentage() <= HUD_PLAYER_HEALTH_WARNING) {
+		ae::Graphics.SetProgram(ae::Assets.Programs["ortho_pos"]);
+		float FadePower = (HUD_PLAYER_HEALTH_WARNING - Player->GetHealthPercentage()) / HUD_PLAYER_HEALTH_WARNING;
+		float FadeAmount = HUD_PLAYER_HEALTH_FADE + sin(Timer * HUD_PLAYER_HEALTH_PULSE_FACTOR * FadePower) * HUD_PLAYER_HEALTH_PULSE_AMOUNT;
+		ae::Graphics.SetColor(glm::vec4(1.0f, 0.0f, 0.0f, FadeAmount * FadePower));
+		ae::Graphics.DrawRectangle(glm::vec2(0, 0), ae::Graphics.CurrentSize, true);
+	}
+
 	// Fade screen when paused
-	if(IsPaused() || (Player && Player->IsDead()))
+	if(IsPaused() || Player->IsDead())
 		ae::Graphics.FadeScreen(ae::Assets.Programs["ortho_pos"], GAME_PAUSE_FADEAMOUNT);
 
 	// Draw in-game menu
