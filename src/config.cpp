@@ -39,6 +39,7 @@ void _Config::Init(const std::string &ConfigFile) {
 	ae::Actions.State[Action::GAME_DOWN].Name = "game_down";
 	ae::Actions.State[Action::GAME_USE].Name = "game_use";
 	ae::Actions.State[Action::GAME_SPRINT].Name = "game_sprint";
+	ae::Actions.State[Action::GAME_MAP].Name = "game_map";
 	ae::Actions.State[Action::GAME_FIRE].Name = "game_fire";
 	ae::Actions.State[Action::GAME_AIM].Name = "game_aim";
 	ae::Actions.State[Action::GAME_MELEE].Name = "game_melee";
@@ -47,6 +48,7 @@ void _Config::Init(const std::string &ConfigFile) {
 	ae::Actions.State[Action::GAME_HEAL].Name = "game_heal";
 	ae::Actions.State[Action::GAME_INVENTORY].Name = "game_inventory";
 	ae::Actions.State[Action::MISC_CONSOLE].Name = "misc_console";
+	ae::Actions.State[Action::MISC_DEBUG].Name = "misc_debug";
 
 	// Create config path
 	char *PrefPath = SDL_GetPrefPath("", "emptyclip");
