@@ -430,25 +430,29 @@ void _PlayState::Update(double FrameTime) {
 		CheckEvents(Player);
 	Player->TileChanged = false;
 
-	// Find nearest item
-	_Item *NearbyItem = (_Item *)Map->CheckCollisionsInGrid(Player->Position, Player->Radius, GRID_ITEM, nullptr);
+	// Find nearest items
+	std::unordered_map<_Object *, int> NearbyItems;
+	Map->GetCloseObjects(Player->Position, Player->Radius, GRID_ITEM, NearbyItems);
+	for(auto &Iterator : NearbyItems) {
+		_Item *NearbyItem = (_Item *)Iterator.first;
 
-	// Automatically pickup ammo
-	if(NearbyItem && NearbyItem->Type == _Object::AMMO) {
-		int AmountAdded = 0;
-		PickupObject(NearbyItem, AmountAdded);
+		// Automatically pickup ammo
+		if(NearbyItem && NearbyItem->Type == _Object::AMMO) {
+			int AmountAdded = 0;
+			PickupObject(NearbyItem, AmountAdded);
 
-		if(AmountAdded) {
-			_Particle *DamageParticle = new _Particle(_ParticleSpawn(GameAssets.GetParticleTemplate("damage0"), glm::vec2(0), Player->Position, OBJECT_Z, 0));
-			DamageParticle->Text = std::string("+") + std::to_string(AmountAdded);
-			Particles->Add(DamageParticle);
+			if(AmountAdded) {
+				_Particle *DamageParticle = new _Particle(_ParticleSpawn(GameAssets.GetParticleTemplate("damage0"), glm::vec2(0), Player->Position, OBJECT_Z, 0));
+				DamageParticle->Text = std::string("+") + std::to_string(AmountAdded);
+				Particles->Add(DamageParticle);
+			}
 		}
-	}
-	// Manually pickup up an item
-	else if(Player->UseRequested) {
-		UseObject(NearbyItem);
+		// Manually pickup up an item
+		else if(Player->UseRequested) {
+			UseObject(NearbyItem);
 
-		Player->UseRequested = false;
+			Player->UseRequested = false;
+		}
 	}
 
 	// Update objects
@@ -712,7 +716,10 @@ void _PlayState::ResolveAttack(_Entity *Attacker, int GridType) {
 	if(WeaponType != WEAPON_MELEE) {
 		_Hit Hit(HIT_NONE);
 		GenerateBulletEffects(Attacker, -1, Hit);
-		ae::Audio.PlaySound(Attacker->GetSound(SOUND_FIRE, WEAPONATTACK_MAIN), glm::vec3(Attacker->Position.x, 0.0f, Attacker->Position.y));
+		if(Attacker->Type == _Object::PLAYER)
+			ae::Audio.PlaySound(Attacker->GetSound(SOUND_FIRE, WEAPONATTACK_MAIN));
+		else
+			ae::Audio.PlaySound(Attacker->GetSound(SOUND_FIRE, WEAPONATTACK_MAIN), glm::vec3(Attacker->Position.x, 0.0f, Attacker->Position.y));
 	}
 
 	Attacker->StartTriggerDownAudio();

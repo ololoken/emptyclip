@@ -551,6 +551,27 @@ _Object *_Map::CheckCollisionsInGrid(const glm::vec2 &Position, float Radius, in
 	return nullptr;
 }
 
+// Return nearby objects
+void _Map::GetCloseObjects(const glm::vec2 &Position, float Radius, int GridType, std::unordered_map<_Object *, int> &TouchedObjects) const {
+	if(!Data)
+		throw std::runtime_error("Tile data uninitialized!");
+
+	// Get bounding rectangle
+	_TileBounds TileBounds;
+	GetTileBounds(Position, Radius, TileBounds);
+
+	// Iterate through tiles covered by the bounds
+	for(int i = TileBounds.Start.x; i <= TileBounds.End.x; i++) {
+		for(int j = TileBounds.Start.y; j <= TileBounds.End.y; j++) {
+			for(auto Iterator : Data[i][j].Objects[GridType]) {
+				float RadiiSum = Iterator->Radius + Radius;
+				if(glm::distance2(Iterator->Position, Position) < RadiiSum * RadiiSum)
+					TouchedObjects[Iterator] = 1;
+			}
+		}
+	}
+}
+
 // Returns a list of entities that an object is colliding with
 void _Map::CheckEntityCollisionsInGrid(const glm::vec2 &Position, float Radius, const _Object *SkipObject, std::vector<_Entity *> &Entities) const {
 	if(!Data)
