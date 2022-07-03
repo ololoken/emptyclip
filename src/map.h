@@ -235,7 +235,7 @@ class _Map {
 
 		_Event *GetEvent(int Index) const;
 		std::vector<_Event *> &GetEventList(const glm::ivec2 &Coord);
-		glm::vec2 GetStartingPositionByCheckpoint(int Level);
+		glm::vec2 GetStartingPositionByCheckpoint(int CheckpointLevel);
 		int GetTotalBlockSize() const;
 		int GetMapType() const { return MapType; }
 		int GetWidth() const { return Width; }

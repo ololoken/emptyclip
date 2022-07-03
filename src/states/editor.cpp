@@ -149,8 +149,8 @@ void _EditorState::Init() {
 
 void _EditorState::Close() {
 	Camera->GetDrawPosition(0, SavedCameraPosition);
-	SavedLayer = CurrentLayer;
-	SavedPalette = CurrentPalette;
+	SavedLayer = EditLayer;
+	SavedPalette = EditMode;
 	SavedCheckpointIndex = CheckpointIndex;
 
 	for(int i = 0; i < EDITMODE_COUNT; i++)
@@ -172,12 +172,10 @@ bool _EditorState::LoadMap(const std::string &File, bool UseSavedCameraPosition)
 
 	try {
 		Map = new _Map(File);
-
 		Success = true;
 	}
 	catch(std::exception &Error) {
 		std::cout << Error.what() << std::endl;
-
 		Map = new _Map();
 	}
 
@@ -216,8 +214,8 @@ void _EditorState::ResetEditorState() {
 	ClickedPosition = glm::vec2(0, 0);
 	CopiedPosition = glm::vec2(0, 0);
 	MoveDelta = glm::vec2(0, 0);
-	CurrentLayer = EDITOR_DEFAULT_LAYER;
-	CurrentPalette = EDITMODE_BLOCKS;
+	EditLayer = EDITOR_DEFAULT_LAYER;
+	EditMode = EDITMODE_BLOCKS;
 	GridMode = EDITOR_DEFAULT_GRIDMODE;
 	Walkable = true;
 	HighlightBlocks = false;
@@ -259,8 +257,8 @@ void _EditorState::ResetEditorState() {
 
 	// Load palettes
 	LoadPalettes();
-	LayerButtons[CurrentLayer]->Checked = true;
-	ModeButtons[CurrentPalette]->Checked = true;
+	LayerButtons[EditLayer]->Checked = true;
+	ModeButtons[EditMode]->Checked = true;
 	ae::FocusedElement = nullptr;
 }
 
@@ -473,14 +471,14 @@ void _EditorState::HandleMouseButton(const ae::_MouseEvent &MouseEvent) {
 		ProcessIcons(Clicked->Index, MouseEvent.Button == SDL_BUTTON_RIGHT);
 	}
 
-	if(CurrentPalette == EDITMODE_BLOCKS) {
+	if(EditMode == EDITMODE_BLOCKS) {
 		ae::_Element *Clicked = BlockElement->GetClickedElement();
 		if(Clicked && Clicked->Index != -1) {
 			ProcessBlockIcons(Clicked->Index, MouseEvent.Button == SDL_BUTTON_RIGHT);
 		}
 	}
 
-	if(CurrentPalette == EDITMODE_EVENTS) {
+	if(EditMode == EDITMODE_EVENTS) {
 		ae::_Element *Clicked = EventElement->GetClickedElement();
 		if(Clicked && Clicked->Index != -1) {
 			ProcessEventIcons(Clicked->Index, MouseEvent.Button == SDL_BUTTON_RIGHT);
@@ -495,7 +493,7 @@ void _EditorState::HandleMouseButton(const ae::_MouseEvent &MouseEvent) {
 			switch(MouseEvent.Button) {
 				case SDL_BUTTON_LEFT:
 					if(!IsMoving && !Clicked) {
-						switch(CurrentPalette) {
+						switch(EditMode) {
 							case EDITMODE_BLOCKS:
 							case EDITMODE_EVENTS:
 								DeselectBlock();
@@ -509,7 +507,7 @@ void _EditorState::HandleMouseButton(const ae::_MouseEvent &MouseEvent) {
 								FinishDrawing = false;
 							break;
 							default: {
-								ae::_Element *Button = Brush[CurrentPalette];
+								ae::_Element *Button = Brush[EditMode];
 								if(Button)
 									SpawnObject(Map->GetValidPosition(WorldCursor), (intptr_t)Button->UserData, Button->Name, ObjectLevel, IsShiftDown);
 							} break;
@@ -521,11 +519,11 @@ void _EditorState::HandleMouseButton(const ae::_MouseEvent &MouseEvent) {
 				break;
 				case SDL_BUTTON_MIDDLE:
 					if(!IsDrawing) {
-						switch(CurrentPalette) {
+						switch(EditMode) {
 							case EDITMODE_BLOCKS:
 
 								// Get the block
-								SelectedBlockIndex = Map->GetSelectedBlock(CurrentLayer, WorldCursorIndex, &SelectedBlock);
+								SelectedBlockIndex = Map->GetSelectedBlock(EditLayer, WorldCursorIndex, &SelectedBlock);
 								if(BlockSelected()) {
 
 									// Save old states
@@ -572,7 +570,7 @@ void _EditorState::HandleMouseButton(const ae::_MouseEvent &MouseEvent) {
 	else {
 
 		// Get button click for palette
-		ae::_Element *Button = PaletteElement[CurrentPalette]->GetClickedElement();
+		ae::_Element *Button = PaletteElement[EditMode]->GetClickedElement();
 		if(Button)
 			ExecuteSelectPalette(Button, MouseEvent.Button == SDL_BUTTON_RIGHT);
 	}
@@ -583,7 +581,7 @@ void _EditorState::HandleMouseButton(const ae::_MouseEvent &MouseEvent) {
 			case SDL_BUTTON_LEFT:
 				if(IsDrawing) {
 					FinishDrawing = true;
-					UndoNumber[CurrentLayer]++;
+					UndoNumber[EditLayer]++;
 				}
 			break;
 			case SDL_BUTTON_MIDDLE:
@@ -618,12 +616,12 @@ void _EditorState::HandleMouseWheel(int Direction) {
 	else {
 		if(ae::Input.GetMouse().x >= ae::Graphics.ViewportSize.x) {
 			if(Direction > 0)
-				PaletteElement[CurrentPalette]->UpdateChildrenOffset(glm::ivec2(0, PaletteSizes[CurrentPalette]));
+				PaletteElement[EditMode]->UpdateChildrenOffset(glm::ivec2(0, PaletteSizes[EditMode]));
 			else
-				PaletteElement[CurrentPalette]->UpdateChildrenOffset(glm::ivec2(0, -PaletteSizes[CurrentPalette]));
+				PaletteElement[EditMode]->UpdateChildrenOffset(glm::ivec2(0, -PaletteSizes[EditMode]));
 		}
 		else {
-			if(CurrentPalette == EDITMODE_EVENTS) {
+			if(EditMode == EDITMODE_EVENTS) {
 				if(SelectedEvent)
 					SelectedEvent->SpawnLevel = std::clamp(SelectedEvent->SpawnLevel + Direction, 1, OBJECT_MAX_LEVEL);
 				else
@@ -720,7 +718,7 @@ void _EditorState::Update(double FrameTime) {
 	}
 
 	// Update based on editor state
-	switch(CurrentPalette) {
+	switch(EditMode) {
 		case EDITMODE_BLOCKS:
 
 			// Finish drawing a block and add it to the list
@@ -735,10 +733,10 @@ void _EditorState::Update(double FrameTime) {
 					Block.AltTexture = AltTexture;
 					Block.Rotation = Rotation;
 					Block.ScaleX = ScaleX;
-					Block.Wall = (CurrentLayer == MAPLAYER_WALL);
+					Block.Wall = (EditLayer == MAPLAYER_WALL);
 					Block.Walkable = Walkable;
 
-					Map->AddBlock(CurrentLayer, Block);
+					Map->AddBlock(EditLayer, Block);
 				}
 
 				FinishDrawing = IsDrawing = false;
@@ -791,26 +789,26 @@ void _EditorState::Render(double BlendFactor) {
 
 	// Draw tentative block
 	if(IsDrawing) {
-		if(Brush[CurrentPalette]) {
-			if(CurrentPalette == EDITMODE_EVENTS) {
+		if(Brush[EditMode]) {
+			if(EditMode == EDITMODE_EVENTS) {
 				ae::Graphics.SetDepthTest(false);
-				ae::Graphics.DrawRepeatable(glm::vec3(DrawStart.x, DrawStart.y, MAP_LAYEROFFSET), glm::vec3(DrawEnd.x, DrawEnd.y, MAP_LAYEROFFSET), Brush[CurrentPalette]->Style->Texture, 0, 1.0f);
+				ae::Graphics.DrawRepeatable(glm::vec3(DrawStart.x, DrawStart.y, MAP_LAYEROFFSET), glm::vec3(DrawEnd.x, DrawEnd.y, MAP_LAYEROFFSET), Brush[EditMode]->Style->Texture, 0, 1.0f);
 				ae::Graphics.SetDepthTest(true);
 			}
 			else {
-				if(CurrentLayer == MAPLAYER_FORE)
-					ae::Graphics.DrawRepeatable(glm::vec3(DrawStart.x, DrawStart.y, MaxZ + MAP_LAYEROFFSET), glm::vec3(DrawEnd.x, DrawEnd.y, MaxZ + MAP_LAYEROFFSET), Brush[CurrentPalette]->Style->Texture, Rotation, ScaleX);
-				else if(CurrentLayer == MAPLAYER_FLAT) {
+				if(EditLayer == MAPLAYER_FORE)
+					ae::Graphics.DrawRepeatable(glm::vec3(DrawStart.x, DrawStart.y, MaxZ + MAP_LAYEROFFSET), glm::vec3(DrawEnd.x, DrawEnd.y, MaxZ + MAP_LAYEROFFSET), Brush[EditMode]->Style->Texture, Rotation, ScaleX);
+				else if(EditLayer == MAPLAYER_FLAT) {
 					ae::Graphics.SetVBO(ae::VBO_CUBE);
-					ae::Graphics.DrawWall(glm::vec3(DrawStart.x, DrawStart.y, MinZ), glm::vec3(DrawEnd.x - DrawStart.x, DrawEnd.y - DrawStart.y, MaxZ - MinZ), Rotation, Brush[CurrentPalette]->Style->Texture);
+					ae::Graphics.DrawWall(glm::vec3(DrawStart.x, DrawStart.y, MinZ), glm::vec3(DrawEnd.x - DrawStart.x, DrawEnd.y - DrawStart.y, MaxZ - MinZ), Rotation, Brush[EditMode]->Style->Texture);
 				}
 				else {
 					if(MaxZ == MinZ) {
-						ae::Graphics.DrawRepeatable(glm::vec3(DrawStart.x, DrawStart.y, MinZ + MAP_LAYEROFFSET * CurrentLayer), glm::vec3(DrawEnd.x, DrawEnd.y, MinZ + MAP_LAYEROFFSET * CurrentLayer), Brush[CurrentPalette]->Style->Texture, Rotation, ScaleX);
+						ae::Graphics.DrawRepeatable(glm::vec3(DrawStart.x, DrawStart.y, MinZ + MAP_LAYEROFFSET * EditLayer), glm::vec3(DrawEnd.x, DrawEnd.y, MinZ + MAP_LAYEROFFSET * EditLayer), Brush[EditMode]->Style->Texture, Rotation, ScaleX);
 					}
 					else {
 						ae::Graphics.SetVBO(ae::VBO_CUBE);
-						ae::Graphics.DrawCube(glm::vec3(DrawStart.x, DrawStart.y, MinZ), glm::vec3(DrawEnd.x - DrawStart.x, DrawEnd.y - DrawStart.y, MaxZ - MinZ), Brush[CurrentPalette]->Style->Texture);
+						ae::Graphics.DrawCube(glm::vec3(DrawStart.x, DrawStart.y, MinZ), glm::vec3(DrawEnd.x - DrawStart.x, DrawEnd.y - DrawStart.y, MaxZ - MinZ), Brush[EditMode]->Style->Texture);
 					}
 				}
 			}
@@ -852,7 +850,8 @@ void _EditorState::Render(double BlendFactor) {
 	Map->RenderForeground();
 
 	// Draw the events
-	Map->RenderEvents(EventTextures);
+	if(EditMode == EDITMODE_EVENTS)
+		Map->RenderEvents(EventTextures);
 
 	ae::Graphics.SetDepthMask(false);
 	ae::Graphics.SetDepthTest(false);
@@ -867,7 +866,7 @@ void _EditorState::Render(double BlendFactor) {
 
 	// Outline the blocks
 	if(HighlightBlocks)
-		Map->HighlightBlocks(CurrentLayer);
+		Map->HighlightBlocks(EditLayer);
 
 	// Outline selected block
 	if(BlockSelected()) {
@@ -947,45 +946,58 @@ void _EditorState::Render(double BlendFactor) {
 	Buffer.str("");
 
 	// Draw cursor position
-	int X = 16;
-	int Y = ae::Graphics.ViewportSize.y - 25;
+	glm::ivec2 DrawPosition(16, ae::Graphics.ViewportSize.y - 25);
 	Buffer << std::fixed << WorldCursor.x << ", " << WorldCursor.y;
-	MainFont->DrawText(Buffer.str(), glm::vec2(X, Y));
+	MainFont->DrawText(Buffer.str(), DrawPosition);
 	Buffer.str("");
 
+	// Top right
+	DrawPosition.x = ae::Graphics.ViewportSize.x - 45;
+	DrawPosition.y = 25;
+
 	// Draw FPS
-	X = ae::Graphics.ViewportSize.x - 45;
-	Y = 25;
 	Buffer << ae::Graphics.FramesPerSecond << " FPS";
-	MainFont->DrawText(Buffer.str(), glm::vec2(X, Y), ae::RIGHT_BASELINE);
+	MainFont->DrawText(Buffer.str(), DrawPosition, ae::RIGHT_BASELINE);
 	Buffer.str("");
 
 	// Draw selection count
 	Buffer << SelectedObjects.size() << " selected";
-	MainFont->DrawText(Buffer.str(), glm::vec2(X, Y + 20), ae::RIGHT_BASELINE);
+	MainFont->DrawText(Buffer.str(), DrawPosition + glm::ivec2(0, 20), ae::RIGHT_BASELINE);
 	Buffer.str("");
 
-	// Draw checkpoint info
-	X = ae::Graphics.ViewportSize.x - 45;
-	Y = ae::Graphics.ViewportSize.y - 40;
-	Buffer << CheckpointIndex;
-	MainFont->DrawText("Checkpoint:", glm::vec2(X, Y), ae::RIGHT_BASELINE);
-	MainFont->DrawText(Buffer.str(), glm::vec2(X + 5, Y));
-	Buffer.str("");
+	// Bottom right
+	DrawPosition.x = ae::Graphics.ViewportSize.x - 45;
+	DrawPosition.y = ae::Graphics.ViewportSize.y - 60;
+	glm::ivec2 DrawOffset(5, 0);
 
 	// Draw grid size
-	Y += 20;
 	Buffer << GridMode;
-	MainFont->DrawText("Grid:", glm::vec2(X, Y), ae::RIGHT_BASELINE);
-	MainFont->DrawText(Buffer.str(), glm::vec2(X + 5, Y));
+	MainFont->DrawText("Grid:", DrawPosition, ae::RIGHT_BASELINE);
+	MainFont->DrawText(Buffer.str(), DrawPosition + DrawOffset);
 	Buffer.str("");
+	DrawPosition.y += 20;
+
+	// Draw checkpoint info
+	Buffer << CheckpointIndex;
+	MainFont->DrawText("Checkpoint:",  DrawPosition, ae::RIGHT_BASELINE);
+	MainFont->DrawText(Buffer.str(), DrawPosition + DrawOffset);
+	Buffer.str("");
+	DrawPosition.y += 20;
+
+	// Event tile count
+	if(SelectedEvent) {
+		Buffer << SelectedEvent->Tiles.size();
+		MainFont->DrawText("Event tiles:",  DrawPosition, ae::RIGHT_BASELINE);
+		MainFont->DrawText(Buffer.str(), DrawPosition + DrawOffset);
+		Buffer.str("");
+	}
 
 	// Draw command buttons
 	CommandElement->Render();
-	if(CurrentPalette == EDITMODE_BLOCKS) {
+	if(EditMode == EDITMODE_BLOCKS) {
 		BlockElement->Render();
 	}
-	else if(CurrentPalette == EDITMODE_EVENTS) {
+	else if(EditMode == EDITMODE_EVENTS) {
 		EventElement->Render();
 	}
 
@@ -993,7 +1005,7 @@ void _EditorState::Render(double BlendFactor) {
 	DrawBrush();
 
 	// Draw Palette
-	PaletteElement[CurrentPalette]->Render();
+	PaletteElement[EditMode]->Render();
 
 	ae::Graphics.SetDepthMask(true);
 }
@@ -1114,11 +1126,11 @@ void _EditorState::DrawBrush() {
 	std::string IconID;
 	glm::vec4 IconColor = COLOR_WHITE;
 	const ae::_Texture *IconTexture = nullptr;
-	if(Brush[CurrentPalette]) {
-		IconID = Brush[CurrentPalette]->Name;
-		IconText = Brush[CurrentPalette]->Style->Name;
-		IconTexture = Brush[CurrentPalette]->Style->Texture;
-		IconColor = Brush[CurrentPalette]->Style->TextureColor;
+	if(Brush[EditMode]) {
+		IconID = Brush[EditMode]->Name;
+		IconText = Brush[EditMode]->Style->Name;
+		IconTexture = Brush[EditMode]->Style->Texture;
+		IconColor = Brush[EditMode]->Style->TextureColor;
 	}
 
 	// Get brush icon/texture position
@@ -1129,7 +1141,7 @@ void _EditorState::DrawBrush() {
 	float TextSpacingY = 17;
 
 	// Edit mode specific text
-	switch(CurrentPalette) {
+	switch(EditMode) {
 		case EDITMODE_BLOCKS: {
 
 			// See if there's a selected block
@@ -1140,7 +1152,7 @@ void _EditorState::DrawBrush() {
 				IconTexture = SelectedBlock->Texture;
 				if(IconTexture)
 					IconText = IconTexture->Name;
-				if(CurrentLayer != MAPLAYER_FLAT)
+				if(EditLayer != MAPLAYER_FLAT)
 					IconRotation = SelectedBlock->Rotation;
 				IconScaleX = SelectedBlock->ScaleX;
 				BlockMinZ = SelectedBlock->MinZ;
@@ -1150,9 +1162,9 @@ void _EditorState::DrawBrush() {
 					BlockAltTextureID = SelectedBlock->AltTexture->Name;
 			}
 			else {
-				if(Brush[CurrentPalette])
-					IconText = Brush[CurrentPalette]->Name;
-				if(CurrentLayer != MAPLAYER_FLAT)
+				if(Brush[EditMode])
+					IconText = Brush[EditMode]->Name;
+				if(EditLayer != MAPLAYER_FLAT)
 					IconRotation = Rotation;
 				IconScaleX = ScaleX;
 				BlockMinZ = MinZ;
@@ -1345,7 +1357,6 @@ void _EditorState::DrawObject(float OffsetX, float OffsetY, const _ObjectSpawn *
 
 // Processes clicks on the buttons
 void _EditorState::ProcessIcons(int Index, int Type) {
-
 	switch(Index) {
 		case ICON_LAYER1:
 			ExecuteUpdateLayer(0, false);
@@ -1424,7 +1435,6 @@ void _EditorState::ProcessIcons(int Index, int Type) {
 
 // Processes clicks on the block buttons
 void _EditorState::ProcessBlockIcons(int Index, int Type) {
-
 	switch(Index) {
 		case ICON_WALK:
 			ExecuteWalkable();
@@ -1538,12 +1548,12 @@ void _EditorState::AddEvent(int Type) {
 		break;
 		case EVENT_WALLSWITCH:
 			EventItemID = ItemID;
-			TileLayer = CurrentLayer;
+			TileLayer = EditLayer;
 		break;
 		case EVENT_SPAWN:
 			EventMonsterID = MonsterID;
 			EventParticleID = ParticleID;
-			TileLayer = CurrentLayer;
+			TileLayer = EditLayer;
 		break;
 		default:
 		break;
@@ -1562,7 +1572,6 @@ void _EditorState::AddEvent(int Type) {
 
 // Updates the selected event's object identifier
 void _EditorState::UpdateEventID(int Type, const std::string &ID) {
-
 	if(EventSelected()) {
 		switch(Type) {
 			case EDITINPUT_ITEMIDENTIFIER:
@@ -1580,7 +1589,6 @@ void _EditorState::UpdateEventID(int Type, const std::string &ID) {
 
 // Gets the selected event's object identifier
 std::string _EditorState::GetEventID(int Type) {
-
 	if(EventSelected()) {
 		switch(Type) {
 			case EDITINPUT_ITEMIDENTIFIER:
@@ -1621,7 +1629,6 @@ glm::vec2 _EditorState::GetValidObjectPosition(const glm::vec2 &Position) const 
 
 // Determines if an object is part of the selected objects list
 bool _EditorState::ObjectInSelectedList(_ObjectSpawn *Object) {
-
 	for(auto Iterator : SelectedObjects) {
 		if(Object == Iterator)
 			return true;
@@ -1674,8 +1681,8 @@ void _EditorState::ExecuteToggleTile() {
 				case EVENT_WALLSWITCH:
 				case EVENT_FLOORSWITCH: {
 					_Block *Block;
-					int BlockIndex = Map->GetSelectedBlock(CurrentLayer, WorldCursorIndex, &Block);
-					SelectedEvent->AddTile(_EventTile(WorldCursorIndex, CurrentLayer, BlockIndex));
+					int BlockIndex = Map->GetSelectedBlock(EditLayer, WorldCursorIndex, &Block);
+					SelectedEvent->AddTile(_EventTile(WorldCursorIndex, EditLayer, BlockIndex));
 				} break;
 				case EVENT_ENABLE: {
 					_Event *Event;
@@ -1798,10 +1805,10 @@ void _EditorState::ExecuteTest() {
 // Executes the delete command
 void _EditorState::ExecuteDelete() {
 
-	switch(CurrentPalette) {
+	switch(EditMode) {
 		case EDITMODE_BLOCKS:
 			if(BlockSelected()) {
-				Map->RemoveBlock(CurrentLayer, SelectedBlockIndex);
+				Map->RemoveBlock(EditLayer, SelectedBlockIndex);
 				DeselectBlock();
 			}
 		break;
@@ -1828,7 +1835,7 @@ void _EditorState::ExecuteDelete() {
 // Executes the copy command
 void _EditorState::ExecuteCopy() {
 
-	switch(CurrentPalette) {
+	switch(EditMode) {
 		case EDITMODE_BLOCKS:
 			if(BlockSelected()) {
 				ClipboardBlock = *SelectedBlock;
@@ -1859,7 +1866,7 @@ void _EditorState::ExecutePaste(bool Viewport) {
 	else
 		StartPosition = glm::vec2(Camera->GetPosition().x, Camera->GetPosition().y);
 
-	switch(CurrentPalette) {
+	switch(EditMode) {
 		case EDITMODE_BLOCKS:
 			if(BlockCopied) {
 				int Width = ClipboardBlock.End.x - ClipboardBlock.Start.x;
@@ -1867,8 +1874,8 @@ void _EditorState::ExecutePaste(bool Viewport) {
 				ClipboardBlock.Start = Map->GetValidCoord(glm::ivec2(StartPosition));
 				ClipboardBlock.End = Map->GetValidCoord(glm::ivec2(StartPosition.x + Width, StartPosition.y + Height));
 
-				UndoNumber[CurrentLayer]++;
-				Map->AddBlock(CurrentLayer, ClipboardBlock);
+				UndoNumber[EditLayer]++;
+				Map->AddBlock(EditLayer, ClipboardBlock);
 			}
 		break;
 		case EDITMODE_EVENTS:
@@ -1899,12 +1906,12 @@ void _EditorState::ExecuteDeselect() {
 
 // Executes the undo command
 void _EditorState::ExecuteUndo() {
-	switch(CurrentPalette) {
+	switch(EditMode) {
 		case EDITMODE_BLOCKS:
-			if(UndoNumber[CurrentLayer] > 0) {
-				Map->RemoveLastBlock(CurrentLayer);
+			if(UndoNumber[EditLayer] > 0) {
+				Map->RemoveLastBlock(EditLayer);
 				DeselectBlock();
-				UndoNumber[CurrentLayer]--;
+				UndoNumber[EditLayer]--;
 			}
 		break;
 	}
@@ -1912,13 +1919,13 @@ void _EditorState::ExecuteUndo() {
 
 // Executes the update selected palette command
 void _EditorState::ExecuteUpdateSelectedPalette(int Change) {
-	std::vector<ae::_Element *> &Children = PaletteElement[CurrentPalette]->Children;
-	if(!Brush[CurrentPalette]) {
-		Brush[CurrentPalette] = Children[0];
+	std::vector<ae::_Element *> &Children = PaletteElement[EditMode]->Children;
+	if(!Brush[EditMode]) {
+		Brush[EditMode] = Children[0];
 		return;
 	}
 
-	int CurrentIndex = Brush[CurrentPalette]->Index;
+	int CurrentIndex = Brush[EditMode]->Index;
 	CurrentIndex += Change;
 	if(CurrentIndex >= (int)Children.size())
 		CurrentIndex = 0;
@@ -1936,7 +1943,7 @@ void _EditorState::ExecuteSelectPalette(ae::_Element *Button, int ClickType) {
 	if(Button->Index == -1) {
 
 		// Deselect alternate texture
-		if(ClickType == 1 && CurrentPalette == EDITMODE_BLOCKS) {
+		if(ClickType == 1 && EditMode == EDITMODE_BLOCKS) {
 			if(BlockSelected()) {
 				SelectedBlock->AltTexture = nullptr;
 			}
@@ -1949,7 +1956,7 @@ void _EditorState::ExecuteSelectPalette(ae::_Element *Button, int ClickType) {
 		return;
 	}
 
-	switch(CurrentPalette) {
+	switch(EditMode) {
 		case EDITMODE_BLOCKS:
 			if(!Button)
 				return;
@@ -1997,7 +2004,7 @@ void _EditorState::ExecuteSelectPalette(ae::_Element *Button, int ClickType) {
 		break;
 		default:
 			if(ClickType == 1 && EventSelected()) {
-				switch(CurrentPalette) {
+				switch(EditMode) {
 					case EDITMODE_MONSTERS:
 						SelectedEvent->MonsterID = Button->Name;
 						ExecuteSwitchMode(EDITMODE_EVENTS);
@@ -2014,7 +2021,7 @@ void _EditorState::ExecuteSelectPalette(ae::_Element *Button, int ClickType) {
 	}
 
 	if(ClickType == 0)
-		Brush[CurrentPalette] = Button;
+		Brush[EditMode] = Button;
 }
 
 // Executes the update grid command
@@ -2037,15 +2044,15 @@ void _EditorState::ExecuteHighlightBlocks() {
 void _EditorState::ExecuteSwitchMode(int State) {
 
 	// Toggle icons
-	if(CurrentPalette != State) {
-		ModeButtons[CurrentPalette]->Checked = false;
+	if(EditMode != State) {
+		ModeButtons[EditMode]->Checked = false;
 		ModeButtons[State]->Checked = true;
 
 		// Set state
-		CurrentPalette = State;
+		EditMode = State;
 		BlockElement->SetActive(false);
 		EventElement->SetActive(false);
-		switch(CurrentPalette) {
+		switch(EditMode) {
 			case EDITMODE_BLOCKS:
 				BlockElement->SetActive(true);
 			break;
@@ -2059,9 +2066,9 @@ void _EditorState::ExecuteSwitchMode(int State) {
 // Executes the update layer command
 void _EditorState::ExecuteUpdateLayer(int Layer, bool Move) {
 
-	if(CurrentLayer != Layer) {
+	if(EditLayer != Layer) {
 		if(Move && BlockSelected()) {
-			Map->ChangeLayer(CurrentLayer, Layer, SelectedBlockIndex);
+			Map->ChangeLayer(EditLayer, Layer, SelectedBlockIndex);
 			SelectedBlockIndex = Map->GetLastBlock(Layer, &SelectedBlock);
 
 			// Change block properties
@@ -2096,9 +2103,9 @@ void _EditorState::ExecuteUpdateLayer(int Layer, bool Move) {
 		MinZ = MAP_MINZ;
 
 		// Toggle icons
-		LayerButtons[CurrentLayer]->Checked = false;
+		LayerButtons[EditLayer]->Checked = false;
 		LayerButtons[Layer]->Checked = true;
-		CurrentLayer = Layer;
+		EditLayer = Layer;
 	}
 }
 
@@ -2106,7 +2113,7 @@ void _EditorState::ExecuteUpdateLayer(int Layer, bool Move) {
 void _EditorState::ExecuteShiftLayer(int Change) {
 
 	// Shift layers
-	int NewLayer = CurrentLayer + Change;
+	int NewLayer = EditLayer + Change;
 	if(NewLayer > MAPLAYER_COUNT - 1)
 		NewLayer = MAPLAYER_COUNT - 1;
 	else if(NewLayer < 0)
@@ -2119,12 +2126,12 @@ void _EditorState::ExecuteShiftLayer(int Change) {
 void _EditorState::ExecuteUpdateBlockLimits(int Direction, bool Expand) {
 	glm::ivec2 Start, End;
 	bool Change = false;
-	if(CurrentPalette == EDITMODE_BLOCKS && BlockSelected()) {
+	if(EditMode == EDITMODE_BLOCKS && BlockSelected()) {
 		Start = SelectedBlock->Start;
 		End = SelectedBlock->End;
 		Change = true;
 	}
-	else if(CurrentPalette == EDITMODE_EVENTS && EventSelected()) {
+	else if(EditMode == EDITMODE_EVENTS && EventSelected()) {
 		Start = SelectedEvent->Start;
 		End = SelectedEvent->End;
 		Change = true;
@@ -2171,11 +2178,11 @@ void _EditorState::ExecuteUpdateBlockLimits(int Direction, bool Expand) {
 		if(End.y < Start.y)
 			End.y = Start.y;
 
-		if(CurrentPalette == EDITMODE_BLOCKS && BlockSelected()) {
+		if(EditMode == EDITMODE_BLOCKS && BlockSelected()) {
 			SelectedBlock->Start = Map->GetValidCoord(Start);
 			SelectedBlock->End = Map->GetValidCoord(End);
 		}
-		else if(CurrentPalette == EDITMODE_EVENTS && EventSelected()) {
+		else if(EditMode == EDITMODE_EVENTS && EventSelected()) {
 			SelectedEvent->Start = Map->GetValidCoord(Start);
 			SelectedEvent->End = Map->GetValidCoord(End);
 		}
@@ -2249,14 +2256,4 @@ void _EditorState::ClearClipboard() {
 	BlockCopied = false;
 	ClipboardEvent = nullptr;
 	ClipboardObjects.clear();
-}
-
-// Clear object selection
-void _EditorState::DeselectObjects() {
-	SelectedObjects.clear();
-}
-
-// Determine if any objects are selected
-bool _EditorState::ObjectsSelected() {
-	return SelectedObjects.size() != 0;
 }

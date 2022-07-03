@@ -170,11 +170,11 @@ class _EditorState : public ae::_State {
 		void SelectObjects();
 		void DeselectBlock() { SelectedBlockIndex = -1, SelectedBlock = nullptr; }
 		void DeselectEvent() { SelectedEventIndex = -1, SelectedEvent = nullptr; }
-		void DeselectObjects();
+		void DeselectObjects() { SelectedObjects.clear(); }
 		void ClearClipboard();
 		bool BlockSelected() { return SelectedBlockIndex != -1; }
 		bool EventSelected() { return SelectedEventIndex != -1; }
-		bool ObjectsSelected();
+		bool ObjectsSelected() { return SelectedObjects.size() != 0; }
 
 		void SetEventProperties(double ActivationPeriod, int Level, int Active, const std::string &ParticleID);
 		std::string GetEventID(int Type);
@@ -236,8 +236,8 @@ class _EditorState : public ae::_State {
 		int EditorInput;
 
 		// UI
-		int CurrentLayer;
-		int CurrentPalette;
+		int EditLayer;
+		int EditMode;
 		std::vector<const ae::_Texture *> EventTextures;
 		ae::_Font *MainFont;
 		ae::_Element *LayerButtons[MAPLAYER_COUNT];

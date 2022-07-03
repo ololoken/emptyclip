@@ -1171,22 +1171,20 @@ std::vector<_Event *> &_Map::GetEventList(const glm::ivec2 &Position) {
 }
 
 // Returns a starting position by level and player id
-glm::vec2 _Map::GetStartingPositionByCheckpoint(int Level) {
+glm::vec2 _Map::GetStartingPositionByCheckpoint(int CheckpointLevel) {
 
-	// Degenerate case
-	if(CheckpointEvents.size() == 0)
-		return glm::vec2(2.5f, 2.5f);
-
-	// Look through events
+	// Look through checkpoint events
 	for(size_t i = 0; i < CheckpointEvents.size(); i++) {
 		_Event *Event = CheckpointEvents[i];
-		if(Event->Level == Level) {
-			const std::vector<_EventTile> &Tiles = Event->Tiles;
+		if(Event->Level != CheckpointLevel)
+			continue;
 
-			if(Tiles.size() == 0)
-				return glm::vec2(Event->Start.x + 0.5f, Event->Start.y + 0.5f);
-			else
-				return glm::vec2(Tiles[0].Coord.x + 0.5f, Tiles[0].Coord.y + 0.5f);
+		if(Event->Tiles.size() == 0) {
+			return glm::vec2(Event->Start.x + 0.5f, Event->Start.y + 0.5f);
+		}
+		else {
+			std::size_t TileID = ae::GetRandomInt((std::size_t)0, Event->Tiles.size()-1);
+			return glm::vec2(Event->Tiles[TileID].Coord.x + 0.5f, Event->Tiles[TileID].Coord.y + 0.5f);
 		}
 	}
 
@@ -1553,15 +1551,17 @@ void _Map::RenderEvents(std::vector<const ae::_Texture *> &Textures) {
 	// Draw events
 	for(size_t i = 0; i < Events.size(); i++) {
 		glm::vec4 Bounds(Events[i]->Start.x, Events[i]->Start.y, Events[i]->End.x + 1.0f, Events[i]->End.y + 1.0f);
-		if(Camera->IsAABBInView(Bounds)) {
-			ae::Graphics.DrawRepeatable(
-				glm::vec3(Events[i]->Start.x, Events[i]->Start.y, MAP_LAYEROFFSET),
-				glm::vec3(Events[i]->End.x + 1.0f, Events[i]->End.y + 1.0f, MAP_LAYEROFFSET),
-				Textures[Events[i]->Type],
-				0,
-				1.0f
-			);
-		}
+		if(!Camera->IsAABBInView(Bounds))
+			continue;
+
+		// Draw event overlay
+		ae::Graphics.DrawRepeatable(
+			glm::vec3(Events[i]->Start.x, Events[i]->Start.y, MAP_LAYEROFFSET),
+			glm::vec3(Events[i]->End.x + 1.0f, Events[i]->End.y + 1.0f, MAP_LAYEROFFSET),
+			Textures[Events[i]->Type],
+			0,
+			1.0f
+		);
 	}
 }
 
