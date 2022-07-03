@@ -2,6 +2,6 @@ id	fire_id	gunsmoke_id	ricochet_id	bullethole_id	hit_id	floordecal_id
 player					bloodspurt0	blood0
 monster					bloodspurt0	blood0
 crate						crate0
-gun0	gun_fire0	gun_smoke0	bullet_spark0	bullet_hole0		
-gun1	gun_fire1	gun_smoke0	bullet_spark0	bullet_hole0		
+gun	gun_fire0	gun_smoke0	bullet_spark0	bullet_hole0		
+gun_big	gun_fire1	gun_smoke0	bullet_spark0	bullet_hole0		
 plasma	plasma_fire0	plasma_smoke0	plasma_spark0	plasma_hole0		

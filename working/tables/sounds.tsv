@@ -11,7 +11,7 @@ event_rumble1	event_rumble1.ogg	1	1
 knife_fire0	knife_fire0.ogg	0.7	3
 knife_hit0	knife_hit0.ogg	0.7	3
 magnum_fire0	magnum_fire0.ogg	0.7	3
-minigun_fire0	minigun_fire0.ogg	0.5	1
+minigun_fire0	minigun_fire0.ogg	0.7	1
 monster_hit0	monster_hit0.ogg	1	5
 monster_punch0	monster_punch0.ogg	0.3	5
 pistol_empty0	pistol_empty0.ogg	0.8	1

@@ -28,7 +28,7 @@ fi
 
 # get scale
 if [ -z "$scale" ]; then
-	scale=1
+	scale=2
 fi
 echo "$file"
 echo "calculating..."

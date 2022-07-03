@@ -162,12 +162,13 @@ void _Entity::StartTriggerDownAudio() {
 		return;
 
 	const ae::_Sound *Sound = GetSound(SOUND_TRIGGERDOWN, AttackRequestType);
-	if(Sound) {
-		TriggerDownAudio = new ae::_AudioSource(Sound);
-		TriggerDownAudio->SetRelative(true);
-		TriggerDownAudio->SetLooping(true);
-		TriggerDownAudio->Play();
-	}
+	if(!Sound)
+		return;
+
+	TriggerDownAudio = new ae::_AudioSource(Sound);
+	TriggerDownAudio->SetRelative(true);
+	TriggerDownAudio->SetLooping(true);
+	TriggerDownAudio->Play();
 }
 
 // Stop all audio associated with entity
@@ -246,6 +247,7 @@ void _Entity::UpdateAnimation(double FrameTime, bool PlaySound) {
 				Animation->Stop();
 				Animation->Play(ShootingTwohandAnimation);
 			}
+			Animation->FramePeriod = FirePeriod[WEAPONATTACK_MAIN];
 
 			Action = ACTION_SHOOT;
 			AttackMade = true;

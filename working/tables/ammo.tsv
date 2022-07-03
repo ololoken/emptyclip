@@ -2,3 +2,4 @@ id	name	icon_texture	amount	max
 ammo_pistol	Pistol Ammo	textures/items/ammo_pistol.png	10	50
 ammo_shells	Shotgun Shells	textures/items/ammo_shotgun.png	5	25
 ammo_rifle	Rifle Ammo	textures/items/ammo_rifle.png	20	100
+ammo_heavy	Heavy Ammo	textures/items/ammo_heavy.png	25	150
