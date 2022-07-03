@@ -128,6 +128,6 @@ const  float        HUD_MINIMAP_CAPTURE_SIZE       =  20.0f;
 const  float        HUD_MINIMAP_FULL_CAPTURE_SIZE  =  50.0f;
 const  glm::vec2    HUD_MINIMAP_SIZE               =  glm::vec2(200,200);
 const  glm::vec2    HUD_MINIMAP_PADDING            =  glm::vec2(10,10);
-const  glm::vec4    HUD_MINIMAP_BACKGROUND_COLOR   =  glm::vec4(0.0f, 0.0f, 0.0f, 0.5f);
+const  glm::vec4    HUD_MINIMAP_BACKGROUND_COLOR   =  glm::vec4(0.0f, 0.0f, 0.0f, 0.8f);
 const  glm::vec4    HUD_MINIMAP_WALL_COLOR         =  glm::vec4(0.40f, 0.36f, 0.29f, 0.4f);
 const  glm::vec4    HUD_MINIMAP_DOOR_COLOR         =  glm::vec4(0.7f, 0.7f, 0.7f, 0.4f);

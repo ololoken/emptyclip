@@ -1689,43 +1689,59 @@ void _Map::AddMinimapLayers() {
 	for(std::size_t i = 0; i < Blocks[MAPLAYER_WALL].size(); i++) {
 		_Block *Block = &Blocks[MAPLAYER_WALL][i];
 
+		// Check bounds
 		glm::vec4 Bounds;
 		Block->GetBounds(Bounds);
-		if(CheckMinimapBounds(Bounds)) {
-			_MinimapLayer MinimapLayer;
-			MinimapLayer.Bounds = Bounds;
-			MinimapLayer.Color = HUD_MINIMAP_WALL_COLOR;
-			MinimapLayers.push_back(MinimapLayer);
-		}
+		if(!CheckMinimapBounds(Bounds))
+			continue;
+
+		// Check for empty texture
+		if(!Block->Texture)
+			continue;
+
+		_MinimapLayer MinimapLayer;
+		MinimapLayer.Bounds = Bounds;
+		MinimapLayer.Color = HUD_MINIMAP_WALL_COLOR;
+		MinimapLayers.push_back(MinimapLayer);
 	}
 
 	// Add flat walls
 	for(size_t i = 0; i < Blocks[MAPLAYER_FLAT].size(); i++) {
 		_Block *Block = &Blocks[MAPLAYER_FLAT][i];
+		if(Block->MinZ > 0)
+			continue;
 
+		// Check bounds
 		glm::vec4 Bounds;
 		Block->GetBounds(Bounds);
-		if(Block->MinZ <= 0 && CheckMinimapBounds(Bounds)) {
-			_MinimapLayer MinimapLayer;
-			MinimapLayer.Bounds = Bounds;
-			MinimapLayer.Color = HUD_MINIMAP_WALL_COLOR;
-			MinimapLayers.push_back(MinimapLayer);
-		}
+		if(!CheckMinimapBounds(Bounds))
+			continue;
+
+		// Check for empty texture
+		if(!Block->Texture)
+			continue;
+
+		_MinimapLayer MinimapLayer;
+		MinimapLayer.Bounds = Bounds;
+		MinimapLayer.Color = HUD_MINIMAP_WALL_COLOR;
+		MinimapLayers.push_back(MinimapLayer);
 	}
 
 	// Add doors to minimap
 	for(const auto &Event : Events) {
-		if(Event->Type != EVENT_DOOR)
+		if(Event->Type != EVENT_DOOR && Event->Type != EVENT_WALLSWITCH)
 			continue;
 
+		// Check bounds
 		glm::vec4 Bounds;
 		Event->GetBounds(Bounds);
-		if(CheckMinimapBounds(Bounds)) {
-			_MinimapLayer MinimapLayer;
-			MinimapLayer.Bounds = Bounds;
-			MinimapLayer.Color = Event->ItemID.empty() ? HUD_MINIMAP_DOOR_COLOR : Stats.Objects.at(Event->ItemID).DoorColor;
-			MinimapLayers.push_back(MinimapLayer);
-		}
+		if(!CheckMinimapBounds(Bounds))
+			continue;
+
+		_MinimapLayer MinimapLayer;
+		MinimapLayer.Bounds = Bounds;
+		MinimapLayer.Color = Event->ItemID.empty() ? HUD_MINIMAP_DOOR_COLOR : Stats.Objects.at(Event->ItemID).DoorColor;
+		MinimapLayers.push_back(MinimapLayer);
 	}
 }
 
