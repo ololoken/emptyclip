@@ -37,6 +37,7 @@
 #include <iostream>
 #include <glm/gtx/norm.hpp>
 #include <glm/gtx/rotate_vector.hpp>
+#include <zlib/zfstream.h>
 
 // Initialize
 _Map::_Map() :
@@ -61,12 +62,12 @@ _Map::_Map(const std::string &Filename) : _Map() {
 	if(Filename == "")
 		throw std::runtime_error("Empty file name");
 
-	this->Filename = Filename;
+	this->Filename = FixFilename(Filename);
 
 	// Load file
-	std::ifstream InputFile("maps/" + Filename, std::ios::in);
+	gzifstream InputFile(("maps/" + this->Filename).c_str(), std::ios::in);
 	if(!InputFile)
-		throw std::runtime_error("Cannot load file: " + Filename);
+		throw std::runtime_error("Cannot load file: " + this->Filename);
 
 	// Get file version
 	int FileVersion;
@@ -282,8 +283,8 @@ void _Map::InitializeTiles() {
 // Saves the level to a file
 bool _Map::Save(const std::string &String) {
 
-	Filename = String;
-	std::ofstream Output("maps/" + Filename, std::ios::out);
+	Filename = FixFilename(String);
+	gzofstream Output(("maps/" + Filename).c_str(), std::ios::out);
 	if(!Output)
 		throw std::runtime_error("Cannot create file: " + Filename);
 
@@ -1736,4 +1737,15 @@ void _Map::AddMinimapLayers() {
 // Generates a random point inside of a circle
 glm::vec2 _Map::GenerateRandomPointInCircle(float Radius) {
 	return glm::rotate(glm::vec2(0, -1), glm::radians((float)(ae::GetRandomReal(0, 1) * 360.0))) * Radius * (float)sqrt(ae::GetRandomReal(0, 1));
+}
+
+// Add missing extensions to filename
+std::string _Map::FixFilename(const std::string &Filename) {
+	std::string NewFilename = Filename;
+	if(NewFilename.find(".map", 0) == std::string::npos)
+		NewFilename = NewFilename + ".map";
+	if(NewFilename.find(".gz", 0) == std::string::npos)
+		NewFilename = NewFilename + ".gz";
+
+	return NewFilename;
 }

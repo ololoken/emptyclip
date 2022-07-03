@@ -253,7 +253,9 @@ class _Map {
 
 		bool CheckMinimapBounds(const glm::vec4 &Bounds);
 		void AddMinimapLayers();
+
 		static glm::vec2 GenerateRandomPointInCircle(float Radius);
+		static std::string FixFilename(const std::string &Filename);
 
 		// Stats
 		int MapType;

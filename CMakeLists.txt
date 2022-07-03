@@ -45,6 +45,7 @@ find_package(Threads REQUIRED)
 
 # set include directories
 include_directories("src")
+include_directories("ext")
 include_directories("ext/ae")
 include_directories(${SDL2_INCLUDE_DIR})
 include_directories(${SDL2_IMAGE_INCLUDE_DIR})
