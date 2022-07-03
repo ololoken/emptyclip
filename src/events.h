@@ -71,6 +71,7 @@ class _Event {
 		int Active;
 		int Level;
 		int SpawnLevel;
+		bool Switched;
 		glm::ivec2 Start;
 		glm::ivec2 End;
 		std::vector<_EventTile> Tiles;

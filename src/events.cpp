@@ -23,6 +23,7 @@ _Event::_Event(int Type, int Active, const glm::ivec2 &Start, const glm::ivec2 &
 	Active(Active),
 	Level(Level),
 	SpawnLevel(SpawnLevel),
+	Switched(false),
 	Start(Start),
 	End(End),
 	ItemID(ItemID),

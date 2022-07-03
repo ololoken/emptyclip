@@ -880,34 +880,42 @@ void _PlayState::ActivateEvent() {
 	// Check for events
 	std::vector<_Event *> &Events = Map->GetEventList(Position);
 	for(auto Event : Events) {
+		if(!Event->Active)
+			continue;
+
+		if(!Map->CanChangeMapState(Event))
+			continue;
 
 		// Check for doors or switches
-		if(Event->Active && (Event->Type == EVENT_DOOR || Event->Type == EVENT_WALLSWITCH) && Map->CanChangeMapState(Event)) {
+		if(Event->Type != EVENT_DOOR && Event->Type != EVENT_WALLSWITCH)
+			continue;
 
-			// Check for key in inventory and use it
-			if(!Event->ItemID.empty()) {
-				int ItemIndex = Player->FindItem(Event->ItemID);
-				if(ItemIndex == -1) {
-					HUD->ShowMessageBox("You need the " + Stats.Objects.at(Event->ItemID).Name, HUD_KEYMESSAGETIME);
-					return;
-				}
-
-				if(Player->UseItem(ItemIndex, true))
-					HUD->ShowTextMessage("KEY USED", 2.0f);
+		// Check for key in inventory and use it
+		if(!Event->ItemID.empty()) {
+			int ItemIndex = Player->FindItem(Event->ItemID);
+			if(ItemIndex == -1) {
+				HUD->ShowMessageBox("You need the " + Stats.Objects.at(Event->ItemID).Name, HUD_KEYMESSAGETIME);
+				return;
 			}
 
-			// Change map
-			Map->ChangeMapState(Event);
-
-			// Decrement level
-			if(Event->Level > 0) {
-				Event->Decrement();
-				if(Event->Level == 0)
-					Event->Active = false;
-			}
-
-			Player->ResetUseTimer();
+			if(Player->UseItem(ItemIndex, true))
+				HUD->ShowTextMessage("KEY USED", 2.0f);
 		}
+
+		// Change map
+		Map->ChangeMapState(Event);
+
+		// Decrement level
+		if(Event->Level > 0) {
+			Event->Decrement();
+			if(Event->Level == 0)
+				Event->Active = false;
+		}
+
+		// Toggle event
+		Event->Switched = !Event->Switched;
+
+		Player->ResetUseTimer();
 	}
 }
 
