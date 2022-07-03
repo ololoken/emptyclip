@@ -190,7 +190,7 @@ bool _PlayState::HandleAction(int InputType, size_t Action, int Value) {
 						AttackType = WEAPONATTACK_MELEE;
 
 					// Can reload
-					if(Player->Reloading)
+					if(Player->Reloading && Player->WeaponHasAmmo(AttackType))
 						Player->CancelReloading();
 
 					// Play sound
@@ -974,7 +974,7 @@ void _PlayState::UpdateMonsters(double FrameTime) {
 			Monster->GetRenderBounds(Bounds);
 
 			// Add to minimap
-			if(Map->CheckMinimapBounds(Bounds)) {
+			if(Monster->Health > 0 && Map->CheckMinimapBounds(Bounds)) {
 				_MinimapLayer MinimapLayer;
 				MinimapLayer.Bounds = Bounds;
 				MinimapLayer.Color = Monster->AIType ? COLOR_RED : COLOR_MAGENTA;

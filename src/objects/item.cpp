@@ -424,6 +424,7 @@ void _Item::RecalculateStats() {
 			Attributes.at("damage_resist").Int += Bonus[MOD_DAMAGERESIST];
 			Attributes.at("max_ammo").Int += Bonus[MOD_MAXAMMO];
 			Attributes.at("move_speed").Int += Bonus[MOD_MOVESPEED];
+			Attributes.at("move_speed").Int = std::clamp(Attributes.at("move_speed").Int, -ITEM_MAX_MOVESPEED, ITEM_MAX_MOVESPEED);
 		break;
 	}
 }
