@@ -65,7 +65,7 @@ _Save::~_Save() {
 }
 
 // Get a save path for a slot
-std::string _Save::GetConfigPath(std::size_t Slot) {
+std::string _Save::GetConfigPath(size_t Slot) {
 	if(Slot >= SLOT_COUNT)
 		return "";
 
@@ -75,7 +75,7 @@ std::string _Save::GetConfigPath(std::size_t Slot) {
 }
 
 // Create new player
-void _Save::CreateNewPlayer(std::size_t Slot, const std::string &Name, const std::string &ColorID) {
+void _Save::CreateNewPlayer(size_t Slot, const std::string &Name, const std::string &ColorID) {
 	if(Slot >= SLOT_COUNT)
 		return;
 
@@ -88,7 +88,7 @@ void _Save::CreateNewPlayer(std::size_t Slot, const std::string &Name, const std
 }
 
 // Deletes a player
-void _Save::DeletePlayer(std::size_t Slot) {
+void _Save::DeletePlayer(size_t Slot) {
 	if(Slot >= SLOT_COUNT)
 		return;
 
@@ -125,7 +125,7 @@ void _Save::LoadSaves() {
 	for(size_t i = 0; i < Files.Nodes.size(); i++) {
 		size_t Extension = Files.Nodes[i].find(".save");
 		std::string SlotIndexString = Files.Nodes[i].substr(0, Extension);
-		std::size_t SlotIndex = atoi(SlotIndexString.c_str()) - 1;
+		size_t SlotIndex = atoi(SlotIndexString.c_str()) - 1;
 		if(SlotIndex > SLOT_9)
 			continue;
 

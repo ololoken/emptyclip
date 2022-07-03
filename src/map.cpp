@@ -1183,7 +1183,7 @@ glm::vec2 _Map::GetStartingPositionByCheckpoint(int CheckpointLevel) {
 			return glm::vec2(Event->Start.x + 0.5f, Event->Start.y + 0.5f);
 		}
 		else {
-			std::size_t TileID = ae::GetRandomInt((std::size_t)0, Event->Tiles.size()-1);
+			size_t TileID = ae::GetRandomInt((size_t)0, Event->Tiles.size()-1);
 			return glm::vec2(Event->Tiles[TileID].Coord.x + 0.5f, Event->Tiles[TileID].Coord.y + 0.5f);
 		}
 	}
@@ -1278,7 +1278,7 @@ void _Map::DrawMinimap(bool FullMap) {
 // Draws rectangles around all the blocks
 void _Map::HighlightBlocks(int Layer) {
 	ae::Graphics.SetColor(COLOR_MAGENTA);
-	for(std::size_t i = 0; i < Blocks[Layer].size(); i++)
+	for(size_t i = 0; i < Blocks[Layer].size(); i++)
 		ae::Graphics.DrawRectangle3D(glm::vec2(Blocks[Layer][i].Start.x, Blocks[Layer][i].Start.y), glm::vec2(Blocks[Layer][i].End.x + 1.0f, Blocks[Layer][i].End.y + 1.0f), false);
 }
 
@@ -1391,7 +1391,7 @@ int _Map::RenderFloors() {
 	ae::Graphics.SetDepthMask(false);
 
 	int Count = 0;
-	for(std::size_t i = 0; i < Blocks[MAPLAYER_BASE].size(); i++) {
+	for(size_t i = 0; i < Blocks[MAPLAYER_BASE].size(); i++) {
 		_Block *Block = &Blocks[MAPLAYER_BASE][i];
 
 		bool Draw = true;
@@ -1472,7 +1472,7 @@ int _Map::RenderWalls() {
 
 	// Draw walls
 	int Count = 0;
-	for(std::size_t i = 0; i < Blocks[MAPLAYER_WALL].size(); i++) {
+	for(size_t i = 0; i < Blocks[MAPLAYER_WALL].size(); i++) {
 		_Block *Block = &Blocks[MAPLAYER_WALL][i];
 
 		// Always draw walls that go lower than floor
@@ -1578,7 +1578,7 @@ int _Map::RenderForeground() {
 
 	// Draw foreground
 	int Count = 0;
-	for(std::size_t i = 0; i < Blocks[6].size(); i++) {
+	for(size_t i = 0; i < Blocks[6].size(); i++) {
 		_Block *Block = &Blocks[6][i];
 
 		// Check bounds
@@ -1686,7 +1686,7 @@ bool _Map::CheckMinimapBounds(const glm::vec4 &Bounds) {
 void _Map::AddMinimapLayers() {
 
 	// Add walls
-	for(std::size_t i = 0; i < Blocks[MAPLAYER_WALL].size(); i++) {
+	for(size_t i = 0; i < Blocks[MAPLAYER_WALL].size(); i++) {
 		_Block *Block = &Blocks[MAPLAYER_WALL][i];
 
 		// Check bounds

@@ -74,7 +74,7 @@ void _Item::DrawAttribute(const std::string &Attribute, const std::string &Label
 }
 
 // Draw the item popup window
-void _Item::DrawTooltip(const _Player *Player, std::size_t CompareSlot, int InventorySlot, glm::ivec2 DrawPosition) {
+void _Item::DrawTooltip(const _Player *Player, size_t CompareSlot, int InventorySlot, glm::ivec2 DrawPosition) {
 	std::ostringstream Buffer;
 
 	glm::ivec2 Size(300, 120);

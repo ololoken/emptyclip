@@ -51,17 +51,17 @@ class _Save {
 		_Save();
 		~_Save();
 
-		void CreateNewPlayer(std::size_t Slot, const std::string &Name, const std::string &ColorID);
-		void DeletePlayer(std::size_t Slot);
+		void CreateNewPlayer(size_t Slot, const std::string &Name, const std::string &ColorID);
+		void DeletePlayer(size_t Slot);
 		void LoadSaves();
 		void LoadPlayer(_Player *Player);
 		void SavePlayer(_Player *Player);
 
-		_Player *GetPlayer(std::size_t Slot) { return Players[Slot]; }
+		_Player *GetPlayer(size_t Slot) { return Players[Slot]; }
 
 	private:
 
-		std::string GetConfigPath(std::size_t Slot);
+		std::string GetConfigPath(size_t Slot);
 
 		void LoadItems(_Player *Player, ae::_Buffer &Buffer);
 		void LoadMods(ae::_Buffer &Buffer, _Item *Item);

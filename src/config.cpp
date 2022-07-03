@@ -139,7 +139,7 @@ void _Config::Load() {
 		File.getline(Buffer, 256);
 		if(File.good()) {
 			std::string Line(Buffer);
-			std::size_t Pos = Line.find_first_of('=');
+			size_t Pos = Line.find_first_of('=');
 			if(Pos != std::string::npos) {
 				std::string Field = Line.substr(0, Pos);
 				std::string Value = Line.substr(Pos+1, Line.size());
@@ -178,7 +178,7 @@ void _Config::Load() {
 		ae::Actions.ClearMappings(i);
 
 	// Load bindings
-	for(std::size_t i = 0; i < ae::Actions.State.size(); i++) {
+	for(size_t i = 0; i < ae::Actions.State.size(); i++) {
 		std::ostringstream Buffer;
 		Buffer << "action_" << ae::Actions.State[i].Name;
 

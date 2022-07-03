@@ -109,7 +109,7 @@ void _Stats::LoadLevels(const std::string &Path) {
 	}
 
 	// Calculate next level
-	for(std::size_t i = 1; i < Levels.size(); i++)
+	for(size_t i = 1; i < Levels.size(); i++)
 		Levels[i - 1].NextLevel = Levels[i].Experience - Levels[i - 1].Experience;
 
 	// Cap next level
@@ -672,7 +672,7 @@ _Monster *_Stats::CreateMonster(const std::string &ID, int Level, const glm::vec
 const _Level &_Stats::FindLevel(int64_t Experience) {
 
 	// Search through levels
-	for(std::size_t i = 1; i < Levels.size(); i++) {
+	for(size_t i = 1; i < Levels.size(); i++) {
 		if(Levels[i].Experience > Experience)
 			return Levels[i-1];
 	}
