@@ -1942,14 +1942,19 @@ void _EditorState::ExecuteSelectPalette(ae::_Element *Button, int ClickType) {
 
 	if(Button->Index == -1) {
 
-		// Deselect alternate texture
-		if(ClickType == 1 && EditMode == EDITMODE_BLOCKS) {
+		// Deselect texture
+		if(EditMode == EDITMODE_BLOCKS) {
 			if(BlockSelected()) {
-				SelectedBlock->AltTexture = nullptr;
+				if(ClickType)
+					SelectedBlock->AltTexture = nullptr;
+				else
+					SelectedBlock->Texture = nullptr;
 			}
 			else {
-				AltTextureID = "";
-				AltTexture = nullptr;
+				if(ClickType) {
+					AltTextureID = "";
+					AltTexture = nullptr;
+				}
 			}
 		}
 

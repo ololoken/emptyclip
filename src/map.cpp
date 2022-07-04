@@ -189,7 +189,7 @@ _Map::_Map(const std::string &Filename) : _Map() {
 		std::getline(InputFile, AltTexturePath, '\n');
 
 		Block.Texture = ae::Assets.Textures[TexturePath];
-		if(!Block.Texture)
+		if(TexturePath != "" && !Block.Texture)
 			throw std::runtime_error("Cannot find texture: " + TexturePath);
 
 		if(AltTexturePath != "") {
@@ -340,6 +340,10 @@ bool _Map::Save(const std::string &String) {
 	for(int i = 0; i < MAPLAYER_COUNT; i++) {
 		for(size_t j = 0; j < Blocks[i].size(); j++) {
 
+			std::string TextureID;
+			if(Blocks[i][j].Texture)
+				TextureID = Blocks[i][j].Texture->Name;
+
 			std::string AltTextureID;
 			if(Blocks[i][j].AltTexture)
 				AltTextureID = Blocks[i][j].AltTexture->Name;
@@ -356,7 +360,7 @@ bool _Map::Save(const std::string &String) {
 				<< Blocks[i][j].ScaleX << ' '
 				<< Blocks[i][j].Wall << ' '
 				<< Blocks[i][j].Walkable << ' '
-				<< Blocks[i][j].Texture->Name << '\t'
+				<< TextureID << '\t'
 				<< AltTextureID << '\n';
 		}
 	}
