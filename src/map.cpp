@@ -378,7 +378,7 @@ void _Map::AddObjectToGrid(_Object *Object, int Type) {
 
 	for(int i = TileBounds.Start.x; i <= TileBounds.End.x; i++) {
 		for(int j = TileBounds.Start.y; j <= TileBounds.End.y; j++) {
-			Data[i][j].Objects[Type].push_front(Object);
+			Data[i][j].Objects[Type][Object] = 1;
 		}
 	}
 }
@@ -394,12 +394,7 @@ void _Map::RemoveObjectFromGrid(_Object *Object, int Type) {
 
 	for(int i = TileBounds.Start.x; i <= TileBounds.End.x; i++) {
 		for(int j = TileBounds.Start.y; j <= TileBounds.End.y; j++) {
-			for(auto Iterator = Data[i][j].Objects[Type].begin(); Iterator != Data[i][j].Objects[Type].end(); ++Iterator) {
-				if(*Iterator == Object) {
-					Data[i][j].Objects[Type].erase(Iterator);
-					break;
-				}
-			}
+			Data[i][j].Objects[Type].erase(Object);
 		}
 	}
 }
@@ -545,11 +540,12 @@ _Object *_Map::GetCloseObject(const glm::vec2 &Position, float Radius, int GridT
 	for(int i = TileBounds.Start.x; i <= TileBounds.End.x; i++) {
 		for(int j = TileBounds.Start.y; j <= TileBounds.End.y; j++) {
 			for(auto Iterator : Data[i][j].Objects[GridType]) {
+				_Object *Object = Iterator.first;
 
 				// Check circle intersection
-				float RadiiSum = Iterator->Radius + Radius;
-				if(glm::distance2(Iterator->Position, Position) < RadiiSum * RadiiSum)
-					return Iterator;
+				float RadiiSum = Object->Radius + Radius;
+				if(glm::distance2(Object->Position, Position) < RadiiSum * RadiiSum)
+					return Object;
 			}
 		}
 	}
@@ -570,9 +566,11 @@ void _Map::GetCloseObjects(const glm::vec2 &Position, float Radius, int GridType
 	for(int i = TileBounds.Start.x; i <= TileBounds.End.x; i++) {
 		for(int j = TileBounds.Start.y; j <= TileBounds.End.y; j++) {
 			for(auto Iterator : Data[i][j].Objects[GridType]) {
-				float RadiiSum = Iterator->Radius + Radius;
-				if(glm::distance2(Iterator->Position, Position) < RadiiSum * RadiiSum)
-					TouchedObjects[Iterator] = 1;
+				_Object *Object = Iterator.first;
+
+				float RadiiSum = Object->Radius + Radius;
+				if(glm::distance2(Object->Position, Position) < RadiiSum * RadiiSum)
+					TouchedObjects[Object] = 1;
 			}
 		}
 	}
@@ -592,8 +590,8 @@ void _Map::CheckEntityCollisionsInGrid(const glm::vec2 &Position, float Radius, 
 	for(int i = TileBounds.Start.x; i <= TileBounds.End.x; i++) {
 		for(int j = TileBounds.Start.y; j <= TileBounds.End.y; j++) {
 			for(int k = 0; k < 2; k++) {
-				for(auto Iterator = Data[i][j].Objects[k].begin(); Iterator != Data[i][j].Objects[k].end(); ++Iterator) {
-					_Entity *Entity = (_Entity *)*Iterator;
+				for(auto &Iterator : Data[i][j].Objects[k]) {
+					_Entity *Entity = (_Entity *)Iterator.first;
 					if(Entity == SkipObject || Entity->IsDying())
 						continue;
 
@@ -660,8 +658,8 @@ void _Map::CheckMeleeCollisions(_Entity *Attacker, const glm::vec2 &Direction, i
 	std::unordered_map<_Entity *, int> EntityMap;
 	for(int i = TileBounds.Start.x; i <= TileBounds.End.x; i++) {
 		for(int j = TileBounds.Start.y; j <= TileBounds.End.y; j++) {
-			for(auto Iterator = Data[i][j].Objects[GridType].begin(); Iterator != Data[i][j].Objects[GridType].end(); ++Iterator) {
-				_Entity *Entity = (_Entity *)*Iterator;
+			for(auto &Iterator : Data[i][j].Objects[GridType]) {
+				_Entity *Entity = (_Entity *)Iterator.first;
 				if(Entity->IsDying())
 					continue;
 
@@ -803,8 +801,8 @@ void _Map::CheckBulletCollisions(const glm::vec2 &Position, const glm::vec2 &Dir
 		_Hit Hit(HIT_OBJECT);
 		float MinDistance = HUGE_VAL;
 		if(CheckObjects) {
-			for(auto Iterator = Data[TileTracer.x][TileTracer.y].Objects[GridType].begin(); Iterator != Data[TileTracer.x][TileTracer.y].Objects[GridType].end(); ++Iterator) {
-				_Entity *Entity = (_Entity *)(*Iterator);
+			for(auto &Iterator : Data[TileTracer.x][TileTracer.y].Objects[GridType]) {
+				_Entity *Entity = (_Entity *)Iterator.first;
 				if(Entity->IsDying() || HitObjects.find(Entity) != HitObjects.end())
 					continue;
 

@@ -93,7 +93,7 @@ struct _Tile {
 	bool CanWalk() { return !(Collision & ENTITY); }
 	bool CanShoot() { return !(Collision & BULLET); }
 
-	std::list<_Object *> Objects[GRID_COUNT];
+	std::unordered_map<_Object *, int> Objects[GRID_COUNT];
 	std::vector<_Event *> Events;
 	std::vector<_Particle *> Particles;
 	int Collision;
