@@ -98,6 +98,7 @@ void _Monster::Update(double FrameTime) {
 			FacePosition(Player->Position);
 			TargetPosition = Player->Position;
 			MoveState = MOVE_TARGET;
+			StaticTimer = 0;
 		}
 	}
 	else if(PlayerDistanceSquared >= ENTITY_MAX_ACTIVE_RANGE * ENTITY_MAX_ACTIVE_RANGE) {
@@ -119,10 +120,11 @@ void _Monster::Update(double FrameTime) {
 	glm::vec2 OldPosition = Position;
 	Move(FrameTime);
 
-	// Stop monster when static
+	// Check for inactive distance
 	if(glm::distance2(OldPosition, Position) > ENTITY_STOP_THRESHOLD * ENTITY_STOP_THRESHOLD) {
 		StaticTimer = 0;
 	}
+	// Stop monster when static
 	else if(StaticTimer > ENTITY_STATIC_TIME) {
 		MoveState = MOVE_NONE;
 	}
