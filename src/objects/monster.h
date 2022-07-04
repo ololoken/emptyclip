@@ -45,4 +45,5 @@ class _Monster : public _Entity {
 		bool LastPlayerVisible;
 		float AttackRangeSquared;
 		float ViewRangeSquared;
+		double StaticTimer;
 };

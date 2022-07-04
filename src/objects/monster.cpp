@@ -21,6 +21,7 @@
 #include <gameassets.h>
 #include <stats.h>
 #include <map.h>
+#include <iostream>
 #include <glm/gtx/norm.hpp>
 
 // Constants
@@ -65,6 +66,7 @@ _Monster::_Monster(const _ObjectTemplate &MonsterTemplate) :
 		Circle = false;
 
 	LastPlayerVisible = false;
+	StaticTimer = 0;
 }
 
 // Update
@@ -72,6 +74,8 @@ void _Monster::Update(double FrameTime) {
 	_Entity::Update(FrameTime);
 	if(!Player || Player->IsDying())
 		return;
+
+	StaticTimer += FrameTime;
 
 	// Update animation
 	UpdateAnimation(FrameTime);
@@ -100,7 +104,7 @@ void _Monster::Update(double FrameTime) {
 
 	// Check for reaching target
 	float TargetDistanceSquared = glm::distance2(Position, TargetPosition);
-	if(TargetDistanceSquared <= 0.1f)
+	if(TargetDistanceSquared <= Radius * Radius)
 		MoveState = MOVE_NONE;
 
 	// Check for attack range
@@ -108,7 +112,16 @@ void _Monster::Update(double FrameTime) {
 		StartAttack();
 
 	// Move
+	glm::vec2 OldPosition = Position;
 	Move(FrameTime);
+
+	// Stop monster when static
+	if(glm::distance2(OldPosition, Position) > ENTITY_STOP_THRESHOLD * ENTITY_STOP_THRESHOLD) {
+		StaticTimer = 0;
+	}
+	else if(StaticTimer > ENTITY_STATIC_TIME) {
+		MoveState = MOVE_NONE;
+	}
 }
 
 // Get weapon particles used by monster

@@ -605,8 +605,6 @@ void _PlayState::Render(double BlendFactor) {
 	if(!Player->IsDying())
 		HUD->RenderCrosshair(WorldCursor * (float)BlendFactor + PreviousWorldCursor * (float)(1.0f - BlendFactor));
 
-
-
 	// Debug
 	if(GodMode && DevMode && DebugMode) {
 		ae::Graphics.SetDepthTest(false);
