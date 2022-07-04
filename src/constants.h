@@ -57,6 +57,7 @@ const  float        ENTITY_MOVESOUNDDELAYFACTOR    =  0.02625f;
 const  int          ENTITY_MINDAMAGEPOINTS         =  1;
 const  float        ENTITY_STOP_THRESHOLD          =  0.01f;
 const  double       ENTITY_STATIC_TIME             =  2.0;
+const  float        ENTITY_MAX_ACTIVE_RANGE        =  30.0f;
 //     Player
 const  int          PLAYER_SAVEVERSION             =  5;
 const  float        PLAYER_RADIUS                  =  0.35f;

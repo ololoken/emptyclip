@@ -100,6 +100,10 @@ void _Monster::Update(double FrameTime) {
 			MoveState = MOVE_TARGET;
 		}
 	}
+	else if(PlayerDistanceSquared >= ENTITY_MAX_ACTIVE_RANGE * ENTITY_MAX_ACTIVE_RANGE) {
+		PlayerVisible = false;
+		MoveState = MOVE_NONE;
+	}
 	LastPlayerVisible = PlayerVisible;
 
 	// Check for reaching target
