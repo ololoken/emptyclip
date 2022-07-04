@@ -189,6 +189,7 @@ class _Map {
 		void CheckBulletCollisions(const glm::vec2 &Position, const glm::vec2 &Direction, std::vector<_Hit> &Hits, int GridType, bool CheckObjects, int Penetration) const;
 		float RayObjectIntersection(const glm::vec2 &Origin, const glm::vec2 &Direction, const _Object *Object) const;
 		bool IsVisible(const glm::vec2 &Start, const glm::vec2 &End, int CheckFlag) const;
+		bool CanMoveTo(const glm::vec2 &Start, const glm::vec2 &End, const glm::vec2 &Size) const;
 		void AddObjectToGrid(_Object *Object, int Type);
 		void RemoveObjectFromGrid(_Object *Object, int Type);
 

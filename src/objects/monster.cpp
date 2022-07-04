@@ -89,17 +89,13 @@ void _Monster::Update(double FrameTime) {
 	if(PlayerDistanceSquared <= ViewRangeSquared) {
 
 		// Check if player is visible
-		PlayerVisible = Map->IsVisible(Position, Player->Position, _Tile::ENTITY);
+		PlayerVisible = Map->CanMoveTo(Position, Player->Position, glm::vec2(Radius, Radius) * 0.3f);
 		if(PlayerVisible) {
 			FacePosition(Player->Position);
 			TargetPosition = Player->Position;
 			MoveState = MOVE_TARGET;
 		}
 	}
-
-	// Center target position when vision is lost
-	if(!PlayerVisible && PlayerVisible != LastPlayerVisible)
-		TargetPosition = glm::vec2(glm::ivec2(TargetPosition)) + glm::vec2(0.5f);
 	LastPlayerVisible = PlayerVisible;
 
 	// Check for reaching target

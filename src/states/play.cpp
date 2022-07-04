@@ -605,9 +605,18 @@ void _PlayState::Render(double BlendFactor) {
 	if(!Player->IsDying())
 		HUD->RenderCrosshair(WorldCursor * (float)BlendFactor + PreviousWorldCursor * (float)(1.0f - BlendFactor));
 
+
+
 	// Debug
 	if(GodMode && DevMode && DebugMode) {
 		ae::Graphics.SetDepthTest(false);
+
+		// Draw monster target positions
+		ae::Graphics.SetProgram(ae::Assets.Programs["pos"]);
+		ae::Graphics.SetColor(glm::vec4(1, 0, 0, 1));
+		for(const auto &Object : Map->ObjectManager->RenderList[_ObjectManager::RENDER_MONSTER]) {
+			ae::Graphics.DrawCircle(glm::vec3(((_Entity *)Object)->TargetPosition, 0), 0.1f);
+		}
 
 		// Draw weapon ranges
 		for(int i = 0; i < WEAPONATTACK_COUNT; i++) {
@@ -628,6 +637,8 @@ void _PlayState::Render(double BlendFactor) {
 			ae::Graphics.DrawLine(Player->Position, LeftLine);
 			ae::Graphics.DrawLine(Player->Position, RightLine);
 		}
+
+		ae::Graphics.SetDepthTest(true);
 	}
 
 	// Setup OpenGL for drawing the HUD

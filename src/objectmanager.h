@@ -30,6 +30,13 @@ class _ObjectManager {
 
 	public:
 
+		enum RenderType {
+			RENDER_ITEMS,
+			RENDER_PLAYER,
+			RENDER_MONSTER,
+			RENDER_COUNT
+		};
+
 		_ObjectManager();
 		~_ObjectManager();
 
@@ -43,7 +50,7 @@ class _ObjectManager {
 		void ClearObjects();
 
 		std::list<_Object *> Objects;
-		std::vector<_Object *> RenderList[3];
+		std::vector<_Object *> RenderList[RENDER_COUNT];
 
 	private:
 

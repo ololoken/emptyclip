@@ -448,14 +448,6 @@ void _Entity::Render(double BlendFactor) {
 		Rotation,
 		glm::vec2(Scale)
 	);
-
-	/*
-	ae::Graphics.SetProgram(ae::Assets.Programs["pos"]);
-	ae::Graphics.SetColor(glm::vec4(1, 0, 0, 1));
-	ae::Graphics.SetDepthTest(false);
-	ae::Graphics.DrawCircle(glm::vec3(TargetPosition, 0), 0.1f);
-	ae::Graphics.SetDepthTest(true);
-	*/
 }
 
 // Updates the Entity's maximum health

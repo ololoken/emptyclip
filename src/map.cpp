@@ -798,9 +798,6 @@ void _Map::CheckBulletCollisions(const glm::vec2 &Position, const glm::vec2 &Dir
 	if(!Data)
 		throw std::runtime_error("Tile data uninitialized!");
 
-	// Find slope
-	float Slope = Direction.y / Direction.x;
-
 	// Find starting tile
 	glm::ivec2 TileTracer = GetValidCoord(glm::ivec2(Position.x, Position.y));
 
@@ -882,6 +879,9 @@ void _Map::CheckBulletCollisions(const glm::vec2 &Position, const glm::vec2 &Dir
 			EndedOnX = false;
 		}
 	}
+
+	// Find slope
+	float Slope = Direction.y / Direction.x;
 
 	// Determine which side has hit
 	glm::vec2 WallHitPosition;
@@ -1071,6 +1071,43 @@ bool _Map::IsVisible(const glm::vec2 &Start, const glm::vec2 &End, int CheckFlag
 	}
 
 	return true;
+}
+
+// Determine if an AABB can move to a position without hitting walls
+bool _Map::CanMoveTo(const glm::vec2 &Start, const glm::vec2 &End, const glm::vec2 &Size) const {
+
+	// Get x components of the starting corners
+	glm::vec2 LeftStartPosition;
+	glm::vec2 RightStartPosition;
+	LeftStartPosition.x = Start.x - Size.x;
+	RightStartPosition.x = Start.x + Size.x;
+
+	// Get direction
+	glm::vec2 Direction(End - Start);
+
+	// Get y components of the starting corners
+	if((Direction.x < 0 && Direction.y < 0) || (Direction.x >= 0 && Direction.y >= 0)) {
+		LeftStartPosition.y = Start.y + Size.y;
+		RightStartPosition.y = Start.y - Size.y;
+	}
+	else {
+		LeftStartPosition.y = Start.y - Size.y;
+		RightStartPosition.y = Start.y + Size.y;
+	}
+
+	// Get ending positions
+	glm::vec2 LeftEndPosition = LeftStartPosition + Direction;
+	glm::vec2 RightEndPosition = RightStartPosition + Direction;
+
+	// Check the first corner
+	if(IsVisible(LeftStartPosition, LeftEndPosition, _Tile::ENTITY)) {
+
+		// No wall, so check the second corner
+		if(IsVisible(RightStartPosition, RightEndPosition, _Tile::ENTITY))
+			return true;
+	}
+
+	return false;
 }
 
 // Return an object at a given position
