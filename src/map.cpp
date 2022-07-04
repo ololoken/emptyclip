@@ -35,9 +35,14 @@
 #include <stdexcept>
 #include <iomanip>
 #include <iostream>
+#include <algorithm>
 #include <glm/gtx/norm.hpp>
 #include <glm/gtx/rotate_vector.hpp>
 #include <zlib/zfstream.h>
+
+inline bool CompareHitDistance(_Hit &First, _Hit &Second) {
+	return First.DistanceSquared < Second.DistanceSquared;
+}
 
 // Initialize
 _Map::_Map() :
@@ -650,6 +655,9 @@ void _Map::CheckMeleeCollisions(_Entity *Attacker, const glm::vec2 &Direction, i
 	// Get the object's bounding rectangle
 	_TileBounds TileBounds;
 	GetTileBounds(Attacker->Position, Attacker->AttackRange[Attacker->AttackRequestType], TileBounds);
+
+	// Check tiles for objects
+	std::unordered_map<_Entity *, int> EntityMap;
 	for(int i = TileBounds.Start.x; i <= TileBounds.End.x; i++) {
 		for(int j = TileBounds.Start.y; j <= TileBounds.End.y; j++) {
 			for(auto Iterator = Data[i][j].Objects[GridType].begin(); Iterator != Data[i][j].Objects[GridType].end(); ++Iterator) {
@@ -657,35 +665,43 @@ void _Map::CheckMeleeCollisions(_Entity *Attacker, const glm::vec2 &Direction, i
 				if(Entity->IsDying())
 					continue;
 
+				// Check circle intersection
 				float DistanceSquared = glm::distance2(Entity->Position, Attacker->Position);
 				float RadiiSum = Entity->Radius + Attacker->AttackRange[Attacker->AttackRequestType];
-
-				// Check circle intersection
 				if(DistanceSquared >= RadiiSum * RadiiSum)
 					continue;
 
-				glm::vec2 ObjectDirection(glm::normalize(Entity->Position - Attacker->Position));
-
 				// Compare angles
-				if(glm::dot(Direction, ObjectDirection) > cosf(glm::radians(Attacker->MaxAccuracy[Attacker->AttackRequestType] * 0.5f))) {
+				glm::vec2 ObjectDirection(glm::normalize(Entity->Position - Attacker->Position));
+				if(glm::dot(Direction, ObjectDirection) <= cosf(glm::radians(Attacker->MaxAccuracy[Attacker->AttackRequestType] * 0.5f)))
+					continue;
 
-					// Check for walls
-					if(IsVisible(Attacker->Position, Entity->Position)) {
-						_Hit Hit(HIT_OBJECT);
-						Hit.Object = Entity;
-						Hit.Position = Entity->Position;
-						Hits.push_back(Hit);
+				// Check for walls
+				if(!IsVisible(Attacker->Position, Entity->Position))
+					continue;
 
-						Penetration--;
-						if(Penetration <= 0)
-							return;
-					}
-				}
+				// Check unique list of hit entities
+				if(EntityMap.find(Entity) != EntityMap.end())
+					continue;
+
+				// Add to list of hit entities
+				EntityMap[Entity] = 1;
+
+				// Add to potential hits
+				_Hit Hit(HIT_OBJECT);
+				Hit.Object = Entity;
+				Hit.Position = Entity->Position;
+				Hit.DistanceSquared = DistanceSquared;
+				Hits.push_back(Hit);
 			}
 		}
 	}
 
-	return;
+	// Sort by distance
+	std::sort(Hits.begin(), Hits.end(), CompareHitDistance);
+
+	// Handle penetration
+	Hits.resize((size_t)Penetration);
 }
 
 // Determines which walls are adjacent to the object

@@ -132,6 +132,7 @@ struct _Hit {
 	glm::vec2 Normal;
 	glm::vec2 Position;
 	glm::vec2 Push;
+	float DistanceSquared;
 	bool AxisAlignedPush;
 	int Type;
 };
