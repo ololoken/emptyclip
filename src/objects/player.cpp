@@ -442,6 +442,10 @@ int _Player::AddItem(_Item *Item, int &AmountAdded) {
 
 			return 1;
 		}
+		case _Object::KEY: {
+			Keys[Item->ID] = 1;
+			return 1;
+		}
 		default:
 			return AddInventory(Item);
 		break;
@@ -578,6 +582,8 @@ int _Player::CombineItems(_Item *FromItem, _Item *ToItem) {
 // return 1 on added item
 // return 2 on added item and combined
 int _Player::AddInventory(_Item *Item) {
+	if(!Item)
+		return 0;
 
 	// Search for an existing item or empty slot
 	int EmptySlot = -1;
@@ -725,16 +731,6 @@ int _Player::FindItem(const std::string &ID) {
 	}
 
 	return -1;
-}
-
-// Remove all keys from inventory
-void _Player::RemoveKeys() {
-	for(int i = INVENTORY_BAGSTART; i < INVENTORY_BAGEND; i++) {
-		if(HasInventory(i) && Inventory[i]->Type == _Object::KEY) {
-			delete Inventory[i];
-			Inventory[i] = nullptr;
-		}
-	}
 }
 
 // Begins the reloading process

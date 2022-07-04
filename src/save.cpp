@@ -42,6 +42,7 @@ enum SaveChunkTypes {
 	CHUNK_SKILLS,
 	CHUNK_ITEMS,
 	CHUNK_AMMO,
+	CHUNK_KEYS,
 };
 
 // Write a chunk to a stream
@@ -224,6 +225,11 @@ void _Save::LoadPlayer(_Player *Player) {
 				File.read(&Buffer[0], Size);
 				LoadAmmo(Player, Buffer);
 			} break;
+			case CHUNK_KEYS: {
+				ae::_Buffer Buffer(Size);
+				File.read(&Buffer[0], Size);
+				LoadKeys(Player, Buffer);
+			} break;
 			default:
 				File.ignore(Size);
 			break;
@@ -265,6 +271,7 @@ void _Save::SavePlayer(_Player *Player) {
 
 	SaveItems(Player, File);
 	SaveAmmo(Player, File);
+	SaveKeys(Player, File);
 
 	File.close();
 }
@@ -338,6 +345,19 @@ void _Save::LoadAmmo(_Player *Player, ae::_Buffer &Buffer) {
 	}
 }
 
+// Load keys
+void _Save::LoadKeys(_Player *Player, ae::_Buffer &Buffer) {
+
+	// Read count
+	int KeyTypeCount = Buffer.Read<int>();
+
+	// Read data
+	for(int i = 0; i < KeyTypeCount; i++) {
+		std::string ID = Buffer.ReadString();
+		Player->Keys[ID] = 1;
+	}
+}
+
 // Saves items to a stream
 void _Save::SaveItems(_Player *Player, std::ofstream &File) {
 
@@ -382,4 +402,19 @@ void _Save::SaveAmmo(_Player *Player, std::ofstream &File) {
 
 	// Write chunk
 	WriteChunk(File, CHUNK_AMMO, &Buffer[0], Buffer.GetCurrentSize());
+}
+
+// Save keys
+void _Save::SaveKeys(_Player *Player, std::ofstream &File) {
+
+	// Write key type count
+	ae::_Buffer Buffer;
+	Buffer.Write<int>((int)Player->Keys.size());
+
+	// Write keys
+	for(const auto &Key : Player->Keys)
+		Buffer.WriteString(Key.first.c_str());
+
+	// Write chunk
+	WriteChunk(File, CHUNK_KEYS, &Buffer[0], Buffer.GetCurrentSize());
 }

@@ -20,6 +20,7 @@
 // Libraries
 #include <objects/entity.h>
 #include <constants.h>
+#include <map>
 
 // Forward Declarations
 class _Item;
@@ -90,7 +91,6 @@ class _Player : public _Entity {
 		bool UseMedkit(int Index);
 		int FindItem(int Index);
 		int FindItem(const std::string &ID);
-		void RemoveKeys();
 		void ResetUseTimer() { UseTimer = 0; }
 		void ConsumeInventory(int Index, bool Delete=true);
 		int ReduceAmmo(int Amount) override;
@@ -145,6 +145,7 @@ class _Player : public _Entity {
 		_Item *Inventory[INVENTORY_SIZE];
 		std::unordered_map<std::string, int> Ammo;
 		std::unordered_map<std::string, int> AmmoMax;
+		std::map<std::string, int> Keys;
 		bool UseRequested;
 		bool MedkitRequested;
 		int WeaponSwitchFrom;

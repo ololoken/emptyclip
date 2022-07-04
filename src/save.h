@@ -66,8 +66,10 @@ class _Save {
 		void LoadItems(_Player *Player, ae::_Buffer &Buffer);
 		void LoadMods(ae::_Buffer &Buffer, _Item *Item);
 		void LoadAmmo(_Player *Player, ae::_Buffer &Buffer);
+		void LoadKeys(_Player *Player, ae::_Buffer &Buffer);
 		void SaveItems(_Player *Player, std::ofstream &File);
 		void SaveAmmo(_Player *Player, std::ofstream &File);
+		void SaveKeys(_Player *Player, std::ofstream &File);
 
 		// Players
 		std::vector<_Player *> Players;

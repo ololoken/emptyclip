@@ -373,8 +373,8 @@ void _HUD::Render(bool FullMap) {
 	DrawHUDWeapon(Player->GetMelee(), ae::Assets.Elements["element_hud_melee"], ae::Assets.Elements["image_melee_icon"], nullptr);
 
 	// Draw ammo amounts
-	glm::vec2 Spacing = glm::vec2(0, 22) * ae::_Element::GetUIScale();
-	glm::vec2 DrawPosition(15 * ae::_Element::GetUIScale(), ae::Graphics.CurrentSize.y - Spacing.y);
+	glm::vec2 AmmoSpacing = glm::vec2(0, 22) * ae::_Element::GetUIScale();
+	glm::vec2 DrawPosition(15 * ae::_Element::GetUIScale(), ae::Graphics.CurrentSize.y - AmmoSpacing.y);
 	for(const auto &AmmoType : Stats.AmmoNames) {
 		if(Player->Ammo.find(AmmoType) == Player->Ammo.end())
 			continue;
@@ -391,13 +391,23 @@ void _HUD::Render(bool FullMap) {
 		Fonts[FONT_SMALL]->DrawText(Buffer.str(), DrawPosition + glm::vec2(16, 5) * ae::_Element::GetUIScale(), ae::LEFT_BASELINE);
 		Buffer.str("");
 
-		DrawPosition -= Spacing;
+		DrawPosition -= AmmoSpacing;
+	}
+
+	// Draw keys
+	glm::vec2 KeySpacing = glm::vec2(0, UI_INVENTORY_ITEM_SIZE.y * 0.5f) * ae::_Element::GetUIScale();
+	DrawPosition.x = UI_INVENTORY_ITEM_SIZE.x * 0.5f * ae::_Element::GetUIScale();
+	DrawPosition.y -= 50 * ae::_Element::GetUIScale();
+	for(const auto &Key : Player->Keys) {
+		ae::Graphics.SetProgram(ae::Assets.Programs["ortho_pos_uv"]);
+		ae::Graphics.DrawScaledImage(DrawPosition, ae::Assets.Textures[Stats.Objects.at(Key.first).IconID], UI_INVENTORY_ITEM_SIZE, COLOR_WHITE);
+
+		DrawPosition -= KeySpacing;
 	}
 
 	// Draw mini map
-	if(Player->Map) {
+	if(Player->Map)
 		Player->Map->DrawMinimap(FullMap);
-	}
 
 	// Draw character screen
 	DrawCharacterScreen();
@@ -558,17 +568,17 @@ void _HUD::DrawCharacterScreen() {
 
 	// Draw inventory
 	for(int i = INVENTORY_MAINHAND; i < INVENTORY_BAGEND; i++) {
-		if(Player->HasInventory(i)) {
-			if(Player->Inventory[i] != CursorItem) {
-				ae::_Element *Button = Elements[ELEMENT_INVENTORY]->Children[i];
-				if(Button) {
-					ae::Graphics.SetProgram(ae::Assets.Programs["ortho_pos_uv"]);
-					ae::Graphics.DrawScaledImage(Button->Bounds.GetCenter(), Player->Inventory[i]->Texture, UI_INVENTORY_ITEM_SIZE, Player->Inventory[i]->Color);
-					if(i >= INVENTORY_BAGSTART && Player->Inventory[i]->CanStack())
-						DrawItemCount(Player->Inventory[i], Button->Bounds.End.x - 2, Button->Bounds.End.y - 2);
-				}
-			}
-		}
+		if(!Player->HasInventory(i) || Player->Inventory[i] == CursorItem)
+			continue;
+
+		ae::_Element *Button = Elements[ELEMENT_INVENTORY]->Children[i];
+		if(!Button)
+			continue;
+
+		ae::Graphics.SetProgram(ae::Assets.Programs["ortho_pos_uv"]);
+		ae::Graphics.DrawScaledImage(Button->Bounds.GetCenter(), Player->Inventory[i]->Texture, UI_INVENTORY_ITEM_SIZE, Player->Inventory[i]->Color);
+		if(i >= INVENTORY_BAGSTART && Player->Inventory[i]->CanStack())
+			DrawItemCount(Player->Inventory[i], Button->Bounds.End.x - 2, Button->Bounds.End.y - 2);
 	}
 
 	// Draw cursor item
@@ -576,8 +586,10 @@ void _HUD::DrawCharacterScreen() {
 		glm::ivec2 Position(ae::Input.GetMouse() - ClickOffset);
 		ae::Graphics.SetProgram(ae::Assets.Programs["ortho_pos_uv"]);
 		ae::Graphics.DrawScaledImage(Position, CursorItem->Texture, UI_INVENTORY_ITEM_SIZE, CursorItem->Color);
-		if(CursorItem->CanStack())
-			DrawItemCount(CursorItem, Position.x + 22, Position.y + 22);
+		if(CursorItem->CanStack()) {
+			ae::_Element *Button = Elements[ELEMENT_INVENTORY]->Children[DragStart->Index];
+			DrawItemCount(CursorItem, Position.x + Button->BaseSize.x/2 - 2, Position.y + Button->BaseSize.y/2 - 2);
+		}
 	}
 
 	// Draw cursor skill

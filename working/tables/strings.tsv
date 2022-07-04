@@ -12,7 +12,7 @@ tutorial_door	To open the door, hit [c red]Spacebar[c white] while facing it.
 tutorial_melee	Use [c red]Mouse button 4[c white] to attack with your melee weapon.
 tutorial_switch	Hit [c red]Spacebar[c white] to activate the switch.
 tutorial_fire	Use [c red]Left-click[c white] to shoot your gun. Hold [c red]right-click[c white] to aim and reduce recoil at the cost of movement speed.
-tutorial_sprint	Hold [c red]A[c white] to sprint.
+tutorial_keys	Keys are kept until the end of the level.\n\nHold [c red]A[c white] to sprint back.
 tutorial_crate	Attack the crate to open it.
 tutorial_swap	Hit [c red]W[c white] to switch weapons.
 tutorial_map	Hold [c red]Tab[c white] to view the map.\n\nYellow icons are keys.

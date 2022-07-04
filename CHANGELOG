@@ -14,6 +14,7 @@ Empty Clip 2.0.0 -
 - Updated item tooltip and added equipped item comparison
 - Ammo is now stored as a number of rounds for each ammo type
 - Ammo is now picked up automatically
+- Keys are now stored in a keychain and are kept until the end of the level
 - Armor now affects movement speed and damage resist
 - Added mods for armor
 - Shotguns now reload one shell at a time

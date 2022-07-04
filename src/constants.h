@@ -56,7 +56,7 @@ const  float        AUDIO_MAX_DISTANCE             =  30.0f;
 const  float        ENTITY_MOVESOUNDDELAYFACTOR    =  0.02625f;
 const  int          ENTITY_MINDAMAGEPOINTS         =  1;
 //     Player
-const  int          PLAYER_SAVEVERSION             =  4;
+const  int          PLAYER_SAVEVERSION             =  5;
 const  float        PLAYER_RADIUS                  =  0.35f;
 const  double       PLAYER_MEDKITPERIOD            =  0.5;
 const  float        PLAYER_LEGCHANGEFACTOR         =  0.2f;

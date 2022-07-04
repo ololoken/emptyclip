@@ -892,14 +892,12 @@ void _PlayState::ActivateEvent() {
 
 		// Check for key in inventory and use it
 		if(!Event->ItemID.empty()) {
-			int ItemIndex = Player->FindItem(Event->ItemID);
-			if(ItemIndex == -1) {
+			if(Player->Keys.find(Event->ItemID) == Player->Keys.end()) {
 				HUD->ShowMessageBox("You need the " + Stats.Objects.at(Event->ItemID).Name, HUD_KEYMESSAGETIME);
 				return;
 			}
 
-			if(Player->UseItem(ItemIndex, true))
-				HUD->ShowTextMessage("KEY USED", 2.0f);
+			HUD->ShowTextMessage("KEY USED", 2.0f);
 		}
 
 		// Change map
@@ -1049,7 +1047,7 @@ void _PlayState::CheckEvents(const _Entity *Entity) {
 					Player->CheckpointIndex = Event->Level;
 					Player->MapID = Level;
 					if(Map->MapType == MAPTYPE_CAMPAIGN)
-						Player->RemoveKeys();
+						Player->Keys.clear();
 					Save.SavePlayer(Player);
 				break;
 				case EVENT_TEXT:
