@@ -58,7 +58,8 @@ build() {
 
 	# copy files
 	cp "${projectdir}"/{README,CHANGELOG} "${archive_base}"/
-	#echo "${project}.exe -editor" > "${archive_base}"/run_editor.bat
+	echo "${project}.exe -editor" > "${archive_base}"/run_editor.bat
+	echo "${project}.exe -level bench" > "${archive_base}"/run_bench.bat
 	#chmod +x "${archive_base}"/*.bat
 
 	# zip

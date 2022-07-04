@@ -2224,7 +2224,7 @@ void _EditorState::SelectObject() {
 // Selects objects
 void _EditorState::SelectObjects() {
 	DeselectObjects();
-	Map->GetSelectedObjects(ClickedPosition, WorldCursor, &SelectedObjects);
+	Map->GetSelectedObjects(ClickedPosition, WorldCursor, &SelectedObjects, EditMode == EDITMODE_MONSTERS);
 }
 
 // Aligns an object to the grid

@@ -1031,7 +1031,7 @@ void _Map::GetSelectedObject(const glm::vec2 &Position, float RadiusSquared, _Ob
 }
 
 // Returns all the objects that fall inside the rectangle
-void _Map::GetSelectedObjects(const glm::vec2 &Start, const glm::vec2 &End, std::vector<_ObjectSpawn *> *SelectedObjects) {
+void _Map::GetSelectedObjects(const glm::vec2 &Start, const glm::vec2 &End, std::vector<_ObjectSpawn *> *SelectedObjects, int Type) {
 
 	glm::vec2 StartPoint, EndPoint;
 	if(End.x < Start.x) {
@@ -1053,6 +1053,11 @@ void _Map::GetSelectedObjects(const glm::vec2 &Start, const glm::vec2 &End, std:
 	}
 
 	for(const auto &ObjectSpawn : ObjectSpawns) {
+		if(Type == 0 && ObjectSpawn->Type == _Object::MONSTER)
+			continue;
+		else if(Type == 1 && ObjectSpawn->Type != _Object::MONSTER)
+			continue;
+
 		if(ObjectSpawn->Position.x > StartPoint.x && ObjectSpawn->Position.y > StartPoint.y && ObjectSpawn->Position.x <= EndPoint.x && ObjectSpawn->Position.y <= EndPoint.y) {
 			SelectedObjects->push_back(ObjectSpawn);
 		}
