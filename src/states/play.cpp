@@ -51,6 +51,7 @@
 #include <stdexcept>
 #include <fstream>
 #include <iostream>
+#include <algorithm>
 
 _PlayState PlayState;
 
@@ -912,7 +913,9 @@ void _PlayState::ActivateEvent() {
 				return;
 			}
 
-			HUD->ShowTextMessage("KEY USED", 2.0f);
+			std::string KeyName = Stats.Objects.at(Event->ItemID).Name;
+			std::transform(KeyName.begin(), KeyName.end(), KeyName.begin(), ::toupper);
+			HUD->ShowTextMessage(KeyName + " USED", 2.0f);
 		}
 
 		// Change map

@@ -17,3 +17,4 @@ tutorial_keys	Keys are kept until the end of the level.\n\nHold [c red]A[c white
 tutorial_crate	Attack the crate to open it.
 tutorial_swap	Hit [c red]W[c white] to switch weapons.
 tutorial_map	Hold [c red]Tab[c white] to view the map.\n\nYellow icons are keys.
+mansion_switches	Find the switches to lower the gates.
