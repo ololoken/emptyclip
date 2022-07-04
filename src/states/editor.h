@@ -209,6 +209,7 @@ class _EditorState : public ae::_State {
 		void ExecuteUpdateLayer(int Layer, bool Move);
 		void ExecuteShiftLayer(int Change);
 		void ExecuteUpdateBlockLimits(int Direction, bool Expand);
+		void ExecuteUpdateMapLevel(int Change);
 
 		// Parameters
 		glm::vec3 SavedCameraPosition;

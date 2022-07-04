@@ -205,8 +205,8 @@ void _EditorState::ResetEditorState() {
 	EventActivationPeriod = 0;
 	EventActive = 1;
 	EventLevel = 0;
-	EventSpawnLevel = 1;
-	ObjectLevel = 1;
+	EventSpawnLevel = Map ? Map->Level : 1;
+	ObjectLevel = Map ? Map->Level : 1;
 	AltTextureID = "";
 	AltTexture = nullptr;
 	EditorInput = -1;
@@ -342,6 +342,12 @@ bool _EditorState::HandleKey(const ae::_KeyEvent &KeyEvent) {
 			break;
 			case SDL_SCANCODE_F:
 				ExecuteUpdateLayer(6, false);
+			break;
+			case SDL_SCANCODE_PAGEUP:
+				ExecuteUpdateMapLevel(1);
+			break;
+			case SDL_SCANCODE_PAGEDOWN:
+				ExecuteUpdateMapLevel(-1);
 			break;
 			case SDL_SCANCODE_MINUS:
 				ExecuteUpdateCheckpointIndex(-1);
@@ -939,50 +945,63 @@ void _EditorState::Render(double BlendFactor) {
 	if(EditorInput != -1)
 		InputBox->Render();
 
-	// Draw filename
+	// Top left
+	glm::vec2 DrawPosition = glm::vec2(25, 25) * ae::_Element::GetUIScale();
+	glm::vec2 DrawSpacing = glm::vec2(0, 20) * ae::_Element::GetUIScale();
 	std::ostringstream Buffer;
+
+	// Draw filename
 	Buffer << Map->Filename;
-	MainFont->DrawText(Buffer.str(), glm::vec2(25, 25));
+	MainFont->DrawText(Buffer.str(), DrawPosition);
+	Buffer.str("");
+	DrawPosition += DrawSpacing;
+
+	// Draw map level
+	Buffer << "Level " << Map->Level;
+	MainFont->DrawText(Buffer.str(), DrawPosition);
 	Buffer.str("");
 
+	// Bottom Left
+
 	// Draw cursor position
-	glm::ivec2 DrawPosition(16, ae::Graphics.ViewportSize.y - 25);
+	DrawPosition = glm::vec2(16 * ae::_Element::GetUIScale(), ae::Graphics.ViewportSize.y - 25 * ae::_Element::GetUIScale());
 	Buffer << std::fixed << WorldCursor.x << ", " << WorldCursor.y;
 	MainFont->DrawText(Buffer.str(), DrawPosition);
 	Buffer.str("");
 
 	// Top right
-	DrawPosition.x = ae::Graphics.ViewportSize.x - 45;
-	DrawPosition.y = 25;
+	DrawPosition.x = ae::Graphics.ViewportSize.x - 45 * ae::_Element::GetUIScale();
+	DrawPosition.y = 25 * ae::_Element::GetUIScale();
 
 	// Draw FPS
 	Buffer << ae::Graphics.FramesPerSecond << " FPS";
 	MainFont->DrawText(Buffer.str(), DrawPosition, ae::RIGHT_BASELINE);
 	Buffer.str("");
+	DrawPosition += DrawSpacing;
 
 	// Draw selection count
 	Buffer << SelectedObjects.size() << " selected";
-	MainFont->DrawText(Buffer.str(), DrawPosition + glm::ivec2(0, 20), ae::RIGHT_BASELINE);
+	MainFont->DrawText(Buffer.str(), DrawPosition, ae::RIGHT_BASELINE);
 	Buffer.str("");
 
 	// Bottom right
-	DrawPosition.x = ae::Graphics.ViewportSize.x - 45;
-	DrawPosition.y = ae::Graphics.ViewportSize.y - 60;
-	glm::ivec2 DrawOffset(5, 0);
+	DrawPosition.x = ae::Graphics.ViewportSize.x - 45 * ae::_Element::GetUIScale();
+	DrawPosition.y = ae::Graphics.ViewportSize.y - 60 * ae::_Element::GetUIScale();
+	glm::vec2 DrawOffset(5 * ae::_Element::GetUIScale(), 0);
 
 	// Draw grid size
 	Buffer << GridMode;
 	MainFont->DrawText("Grid:", DrawPosition, ae::RIGHT_BASELINE);
 	MainFont->DrawText(Buffer.str(), DrawPosition + DrawOffset);
 	Buffer.str("");
-	DrawPosition.y += 20;
+	DrawPosition += DrawSpacing;
 
 	// Draw checkpoint info
 	Buffer << CheckpointIndex;
 	MainFont->DrawText("Checkpoint:",  DrawPosition, ae::RIGHT_BASELINE);
 	MainFont->DrawText(Buffer.str(), DrawPosition + DrawOffset);
 	Buffer.str("");
-	DrawPosition.y += 20;
+	DrawPosition += DrawSpacing;
 
 	// Event tile count
 	if(SelectedEvent) {
@@ -2192,6 +2211,14 @@ void _EditorState::ExecuteUpdateBlockLimits(int Direction, bool Expand) {
 			SelectedEvent->End = Map->GetValidCoord(End);
 		}
 	}
+}
+
+// Update map level
+void _EditorState::ExecuteUpdateMapLevel(int Change) {
+	if(!Map)
+		return;
+
+	Map->Level = std::max(0, Map->Level + Change);
 }
 
 // Selects an object
