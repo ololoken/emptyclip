@@ -667,11 +667,14 @@ void _HUD::UpdateSkillInfo(int Skill, int DrawX, int DrawY) {
 			Buffer << "+" << Stats.GetSkill(Level, Skill) << "%";
 			BufferNext << "+" << Stats.GetSkill(Stats.GetValidSkillLevel(Level+1), Skill) << "%";
 		break;
-		case SKILL_LUCK:
+		case SKILL_LUCK: {
+			int Bonus = Stats.GetSkill(Level, Skill);
+			int BonusNext = Stats.GetSkill(Stats.GetValidSkillLevel(Level+1), Skill);
 			Elements[LABEL_SKILLTEXT]->Text = "Increases Drop Rate";
-			Buffer << "+" << Stats.GetSkill(Level, Skill) << "%";
-			BufferNext << "+" << Stats.GetSkill(Stats.GetValidSkillLevel(Level+1), Skill) << "%";
-		break;
+			Elements[LABEL_SKILLTEXTALT]->Text = "Increases Ammo Pickup Bonus";
+			Buffer << "+" << Bonus << "% Drop Rate / +" << Bonus * PLAYER_AMMO_LUCK_MULTIPLIER << "% Ammo";
+			BufferNext << "+" << BonusNext << "% Drop Rate / +" << BonusNext * PLAYER_AMMO_LUCK_MULTIPLIER << "% Ammo";
+		} break;
 	}
 
 	// Wrap text

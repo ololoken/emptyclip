@@ -75,6 +75,7 @@ const  float        PLAYER_ZOOMSCALE               =  15.0f;
 const  float        PLAYER_MAXACCURACY             =  170.0f;
 const  double       PLAYER_WEAPONSWITCHPERIOD      =  0.5;
 const  double       PLAYER_USEPERIOD               =  0.2;
+const  float        PLAYER_AMMO_LUCK_MULTIPLIER    =  5.0f;
 //     Inventory
 const  int          INVENTORY_BAGSIZE              =  16;
 const  int          INVENTORY_MAX_STACK            =  99;
@@ -82,7 +83,7 @@ const  int          INVENTORY_MAX_STACK            =  99;
 const  float        ITEM_SCALE                     =  0.5f;
 const  float        ITEM_Z                         =  0.05f;
 const  int          ITEM_QUALITY_RANGE             =  15;
-const  int          ITEM_MAX_MOVESPEED             =  50;
+const  int          ITEM_MAX_MOVESPEED             =  90;
 //     Objects
 const  float        OBJECT_Z                       =  0.3f;
 const  int          OBJECT_MAX_LEVEL               =  1000;

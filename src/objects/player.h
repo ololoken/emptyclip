@@ -163,6 +163,7 @@ class _Player : public _Entity {
 		int Skills[SKILL_COUNT];
 		int SkillPointsRemaining;
 		int DropRate;
+		float PickupModifier;
 
 		// Attacking
 		float CurrentAccuracyNormal;

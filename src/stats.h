@@ -114,7 +114,7 @@ class _Stats {
 
 		int GetValidSkillLevel(int Level);
 		int GetSkill(int Level, int Type) const { return Skills[Level].Data[Type]; }
-		float GetSkillBonusMultiplier(int Level, int Type) const { return (100 + Skills[Level].Data[Type]) * 0.01f; }
+		float GetSkillBonusMultiplier(int Level, int Type, float Multiplier=1.0f) const { return (100 + Skills[Level].Data[Type] * Multiplier) * 0.01f; }
 
 		void GetRandomDrop(const _ItemDrop *ItemDrop, _ObjectSpawn *ObjectSpawn);
 

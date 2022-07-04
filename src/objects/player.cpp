@@ -92,6 +92,7 @@ void _Player::Reset() {
 	ExperienceNextLevel = 0;
 	SkillPointsRemaining = 0;
 	DropRate = 100;
+	PickupModifier = 100;
 
 	for(int i = 0; i < SKILL_COUNT; i++)
 		Skills[i] = 0;
@@ -432,8 +433,11 @@ int _Player::AddItem(_Item *Item, int &AmountAdded) {
 			if(Ammo[Item->ID] == AmmoMax[Item->ID])
 				return 0;
 
+			// Add pickup bonus
+			int PickupAmount = Item->Attributes["amount"].Int * PickupModifier;
+
 			int AmountToMax = AmmoMax[Item->ID] - Ammo[Item->ID];
-			AmountAdded = std::min(AmountToMax, Item->Attributes["amount"].Int);
+			AmountAdded = std::min(AmountToMax, PickupAmount);
 			Ammo[Item->ID] += AmountAdded;
 
 			return 1;
@@ -1008,6 +1012,7 @@ void _Player::RecalculateStats() {
 
 	// Drop Rate
 	DropRate = 100 + Skills[SKILL_LUCK];
+	PickupModifier = Stats.GetSkillBonusMultiplier(Skills[SKILL_LUCK], SKILL_LUCK, PLAYER_AMMO_LUCK_MULTIPLIER);
 }
 
 // Reset after death
