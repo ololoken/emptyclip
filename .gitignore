@@ -19,4 +19,4 @@ deployment/*-src
 deployment/*.tar.gz
 deployment/out
 TODO
-working/maps/test.map
+working/maps/test.map.gz
