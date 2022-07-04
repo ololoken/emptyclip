@@ -89,7 +89,7 @@ void _Monster::Update(double FrameTime) {
 	if(PlayerDistanceSquared <= ViewRangeSquared) {
 
 		// Check if player is visible
-		PlayerVisible = Map->IsVisible(Position, Player->Position);
+		PlayerVisible = Map->IsVisible(Position, Player->Position, _Tile::ENTITY);
 		if(PlayerVisible) {
 			FacePosition(Player->Position);
 			TargetPosition = Player->Position;

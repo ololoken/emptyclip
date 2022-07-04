@@ -495,7 +495,7 @@ void _PlayState::Update(double FrameTime) {
 
 	// Get zoom state
 	if(Player->Aiming) {
-		if(Map->IsVisible(Player->Position, WorldCursor)) {
+		if(Map->IsVisible(Player->Position, WorldCursor, _Tile::BULLET)) {
 			Camera->UpdatePosition((WorldCursor - Player->Position) / Player->ZoomScale);
 		}
 		else {

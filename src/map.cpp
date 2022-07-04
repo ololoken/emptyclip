@@ -719,7 +719,7 @@ void _Map::CheckMeleeCollisions(_Entity *Attacker, const glm::vec2 &Direction, i
 					continue;
 
 				// Check for walls
-				if(!IsVisible(Attacker->Position, Entity->Position))
+				if(!IsVisible(Attacker->Position, Entity->Position, _Tile::BULLET))
 					continue;
 
 				// Add to potential hits
@@ -805,40 +805,40 @@ void _Map::CheckBulletCollisions(const glm::vec2 &Position, const glm::vec2 &Dir
 	glm::ivec2 TileTracer = GetValidCoord(glm::ivec2(Position.x, Position.y));
 
 	// Check x direction
-	int TileIncrementX, FirstBoundaryTileX;
+	glm::ivec2 TileIncrement;
+	glm::ivec2 FirstBoundaryTile;
 	if(Direction.x < 0) {
-		FirstBoundaryTileX = TileTracer.x;
-		TileIncrementX = -1;
+		FirstBoundaryTile.x = TileTracer.x;
+		TileIncrement.x = -1;
 	}
 	else {
-		FirstBoundaryTileX = TileTracer.x + 1;
-		TileIncrementX = 1;
+		FirstBoundaryTile.x = TileTracer.x + 1;
+		TileIncrement.x = 1;
 	}
 
 	// Check y direction
-	int TileIncrementY, FirstBoundaryTileY;
 	if(Direction.y < 0) {
-		FirstBoundaryTileY = TileTracer.y;
-		TileIncrementY = -1;
+		FirstBoundaryTile.y = TileTracer.y;
+		TileIncrement.y = -1;
 	}
 	else {
-		FirstBoundaryTileY = TileTracer.y + 1;
-		TileIncrementY = 1;
+		FirstBoundaryTile.y = TileTracer.y + 1;
+		TileIncrement.y = 1;
 	}
 
 	// Find ray direction ratios
 	glm::vec2 Ratio(1.0f / Direction.x, 1.0f / Direction.y);
 
 	// Calculate increments
-	glm::vec2 Increment(TileIncrementX * Ratio.x, TileIncrementY * Ratio.y);
+	glm::vec2 Increment(TileIncrement.x * Ratio.x, TileIncrement.y * Ratio.y);
 
 	// Get starting positions
-	glm::vec2 Tracer((FirstBoundaryTileX - Position.x) * Ratio.x, (FirstBoundaryTileY - Position.y) * Ratio.y);
+	glm::vec2 Tracer((FirstBoundaryTile.x - Position.x) * Ratio.x, (FirstBoundaryTile.y - Position.y) * Ratio.y);
 
 	// Traverse tiles
 	bool EndedOnX = false;
 	std::unordered_map<_Entity *, int> HitObjects;
-	while(TileTracer.x >= 0 && TileTracer.y >= 0 && TileTracer.x < Size.x && TileTracer.y < Size.y && CanShootThrough(TileTracer)) {
+	while(TileTracer.x >= 0 && TileTracer.y >= 0 && TileTracer.x < Size.x && TileTracer.y < Size.y && CheckCollisionFlag(TileTracer, _Tile::BULLET)) {
 
 		// Check for object intersections
 		_Hit Hit(HIT_OBJECT);
@@ -873,12 +873,12 @@ void _Map::CheckBulletCollisions(const glm::vec2 &Position, const glm::vec2 &Dir
 		// Determine which direction needs an update
 		if(Tracer.x < Tracer.y) {
 			Tracer.x += Increment.x;
-			TileTracer.x += TileIncrementX;
+			TileTracer.x += TileIncrement.x;
 			EndedOnX = true;
 		}
 		else {
 			Tracer.y += Increment.y;
-			TileTracer.y += TileIncrementY;
+			TileTracer.y += TileIncrement.y;
 			EndedOnX = false;
 		}
 	}
@@ -891,16 +891,16 @@ void _Map::CheckBulletCollisions(const glm::vec2 &Position, const glm::vec2 &Dir
 
 		// Get correct side of the wall
 		if(Direction.x < 0) {
-			FirstBoundaryTileX = TileTracer.x + 1;
+			FirstBoundaryTile.x = TileTracer.x + 1;
 			Hit.Normal.x = 1;
 			Hit.Normal.y = 0;
 		}
 		else {
-			FirstBoundaryTileX = TileTracer.x;
+			FirstBoundaryTile.x = TileTracer.x;
 			Hit.Normal.x = -1;
 			Hit.Normal.y = 0;
 		}
-		WallBoundary.x = FirstBoundaryTileX - Position.x;
+		WallBoundary.x = FirstBoundaryTile.x - Position.x;
 
 		// Determine hit position
 		WallHitPosition.x = WallBoundary.x;
@@ -910,16 +910,16 @@ void _Map::CheckBulletCollisions(const glm::vec2 &Position, const glm::vec2 &Dir
 
 		// Get correct side of the wall
 		if(Direction.y < 0) {
-			FirstBoundaryTileY = TileTracer.y + 1;
+			FirstBoundaryTile.y = TileTracer.y + 1;
 			Hit.Normal.x = 0;
 			Hit.Normal.y = 1;
 		}
 		else {
-			FirstBoundaryTileY = TileTracer.y;
+			FirstBoundaryTile.y = TileTracer.y;
 			Hit.Normal.x = 0;
 			Hit.Normal.y = -1;
 		}
-		WallBoundary.y = FirstBoundaryTileY - Position.y;
+		WallBoundary.y = FirstBoundaryTile.y - Position.y;
 
 		// Determine hit position
 		WallHitPosition.x = WallBoundary.y / Slope;
@@ -952,8 +952,7 @@ float _Map::RayObjectIntersection(const glm::vec2 &Origin, const glm::vec2 &Dire
 }
 
 // Determines if two positions are mutually visible
-bool _Map::IsVisible(const glm::vec2 &Start, const glm::vec2 &End) const {
-	int TileIncrementX, TileIncrementY, FirstBoundaryTileX, FirstBoundaryTileY;
+bool _Map::IsVisible(const glm::vec2 &Start, const glm::vec2 &End, int CheckFlag) const {
 
 	// Find starting and ending tiles
 	glm::ivec2 StartTile = GetValidCoord(glm::ivec2(Start));
@@ -963,7 +962,7 @@ bool _Map::IsVisible(const glm::vec2 &Start, const glm::vec2 &End) const {
 	glm::vec2 Direction = End - Start;
 
 	// Check degenerate cases
-	if(!CanShootThrough(StartTile) || !CanShootThrough(EndTile))
+	if(!CheckCollisionFlag(StartTile, CheckFlag) || !CheckCollisionFlag(EndTile, CheckFlag))
 		return false;
 
 	// Only need to check vertical tiles
@@ -976,13 +975,13 @@ bool _Map::IsVisible(const glm::vec2 &Start, const glm::vec2 &End) const {
 		// Check direction
 		if(Direction.y < 0) {
 			for(int i = EndTile.y; i <= StartTile.y; i++) {
-				if(!CanShootThrough(glm::ivec2(StartTile.x, i)))
+				if(!CheckCollisionFlag(glm::ivec2(StartTile.x, i), CheckFlag))
 					return false;
 			}
 		}
 		else {
 			for(int i = StartTile.y; i <= EndTile.y; i++) {
-				if(!CanShootThrough(glm::ivec2(StartTile.x, i)))
+				if(!CheckCollisionFlag(glm::ivec2(StartTile.x, i), CheckFlag))
 					return false;
 			}
 		}
@@ -993,13 +992,13 @@ bool _Map::IsVisible(const glm::vec2 &Start, const glm::vec2 &End) const {
 		// Check direction
 		if(Direction.x < 0) {
 			for(int i = EndTile.x; i <= StartTile.x; i++) {
-				if(!CanShootThrough(glm::ivec2(i, StartTile.y)))
+				if(!CheckCollisionFlag(glm::ivec2(i, StartTile.y), CheckFlag))
 					return false;
 			}
 		}
 		else {
 			for(int i = StartTile.x; i <= EndTile.x; i++) {
-				if(!CanShootThrough(glm::ivec2(i, StartTile.y)))
+				if(!CheckCollisionFlag(glm::ivec2(i, StartTile.y), CheckFlag))
 					return false;
 			}
 		}
@@ -1007,39 +1006,39 @@ bool _Map::IsVisible(const glm::vec2 &Start, const glm::vec2 &End) const {
 	}
 
 	// Check x direction
+	glm::ivec2 TileIncrement;
+	glm::ivec2 FirstBoundaryTile;
 	if(Direction.x < 0) {
-		FirstBoundaryTileX = StartTile.x;
-		TileIncrementX = -1;
+		FirstBoundaryTile.x = StartTile.x;
+		TileIncrement.x = -1;
 	}
 	else {
-		FirstBoundaryTileX = StartTile.x + 1;
-		TileIncrementX = 1;
+		FirstBoundaryTile.x = StartTile.x + 1;
+		TileIncrement.x = 1;
 	}
 
 	// Check y direction
 	if(Direction.y < 0) {
-		FirstBoundaryTileY = StartTile.y;
-		TileIncrementY = -1;
+		FirstBoundaryTile.y = StartTile.y;
+		TileIncrement.y = -1;
 	}
 	else {
-		FirstBoundaryTileY = StartTile.y + 1;
-		TileIncrementY = 1;
+		FirstBoundaryTile.y = StartTile.y + 1;
+		TileIncrement.y = 1;
 	}
 
 	// Find ray direction ratios
-	glm::vec2 Ratio;
-	Ratio.x = 1.0f / Direction.x;
-	Ratio.y = 1.0f / Direction.y;
+	glm::vec2 Ratio = 1.0f / Direction;
 
 	// Calculate increments
 	glm::vec2 Increment;
-	Increment.x = TileIncrementX * Ratio.x;
-	Increment.y = TileIncrementY * Ratio.y;
+	Increment.x = TileIncrement.x * Ratio.x;
+	Increment.y = TileIncrement.y * Ratio.y;
 
 	// Get starting positions
 	glm::vec2 Tracer;
-	Tracer.x = (FirstBoundaryTileX - Start.x) * Ratio.x;
-	Tracer.y = (FirstBoundaryTileY - Start.y) * Ratio.y;
+	Tracer.x = (FirstBoundaryTile.x - Start.x) * Ratio.x;
+	Tracer.y = (FirstBoundaryTile.y - Start.y) * Ratio.y;
 
 	// Starting tiles
 	glm::ivec2 TileTracer = StartTile;
@@ -1048,17 +1047,17 @@ bool _Map::IsVisible(const glm::vec2 &Start, const glm::vec2 &End) const {
 	while(true) {
 
 		// Check for walls
-		if(TileTracer.x < 0 || TileTracer.y < 0 || TileTracer.x >= Size.x || TileTracer.y >= Size.y || !CanShootThrough(TileTracer))
+		if(TileTracer.x < 0 || TileTracer.y < 0 || TileTracer.x >= Size.x || TileTracer.y >= Size.y || !CheckCollisionFlag(TileTracer, CheckFlag))
 			return false;
 
 		// Determine which direction needs an update
 		if(Tracer.x < Tracer.y) {
 			Tracer.x += Increment.x;
-			TileTracer.x += TileIncrementX;
+			TileTracer.x += TileIncrement.x;
 		}
 		else {
 			Tracer.y += Increment.y;
-			TileTracer.y += TileIncrementY;
+			TileTracer.y += TileIncrement.y;
 		}
 
 		// Exit condition

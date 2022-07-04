@@ -188,7 +188,7 @@ class _Map {
 		void CheckMeleeCollisions(_Entity *Attacker, const glm::vec2 &Direction, int GridType, int Penetration, std::vector<_Hit> &Hits) const;
 		void CheckBulletCollisions(const glm::vec2 &Position, const glm::vec2 &Direction, std::vector<_Hit> &Hits, int GridType, bool CheckObjects, int Penetration) const;
 		float RayObjectIntersection(const glm::vec2 &Origin, const glm::vec2 &Direction, const _Object *Object) const;
-		bool IsVisible(const glm::vec2 &Start, const glm::vec2 &End) const;
+		bool IsVisible(const glm::vec2 &Start, const glm::vec2 &End, int CheckFlag) const;
 		void AddObjectToGrid(_Object *Object, int Type);
 		void RemoveObjectFromGrid(_Object *Object, int Type);
 
@@ -241,7 +241,7 @@ class _Map {
 		int GetWallState(const glm::vec2 &Position, float Radius) const;
 		void GetAdjacentTile(const glm::vec2 &Position, float Direction, glm::ivec2 &Coord) const;
 		glm::ivec2 GetValidCoord(const glm::ivec2 &Coord) const;
-		bool CanShootThrough(const glm::ivec2 &Position) const;
+		bool CheckCollisionFlag(const glm::ivec2 &Position, int Flag) const;
 		void GetTileBounds(const glm::vec2 &Position, float Radius, _TileBounds &TileBounds) const;
 		const _Block *GetBlock(int Layer, const size_t Index) const;
 		glm::vec2 GetValidPosition(const glm::vec2 &Position) const;
@@ -300,12 +300,9 @@ inline glm::ivec2 _Map::GetValidCoord(const glm::ivec2 &Coord) const {
 	);
 }
 
-// Determines if a tile can be shot through
-inline bool _Map::CanShootThrough(const glm::ivec2 &Position) const {
-	if(!Data)
-		throw std::runtime_error("Tile data uninitialized!");
-
-	return Data[Position.x][Position.y].CanShoot();
+// Check collision flag on a tile
+inline bool _Map::CheckCollisionFlag(const glm::ivec2 &Position, int Flag) const {
+	return !(Data[Position.x][Position.y].Collision & Flag);
 }
 
 // Returns a bounding rectangle
