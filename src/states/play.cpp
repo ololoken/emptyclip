@@ -562,7 +562,12 @@ void _PlayState::Render(double BlendFactor) {
 	glUniformMatrix4fv(ae::Assets.Programs["text"]->ViewProjectionTransformID, 1, GL_FALSE, glm::value_ptr(Camera->Transform));
 
 	// Update minimap
-	Map->MinimapCaptureSize = ae::Actions.State[Action::GAME_MAP].Value > 0.0f ? HUD_MINIMAP_FULL_CAPTURE_SIZE : HUD_MINIMAP_CAPTURE_SIZE;
+	if(ae::Actions.State[Action::GAME_MAP].Value > 0.0f) {
+		Map->MinimapCaptureSize = HUD_MINIMAP_FULL_CAPTURE_SIZE;
+		Map->MinimapCaptureSize.x *= ae::Graphics.AspectRatio;
+	}
+	else
+		Map->MinimapCaptureSize = HUD_MINIMAP_CAPTURE_SIZE;
 
 	// Draw the floor
 	int BlockRenderCount = Map->RenderFloors();
@@ -996,7 +1001,7 @@ void _PlayState::UpdateMonsters(double FrameTime) {
 			if(Monster->Health > 0 && Map->CheckMinimapBounds(Bounds)) {
 				_MinimapLayer MinimapLayer;
 				MinimapLayer.Bounds = Bounds;
-				MinimapLayer.Color = Monster->AIType ? COLOR_RED : COLOR_MAGENTA;
+				MinimapLayer.Color = Monster->AIType ? HUD_MINIMAP_ENEMY_COLOR : HUD_MINIMAP_CRATE_COLOR;
 				Map->MinimapLayers.push_back(MinimapLayer);
 			}
 

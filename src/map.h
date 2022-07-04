@@ -211,7 +211,7 @@ class _Map {
 		int RenderForeground();
 		void RenderEvents(std::vector<const ae::_Texture *> &Textures);
 		void RenderGrid(int Mode);
-		void DrawMinimap(bool FullMap);
+		void DrawMinimap(bool FullMap, ae::_Bounds &MinimapBounds);
 		void HighlightBlocks(int Layer);
 
 		void AddBlock(int Layer, _Block Block) { Blocks[Layer].push_back(Block); }
@@ -268,7 +268,7 @@ class _Map {
 
 		// Minimap
 		std::vector<_MinimapLayer> MinimapLayers;
-		float MinimapCaptureSize;
+		glm::vec2 MinimapCaptureSize;
 
 	private:
 

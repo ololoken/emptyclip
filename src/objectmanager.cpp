@@ -71,15 +71,16 @@ void _ObjectManager::Update(double FrameTime, _Map *Map) {
 					case _Object::WEAPON:
 					case _Object::ARMOR:
 					case _Object::MOD:
-						MinimapLayer.Color = COLOR_GREEN;
+						MinimapLayer.Color = HUD_MINIMAP_EQUIPMENT_COLOR;
 					break;
 					case _Object::KEY:
-						MinimapLayer.Color = COLOR_YELLOW;
+						MinimapLayer.Color = HUD_MINIMAP_KEY_COLOR;
 					break;
 					case _Object::AMMO:
-						MinimapLayer.Color = COLOR_CYAN;
+						MinimapLayer.Color = HUD_MINIMAP_AMMO_COLOR;
 					break;
 					case _Object::MEDKIT:
+						MinimapLayer.Color = HUD_MINIMAP_MEDKIT_COLOR;
 					break;
 				}
 				Map->MinimapLayers.push_back(MinimapLayer);

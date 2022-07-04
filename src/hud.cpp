@@ -37,6 +37,21 @@
 #include <SDL_mouse.h>
 #include <glm/gtc/type_ptr.hpp>
 
+struct _MinimapLegend {
+	std::string Label;
+	glm::vec4 Color;
+};
+
+static std::vector<_MinimapLegend> MinimapLegends = {
+	{ "Keys", HUD_MINIMAP_KEY_COLOR},
+	{ "Equipment",  HUD_MINIMAP_EQUIPMENT_COLOR },
+	{ "Ammo", HUD_MINIMAP_AMMO_COLOR},
+	{ "Medkits", HUD_MINIMAP_MEDKIT_COLOR },
+	{ "Crates", HUD_MINIMAP_CRATE_COLOR },
+	{ "Enemies", HUD_MINIMAP_ENEMY_COLOR },
+	{ "Doors/Switches", HUD_MINIMAP_DOOR_COLOR },
+};
+
 // Initialize
 _HUD::_HUD(_Player *Player) :
 	Player(Player) {
@@ -406,8 +421,31 @@ void _HUD::Render(bool FullMap) {
 	}
 
 	// Draw mini map
-	if(Player->Map)
-		Player->Map->DrawMinimap(FullMap);
+	if(Player->Map) {
+		ae::_Bounds MinimapBounds;
+		Player->Map->DrawMinimap(FullMap, MinimapBounds);
+
+		// Draw legend
+		if(FullMap) {
+			glm::vec2 DrawPosition(MinimapBounds.Start);
+			glm::vec2 LegendHalfSize = glm::vec2(8, 8) * ae::_Element::GetUIScale();
+			glm::vec2 LegendOffset = glm::vec2(-14, -6) * ae::_Element::GetUIScale();
+			DrawPosition.y -= 10 * ae::_Element::GetUIScale();
+			DrawPosition.x -= LegendOffset.x - LegendHalfSize.x - 4 * ae::_Element::GetUIScale();
+
+			for(const auto &Legend : MinimapLegends) {
+				ae::_TextBounds TextBounds;
+				ae::Assets.Fonts["hud_medium"]->GetStringDimensions(Legend.Label, TextBounds);
+				ae::Assets.Fonts["hud_medium"]->DrawText(Legend.Label, DrawPosition, ae::LEFT_BASELINE);
+
+				ae::Graphics.SetProgram(ae::Assets.Programs["ortho_pos"]);
+				ae::Graphics.SetColor(Legend.Color);
+				ae::Graphics.DrawRectangle(DrawPosition - LegendHalfSize + LegendOffset, DrawPosition + LegendHalfSize + LegendOffset, true);
+
+				DrawPosition.x += TextBounds.Width + LegendHalfSize.x * 2 + 20 * ae::_Element::GetUIScale();
+			}
+		}
+	}
 
 	// Draw character screen
 	DrawCharacterScreen();
