@@ -62,6 +62,7 @@ const  float        ENTITY_MAX_ACTIVE_RANGE        =  30.0f;
 const  int          PLAYER_SAVEVERSION             =  5;
 const  float        PLAYER_RADIUS                  =  0.35f;
 const  double       PLAYER_MEDKITPERIOD            =  0.5;
+const  float        PLAYER_STARTING_HEALTH_FACTOR  =  0.85f;
 const  float        PLAYER_LEGCHANGEFACTOR         =  0.2f;
 const  float        PLAYER_MOVEMENTSPEED           =  4.5f;
 const  float        PLAYER_BACKWARDS_SPEEDFACTOR   =  0.5f;
