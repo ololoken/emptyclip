@@ -238,13 +238,10 @@ class _Map {
 		std::vector<_Event *> &GetEventList(const glm::ivec2 &Coord);
 		glm::vec2 GetStartingPositionByCheckpoint(int CheckpointLevel);
 		int GetTotalBlockSize() const;
-		int GetMapType() const { return MapType; }
-		int GetWidth() const { return Width; }
-		int GetHeight() const { return Height; }
 		int GetWallState(const glm::vec2 &Position, float Radius) const;
 		void GetAdjacentTile(const glm::vec2 &Position, float Direction, glm::ivec2 &Coord) const;
 		glm::ivec2 GetValidCoord(const glm::ivec2 &Coord) const;
-		bool CanShootThrough(int IndexX, int IndexY) const;
+		bool CanShootThrough(const glm::ivec2 &Position) const;
 		void GetTileBounds(const glm::vec2 &Position, float Radius, _TileBounds &TileBounds) const;
 		const _Block *GetBlock(int Layer, const size_t Index) const;
 		glm::vec2 GetValidPosition(const glm::vec2 &Position) const;
@@ -259,11 +256,10 @@ class _Map {
 		static std::string FixFilename(const std::string &Filename);
 
 		// Stats
-		int MapType;
-		int Width;
-		int Height;
-		int Level;
 		std::string Filename;
+		glm::ivec2 Size;
+		int MapType;
+		int Level;
 
 		// Objects
 		ae::_Camera *Camera;
@@ -299,17 +295,17 @@ class _Map {
 // Returns a coordinate inside the map
 inline glm::ivec2 _Map::GetValidCoord(const glm::ivec2 &Coord) const {
 	return glm::ivec2(
-		std::max(0, std::min(Coord.x, Width-1)),
-		std::max(0, std::min(Coord.y, Height-1))
+		std::max(0, std::min(Coord.x, Size.x-1)),
+		std::max(0, std::min(Coord.y, Size.y-1))
 	);
 }
 
 // Determines if a tile can be shot through
-inline bool _Map::CanShootThrough(int IndexX, int IndexY) const {
+inline bool _Map::CanShootThrough(const glm::ivec2 &Position) const {
 	if(!Data)
 		throw std::runtime_error("Tile data uninitialized!");
 
-	return Data[IndexX][IndexY].CanShoot();
+	return Data[Position.x][Position.y].CanShoot();
 }
 
 // Returns a bounding rectangle

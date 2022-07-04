@@ -104,6 +104,7 @@ class _PlayState : public ae::_State {
 		// Entities
 		std::list<_Entity *> Monsters;
 		std::list<_Event *> ActiveEvents;
+		int ActiveAI;
 
 		// HUD
 		_HUD *HUD;

@@ -46,9 +46,8 @@ inline bool CompareHitDistance(_Hit &First, _Hit &Second) {
 
 // Initialize
 _Map::_Map() :
+	Size{MAP_WIDTH, MAP_HEIGHT},
 	MapType(MAPTYPE_CAMPAIGN),
-	Width(MAP_WIDTH),
-	Height(MAP_HEIGHT),
 	Level(1),
 	Camera(nullptr),
 	ObjectManager(new _ObjectManager()),
@@ -87,7 +86,7 @@ _Map::_Map(const std::string &Filename) : _Map() {
 	InputFile >> MapType;
 
 	// Read dimensions
-	InputFile >> Width >> Height;
+	InputFile >> Size.x >> Size.y;
 
 	// Load objects
 	size_t ObjectCount;
@@ -225,7 +224,7 @@ _Map::~_Map() {
 		delete Particle;
 
 	if(Data != nullptr) {
-		for(int i = 0; i < Width; i++)
+		for(int i = 0; i < Size.x; i++)
 			delete[] Data[i];
 		delete[] Data;
 	}
@@ -235,14 +234,14 @@ _Map::~_Map() {
 void _Map::InitializeTiles() {
 
 	// Allocate memory
-	Data = new _Tile*[Width];
+	Data = new _Tile*[Size.x];
 
-	for(int i = 0; i < Width; i++)
-		Data[i] = new _Tile[Height];
+	for(int i = 0; i < Size.x; i++)
+		Data[i] = new _Tile[Size.y];
 
 	// Clear out array
-	for(int i = 0; i < Width; i++) {
-		for(int j = 0; j < Height; j++) {
+	for(int i = 0; i < Size.x; i++) {
+		for(int j = 0; j < Size.y; j++) {
 			Data[i][j] = _Tile();
 		}
 	}
@@ -300,7 +299,7 @@ bool _Map::Save(const std::string &String) {
 		<< MAP_FILEVERSION << '\n'
 		<< Level << '\n'
 		<< MapType << '\n'
-		<< Width << ' ' << Height << '\n';
+		<< Size.x << ' ' << Size.y << '\n';
 
 	// Objects
 	Output << ObjectSpawns.size() << '\n';
@@ -420,12 +419,12 @@ bool _Map::CheckTileCollisions(const glm::vec2 &TargetPosition, float Radius, gl
 		Top = NewPosition.y = Radius;
 		Touching = true;
 	}
-	if(Right >= (float)Width) {
-		Right = NewPosition.x = (float)Width - Radius;
+	if(Right >= (float)Size.x) {
+		Right = NewPosition.x = (float)Size.x - Radius;
 		Touching = true;
 	}
-	if(Bottom >= (float)Height) {
-		Bottom = NewPosition.y = (float)Height - Radius;
+	if(Bottom >= (float)Size.y) {
+		Bottom = NewPosition.y = (float)Size.y - Radius;
 		Touching = true;
 	}
 
@@ -586,7 +585,7 @@ void _Map::CheckEntityCollisionsInGrid(const glm::vec2 &Position, float Radius, 
 	GetTileBounds(Position, Radius, TileBounds);
 
 	// Get unique list of objects to check against
-	std::unordered_map<_Entity *, int> HitEntities;
+	std::unordered_map<_Entity *, int> CheckEntities;
 	for(int i = TileBounds.Start.x; i <= TileBounds.End.x; i++) {
 		for(int j = TileBounds.Start.y; j <= TileBounds.End.y; j++) {
 			for(int k = 0; k < 2; k++) {
@@ -595,14 +594,16 @@ void _Map::CheckEntityCollisionsInGrid(const glm::vec2 &Position, float Radius, 
 					if(Entity == SkipObject || Entity->IsDying())
 						continue;
 
-					HitEntities[Entity] = 1;
+					CheckEntities[Entity] = 1;
 				}
 			}
 		}
 	}
 
+	Hits.reserve(CheckEntities.size());
+
 	// Get push vectors for each hit object
-	for(const auto &HitEntity : HitEntities) {
+	for(const auto &HitEntity : CheckEntities) {
 		_Entity *Entity = HitEntity.first;
 		if(Entity->Circle) {
 			float DistanceSquared = glm::distance2(Entity->Position, Position);
@@ -837,7 +838,7 @@ void _Map::CheckBulletCollisions(const glm::vec2 &Position, const glm::vec2 &Dir
 	// Traverse tiles
 	bool EndedOnX = false;
 	std::unordered_map<_Entity *, int> HitObjects;
-	while(TileTracer.x >= 0 && TileTracer.y >= 0 && TileTracer.x < Width && TileTracer.y < Height && CanShootThrough(TileTracer.x, TileTracer.y)) {
+	while(TileTracer.x >= 0 && TileTracer.y >= 0 && TileTracer.x < Size.x && TileTracer.y < Size.y && CanShootThrough(TileTracer)) {
 
 		// Check for object intersections
 		_Hit Hit(HIT_OBJECT);
@@ -952,18 +953,17 @@ float _Map::RayObjectIntersection(const glm::vec2 &Origin, const glm::vec2 &Dire
 
 // Determines if two positions are mutually visible
 bool _Map::IsVisible(const glm::vec2 &Start, const glm::vec2 &End) const {
-	glm::vec2 Direction, Tracer, Increment, Ratio;
-	int TileIncrementX, TileIncrementY, FirstBoundaryTileX, FirstBoundaryTileY, TileTracerX, TileTracerY;
+	int TileIncrementX, TileIncrementY, FirstBoundaryTileX, FirstBoundaryTileY;
 
 	// Find starting and ending tiles
 	glm::ivec2 StartTile = GetValidCoord(glm::ivec2(Start));
 	glm::ivec2 EndTile = GetValidCoord(glm::ivec2(End));
 
 	// Get direction
-	Direction = End - Start;
+	glm::vec2 Direction = End - Start;
 
 	// Check degenerate cases
-	if(!CanShootThrough(StartTile.x, StartTile.y) || !CanShootThrough(EndTile.x, EndTile.y))
+	if(!CanShootThrough(StartTile) || !CanShootThrough(EndTile))
 		return false;
 
 	// Only need to check vertical tiles
@@ -976,13 +976,13 @@ bool _Map::IsVisible(const glm::vec2 &Start, const glm::vec2 &End) const {
 		// Check direction
 		if(Direction.y < 0) {
 			for(int i = EndTile.y; i <= StartTile.y; i++) {
-				if(!CanShootThrough(StartTile.x, i))
+				if(!CanShootThrough(glm::ivec2(StartTile.x, i)))
 					return false;
 			}
 		}
 		else {
 			for(int i = StartTile.y; i <= EndTile.y; i++) {
-				if(!CanShootThrough(StartTile.x, i))
+				if(!CanShootThrough(glm::ivec2(StartTile.x, i)))
 					return false;
 			}
 		}
@@ -993,13 +993,13 @@ bool _Map::IsVisible(const glm::vec2 &Start, const glm::vec2 &End) const {
 		// Check direction
 		if(Direction.x < 0) {
 			for(int i = EndTile.x; i <= StartTile.x; i++) {
-				if(!CanShootThrough(i, StartTile.y))
+				if(!CanShootThrough(glm::ivec2(i, StartTile.y)))
 					return false;
 			}
 		}
 		else {
 			for(int i = StartTile.x; i <= EndTile.x; i++) {
-				if(!CanShootThrough(i, StartTile.y))
+				if(!CanShootThrough(glm::ivec2(i, StartTile.y)))
 					return false;
 			}
 		}
@@ -1027,44 +1027,48 @@ bool _Map::IsVisible(const glm::vec2 &Start, const glm::vec2 &End) const {
 	}
 
 	// Find ray direction ratios
+	glm::vec2 Ratio;
 	Ratio.x = 1.0f / Direction.x;
 	Ratio.y = 1.0f / Direction.y;
 
 	// Calculate increments
+	glm::vec2 Increment;
 	Increment.x = TileIncrementX * Ratio.x;
 	Increment.y = TileIncrementY * Ratio.y;
 
 	// Get starting positions
+	glm::vec2 Tracer;
 	Tracer.x = (FirstBoundaryTileX - Start.x) * Ratio.x;
 	Tracer.y = (FirstBoundaryTileY - Start.y) * Ratio.y;
 
 	// Starting tiles
-	TileTracerX = StartTile.x;
-	TileTracerY = StartTile.y;
+	glm::ivec2 TileTracer = StartTile;
 
 	// Traverse tiles
 	while(true) {
 
 		// Check for walls
-		if(TileTracerX < 0 || TileTracerY < 0 || TileTracerX >= Width || TileTracerY >= Height || !CanShootThrough(TileTracerX, TileTracerY))
+		if(TileTracer.x < 0 || TileTracer.y < 0 || TileTracer.x >= Size.x || TileTracer.y >= Size.y || !CanShootThrough(TileTracer))
 			return false;
 
 		// Determine which direction needs an update
 		if(Tracer.x < Tracer.y) {
 			Tracer.x += Increment.x;
-			TileTracerX += TileIncrementX;
+			TileTracer.x += TileIncrementX;
 		}
 		else {
 			Tracer.y += Increment.y;
-			TileTracerY += TileIncrementY;
+			TileTracer.y += TileIncrementY;
 		}
 
 		// Exit condition
-		if((Direction.x < 0 && TileTracerX < EndTile.x)
-			|| (Direction.x > 0 && TileTracerX > EndTile.x)
-			|| (Direction.y < 0 && TileTracerY < EndTile.y)
-			|| (Direction.y > 0 && TileTracerY > EndTile.y))
-			break;
+		if(
+			(Direction.x < 0 && TileTracer.x < EndTile.x) ||
+			(Direction.x > 0 && TileTracer.x > EndTile.x) ||
+			(Direction.y < 0 && TileTracer.y < EndTile.y) ||
+			(Direction.y > 0 && TileTracer.y > EndTile.y)) {
+				break;
+		}
 	}
 
 	return true;
@@ -1290,12 +1294,12 @@ void _Map::RenderGrid(int Mode) {
 
 	// Draw vertical lines
 	ae::Graphics.SetColor(COLOR_TWHITE);
-	for(int i = Mode; i < Width; i += Mode)
-		ae::Graphics.DrawLine(glm::vec2(i, 0), glm::vec2(i, Height));
+	for(int i = Mode; i < Size.x; i += Mode)
+		ae::Graphics.DrawLine(glm::vec2(i, 0), glm::vec2(i, Size.y));
 
 	// Draw horizontal lines
-	for(int i = Mode; i < Height; i += Mode)
-		ae::Graphics.DrawLine(glm::vec2(0, i), glm::vec2(Width, i));
+	for(int i = Mode; i < Size.y; i += Mode)
+		ae::Graphics.DrawLine(glm::vec2(0, i), glm::vec2(Size.x, i));
 }
 
 // Draw the mini map
@@ -1359,7 +1363,6 @@ void _Map::AddParticle(_Particle *Particle) {
 // Returns the total number of blocks
 int _Map::GetTotalBlockSize() const {
 	int Sum = 0;
-
 	for(int i = 0; i < MAPLAYER_COUNT; i++)
 		Sum += Blocks[i].size();
 
@@ -1368,23 +1371,7 @@ int _Map::GetTotalBlockSize() const {
 
 // Returns a valid position on the map
 glm::vec2 _Map::GetValidPosition(const glm::vec2 &Position) const {
-	glm::vec2 NewPosition;
-
-	if(Position.x <= 0)
-		NewPosition.x = 0;
-	else if(Position.x >= Width - MAP_EPSILON)
-		NewPosition.x = Width - MAP_EPSILON;
-	else
-		NewPosition.x = Position.x;
-
-	if(Position.y <= 0)
-		NewPosition.y = 0;
-	else if(Position.y >= Height - MAP_EPSILON)
-		NewPosition.y = Height - MAP_EPSILON;
-	else
-		NewPosition.y = Position.y;
-
-	return NewPosition;
+	return glm::vec2(std::clamp(Position.x, 0.0f, Size.x - MAP_EPSILON), std::clamp(Position.y, 0.0f, Size.y - MAP_EPSILON));
 }
 
 // Opens a door or hits a floor switch

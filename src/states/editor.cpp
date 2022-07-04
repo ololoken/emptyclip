@@ -700,14 +700,14 @@ void _EditorState::Update(double FrameTime) {
 		// Check x bounds
 		if(Offset.x + OldStart.x < 0)
 			Offset.x = -OldStart.x;
-		else if(Offset.x + OldEnd.x >= Map->GetWidth())
-			Offset.x = Map->GetWidth() - OldEnd.x - 1;
+		else if(Offset.x + OldEnd.x >= Map->Size.x)
+			Offset.x = Map->Size.x - OldEnd.x - 1;
 
 		// Check y bounds
 		if(Offset.y + OldStart.y < 0)
 			Offset.y = -OldStart.y;
-		else if(Offset.y + OldEnd.y >= Map->GetHeight())
-			Offset.y = Map->GetHeight() - OldEnd.y - 1;
+		else if(Offset.y + OldEnd.y >= Map->Size.y)
+			Offset.y = Map->Size.y - OldEnd.y - 1;
 
 		// Get start positions
 		DrawStart = OldStart + Offset;
@@ -859,7 +859,7 @@ void _EditorState::Render(double BlendFactor) {
 	// Draw map boundaries
 	ae::Graphics.SetProgram(ae::Assets.Programs["pos"]);
 	ae::Graphics.SetColor(COLOR_RED);
-	ae::Graphics.DrawRectangle3D(glm::vec2(-0.01f, -0.01f), glm::vec2(Map->GetWidth() + 0.01f, Map->GetHeight() + 0.01f), false);
+	ae::Graphics.DrawRectangle3D(glm::vec2(-0.01f, -0.01f), glm::vec2(Map->Size.x + 0.01f, Map->Size.y + 0.01f), false);
 
 	// Draw grid
 	Map->RenderGrid(GridMode);
@@ -1612,15 +1612,15 @@ glm::vec2 _EditorState::GetValidObjectPosition(const glm::vec2 &Position) const 
 
 	if(Position.x < 0)
 		NewPosition.x = 0;
-	else if(Position.x >= Map->GetWidth())
-		NewPosition.x = (float)Map->GetWidth();
+	else if(Position.x >= Map->Size.x)
+		NewPosition.x = (float)Map->Size.x;
 	else
 		NewPosition.x = Position.x;
 
 	if(Position.y < 0)
 		NewPosition.y = 0;
-	else if(Position.y >= Map->GetHeight())
-		NewPosition.y = (float)Map->GetHeight();
+	else if(Position.y >= Map->Size.y)
+		NewPosition.y = (float)Map->Size.y;
 	else
 		NewPosition.y = Position.y;
 

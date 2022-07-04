@@ -133,6 +133,7 @@ void _PlayState::Init() {
 	ae::Actions.ResetState();
 	ae::Audio.Stop();
 
+	ActiveAI = 0;
 	Timer = 0;
 }
 
@@ -689,6 +690,11 @@ void _PlayState::Render(double BlendFactor) {
 		Buffer << ParticleRenderCount << " decals rendered";
 		ae::Assets.Fonts["hud_tiny"]->DrawText(Buffer.str(), DrawPosition);
 		Buffer.str("");
+
+		DrawPosition.y += 15;
+		Buffer << ActiveAI << " active ai";
+		ae::Assets.Fonts["hud_tiny"]->DrawText(Buffer.str(), DrawPosition);
+		Buffer.str("");
 	}
 
 	// Show red overlay when player's health is low
@@ -956,6 +962,7 @@ void _PlayState::CreateItemDrop(const _Entity *Entity, float DropRate) {
 void _PlayState::UpdateMonsters(double FrameTime) {
 
 	// Loop through monsters
+	ActiveAI = 0;
 	for(auto MonsterIterator = Monsters.begin(); MonsterIterator != Monsters.end();) {
 		_Monster *Monster = (_Monster *)*MonsterIterator;
 
@@ -966,6 +973,8 @@ void _PlayState::UpdateMonsters(double FrameTime) {
 		}
 		else {
 			Monster->Update(FrameTime);
+			if(Monster->MoveState)
+				ActiveAI++;
 
 			// Get bounds
 			glm::vec4 Bounds;
@@ -1011,7 +1020,7 @@ void _PlayState::CheckEvents(const _Entity *Entity) {
 					Event->Active = false;
 				break;
 				case EVENT_CHECK:
-					switch(Map->GetMapType()) {
+					switch(Map->MapType) {
 						case MAPTYPE_CAMPAIGN:
 							if(Event->Level > Player->CheckpointIndex) {
 								Player->CheckpointIndex = Event->Level;

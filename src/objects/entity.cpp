@@ -391,15 +391,18 @@ void _Entity::Move(double FrameTime) {
 
 	// Get a list of entities that the object is colliding with
 	std::vector<_Hit> Hits;
-	Hits.reserve(10);
 	glm::vec2 NewPosition = Position + MoveDirection;
 	bool AxisAlignedPush = false;
 	Map->CheckEntityCollisionsInGrid(NewPosition, Radius, this, Hits, AxisAlignedPush);
 
 	// Resolve pushes
 	for(auto Hit : Hits) {
-		if(!(AxisAlignedPush && Hit.Push.x != 0 && Hit.Push.y != 0))
-			NewPosition += Hit.Push;
+
+		// If at least one push is axis aligned, don't push with diagonals
+		if(AxisAlignedPush && Hit.Push.x != 0 && Hit.Push.y != 0)
+			continue;
+
+		NewPosition += Hit.Push;
 	}
 
 	// Check collisions with walls and map boundaries
