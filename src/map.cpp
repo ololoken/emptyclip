@@ -655,35 +655,71 @@ void _Map::CheckMeleeCollisions(_Entity *Attacker, const glm::vec2 &Direction, i
 	GetTileBounds(Attacker->Position, Attacker->AttackRange[Attacker->AttackRequestType], TileBounds);
 
 	// Check tiles for objects
-	std::unordered_map<_Entity *, int> EntityMap;
+	std::unordered_map<_Entity *, int> CheckedEntities;
 	for(int i = TileBounds.Start.x; i <= TileBounds.End.x; i++) {
 		for(int j = TileBounds.Start.y; j <= TileBounds.End.y; j++) {
 			for(auto &Iterator : Data[i][j].Objects[GridType]) {
 				_Entity *Entity = (_Entity *)Iterator.first;
+
+				// Check unique list of entities
+				if(CheckedEntities.find(Entity) != CheckedEntities.end())
+					continue;
+
+				// Add to list of hit entities
+				CheckedEntities[Entity] = 1;
+
+				// Check if dying
 				if(Entity->IsDying())
 					continue;
 
-				// Check circle intersection
-				float DistanceSquared = glm::distance2(Entity->Position, Attacker->Position);
-				float RadiiSum = Entity->Radius + Attacker->AttackRange[Attacker->AttackRequestType];
-				if(DistanceSquared >= RadiiSum * RadiiSum)
-					continue;
+				// Get melee range
+				float AttackRange = Attacker->AttackRange[Attacker->AttackRequestType];
 
-				// Compare angles
-				glm::vec2 ObjectDirection(glm::normalize(Entity->Position - Attacker->Position));
+				// Check circle intersection
+				float DistanceSquared = glm::distance2(Attacker->Position, Entity->Position);
+				glm::vec2 ClosetPoint;
+				if(Entity->Circle) {
+					ClosetPoint = Entity->Position;
+					float RadiiSum = AttackRange + Entity->Radius;
+					if(DistanceSquared >= RadiiSum * RadiiSum)
+						continue;
+				}
+				// Check AABB collision
+				else {
+					ClosetPoint = Attacker->Position;
+
+					// Get AABB of object
+					float AABB[4] = {
+						Entity->Position.x - Entity->Radius,
+						Entity->Position.y - Entity->Radius,
+						Entity->Position.x + Entity->Radius,
+						Entity->Position.y + Entity->Radius
+					};
+
+					// Get closest point on AABB
+					if(ClosetPoint.x < AABB[0])
+						ClosetPoint.x = AABB[0];
+					if(ClosetPoint.y < AABB[1])
+						ClosetPoint.y = AABB[1];
+					if(ClosetPoint.x > AABB[2])
+						ClosetPoint.x = AABB[2];
+					if(ClosetPoint.y > AABB[3])
+						ClosetPoint.y = AABB[3];
+
+					// Test circle collision with point
+					float DistanceSquared = glm::distance2(ClosetPoint, Attacker->Position);
+					if(DistanceSquared >= AttackRange * AttackRange)
+						continue;
+				}
+
+				// Compare angles to closest point
+				glm::vec2 ObjectDirection(glm::normalize(ClosetPoint - Attacker->Position));
 				if(glm::dot(Direction, ObjectDirection) <= cosf(glm::radians(Attacker->MaxAccuracy[Attacker->AttackRequestType] * 0.5f)))
 					continue;
 
 				// Check for walls
 				if(!IsVisible(Attacker->Position, Entity->Position))
 					continue;
-
-				// Check unique list of hit entities
-				if(EntityMap.find(Entity) != EntityMap.end())
-					continue;
-
-				// Add to list of hit entities
-				EntityMap[Entity] = 1;
 
 				// Add to potential hits
 				_Hit Hit(HIT_OBJECT);
@@ -695,11 +731,17 @@ void _Map::CheckMeleeCollisions(_Entity *Attacker, const glm::vec2 &Direction, i
 		}
 	}
 
+	// Check for hits
+	if(Hits.empty())
+		return;
+
 	// Sort by distance
-	std::sort(Hits.begin(), Hits.end(), CompareHitDistance);
+	if(Hits.size() > 1)
+		std::sort(Hits.begin(), Hits.end(), CompareHitDistance);
 
 	// Handle penetration
-	Hits.resize((size_t)Penetration);
+	if(Hits.size() > (size_t)Penetration)
+		Hits.resize((size_t)Penetration);
 }
 
 // Determines which walls are adjacent to the object
