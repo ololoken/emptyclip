@@ -592,7 +592,7 @@ void _HUD::DrawCharacterScreen() {
 	Buffer << Player->DamageResist << "%";
 	DrawAttribute("Damage Resist", Buffer, DrawPosition);
 
-	Buffer << int(100 * Player->MovementSpeed / PLAYER_MOVEMENTSPEED + 0.5f) << "%";
+	Buffer << Player->BaseMoveSpeed << "%";
 	DrawAttribute("Move Speed", Buffer, DrawPosition);
 
 	Buffer << int(100 * Player->MaxStamina + 0.5f) << "%";

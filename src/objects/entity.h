@@ -121,8 +121,9 @@ class _Entity : public _Object {
 
 		// Movement
 		MoveType MoveState;
-		float MovementSpeed;
-		float MovementModifier;
+		int BaseMoveSpeed;
+		float MoveSpeed;
+		float MoveModifier;
 		bool PositionChanged;
 		float Stamina;
 		float MaxStamina;

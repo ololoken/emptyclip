@@ -121,7 +121,7 @@ void _Player::Reset() {
 	UsePeriod = PLAYER_USEPERIOD;
 	ZoomScale = PLAYER_ZOOMSCALE;
 	LegDirection = 0.0f;
-	MovementSpeed = 0.0f;
+	MoveSpeed = 0.0f;
 	MoveState = MOVE_NONE;
 	WeaponSwitchTimer = 0.0;
 	ReloadTimer = 0.0;
@@ -841,15 +841,15 @@ void _Player::UpdateWeaponSwitch() {
 void _Player::UpdateSpeed(float Factor) {
 
 	if(Aiming)
-		MovementModifier = PLAYER_AIM_MOVESPEEDFACTOR;
+		MoveModifier = PLAYER_AIM_MOVESPEEDFACTOR;
 	else if(Sprinting)
-		MovementModifier = PLAYER_SPRINT_SPEEDFACTOR;
+		MoveModifier = PLAYER_SPRINT_SPEEDFACTOR;
 	else
-		MovementModifier = 1.0f;
+		MoveModifier = 1.0f;
 
-	MovementModifier *= Factor;
+	MoveModifier *= Factor;
 
-	LegAnimation->FramePeriod = LegAnimation->Reels[0]->FramePeriod / MovementModifier;
+	LegAnimation->FramePeriod = LegAnimation->Reels[0]->FramePeriod / MoveModifier;
 	if(Animation->Reel == PLAYER_ANIMATIONWALKINGONEHAND || Animation->Reel == PLAYER_ANIMATIONWALKINGTWOHAND)
 		SetAnimationPlaybackSpeedFactor();
 }
@@ -984,7 +984,7 @@ void _Player::RecalculateStats() {
 	WeaponSwitchPeriod = PLAYER_WEAPONSWITCHPERIOD / Stats.GetSkillBonusMultiplier(Skills[SKILL_DEXTERITY], SKILL_DEXTERITY);
 	ZoomScale = Weapon[WEAPONATTACK_MAIN].Attributes["zoom_scale"].Float;
 
-	int BaseMovementSpeed = 100 + Stats.GetSkill(Skills[SKILL_CUNNING], SKILL_CUNNING);
+	BaseMoveSpeed = 100 + Stats.GetSkill(Skills[SKILL_CUNNING], SKILL_CUNNING);
 	MaxHealth = (int)(Stats.GetLevelHealth(Level) * Stats.GetSkillBonusMultiplier(Skills[SKILL_VITALITY], SKILL_VITALITY));
 	MaxStamina = Stats.GetSkillBonusMultiplier(Skills[SKILL_ENDURANCE], SKILL_ENDURANCE);
 	StaminaRegenModifier = Stats.GetSkillBonusMultiplier(Skills[SKILL_ENDURANCE], SKILL_ENDURANCE);
@@ -998,12 +998,12 @@ void _Player::RecalculateStats() {
 	if(GetArmor()) {
 		DamageBlock += GetArmor()->Attributes.at("damage_block").Int;
 		DamageResist += GetArmor()->Attributes.at("damage_resist").Int;
-		BaseMovementSpeed += GetArmor()->Attributes.at("move_speed").Int;
+		BaseMoveSpeed += GetArmor()->Attributes.at("move_speed").Int;
 		Attributes["max_ammo"].Int += GetArmor()->Attributes.at("max_ammo").Int;
 	}
 
 	// Get final speed
-	MovementSpeed = BaseMovementSpeed * 0.01f * PLAYER_MOVEMENTSPEED;
+	MoveSpeed = BaseMoveSpeed * 0.01f * PLAYER_MOVESPEED;
 
 	// Handle max ammo
 	AmmoMax.clear();
@@ -1050,7 +1050,7 @@ void _Player::ResetWeaponAnimation() {
 
 	Action = ACTION_IDLE;
 	Animation->Stop();
-	Animation->Play(WalkingAnimation, MovementSpeed);
+	Animation->Play(WalkingAnimation, MoveSpeed);
 	Animation->CalculateTextureCoords();
 	SetAnimationPlaybackSpeedFactor();
 }
@@ -1111,5 +1111,5 @@ void _Player::SetLegAnimationPlayMode(int Mode) {
 }
 
 void _Player::SetAnimationPlaybackSpeedFactor() {
-	Animation->FramePeriod = Animation->Reels[Animation->Reel]->FramePeriod / MovementModifier;
+	Animation->FramePeriod = Animation->Reels[Animation->Reel]->FramePeriod / MoveModifier;
 }

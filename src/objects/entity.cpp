@@ -36,8 +36,9 @@ _Entity::_Entity(const _ObjectTemplate &EntityTemplate) :
 	_Object(EntityTemplate),
 	TriggerDownAudio(nullptr),
 	MoveState(MOVE_NONE),
-	MovementSpeed(0),
-	MovementModifier(1.0f),
+	BaseMoveSpeed(0),
+	MoveSpeed(0),
+	MoveModifier(1.0f),
 	PositionChanged(false),
 	Stamina(1),
 	MaxStamina(1),
@@ -205,7 +206,7 @@ void _Entity::UpdateAnimation(double FrameTime, bool PlaySound) {
 				Animation->Stop();
 			}
 			else {
-				Animation->Play(WalkingAnimation, MovementSpeed);
+				Animation->Play(WalkingAnimation, MoveSpeed);
 				SetLegAnimationPlayMode(ae::_Animation::PLAYING);
 				SetAnimationPlaybackSpeedFactor();
 
@@ -232,7 +233,7 @@ void _Entity::UpdateAnimation(double FrameTime, bool PlaySound) {
 		case ACTION_MELEE:
 			if(Animation->IsStopped()) {
 				Animation->Stop();
-				Animation->Play(WalkingAnimation, MovementSpeed);
+				Animation->Play(WalkingAnimation, MoveSpeed);
 				SetAnimationPlaybackSpeedFactor();
 
 				Action = ACTION_IDLE;
@@ -256,7 +257,7 @@ void _Entity::UpdateAnimation(double FrameTime, bool PlaySound) {
 		case ACTION_SHOOT:
 			if(Animation->IsStopped()) {
 				Animation->Stop();
-				Animation->Play(WalkingAnimation, MovementSpeed);
+				Animation->Play(WalkingAnimation, MoveSpeed);
 				SetAnimationPlaybackSpeedFactor();
 
 				Action = ACTION_IDLE;
@@ -374,7 +375,7 @@ void _Entity::Move(double FrameTime) {
 		UpdateSpeed(PLAYER_BACKWARDS_SPEEDFACTOR);
 
 	// Get speed
-	float Speed = MovementSpeed * MovementModifier * FrameTime;
+	float Speed = MoveSpeed * MoveModifier * FrameTime;
 
 	// Update speed while attacking
 	if(Action == ACTION_SHOOT || Action == ACTION_MELEE)
