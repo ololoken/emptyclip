@@ -69,54 +69,73 @@
         <element id="button_inventory_bag15" style="style_hud_inventory" offset_x="240" offset_y="240" size_x="80" size_y="80" alignment_x="0" alignment_y="0" clickable="true" index="19"/>
     </element>
     <element id="element_skills" style="style_hud_skills" size_x="300" size_y="700" alignment_x="2">
-        <element id="button_skills_plus0" style="style_hud_plus" hover_style="style_hud_plus_hover" offset_x="75" offset_y="30" size_x="16" size_y="16" alignment_x="0" alignment_y="0" clickable="true" index="0">
-            <element id="label_hud_skill0_text" font="hud_medium" text="Strength" offset_x="25" offset_y="14" alignment_x="0" alignment_y="3"/>
-            <element id="label_hud_skill0_value" font="hud_medium" text="0" offset_x="-32" offset_y="14" alignment_x="0" alignment_y="3"/>
+		<element id="element_skills_0" offset_x="75" offset_y="30" size_x="16" size_y="16" alignment_x="0" alignment_y="0" clickable="true" index="0">
+			<element id="button_skills_plus0" style="style_hud_plus" hover_style="style_hud_plus_hover" disabled_style="style_hud_plus_disabled" size_x="16" size_y="16" alignment_x="0" alignment_y="0" clickable="true" index="0">
+				<element id="label_hud_skill0_text" font="hud_medium" text="Strength" offset_x="25" offset_y="14" alignment_x="0" alignment_y="3"/>
+				<element id="label_hud_skill0_value" font="hud_medium" text="0" offset_x="-32" offset_y="14" alignment_x="0" alignment_y="3"/>
+			</element>
+		</element>
+		<element id="element_skills_1" offset_x="75" offset_y="60" size_x="16" size_y="16" alignment_x="0" alignment_y="0" clickable="true" index="1">
+			<element id="button_skills_plus1" style="style_hud_plus" hover_style="style_hud_plus_hover" disabled_style="style_hud_plus_disabled" size_x="16" size_y="16" alignment_x="0" alignment_y="0" clickable="true" index="1">
+				<element id="label_hud_skill1_text" font="hud_medium" text="Dexterity" offset_x="25" offset_y="14" alignment_x="0" alignment_y="3"/>
+				<element id="label_hud_skill1_value" font="hud_medium" text="0" offset_x="-32" offset_y="14" alignment_x="0" alignment_y="3"/>
+			</element>
         </element>
-        <element id="button_skills_plus1" style="style_hud_plus" hover_style="style_hud_plus_hover" offset_x="75" offset_y="60" size_x="16" size_y="16" alignment_x="0" alignment_y="0" clickable="true" index="1">
-            <element id="label_hud_skill1_text" font="hud_medium" text="Dexterity" offset_x="25" offset_y="14" alignment_x="0" alignment_y="3"/>
-            <element id="label_hud_skill1_value" font="hud_medium" text="0" offset_x="-32" offset_y="14" alignment_x="0" alignment_y="3"/>
+		<element id="element_skills_2" offset_x="75" offset_y="90" size_x="16" size_y="16" alignment_x="0" alignment_y="0" clickable="true" index="2">
+			<element id="button_skills_plus2" style="style_hud_plus" hover_style="style_hud_plus_hover" disabled_style="style_hud_plus_disabled" size_x="16" size_y="16" alignment_x="0" alignment_y="0" clickable="true" index="2">
+				<element id="label_hud_skill2_text" font="hud_medium" text="Fortitude" offset_x="25" offset_y="14" alignment_x="0" alignment_y="3"/>
+				<element id="label_hud_skill2_value" font="hud_medium" text="0" offset_x="-32" offset_y="14" alignment_x="0" alignment_y="3"/>
+			</element>
         </element>
-        <element id="button_skills_plus2" style="style_hud_plus" hover_style="style_hud_plus_hover" offset_x="75" offset_y="90" size_x="16" size_y="16" alignment_x="0" alignment_y="0" clickable="true" index="2">
-            <element id="label_hud_skill2_text" font="hud_medium" text="Fortitude" offset_x="25" offset_y="14" alignment_x="0" alignment_y="3"/>
-            <element id="label_hud_skill2_value" font="hud_medium" text="0" offset_x="-32" offset_y="14" alignment_x="0" alignment_y="3"/>
+		<element id="element_skills_3" offset_x="75" offset_y="120" size_x="16" size_y="16" alignment_x="0" alignment_y="0" clickable="true" index="3">
+			<element id="button_skills_plus3" style="style_hud_plus" hover_style="style_hud_plus_hover" disabled_style="style_hud_plus_disabled" size_x="16" size_y="16" alignment_x="0" alignment_y="0" clickable="true" index="3">
+				<element id="label_hud_skill3_text" font="hud_medium" text="Vitality" offset_x="25" offset_y="14" alignment_x="0" alignment_y="3"/>
+				<element id="label_hud_skill3_value" font="hud_medium" text="0" offset_x="-32" offset_y="14" alignment_x="0" alignment_y="3"/>
+			</element>
         </element>
-        <element id="button_skills_plus3" style="style_hud_plus" hover_style="style_hud_plus_hover" offset_x="75" offset_y="120" size_x="16" size_y="16" alignment_x="0" alignment_y="0" clickable="true" index="3">
-            <element id="label_hud_skill3_text" font="hud_medium" text="Vitality" offset_x="25" offset_y="14" alignment_x="0" alignment_y="3"/>
-            <element id="label_hud_skill3_value" font="hud_medium" text="0" offset_x="-32" offset_y="14" alignment_x="0" alignment_y="3"/>
+		<element id="element_skills_4" offset_x="75" offset_y="150" size_x="16" size_y="16" alignment_x="0" alignment_y="0" clickable="true" index="4">
+			<element id="button_skills_plus4" style="style_hud_plus" hover_style="style_hud_plus_hover" disabled_style="style_hud_plus_disabled" size_x="16" size_y="16" alignment_x="0" alignment_y="0" clickable="true" index="4">
+				<element id="label_hud_skill4_text" font="hud_medium" text="Agility" offset_x="25" offset_y="14" alignment_x="0" alignment_y="3"/>
+				<element id="label_hud_skill4_value" font="hud_medium" text="0" offset_x="-32" offset_y="14" alignment_x="0" alignment_y="3"/>
+			</element>
         </element>
-        <element id="button_skills_plus4" style="style_hud_plus" hover_style="style_hud_plus_hover" offset_x="75" offset_y="150" size_x="16" size_y="16" alignment_x="0" alignment_y="0" clickable="true" index="4">
-            <element id="label_hud_skill4_text" font="hud_medium" text="Agility" offset_x="25" offset_y="14" alignment_x="0" alignment_y="3"/>
-            <element id="label_hud_skill4_value" font="hud_medium" text="0" offset_x="-32" offset_y="14" alignment_x="0" alignment_y="3"/>
+		<element id="element_skills_5" offset_x="75" offset_y="180" size_x="16" size_y="16" alignment_x="0" alignment_y="0" clickable="true" index="5">
+			<element id="button_skills_plus5" style="style_hud_plus" hover_style="style_hud_plus_hover" disabled_style="style_hud_plus_disabled" size_x="16" size_y="16" alignment_x="0" alignment_y="0" clickable="true" index="5">
+				<element id="label_hud_skill5_text" font="hud_medium" text="Cunning" offset_x="25" offset_y="14" alignment_x="0" alignment_y="3"/>
+				<element id="label_hud_skill5_value" font="hud_medium" text="0" offset_x="-32" offset_y="14" alignment_x="0" alignment_y="3"/>
+			</element>
         </element>
-        <element id="button_skills_plus5" style="style_hud_plus" hover_style="style_hud_plus_hover" offset_x="75" offset_y="180" size_x="16" size_y="16" alignment_x="0" alignment_y="0" clickable="true" index="5">
-            <element id="label_hud_skill5_text" font="hud_medium" text="Cunning" offset_x="25" offset_y="14" alignment_x="0" alignment_y="3"/>
-            <element id="label_hud_skill5_value" font="hud_medium" text="0" offset_x="-32" offset_y="14" alignment_x="0" alignment_y="3"/>
+		<element id="element_skills_6" offset_x="75" offset_y="210" size_x="16" size_y="16" alignment_x="0" alignment_y="0" clickable="true" index="6">
+			<element id="button_skills_plus6" style="style_hud_plus" hover_style="style_hud_plus_hover" disabled_style="style_hud_plus_disabled" size_x="16" size_y="16" alignment_x="0" alignment_y="0" clickable="true" index="6">
+				<element id="label_hud_skill6_text" font="hud_medium" text="Endurance" offset_x="25" offset_y="14" alignment_x="0" alignment_y="3"/>
+				<element id="label_hud_skill6_value" font="hud_medium" text="0" offset_x="-32" offset_y="14" alignment_x="0" alignment_y="3"/>
+			</element>
         </element>
-        <element id="button_skills_plus6" style="style_hud_plus" hover_style="style_hud_plus_hover" offset_x="75" offset_y="210" size_x="16" size_y="16" alignment_x="0" alignment_y="0" clickable="true" index="6">
-            <element id="label_hud_skill6_text" font="hud_medium" text="Endurance" offset_x="25" offset_y="14" alignment_x="0" alignment_y="3"/>
-            <element id="label_hud_skill6_value" font="hud_medium" text="0" offset_x="-32" offset_y="14" alignment_x="0" alignment_y="3"/>
+		<element id="element_skills_7" offset_x="75" offset_y="240" size_x="16" size_y="16" alignment_x="0" alignment_y="0" clickable="true" index="7">
+			<element id="button_skills_plus7" style="style_hud_plus" hover_style="style_hud_plus_hover" disabled_style="style_hud_plus_disabled" size_x="16" size_y="16" alignment_x="0" alignment_y="0" clickable="true" index="7">
+				<element id="label_hud_skill7_text" font="hud_medium" text="Perception" offset_x="25" offset_y="14" alignment_x="0" alignment_y="3"/>
+				<element id="label_hud_skill7_value" font="hud_medium" text="0" offset_x="-32" offset_y="14" alignment_x="0" alignment_y="3"/>
+			</element>
         </element>
-        <element id="button_skills_plus7" style="style_hud_plus" hover_style="style_hud_plus_hover" offset_x="75" offset_y="240" size_x="16" size_y="16" alignment_x="0" alignment_y="0" clickable="true" index="7">
-            <element id="label_hud_skill7_text" font="hud_medium" text="Perception" offset_x="25" offset_y="14" alignment_x="0" alignment_y="3"/>
-            <element id="label_hud_skill7_value" font="hud_medium" text="0" offset_x="-32" offset_y="14" alignment_x="0" alignment_y="3"/>
-        </element>
-        <element id="button_skills_plus8" style="style_hud_plus" hover_style="style_hud_plus_hover" offset_x="75" offset_y="270" size_x="16" size_y="16" alignment_x="0" alignment_y="0" clickable="true" index="8">
-            <element id="label_hud_skill8_text" font="hud_medium" text="Luck" offset_x="25" offset_y="14" alignment_x="0" alignment_y="3"/>
-            <element id="label_hud_skill8_value" font="hud_medium" text="0" offset_x="-32" offset_y="14" alignment_x="0" alignment_y="3"/>
+		<element id="element_skills_8" offset_x="75" offset_y="270" size_x="16" size_y="16" alignment_x="0" alignment_y="0" clickable="true" index="8">
+			<element id="button_skills_plus8" style="style_hud_plus" hover_style="style_hud_plus_hover" disabled_style="style_hud_plus_disabled" size_x="16" size_y="16" alignment_x="0" alignment_y="0" clickable="true" index="8">
+				<element id="label_hud_skill8_text" font="hud_medium" text="Luck" offset_x="25" offset_y="14" alignment_x="0" alignment_y="3"/>
+				<element id="label_hud_skill8_value" font="hud_medium" text="0" offset_x="-32" offset_y="14" alignment_x="0" alignment_y="3"/>
+			</element>
         </element>
         <element id="button_skills_remaining" offset_x="75" offset_y="310" size_x="16" size_y="16" alignment_x="0" alignment_y="0" clickable="true">
             <element id="label_hud_skill_remaining_text" font="hud_medium" text="Points Remaining" offset_y="14" alignment_x="0" alignment_y="3"/>
             <element id="label_hud_skill_remaining_value" font="hud_medium" text="0" offset_x="-32" offset_y="14" alignment_x="0" alignment_y="3"/>
         </element>
     </element>
-    <element id="element_skill_info" style="style_hud_skills" size_x="450" size_y="200" alignment_x="0" alignment_y="0">
+    <element id="element_skill_info" style="style_hud_skills" size_x="450" size_y="210" alignment_x="0" alignment_y="0">
         <element id="label_hud_skill_text" font="hud_large" offset_x="15" offset_y="30" alignment_x="0" alignment_y="3"/>
         <element id="label_hud_skill_textalt" font="hud_large" offset_x="15" offset_y="55" alignment_x="0" alignment_y="3"/>
         <element id="label_hud_skill_current" font="hud_medium" text="Current Level" offset_x="15" offset_y="85" alignment_x="0" alignment_y="3"/>
         <element id="label_hud_skill_level" font="hud_medium" offset_x="25" offset_y="105" alignment_x="0" alignment_y="3"/>
         <element id="label_hud_skill_next" font="hud_medium" text="Next Level" offset_x="15" offset_y="135" alignment_x="0" alignment_y="3"/>
         <element id="label_hud_skill_level_next" font="hud_medium" offset_x="25" offset_y="155" alignment_x="0" alignment_y="3"/>
+        <element id="label_hud_skill_max" font="hud_large" color="red" offset_x="15" offset_y="190" alignment_x="0" alignment_y="3"/>
     </element>
     <element id="element_editor_command" offset_x="16" size_x="700" size_y="147" alignment_x="0" alignment_y="2">
         <element id="button_editor_layer_base" style="style_editor_layer1" hover_style="style_editor_button_selected" size_x="32" size_y="32" alignment_x="0" alignment_y="0" clickable="true" index="0"/>

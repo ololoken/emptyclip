@@ -680,6 +680,11 @@ const _Level &_Stats::FindLevel(int64_t Experience) {
 	return Levels[Levels.size()-1];
 }
 
+// Get max level for any skill given a player level
+int _Stats::GetMaxSkillLevel(int PlayerLevel) const {
+	return (PlayerLevel - 1) * GAME_MAX_SKILL_PERLEVEL;
+}
+
 // Returns a skill value in a valid range
 int _Stats::GetValidSkillLevel(int Level) {
 	if(Level < 0)

@@ -250,7 +250,7 @@ void _HUD::MouseEvent(const ae::_MouseEvent &MouseEvent) {
 	// Level up skill
 	HitElement = Elements[ELEMENT_SKILLS]->HitElement;
 	if(MouseEvent.Pressed && MouseEvent.Button == SDL_BUTTON_LEFT) {
-		if(HitElement && HitElement->Index >= 0) {
+		if(HitElement && HitElement->Index >= 0 && HitElement->Children.front()->Enabled) {
 			Player->UpdateSkill(HitElement->Index, ae::Input.ModKeyDown(KMOD_SHIFT) ? 5 : 1);
 		}
 	}
@@ -281,7 +281,17 @@ void _HUD::Update(double FrameTime, float Radius) {
 
 		HitElement = Elements[ELEMENT_SKILLS]->HitElement;
 		if(HitElement && HitElement->Index >= 0)
-			UpdateSkillInfo(HitElement->Index, ae::Input.GetMouse());
+			UpdateSkillTooltip(HitElement->Index, ae::Input.GetMouse());
+
+		for(int i = 0; i < SKILL_COUNT; i++) {
+			ae::_Element *SkillButton = ae::Assets.Elements["button_skills_plus" + std::to_string(i)];
+			if(!SkillButton)
+				continue;
+
+			SkillButton->Enabled = false;
+			if(Player->Skills[i] < Stats.GetMaxSkillLevel(Player->Level))
+				SkillButton->Enabled = true;
+		}
 	}
 	else
 		ae::Graphics.SetCursor(false);
@@ -658,7 +668,7 @@ void _HUD::DrawItemCount(_Item *Item, int X, int Y) {
 }
 
 // Draw the skill popup window
-void _HUD::UpdateSkillInfo(int Skill, const glm::vec2 &Position) {
+void _HUD::UpdateSkillTooltip(int Skill, const glm::vec2 &Position) {
 	CursorSkill = Skill;
 
 	glm::vec2 DrawPosition(Position);
@@ -732,11 +742,16 @@ void _HUD::UpdateSkillInfo(int Skill, const glm::vec2 &Position) {
 
 	// Wrap text
 	Elements[LABEL_SKILLTEXT]->SetWrap(Elements[ELEMENT_SKILLINFO]->Size.x - 20);
-
 	Elements[LABEL_SKILL_LEVEL]->Text = Buffer.str();
 	if(Player->Skills[Skill]+1 > GAME_SKILLLEVELS)
 		BufferNext.str("");
 	Elements[LABEL_SKILL_LEVEL_NEXT]->Text = BufferNext.str();
+
+	// Max skill level
+	ae::Assets.Elements["label_hud_skill_max"]->Text = "";
+	if(Player->Skills[Skill] >= Stats.GetMaxSkillLevel(Player->Level)) {
+		ae::Assets.Elements["label_hud_skill_max"]->Text = "Player Level " + std::to_string(Player->Level + 1) + " Required";
+	}
 }
 
 // Draw death message

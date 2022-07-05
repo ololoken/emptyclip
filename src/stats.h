@@ -110,6 +110,7 @@ class _Stats {
 		const _Level &FindLevel(int64_t Experience);
 		int GetLevelHealth(int Level) { return Levels[Level-1].HealthBonus; }
 		int GetSkillPointsRemaining(int Level) { return Levels[Level-1].SkillPoints; }
+		int GetMaxSkillLevel(int PlayerLevel) const;
 		int GetMaxLevel() const { return (int)Levels.size(); }
 
 		int GetValidSkillLevel(int Level);
