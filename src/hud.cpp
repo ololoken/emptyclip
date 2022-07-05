@@ -743,7 +743,6 @@ void _HUD::UpdateSkillTooltip(int Skill, const glm::vec2 &Position) {
 	}
 
 	// Wrap text
-	Elements[LABEL_SKILLTEXT]->SetWrap(Elements[ELEMENT_SKILLINFO]->Size.x - 20 * ae::_Element::GetUIScale());
 	Elements[LABEL_SKILL_LEVEL]->Text = Buffer.str();
 	if(Player->Skills[Skill]+1 > GAME_SKILLLEVELS)
 		BufferNext.str("");
@@ -778,7 +777,7 @@ void _HUD::ShowMessageBox(const std::string &Message, double Time) {
 		return;
 
 	Elements[LABEL_MESSAGEBOX]->Text = Message;
-	Elements[LABEL_MESSAGEBOX]->SetWrap(Elements[ELEMENT_MESSAGE]->Size.x - 25 * ae::_Element::GetUIScale());
+	Elements[LABEL_MESSAGEBOX]->SetWrap(Elements[ELEMENT_MESSAGE]->Size.x - 35 * ae::_Element::GetUIScale());
 
 	Elements[ELEMENT_MESSAGE]->SetFade(1.0f);
 	MessageBoxTimer = Time;
