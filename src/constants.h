@@ -38,7 +38,7 @@ const  double       GAME_TIMESTEP                  =  1.0/GAME_FPS;
 const  float        GAME_PAUSE_FADEAMOUNT          =  0.7f;
 const  std::string  GAME_STARTLEVEL                =  "mansion0.map";
 const  std::string  GAME_FIRSTLEVEL                =  "mansion0.map";
-const  int          GAME_SKILLLEVELS               =  50;
+const  int          GAME_SKILLLEVELS               =  100;
 const  int          GAME_WIN_PROGRESSION_POINTS    =  20;
 //     Camera
 const  float        CAMERA_DISTANCE                =  6.5f;
@@ -79,7 +79,7 @@ const  float        PLAYER_ZOOMSCALE               =  15.0f;
 const  float        PLAYER_MAXACCURACY             =  170.0f;
 const  double       PLAYER_WEAPONSWITCHPERIOD      =  0.5;
 const  double       PLAYER_USEPERIOD               =  0.2;
-const  float        PLAYER_AMMO_LUCK_MULTIPLIER    =  5.0f;
+const  float        PLAYER_AMMO_LUCK_MULTIPLIER    =  2.0f;
 //     Inventory
 const  int          INVENTORY_BAGSIZE              =  16;
 const  int          INVENTORY_MAX_STACK            =  99;

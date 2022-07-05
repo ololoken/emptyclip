@@ -677,6 +677,7 @@ void _HUD::UpdateSkillInfo(int Skill, int DrawX, int DrawY) {
 	switch(Skill) {
 		case SKILL_STRENGTH:
 			Elements[LABEL_SKILLTEXT]->Text = "Increases Melee Damage";
+			Elements[LABEL_SKILLTEXTALT]->Text = "Increases Gun Handling";
 			Buffer << "+" << Stats.GetSkill(Level, Skill) << "%";
 			BufferNext << "+" << Stats.GetSkill(Stats.GetValidSkillLevel(Player->Skills[Skill]+1), Skill) << "%";
 		break;
