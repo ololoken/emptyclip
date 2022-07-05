@@ -216,9 +216,7 @@ class _Map {
 
 		void AddBlock(int Layer, _Block Block) { Blocks[Layer].push_back(Block); }
 		void AddEvent(_Event *Event) { Events.push_back(Event); }
-		void AddObject(_ObjectSpawn *Object) { ObjectSpawns.push_back(Object); }
 		void AddParticle(_Particle *Particle);
-		const std::vector<_ObjectSpawn *> &GetObjectsList() { return ObjectSpawns; }
 		void GetSelectedObject(const glm::vec2 &Position, float RadiusSquared, _ObjectSpawn **Object, size_t *Index);
 		void GetSelectedObjects(const glm::vec2 &Start, const glm::vec2 &End, std::vector<_ObjectSpawn *> *SelectedObjects, int Type);
 		int GetSelectedBlock(int Layer, const glm::ivec2 &Index, _Block **Block);
@@ -265,6 +263,7 @@ class _Map {
 		// Objects
 		ae::_Camera *Camera;
 		std::unique_ptr<_ObjectManager> ObjectManager;
+		std::vector<_ObjectSpawn *> ObjectSpawns;
 
 		// Minimap
 		std::vector<_MinimapLayer> MinimapLayers;
@@ -281,7 +280,6 @@ class _Map {
 		std::vector<_Event *> CheckpointEvents;
 
 		// Objects
-		std::vector<_ObjectSpawn *> ObjectSpawns;
 		std::vector<_Particle *> Particles;
 
 		// Lights

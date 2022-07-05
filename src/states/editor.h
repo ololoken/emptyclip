@@ -280,6 +280,7 @@ class _EditorState : public ae::_State {
 		int EventSpawnLevel;
 
 		// Objects
+		std::unordered_map<std::string, int> ObjectCounts;
 		std::vector<_ObjectSpawn *> SelectedObjects;
 		std::vector<_ObjectSpawn *> ClipboardObjects;
 		glm::vec2 ClickedPosition;

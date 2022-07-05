@@ -104,13 +104,9 @@ void _PlayState::Init() {
 	Player->TileChanged = true;
 	Map->AddObjectToGrid(Player, GRID_PLAYER);
 
-	// Get monster and item list
-	std::vector<_ObjectSpawn *> Objects = Map->GetObjectsList();
-
 	// Spawn objects
-	for(size_t i = 0; i < Objects.size(); i++) {
-		SpawnObject(Objects[i]);
-	}
+	for(const auto &ObjectSpawn : Map->ObjectSpawns)
+		SpawnObject(ObjectSpawn);
 
 	// Initialize objects
 	HUD = new _HUD(Player);

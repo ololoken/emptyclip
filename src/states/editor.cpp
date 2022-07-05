@@ -672,6 +672,12 @@ void _EditorState::Update(double FrameTime) {
 	// Set camera position
 	Camera->Update(FrameTime);
 
+	// Count object ids
+	ObjectCounts.clear();
+	for(const auto &ObjectSpawn : Map->ObjectSpawns) {
+		ObjectCounts[ObjectSpawn->ID]++;
+	}
+
 	// Drawing a block or event
 	if(IsDrawing) {
 
@@ -828,10 +834,8 @@ void _EditorState::Render(double BlendFactor) {
 	ae::Graphics.SetProgram(ae::Assets.Programs["pos_uv"]);
 	ae::Graphics.SetDepthMask(false);
 	ae::Graphics.SetVBO(ae::VBO_QUAD);
-	const std::vector<_ObjectSpawn *> &Objects = Map->GetObjectsList();
-	for(size_t i = 0; i < Objects.size(); i++) {
-		DrawObject(0.0f, 0.0f, Objects[i], 1.0f);
-	}
+	for(const auto &ObjectSpawn : Map->ObjectSpawns)
+		DrawObject(0.0f, 0.0f, ObjectSpawn, 1.0f);
 
 	// Outline selected item
 	ae::Graphics.SetProgram(ae::Assets.Programs["pos"]);
@@ -926,7 +930,7 @@ void _EditorState::Render(double BlendFactor) {
 
 	// Draw object levels
 	if(Camera->GetPosition().z <= 20) {
-		for(const auto &Object : Objects) {
+		for(const auto &Object : Map->ObjectSpawns) {
 			if(Object->Type == _Object::AMMO)
 				continue;
 
@@ -1143,8 +1147,9 @@ void _EditorState::DrawBrush() {
 	// Get selected palette
 	std::string IconText;
 	std::string IconID;
-	glm::vec4 IconColor = COLOR_WHITE;
+	std::string IconTotal;
 	const ae::_Texture *IconTexture = nullptr;
+	glm::vec4 IconColor = COLOR_WHITE;
 	if(Brush[EditMode]) {
 		IconID = Brush[EditMode]->Name;
 		IconText = Brush[EditMode]->Style->Name;
@@ -1158,6 +1163,7 @@ void _EditorState::DrawBrush() {
 	float IconRotation = 0;
 	float IconScaleX = 1.0f;
 	float TextSpacingY = 17;
+	int SelectedObjectLevel = 1;
 
 	// Edit mode specific text
 	switch(EditMode) {
@@ -1303,7 +1309,7 @@ void _EditorState::DrawBrush() {
 		default: {
 
 			// See if there's a selected object
-			int SelectedObjectLevel = ObjectLevel;
+			SelectedObjectLevel = ObjectLevel;
 			if(SelectedObjects.size() > 0) {
 				auto Iterator = SelectedObjects.begin();
 				IconID = (*Iterator)->ID;
@@ -1312,8 +1318,7 @@ void _EditorState::DrawBrush() {
 				SelectedObjectLevel = (*Iterator)->Level;
 			}
 
-			if(IconID != "")
-				MainFont->DrawText("Level: " + std::to_string(SelectedObjectLevel), IconPosition + NamePosition + glm::vec2(0, TextSpacingY*2), ae::LEFT_BASELINE);
+			IconTotal = std::to_string(ObjectCounts[IconID]);
 		} break;
 	}
 
@@ -1322,8 +1327,20 @@ void _EditorState::DrawBrush() {
 		MainFont->DrawText(IconText, IconPosition + NamePosition, ae::LEFT_BASELINE);
 
 	NamePosition.y += TextSpacingY;
-	if(IconID != "")
+	if(IconID != "") {
 		MainFont->DrawText(IconID, IconPosition + NamePosition, ae::LEFT_BASELINE);
+
+		if(EditMode == EDITMODE_MONSTERS || EditMode == EDITMODE_ITEMS) {
+
+			// Draw object level
+			NamePosition.y += TextSpacingY;
+			MainFont->DrawText("Level: " + std::to_string(SelectedObjectLevel), IconPosition + NamePosition, ae::LEFT_BASELINE);
+
+			// Draw object total in level
+			NamePosition.y += TextSpacingY;
+			MainFont->DrawText("Total: " + IconTotal, IconPosition + NamePosition, ae::LEFT_BASELINE);
+		}
+	}
 
 	if(IconTexture) {
 		ae::Assets.Programs["ortho_pos_uv"]->ResetTextureTransform();
@@ -1528,7 +1545,7 @@ void _EditorState::SpawnObject(const glm::vec2 &Position, int Type, const std::s
 		SpawnPosition = Position;
 
 	_ObjectSpawn *Object = new _ObjectSpawn(ID, SpawnPosition, Type, Level);
-	Map->AddObject(Object);
+	Map->ObjectSpawns.push_back(Object);
 }
 
 // Adds an event to the list
