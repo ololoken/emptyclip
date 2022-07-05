@@ -1,6 +1,6 @@
 id	file	volume	limit
 club_hit0	club_hit0.ogg	0.7	5
-crate_die0	crate_die0.ogg	0.7	5
+crate_die0	crate_die0.ogg	0.4	1
 dog_die0	dog_die0.ogg	0.7	5
 dog_fire0	dog_fire0.ogg	0.7	5
 dog_move0	dog_move0.ogg	0.05	5

@@ -1174,6 +1174,7 @@ void _EditorState::DrawBrush() {
 			float BlockMinZ, BlockMaxZ;
 			bool BlockWalkable;
 			if(BlockSelected()) {
+				IconText = "";
 				IconTexture = SelectedBlock->Texture;
 				if(IconTexture)
 					IconText = IconTexture->Name;
