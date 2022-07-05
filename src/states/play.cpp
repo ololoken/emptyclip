@@ -328,6 +328,11 @@ bool _PlayState::HandleCommand(ae::_Console *Console) {
 			GodMode = !GodMode;
 			Console->AddMessage("god = " + std::to_string(GodMode));
 		}
+		else if(Console->Command == "reset") {
+			if(Player)
+				Player->Reset();
+			Console->AddMessage("player reset");
+		}
 		else
 			return false;
 	}
