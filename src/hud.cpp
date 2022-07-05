@@ -778,7 +778,7 @@ void _HUD::ShowMessageBox(const std::string &Message, double Time) {
 		return;
 
 	Elements[LABEL_MESSAGEBOX]->Text = Message;
-	Elements[LABEL_MESSAGEBOX]->SetWrap(Elements[ELEMENT_MESSAGE]->Size.x - 25);
+	Elements[LABEL_MESSAGEBOX]->SetWrap(Elements[ELEMENT_MESSAGE]->Size.x - 25 * ae::_Element::GetUIScale());
 
 	Elements[ELEMENT_MESSAGE]->SetFade(1.0f);
 	MessageBoxTimer = Time;

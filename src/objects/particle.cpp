@@ -91,5 +91,5 @@ void _Particle::Render() {
 	}
 
 	if(Font && Text != "")
-		Font->DrawText(Text.c_str(), Position, ae::CENTER_BASELINE, Color, 1/64.0f);
+		Font->DrawText(Text.c_str(), Position, ae::CENTER_BASELINE, Color, (1/64.0f) / ae::_Element::GetUIScale());
 }
