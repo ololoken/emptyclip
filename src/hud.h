@@ -42,8 +42,6 @@ class _HUD {
 			FONT_SMALL,
 			FONT_MEDIUM,
 			FONT_LARGE,
-			FONT_LARGER,
-			FONT_LARGEST,
 			FONT_COUNT
 		};
 
@@ -116,7 +114,7 @@ class _HUD {
 
 		void DrawIndicator(const std::string &String, float Percent=0.0f, const ae::_Texture *Texture=nullptr);
 		void DrawHUDWeapon(const _Item *Weapon, ae::_Element *Element, ae::_Element *Image, ae::_Element *Label);
-		void DrawItemCount(_Item *Item, int X, int Y);
+		void DrawItemCount(_Item *Item, const glm::vec2 &Position);
 		void DrawAttribute(const std::string &Label, std::ostringstream &Buffer, glm::vec2 &DrawPosition) const;
 
 		// State

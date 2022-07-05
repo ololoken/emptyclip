@@ -305,8 +305,6 @@ void _Player::Render(double BlendFactor) {
 		Rotation,
 		glm::vec2(Scale)
 	);
-
-	//ae::Assets.Fonts["hud_large"]->DrawText(std::to_string(NewLegAnimation->Timer), glm::vec3(DrawPosition, PositionZ), ae::LEFT_BASELINE, glm::vec4(1.0f), 1/64.0f);
 }
 
 // Draws the player in screen space
@@ -321,7 +319,7 @@ void _Player::Render2D(const glm::ivec2 &Position) {
 		LegTemplate->Texture,
 		glm::vec4(LegAnimation->TextureCoords),
 		Rotation,
-		glm::vec2(LegTemplate->FrameSize)
+		glm::vec2(LegTemplate->FrameSize) * ae::_Element::GetUIScale()
 	);
 
 	// Draw torso
@@ -332,7 +330,7 @@ void _Player::Render2D(const glm::ivec2 &Position) {
 		WalkTemplate->Texture,
 		glm::vec4(Animation->TextureCoords),
 		Rotation,
-		glm::vec2(WalkTemplate->FrameSize)
+		glm::vec2(WalkTemplate->FrameSize) * ae::_Element::GetUIScale()
 	);
 }
 

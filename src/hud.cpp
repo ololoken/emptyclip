@@ -71,8 +71,6 @@ _HUD::_HUD(_Player *Player) :
 	Fonts[FONT_SMALL] = ae::Assets.Fonts["hud_small"];
 	Fonts[FONT_MEDIUM] = ae::Assets.Fonts["hud_medium"];
 	Fonts[FONT_LARGE] = ae::Assets.Fonts["hud_large"];
-	Fonts[FONT_LARGER] = ae::Assets.Fonts["hud_larger"];
-	Fonts[FONT_LARGEST] = ae::Assets.Fonts["hud_largest"];
 	CrosshairTexture = ae::Assets.Textures["textures/hud/crosshair0.png"];
 	ReloadTexture = ae::Assets.Textures["textures/hud/reload0.png"];
 	WeaponSwitchTexture = ae::Assets.Textures["textures/hud/weaponswitch0.png"];
@@ -145,7 +143,6 @@ _HUD::_HUD(_Player *Player) :
 
 	Elements[ELEMENT_MESSAGE] = ae::Assets.Elements["element_hud_messagebox"];
 	Elements[ELEMENT_MESSAGE]->SetActive(true);
-
 }
 
 // Shut down
@@ -400,7 +397,7 @@ void _HUD::Render(bool FullMap) {
 
 	// Draw ammo amounts
 	glm::vec2 AmmoSpacing = glm::vec2(0, 22) * ae::_Element::GetUIScale();
-	glm::vec2 DrawPosition(15 * ae::_Element::GetUIScale(), ae::Graphics.CurrentSize.y - AmmoSpacing.y);
+	glm::vec2 DrawPosition(25 * ae::_Element::GetUIScale(), ae::Graphics.CurrentSize.y - AmmoSpacing.y);
 	for(const auto &AmmoType : Stats.AmmoNames) {
 		if(Player->Ammo.find(AmmoType) == Player->Ammo.end())
 			continue;
@@ -414,7 +411,7 @@ void _HUD::Render(bool FullMap) {
 		ae::Graphics.DrawScaledImage(DrawPosition, Texture, UI_HUD_AMMO_SIZE);
 
 		Buffer << Player->Ammo[AmmoType] << " / " << Player->AmmoMax[AmmoType] << "";
-		Fonts[FONT_SMALL]->DrawText(Buffer.str(), DrawPosition + glm::vec2(16, 5) * ae::_Element::GetUIScale(), ae::LEFT_BASELINE);
+		Fonts[FONT_TINY]->DrawText(Buffer.str(), glm::ivec2(DrawPosition + glm::vec2(16, 5) * ae::_Element::GetUIScale()), ae::LEFT_BASELINE);
 		Buffer.str("");
 
 		DrawPosition -= AmmoSpacing;
@@ -422,7 +419,7 @@ void _HUD::Render(bool FullMap) {
 
 	// Draw keys
 	glm::vec2 KeySpacing = glm::vec2(0, UI_INVENTORY_ITEM_SIZE.y * 0.5f) * ae::_Element::GetUIScale();
-	DrawPosition.x = UI_INVENTORY_ITEM_SIZE.x * 0.5f * ae::_Element::GetUIScale();
+	DrawPosition.x = (5 + UI_INVENTORY_ITEM_SIZE.x * 0.5f) * ae::_Element::GetUIScale();
 	DrawPosition.y -= 50 * ae::_Element::GetUIScale();
 	for(const auto &Key : Player->Keys) {
 		ae::Graphics.SetProgram(ae::Assets.Programs["ortho_pos_uv"]);
@@ -432,30 +429,9 @@ void _HUD::Render(bool FullMap) {
 	}
 
 	// Draw mini map
-	if(Player->Map) {
+	if(Player->Map && !FullMap) {
 		ae::_Bounds MinimapBounds;
 		Player->Map->DrawMinimap(FullMap, MinimapBounds);
-
-		// Draw legend
-		if(FullMap) {
-			glm::vec2 DrawPosition(MinimapBounds.Start);
-			glm::vec2 LegendHalfSize = glm::vec2(8, 8) * ae::_Element::GetUIScale();
-			glm::vec2 LegendOffset = glm::vec2(-14, -6) * ae::_Element::GetUIScale();
-			DrawPosition.y -= 10 * ae::_Element::GetUIScale();
-			DrawPosition.x -= LegendOffset.x - LegendHalfSize.x - 4 * ae::_Element::GetUIScale();
-
-			for(const auto &Legend : MinimapLegends) {
-				ae::_TextBounds TextBounds;
-				ae::Assets.Fonts["hud_medium"]->GetStringDimensions(Legend.Label, TextBounds);
-				ae::Assets.Fonts["hud_medium"]->DrawText(Legend.Label, DrawPosition, ae::LEFT_BASELINE);
-
-				ae::Graphics.SetProgram(ae::Assets.Programs["ortho_pos"]);
-				ae::Graphics.SetColor(Legend.Color);
-				ae::Graphics.DrawRectangle(DrawPosition - LegendHalfSize + LegendOffset, DrawPosition + LegendHalfSize + LegendOffset, true);
-
-				DrawPosition.x += TextBounds.Width + LegendHalfSize.x * 2 + 20 * ae::_Element::GetUIScale();
-			}
-		}
 	}
 
 	// Draw character screen
@@ -493,6 +469,31 @@ void _HUD::Render(bool FullMap) {
 		}
 
 		CursorOverItem->DrawTooltip(Player, CompareSlot, CursorInventorySlot, ae::Input.GetMouse());
+	}
+
+	// Draw full map
+	if(Player->Map && FullMap) {
+		ae::_Bounds MinimapBounds;
+		Player->Map->DrawMinimap(FullMap, MinimapBounds);
+
+		// Draw legen
+		glm::vec2 DrawPosition(MinimapBounds.Start);
+		glm::vec2 LegendHalfSize = glm::vec2(8, 8) * ae::_Element::GetUIScale();
+		glm::vec2 LegendOffset = glm::vec2(-14, -8) * ae::_Element::GetUIScale();
+		DrawPosition.y -= 10 * ae::_Element::GetUIScale();
+		DrawPosition.x -= LegendOffset.x - LegendHalfSize.x - 4 * ae::_Element::GetUIScale();
+
+		for(const auto &Legend : MinimapLegends) {
+			ae::_TextBounds TextBounds;
+			ae::Assets.Fonts["hud_small"]->GetStringDimensions(Legend.Label, TextBounds);
+			ae::Assets.Fonts["hud_small"]->DrawText(Legend.Label, DrawPosition, ae::LEFT_BASELINE);
+
+			ae::Graphics.SetProgram(ae::Assets.Programs["ortho_pos"]);
+			ae::Graphics.SetColor(Legend.Color);
+			ae::Graphics.DrawRectangle(DrawPosition - LegendHalfSize + LegendOffset, DrawPosition + LegendHalfSize + LegendOffset, true);
+
+			DrawPosition.x += TextBounds.Width + LegendHalfSize.x * 2 + 20 * ae::_Element::GetUIScale();
+		}
 	}
 }
 
@@ -569,7 +570,7 @@ void _HUD::DrawCharacterScreen() {
 	Elements[ELEMENT_SKILLS]->Render();
 
 	// Draw stats
-	glm::vec2 DrawPosition(ae::Graphics.CurrentSize.x - 160, ae::Graphics.CurrentSize.y/2 + 40);
+	glm::vec2 DrawPosition(ae::Graphics.CurrentSize.x - 160 * ae::_Element::GetUIScale(), ae::Graphics.CurrentSize.y/2 + 20 * ae::_Element::GetUIScale());
 
 	// Offense
 	if(Player->HasMainHand()) {
@@ -583,7 +584,7 @@ void _HUD::DrawCharacterScreen() {
 		DrawAttribute("Fire Rate", Buffer, DrawPosition);
 	}
 
-	DrawPosition.y += 20;
+	DrawPosition.y += 10 * ae::_Element::GetUIScale();
 
 	Buffer << Player->MinDamage[WEAPONATTACK_MELEE] << " - " << Player->MaxDamage[WEAPONATTACK_MELEE];
 	DrawAttribute("Melee Damage", Buffer, DrawPosition);
@@ -594,7 +595,7 @@ void _HUD::DrawCharacterScreen() {
 	Buffer << ae::Round1(1.0 / Player->FirePeriod[WEAPONATTACK_MELEE]) << "/s";
 	DrawAttribute("Attack Speed", Buffer, DrawPosition);
 
-	DrawPosition.y += 20;
+	DrawPosition.y += 10 * ae::_Element::GetUIScale();
 
 	// Defense
 	Buffer << Player->DamageBlock;
@@ -609,7 +610,7 @@ void _HUD::DrawCharacterScreen() {
 	Buffer << int(100 * Player->MaxStamina + 0.5f) << "%";
 	DrawAttribute("Stamina", Buffer, DrawPosition);
 
-	DrawPosition.y += 20;
+	DrawPosition.y += 10 * ae::_Element::GetUIScale();
 
 	// Misc
 	Buffer << Player->DropRate << "%";
@@ -619,6 +620,7 @@ void _HUD::DrawCharacterScreen() {
 	DrawAttribute("Kills", Buffer, DrawPosition);
 
 	// Draw inventory
+	float CountOffset = 4 * ae::_Element::GetUIScale();
 	for(int i = INVENTORY_MAINHAND; i < INVENTORY_BAGEND; i++) {
 		if(!Player->HasInventory(i) || Player->Inventory[i] == CursorItem)
 			continue;
@@ -630,17 +632,17 @@ void _HUD::DrawCharacterScreen() {
 		ae::Graphics.SetProgram(ae::Assets.Programs["ortho_pos_uv"]);
 		ae::Graphics.DrawScaledImage(Button->Bounds.GetCenter(), Player->Inventory[i]->Texture, UI_INVENTORY_ITEM_SIZE, Player->Inventory[i]->Color);
 		if(i >= INVENTORY_BAGSTART && Player->Inventory[i]->CanStack())
-			DrawItemCount(Player->Inventory[i], Button->Bounds.End.x - 2, Button->Bounds.End.y - 2);
+			DrawItemCount(Player->Inventory[i], Button->Bounds.End - glm::vec2(CountOffset));
 	}
 
 	// Draw cursor item
 	if(CursorItem) {
-		glm::ivec2 Position(ae::Input.GetMouse() - ClickOffset);
+		glm::vec2 Position(ae::Input.GetMouse() - ClickOffset);
 		ae::Graphics.SetProgram(ae::Assets.Programs["ortho_pos_uv"]);
 		ae::Graphics.DrawScaledImage(Position, CursorItem->Texture, UI_INVENTORY_ITEM_SIZE, CursorItem->Color);
 		if(CursorItem->CanStack()) {
 			ae::_Element *Button = Elements[ELEMENT_INVENTORY]->Children[DragStart->Index];
-			DrawItemCount(CursorItem, Position.x + Button->BaseSize.x/2 - 2, Position.y + Button->BaseSize.y/2 - 2);
+			DrawItemCount(CursorItem, Position + Button->BaseSize * 0.5f - glm::vec2(CountOffset));
 		}
 	}
 
@@ -651,19 +653,19 @@ void _HUD::DrawCharacterScreen() {
 
 // Draw character stat on character screen
 void _HUD::DrawAttribute(const std::string &Label, std::ostringstream &Buffer, glm::vec2 &DrawPosition) const {
-	glm::vec2 DrawOffset(10, 0);
-	ae::Assets.Fonts["hud_medium"]->DrawText(Label, DrawPosition, ae::RIGHT_BASELINE);
-	ae::Assets.Fonts["hud_medium"]->DrawText(Buffer.str(), DrawPosition + DrawOffset, ae::LEFT_BASELINE);
+	glm::vec2 DrawOffset(10 * ae::_Element::GetUIScale(), 0);
+	ae::Assets.Fonts["hud_char"]->DrawText(Label, glm::ivec2(DrawPosition), ae::RIGHT_BASELINE);
+	ae::Assets.Fonts["hud_char"]->DrawText(Buffer.str(), glm::ivec2(DrawPosition + DrawOffset), ae::LEFT_BASELINE);
 	Buffer.str("");
 
-	DrawPosition.y += 20;
+	DrawPosition.y += 20 * ae::_Element::GetUIScale();
 }
 
 // Draw the item count text
-void _HUD::DrawItemCount(_Item *Item, int X, int Y) {
+void _HUD::DrawItemCount(_Item *Item, const glm::vec2 &Position) {
 	std::ostringstream Buffer;
 	Buffer << Item->Count;
-	Fonts[FONT_TINY]->DrawText(Buffer.str(), glm::vec2(X, Y), ae::RIGHT_BASELINE, COLOR_WHITE);
+	Fonts[FONT_TINY]->DrawText(Buffer.str(), Position, ae::RIGHT_BASELINE, COLOR_WHITE);
 	Buffer.str("");
 }
 
@@ -741,7 +743,7 @@ void _HUD::UpdateSkillTooltip(int Skill, const glm::vec2 &Position) {
 	}
 
 	// Wrap text
-	Elements[LABEL_SKILLTEXT]->SetWrap(Elements[ELEMENT_SKILLINFO]->Size.x - 20);
+	Elements[LABEL_SKILLTEXT]->SetWrap(Elements[ELEMENT_SKILLINFO]->Size.x - 20 * ae::_Element::GetUIScale());
 	Elements[LABEL_SKILL_LEVEL]->Text = Buffer.str();
 	if(Player->Skills[Skill]+1 > GAME_SKILLLEVELS)
 		BufferNext.str("");
@@ -756,8 +758,8 @@ void _HUD::UpdateSkillTooltip(int Skill, const glm::vec2 &Position) {
 
 // Draw death message
 void _HUD::RenderDeathScreen() {
-	Fonts[FONT_LARGEST]->DrawText("You Died!", glm::vec2(ae::Graphics.CurrentSize.x / 2, ae::Graphics.CurrentSize.y / 2 - 200), ae::CENTER_MIDDLE);
-	Fonts[FONT_LARGE]->DrawText(std::string("Press [") + ae::Actions.GetInputNameForAction(Action::GAME_USE) + "] to continue", glm::vec2(ae::Graphics.CurrentSize.x / 2, ae::Graphics.CurrentSize.y / 2 - 150), ae::CENTER_MIDDLE);
+	ae::Assets.Fonts["hud_large"]->DrawText("You Died!", glm::vec2(ae::Graphics.CurrentSize.x / 2, ae::Graphics.CurrentSize.y / 2 - 200 * ae::_Element::GetUIScale()), ae::CENTER_MIDDLE);
+	ae::Assets.Fonts["menu_buttons"]->DrawText(std::string("Press [") + ae::Actions.GetInputNameForAction(Action::GAME_USE) + "] to respawn", glm::vec2(ae::Graphics.CurrentSize.x / 2, ae::Graphics.CurrentSize.y / 2 - 100 * ae::_Element::GetUIScale()), ae::CENTER_MIDDLE);
 }
 
 // Show hud message

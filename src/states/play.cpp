@@ -697,7 +697,7 @@ void _PlayState::Render(double BlendFactor) {
 	}*/
 
 	// Render HUD
-	HUD->Render(ae::Actions.State[Action::GAME_MAP].Value > 0.0f);
+	HUD->Render(ae::FocusedElement == nullptr && ae::Actions.State[Action::GAME_MAP].Value > 0.0f);
 
 	// Debug mode
 	if(DebugMode) {

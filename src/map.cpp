@@ -26,6 +26,7 @@
 #include <ae/assets.h>
 #include <ae/program.h>
 #include <ae/bounds.h>
+#include <ae/ui.h>
 #include <gameassets.h>
 #include <events.h>
 #include <stats.h>
@@ -1346,7 +1347,7 @@ void _Map::RenderGrid(int Mode) {
 void _Map::DrawMinimap(bool FullMap, ae::_Bounds &MinimapBounds) {
 
 	// Get bounds of minimap window
-	glm::vec2 DrawSize = FullMap ? glm::vec2(ae::Graphics.CurrentSize.y, ae::Graphics.CurrentSize.y) * 0.75f : HUD_MINIMAP_SIZE;
+	glm::vec2 DrawSize = FullMap ? glm::vec2(ae::Graphics.CurrentSize.y, ae::Graphics.CurrentSize.y) * 0.75f : HUD_MINIMAP_SIZE * ae::_Element::GetUIScale();
 	if(FullMap) {
 		DrawSize.x *= ae::Graphics.AspectRatio;
 		MinimapBounds = ae::_Bounds(
@@ -1355,9 +1356,10 @@ void _Map::DrawMinimap(bool FullMap, ae::_Bounds &MinimapBounds) {
 		);
 	}
 	else {
+		glm::vec2 Padding = HUD_MINIMAP_PADDING * ae::_Element::GetUIScale();
 		MinimapBounds = ae::_Bounds(
-			glm::ivec2(ae::Graphics.CurrentSize.x - DrawSize.x - HUD_MINIMAP_PADDING.x, HUD_MINIMAP_PADDING.y),
-			glm::ivec2(ae::Graphics.CurrentSize.x - HUD_MINIMAP_PADDING.x, HUD_MINIMAP_PADDING.y + DrawSize.y)
+			glm::ivec2(ae::Graphics.CurrentSize.x - DrawSize.x - Padding.x, Padding.y),
+			glm::ivec2(ae::Graphics.CurrentSize.x - Padding.x, Padding.y + DrawSize.y)
 		);
 	}
 

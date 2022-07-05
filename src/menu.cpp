@@ -378,7 +378,7 @@ void _Menu::HandleMouseButton(const ae::_MouseEvent &MouseEvent) {
 					else if(Clicked->Name.substr(0, InputBoxPrefix.size()) == InputBoxPrefix) {
 						OptionsState = OPTION_ACCEPT_INPUT;
 						CurrentAction = Clicked->Index;
-						ae::Assets.Elements["label_menu_options_accept_text_action"]->Text = ae::Actions.GetInputNameForAction(CurrentAction, 0);
+						ae::Assets.Elements["label_menu_options_accept_text_action"]->Text = Clicked->Children.front()->Text;
 					}
 				}
 			} break;

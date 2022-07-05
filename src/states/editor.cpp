@@ -82,7 +82,7 @@ void _EditorState::Init() {
 	ae::FocusedElement = nullptr;
 
 	// Load command buttons
-	MainFont = ae::Assets.Fonts["menu_buttons"];
+	MainFont = ae::Assets.Fonts["hud_small"];
 	CommandElement = ae::Assets.Elements["element_editor_command"];
 	BlockElement = ae::Assets.Elements["element_editor_blocks"];
 	EventElement = ae::Assets.Elements["element_editor_events"];
@@ -1158,11 +1158,11 @@ void _EditorState::DrawBrush() {
 	}
 
 	// Get brush icon/texture position
-	glm::vec2 IconPosition(382 + EDITOR_PALETTE_SELECTEDSIZE, ae::Graphics.CurrentSize.y - EDITOR_PALETTE_SELECTEDSIZE - 8);
-	glm::vec2 NamePosition(EDITOR_PALETTE_SELECTEDSIZE + 16, -EDITOR_PALETTE_SELECTEDSIZE / 2);
+	glm::vec2 IconPosition((382 + EDITOR_PALETTE_SELECTEDSIZE) * ae::_Element::GetUIScale(), ae::Graphics.CurrentSize.y - (EDITOR_PALETTE_SELECTEDSIZE + 8) * ae::_Element::GetUIScale());
+	glm::vec2 NamePosition = glm::vec2(EDITOR_PALETTE_SELECTEDSIZE + 16, -EDITOR_PALETTE_SELECTEDSIZE / 2) * ae::_Element::GetUIScale();
 	float IconRotation = 0;
 	float IconScaleX = 1.0f;
-	float TextSpacingY = 17;
+	float TextSpacingY = 18 * ae::_Element::GetUIScale();
 	int SelectedObjectLevel = 1;
 
 	// Edit mode specific text
@@ -1203,36 +1203,36 @@ void _EditorState::DrawBrush() {
 
 			IconID = "";
 
-			glm::vec2 TextPosition(IconPosition.x + EDITOR_PALETTE_SELECTEDSIZE + 290, IconPosition.y - EDITOR_PALETTE_SELECTEDSIZE);
-			glm::vec2 ValueOffset(5, 0);
+			glm::vec2 TextPosition(IconPosition.x + (EDITOR_PALETTE_SELECTEDSIZE + 290) * ae::_Element::GetUIScale(), IconPosition.y - EDITOR_PALETTE_SELECTEDSIZE * ae::_Element::GetUIScale());
+			glm::vec2 ValueOffset(5 * ae::_Element::GetUIScale(), 0);
 			std::ostringstream Buffer;
 			Buffer << IconRotation;
-			MainFont->DrawText("Rotation:", TextPosition, ae::RIGHT_BASELINE);
-			MainFont->DrawText(Buffer.str(), TextPosition + ValueOffset);
+			MainFont->DrawText("Rotation:", glm::ivec2(TextPosition), ae::RIGHT_BASELINE);
+			MainFont->DrawText(Buffer.str(), glm::ivec2(TextPosition + ValueOffset));
 			Buffer.str("");
 
-			TextPosition.y += 15;
+			TextPosition.y += TextSpacingY;
 			Buffer << BlockMinZ;
-			MainFont->DrawText("Min Z:", TextPosition, ae::RIGHT_BASELINE);
-			MainFont->DrawText(Buffer.str(), TextPosition + ValueOffset);
+			MainFont->DrawText("Min Z:", glm::ivec2(TextPosition), ae::RIGHT_BASELINE);
+			MainFont->DrawText(Buffer.str(), glm::ivec2(TextPosition + ValueOffset));
 			Buffer.str("");
 
-			TextPosition.y += 15;
+			TextPosition.y += TextSpacingY;
 			Buffer << BlockMaxZ;
-			MainFont->DrawText("Max Z:", TextPosition, ae::RIGHT_BASELINE);
-			MainFont->DrawText(Buffer.str(), TextPosition + ValueOffset);
+			MainFont->DrawText("Max Z:", glm::ivec2(TextPosition), ae::RIGHT_BASELINE);
+			MainFont->DrawText(Buffer.str(), glm::ivec2(TextPosition + ValueOffset));
 			Buffer.str("");
 
-			TextPosition.y += 15;
+			TextPosition.y += TextSpacingY;
 			Buffer << IconScaleX;
-			MainFont->DrawText("ScaleX:", TextPosition, ae::RIGHT_BASELINE);
-			MainFont->DrawText(Buffer.str(), TextPosition + ValueOffset);
+			MainFont->DrawText("ScaleX:", glm::ivec2(TextPosition), ae::RIGHT_BASELINE);
+			MainFont->DrawText(Buffer.str(), glm::ivec2(TextPosition + ValueOffset));
 			Buffer.str("");
 
-			TextPosition.y += 15;
+			TextPosition.y += TextSpacingY;
 			Buffer << BlockWalkable;
-			MainFont->DrawText("Walk:", TextPosition, ae::RIGHT_BASELINE);
-			MainFont->DrawText(Buffer.str(), TextPosition + ValueOffset);
+			MainFont->DrawText("Walk:", glm::ivec2(TextPosition), ae::RIGHT_BASELINE);
+			MainFont->DrawText(Buffer.str(), glm::ivec2(TextPosition + ValueOffset));
 			Buffer.str("");
 
 			IconID = BlockAltTextureID;
@@ -1271,39 +1271,39 @@ void _EditorState::DrawBrush() {
 				ActivationPeriod = EventActivationPeriod;
 			}
 
-			glm::vec2 TextPosition(IconPosition.x + EDITOR_PALETTE_SELECTEDSIZE + 260, IconPosition.y - EDITOR_PALETTE_SELECTEDSIZE/2);
-			glm::vec2 ValueOffset(5, 0);
+			glm::vec2 TextPosition(IconPosition.x + (EDITOR_PALETTE_SELECTEDSIZE + 260) * ae::_Element::GetUIScale(), IconPosition.y - (EDITOR_PALETTE_SELECTEDSIZE/2) * ae::_Element::GetUIScale());
+			glm::vec2 ValueOffset(5 * ae::_Element::GetUIScale(), 0);
 
 			std::ostringstream Buffer;
 			Buffer << Active;
-			MainFont->DrawText("Active:", TextPosition, ae::RIGHT_BASELINE);
-			MainFont->DrawText(Buffer.str(), TextPosition + ValueOffset);
+			MainFont->DrawText("Active:", glm::ivec2(TextPosition), ae::RIGHT_BASELINE);
+			MainFont->DrawText(Buffer.str(), glm::ivec2(TextPosition + ValueOffset));
 			Buffer.str("");
 
 			TextPosition.y += TextSpacingY;
 			Buffer << Level << ":" << ActivationPeriod;
-			MainFont->DrawText("Level:", TextPosition, ae::RIGHT_BASELINE);
-			MainFont->DrawText(Buffer.str(), TextPosition + ValueOffset);
+			MainFont->DrawText("Level:", glm::ivec2(TextPosition), ae::RIGHT_BASELINE);
+			MainFont->DrawText(Buffer.str(), glm::ivec2(TextPosition + ValueOffset));
 			Buffer.str("");
 
 			TextPosition.y += TextSpacingY;
 			Buffer << SpawnLevel;
-			MainFont->DrawText("Spawn Level:", TextPosition, ae::RIGHT_BASELINE);
-			MainFont->DrawText(Buffer.str(), TextPosition + ValueOffset);
+			MainFont->DrawText("Spawn Level:", glm::ivec2(TextPosition), ae::RIGHT_BASELINE);
+			MainFont->DrawText(Buffer.str(), glm::ivec2(TextPosition + ValueOffset));
 			Buffer.str("");
 
-			TextPosition.x += 150;
+			TextPosition.x += 150 * ae::_Element::GetUIScale();
 			TextPosition.y -= TextSpacingY * 2;
-			MainFont->DrawText("Item:", TextPosition, ae::RIGHT_BASELINE);
-			MainFont->DrawText(ItemID, TextPosition + ValueOffset);
+			MainFont->DrawText("Item:", glm::ivec2(TextPosition), ae::RIGHT_BASELINE);
+			MainFont->DrawText(ItemID, glm::ivec2(TextPosition + ValueOffset));
 
 			TextPosition.y += TextSpacingY;
-			MainFont->DrawText("Monster:", TextPosition, ae::RIGHT_BASELINE);
-			MainFont->DrawText(MonsterID, TextPosition + ValueOffset);
+			MainFont->DrawText("Monster:", glm::ivec2(TextPosition), ae::RIGHT_BASELINE);
+			MainFont->DrawText(MonsterID, glm::ivec2(TextPosition + ValueOffset));
 
 			TextPosition.y += TextSpacingY;
-			MainFont->DrawText("Particle:", TextPosition, ae::RIGHT_BASELINE);
-			MainFont->DrawText(ParticleID, TextPosition + ValueOffset);
+			MainFont->DrawText("Particle:", glm::ivec2(TextPosition), ae::RIGHT_BASELINE);
+			MainFont->DrawText(ParticleID, glm::ivec2(TextPosition + ValueOffset));
 
 			IconID = "";
 		} break;
@@ -1325,21 +1325,21 @@ void _EditorState::DrawBrush() {
 
 	// Brush information name and id
 	if(IconText != "")
-		MainFont->DrawText(IconText, IconPosition + NamePosition, ae::LEFT_BASELINE);
+		MainFont->DrawText(IconText, glm::ivec2(IconPosition + NamePosition), ae::LEFT_BASELINE);
 
 	NamePosition.y += TextSpacingY;
 	if(IconID != "") {
-		MainFont->DrawText(IconID, IconPosition + NamePosition, ae::LEFT_BASELINE);
+		MainFont->DrawText(IconID, glm::ivec2(IconPosition + NamePosition), ae::LEFT_BASELINE);
 
 		if(EditMode == EDITMODE_MONSTERS || EditMode == EDITMODE_ITEMS) {
 
 			// Draw object level
 			NamePosition.y += TextSpacingY;
-			MainFont->DrawText("Level: " + std::to_string(SelectedObjectLevel), IconPosition + NamePosition, ae::LEFT_BASELINE);
+			MainFont->DrawText("Level: " + std::to_string(SelectedObjectLevel), glm::ivec2(IconPosition + NamePosition), ae::LEFT_BASELINE);
 
 			// Draw object total in level
 			NamePosition.y += TextSpacingY;
-			MainFont->DrawText("Total: " + IconTotal, IconPosition + NamePosition, ae::LEFT_BASELINE);
+			MainFont->DrawText("Total: " + IconTotal, glm::ivec2(IconPosition + NamePosition), ae::LEFT_BASELINE);
 		}
 	}
 

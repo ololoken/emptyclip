@@ -62,7 +62,7 @@ class _Item : public _Object {
 
 		void RecalculateStats();
 		void Serialize(ae::_Buffer &Buffer) override;
-		void DrawTooltip(const _Player *Player, size_t CompareSlot, int InventorySlot, glm::ivec2 DrawPosition);
+		void DrawTooltip(const _Player *Player, size_t CompareSlot, int InventorySlot, glm::vec2 DrawPosition);
 		void Render(double BlendFactor) override;
 
 		bool AddMod(_Item *Mod);
@@ -87,6 +87,6 @@ class _Item : public _Object {
 
 	private:
 
-		void DrawAttribute(const std::string &Attribute, const std::string &Label, glm::ivec2 &DrawPosition, const _Item *EquippedItem, bool Plus, bool Percent) const;
+		void DrawAttribute(const std::string &Attribute, const std::string &Label, glm::vec2 &DrawPosition, const _Item *EquippedItem, bool Plus, bool Percent) const;
 
 };

@@ -303,6 +303,7 @@ int _Framework::GlobalKeyHandler(const SDL_Event &Event) {
 				Config.Fullscreen = !Config.Fullscreen;
 				Config.Save();
 				ae::Graphics.SetFullscreen(Config.Fullscreen);
+				ae::Assets.LoadFonts("tables/fonts.tsv");
 				if(Console)
 					Console->UpdateSize();
 			}

@@ -1,12 +1,13 @@
 identifier	background color	border color	program	texture	texture color	stretch
-style_menu_window	menu_red_opaque	menu_red_border	ortho_pos			0
-style_menu_box	menu_red_bg	menu_red_border	ortho_pos			0
-style_menu_hover	menu_selected	menu_selected	ortho_pos			0
-style_menu_textbox	menu_darkred_bg	menu_red_border	ortho_pos			0
-style_menu_select		menu_red_border	ortho_pos			0
-style_menu_button			ortho_pos_uv	textures/menu/button.png		0
-style_menu_button_hover			ortho_pos_uv	textures/menu/button_hover.png		0
-style_editor_button_selected	editor_hover		ortho_pos			0
+style_menu_window	menu_red_opaque	menu_red_border	ortho_pos			1
+style_menu_box	menu_red_bg	menu_red_border	ortho_pos			1
+style_menu_hover	menu_selected	menu_selected	ortho_pos			1
+style_menu_textbox	menu_darkred_bg	menu_red_border	ortho_pos			1
+style_menu_select		menu_red_border	ortho_pos			1
+style_menu_button	menu_button		ortho_pos			1
+style_menu_button_hover	menu_button_hover		ortho_pos			1
+style_menu_button_disabled	menu_button_disabled		ortho_pos			1
+style_editor_button_selected	editor_hover		ortho_pos			1
 style_editor_layer1			ortho_pos_uv	textures/editor/layer1.png		0
 style_editor_layer2			ortho_pos_uv	textures/editor/layer2.png		0
 style_editor_layer3			ortho_pos_uv	textures/editor/layer3.png		0
@@ -49,12 +50,12 @@ style_editor_monsidentifier			ortho_pos_uv	textures/editor/mons_identifier.png		
 style_editor_partidentifier			ortho_pos_uv	textures/editor/part_identifier.png		0
 style_editor_paletteprevious			ortho_pos_uv	textures/editor/palette_previous.png		0
 style_editor_palettenext			ortho_pos_uv	textures/editor/palette_next.png		0
-style_editor_palette	black	white	ortho_pos			0
+style_editor_palette	black	white	ortho_pos			1
 style_hud_inventory			ortho_pos_uv	textures/hud/inventory_slot.png		0
 style_hud_inventory_armor			ortho_pos_uv	textures/hud/inventory_armor.png		0
 style_hud_inventory_gun			ortho_pos_uv	textures/hud/inventory_gun.png		0
 style_hud_inventory_melee			ortho_pos_uv	textures/hud/inventory_melee.png		0
-style_hud_skills	skills_bg		ortho_pos			0
-style_hud_plus			ortho_pos_uv	textures/hud/plus.png		0
-style_hud_plus_hover			ortho_pos_uv	textures/hud/plus_hover.png		0
-style_hud_plus_disabled			ortho_pos_uv	textures/hud/plus_disabled.png		0
+style_hud_skills	skills_bg		ortho_pos			1
+style_hud_plus			ortho_pos_uv	textures/hud/plus.png		1
+style_hud_plus_hover			ortho_pos_uv	textures/hud/plus_hover.png		1
+style_hud_plus_disabled			ortho_pos_uv	textures/hud/plus_disabled.png		1
