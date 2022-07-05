@@ -26,6 +26,7 @@
 #include <map.h>
 #include <constants.h>
 #include <iostream>
+#include <algorithm>
 #include <glm/gtx/norm.hpp>
 
 const double SQRT1_2 = 0.70710678118654752440;
@@ -46,7 +47,7 @@ _Entity::_Entity(const _ObjectTemplate &EntityTemplate) :
 	Health(0),
 	MaxHealth(0),
 	DamageBlock(0),
-	DamageResist(0.0f),
+	DamageResist(0),
 	Action(ACTION_IDLE),
 	WalkingAnimation(ENTITY_ANIMATIONWALKING),
 	MeleeAnimation(ENTITY_ANIMATIONATTACK),
@@ -450,31 +451,9 @@ void _Entity::Render(double BlendFactor) {
 	);
 }
 
-// Updates the Entity's maximum health
-void _Entity::UpdateMaxHealth(int Adjust) {
-
-	// Update health
-	MaxHealth += Adjust;
-
-	// In case we allow decreasing max health, make sure it stays above 0.
-	if(MaxHealth < 1)
-		MaxHealth = 1;
-}
-
-// Updates the Entity's current health
+// Update current health
 void _Entity::UpdateHealth(int Adjust) {
-
-	// Update health
-	Health += Adjust;
-
-	// Make sure current health doesn't exceed the maximum
-	if(Health > MaxHealth)
-		Health = MaxHealth;
-
-	// Object has died
-	if(Health < 0)
-		Health = 0;
-
+	Health = std::clamp(Health + Adjust, 0, MaxHealth);
 	if(Health == 0 && !IsDying())
 		Action = ACTION_STARTDEATH;
 }

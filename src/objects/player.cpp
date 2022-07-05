@@ -92,7 +92,8 @@ void _Player::Reset() {
 	ExperienceNextLevel = 0;
 	SkillPointsRemaining = 0;
 	DropRate = 100;
-	PickupModifier = 100;
+	PickupModifier = 1.0f;
+	HealModifier = 1.0f;
 
 	for(int i = 0; i < SKILL_COUNT; i++)
 		Skills[i] = 0;
@@ -705,7 +706,8 @@ bool _Player::UseItem(int Index, bool Event) {
 // Uses a medkit if one is available
 bool _Player::UseMedkit(int Index) {
 	if(CanUseMedkit() && HasInventory(Index) && Inventory[Index]->Type == _Object::MEDKIT) {
-		UpdateHealth(Inventory[Index]->Attributes.at("health_restored").Int);
+		int HealAmount = Inventory[Index]->Attributes.at("health_restored").Int * HealModifier;
+		UpdateHealth(HealAmount);
 		ConsumeInventory(Index);
 		MedkitTimer = 0;
 
@@ -951,7 +953,7 @@ void _Player::RecalculateStats() {
 	}
 	else {
 		float StrengthSkillMultiplier = Stats.GetSkillBonusMultiplier(Skills[SKILL_STRENGTH], SKILL_STRENGTH);
-		float AccuracySkillMultiplier = 1.0f / Stats.GetSkillBonusMultiplier(Skills[SKILL_PERCEPTION], SKILL_PERCEPTION);
+		float AccuracySkillMultiplier = 1.0f / Stats.GetSkillBonusMultiplier(Skills[SKILL_PERCEPTION], SKILL_PERCEPTION, 1);
 		CurrentAccuracyNormal = MinAccuracyNormal = Weapon[WEAPONATTACK_MAIN].Attributes.at("min_accuracy").Int * AccuracySkillMultiplier;
 		MaxAccuracyNormal = Weapon[WEAPONATTACK_MAIN].Attributes.at("max_accuracy").Int * AccuracySkillMultiplier;
 		Recoil = Weapon[WEAPONATTACK_MAIN].Attributes["recoil"].Float / StrengthSkillMultiplier;
@@ -959,7 +961,7 @@ void _Player::RecalculateStats() {
 		MoveRecoil = Weapon[WEAPONATTACK_MAIN].Attributes["move_recoil"].Float / StrengthSkillMultiplier;
 	}
 
-	MaxAccuracy[WEAPONATTACK_MELEE] = Weapon[WEAPONATTACK_MELEE].Attributes.at("max_accuracy").Int;
+	MaxAccuracy[WEAPONATTACK_MELEE] = Weapon[WEAPONATTACK_MELEE].Attributes.at("max_accuracy").Int * Stats.GetSkillBonusMultiplier(Skills[SKILL_PERCEPTION], SKILL_PERCEPTION);
 
 	// Set accuracy
 	ResetAccuracy(true);
@@ -983,13 +985,15 @@ void _Player::RecalculateStats() {
 	ZoomScale = Weapon[WEAPONATTACK_MAIN].Attributes["zoom_scale"].Float;
 
 	int BaseMovementSpeed = 100 + Stats.GetSkill(Skills[SKILL_CUNNING], SKILL_CUNNING);
-	DamageResist = Stats.GetSkill(Skills[SKILL_FORTITUDE], SKILL_FORTITUDE);
 	MaxHealth = (int)(Stats.GetLevelHealth(Level) * Stats.GetSkillBonusMultiplier(Skills[SKILL_VITALITY], SKILL_VITALITY));
 	MaxStamina = Stats.GetSkillBonusMultiplier(Skills[SKILL_ENDURANCE], SKILL_ENDURANCE);
 	StaminaRegenModifier = Stats.GetSkillBonusMultiplier(Skills[SKILL_ENDURANCE], SKILL_ENDURANCE);
+	Health = std::clamp(Health, 0, MaxHealth);
+	HealModifier = Stats.GetSkillBonusMultiplier(Skills[SKILL_VITALITY], SKILL_VITALITY, 1);
 
 	// Armor
-	DamageBlock = 0;
+	DamageBlock = Stats.GetSkill(Skills[SKILL_FORTITUDE], SKILL_FORTITUDE);
+	DamageResist = std::min((int)Stats.GetSkill(Skills[SKILL_FORTITUDE], SKILL_FORTITUDE, 1), ENTITY_MAX_DAMAGE_RESIST);
 	Attributes["max_ammo"].Int = 100;
 	if(GetArmor()) {
 		DamageBlock += GetArmor()->Attributes.at("damage_block").Int;
@@ -1011,7 +1015,7 @@ void _Player::RecalculateStats() {
 
 	// Drop Rate
 	DropRate = 100 + Skills[SKILL_LUCK];
-	PickupModifier = Stats.GetSkillBonusMultiplier(Skills[SKILL_LUCK], SKILL_LUCK, PLAYER_AMMO_LUCK_MULTIPLIER);
+	PickupModifier = Stats.GetSkillBonusMultiplier(Skills[SKILL_LUCK], SKILL_LUCK, 1);
 }
 
 // Reset after death

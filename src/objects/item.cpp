@@ -308,7 +308,7 @@ void _Item::DrawTooltip(const _Player *Player, size_t CompareSlot, int Inventory
 		case _Object::MEDKIT: {
 			HelpTextList.push_back("Right-click to use");
 			DrawPosition.y += 20;
-			Buffer << "+" << Attributes.at("health_restored").Int << " HP";
+			Buffer << "+" << (int)(Attributes.at("health_restored").Int * Player->HealModifier) << " HP";
 			ae::Assets.Fonts["hud_medium"]->DrawText(Buffer.str(), glm::vec2(DrawPosition.x, DrawPosition.y), ae::CENTER_BASELINE, COLOR_GREEN);
 		} break;
 	}

@@ -58,6 +58,7 @@ const  int          ENTITY_MINDAMAGEPOINTS         =  1;
 const  float        ENTITY_STOP_THRESHOLD          =  0.01f;
 const  double       ENTITY_STATIC_TIME             =  2.0;
 const  float        ENTITY_MAX_ACTIVE_RANGE        =  30.0f;
+const  int          ENTITY_MAX_DAMAGE_RESIST       =  90;
 //     Player
 const  int          PLAYER_SAVEVERSION             =  5;
 const  float        PLAYER_RADIUS                  =  0.35f;
@@ -79,7 +80,6 @@ const  float        PLAYER_ZOOMSCALE               =  15.0f;
 const  float        PLAYER_MAXACCURACY             =  170.0f;
 const  double       PLAYER_WEAPONSWITCHPERIOD      =  0.5;
 const  double       PLAYER_USEPERIOD               =  0.2;
-const  float        PLAYER_AMMO_LUCK_MULTIPLIER    =  2.0f;
 //     Inventory
 const  int          INVENTORY_BAGSIZE              =  16;
 const  int          INVENTORY_MAX_STACK            =  99;

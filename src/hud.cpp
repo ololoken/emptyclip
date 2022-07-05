@@ -577,6 +577,9 @@ void _HUD::DrawCharacterScreen() {
 	Buffer << Player->MinDamage[WEAPONATTACK_MELEE] << " - " << Player->MaxDamage[WEAPONATTACK_MELEE];
 	DrawAttribute("Melee Damage", Buffer, DrawPosition);
 
+	Buffer << ae::Round1(Player->MaxAccuracy[WEAPONATTACK_MELEE]) << " degrees";
+	DrawAttribute("Swing Arc", Buffer, DrawPosition);
+
 	Buffer << ae::Round1(1.0 / Player->FirePeriod[WEAPONATTACK_MELEE]) << "/s";
 	DrawAttribute("Attack Speed", Buffer, DrawPosition);
 
@@ -688,15 +691,17 @@ void _HUD::UpdateSkillInfo(int Skill, int DrawX, int DrawY) {
 			BufferNext << "+" << Stats.GetSkill(Stats.GetValidSkillLevel(Level+1), Skill) << "%";
 		break;
 		case SKILL_FORTITUDE:
+			Elements[LABEL_SKILLTEXT]->Text = "Increases Damage Block";
 			Elements[LABEL_SKILLTEXT]->Text = "Increases Damage Resist";
-			Buffer << "+" << Stats.GetSkill(Level, Skill) << "%";
-			BufferNext << "+" << Stats.GetSkill(Stats.GetValidSkillLevel(Level+1), Skill) << "%";
+			Buffer << "+" << Stats.GetSkill(Level, Skill) << " Damage Block / +" << Stats.GetSkill(Level, Skill, 1) << "% Damage Resist";
+			BufferNext << "+" << Stats.GetSkill(Stats.GetValidSkillLevel(Level+1), Skill) << " Damage Block / +" << Stats.GetSkill(Stats.GetValidSkillLevel(Level+1), Skill, 1) << "% Damage Resist";
 		break;
-		case SKILL_VITALITY:
+		case SKILL_VITALITY: {
 			Elements[LABEL_SKILLTEXT]->Text = "Increases Max Health";
-			Buffer << "+" << Stats.GetSkill(Level, Skill) << "%";
-			BufferNext << "+" << Stats.GetSkill(Stats.GetValidSkillLevel(Level+1), Skill) << "%";
-		break;
+			Elements[LABEL_SKILLTEXTALT]->Text = "Increases Medkit Heal Bonus";
+			Buffer << "+" << Stats.GetSkill(Level, Skill) << "% Max Health / +" << Stats.GetSkill(Level, Skill, 1) << "% Medkit Heal";
+			BufferNext << "+" << Stats.GetSkill(Stats.GetValidSkillLevel(Level+1), Skill) << "% Max Health / +" << Stats.GetSkill(Stats.GetValidSkillLevel(Level+1), Skill, 1) << "% Medkit Heal";
+		} break;
 		case SKILL_AGILITY:
 			Elements[LABEL_SKILLTEXT]->Text = "Increases Attack Speed";
 			Elements[LABEL_SKILLTEXTALT]->Text = "Increases Fire Rate";
@@ -714,17 +719,16 @@ void _HUD::UpdateSkillInfo(int Skill, int DrawX, int DrawY) {
 			BufferNext << "+" << Stats.GetSkill(Stats.GetValidSkillLevel(Level+1), Skill) << "%";
 		break;
 		case SKILL_PERCEPTION:
-			Elements[LABEL_SKILLTEXT]->Text = "Increases Gun Accuracy";
-			Buffer << "+" << Stats.GetSkill(Level, Skill) << "%";
-			BufferNext << "+" << Stats.GetSkill(Stats.GetValidSkillLevel(Level+1), Skill) << "%";
+			Elements[LABEL_SKILLTEXT]->Text = "Increases Melee Swing Arc";
+			Elements[LABEL_SKILLTEXTALT]->Text = "Increases Gun Accuracy";
+			Buffer << "+" << Stats.GetSkill(Level, Skill) << "% Swing Arc / +" << Stats.GetSkill(Level, Skill, 1) << "% Swing Arc";
+			BufferNext << "+" << Stats.GetSkill(Stats.GetValidSkillLevel(Level+1), Skill) << "% Accuracy / +" << Stats.GetSkill(Stats.GetValidSkillLevel(Level+1), Skill, 1) << "% Accuracy";
 		break;
 		case SKILL_LUCK: {
-			int Bonus = Stats.GetSkill(Level, Skill);
-			int BonusNext = Stats.GetSkill(Stats.GetValidSkillLevel(Level+1), Skill);
 			Elements[LABEL_SKILLTEXT]->Text = "Increases Drop Rate";
 			Elements[LABEL_SKILLTEXTALT]->Text = "Increases Ammo Pickup Bonus";
-			Buffer << "+" << Bonus << "% Drop Rate / +" << Bonus * PLAYER_AMMO_LUCK_MULTIPLIER << "% Ammo";
-			BufferNext << "+" << BonusNext << "% Drop Rate / +" << BonusNext * PLAYER_AMMO_LUCK_MULTIPLIER << "% Ammo";
+			Buffer << "+" << Stats.GetSkill(Level, Skill) << "% Drop Rate / +" << Stats.GetSkill(Level, Skill, 1) << "% Ammo";
+			BufferNext << "+" << Stats.GetSkill(Stats.GetValidSkillLevel(Level+1), Skill) << "% Drop Rate / +" << Stats.GetSkill(Stats.GetValidSkillLevel(Level+1), Skill, 1) << "% Ammo";
 		} break;
 	}
 

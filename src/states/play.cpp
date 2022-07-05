@@ -328,9 +328,29 @@ bool _PlayState::HandleCommand(ae::_Console *Console) {
 			GodMode = !GodMode;
 			Console->AddMessage("god = " + std::to_string(GodMode));
 		}
+		else if(Console->Command == "health") {
+			if(Parameters.size() == 1) {
+				if(!Player)
+					return true;
+
+				bool Adjust = false;
+				if(Parameters[0][0] == '+' || Parameters[0][0] == '-')
+					Adjust = true;
+
+				int64_t Change = ae::ToNumber<int64_t>(Parameters[0]);
+				Player->Health = std::max((int64_t)0, Adjust ? Player->Health + Change : Change);
+				Player->UpdateHealth(0);
+				Player->RecalculateStats();
+			}
+			else
+				Console->AddMessage("usage: " + Console->Command + " [+-][amount]");
+		}
+
 		else if(Console->Command == "reset") {
-			if(Player)
-				Player->Reset();
+			if(!Player)
+				return true;
+
+			Player->Reset();
 			Console->AddMessage("player reset");
 		}
 		else

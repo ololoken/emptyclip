@@ -133,8 +133,8 @@ void _Stats::LoadSkills(const std::string &Path) {
 		if(InputFile.eof())
 			throw std::runtime_error("Premature end of file" + Path);
 
-		for(int i = 0; i < SKILL_COUNT; i++)
-			InputFile >> Skill.Data[i];
+		for(int i = 0; i < SKILL_COUNT * 2; i++)
+			InputFile >> Skill.Data[i >> 1][i % 2];
 
 		Skills.push_back(Skill);
 	}

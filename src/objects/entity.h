@@ -96,7 +96,6 @@ class _Entity : public _Object {
 		virtual void UpdateKillCount(int Value) { }
 		virtual void UpdateAnimation(double FrameTime, bool PlaySound=true);
 
-		void UpdateMaxHealth(int Adjust);
 		void UpdateHealth(int Adjust);
 		virtual void UpdateSpeed(float Factor) {}
 		int GenerateDamage(int AttackType, int DamageBlock, int DamageResist);
