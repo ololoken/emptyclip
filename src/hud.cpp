@@ -289,7 +289,7 @@ void _HUD::Update(double FrameTime, float Radius) {
 				continue;
 
 			SkillButton->Enabled = false;
-			if(Player->Skills[i] < Stats.GetMaxSkillLevel(Player->Level))
+			if(Player->SkillPointsRemaining && Player->Skills[i] < Stats.GetMaxSkillLevel(Player->Level))
 				SkillButton->Enabled = true;
 		}
 	}
