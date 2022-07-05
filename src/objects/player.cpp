@@ -354,8 +354,8 @@ void _Player::UpdateExperience(int64_t ExperienceGained) {
 
 // Updates a skill
 void _Player::UpdateSkill(int Index, int Value) {
+	Value = std::min(Value, SkillPointsRemaining);
 	int TentativeSum = Value;
-
 	for(int i = 0; i < SKILL_COUNT; i++)
 		TentativeSum += Skills[i];
 

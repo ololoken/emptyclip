@@ -247,10 +247,11 @@ void _HUD::MouseEvent(const ae::_MouseEvent &MouseEvent) {
 		}
 	}
 
+	// Level up skill
 	HitElement = Elements[ELEMENT_SKILLS]->HitElement;
 	if(MouseEvent.Pressed && MouseEvent.Button == SDL_BUTTON_LEFT) {
 		if(HitElement && HitElement->Index >= 0) {
-			Player->UpdateSkill(HitElement->Index, 1);
+			Player->UpdateSkill(HitElement->Index, ae::Input.ModKeyDown(KMOD_SHIFT) ? 5 : 1);
 		}
 	}
 }
@@ -280,7 +281,7 @@ void _HUD::Update(double FrameTime, float Radius) {
 
 		HitElement = Elements[ELEMENT_SKILLS]->HitElement;
 		if(HitElement && HitElement->Index >= 0)
-			UpdateSkillInfo(HitElement->Index, ae::Input.GetMouse().x, ae::Input.GetMouse().y);
+			UpdateSkillInfo(HitElement->Index, ae::Input.GetMouse());
 	}
 	else
 		ae::Graphics.SetCursor(false);
@@ -657,18 +658,15 @@ void _HUD::DrawItemCount(_Item *Item, int X, int Y) {
 }
 
 // Draw the skill popup window
-void _HUD::UpdateSkillInfo(int Skill, int DrawX, int DrawY) {
+void _HUD::UpdateSkillInfo(int Skill, const glm::vec2 &Position) {
 	CursorSkill = Skill;
 
-	DrawX -= Elements[ELEMENT_SKILLINFO]->Size.x + 15;
-	DrawY -= Elements[ELEMENT_SKILLINFO]->Size.y + 15;
-	if(DrawX < 10)
-		DrawX = 10;
-	if(DrawY < 10)
-		DrawY = 10;
+	glm::vec2 DrawPosition(Position);
+	DrawPosition -= Elements[ELEMENT_SKILLINFO]->Size + glm::vec2(15) * ae::_Element::GetUIScale();
+	DrawPosition.y = std::max(DrawPosition.y, 10 * ae::_Element::GetUIScale());
 
 	// Move window
-	Elements[ELEMENT_SKILLINFO]->Offset = glm::ivec2(DrawX, DrawY);
+	Elements[ELEMENT_SKILLINFO]->Offset = DrawPosition;
 	Elements[ELEMENT_SKILLINFO]->CalculateBounds(false);
 
 	// Get skill description
