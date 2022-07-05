@@ -122,7 +122,7 @@ void _GameAssets::LoadSoundGroups(const std::string &Path) {
 
 		// Check for duplicates
 		if(SoundGroups.find(ID) != SoundGroups.end())
-			throw std::runtime_error(std::string(__func__) + " - Duplicate entry: " + ID);
+			throw std::runtime_error(std::string(__func__) + " - Duplicate entry '" + ID + "'");
 
 		SoundGroups[ID] = SoundGroup;
 	}
@@ -161,7 +161,7 @@ void _GameAssets::LoadParticles(const std::string &Path) {
 
 		// Check for duplicates
 		if(IsParticleLoaded(ID))
-			throw std::runtime_error(std::string(__func__) + " - Duplicate entry: " + ID);
+			throw std::runtime_error(std::string(__func__) + " - Duplicate entry '" + ID + "'");
 
 		// Get texture
 		Particle.Texture = ae::Assets.Textures[TextureID];

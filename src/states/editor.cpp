@@ -82,7 +82,7 @@ void _EditorState::Init() {
 	ae::FocusedElement = nullptr;
 
 	// Load command buttons
-	MainFont = ae::Assets.Fonts["hud_small"];
+	MainFont = ae::Assets.Fonts["editor"];
 	CommandElement = ae::Assets.Elements["element_editor_command"];
 	BlockElement = ae::Assets.Elements["element_editor_blocks"];
 	EventElement = ae::Assets.Elements["element_editor_events"];
@@ -1126,6 +1126,7 @@ void _EditorState::LoadPaletteButtons(std::vector<_Brush> &Icons, int Type) {
 		Button->HoverStyle = ae::Assets.Styles["style_editor_button_selected"];
 		Button->UserData = (void *)(intptr_t)Icons[i].ObjectType;
 		Button->Index = i;
+		Button->Scaled = false;
 
 		PaletteElement[Type]->Children.push_back(Button);
 
@@ -1158,11 +1159,11 @@ void _EditorState::DrawBrush() {
 	}
 
 	// Get brush icon/texture position
-	glm::vec2 IconPosition((382 + EDITOR_PALETTE_SELECTEDSIZE) * ae::_Element::GetUIScale(), ae::Graphics.CurrentSize.y - (EDITOR_PALETTE_SELECTEDSIZE + 8) * ae::_Element::GetUIScale());
-	glm::vec2 NamePosition = glm::vec2(EDITOR_PALETTE_SELECTEDSIZE + 16, -EDITOR_PALETTE_SELECTEDSIZE / 2) * ae::_Element::GetUIScale();
+	glm::vec2 IconPosition(382 + EDITOR_PALETTE_SELECTEDSIZE, ae::Graphics.CurrentSize.y - EDITOR_PALETTE_SELECTEDSIZE - 8);
+	glm::vec2 NamePosition = glm::vec2(EDITOR_PALETTE_SELECTEDSIZE + 16, -EDITOR_PALETTE_SELECTEDSIZE / 2);
 	float IconRotation = 0;
 	float IconScaleX = 1.0f;
-	float TextSpacingY = 18 * ae::_Element::GetUIScale();
+	float TextSpacingY = 18;
 	int SelectedObjectLevel = 1;
 
 	// Edit mode specific text
@@ -1203,8 +1204,8 @@ void _EditorState::DrawBrush() {
 
 			IconID = "";
 
-			glm::vec2 TextPosition(IconPosition.x + (EDITOR_PALETTE_SELECTEDSIZE + 290) * ae::_Element::GetUIScale(), IconPosition.y - EDITOR_PALETTE_SELECTEDSIZE * ae::_Element::GetUIScale());
-			glm::vec2 ValueOffset(5 * ae::_Element::GetUIScale(), 0);
+			glm::vec2 TextPosition(IconPosition.x + EDITOR_PALETTE_SELECTEDSIZE + 290, IconPosition.y - EDITOR_PALETTE_SELECTEDSIZE - 3);
+			glm::vec2 ValueOffset(5, 0);
 			std::ostringstream Buffer;
 			Buffer << IconRotation;
 			MainFont->DrawText("Rotation:", glm::ivec2(TextPosition), ae::RIGHT_BASELINE);
@@ -1271,8 +1272,8 @@ void _EditorState::DrawBrush() {
 				ActivationPeriod = EventActivationPeriod;
 			}
 
-			glm::vec2 TextPosition(IconPosition.x + (EDITOR_PALETTE_SELECTEDSIZE + 260) * ae::_Element::GetUIScale(), IconPosition.y - (EDITOR_PALETTE_SELECTEDSIZE/2) * ae::_Element::GetUIScale());
-			glm::vec2 ValueOffset(5 * ae::_Element::GetUIScale(), 0);
+			glm::vec2 TextPosition(IconPosition.x + EDITOR_PALETTE_SELECTEDSIZE + 260, IconPosition.y - EDITOR_PALETTE_SELECTEDSIZE/2);
+			glm::vec2 ValueOffset(5, 0);
 
 			std::ostringstream Buffer;
 			Buffer << Active;
@@ -1292,7 +1293,7 @@ void _EditorState::DrawBrush() {
 			MainFont->DrawText(Buffer.str(), glm::ivec2(TextPosition + ValueOffset));
 			Buffer.str("");
 
-			TextPosition.x += 150 * ae::_Element::GetUIScale();
+			TextPosition.x += 150;
 			TextPosition.y -= TextSpacingY * 2;
 			MainFont->DrawText("Item:", glm::ivec2(TextPosition), ae::RIGHT_BASELINE);
 			MainFont->DrawText(ItemID, glm::ivec2(TextPosition + ValueOffset));

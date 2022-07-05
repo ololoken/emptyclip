@@ -79,7 +79,7 @@ void _Stats::LoadStrings(const std::string &Path) {
 
 		// Check for duplicates
 		if(Strings.find(ID) != Strings.end())
-			throw std::runtime_error(std::string(__func__) + " - Duplicate entry: " + ID);
+			throw std::runtime_error(std::string(__func__) + " - Duplicate entry '" + ID + "'");
 
 		Strings[ID] = Text;
 	}
@@ -169,7 +169,7 @@ void _Stats::LoadAmmo(const std::string &Path) {
 
 		// Check for duplicates
 		if(Objects.find(ID) != Objects.end())
-			throw std::runtime_error(std::string(__func__) + " - Duplicate entry: " + ID);
+			throw std::runtime_error(std::string(__func__) + " - Duplicate entry '" + ID + "'");
 
 		Objects.insert(std::make_pair(ID, Template));
 		AmmoNames.push_back(ID);
@@ -253,7 +253,7 @@ void _Stats::LoadWeapons(const std::string &Path) {
 
 		// Check for duplicates
 		if(Objects.find(ID) != Objects.end())
-			throw std::runtime_error(std::string(__func__) + " - Duplicate entry: " + ID);
+			throw std::runtime_error(std::string(__func__) + " - Duplicate entry '" + ID + "'");
 
 		Objects.insert(std::make_pair(ID, Template));
 	}
@@ -301,7 +301,7 @@ void _Stats::LoadArmor(const std::string &Path) {
 
 		// Check for duplicates
 		if(Objects.find(ID) != Objects.end())
-			throw std::runtime_error(std::string(__func__) + " - Duplicate entry: " + ID);
+			throw std::runtime_error(std::string(__func__) + " - Duplicate entry '" + ID + "'");
 
 		Objects.insert(std::make_pair(ID, Template));
 	}
@@ -340,7 +340,7 @@ void _Stats::LoadKeys(const std::string &Path) {
 
 		// Check for duplicates
 		if(Objects.find(ID) != Objects.end())
-			throw std::runtime_error(std::string(__func__) + " - Duplicate entry: " + ID);
+			throw std::runtime_error(std::string(__func__) + " - Duplicate entry '" + ID + "'");
 
 		Objects.insert(std::make_pair(ID, Template));
 	}
@@ -381,7 +381,7 @@ void _Stats::LoadMedkits(const std::string &Path) {
 
 		// Check for duplicates
 		if(Objects.find(ID) != Objects.end())
-			throw std::runtime_error(std::string(__func__) + " - Duplicate entry: " + ID);
+			throw std::runtime_error(std::string(__func__) + " - Duplicate entry '" + ID + "'");
 
 		Objects.insert(std::make_pair(ID, Template));
 	}
@@ -426,7 +426,7 @@ void _Stats::LoadMods(const std::string &Path) {
 
 		// Check for duplicates
 		if(Objects.find(ID) != Objects.end())
-			throw std::runtime_error(std::string(__func__) + " - Duplicate entry: " + ID);
+			throw std::runtime_error(std::string(__func__) + " - Duplicate entry '" + ID + "'");
 
 		Objects.insert(std::make_pair(ID, Template));
 		ModNames.push_back(ID);
