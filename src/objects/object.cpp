@@ -65,7 +65,11 @@ void _Object::SetAttributeSpread(const std::string &AttributeName, float Multipl
 // Get an attribute value given a level and multiplier
 float _Object::GetAttributeLevel(const std::string &AttributeName, float Multiplier) {
 	float LevelValue = Level > 0 ? Template.Attributes.at(AttributeName + "_level").Float * Level : 0;
-	return (Template.Attributes.at(AttributeName).Float + LevelValue) * Multiplier;
+	float Value = Template.Attributes.at(AttributeName).Float + LevelValue;
+	if(Value < 0)
+		return Value / Multiplier;
+	else
+		return Value * Multiplier;
 }
 
 // Get two range attributes given a level, spread and multiplier

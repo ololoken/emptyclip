@@ -425,7 +425,7 @@ void _Item::RecalculateStats() {
 			SetAttributeLevel("damage_block", 1.0f + Quality * 0.01f);
 			SetAttributeLevel("damage_resist", 1.0f + Quality * 0.01f);
 			SetAttributeLevel("max_ammo", 1.0f + Quality * 0.01f);
-			SetAttributeLevel("move_speed",  1.0f - Quality * 0.01f);
+			SetAttributeLevel("move_speed",  1.0f + Quality * 0.01f);
 			Attributes.at("damage_block").Int += Bonus[MOD_DAMAGEBLOCK];
 			Attributes.at("damage_resist").Int += Bonus[MOD_DAMAGERESIST];
 			Attributes.at("max_ammo").Int += Bonus[MOD_MAXAMMO];
