@@ -218,6 +218,7 @@ class _EditorState : public ae::_State {
 		std::string MapFilename;
 		int SavedLayer;
 		int SavedPalette;
+		int SavedGridMode;
 		bool SavedHighlightBlocks;
 
 		// Map editing

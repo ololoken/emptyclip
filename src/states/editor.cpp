@@ -69,14 +69,16 @@ const int PaletteSizes[EDITMODE_COUNT] = {
 // Constructor
 _EditorState::_EditorState() :
 	SavedCameraPosition(0, 0, CAMERA_DISTANCE),
-	SavedCheckpointIndex(-1),
+	SavedCheckpointIndex(0),
 	MapFilename(""),
-	SavedLayer(-1),
-	SavedPalette(-1),
+	SavedLayer(0),
+	SavedPalette(0),
+	SavedGridMode(5),
 	SavedHighlightBlocks(false) {
 
 }
 
+// Initialize
 void _EditorState::Init() {
 	ae::Graphics.Element->SetActive(false);
 	ae::Graphics.Element->Active = true;
@@ -138,24 +140,21 @@ void _EditorState::Init() {
 	for(int i = 0; i < EDITMODE_COUNT; i++)
 		PaletteElement[i]->SetHeight(ae::Graphics.ViewportSize.y - 30);
 
-	if(SavedLayer != -1)
-		ExecuteUpdateLayer(SavedLayer, false);
-
-	if(SavedPalette != -1)
-		ExecuteSwitchMode(SavedPalette);
-
-	if(SavedCheckpointIndex != -1)
-		CheckpointIndex = SavedCheckpointIndex;
-
-	if(SavedHighlightBlocks)
-		HighlightBlocks = SavedHighlightBlocks;
+	// Set saved state
+	ExecuteUpdateLayer(SavedLayer, false);
+	ExecuteSwitchMode(SavedPalette);
+	CheckpointIndex = SavedCheckpointIndex;
+	GridMode = SavedGridMode;
+	HighlightBlocks = SavedHighlightBlocks;
 }
 
+// Shutdown
 void _EditorState::Close() {
 	Camera->GetDrawPosition(0, SavedCameraPosition);
 	SavedLayer = EditLayer;
 	SavedPalette = EditMode;
 	SavedHighlightBlocks = HighlightBlocks;
+	SavedGridMode = GridMode;
 	SavedCheckpointIndex = CheckpointIndex;
 
 	for(int i = 0; i < EDITMODE_COUNT; i++)
