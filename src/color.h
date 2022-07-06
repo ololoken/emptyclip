@@ -19,14 +19,15 @@
 
 #include <glm/vec4.hpp>
 
-const glm::vec4 COLOR_WHITE    = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
-const glm::vec4 COLOR_TWHITE   = glm::vec4(1.0f, 1.0f, 1.0f, 0.5f);
-const glm::vec4 COLOR_DARK     = glm::vec4(0.3f, 0.3f, 0.3f, 1.0f);
-const glm::vec4 COLOR_GRAY     = glm::vec4(0.6f, 0.6f, 0.6f, 1.0f);
-const glm::vec4 COLOR_TGRAY    = glm::vec4(1.0f, 1.0f, 1.0f, 0.2f);
-const glm::vec4 COLOR_RED      = glm::vec4(1.0f, 0.0f, 0.0f, 1.0f);
-const glm::vec4 COLOR_GREEN    = glm::vec4(0.0f, 1.0f, 0.0f, 1.0f);
-const glm::vec4 COLOR_BLUE     = glm::vec4(0.0f, 0.0f, 1.0f, 1.0f);
-const glm::vec4 COLOR_YELLOW   = glm::vec4(1.0f, 1.0f, 0.0f, 1.0f);
-const glm::vec4 COLOR_MAGENTA  = glm::vec4(1.0f, 0.0f, 1.0f, 1.0f);
-const glm::vec4 COLOR_CYAN     = glm::vec4(0.0f, 1.0f, 1.0f, 1.0f);
+const glm::vec4 COLOR_WHITE    = glm::vec4(1.0f,   1.0f,   1.0f,    1.0f);
+const glm::vec4 COLOR_TWHITE   = glm::vec4(1.0f,   1.0f,   1.0f,    0.5f);
+const glm::vec4 COLOR_DARK     = glm::vec4(0.3f,   0.3f,   0.3f,    1.0f);
+const glm::vec4 COLOR_GRAY     = glm::vec4(0.6f,   0.6f,   0.6f,    1.0f);
+const glm::vec4 COLOR_TGRAY    = glm::vec4(1.0f,   1.0f,   1.0f,    0.2f);
+const glm::vec4 COLOR_RED      = glm::vec4(1.0f,   0.0f,   0.0f,    1.0f);
+const glm::vec4 COLOR_GREEN    = glm::vec4(0.0f,   1.0f,   0.0f,    1.0f);
+const glm::vec4 COLOR_BLUE     = glm::vec4(0.0f,   0.0f,   1.0f,    1.0f);
+const glm::vec4 COLOR_YELLOW   = glm::vec4(1.0f,   1.0f,   0.0f,    1.0f);
+const glm::vec4 COLOR_MAGENTA  = glm::vec4(1.0f,   0.0f,   1.0f,    1.0f);
+const glm::vec4 COLOR_CYAN     = glm::vec4(0.0f,   1.0f,   1.0f,    1.0f);
+const glm::vec4 COLOR_GOLD     = glm::vec4(0.76f,  0.73f,  0.173f,  1.0f);

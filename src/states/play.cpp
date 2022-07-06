@@ -630,7 +630,7 @@ void _PlayState::Render(double BlendFactor) {
 
 	// Draw the crosshair
 	if(!Player->IsDying())
-		HUD->RenderCrosshair(WorldCursor * (float)BlendFactor + PreviousWorldCursor * (float)(1.0f - BlendFactor));
+		HUD->DrawCrosshair(WorldCursor * (float)BlendFactor + PreviousWorldCursor * (float)(1.0f - BlendFactor));
 
 	// Debug
 	if(GodMode && DevMode && DebugMode) {
@@ -754,7 +754,7 @@ void _PlayState::Render(double BlendFactor) {
 	// Draw death screen
 	else if(Player->IsDead()) {
 		ae::Graphics.SetCursor(1);
-		HUD->RenderDeathScreen();
+		HUD->DrawDeathScreen();
 	}
 }
 

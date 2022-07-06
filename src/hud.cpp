@@ -498,7 +498,7 @@ void _HUD::Render(bool FullMap) {
 }
 
 // Draws the crosshair
-void _HUD::RenderCrosshair(const glm::vec2 &Position) {
+void _HUD::DrawCrosshair(const glm::vec2 &Position) {
 	if(InventoryOpen)
 		return;
 
@@ -626,7 +626,7 @@ void _HUD::DrawCharacterScreen() {
 	DrawAttribute("Play Time", Buffer, DrawPosition);
 
 	// Draw inventory
-	float CountOffset = 4 * ae::_Element::GetUIScale();
+	bool DrawLevel = ae::Input.ModKeyDown(KMOD_ALT);
 	for(int i = INVENTORY_MAINHAND; i < INVENTORY_BAGEND; i++) {
 		if(!Player->HasInventory(i) || Player->Inventory[i] == CursorItem)
 			continue;
@@ -638,7 +638,10 @@ void _HUD::DrawCharacterScreen() {
 		ae::Graphics.SetProgram(ae::Assets.Programs["ortho_pos_uv"]);
 		ae::Graphics.DrawScaledImage(Button->Bounds.GetCenter(), Player->Inventory[i]->Texture, UI_INVENTORY_ITEM_SIZE, Player->Inventory[i]->Color);
 		if(i >= INVENTORY_BAGSTART && Player->Inventory[i]->CanStack())
-			DrawItemCount(Player->Inventory[i], Button->Bounds.End - glm::vec2(CountOffset));
+			DrawItemCount(Player->Inventory[i], Button->Bounds.End);
+
+		if(DrawLevel)
+			DrawItemLevel(Player->Inventory[i], Button->Bounds.Start);
 	}
 
 	// Draw cursor item
@@ -646,10 +649,13 @@ void _HUD::DrawCharacterScreen() {
 		glm::vec2 Position(ae::Input.GetMouse() - ClickOffset);
 		ae::Graphics.SetProgram(ae::Assets.Programs["ortho_pos_uv"]);
 		ae::Graphics.DrawScaledImage(Position, CursorItem->Texture, UI_INVENTORY_ITEM_SIZE, CursorItem->Color);
-		if(CursorItem->CanStack()) {
-			ae::_Element *Button = Elements[ELEMENT_INVENTORY]->Children[DragStart->Index];
-			DrawItemCount(CursorItem, Position + Button->BaseSize * 0.5f - glm::vec2(CountOffset));
-		}
+
+		ae::_Element *Button = Elements[ELEMENT_INVENTORY]->Children[DragStart->Index];
+		if(CursorItem->CanStack())
+			DrawItemCount(CursorItem, Position + Button->Size * 0.5f);
+
+		if(DrawLevel)
+			DrawItemLevel(CursorItem, Position - Button->Size * 0.5f);
 	}
 
 	// Draw cursor skill
@@ -671,8 +677,14 @@ void _HUD::DrawAttribute(const std::string &Label, std::stringstream &Buffer, gl
 void _HUD::DrawItemCount(_Item *Item, const glm::vec2 &Position) {
 	std::ostringstream Buffer;
 	Buffer << Item->Count;
-	Fonts[FONT_TINY]->DrawText(Buffer.str(), Position, ae::RIGHT_BASELINE, COLOR_WHITE);
-	Buffer.str("");
+	Fonts[FONT_TINY]->DrawText(Buffer.str(), Position - glm::vec2(4 * ae::_Element::GetUIScale()), ae::RIGHT_BASELINE, COLOR_WHITE);
+}
+
+// Draw item level
+void _HUD::DrawItemLevel(_Item *Item, const glm::vec2 &Position) {
+	std::ostringstream Buffer;
+	Buffer << Item->Level;
+	Fonts[FONT_TINY]->DrawText(Buffer.str(), Position + glm::vec2(14, 18) * ae::_Element::GetUIScale(), ae::RIGHT_BASELINE, COLOR_GOLD);
 }
 
 // Draw the skill popup window
@@ -762,7 +774,7 @@ void _HUD::UpdateSkillTooltip(int Skill, const glm::vec2 &Position) {
 }
 
 // Draw death message
-void _HUD::RenderDeathScreen() {
+void _HUD::DrawDeathScreen() {
 	glm::vec2 DrawPosition = glm::vec2(ae::Graphics.CurrentSize) * 0.5f;
 	DrawPosition.y += -200 * ae::_Element::GetUIScale();
 	ae::Assets.Fonts["hud_large"]->DrawText("You Died!", DrawPosition , ae::CENTER_MIDDLE);

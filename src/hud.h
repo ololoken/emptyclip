@@ -100,13 +100,11 @@ class _HUD {
 
 		void Render(bool FullMap);
 		void DrawCharacterScreen();
-		void UpdateSkillTooltip(int Skill, const glm::vec2 &DrawPosition);
-		void RenderCrosshair(const glm::vec2 &Position);
-		void RenderDeathScreen();
+		void DrawCrosshair(const glm::vec2 &Position);
+		void DrawDeathScreen();
 
 		void ShowTextMessage(const std::string &Message, double Time);
 		void ShowMessageBox(const std::string &Message, double Time);
-		double GetMessageBoxTimer() { return MessageBoxTimer; }
 
 		_Item *CursorOverItem;
 
@@ -115,7 +113,9 @@ class _HUD {
 		void DrawIndicator(const std::string &String, float Percent=0.0f, const ae::_Texture *Texture=nullptr);
 		void DrawHUDWeapon(const _Item *Weapon, ae::_Element *Element, ae::_Element *Image, ae::_Element *Label);
 		void DrawItemCount(_Item *Item, const glm::vec2 &Position);
+		void DrawItemLevel(_Item *Item, const glm::vec2 &Position);
 		void DrawAttribute(const std::string &Label, std::stringstream &Buffer, glm::vec2 &DrawPosition) const;
+		void UpdateSkillTooltip(int Skill, const glm::vec2 &DrawPosition);
 		void FormatTime(std::stringstream &Buffer, int64_t Time);
 
 		// State
