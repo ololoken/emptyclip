@@ -639,11 +639,7 @@ void _PlayState::Render(double BlendFactor) {
 	// Draw particles
 	ae::Graphics.EnableParticleBlending();
 	Particles->Render(_Particles::NORMAL);
-
-	// Draw damage text numbers
 	ae::Graphics.DisableParticleBlending();
-	ae::Graphics.SetDepthTest(false);
-	Particles->Render(_Particles::TEXT);
 
 	// Draw the foreground tiles
 	BlockRenderCount += Map->RenderForeground();
@@ -691,6 +687,9 @@ void _PlayState::Render(double BlendFactor) {
 	ae::Graphics.SetStaticUniforms();
 	ae::Graphics.SetDepthTest(false);
 	ae::Graphics.SetDepthMask(false);
+
+	// Draw damage text numbers
+	Particles->Render(_Particles::TEXT);
 
 	/*
 	glm::ivec2 Start(Camera->GetAABB()[0], Camera->GetAABB()[1]);

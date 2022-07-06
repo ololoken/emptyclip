@@ -24,6 +24,7 @@
 
 // Forward Declarations
 namespace ae {
+	class _Camera;
 	class _Texture;
 	class _Font;
 }
@@ -38,7 +39,7 @@ class _Particle {
 		~_Particle();
 
 		void Update(double FrameTime);
-		void Render();
+		void Render(const ae::_Camera *Camera);
 
 		// Attributes
 		int Type;

@@ -67,7 +67,7 @@ void _Particles::Update(double FrameTime) {
 // Render
 void _Particles::Render(int Type) {
 	for(auto Iterator : RenderList[Type])
-		Iterator->Render();
+		Iterator->Render(Camera);
 }
 
 // Deletes all

@@ -19,6 +19,7 @@
 #include <objects/templates.h>
 #include <ae/graphics.h>
 #include <ae/font.h>
+#include <ae/camera.h>
 #include <ae/random.h>
 #include <particles.h>
 #include <glm/gtx/rotate_vector.hpp>
@@ -80,7 +81,7 @@ void _Particle::Update(double FrameTime) {
 }
 
 // Render
-void _Particle::Render() {
+void _Particle::Render(const ae::_Camera *Camera) {
 
 	if(Texture) {
 		ae::Graphics.SetColor(Color);
@@ -90,6 +91,9 @@ void _Particle::Render() {
 			ae::Graphics.DrawSprite(glm::vec3(Position, PositionZ), Texture, Rotation, Scale);
 	}
 
-	if(Font && Text != "")
-		Font->DrawText(Text.c_str(), Position, ae::CENTER_BASELINE, Color, (1/64.0f) / ae::_Element::GetUIScale());
+	if(Font && Text != "") {
+		glm::vec2 ScreenPosition;
+		Camera->ConvertWorldToScreen(Position, ScreenPosition);
+		Font->DrawText(Text.c_str(), ScreenPosition, ae::CENTER_BASELINE, Color);
+	}
 }

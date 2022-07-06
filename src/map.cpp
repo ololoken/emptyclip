@@ -1733,7 +1733,7 @@ int _Map::RenderParticles(int Type) {
 				if(Particle->Type != Type)
 					continue;
 
-				Particle->Render();
+				Particle->Render(Camera);
 				Count++;
 			}
 		}
