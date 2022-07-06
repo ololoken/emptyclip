@@ -708,7 +708,7 @@ void _HUD::UpdateSkillTooltip(int Skill, const glm::vec2 &Position) {
 		break;
 		case SKILL_FORTITUDE:
 			Elements[LABEL_SKILLTEXT]->Text = "Increases Damage Block";
-			Elements[LABEL_SKILLTEXT]->Text = "Increases Damage Resist";
+			Elements[LABEL_SKILLTEXTALT]->Text = "Increases Damage Resist";
 			Buffer << "+" << Stats.GetSkill(Level, Skill) << " Damage Block / +" << Stats.GetSkill(Level, Skill, 1) << "% Damage Resist";
 			BufferNext << "+" << Stats.GetSkill(Stats.GetValidSkillLevel(Level+1), Skill) << " Damage Block / +" << Stats.GetSkill(Stats.GetValidSkillLevel(Level+1), Skill, 1) << "% Damage Resist";
 		break;
