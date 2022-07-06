@@ -81,6 +81,7 @@ void _Player::Reset() {
 
 	// Set stats
 	MonsterKills = 0;
+	Deaths = 0;
 	TimePlayed = 0;
 	Radius = PLAYER_RADIUS;
 	Name = "test";
@@ -90,6 +91,7 @@ void _Player::Reset() {
 	Experience = 0;
 	ExperienceNeeded = 0;
 	ExperienceNextLevel = 0;
+	ExperienceLost = 0;
 	SkillPointsRemaining = 0;
 	DropRate = 100;
 	PickupModifier = 1.0f;
@@ -375,7 +377,10 @@ void _Player::CalculateExperienceStats() {
 	const _Level &LevelStat = Stats.FindLevel(Experience);
 	Level = LevelStat.Level;
 	ExperienceNextLevel = LevelStat.NextLevel;
-	ExperienceNeeded = (Level == Stats.GetMaxLevel()) ? 0 : LevelStat.NextLevel - (Experience - LevelStat.Experience);
+
+	int64_t ExperienceThisLevel = Experience - LevelStat.Experience;
+	ExperienceNeeded = (Level == Stats.GetMaxLevel()) ? 0 : LevelStat.NextLevel - ExperienceThisLevel;
+	ExperienceLost = std::min(ExperienceThisLevel, (int64_t)(LevelStat.NextLevel * GAME_EXPERIENCE_LOST));
 }
 
 // Calculates the number of skills points remaining
@@ -1057,7 +1062,12 @@ void _Player::ResetWeaponAnimation() {
 
 // Applies the death penalty
 void _Player::IncurDeathPenalty() {
-	Reloading = SwitchingWeapons = false;
+	Reloading = false;
+	SwitchingWeapons = false;
+	Deaths++;
+
+	Experience -= ExperienceLost;
+	CalculateExperienceStats();
 }
 
 // Returns a sound index

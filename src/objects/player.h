@@ -153,12 +153,14 @@ class _Player : public _Entity {
 
 		// Character information
 		double PlayingTimer;
+		int Deaths;
 		int MonsterKills;
 		int TimePlayed;
 		int64_t Gold;
 		int64_t Experience;
 		int64_t ExperienceNextLevel;
 		int64_t ExperienceNeeded;
+		int64_t ExperienceLost;
 
 		// Skills
 		int Skills[SKILL_COUNT];

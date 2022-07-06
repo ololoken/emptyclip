@@ -43,6 +43,7 @@ enum SaveChunkTypes {
 	CHUNK_ITEMS,
 	CHUNK_AMMO,
 	CHUNK_KEYS,
+	CHUNK_DEATHS,
 };
 
 // Write a chunk to a stream
@@ -213,6 +214,9 @@ void _Save::LoadPlayer(_Player *Player) {
 			case CHUNK_MONSTER_KILLS:
 				File.read((char *)&Player->MonsterKills, sizeof(Player->MonsterKills));
 			break;
+			case CHUNK_DEATHS:
+				File.read((char *)&Player->Deaths, sizeof(Player->Deaths));
+			break;
 			case CHUNK_SKILLS:
 				File.read((char *)&Player->Skills, sizeof(Player->Skills));
 			break;
@@ -239,6 +243,7 @@ void _Save::LoadPlayer(_Player *Player) {
 
 	File.close();
 
+	Player->CheckpointIndex = 0;
 	Player->CalculateExperienceStats();
 	Player->CalculateSkillsRemaining();
 	Player->UpdateColor();
@@ -268,6 +273,7 @@ void _Save::SavePlayer(_Player *Player) {
 	WriteChunk(File, CHUNK_HEALTH, (char *)&Player->Health, sizeof(Player->Health));
 	WriteChunk(File, CHUNK_TIME_PLAYED, (char *)&Player->TimePlayed, sizeof(Player->TimePlayed));
 	WriteChunk(File, CHUNK_MONSTER_KILLS, (char *)&Player->MonsterKills, sizeof(Player->MonsterKills));
+	WriteChunk(File, CHUNK_DEATHS, (char *)&Player->Deaths, sizeof(Player->Deaths));
 	WriteChunk(File, CHUNK_SKILLS, (char *)&Player->Skills, sizeof(Player->Skills));
 
 	SaveItems(Player, File);

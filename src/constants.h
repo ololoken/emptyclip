@@ -41,6 +41,7 @@ const  std::string  GAME_FIRSTLEVEL                =  "mansion0.map";
 const  int          GAME_SKILLLEVELS               =  100;
 const  int          GAME_MAX_SKILL_PERLEVEL        =  3;
 const  int          GAME_WIN_PROGRESSION_POINTS    =  20;
+const  double       GAME_EXPERIENCE_LOST           =  0.1;
 //     Camera
 const  float        CAMERA_DISTANCE                =  6.5f;
 const  float        CAMERA_DISTANCE_AIMED          =  7.0f;

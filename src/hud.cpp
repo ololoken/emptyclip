@@ -619,6 +619,9 @@ void _HUD::DrawCharacterScreen() {
 	Buffer << Player->MonsterKills;
 	DrawAttribute("Kills", Buffer, DrawPosition);
 
+	Buffer << Player->Deaths;
+	DrawAttribute("Deaths", Buffer, DrawPosition);
+
 	// Draw inventory
 	float CountOffset = 4 * ae::_Element::GetUIScale();
 	for(int i = INVENTORY_MAINHAND; i < INVENTORY_BAGEND; i++) {
@@ -757,8 +760,15 @@ void _HUD::UpdateSkillTooltip(int Skill, const glm::vec2 &Position) {
 
 // Draw death message
 void _HUD::RenderDeathScreen() {
-	ae::Assets.Fonts["hud_large"]->DrawText("You Died!", glm::vec2(ae::Graphics.CurrentSize.x / 2, ae::Graphics.CurrentSize.y / 2 - 200 * ae::_Element::GetUIScale()), ae::CENTER_MIDDLE);
-	ae::Assets.Fonts["menu_buttons"]->DrawText(std::string("Press [") + ae::Actions.GetInputNameForAction(Action::GAME_USE) + "] to respawn", glm::vec2(ae::Graphics.CurrentSize.x / 2, ae::Graphics.CurrentSize.y / 2 - 100 * ae::_Element::GetUIScale()), ae::CENTER_MIDDLE);
+	glm::vec2 DrawPosition = glm::vec2(ae::Graphics.CurrentSize) * 0.5f;
+	DrawPosition.y += -200 * ae::_Element::GetUIScale();
+	ae::Assets.Fonts["hud_large"]->DrawText("You Died!", DrawPosition , ae::CENTER_MIDDLE);
+
+	DrawPosition.y += 100 * ae::_Element::GetUIScale();
+	ae::Assets.Fonts["menu_buttons"]->DrawTextFormatted("You lost [c red]" + std::to_string((int)(GAME_EXPERIENCE_LOST * 100 + 0.5f)) + "%[c white] experience", DrawPosition, ae::CENTER_MIDDLE);
+
+	DrawPosition.y += 100 * ae::_Element::GetUIScale();
+	ae::Assets.Fonts["hud_medium"]->DrawText(std::string("Press [") + ae::Actions.GetInputNameForAction(Action::GAME_USE) + "] to respawn", DrawPosition, ae::CENTER_MIDDLE);
 }
 
 // Show hud message
