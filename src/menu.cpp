@@ -404,6 +404,9 @@ void _Menu::HandleMouseButton(const ae::_MouseEvent &MouseEvent) {
 				if(OptionsState == OPTION_NONE) {
 					if(Clicked->Name == "button_options_defaults") {
 						Config.LoadDefaultInputBindings(false);
+						Config.SoundVolume = 1.0f;
+						ae::Audio.SetSoundVolume(Config.SoundVolume);
+						UpdateOptions();
 						RefreshInputLabels();
 					}
 					else if(Clicked->Name == "button_options_save") {
