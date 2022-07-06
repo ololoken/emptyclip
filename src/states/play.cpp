@@ -701,33 +701,34 @@ void _PlayState::Render(double BlendFactor) {
 
 	// Debug mode
 	if(DebugMode) {
-		glm::vec2 DrawPosition(10, 200);
+		glm::vec2 DrawPosition = glm::vec2(10, 200) * ae::_Element::GetUIScale();
+		glm::vec2 Spacing(0, 16 * ae::_Element::GetUIScale());
 		std::stringstream Buffer;
 		Buffer << ae::Graphics.FramesPerSecond << " FPS";
 		ae::Assets.Fonts["hud_tiny"]->DrawText(Buffer.str(), DrawPosition);
 		Buffer.str("");
 
-		DrawPosition.y += 15;
+		DrawPosition.y += Spacing.y;
 		Buffer << BlockRenderCount << " blocks rendered";
 		ae::Assets.Fonts["hud_tiny"]->DrawText(Buffer.str(), DrawPosition);
 		Buffer.str("");
 
-		DrawPosition.y += 15;
+		DrawPosition.y += Spacing.y;
 		Buffer << Map->ObjectManager->RenderList[0].size() << " items rendered";
 		ae::Assets.Fonts["hud_tiny"]->DrawText(Buffer.str(), DrawPosition);
 		Buffer.str("");
 
-		DrawPosition.y += 15;
+		DrawPosition.y += Spacing.y;
 		Buffer << Map->ObjectManager->RenderList[2].size() << " monsters rendered";
 		ae::Assets.Fonts["hud_tiny"]->DrawText(Buffer.str(), DrawPosition);
 		Buffer.str("");
 
-		DrawPosition.y += 15;
+		DrawPosition.y += Spacing.y;
 		Buffer << ParticleRenderCount << " decals rendered";
 		ae::Assets.Fonts["hud_tiny"]->DrawText(Buffer.str(), DrawPosition);
 		Buffer.str("");
 
-		DrawPosition.y += 15;
+		DrawPosition.y += Spacing.y;
 		Buffer << ActiveAI << " active ai";
 		ae::Assets.Fonts["hud_tiny"]->DrawText(Buffer.str(), DrawPosition);
 		Buffer.str("");
