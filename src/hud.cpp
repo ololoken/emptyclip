@@ -557,7 +557,7 @@ void _HUD::DrawCharacterScreen() {
 	Elements[ELEMENT_INVENTORY]->Render();
 
 	// Set skill labels
-	std::ostringstream Buffer;
+	std::stringstream Buffer;
 	Buffer << Player->SkillPointsRemaining;
 	Elements[LABEL_SKILL_REMAINING]->Text = Buffer.str();
 	Buffer.str("");
@@ -616,11 +616,14 @@ void _HUD::DrawCharacterScreen() {
 	Buffer << Player->DropRate << "%";
 	DrawAttribute("Drop Rate", Buffer, DrawPosition);
 
-	Buffer << Player->MonsterKills;
+	Buffer << Player->Kills;
 	DrawAttribute("Kills", Buffer, DrawPosition);
 
 	Buffer << Player->Deaths;
 	DrawAttribute("Deaths", Buffer, DrawPosition);
+
+	FormatTime(Buffer, Player->PlayTime);
+	DrawAttribute("Play Time", Buffer, DrawPosition);
 
 	// Draw inventory
 	float CountOffset = 4 * ae::_Element::GetUIScale();
@@ -655,7 +658,7 @@ void _HUD::DrawCharacterScreen() {
 }
 
 // Draw character stat on character screen
-void _HUD::DrawAttribute(const std::string &Label, std::ostringstream &Buffer, glm::vec2 &DrawPosition) const {
+void _HUD::DrawAttribute(const std::string &Label, std::stringstream &Buffer, glm::vec2 &DrawPosition) const {
 	glm::vec2 DrawOffset(10 * ae::_Element::GetUIScale(), 0);
 	ae::Assets.Fonts["hud_char"]->DrawText(Label, glm::ivec2(DrawPosition), ae::RIGHT_BASELINE);
 	ae::Assets.Fonts["hud_char"]->DrawText(Buffer.str(), glm::ivec2(DrawPosition + DrawOffset), ae::LEFT_BASELINE);
@@ -791,4 +794,14 @@ void _HUD::ShowMessageBox(const std::string &Message, double Time) {
 
 	Elements[ELEMENT_MESSAGE]->SetFade(1.0f);
 	MessageBoxTimer = Time;
+}
+
+// Format time
+void _HUD::FormatTime(std::stringstream &Buffer, int64_t Time) {
+	if(Time < 60)
+		Buffer << Time << "s";
+	else if(Time < 3600)
+		Buffer << Time / 60 << "m";
+	else
+		Buffer << Time / 3600 << "h" << (Time / 60 % 60) << "m";
 }

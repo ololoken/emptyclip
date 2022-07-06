@@ -37,8 +37,8 @@ enum SaveChunkTypes {
 	CHUNK_EXPERIENCE,
 	CHUNK_GOLD,
 	CHUNK_HEALTH,
-	CHUNK_TIME_PLAYED,
-	CHUNK_MONSTER_KILLS,
+	CHUNK_PLAYTIME,
+	CHUNK_KILLS,
 	CHUNK_SKILLS,
 	CHUNK_ITEMS,
 	CHUNK_AMMO,
@@ -208,11 +208,11 @@ void _Save::LoadPlayer(_Player *Player) {
 				if(Player->Health <= 0)
 					Player->Health = 1;
 			break;
-			case CHUNK_TIME_PLAYED: {
-				File.read((char *)&Player->TimePlayed, sizeof(Player->TimePlayed));
+			case CHUNK_PLAYTIME: {
+				File.read((char *)&Player->PlayTime, sizeof(Player->PlayTime));
 			} break;
-			case CHUNK_MONSTER_KILLS:
-				File.read((char *)&Player->MonsterKills, sizeof(Player->MonsterKills));
+			case CHUNK_KILLS:
+				File.read((char *)&Player->Kills, sizeof(Player->Kills));
 			break;
 			case CHUNK_DEATHS:
 				File.read((char *)&Player->Deaths, sizeof(Player->Deaths));
@@ -271,8 +271,8 @@ void _Save::SavePlayer(_Player *Player) {
 	WriteChunk(File, CHUNK_EXPERIENCE, (char *)&Player->Experience, sizeof(Player->Experience));
 	WriteChunk(File, CHUNK_GOLD, (char *)&Player->Gold, sizeof(Player->Gold));
 	WriteChunk(File, CHUNK_HEALTH, (char *)&Player->Health, sizeof(Player->Health));
-	WriteChunk(File, CHUNK_TIME_PLAYED, (char *)&Player->TimePlayed, sizeof(Player->TimePlayed));
-	WriteChunk(File, CHUNK_MONSTER_KILLS, (char *)&Player->MonsterKills, sizeof(Player->MonsterKills));
+	WriteChunk(File, CHUNK_PLAYTIME, (char *)&Player->PlayTime, sizeof(Player->PlayTime));
+	WriteChunk(File, CHUNK_KILLS, (char *)&Player->Kills, sizeof(Player->Kills));
 	WriteChunk(File, CHUNK_DEATHS, (char *)&Player->Deaths, sizeof(Player->Deaths));
 	WriteChunk(File, CHUNK_SKILLS, (char *)&Player->Skills, sizeof(Player->Skills));
 

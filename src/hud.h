@@ -115,7 +115,8 @@ class _HUD {
 		void DrawIndicator(const std::string &String, float Percent=0.0f, const ae::_Texture *Texture=nullptr);
 		void DrawHUDWeapon(const _Item *Weapon, ae::_Element *Element, ae::_Element *Image, ae::_Element *Label);
 		void DrawItemCount(_Item *Item, const glm::vec2 &Position);
-		void DrawAttribute(const std::string &Label, std::ostringstream &Buffer, glm::vec2 &DrawPosition) const;
+		void DrawAttribute(const std::string &Label, std::stringstream &Buffer, glm::vec2 &DrawPosition) const;
+		void FormatTime(std::stringstream &Buffer, int64_t Time);
 
 		// State
 		_Player *Player;

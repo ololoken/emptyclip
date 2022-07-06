@@ -69,7 +69,7 @@ class _Player : public _Entity {
 		void UpdateReloading();
 		void UpdateWeaponSwitch();
 		void UpdateSpeed(float Factor) override;
-		void UpdateKillCount(int Value) override { MonsterKills += Value; }
+		void UpdateKillCount(int Value) override { Kills += Value; }
 		void UpdateSkill(int Index, int Value);
 		void StartReloading();
 		void CancelReloading();
@@ -152,10 +152,9 @@ class _Player : public _Entity {
 		int WeaponSwitchTo;
 
 		// Character information
-		double PlayingTimer;
+		double PlayTime;
 		int Deaths;
-		int MonsterKills;
-		int TimePlayed;
+		int Kills;
 		int64_t Gold;
 		int64_t Experience;
 		int64_t ExperienceNextLevel;

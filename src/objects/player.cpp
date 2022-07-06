@@ -80,9 +80,9 @@ _Player::~_Player() {
 void _Player::Reset() {
 
 	// Set stats
-	MonsterKills = 0;
+	Kills = 0;
 	Deaths = 0;
-	TimePlayed = 0;
+	PlayTime = 0;
 	Radius = PLAYER_RADIUS;
 	Name = "test";
 	ColorID = "white";
@@ -131,8 +131,6 @@ void _Player::Reset() {
 	MedkitTimer = 0.0;
 	WeaponSwitchFrom = -1;
 	WeaponSwitchTo = -1;
-	TimePlayed = 0;
-	PlayingTimer = 0;
 	Stamina = 100.0f;
 
 	CalculateExperienceStats();
@@ -162,15 +160,11 @@ void _Player::DeleteItems() {
 void _Player::Update(double FrameTime) {
 	_Entity::Update(FrameTime);
 
-	PlayingTimer += FrameTime;
+	PlayTime += FrameTime;
 	WeaponSwitchTimer += FrameTime;
 	ReloadTimer += FrameTime;
 	UseTimer += FrameTime;
 	MedkitTimer += FrameTime;
-	if(PlayingTimer > 1.0) {
-		TimePlayed++;
-		PlayingTimer -= 1.0;
-	}
 
 	// Update stamina
 	if(!IsDying() && !Sprinting)
