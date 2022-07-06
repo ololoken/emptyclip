@@ -208,6 +208,9 @@ void _Menu::UpdateOptions() {
 	std::stringstream Buffer;
 	Buffer << std::fixed << std::setprecision(2);
 
+	// Set fullscreen
+	ae::Assets.Elements["label_menu_options_fullscreen_check"]->Text = Config.Fullscreen ? "X" : "";
+
 	// Set sound volume
 	Buffer << Config.SoundVolume;
 	ae::Assets.Elements["label_menu_options_soundvolume_value"]->Text = Buffer.str();
@@ -402,7 +405,11 @@ void _Menu::HandleMouseButton(const ae::_MouseEvent &MouseEvent) {
 			} break;
 			case STATE_OPTIONS: {
 				if(OptionsState == OPTION_NONE) {
-					if(Clicked->Name == "button_options_defaults") {
+					if(Clicked->Name == "button_menu_options_fullscreen") {
+						SetFullscreen(!Config.Fullscreen);
+						UpdateOptions();
+					}
+					else if(Clicked->Name == "button_options_defaults") {
 						Config.LoadDefaultInputBindings(false);
 						Config.SoundVolume = 1.0f;
 						ae::Audio.SetSoundVolume(Config.SoundVolume);
@@ -454,6 +461,18 @@ void _Menu::HandleResize() {
 		Background->SetHeight(ae::Graphics.CurrentSize.y);
 		Background->SetActive(true);
 	}
+}
+
+// Set fullscreen state of game
+void _Menu::SetFullscreen(bool Fullscreen) {
+	if(!ae::Graphics.SetFullscreen(Fullscreen))
+		return;
+
+	Config.Fullscreen = Fullscreen;
+	Config.Save();
+
+	// Reload fonts
+	ae::Assets.LoadFonts("tables/fonts.tsv");
 }
 
 // Update phase

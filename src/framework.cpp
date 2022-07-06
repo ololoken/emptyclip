@@ -28,6 +28,7 @@
 #include <ae/util.h>
 #include <ae/audio.h>
 #include <gameassets.h>
+#include <menu.h>
 #include <config.h>
 #include <stdexcept>
 #include <constants.h>
@@ -302,8 +303,7 @@ int _Framework::GlobalKeyHandler(const SDL_Event &Event) {
 			if(!Event.key.repeat) {
 				Config.Fullscreen = !Config.Fullscreen;
 				Config.Save();
-				ae::Graphics.SetFullscreen(Config.Fullscreen);
-				ae::Assets.LoadFonts("tables/fonts.tsv");
+				Menu.SetFullscreen(Config.Fullscreen);
 				if(Console)
 					Console->UpdateSize();
 			}
