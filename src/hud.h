@@ -103,7 +103,7 @@ class _HUD {
 		void DrawCrosshair(const glm::vec2 &Position);
 		void DrawDeathScreen();
 
-		void ShowTextMessage(const std::string &Message, double Time);
+		void ShowTextMessage(const std::string &Message, double Time, bool Override=true);
 		void ShowMessageBox(const std::string &Message, double Time);
 
 		_Item *CursorOverItem;

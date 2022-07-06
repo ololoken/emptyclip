@@ -303,11 +303,13 @@ void _HUD::Update(double FrameTime, float Radius) {
 	if(LastEntityHit != nullptr && (LastEntityHitTimer > HUD_ENTITYHEALTHDISPLAYPERIOD || !LastEntityHit->Active))
 		LastEntityHit = nullptr;
 
-	if(MessageTimer > 0.0)
-		MessageTimer -= FrameTime;
+	MessageTimer -= FrameTime;
+	if(MessageTimer < 0.0)
+		MessageTimer = 0;
 
-	if(MessageBoxTimer > 0.0)
-		MessageBoxTimer -= FrameTime;
+	MessageBoxTimer -= FrameTime;
+	if(MessageBoxTimer < 0.0)
+		MessageBoxTimer = 0;
 }
 
 // Draw phase
@@ -800,7 +802,10 @@ void _HUD::DrawDeathScreen() {
 }
 
 // Show hud message
-void _HUD::ShowTextMessage(const std::string &Message, double Time) {
+void _HUD::ShowTextMessage(const std::string &Message, double Time, bool Override) {
+	if(!Override && MessageTimer > 0)
+		return;
+
 	Elements[LABEL_MESSAGE]->Text = Message;
 	Elements[LABEL_MESSAGE]->SetFade(1.0f);
 	MessageTimer = Time;

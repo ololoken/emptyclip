@@ -921,7 +921,7 @@ void _PlayState::PickupObject(_Item *Item, int &AmountAdded) {
 	}
 	else {
 		if(Item->Type == _Object::AMMO)
-			HUD->ShowTextMessage("AMMO FULL", HUD_INVENTORYFULLTIME);
+			HUD->ShowTextMessage("AMMO FULL", HUD_INVENTORYFULLTIME, false);
 		else
 			HUD->ShowTextMessage("INVENTORY FULL", HUD_INVENTORYFULLTIME);
 	}
