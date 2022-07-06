@@ -590,7 +590,7 @@ void _Map::CheckEntityCollisionsInGrid(const glm::vec2 &Position, float Radius, 
 	GetTileBounds(Position, Radius, TileBounds);
 
 	// Get unique list of objects to check against
-	std::unordered_map<_Entity *, int> CheckEntities;
+	std::unordered_map<_Entity *, int> CheckEntities(10);
 	for(int i = TileBounds.Start.x; i <= TileBounds.End.x; i++) {
 		for(int j = TileBounds.Start.y; j <= TileBounds.End.y; j++) {
 			for(int k = 0; k < 2; k++) {
@@ -661,7 +661,7 @@ void _Map::CheckMeleeCollisions(_Entity *Attacker, const glm::vec2 &Direction, i
 	GetTileBounds(Attacker->Position, Attacker->AttackRange[Attacker->AttackRequestType], TileBounds);
 
 	// Check tiles for objects
-	std::unordered_map<_Entity *, int> CheckedEntities;
+	std::unordered_map<_Entity *, int> CheckedEntities(10);
 	for(int i = TileBounds.Start.x; i <= TileBounds.End.x; i++) {
 		for(int j = TileBounds.Start.y; j <= TileBounds.End.y; j++) {
 			for(auto &Iterator : Data[i][j].Objects[GridType]) {
@@ -839,7 +839,7 @@ void _Map::CheckBulletCollisions(const glm::vec2 &Position, const glm::vec2 &Dir
 
 	// Traverse tiles
 	bool EndedOnX = false;
-	std::unordered_map<_Entity *, int> HitObjects;
+	std::unordered_map<_Entity *, int> HitObjects(100);
 	while(TileTracer.x >= 0 && TileTracer.y >= 0 && TileTracer.x < Size.x && TileTracer.y < Size.y && CheckCollisionFlag(TileTracer, _Tile::BULLET)) {
 
 		// Check for object intersections
