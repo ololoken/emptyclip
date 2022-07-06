@@ -955,8 +955,8 @@ void _EditorState::Render(double BlendFactor) {
 		InputBox->Render();
 
 	// Top left
-	glm::vec2 DrawPosition = glm::vec2(25, 25) * ae::_Element::GetUIScale();
-	glm::vec2 DrawSpacing = glm::vec2(0, 20) * ae::_Element::GetUIScale();
+	glm::vec2 DrawPosition = glm::vec2(15, 25);
+	glm::vec2 DrawSpacing = glm::vec2(0, 20);
 	std::ostringstream Buffer;
 
 	// Draw filename
@@ -973,14 +973,14 @@ void _EditorState::Render(double BlendFactor) {
 	// Bottom Left
 
 	// Draw cursor position
-	DrawPosition = glm::vec2(16 * ae::_Element::GetUIScale(), ae::Graphics.ViewportSize.y - 25 * ae::_Element::GetUIScale());
+	DrawPosition = glm::vec2(15, ae::Graphics.ViewportSize.y - 25);
 	Buffer << std::fixed << WorldCursor.x << ", " << WorldCursor.y;
 	MainFont->DrawText(Buffer.str(), DrawPosition);
 	Buffer.str("");
 
 	// Top right
-	DrawPosition.x = ae::Graphics.ViewportSize.x - 45 * ae::_Element::GetUIScale();
-	DrawPosition.y = 25 * ae::_Element::GetUIScale();
+	DrawPosition.x = ae::Graphics.ViewportSize.x - 15;
+	DrawPosition.y = 25;
 
 	// Draw FPS
 	Buffer << ae::Graphics.FramesPerSecond << " FPS";
@@ -994,9 +994,9 @@ void _EditorState::Render(double BlendFactor) {
 	Buffer.str("");
 
 	// Bottom right
-	DrawPosition.x = ae::Graphics.ViewportSize.x - 45 * ae::_Element::GetUIScale();
-	DrawPosition.y = ae::Graphics.ViewportSize.y - 60 * ae::_Element::GetUIScale();
-	glm::vec2 DrawOffset(5 * ae::_Element::GetUIScale(), 0);
+	DrawPosition.x = ae::Graphics.ViewportSize.x - 30;
+	DrawPosition.y = ae::Graphics.ViewportSize.y - 40;
+	glm::vec2 DrawOffset(5, 0);
 
 	// Draw grid size
 	Buffer << GridMode;
