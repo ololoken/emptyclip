@@ -558,7 +558,7 @@ _Object *_Map::GetCloseObject(const glm::vec2 &Position, float Radius, int GridT
 }
 
 // Return objects that are touching a circle
-void _Map::GetCloseObjects(const glm::vec2 &Position, float Radius, int GridType, std::unordered_map<_Object *, int> &TouchedObjects) const {
+void _Map::GetCloseObjects(const glm::vec2 &Position, float Radius, int GridType, std::unordered_map<_Object *, int> &Objects, _Object **ClosestObject) const {
 	if(!Data)
 		throw std::runtime_error("Tile data uninitialized!");
 
@@ -567,14 +567,23 @@ void _Map::GetCloseObjects(const glm::vec2 &Position, float Radius, int GridType
 	GetTileBounds(Position, Radius, TileBounds);
 
 	// Iterate through tiles covered by the bounds
+	float ClosestDistance = HUGE_VAL;
 	for(int i = TileBounds.Start.x; i <= TileBounds.End.x; i++) {
 		for(int j = TileBounds.Start.y; j <= TileBounds.End.y; j++) {
 			for(auto Iterator : Data[i][j].Objects[GridType]) {
 				_Object *Object = Iterator.first;
 
 				float RadiiSum = Object->Radius + Radius;
-				if(glm::distance2(Object->Position, Position) < RadiiSum * RadiiSum)
-					TouchedObjects[Object] = 1;
+				float DistanceSquared = glm::distance2(Object->Position, Position);
+				if(DistanceSquared >= RadiiSum * RadiiSum)
+					continue;
+				Objects[Object] = 1;
+
+				// Keep track of closest object
+				if(DistanceSquared < ClosestDistance) {
+					ClosestDistance = DistanceSquared;
+					*ClosestObject = Object;
+				}
 			}
 		}
 	}

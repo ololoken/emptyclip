@@ -30,6 +30,7 @@ class _Player;
 class _Item;
 class _Weapon;
 namespace ae {
+	class _Camera;
 	struct _MouseEvent;
 }
 
@@ -92,13 +93,12 @@ class _HUD {
 
 		void SetLastEntityHit(_Entity *Entity);
 		void SetInventoryOpen(bool Value);
-		bool GetInventoryOpen() { return InventoryOpen; }
 		bool IsDragging() const { return CursorItem != nullptr; }
 
 		void MouseEvent(const ae::_MouseEvent &MouseEvent);
 		void Update(double FrameTime, float Radius);
 
-		void Render(bool FullMap);
+		void Render(const ae::_Camera *Camera, bool FullMap);
 		void DrawCharacterScreen();
 		void DrawCrosshair(const glm::vec2 &Position);
 		void DrawDeathScreen();
@@ -107,6 +107,8 @@ class _HUD {
 		void ShowMessageBox(const std::string &Message, double Time);
 
 		_Item *CursorOverItem;
+		bool CursorOverWorld;
+		bool InventoryOpen;
 
 	private:
 
@@ -120,7 +122,6 @@ class _HUD {
 
 		// State
 		_Player *Player;
-		bool InventoryOpen;
 
 		// UI
 		ae::_Element *Elements[ELEMENT_COUNT];

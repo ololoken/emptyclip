@@ -30,6 +30,7 @@ class _Entity;
 class _Monster;
 class _Player;
 class _Item;
+class _Object;
 class _Particles;
 struct _ObjectSpawn;
 struct _ParticleTemplate;
@@ -89,7 +90,7 @@ class _PlayState : public ae::_State {
 		void RemoveMonster(_Monster *Monster);
 		void CreateItemDrop(const _Entity *Entity, float DropRate);
 		void ResolveAttack(_Entity *Attacker, int GridType);
-		void PickupObject(_Item *NearbyItem, int &AmountAdded);
+		void PickupObject(_Item *Item, int &AmountAdded);
 		void UseObject(_Item *NearbyItem);
 		void ActivateEvent();
 
@@ -104,6 +105,8 @@ class _PlayState : public ae::_State {
 		// Entities
 		std::list<_Entity *> Monsters;
 		std::list<_Event *> ActiveEvents;
+		_Object *LastClosestItem;
+		double ClosestItemTimer;
 		int ActiveAI;
 
 		// HUD

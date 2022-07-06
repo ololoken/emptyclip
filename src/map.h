@@ -184,7 +184,7 @@ class _Map {
 		bool CheckTileCollisions(const glm::vec2 &TargetPosition, float Radius, glm::vec2 &NewPosition);
 		void CheckEntityCollisionsInGrid(const glm::vec2 &Position, float Radius, const _Object *SkipObject, std::vector<_Hit> &Hits, bool &AxisAlignedPush) const;
 		_Object *GetCloseObject(const glm::vec2 &Position, float Radius, int GridType) const;
-		void GetCloseObjects(const glm::vec2 &Position, float Radius, int GridType, std::unordered_map<_Object *, int> &TouchedObjects) const;
+		void GetCloseObjects(const glm::vec2 &Position, float Radius, int GridType, std::unordered_map<_Object *, int> &Objects, _Object **ClosestObject) const;
 		void CheckMeleeCollisions(_Entity *Attacker, const glm::vec2 &Direction, int GridType, int Penetration, std::vector<_Hit> &Hits) const;
 		void CheckBulletCollisions(const glm::vec2 &Position, const glm::vec2 &Direction, std::vector<_Hit> &Hits, int GridType, bool CheckObjects, int Penetration) const;
 		float RayObjectIntersection(const glm::vec2 &Origin, const glm::vec2 &Direction, const _Object *Object) const;

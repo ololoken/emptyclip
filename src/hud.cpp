@@ -27,6 +27,7 @@
 #include <ae/assets.h>
 #include <ae/actions.h>
 #include <ae/util.h>
+#include <ae/camera.h>
 #include <map.h>
 #include <actiontype.h>
 #include <config.h>
@@ -58,7 +59,9 @@ _HUD::_HUD(_Player *Player) :
 
 	LastEntityHit = nullptr;
 	DragStart = nullptr;
-	CursorItem = CursorOverItem = nullptr;
+	CursorItem = nullptr;
+	CursorOverItem = nullptr;
+	CursorOverWorld = false;
 	CursorSkill = -1;
 	CursorInventorySlot = -1;
 	CrosshairScale = 0.0f;
@@ -169,7 +172,9 @@ void _HUD::SetInventoryOpen(bool Value) {
 		Elements[ELEMENT_INVENTORY]->SetActive(false);
 		Elements[ELEMENT_SKILLS]->SetActive(false);
 		DragStart = nullptr;
-		CursorItem = CursorOverItem = nullptr;
+		CursorItem = nullptr;
+		CursorOverItem = nullptr;
+		CursorOverWorld = false;
 	}
 
 	ae::Graphics.SetCursor(InventoryOpen);
@@ -177,7 +182,7 @@ void _HUD::SetInventoryOpen(bool Value) {
 
 // Handle mouse events
 void _HUD::MouseEvent(const ae::_MouseEvent &MouseEvent) {
-	if(!GetInventoryOpen())
+	if(!InventoryOpen)
 		return;
 
 	ae::_Element *HitElement = Elements[ELEMENT_INVENTORY]->HitElement;
@@ -266,13 +271,14 @@ void _HUD::Update(double FrameTime, float Radius) {
 		CrosshairScale = HUD_MINCROSSHAIRSCALE;
 
 	// Update inventory
-	if(GetInventoryOpen()) {
+	if(InventoryOpen) {
 		ae::Graphics.SetCursor(true);
 
 		ae::_Element *HitElement;
 		HitElement = Elements[ELEMENT_INVENTORY]->HitElement;
 		if(HitElement && HitElement->Index >= 0) {
 			CursorOverItem = Player->Inventory[HitElement->Index];
+			CursorOverWorld = false;
 			CursorInventorySlot = HitElement->Index;
 		}
 
@@ -305,7 +311,7 @@ void _HUD::Update(double FrameTime, float Radius) {
 }
 
 // Draw phase
-void _HUD::Render(bool FullMap) {
+void _HUD::Render(const ae::_Camera *Camera, bool FullMap) {
 
 	// Set labels
 	ae::Assets.Elements["label_hud_offhand_switch_key"]->Text = ae::Actions.GetInputNameForAction(Action::GAME_WEAPONSWITCH);
@@ -468,7 +474,14 @@ void _HUD::Render(bool FullMap) {
 			}
 		}
 
-		CursorOverItem->DrawTooltip(Player, CompareSlot, CursorInventorySlot, ae::Input.GetMouse());
+		// Draw cursor over item
+		glm::vec2 CursorOverPosition;
+		if(CursorOverWorld)
+			Camera->ConvertWorldToScreen(CursorOverItem->Position, CursorOverPosition);
+		else
+			CursorOverPosition = ae::Input.GetMouse();
+
+		CursorOverItem->DrawTooltip(Player, CompareSlot, CursorInventorySlot, CursorOverPosition);
 	}
 
 	// Draw full map

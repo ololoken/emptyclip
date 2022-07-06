@@ -64,6 +64,8 @@ _PlayState::_PlayState() {
 	GodMode = false;
 	DebugMode = false;
 	FromEditor = false;
+	LastClosestItem = nullptr;
+	ClosestItemTimer = 0.0;
 }
 
 // Load level and set up objects
@@ -175,12 +177,12 @@ bool _PlayState::HandleAction(int InputType, size_t Action, int Value) {
 	if(!Player->IsDying()) {
 		switch(Action) {
 			case Action::GAME_INVENTORY:
-				HUD->SetInventoryOpen(!HUD->GetInventoryOpen());
+				HUD->SetInventoryOpen(!HUD->InventoryOpen);
 				Player->SetAiming(false);
 				Player->SetSprinting(false);
 			break;
 			case Action::GAME_FIRE:
-				if(!HUD->GetInventoryOpen() && !Player->IsMeleeAttacking()) {
+				if(!HUD->InventoryOpen && !Player->IsMeleeAttacking()) {
 
 					// Use melee weapon if player has no main hand
 					int AttackType = WEAPONATTACK_MAIN;
@@ -202,7 +204,7 @@ bool _PlayState::HandleAction(int InputType, size_t Action, int Value) {
 				}
 			break;
 			case Action::GAME_MELEE:
-				if(!HUD->GetInventoryOpen()) {
+				if(!HUD->InventoryOpen) {
 					if(Player->Reloading)
 						Player->CancelReloading();
 
@@ -253,7 +255,7 @@ bool _PlayState::HandleKey(const ae::_KeyEvent &KeyEvent) {
 					Player->Respawn();
 				}
 				else if(!Player->IsDying()) {
-					if(HUD->GetInventoryOpen()) {
+					if(HUD->InventoryOpen) {
 						HUD->SetInventoryOpen(false);
 					}
 					else if(TestMode) {
@@ -389,8 +391,10 @@ void _PlayState::Update(double FrameTime) {
 	if(IsPaused()) {
 		Menu.Update(FrameTime);
 		ae::Graphics.SetCursor(true);
-		if(HUD)
+		if(HUD) {
 			HUD->CursorOverItem = nullptr;
+			HUD->CursorOverWorld = false;
+		}
 
 		return;
 	}
@@ -426,7 +430,7 @@ void _PlayState::Update(double FrameTime) {
 			Player->MoveState = MOVE_NONE;
 
 		// Attack or aim
-		if(!HUD->GetInventoryOpen()) {
+		if(!HUD->InventoryOpen) {
 
 			// Attack again
 			if(!Player->IsMeleeAttacking() && Player->FireRateType[WEAPONATTACK_MAIN] == FIRERATE_AUTO && ae::Actions.State[Action::GAME_FIRE].Value > 0.0f) {
@@ -459,7 +463,8 @@ void _PlayState::Update(double FrameTime) {
 
 	// Find nearest items
 	std::unordered_map<_Object *, int> NearbyItems;
-	Map->GetCloseObjects(Player->Position, Player->Radius, GRID_ITEM, NearbyItems);
+	_Object *ClosestItem = nullptr;
+	Map->GetCloseObjects(Player->Position, Player->Radius, GRID_ITEM, NearbyItems, &ClosestItem);
 	for(auto &Iterator : NearbyItems) {
 		_Item *NearbyItem = (_Item *)Iterator.first;
 
@@ -544,9 +549,24 @@ void _PlayState::Update(double FrameTime) {
 	// Update the HUD
 	HUD->Update(FrameTime, Player->GetCrosshairRadius(WorldCursor));
 
+	// Show item tooltip when standing over item
+	if(!HUD->InventoryOpen && ClosestItem && ClosestItem == LastClosestItem && ClosestItem->Type != _Object::AMMO) {
+		ClosestItemTimer += FrameTime;
+		if(!HUD->CursorOverItem && ClosestItemTimer >= HUD_STANDOVER_TIME) {
+			HUD->CursorOverItem = (_Item *)ClosestItem;
+			HUD->CursorOverWorld = true;
+		}
+	}
+	else
+		ClosestItemTimer = 0.0;
+
+	LastClosestItem = ClosestItem;
+
 	// Set cursor item
-	if(!ae::Graphics.Element->HitElement && CursorItem && !HUD->CursorOverItem && (HUD->GetInventoryOpen() || CursorItemTimer > HUD_CURSOR_ITEM_WAIT))
+	if(!ae::Graphics.Element->HitElement && CursorItem && (!HUD->CursorOverItem || ClosestItem == HUD->CursorOverItem) && (HUD->InventoryOpen || CursorItemTimer > HUD_CURSOR_ITEM_WAIT || ClosestItemTimer >= HUD_STANDOVER_TIME)) {
 		HUD->CursorOverItem = CursorItem;
+		HUD->CursorOverWorld = false;
+	}
 
 	ae::Audio.SetPosition(glm::vec3(Player->Position.x, 10, Player->Position.y));
 }
@@ -697,7 +717,7 @@ void _PlayState::Render(double BlendFactor) {
 	}*/
 
 	// Render HUD
-	HUD->Render(ae::FocusedElement == nullptr && ae::Actions.State[Action::GAME_MAP].Value > 0.0f);
+	HUD->Render(Camera, ae::FocusedElement == nullptr && ae::Actions.State[Action::GAME_MAP].Value > 0.0f);
 
 	// Debug mode
 	if(DebugMode) {
@@ -885,22 +905,26 @@ void _PlayState::ResolveAttack(_Entity *Attacker, int GridType) {
 }
 
 // Places an item into the player's inventory
-void _PlayState::PickupObject(_Item *NearbyItem, int &AmountAdded) {
-	if(!NearbyItem)
+void _PlayState::PickupObject(_Item *Item, int &AmountAdded) {
+	if(!Item)
 		return;
 
 	// Attempt to add item
-	int AddResult = Player->AddItem(NearbyItem, AmountAdded);
+	int AddResult = Player->AddItem(Item, AmountAdded);
 	if(AddResult) {
 		Player->ResetUseTimer();
-		Map->RemoveItem(NearbyItem);
+		Map->RemoveItem(Item);
 		if(AddResult == 2) {
-			delete NearbyItem;
+			delete Item;
 			CursorItemTimer = 0;
 		}
 	}
-	else
-		HUD->ShowTextMessage(HUD_INVENTORYFULLMESSAGE, HUD_INVENTORYFULLTIME);
+	else {
+		if(Item->Type == _Object::AMMO)
+			HUD->ShowTextMessage("AMMO FULL", HUD_INVENTORYFULLTIME);
+		else
+			HUD->ShowTextMessage("INVENTORY FULL", HUD_INVENTORYFULLTIME);
+	}
 }
 
 // Processes the use key to open doors, hit switches, and pickup items
