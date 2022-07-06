@@ -72,7 +72,8 @@ _EditorState::_EditorState() :
 	SavedCheckpointIndex(-1),
 	MapFilename(""),
 	SavedLayer(-1),
-	SavedPalette(-1) {
+	SavedPalette(-1),
+	SavedHighlightBlocks(false) {
 
 }
 
@@ -145,12 +146,16 @@ void _EditorState::Init() {
 
 	if(SavedCheckpointIndex != -1)
 		CheckpointIndex = SavedCheckpointIndex;
+
+	if(SavedHighlightBlocks)
+		HighlightBlocks = SavedHighlightBlocks;
 }
 
 void _EditorState::Close() {
 	Camera->GetDrawPosition(0, SavedCameraPosition);
 	SavedLayer = EditLayer;
 	SavedPalette = EditMode;
+	SavedHighlightBlocks = HighlightBlocks;
 	SavedCheckpointIndex = CheckpointIndex;
 
 	for(int i = 0; i < EDITMODE_COUNT; i++)
