@@ -4,7 +4,7 @@ key_boss	0	0	0	0	0	0	0	1
 ammo_pistol	1	0	0	0	0	0	10	0
 ammo_shells	1	0	0	0	0	0	10	0
 ammo_rifle	1	0	0	0	0	0	10	0
-ammo_heavy	1	0	0	0	0	0	10	0
+ammo_heavy	0	0	0	0	0	0	10	0
 medkit	0	1	0	0	0	0	10	0
 weapon_knife	0	0	0	1	0	0	1	0
 weapon_pistol	0	0	1	0	0	0	1	0
