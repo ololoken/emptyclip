@@ -16,6 +16,8 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 *******************************************************************************/
 #include <menu.h>
+#include <states/play.h>
+#include <states/null.h>
 #include <objects/player.h>
 #include <ae/input.h>
 #include <ae/actions.h>
@@ -23,16 +25,17 @@
 #include <ae/assets.h>
 #include <ae/graphics.h>
 #include <ae/animation.h>
+#include <ae/util.h>
 #include <ae/ui.h>
+#include <ae/audio.h>
 #include <actiontype.h>
 #include <constants.h>
 #include <gameassets.h>
 #include <config.h>
 #include <framework.h>
 #include <version.h>
-#include <states/play.h>
-#include <states/null.h>
 #include <sstream>
+#include <iomanip>
 #include <SDL_mouse.h>
 
 _Menu Menu;
@@ -134,6 +137,8 @@ void _Menu::InitOptions() {
 	RefreshInputLabels();
 	CurrentAction = -1;
 
+	UpdateOptions();
+
 	OptionsState = OPTION_NONE;
 	State = STATE_OPTIONS;
 }
@@ -196,6 +201,46 @@ void _Menu::LaunchGame() {
 
 	SaveSlots[SelectedSlot]->Checked = false;
 	State = STATE_NONE;
+}
+
+// Update option elements
+void _Menu::UpdateOptions() {
+	std::stringstream Buffer;
+	Buffer << std::fixed << std::setprecision(2);
+
+	// Set sound volume
+	Buffer << Config.SoundVolume;
+	ae::Assets.Elements["label_menu_options_soundvolume_value"]->Text = Buffer.str();
+	Buffer.str("");
+
+	ae::Assets.Elements["button_menu_options_soundvolume"]->SetOffsetPercent(glm::vec2(Config.SoundVolume, 0));
+}
+
+// Update config and audio volumes from options
+void _Menu::UpdateVolume() {
+	ae::_Element *SoundSlider = ae::Assets.Elements["element_menu_options_soundvolume"];
+	ae::_Element *SoundVolume = ae::Assets.Elements["label_menu_options_soundvolume_value"];
+	ae::_Element *SoundButton = ae::Assets.Elements["button_menu_options_soundvolume"];
+
+	// Handle clicking inside slider elements
+	if(!SoundButton->PressedElement && SoundSlider->PressedElement) {
+		SoundButton->PressedOffset = SoundButton->Size / 2.0f;
+		SoundButton->PressedElement = SoundButton;
+	}
+
+	// Update volume
+	if(SoundButton->PressedElement) {
+
+		// Convert slider percent to number
+		std::stringstream Buffer;
+		Buffer << std::fixed << std::setprecision(2) << SoundButton->GetOffsetPercent().x;
+		SoundVolume->Text = Buffer.str();
+		Buffer.str("");
+
+		// Set volumes
+		Config.SoundVolume = ae::ToNumber<float>(SoundVolume->Text);
+		ae::Audio.SetSoundVolume(Config.SoundVolume);
+	}
 }
 
 // Shutdown
@@ -422,6 +467,9 @@ void _Menu::Update(double FrameTime) {
 				}
 			}
 		} break;
+		case STATE_OPTIONS:
+			UpdateVolume();
+		break;
 		default:
 		break;
 	}

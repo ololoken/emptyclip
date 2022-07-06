@@ -103,6 +103,8 @@ class _Menu {
 		void InitNewPlayer();
 		void LaunchGame();
 
+		void UpdateOptions();
+		void UpdateVolume();
 		void RefreshInputLabels();
 		void RefreshSaveSlots();
 		void CancelCreate();
