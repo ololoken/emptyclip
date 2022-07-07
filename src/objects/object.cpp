@@ -21,6 +21,7 @@
 #include <stats.h>
 #include <glm/geometric.hpp>
 #include <glm/gtx/rotate_vector.hpp>
+#include <glm/gtx/norm.hpp>
 
 // Constructor
 _Object::_Object(const _ObjectTemplate &ObjectTemplate) :
@@ -118,4 +119,104 @@ void _Object::SetPosition(const glm::vec2 &NewPosition) {
 // Get direction of object as a unit vector
 glm::vec2 _Object::GetDirectionVector(float RotationOffset) const {
 	return glm::rotate(glm::vec2(0, -1), glm::radians(Rotation + RotationOffset));
+}
+
+// Returns a t value for when a ray intersects the object
+float _Object::RayIntersection(const glm::vec2 &Origin, const glm::vec2 &Direction) const {
+
+	if(Circle) {
+
+		// Ray circle test
+		glm::vec2 Offset = Origin - glm::vec2(Position);
+		float B = glm::dot(Offset, Direction);
+		float C = glm::dot(Offset, Offset) - Radius * Radius;
+
+		// Ray pointing away from circle and not inside
+		if(C > 0.0f && B > 0.0f)
+			return HUGE_VAL;
+
+		// Ray missed circle
+		float Discriminant = B * B - C;
+		if(Discriminant < 0.0f)
+			return HUGE_VAL;
+
+		// Find intersect time
+		float Time = -B - std::sqrt(Discriminant);
+		if(Time < 0.0f)
+		   Time = 0.0f;
+
+		return Time;
+
+	}
+	else {
+
+		// Ray AABB test
+		float TimeMin = 0.0f;
+		float TimeMax = HUGE_VAL;
+		for(int i = 0; i < 2; i++) {
+			float AABBMin = Position[i] - Radius;
+			float AABBMax = Position[i] + Radius;
+			if(std::abs(Direction[i]) == 0.0f) {
+				if(Origin[i] < AABBMin || Origin[i] > AABBMax)
+					return HUGE_VAL;
+			}
+			else {
+
+				float OneOverDirection =  1.0f / Direction[i];
+				float HitTimeMin = (AABBMin - Origin[i]) * OneOverDirection;
+				float HitTimeMax = (AABBMax - Origin[i]) * OneOverDirection;
+
+				if(HitTimeMin > HitTimeMax)
+					std::swap(HitTimeMin, HitTimeMax);
+
+				TimeMin = std::max(TimeMin, HitTimeMin);
+				TimeMax = std::min(TimeMax, HitTimeMax);
+
+				if(TimeMin > TimeMax)
+					return HUGE_VAL;
+			}
+		}
+
+		return TimeMin;
+	}
+
+	return HUGE_VAL;
+}
+
+// Determine if a circle is touching the object
+bool _Object::IsTouchingCircle(const glm::vec2 &CircleCenter, float CircleRadius, float &DistanceSquared) const {
+
+	// Test against circle object
+	if(Circle) {
+		DistanceSquared = glm::distance2(CircleCenter, Position);
+		float RadiiSum = CircleRadius + Radius;
+
+		return DistanceSquared < RadiiSum * RadiiSum;
+	}
+	// Test against AABB object
+	else {
+		glm::vec2 ClosetPoint = CircleCenter;
+
+		// Get AABB of object
+		float AABB[4] = {
+			Position.x - Radius,
+			Position.y - Radius,
+			Position.x + Radius,
+			Position.y + Radius
+		};
+
+		// Get closest point on AABB
+		if(ClosetPoint.x < AABB[0])
+			ClosetPoint.x = AABB[0];
+		if(ClosetPoint.y < AABB[1])
+			ClosetPoint.y = AABB[1];
+		if(ClosetPoint.x > AABB[2])
+			ClosetPoint.x = AABB[2];
+		if(ClosetPoint.y > AABB[3])
+			ClosetPoint.y = AABB[3];
+
+		// Test circle collision with point
+		float DistanceSquared = glm::distance2(ClosetPoint, CircleCenter);
+		return DistanceSquared < CircleRadius * CircleRadius;
+	}
 }

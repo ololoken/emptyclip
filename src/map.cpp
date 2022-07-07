@@ -661,13 +661,30 @@ void _Map::CheckEntityCollisionsInGrid(const glm::vec2 &Position, float Radius, 
 }
 
 // Checks for melee collisions with entities in the collision grid
-void _Map::CheckMeleeCollisions(_Entity *Attacker, const glm::vec2 &Direction, int GridType, int Penetration, std::vector<_Hit> &Hits) const {
+void _Map::CheckMeleeCollisions(_Entity *Attacker, int GridType, int Penetration, std::vector<_Hit> &Hits) const {
 	if(!Data)
 		throw std::runtime_error("Tile data uninitialized!");
 
 	// Get the object's bounding rectangle
 	_TileBounds TileBounds;
 	GetTileBounds(Attacker->Position, Attacker->AttackRange[Attacker->AttackRequestType], TileBounds);
+
+	// Set up player attacking calculations
+	float AttackRange = Attacker->AttackRange[Attacker->AttackRequestType];
+	glm::vec2 LeftLineStart;
+	glm::vec2 RightLineStart;
+	glm::vec2 Direction;
+	if(Attacker->Type == _Object::PLAYER) {
+
+		// Get attacker direction and normal
+		Direction = Attacker->GetDirectionVector();
+		glm::vec2 NormalDirection(-Direction.y, Direction.x);
+
+		// Get starting points of attack ranges
+		float AttackWidth = Attacker->AttackWidth[Attacker->AttackRequestType];
+		LeftLineStart = Attacker->Position - NormalDirection * AttackWidth;
+		RightLineStart = Attacker->Position + NormalDirection * AttackWidth;
+	}
 
 	// Check tiles for objects
 	std::unordered_map<_Entity *, int> CheckedEntities(10);
@@ -687,54 +704,39 @@ void _Map::CheckMeleeCollisions(_Entity *Attacker, const glm::vec2 &Direction, i
 				if(Entity->IsDying())
 					continue;
 
-				// Get melee range
-				float AttackRange = Attacker->AttackRange[Attacker->AttackRequestType];
-
-				// Check circle intersection
-				float DistanceSquared = glm::distance2(Attacker->Position, Entity->Position);
-				glm::vec2 ClosetPoint;
-				if(Entity->Circle) {
-					ClosetPoint = Entity->Position;
-					float RadiiSum = AttackRange + Entity->Radius;
-					if(DistanceSquared >= RadiiSum * RadiiSum)
-						continue;
-				}
-				// Check AABB collision
-				else {
-					ClosetPoint = Attacker->Position;
-
-					// Get AABB of object
-					float AABB[4] = {
-						Entity->Position.x - Entity->Radius,
-						Entity->Position.y - Entity->Radius,
-						Entity->Position.x + Entity->Radius,
-						Entity->Position.y + Entity->Radius
-					};
-
-					// Get closest point on AABB
-					if(ClosetPoint.x < AABB[0])
-						ClosetPoint.x = AABB[0];
-					if(ClosetPoint.y < AABB[1])
-						ClosetPoint.y = AABB[1];
-					if(ClosetPoint.x > AABB[2])
-						ClosetPoint.x = AABB[2];
-					if(ClosetPoint.y > AABB[3])
-						ClosetPoint.y = AABB[3];
-
-					// Test circle collision with point
-					float DistanceSquared = glm::distance2(ClosetPoint, Attacker->Position);
-					if(DistanceSquared >= AttackRange * AttackRange)
-						continue;
-				}
-
-				// Compare angles to closest point
-				glm::vec2 ObjectDirection(glm::normalize(ClosetPoint - Attacker->Position));
-				if(glm::dot(Direction, ObjectDirection) <= cosf(glm::radians(Attacker->MaxAccuracy[Attacker->AttackRequestType] * 0.5f)))
+				// Test if attacker is within attack range
+				float DistanceSquared = HUGE_VAL;
+				if(!Entity->IsTouchingCircle(Attacker->Position, AttackRange, DistanceSquared))
 					continue;
 
-				// Check for walls
-				if(!IsVisible(Attacker->Position, Entity->Position, _Tile::BULLET))
-					continue;
+				// Do additional tests when the player is attacking
+				if(Attacker->Type == _Object::PLAYER) {
+
+					// Test left side
+					float Time = Entity->RayIntersection(LeftLineStart, Direction);
+					if(Time >= AttackRange) {
+
+						// Test right side
+						Time = Entity->RayIntersection(RightLineStart, Direction);
+						if(Time >= AttackRange)
+							continue;
+					}
+
+					// Ray test from right side of weapon width
+
+				/*
+					// Test angle
+					glm::vec2 Direction = Attacker->GetDirectionVector();
+					glm::vec2 ObjectDirection(glm::normalize(Entity->Position - Attacker->Position));
+					std::cout << glm::dot(Direction, CenterDirection) << std::endl;
+					if(glm::dot(Direction, CenterDirection) <= cosf(glm::radians(Attacker->MaxAccuracy[Attacker->AttackRequestType] * 0.5f)))
+						continue;
+				*/
+
+					// Check for walls
+					if(!IsVisible(Attacker->Position, Entity->Position, _Tile::BULLET))
+						continue;
+				}
 
 				// Add to potential hits
 				_Hit Hit(HIT_OBJECT);
@@ -860,7 +862,7 @@ void _Map::CheckBulletCollisions(const glm::vec2 &Position, const glm::vec2 &Dir
 				if(Entity->IsDying() || HitObjects.find(Entity) != HitObjects.end())
 					continue;
 
-				float Distance = RayObjectIntersection(Position, Direction, Entity);
+				float Distance = Entity->RayIntersection(Position, Direction);
 				if(Distance < MinDistance && Distance > 0.0f) {
 					Hit.Object = Entity;
 					MinDistance = Distance;
@@ -942,27 +944,6 @@ void _Map::CheckBulletCollisions(const glm::vec2 &Position, const glm::vec2 &Dir
 
 	Hit.Position = WallHitPosition + Position;
 	Hits.push_back(Hit);
-}
-
-// Returns a t value for when a ray intersects a circle
-float _Map::RayObjectIntersection(const glm::vec2 &Origin, const glm::vec2 &Direction, const _Object *Object) const {
-
-	glm::vec2 Vector2EMinusC(Origin - Object->Position);
-	float QuantityDDotD = glm::dot(Direction, Direction);
-	float QuantityDDotEMC = glm::dot(Direction, Vector2EMinusC);
-	float Discriminant = QuantityDDotEMC * QuantityDDotEMC - QuantityDDotD * (glm::dot(Vector2EMinusC, Vector2EMinusC) - Object->Radius * Object->Radius);
-	if(Discriminant >= 0) {
-		float ProductRayOMinusC = glm::dot(Direction * -1.0f, Vector2EMinusC);
-		float SqrtDiscriminant = sqrt(Discriminant);
-
-		float TMinus = (ProductRayOMinusC - SqrtDiscriminant) / QuantityDDotD;
-		if(TMinus > 0)
-			return TMinus;
-		else
-			return (ProductRayOMinusC + SqrtDiscriminant) / QuantityDDotD;
-	}
-	else
-		return HUGE_VAL;
 }
 
 // Determines if two positions are mutually visible
@@ -1707,15 +1688,6 @@ int _Map::RenderForeground() {
 	}
 
 	return Count;
-}
-
-// Render entities and items
-void _Map::RenderObjects(double BlendFactor) {
-	ae::Assets.Programs["pos_uv"]->ResetTextureTransform();
-	ae::Graphics.SetProgram(ae::Assets.Programs["pos_uv"]);
-	ae::Graphics.SetDepthMask(false);
-	ae::Graphics.SetDepthTest(true);
-	ObjectManager->Render(BlendFactor);
 }
 
 // Render map decals

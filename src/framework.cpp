@@ -369,6 +369,7 @@ void _Framework::LoadAssets() {
 	ae::Assets.LoadTextureDirectory("textures/hud_repeat/", false, true, false);
 	ae::Assets.LoadTextureDirectory("textures/icons/", false, false, false);
 	ae::Assets.LoadTextureDirectory("textures/items/", false, false, true);
+	ae::Assets.LoadTextureDirectory("textures/melee/", false, false, true);
 	ae::Assets.LoadTextureDirectory("textures/menu/", false, false, false);
 	ae::Assets.LoadTextureDirectory("textures/particles/", false, false, false);
 	ae::Assets.LoadTextureDirectory(MAP_TEXTURE_PATH, false, true, true);

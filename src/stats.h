@@ -71,6 +71,7 @@ struct _ObjectTemplate {
 
 	std::string Name;
 	std::string IconID;
+	std::string MeleeID;
 	std::string AmmoID;
 	std::string AnimationID;
 	std::string SoundGroupID;

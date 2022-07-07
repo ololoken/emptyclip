@@ -549,6 +549,10 @@ void _PlayState::Update(double FrameTime) {
 	// Update the HUD
 	HUD->Update(FrameTime, Player->GetCrosshairRadius(WorldCursor));
 
+	// Reset timer if player isn't idle
+	if(Player->Action != ACTION_IDLE)
+		ClosestItemTimer = 0.0;
+
 	// Show item tooltip when standing over item
 	if(!HUD->InventoryOpen && ClosestItem && ClosestItem == LastClosestItem && ClosestItem->Type != _Object::AMMO) {
 		ClosestItemTimer += FrameTime;
@@ -623,7 +627,7 @@ void _PlayState::Render(double BlendFactor) {
 	BlockRenderCount += Map->RenderWalls();
 
 	// Draw objects
-	Map->RenderObjects(BlendFactor);
+	Map->ObjectManager->Render(BlendFactor);
 
 	// Draw the rest of the walls
 	BlockRenderCount += Map->RenderWalls();
@@ -673,10 +677,20 @@ void _PlayState::Render(double BlendFactor) {
 			ae::Graphics.SetColor(Color);
 			ae::Graphics.DrawCircle(glm::vec3(Player->Position, 0), Range);
 
-			glm::vec2 LeftLine = Player->Position + Player->GetDirectionVector(-Player->MaxAccuracy[i] * 0.5f) * Range;
-			glm::vec2 RightLine = Player->Position + Player->GetDirectionVector(Player->MaxAccuracy[i] * 0.5f) * Range;
-			ae::Graphics.DrawLine(Player->Position, LeftLine);
-			ae::Graphics.DrawLine(Player->Position, RightLine);
+			glm::vec2 Direction = Player->GetDirectionVector();
+			glm::vec2 NormalDirection(-Direction.y, Direction.x);
+
+			glm::vec2 LeftLineStart = Player->Position - NormalDirection * Player->AttackWidth[i];
+			glm::vec2 LeftLineEnd = LeftLineStart + Direction * Range;
+			ae::Graphics.DrawLine(LeftLineStart, LeftLineEnd);
+
+			glm::vec2 RightLineStart = Player->Position + NormalDirection * Player->AttackWidth[i];
+			glm::vec2 RightLineEnd = RightLineStart + Direction * Range;
+			ae::Graphics.DrawLine(RightLineStart, RightLineEnd);
+			//glm::vec2 LeftLine = Player->Position + Player->GetDirectionVector(-Player->MaxAccuracy[i] * 0.5f) * Range;
+			//glm::vec2 RightLine = Player->Position + Player->GetDirectionVector(Player->MaxAccuracy[i] * 0.5f) * Range;
+			//ae::Graphics.DrawLine(Player->Position, LeftLine);
+			//ae::Graphics.DrawLine(Player->Position, RightLine);
 		}
 
 		ae::Graphics.SetDepthTest(true);
@@ -815,7 +829,7 @@ void _PlayState::ResolveAttack(_Entity *Attacker, int GridType) {
 
 		// Check weapon type
 		if(WeaponType == WEAPON_MELEE) {
-			Map->CheckMeleeCollisions(Attacker, Attacker->GetDirectionVector(), GridType, Attacker->Penetration[Attacker->AttackRequestType], Hits);
+			Map->CheckMeleeCollisions(Attacker, GridType, Attacker->Penetration[Attacker->AttackRequestType], Hits);
 		}
 		else {
 

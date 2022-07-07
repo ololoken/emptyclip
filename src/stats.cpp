@@ -200,6 +200,7 @@ void _Stats::LoadWeapons(const std::string &Path) {
 		std::getline(File, ID, '\t');
 		std::getline(File, Template.Name, '\t');
 		std::getline(File, Template.IconID, '\t');
+		std::getline(File, Template.MeleeID, '\t');
 		std::getline(File, SoundGroupID, '\t');
 		std::getline(File, WeaponParticlesID, '\t');
 		std::getline(File, Template.AmmoID, '\t');
@@ -225,7 +226,8 @@ void _Stats::LoadWeapons(const std::string &Path) {
 			>> Template.Attributes["attack_count"].Int
 			>> Template.Attributes["rounds"].Int
 			>> Template.Attributes["penetration"].Int
-			>> Template.Attributes["attack_movespeed"].Float;
+			>> Template.Attributes["attack_movespeed"].Float
+			>> Template.Attributes["melee_width"].Float;
 
 		File.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
@@ -610,6 +612,7 @@ _Item *_Stats::CreateItem(const std::string &ID, int Level, int Quality, int Cou
 			Item->Attributes["range"].Float = Template.Attributes["range"].Float;
 			Item->Attributes["fire_rate"].Int = Template.Attributes["fire_rate"].Int;
 			Item->Attributes["attack_movespeed"].Float = Template.Attributes["attack_movespeed"].Float;
+			Item->Attributes["attack_width"].Float = Template.Attributes["melee_width"].Float;
 			Item->SetMaxMods(RandomStats);
 
 			Item->Attributes["ammo"].Int = Template.Attributes.at("rounds").Int;
@@ -659,7 +662,7 @@ _Monster *_Stats::CreateMonster(const std::string &ID, int Level, const glm::vec
 	Monster->MinAccuracy = Template.Attributes.at("accuracy").Int;
 	for(int i = 0; i < WEAPONATTACK_COUNT; i++) {
 		Monster->GetAttributeRange("damage", 1.0f, Monster->MinDamage[i], Monster->MaxDamage[i]);
-		Monster->FirePeriod[i] = Template.Attributes.at("attack_period").Double;
+		Monster->AttackPeriod[i] = Template.Attributes.at("attack_period").Double;
 		Monster->MaxAccuracy[i] = Template.Attributes.at("accuracy").Int;
 		Monster->AttackRange[i] = Template.Attributes.at("attack_range").Float;
 		Monster->AttackMoveSpeed[i] = Template.Attributes.at("attack_movespeed").Float;

@@ -63,8 +63,9 @@ _Entity::_Entity(const _ObjectTemplate &EntityTemplate) :
 	RecoilModifier(1.0f),
 	MoveRecoil(0.0f),
 	AttackRange{0, 0},
-	FireTimer{0, 0},
-	FirePeriod{0, 0},
+	AttackTimer{0, 0},
+	AttackPeriod{0, 0},
+	AttackWidth{0, 0},
 	AttackCount{1, 1},
 	AttackRequestType(0),
 	AttackRequested(false),
@@ -184,11 +185,11 @@ void _Entity::Update(double FrameTime) {
 	LastPosition = Position;
 
 	for(int i = 0; i < WEAPONATTACK_COUNT; i++)
-		FireTimer[i] += FrameTime;
+		AttackTimer[i] += FrameTime;
 
 	// Check timer to see if the object can attack
 	for(int i = 0; i < WEAPONATTACK_COUNT; i++) {
-		if(!AttackAllowed[i] && FireTimer[i] >= FirePeriod[i])
+		if(!AttackAllowed[i] && AttackTimer[i] >= AttackPeriod[i])
 			AttackAllowed[i] = true;
 	}
 
@@ -225,7 +226,7 @@ void _Entity::UpdateAnimation(double FrameTime, bool PlaySound) {
 			Animation->Stop();
 			Animation->Play(MeleeAnimation);
 			if(Type == _Object::PLAYER)
-				Animation->FramePeriod = FirePeriod[WEAPONATTACK_MELEE] / (Animation->Reels[MeleeAnimation]->EndFrame + 1);
+				Animation->FramePeriod = AttackPeriod[WEAPONATTACK_MELEE] / (Animation->Reels[MeleeAnimation]->EndFrame + 1);
 			SetLegAnimationPlayMode(ae::_Animation::STOPPED);
 
 			Action = ACTION_MELEE;
@@ -237,7 +238,6 @@ void _Entity::UpdateAnimation(double FrameTime, bool PlaySound) {
 				SetAnimationPlaybackSpeedFactor();
 
 				Action = ACTION_IDLE;
-				AttackMade = true;
 			}
 		break;
 		case ACTION_STARTSHOOT:
@@ -249,7 +249,7 @@ void _Entity::UpdateAnimation(double FrameTime, bool PlaySound) {
 				Animation->Stop();
 				Animation->Play(ShootingTwohandAnimation);
 			}
-			Animation->FramePeriod = FirePeriod[WEAPONATTACK_MAIN];
+			Animation->FramePeriod = AttackPeriod[WEAPONATTACK_MAIN];
 
 			Action = ACTION_SHOOT;
 			AttackMade = true;
@@ -286,9 +286,14 @@ void _Entity::UpdateAnimation(double FrameTime, bool PlaySound) {
 	int LastFrame = Animation->Frame;
 	Animation->Update(FrameTime);
 
-	// Play move sound on first and last frame of animation
-	if(Animation->Reel == (size_t)WalkingAnimation && PositionChanged && Action == ACTION_MOVING && PlaySound && LastFrame != Animation->Frame && (Animation->Frame == 0 || Animation->Frame == Animation->Reels[Animation->Reel]->EndFrame))
-		ae::Audio.PlaySound(GetSound(SOUND_MOVE, -1), glm::vec3(Position.x, 0.0f, Position.y));
+	if(LastFrame != Animation->Frame) {
+		if(Action == ACTION_MELEE && Animation->Frame == 1)
+			AttackMade = true;
+
+		// Play move sound on first and last frame of animation
+		if(Animation->Reel == (size_t)WalkingAnimation && PositionChanged && Action == ACTION_MOVING && PlaySound && (Animation->Frame == 0 || Animation->Frame == Animation->Reels[Animation->Reel]->EndFrame))
+			ae::Audio.PlaySound(GetSound(SOUND_MOVE, -1), glm::vec3(Position.x, 0.0f, Position.y));
+	}
 }
 
 // Updates the entity's accuracy according to the weapon's recoil
@@ -442,7 +447,6 @@ void _Entity::Render(double BlendFactor) {
 	glm::vec2 DrawPosition(Position * (float)BlendFactor + LastPosition * (float)(1.0f - BlendFactor));
 
 	ae::Graphics.SetColor(Color);
-	ae::Assets.Programs["pos_uv"]->ResetTextureTransform();
 	ae::Graphics.DrawAnimationFrame(
 		glm::vec3(DrawPosition, PositionZ),
 		Animation->Reels[Animation->Reel]->Texture,
@@ -450,6 +454,19 @@ void _Entity::Render(double BlendFactor) {
 		Rotation,
 		glm::vec2(Scale)
 	);
+
+	/*
+	ae::Graphics.SetProgram(ae::Assets.Programs["pos"]);
+	ae::Graphics.SetDepthMask(false);
+	ae::Graphics.SetDepthTest(false);
+	ae::Graphics.SetColor(COLOR_WHITE);
+	if(Circle)
+		ae::Graphics.DrawCircle(glm::vec3(DrawPosition, 0), Radius);
+	else
+		ae::Graphics.DrawRectangle3D(Position - glm::vec2(Radius), Position + glm::vec2(Radius), false);
+	ae::Graphics.SetDepthTest(true);
+	ae::Graphics.SetProgram(ae::Assets.Programs["pos_uv"]);
+	*/
 }
 
 // Update current health

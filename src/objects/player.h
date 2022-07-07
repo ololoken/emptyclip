@@ -136,6 +136,7 @@ class _Player : public _Entity {
 
 		// Animation
 		ae::_Animation *LegAnimation;
+		const ae::_Texture *MeleeTexture;
 		std::string ColorID;
 		float LegDirection;
 		bool Aiming;

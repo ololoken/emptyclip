@@ -32,6 +32,8 @@
 #include <algorithm>
 #include <glm/geometric.hpp>
 #include <glm/trigonometric.hpp>
+#include <glm/ext/scalar_constants.hpp>
+#include <glm/gtx/rotate_vector.hpp>
 
 // Constructor
 _Player::_Player(const _ObjectTemplate &PlayerTemplate) :
@@ -76,16 +78,23 @@ _Player::~_Player() {
 	DeleteItems();
 }
 
+// Deletes the item objects
+void _Player::DeleteItems() {
+	for(int i = 0; i < INVENTORY_SIZE; i++) {
+		delete Inventory[i];
+		Inventory[i] = nullptr;
+	}
+}
+
 // Resets the player state
 void _Player::Reset() {
-
-	// Set stats
 	Kills = 0;
 	Deaths = 0;
 	PlayTime = 0;
 	Radius = PLAYER_RADIUS;
 	Name = "test";
 	ColorID = "white";
+	Color = glm::vec4(1.0f);
 	Level = 1;
 	Gold = 0;
 	Experience = 0;
@@ -96,15 +105,6 @@ void _Player::Reset() {
 	DropRate = 100;
 	PickupModifier = 1.0f;
 	HealModifier = 1.0f;
-
-	for(int i = 0; i < SKILL_COUNT; i++)
-		Skills[i] = 0;
-
-	DeleteItems();
-	Ammo.clear();
-	Keys.clear();
-
-	// Reset state
 	MapID = GAME_STARTLEVEL;
 	CheckpointIndex = 0;
 	Progression = 0;
@@ -117,9 +117,7 @@ void _Player::Reset() {
 	AttackRequested = false;
 	UseRequested = false;
 	MedkitRequested = false;
-	for(int i = 0; i < WEAPONATTACK_COUNT; i++)
-		AttackAllowed[i] = true;
-
+	MeleeTexture = nullptr;
 	UsePeriod = PLAYER_USEPERIOD;
 	ZoomScale = PLAYER_ZOOMSCALE;
 	LegDirection = 0.0f;
@@ -132,28 +130,129 @@ void _Player::Reset() {
 	WeaponSwitchFrom = -1;
 	WeaponSwitchTo = -1;
 	Stamina = 100.0f;
+	for(int i = 0; i < WEAPONATTACK_COUNT; i++)
+		AttackAllowed[i] = true;
+	for(int i = 0; i < SKILL_COUNT; i++)
+		Skills[i] = 0;
+
+	DeleteItems();
+	Ammo.clear();
+	Keys.clear();
 
 	CalculateExperienceStats();
 	CalculateSkillsRemaining();
-	UpdateColor();
+	RecalculateStats();
+	ResetWeaponAnimation();
+	StopAudio();
 
 	Animation->Play(0);
 	Animation->Stop();
 	LegAnimation->Stop();
 
-	RecalculateStats();
-	ResetWeaponAnimation();
-	StopAudio();
-
 	Health = MaxHealth;
 }
 
-// Deletes the item objects
-void _Player::DeleteItems() {
-	for(int i = 0; i < INVENTORY_SIZE; i++) {
-		delete Inventory[i];
-		Inventory[i] = nullptr;
+// Calculates the player's stats from weapons and skills
+void _Player::RecalculateStats() {
+	CalculateExperienceStats();
+	CalculateSkillsRemaining();
+
+	_ObjectTemplate Weapon[WEAPONATTACK_COUNT] = { _Object::WEAPON, _Object::WEAPON };
+	for(int i = 0; i < WEAPONATTACK_COUNT; i++)
+		Weapon[i].Attributes = Stats.WeaponFists->Attributes;
+
+	// See if the player is using a weapon
+	if(HasMainHand()) {
+		Weapon[WEAPONATTACK_MAIN].Attributes = GetMainHand()->Attributes;
+		MainWeaponType = GetMainHand()->Attributes.at("weapon_type").Int;
 	}
+	else
+		MainWeaponType = WEAPON_MELEE;
+
+	// Get stats of melee weapon
+	if(HasMelee()) {
+		Weapon[WEAPONATTACK_MELEE].Attributes = GetMelee()->Attributes;
+		MeleeTexture = ae::Assets.Textures[GetMelee()->Template.MeleeID];
+	}
+	else
+		MeleeTexture =  ae::Assets.Textures[Stats.WeaponFists->Template.MeleeID];
+
+	// Set up main stats based on weapon
+	Recoil = 0;
+	RecoilRegen = 0;
+	MoveRecoil = 0.0f;
+	AttackRange[WEAPONATTACK_MAIN] = Weapon[WEAPONATTACK_MAIN].Attributes["range"].Float;
+	AttackRange[WEAPONATTACK_MELEE] = Weapon[WEAPONATTACK_MELEE].Attributes["range"].Float;
+	if(MainWeaponType == WEAPON_MELEE) {
+		CurrentAccuracyNormal = MinAccuracyNormal = Weapon[WEAPONATTACK_MAIN].Attributes.at("min_accuracy").Int;
+		MaxAccuracyNormal = Weapon[WEAPONATTACK_MAIN].Attributes.at("max_accuracy").Int;
+	}
+	else {
+		float StrengthSkillMultiplier = Stats.GetSkillBonusMultiplier(Skills[SKILL_STRENGTH], SKILL_STRENGTH);
+		float AccuracySkillMultiplier = 1.0f / Stats.GetSkillBonusMultiplier(Skills[SKILL_PERCEPTION], SKILL_PERCEPTION, 1);
+		CurrentAccuracyNormal = MinAccuracyNormal = Weapon[WEAPONATTACK_MAIN].Attributes.at("min_accuracy").Int * AccuracySkillMultiplier;
+		MaxAccuracyNormal = Weapon[WEAPONATTACK_MAIN].Attributes.at("max_accuracy").Int * AccuracySkillMultiplier;
+		Recoil = Weapon[WEAPONATTACK_MAIN].Attributes["recoil"].Float / StrengthSkillMultiplier;
+		RecoilRegen = Weapon[WEAPONATTACK_MAIN].Attributes["recoil_regen"].Float * StrengthSkillMultiplier;
+		MoveRecoil = Weapon[WEAPONATTACK_MAIN].Attributes["move_recoil"].Float / StrengthSkillMultiplier;
+	}
+
+	MaxAccuracy[WEAPONATTACK_MELEE] = Weapon[WEAPONATTACK_MELEE].Attributes.at("max_accuracy").Int * Stats.GetSkillBonusMultiplier(Skills[SKILL_PERCEPTION], SKILL_PERCEPTION);
+
+	// Set accuracy
+	ResetAccuracy(true);
+
+	// Attacking
+	for(int i = 0; i < WEAPONATTACK_COUNT; i++) {
+		float MeleeDamageModifier = 1.0f;
+		if((i == WEAPONATTACK_MAIN && MainWeaponType == WEAPON_MELEE) || i == WEAPONATTACK_MELEE)
+			MeleeDamageModifier = Stats.GetSkillBonusMultiplier(Skills[SKILL_STRENGTH], SKILL_STRENGTH);
+
+		FireRateType[i] = Weapon[i].Attributes["fire_rate"].Int;
+		AttackPeriod[i] = std::max(Weapon[i].Attributes["fire_period"].Double / Stats.GetSkillBonusMultiplier(Skills[SKILL_AGILITY], SKILL_AGILITY), WEAPON_MINFIREPERIOD);
+		MinDamage[i] = std::ceil(Weapon[i].Attributes["min_damage"].Int * MeleeDamageModifier);
+		MaxDamage[i] = std::ceil(Weapon[i].Attributes["max_damage"].Int * MeleeDamageModifier);
+		AttackMoveSpeed[i] = Weapon[i].Attributes["attack_movespeed"].Float;
+		Penetration[i] = Weapon[i].Attributes["penetration"].Int;
+		AttackCount[i] = Weapon[i].Attributes["attack_count"].Int;
+		AttackWidth[i] = Weapon[i].Attributes["attack_width"].Float;
+	}
+	ReloadPeriod = Weapon[WEAPONATTACK_MAIN].Attributes["reload_period"].Double / Stats.GetSkillBonusMultiplier(Skills[SKILL_DEXTERITY], SKILL_DEXTERITY);
+	WeaponSwitchPeriod = PLAYER_WEAPONSWITCHPERIOD / Stats.GetSkillBonusMultiplier(Skills[SKILL_DEXTERITY], SKILL_DEXTERITY);
+	ZoomScale = Weapon[WEAPONATTACK_MAIN].Attributes["zoom_scale"].Float;
+
+	BaseMoveSpeed = 100 + Stats.GetSkill(Skills[SKILL_CUNNING], SKILL_CUNNING);
+	MaxHealth = (int)(Stats.GetLevelHealth(Level) * Stats.GetSkillBonusMultiplier(Skills[SKILL_VITALITY], SKILL_VITALITY));
+	MaxStamina = Stats.GetSkillBonusMultiplier(Skills[SKILL_ENDURANCE], SKILL_ENDURANCE);
+	StaminaRegenModifier = Stats.GetSkillBonusMultiplier(Skills[SKILL_ENDURANCE], SKILL_ENDURANCE);
+	Health = std::clamp(Health, 0, MaxHealth);
+	HealModifier = Stats.GetSkillBonusMultiplier(Skills[SKILL_VITALITY], SKILL_VITALITY, 1);
+
+	// Armor
+	DamageBlock = Stats.GetSkill(Skills[SKILL_FORTITUDE], SKILL_FORTITUDE);
+	DamageResist = std::min((int)Stats.GetSkill(Skills[SKILL_FORTITUDE], SKILL_FORTITUDE, 1), ENTITY_MAX_DAMAGE_RESIST);
+	Attributes["max_ammo"].Int = 100;
+	if(GetArmor()) {
+		DamageBlock += GetArmor()->Attributes.at("damage_block").Int;
+		DamageResist += GetArmor()->Attributes.at("damage_resist").Int;
+		BaseMoveSpeed += GetArmor()->Attributes.at("move_speed").Int;
+		Attributes["max_ammo"].Int += GetArmor()->Attributes.at("max_ammo").Int;
+	}
+
+	// Get final speed
+	MoveSpeed = BaseMoveSpeed * 0.01f * PLAYER_MOVESPEED;
+
+	// Handle max ammo
+	AmmoMax.clear();
+	for(const auto &AmmoType : Stats.AmmoNames) {
+		AmmoMax[AmmoType] = Stats.Objects.at(AmmoType).Attributes["amount_max"].Int * Attributes["max_ammo"].Mult();
+		if(Ammo.find(AmmoType) != Ammo.end())
+			Ammo[AmmoType] = std::min(Ammo[AmmoType], AmmoMax[AmmoType]);
+	}
+
+	// Drop Rate
+	DropRate = 100 + Skills[SKILL_LUCK];
+	PickupModifier = Stats.GetSkillBonusMultiplier(Skills[SKILL_LUCK], SKILL_LUCK, 1);
 }
 
 // Updates the entity's states
@@ -251,33 +350,6 @@ void _Player::UpdateAnimation(double FrameTime, bool PlaySound) {
 
 }
 
-// Determines how much to move the leg direction
-void _Player::AdjustLegDirection(float Destination) {
-	float Distance, Adjust;
-
-	Distance = Destination - LegDirection;
-
-	// Get deltas
-	if(Distance < -180.0f)
-		Adjust = -(Distance + 180.0f) * PLAYER_LEGCHANGEFACTOR;
-	else if(Distance > 180.0f)
-		Adjust = -(Distance - 180.0f) * PLAYER_LEGCHANGEFACTOR;
-	else
-		Adjust = Distance * PLAYER_LEGCHANGEFACTOR;
-
-	// Update leg
-	if(std::abs(Adjust) < 0.1f)
-		LegDirection = Destination;
-	else
-		LegDirection += Adjust;
-
-	// Cap direction
-	if(LegDirection < 0.0f)
-		LegDirection += 360.0f;
-	else if(LegDirection >= 360.0f)
-		LegDirection -= 360.0f;
-}
-
 // Draws the player
 void _Player::Render(double BlendFactor) {
 	glm::vec2 DrawPosition(Position * (float)BlendFactor + LastPosition * (float)(1.0 - BlendFactor));
@@ -292,6 +364,40 @@ void _Player::Render(double BlendFactor) {
 		glm::vec2(Scale)
 	);
 
+	// Draw melee animation
+	if(Action == ACTION_MELEE && MeleeTexture) {
+		float MeleePercent = std::clamp(AttackTimer[AttackRequestType] / AttackPeriod[AttackRequestType], 0.0, 1.0);
+		float MeleeMagnitude = std::sin(MeleePercent * glm::pi<double>());
+
+		// Melee thrust
+		float RenderScale = 0.5f;
+		glm::vec2 MeleePosition = DrawPosition + Direction * (MeleeMagnitude * AttackRange[AttackRequestType] - RenderScale * 0.5f);
+		ae::Assets.Programs["pos_uv"]->ResetTextureTransform();
+		ae::Graphics.SetColor(COLOR_WHITE);
+		ae::Graphics.DrawSprite(glm::vec3(MeleePosition, PositionZ + 0.005f), MeleeTexture, Rotation, glm::vec2(RenderScale));
+	}
+
+	/*
+	// Draw melee swing
+	if(Action == ACTION_MELEE) {
+		double MeleePercent = std::clamp(AttackTimer[1] / AttackPeriod[1], 0.0, 1.0);
+		float MeleeRotation = Rotation + (0.5 - MeleePercent) * MaxAccuracy[WEAPONATTACK_MELEE];
+		if(MeleeRotation < 0)
+			MeleeRotation += 360;
+		else if(MeleeRotation > 360)
+			MeleeRotation -= 360;
+
+		//std::cout << MeleeRotation << " " << AttackTimer[1] << " " << AttackPeriod[1] << std::endl;
+		glm::vec2 MeleeDirection = glm::rotate(glm::vec2(0, -AttackRange[WEAPONATTACK_MELEE]), glm::radians(MeleeRotation));
+		ae::Graphics.SetProgram(ae::Assets.Programs["pos"]);
+		ae::Graphics.SetDepthMask(false);
+		ae::Graphics.SetDepthTest(false);
+		ae::Graphics.SetColor(COLOR_WHITE);
+		ae::Graphics.DrawLine(Position, Position + MeleeDirection);
+		ae::Graphics.SetDepthTest(true);
+	}
+	*/
+
 	// Draw torso
 	ae::Graphics.SetColor(COLOR_WHITE);
 	ae::Graphics.DrawAnimationFrame(
@@ -301,6 +407,16 @@ void _Player::Render(double BlendFactor) {
 		Rotation,
 		glm::vec2(Scale)
 	);
+
+	/*
+	ae::Graphics.SetProgram(ae::Assets.Programs["pos"]);
+	ae::Graphics.SetDepthMask(false);
+	ae::Graphics.SetDepthTest(false);
+	ae::Graphics.SetColor(COLOR_WHITE);
+	ae::Graphics.DrawCircle(glm::vec3(DrawPosition, 0), Radius);
+	ae::Graphics.SetDepthTest(true);
+	ae::Graphics.SetProgram(ae::Assets.Programs["pos_uv"]);
+	*/
 }
 
 // Draws the player in screen space
@@ -328,6 +444,33 @@ void _Player::Render2D(const glm::ivec2 &Position) {
 		Rotation,
 		glm::vec2(WalkTemplate->FrameSize) * ae::_Element::GetUIScale()
 	);
+}
+
+// Determines how much to move the leg direction
+void _Player::AdjustLegDirection(float Destination) {
+	float Distance, Adjust;
+
+	Distance = Destination - LegDirection;
+
+	// Get deltas
+	if(Distance < -180.0f)
+		Adjust = -(Distance + 180.0f) * PLAYER_LEGCHANGEFACTOR;
+	else if(Distance > 180.0f)
+		Adjust = -(Distance - 180.0f) * PLAYER_LEGCHANGEFACTOR;
+	else
+		Adjust = Distance * PLAYER_LEGCHANGEFACTOR;
+
+	// Update leg
+	if(std::abs(Adjust) < 0.1f)
+		LegDirection = Destination;
+	else
+		LegDirection += Adjust;
+
+	// Cap direction
+	if(LegDirection < 0.0f)
+		LegDirection += 360.0f;
+	else if(LegDirection >= 360.0f)
+		LegDirection -= 360.0f;
 }
 
 // Updates the player's experience, leveling up if needed
@@ -917,104 +1060,6 @@ void _Player::ConsumeInventory(int Index, bool Delete) {
 			delete Inventory[Index];
 		Inventory[Index] = nullptr;
 	}
-}
-
-// Calculates the player's stats from weapons and skills
-void _Player::RecalculateStats() {
-	CalculateExperienceStats();
-	CalculateSkillsRemaining();
-
-	_ObjectTemplate Weapon[WEAPONATTACK_COUNT] = { _Object::WEAPON, _Object::WEAPON };
-	for(int i = 0; i < WEAPONATTACK_COUNT; i++)
-		Weapon[i].Attributes = Stats.WeaponFists->Attributes;
-
-	// See if the player is using a weapon
-	if(HasMainHand()) {
-		Weapon[WEAPONATTACK_MAIN].Attributes = GetMainHand()->Attributes;
-		MainWeaponType = GetMainHand()->Attributes.at("weapon_type").Int;
-	}
-	else
-		MainWeaponType = WEAPON_MELEE;
-
-	// Get stats of melee weapon
-	if(HasMelee())
-		Weapon[WEAPONATTACK_MELEE].Attributes = GetMelee()->Attributes;
-
-	// Set up main stats based on weapon
-	Recoil = 0;
-	RecoilRegen = 0;
-	MoveRecoil = 0.0f;
-	AttackRange[WEAPONATTACK_MAIN] = Weapon[WEAPONATTACK_MAIN].Attributes["range"].Float;
-	AttackRange[WEAPONATTACK_MELEE] = Weapon[WEAPONATTACK_MELEE].Attributes["range"].Float;
-	if(MainWeaponType == WEAPON_MELEE) {
-		CurrentAccuracyNormal = MinAccuracyNormal = Weapon[WEAPONATTACK_MAIN].Attributes.at("min_accuracy").Int;
-		MaxAccuracyNormal = Weapon[WEAPONATTACK_MAIN].Attributes.at("max_accuracy").Int;
-	}
-	else {
-		float StrengthSkillMultiplier = Stats.GetSkillBonusMultiplier(Skills[SKILL_STRENGTH], SKILL_STRENGTH);
-		float AccuracySkillMultiplier = 1.0f / Stats.GetSkillBonusMultiplier(Skills[SKILL_PERCEPTION], SKILL_PERCEPTION, 1);
-		CurrentAccuracyNormal = MinAccuracyNormal = Weapon[WEAPONATTACK_MAIN].Attributes.at("min_accuracy").Int * AccuracySkillMultiplier;
-		MaxAccuracyNormal = Weapon[WEAPONATTACK_MAIN].Attributes.at("max_accuracy").Int * AccuracySkillMultiplier;
-		Recoil = Weapon[WEAPONATTACK_MAIN].Attributes["recoil"].Float / StrengthSkillMultiplier;
-		RecoilRegen = Weapon[WEAPONATTACK_MAIN].Attributes["recoil_regen"].Float * StrengthSkillMultiplier;
-		MoveRecoil = Weapon[WEAPONATTACK_MAIN].Attributes["move_recoil"].Float / StrengthSkillMultiplier;
-	}
-
-	MaxAccuracy[WEAPONATTACK_MELEE] = Weapon[WEAPONATTACK_MELEE].Attributes.at("max_accuracy").Int * Stats.GetSkillBonusMultiplier(Skills[SKILL_PERCEPTION], SKILL_PERCEPTION);
-
-	// Set accuracy
-	ResetAccuracy(true);
-
-	// Attacking
-	for(int i = 0; i < WEAPONATTACK_COUNT; i++) {
-		float MeleeDamageModifier = 1.0f;
-		if((i == WEAPONATTACK_MAIN && MainWeaponType == WEAPON_MELEE) || i == WEAPONATTACK_MELEE)
-			MeleeDamageModifier = Stats.GetSkillBonusMultiplier(Skills[SKILL_STRENGTH], SKILL_STRENGTH);
-
-		FireRateType[i] = Weapon[i].Attributes["fire_rate"].Int;
-		FirePeriod[i] = std::max(Weapon[i].Attributes["fire_period"].Double / Stats.GetSkillBonusMultiplier(Skills[SKILL_AGILITY], SKILL_AGILITY), WEAPON_MINFIREPERIOD);
-		MinDamage[i] = std::ceil(Weapon[i].Attributes["min_damage"].Int * MeleeDamageModifier);
-		MaxDamage[i] = std::ceil(Weapon[i].Attributes["max_damage"].Int * MeleeDamageModifier);
-		AttackMoveSpeed[i] = Weapon[i].Attributes["attack_movespeed"].Float;
-		Penetration[i] = Weapon[i].Attributes["penetration"].Int;
-		AttackCount[i] = Weapon[i].Attributes["attack_count"].Int;
-	}
-	ReloadPeriod = Weapon[WEAPONATTACK_MAIN].Attributes["reload_period"].Double / Stats.GetSkillBonusMultiplier(Skills[SKILL_DEXTERITY], SKILL_DEXTERITY);
-	WeaponSwitchPeriod = PLAYER_WEAPONSWITCHPERIOD / Stats.GetSkillBonusMultiplier(Skills[SKILL_DEXTERITY], SKILL_DEXTERITY);
-	ZoomScale = Weapon[WEAPONATTACK_MAIN].Attributes["zoom_scale"].Float;
-
-	BaseMoveSpeed = 100 + Stats.GetSkill(Skills[SKILL_CUNNING], SKILL_CUNNING);
-	MaxHealth = (int)(Stats.GetLevelHealth(Level) * Stats.GetSkillBonusMultiplier(Skills[SKILL_VITALITY], SKILL_VITALITY));
-	MaxStamina = Stats.GetSkillBonusMultiplier(Skills[SKILL_ENDURANCE], SKILL_ENDURANCE);
-	StaminaRegenModifier = Stats.GetSkillBonusMultiplier(Skills[SKILL_ENDURANCE], SKILL_ENDURANCE);
-	Health = std::clamp(Health, 0, MaxHealth);
-	HealModifier = Stats.GetSkillBonusMultiplier(Skills[SKILL_VITALITY], SKILL_VITALITY, 1);
-
-	// Armor
-	DamageBlock = Stats.GetSkill(Skills[SKILL_FORTITUDE], SKILL_FORTITUDE);
-	DamageResist = std::min((int)Stats.GetSkill(Skills[SKILL_FORTITUDE], SKILL_FORTITUDE, 1), ENTITY_MAX_DAMAGE_RESIST);
-	Attributes["max_ammo"].Int = 100;
-	if(GetArmor()) {
-		DamageBlock += GetArmor()->Attributes.at("damage_block").Int;
-		DamageResist += GetArmor()->Attributes.at("damage_resist").Int;
-		BaseMoveSpeed += GetArmor()->Attributes.at("move_speed").Int;
-		Attributes["max_ammo"].Int += GetArmor()->Attributes.at("max_ammo").Int;
-	}
-
-	// Get final speed
-	MoveSpeed = BaseMoveSpeed * 0.01f * PLAYER_MOVESPEED;
-
-	// Handle max ammo
-	AmmoMax.clear();
-	for(const auto &AmmoType : Stats.AmmoNames) {
-		AmmoMax[AmmoType] = Stats.Objects.at(AmmoType).Attributes["amount_max"].Int * Attributes["max_ammo"].Mult();
-		if(Ammo.find(AmmoType) != Ammo.end())
-			Ammo[AmmoType] = std::min(Ammo[AmmoType], AmmoMax[AmmoType]);
-	}
-
-	// Drop Rate
-	DropRate = 100 + Skills[SKILL_LUCK];
-	PickupModifier = Stats.GetSkillBonusMultiplier(Skills[SKILL_LUCK], SKILL_LUCK, 1);
 }
 
 // Reset after death

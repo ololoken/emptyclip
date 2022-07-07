@@ -85,7 +85,7 @@ class _Entity : public _Object {
 
 		bool StartAttack();
 		float GenerateShotDirection();
-		void ResetAttackAllowed(int AttackType) { AttackAllowed[AttackType] = false; FireTimer[AttackType] = 0; }
+		void ResetAttackAllowed(int AttackType) { AttackAllowed[AttackType] = false; AttackTimer[AttackType] = 0; }
 		bool IsMeleeAttacking() const { return Action == ACTION_MELEE || Action == ACTION_STARTMELEE; }
 
 		virtual bool CanAttack(int AttackType) const { return AttackAllowed[AttackType] && !IsMeleeAttacking() && !IsDying() && MainWeaponType != WEAPON_NONE; }
@@ -154,8 +154,9 @@ class _Entity : public _Object {
 		float RecoilModifier;
 		float MoveRecoil;
 		float AttackRange[WEAPONATTACK_COUNT];
-		double FireTimer[WEAPONATTACK_COUNT];
-		double FirePeriod[WEAPONATTACK_COUNT];
+		double AttackTimer[WEAPONATTACK_COUNT];
+		double AttackPeriod[WEAPONATTACK_COUNT];
+		float AttackWidth[WEAPONATTACK_COUNT];
 		int MinDamage[WEAPONATTACK_COUNT];
 		int MaxDamage[WEAPONATTACK_COUNT];
 		int Penetration[WEAPONATTACK_COUNT];

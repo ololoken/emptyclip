@@ -64,6 +64,8 @@ class _Object {
 		void FacePosition(const glm::vec2 &Target);
 		void SetPosition(const glm::vec2 &NewPosition);
 		glm::vec2 GetDirectionVector(float RotationOffset = 0.0f) const;
+		float RayIntersection(const glm::vec2 &Origin, const glm::vec2 &Direction) const;
+		bool IsTouchingCircle(const glm::vec2 &CircleCenter, float CircleRadius, float &DistanceSquared) const;
 
 		virtual std::string GetTypeAsString() const { return "Object"; }
 		void SetAttributeRange(const std::string &AttributeName, float Multiplier);

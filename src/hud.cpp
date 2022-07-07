@@ -595,7 +595,7 @@ void _HUD::DrawCharacterScreen() {
 		Buffer << ae::Round1(Player->MinAccuracyNormal) << " - " << ae::Round1(Player->MaxAccuracyNormal);
 		DrawAttribute("Accuracy", Buffer, DrawPosition);
 
-		Buffer << ae::Round1(1.0 / Player->FirePeriod[WEAPONATTACK_MAIN]) << "/s";
+		Buffer << ae::Round1(1.0 / Player->AttackPeriod[WEAPONATTACK_MAIN]) << "/s";
 		DrawAttribute("Fire Rate", Buffer, DrawPosition);
 	}
 
@@ -607,7 +607,7 @@ void _HUD::DrawCharacterScreen() {
 	Buffer << ae::Round1(Player->MaxAccuracy[WEAPONATTACK_MELEE]) << " degrees";
 	DrawAttribute("Swing Arc", Buffer, DrawPosition);
 
-	Buffer << ae::Round1(1.0 / Player->FirePeriod[WEAPONATTACK_MELEE]) << "/s";
+	Buffer << ae::Round1(1.0 / Player->AttackPeriod[WEAPONATTACK_MELEE]) << "/s";
 	DrawAttribute("Attack Speed", Buffer, DrawPosition);
 
 	DrawPosition.y += 10 * ae::_Element::GetUIScale();

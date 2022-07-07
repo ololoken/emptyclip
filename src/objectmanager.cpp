@@ -18,6 +18,9 @@
 #include <objectmanager.h>
 #include <objects/object.h>
 #include <ae/camera.h>
+#include <ae/assets.h>
+#include <ae/program.h>
+#include <ae/graphics.h>
 #include <map.h>
 #include <stats.h>
 #include <constants.h>
@@ -99,6 +102,10 @@ void _ObjectManager::Update(double FrameTime, _Map *Map) {
 
 // Render objects
 void _ObjectManager::Render(double BlendFactor) {
+	ae::Assets.Programs["pos_uv"]->ResetTextureTransform();
+	ae::Graphics.SetProgram(ae::Assets.Programs["pos_uv"]);
+	ae::Graphics.SetDepthMask(false);
+	ae::Graphics.SetDepthTest(true);
 
 	// Draw objects
 	for(int i = 0; i < RENDER_COUNT; i++) {
