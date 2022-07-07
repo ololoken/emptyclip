@@ -91,7 +91,7 @@ class _PlayState : public ae::_State {
 		void CreateItemDrop(const _Entity *Entity, float DropRate);
 		void ResolveAttack(_Entity *Attacker, int GridType);
 		void PickupObject(_Item *Item, int &AmountAdded);
-		void UseObject(_Item *NearbyItem);
+		void UseObject(_Item *Item);
 		void ActivateEvent();
 
 		// Game

@@ -589,6 +589,7 @@ int _Player::AddItem(_Item *Item, int &AmountAdded) {
 		}
 		case _Object::KEY: {
 			Keys[Item->ID] = 1;
+			AmountAdded = 1;
 			return 1;
 		}
 		default:

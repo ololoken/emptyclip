@@ -469,13 +469,21 @@ void _PlayState::Update(double FrameTime) {
 		_Item *NearbyItem = (_Item *)Iterator.first;
 
 		// Automatically pickup ammo
-		if(NearbyItem && NearbyItem->Type == _Object::AMMO) {
+		if(NearbyItem && (NearbyItem->Type == _Object::AMMO || NearbyItem->Type == _Object::KEY)) {
 			int AmountAdded = 0;
 			PickupObject(NearbyItem, AmountAdded);
 
 			if(AmountAdded) {
-				_Particle *DamageParticle = new _Particle(_ParticleSpawn(GameAssets.GetParticleTemplate("damage0"), glm::vec2(0), Player->Position, OBJECT_Z, 0));
-				DamageParticle->Text = std::string("+") + std::to_string(AmountAdded);
+				glm::vec2 ParticlePosition(Player->Position.x, Player->Position.y - 0.5);
+
+				std::string ParticleText = "+";
+				if(NearbyItem->Type == _Object::AMMO)
+					ParticleText += std::to_string(AmountAdded);
+				else
+					ParticleText += NearbyItem->Name;
+
+				_Particle *DamageParticle = new _Particle(_ParticleSpawn(GameAssets.GetParticleTemplate("damage0"), glm::vec2(0), ParticlePosition, OBJECT_Z, 0));
+				DamageParticle->Text = ParticleText;
 				Particles->Add(DamageParticle);
 			}
 		}
@@ -941,13 +949,13 @@ void _PlayState::PickupObject(_Item *Item, int &AmountAdded) {
 }
 
 // Processes the use key to open doors, hit switches, and pickup items
-void _PlayState::UseObject(_Item *NearbyItem) {
+void _PlayState::UseObject(_Item *Item) {
 	if(!Player->CanPickup())
 		return;
 
 	// Pick up an item if available
 	int AmountAdded = 0;
-	PickupObject(NearbyItem, AmountAdded);
+	PickupObject(Item, AmountAdded);
 }
 
 // Open door or handle switches
