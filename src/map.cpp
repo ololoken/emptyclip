@@ -722,8 +722,6 @@ void _Map::CheckMeleeCollisions(_Entity *Attacker, int GridType, int Penetration
 							continue;
 					}
 
-					// Ray test from right side of weapon width
-
 				/*
 					// Test angle
 					glm::vec2 Direction = Attacker->GetDirectionVector();
@@ -744,6 +742,10 @@ void _Map::CheckMeleeCollisions(_Entity *Attacker, int GridType, int Penetration
 				Hit.Position = Entity->Position;
 				Hit.DistanceSquared = DistanceSquared;
 				Hits.push_back(Hit);
+
+				// Early exit for monsters
+				if(Attacker->Type == _Object::MONSTER)
+					return;
 			}
 		}
 	}
