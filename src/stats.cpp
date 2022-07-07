@@ -227,7 +227,9 @@ void _Stats::LoadWeapons(const std::string &Path) {
 			>> Template.Attributes["rounds"].Int
 			>> Template.Attributes["penetration"].Int
 			>> Template.Attributes["attack_movespeed"].Float
-			>> Template.Attributes["melee_width"].Float;
+			>> Template.Attributes["melee_width"].Float
+			>> Template.Attributes["scale_x"].Float
+			>> Template.Attributes["scale_y"].Float;
 
 		File.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
@@ -613,6 +615,8 @@ _Item *_Stats::CreateItem(const std::string &ID, int Level, int Quality, int Cou
 			Item->Attributes["fire_rate"].Int = Template.Attributes["fire_rate"].Int;
 			Item->Attributes["attack_movespeed"].Float = Template.Attributes["attack_movespeed"].Float;
 			Item->Attributes["attack_width"].Float = Template.Attributes["melee_width"].Float;
+			Item->Attributes["scale_x"].Float = Template.Attributes["scale_x"].Float;
+			Item->Attributes["scale_y"].Float = Template.Attributes["scale_y"].Float;
 			Item->SetMaxMods(RandomStats);
 
 			Item->Attributes["ammo"].Int = Template.Attributes.at("rounds").Int;

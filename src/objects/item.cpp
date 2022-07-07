@@ -233,37 +233,39 @@ void _Item::DrawTooltip(const _Player *Player, size_t CompareSlot, int Inventory
 				Buffer << std::setprecision(6);
 			}
 
-			// Weapon Spread
-			TextColor = COLOR_WHITE;
-			if(EquippedItem && EquippedItem->IsMelee() == IsMelee()) {
-				if(GetAverageAccuracy() < EquippedItem->GetAverageAccuracy()) {
-
-					// Less is worse for melee
-					if(IsMelee())
-						TextColor = COLOR_RED;
-					else
+			// Accuracy
+			if(!IsMelee()) {
+				TextColor = COLOR_WHITE;
+				if(EquippedItem) {
+					if(GetAverageAccuracy() < EquippedItem->GetAverageAccuracy())
 						TextColor = COLOR_GREEN;
-				}
-				else if(GetAverageAccuracy() > EquippedItem->GetAverageAccuracy()) {
-
-					// Bigger is better for melee
-					if(IsMelee())
-						TextColor = COLOR_GREEN;
-					else
+					else if(GetAverageAccuracy() > EquippedItem->GetAverageAccuracy())
 						TextColor = COLOR_RED;
 				}
-			}
-			DrawPosition.y += Spacing.y;
-			if(IsMelee()) {
-				Buffer << Attributes.at("max_accuracy").Int << " degrees";
-				ae::Assets.Fonts["hud_medium"]->DrawText("Swing Arc", glm::ivec2(DrawPosition - DrawOffset), ae::RIGHT_BASELINE);
-			}
-			else {
+
+				DrawPosition.y += Spacing.y;
 				Buffer << Attributes.at("min_accuracy").Int << " - " << Attributes.at("max_accuracy").Int;
 				ae::Assets.Fonts["hud_medium"]->DrawText("Accuracy", glm::ivec2(DrawPosition - DrawOffset), ae::RIGHT_BASELINE);
+				ae::Assets.Fonts["hud_medium"]->DrawText(Buffer.str(), glm::ivec2(DrawPosition + DrawOffset), ae::LEFT_BASELINE, TextColor);
+				Buffer.str("");
 			}
-			ae::Assets.Fonts["hud_medium"]->DrawText(Buffer.str(), glm::ivec2(DrawPosition + DrawOffset), ae::LEFT_BASELINE, TextColor);
-			Buffer.str("");
+
+			// Range
+			if(IsMelee()) {
+				TextColor = COLOR_WHITE;
+				if(EquippedItem) {
+					if(Attributes.at("range").Float > EquippedItem->Attributes.at("range").Float)
+						TextColor = COLOR_GREEN;
+					else if(Attributes.at("range").Float < EquippedItem->Attributes.at("range").Float)
+						TextColor = COLOR_RED;
+				}
+
+				DrawPosition.y += Spacing.y;
+				Buffer << Attributes.at("range").Float;
+				ae::Assets.Fonts["hud_medium"]->DrawText("Range", glm::ivec2(DrawPosition - DrawOffset), ae::RIGHT_BASELINE);
+				ae::Assets.Fonts["hud_medium"]->DrawText(Buffer.str(), glm::ivec2(DrawPosition + DrawOffset), ae::LEFT_BASELINE, TextColor);
+				Buffer.str("");
+			}
 
 			// Reload speed
 			if(Attributes.at("reload_period").Double > 1) {
@@ -404,7 +406,7 @@ void _Item::RecalculateStats() {
 		case _Object::WEAPON: {
 
 			SetAttributeRange("damage", GetBonusMultiplier(MOD_DAMAGE) + Quality * 0.01f);
-			SetAttributeSpread("accuracy", IsMelee() ? GetBonusMultiplier(MOD_ACCURACY) : 1.0f / GetBonusMultiplier(MOD_ACCURACY));
+			SetAttributeSpread("accuracy", 1.0f / GetBonusMultiplier(MOD_ACCURACY));
 			Attributes["rounds"].Int = std::ceil(Template.Attributes.at("rounds").Int * GetBonusMultiplier(MOD_MAXROUNDS));
 			Attributes["fire_period"].Double = Template.Attributes.at("fire_period").Double / GetBonusMultiplier(MOD_ATTACKSPEED);
 			Attributes["attack_count"].Int = Template.Attributes.at("attack_count").Int;
@@ -414,10 +416,6 @@ void _Item::RecalculateStats() {
 			Attributes["recoil_regen"].Float = Template.Attributes.at("recoil_regen").Float * GetBonusMultiplier(MOD_HANDLING);
 			Attributes["move_recoil"].Float = Template.Attributes.at("move_recoil").Float / GetBonusMultiplier(MOD_HANDLING);
 			Attributes["penetration"].Int = Template.Attributes.at("penetration").Int + Bonus[MOD_PENETRATION];
-
-			// For melee, min accuracy is 0 and max is swing arc
-			if(IsMelee())
-				Attributes["min_accuracy"].Int = 0;
 
 			SetAmmo(Attributes["ammo"].Int);
 		} break;
@@ -457,6 +455,9 @@ bool _Item::AddMod(_Item *Mod) {
 
 			// Reload amount only affects manual reload weapons
 			if(ModType == MOD_RELOADAMOUNT && !Template.Attributes.at("reload_amount").Int)
+				return false;
+
+			if(ModType == MOD_ACCURACY && IsMelee())
 				return false;
 
 		} break;
@@ -540,12 +541,7 @@ std::string _Item::ModTypeToString(int ModType) {
 			return "Damage";
 		break;
 		case MOD_ACCURACY:
-			if(Type == _Object::MOD)
-				return "Accuracy/Swing Arc";
-			else if(IsMelee())
-				return "Swing Arc";
-			else
-				return "Accuracy";
+			return "Accuracy";
 		break;
 		case MOD_ATTACKSPEED:
 			if(Type == _Object::MOD)

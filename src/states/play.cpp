@@ -799,7 +799,7 @@ void _PlayState::Render(double BlendFactor) {
 	}
 }
 
-// Fires a gun or swings a weapon
+// Resolve an entity attacking
 void _PlayState::ResolveAttack(_Entity *Attacker, int GridType) {
 
 	// Check for ammo

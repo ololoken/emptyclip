@@ -183,11 +183,10 @@ void _Player::RecalculateStats() {
 	MoveRecoil = 0.0f;
 	AttackRange[WEAPONATTACK_MAIN] = Weapon[WEAPONATTACK_MAIN].Attributes["range"].Float;
 	AttackRange[WEAPONATTACK_MELEE] = Weapon[WEAPONATTACK_MELEE].Attributes["range"].Float;
-	if(MainWeaponType == WEAPON_MELEE) {
-		CurrentAccuracyNormal = MinAccuracyNormal = Weapon[WEAPONATTACK_MAIN].Attributes.at("min_accuracy").Int;
-		MaxAccuracyNormal = Weapon[WEAPONATTACK_MAIN].Attributes.at("max_accuracy").Int;
-	}
-	else {
+	CurrentAccuracyNormal = 0;
+	MinAccuracyNormal = 0;
+	MaxAccuracyNormal = 0;
+	if(MainWeaponType != WEAPON_MELEE) {
 		float StrengthSkillMultiplier = Stats.GetSkillBonusMultiplier(Skills[SKILL_STRENGTH], SKILL_STRENGTH);
 		float AccuracySkillMultiplier = 1.0f / Stats.GetSkillBonusMultiplier(Skills[SKILL_PERCEPTION], SKILL_PERCEPTION, 1);
 		CurrentAccuracyNormal = MinAccuracyNormal = Weapon[WEAPONATTACK_MAIN].Attributes.at("min_accuracy").Int * AccuracySkillMultiplier;
@@ -196,8 +195,6 @@ void _Player::RecalculateStats() {
 		RecoilRegen = Weapon[WEAPONATTACK_MAIN].Attributes["recoil_regen"].Float * StrengthSkillMultiplier;
 		MoveRecoil = Weapon[WEAPONATTACK_MAIN].Attributes["move_recoil"].Float / StrengthSkillMultiplier;
 	}
-
-	MaxAccuracy[WEAPONATTACK_MELEE] = Weapon[WEAPONATTACK_MELEE].Attributes.at("max_accuracy").Int * Stats.GetSkillBonusMultiplier(Skills[SKILL_PERCEPTION], SKILL_PERCEPTION);
 
 	// Set accuracy
 	ResetAccuracy(true);
@@ -216,6 +213,8 @@ void _Player::RecalculateStats() {
 		Penetration[i] = Weapon[i].Attributes["penetration"].Int;
 		AttackCount[i] = Weapon[i].Attributes["attack_count"].Int;
 		AttackWidth[i] = Weapon[i].Attributes["attack_width"].Float;
+		MeleeScale[i].x = Weapon[i].Attributes["scale_x"].Float;
+		MeleeScale[i].y = Weapon[i].Attributes["scale_y"].Float;
 	}
 	ReloadPeriod = Weapon[WEAPONATTACK_MAIN].Attributes["reload_period"].Double / Stats.GetSkillBonusMultiplier(Skills[SKILL_DEXTERITY], SKILL_DEXTERITY);
 	WeaponSwitchPeriod = PLAYER_WEAPONSWITCHPERIOD / Stats.GetSkillBonusMultiplier(Skills[SKILL_DEXTERITY], SKILL_DEXTERITY);
@@ -370,11 +369,10 @@ void _Player::Render(double BlendFactor) {
 		float MeleeMagnitude = std::sin(MeleePercent * glm::pi<double>());
 
 		// Melee thrust
-		float RenderScale = 0.5f;
-		glm::vec2 MeleePosition = DrawPosition + Direction * (MeleeMagnitude * AttackRange[AttackRequestType] - RenderScale * 0.5f);
+		glm::vec2 MeleePosition = DrawPosition + Direction * (MeleeMagnitude * AttackRange[AttackRequestType] - MeleeScale[AttackRequestType].y * 0.5f);
 		ae::Assets.Programs["pos_uv"]->ResetTextureTransform();
 		ae::Graphics.SetColor(COLOR_WHITE);
-		ae::Graphics.DrawSprite(glm::vec3(MeleePosition, PositionZ + 0.005f), MeleeTexture, Rotation, glm::vec2(RenderScale));
+		ae::Graphics.DrawSprite(glm::vec3(MeleePosition, PositionZ + 0.005f), MeleeTexture, Rotation, MeleeScale[AttackRequestType]);
 	}
 
 	/*

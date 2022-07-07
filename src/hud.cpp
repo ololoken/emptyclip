@@ -604,8 +604,8 @@ void _HUD::DrawCharacterScreen() {
 	Buffer << Player->MinDamage[WEAPONATTACK_MELEE] << " - " << Player->MaxDamage[WEAPONATTACK_MELEE];
 	DrawAttribute("Melee Damage", Buffer, DrawPosition);
 
-	Buffer << ae::Round1(Player->MaxAccuracy[WEAPONATTACK_MELEE]) << " degrees";
-	DrawAttribute("Swing Arc", Buffer, DrawPosition);
+	Buffer << ae::Round1(Player->AttackRange[WEAPONATTACK_MELEE]);
+	DrawAttribute("Range", Buffer, DrawPosition);
 
 	Buffer << ae::Round1(1.0 / Player->AttackPeriod[WEAPONATTACK_MELEE]) << "/s";
 	DrawAttribute("Attack Speed", Buffer, DrawPosition);
@@ -762,10 +762,9 @@ void _HUD::UpdateSkillTooltip(int Skill, const glm::vec2 &Position) {
 			BufferNext << "+" << Stats.GetSkill(Stats.GetValidSkillLevel(Level+1), Skill) << "%";
 		break;
 		case SKILL_PERCEPTION:
-			Elements[LABEL_SKILLTEXT]->Text = "Increases Melee Swing Arc";
-			Elements[LABEL_SKILLTEXTALT]->Text = "Increases Gun Accuracy";
-			Buffer << "+" << Stats.GetSkill(Level, Skill) << "% Swing Arc / +" << Stats.GetSkill(Level, Skill, 1) << "% Swing Arc";
-			BufferNext << "+" << Stats.GetSkill(Stats.GetValidSkillLevel(Level+1), Skill) << "% Accuracy / +" << Stats.GetSkill(Stats.GetValidSkillLevel(Level+1), Skill, 1) << "% Accuracy";
+			Elements[LABEL_SKILLTEXT]->Text = "Increases Gun Accuracy";
+			Buffer << "+" << Stats.GetSkill(Level, Skill) << "%";
+			BufferNext << "+" << Stats.GetSkill(Stats.GetValidSkillLevel(Level+1), Skill) << "%";
 		break;
 		case SKILL_LUCK: {
 			Elements[LABEL_SKILLTEXT]->Text = "Increases Drop Rate";

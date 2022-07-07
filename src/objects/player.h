@@ -137,6 +137,7 @@ class _Player : public _Entity {
 		// Animation
 		ae::_Animation *LegAnimation;
 		const ae::_Texture *MeleeTexture;
+		glm::vec2 MeleeScale[WEAPONATTACK_COUNT];
 		std::string ColorID;
 		float LegDirection;
 		bool Aiming;
