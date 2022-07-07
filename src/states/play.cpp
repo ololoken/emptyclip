@@ -407,7 +407,8 @@ void _PlayState::Update(double FrameTime) {
 	if(!Player->IsDying() && ae::FocusedElement == nullptr) {
 
 		// Turn character to face the world cursor
-		Player->FacePosition(WorldCursor);
+		if(Player->Action != ACTION_MELEE)
+			Player->FacePosition(WorldCursor);
 
 		// Move types
 		if(ae::Actions.State[Action::GAME_UP].Value > 0.0f && ae::Actions.State[Action::GAME_LEFT].Value > 0.0f)

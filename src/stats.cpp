@@ -45,7 +45,10 @@ void _Stats::Init() {
 	LoadWeapons("tables/weapons.tsv");
 	LoadItemDrops("tables/itemdrops.tsv");
 	LoadMonsters("tables/monsters.tsv");
-	Objects.insert(std::make_pair("player", _ObjectTemplate(_Object::PLAYER)));
+
+	_ObjectTemplate PlayerTemplate(_Object::PLAYER);
+	Objects.insert(std::make_pair("player", PlayerTemplate));
+
 	WeaponFists = Stats.CreateItem("weapon_fists", 1, 0, 1, glm::vec2(0), false);
 }
 
