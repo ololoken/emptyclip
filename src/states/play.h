@@ -113,6 +113,7 @@ class _PlayState : public ae::_State {
 		_HUD *HUD;
 		_Item *CursorItem;
 		_Item *PreviousCursorItem;
+		_Object *ClosestItem;
 
 		// Particles
 		_Particles *Particles;

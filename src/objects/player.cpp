@@ -37,8 +37,7 @@
 
 // Constructor
 _Player::_Player(const _ObjectTemplate &PlayerTemplate) :
-	_Entity(PlayerTemplate),
-	ReloadSound(nullptr) {
+	_Entity(PlayerTemplate) {
 
 	// Set up animations
 	LegAnimation = new ae::_Animation(nullptr);
@@ -111,6 +110,7 @@ void _Player::Reset() {
 	Active = true;
 	Action = ACTION_IDLE;
 	Reloading = false;
+	ReloadSound = nullptr;
 	SwitchingWeapons = false;
 	Aiming = false;
 	Sprinting = false;
@@ -583,12 +583,12 @@ int _Player::AddItem(_Item *Item, int &AmountAdded) {
 			AmountAdded = std::min(AmountToMax, PickupAmount);
 			Ammo[Item->ID] += AmountAdded;
 
-			return 1;
+			return 2;
 		}
 		case _Object::KEY: {
 			Keys[Item->ID] = 1;
 			AmountAdded = 1;
-			return 1;
+			return 2;
 		}
 		default:
 			return AddInventory(Item);

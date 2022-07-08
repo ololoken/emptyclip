@@ -72,7 +72,8 @@ _Entity::_Entity(const _ObjectTemplate &EntityTemplate) :
 	AttackRequested(false),
 	AttackAllowed{true, true},
 	AttackMade(false),
-	ExperienceGiven(0) {
+	ExperienceGiven(0),
+	TargetPosition{0, 0} {
 
 	for(int i = 0; i < WEAPON_COUNT; i++)
 		WeaponOffset[i] = glm::vec2(0.0f, 0.0f);

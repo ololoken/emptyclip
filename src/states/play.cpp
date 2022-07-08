@@ -65,6 +65,7 @@ _PlayState::_PlayState() {
 	DebugMode = false;
 	FromEditor = false;
 	LastClosestItem = nullptr;
+	ClosestItem = nullptr;
 	ClosestItemTimer = 0.0;
 }
 
@@ -464,7 +465,7 @@ void _PlayState::Update(double FrameTime) {
 
 	// Find nearest items
 	std::unordered_map<_Object *, int> NearbyItems;
-	_Object *ClosestItem = nullptr;
+	ClosestItem = nullptr;
 	Map->GetCloseObjects(Player->Position, Player->Radius, GRID_ITEM, NearbyItems, &ClosestItem);
 	for(auto &Iterator : NearbyItems) {
 		_Item *NearbyItem = (_Item *)Iterator.first;
@@ -472,16 +473,18 @@ void _PlayState::Update(double FrameTime) {
 		// Automatically pickup ammo
 		if(NearbyItem && (NearbyItem->Type == _Object::AMMO || NearbyItem->Type == _Object::KEY)) {
 			int AmountAdded = 0;
+			int Type = NearbyItem->Type;
+			std::string Name = NearbyItem->Name;
 			PickupObject(NearbyItem, AmountAdded);
 
 			if(AmountAdded) {
 				glm::vec2 ParticlePosition(Player->Position.x, Player->Position.y - 0.5);
 
 				std::string ParticleText = "+";
-				if(NearbyItem->Type == _Object::AMMO)
+				if(Type == _Object::AMMO)
 					ParticleText += std::to_string(AmountAdded);
 				else
-					ParticleText += NearbyItem->Name;
+					ParticleText += Name;
 
 				_Particle *DamageParticle = new _Particle(_ParticleSpawn(GameAssets.GetParticleTemplate("damage0"), glm::vec2(0), ParticlePosition, OBJECT_Z, 0));
 				DamageParticle->Text = ParticleText;
@@ -934,6 +937,9 @@ void _PlayState::PickupObject(_Item *Item, int &AmountAdded) {
 	// Attempt to add item
 	int AddResult = Player->AddItem(Item, AmountAdded);
 	if(AddResult) {
+		if(Item == ClosestItem)
+			ClosestItem = nullptr;
+
 		Player->ResetUseTimer();
 		Map->RemoveItem(Item);
 		if(AddResult == 2) {
