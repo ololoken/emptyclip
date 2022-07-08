@@ -674,6 +674,7 @@ _Monster *_Stats::CreateMonster(const std::string &ID, int Level, const glm::vec
 		Monster->AttackRange[i] = Template.Attributes.at("attack_range").Float;
 		Monster->AttackMoveSpeed[i] = Template.Attributes.at("attack_movespeed").Float;
 	}
+	Monster->RecalculateStats();
 
 	return Monster;
 }

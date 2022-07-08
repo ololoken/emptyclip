@@ -69,13 +69,17 @@ _Monster::_Monster(const _ObjectTemplate &MonsterTemplate) :
 	StaticTimer = 0;
 }
 
+// Set up stats used by the monster
+void _Monster::RecalculateStats() {
+	StopThresholdSquared = ENTITY_STOP_THRESHOLD * MoveSpeed;
+	StopThresholdSquared *= StopThresholdSquared;
+}
+
 // Update
 void _Monster::Update(double FrameTime) {
 	_Entity::Update(FrameTime);
-	if(!Player || Player->IsDying() || Player->IsInvulnerable()) {
-		MoveState = MOVE_NONE;
+	if(!Player)
 		return;
-	}
 
 	StaticTimer += FrameTime;
 
@@ -83,8 +87,12 @@ void _Monster::Update(double FrameTime) {
 	UpdateAnimation(FrameTime);
 
 	// Move the monster
-	if(IsDying() || !AIType)
+	if(IsDying() || !AIType || Player->IsInvulnerable() || Player->IsDying()) {
+		MoveState = MOVE_NONE;
+		PositionChanged = false;
+		StaticTimer = 0;
 		return;
+	}
 
 	// Check for player in range
 	bool PlayerVisible = false;
@@ -120,7 +128,7 @@ void _Monster::Update(double FrameTime) {
 	Move(FrameTime);
 
 	// Check for inactive distance
-	if(glm::distance2(OldPosition, Position) > ENTITY_STOP_THRESHOLD * ENTITY_STOP_THRESHOLD) {
+	if(glm::distance2(OldPosition, Position) > StopThresholdSquared) {
 		StaticTimer = 0;
 	}
 	// Stop monster when static

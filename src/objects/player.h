@@ -76,7 +76,7 @@ class _Player : public _Entity {
 		void StartWeaponSwitch(int SlotFrom, int SlotTo);
 		int SpentSkillPoints() const;
 		void ResetAccuracy(bool CompleteReset);
-		void RecalculateStats();
+		void RecalculateStats() override;
 		void Respawn();
 
 		int AddItem(_Item *Item, int &AmountAdded);

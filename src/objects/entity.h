@@ -80,6 +80,7 @@ class _Entity : public _Object {
 
 		virtual void Update(double FrameTime) override;
 		virtual void Render(double BlendFactor) override;
+		virtual void RecalculateStats() { }
 
 		void Move(double FrameTime);
 

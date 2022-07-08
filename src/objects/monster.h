@@ -31,6 +31,7 @@ class _Monster : public _Entity {
 	public:
 
 		_Monster(const _ObjectTemplate &MonsterTemplate);
+		void RecalculateStats() override;
 
 		void Update(double FrameTime) override;
 		const _ParticleTemplate *GetParticle(int Index) const override;
@@ -45,5 +46,6 @@ class _Monster : public _Entity {
 		bool LastPlayerVisible;
 		float AttackRangeSquared;
 		float ViewRangeSquared;
+		float StopThresholdSquared;
 		double StaticTimer;
 };
