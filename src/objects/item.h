@@ -66,7 +66,7 @@ class _Item : public _Object {
 		void Render(double BlendFactor) override;
 
 		bool AddMod(_Item *Mod);
-		float GetBonusMultiplier(int ModType) const { return (100 + Bonus[ModType]) * 0.01f; }
+		float GetBonusMultiplier(int ModType, bool Inverse=false) const;
 
 		int UpdateCount(int Amount) { Count += Amount; return Count; }
 		bool CanStack() { return Type == _Object::MEDKIT; }
