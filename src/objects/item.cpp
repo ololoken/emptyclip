@@ -82,7 +82,7 @@ void _Item::DrawTooltip(const _Player *Player, size_t CompareSlot, int Inventory
 
 	// Set size based on type
 	if(Type == _Object::WEAPON)
-		Size.y = 500 * ae::_Element::GetUIScale();
+		Size.y = 520 * ae::_Element::GetUIScale();
 	else if(Type == _Object::ARMOR)
 		Size.y = 380 * ae::_Element::GetUIScale();
 	else if(Type == _Object::MEDKIT)
@@ -244,8 +244,25 @@ void _Item::DrawTooltip(const _Player *Player, size_t CompareSlot, int Inventory
 				}
 
 				DrawPosition.y += Spacing.y;
-				Buffer << Attributes.at("min_accuracy").Int << " - " << Attributes.at("max_accuracy").Int;
+				Buffer << ae::Round1(Attributes.at("min_accuracy").Float) << " - " << ae::Round1(Attributes.at("max_accuracy").Float);
 				ae::Assets.Fonts["hud_medium"]->DrawText("Accuracy", glm::ivec2(DrawPosition - DrawOffset), ae::RIGHT_BASELINE);
+				ae::Assets.Fonts["hud_medium"]->DrawText(Buffer.str(), glm::ivec2(DrawPosition + DrawOffset), ae::LEFT_BASELINE, TextColor);
+				Buffer.str("");
+			}
+
+			// Recoil
+			if(!IsMelee()) {
+				TextColor = COLOR_WHITE;
+				if(EquippedItem) {
+					if(Attributes.at("recoil").Float < EquippedItem->Attributes.at("recoil").Float)
+						TextColor = COLOR_GREEN;
+					else if(Attributes.at("recoil").Float > EquippedItem->Attributes.at("recoil").Float)
+						TextColor = COLOR_RED;
+				}
+
+				DrawPosition.y += Spacing.y;
+				Buffer << ae::Round1(Attributes.at("recoil").Float);
+				ae::Assets.Fonts["hud_medium"]->DrawText("Recoil", glm::ivec2(DrawPosition - DrawOffset), ae::RIGHT_BASELINE);
 				ae::Assets.Fonts["hud_medium"]->DrawText(Buffer.str(), glm::ivec2(DrawPosition + DrawOffset), ae::LEFT_BASELINE, TextColor);
 				Buffer.str("");
 			}
@@ -402,28 +419,29 @@ void _Item::RecalculateStats() {
 	for(size_t i = 0; i < Mods.size(); i++)
 		Bonus[Mods[i]->Attributes.at("mod_type").Int] += Mods[i]->Attributes.at("bonus").Int;
 
+	float QualityFactor = Quality * 0.01f;
 	switch(Type) {
 		case _Object::WEAPON: {
 
-			SetAttributeRange("damage", GetBonusMultiplier(MOD_DAMAGE) + Quality * 0.01f);
-			SetAttributeSpread("accuracy", 1.0f / GetBonusMultiplier(MOD_ACCURACY));
-			Attributes["rounds"].Int = std::ceil(Template.Attributes.at("rounds").Int * GetBonusMultiplier(MOD_MAXROUNDS));
-			Attributes["fire_period"].Double = Template.Attributes.at("fire_period").Double / GetBonusMultiplier(MOD_ATTACKSPEED);
+			SetAttributeRange("damage", GetBonusMultiplier(MOD_DAMAGE) + QualityFactor);
+			SetAttributeSpread("accuracy", 1.0f / (GetBonusMultiplier(MOD_ACCURACY) + QualityFactor));
+			Attributes["rounds"].Int = std::ceil(Template.Attributes.at("rounds").Int * (GetBonusMultiplier(MOD_MAXROUNDS) + QualityFactor));
+			Attributes["fire_period"].Double = Template.Attributes.at("fire_period").Double / (GetBonusMultiplier(MOD_ATTACKSPEED) + QualityFactor);
 			Attributes["attack_count"].Int = Template.Attributes.at("attack_count").Int;
-			Attributes["reload_period"].Double = Template.Attributes.at("reload_period").Double / GetBonusMultiplier(MOD_RELOADSPEED);
+			Attributes["reload_period"].Double = Template.Attributes.at("reload_period").Double / (GetBonusMultiplier(MOD_RELOADSPEED) + QualityFactor);
 			Attributes["reload_amount"].Int = Template.Attributes.at("reload_amount").Int + Bonus[MOD_RELOADAMOUNT];
-			Attributes["recoil"].Float = Template.Attributes.at("recoil").Float / GetBonusMultiplier(MOD_HANDLING);
-			Attributes["recoil_regen"].Float = Template.Attributes.at("recoil_regen").Float * GetBonusMultiplier(MOD_HANDLING);
-			Attributes["move_recoil"].Float = Template.Attributes.at("move_recoil").Float / GetBonusMultiplier(MOD_HANDLING);
+			Attributes["recoil"].Float = Template.Attributes.at("recoil").Float / (GetBonusMultiplier(MOD_HANDLING) + QualityFactor);
+			Attributes["recoil_regen"].Float = Template.Attributes.at("recoil_regen").Float * (GetBonusMultiplier(MOD_HANDLING) + QualityFactor);
+			Attributes["move_recoil"].Float = Template.Attributes.at("move_recoil").Float / (GetBonusMultiplier(MOD_HANDLING) + QualityFactor);
 			Attributes["penetration"].Int = Template.Attributes.at("penetration").Int + Bonus[MOD_PENETRATION];
 
 			SetAmmo(Attributes["ammo"].Int);
 		} break;
 		case _Object::ARMOR:
-			SetAttributeLevel("damage_block", 1.0f + Quality * 0.01f);
-			SetAttributeLevel("damage_resist", 1.0f + Quality * 0.01f);
-			SetAttributeLevel("max_ammo", 1.0f + Quality * 0.01f);
-			SetAttributeLevel("move_speed",  1.0f + Quality * 0.01f);
+			SetAttributeLevel("damage_block", 1.0f + QualityFactor);
+			SetAttributeLevel("damage_resist", 1.0f + QualityFactor);
+			SetAttributeLevel("max_ammo", 1.0f + QualityFactor);
+			SetAttributeLevel("move_speed",  1.0f + QualityFactor);
 			Attributes.at("damage_block").Int += Bonus[MOD_DAMAGEBLOCK];
 			Attributes.at("damage_resist").Int += Bonus[MOD_DAMAGERESIST];
 			Attributes.at("max_ammo").Int += Bonus[MOD_MAXAMMO];
@@ -475,7 +493,7 @@ float _Item::GetAverageDamage() const {
 
 // Get average accuracy from range
 float _Item::GetAverageAccuracy() const {
-	return (Attributes.at("min_accuracy").Int + Attributes.at("max_accuracy").Int) * 0.5f;
+	return (Attributes.at("min_accuracy").Float + Attributes.at("max_accuracy").Float) * 0.5f;
 }
 
 // Get type as string
