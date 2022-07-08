@@ -22,7 +22,6 @@ style_editor_event			ortho_pos_uv	textures/editor/event.png		1
 style_editor_mons			ortho_pos_uv	textures/editor/mons.png		1
 style_editor_item			ortho_pos_uv	textures/editor/item.png		1
 style_editor_weap			ortho_pos_uv	textures/editor/weap.png		1
-style_editor_none			ortho_pos_uv	textures/editor/none.png		1
 style_editor_del			ortho_pos_uv	textures/editor/del.png		1
 style_editor_copy			ortho_pos_uv	textures/editor/copy.png		1
 style_editor_paste			ortho_pos_uv	textures/editor/paste.png		1
@@ -30,7 +29,6 @@ style_editor_show			ortho_pos_uv	textures/editor/show.png		1
 style_editor_undo			ortho_pos_uv	textures/editor/undo.png		1
 style_editor_new			ortho_pos_uv	textures/editor/new.png		1
 style_editor_grid			ortho_pos_uv	textures/editor/grid.png		1
-style_editor_mset			ortho_pos_uv	textures/editor/mset.png		1
 style_editor_load			ortho_pos_uv	textures/editor/load.png		1
 style_editor_save			ortho_pos_uv	textures/editor/save.png		1
 style_editor_test			ortho_pos_uv	textures/editor/test.png		1
@@ -48,9 +46,6 @@ style_editor_active			ortho_pos_uv	textures/editor/active.png		1
 style_editor_itemidentifier			ortho_pos_uv	textures/editor/item_identifier.png		1
 style_editor_monsidentifier			ortho_pos_uv	textures/editor/mons_identifier.png		1
 style_editor_partidentifier			ortho_pos_uv	textures/editor/part_identifier.png		1
-style_editor_paletteprevious			ortho_pos_uv	textures/editor/palette_previous.png		1
-style_editor_palettenext			ortho_pos_uv	textures/editor/palette_next.png		1
-style_editor_palette	black	white	ortho_pos			1
 style_hud_inventory			ortho_pos_uv	textures/hud/inventory_slot.png		1
 style_hud_inventory_armor			ortho_pos_uv	textures/hud/inventory_armor.png		1
 style_hud_inventory_gun			ortho_pos_uv	textures/hud/inventory_gun.png		1
