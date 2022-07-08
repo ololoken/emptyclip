@@ -27,6 +27,7 @@
 #include <ae/ui.h>
 #include <ae/util.h>
 #include <ae/audio.h>
+#include <ae/texture.h>
 #include <gameassets.h>
 #include <menu.h>
 #include <config.h>
@@ -363,24 +364,41 @@ void _Framework::LoadAssets() {
 
 	ae::Assets.LoadPrograms("tables/programs.tsv");
 	ae::Assets.LoadFonts("tables/fonts.tsv", false);
-	ae::Assets.LoadTextureDirectory("textures/editor/", false, false, false);
-	ae::Assets.LoadTextureDirectory("textures/editor_repeat/", false, true, true);
-	ae::Assets.LoadTextureDirectory("textures/hud/", false, false, false);
-	ae::Assets.LoadTextureDirectory("textures/hud_repeat/", false, true, false);
-	ae::Assets.LoadTextureDirectory("textures/icons/", false, false, false);
-	ae::Assets.LoadTextureDirectory("textures/items/", false, false, true);
-	ae::Assets.LoadTextureDirectory("textures/melee/", false, false, true);
-	ae::Assets.LoadTextureDirectory("textures/menu/", false, false, false);
-	ae::Assets.LoadTextureDirectory("textures/particles/", false, false, false);
-	ae::Assets.LoadTextureDirectory(MAP_TEXTURE_PATH, false, true, true);
+
+	// Load textures
+	ae::_TextureSettings TextureSettings;
+	TextureSettings.WrapMode = ae::_Texture::REPEAT;
+	TextureSettings.Mipmaps = false;
+	ae::Assets.LoadTextureDirectory("textures/editor_repeat/", TextureSettings);
+	ae::Assets.LoadTextureDirectory("textures/hud_repeat/", TextureSettings);
+
+	TextureSettings.WrapMode = ae::_Texture::REPEAT;
+	TextureSettings.Mipmaps = true;
+	ae::Assets.LoadTextureDirectory(MAP_TEXTURE_PATH, TextureSettings);
+
+	TextureSettings.WrapMode = ae::_Texture::CLAMP_TO_EDGE;
+	TextureSettings.Mipmaps = false;
+	ae::Assets.LoadTextureDirectory("textures/editor/", TextureSettings);
+	ae::Assets.LoadTextureDirectory("textures/hud/", TextureSettings);
+	ae::Assets.LoadTextureDirectory("textures/icons/", TextureSettings);
+	ae::Assets.LoadTextureDirectory("textures/menu/", TextureSettings);
+	ae::Assets.LoadTextureDirectory("textures/particles/", TextureSettings);
+
+	TextureSettings.WrapMode = ae::_Texture::CLAMP_TO_EDGE;
+	TextureSettings.Mipmaps = true;
+	ae::Assets.LoadReels("tables/reels.tsv", TextureSettings);
+	ae::Assets.LoadTextureDirectory("textures/items/", TextureSettings);
+
+	TextureSettings.WrapMode = ae::_Texture::CLAMP_TO_BORDER;
+	TextureSettings.Mipmaps = true;
+	ae::Assets.LoadTextureDirectory("textures/melee/", TextureSettings);
 	ae::Assets.LoadColors("tables/colors.tsv");
 	GameAssets.LoadSounds("tables/sounds.tsv", "sounds/");
 	GameAssets.LoadSoundGroups("tables/sound_groups.tsv");
 	GameAssets.LoadParticles("tables/particles.tsv");
 	GameAssets.LoadParticleGroups("tables/particle_groups.tsv");
-	ae::Assets.LoadReels("tables/reels.tsv", false);
-	ae::Assets.LoadAnimations("tables/animations.tsv");
 
+	ae::Assets.LoadAnimations("tables/animations.tsv");
 	ae::Assets.LoadStyles("tables/styles.tsv");
 	ae::Assets.LoadUI("tables/ui.xml");
 	//Assets.SaveUI("tables/ui_new.xml");

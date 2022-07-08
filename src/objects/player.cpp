@@ -363,16 +363,23 @@ void _Player::Render(double BlendFactor) {
 		glm::vec2(Scale)
 	);
 
-	// Draw melee animation
+	// Draw melee thrust animation
 	if(Action == ACTION_MELEE && MeleeTexture) {
 		float MeleePercent = std::clamp(AttackTimer[AttackRequestType] / AttackPeriod[AttackRequestType], 0.0, 1.0);
 		float MeleeMagnitude = std::sin(MeleePercent * glm::pi<double>());
 
-		// Melee thrust
-		glm::vec2 MeleePosition = DrawPosition + Direction * (MeleeMagnitude * AttackRange[AttackRequestType] - MeleeScale[AttackRequestType].y * 0.5f);
-		ae::Assets.Programs["pos_uv"]->ResetTextureTransform();
+		//TODO fix when range is < 0.5
+
+		// Start position of melee frame behind the player and shift position proportional to magnitude if range is bigger than the melee texture
+		glm::vec2 MeleePosition = DrawPosition + Direction * (MeleeScale[AttackRequestType].y * 0.5f + (AttackRange[AttackRequestType] - MeleeScale[AttackRequestType].y) * MeleeMagnitude);
 		ae::Graphics.SetColor(COLOR_WHITE);
-		ae::Graphics.DrawSprite(glm::vec3(MeleePosition, PositionZ + 0.005f), MeleeTexture, Rotation, MeleeScale[AttackRequestType]);
+		ae::Graphics.DrawAnimationFrame(
+			glm::vec3(MeleePosition, PositionZ + 0.005f),
+			MeleeTexture,
+			glm::vec4(0.0f, MeleeMagnitude - 1.0f, 1.0f, MeleeMagnitude),
+			Rotation,
+			MeleeScale[AttackRequestType]
+		);
 	}
 
 	/*
@@ -405,16 +412,6 @@ void _Player::Render(double BlendFactor) {
 		Rotation,
 		glm::vec2(Scale)
 	);
-
-	/*
-	ae::Graphics.SetProgram(ae::Assets.Programs["pos"]);
-	ae::Graphics.SetDepthMask(false);
-	ae::Graphics.SetDepthTest(false);
-	ae::Graphics.SetColor(COLOR_WHITE);
-	ae::Graphics.DrawCircle(glm::vec3(DrawPosition, 0), Radius);
-	ae::Graphics.SetDepthTest(true);
-	ae::Graphics.SetProgram(ae::Assets.Programs["pos_uv"]);
-	*/
 }
 
 // Draws the player in screen space
