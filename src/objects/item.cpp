@@ -147,24 +147,17 @@ void _Item::DrawTooltip(const _Player *Player, size_t CompareSlot, int Inventory
 		Buffer.str("");
 	}
 
-	DrawPosition.y += 10 * ae::_Element::GetUIScale();
-	glm::vec2 DrawOffset(8 * ae::_Element::GetUIScale(), 0);
-
 	// Quality
 	glm::vec4 TextColor = COLOR_WHITE;
 	if(Type == _Object::WEAPON || Type == _Object::ARMOR || Type == _Object::MOD) {
-		if(EquippedItem) {
-			if(Quality > EquippedItem->Quality)
-				TextColor = COLOR_GREEN;
-			else if(Quality < EquippedItem->Quality)
-				TextColor = COLOR_RED;
-		}
-		DrawPosition.y += Spacing.y;
-		Buffer << Quality << "%";
-		ae::Assets.Fonts["hud_medium"]->DrawText("Quality", glm::ivec2(DrawPosition - DrawOffset), ae::RIGHT_BASELINE);
-		ae::Assets.Fonts["hud_medium"]->DrawText(Buffer.str(), glm::ivec2(DrawPosition + DrawOffset), ae::LEFT_BASELINE, TextColor);
+		DrawPosition.y += 24 * ae::_Element::GetUIScale();
+		Buffer << "Quality " << Quality << "%";
+		ae::Assets.Fonts["hud_small"]->DrawText(Buffer.str(), glm::ivec2(DrawPosition), ae::CENTER_BASELINE);
 		Buffer.str("");
 	}
+
+	DrawPosition.y += 10 * ae::_Element::GetUIScale();
+	glm::vec2 DrawOffset(8 * ae::_Element::GetUIScale(), 0);
 
 	std::vector<std::string> HelpTextList;
 	switch(Type) {

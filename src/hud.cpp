@@ -699,7 +699,7 @@ void _HUD::DrawItemCount(_Item *Item, const glm::vec2 &Position) {
 void _HUD::DrawItemLevel(_Item *Item, const glm::vec2 &Position) {
 	std::ostringstream Buffer;
 	Buffer << Item->Level;
-	Fonts[FONT_TINY]->DrawText(Buffer.str(), Position + glm::vec2(14, 18) * ae::_Element::GetUIScale(), ae::RIGHT_BASELINE, COLOR_GOLD);
+	Fonts[FONT_TINY]->DrawText(Buffer.str(), Position + glm::vec2(4, 18) * ae::_Element::GetUIScale(), ae::LEFT_BASELINE, COLOR_GOLD);
 }
 
 // Draw the skill popup window
