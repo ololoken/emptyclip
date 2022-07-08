@@ -72,8 +72,10 @@ _Monster::_Monster(const _ObjectTemplate &MonsterTemplate) :
 // Update
 void _Monster::Update(double FrameTime) {
 	_Entity::Update(FrameTime);
-	if(!Player || Player->IsDying())
+	if(!Player || Player->IsDying() || Player->IsInvulnerable()) {
+		MoveState = MOVE_NONE;
 		return;
+	}
 
 	StaticTimer += FrameTime;
 
@@ -81,10 +83,7 @@ void _Monster::Update(double FrameTime) {
 	UpdateAnimation(FrameTime);
 
 	// Move the monster
-	if(IsDying())
-		return;
-
-	if(!AIType)
+	if(IsDying() || !AIType)
 		return;
 
 	// Check for player in range

@@ -130,6 +130,7 @@ void _Player::Reset() {
 	WeaponSwitchFrom = -1;
 	WeaponSwitchTo = -1;
 	Stamina = 100.0f;
+	InvulnerableTimer = 0.0;
 	for(int i = 0; i < WEAPONATTACK_COUNT; i++)
 		AttackAllowed[i] = true;
 	for(int i = 0; i < SKILL_COUNT; i++)
@@ -352,9 +353,12 @@ void _Player::UpdateAnimation(double FrameTime, bool PlaySound) {
 // Draws the player
 void _Player::Render(double BlendFactor) {
 	glm::vec2 DrawPosition(Position * (float)BlendFactor + LastPosition * (float)(1.0 - BlendFactor));
+	float Alpha = 1.0f;
+	if(IsInvulnerable())
+		Alpha = std::abs(std::fmod(InvulnerableTimer * 5, 1.0)) >= 0.5 ? 0.25f : 0.75f;
 
 	// Draw legs
-	ae::Graphics.SetColor(Color);
+	ae::Graphics.SetColor(glm::vec4(Color.r, Color.g, Color.b, Color.a * Alpha));
 	ae::Graphics.DrawAnimationFrame(
 		glm::vec3(DrawPosition, PositionZ),
 		LegAnimation->Reels[LegAnimation->Reel]->Texture,
@@ -364,6 +368,7 @@ void _Player::Render(double BlendFactor) {
 	);
 
 	// Draw melee thrust animation
+	ae::Graphics.SetColor(glm::vec4(1.0f, 1.0f, 1.0f, Alpha));
 	if(Action == ACTION_MELEE && MeleeTexture) {
 		float MeleePercent = std::clamp(AttackTimer[AttackRequestType] / AttackPeriod[AttackRequestType], 0.0, 1.0);
 		float MeleeMagnitude = std::sin(MeleePercent * glm::pi<double>());
@@ -372,7 +377,6 @@ void _Player::Render(double BlendFactor) {
 
 		// Start position of melee frame behind the player and shift position proportional to magnitude if range is bigger than the melee texture
 		glm::vec2 MeleePosition = DrawPosition + Direction * (MeleeScale[AttackRequestType].y * 0.5f + (AttackRange[AttackRequestType] - MeleeScale[AttackRequestType].y) * MeleeMagnitude);
-		ae::Graphics.SetColor(COLOR_WHITE);
 		ae::Graphics.DrawAnimationFrame(
 			glm::vec3(MeleePosition, PositionZ + 0.005f),
 			MeleeTexture,
@@ -404,7 +408,6 @@ void _Player::Render(double BlendFactor) {
 	*/
 
 	// Draw torso
-	ae::Graphics.SetColor(COLOR_WHITE);
 	ae::Graphics.DrawAnimationFrame(
 		glm::vec3(DrawPosition, PositionZ + 0.01f),
 		Animation->Reels[Animation->Reel]->Texture,
@@ -1070,6 +1073,8 @@ void _Player::Respawn() {
 	ResetWeaponAnimation();
 	StopAudio();
 	SetPosition(Map->GetStartingPositionByCheckpoint(CheckpointIndex));
+
+	InvulnerableTimer = GAME_INVULNERABLE_TIME;
 }
 
 // Sets the weapon animation for the player

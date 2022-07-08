@@ -24,7 +24,7 @@ Empty Clip 2.0.0 -
 - Added bullet penetration for certain weapons
 - Removed strength requirement from armor
 - Removed player profiles
-- Players now respawn at their last checkpoint
+- Players now respawn at their last checkpoint with invulnerability for five seconds
 - Added damage number particles
 - Improved bullet hole decals
 - The game now pauses while menu is open

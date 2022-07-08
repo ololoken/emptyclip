@@ -502,7 +502,7 @@ std::string _Item::GetTypeAsString() const {
 				break;
 			}
 
-			return WeaponTypeString + " class weapon";
+			return WeaponTypeString;
 		} break;
 		case _Object::ARMOR:
 			return "Armor";

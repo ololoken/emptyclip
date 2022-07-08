@@ -42,6 +42,7 @@ const  int          GAME_SKILLLEVELS               =  100;
 const  int          GAME_MAX_SKILL_PERLEVEL        =  3;
 const  int          GAME_WIN_PROGRESSION_POINTS    =  20;
 const  double       GAME_EXPERIENCE_LOST           =  0.1;
+const  double       GAME_INVULNERABLE_TIME         =  5.0;
 //     Camera
 const  float        CAMERA_DISTANCE                =  6.5f;
 const  float        CAMERA_DISTANCE_AIMED          =  7.0f;

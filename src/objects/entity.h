@@ -101,6 +101,7 @@ class _Entity : public _Object {
 		int GenerateDamage(int AttackType, int DamageBlock, int DamageResist);
 		bool IsDying() const { return Action == ACTION_DYING || Action == ACTION_STARTDEATH; }
 		bool IsDead() const { return Action == ACTION_DYING && !Active; }
+		bool IsInvulnerable() const { return InvulnerableTimer > 0.0; }
 
 		float GetHealthPercentage() const { return (float)Health / MaxHealth; }
 		float GetStaminaPercentage() const { return Stamina / MaxStamina; }
@@ -144,6 +145,7 @@ class _Entity : public _Object {
 		int ShootingOnehandAnimation;
 		int ShootingTwohandAnimation;
 		int DyingAnimation;
+		double InvulnerableTimer;
 
 		// Attacking attributes
 		float CurrentAccuracy;

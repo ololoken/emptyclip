@@ -55,6 +55,7 @@ _Entity::_Entity(const _ObjectTemplate &EntityTemplate) :
 	ShootingOnehandAnimation(ENTITY_ANIMATIONATTACK),
 	ShootingTwohandAnimation(ENTITY_ANIMATIONATTACK),
 	DyingAnimation(ENTITY_ANIMATIONDYING),
+	InvulnerableTimer(0.0),
 	CurrentAccuracy(0),
 	MinAccuracy(0),
 	MaxAccuracy{0, 0},
@@ -183,6 +184,10 @@ void _Entity::StopAudio() {
 // Update the entity
 void _Entity::Update(double FrameTime) {
 	LastPosition = Position;
+
+	InvulnerableTimer -= FrameTime;
+	if(InvulnerableTimer < 0)
+		InvulnerableTimer = 0.0;
 
 	for(int i = 0; i < WEAPONATTACK_COUNT; i++)
 		AttackTimer[i] += FrameTime;
@@ -400,7 +405,8 @@ void _Entity::Move(double FrameTime) {
 	std::vector<_Hit> Hits;
 	glm::vec2 NewPosition = Position + MoveDirection;
 	bool AxisAlignedPush = false;
-	Map->CheckEntityCollisionsInGrid(NewPosition, Radius, this, Hits, AxisAlignedPush);
+	if(!IsInvulnerable())
+		Map->CheckEntityCollisionsInGrid(NewPosition, Radius, this, Hits, AxisAlignedPush);
 
 	// Resolve pushes
 	for(auto Hit : Hits) {
@@ -471,6 +477,9 @@ void _Entity::Render(double BlendFactor) {
 
 // Update current health
 void _Entity::UpdateHealth(int Adjust) {
+	if(IsInvulnerable())
+		return;
+
 	Health = std::clamp(Health + Adjust, 0, MaxHealth);
 	if(Health == 0 && !IsDying())
 		Action = ACTION_STARTDEATH;
