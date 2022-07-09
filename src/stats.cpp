@@ -621,8 +621,6 @@ _Item *_Stats::CreateItem(const std::string &ID, int Level, int Quality, int Cou
 			Item->Attributes["scale_x"].Float = Template.Attributes["scale_x"].Float;
 			Item->Attributes["scale_y"].Float = Template.Attributes["scale_y"].Float;
 			Item->SetMaxMods(RandomStats);
-
-			Item->Attributes["ammo"].Int = Template.Attributes.at("rounds").Int;
 		} break;
 		case _Object::ARMOR:
 			Item->SetMaxMods(RandomStats);
@@ -641,6 +639,9 @@ _Item *_Stats::CreateItem(const std::string &ID, int Level, int Quality, int Cou
 	}
 
 	Item->RecalculateStats();
+
+	if(Template.Type == _Object::WEAPON)
+		Item->Attributes["ammo"].Int = Template.Attributes.at("rounds").Int;
 
 	return Item;
 }
