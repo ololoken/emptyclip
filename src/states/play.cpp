@@ -69,6 +69,7 @@ _PlayState::_PlayState() {
 	LastClosestItem = nullptr;
 	ClosestItem = nullptr;
 	ClosestItemTimer = 0.0;
+	FlashTimer = 0.0;
 }
 
 // Load level and set up objects
@@ -401,6 +402,7 @@ void _PlayState::Update(double FrameTime) {
 	//	std::cout << ae::Graphics.Element->HitElement->Name << std::endl;
 
 	Timer += FrameTime;
+	FlashTimer = std::max(0.0, FlashTimer - FrameTime);
 
 	// Handle pause
 	if(IsPaused()) {
@@ -469,8 +471,10 @@ void _PlayState::Update(double FrameTime) {
 		HUD->SetInventoryOpen(false);
 	}
 
-	// Update the player's states
+	// Update player
 	Player->Update(FrameTime);
+	if(Player->Action == ACTION_STARTSHOOT)
+		FlashTimer = LIGHT_FLASH_TIME;
 
 	// Check for events
 	if(Player->TileChanged)
@@ -605,15 +609,21 @@ void _PlayState::Render(double BlendFactor) {
 	if(IsPaused())
 		BlendFactor = 0;
 
+	glm::vec4 DynamicLightColor;
+	if(FlashTimer > 0.0)
+		DynamicLightColor = LIGHT_FLASH_COLOR;
+	else
+		DynamicLightColor = PLAYER_LIGHT;
+
 	// Set up lights
-	glm::vec3 LightPosition(glm::vec2(Player->Position), 1.f);
+	glm::vec3 LightPosition(glm::vec2(Player->Position), 1.0f);
 	ae::Assets.Programs["map"]->LightCount = 1;
-	ae::Assets.Programs["map"]->Lights[0].Color = PLAYER_LIGHT;
+	ae::Assets.Programs["map"]->Lights[0].Color = DynamicLightColor;
 	ae::Assets.Programs["map"]->Lights[0].Position = LightPosition;
 	ae::Assets.Programs["map"]->Lights[0].Attenuation = LIGHT_ATTENUATION;
 	ae::Assets.Programs["map"]->AmbientLight = Map->GetAmbientLight();
 	ae::Assets.Programs["map_norm"]->LightCount = 1;
-	ae::Assets.Programs["map_norm"]->Lights[0].Color = PLAYER_LIGHT;
+	ae::Assets.Programs["map_norm"]->Lights[0].Color = DynamicLightColor;
 	ae::Assets.Programs["map_norm"]->Lights[0].Position = LightPosition;
 	ae::Assets.Programs["map_norm"]->Lights[0].Attenuation = LIGHT_ATTENUATION;
 	ae::Assets.Programs["map_norm"]->AmbientLight = Map->GetAmbientLight();
@@ -692,10 +702,13 @@ void _PlayState::Render(double BlendFactor) {
 	ParticleRenderCount += Map->RenderParticles(_Particles::WALL_DECALS);
 
 	// Draw particles
+	ae::Graphics.EnableParticleBlending();
 	ae::Graphics.SetProgram(ae::Assets.Programs["map"]);
 	ae::Assets.Programs["map"]->ResetTextureTransform();
-	ae::Graphics.EnableParticleBlending();
 	Particles->Render(_Particles::NORMAL);
+	ae::Graphics.SetProgram(ae::Assets.Programs["pos_uv"]);
+	ae::Assets.Programs["pos_uv"]->ResetTextureTransform();
+	Particles->Render(_Particles::EMISSIVE);
 	ae::Graphics.DisableParticleBlending();
 
 	// Draw the foreground tiles

@@ -152,3 +152,5 @@ const  glm::vec4    HUD_MINIMAP_DOOR_COLOR         =  glm::vec4(0.28f,0.28f,0.28
 const  glm::vec4    HUD_MINIMAP_TOGGLED_COLOR      =  glm::vec4(0.035f,0.035f,0.035f,1.0f);
 //     Light
 const  glm::vec3    LIGHT_ATTENUATION              =  glm::vec3(1.0f, 0.2f, 0.1f);
+const  double       LIGHT_FLASH_TIME               =  GAME_TIMESTEP * 2;
+const  glm::vec4    LIGHT_FLASH_COLOR              =  glm::vec4(4.0f, 4.0f, 4.0f, 1.0f);

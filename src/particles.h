@@ -54,6 +54,7 @@ class _Particles {
 
 		enum ParticleTypes {
 			NORMAL,
+			EMISSIVE,
 			FLOOR_DECALS,
 			WALL_DECALS,
 			TEXT,

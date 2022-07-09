@@ -76,6 +76,7 @@ class _PlayState : public ae::_State {
 
 		// Objects
 		_Player *Player;
+		double FlashTimer;
 
 	protected:
 
