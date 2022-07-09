@@ -19,7 +19,7 @@
         <element id="image_player_stamina_empty" texture="textures/hud_repeat/stamina_empty.png" size_x="200" size_y="8" alignment_x="0" alignment_y="0"/>
         <element id="image_player_stamina_full" texture="textures/hud_repeat/stamina_full.png" size_y="8" alignment_x="0" alignment_y="0"/>
     </element>
-    <element id="element_hud_indicator" offset_y="166" size_x="256" size_y="32">
+    <element id="element_hud_indicator" style="style_hud_indicator" offset_y="166" size_x="256" size_y="32">
         <element id="image_indicator_progress" size_x="256" size_y="32" alignment_x="0" alignment_y="0" stretch="false"/>
         <element id="label_hud_indicator_text" font="hud_small" offset_y="-16" alignment_y="3"/>
     </element>

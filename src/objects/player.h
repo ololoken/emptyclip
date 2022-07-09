@@ -200,7 +200,7 @@ class _Player : public _Entity {
 		void CalculateSkillsRemaining();
 		void UpdateColor();
 
-		void IncurDeathPenalty() override;
+		void ApplyDeathPenalty() override;
 		void ResetWeaponAnimation();
 
 		bool CanUseMedkit() const;

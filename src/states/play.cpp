@@ -461,7 +461,6 @@ void _PlayState::Update(double FrameTime) {
 	// Check for events
 	if(Player->TileChanged)
 		CheckEvents(Player);
-	Player->TileChanged = false;
 
 	// Find nearest items
 	std::unordered_map<_Object *, int> NearbyItems;
@@ -1094,106 +1093,108 @@ void _PlayState::UpdateMonsters(double FrameTime) {
 
 // Checks for the player triggering events
 void _PlayState::CheckEvents(const _Entity *Entity) {
-	glm::ivec2 Position = Map->GetValidCoord(Entity->Position);
+	Player->TileChanged = false;
 
 	// Check for events triggered by walking
+	glm::ivec2 Position = Map->GetValidCoord(Entity->Position);
 	std::vector<_Event *> &Events = Map->GetEventList(Position);
 	for(auto Event : Events) {
+		if(!Event->Active)
+			continue;
 
 		// Perform action
-		if(Event->Active) {
-			switch(Event->Type) {
-				case EVENT_SPAWN:
-					if(Stats.Objects.find(Event->MonsterID) != Stats.Objects.end()) {
-						Event->StartTimer();
-						ActiveEvents.push_back(Event);
-					}
-					Event->Active = false;
-				break;
-				case EVENT_CHECK:
-					switch(Map->MapType) {
-						case MAPTYPE_CAMPAIGN:
-							if(Event->Level > Player->CheckpointIndex) {
-								Player->CheckpointIndex = Event->Level;
-								HUD->ShowTextMessage(HUD_CHECKPOINTMESSAGE, HUD_CHECKPOINTTIME);
-								Save.SavePlayer(Player);
-							}
-							Event->Active = false;
-						break;
-						case MAPTYPE_ADVENTURE:
-							if(Event->Level != Player->CheckpointIndex) {
-								Player->CheckpointIndex = Event->Level;
-								HUD->ShowTextMessage(HUD_CHECKPOINTMESSAGE, HUD_CHECKPOINTTIME);
-								Save.SavePlayer(Player);
-							}
-						break;
-						default:
-						break;
-					}
-				break;
-				case EVENT_ENDLEVEL:
-					Level = Event->ItemID;
-
-					// End of the game
-					if(Level == "") {
-						Level = GAME_FIRSTLEVEL;
-						Player->Progression += GAME_WIN_PROGRESSION_POINTS;
-						Framework.ChangeState(&NullState);
-					}
-					// Next level
-					else
-						Framework.ChangeState(&PlayState);
-
-					Player->CheckpointIndex = Event->Level;
-					Player->MapID = Level;
-					if(Map->MapType == MAPTYPE_CAMPAIGN)
-						Player->Keys.clear();
-					Save.SavePlayer(Player);
-				break;
-				case EVENT_TEXT:
-					HUD->ShowMessageBox(Stats.Strings[Event->ItemID], Event->ActivationPeriod);
-					if(Event->Level != 0)
-						Event->Active = false;
-				break;
-				case EVENT_SOUND:
-					if(ae::Assets.Sounds[Event->ItemID]) {
-						Event->StartTimer();
-						ActiveEvents.push_back(Event);
-					}
-					Event->Active = false;
-				break;
-				case EVENT_FLOORSWITCH:
-				case EVENT_ENABLE:
+		switch(Event->Type) {
+			case EVENT_SPAWN:
+				if(Stats.Objects.find(Event->MonsterID) != Stats.Objects.end()) {
 					Event->StartTimer();
 					ActiveEvents.push_back(Event);
+				}
+				Event->Active = false;
+			break;
+			case EVENT_CHECK:
+				switch(Map->MapType) {
+					case MAPTYPE_CAMPAIGN:
+						if(Event->Level > Player->CheckpointIndex) {
+							Player->CheckpointIndex = Event->Level;
+							HUD->ShowTextMessage(HUD_CHECKPOINTMESSAGE, HUD_CHECKPOINTTIME);
+							Save.SavePlayer(Player);
+						}
+						Event->Active = false;
+					break;
+					case MAPTYPE_ADVENTURE:
+						if(Event->Level != Player->CheckpointIndex) {
+							Player->CheckpointIndex = Event->Level;
+							HUD->ShowTextMessage(HUD_CHECKPOINTMESSAGE, HUD_CHECKPOINTTIME);
+							Save.SavePlayer(Player);
+						}
+					break;
+					default:
+					break;
+				}
+			break;
+			case EVENT_ENDLEVEL:
+				Level = Event->ItemID;
+
+				// End of the game
+				if(Level == "") {
+					Level = GAME_FIRSTLEVEL;
+					Player->Progression += GAME_WIN_PROGRESSION_POINTS;
+					Framework.ChangeState(&NullState);
+				}
+				// Next level
+				else
+					Framework.ChangeState(&PlayState);
+
+				Player->CheckpointIndex = Event->Level;
+				Player->MapID = Level;
+				if(Map->MapType == MAPTYPE_CAMPAIGN)
+					Player->Keys.clear();
+				Save.SavePlayer(Player);
+			break;
+			case EVENT_TEXT:
+				HUD->ShowMessageBox(Stats.Strings[Event->ItemID], Event->ActivationPeriod);
+				if(Event->Level != 0)
 					Event->Active = false;
-				break;
-				case EVENT_TELEPORT: {
-					if(Event->Level > 0) {
-						Event->Decrement();
-						if(Event->Level == 0)
-							Event->Active = false;
-					}
+			break;
+			case EVENT_SOUND:
+				if(ae::Assets.Sounds[Event->ItemID]) {
+					Event->StartTimer();
+					ActiveEvents.push_back(Event);
+				}
+				Event->Active = false;
+			break;
+			case EVENT_FLOORSWITCH:
+			case EVENT_ENABLE:
+				Event->StartTimer();
+				ActiveEvents.push_back(Event);
+				Event->Active = false;
+			break;
+			case EVENT_TELEPORT: {
+				if(Event->Level > 0) {
+					Event->Decrement();
+					if(Event->Level == 0)
+						Event->Active = false;
+				}
 
-					if(Event->Tiles.size() > 0) {
-						glm::vec2 NewPosition(Event->Tiles[0].Coord.x + 0.5f, Event->Tiles[0].Coord.y + 0.5f);
-						Particles->Create(_ParticleSpawn(GameAssets.GetParticleTemplate(Event->ParticleID), glm::vec2(0), NewPosition, OBJECT_Z, 0));
+				if(Event->Tiles.size() > 0) {
+					glm::vec2 NewPosition(Event->Tiles[0].Coord.x + 0.5f, Event->Tiles[0].Coord.y + 0.5f);
+					Particles->Create(_ParticleSpawn(GameAssets.GetParticleTemplate(Event->ParticleID), glm::vec2(0), NewPosition, OBJECT_Z, 0));
 
-						Map->RemoveObjectFromGrid(Player, GRID_PLAYER);
-						Player->SetPosition(NewPosition);
-						Map->AddObjectToGrid(Player, GRID_PLAYER);
-					}
-				} break;
-				case EVENT_LIGHT: {
-					if(LastLightEvent != Event) {
-						Map->SetAmbientLight(ae::Assets.Colors[Event->ItemID]);
-						Map->SetAmbientLightChangePeriod(Event->ActivationPeriod);
-						LastLightEvent = Event;
-					}
-				} break;
-				default:
-				break;
-			}
+					Map->RemoveObjectFromGrid(Player, GRID_PLAYER);
+					Player->SetPosition(NewPosition);
+					Map->AddObjectToGrid(Player, GRID_PLAYER);
+					Player->TileChanged = true;
+				}
+			} break;
+			case EVENT_LIGHT: {
+				if(LastLightEvent != Event) {
+					Map->SetAmbientLight(ae::Assets.Colors[Event->ItemID]);
+					Map->SetAmbientLightChangePeriod(Event->ActivationPeriod);
+					LastLightEvent = Event;
+				}
+			} break;
+			default:
+			break;
 		}
 	}
 }

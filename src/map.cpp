@@ -1159,10 +1159,11 @@ void _Map::GetSelectedObjects(const glm::vec2 &Start, const glm::vec2 &End, std:
 
 // Removes a block from the list
 void _Map::RemoveBlock(int Layer, int Index) {
-	if(Index >= 0 && Index < (int)Blocks[Layer].size()) {
-		DeleteBlockIDFromTiles(Layer, Index);
-		Blocks[Layer].erase(Blocks[Layer].begin() + Index);
-	}
+	if(Index < 0 || Index >= (int)Blocks[Layer].size())
+		return;
+
+	DeleteBlockIDFromTiles(Layer, Index);
+	Blocks[Layer].erase(Blocks[Layer].begin() + Index);
 }
 
 // Deletes a block id from the events list given a block id and layer

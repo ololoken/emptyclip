@@ -205,26 +205,24 @@ void _Entity::Update(double FrameTime) {
 // Updates the animation
 void _Entity::UpdateAnimation(double FrameTime, bool PlaySound) {
 
+	// Update legs
+	SetLegAnimationPlayMode(PositionChanged ? ae::_Animation::PLAYING : ae::_Animation::STOPPED);
+
 	// Check action
 	switch(Action) {
 		case ACTION_IDLE:
 			if(!PositionChanged) {
-				SetLegAnimationPlayMode(ae::_Animation::STOPPED);
 				Animation->Stop();
 			}
 			else {
 				Animation->Play(WalkingAnimation, MoveSpeed);
-				SetLegAnimationPlayMode(ae::_Animation::PLAYING);
 				SetAnimationPlaybackSpeedFactor();
-
 				Action = ACTION_MOVING;
 			}
 		break;
 		case ACTION_MOVING:
 			if(!PositionChanged) {
 				Animation->Stop();
-				SetLegAnimationPlayMode(ae::_Animation::STOPPED);
-
 				Action = ACTION_IDLE;
 			}
 		break;
@@ -233,7 +231,6 @@ void _Entity::UpdateAnimation(double FrameTime, bool PlaySound) {
 			Animation->Play(MeleeAnimation);
 			if(Type == _Object::PLAYER)
 				Animation->FramePeriod = AttackPeriod[WEAPONATTACK_MELEE] / (Animation->Reels[MeleeAnimation]->EndFrame + 1);
-			SetLegAnimationPlayMode(ae::_Animation::STOPPED);
 
 			Action = ACTION_MELEE;
 		break;
@@ -242,7 +239,6 @@ void _Entity::UpdateAnimation(double FrameTime, bool PlaySound) {
 				Animation->Stop();
 				Animation->Play(WalkingAnimation, MoveSpeed);
 				SetAnimationPlaybackSpeedFactor();
-
 				Action = ACTION_IDLE;
 			}
 		break;
@@ -255,8 +251,8 @@ void _Entity::UpdateAnimation(double FrameTime, bool PlaySound) {
 				Animation->Stop();
 				Animation->Play(ShootingTwohandAnimation);
 			}
-			Animation->FramePeriod = AttackPeriod[WEAPONATTACK_MAIN];
 
+			Animation->FramePeriod = AttackPeriod[WEAPONATTACK_MAIN];
 			Action = ACTION_SHOOT;
 			AttackMade = true;
 		break;
@@ -265,23 +261,17 @@ void _Entity::UpdateAnimation(double FrameTime, bool PlaySound) {
 				Animation->Stop();
 				Animation->Play(WalkingAnimation, MoveSpeed);
 				SetAnimationPlaybackSpeedFactor();
-
 				Action = ACTION_IDLE;
 			}
-
-			if(PositionChanged)
-				SetLegAnimationPlayMode(ae::_Animation::PLAYING);
-			else
-				SetLegAnimationPlayMode(ae::_Animation::STOPPED);
 		break;
 		case ACTION_STARTDEATH:
 			Animation->Stop();
 			Animation->Play(DyingAnimation);
 			SetLegAnimationPlayMode(ae::_Animation::STOPPED);
 			MoveState = MOVE_NONE;
-			IncurDeathPenalty();
-
 			Action = ACTION_DYING;
+
+			ApplyDeathPenalty();
 		break;
 		case ACTION_DYING:
 			if(Animation->IsStopped())
@@ -292,7 +282,10 @@ void _Entity::UpdateAnimation(double FrameTime, bool PlaySound) {
 	int LastFrame = Animation->Frame;
 	Animation->Update(FrameTime);
 
+	// Check for animation frame updates
 	if(LastFrame != Animation->Frame) {
+
+		// Perform melee attack on middle frame
 		if(Action == ACTION_MELEE && Animation->Frame == 1)
 			AttackMade = true;
 
@@ -388,19 +381,12 @@ void _Entity::Move(double FrameTime) {
 	// Get speed
 	float Speed = MoveSpeed * MoveModifier * FrameTime;
 
-	// Update speed while attacking
-	if(Action == ACTION_SHOOT || Action == ACTION_MELEE)
-		Speed *= AttackMoveSpeed[AttackRequestType];
-
 	// Update move vector
 	MoveDirection *= Speed;
 
 	// Update accuracy
-	if(MoveState) {
-		CurrentAccuracy += Speed * MoveRecoil;
-		if(CurrentAccuracy > MaxAccuracy[WEAPONATTACK_MAIN])
-			CurrentAccuracy = MaxAccuracy[WEAPONATTACK_MAIN];
-	}
+	if(MoveState)
+		CurrentAccuracy = std::min(CurrentAccuracy + Speed * MoveRecoil, MaxAccuracy[WEAPONATTACK_MAIN]);
 
 	// Get a list of entities that the object is colliding with
 	std::vector<_Hit> Hits;

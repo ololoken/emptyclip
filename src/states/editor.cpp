@@ -1757,37 +1757,22 @@ void _EditorState::ExecuteChangeZ(float Change, int Type) {
 
 // Executes the change level command
 void _EditorState::ExecuteChangeLevel(int Change) {
-	if(EventSelected()) {
-		SelectedEvent->Level = SelectedEvent->Level + Change;
-		if(SelectedEvent->Level < 0)
-			SelectedEvent->Level = 0;
-
-	}
-	else {
-		EventLevel += Change;
-		if(EventLevel < 0)
-			EventLevel = 0;
-	}
+	if(EventSelected())
+		SelectedEvent->Level = std::max(0, SelectedEvent->Level + Change);
+	else
+		EventLevel = std::max(0, EventLevel + Change);
 }
 
 // Executes the change activation period command
 void _EditorState::ExecuteChangePeriod(double Value) {
-	if(EventSelected()) {
-		SelectedEvent->ActivationPeriod = SelectedEvent->ActivationPeriod + Value;
-		if(SelectedEvent->ActivationPeriod < 0.0)
-			SelectedEvent->ActivationPeriod = 0.0;
-
-	}
-	else {
-		EventActivationPeriod += Value;
-		if(EventActivationPeriod < 0.0)
-			EventActivationPeriod = 0.0;
-	}
+	if(EventSelected())
+		SelectedEvent->ActivationPeriod = std::max(0.0, SelectedEvent->ActivationPeriod + Value);
+	else
+		EventActivationPeriod  = std::max(0.0, EventActivationPeriod + Value);
 }
 
 // Executes the change active command
 void _EditorState::ExecuteChangeActive() {
-
 	if(EventSelected())
 		SelectedEvent->Active = !SelectedEvent->Active;
 	else
@@ -1796,10 +1781,7 @@ void _EditorState::ExecuteChangeActive() {
 
 // Executes the change checkpoint command
 void _EditorState::ExecuteUpdateCheckpointIndex(int Value) {
-	CheckpointIndex += Value;
-
-	if(CheckpointIndex < 0)
-		CheckpointIndex = 0;
+	CheckpointIndex = std::max(0, CheckpointIndex + Value);
 }
 
 // Executes the an I/O command
@@ -1959,7 +1941,7 @@ void _EditorState::ExecuteUndo() {
 	}
 }
 
-// Executes the update selected palette command
+// Moves to the previous/next icon in the palette
 void _EditorState::ExecuteUpdateSelectedPalette(int Change) {
 	std::vector<ae::_Element *> &Children = PaletteElement[EditMode]->Children;
 	if(!Brush[EditMode]) {
@@ -1969,6 +1951,8 @@ void _EditorState::ExecuteUpdateSelectedPalette(int Change) {
 
 	int CurrentIndex = Brush[EditMode]->Index;
 	CurrentIndex += Change;
+
+	// Wrap around
 	if(CurrentIndex >= (int)Children.size())
 		CurrentIndex = 0;
 	else if(CurrentIndex < 0)

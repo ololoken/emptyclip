@@ -534,9 +534,6 @@ void _HUD::DrawIndicator(const std::string &String, float Percent, const ae::_Te
 
 	// Set text
 	Elements[LABEL_INDICATOR]->Text = String;
-	ae::Graphics.SetProgram(ae::Assets.Programs["ortho_pos"]);
-	ae::Graphics.SetColor(COLOR_TGRAY);
-	ae::Graphics.DrawRectangle(Elements[ELEMENT_INDICATOR]->Bounds);
 
 	// Set progress size
 	Elements[IMAGE_RELOAD]->Texture = Texture;

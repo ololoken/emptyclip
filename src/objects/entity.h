@@ -177,7 +177,7 @@ class _Entity : public _Object {
 
 	protected:
 
-		virtual void IncurDeathPenalty() { }
+		virtual void ApplyDeathPenalty() { }
 		virtual void SetLegAnimationPlayMode(int Mode) { }
 		virtual void SetAnimationPlaybackSpeedFactor() { }
 		void UpdateRecoil(double FrameTime);

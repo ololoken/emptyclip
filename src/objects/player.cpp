@@ -990,6 +990,9 @@ void _Player::UpdateSpeed(float Factor) {
 
 	MoveModifier *= Factor;
 
+	if(Action == ACTION_SHOOT || Action == ACTION_MELEE)
+		MoveModifier *= AttackMoveSpeed[AttackRequestType];
+
 	LegAnimation->FramePeriod = LegAnimation->Reels[0]->FramePeriod / MoveModifier;
 	if(Animation->Reel == PLAYER_ANIMATIONWALKINGONEHAND || Animation->Reel == PLAYER_ANIMATIONWALKINGTWOHAND)
 		SetAnimationPlaybackSpeedFactor();
@@ -1101,7 +1104,7 @@ void _Player::ResetWeaponAnimation() {
 }
 
 // Applies the death penalty
-void _Player::IncurDeathPenalty() {
+void _Player::ApplyDeathPenalty() {
 	Reloading = false;
 	SwitchingWeapons = false;
 	Deaths++;
