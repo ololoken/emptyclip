@@ -131,6 +131,7 @@ void _Player::Reset() {
 	WeaponSwitchTo = -1;
 	Stamina = 100.0f;
 	InvulnerableTimer = 0.0;
+	Flashlight = false;
 	for(int i = 0; i < WEAPONATTACK_COUNT; i++)
 		AttackAllowed[i] = true;
 	for(int i = 0; i < SKILL_COUNT; i++)

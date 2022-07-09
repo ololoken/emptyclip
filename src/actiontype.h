@@ -28,6 +28,7 @@ namespace Action {
 		GAME_USE,
 		GAME_SPRINT,
 		GAME_MAP,
+		GAME_FLASHLIGHT,
 		GAME_FIRE,
 		GAME_AIM,
 		GAME_MELEE,

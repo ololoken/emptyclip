@@ -40,6 +40,7 @@ void _Config::Init(const std::string &ConfigFile) {
 	ae::Actions.State[Action::GAME_USE].Name = "game_use";
 	ae::Actions.State[Action::GAME_SPRINT].Name = "game_sprint";
 	ae::Actions.State[Action::GAME_MAP].Name = "game_map";
+	ae::Actions.State[Action::GAME_FLASHLIGHT].Name = "game_flashlight";
 	ae::Actions.State[Action::GAME_FIRE].Name = "game_fire";
 	ae::Actions.State[Action::GAME_AIM].Name = "game_aim";
 	ae::Actions.State[Action::GAME_MELEE].Name = "game_melee";
@@ -116,6 +117,7 @@ void _Config::LoadDefaultInputBindings(bool IfNone) {
 	ae::Actions.AddInputMap(0, ae::_Input::KEYBOARD, SDL_SCANCODE_W, Action::GAME_WEAPONSWITCH, 1.0f, -1.0f, IfNone);
 	ae::Actions.AddInputMap(0, ae::_Input::KEYBOARD, SDL_SCANCODE_Q, Action::GAME_HEAL, 1.0f, -1.0f, IfNone);
 	ae::Actions.AddInputMap(0, ae::_Input::KEYBOARD, SDL_SCANCODE_TAB, Action::GAME_MAP, 1.0f, -1.0f, IfNone);
+	ae::Actions.AddInputMap(0, ae::_Input::KEYBOARD, SDL_SCANCODE_V, Action::GAME_FLASHLIGHT, 1.0f, -1.0f, IfNone);
 
 	// Misc
 	ae::Actions.AddInputMap(0, ae::_Input::KEYBOARD, SDL_SCANCODE_GRAVE, Action::MISC_CONSOLE, 1.0f, -1.0f, IfNone);

@@ -102,8 +102,8 @@ void _ObjectManager::Update(double FrameTime, _Map *Map) {
 
 // Render objects
 void _ObjectManager::Render(double BlendFactor) {
-	ae::Assets.Programs["map"]->ResetTextureTransform();
 	ae::Graphics.SetProgram(ae::Assets.Programs["map"]);
+	ae::Assets.Programs["map"]->ResetTextureTransform();
 	ae::Graphics.SetDepthMask(false);
 	ae::Graphics.SetDepthTest(true);
 

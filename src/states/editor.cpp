@@ -801,15 +801,15 @@ void _EditorState::Render(double BlendFactor) {
 
 	// Setup the viewing matrix
 	ae::Graphics.SetProgram(ae::Assets.Programs["map"]);
-	glUniformMatrix4fv(ae::Assets.Programs["map"]->ViewProjectionTransformID, 1, GL_FALSE, glm::value_ptr(Camera->Transform));
+	ae::Assets.Programs["map"]->SetUniformMat4("view_projection_transform", Camera->Transform);
 	ae::Graphics.SetProgram(ae::Assets.Programs["map_norm"]);
-	glUniformMatrix4fv(ae::Assets.Programs["map_norm"]->ViewProjectionTransformID, 1, GL_FALSE, glm::value_ptr(Camera->Transform));
+	ae::Assets.Programs["map_norm"]->SetUniformMat4("view_projection_transform", Camera->Transform);
 	ae::Graphics.SetProgram(ae::Assets.Programs["pos"]);
-	glUniformMatrix4fv(ae::Assets.Programs["pos"]->ViewProjectionTransformID, 1, GL_FALSE, glm::value_ptr(Camera->Transform));
+	ae::Assets.Programs["pos"]->SetUniformMat4("view_projection_transform", Camera->Transform);
 	ae::Graphics.SetProgram(ae::Assets.Programs["pos_uv"]);
-	glUniformMatrix4fv(ae::Assets.Programs["pos_uv"]->ViewProjectionTransformID, 1, GL_FALSE, glm::value_ptr(Camera->Transform));
+	ae::Assets.Programs["pos_uv"]->SetUniformMat4("view_projection_transform", Camera->Transform);
 	ae::Graphics.SetProgram(ae::Assets.Programs["text"]);
-	glUniformMatrix4fv(ae::Assets.Programs["text"]->ViewProjectionTransformID, 1, GL_FALSE, glm::value_ptr(Camera->Transform));
+	ae::Assets.Programs["text"]->SetUniformMat4("view_projection_transform", Camera->Transform);
 
 	// Draw floors
 	Map->RenderFloors();
@@ -1373,8 +1373,8 @@ void _EditorState::DrawBrush() {
 	}
 
 	if(IconTexture) {
-		ae::Assets.Programs["ortho_pos_uv"]->ResetTextureTransform();
 		ae::Graphics.SetProgram(ae::Assets.Programs["ortho_pos_uv"]);
+		ae::Assets.Programs["ortho_pos_uv"]->ResetTextureTransform();
 		ae::Graphics.SetColor(IconColor);
 		glm::vec3 DrawPosition = glm::vec3(IconPosition, 0.0f);
 		glm::vec2 IconScale = glm::vec2(IconScaleX * EDITOR_PALETTE_SELECTEDSIZE * 2, EDITOR_PALETTE_SELECTEDSIZE * 2);
@@ -1414,8 +1414,8 @@ void _EditorState::DrawObject(float OffsetX, float OffsetY, const _ObjectSpawn *
 
 	Color.a *= Alpha;
 	if(Texture != nullptr) {
-		ae::Assets.Programs["pos_uv"]->ResetTextureTransform();
 		ae::Graphics.SetProgram(ae::Assets.Programs["pos_uv"]);
+		ae::Assets.Programs["pos_uv"]->ResetTextureTransform();
 		ae::Graphics.SetColor(Color);
 		ae::Graphics.DrawSprite(glm::vec3(DrawPosition, Depth), Texture, 0.0f, glm::vec2(Scale));
 	}

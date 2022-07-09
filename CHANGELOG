@@ -9,7 +9,8 @@ Empty Clip 2.0.0 -
 - Rewrote AI system
 - Aiming now modifies recoil and recoil regen
 - Added minimap and hotkey for full map view (Tab by default)
-- Added sprinting and a stamina bar
+- Added sprinting and a stamina bar (Hold A by default)
+- Added flashlight hot key (V by default)
 - Equipment can be equipped by right-clicking in the inventory
 - Items can be dropped by clicking the middle mouse button
 - Items in inventory can now stack

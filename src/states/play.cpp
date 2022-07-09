@@ -232,6 +232,9 @@ bool _PlayState::HandleAction(int InputType, size_t Action, int Value) {
 			case Action::GAME_HEAL:
 				Player->MedkitRequested = true;
 			break;
+			case Action::GAME_FLASHLIGHT:
+				Player->Flashlight = !Player->Flashlight;
+			break;
 		}
 	}
 	else {
@@ -602,16 +605,15 @@ void _PlayState::Render(double BlendFactor) {
 	if(IsPaused())
 		BlendFactor = 0;
 
+	// Set up lights
 	glm::vec3 LightPosition(glm::vec2(Player->Position), 1.f);
-	const glm::vec4 PlayerLight(0.5f, 0.5f, 0.5f, 1.0f);
-
 	ae::Assets.Programs["map"]->LightCount = 1;
-	ae::Assets.Programs["map"]->Lights[0].Color = PlayerLight;
+	ae::Assets.Programs["map"]->Lights[0].Color = PLAYER_LIGHT;
 	ae::Assets.Programs["map"]->Lights[0].Position = LightPosition;
 	ae::Assets.Programs["map"]->Lights[0].Attenuation = LIGHT_ATTENUATION;
 	ae::Assets.Programs["map"]->AmbientLight = Map->GetAmbientLight();
 	ae::Assets.Programs["map_norm"]->LightCount = 1;
-	ae::Assets.Programs["map_norm"]->Lights[0].Color = PlayerLight;
+	ae::Assets.Programs["map_norm"]->Lights[0].Color = PLAYER_LIGHT;
 	ae::Assets.Programs["map_norm"]->Lights[0].Position = LightPosition;
 	ae::Assets.Programs["map_norm"]->Lights[0].Attenuation = LIGHT_ATTENUATION;
 	ae::Assets.Programs["map_norm"]->AmbientLight = Map->GetAmbientLight();
@@ -622,15 +624,15 @@ void _PlayState::Render(double BlendFactor) {
 
 	// Setup the viewing matrix
 	ae::Graphics.SetProgram(ae::Assets.Programs["map"]);
-	glUniformMatrix4fv(ae::Assets.Programs["map"]->ViewProjectionTransformID, 1, GL_FALSE, glm::value_ptr(Camera->Transform));
+	ae::Assets.Programs["map"]->SetUniformMat4("view_projection_transform", Camera->Transform);
 	ae::Graphics.SetProgram(ae::Assets.Programs["map_norm"]);
-	glUniformMatrix4fv(ae::Assets.Programs["map_norm"]->ViewProjectionTransformID, 1, GL_FALSE, glm::value_ptr(Camera->Transform));
+	ae::Assets.Programs["map_norm"]->SetUniformMat4("view_projection_transform", Camera->Transform);
 	ae::Graphics.SetProgram(ae::Assets.Programs["pos"]);
-	glUniformMatrix4fv(ae::Assets.Programs["pos"]->ViewProjectionTransformID, 1, GL_FALSE, glm::value_ptr(Camera->Transform));
+	ae::Assets.Programs["pos"]->SetUniformMat4("view_projection_transform", Camera->Transform);
 	ae::Graphics.SetProgram(ae::Assets.Programs["pos_uv"]);
-	glUniformMatrix4fv(ae::Assets.Programs["pos_uv"]->ViewProjectionTransformID, 1, GL_FALSE, glm::value_ptr(Camera->Transform));
+	ae::Assets.Programs["pos_uv"]->SetUniformMat4("view_projection_transform", Camera->Transform);
 	ae::Graphics.SetProgram(ae::Assets.Programs["text"]);
-	glUniformMatrix4fv(ae::Assets.Programs["text"]->ViewProjectionTransformID, 1, GL_FALSE, glm::value_ptr(Camera->Transform));
+	ae::Assets.Programs["text"]->SetUniformMat4("view_projection_transform", Camera->Transform);
 
 	// Update minimap
 	if(ae::Actions.State[Action::GAME_MAP].Value > 0.0f) {
@@ -640,10 +642,34 @@ void _PlayState::Render(double BlendFactor) {
 	else
 		Map->MinimapCaptureSize = HUD_MINIMAP_CAPTURE_SIZE;
 
+	// Add lights
+	Framebuffer->Clear();
+	ae::Graphics.SetProgram(ae::Assets.Programs["pos_uv"]);
+	ae::Graphics.EnableParticleBlending();
+	if(Player->Flashlight) {
+		ae::Graphics.SetColor(glm::vec4(1.0f));
+		ae::Graphics.DrawSprite(glm::vec3(Player->Position + glm::vec2(5) * Player->GetDirectionVector(), 0), ae::Assets.Textures["textures/lights/flashlight.png"], Player->Rotation, glm::vec2(5, 10));
+	}
+	ae::Graphics.DisableParticleBlending();
+	ae::_Framebuffer::Unbind();
+
+	// Set framebuffer texture
+	if(Framebuffer) {
+		ae::Assets.Programs["map"]->Use();
+		ae::Graphics.SetActiveTexture(1);
+		Framebuffer->BindTexture();
+		ae::Graphics.SetActiveTexture(0);
+		ae::Assets.Programs["map_norm"]->Use();
+		ae::Graphics.SetActiveTexture(1);
+		Framebuffer->BindTexture();
+		ae::Graphics.SetActiveTexture(0);
+	}
+
 	// Draw the floor
 	int BlockRenderCount = Map->RenderFloors();
 
 	// Draw floor decals
+	ae::Graphics.SetProgram(ae::Assets.Programs["map"]);
 	ae::Assets.Programs["map"]->ResetTextureTransform();
 	ae::Graphics.SetDepthMask(false);
 	ae::Graphics.SetDepthTest(false);
@@ -660,20 +686,17 @@ void _PlayState::Render(double BlendFactor) {
 	BlockRenderCount += Map->RenderFlatWalls();
 
 	// Draw wall decals
-	ae::Assets.Programs["map"]->ResetTextureTransform();
 	ae::Graphics.SetProgram(ae::Assets.Programs["map"]);
+	ae::Assets.Programs["map"]->ResetTextureTransform();
 	ae::Graphics.SetDepthMask(false);
 	ParticleRenderCount += Map->RenderParticles(_Particles::WALL_DECALS);
 
 	// Draw particles
+	ae::Graphics.SetProgram(ae::Assets.Programs["map"]);
+	ae::Assets.Programs["map"]->ResetTextureTransform();
 	ae::Graphics.EnableParticleBlending();
 	Particles->Render(_Particles::NORMAL);
 	ae::Graphics.DisableParticleBlending();
-
-	//ae::Graphics.SetDepthTest(false);
-	//ae::Graphics.SetColor(glm::vec4(1,1,1,0.5));
-	//ae::Graphics.DrawSprite(glm::vec3(Player->Position + glm::vec2(5) * Player->GetDirectionVector(), 0), ae::Assets.Textures["textures/lights/flashlight.png"], Player->Rotation, glm::vec2(5, 10));
-	//ae::Graphics.SetDepthTest(true);
 
 	// Draw the foreground tiles
 	BlockRenderCount += Map->RenderForeground();

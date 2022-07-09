@@ -152,6 +152,7 @@ class _Player : public _Entity {
 		bool MedkitRequested;
 		int WeaponSwitchFrom;
 		int WeaponSwitchTo;
+		bool Flashlight;
 
 		// Character information
 		double PlayTime;
