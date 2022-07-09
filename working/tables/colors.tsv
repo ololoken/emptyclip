@@ -18,9 +18,10 @@ menu_red_border	0.5	0.05	0.05	1
 menu_darkred_bg	0.1	0.05	0.05	1
 skills_bg	0	0	0	0.7
 ambient_half	0.5	0.5	0.5	1
+ambient_dark	0.25	0.25	0.25	1
+ambient_black	0	0	0	1
 ambient_night	0.0625	0.0625	0.375	1
 ambient_dusk	0.125	0.125	0.125	1
 ambient_day	0.75	0.75	0.5625	1
 ambient_dawn	0.625	0.5	0.375	1
-ambient_black	0	0	0	1
 editor_hover	1	1	1	0.2
