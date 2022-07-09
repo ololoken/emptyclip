@@ -24,14 +24,14 @@ Empty Clip 2.0.0 -
 - Added bullet penetration for certain weapons
 - Removed strength requirement from armor
 - Removed player profiles
-- Players now respawn at their last checkpoint with invulnerability for five seconds
+- Players now respawn at their last checkpoint with invulnerability for three seconds
 - Added damage number particles
 - Improved bullet hole decals
 - The game now pauses while menu is open
 - Fullscreen can be toggled with alt-enter
 - Mouse buttons can now be remapped
-- Added cmake build system
 - Added console window (open with tilde key)
+- Switched build system to CMake
 - Save files are now in ~/.local/share/emptyclip for linux
 - Lots of fixes and cleanup
 

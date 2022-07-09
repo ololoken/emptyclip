@@ -22,6 +22,7 @@
 #include <ae/graphics.h>
 #include <ae/font.h>
 #include <ae/assets.h>
+#include <ae/input.h>
 #include <ae/util.h>
 #include <constants.h>
 #include <stats.h>
@@ -174,7 +175,10 @@ void _Item::DrawTooltip(const _Player *Player, size_t CompareSlot, int Inventory
 					TextColor = COLOR_RED;
 			}
 			DrawPosition.y += Spacing.y;
-			Buffer << Attributes.at("min_damage").Int << " - " << Attributes.at("max_damage").Int;
+			if(ae::Input.ModKeyDown(KMOD_ALT))
+				Buffer << ae::Round1(GetAverageDamage()) << " avg";
+			else
+				Buffer << Attributes.at("min_damage").Int << " - " << Attributes.at("max_damage").Int;
 			ae::Assets.Fonts["hud_medium"]->DrawText("Damage", glm::ivec2(DrawPosition - DrawOffset), ae::RIGHT_BASELINE);
 			ae::Assets.Fonts["hud_medium"]->DrawText(Buffer.str(), glm::ivec2(DrawPosition + DrawOffset), ae::LEFT_BASELINE, TextColor);
 			Buffer.str("");
@@ -237,7 +241,10 @@ void _Item::DrawTooltip(const _Player *Player, size_t CompareSlot, int Inventory
 				}
 
 				DrawPosition.y += Spacing.y;
-				Buffer << ae::Round1(Attributes.at("min_accuracy").Float) << " - " << ae::Round1(Attributes.at("max_accuracy").Float);
+				if(ae::Input.ModKeyDown(KMOD_ALT))
+					Buffer << ae::Round1(GetAverageAccuracy()) << " avg";
+				else
+					Buffer << ae::Round1(Attributes.at("min_accuracy").Float) << " - " << ae::Round1(Attributes.at("max_accuracy").Float) << " deg";
 				ae::Assets.Fonts["hud_medium"]->DrawText("Accuracy", glm::ivec2(DrawPosition - DrawOffset), ae::RIGHT_BASELINE);
 				ae::Assets.Fonts["hud_medium"]->DrawText(Buffer.str(), glm::ivec2(DrawPosition + DrawOffset), ae::LEFT_BASELINE, TextColor);
 				Buffer.str("");
