@@ -8,6 +8,10 @@ in vec2 texture_coord;
 out vec4 out_color;
 
 void main() {
+
+	// Get texture color
 	vec4 texture_color = texture(sampler0, texture_coord);
+
+	// Final color
 	out_color = color * texture_color * ambient_light;
 }

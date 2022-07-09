@@ -1,16 +1,17 @@
 #version 330 core
 
-#define MAX_LIGHTS 50
+#define MAX_LIGHTS 10
 
 uniform sampler2D sampler0;
+uniform sampler2D sampler1;
 uniform vec4 ambient_light;
 uniform vec4 color;
 
 uniform int light_count;
 uniform struct light {
-	vec3 position;
 	vec4 color;
-	float radius;
+	vec3 position;
+	vec3 attenuation;
 } lights[MAX_LIGHTS];
 
 smooth in vec3 world_position;
@@ -20,10 +21,10 @@ out vec4 out_color;
 
 void main() {
 
-	// Set ambient light
-	vec4 light_color = ambient_light;
+	// Get light color from ambient and mixed light framebuffer
+	vec4 light_color = ambient_light + texelFetch(sampler1, ivec2(gl_FragCoord.xy), 0);
 
-	// Calculate lighting
+	// Calculate Lambertian lighting
 	for(int i = 0; i < light_count; i++) {
 
 		// Get direction to light
@@ -35,14 +36,13 @@ void main() {
 
 		// Calculate diffuse color
 		vec4 diffuse_light = lights[i].color * max(dot(world_normal, light_direction), 0.0);
-		//float attenuation = 1.0 / (light_attenuation.x + light_distance * light_attenuation.y + light_distance * light_distance * light_attenuation.z);
-		float attenuation = 1;
+		float attenuation = 1.0 / (lights[i].attenuation.x + lights[i].attenuation.y * light_distance + lights[i].attenuation.z * light_distance * light_distance);
 
 		// Add lights up
 		light_color += diffuse_light * attenuation;
 	}
 
-	// Get texture color
+	// Get color from texture
 	vec4 texture_color = texture(sampler0, texture_coord);
 
 	// Final color

@@ -37,6 +37,7 @@ struct _ParticleTemplate;
 struct _EventTile;
 struct _Hit;
 namespace ae {
+	class _Framebuffer;
 	class _Camera;
 }
 
@@ -73,6 +74,7 @@ class _PlayState : public ae::_State {
 		bool GodMode;
 		int CheckpointIndex;
 
+		// Objects
 		_Player *Player;
 
 	protected:
@@ -114,6 +116,9 @@ class _PlayState : public ae::_State {
 		_Item *CursorItem;
 		_Item *PreviousCursorItem;
 		_Object *ClosestItem;
+
+		// Graphics
+		ae::_Framebuffer *Framebuffer;
 
 		// Particles
 		_Particles *Particles;

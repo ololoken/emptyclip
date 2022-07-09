@@ -1471,7 +1471,7 @@ int _Map::RenderFloors() {
 		return 0;
 
 	// Draw base layer
-	ae::Graphics.SetProgram(ae::Assets.Programs["pos_uv"]);
+	ae::Graphics.SetProgram(ae::Assets.Programs["map"]);
 	ae::Graphics.SetColor(glm::vec4(1.0f));
 	ae::Graphics.SetDepthTest(false);
 	ae::Graphics.SetDepthMask(false);
@@ -1550,7 +1550,7 @@ int _Map::RenderWalls() {
 		return 0;
 
 	// Set up graphics
-	ae::Graphics.SetProgram(ae::Assets.Programs["pos_uv"]);
+	ae::Graphics.SetProgram(ae::Assets.Programs["map_norm"]);
 	ae::Graphics.SetColor(glm::vec4(1.0f));
 	ae::Graphics.SetDepthMask(true);
 	ae::Graphics.SetDepthTest(true);
@@ -1591,7 +1591,7 @@ int _Map::RenderWalls() {
 // Render flat walls
 int _Map::RenderFlatWalls() {
 
-	ae::Graphics.SetProgram(ae::Assets.Programs["pos_uv"]);
+	ae::Graphics.SetProgram(ae::Assets.Programs["map_norm"]);
 	ae::Graphics.SetColor(glm::vec4(1.0f));
 	ae::Graphics.SetDepthMask(false);
 	ae::Graphics.SetDepthTest(true);
@@ -1602,8 +1602,8 @@ int _Map::RenderFlatWalls() {
 
 		// Check bounds
 		bool Draw = true;
+		glm::vec4 Bounds;
 		if(Block->MinZ >= 0) {
-			glm::vec4 Bounds;
 			Block->GetBounds(Bounds);
 			Draw = Camera->IsAABBInView(Bounds);
 		}
@@ -1612,11 +1612,33 @@ int _Map::RenderFlatWalls() {
 			continue;
 
 		// Draw
+		glm::vec2 Offset(0);
+		int Side;
+		if(Block->Rotation == 0.0f || Block->Rotation == 180.0f) {
+			if(Block->End.y + 0.5f > Camera->GetPosition().y) {
+				Side = 3;
+				Offset.y = 0.5f;
+			}
+			else {
+				Side = 1;
+				Offset.y = -0.5f;
+			}
+		}
+		else {
+			if(Block->End.x + 0.5f > Camera->GetPosition().x) {
+				Side = 2;
+				Offset.x = 0.5f;
+			}
+			else {
+				Side = 4;
+				Offset.x = -0.5f;
+			}
+		}
 		ae::Graphics.DrawWall(
-			glm::vec3(Block->Start.x, Block->Start.y, Block->MinZ),
+			glm::vec3(glm::vec2(Block->Start) + Offset, Block->MinZ),
 			glm::vec3(Block->End.x - Block->Start.x + 1.0f, Block->End.y - Block->Start.y + 1.0f, Block->MaxZ - Block->MinZ),
-			Block->Rotation,
-			Block->Texture
+			Block->Texture,
+			Side
 		);
 
 		Count++;

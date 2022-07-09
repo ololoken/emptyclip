@@ -121,6 +121,7 @@ void _Framework::Init(int ArgumentCount, char **Arguments) {
 	WindowSettings.Vsync = Config.Vsync;
 	WindowSettings.Size = Config.WindowSize;
 	WindowSettings.MSAA = Config.MSAA;
+	WindowSettings.Anisotrophy = Config.Anisotrophy;
 	WindowSettings.Position = glm::ivec2(SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED);
 
 	// Set up subsystems
@@ -391,6 +392,7 @@ void _Framework::LoadAssets() {
 
 	TextureSettings.WrapMode = ae::_Texture::CLAMP_TO_BORDER;
 	TextureSettings.Mipmaps = true;
+	ae::Assets.LoadTextureDirectory("textures/lights/", TextureSettings);
 	ae::Assets.LoadTextureDirectory("textures/melee/", TextureSettings);
 	ae::Assets.LoadColors("tables/colors.tsv");
 	GameAssets.LoadSounds("tables/sounds.tsv", "sounds/");

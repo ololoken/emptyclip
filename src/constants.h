@@ -21,9 +21,10 @@
 #include <string>
 #include <SDL_keycode.h>
 #include <glm/vec2.hpp>
+#include <glm/vec3.hpp>
 #include <glm/vec4.hpp>
 
-//     Config
+//     Defaults
 const  glm::ivec2   DEFAULT_WINDOW_SIZE            =  glm::ivec2(1440,900);
 const  int          DEFAULT_FULLSCREEN             =  1;
 const  int          DEFAULT_AUDIOENABLED           =  1;
@@ -148,3 +149,5 @@ const  glm::vec4    HUD_MINIMAP_CRATE_COLOR        =  glm::vec4(1.0f,0.0f,1.0f,1
 const  glm::vec4    HUD_MINIMAP_WALL_COLOR         =  glm::vec4(0.40f,0.36f,0.29f,0.4f);
 const  glm::vec4    HUD_MINIMAP_DOOR_COLOR         =  glm::vec4(0.28f,0.28f,0.28f,1.0f);
 const  glm::vec4    HUD_MINIMAP_TOGGLED_COLOR      =  glm::vec4(0.035f,0.035f,0.035f,1.0f);
+//     Light
+const  glm::vec3    LIGHT_ATTENUATION              =  glm::vec3(1.0f, 0.2f, 0.1f);

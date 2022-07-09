@@ -37,6 +37,7 @@ namespace ae {
 	class _Camera;
 	class _Element;
 	class _Font;
+	class _Framebuffer;
 	struct _Reel;
 }
 
@@ -220,6 +221,9 @@ class _EditorState : public ae::_State {
 		int SavedPalette;
 		int SavedGridMode;
 		bool SavedHighlightBlocks;
+
+		// Graphics
+		ae::_Framebuffer *Framebuffer;
 
 		// Map editing
 		ae::_Camera *Camera;

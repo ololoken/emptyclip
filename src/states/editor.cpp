@@ -26,6 +26,7 @@
 #include <ae/assets.h>
 #include <ae/program.h>
 #include <ae/animation.h>
+#include <ae/framebuffer.h>
 #include <objects/monster.h>
 #include <objects/player.h>
 #include <gameassets.h>
@@ -135,6 +136,7 @@ void _EditorState::Init() {
 	ae::Graphics.SetViewport(ae::Graphics.CurrentSize - EDITOR_VIEWPORT_OFFSET);
 	Camera->CalculateFrustum(ae::Graphics.AspectRatio);
 	ae::Graphics.SetCursor(true);
+	Framebuffer = new ae::_Framebuffer(ae::Graphics.ViewportSize);
 
 	// Adjust UI
 	for(int i = 0; i < EDITMODE_COUNT; i++)
@@ -162,9 +164,11 @@ void _EditorState::Close() {
 
 	delete Camera;
 	delete Map;
+	delete Framebuffer;
 
 	Camera = nullptr;
 	Map = nullptr;
+	Framebuffer = nullptr;
 }
 
 // Load a level
@@ -790,9 +794,16 @@ void _EditorState::Render(double BlendFactor) {
 	Camera->Set3DProjection(BlendFactor);
 	ae::Assets.Programs["pos_uv"]->AmbientLight = glm::vec4(1);
 	ae::Assets.Programs["pos_uv"]->LightCount = 0;
-	ae::Assets.Programs["pos_uv_norm"]->LightCount = 0;
+	ae::Assets.Programs["map"]->LightCount = 0;
+	ae::Assets.Programs["map"]->AmbientLight = glm::vec4(1);
+	ae::Assets.Programs["map_norm"]->LightCount = 0;
+	ae::Assets.Programs["map_norm"]->AmbientLight = glm::vec4(1);
 
 	// Setup the viewing matrix
+	ae::Graphics.SetProgram(ae::Assets.Programs["map"]);
+	glUniformMatrix4fv(ae::Assets.Programs["map"]->ViewProjectionTransformID, 1, GL_FALSE, glm::value_ptr(Camera->Transform));
+	ae::Graphics.SetProgram(ae::Assets.Programs["map_norm"]);
+	glUniformMatrix4fv(ae::Assets.Programs["map_norm"]->ViewProjectionTransformID, 1, GL_FALSE, glm::value_ptr(Camera->Transform));
 	ae::Graphics.SetProgram(ae::Assets.Programs["pos"]);
 	glUniformMatrix4fv(ae::Assets.Programs["pos"]->ViewProjectionTransformID, 1, GL_FALSE, glm::value_ptr(Camera->Transform));
 	ae::Graphics.SetProgram(ae::Assets.Programs["pos_uv"]);
@@ -815,8 +826,17 @@ void _EditorState::Render(double BlendFactor) {
 				if(EditLayer == MAPLAYER_FORE)
 					ae::Graphics.DrawRepeatable(glm::vec3(DrawStart.x, DrawStart.y, MaxZ + MAP_LAYEROFFSET), glm::vec3(DrawEnd.x, DrawEnd.y, MaxZ + MAP_LAYEROFFSET), Brush[EditMode]->Style->Texture, Rotation, ScaleX);
 				else if(EditLayer == MAPLAYER_FLAT) {
-					ae::Graphics.SetVBO(ae::VBO_CUBE);
-					ae::Graphics.DrawWall(glm::vec3(DrawStart.x, DrawStart.y, MinZ), glm::vec3(DrawEnd.x - DrawStart.x, DrawEnd.y - DrawStart.y, MaxZ - MinZ), Rotation, Brush[EditMode]->Style->Texture);
+					glm::vec2 Offset;
+					int Side;
+					if(Rotation == 0.0f || Rotation == 180.0f) {
+						Side = 3;
+						Offset.y = 0.5f;
+					}
+					else {
+						Side = 2;
+						Offset.x = 0.5f;
+					}
+					ae::Graphics.DrawWall(glm::vec3(glm::vec2(DrawStart) + Offset, MinZ), glm::vec3(DrawEnd.x - DrawStart.x, DrawEnd.y - DrawStart.y, MaxZ - MinZ), Brush[EditMode]->Style->Texture, Side);
 				}
 				else {
 					if(MaxZ == MinZ) {
@@ -1176,8 +1196,10 @@ void _EditorState::DrawBrush() {
 
 			// See if there's a selected block
 			std::string BlockAltTextureID;
-			float BlockMinZ, BlockMaxZ;
+			float BlockMinZ;
+			float BlockMaxZ;
 			bool BlockWalkable;
+			float TextRotation;
 			if(BlockSelected()) {
 				IconText = "";
 				IconTexture = SelectedBlock->Texture;
@@ -1185,6 +1207,7 @@ void _EditorState::DrawBrush() {
 					IconText = IconTexture->Name;
 				if(EditLayer != MAPLAYER_FLAT)
 					IconRotation = SelectedBlock->Rotation;
+				TextRotation = SelectedBlock->Rotation;
 				IconScaleX = SelectedBlock->ScaleX;
 				BlockMinZ = SelectedBlock->MinZ;
 				BlockMaxZ = SelectedBlock->MaxZ;
@@ -1197,6 +1220,7 @@ void _EditorState::DrawBrush() {
 					IconText = Brush[EditMode]->Name;
 				if(EditLayer != MAPLAYER_FLAT)
 					IconRotation = Rotation;
+				TextRotation = Rotation;
 				IconScaleX = ScaleX;
 				BlockMinZ = MinZ;
 				BlockMaxZ = MaxZ;
@@ -1211,7 +1235,7 @@ void _EditorState::DrawBrush() {
 			glm::vec2 TextPosition(IconPosition.x + EDITOR_PALETTE_SELECTEDSIZE + 290, IconPosition.y - EDITOR_PALETTE_SELECTEDSIZE - 3);
 			glm::vec2 ValueOffset(5, 0);
 			std::ostringstream Buffer;
-			Buffer << IconRotation;
+			Buffer << TextRotation;
 			MainFont->DrawText("Rotation:", glm::ivec2(TextPosition), ae::RIGHT_BASELINE);
 			MainFont->DrawText(Buffer.str(), glm::ivec2(TextPosition + ValueOffset));
 			Buffer.str("");

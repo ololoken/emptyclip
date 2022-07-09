@@ -46,7 +46,7 @@ class _Config {
 		double MaxFPS;
 		int Vsync;
 		int MSAA;
-		int Aniso;
+		int Anisotrophy;
 		int Fullscreen;
 
 		// Audio
