@@ -145,6 +145,7 @@ void _PlayState::Init() {
 
 // Close map
 void _PlayState::Close() {
+	Save.SavePlayer(Player);
 
 	DeleteMonsters();
 	ActiveEvents.clear();
@@ -264,6 +265,7 @@ bool _PlayState::HandleKey(const ae::_KeyEvent &KeyEvent) {
 			case SDL_SCANCODE_ESCAPE:
 				if(Player->IsDead()) {
 					Player->Respawn();
+					Save.SavePlayer(Player);
 				}
 				else if(!Player->IsDying()) {
 					if(HUD->InventoryOpen) {
