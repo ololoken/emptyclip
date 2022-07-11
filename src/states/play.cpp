@@ -236,6 +236,7 @@ bool _PlayState::HandleAction(int InputType, size_t Action, int Value) {
 			break;
 			case Action::GAME_FLASHLIGHT:
 				Player->Flashlight = !Player->Flashlight;
+				ae::Audio.PlaySound(ae::Assets.Sounds["game_flashlight0"]);
 			break;
 		}
 	}
@@ -611,23 +612,28 @@ void _PlayState::Render(double BlendFactor) {
 	if(IsPaused())
 		BlendFactor = 0;
 
-	glm::vec4 DynamicLightColor;
-	if(FlashTimer > 0.0)
-		DynamicLightColor = LIGHT_FLASH_COLOR;
-	else
-		DynamicLightColor = PLAYER_LIGHT;
+	glm::vec4 PlayerLightColor;
+	glm::vec3 LightAttenuantion;
+	if(FlashTimer > 0.0) {
+		PlayerLightColor = LIGHT_FLASH_COLOR;
+		LightAttenuantion = LIGHT_FLASH_ATTENUATION;
+	}
+	else {
+		PlayerLightColor = PLAYER_LIGHT;
+		LightAttenuantion = LIGHT_ATTENUATION;
+	}
 
 	// Set up lights
 	glm::vec3 LightPosition(glm::vec2(Player->Position), 1.0f);
 	ae::Assets.Programs["map"]->LightCount = 1;
-	ae::Assets.Programs["map"]->Lights[0].Color = DynamicLightColor;
+	ae::Assets.Programs["map"]->Lights[0].Color = PlayerLightColor;
 	ae::Assets.Programs["map"]->Lights[0].Position = LightPosition;
-	ae::Assets.Programs["map"]->Lights[0].Attenuation = LIGHT_ATTENUATION;
+	ae::Assets.Programs["map"]->Lights[0].Attenuation = LightAttenuantion;
 	ae::Assets.Programs["map"]->AmbientLight = Map->GetAmbientLight();
 	ae::Assets.Programs["map_norm"]->LightCount = 1;
-	ae::Assets.Programs["map_norm"]->Lights[0].Color = DynamicLightColor;
+	ae::Assets.Programs["map_norm"]->Lights[0].Color = PlayerLightColor;
 	ae::Assets.Programs["map_norm"]->Lights[0].Position = LightPosition;
-	ae::Assets.Programs["map_norm"]->Lights[0].Attenuation = LIGHT_ATTENUATION;
+	ae::Assets.Programs["map_norm"]->Lights[0].Attenuation = LightAttenuantion;
 	ae::Assets.Programs["map_norm"]->AmbientLight = Map->GetAmbientLight();
 
 	// Setup the viewing matrix
