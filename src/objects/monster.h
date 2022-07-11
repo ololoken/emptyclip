@@ -50,9 +50,12 @@ class _Monster : public _Entity {
 
 	private:
 
+		void GenerateReactionTime();
+
 		bool LastPlayerVisible;
 		float AttackRangeSquared;
 		float ViewRangeSquared;
 		float StopThresholdSquared;
 		double StaticTimer;
+		double ReactionTimer;
 };

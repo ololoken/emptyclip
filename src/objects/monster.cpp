@@ -59,7 +59,9 @@ _Monster::_Monster(const _ObjectTemplate &MonsterTemplate) :
 		Circle = false;
 
 	LastPlayerVisible = false;
-	StaticTimer = 0;
+	StaticTimer = 0.0;
+	ReactionTimer = 0.0;
+	GenerateReactionTime();
 }
 
 // Set up stats used by the monster
@@ -84,6 +86,7 @@ void _Monster::Update(double FrameTime) {
 		MoveState = MOVE_NONE;
 		PositionChanged = false;
 		StaticTimer = 0;
+		GenerateReactionTime();
 		return;
 	}
 
@@ -95,22 +98,31 @@ void _Monster::Update(double FrameTime) {
 		// Check if player is visible
 		PlayerVisible = Map->CanMoveTo(Position, Player->Position, glm::vec2(Radius, Radius) * 0.3f);
 		if(PlayerVisible) {
-			FacePosition(Player->Position);
-			TargetPosition = Player->Position;
-			MoveState = MOVE_TARGET;
-			StaticTimer = 0;
+			ReactionTimer -= FrameTime;
+			if(ReactionTimer <= 0) {
+				FacePosition(Player->Position);
+				TargetPosition = Player->Position;
+				MoveState = MOVE_TARGET;
+				StaticTimer = 0.0;
+				ReactionTimer = 0.0;
+			}
 		}
+		else
+			GenerateReactionTime();
 	}
 	else if(PlayerDistanceSquared >= ENTITY_MAX_ACTIVE_RANGE * ENTITY_MAX_ACTIVE_RANGE) {
 		PlayerVisible = false;
 		MoveState = MOVE_NONE;
+		GenerateReactionTime();
 	}
 	LastPlayerVisible = PlayerVisible;
 
 	// Check for reaching target
 	float TargetDistanceSquared = glm::distance2(Position, TargetPosition);
-	if(TargetDistanceSquared <= Radius * Radius)
+	if(TargetDistanceSquared <= Radius * Radius) {
 		MoveState = MOVE_NONE;
+		GenerateReactionTime();
+	}
 
 	// Check for attack range
 	if(PlayerDistanceSquared <= AttackRangeSquared)
@@ -127,6 +139,7 @@ void _Monster::Update(double FrameTime) {
 	// Stop monster when static
 	else if(StaticTimer > ENTITY_STATIC_TIME) {
 		MoveState = MOVE_NONE;
+		GenerateReactionTime();
 	}
 }
 
@@ -137,4 +150,10 @@ const _ParticleTemplate *_Monster::GetParticle(int ParticleType) const {
 		return nullptr;
 
 	return ParticleTemplate[ae::GetRandomInt((size_t)0, ParticleTemplate.size()-1)];
+}
+
+// Reset the reaction timer
+void _Monster::GenerateReactionTime() {
+	if(ReactionTimer <= 0.0)
+		ReactionTimer = ae::GetRandomReal(AI_REACTION_TIME_MIN, AI_REACTION_TIME_MAX);
 }

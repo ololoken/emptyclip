@@ -98,6 +98,9 @@ const  int          ITEM_MAX_MOVESPEED             =  90;
 //     Objects
 const  float        OBJECT_Z                       =  0.3f;
 const  int          OBJECT_MAX_LEVEL               =  1000;
+//     AI
+const  double       AI_REACTION_TIME_MIN           =  GAME_TIMESTEP;
+const  double       AI_REACTION_TIME_MAX           =  0.3;
 //     Map
 const  int          MAP_FILEVERSION                =  2;
 const  std::string  MAP_TEXTURE_PATH               =  "textures/map/";
