@@ -1133,7 +1133,7 @@ void _PlayState::UpdateMonsters(double FrameTime) {
 			Monster->GetRenderBounds(Bounds);
 
 			// Add to minimap
-			if(Monster->Health > 0 && Map->CheckMinimapBounds(Bounds)) {
+			if(Monster->Health > 0 && Map->CheckMinimapBounds(Bounds) && Monster->MoveState) {
 				_MinimapLayer MinimapLayer;
 				MinimapLayer.Bounds = Bounds;
 				MinimapLayer.Color = Monster->AIType ? HUD_MINIMAP_ENEMY_COLOR : HUD_MINIMAP_CRATE_COLOR;
