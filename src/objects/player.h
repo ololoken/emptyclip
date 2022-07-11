@@ -88,7 +88,6 @@ class _Player : public _Entity {
 		int CombineItems(_Item *FromItem, _Item *ToItem);
 		bool AddMod(int FromIndex, int ToIndex);
 		bool UseItem(int Index, bool Event);
-		bool UseMedkit(int Index);
 		int FindItem(int Index);
 		int FindItem(const std::string &ID);
 		void ResetUseTimer() { UseTimer = 0; }
@@ -107,6 +106,7 @@ class _Player : public _Entity {
 		bool CanDropItem() const { return !Reloading && !SwitchingWeapons; }
 		bool CanSwitchWeapons() const { return !SwitchingWeapons && !Reloading && !IsMeleeAttacking() && !IsDying(); }
 		bool CanReload() const;
+		bool CanSelfHeal() const;
 
 		void SetColorID(const std::string &ColorID) { this->ColorID = ColorID; UpdateColor(); }
 		void SetAiming(bool State);
@@ -114,6 +114,7 @@ class _Player : public _Entity {
 
 		double GetReloadPercent() const { return std::min(1.0, ReloadTimer / ReloadPeriod); }
 		double GetWeaponSwitchPercent() const { return std::min(1.0, WeaponSwitchTimer / WeaponSwitchPeriod); }
+		double GetSelfHealPercent() const { return std::min(1.0, SelfHealTimer / SelfHealPeriod); }
 		float GetCrosshairRadius(const glm::vec2 &Cursor);
 		const _ParticleTemplate *GetParticle(int ParticleType) const override;
 		_Item *GetMainHand() const { return Inventory[INVENTORY_MAINHAND]; }
@@ -149,7 +150,6 @@ class _Player : public _Entity {
 		std::unordered_map<std::string, int> AmmoMax;
 		std::map<std::string, int> Keys;
 		bool UseRequested;
-		bool MedkitRequested;
 		int WeaponSwitchFrom;
 		int WeaponSwitchTo;
 		bool Flashlight;
@@ -178,14 +178,16 @@ class _Player : public _Entity {
 		float ZoomScale;
 		double WeaponSwitchTimer;
 		double ReloadTimer;
+		double SelfHealTimer;
 		double UseTimer;
-		double MedkitTimer;
 		double WeaponSwitchPeriod;
 		double ReloadPeriod;
+		double SelfHealPeriod;
 		double UsePeriod;
 		int FireRateType[WEAPONATTACK_COUNT];
 		bool Reloading;
 		bool SwitchingWeapons;
+		bool SelfHealing;
 
 		// Sounds
 		const ae::_AudioSource *ReloadSound;
@@ -204,7 +206,6 @@ class _Player : public _Entity {
 		void ApplyDeathPenalty() override;
 		void ResetWeaponAnimation();
 
-		bool CanUseMedkit() const;
 		void DeleteItems();
 
 };

@@ -113,11 +113,11 @@ void _Player::Reset() {
 	Reloading = false;
 	ReloadSound = nullptr;
 	SwitchingWeapons = false;
+	SelfHealing = false;
 	Aiming = false;
 	Sprinting = false;
 	AttackRequested = false;
 	UseRequested = false;
-	MedkitRequested = false;
 	MeleeTexture = nullptr;
 	UsePeriod = PLAYER_USEPERIOD;
 	ZoomScale = PLAYER_ZOOMSCALE;
@@ -126,8 +126,8 @@ void _Player::Reset() {
 	MoveState = MOVE_NONE;
 	WeaponSwitchTimer = 0.0;
 	ReloadTimer = 0.0;
+	SelfHealTimer = 0.0;
 	UseTimer = 0.0;
-	MedkitTimer = 0.0;
 	WeaponSwitchFrom = -1;
 	WeaponSwitchTo = -1;
 	Stamina = 100.0f;
@@ -221,6 +221,7 @@ void _Player::RecalculateStats() {
 	}
 	ReloadPeriod = Weapon[WEAPONATTACK_MAIN].Attributes["reload_period"].Double / Stats.GetSkillBonusMultiplier(Skills[SKILL_DEXTERITY], SKILL_DEXTERITY);
 	WeaponSwitchPeriod = PLAYER_WEAPONSWITCHPERIOD / Stats.GetSkillBonusMultiplier(Skills[SKILL_DEXTERITY], SKILL_DEXTERITY);
+	SelfHealPeriod = PLAYER_SELFHEAL_PERIOD / Stats.GetSkillBonusMultiplier(Skills[SKILL_CUNNING], SKILL_CUNNING, 1);
 	ZoomScale = Weapon[WEAPONATTACK_MAIN].Attributes["zoom_scale"].Float;
 
 	BaseMoveSpeed = 100 + Stats.GetSkill(Skills[SKILL_CUNNING], SKILL_CUNNING);
@@ -265,7 +266,14 @@ void _Player::Update(double FrameTime) {
 	WeaponSwitchTimer += FrameTime;
 	ReloadTimer += FrameTime;
 	UseTimer += FrameTime;
-	MedkitTimer += FrameTime;
+	if(SelfHealing) {
+		SelfHealTimer += FrameTime;
+		if(SelfHealTimer >= SelfHealPeriod) {
+			SelfHealTimer = 0;
+			int HealAmount = (int)(PLAYER_SELFHEAL_PERCENT * HealModifier) * 0.01f * MaxHealth;
+			UpdateHealth(HealAmount);
+		}
+	}
 
 	// Update stamina
 	if(!IsDying() && !Sprinting)
@@ -290,12 +298,6 @@ void _Player::Update(double FrameTime) {
 	if(AttackRequested) {
 		StartAttack();
 		AttackRequested = false;
-	}
-
-	// Use a medkit
-	if(MedkitRequested) {
-		UseMedkit(FindItem(_Object::MEDKIT));
-		MedkitRequested = false;
 	}
 
 	Move(FrameTime);
@@ -587,6 +589,18 @@ int _Player::AddItem(_Item *Item, int &AmountAdded) {
 
 			return 2;
 		}
+		case _Object::MEDKIT: {
+			if(Health == MaxHealth)
+				return 0;
+
+			int AmountToMax = MaxHealth - Health;
+			int HealAmount = (int)(GAME_MEDKIT_HEALTH_PERCENT * HealModifier) * 0.01f * MaxHealth;
+			UpdateHealth(HealAmount);
+
+			AmountAdded = std::min(AmountToMax, HealAmount);
+
+			return 2;
+		} break;
 		case _Object::KEY: {
 			Keys[Item->ID] = 1;
 			AmountAdded = 1;
@@ -829,33 +843,6 @@ bool _Player::UseItem(int Index, bool Event) {
 
 	if(!HasInventory(Index))
 		return false;
-
-	switch(Inventory[Index]->Type) {
-		case _Object::MEDKIT:
-			UseMedkit(Index);
-		break;
-		case _Object::KEY:
-			if(Event) {
-				if(Map->MapType != MAPTYPE_CAMPAIGN)
-					ConsumeInventory(Index);
-				return true;
-			}
-		break;
-	}
-
-	return false;
-}
-
-// Uses a medkit if one is available
-bool _Player::UseMedkit(int Index) {
-	if(CanUseMedkit() && HasInventory(Index) && Inventory[Index]->Type == _Object::MEDKIT) {
-		int HealAmount = Inventory[Index]->Attributes.at("health_restored").Int * HealModifier;
-		UpdateHealth(HealAmount);
-		ConsumeInventory(Index);
-		MedkitTimer = 0;
-
-		return true;
-	}
 
 	return false;
 }
@@ -1158,8 +1145,8 @@ int _Player::GetInventoryMaxStack() const {
 	return INVENTORY_MAX_STACK;
 }
 
-bool _Player::CanUseMedkit() const {
-	return (MedkitTimer > PLAYER_MEDKITPERIOD) && Health < MaxHealth;
+bool _Player::CanSelfHeal() const {
+	return Health < MaxHealth && !SwitchingWeapons && !Reloading && !IsMeleeAttacking() && !IsDying();
 }
 
 bool _Player::CanReload() const {

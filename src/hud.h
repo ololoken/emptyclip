@@ -145,6 +145,4 @@ class _HUD {
 
 		// Textures
 		const ae::_Texture *CrosshairTexture;
-		const ae::_Texture *ReloadTexture;
-		const ae::_Texture *WeaponSwitchTexture;
 };

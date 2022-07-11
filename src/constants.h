@@ -44,6 +44,7 @@ const  int          GAME_MAX_SKILL_PERLEVEL        =  3;
 const  int          GAME_WIN_PROGRESSION_POINTS    =  20;
 const  double       GAME_EXPERIENCE_LOST           =  0.1;
 const  double       GAME_INVULNERABLE_TIME         =  3.0;
+const  int          GAME_MEDKIT_HEALTH_PERCENT     =  25;
 //     Camera
 const  float        CAMERA_DISTANCE                =  6.5f;
 const  float        CAMERA_DISTANCE_AIMED          =  7.0f;
@@ -66,7 +67,8 @@ const  int          ENTITY_MAX_DAMAGE_RESIST       =  90;
 //     Player
 const  int          PLAYER_SAVEVERSION             =  5;
 const  float        PLAYER_RADIUS                  =  0.35f;
-const  double       PLAYER_MEDKITPERIOD            =  0.5;
+const  double       PLAYER_SELFHEAL_PERIOD         =  5;
+const  int          PLAYER_SELFHEAL_PERCENT        =  15;
 const  float        PLAYER_STARTING_HEALTH_FACTOR  =  0.85f;
 const  float        PLAYER_LEGCHANGEFACTOR         =  0.2f;
 const  float        PLAYER_MOVESPEED               =  4.5f;

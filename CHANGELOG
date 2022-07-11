@@ -8,12 +8,13 @@ Empty Clip 2.0.0 -
 - Reworked skill system
 - Rewrote AI system
 - Aiming now modifies recoil and recoil regen
+- Medkits are now used when picked up
+- Added the ability to slowly self heal (Hold Q by default)
 - Added minimap and hotkey for full map view (Tab by default)
 - Added sprinting and a stamina bar (Hold A by default)
 - Added flashlight hot key (V by default)
 - Equipment can be equipped by right-clicking in the inventory
 - Items can be dropped by clicking the middle mouse button
-- Items in inventory can now stack
 - Updated item tooltip and added equipped item comparison
 - Ammo is now stored as a number of rounds for each ammo type
 - Ammo and keys are now picked up automatically

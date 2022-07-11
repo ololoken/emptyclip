@@ -9,7 +9,7 @@ world_dungeon3	Sapphire Dungeon
 tutorial_move	Hit the keys [c red]ESDF[c white] to move your character.\n\nUse the [c red]mouse[c white] to look around.
 tutorial_door	To open the door, hit [c red]Spacebar[c white] while facing it.
 tutorial_pickup	Hit [c red]Spacebar[c white] to pickup items.\n\nHit [c red]C[c white] to open your inventory.
-tutorial_heal	Hit [c red]Q[c white] to use a medkit.
+tutorial_heal	Hold [c red]Q[c white] to slowly heal yourself.
 tutorial_melee	Use [c red]Mouse button 4[c white] to attack with your melee weapon.
 tutorial_switch	Hit [c red]Spacebar[c white] to activate the switch.
 tutorial_fire	Use [c red]Left-click[c white] to shoot your gun. Hold [c red]right-click[c white] to aim and reduce recoil at the cost of movement speed.

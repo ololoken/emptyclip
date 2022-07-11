@@ -69,7 +69,8 @@ class _Item : public _Object {
 		float GetBonusMultiplier(int ModType, bool Inverse=false) const;
 
 		int UpdateCount(int Amount) { Count += Amount; return Count; }
-		bool CanStack() { return Type == _Object::MEDKIT; }
+		bool CanStack() const { return Type == _Object::MEDKIT; }
+		bool IsAutoPickup() const { return Type == _Object::AMMO || Type == _Object::KEY || Type == _Object::MEDKIT; }
 
 		void SetAmmo(int Value);
 		bool IsMelee() const { return Attributes.at("weapon_type").Int == WEAPON_MELEE; }

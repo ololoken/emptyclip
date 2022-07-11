@@ -75,8 +75,6 @@ _HUD::_HUD(_Player *Player) :
 	Fonts[FONT_MEDIUM] = ae::Assets.Fonts["hud_medium"];
 	Fonts[FONT_LARGE] = ae::Assets.Fonts["hud_large"];
 	CrosshairTexture = ae::Assets.Textures["textures/hud/crosshair0.png"];
-	ReloadTexture = ae::Assets.Textures["textures/hud/reload0.png"];
-	WeaponSwitchTexture = ae::Assets.Textures["textures/hud/weaponswitch0.png"];
 
 	// Elements
 	Elements[LABEL_MESSAGE] = ae::Assets.Elements["label_hud_message"];
@@ -229,9 +227,6 @@ void _HUD::MouseEvent(const ae::_MouseEvent &MouseEvent) {
 						} break;
 						case _Object::ARMOR:
 							Player->SwapInventory(HitElement->Index, INVENTORY_ARMOR);
-						break;
-						case _Object::MEDKIT:
-							Player->UseMedkit(HitElement->Index);
 						break;
 					}
 				}
@@ -386,7 +381,7 @@ void _HUD::Render(const ae::_Camera *Camera, bool FullMap) {
 
 	// Reload indicator
 	if(Player->Reloading)
-		DrawIndicator("Reloading", Player->GetReloadPercent(), ReloadTexture);
+		DrawIndicator("Reloading", Player->GetReloadPercent(), ae::Assets.Textures["textures/hud/indicator_reload.png"]);
 	else if(!Player->WeaponHasAmmo(WEAPONATTACK_MAIN) && !Player->SwitchingWeapons && Player->GetMainHand() && Player->GetMainHand()->Attributes.at("rounds").Int > 0) {
 		if(Player->HasAmmoForMain())
 			DrawIndicator("Hit " + ae::Actions.GetInputNameForAction(Action::GAME_RELOAD) + " to Reload");
@@ -396,7 +391,11 @@ void _HUD::Render(const ae::_Camera *Camera, bool FullMap) {
 
 	// Weapon switch indicator
 	if(Player->SwitchingWeapons)
-		DrawIndicator("Switching Weapons", Player->GetWeaponSwitchPercent(), WeaponSwitchTexture);
+		DrawIndicator("Switching Weapons", Player->GetWeaponSwitchPercent(), ae::Assets.Textures["textures/hud/indicator_weaponswitch.png"]);
+
+	// Heal indicator
+	if(Player->SelfHealing)
+		DrawIndicator("Healing", Player->GetSelfHealPercent(), ae::Assets.Textures["textures/hud/indicator_heal.png"]);
 
 	// Draw weapons
 	DrawHUDWeapon(Player->GetMainHand(), ae::Assets.Elements["element_hud_mainhand"], ae::Assets.Elements["image_mainhand_icon"], ae::Assets.Elements["label_hud_mainhand_ammo"]);
@@ -610,6 +609,9 @@ void _HUD::DrawCharacterScreen() {
 	DrawPosition.y += 10 * ae::_Element::GetUIScale();
 
 	// Defense
+	Buffer << int(PLAYER_SELFHEAL_PERCENT * Player->HealModifier + 0.5f) << "%";
+	DrawAttribute("Self Heal Percent", Buffer, DrawPosition);
+
 	Buffer << Player->DamageBlock;
 	DrawAttribute("Damage Block", Buffer, DrawPosition);
 
@@ -738,9 +740,9 @@ void _HUD::UpdateSkillTooltip(int Skill, const glm::vec2 &Position) {
 		break;
 		case SKILL_VITALITY: {
 			Elements[LABEL_SKILLTEXT]->Text = "Increases Max Health";
-			Elements[LABEL_SKILLTEXTALT]->Text = "Increases Medkit Heal Bonus";
-			Buffer << "+" << Stats.GetSkill(Level, Skill) << "% Max Health / +" << Stats.GetSkill(Level, Skill, 1) << "% Medkit Heal";
-			BufferNext << "+" << Stats.GetSkill(Stats.GetValidSkillLevel(Level+1), Skill) << "% Max Health / +" << Stats.GetSkill(Stats.GetValidSkillLevel(Level+1), Skill, 1) << "% Medkit Heal";
+			Elements[LABEL_SKILLTEXTALT]->Text = "Increases Heal Bonus";
+			Buffer << "+" << Stats.GetSkill(Level, Skill) << "% Max Health / +" << Stats.GetSkill(Level, Skill, 1) << "% Heal Bonus";
+			BufferNext << "+" << Stats.GetSkill(Stats.GetValidSkillLevel(Level+1), Skill) << "% Max Health / +" << Stats.GetSkill(Stats.GetValidSkillLevel(Level+1), Skill, 1) << "% Heal Bonus";
 		} break;
 		case SKILL_AGILITY:
 			Elements[LABEL_SKILLTEXT]->Text = "Increases Attack Speed";
@@ -750,8 +752,9 @@ void _HUD::UpdateSkillTooltip(int Skill, const glm::vec2 &Position) {
 		break;
 		case SKILL_CUNNING:
 			Elements[LABEL_SKILLTEXT]->Text = "Increases Move Speed";
-			Buffer << "+" << Stats.GetSkill(Level, Skill) << "%";
-			BufferNext << "+" << Stats.GetSkill(Stats.GetValidSkillLevel(Level+1), Skill) << "%";
+			Elements[LABEL_SKILLTEXTALT]->Text = "Increases Self Heal Speed";
+			Buffer << "+" << Stats.GetSkill(Level, Skill) << "% Move Speed / +" << Stats.GetSkill(Level, Skill, 1) << "% Heal Speed";
+			BufferNext << "+" << Stats.GetSkill(Stats.GetValidSkillLevel(Level+1), Skill) << "% Move Speed / +" << Stats.GetSkill(Stats.GetValidSkillLevel(Level+1), Skill, 1) << "% Heal Speed";
 		break;
 		case SKILL_ENDURANCE:
 			Elements[LABEL_SKILLTEXT]->Text = "Increases Max Stamina";

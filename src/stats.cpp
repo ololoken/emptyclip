@@ -374,21 +374,15 @@ void _Stats::LoadMedkits(const std::string &Path) {
 		std::string ColorID;
 		std::getline(File, ID, '\t');
 		std::getline(File, Template.Name, '\t');
-		std::getline(File, Template.IconID, '\t');
-
-		File
-			>> Template.Attributes["health_restored"].Float
-			>> Template.Attributes["health_restored_level"].Float;
-
-		File.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+		std::getline(File, Template.IconID, '\n');
 
 		// Check for loaded textures
 		if(!ae::Assets.Textures[Template.IconID])
-			throw std::runtime_error(std::string(__func__) + " - Cannot find texture: " + Template.IconID);
+			throw std::runtime_error(std::string(__func__) + " unknown texture '" + Template.IconID + "'");
 
 		// Check for duplicates
 		if(Objects.find(ID) != Objects.end())
-			throw std::runtime_error(std::string(__func__) + " - Duplicate entry '" + ID + "'");
+			throw std::runtime_error(std::string(__func__) + " duplicate id '" + ID + "'");
 
 		Objects.insert(std::make_pair(ID, Template));
 	}
@@ -629,9 +623,6 @@ _Item *_Stats::CreateItem(const std::string &ID, int Level, int Quality, int Cou
 			Item->Attributes["mod_type"].Int = Template.Attributes["mod_type"].Int;
 			Item->Attributes["weapon_type"].Int = Template.Attributes["weapon_type"].Int;
 			Item->SetAttributeLevel("bonus", 1.0f + Item->Quality * 0.01f);
-		break;
-		case _Object::MEDKIT:
-			Item->SetAttributeLevel("health_restored", 1.0f);
 		break;
 		default:
 			Item->Attributes = Template.Attributes;
