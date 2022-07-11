@@ -107,7 +107,7 @@ class _Entity : public _Object {
 		float GetHealthPercentage() const { return (float)Health / MaxHealth; }
 		float GetStaminaPercentage() const { return Stamina / MaxStamina; }
 
-		virtual const _ParticleTemplate *GetParticle(int Index) const { return nullptr; }
+		virtual const _ParticleTemplate *GetParticle(int ParticleType) const { return nullptr; }
 		virtual const ae::_Sound *GetSound(int Type, int AttackType) const { return Sounds[Type]; }
 
 		void StartTriggerDownAudio();

@@ -63,7 +63,7 @@ class _PlayState : public ae::_State {
 		void Update(double FrameTime) override;
 		void Render(double BlendFactor) override;
 
-		void GenerateBulletEffects(_Entity *Attacker, const int Type, const _Hit &Hit);
+		void GenerateHitEffects(_Entity *Attacker, const int Type, const _Hit &Hit);
 
 		// Parameters
 		std::string Level;

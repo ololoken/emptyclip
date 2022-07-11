@@ -28,6 +28,7 @@
 #include <ae/program.h>
 #include <ae/ui.h>
 #include <ae/audio.h>
+#include <ae/util.h>
 #include <constants.h>
 #include <tinyxml2/tinyxml2.h>
 #include <stdexcept>
@@ -160,8 +161,8 @@ void _GameAssets::LoadParticles(const std::string &Path) {
 		File.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
 		// Check for duplicates
-		if(IsParticleLoaded(ID))
-			throw std::runtime_error(std::string(__func__) + " - Duplicate entry '" + ID + "'");
+		if(Particles.find(ID) != Particles.end())
+			throw std::runtime_error(std::string(__func__) + " duplicate entry '" + ID + "'");
 
 		// Get texture
 		Particle.Texture = ae::Assets.Textures[TextureID];
@@ -210,12 +211,14 @@ void _GameAssets::LoadParticleGroups(const std::string &Path) {
 			std::string ParticleID;
 			std::getline(Buffer, ParticleID, '\t');
 
-			if(ParticleID != "" && !IsParticleLoaded(ParticleID))
-				throw std::runtime_error(std::string(__func__) + " - Cannot find particle: " + ParticleID);
-			else if(ParticleID == "")
-				WeaponParticle.ParticleTemplates[i] = nullptr;
-			else
-				WeaponParticle.ParticleTemplates[i] = GetParticleTemplate(ParticleID);
+			std::vector<std::string> Tokens;
+			ae::TokenizeString(ParticleID, Tokens, ',');
+			for(const auto &ParticleID : Tokens) {
+				if(ParticleID != "" && Particles.find(ParticleID) == Particles.end())
+					throw std::runtime_error(std::string(__func__) + " unknown particle_id: '" + ParticleID + "'");
+				else
+					WeaponParticle.ParticleTemplates[i].push_back(GetParticleTemplate(ParticleID));
+			}
 		}
 
 		ParticleGroups[Name] = WeaponParticle;
@@ -223,8 +226,6 @@ void _GameAssets::LoadParticleGroups(const std::string &Path) {
 
 	File.close();
 }
-
-bool _GameAssets::IsParticleLoaded(const std::string &ID) { return Particles.find(ID) != Particles.end(); }
 
 _ParticleTemplate *_GameAssets::GetParticleTemplate(const std::string &ID) {
 	if(Particles.find(ID) == Particles.end())

@@ -34,7 +34,7 @@ class _Monster : public _Entity {
 		void RecalculateStats() override;
 
 		void Update(double FrameTime) override;
-		const _ParticleTemplate *GetParticle(int Index) const override;
+		const _ParticleTemplate *GetParticle(int ParticleType) const override;
 
 		// AI
 		const _Player *Player;

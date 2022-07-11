@@ -22,6 +22,7 @@
 #include <glm/vec4.hpp>
 #include <unordered_map>
 #include <string>
+#include <vector>
 #include <cstdint>
 
 namespace ae {
@@ -94,11 +95,5 @@ struct _ParticleTemplate {
 
 // Group of particles
 struct _ParticleGroup {
-
-	_ParticleGroup() {
-		for(int i = 0; i < PARTICLE_COUNT; i++)
-			ParticleTemplates[i] = nullptr;
-	}
-
-	_ParticleTemplate *ParticleTemplates[PARTICLE_COUNT];
+	std::vector<const _ParticleTemplate *> ParticleTemplates[PARTICLE_COUNT];
 };

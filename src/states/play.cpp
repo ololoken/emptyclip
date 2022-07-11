@@ -884,7 +884,7 @@ void _PlayState::ResolveAttack(_Entity *Attacker, int GridType) {
 	// Play fire sound and generate fire/smoke particles
 	if(WeaponType != WEAPON_MELEE) {
 		_Hit Hit(HIT_NONE);
-		GenerateBulletEffects(Attacker, -1, Hit);
+		GenerateHitEffects(Attacker, -1, Hit);
 		if(Attacker->Type == _Object::PLAYER)
 			ae::Audio.PlaySound(Attacker->GetSound(SOUND_FIRE, WEAPONATTACK_MAIN));
 		else
@@ -931,7 +931,7 @@ void _PlayState::ResolveAttack(_Entity *Attacker, int GridType) {
 						PlayedHitWallSound = true;
 					}
 
-					GenerateBulletEffects(Attacker, HIT_WALL, Hit);
+					GenerateHitEffects(Attacker, HIT_WALL, Hit);
 				break;
 				case HIT_OBJECT: {
 
@@ -969,7 +969,7 @@ void _PlayState::ResolveAttack(_Entity *Attacker, int GridType) {
 
 					// Generate bullet effects once for each hit object
 					if(DecalObjects.find(Hit.Object) == DecalObjects.end()) {
-						GenerateBulletEffects(Attacker, HIT_OBJECT, Hit);
+						GenerateHitEffects(Attacker, HIT_OBJECT, Hit);
 						DecalObjects[Hit.Object] = 1;
 					}
 
@@ -1367,7 +1367,7 @@ void _PlayState::RemoveMonster(_Monster *Monster) {
 }
 
 // Generate particles depending on hit type
-void _PlayState::GenerateBulletEffects(_Entity *Attacker, const int Type, const _Hit &Hit) {
+void _PlayState::GenerateHitEffects(_Entity *Attacker, const int Type, const _Hit &Hit) {
 	if(Type == -1) {
 		glm::vec2 ParticlePosition = Attacker->Position + glm::rotate(Attacker->WeaponOffset[Attacker->MainWeaponType], glm::radians(Attacker->Rotation));
 		Particles->Create(_ParticleSpawn(Attacker->GetParticle(PARTICLE_FIRE), glm::vec2(0), ParticlePosition, OBJECT_Z, Attacker->Rotation));

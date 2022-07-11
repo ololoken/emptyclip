@@ -10,6 +10,10 @@ plasma_spark0	textures/particles/plasma_spark0.png			1	1	0.5	135	225	0	0	0.033	0
 plasma_hole0	textures/particles/plasma_spark0.png			3	1	0	0	359	0	0	0	0	0	0.1	0.15	0.2	1	-0.5
 crate0	textures/particles/crate0.png			2	1	0	0	359	0	0	0	0	0	0.8	1.2	0	1	0
 blood0	textures/particles/blood0.png			2	1	0	0	359	0	0	0	0	0	0.5	1.25	0	1	0
+blood1	textures/particles/blood1.png			2	1	0	0	359	0	0	0	0	0	0.5	1.25	0	1	0
+blood2	textures/particles/blood2.png			2	1	0	0	359	0	0	0	0	0	0.5	1.25	0	1	0
+blood3	textures/particles/blood3.png			2	1	0	0	359	0	0	0	0	0	0.5	1.25	0	1	0
+blood4	textures/particles/blood4.png			2	1	0	0	359	0	0	0	0	0	0.5	1.25	0	1	0
 bloodspurt0	textures/particles/bloodspurt0.png			0	2	0.5	-40	40	0	0	6.6	6.6	-2.6	0.1	0.3	0	1	-1.3
 smoke0	textures/particles/smoke0.png			0	10	1.5	0	359	-500	500	0.6	1.2	0	1	1.5	0	1	-0.8
 tracer0	textures/particles/bullet_spark0.png			1	1	2	0	0	0	0	90	90	0	5	5	0	0.02	0

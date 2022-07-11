@@ -138,6 +138,10 @@ void _Monster::Update(double FrameTime) {
 }
 
 // Get weapon particles used by monster
-const _ParticleTemplate *_Monster::GetParticle(int Index) const {
-	return Template.ParticleGroup->ParticleTemplates[Index];
+const _ParticleTemplate *_Monster::GetParticle(int ParticleType) const {
+	const auto &ParticleTemplate = Template.ParticleGroup->ParticleTemplates[ParticleType];
+	if(ParticleTemplate.empty())
+		return nullptr;
+
+	return ParticleTemplate[ae::GetRandomInt((size_t)0, ParticleTemplate.size()-1)];
 }

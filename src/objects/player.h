@@ -115,7 +115,7 @@ class _Player : public _Entity {
 		double GetReloadPercent() const { return std::min(1.0, ReloadTimer / ReloadPeriod); }
 		double GetWeaponSwitchPercent() const { return std::min(1.0, WeaponSwitchTimer / WeaponSwitchPeriod); }
 		float GetCrosshairRadius(const glm::vec2 &Cursor);
-		const _ParticleTemplate *GetParticle(int Index) const override;
+		const _ParticleTemplate *GetParticle(int ParticleType) const override;
 		_Item *GetMainHand() const { return Inventory[INVENTORY_MAINHAND]; }
 		_Item *GetOffHand() const { return Inventory[INVENTORY_OFFHAND]; }
 		_Item *GetMelee() const { return Inventory[INVENTORY_MELEE]; }

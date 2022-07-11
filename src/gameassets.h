@@ -53,8 +53,6 @@ class _GameAssets {
 		void LoadParticles(const std::string &Path);
 		void LoadParticleGroups(const std::string &Path);
 
-		bool IsParticleLoaded(const std::string &ID);
-
 		_ParticleTemplate *GetParticleTemplate(const std::string &ID);
 
 		// Tables

@@ -24,6 +24,7 @@
 #include <ae/program.h>
 #include <ae/audio.h>
 #include <ae/ui.h>
+#include <ae/random.h>
 #include <gameassets.h>
 #include <stats.h>
 #include <map.h>
@@ -1128,12 +1129,22 @@ const ae::_Sound *_Player::GetSound(int SoundType, int AttackType) const {
 }
 
 // Get a particle from either the main weapon or player group
-const _ParticleTemplate *_Player::GetParticle(int Index) const {
-	if(Index == PARTICLE_HIT || Index == PARTICLE_FLOORDECAL)
-		return GameAssets.ParticleGroups.at("player").ParticleTemplates[Index];
+const _ParticleTemplate *_Player::GetParticle(int ParticleType) const {
+	if(ParticleType == PARTICLE_HIT || ParticleType == PARTICLE_FLOORDECAL) {
+		const auto &Template = GameAssets.ParticleGroups.at("player").ParticleTemplates[ParticleType];
+		if(Template.empty())
+			return nullptr;
 
-	if(HasMainHand())
-		return Stats.Objects.at(GetMainHand()->ID).ParticleGroup->ParticleTemplates[Index];
+		return Template[ae::GetRandomInt((size_t)0, Template.size()-1)];
+	}
+
+	if(HasMainHand()) {
+		const auto &Template = Stats.Objects.at(GetMainHand()->ID).ParticleGroup->ParticleTemplates[ParticleType];
+		if(Template.empty())
+			return nullptr;
+
+		return Template[ae::GetRandomInt((size_t)0, Template.size()-1)];
+	}
 
 	return nullptr;
 }
@@ -1155,7 +1166,9 @@ bool _Player::CanReload() const {
 	return HasMainHand() && AttackAllowed[WEAPONATTACK_MAIN] && !Reloading && !SwitchingWeapons && !IsMeleeAttacking() && GetMainHand()->Attributes.at("ammo").Int != GetMainHand()->Attributes.at("rounds").Int && HasAmmoForMain();
 }
 
-bool _Player::IsMelee() const { return GetMainHand() == nullptr || GetMainHand()->IsMelee(); }
+bool _Player::IsMelee() const {
+	return GetMainHand() == nullptr || GetMainHand()->IsMelee();
+}
 
 void _Player::SetLegAnimationPlayMode(int Mode) {
 	if(Mode == ae::_Animation::PLAYING)

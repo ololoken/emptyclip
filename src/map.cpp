@@ -144,7 +144,7 @@ _Map::_Map(const std::string &Filename) : _Map() {
 		// Check for existence
 		if(EventMonsterID != "" && Stats.Objects.find(EventMonsterID) == Stats.Objects.end())
 			throw std::runtime_error("Cannot find monster: " + EventMonsterID);
-		if(EventParticleID != "" && !GameAssets.IsParticleLoaded(EventParticleID))
+		if(EventParticleID != "" && GameAssets.Particles.find(EventParticleID) == GameAssets.Particles.end())
 			throw std::runtime_error("Cannot find particle: " + EventParticleID);
 
 		_Event *Event = new _Event(EventType, EventActive, EventStart, EventEnd, EventLevel, EventSpawnLevel, EventActivationPeriod, EventItemID, EventMonsterID, EventParticleID);
