@@ -49,6 +49,9 @@ class _Config {
 		int Anisotrophy;
 		int Fullscreen;
 
+		// Game
+		bool WeaponFlashes;
+
 		// Audio
 		int AudioEnabled;
 		float SoundVolume;

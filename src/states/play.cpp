@@ -613,7 +613,7 @@ void _PlayState::Render(double BlendFactor) {
 
 	glm::vec4 PlayerLightColor;
 	glm::vec3 LightAttenuantion;
-	if(FlashTimer > 0.0) {
+	if(Config.WeaponFlashes && FlashTimer > 0.0) {
 		PlayerLightColor = LIGHT_FLASH_COLOR;
 		LightAttenuantion = LIGHT_FLASH_ATTENUATION;
 	}
@@ -1133,7 +1133,7 @@ void _PlayState::UpdateMonsters(double FrameTime) {
 			Monster->GetRenderBounds(Bounds);
 
 			// Add to minimap
-			if(Monster->Health > 0 && Map->CheckMinimapBounds(Bounds) && Monster->MoveState) {
+			if(Monster->MoveState && Monster->Health > 0 && Map->CheckMinimapBounds(Bounds)) {
 				_MinimapLayer MinimapLayer;
 				MinimapLayer.Bounds = Bounds;
 				MinimapLayer.Color = Monster->AIType ? HUD_MINIMAP_ENEMY_COLOR : HUD_MINIMAP_CRATE_COLOR;

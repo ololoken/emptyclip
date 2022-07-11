@@ -87,6 +87,8 @@ void _Config::SetDefaults() {
 	MaxFPS = DEFAULT_MAXFPS;
 	AudioEnabled = DEFAULT_AUDIOENABLED;
 
+	WeaponFlashes = true;
+
 	SoundVolume = 1.0f;
 	MusicVolume = 1.0f;
 
@@ -172,6 +174,7 @@ void _Config::Load() {
 	GetValue("anisotrophy", Anisotrophy);
 	GetValue("msaa", MSAA);
 	GetValue("audio_enabled", AudioEnabled);
+	GetValue("weapon_flashes", WeaponFlashes);
 	GetValue("sound_volume", SoundVolume);
 	GetValue("music_volume", MusicVolume);
 
@@ -221,6 +224,7 @@ void _Config::Save() {
 	File << "msaa=" << MSAA << std::endl;
 	File << "aniso=" << Anisotrophy << std::endl;
 	File << "audio_enabled=" << AudioEnabled << std::endl;
+	File << "weapon_flashes=" << WeaponFlashes << std::endl;
 	File << "sound_volume=" << SoundVolume << std::endl;
 	File << "music_volume=" << MusicVolume << std::endl;
 
