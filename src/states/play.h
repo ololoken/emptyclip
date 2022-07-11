@@ -103,7 +103,6 @@ class _PlayState : public ae::_State {
 
 		// Map
 		_Map *Map;
-		_Event *LastLightEvent;
 
 		// Entities
 		std::list<_Entity *> Monsters;

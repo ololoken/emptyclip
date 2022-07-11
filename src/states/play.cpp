@@ -80,7 +80,6 @@ void _PlayState::Init() {
 
 	CursorItem = nullptr;
 	PreviousCursorItem = nullptr;
-	LastLightEvent = nullptr;
 
 	// Check for player
 	if(TestMode) {
@@ -1250,10 +1249,14 @@ void _PlayState::CheckEvents(const _Entity *Entity) {
 				}
 			} break;
 			case EVENT_LIGHT: {
-				if(LastLightEvent != Event) {
+				if(Event->Level > 0) {
+					Event->Active = false;
+					Event->StartTimer();
+					ActiveEvents.push_back(Event);
+				}
+				else {
 					Map->SetAmbientLight(ae::Assets.Colors[Event->ItemID]);
-					Map->SetAmbientLightChangePeriod(Event->ActivationPeriod);
-					LastLightEvent = Event;
+					Map->SetAmbientLightChangePeriod(LIGHT_CHANGE_PERIOD);
 				}
 			} break;
 			default:
@@ -1303,6 +1306,11 @@ void _PlayState::UpdateEvents(double FrameTime) {
 				for(size_t i = 0; i < Tiles.size(); i++)
 					Map->ToggleEventActive(Tiles[i].BlockID);
 
+				Decrement = true;
+			} break;
+			case EVENT_LIGHT: {
+				Map->SetAmbientLight(ae::Assets.Colors[Event->ItemID]);
+				Map->SetAmbientLightChangePeriod(LIGHT_CHANGE_PERIOD);
 				Decrement = true;
 			} break;
 			default:

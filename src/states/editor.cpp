@@ -1621,6 +1621,9 @@ void _EditorState::AddEvent(int Type) {
 			EventParticleID = ParticleID;
 			TileLayer = EditLayer;
 		break;
+		case EVENT_TELEPORT:
+			EventParticleID = ParticleID;
+		break;
 		default:
 		break;
 	}
@@ -2049,7 +2052,7 @@ void _EditorState::ExecuteSelectPalette(ae::_Element *Button, int ClickType) {
 						SetEventProperties(0, 0, 1, "smoke0");
 					break;
 					case EVENT_LIGHT:
-						SetEventProperties(1, 100, 1, "smoke0");
+						SetEventProperties(1, 0, 1, "");
 					break;
 					default:
 						SetEventProperties(0, 0, 1, "");
