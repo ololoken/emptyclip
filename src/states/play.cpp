@@ -474,6 +474,7 @@ void _PlayState::Update(double FrameTime) {
 			Player->SelfHealTimer = 0.0;
 		}
 		else {
+			HUD->CursorItem = nullptr;
 			Player->MoveState = MOVE_NONE;
 			Player->SetAiming(false);
 			Player->SetSprinting(false);
@@ -1156,7 +1157,7 @@ void _PlayState::UpdateMonsters(double FrameTime) {
 			Monster->GetRenderBounds(Bounds);
 
 			// Add to minimap
-			if(Monster->MoveState && Monster->Health > 0 && Map->CheckMinimapBounds(Bounds)) {
+			if((Monster->MoveState || Monster->AIType == _Monster::AI_NONE) && Monster->Health > 0 && Map->CheckMinimapBounds(Bounds)) {
 				_MinimapLayer MinimapLayer;
 				MinimapLayer.Bounds = Bounds;
 				MinimapLayer.Color = Monster->AIType ? HUD_MINIMAP_ENEMY_COLOR : HUD_MINIMAP_CRATE_COLOR;

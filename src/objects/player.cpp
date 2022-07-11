@@ -270,7 +270,7 @@ void _Player::Update(double FrameTime) {
 		SelfHealTimer += FrameTime;
 		if(SelfHealTimer >= SelfHealPeriod) {
 			SelfHealTimer = 0;
-			int HealAmount = (int)(PLAYER_SELFHEAL_PERCENT * HealModifier) * 0.01f * MaxHealth;
+			int HealAmount = (PLAYER_SELFHEAL_PERCENT * HealModifier + 0.5f) * 0.01f * MaxHealth;
 			UpdateHealth(HealAmount);
 		}
 	}

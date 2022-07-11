@@ -106,6 +106,7 @@ class _HUD {
 		void ShowTextMessage(const std::string &Message, double Time, bool Override=true);
 		void ShowMessageBox(const std::string &Message, double Time);
 
+		_Item *CursorItem;
 		_Item *CursorOverItem;
 		bool CursorOverWorld;
 		bool InventoryOpen;
@@ -126,7 +127,6 @@ class _HUD {
 		// UI
 		ae::_Element *Elements[ELEMENT_COUNT];
 		ae::_Element *DragStart;
-		_Item *CursorItem;
 		glm::ivec2 ClickOffset;
 		int CursorSkill;
 		int CursorInventorySlot;

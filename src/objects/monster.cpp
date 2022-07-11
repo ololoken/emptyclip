@@ -27,13 +27,6 @@
 // Constants
 const glm::vec2 MONSTER_WEAPONOFFSET = glm::vec2(32.0f / 64.0f - 0.5f, -0.5f);
 
-// Enumerations
-enum AITypes {
-	AI_NONE,
-	AI_ZOMBIE,
-	AI_COUNT
-};
-
 // Constructor
 _Monster::_Monster(const _ObjectTemplate &MonsterTemplate) :
 	_Entity(MonsterTemplate),

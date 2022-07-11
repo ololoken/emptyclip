@@ -6,17 +6,17 @@ world_dungeon0	Old Dungeon
 world_dungeon1	Emerald Dungeon
 world_dungeon2	Ruby Dungeon
 world_dungeon3	Sapphire Dungeon
-tutorial_move	Hit the keys [c red]ESDF[c white] to move your character.\n\nUse the [c red]mouse[c white] to look around.
-tutorial_door	To open the door, hit [c red]Spacebar[c white] while facing it.
-tutorial_pickup	Hit [c red]Spacebar[c white] to pickup items.\n\nHit [c red]C[c white] to open your inventory.
+tutorial_move	Press the keys [c red]ESDF[c white] to move your character.\n\nMove the [c red]mouse[c white] to look around.
+tutorial_door	To open the door, press [c red]Spacebar[c white] while facing it.
+tutorial_pickup	Press [c red]Spacebar[c white] to pick up items.\n\nPress [c red]C[c white] to open your inventory.
 tutorial_heal	Hold [c red]Q[c white] to slowly heal yourself.
-tutorial_melee	Use [c red]Mouse button 4[c white] to attack with your melee weapon.
-tutorial_switch	Hit [c red]Spacebar[c white] to activate the switch.
-tutorial_fire	Use [c red]Left-click[c white] to shoot your gun. Hold [c red]right-click[c white] to aim and reduce recoil at the cost of movement speed.
+tutorial_melee	Press [c red]Mouse button 4[c white] to attack with your melee weapon.
+tutorial_switch	Press [c red]Spacebar[c white] to activate the switch.
+tutorial_fire	Press [c red]Left-click[c white] to shoot your gun. Hold [c red]right-click[c white] to aim and reduce recoil at the cost of movement speed.
 tutorial_keys	Keys are kept until the end of the level.\n\nHold [c red]A[c white] to sprint back.
 tutorial_crate	Attack the crate to open it.
-tutorial_swap	Hit [c red]W[c white] to switch weapons.
+tutorial_swap	Press [c red]W[c white] to switch weapons.
 tutorial_map	Hold [c red]Tab[c white] to view the map.\n\nYellow icons are keys.
-tutorial_flashlight	Hit [c red]V[c white] to turn your flashlight on.
+tutorial_flashlight	Press [c red]V[c white] to turn your flashlight on.
 tutorial_boss	Kill the boss to get the last key!
 mansion_switches	Find the switches to lower the gates.

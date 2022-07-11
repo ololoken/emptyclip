@@ -30,6 +30,13 @@ class _Monster : public _Entity {
 
 	public:
 
+		// Enumerations
+		enum AITypes {
+			AI_NONE,
+			AI_ZOMBIE,
+			AI_COUNT
+		};
+
 		_Monster(const _ObjectTemplate &MonsterTemplate);
 		void RecalculateStats() override;
 

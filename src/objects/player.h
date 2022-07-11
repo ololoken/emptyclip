@@ -103,7 +103,7 @@ class _Player : public _Entity {
 		bool CanAttack(int AttackType) const override { return AttackAllowed[AttackType] && !IsMeleeAttacking() && !Reloading && !SwitchingWeapons && !IsDying(); }
 		bool CanPickup() const { return !IsDying() && CanUse(); }
 		bool CanUse() const { return UseTimer > UsePeriod; }
-		bool CanDropItem() const { return !Reloading && !SwitchingWeapons; }
+		bool CanDropItem() const { return !Reloading && !SwitchingWeapons && !SelfHealing; }
 		bool CanSwitchWeapons() const { return !SwitchingWeapons && !Reloading && !IsMeleeAttacking() && !IsDying(); }
 		bool CanReload() const;
 		bool CanSelfHeal() const;
