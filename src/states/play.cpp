@@ -994,16 +994,13 @@ void _PlayState::ResolveAttack(_Entity *Attacker, int GridType) {
 					// Weapon hit sound
 					ae::Audio.PlaySound(Attacker->GetSound(SOUND_HIT, Attacker->AttackRequestType), glm::vec3(Hit.Position.x, 0.0f, Hit.Position.y));
 
-					// Entity hit sound
-					ae::Audio.PlaySound(Hit.Object->GetSound(SOUND_TAKEDAMAGE, -1), glm::vec3(Hit.Position.x, 0.0f, Hit.Position.y));
+					// Call on hit function
+					Hit.Object->OnHit(Attacker, Hit);
 
 					// Set HUD last hit object
-					if(Hit.Object->Type == _Object::MONSTER)
+					if(Hit.Object->Type == _Object::MONSTER) {
 						HUD->SetLastEntityHit(Hit.Object);
-					// Reset healing timer
-					else if(Hit.Object->Type == _Object::PLAYER)
-						Player->SelfHealTimer = 0.0;
-
+					}
 				} break;
 			}
 		}

@@ -23,8 +23,9 @@
 #include <list>
 
 // Forward Declarations
-struct _ParticleTemplate;
 class _Map;
+struct _ParticleTemplate;
+struct _Hit;
 namespace ae {
 	class _Animation;
 	class _AudioSource;
@@ -98,6 +99,7 @@ class _Entity : public _Object {
 		virtual void UpdateAnimation(double FrameTime, bool PlaySound=true);
 
 		void UpdateHealth(int Adjust);
+		virtual void OnHit(_Entity *Attacker, const _Hit &Hit);
 		virtual void UpdateSpeed(float Factor) {}
 		int GenerateDamage(int AttackType, int DamageBlock, int DamageResist);
 		bool IsDying() const { return Action == ACTION_DYING || Action == ACTION_STARTDEATH; }

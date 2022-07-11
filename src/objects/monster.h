@@ -41,6 +41,7 @@ class _Monster : public _Entity {
 		void RecalculateStats() override;
 
 		void Update(double FrameTime) override;
+		void OnHit(_Entity *Attacker, const _Hit &Hit) override;
 		const _ParticleTemplate *GetParticle(int ParticleType) const override;
 
 		// AI
@@ -50,6 +51,7 @@ class _Monster : public _Entity {
 
 	private:
 
+		void SetTarget(const glm::vec2 &NewTargetPosition);
 		void GenerateReactionTime();
 
 		bool LastPlayerVisible;

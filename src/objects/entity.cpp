@@ -471,3 +471,11 @@ void _Entity::UpdateHealth(int Adjust) {
 	if(Health == 0 && !IsDying())
 		Action = ACTION_STARTDEATH;
 }
+
+// Called when an entity is hit
+void _Entity::OnHit(_Entity *Attacker, const _Hit &Hit) {
+
+	// Taking damage sound
+	ae::Audio.PlaySound(GetSound(SOUND_TAKEDAMAGE, -1), glm::vec3(Hit.Position.x, 0.0f, Hit.Position.y));
+
+}

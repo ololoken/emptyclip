@@ -1141,6 +1141,11 @@ void _Player::UpdateColor() {
 	Color = ae::Assets.Colors[ColorID];
 }
 
+// Called when the player gets hit
+void _Player::OnHit(_Entity *Attacker, const _Hit &Hit) {
+	SelfHealTimer = 0.0;
+}
+
 int _Player::GetInventoryMaxStack() const {
 	return INVENTORY_MAX_STACK;
 }

@@ -100,11 +100,8 @@ void _Monster::Update(double FrameTime) {
 		if(PlayerVisible) {
 			ReactionTimer -= FrameTime;
 			if(ReactionTimer <= 0) {
-				FacePosition(Player->Position);
-				TargetPosition = Player->Position;
-				MoveState = MOVE_TARGET;
-				StaticTimer = 0.0;
 				ReactionTimer = 0.0;
+				SetTarget(Player->Position);
 			}
 		}
 		else
@@ -143,6 +140,14 @@ void _Monster::Update(double FrameTime) {
 	}
 }
 
+// Called when the monster gets hit
+void _Monster::OnHit(_Entity *Attacker, const _Hit &Hit) {
+	if(!AIType)
+		return;
+
+	SetTarget(Attacker->Position);
+}
+
 // Get weapon particles used by monster
 const _ParticleTemplate *_Monster::GetParticle(int ParticleType) const {
 	const auto &ParticleTemplate = Template.ParticleGroup->ParticleTemplates[ParticleType];
@@ -150,6 +155,14 @@ const _ParticleTemplate *_Monster::GetParticle(int ParticleType) const {
 		return nullptr;
 
 	return ParticleTemplate[ae::GetRandomInt((size_t)0, ParticleTemplate.size()-1)];
+}
+
+// Set a target position
+void _Monster::SetTarget(const glm::vec2 &NewTargetPosition) {
+	FacePosition(NewTargetPosition);
+	TargetPosition = NewTargetPosition;
+	MoveState = MOVE_TARGET;
+	StaticTimer = 0.0;
 }
 
 // Reset the reaction timer
