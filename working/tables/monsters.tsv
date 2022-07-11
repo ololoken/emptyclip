@@ -1,29 +1,29 @@
-id	name	animation_id	color_id	particlegroup_id	soundgroup_id	itemdrop_id	drop_count	health	health_level	ai_type	view_range	xp	xp_level	move_speed	move_speed_level	radius	scale	accuracy	attack_range	damage	damage_level	damage_spread	attack_period	weapon_type	attack_movespeed
-crate_ammo	Ammo Crate	crate_ammo		crate	crate	crate_ammo	5	0	25	0	0	0	0	0	0	0.48	1	0	0	0	0	0	0	0	0
-crate_health	Health Crate	crate_health		crate	crate	crate_health	2	0	25	0	0	0	0	0	0	0.48	1	0	0	0	0	0	0	0	0
-crate_gun	Gun Crate	crate_gun		crate	crate	crate_gun	1	0	25	0	0	0	0	0	0	0.48	1	0	0	0	0	0	0	0	0
-crate_melee	Melee Crate	crate_melee		crate	crate	crate_melee	1	0	25	0	0	0	0	0	0	0.48	1	0	0	0	0	0	0	0	0
-crate_armor	Armor Crate	crate_armor		crate	crate	crate_armor	1	0	25	0	0	0	0	0	0	0.48	1	0	0	0	0	0	0	0	0
-crate_mod	Mod Crate	crate_mod		crate	crate	crate_mod	2	0	25	0	0	0	0	0	0	0.48	1	0	0	0	0	0	0	0	0
-monster_zombie	Zombie	zombie		monster	zombie	monster	1	35	15	1	10	0	10	0.3	0.05	0.3	0.8	0	0.7	0	10	0.1	1.7	1	0.1
-monster_dog	Dog	dog		monster	dog	monster	1	5	10	1	25	0	7	7	0.1	0.2	0.7	0	0.9	5	10	0.1	0.8	1	0.5
-monster_bat	Bat	bat	dark	monster	bat	monster	1	0	10	1	13	0	5	4	0.1	0.2	0.5	0	0.7	0	8	0.1	1.1	1	0.25
-monster_spider	Spider	spider		monster	spider	monster	1	0	10	1	15	0	5	5	0.07	0.2	0.5	0	0.7	0	7	0.1	1	1	0.25
-monster_skeleton	Skeleton	skeleton		monster	skeleton	monster	1	35	20	1	10	0	12	1.3	0.05	0.3	0.8	0	0.7	0	10	0.1	1.2	1	0.1
-monster_beast	Beast	beast		monster	beast	monster	1	100	50	1	12	0	30	1	0.03	0.4	2	0	1.2	5	30	0.1	2.5	1	0
-monster_fighter	Fighter	fighter		monster	fighter	monster	1	50	20	1	15	0	15	2.3	0.07	0.3	1	0	0.9	5	12	0.1	0.7	1	0.25
-monster_gunner	Gunner	gunner		monster	gunner	monster	1	30	20	1	20	0	15	2	0.08	0.3	1	15	10	5	15	0.1	1.5	2	0.1
-monster_demon	Demon	demon		monster	player	monster	1	40	25	1	12	0	20	2.6	0.05	0.3	1	0	3	5	20	0.1	1.3	1	0.1
-monster_alien	Alien	alien		monster	player	monster	1	50	20	1	20	0	30	2	0.05	0.3	1	15	10	5	15	0.1	1.2	2	0.1
-boss_01	Zombie Chieftain	zombie	dark	monster	zombie	boss	1	500	0	1	50	500	0	1	0	0.4	1.5	0	1.2	35	0	0.1	1.7	1	0.5
-boss_02	Black Wolf	dog	dark	monster	dog	boss	1	250	0	1	50	1500	0	9	0	0.3	1.2	0	1.2	40	0	0.1	0.9	1	0.4
-boss_03	Frozen Beast	beast	blue	monster	beast	boss	1	500	0	1	50	500	0	1	0	0.3	0.8	0	0.7	0	0	0.1	1.7	1	0.1
-boss_04	Boss	zombie		monster	player	boss	1	500	0	1	50	500	0	1	0	0.3	0.8	0	0.7	0	0	0.1	1.7	1	0.1
-boss_05	Boss	zombie		monster	player	boss	1	500	0	1	50	500	0	1	0	0.3	0.8	0	0.7	0	0	0.1	1.7	1	0.1
-boss_06	Boss	zombie		monster	player	boss	1	500	0	1	50	500	0	1	0	0.3	0.8	0	0.7	0	0	0.1	1.7	1	0.1
-boss_07	Boss	zombie		monster	player	boss	1	500	0	1	50	500	0	1	0	0.3	0.8	0	0.7	0	0	0.1	1.7	1	0.1
-boss_08	Boss	zombie		monster	player	boss	1	500	0	1	50	500	0	1	0	0.3	0.8	0	0.7	0	0	0.1	1.7	1	0.1
-boss_09	Boss	zombie		monster	player	boss	1	500	0	1	50	500	0	1	0	0.3	0.8	0	0.7	0	0	0.1	1.7	1	0.1
-boss_10	Boss	zombie		monster	player	boss	1	500	0	1	50	500	0	1	0	0.3	0.8	0	0.7	0	0	0.1	1.7	1	0.1
-boss_11	Boss	zombie		monster	player	boss	1	500	0	1	50	500	0	1	0	0.3	0.8	0	0.7	0	0	0.1	1.7	1	0.1
-boss_12	Boss	zombie		monster	player	boss	1	500	0	1	50	500	0	1	0	0.3	0.8	0	0.7	0	0	0.1	1.7	1	0.1
+id	name	animation_id	color_id	particlegroup_id	soundgroup_id	itemdrop_id	drop_count	health	health_level	ai_type	ai_attacks	view_range	xp	xp_level	move_speed	move_speed_level	radius	scale	accuracy	attack_range	damage	damage_level	damage_spread	attack_period	weapon_type	attack_movespeed
+crate_ammo	Ammo Crate	crate_ammo		crate	crate	crate_ammo	5	0	25	0	0	0	0	0	0	0	0.48	1	0	0	0	0	0	0	0	0
+crate_health	Health Crate	crate_health		crate	crate	crate_health	2	0	25	0	0	0	0	0	0	0	0.48	1	0	0	0	0	0	0	0	0
+crate_gun	Gun Crate	crate_gun		crate	crate	crate_gun	1	0	25	0	0	0	0	0	0	0	0.48	1	0	0	0	0	0	0	0	0
+crate_melee	Melee Crate	crate_melee		crate	crate	crate_melee	1	0	25	0	0	0	0	0	0	0	0.48	1	0	0	0	0	0	0	0	0
+crate_armor	Armor Crate	crate_armor		crate	crate	crate_armor	1	0	25	0	0	0	0	0	0	0	0.48	1	0	0	0	0	0	0	0	0
+crate_mod	Mod Crate	crate_mod		crate	crate	crate_mod	2	0	25	0	0	0	0	0	0	0	0.48	1	0	0	0	0	0	0	0	0
+monster_zombie	Zombie	zombie		monster	zombie	monster	1	35	15	2	0	10	0	10	0.3	0.05	0.3	0.8	0	0.7	0	10	0.1	1.7	1	0.1
+monster_dog	Dog	dog		monster	dog	monster	1	5	10	3	3	25	0	7	7	0.1	0.2	0.7	0	0.9	5	10	0.1	0.8	1	0.5
+monster_bat	Bat	bat	dark	monster	bat	monster	1	0	10	3	1	13	0	5	4	0.1	0.2	0.5	0	0.7	0	8	0.1	1.1	1	0.25
+monster_spider	Spider	spider		monster	spider	monster	1	0	10	2	0	15	0	5	5	0.07	0.2	0.5	0	0.7	0	7	0.1	1	1	0.25
+monster_skeleton	Skeleton	skeleton		monster	skeleton	monster	1	35	20	2	0	10	0	12	1.3	0.05	0.3	0.8	0	0.7	0	10	0.1	1.2	1	0.1
+monster_beast	Beast	beast		monster	beast	monster	1	100	50	2	0	12	0	30	1	0.03	0.4	2	0	1.2	5	30	0.1	2.5	1	0
+monster_fighter	Fighter	fighter		monster	fighter	monster	1	50	20	2	0	15	0	15	2.3	0.07	0.3	1	0	0.9	5	12	0.1	0.7	1	0.25
+monster_gunner	Gunner	gunner		monster	gunner	monster	1	30	20	2	0	20	0	15	2	0.08	0.3	1	15	10	5	15	0.1	1.5	2	0.1
+monster_demon	Demon	demon		monster	player	monster	1	40	25	2	0	12	0	20	2.6	0.05	0.3	1	0	3	5	20	0.1	1.3	1	0.1
+monster_alien	Alien	alien		monster	player	monster	1	50	20	2	0	20	0	30	2	0.05	0.3	1	15	10	5	15	0.1	1.2	2	0.1
+boss_01	Zombie Chieftain	zombie	dark	monster	zombie	boss	1	500	0	1	0	50	500	0	1	0	0.4	1.5	0	1.2	35	0	0.1	1.7	1	0.5
+boss_02	Black Wolf	dog	dark	monster	dog	boss	1	250	0	1	0	50	1500	0	9	0	0.3	1.2	0	1.2	40	0	0.1	0.9	1	0.4
+boss_03	Frozen Beast	beast	blue	monster	beast	boss	1	500	0	1	0	50	500	0	1	0	0.3	0.8	0	0.7	0	0	0.1	1.7	1	0.1
+boss_04	Boss	zombie		monster	player	boss	1	500	0	1	0	50	500	0	1	0	0.3	0.8	0	0.7	0	0	0.1	1.7	1	0.1
+boss_05	Boss	zombie		monster	player	boss	1	500	0	1	0	50	500	0	1	0	0.3	0.8	0	0.7	0	0	0.1	1.7	1	0.1
+boss_06	Boss	zombie		monster	player	boss	1	500	0	1	0	50	500	0	1	0	0.3	0.8	0	0.7	0	0	0.1	1.7	1	0.1
+boss_07	Boss	zombie		monster	player	boss	1	500	0	1	0	50	500	0	1	0	0.3	0.8	0	0.7	0	0	0.1	1.7	1	0.1
+boss_08	Boss	zombie		monster	player	boss	1	500	0	1	0	50	500	0	1	0	0.3	0.8	0	0.7	0	0	0.1	1.7	1	0.1
+boss_09	Boss	zombie		monster	player	boss	1	500	0	1	0	50	500	0	1	0	0.3	0.8	0	0.7	0	0	0.1	1.7	1	0.1
+boss_10	Boss	zombie		monster	player	boss	1	500	0	1	0	50	500	0	1	0	0.3	0.8	0	0.7	0	0	0.1	1.7	1	0.1
+boss_11	Boss	zombie		monster	player	boss	1	500	0	1	0	50	500	0	1	0	0.3	0.8	0	0.7	0	0	0.1	1.7	1	0.1
+boss_12	Boss	zombie		monster	player	boss	1	500	0	1	0	50	500	0	1	0	0.3	0.8	0	0.7	0	0	0.1	1.7	1	0.1

@@ -412,6 +412,7 @@ void _Player::Render(double BlendFactor) {
 	*/
 
 	// Draw torso
+	ae::Graphics.SetColor(glm::vec4(Color.r, Color.g, Color.b, Color.a * Alpha));
 	ae::Graphics.DrawAnimationFrame(
 		glm::vec3(DrawPosition, PositionZ + 0.01f),
 		Animation->Reels[Animation->Reel]->Texture,
@@ -1143,6 +1144,7 @@ void _Player::UpdateColor() {
 
 // Called when the player gets hit
 void _Player::OnHit(_Entity *Attacker, const _Hit &Hit) {
+	_Entity::OnHit(Attacker, Hit);
 	SelfHealTimer = 0.0;
 }
 

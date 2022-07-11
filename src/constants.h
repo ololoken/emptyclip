@@ -101,6 +101,7 @@ const  int          OBJECT_MAX_LEVEL               =  1000;
 //     AI
 const  double       AI_REACTION_TIME_MIN           =  GAME_TIMESTEP;
 const  double       AI_REACTION_TIME_MAX           =  0.3;
+const  float        AI_RETREAT_DISTANCE            =  20.0f;
 //     Map
 const  int          MAP_FILEVERSION                =  2;
 const  std::string  MAP_TEXTURE_PATH               =  "textures/map/";

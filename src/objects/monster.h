@@ -33,14 +33,23 @@ class _Monster : public _Entity {
 		// Enumerations
 		enum AITypes {
 			AI_NONE,
-			AI_ZOMBIE,
+			AI_BOSS,
+			AI_BASIC,
+			AI_HITANDRUN,
 			AI_COUNT
+		};
+
+		enum GoalTypes {
+			GOAL_PURSUE,
+			GOAL_RETREAT,
+			GOAL_COUNT,
 		};
 
 		_Monster(const _ObjectTemplate &MonsterTemplate);
 		void RecalculateStats() override;
 
 		void Update(double FrameTime) override;
+		void OnAttack(_Entity *Victim, const _Hit &Hit) override;
 		void OnHit(_Entity *Attacker, const _Hit &Hit) override;
 		const _ParticleTemplate *GetParticle(int ParticleType) const override;
 
@@ -55,6 +64,8 @@ class _Monster : public _Entity {
 		void GenerateReactionTime();
 
 		bool LastPlayerVisible;
+		int AttackCount;
+		int Goal;
 		float AttackRangeSquared;
 		float ViewRangeSquared;
 		float StopThresholdSquared;

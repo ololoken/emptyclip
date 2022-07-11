@@ -991,10 +991,8 @@ void _PlayState::ResolveAttack(_Entity *Attacker, int GridType) {
 						DecalObjects[Hit.Object] = 1;
 					}
 
-					// Weapon hit sound
-					ae::Audio.PlaySound(Attacker->GetSound(SOUND_HIT, Attacker->AttackRequestType), glm::vec3(Hit.Position.x, 0.0f, Hit.Position.y));
-
-					// Call on hit function
+					// Callback functions
+					Attacker->OnAttack(Hit.Object, Hit);
 					Hit.Object->OnHit(Attacker, Hit);
 
 					// Set HUD last hit object

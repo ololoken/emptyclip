@@ -537,6 +537,7 @@ void _Stats::LoadMonsters(const std::string &Path) {
 			>> Template.Attributes["health"].Float
 			>> Template.Attributes["health_level"].Float
 			>> Template.Attributes["ai_type"].Int
+			>> Template.Attributes["ai_attacks"].Int
 			>> Template.Attributes["view_range"].Float
 			>> Template.Attributes["xp"].Float
 			>> Template.Attributes["xp_level"].Float

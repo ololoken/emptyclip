@@ -59,6 +59,8 @@ _Monster::_Monster(const _ObjectTemplate &MonsterTemplate) :
 		Circle = false;
 
 	LastPlayerVisible = false;
+	Goal = GOAL_PURSUE;
+	AttackCount = 0;
 	StaticTimer = 0.0;
 	ReactionTimer = 0.0;
 	GenerateReactionTime();
@@ -95,17 +97,20 @@ void _Monster::Update(double FrameTime) {
 	float PlayerDistanceSquared = glm::distance2(Position, Player->Position);
 	if(PlayerDistanceSquared <= ViewRangeSquared) {
 
-		// Check if player is visible
-		PlayerVisible = Map->CanMoveTo(Position, Player->Position, glm::vec2(Radius, Radius) * 0.3f);
-		if(PlayerVisible) {
-			ReactionTimer -= FrameTime;
-			if(ReactionTimer <= 0) {
-				ReactionTimer = 0.0;
-				SetTarget(Player->Position);
+		if(Goal == GOAL_PURSUE) {
+
+			// Check if player is visible
+			PlayerVisible = Map->CanMoveTo(Position, Player->Position, glm::vec2(Radius, Radius) * 0.3f);
+			if(PlayerVisible) {
+				ReactionTimer -= FrameTime;
+				if(ReactionTimer <= 0) {
+					ReactionTimer = 0.0;
+					SetTarget(Player->Position);
+				}
 			}
+			else
+				GenerateReactionTime();
 		}
-		else
-			GenerateReactionTime();
 	}
 	else if(PlayerDistanceSquared >= ENTITY_MAX_ACTIVE_RANGE * ENTITY_MAX_ACTIVE_RANGE) {
 		PlayerVisible = false;
@@ -136,15 +141,31 @@ void _Monster::Update(double FrameTime) {
 	// Stop monster when static
 	else if(StaticTimer > ENTITY_STATIC_TIME) {
 		MoveState = MOVE_NONE;
+		Goal = GOAL_PURSUE;
 		GenerateReactionTime();
+	}
+}
+
+// Called when the monster lands a hit
+void _Monster::OnAttack(_Entity *Victim, const _Hit &Hit) {
+	_Entity::OnAttack(Victim, Hit);
+
+	AttackCount++;
+	if(AIType == AI_HITANDRUN && AttackCount >= Template.Attributes.at("ai_attacks").Int) {
+		AttackCount = 0;
+		Goal = GOAL_RETREAT;
+		SetTarget(glm::normalize(Position - Player->Position) * AI_RETREAT_DISTANCE);
 	}
 }
 
 // Called when the monster gets hit
 void _Monster::OnHit(_Entity *Attacker, const _Hit &Hit) {
+	_Entity::OnHit(Attacker, Hit);
+
 	if(!AIType)
 		return;
 
+	Goal = GOAL_PURSUE;
 	SetTarget(Attacker->Position);
 }
 

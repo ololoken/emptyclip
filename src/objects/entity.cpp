@@ -472,6 +472,11 @@ void _Entity::UpdateHealth(int Adjust) {
 		Action = ACTION_STARTDEATH;
 }
 
+// Called when an entity lands a hit
+void _Entity::OnAttack(_Entity *Victim, const _Hit &Hit) {
+	ae::Audio.PlaySound(GetSound(SOUND_HIT, AttackRequestType), glm::vec3(Hit.Position.x, 0.0f, Hit.Position.y));
+}
+
 // Called when an entity is hit
 void _Entity::OnHit(_Entity *Attacker, const _Hit &Hit) {
 
