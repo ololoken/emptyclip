@@ -436,7 +436,7 @@ void _HUD::Render(const ae::_Camera *Camera, bool FullMap) {
 	}
 
 	// Draw mini map
-	if(Player->Map && !FullMap) {
+	if(Player->Map && !FullMap && !InventoryOpen) {
 		ae::_Bounds MinimapBounds;
 		Player->Map->DrawMinimap(FullMap, MinimapBounds);
 	}
@@ -518,12 +518,14 @@ void _HUD::DrawCrosshair(const glm::vec2 &Position) {
 
 	ae::Graphics.SetDepthTest(false);
 
+	glm::vec4 Color = Player->IsSteady() ? COLOR_YELLOW : COLOR_WHITE;
+
 	ae::Graphics.SetProgram(ae::Assets.Programs["pos"]);
-	ae::Graphics.SetColor(COLOR_WHITE);
+	ae::Graphics.SetColor(Color);
 	ae::Graphics.DrawCircle(glm::vec3(Position, 0.0f), CrosshairScale);
 
 	ae::Graphics.SetProgram(ae::Assets.Programs["pos_uv"]);
-	ae::Graphics.SetColor(COLOR_WHITE);
+	ae::Graphics.SetColor(Color);
 	ae::Assets.Programs["pos_uv"]->ResetTextureTransform();
 	ae::Graphics.DrawSprite(glm::vec3(Position, 0.0f), CrosshairTexture, 0);
 }
@@ -581,7 +583,7 @@ void _HUD::DrawCharacterScreen() {
 	Elements[ELEMENT_SKILLS]->Render();
 
 	// Draw stats
-	glm::vec2 DrawPosition(ae::Graphics.CurrentSize.x - 160 * ae::_Element::GetUIScale(), ae::Graphics.CurrentSize.y/2 + 20 * ae::_Element::GetUIScale());
+	glm::vec2 DrawPosition(ae::Graphics.CurrentSize.x - 160 * ae::_Element::GetUIScale(), 390 * ae::_Element::GetUIScale());
 
 	// Offense
 	if(Player->HasMainHand()) {
@@ -593,6 +595,12 @@ void _HUD::DrawCharacterScreen() {
 
 		Buffer << ae::Round1(1.0 / Player->AttackPeriod[WEAPONATTACK_MAIN]) << "/s";
 		DrawAttribute("Fire Rate", Buffer, DrawPosition);
+
+		Buffer << Player->CritChance[WEAPONATTACK_MAIN] << "%";
+		DrawAttribute("Crit Chance", Buffer, DrawPosition);
+
+		Buffer << Player->CritDamage[WEAPONATTACK_MAIN] << "%";
+		DrawAttribute("Crit Damage", Buffer, DrawPosition);
 	}
 
 	DrawPosition.y += 10 * ae::_Element::GetUIScale();
@@ -605,6 +613,12 @@ void _HUD::DrawCharacterScreen() {
 
 	Buffer << ae::Round1(1.0 / Player->AttackPeriod[WEAPONATTACK_MELEE]) << "/s";
 	DrawAttribute("Attack Speed", Buffer, DrawPosition);
+
+	Buffer << Player->CritChance[WEAPONATTACK_MELEE] << "%";
+	DrawAttribute("Melee Crit Chance", Buffer, DrawPosition);
+
+	Buffer << Player->CritDamage[WEAPONATTACK_MELEE] << "%";
+	DrawAttribute("Melee Crit Damage", Buffer, DrawPosition);
 
 	DrawPosition.y += 10 * ae::_Element::GetUIScale();
 
@@ -764,8 +778,9 @@ void _HUD::UpdateSkillTooltip(int Skill, const glm::vec2 &Position) {
 		break;
 		case SKILL_PERCEPTION:
 			Elements[LABEL_SKILLTEXT]->Text = "Increases Gun Accuracy";
-			Buffer << "+" << Stats.GetSkill(Level, Skill) << "%";
-			BufferNext << "+" << Stats.GetSkill(Stats.GetValidSkillLevel(Level+1), Skill) << "%";
+			Elements[LABEL_SKILLTEXTALT]->Text = "Increases Critical Hit Damage";
+			Buffer << "+" << Stats.GetSkill(Level, Skill) << "% Gun Accuracy / +" << Stats.GetSkill(Level, Skill, 1) << "% Critical Hit Damage";
+			BufferNext << "+" << Stats.GetSkill(Stats.GetValidSkillLevel(Level+1), Skill) << "% Gun Accuracy / +" << Stats.GetSkill(Stats.GetValidSkillLevel(Level+1), Skill, 1) << "% Critical Hit Damage";
 		break;
 		case SKILL_LUCK: {
 			Elements[LABEL_SKILLTEXT]->Text = "Increases Drop Rate";

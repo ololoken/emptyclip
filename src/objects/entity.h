@@ -102,7 +102,8 @@ class _Entity : public _Object {
 		virtual void OnAttack(_Entity *Victim, const _Hit &Hit);
 		virtual void OnHit(_Entity *Attacker, const _Hit &Hit);
 		virtual void UpdateSpeed(float Factor) {}
-		int GenerateDamage(int AttackType, int DamageBlock, int DamageResist);
+		int GenerateDamage(int AttackType, int DamageBlock, int DamageResist, bool Steady, bool &Crit);
+		virtual bool IsSteady() const { return false; }
 		bool IsDying() const { return Action == ACTION_DYING || Action == ACTION_STARTDEATH; }
 		bool IsDead() const { return Action == ACTION_DYING && !Active; }
 		bool IsInvulnerable() const { return InvulnerableTimer > 0.0; }
@@ -168,6 +169,8 @@ class _Entity : public _Object {
 		int Penetration[WEAPONATTACK_COUNT];
 		float AttackMoveSpeed[WEAPONATTACK_COUNT];
 		int AttackCount[WEAPONATTACK_COUNT];
+		int CritChance[WEAPONATTACK_COUNT];
+		int CritDamage[WEAPONATTACK_COUNT];
 		int MainWeaponType;
 		int AttackRequestType;
 		bool AttackRequested;

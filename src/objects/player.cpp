@@ -215,6 +215,8 @@ void _Player::RecalculateStats() {
 		AttackMoveSpeed[i] = Weapon[i].Attributes["attack_movespeed"].Float;
 		Penetration[i] = Weapon[i].Attributes["penetration"].Int;
 		AttackCount[i] = Weapon[i].Attributes["attack_count"].Int;
+		CritChance[i] = Weapon[i].Attributes["crit_chance"].Int;
+		CritDamage[i] = PLAYER_CRIT_DAMAGE + Stats.GetSkill(Skills[SKILL_PERCEPTION], SKILL_PERCEPTION, 1);
 		AttackWidth[i] = Weapon[i].Attributes["attack_width"].Float;
 		MeleeScale[i].x = Weapon[i].Attributes["scale_x"].Float;
 		MeleeScale[i].y = Weapon[i].Attributes["scale_y"].Float;

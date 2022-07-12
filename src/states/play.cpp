@@ -919,6 +919,11 @@ void _PlayState::ResolveAttack(_Entity *Attacker, int GridType) {
 	for(int i = 0; i < Attacker->AttackCount[Attacker->AttackRequestType]; i++) {
 		Hits.clear();
 
+		// Check if gun was at min accuracy
+		bool Steady = false;
+		if(Attacker->AttackRequestType == WEAPONATTACK_MAIN && Attacker->IsSteady())
+			Steady = true;
+
 		// Check weapon type
 		if(WeaponType == WEAPON_MELEE) {
 			Map->CheckMeleeCollisions(Attacker, GridType, Attacker->Penetration[Attacker->AttackRequestType], Hits);
@@ -954,7 +959,8 @@ void _PlayState::ResolveAttack(_Entity *Attacker, int GridType) {
 				case HIT_OBJECT: {
 
 					// Generate damage
-					int Damage = Attacker->GenerateDamage(Attacker->AttackRequestType, Hit.Object->DamageBlock, Hit.Object->DamageResist);
+					bool Crit = false;
+					int Damage = Attacker->GenerateDamage(Attacker->AttackRequestType, Hit.Object->DamageBlock, Hit.Object->DamageResist, Steady, Crit);
 					if(GodMode && Hit.Object->Type == _Object::PLAYER)
 						Damage = 0;
 
@@ -966,6 +972,9 @@ void _PlayState::ResolveAttack(_Entity *Attacker, int GridType) {
 					DamageParticle->Text = std::to_string(Damage);
 					if(Hit.Object->Type ==  _Object::PLAYER)
 						DamageParticle->Color = COLOR_RED;
+
+					if(Crit)
+						DamageParticle->Color = COLOR_YELLOW;
 					Particles->Add(DamageParticle);
 
 					// Update health

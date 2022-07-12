@@ -64,7 +64,7 @@ class _Monster : public _Entity {
 		void GenerateReactionTime();
 
 		bool LastPlayerVisible;
-		int AttackCount;
+		int AttacksMade;
 		int Goal;
 		float AttackRangeSquared;
 		float ViewRangeSquared;

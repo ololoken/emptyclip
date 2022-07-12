@@ -60,7 +60,7 @@ _Monster::_Monster(const _ObjectTemplate &MonsterTemplate) :
 
 	LastPlayerVisible = false;
 	Goal = GOAL_PURSUE;
-	AttackCount = 0;
+	AttacksMade = 0;
 	StaticTimer = 0.0;
 	ReactionTimer = 0.0;
 	GenerateReactionTime();
@@ -150,9 +150,9 @@ void _Monster::Update(double FrameTime) {
 void _Monster::OnAttack(_Entity *Victim, const _Hit &Hit) {
 	_Entity::OnAttack(Victim, Hit);
 
-	AttackCount++;
-	if(AIType == AI_HITANDRUN && AttackCount >= Template.Attributes.at("ai_attacks").Int) {
-		AttackCount = 0;
+	AttacksMade++;
+	if(AIType == AI_HITANDRUN && AttacksMade >= Template.Attributes.at("ai_attacks").Int) {
+		AttacksMade = 0;
 		Goal = GOAL_RETREAT;
 		SetTarget(glm::normalize(Position - Player->Position) * AI_RETREAT_DISTANCE);
 	}

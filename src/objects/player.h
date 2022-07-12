@@ -107,6 +107,7 @@ class _Player : public _Entity {
 		bool CanSwitchWeapons() const { return !SwitchingWeapons && !Reloading && !IsMeleeAttacking() && !IsDying(); }
 		bool CanReload() const;
 		bool CanSelfHeal() const;
+		bool IsSteady() const override { return HasMainHand() && CurrentAccuracy <= MinAccuracy; }
 
 		void SetColorID(const std::string &ColorID) { this->ColorID = ColorID; UpdateColor(); }
 		void SetAiming(bool State);

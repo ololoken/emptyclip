@@ -83,7 +83,7 @@ void _Item::DrawTooltip(const _Player *Player, size_t CompareSlot, int Inventory
 
 	// Set size based on type
 	if(Type == _Object::WEAPON)
-		Size.y = 520 * ae::_Element::GetUIScale();
+		Size.y = 540 * ae::_Element::GetUIScale();
 	else if(Type == _Object::ARMOR)
 		Size.y = 380 * ae::_Element::GetUIScale();
 	else if(Type == _Object::MEDKIT)
@@ -128,7 +128,7 @@ void _Item::DrawTooltip(const _Player *Player, size_t CompareSlot, int Inventory
 
 	// Draw background
 	ae::Graphics.SetProgram(ae::Assets.Programs["ortho_pos"]);
-	ae::Graphics.SetColor(glm::vec4(0, 0, 0, 0.8f));
+	ae::Graphics.SetColor(ae::Assets.Colors["tooltip_bg"]);
 	ae::Graphics.DrawRectangle(glm::ivec2(DrawPosition), glm::ivec2(DrawPosition + Size), true);
 
 	// Draw name
@@ -198,6 +198,10 @@ void _Item::DrawTooltip(const _Player *Player, size_t CompareSlot, int Inventory
 				ae::Assets.Fonts["hud_medium"]->DrawText(Buffer.str(), glm::ivec2(DrawPosition + DrawOffset), ae::LEFT_BASELINE, TextColor);
 				Buffer.str("");
 			}
+
+			// Crit chance
+			if(Attributes.at("crit_chance").Int)
+				DrawAttribute("crit_chance", "Critical Hit Chance", DrawPosition, EquippedItem, false, true);
 
 			// Attack count
 			if(Attributes.at("attack_count").Int > 1)
@@ -433,6 +437,7 @@ void _Item::RecalculateStats() {
 			Attributes["recoil_regen"].Float = Template.Attributes.at("recoil_regen").Float * GetBonusMultiplier(MOD_HANDLING);
 			Attributes["move_recoil"].Float = Template.Attributes.at("move_recoil").Float * GetBonusMultiplier(MOD_HANDLING, true);
 			Attributes["penetration"].Int = Template.Attributes.at("penetration").Int + Bonus[MOD_PENETRATION];
+			Attributes["crit_chance"].Int = Template.Attributes.at("crit_chance").Int * QualityFactor + 0.5f;
 
 			SetAmmo(Attributes["ammo"].Int);
 		break;

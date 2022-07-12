@@ -68,6 +68,8 @@ _Entity::_Entity(const _ObjectTemplate &EntityTemplate) :
 	AttackPeriod{0, 0},
 	AttackWidth{0, 0},
 	AttackCount{1, 1},
+	CritChance{0, 0},
+	CritDamage{100, 100},
 	AttackRequestType(0),
 	AttackRequested(false),
 	AttackAllowed{true, true},
@@ -121,8 +123,23 @@ float _Entity::GenerateShotDirection() {
 }
 
 // Generates damage after defenses
-int _Entity::GenerateDamage(int AttackType, int DamageBlock, int DamageResist) {
+int _Entity::GenerateDamage(int AttackType, int DamageBlock, int DamageResist, bool Steady, bool &Crit) {
+
+	// Generate base damage
 	int Damage = ae::GetRandomInt(MinDamage[AttackType], MaxDamage[AttackType]);
+
+	// Increase chance when aiming is at min accuracy
+	int Chance = CritChance[AttackType];
+	if(Steady)
+		Chance *= PLAYER_STEADY_CRIT_FACTOR;
+
+	// Check for crit
+	if(ae::GetRandomInt(1, 100) <= Chance) {
+		Damage *= CritDamage[AttackType] * 0.01f;
+		Crit = true;
+	}
+
+	// Reduce damage
 	Damage -= (int)(Damage * DamageResist * 0.01f);
 	Damage -= DamageBlock;
 
