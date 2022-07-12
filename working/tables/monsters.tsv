@@ -17,7 +17,7 @@ monster_demon	Demon	demon		monster	player	monster	1	40	25	2	0	12	0	20	2.6	0.05	0
 monster_alien	Alien	alien		monster	player	monster	1	50	20	2	0	20	0	30	2	0.05	0.3	1	15	10	5	15	0.1	1.2	2	0.1
 boss_01	Zombie Chieftain	zombie	dark	monster	zombie	boss	1	500	0	1	0	50	500	0	1	0	0.4	1.5	0	1.2	35	0	0.1	1.7	1	0.5
 boss_02	Black Wolf	dog	dark	monster	dog	boss	1	250	0	1	0	50	1500	0	9	0	0.3	1.2	0	1.2	40	0	0.1	0.9	1	0.4
-boss_03	Frozen Beast	beast	blue	monster	beast	boss	1	500	0	1	0	50	500	0	1	0	0.3	0.8	0	0.7	0	0	0.1	1.7	1	0.1
+boss_03	Frozen Beast	beast	blue	monster	beast	boss	1	2500	0	1	0	50	5000	0	2.3	0	0.7	5	0	3	100	0	0.1	1	1	0.3
 boss_04	Boss	zombie		monster	player	boss	1	500	0	1	0	50	500	0	1	0	0.3	0.8	0	0.7	0	0	0.1	1.7	1	0.1
 boss_05	Boss	zombie		monster	player	boss	1	500	0	1	0	50	500	0	1	0	0.3	0.8	0	0.7	0	0	0.1	1.7	1	0.1
 boss_06	Boss	zombie		monster	player	boss	1	500	0	1	0	50	500	0	1	0	0.3	0.8	0	0.7	0	0	0.1	1.7	1	0.1

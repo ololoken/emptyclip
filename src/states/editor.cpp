@@ -296,8 +296,6 @@ bool _EditorState::HandleKey(const ae::_KeyEvent &KeyEvent) {
 						else {
 							SavedText[EditorInput] = InputText;
 						}
-
-						ExecuteDeselect();
 					break;
 					case EDITINPUT_ITEMIDENTIFIER:
 					case EDITINPUT_MONSTERIDENTIFIER:
