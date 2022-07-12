@@ -87,10 +87,11 @@ class _Entity : public _Object {
 
 		bool StartAttack();
 		float GenerateShotDirection();
-		void ResetAttackAllowed(int AttackType) { AttackAllowed[AttackType] = false; AttackTimer[AttackType] = 0; }
 		bool IsMeleeAttacking() const { return Action == ACTION_MELEE || Action == ACTION_STARTMELEE; }
 
-		virtual bool CanAttack(int AttackType) const { return AttackAllowed[AttackType] && !IsMeleeAttacking() && !IsDying() && MainWeaponType != WEAPON_NONE; }
+		bool CheckBurstTimer(int AttackType) const { return AttackTimer[AttackType] >= BurstPeriod[AttackType]; }
+		bool CheckAttackTimer(int AttackType) const { return AttackTimer[AttackType] >= AttackPeriod[AttackType]; }
+		virtual bool CanAttack(int AttackType) const { return CheckAttackTimer(AttackType) && !IsMeleeAttacking() && !IsDying() && MainWeaponType != WEAPON_NONE; }
 		virtual int ReduceAmmo(int Amount) { return Amount; }
 		virtual bool WeaponHasAmmo(int AttackType) const { return true; }
 
@@ -171,10 +172,12 @@ class _Entity : public _Object {
 		int AttackCount[WEAPONATTACK_COUNT];
 		int CritChance[WEAPONATTACK_COUNT];
 		int CritDamage[WEAPONATTACK_COUNT];
+		int BurstRounds[WEAPONATTACK_COUNT];
+		double BurstPeriod[WEAPONATTACK_COUNT];
 		int MainWeaponType;
 		int AttackRequestType;
+		int BurstRoundsShot;
 		bool AttackRequested;
-		bool AttackAllowed[WEAPONATTACK_COUNT];
 		bool AttackMade;
 
 		// Monsters

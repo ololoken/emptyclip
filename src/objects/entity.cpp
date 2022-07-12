@@ -70,9 +70,11 @@ _Entity::_Entity(const _ObjectTemplate &EntityTemplate) :
 	AttackCount{1, 1},
 	CritChance{0, 0},
 	CritDamage{100, 100},
+	BurstRounds{0, 0},
+	BurstPeriod{0.0, 0.0},
 	AttackRequestType(0),
+	BurstRoundsShot(0),
 	AttackRequested(false),
-	AttackAllowed{true, true},
 	AttackMade(false),
 	ExperienceGiven(0),
 	TargetPosition{0, 0} {
@@ -114,8 +116,11 @@ float _Entity::GenerateShotDirection() {
 	else if(NewDirection >= 360.0f)
 		NewDirection -= 360.0f;
 
+	// Adjust recoil for burst weapons
+	float BurstModifier = BurstRounds[WEAPONATTACK_MAIN] ? 1.0f / BurstRounds[WEAPONATTACK_MAIN] : 1.0f;
+
 	// Update accuracy based on the weapon's recoil
-	CurrentAccuracy += Recoil * RecoilModifier;
+	CurrentAccuracy += Recoil * RecoilModifier * BurstModifier;
 	if(CurrentAccuracy > MaxAccuracy[WEAPONATTACK_MAIN])
 		CurrentAccuracy = MaxAccuracy[WEAPONATTACK_MAIN];
 
@@ -150,16 +155,20 @@ int _Entity::GenerateDamage(int AttackType, int DamageBlock, int DamageResist, b
 	return Damage;
 }
 
-// Starts the attack animation
+// Starts the attack animation, return true to stop next burst fire
 bool _Entity::StartAttack() {
+
+	// Check for next attack timer
+	if(!CheckBurstTimer(AttackRequestType))
+		return !BurstRounds[AttackRequestType];
 
 	// Make sure object is allowed to attack
 	if(!CanAttack(AttackRequestType))
-		return false;
+		return true;
 
 	// Check ammo
 	if(!WeaponHasAmmo(AttackRequestType))
-		return false;
+		return true;
 
 	// Set animation
 	if(AttackRequestType == WEAPONATTACK_MELEE || MainWeaponType == WEAPON_MELEE) {
@@ -170,12 +179,18 @@ bool _Entity::StartAttack() {
 	}
 	else {
 		Action = ACTION_STARTSHOOT;
-		ResetAttackAllowed(WEAPONATTACK_MELEE);
+		AttackTimer[WEAPONATTACK_MELEE] = 0.0;
 	}
 
-	ResetAttackAllowed(AttackRequestType);
+	// Reset attack timer
+	AttackTimer[AttackRequestType] = 0.0;
 
-	return true;
+	// Update burst fire
+	BurstRoundsShot++;
+	if(BurstRoundsShot >= BurstRounds[AttackRequestType])
+		return true;
+
+	return false;
 }
 
 // Start playing the trigger down audio loop
@@ -209,12 +224,6 @@ void _Entity::Update(double FrameTime) {
 
 	for(int i = 0; i < WEAPONATTACK_COUNT; i++)
 		AttackTimer[i] += FrameTime;
-
-	// Check timer to see if the object can attack
-	for(int i = 0; i < WEAPONATTACK_COUNT; i++) {
-		if(!AttackAllowed[i] && AttackTimer[i] >= AttackPeriod[i])
-			AttackAllowed[i] = true;
-	}
 
 	UpdateRecoil(FrameTime);
 }

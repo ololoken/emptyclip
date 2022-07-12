@@ -206,7 +206,8 @@ bool _PlayState::HandleAction(int InputType, size_t Action, int Value) {
 						if(Player->CanAttack(AttackType) && !Player->WeaponHasAmmo(AttackType))
 							ae::Audio.PlaySound(Player->GetSound(SOUND_EMPTY, AttackType));
 
-						if(Player->FireRateType[AttackType] == FIRERATE_SEMI) {
+						if(Player->CheckAttackTimer(AttackType) && Player->FireRateType[AttackType] == FIRERATE_SEMI && (!Player->BurstRounds[AttackType] || (Player->BurstRounds[AttackType] && Player->BurstRoundsShot == 0))) {
+							Player->BurstRoundsShot = 0;
 							Player->AttackRequested = true;
 							Player->AttackRequestType = AttackType;
 						}
@@ -885,6 +886,7 @@ void _PlayState::Render(double BlendFactor) {
 
 // Resolve an entity attacking
 void _PlayState::ResolveAttack(_Entity *Attacker, int GridType) {
+	Attacker->AttackMade = false;
 
 	// Check for ammo
 	if(!Attacker->WeaponHasAmmo(Attacker->AttackRequestType))
@@ -1012,8 +1014,6 @@ void _PlayState::ResolveAttack(_Entity *Attacker, int GridType) {
 			}
 		}
 	}
-
-	Attacker->AttackMade = false;
 }
 
 // Places an item into the player's inventory

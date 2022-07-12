@@ -100,7 +100,7 @@ class _Player : public _Entity {
 		bool HasMelee() const { return GetMelee() != nullptr; }
 		bool HasArmor() const { return GetArmor() != nullptr; }
 		bool HasInventory(int Index) const { return Index >= 0 && Inventory[Index] != nullptr; }
-		bool CanAttack(int AttackType) const override { return AttackAllowed[AttackType] && !IsMeleeAttacking() && !Reloading && !SwitchingWeapons && !IsDying(); }
+		bool CanAttack(int AttackType) const override { return !IsMeleeAttacking() && !Reloading && !SwitchingWeapons && !IsDying(); }
 		bool CanPickup() const { return !IsDying() && CanUse(); }
 		bool CanUse() const { return UseTimer > UsePeriod; }
 		bool CanDropItem() const { return !Reloading && !SwitchingWeapons && !SelfHealing; }

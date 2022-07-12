@@ -133,8 +133,6 @@ void _Player::Reset() {
 	Stamina = 100.0f;
 	InvulnerableTimer = 0.0;
 	Flashlight = false;
-	for(int i = 0; i < WEAPONATTACK_COUNT; i++)
-		AttackAllowed[i] = true;
 	for(int i = 0; i < SKILL_COUNT; i++)
 		Skills[i] = 0;
 
@@ -217,6 +215,11 @@ void _Player::RecalculateStats() {
 		AttackCount[i] = Weapon[i].Attributes["attack_count"].Int;
 		CritChance[i] = Weapon[i].Attributes["crit_chance"].Int;
 		CritDamage[i] = PLAYER_CRIT_DAMAGE + Stats.GetSkill(Skills[SKILL_PERCEPTION], SKILL_PERCEPTION, 1);
+		BurstRounds[i] = Weapon[i].Attributes["burst_rounds"].Int;
+		if(BurstRounds[i])
+			BurstPeriod[i] = std::max(Weapon[i].Attributes["burst_period"].Double / Stats.GetSkillBonusMultiplier(Skills[SKILL_AGILITY], SKILL_AGILITY), WEAPON_MINFIREPERIOD);
+		else
+			BurstPeriod[i] = AttackPeriod[i];
 		AttackWidth[i] = Weapon[i].Attributes["attack_width"].Float;
 		MeleeScale[i].x = Weapon[i].Attributes["scale_x"].Float;
 		MeleeScale[i].y = Weapon[i].Attributes["scale_y"].Float;
@@ -297,9 +300,9 @@ void _Player::Update(double FrameTime) {
 	}
 
 	// Make an attack
-	if(AttackRequested) {
-		StartAttack();
+	if(AttackRequested && StartAttack()) {
 		AttackRequested = false;
+		BurstRoundsShot = 0;
 	}
 
 	Move(FrameTime);
@@ -1159,7 +1162,7 @@ bool _Player::CanSelfHeal() const {
 }
 
 bool _Player::CanReload() const {
-	return HasMainHand() && AttackAllowed[WEAPONATTACK_MAIN] && !Reloading && !SwitchingWeapons && !IsMeleeAttacking() && GetMainHand()->Attributes.at("ammo").Int != GetMainHand()->Attributes.at("rounds").Int && HasAmmoForMain();
+	return HasMainHand() && CheckAttackTimer(WEAPONATTACK_MAIN) && !Reloading && !SwitchingWeapons && !IsMeleeAttacking() && GetMainHand()->Attributes.at("ammo").Int != GetMainHand()->Attributes.at("rounds").Int && HasAmmoForMain();
 }
 
 bool _Player::IsMelee() const {

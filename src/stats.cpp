@@ -222,6 +222,8 @@ void _Stats::LoadWeapons(const std::string &Path) {
 			>> Template.Attributes["range"].Float
 			>> Template.Attributes["fire_rate"].Int
 			>> Template.Attributes["fire_period"].Double
+			>> Template.Attributes["burst_rounds"].Int
+			>> Template.Attributes["burst_period"].Double
 			>> Template.Attributes["reload_amount"].Int
 			>> Template.Attributes["reload_period"].Double
 			>> Template.Attributes["mods"].Float
@@ -612,6 +614,8 @@ _Item *_Stats::CreateItem(const std::string &ID, int Level, int Quality, int Cou
 			Item->Attributes["zoom_scale"].Float = Template.Attributes["zoom_scale"].Float;
 			Item->Attributes["range"].Float = Template.Attributes["range"].Float;
 			Item->Attributes["fire_rate"].Int = Template.Attributes["fire_rate"].Int;
+			Item->Attributes["burst_rounds"].Int = Template.Attributes["burst_rounds"].Int;
+			Item->Attributes["burst_period"].Double = Template.Attributes["burst_period"].Double;
 			Item->Attributes["attack_movespeed"].Float = Template.Attributes["attack_movespeed"].Float;
 			Item->Attributes["attack_width"].Float = Template.Attributes["melee_width"].Float;
 			Item->Attributes["scale_x"].Float = Template.Attributes["scale_x"].Float;
