@@ -232,6 +232,7 @@ void _EditorState::ResetEditorState() {
 
 	IsShiftDown = false;
 	IsCtrlDown = false;
+	IsAltDown = false;
 	DraggingBox = false;
 	BlockCopied = false;
 	IsDrawing = false;
@@ -670,6 +671,7 @@ void _EditorState::Update(double FrameTime) {
 	// Get modifier key status
 	IsShiftDown = ae::Input.ModKeyDown(KMOD_SHIFT) ? true : false;
 	IsCtrlDown = ae::Input.ModKeyDown(KMOD_CTRL) ? true : false;
+	IsAltDown = ae::Input.ModKeyDown(KMOD_ALT) ? true : false;
 
 	// Get world cursor
 	Camera->ConvertScreenToWorld(ae::Input.GetMouse(), WorldCursor);
@@ -913,25 +915,16 @@ void _EditorState::Render(double BlendFactor) {
 		ae::Graphics.SetColor(COLOR_CYAN);
 		ae::Graphics.DrawRectangle3D(glm::vec2(SelectedEvent->Start.x + 0.02f, SelectedEvent->Start.y + 0.02f), glm::vec2(SelectedEvent->End.x + 0.98f, SelectedEvent->End.y + 0.98f), false);
 
-		// Outline affected tiles and blocks
-		const std::vector<_EventTile> &Tiles = SelectedEvent->Tiles;
-		for(size_t i = 0; i < Tiles.size(); i++) {
-			ae::Graphics.SetColor(COLOR_RED);
-			ae::Graphics.DrawRectangle3D(glm::vec2(Tiles[i].Coord.x + 0.2f, Tiles[i].Coord.y + 0.2f), glm::vec2(Tiles[i].Coord.x + 0.8f, Tiles[i].Coord.y + 0.8f), false);
-
-			if(Tiles[i].BlockID != -1) {
-				if(SelectedEvent->Type == EVENT_ENABLE) {
-					const _Event *Event = Map->GetEvent(Tiles[i].BlockID);
-					ae::Graphics.SetColor(COLOR_YELLOW);
-					ae::Graphics.DrawRectangle3D(glm::vec2(Event->Start.x, Event->Start.y), glm::vec2(Event->End.x + 1.0f, Event->End.y + 1.0f), false);
-				}
-				else {
-					const _Block *Block = Map->GetBlock(Tiles[i].Layer, Tiles[i].BlockID);
-					ae::Graphics.SetColor(COLOR_GREEN);
-					ae::Graphics.DrawRectangle3D(glm::vec2(Block->Start.x, Block->Start.y), glm::vec2(Block->End.x + 1.0f, Block->End.y + 1.0f), false);
-				}
+		// Draw tiles for events with the same type
+		if(IsAltDown) {
+			for(const auto &Event : Map->Events) {
+				if(Event != SelectedEvent && Event->Type == SelectedEvent->Type)
+					DrawEventTiles(Event, glm::vec4(0.5f, 0.5f, 0.5f, 0.5));
 			}
 		}
+
+		// Outline affected tiles and blocks
+		DrawEventTiles(SelectedEvent, glm::vec4(1.0f, 0.0f, 0.0f, 0.5f));
 	}
 
 	// Dragging a box around object
@@ -1379,6 +1372,29 @@ void _EditorState::DrawBrush() {
 		glm::vec3 DrawPosition = glm::vec3(IconPosition, 0.0f);
 		glm::vec2 IconScale = glm::vec2(IconScaleX * EDITOR_PALETTE_SELECTEDSIZE * 2, EDITOR_PALETTE_SELECTEDSIZE * 2);
 		ae::Graphics.DrawSprite(DrawPosition, IconTexture, IconRotation * IconScaleX, IconScale);
+	}
+}
+
+// Draw tiles for an event
+void _EditorState::DrawEventTiles(_Event *Event, const glm::vec4 &Color) {
+	const std::vector<_EventTile> &Tiles = Event->Tiles;
+
+	for(size_t i = 0; i < Tiles.size(); i++) {
+		ae::Graphics.SetColor(Color);
+		ae::Graphics.DrawRectangle3D(glm::vec2(Tiles[i].Coord.x + 0.2f, Tiles[i].Coord.y + 0.2f), glm::vec2(Tiles[i].Coord.x + 0.8f, Tiles[i].Coord.y + 0.8f), false);
+
+		if(Tiles[i].BlockID != -1) {
+			if(SelectedEvent->Type == EVENT_ENABLE) {
+				const _Event *Event = Map->Events[Tiles[i].BlockID];
+				ae::Graphics.SetColor(COLOR_YELLOW);
+				ae::Graphics.DrawRectangle3D(glm::vec2(Event->Start.x, Event->Start.y), glm::vec2(Event->End.x + 1.0f, Event->End.y + 1.0f), false);
+			}
+			else {
+				const _Block *Block = Map->GetBlock(Tiles[i].Layer, Tiles[i].BlockID);
+				ae::Graphics.SetColor(COLOR_GREEN);
+				ae::Graphics.DrawRectangle3D(glm::vec2(Block->Start.x, Block->Start.y), glm::vec2(Block->End.x + 1.0f, Block->End.y + 1.0f), false);
+			}
+		}
 	}
 }
 

@@ -68,18 +68,21 @@ Start the mapeditor
 
 ----- HOW TO PLAY -----
 
-Use ESDF to walk around
-Use Left-click to shoot your gun
-Use Right-click to enter aim mode
-Click Mouse button 4 to swing your melee weapon
+Press ESDF to walk around
+Press Left-click to shoot your gun
+Hold Right-click to enter aim mode
+Press Mouse Button 4 to attack with your melee weapon
 Hold A to sprint
-Hit Space to pick up items, open doors, or activate switches
-Hit R to reload your gun
-Hit W to switch weapons
-Hit Q to use a medkit
-Hit C to open your inventory or see character stats
-Click Middle mouse button to drop an item
-Hit Escape to open the game menu or quit the game in test mode
-Hit F1 to open the game menu
+Press Spacebar to pick up items, open doors, or activate switches
+Press R to reload your gun
+Press W to switch weapons
+Press Q to self heal
+Press V to toggle your flashlight
+Press C to open your inventory or see character stats
+Hold Tab to view the map
+Press Middle Mouse Button to drop an item on the inventory screen
+Press Escape to open the game menu or quit the game in test mode
+Press F1 to open the game menu
+Press F2 to show technical stats
 
 Save data is in %APPDATA%/emptyclip for Windows and ~/.local/share/emptyclip for Linux.

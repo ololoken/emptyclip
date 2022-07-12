@@ -141,7 +141,7 @@ void _Item::DrawTooltip(const _Player *Player, size_t CompareSlot, int Inventory
 	ae::Assets.Fonts["hud_small"]->DrawText(GetTypeAsString(), glm::ivec2(DrawPosition), ae::CENTER_BASELINE);
 
 	// Draw Level
-	if(Type != _Object::KEY && Type != _Object::AMMO) {
+	if(Type != _Object::KEY && Type != _Object::AMMO && Type != _Object::MEDKIT) {
 		DrawPosition.y += 24 * ae::_Element::GetUIScale();
 		Buffer << "Level " << Level;
 		ae::Assets.Fonts["hud_small"]->DrawText(Buffer.str(), glm::ivec2(DrawPosition), ae::CENTER_BASELINE);
@@ -547,7 +547,7 @@ std::string _Item::GetTypeAsString() const {
 		case _Object::KEY:
 			return "Key";
 		case _Object::MEDKIT:
-			return "Medkit";
+			return "Healing Item";
 	}
 
 	return "";

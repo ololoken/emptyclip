@@ -231,7 +231,6 @@ class _Map {
 
 		void ClearEvent(const _Event *Event);
 
-		_Event *GetEvent(int Index) const;
 		std::vector<_Event *> &GetEventList(const glm::ivec2 &Coord);
 		glm::vec2 GetStartingPositionByCheckpoint(int CheckpointLevel);
 		int GetTotalBlockSize() const;
@@ -262,6 +261,7 @@ class _Map {
 		ae::_Camera *Camera;
 		std::unique_ptr<_ObjectManager> ObjectManager;
 		std::vector<_ObjectSpawn *> ObjectSpawns;
+		std::vector<_Event *> Events;
 
 		// Minimap
 		std::vector<_MinimapLayer> MinimapLayers;
@@ -274,7 +274,6 @@ class _Map {
 		// Blocks
 		_Tile **Data;
 		std::vector<_Block> Blocks[MAPLAYER_COUNT];
-		std::vector<_Event *> Events;
 		std::vector<_Event *> CheckpointEvents;
 
 		// Objects

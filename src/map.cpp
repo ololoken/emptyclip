@@ -1249,12 +1249,6 @@ void _Map::ToggleEventActive(int Index) {
 		Events[Index]->Active = !Events[Index]->Active;
 }
 
-// Gets an event
-_Event *_Map::GetEvent(int Index) const {
-
-	return Events[Index];
-}
-
 // Determines if a tile has any events
 bool _Map::HasEvents(const glm::ivec2 &Position) const {
 	if(!Data)

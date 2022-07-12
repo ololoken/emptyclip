@@ -156,6 +156,7 @@ class _EditorState : public ae::_State {
 
 		void DrawObject(float OffsetX, float OffsetY, const _ObjectSpawn *Object, float Alpha);
 		void DrawBrush();
+		void DrawEventTiles(_Event *Event, const glm::vec4 &Color);
 		void ProcessIcons(int Index, int Type);
 		void ProcessBlockIcons(int Index, int Type);
 		void ProcessEventIcons(int Index, int Type);
@@ -236,6 +237,7 @@ class _EditorState : public ae::_State {
 		bool IsMoving;
 		bool IsShiftDown;
 		bool IsCtrlDown;
+		bool IsAltDown;
 		bool DraggingBox;
 
 		// Text input
