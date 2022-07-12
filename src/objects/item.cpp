@@ -428,7 +428,7 @@ void _Item::RecalculateStats() {
 		case _Object::WEAPON:
 			SetAttributeRange("damage", GetBonusMultiplier(MOD_DAMAGE));
 			SetAttributeSpread("accuracy", GetBonusMultiplier(MOD_ACCURACY, true));
-			Attributes["rounds"].Int = std::ceil(Template.Attributes.at("rounds").Int * GetBonusMultiplier(MOD_MAXROUNDS));
+			Attributes["rounds"].Int = Template.Attributes.at("rounds").Int * GetBonusMultiplier(MOD_MAXROUNDS) + 0.5f;
 			Attributes["fire_period"].Double = Template.Attributes.at("fire_period").Double * GetBonusMultiplier(MOD_ATTACKSPEED, true);
 			Attributes["attack_count"].Int = Template.Attributes.at("attack_count").Int;
 			Attributes["reload_period"].Double = Template.Attributes.at("reload_period").Double * GetBonusMultiplier(MOD_RELOADSPEED, true);

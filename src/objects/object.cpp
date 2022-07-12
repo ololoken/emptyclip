@@ -52,7 +52,7 @@ void _Object::SetAttributeRange(const std::string &AttributeName, float Multipli
 
 // Set an attribute given a level and multiplier
 void _Object::SetAttributeLevel(const std::string &AttributeName, float Multiplier) {
-	Attributes[AttributeName].Int = std::ceil(GetAttributeLevel(AttributeName, Multiplier));
+	Attributes[AttributeName].Int = GetAttributeLevel(AttributeName, Multiplier) + 0.5f;
 }
 
 // Set attribute range given a spread
@@ -76,8 +76,8 @@ float _Object::GetAttributeLevel(const std::string &AttributeName, float Multipl
 // Get two range attributes given a level, spread and multiplier
 void _Object::GetAttributeRange(const std::string &AttributeName, float Multiplier, int &Min, int &Max) {
 	float LevelValue = Level > 0 ? Template.Attributes.at(AttributeName + "_level").Float * Level : 0;
-	int Value = std::ceil((Template.Attributes.at(AttributeName).Float + LevelValue) * Multiplier);
-	int ValueRange = std::ceil(Value * Template.Attributes.at(AttributeName + "_spread").Float);
+	int Value = (Template.Attributes.at(AttributeName).Float + LevelValue) * Multiplier + 0.5f;
+	int ValueRange = Value * Template.Attributes.at(AttributeName + "_spread").Float + 0.5f;
 	Min = Value - ValueRange;
 	Max = Value + ValueRange;
 }

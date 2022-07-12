@@ -26,7 +26,7 @@ struct _Value {
 
 	float Mult() const { return Int * 0.01f; }
 	float BonusMult() const { return (100 + Int) * 0.01f; }
-	int Multiplicative(int Current) { return std::ceil(Int * (100 - Current) * 0.01f); }
+	int Multiplicative(int Current) { return Int * (100 - Current) * 0.01f + 0.5f; }
 
 	union {
 		int Int;

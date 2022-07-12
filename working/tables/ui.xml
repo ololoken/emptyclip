@@ -66,7 +66,7 @@
         <element id="button_inventory_bag14" style="style_hud_inventory" offset_x="160" offset_y="240" size_x="80" size_y="80" alignment_x="0" alignment_y="0" clickable="true" index="18"/>
         <element id="button_inventory_bag15" style="style_hud_inventory" offset_x="240" offset_y="240" size_x="80" size_y="80" alignment_x="0" alignment_y="0" clickable="true" index="19"/>
     </element>
-    <element id="element_skills" style="style_hud_skills" size_x="330" size_y="1080" alignment_x="2">
+    <element id="element_skills" style="style_hud_skills" size_x="330" size_y="100%" alignment_x="2">
 		<element id="element_skills_0" offset_x="-200" offset_y="50" size_x="16" size_y="16" alignment_x="2" alignment_y="0" clickable="true" index="0">
 			<element id="button_skills_plus0" style="style_hud_plus" hover_style="style_hud_plus_hover" disabled_style="style_hud_plus_disabled" size_x="16" size_y="16" alignment_x="0" alignment_y="0" clickable="true" index="0">
 				<element id="label_hud_skill0_text" font="hud_small" text="Strength" offset_x="25" offset_y="16" alignment_x="0" alignment_y="3"/>
@@ -126,7 +126,7 @@
             <element id="label_hud_skill_remaining_value" font="hud_small" text="0" offset_x="-22" offset_y="16" alignment_x="2" alignment_y="3"/>
         </element>
     </element>
-    <element id="element_skill_info" style="style_hud_skills" size_x="480" size_y="250" alignment_x="0" alignment_y="0">
+    <element id="element_skill_info" style="style_hud_skills" size_x="520" size_y="250" alignment_x="0" alignment_y="0">
         <element id="label_hud_skill_text" font="hud_medium" offset_x="20" offset_y="38" alignment_x="0" alignment_y="3"/>
         <element id="label_hud_skill_textalt" font="hud_medium" offset_x="20" offset_y="70" alignment_x="0" alignment_y="3"/>
         <element id="label_hud_skill_current" font="hud_small" text="Current Level" offset_x="20" offset_y="110" alignment_x="0" alignment_y="3"/>

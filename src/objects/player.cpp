@@ -191,7 +191,7 @@ void _Player::RecalculateStats() {
 	MaxAccuracyNormal = 0;
 	if(MainWeaponType != WEAPON_MELEE) {
 		float StrengthSkillMultiplier = Stats.GetSkillBonusMultiplier(Skills[SKILL_STRENGTH], SKILL_STRENGTH);
-		float AccuracySkillMultiplier = 1.0f / Stats.GetSkillBonusMultiplier(Skills[SKILL_PERCEPTION], SKILL_PERCEPTION, 1);
+		float AccuracySkillMultiplier = 1.0f / Stats.GetSkillBonusMultiplier(Skills[SKILL_PERCEPTION], SKILL_PERCEPTION);
 		CurrentAccuracyNormal = MinAccuracyNormal = Weapon[WEAPONATTACK_MAIN].Attributes.at("min_accuracy").Float * AccuracySkillMultiplier;
 		MaxAccuracyNormal = Weapon[WEAPONATTACK_MAIN].Attributes.at("max_accuracy").Float * AccuracySkillMultiplier;
 		Recoil = Weapon[WEAPONATTACK_MAIN].Attributes["recoil"].Float / StrengthSkillMultiplier;
@@ -210,8 +210,8 @@ void _Player::RecalculateStats() {
 
 		FireRateType[i] = Weapon[i].Attributes["fire_rate"].Int;
 		AttackPeriod[i] = std::max(Weapon[i].Attributes["fire_period"].Double / Stats.GetSkillBonusMultiplier(Skills[SKILL_AGILITY], SKILL_AGILITY), WEAPON_MINFIREPERIOD);
-		MinDamage[i] = std::ceil(Weapon[i].Attributes["min_damage"].Int * MeleeDamageModifier);
-		MaxDamage[i] = std::ceil(Weapon[i].Attributes["max_damage"].Int * MeleeDamageModifier);
+		MinDamage[i] = Weapon[i].Attributes["min_damage"].Int * MeleeDamageModifier + 0.5f;
+		MaxDamage[i] = Weapon[i].Attributes["max_damage"].Int * MeleeDamageModifier + 0.5f;
 		AttackMoveSpeed[i] = Weapon[i].Attributes["attack_movespeed"].Float;
 		Penetration[i] = Weapon[i].Attributes["penetration"].Int;
 		AttackCount[i] = Weapon[i].Attributes["attack_count"].Int;
@@ -227,7 +227,7 @@ void _Player::RecalculateStats() {
 	ZoomScale = Weapon[WEAPONATTACK_MAIN].Attributes["zoom_scale"].Float;
 
 	BaseMoveSpeed = 100 + Stats.GetSkill(Skills[SKILL_CUNNING], SKILL_CUNNING);
-	MaxHealth = (int)(Stats.GetLevelHealth(Level) * Stats.GetSkillBonusMultiplier(Skills[SKILL_VITALITY], SKILL_VITALITY));
+	MaxHealth = Stats.GetLevelHealth(Level) * Stats.GetSkillBonusMultiplier(Skills[SKILL_VITALITY], SKILL_VITALITY) + 0.5f;
 	MaxStamina = Stats.GetSkillBonusMultiplier(Skills[SKILL_ENDURANCE], SKILL_ENDURANCE);
 	StaminaRegenModifier = Stats.GetSkillBonusMultiplier(Skills[SKILL_ENDURANCE], SKILL_ENDURANCE);
 	Health = std::clamp(Health, 0, MaxHealth);
@@ -250,7 +250,7 @@ void _Player::RecalculateStats() {
 	// Handle max ammo
 	AmmoMax.clear();
 	for(const auto &AmmoType : Stats.AmmoNames) {
-		AmmoMax[AmmoType] = std::ceil(Stats.Objects.at(AmmoType).Attributes["amount_max"].Int * Attributes["max_ammo"].Mult());
+		AmmoMax[AmmoType] = Stats.Objects.at(AmmoType).Attributes["amount_max"].Int * Attributes["max_ammo"].Mult() + 0.5f;
 		if(Ammo.find(AmmoType) != Ammo.end())
 			Ammo[AmmoType] = std::min(Ammo[AmmoType], AmmoMax[AmmoType]);
 	}
@@ -584,7 +584,7 @@ int _Player::AddItem(_Item *Item, int &AmountAdded) {
 				return 0;
 
 			// Add pickup bonus
-			int PickupAmount = Item->Attributes["amount"].Int * PickupModifier;
+			int PickupAmount = Item->Attributes["amount"].Int * PickupModifier + 0.5f;
 
 			int AmountToMax = AmmoMax[Item->ID] - Ammo[Item->ID];
 			AmountAdded = std::min(AmountToMax, PickupAmount);

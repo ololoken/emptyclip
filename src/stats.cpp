@@ -658,8 +658,8 @@ _Monster *_Stats::CreateMonster(const std::string &ID, int Level, const glm::vec
 	Monster->MoveSpeed = Monster->GetAttributeLevel("move_speed", 1.0f);
 	Monster->Radius = Template.Attributes.at("radius").Float;
 	Monster->Scale = Template.Attributes.at("scale").Float;
-	Monster->Health = std::ceil(Monster->MaxHealth = Monster->GetAttributeLevel("health", 1.0f));
-	Monster->ExperienceGiven = std::ceil(Monster->GetAttributeLevel("xp", 1.0f));
+	Monster->Health = Monster->MaxHealth = Monster->GetAttributeLevel("health", 1.0f);
+	Monster->ExperienceGiven = Monster->GetAttributeLevel("xp", 1.0f);
 	Monster->MinAccuracy = Template.Attributes.at("accuracy").Int;
 	for(int i = 0; i < WEAPONATTACK_COUNT; i++) {
 		Monster->GetAttributeRange("damage", 1.0f, Monster->MinDamage[i], Monster->MaxDamage[i]);
