@@ -633,7 +633,7 @@ _Item *_Stats::CreateItem(const std::string &ID, int Level, int Quality, int Cou
 	Item->RecalculateStats();
 
 	if(Template.Type == _Object::WEAPON)
-		Item->Attributes["ammo"].Int = Template.Attributes.at("rounds").Int;
+		Item->Attributes["ammo"].Int = Item->Attributes.at("rounds").Int;
 
 	return Item;
 }
