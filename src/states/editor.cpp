@@ -2051,6 +2051,9 @@ void _EditorState::ExecuteSelectPalette(ae::_Element *Button, int ClickType) {
 		case EDITMODE_EVENTS:
 			if(!EventSelected()) {
 				switch(Button->Index) {
+					case EVENT_DOOR:
+						SetEventProperties(0, 1, 1, "");
+					break;
 					case EVENT_SPAWN:
 						SetEventProperties(0, 1, 1, "smoke0");
 					break;
