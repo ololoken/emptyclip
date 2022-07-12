@@ -417,7 +417,7 @@ void _Player::Render(double BlendFactor) {
 	*/
 
 	// Draw torso
-	ae::Graphics.SetColor(glm::vec4(Color.r, Color.g, Color.b, Color.a * Alpha));
+	ae::Graphics.SetColor(glm::vec4(1.0f, 1.0f, 1.0f, Alpha));
 	ae::Graphics.DrawAnimationFrame(
 		glm::vec3(DrawPosition, PositionZ + 0.01f),
 		Animation->Reels[Animation->Reel]->Texture,
