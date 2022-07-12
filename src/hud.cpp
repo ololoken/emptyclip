@@ -758,8 +758,9 @@ void _HUD::UpdateSkillTooltip(int Skill, const glm::vec2 &Position) {
 		break;
 		case SKILL_ENDURANCE:
 			Elements[LABEL_SKILLTEXT]->Text = "Increases Max Stamina";
-			Buffer << "+" << Stats.GetSkill(Level, Skill) << "%";
-			BufferNext << "+" << Stats.GetSkill(Stats.GetValidSkillLevel(Level+1), Skill) << "%";
+			Elements[LABEL_SKILLTEXTALT]->Text = "Increases Max Ammo";
+			Buffer << "+" << Stats.GetSkill(Level, Skill) << "% Max Stamina / +" << Stats.GetSkill(Level, Skill, 1) << "% Max Ammo";
+			BufferNext << "+" << Stats.GetSkill(Stats.GetValidSkillLevel(Level+1), Skill) << "% Max Stamina / +" << Stats.GetSkill(Stats.GetValidSkillLevel(Level+1), Skill, 1) << "% Max Ammo";
 		break;
 		case SKILL_PERCEPTION:
 			Elements[LABEL_SKILLTEXT]->Text = "Increases Gun Accuracy";

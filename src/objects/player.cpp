@@ -234,7 +234,7 @@ void _Player::RecalculateStats() {
 	// Armor
 	DamageBlock = Stats.GetSkill(Skills[SKILL_FORTITUDE], SKILL_FORTITUDE);
 	DamageResist = std::min((int)Stats.GetSkill(Skills[SKILL_FORTITUDE], SKILL_FORTITUDE, 1), ENTITY_MAX_DAMAGE_RESIST);
-	Attributes["max_ammo"].Int = 100;
+	Attributes["max_ammo"].Int = 100 + Stats.GetSkill(Skills[SKILL_ENDURANCE], SKILL_ENDURANCE, 1);
 	if(GetArmor()) {
 		DamageBlock += GetArmor()->Attributes.at("damage_block").Int;
 		DamageResist += GetArmor()->Attributes.at("damage_resist").Int;
@@ -248,7 +248,7 @@ void _Player::RecalculateStats() {
 	// Handle max ammo
 	AmmoMax.clear();
 	for(const auto &AmmoType : Stats.AmmoNames) {
-		AmmoMax[AmmoType] = Stats.Objects.at(AmmoType).Attributes["amount_max"].Int * Attributes["max_ammo"].Mult();
+		AmmoMax[AmmoType] = std::ceil(Stats.Objects.at(AmmoType).Attributes["amount_max"].Int * Attributes["max_ammo"].Mult());
 		if(Ammo.find(AmmoType) != Ammo.end())
 			Ammo[AmmoType] = std::min(Ammo[AmmoType], AmmoMax[AmmoType]);
 	}
