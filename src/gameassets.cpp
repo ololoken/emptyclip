@@ -77,6 +77,7 @@ void _GameAssets::LoadSounds(const std::string &Path, const std::string &SoundPa
 			Sound->Limit = Limit;
 		}
 
+		ae::Audio.LoadChannel(Sound);
 		ae::Assets.Sounds[ID] = Sound;
 	}
 

@@ -204,7 +204,7 @@ bool _PlayState::HandleAction(int InputType, size_t Action, int Value) {
 
 						// Play sound
 						if(Player->CanAttack(AttackType) && !Player->WeaponHasAmmo(AttackType))
-							ae::Audio.PlaySound(Player->GetSound(SOUND_EMPTY, AttackType));
+							ae::Audio.PlayChannelSound(Player->GetSound(SOUND_EMPTY, AttackType));
 
 						if(Player->CheckAttackTimer(AttackType) && Player->FireRateType[AttackType] == FIRERATE_SEMI && (!Player->BurstRounds[AttackType] || (Player->BurstRounds[AttackType] && Player->BurstRoundsShot == 0))) {
 							Player->BurstRoundsShot = 0;
@@ -234,7 +234,7 @@ bool _PlayState::HandleAction(int InputType, size_t Action, int Value) {
 				break;
 				case Action::GAME_FLASHLIGHT:
 					Player->Flashlight = !Player->Flashlight;
-					ae::Audio.PlaySound(ae::Assets.Sounds["game_flashlight0"]);
+					ae::Audio.PlayChannelSound(ae::Assets.Sounds["game_flashlight0"]);
 				break;
 			}
 		}
@@ -315,7 +315,7 @@ bool _PlayState::HandleCommand(ae::_Console *Console) {
 	else if(Console->Command == "suicide") {
 		if(Player) {
 			Player->UpdateHealth(-10000000);
-			ae::Audio.PlaySound(Player->GetSound(SOUND_DEATH, -1), glm::vec3(Player->Position.x, 0.0f, Player->Position.y));
+			ae::Audio.PlayChannelSound(Player->GetSound(SOUND_DEATH, -1), ae::_SoundSettings(glm::vec3(Player->Position.x, 0.0f, Player->Position.y)));
 		}
 
 		return true;
@@ -882,9 +882,9 @@ void _PlayState::ResolveAttack(_Entity *Attacker, int GridType) {
 		_Hit Hit(HIT_NONE);
 		GenerateHitEffects(Attacker, -1, Hit);
 		if(Attacker->Type == _Object::PLAYER)
-			ae::Audio.PlaySound(Attacker->GetSound(SOUND_FIRE, WEAPONATTACK_MAIN));
+			ae::Audio.PlayChannelSound(Attacker->GetSound(SOUND_FIRE, WEAPONATTACK_MAIN));
 		else
-			ae::Audio.PlaySound(Attacker->GetSound(SOUND_FIRE, WEAPONATTACK_MAIN), glm::vec3(Attacker->Position.x, 0.0f, Attacker->Position.y));
+			ae::Audio.PlayChannelSound(Attacker->GetSound(SOUND_FIRE, WEAPONATTACK_MAIN), ae::_SoundSettings(glm::vec3(Attacker->Position.x, 0.0f, Attacker->Position.y)));
 	}
 
 	Attacker->StartTriggerDownAudio();
@@ -928,7 +928,7 @@ void _PlayState::ResolveAttack(_Entity *Attacker, int GridType) {
 				break;
 				case HIT_WALL:
 					if(!PlayedHitWallSound) {
-						ae::Audio.PlaySound(Attacker->GetSound(SOUND_RICOCHET, WEAPONATTACK_MAIN), glm::vec3(Hit.Position.x, 0.0f, Hit.Position.y));
+						ae::Audio.PlayChannelSound(Attacker->GetSound(SOUND_RICOCHET, WEAPONATTACK_MAIN), ae::_SoundSettings(glm::vec3(Hit.Position.x, 0.0f, Hit.Position.y)));
 						PlayedHitWallSound = true;
 					}
 
@@ -963,7 +963,7 @@ void _PlayState::ResolveAttack(_Entity *Attacker, int GridType) {
 						CreateItemDrop(Hit.Object, Player->DropRate * 0.01f);
 
 						// Dying sound
-						ae::Audio.PlaySound(Hit.Object->GetSound(SOUND_DEATH, -1), glm::vec3(Hit.Position.x, 0.0f, Hit.Position.y));
+						ae::Audio.PlayChannelSound(Hit.Object->GetSound(SOUND_DEATH, -1), ae::_SoundSettings(glm::vec3(Hit.Position.x, 0.0f, Hit.Position.y)));
 
 						// Update stats
 						if(Attacker->Type == _Object::PLAYER) {
@@ -1354,7 +1354,7 @@ void _PlayState::UpdateEvents(double FrameTime) {
 				Decrement = true;
 			} break;
 			case EVENT_SOUND: {
-				ae::Audio.PlaySound(ae::Assets.Sounds[Event->ItemID]);
+				ae::Audio.PlayChannelSound(ae::Assets.Sounds[Event->ItemID]);
 				Decrement = true;
 			} break;
 			case EVENT_FLOORSWITCH:
