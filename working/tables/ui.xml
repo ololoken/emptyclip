@@ -41,7 +41,7 @@
         <element id="image_melee_icon" size_x="64" size_y="64" alignment_y="0" stretch="true"/>
 		<element id="label_hud_melee_key" font="hud_char" offset_x="24" offset_y="58" alignment_y="3"/>
     </element>
-    <element id="element_hud_messagebox" style="style_menu_window" offset_y="-150" size_x="450" size_y="180" alignment_y="2">
+    <element id="element_hud_messagebox" style="style_menu_window" offset_y="-160" size_x="550" size_y="200" alignment_y="2">
         <element id="label_hud_messagebox_text" font="hud_medium" format="true"/>
     </element>
     <element id="element_inventory" offset_x="-320" size_x="320" size_y="400">
