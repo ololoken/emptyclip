@@ -483,13 +483,15 @@ void _PlayState::Update(double FrameTime) {
 			Player->AttackRequested = false;
 		}
 	}
-	else {
+	else
 		HUD->SetInventoryOpen(false);
-	}
 
 	// Update player
 	Player->Update(FrameTime);
+	if(Player->PositionChanged)
+		IgnoreItems.clear();
 
+	// Handle gun flashes
 	if(Player->Action == ACTION_STARTSHOOT)
 		FlashTimer = LIGHT_FLASH_TIME;
 
@@ -497,44 +499,8 @@ void _PlayState::Update(double FrameTime) {
 	if(Player->TileChanged)
 		CheckEvents(Player);
 
-	// Find nearest items
-	std::unordered_map<_Object *, int> NearbyItems;
-	ClosestItem = nullptr;
-	Map->GetCloseObjects(Player->Position, Player->Radius, GRID_ITEM, NearbyItems, &ClosestItem);
-	for(auto &Iterator : NearbyItems) {
-		_Item *NearbyItem = (_Item *)Iterator.first;
-
-		// Automatically pickup ammo
-		if(NearbyItem && NearbyItem->IsAutoPickup()) {
-			int AmountAdded = 0;
-			int Type = NearbyItem->Type;
-			std::string Name = NearbyItem->Name;
-			PickupObject(NearbyItem, AmountAdded);
-
-			if(AmountAdded) {
-				glm::vec2 ParticlePosition(Player->Position.x, Player->Position.y - 0.5);
-
-				std::string ParticleText = "+";
-				glm::vec4 ParticleColor = COLOR_WHITE;
-				if(Type == _Object::AMMO)
-					ParticleText += std::to_string(AmountAdded);
-				else if(Type == _Object::MEDKIT) {
-					ParticleText += std::to_string(AmountAdded) + "HP";
-					ParticleColor = COLOR_GREEN;
-				}
-				else
-					ParticleText += Name;
-
-				_Particle *DamageParticle = new _Particle(_ParticleSpawn(GameAssets.GetParticleTemplate("damage0"), glm::vec2(0), ParticlePosition, OBJECT_Z, 0));
-				DamageParticle->Text = ParticleText;
-				DamageParticle->Color = ParticleColor;
-				Particles->Add(DamageParticle);
-			}
-		}
-		// Manually pickup up an item
-		else if(Player->UseRequested)
-			UseObject(NearbyItem);
-	}
+	// Handle auto and manually picking up items
+	HandlePickup();
 
 	// Activate events
 	if(Player->UseRequested && Player->CanUse()) {
@@ -980,7 +946,7 @@ void _PlayState::ResolveAttack(_Entity *Attacker, int GridType) {
 					glm::vec2 DamagePosition = Hit.Position;
 					if(Hit.Object->Type ==  _Object::PLAYER)
 						DamagePosition += _Map::GenerateRandomPointInCircle(0.3f);
-					_Particle *DamageParticle = new _Particle(_ParticleSpawn(GameAssets.GetParticleTemplate("damage0"), glm::vec2(0), DamagePosition, OBJECT_Z, 0));
+					_Particle *DamageParticle = new _Particle(_ParticleSpawn(GameAssets.GetParticleTemplate("text0"), glm::vec2(0), DamagePosition, OBJECT_Z, 0));
 					DamageParticle->Text = std::to_string(Damage);
 					if(Hit.Object->Type ==  _Object::PLAYER)
 						DamageParticle->Color = COLOR_RED;
@@ -1026,6 +992,52 @@ void _PlayState::ResolveAttack(_Entity *Attacker, int GridType) {
 	}
 }
 
+// Handle pickup
+void _PlayState::HandlePickup() {
+	ClosestItem = nullptr;
+
+	// Get nearby items
+	std::unordered_map<_Object *, int> NearbyItems;
+	Map->GetCloseObjects(Player->Position, Player->Radius, GRID_ITEM, NearbyItems, &ClosestItem);
+	for(auto &Iterator : NearbyItems) {
+		_Item *NearbyItem = (_Item *)Iterator.first;
+
+		// Automatically pickup ammo
+		if(NearbyItem && NearbyItem->IsAutoPickup()) {
+			int AmountAdded = 0;
+			int Type = NearbyItem->Type;
+			std::string Name = NearbyItem->Name;
+			PickupObject(NearbyItem, AmountAdded);
+			if(!AmountAdded) {
+				IgnoreItems[NearbyItem] = 1;
+				return;
+			}
+
+			// Set up particle
+			glm::vec2 ParticlePosition(Player->Position.x, Player->Position.y - 0.5);
+			std::string ParticleText = "+";
+			glm::vec4 ParticleColor = COLOR_WHITE;
+			if(Type == _Object::AMMO)
+				ParticleText += std::to_string(AmountAdded);
+			else if(Type == _Object::MEDKIT) {
+				ParticleText += std::to_string(AmountAdded) + "HP";
+				ParticleColor = COLOR_GREEN;
+			}
+			else
+				ParticleText += Name;
+
+			// Add particle
+			_Particle *Particle = new _Particle(_ParticleSpawn(GameAssets.GetParticleTemplate("text0"), glm::vec2(0), ParticlePosition, OBJECT_Z, 0));
+			Particle->Text = ParticleText;
+			Particle->Color = ParticleColor;
+			Particles->Add(Particle);
+		}
+		// Manually pickup up an item
+		else if(Player->UseRequested)
+			UseObject(NearbyItem);
+	}
+}
+
 // Called when the player dies
 void _PlayState::PlayerDied() {
 
@@ -1055,12 +1067,14 @@ void _PlayState::PickupObject(_Item *Item, int &AmountAdded) {
 		}
 	}
 	else {
-		if(Item->Type == _Object::AMMO)
-			HUD->ShowTextMessage("AMMO FULL", HUD_INVENTORYFULLTIME, false);
-		else if(Item->Type == _Object::MEDKIT)
-			HUD->ShowTextMessage("HEALTH FULL", HUD_INVENTORYFULLTIME, false);
-		else
-			HUD->ShowTextMessage("INVENTORY FULL", HUD_INVENTORYFULLTIME);
+		if(IgnoreItems.find(Item) == IgnoreItems.end()) {
+			if(Item->Type == _Object::AMMO)
+				HUD->ShowTextMessage("AMMO FULL", HUD_INVENTORYFULLTIME, false);
+			else if(Item->Type == _Object::MEDKIT)
+				HUD->ShowTextMessage("HEALTH FULL", HUD_INVENTORYFULLTIME, false);
+			else
+				HUD->ShowTextMessage("INVENTORY FULL", HUD_INVENTORYFULLTIME);
+		}
 	}
 }
 

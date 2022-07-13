@@ -19,6 +19,7 @@
 
 #include <ae/state.h>
 #include <color.h>
+#include <unordered_map>
 #include <list>
 
 // Forward Declarations
@@ -91,6 +92,7 @@ class _PlayState : public ae::_State {
 		void CheckEvents(const _Entity *Entity);
 		void UpdateEvents(double FrameTime);
 		void ResolveAttack(_Entity *Attacker, int GridType);
+		void HandlePickup();
 		void PlayerDied();
 
 		void SpawnObject(_ObjectSpawn *ObjectSpawn, bool GenerateStats=false);
@@ -105,18 +107,19 @@ class _PlayState : public ae::_State {
 		// Map
 		_Map *Map;
 
-		// Entities
+		// Objects
 		std::list<_Entity *> Monsters;
 		std::list<_Event *> ActiveEvents;
-		_Object *LastClosestItem;
-		double ClosestItemTimer;
 		int ActiveAI;
 
 		// HUD
+		std::unordered_map<_Item *, int> IgnoreItems;
 		_HUD *HUD;
 		_Item *CursorItem;
 		_Item *PreviousCursorItem;
 		_Object *ClosestItem;
+		_Object *LastClosestItem;
+		double ClosestItemTimer;
 
 		// Graphics
 		ae::_Framebuffer *Framebuffer;

@@ -263,7 +263,7 @@ void _Player::RecalculateStats() {
 	PickupModifier = Stats.GetSkillBonusMultiplier(Skills[SKILL_LUCK], SKILL_LUCK, 1);
 }
 
-// Updates the entity's states
+// Update the player
 void _Player::Update(double FrameTime) {
 	_Entity::Update(FrameTime);
 
