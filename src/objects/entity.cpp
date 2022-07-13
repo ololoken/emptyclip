@@ -175,7 +175,7 @@ bool _Entity::StartAttack() {
 		Action = ACTION_STARTMELEE;
 
 		// Play weapon sound
-		ae::Audio.PlayChannelSound(GetSound(SOUND_FIRE, AttackRequestType), ae::_SoundSettings(glm::vec3(Position.x, 0.0f, Position.y)));
+		ae::Audio.PlaySound(GetSound(SOUND_FIRE, AttackRequestType), ae::_SoundSettings(glm::vec3(Position.x, 0.0f, Position.y)));
 	}
 	else {
 		Action = ACTION_STARTSHOOT;
@@ -317,7 +317,7 @@ void _Entity::UpdateAnimation(double FrameTime, bool PlaySound) {
 
 		// Play move sound on first and last frame of animation
 		if(Animation->Reel == (size_t)WalkingAnimation && PositionChanged && Action == ACTION_MOVING && PlaySound && (Animation->Frame == 0 || Animation->Frame == Animation->Reels[Animation->Reel]->EndFrame))
-			ae::Audio.PlayChannelSound(GetSound(SOUND_MOVE, -1), glm::vec3(Position.x, 0.0f, Position.y));
+			ae::Audio.PlaySound(GetSound(SOUND_MOVE, -1), glm::vec3(Position.x, 0.0f, Position.y));
 	}
 }
 
@@ -500,10 +500,10 @@ void _Entity::UpdateHealth(int Adjust) {
 
 // Called when an entity lands a hit
 void _Entity::OnAttack(_Entity *Victim, const _Hit &Hit) {
-	ae::Audio.PlayChannelSound(GetSound(SOUND_HIT, AttackRequestType), ae::_SoundSettings(glm::vec3(Hit.Position.x, 0.0f, Hit.Position.y)));
+	ae::Audio.PlaySound(GetSound(SOUND_HIT, AttackRequestType), ae::_SoundSettings(glm::vec3(Hit.Position.x, 0.0f, Hit.Position.y)));
 }
 
 // Called when an entity is hit
 void _Entity::OnHit(_Entity *Attacker, const _Hit &Hit) {
-	ae::Audio.PlayChannelSound(GetSound(SOUND_TAKEDAMAGE, -1), ae::_SoundSettings(glm::vec3(Hit.Position.x, 0.0f, Hit.Position.y)));
+	ae::Audio.PlaySound(GetSound(SOUND_TAKEDAMAGE, -1), ae::_SoundSettings(glm::vec3(Hit.Position.x, 0.0f, Hit.Position.y)));
 }

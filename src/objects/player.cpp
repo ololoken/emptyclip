@@ -326,7 +326,7 @@ void _Player::UpdateAnimation(double FrameTime, bool PlaySound) {
 
 	// Play move sound on first and last frame of leg animation
 	if(PlaySound && LastFrame != LegAnimation->Frame && (LegAnimation->Frame == 0 || LegAnimation->Frame == LegAnimation->Reels[LegAnimation->Reel]->EndFrame))
-		ae::Audio.PlayChannelSound(GetSound(SOUND_MOVE, -1));
+		ae::Audio.PlaySound(GetSound(SOUND_MOVE, -1));
 
 	switch(MoveState) {
 		case MOVE_FORWARD:
@@ -493,7 +493,7 @@ void _Player::UpdateExperience(int64_t ExperienceGained) {
 		CalculateSkillsRemaining();
 		RecalculateStats();
 		Health = MaxHealth;
-		ae::Audio.PlayChannelSound(ae::Assets.Sounds["game_levelup0"]);
+		ae::Audio.PlaySound(ae::Assets.Sounds["game_levelup0"]);
 	}
 }
 
@@ -884,7 +884,7 @@ void _Player::StartReloading() {
 	CancelReloading();
 
 	// Play sound
-	ReloadSound = ae::Audio.PlayChannelSound(GetSound(SOUND_RELOAD, WEAPONATTACK_MAIN));
+	ReloadSound = ae::Audio.PlaySound(GetSound(SOUND_RELOAD, WEAPONATTACK_MAIN));
 
 	// Start timer
 	ReloadTimer = 0;
