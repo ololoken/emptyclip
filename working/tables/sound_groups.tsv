@@ -5,7 +5,7 @@ club	player_swing0					club_hit0
 pistol	pistol_fire0		pistol_ricochet0	pistol_empty0	pistol_reload0				
 pistol_heavy	pistol_fire1		pistol_ricochet0	pistol_empty0	pistol_reload0				
 plasma	plasma_fire0			pistol_empty0	pistol_reload0				
-magnum	magnum_fire0		pistol_ricochet0	pistol_empty0	pistol_reload0				
+revolver	revolver_fire0		pistol_ricochet0	pistol_empty0	revolver_reload0				
 shotgun	shotgun_fire0		pistol_ricochet0	pistol_empty0	shotgun_reload0				
 boltrifle	boltrifle_fire0		pistol_ricochet0	pistol_empty0	shotgun_reload0				
 rifle	rifle_fire0		pistol_ricochet0	pistol_empty0	pistol_reload0				
