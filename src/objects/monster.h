@@ -51,6 +51,7 @@ class _Monster : public _Entity {
 		void Update(double FrameTime) override;
 		void OnAttack(_Entity *Victim, const _Hit &Hit) override;
 		void OnHit(_Entity *Attacker, const _Hit &Hit) override;
+		void OnPlayerDeath();
 		const _ParticleTemplate *GetParticle(int ParticleType) const override;
 
 		// AI

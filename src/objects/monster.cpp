@@ -85,10 +85,7 @@ void _Monster::Update(double FrameTime) {
 
 	// Move the monster
 	if(IsDying() || !AIType || Player->IsInvulnerable() || Player->IsDying()) {
-		MoveState = MOVE_NONE;
-		PositionChanged = false;
-		StaticTimer = 0;
-		GenerateReactionTime();
+
 		return;
 	}
 
@@ -167,6 +164,16 @@ void _Monster::OnHit(_Entity *Attacker, const _Hit &Hit) {
 
 	Goal = GOAL_PURSUE;
 	SetTarget(Attacker->Position);
+}
+
+// Called when the player dies
+void _Monster::OnPlayerDeath() {
+	MoveState = MOVE_NONE;
+	PositionChanged = false;
+	StaticTimer = 0;
+	AttacksMade = 0;
+	Goal = GOAL_PURSUE;
+	GenerateReactionTime();
 }
 
 // Get weapon particles used by monster

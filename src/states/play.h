@@ -82,20 +82,21 @@ class _PlayState : public ae::_State {
 
 		bool IsPaused();
 
-		void DeleteMonsters();
-
-		void UpdateMonsters(double FrameTime);
-		void CheckEvents(const _Entity *Entity);
-		void UpdateEvents(double FrameTime);
-
-		void SpawnObject(_ObjectSpawn *ObjectSpawn, bool GenerateStats=false);
 		void AddMonster(_Monster *Monster);
 		void RemoveMonster(_Monster *Monster);
-		void CreateItemDrop(const _Entity *Entity, float DropRate);
-		void ResolveAttack(_Entity *Attacker, int GridType);
-		void PickupObject(_Item *Item, int &AmountAdded);
-		void UseObject(_Item *Item);
+		void DeleteMonsters();
+		void UpdateMonsters(double FrameTime);
+
 		void ActivateEvent();
+		void CheckEvents(const _Entity *Entity);
+		void UpdateEvents(double FrameTime);
+		void ResolveAttack(_Entity *Attacker, int GridType);
+		void PlayerDied();
+
+		void SpawnObject(_ObjectSpawn *ObjectSpawn, bool GenerateStats=false);
+		void UseObject(_Item *Item);
+		void PickupObject(_Item *Item, int &AmountAdded);
+		void CreateItemDrop(const _Entity *Entity, float DropRate);
 
 		// Game
 		double Timer;

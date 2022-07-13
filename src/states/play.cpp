@@ -489,6 +489,7 @@ void _PlayState::Update(double FrameTime) {
 
 	// Update player
 	Player->Update(FrameTime);
+
 	if(Player->Action == ACTION_STARTSHOOT)
 		FlashTimer = LIGHT_FLASH_TIME;
 
@@ -543,9 +544,18 @@ void _PlayState::Update(double FrameTime) {
 
 	// Update objects
 	Map->Update(FrameTime);
-	UpdateMonsters(FrameTime);
-	Particles->Update(FrameTime);
 	Map->ObjectManager->RenderList[1].push_back(Player);
+
+	// Update monsters
+	int PlayerHealth = Player->Health;
+	UpdateMonsters(FrameTime);
+
+	// Check for player dying
+	if(Player->Health == 0 && PlayerHealth > 0)
+		PlayerDied();
+
+	// Update particles
+	Particles->Update(FrameTime);
 
 	// Add player to minimap
 	_MinimapLayer MinimapLayer;
@@ -1013,6 +1023,16 @@ void _PlayState::ResolveAttack(_Entity *Attacker, int GridType) {
 				} break;
 			}
 		}
+	}
+}
+
+// Called when the player dies
+void _PlayState::PlayerDied() {
+
+	// Update monsters
+	for(const auto &Entity : Monsters) {
+		_Monster *Monster = (_Monster *)Entity;
+		Monster->OnPlayerDeath();
 	}
 }
 
