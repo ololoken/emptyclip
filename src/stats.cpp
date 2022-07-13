@@ -651,6 +651,7 @@ _Monster *_Stats::CreateMonster(const std::string &ID, int Level, const glm::vec
 	_Monster *Monster = new _Monster(Template);
 	Monster->SetPosition(Position);
 	Monster->Animation->Reels = ae::Assets.Animations[Template.AnimationID];
+	Monster->Animation->CalculateTextureCoords();
 	Monster->Level = Level;
 	if(Template.ItemDropID != "")
 		Monster->ItemDrop = &ItemDrops[Template.ItemDropID];

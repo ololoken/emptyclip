@@ -34,7 +34,6 @@
 #include <stdexcept>
 #include <constants.h>
 #include <stats.h>
-#include <save.h>
 #include <states/null.h>
 #include <states/convert.h>
 #include <states/play.h>
@@ -150,9 +149,6 @@ void _Framework::Init(int ArgumentCount, char **Arguments) {
 
 	// Sort commands
 	std::sort(Console->CommandList.begin(), Console->CommandList.end());
-
-	// Load assets
-	Save.LoadSaves();
 
 	Timer = SDL_GetPerformanceCounter();
 }

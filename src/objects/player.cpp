@@ -43,6 +43,7 @@ _Player::_Player(const _ObjectTemplate &PlayerTemplate) :
 	// Set up animations
 	LegAnimation = new ae::_Animation(nullptr);
 	LegAnimation->Reels.push_back(ae::Assets.Reels["player_legs"]);
+	LegAnimation->CalculateTextureCoords();
 
 	WalkingAnimation = PLAYER_ANIMATIONWALKINGONEHAND;
 	MeleeAnimation = PLAYER_ANIMATIONMELEE;
@@ -62,6 +63,7 @@ _Player::_Player(const _ObjectTemplate &PlayerTemplate) :
 
 	// Set animation
 	Animation->Reels = ae::Assets.Animations["player"];
+	Animation->CalculateTextureCoords();
 
 	// Set sounds
 	_SoundGroup &SoundGroup = GameAssets.SoundGroups.at("player");

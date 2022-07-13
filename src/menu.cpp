@@ -122,6 +122,7 @@ void _Menu::InitTitle() {
 void _Menu::InitSinglePlayer() {
 	ChangeLayout("element_menu_singleplayer");
 
+	Save.LoadSaves();
 	RefreshSaveSlots();
 	for(int i = 0; i <= _Save::SLOT_9; i++)
 		SaveSlots[i]->Checked = false;

@@ -111,16 +111,6 @@ void _Save::LoadSaves() {
 		Players[i] = nullptr;
 	}
 
-	// Load test files
-	try {
-		Players[SLOT_TEST] = new _Player(Stats.Objects.at("player"));
-		Players[SLOT_TEST]->SavePath = Config.ConfigPath + "test.save";
-		LoadPlayer(Players[SLOT_TEST]);
-	}
-	catch(std::exception &Error) {
-		std::cout << Error.what() << std::endl;
-	}
-
 	// Get directory contents
 	ae::_Files Files(Config.ConfigPath);
 

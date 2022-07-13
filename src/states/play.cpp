@@ -83,7 +83,9 @@ void _PlayState::Init() {
 
 	// Check for player
 	if(TestMode) {
-		Player = Save.GetPlayer(_Save::SLOT_TEST);
+		Player = new _Player(Stats.Objects.at("player"));
+		Player->SavePath = Config.ConfigPath + "test.save";
+		Save.LoadPlayer(Player);
 	}
 
 	// Bad player
@@ -150,6 +152,11 @@ void _PlayState::Close() {
 	ActiveEvents.clear();
 
 	Player->StopAudio();
+
+	if(TestMode) {
+		delete Player;
+		Player = nullptr;
+	}
 
 	delete Particles;
 	delete Camera;
