@@ -51,6 +51,7 @@ class _Config {
 
 		// Game
 		bool WeaponFlashes;
+		bool Tutorial;
 
 		// Audio
 		int AudioEnabled;

@@ -10,6 +10,8 @@ event_rumble0	event_rumble0.ogg	1	1
 event_crash0	event_crash0.ogg	1	1
 game_flashlight0	game_flashlight0.ogg	1	1
 game_levelup0	game_levelup0.ogg	1	1
+game_message0	game_message0.ogg	1	1
+game_secret0	game_secret0.ogg	1	1
 knife_fire0	knife_fire0.ogg	0.7	3
 knife_hit0	knife_hit0.ogg	0.7	3
 minigun_fire0	minigun_fire0.ogg	0.7	1

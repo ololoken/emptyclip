@@ -1288,11 +1288,20 @@ void _PlayState::CheckEvents(const _Entity *Entity) {
 					Player->Keys.clear();
 				Save.SavePlayer(Player);
 			break;
-			case EVENT_TEXT:
-				HUD->ShowMessageBox(Stats.Strings[Event->ItemID], Event->ActivationPeriod);
+			case EVENT_TEXT: {
+				bool ShowMessage = true;
+				bool IsTutorial = Event->ItemID.find("tutorial_") == 0;
+				if(IsTutorial && !Config.Tutorial)
+					ShowMessage = false;
+
+				if(ShowMessage) {
+					if(IsTutorial)
+						ae::Audio.PlaySound(ae::Assets.Sounds["game_message0"]);
+					HUD->ShowMessageBox(Stats.Strings[Event->ItemID], Event->ActivationPeriod);
+				}
 				if(Event->Level != 0)
 					Event->Active = false;
-			break;
+			} break;
 			case EVENT_SOUND:
 				if(ae::Assets.Sounds[Event->ItemID]) {
 					Event->StartTimer();
@@ -1335,6 +1344,7 @@ void _PlayState::CheckEvents(const _Entity *Entity) {
 				}
 			} break;
 			case EVENT_SECRET: {
+				ae::Audio.PlaySound(ae::Assets.Sounds["game_secret0"]);
 				HUD->ShowMessageBox("You have found a secret!", HUD_SECRET_MESSAGETIME);
 				HUD->Secrets[0]++;
 				Event->Active = false;
