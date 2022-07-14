@@ -468,7 +468,7 @@ void _Stats::LoadItemDrops(const std::string &Path) {
 		auto ItemDropIterator = ItemDrops.find(DropName);
 		if(ItemDropIterator == ItemDrops.end()) {
 			_ItemDrop ItemDrop;
-			ItemDrop.Total = 0;
+			ItemDrop.OddsSum = 0;
 			ItemDrops[DropName] = ItemDrop;
 		}
 
@@ -494,12 +494,12 @@ void _Stats::LoadItemDrops(const std::string &Path) {
 
 		// Add counts to item drops
 		for(int i = 0; i < Drops; i++) {
-			File >> ItemDropEntry.Count;
-			if(ItemDropEntry.Count <= 0)
+			File >> ItemDropEntry.Odds;
+			if(ItemDropEntry.Odds <= 0)
 				continue;
 
-			ItemDrops[ItemDropNames[i]].Total += ItemDropEntry.Count;
-			ItemDropEntry.Count = ItemDrops[ItemDropNames[i]].Total;
+			ItemDrops[ItemDropNames[i]].OddsSum += ItemDropEntry.Odds;
+			ItemDropEntry.Odds = ItemDrops[ItemDropNames[i]].OddsSum;
 			ItemDrops[ItemDropNames[i]].Entries.push_back(ItemDropEntry);
 		}
 
@@ -715,15 +715,15 @@ void _Stats::GetRandomDrop(const _ItemDrop *ItemDrop, _ObjectSpawn *ObjectSpawn)
 		return;
 
 	// Get total
-	if(ItemDrop->Total <= 0.0f)
+	if(ItemDrop->OddsSum <= 0)
 		return;
 
 	// Generate roll
-	float RandomNumber = ae::GetRandomReal(0.0, ItemDrop->Total);
+	int RandomNumber = ae::GetRandomInt(1, ItemDrop->OddsSum);
 
 	// Get item
 	for(size_t i = 0; i < ItemDropSize; i++) {
-		if(RandomNumber <= ItemDrop->Entries[i].Count) {
+		if(RandomNumber <= ItemDrop->Entries[i].Odds) {
 			ObjectSpawn->Type = ItemDrop->Entries[i].Type;
 			ObjectSpawn->ID = ItemDrop->Entries[i].ItemID;
 			return;

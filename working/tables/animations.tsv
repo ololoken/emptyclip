@@ -2,6 +2,7 @@ id	reel_id...
 crate_ammo	crate_ammo	crate_ammo	crate_ammo			
 crate_health	crate_health	crate_health	crate_health			
 crate_gun	crate_gun	crate_gun	crate_gun			
+crate_gun1	crate_gun1	crate_gun1	crate_gun1			
 crate_melee	crate_melee	crate_melee	crate_melee			
 crate_armor	crate_armor	crate_armor	crate_armor			
 crate_mod	crate_mod	crate_mod	crate_mod			

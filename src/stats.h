@@ -48,19 +48,15 @@ struct _Skill {
 
 // A single entry for an item drop
 struct _ItemDropEntry {
-
-	_ItemDropEntry() { }
-	_ItemDropEntry(const std::string &ItemID, float Count, int Type) : ItemID(ItemID), Count(Count), Type(Type) { }
-
 	std::string ItemID;
-	float Count;
+	int Odds;
 	int Type;
 };
 
 // Item drop information
 struct _ItemDrop {
 	std::vector<_ItemDropEntry> Entries;
-	float Total;
+	int OddsSum;
 };
 
 // Object template
