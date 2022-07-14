@@ -1187,6 +1187,7 @@ void _PlayState::CreateItemDrop(const _Entity *Entity, float DropRate) {
 
 // Updates the monsters
 void _PlayState::UpdateMonsters(double FrameTime) {
+	bool HasBossKey = Player->Keys.find("key_boss") != Player->Keys.end();
 
 	// Loop through monsters
 	ActiveAI = 0;
@@ -1208,7 +1209,7 @@ void _PlayState::UpdateMonsters(double FrameTime) {
 			Monster->GetRenderBounds(Bounds);
 
 			// Add to minimap
-			if((Monster->MoveState || Monster->IsCrate()) && Monster->Health > 0 && Map->CheckMinimapBounds(Bounds)) {
+			if((Monster->MoveState || Monster->IsCrate() || HasBossKey) && Monster->Health > 0 && Map->CheckMinimapBounds(Bounds)) {
 				_MinimapLayer MinimapLayer;
 				MinimapLayer.Bounds = Bounds;
 				MinimapLayer.Color = Monster->IsCrate() ? HUD_MINIMAP_CRATE_COLOR : HUD_MINIMAP_ENEMY_COLOR;
