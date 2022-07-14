@@ -55,10 +55,10 @@ static std::vector<_MinimapLegend> MinimapLegends = {
 
 // Initialize
 _HUD::_HUD(_Player *Player) :
-	Player(Player),
 	Kills{0, 0},
 	Crates{0, 0},
-	Secrets{0, 0} {
+	Secrets{0, 0},
+	Player(Player) {
 
 	LastEntityHit = nullptr;
 	DragStart = nullptr;

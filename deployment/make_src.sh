@@ -18,6 +18,7 @@ tar --transform "s|^|$base/|" -czvf "out/$pkg" -C ../ \
 --exclude=*.swp \
 --exclude=.git \
 --exclude=working/"$project"* \
+--exclude=working/maps/test.map.gz \
 ext/ \
 src/ \
 working/ \

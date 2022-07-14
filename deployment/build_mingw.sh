@@ -46,6 +46,7 @@ build() {
 	rm -rf "${archive_base}"
 	cp -r "${projectdir}/working" "${archive_base}"
 	rm "${projectdir}/working/${project}.exe"
+	rm -f "${archive_base}/maps/test.map.gz"
 
 	# remove linux only files
 	rm -f "${archive_base}"/"${project}"{,_debug}
