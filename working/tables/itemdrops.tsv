@@ -1,4 +1,4 @@
-id	crate_ammo	crate_health	crate_gun	crate_gun1	crate_melee	crate_armor	crate_mod	monster_small	monster_medium	monster_large	boss
+id	crate_ammo0	crate_health0	crate_gun0	crate_gun1	crate_melee0	crate_armor0	crate_mod0	monster_small	monster_medium	monster_large	boss
 none	0	0	0	0	0	0	0	120	120	120	0
 key_boss	0	0	0	0	0	0	0	0	0	0	1
 ammo_pistol	1	0	0	0	0	0	0	12	12	0	0
