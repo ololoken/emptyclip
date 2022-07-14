@@ -771,6 +771,7 @@ void _EditorState::Update(double FrameTime) {
 			if(FinishDrawing) {
 				if(Brush[EDITMODE_EVENTS])
 					AddEvent(Brush[EDITMODE_EVENTS]->Index);
+
 				FinishDrawing = IsDrawing = false;
 			}
 
@@ -1595,6 +1596,8 @@ void _EditorState::SpawnObject(const glm::vec2 &Position, int Type, const std::s
 
 // Adds an event to the list
 void _EditorState::AddEvent(int Type) {
+	if(Type == -1)
+		return;
 
 	// Get object identifiers
 	std::string ItemID = SavedText[EDITINPUT_ITEMIDENTIFIER];
@@ -1632,6 +1635,7 @@ void _EditorState::AddEvent(int Type) {
 			TileLayer = EditLayer;
 		break;
 		case EVENT_SPAWN:
+			EventLevel = std::max(1, EventLevel);
 			EventMonsterID = MonsterID;
 			EventParticleID = ParticleID;
 			TileLayer = EditLayer;
@@ -1643,15 +1647,13 @@ void _EditorState::AddEvent(int Type) {
 		break;
 	}
 
-	if(Type != -1) {
-		_Event *Event = new _Event(Type, EventActive, Start, End, EventLevel, EventSpawnLevel, EventActivationPeriod, EventItemID, EventMonsterID, EventParticleID);
-		if(TileLayer != -1) {
-			int BlockIndex = Map->GetSelectedBlock(TileLayer, Start);
-			Event->AddTile(_EventTile(Start, TileLayer, BlockIndex));
-		}
-
-		Map->AddEvent(Event);
+	_Event *Event = new _Event(Type, EventActive, Start, End, EventLevel, EventSpawnLevel, EventActivationPeriod, EventItemID, EventMonsterID, EventParticleID);
+	if(TileLayer != -1) {
+		int BlockIndex = Map->GetSelectedBlock(TileLayer, Start);
+		Event->AddTile(_EventTile(Start, TileLayer, BlockIndex));
 	}
+
+	Map->AddEvent(Event);
 }
 
 // Updates the selected event's object identifier
@@ -1799,8 +1801,10 @@ void _EditorState::ExecuteChangeZ(float Change, int Type) {
 
 // Executes the change level command
 void _EditorState::ExecuteChangeLevel(int Change) {
-	if(EventSelected())
-		SelectedEvent->Level = std::max(0, SelectedEvent->Level + Change);
+	if(EventSelected()) {
+		int MinLevel = SelectedEvent->Type == EVENT_SPAWN ? 1 : 0;
+		SelectedEvent->Level = std::max(MinLevel, SelectedEvent->Level + Change);
+	}
 	else
 		EventLevel = std::max(0, EventLevel + Change);
 }

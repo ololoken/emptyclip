@@ -155,12 +155,14 @@ _Map::_Map(const std::string &Filename) : _Map() {
 			case EVENT_SPAWN: {
 				EventLevel = std::max(1, EventLevel);
 
-				_ObjectTemplate &Template = Stats.Objects.at(EventMonsterID);
-				if(Template.Type == _Object::MONSTER) {
-					if(Template.Attributes.at("ai_type").Int)
-						Monsters += TilesSize * EventLevel;
-					else
-						Crates += TilesSize * EventLevel;
+				if(!EventMonsterID.empty()) {
+					_ObjectTemplate &Template = Stats.Objects.at(EventMonsterID);
+					if(Template.Type == _Object::MONSTER) {
+						if(Template.Attributes.at("ai_type").Int)
+							Monsters += TilesSize * EventLevel;
+						else
+							Crates += TilesSize * EventLevel;
+					}
 				}
 			} break;
 			case EVENT_SECRET:
