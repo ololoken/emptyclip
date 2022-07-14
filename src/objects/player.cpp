@@ -1073,6 +1073,7 @@ void _Player::Respawn() {
 	ResetWeaponAnimation();
 	StopAudio();
 	SetPosition(Map->GetStartingPositionByCheckpoint(CheckpointIndex));
+	TileChanged = true;
 
 	InvulnerableTimer = GAME_INVULNERABLE_TIME;
 }
