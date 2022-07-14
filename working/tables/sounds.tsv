@@ -7,6 +7,7 @@ dog_die0	dog_die0.ogg	0.7	5
 dog_fire0	dog_fire0.ogg	0.7	5
 dog_move0	dog_move0.ogg	0.05	5
 event_rumble0	event_rumble0.ogg	1	1
+event_crash0	event_crash0.ogg	1	1
 game_flashlight0	game_flashlight0.ogg	1	1
 game_levelup0	game_levelup0.ogg	1	1
 knife_fire0	knife_fire0.ogg	0.7	3

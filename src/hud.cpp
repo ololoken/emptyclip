@@ -55,7 +55,10 @@ static std::vector<_MinimapLegend> MinimapLegends = {
 
 // Initialize
 _HUD::_HUD(_Player *Player) :
-	Player(Player) {
+	Player(Player),
+	Kills{0, 0},
+	Crates{0, 0},
+	Secrets{0, 0} {
 
 	LastEntityHit = nullptr;
 	DragStart = nullptr;
@@ -88,6 +91,12 @@ _HUD::_HUD(_Player *Player) :
 	Elements[LABEL_PLAYERLEVEL] = ae::Assets.Elements["label_hud_player_level"];
 	Elements[LABEL_PLAYERHEALTH] = ae::Assets.Elements["label_hud_player_health"];
 	Elements[ELEMENT_PLAYERINFO]->SetActive(true);
+
+	Elements[ELEMENT_LEVELINFO] = ae::Assets.Elements["element_hud_level_info"];
+	Elements[LABEL_LEVELKILLS] = ae::Assets.Elements["label_hud_level_kills"];
+	Elements[LABEL_LEVELCRATES] = ae::Assets.Elements["label_hud_level_crates"];
+	Elements[LABEL_LEVELSECRETS] = ae::Assets.Elements["label_hud_level_secrets"];
+	Elements[ELEMENT_LEVELINFO]->SetActive(true);
 
 	Elements[ELEMENT_ENEMYINFO] = ae::Assets.Elements["element_hud_enemy_info"];
 	Elements[LABEL_ENEMYNAME] = ae::Assets.Elements["label_hud_enemy_name"];
@@ -148,6 +157,16 @@ _HUD::_HUD(_Player *Player) :
 
 // Shut down
 _HUD::~_HUD() {
+}
+
+// Set up max stats for the level
+void _HUD::SetStats(int MaxKills, int MaxCrates, int MaxSecrets) {
+	Kills[0] = 0;
+	Kills[1] = MaxKills;
+	Crates[0] = 0;
+	Crates[1] = MaxCrates;
+	Secrets[0] = 0;
+	Secrets[1] = MaxSecrets;
 }
 
 // Sets the last entity hit object
@@ -378,6 +397,17 @@ void _HUD::Render(const ae::_Camera *Camera, bool FullMap) {
 	Elements[LABEL_PLAYERLEVEL]->Text = Buffer.str();
 	Buffer.str("");
 	Elements[ELEMENT_PLAYERINFO]->Render();
+
+	Buffer << Kills[0] << "/" << Kills[1];
+	Elements[LABEL_LEVELKILLS]->Text = Buffer.str();
+	Buffer.str("");
+	Buffer << Crates[0] << "/" << Crates[1];
+	Elements[LABEL_LEVELCRATES]->Text = Buffer.str();
+	Buffer.str("");
+	Buffer << Secrets[0] << "/" << Secrets[1];
+	Elements[LABEL_LEVELSECRETS]->Text = Buffer.str();
+	Buffer.str("");
+	Elements[ELEMENT_LEVELINFO]->Render();
 
 	// Reload indicator
 	if(Player->Reloading)

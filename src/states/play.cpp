@@ -120,6 +120,7 @@ void _PlayState::Init() {
 
 	// Initialize objects
 	HUD = new _HUD(Player);
+	HUD->SetStats(Map->Monsters, Map->Crates, Map->Secrets);
 	Particles = new _Particles();
 
 	// Set up camera
@@ -974,6 +975,11 @@ void _PlayState::ResolveAttack(_Entity *Attacker, int GridType) {
 
 						// Update stats
 						if(Attacker->Type == _Object::PLAYER) {
+							_Monster *Monster = (_Monster *)Hit.Object;
+							if(Monster->IsCrate())
+								HUD->Crates[0]++;
+							else
+								HUD->Kills[0]++;
 							Attacker->UpdateKillCount(1);
 							Attacker->UpdateExperience(Hit.Object->ExperienceGiven);
 						}
@@ -1118,7 +1124,7 @@ void _PlayState::ActivateEvent() {
 		// Check for key in inventory and use it
 		if(!Event->ItemID.empty()) {
 			if(Player->Keys.find(Event->ItemID) == Player->Keys.end()) {
-				HUD->ShowMessageBox("You need the " + Stats.Objects.at(Event->ItemID).Name, HUD_KEYMESSAGETIME);
+				HUD->ShowMessageBox("You need the " + Stats.Objects.at(Event->ItemID).Name, HUD_KEY_MESSAGETIME);
 				return;
 			}
 
@@ -1202,10 +1208,10 @@ void _PlayState::UpdateMonsters(double FrameTime) {
 			Monster->GetRenderBounds(Bounds);
 
 			// Add to minimap
-			if((Monster->MoveState || Monster->AIType == _Monster::AI_NONE) && Monster->Health > 0 && Map->CheckMinimapBounds(Bounds)) {
+			if((Monster->MoveState || Monster->IsCrate()) && Monster->Health > 0 && Map->CheckMinimapBounds(Bounds)) {
 				_MinimapLayer MinimapLayer;
 				MinimapLayer.Bounds = Bounds;
-				MinimapLayer.Color = Monster->AIType ? HUD_MINIMAP_ENEMY_COLOR : HUD_MINIMAP_CRATE_COLOR;
+				MinimapLayer.Color = Monster->IsCrate() ? HUD_MINIMAP_CRATE_COLOR : HUD_MINIMAP_ENEMY_COLOR;
 				Map->MinimapLayers.push_back(MinimapLayer);
 			}
 
@@ -1328,6 +1334,11 @@ void _PlayState::CheckEvents(const _Entity *Entity) {
 					Map->SetAmbientLightChangePeriod(LIGHT_CHANGE_PERIOD);
 				}
 			} break;
+			case EVENT_SECRET: {
+				HUD->ShowMessageBox("You have found a secret!", HUD_SECRET_MESSAGETIME);
+				HUD->Secrets[0]++;
+				Event->Active = false;
+			} break;
 			default:
 			break;
 		}
@@ -1361,7 +1372,11 @@ void _PlayState::UpdateEvents(double FrameTime) {
 				Decrement = true;
 			} break;
 			case EVENT_SOUND: {
-				ae::Audio.PlaySound(ae::Assets.Sounds[Event->ItemID]);
+				const std::vector<_EventTile> &Tiles = Event->Tiles;
+				if(Tiles.size())
+					ae::Audio.PlaySound(ae::Assets.Sounds[Event->ItemID], ae::_SoundSettings(glm::vec3(Tiles.front().Coord.x, 0, Tiles.front().Coord.y)));
+				else
+					ae::Audio.PlaySound(ae::Assets.Sounds[Event->ItemID]);
 				Decrement = true;
 			} break;
 			case EVENT_FLOORSWITCH:
@@ -1417,6 +1432,10 @@ void _PlayState::SpawnObject(_ObjectSpawn *ObjectSpawn, bool GenerateStats) {
 		_Monster *Monster = Stats.CreateMonster(ObjectSpawn->ID, ObjectSpawn->Level, ObjectSpawn->Position);
 		Monster->Player = Player;
 		AddMonster(Monster);
+		if(Monster->IsCrate())
+			Map->Crates++;
+		else
+			Map->Monsters++;
 	}
 	else {
 		Map->AddItem(Stats.CreateItem(ObjectSpawn->ID, ObjectSpawn->Level, 0, 1, ObjectSpawn->Position, GenerateStats));

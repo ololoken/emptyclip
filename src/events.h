@@ -36,6 +36,7 @@ enum EventType {
 	EVENT_ENABLE,
 	EVENT_TELEPORT,
 	EVENT_LIGHT,
+	EVENT_SECRET,
 };
 
 struct _EventTile {

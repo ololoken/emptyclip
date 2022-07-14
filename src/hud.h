@@ -50,6 +50,7 @@ class _HUD {
 			ELEMENT_PLAYERINFO,
 			ELEMENT_PLAYERHEALTH,
 			ELEMENT_PLAYERSTAMINA,
+			ELEMENT_LEVELINFO,
 			ELEMENT_ENEMYINFO,
 			ELEMENT_INDICATOR,
 			ELEMENT_EXPERIENCE,
@@ -62,6 +63,9 @@ class _HUD {
 			LABEL_PLAYERNAME,
 			LABEL_PLAYERLEVEL,
 			LABEL_PLAYERHEALTH,
+			LABEL_LEVELKILLS,
+			LABEL_LEVELCRATES,
+			LABEL_LEVELSECRETS,
 			LABEL_ENEMYNAME,
 			LABEL_ENEMYHEALTH,
 			LABEL_INDICATOR,
@@ -91,6 +95,7 @@ class _HUD {
 		_HUD(_Player *Player);
 		~_HUD();
 
+		void SetStats(int MaxKills, int MaxCrates, int MaxSecrets);
 		void SetLastEntityHit(_Entity *Entity);
 		void SetInventoryOpen(bool Value);
 		bool IsDragging() const { return CursorItem != nullptr; }
@@ -106,10 +111,16 @@ class _HUD {
 		void ShowTextMessage(const std::string &Message, double Time, bool Override=true);
 		void ShowMessageBox(const std::string &Message, double Time);
 
+		// Inventory
 		_Item *CursorItem;
 		_Item *CursorOverItem;
 		bool CursorOverWorld;
 		bool InventoryOpen;
+
+		// Stats
+		int Kills[2];
+		int Crates[2];
+		int Secrets[2];
 
 	private:
 

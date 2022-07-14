@@ -50,6 +50,9 @@ _Map::_Map() :
 	Size{MAP_WIDTH, MAP_HEIGHT},
 	MapType(MAPTYPE_CAMPAIGN),
 	Level(1),
+	Monsters(0),
+	Crates(0),
+	Secrets(0),
 	Camera(nullptr),
 	ObjectManager(new _ObjectManager()),
 	MinimapCaptureSize(HUD_MINIMAP_CAPTURE_SIZE),
@@ -147,6 +150,25 @@ _Map::_Map(const std::string &Filename) : _Map() {
 		if(EventParticleID != "" && GameAssets.Particles.find(EventParticleID) == GameAssets.Particles.end())
 			throw std::runtime_error("Cannot find particle: " + EventParticleID);
 
+		// Add to stats
+		switch(EventType) {
+			case EVENT_SPAWN: {
+				EventLevel = std::max(1, EventLevel);
+
+				_ObjectTemplate &Template = Stats.Objects.at(EventMonsterID);
+				if(Template.Type == _Object::MONSTER) {
+					if(Template.Attributes.at("ai_type").Int)
+						Monsters += TilesSize * EventLevel;
+					else
+						Crates += TilesSize * EventLevel;
+				}
+			} break;
+			case EVENT_SECRET:
+				Secrets++;
+			break;
+		}
+
+		// Create event
 		_Event *Event = new _Event(EventType, EventActive, EventStart, EventEnd, EventLevel, EventSpawnLevel, EventActivationPeriod, EventItemID, EventMonsterID, EventParticleID);
 		for(size_t j = 0; j < TilesSize; j++) {
 			glm::ivec2 Tile;
@@ -155,9 +177,10 @@ _Map::_Map(const std::string &Filename) : _Map() {
 			Tile = GetValidCoord(Tile);
 			Event->AddTile(_EventTile(Tile, TileLayer, TileBlockID));
 		}
-		Events.push_back(Event);
 
-		if(Event->Type == EVENT_CHECK)
+		// Add to list
+		Events.push_back(Event);
+		if(EventType == EVENT_CHECK)
 			CheckpointEvents.push_back(Event);
 	}
 
@@ -236,7 +259,6 @@ void _Map::InitializeTiles() {
 
 	// Allocate memory
 	Data = new _Tile*[Size.x];
-
 	for(int i = 0; i < Size.x; i++)
 		Data[i] = new _Tile[Size.y];
 

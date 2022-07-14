@@ -257,6 +257,9 @@ class _Map {
 		glm::ivec2 Size;
 		int MapType;
 		int Level;
+		int Monsters;
+		int Crates;
+		int Secrets;
 
 		// Objects
 		ae::_Camera *Camera;

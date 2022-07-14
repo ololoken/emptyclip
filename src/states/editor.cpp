@@ -1067,12 +1067,13 @@ void _EditorState::LoadPalettes() {
 	Icons.push_back(_Brush("spawn", "Spawn", ae::Assets.Textures["textures/editor_repeat/event_spawn.png"], COLOR_WHITE));
 	Icons.push_back(_Brush("check", "Checkpoint", ae::Assets.Textures["textures/editor_repeat/event_check.png"], COLOR_WHITE));
 	Icons.push_back(_Brush("end", "End of Level", ae::Assets.Textures["textures/editor_repeat/event_end.png"], COLOR_WHITE));
-	Icons.push_back(_Brush("text", "Event Message", ae::Assets.Textures["textures/editor_repeat/event_text.png"], COLOR_WHITE));
-	Icons.push_back(_Brush("sound", "Event Sound", ae::Assets.Textures["textures/editor_repeat/event_sound.png"], COLOR_WHITE));
+	Icons.push_back(_Brush("text", "Message", ae::Assets.Textures["textures/editor_repeat/event_text.png"], COLOR_WHITE));
+	Icons.push_back(_Brush("sound", "Sound", ae::Assets.Textures["textures/editor_repeat/event_sound.png"], COLOR_WHITE));
 	Icons.push_back(_Brush("fswitch", "Floor Switch", ae::Assets.Textures["textures/editor_repeat/event_fswitch.png"], COLOR_WHITE));
 	Icons.push_back(_Brush("enable", "Event Enabler", ae::Assets.Textures["textures/editor_repeat/event_enable.png"], COLOR_WHITE));
 	Icons.push_back(_Brush("tele", "Teleporter", ae::Assets.Textures["textures/editor_repeat/event_tele.png"], COLOR_WHITE));
 	Icons.push_back(_Brush("light", "Lights", ae::Assets.Textures["textures/editor_repeat/event_light.png"], COLOR_WHITE));
+	Icons.push_back(_Brush("secret", "Secret", ae::Assets.Textures["textures/editor_repeat/event_secret.png"], COLOR_WHITE));
 	LoadPaletteButtons(Icons, EDITMODE_EVENTS);
 	for(size_t i = 0; i < Icons.size(); i++)
 		EventTextures.push_back(Icons[i].Texture);

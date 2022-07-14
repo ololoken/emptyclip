@@ -53,10 +53,10 @@ _Monster::_Monster(const _ObjectTemplate &MonsterTemplate) :
 		Sounds[i] = SoundGroup.SoundID[i];
 
 	AIType = Template.Attributes.at("ai_type").Int;
-	if(AIType)
-		Rotation = ae::GetRandomReal(0.0f, 359.0f);
-	else
+	if(IsCrate())
 		Circle = false;
+	else
+		Rotation = ae::GetRandomReal(0.0f, 359.0f);
 
 	LastPlayerVisible = false;
 	Goal = GOAL_PURSUE;
@@ -84,10 +84,8 @@ void _Monster::Update(double FrameTime) {
 	UpdateAnimation(FrameTime);
 
 	// Move the monster
-	if(IsDying() || !AIType || Player->IsInvulnerable() || Player->IsDying()) {
-
+	if(IsDying() || !AIType || Player->IsInvulnerable() || Player->IsDying())
 		return;
-	}
 
 	// Check for player in range
 	bool PlayerVisible = false;
@@ -159,7 +157,7 @@ void _Monster::OnAttack(_Entity *Victim, const _Hit &Hit) {
 void _Monster::OnHit(_Entity *Attacker, const _Hit &Hit) {
 	_Entity::OnHit(Attacker, Hit);
 
-	if(!AIType)
+	if(IsCrate())
 		return;
 
 	Goal = GOAL_PURSUE;

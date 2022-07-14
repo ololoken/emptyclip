@@ -19,4 +19,5 @@ tutorial_swap	Press [c red]W[c white] to switch weapons.
 tutorial_map	Hold [c red]Tab[c white] to view the map.\n\nYellow icons are keys.
 tutorial_flashlight	Press [c red]V[c white] to turn your flashlight on.
 tutorial_boss	Kill the boss to get the last key!
+mansion_tree	A nearby tree falls...
 mansion_switches	Find the switches to lower the gates.
