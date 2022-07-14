@@ -31,7 +31,8 @@ const glm::vec2 MONSTER_WEAPONOFFSET = glm::vec2(32.0f / 64.0f - 0.5f, -0.5f);
 _Monster::_Monster(const _ObjectTemplate &MonsterTemplate) :
 	_Entity(MonsterTemplate),
 	Player(nullptr),
-	ItemDrop(nullptr) {
+	ItemDrop(nullptr),
+	ReturnPosition(0.0f) {
 
 	// Set stats
 	MainWeaponType = Template.Attributes.at("weapon_type").Int;
@@ -63,6 +64,7 @@ _Monster::_Monster(const _ObjectTemplate &MonsterTemplate) :
 	AttacksMade = 0;
 	StaticTimer = 0.0;
 	ReactionTimer = 0.0;
+	ReturnTimer = 0.0;
 	GenerateReactionTime();
 }
 
@@ -79,6 +81,16 @@ void _Monster::Update(double FrameTime) {
 		return;
 
 	StaticTimer += FrameTime;
+
+	// Handle returning to original position
+	if(ReturnTimer > 0.0) {
+		ReturnTimer -= FrameTime;
+		if(ReturnTimer <= 0.0) {
+			ReturnTimer = 0.0;
+			Goal = GOAL_PURSUE;
+			SetTarget(ReturnPosition);
+		}
+	}
 
 	// Update animation
 	UpdateAnimation(FrameTime);
@@ -116,9 +128,12 @@ void _Monster::Update(double FrameTime) {
 
 	// Check for reaching target
 	float TargetDistanceSquared = glm::distance2(Position, TargetPosition);
-	if(TargetDistanceSquared <= Radius * Radius) {
+	if(TargetDistanceSquared <= Radius * Radius * 1.1f) {
+		if(MoveState != MOVE_NONE)
+			GenerateReactionTime();
+
 		MoveState = MOVE_NONE;
-		GenerateReactionTime();
+		Goal = GOAL_PURSUE;
 	}
 
 	// Check for attack range
@@ -149,7 +164,14 @@ void _Monster::OnAttack(_Entity *Victim, const _Hit &Hit) {
 	if(AIType == AI_HITANDRUN && AttacksMade >= Template.Attributes.at("ai_attacks").Int) {
 		AttacksMade = 0;
 		Goal = GOAL_RETREAT;
-		SetTarget(glm::normalize(Position - Player->Position) * AI_RETREAT_DISTANCE);
+		ReturnPosition = Position;
+		ReturnTimer = AI_RETREAT_TIME;
+
+		// Ray cast away from player
+		std::vector<_Hit> Hits;
+		Map->CheckBulletCollisions(Position, glm::normalize(Position - Player->Position), Hits, GRID_MONSTER, true, 1, _Tile::ENTITY);
+		if(Hits.size())
+			SetTarget(Hits.front().Position);
 	}
 }
 

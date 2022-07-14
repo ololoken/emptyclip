@@ -851,7 +851,7 @@ void _Map::GetAdjacentTile(const glm::vec2 &Position, float Direction, glm::ivec
 }
 
 // Checks bullet collisions with objects and walls
-void _Map::CheckBulletCollisions(const glm::vec2 &Position, const glm::vec2 &Direction, std::vector<_Hit> &Hits, int GridType, bool CheckObjects, int Penetration) const {
+void _Map::CheckBulletCollisions(const glm::vec2 &Position, const glm::vec2 &Direction, std::vector<_Hit> &Hits, int GridType, bool CheckObjects, int Penetration, int CollisionFlag) const {
 	if(!Data)
 		throw std::runtime_error("Tile data uninitialized!");
 
@@ -892,7 +892,7 @@ void _Map::CheckBulletCollisions(const glm::vec2 &Position, const glm::vec2 &Dir
 	// Traverse tiles
 	bool EndedOnX = false;
 	std::unordered_map<_Entity *, int> HitObjects(100);
-	while(TileTracer.x >= 0 && TileTracer.y >= 0 && TileTracer.x < Size.x && TileTracer.y < Size.y && CheckCollisionFlag(TileTracer, _Tile::BULLET)) {
+	while(TileTracer.x >= 0 && TileTracer.y >= 0 && TileTracer.x < Size.x && TileTracer.y < Size.y && CheckCollisionFlag(TileTracer, CollisionFlag)) {
 
 		// Check for object intersections
 		_Hit Hit(HIT_OBJECT);
@@ -994,12 +994,12 @@ bool _Map::IsVisible(const glm::vec2 &Start, const glm::vec2 &End, int CheckFlag
 	glm::ivec2 StartTile = GetValidCoord(glm::ivec2(Start));
 	glm::ivec2 EndTile = GetValidCoord(glm::ivec2(End));
 
-	// Get direction
-	glm::vec2 Direction = End - Start;
-
 	// Check degenerate cases
 	if(!CheckCollisionFlag(StartTile, CheckFlag) || !CheckCollisionFlag(EndTile, CheckFlag))
 		return false;
+
+	// Get direction
+	glm::vec2 Direction = End - Start;
 
 	// Only need to check vertical tiles
 	if(StartTile.x == EndTile.x) {
@@ -1021,6 +1021,7 @@ bool _Map::IsVisible(const glm::vec2 &Start, const glm::vec2 &End, int CheckFlag
 					return false;
 			}
 		}
+
 		return true;
 	}
 	else if(StartTile.y == EndTile.y) {
@@ -1038,6 +1039,7 @@ bool _Map::IsVisible(const glm::vec2 &Start, const glm::vec2 &End, int CheckFlag
 					return false;
 			}
 		}
+
 		return true;
 	}
 

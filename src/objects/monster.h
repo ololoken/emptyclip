@@ -66,6 +66,7 @@ class _Monster : public _Entity {
 		void SetTarget(const glm::vec2 &NewTargetPosition);
 		void GenerateReactionTime();
 
+		glm::vec2 ReturnPosition;
 		bool LastPlayerVisible;
 		int AttacksMade;
 		int Goal;
@@ -74,4 +75,5 @@ class _Monster : public _Entity {
 		float StopThresholdSquared;
 		double StaticTimer;
 		double ReactionTimer;
+		double ReturnTimer;
 };

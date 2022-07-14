@@ -187,7 +187,7 @@ class _Map {
 		_Object *GetCloseObject(const glm::vec2 &Position, float Radius, int GridType) const;
 		void GetCloseObjects(const glm::vec2 &Position, float Radius, int GridType, std::unordered_map<_Object *, int> &Objects, _Object **ClosestObject) const;
 		void CheckMeleeCollisions(_Entity *Attacker, int GridType, int Penetration, std::vector<_Hit> &Hits) const;
-		void CheckBulletCollisions(const glm::vec2 &Position, const glm::vec2 &Direction, std::vector<_Hit> &Hits, int GridType, bool CheckObjects, int Penetration) const;
+		void CheckBulletCollisions(const glm::vec2 &Position, const glm::vec2 &Direction, std::vector<_Hit> &Hits, int GridType, bool CheckObjects, int Penetration, int CollisionFlag) const;
 		bool IsVisible(const glm::vec2 &Start, const glm::vec2 &End, int CheckFlag) const;
 		bool CanMoveTo(const glm::vec2 &Start, const glm::vec2 &End, const glm::vec2 &Size) const;
 		void AddObjectToGrid(_Object *Object, int Type);

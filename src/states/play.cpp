@@ -562,7 +562,7 @@ void _PlayState::Update(double FrameTime) {
 		}
 		else {
 			std::vector<_Hit> Hits;
-			Map->CheckBulletCollisions(Player->Position, WorldCursor - Player->Position, Hits, 0, false, 1);
+			Map->CheckBulletCollisions(Player->Position, WorldCursor - Player->Position, Hits, 0, false, 1, _Tile::BULLET);
 			if(Hits.size())
 				Camera->UpdatePosition((Hits.front().Position - Player->Position) / Player->ZoomScale);
 		}
@@ -918,7 +918,7 @@ void _PlayState::ResolveAttack(_Entity *Attacker, int GridType) {
 
 			// Check distance to the wall
 			float ShotDirection = Attacker->GenerateShotDirection();
-			Map->CheckBulletCollisions(Attacker->Position, glm::rotate(glm::vec2(0, -1), glm::radians(ShotDirection)), Hits, GridType, true, Attacker->Penetration[Attacker->AttackRequestType]);
+			Map->CheckBulletCollisions(Attacker->Position, glm::rotate(glm::vec2(0, -1), glm::radians(ShotDirection)), Hits, GridType, true, Attacker->Penetration[Attacker->AttackRequestType], _Tile::BULLET);
 
 			// Generate tracer particle
 			_ParticleTemplate *Template = &GameAssets.Particles["tracer0"];
