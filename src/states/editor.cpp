@@ -754,7 +754,7 @@ void _EditorState::Update(double FrameTime) {
 					Block.Rotation = Rotation;
 					Block.ScaleX = ScaleX;
 					Block.Wall = (EditLayer == MAPLAYER_WALL);
-					Block.Walkable = Walkable;
+					Block.Walkable = Walkable || (EditLayer == MAPLAYER_FORE);
 
 					Map->AddBlock(EditLayer, Block);
 				}
@@ -1376,22 +1376,22 @@ void _EditorState::DrawBrush() {
 // Draw tiles for an event
 void _EditorState::DrawEventTiles(_Event *Event, const glm::vec4 &Color) {
 	const std::vector<_EventTile> &Tiles = Event->Tiles;
-
 	for(size_t i = 0; i < Tiles.size(); i++) {
 		ae::Graphics.SetColor(Color);
 		ae::Graphics.DrawRectangle3D(glm::vec2(Tiles[i].Coord.x + 0.2f, Tiles[i].Coord.y + 0.2f), glm::vec2(Tiles[i].Coord.x + 0.8f, Tiles[i].Coord.y + 0.8f), false);
 
-		if(Tiles[i].BlockID != -1) {
-			if(SelectedEvent->Type == EVENT_ENABLE) {
-				const _Event *Event = Map->Events[Tiles[i].BlockID];
-				ae::Graphics.SetColor(COLOR_YELLOW);
-				ae::Graphics.DrawRectangle3D(glm::vec2(Event->Start.x, Event->Start.y), glm::vec2(Event->End.x + 1.0f, Event->End.y + 1.0f), false);
-			}
-			else {
-				const _Block *Block = Map->GetBlock(Tiles[i].Layer, Tiles[i].BlockID);
-				ae::Graphics.SetColor(COLOR_GREEN);
-				ae::Graphics.DrawRectangle3D(glm::vec2(Block->Start.x, Block->Start.y), glm::vec2(Block->End.x + 1.0f, Block->End.y + 1.0f), false);
-			}
+		if(Tiles[i].BlockID == -1)
+			continue;
+
+		if(SelectedEvent->Type == EVENT_ENABLE) {
+			const _Event *Event = Map->Events[Tiles[i].BlockID];
+			ae::Graphics.SetColor(COLOR_YELLOW);
+			ae::Graphics.DrawRectangle3D(glm::vec2(Event->Start.x, Event->Start.y), glm::vec2(Event->End.x + 1.0f, Event->End.y + 1.0f), false);
+		}
+		else {
+			const _Block *Block = Map->GetBlock(Tiles[i].Layer, Tiles[i].BlockID);
+			ae::Graphics.SetColor(COLOR_GREEN);
+			ae::Graphics.DrawRectangle3D(glm::vec2(Block->Start.x, Block->Start.y), glm::vec2(Block->End.x + 1.0f, Block->End.y + 1.0f), false);
 		}
 	}
 }
@@ -1723,9 +1723,9 @@ bool _EditorState::ObjectInSelectedList(_ObjectSpawn *Object) {
 // Executes the walkable command
 void _EditorState::ExecuteWalkable() {
 	if(BlockSelected())
-		SelectedBlock->Walkable = !SelectedBlock->Walkable;
+		SelectedBlock->Walkable = !SelectedBlock->Walkable || (EditLayer == MAPLAYER_FORE);
 	else
-		Walkable = !Walkable;
+		Walkable = !Walkable || (EditLayer == MAPLAYER_FORE);
 }
 
 // Executes the rotate command

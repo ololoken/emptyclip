@@ -247,8 +247,8 @@ void _Map::InitializeTiles() {
 		}
 	}
 
-	// Loop through layers and fill out walkable field
-	for(int l = 0; l < MAPLAYER_FORE; l++) {
+	// Loop through floor layers and fill out walkable field
+	for(int l = 0; l < MAPLAYER_FLAT; l++) {
 		for(size_t k = 0; k < Blocks[l].size(); k++) {
 			for(int i = Blocks[l][k].Start.x; i <= Blocks[l][k].End.x; i++) {
 				for(int j = Blocks[l][k].Start.y; j <= Blocks[l][k].End.y; j++) {
@@ -262,15 +262,30 @@ void _Map::InitializeTiles() {
 	}
 
 	// Loop through walls
-	for(size_t k = 0; k < Blocks[5].size(); k++) {
-		for(int i = Blocks[5][k].Start.x; i <= Blocks[5][k].End.x; i++) {
-			for(int j = Blocks[5][k].Start.y; j <= Blocks[5][k].End.y; j++) {
-				if(Blocks[5][k].Wall) {
-					if(Blocks[5][k].Walkable)
+	for(size_t k = 0; k < Blocks[MAPLAYER_WALL].size(); k++) {
+		for(int i = Blocks[MAPLAYER_WALL][k].Start.x; i <= Blocks[MAPLAYER_WALL][k].End.x; i++) {
+			for(int j = Blocks[MAPLAYER_WALL][k].Start.y; j <= Blocks[MAPLAYER_WALL][k].End.y; j++) {
+				if(Blocks[MAPLAYER_WALL][k].Wall) {
+					if(Blocks[MAPLAYER_WALL][k].Walkable)
 						Data[i][j].Collision &= ~_Tile::ENTITY & ~_Tile::BULLET;
 					else
 						Data[i][j].Collision |= _Tile::ENTITY | _Tile::BULLET;
 				}
+			}
+		}
+	}
+
+	// Flat layer overrides existing collision flags
+	for(size_t k = 0; k < Blocks[MAPLAYER_FLAT].size(); k++) {
+		for(int i = Blocks[MAPLAYER_FLAT][k].Start.x; i <= Blocks[MAPLAYER_FLAT][k].End.x; i++) {
+			for(int j = Blocks[MAPLAYER_FLAT][k].Start.y; j <= Blocks[MAPLAYER_FLAT][k].End.y; j++) {
+				if(Blocks[MAPLAYER_FLAT][k].Walkable)
+					Data[i][j].Collision = 0;
+				else
+					Data[i][j].Collision = _Tile::ENTITY;
+
+				// Don't allow changing of bullet flags
+				Data[i][j].CollisionChangeMask &= ~_Tile::BULLET;
 			}
 		}
 	}
@@ -1425,7 +1440,9 @@ void _Map::ChangeMapState(const _Event *Event) {
 	// Change all the tiles
 	for(size_t i = StartIndex; i < Tiles.size(); i++) {
 		_Tile *Tile = &Data[Tiles[i].Coord.x][Tiles[i].Coord.y];
-		Tile->Collision ^= _Tile::ENTITY;
+
+		// Change flags only allowed by the change mask
+		Tile->Collision ^= Tile->CollisionChangeMask & (_Tile::ENTITY | _Tile::BULLET);
 
 		// Switch textures
 		SwapBlockTextures(Tiles[i].Layer, Tiles[i].BlockID);

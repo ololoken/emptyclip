@@ -88,7 +88,7 @@ struct _Tile {
 		BULLET = 2,
 	};
 
-	_Tile() : Collision(0) { }
+	_Tile() : Collision(0), CollisionChangeMask(~0) { }
 
 	bool CanWalk() { return !(Collision & ENTITY); }
 	bool CanShoot() { return !(Collision & BULLET); }
@@ -97,6 +97,7 @@ struct _Tile {
 	std::vector<_Event *> Events;
 	std::vector<_Particle *> Particles;
 	int Collision;
+	int CollisionChangeMask;
 };
 
 // Holds data for a tile bound
