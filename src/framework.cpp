@@ -72,9 +72,11 @@ void _Framework::Init(int ArgumentCount, char **Arguments) {
 			Fullscreen = false;
 		}
 		else if(Token == "-editor") {
-			State = &EditorState;
-			if(TokensRemaining && Arguments[i+1][0] != '-')
-				EditorState.SetMapFilename(Arguments[++i]);
+			if(ENABLE_EDITOR) {
+				State = &EditorState;
+				if(TokensRemaining && Arguments[i+1][0] != '-')
+					EditorState.SetMapFilename(Arguments[++i]);
+			}
 		}
 		else if(Token == "-convert" && TokensRemaining > 0) {
 			State = &ConvertState;

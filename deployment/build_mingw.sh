@@ -29,7 +29,7 @@ build() {
 	builddir="$projectdir/build/mingw$bits"
 	mkdir -p "$builddir"
 	pushd "$builddir" || exit
-	cmake -GNinja -DCMAKE_TOOLCHAIN_FILE="../../cmake/mingw${bits}.cmake" -DCMAKE_BUILD_TYPE=Release ../../
+	cmake -GNinja -DDISABLE_EDITOR="${DISABLE_EDITOR}" -DCMAKE_TOOLCHAIN_FILE="../../cmake/mingw${bits}.cmake" -DCMAKE_BUILD_TYPE=Release ../../
 
 	# build
 	if ! ninja; then
@@ -58,7 +58,7 @@ build() {
 
 	# copy files
 	cp "${projectdir}"/{README,CHANGELOG} "${archive_base}"/
-	echo "${project}.exe -editor" > "${archive_base}"/run_editor.bat
+	#echo "${project}.exe -editor" > "${archive_base}"/run_editor.bat
 	echo "${project}.exe -level bench" > "${archive_base}"/run_bench.bat
 	#chmod +x "${archive_base}"/*.bat
 

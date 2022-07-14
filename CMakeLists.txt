@@ -21,6 +21,14 @@ if(WIN32)
 	set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,-subsystem,windows")
 endif()
 
+# enable editor
+set("DISABLE_EDITOR=${DISABLE_EDITOR}")
+if(DISABLE_EDITOR)
+	add_definitions("-DENABLE_EDITOR=0")
+else()
+	add_definitions("-DENABLE_EDITOR=1")
+endif()
+
 # compiler flags
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Wno-unused-result -Wno-switch -Wno-unused-parameter -pedantic -std=c++17")
 if("${CMAKE_HOST_SYSTEM_PROCESSOR}" STREQUAL "x86_64")
