@@ -683,6 +683,11 @@ void _HUD::DrawCharacterScreen() {
 	FormatTime(Buffer, Player->PlayTime);
 	DrawAttribute("Play Time", Buffer, DrawPosition);
 
+	if(Player->Progression) {
+		Buffer << Player->Progression;
+		DrawAttribute("Progression", Buffer, DrawPosition);
+	}
+
 	// Draw inventory
 	bool DrawLevel = ae::Input.ModKeyDown(KMOD_ALT);
 	for(int i = INVENTORY_MAINHAND; i < INVENTORY_BAGEND; i++) {

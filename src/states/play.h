@@ -95,7 +95,7 @@ class _PlayState : public ae::_State {
 		void HandlePickup();
 		void PlayerDied();
 
-		void SpawnObject(_ObjectSpawn *ObjectSpawn, bool GenerateStats=false);
+		void SpawnObject(_ObjectSpawn *ObjectSpawn, bool GenerateStats=false, int AddedLevel=0);
 		void UseObject(_Item *Item);
 		void PickupObject(_Item *Item, int &AmountAdded);
 		void CreateItemDrop(const _Entity *Entity, float DropRate);

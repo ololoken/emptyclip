@@ -116,7 +116,7 @@ void _PlayState::Init() {
 
 	// Spawn objects
 	for(const auto &ObjectSpawn : Map->ObjectSpawns)
-		SpawnObject(ObjectSpawn);
+		SpawnObject(ObjectSpawn, false, Player->GetAddedLevel());
 
 	// Initialize objects
 	HUD = new _HUD(Player);
@@ -1276,7 +1276,7 @@ void _PlayState::CheckEvents(const _Entity *Entity) {
 				// End of the game
 				if(Level == "") {
 					Level = GAME_FIRSTLEVEL;
-					Player->Progression += GAME_WIN_PROGRESSION_POINTS;
+					Player->Progression++;
 					Framework.ChangeState(&NullState);
 				}
 				// Next level
@@ -1292,7 +1292,7 @@ void _PlayState::CheckEvents(const _Entity *Entity) {
 			case EVENT_TEXT: {
 				bool ShowMessage = true;
 				bool IsTutorial = Event->ItemID.find("tutorial_") == 0;
-				if(IsTutorial && !Config.Tutorial)
+				if(IsTutorial && (!Config.Tutorial || Player->Progression))
 					ShowMessage = false;
 
 				if(ShowMessage) {
@@ -1374,7 +1374,7 @@ void _PlayState::UpdateEvents(double FrameTime) {
 				for(size_t i = 0; i < Tiles.size(); i++) {
 					Position.x = Tiles[i].Coord.x + 0.5f;
 					Position.y = Tiles[i].Coord.y + 0.5f;
-					_Monster *Monster = Stats.CreateMonster(Event->MonsterID, Event->SpawnLevel, Position);
+					_Monster *Monster = Stats.CreateMonster(Event->MonsterID, Event->SpawnLevel + Player->GetAddedLevel(), Position);
 					Monster->Player = Player;
 					AddMonster(Monster);
 					Particles->Create(_ParticleSpawn(GameAssets.GetParticleTemplate(Event->ParticleID), glm::vec2(0), Position, OBJECT_Z, 0));
@@ -1438,9 +1438,9 @@ void _PlayState::DeleteMonsters() {
 }
 
 // Spawn an object in the map
-void _PlayState::SpawnObject(_ObjectSpawn *ObjectSpawn, bool GenerateStats) {
+void _PlayState::SpawnObject(_ObjectSpawn *ObjectSpawn, bool GenerateStats, int AddedLevel) {
 	if(ObjectSpawn->Type == _Object::MONSTER) {
-		_Monster *Monster = Stats.CreateMonster(ObjectSpawn->ID, ObjectSpawn->Level, ObjectSpawn->Position);
+		_Monster *Monster = Stats.CreateMonster(ObjectSpawn->ID, ObjectSpawn->Level + Player->GetAddedLevel(), ObjectSpawn->Position);
 		Monster->Player = Player;
 		AddMonster(Monster);
 		if(Monster->IsCrate())
@@ -1448,9 +1448,8 @@ void _PlayState::SpawnObject(_ObjectSpawn *ObjectSpawn, bool GenerateStats) {
 		else
 			Map->Monsters++;
 	}
-	else {
-		Map->AddItem(Stats.CreateItem(ObjectSpawn->ID, ObjectSpawn->Level, 0, 1, ObjectSpawn->Position, GenerateStats));
-	}
+	else
+		Map->AddItem(Stats.CreateItem(ObjectSpawn->ID, ObjectSpawn->Level + AddedLevel, 0, 1, ObjectSpawn->Position, GenerateStats));
 }
 
 // Adds a monster to the monster list and collision grid

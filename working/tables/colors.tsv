@@ -8,6 +8,9 @@ brown	0.63	0.34	0.16	1
 purple	0.54	0.18	0.63	1
 dark	0.3	0.3	0.3	1
 black	0	0	0	1
+gold	0.76	0.73	0.173	1
+silver	0.75	0.84	0.91	1
+gray	0.6	0.6	0.6	1
 menu_selected	1	0.05	0.05	0.2
 menu_button	0.3	0.03	0.03	0.8
 menu_button_disabled	0.02	0.02	0.02	0.8

@@ -1078,6 +1078,11 @@ void _Player::Respawn() {
 	InvulnerableTimer = GAME_INVULNERABLE_TIME;
 }
 
+// Get added monster/item level based on progression
+int _Player::GetAddedLevel() const {
+	return Progression * GAME_PROGRESSION_DIFFICULTY;
+}
+
 // Sets the weapon animation for the player
 void _Player::ResetWeaponAnimation() {
 	if(IsDying())

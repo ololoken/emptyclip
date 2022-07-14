@@ -213,34 +213,34 @@
 	<element id="element_menu_singleplayer" size_x="800" size_y="984">
 		<element id="label_menu_singleplayer_title" font="hud_large" text="Characters" offset_y="-350"/>
 		<element id="button_singleplayer_slot0" style="style_menu_box" hover_style="style_menu_hover" offset_x="-400" offset_y="-150" size_x="128" size_y="128" clickable="true" index="0">
-			<element id="label_menu_singleplayer_slot0_text" font="hud_medium" text="Empty Slot" offset_y="160" alignment_y="3"/>
+			<element id="label_menu_singleplayer_slot0_text" font="hud_medium" text="Empty Slot" offset_y="160" alignment_y="3" format="true"/>
 		</element>
 		<element id="button_singleplayer_slot1" style="style_menu_box" hover_style="style_menu_hover" offset_x="-200" offset_y="-150" size_x="128" size_y="128" clickable="true" index="1">
-			<element id="label_menu_singleplayer_slot1_text" font="hud_medium" text="Empty Slot" offset_y="160" alignment_y="3"/>
+			<element id="label_menu_singleplayer_slot1_text" font="hud_medium" text="Empty Slot" offset_y="160" alignment_y="3" format="true"/>
 		</element>
 		<element id="button_singleplayer_slot2" style="style_menu_box" hover_style="style_menu_hover" offset_y="-150" size_x="128" size_y="128" clickable="true" index="2">
-			<element id="label_menu_singleplayer_slot2_text" font="hud_medium" text="Empty Slot" offset_y="160" alignment_y="3"/>
+			<element id="label_menu_singleplayer_slot2_text" font="hud_medium" text="Empty Slot" offset_y="160" alignment_y="3" format="true"/>
 		</element>
 		<element id="button_singleplayer_slot3" style="style_menu_box" hover_style="style_menu_hover" offset_x="200" offset_y="-150" size_x="128" size_y="128" clickable="true" index="3">
-			<element id="label_menu_singleplayer_slot3_text" font="hud_medium" text="Empty Slot" offset_y="160" alignment_y="3"/>
+			<element id="label_menu_singleplayer_slot3_text" font="hud_medium" text="Empty Slot" offset_y="160" alignment_y="3" format="true"/>
 		</element>
 		<element id="button_singleplayer_slot4" style="style_menu_box" hover_style="style_menu_hover" offset_x="400" offset_y="-150" size_x="128" size_y="128" clickable="true" index="4">
-			<element id="label_menu_singleplayer_slot4_text" font="hud_medium" text="Empty Slot" offset_y="160" alignment_y="3"/>
+			<element id="label_menu_singleplayer_slot4_text" font="hud_medium" text="Empty Slot" offset_y="160" alignment_y="3" format="true"/>
 		</element>
 		<element id="button_singleplayer_slot5" style="style_menu_box" hover_style="style_menu_hover" offset_x="-400" offset_y="50" size_x="128" size_y="128" clickable="true" index="5">
-			<element id="label_menu_singleplayer_slot5_text" font="hud_medium" text="Empty Slot" offset_y="160" alignment_y="3"/>
+			<element id="label_menu_singleplayer_slot5_text" font="hud_medium" text="Empty Slot" offset_y="160" alignment_y="3" format="true"/>
 		</element>
 		<element id="button_singleplayer_slot6" style="style_menu_box" hover_style="style_menu_hover" offset_x="-200" offset_y="50" size_x="128" size_y="128" clickable="true" index="6">
-			<element id="label_menu_singleplayer_slot6_text" font="hud_medium" text="Empty Slot" offset_y="160" alignment_y="3"/>
+			<element id="label_menu_singleplayer_slot6_text" font="hud_medium" text="Empty Slot" offset_y="160" alignment_y="3" format="true"/>
 		</element>
 		<element id="button_singleplayer_slot7" style="style_menu_box" hover_style="style_menu_hover" offset_y="50" size_x="128" size_y="128" clickable="true" index="7">
-			<element id="label_menu_singleplayer_slot7_text" font="hud_medium" text="Empty Slot" offset_y="160" alignment_y="3"/>
+			<element id="label_menu_singleplayer_slot7_text" font="hud_medium" text="Empty Slot" offset_y="160" alignment_y="3" format="true"/>
 		</element>
 		<element id="button_singleplayer_slot8" style="style_menu_box" hover_style="style_menu_hover" offset_x="200" offset_y="50" size_x="128" size_y="128" clickable="true" index="8">
-			<element id="label_menu_singleplayer_slot8_text" font="hud_medium" text="Empty Slot" offset_y="160" alignment_y="3"/>
+			<element id="label_menu_singleplayer_slot8_text" font="hud_medium" text="Empty Slot" offset_y="160" alignment_y="3" format="true"/>
 		</element>
 		<element id="button_singleplayer_slot9" style="style_menu_box" hover_style="style_menu_hover" offset_x="400" offset_y="50" size_x="128" size_y="128" clickable="true" index="9">
-			<element id="label_menu_singleplayer_slot9_text" font="hud_medium" text="Empty Slot" offset_y="160" alignment_y="3"/>
+			<element id="label_menu_singleplayer_slot9_text" font="hud_medium" text="Empty Slot" offset_y="160" alignment_y="3" format="true"/>
 		</element>
 		<element id="button_singleplayer_delete" style="style_menu_button" hover_style="style_menu_button_hover" offset_x="-240" offset_y="300" size_x="200" size_y="66" clickable="true">
 			<element id="label_singleplayer_defaults" font="menu_buttons" text="Delete" offset_y="44" alignment_y="3"/>

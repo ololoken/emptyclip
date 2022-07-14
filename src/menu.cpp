@@ -579,6 +579,8 @@ void _Menu::RefreshSaveSlots() {
 			Player->SetLegAnimationPlayMode(ae::_Animation::PLAYING);
 			Player->Animation->Play(0);
 			SlotLabel->Text = Player->Name;
+			if(Player->Progression)
+				SlotLabel->Text += " ([c gold]" + std::to_string(Player->Progression) + "[c white])";
 		}
 		else
 			SlotLabel->Text = "Empty Slot";
