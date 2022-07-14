@@ -124,6 +124,12 @@ void _Monster::Update(double FrameTime) {
 		MoveState = MOVE_NONE;
 		GenerateReactionTime();
 	}
+
+	// Set return position if monster can't see player anymore
+	if(PlayerVisible != LastPlayerVisible && !PlayerVisible && Goal == GOAL_PURSUE) {
+		ReturnPosition = Position;
+		ReturnTimer = AI_RETURN_TIME;
+	}
 	LastPlayerVisible = PlayerVisible;
 
 	// Check for reaching target
