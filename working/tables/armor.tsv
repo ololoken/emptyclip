@@ -1,4 +1,4 @@
 id	name	icon_id	damage_block	damage_block_level	damage_resist	damage_resist_level	max_ammo	max_ammo_level	move_speed	move_speed_level	mods	mods_level
-armor_light	Light Armor	textures/items/armor_light.png	0	1	0	0	8	2	9.5	0.5	1	0.25
-armor_medium	Medium Armor	textures/items/armor_medium.png	0	2	4	1	0	0	-9.5	-0.5	1	0.25
-armor_heavy	Heavy Armor	textures/items/armor_heavy.png	0	5	8	2	-9.5	-0.5	-18	-2	1	0.25
+armor_light	Light Armor	textures/items/armor_light.png	1	1	0	0	10	2	10	0.5	0.5	0.183673469387755
+armor_medium	Medium Armor	textures/items/armor_medium.png	2	2	5	1	0	0	-10	-0.5	0.5	0.183673469387755
+armor_heavy	Heavy Armor	textures/items/armor_heavy.png	5	5	10	2	-10	-0.5	-20	-2	0.5	0.183673469387755

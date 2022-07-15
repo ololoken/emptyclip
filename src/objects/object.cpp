@@ -65,7 +65,7 @@ void _Object::SetAttributeSpread(const std::string &AttributeName, float Multipl
 
 // Get an attribute value given a level and multiplier
 float _Object::GetAttributeLevel(const std::string &AttributeName, float Multiplier) {
-	float LevelValue = Level > 0 ? Template.Attributes.at(AttributeName + "_level").Float * Level : 0;
+	float LevelValue = Level > 0 ? Template.Attributes.at(AttributeName + "_level").Float * (Level - 1) : 0;
 	float Value = Template.Attributes.at(AttributeName).Float + LevelValue;
 	if(Value < 0)
 		return Value / Multiplier;
@@ -75,7 +75,7 @@ float _Object::GetAttributeLevel(const std::string &AttributeName, float Multipl
 
 // Get two range attributes given a level, spread and multiplier
 void _Object::GetAttributeRange(const std::string &AttributeName, float Multiplier, int &Min, int &Max) {
-	float LevelValue = Level > 0 ? Template.Attributes.at(AttributeName + "_level").Float * Level : 0;
+	float LevelValue = Level > 0 ? Template.Attributes.at(AttributeName + "_level").Float * (Level - 1) : 0;
 	int Value = (Template.Attributes.at(AttributeName).Float + LevelValue) * Multiplier + 0.5f;
 	int ValueRange = Value * Template.Attributes.at(AttributeName + "_spread").Float + 0.5f;
 	Min = Value - ValueRange;
@@ -84,7 +84,7 @@ void _Object::GetAttributeRange(const std::string &AttributeName, float Multipli
 
 // Set the max number of mods based on level
 void _Object::SetMaxMods(bool RandomStats) {
-	Attributes["max_mods"].Int = Template.Attributes.at("mods").Float + Template.Attributes.at("mods_level").Float * Level;
+	Attributes["max_mods"].Int = std::max(1, (int)(Template.Attributes.at("mods").Float + Template.Attributes.at("mods_level").Float * (Level - 1) + 0.5f));
 
 	if(RandomStats)
 		Attributes["max_mods"].Int += ae::GetRandomInt(0, 1);
