@@ -1287,6 +1287,7 @@ void _PlayState::CheckEvents(const _Entity *Entity) {
 				else
 					Framework.ChangeState(&PlayState);
 
+				Player->LevelTime = 0;
 				Player->CheckpointIndex = Event->Level;
 				Player->MapID = Level;
 				if(Map->MapType == MAPTYPE_CAMPAIGN)
