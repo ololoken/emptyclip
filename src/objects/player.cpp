@@ -1072,7 +1072,9 @@ void _Player::Respawn() {
 	RecalculateStats();
 	ResetWeaponAnimation();
 	StopAudio();
+	Map->RemoveObjectFromGrid(this, GRID_PLAYER);
 	SetPosition(Map->GetStartingPositionByCheckpoint(CheckpointIndex));
+	Map->AddObjectToGrid(this, GRID_PLAYER);
 	TileChanged = true;
 
 	InvulnerableTimer = GAME_INVULNERABLE_TIME;
