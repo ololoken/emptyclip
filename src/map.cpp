@@ -532,6 +532,8 @@ bool _Map::CheckAABBCollision(const glm::vec2 &Position, float Radius, const flo
 	bool Touching = DistanceSquared < Radius * Radius;
 
 	// Push object out
+	Hit.Push.x = 0.0f;
+	Hit.Push.y = 0.0f;
 	if(Touching && Resolve) {
 
 		// Check if object is inside the AABB
