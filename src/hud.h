@@ -66,6 +66,7 @@ class _HUD {
 			LABEL_LEVELKILLS,
 			LABEL_LEVELCRATES,
 			LABEL_LEVELSECRETS,
+			LABEL_LEVELTIME,
 			LABEL_ENEMYNAME,
 			LABEL_ENEMYHEALTH,
 			LABEL_INDICATOR,
@@ -128,9 +129,10 @@ class _HUD {
 		void DrawHUDWeapon(const _Item *Weapon, ae::_Element *Element, ae::_Element *Image, ae::_Element *Label);
 		void DrawItemCount(_Item *Item, const glm::vec2 &Position);
 		void DrawItemLevel(_Item *Item, const glm::vec2 &Position);
-		void DrawAttribute(const std::string &Label, std::stringstream &Buffer, glm::vec2 &DrawPosition) const;
+		void DrawAttribute(const std::string &Label, std::ostringstream &Buffer, glm::vec2 &DrawPosition) const;
 		void UpdateSkillTooltip(int Skill, const glm::vec2 &DrawPosition);
-		void FormatTime(std::stringstream &Buffer, int64_t Time);
+		void FormatTime(char *Buffer, double Time);
+		void FormatTimeHMS(std::ostringstream &Buffer, int64_t Time);
 
 		// State
 		_Player *Player;

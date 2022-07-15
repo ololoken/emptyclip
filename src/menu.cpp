@@ -179,7 +179,7 @@ void _Menu::InitNewPlayer() {
 
 	// Deselect previous elements
 	for(int i = 0; i < COLOR_COUNT; i++) {
-		std::stringstream Buffer;
+		std::ostringstream Buffer;
 		Buffer << PlayerColorButtonPrefix << i;
 
 		ColorButtons[i] = ae::Assets.Elements[Buffer.str()];
@@ -208,7 +208,7 @@ void _Menu::LaunchGame() {
 
 // Update option elements
 void _Menu::UpdateOptions() {
-	std::stringstream Buffer;
+	std::ostringstream Buffer;
 	Buffer << std::fixed << std::setprecision(2);
 
 	// Set fullscreen
@@ -238,7 +238,7 @@ void _Menu::UpdateVolume() {
 	if(SoundButton->PressedElement) {
 
 		// Convert slider percent to number
-		std::stringstream Buffer;
+		std::ostringstream Buffer;
 		Buffer << std::fixed << std::setprecision(2) << SoundButton->GetOffsetPercent().x;
 		SoundVolume->Text = Buffer.str();
 		Buffer.str("");
@@ -568,7 +568,7 @@ void _Menu::RefreshSaveSlots() {
 
 	// Load save slots
 	for(int i = 0; i <= _Save::SLOT_9; i++) {
-		std::stringstream Buffer;
+		std::ostringstream Buffer;
 		Buffer << "label_menu_singleplayer_slot" << i << "_text";
 		ae::_Element *SlotLabel = ae::Assets.Elements[Buffer.str()];
 		Buffer.str("");

@@ -44,6 +44,7 @@ enum SaveChunkTypes {
 	CHUNK_AMMO,
 	CHUNK_KEYS,
 	CHUNK_DEATHS,
+	CHUNK_PROGRESSIONTIME,
 };
 
 // Write a chunk to a stream
@@ -71,7 +72,7 @@ std::string _Save::GetConfigPath(size_t Slot) {
 	if(Slot >= SLOT_COUNT)
 		return "";
 
-	std::stringstream Buffer;
+	std::ostringstream Buffer;
 	Buffer << Config.ConfigPath << (Slot + 1) << ".save";
 	return Buffer.str();
 }
@@ -201,6 +202,9 @@ void _Save::LoadPlayer(_Player *Player) {
 			case CHUNK_PLAYTIME: {
 				File.read((char *)&Player->PlayTime, sizeof(Player->PlayTime));
 			} break;
+			case CHUNK_PROGRESSIONTIME: {
+				File.read((char *)&Player->ProgressionTime, sizeof(Player->ProgressionTime));
+			} break;
 			case CHUNK_KILLS:
 				File.read((char *)&Player->Kills, sizeof(Player->Kills));
 			break;
@@ -262,6 +266,7 @@ void _Save::SavePlayer(_Player *Player) {
 	WriteChunk(File, CHUNK_GOLD, (char *)&Player->Gold, sizeof(Player->Gold));
 	WriteChunk(File, CHUNK_HEALTH, (char *)&Player->Health, sizeof(Player->Health));
 	WriteChunk(File, CHUNK_PLAYTIME, (char *)&Player->PlayTime, sizeof(Player->PlayTime));
+	WriteChunk(File, CHUNK_PROGRESSIONTIME, (char *)&Player->ProgressionTime, sizeof(Player->ProgressionTime));
 	WriteChunk(File, CHUNK_KILLS, (char *)&Player->Kills, sizeof(Player->Kills));
 	WriteChunk(File, CHUNK_DEATHS, (char *)&Player->Deaths, sizeof(Player->Deaths));
 	WriteChunk(File, CHUNK_SKILLS, (char *)&Player->Skills, sizeof(Player->Skills));

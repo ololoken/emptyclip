@@ -158,6 +158,8 @@ class _Player : public _Entity {
 		bool Flashlight;
 
 		// Character information
+		double LevelTime;
+		double ProgressionTime;
 		double PlayTime;
 		int Deaths;
 		int Kills;

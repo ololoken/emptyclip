@@ -198,7 +198,7 @@ void _Config::Load() {
 			int InputType;
 			int Input;
 			char Dummy;
-			std::stringstream Stream(Iterator);
+			std::istringstream Stream(Iterator);
 			Stream >> Rank >> Dummy >> InputType >> Dummy >> Input;
 			ae::Actions.AddInputMap(Rank, InputType, Input, i, 1.0f, -1.0f, false);
 		}

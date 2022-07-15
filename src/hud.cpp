@@ -96,6 +96,7 @@ _HUD::_HUD(_Player *Player) :
 	Elements[LABEL_LEVELKILLS] = ae::Assets.Elements["label_hud_level_kills"];
 	Elements[LABEL_LEVELCRATES] = ae::Assets.Elements["label_hud_level_crates"];
 	Elements[LABEL_LEVELSECRETS] = ae::Assets.Elements["label_hud_level_secrets"];
+	Elements[LABEL_LEVELTIME] = ae::Assets.Elements["label_hud_level_time"];
 	Elements[ELEMENT_LEVELINFO]->SetActive(true);
 
 	Elements[ELEMENT_ENEMYINFO] = ae::Assets.Elements["element_hud_enemy_info"];
@@ -407,6 +408,9 @@ void _HUD::Render(const ae::_Camera *Camera, bool FullMap) {
 	Buffer << Secrets[0] << "/" << Secrets[1];
 	Elements[LABEL_LEVELSECRETS]->Text = Buffer.str();
 	Buffer.str("");
+	char TimeString[256];
+	FormatTime(TimeString, Player->LevelTime);
+	Elements[LABEL_LEVELTIME]->Text = TimeString;
 	Elements[ELEMENT_LEVELINFO]->Render();
 
 	// Reload indicator
@@ -600,7 +604,7 @@ void _HUD::DrawCharacterScreen() {
 	Elements[ELEMENT_INVENTORY]->Render();
 
 	// Set skill labels
-	std::stringstream Buffer;
+	std::ostringstream Buffer;
 	Buffer << Player->SkillPointsRemaining;
 	Elements[LABEL_SKILL_REMAINING]->Text = Buffer.str();
 	Buffer.str("");
@@ -680,12 +684,17 @@ void _HUD::DrawCharacterScreen() {
 	Buffer << Player->Deaths;
 	DrawAttribute("Deaths", Buffer, DrawPosition);
 
-	FormatTime(Buffer, Player->PlayTime);
+	FormatTimeHMS(Buffer, Player->PlayTime);
 	DrawAttribute("Play Time", Buffer, DrawPosition);
 
 	if(Player->Progression) {
+		DrawPosition.y += 10 * ae::_Element::GetUIScale();
+
 		Buffer << Player->Progression;
 		DrawAttribute("Progression", Buffer, DrawPosition);
+
+		FormatTimeHMS(Buffer, Player->ProgressionTime);
+		DrawAttribute("Progression Time", Buffer, DrawPosition);
 	}
 
 	// Draw inventory
@@ -727,7 +736,7 @@ void _HUD::DrawCharacterScreen() {
 }
 
 // Draw character stat on character screen
-void _HUD::DrawAttribute(const std::string &Label, std::stringstream &Buffer, glm::vec2 &DrawPosition) const {
+void _HUD::DrawAttribute(const std::string &Label, std::ostringstream &Buffer, glm::vec2 &DrawPosition) const {
 	glm::vec2 DrawOffset(10 * ae::_Element::GetUIScale(), 0);
 	ae::Assets.Fonts["hud_char"]->DrawText(Label, glm::ivec2(DrawPosition), ae::RIGHT_BASELINE);
 	ae::Assets.Fonts["hud_char"]->DrawText(Buffer.str(), glm::ivec2(DrawPosition + DrawOffset), ae::LEFT_BASELINE);
@@ -763,7 +772,8 @@ void _HUD::UpdateSkillTooltip(int Skill, const glm::vec2 &Position) {
 	Elements[ELEMENT_SKILLINFO]->CalculateBounds(false);
 
 	// Get skill description
-	std::ostringstream Buffer, BufferNext;
+	std::ostringstream Buffer;
+	std::ostringstream BufferNext;
 	Buffer << std::setprecision(3);
 	BufferNext << std::setprecision(3);
 	int Level = Player->Skills[Skill];
@@ -876,8 +886,16 @@ void _HUD::ShowMessageBox(const std::string &Message, double Time) {
 	MessageBoxTimer = Time;
 }
 
-// Format time
-void _HUD::FormatTime(std::stringstream &Buffer, int64_t Time) {
+// Format time for elapsed time
+void _HUD::FormatTime(char *Buffer, double Time) {
+	uint32_t Minutes = (uint32_t)(Time) / 60;
+	uint32_t Seconds = (uint32_t)(Time - Minutes * 60);
+	uint32_t Centiseconds = (uint32_t)((Time - (uint32_t)(Time)) * 100);
+	snprintf(Buffer, 255, "%.2d:%.2d.%.2d", Minutes, Seconds, Centiseconds);
+}
+
+// Format time with h m s
+void _HUD::FormatTimeHMS(std::ostringstream &Buffer, int64_t Time) {
 	if(Time < 60)
 		Buffer << Time << "s";
 	else if(Time < 3600)

@@ -93,6 +93,8 @@ void _Player::Reset() {
 	Kills = 0;
 	Deaths = 0;
 	PlayTime = 0;
+	ProgressionTime = 0;
+	LevelTime = 0;
 	Radius = PLAYER_RADIUS;
 	Name = "test";
 	ColorID = "white";
@@ -270,6 +272,8 @@ void _Player::Update(double FrameTime) {
 	_Entity::Update(FrameTime);
 
 	PlayTime += FrameTime;
+	ProgressionTime += FrameTime;
+	LevelTime += FrameTime;
 	WeaponSwitchTimer += FrameTime;
 	ReloadTimer += FrameTime;
 	UseTimer += FrameTime;

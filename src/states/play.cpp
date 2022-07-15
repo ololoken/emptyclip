@@ -813,7 +813,7 @@ void _PlayState::Render(double BlendFactor) {
 	if(DebugMode) {
 		glm::vec2 DrawPosition = glm::vec2(10, 200) * ae::_Element::GetUIScale();
 		glm::vec2 Spacing(0, 16 * ae::_Element::GetUIScale());
-		std::stringstream Buffer;
+		std::ostringstream Buffer;
 		Buffer << ae::Graphics.FramesPerSecond << " FPS";
 		ae::Assets.Fonts["hud_tiny"]->DrawText(Buffer.str(), DrawPosition);
 		Buffer.str("");
@@ -1280,6 +1280,7 @@ void _PlayState::CheckEvents(const _Entity *Entity) {
 				if(Level == "") {
 					Level = GAME_FIRSTLEVEL;
 					Player->Progression++;
+					Player->ProgressionTime = 0;
 					Framework.ChangeState(&NullState);
 				}
 				// Next level

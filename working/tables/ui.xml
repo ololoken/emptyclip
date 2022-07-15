@@ -14,6 +14,7 @@
 		<element id="label_hud_level_secrets_label" font="hud_char" text="Secrets" offset_y="70" alignment_x="2" alignment_y="3">
 			<element id="label_hud_level_secrets" font="hud_char" offset_x="10" alignment_x="0" alignment_y="3"/>
 		</element>
+		<element id="label_hud_level_time" font="hud_char" offset_x="-50" offset_y="95" alignment_x="0" alignment_y="3"/>
 	</element>
 	<element id="element_hud_enemy_info" offset_y="50" size_x="150" alignment_y="0">
 		<element id="image_enemy_health_empty" texture="textures/hud_repeat/health_empty.png" size_x="150" size_y="32" alignment_x="0" alignment_y="0"/>

@@ -64,7 +64,7 @@ class _Config {
 		void GetValue(const std::string &Field, Type &Value) {
 			const auto &MapIterator = Map.find(Field);
 			if(MapIterator != Map.end()) {
-				std::stringstream Stream(MapIterator->second.front());
+				std::istringstream Stream(MapIterator->second.front());
 				Stream >> Value;
 			}
 		}
