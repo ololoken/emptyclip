@@ -1376,8 +1376,8 @@ void _PlayState::UpdateEvents(double FrameTime) {
 				const std::vector<_EventTile> &Tiles = Event->Tiles;
 				for(size_t i = 0; i < Tiles.size(); i++) {
 					for(int j = 0; j < Event->SpawnMultiplier; j++) {
-						Position.x = Tiles[i].Coord.x + 0.5f + ae::GetRandomReal(-0.25f, 0.25f);
-						Position.y = Tiles[i].Coord.y + 0.5f + ae::GetRandomReal(-0.25f, 0.25f);
+						Position.x = Tiles[i].Coord.x + 0.5f;
+						Position.y = Tiles[i].Coord.y + 0.5f;
 						_Monster *Monster = Stats.CreateMonster(Event->MonsterID, Event->SpawnLevel + Player->GetAddedLevel(), Position);
 						Monster->Player = Player;
 						AddMonster(Monster);

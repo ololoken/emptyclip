@@ -624,7 +624,7 @@ void _Map::GetCloseObjects(const glm::vec2 &Position, float Radius, int GridType
 }
 
 // Returns a list of entities that an object is colliding with
-void _Map::CheckEntityCollisionsInGrid(const glm::vec2 &Position, float Radius, const _Object *SkipObject, std::vector<_Hit> &Hits, bool &AxisAlignedPush) const {
+void _Map::CheckEntityCollisionsInGrid(const glm::vec2 &Position, float Radius, const _Object *SkipObject, std::vector<_Hit> &Hits, bool &AxisAlignedPush, float PushFactor) const {
 	if(!Data)
 		throw std::runtime_error("Tile data uninitialized!");
 
@@ -663,12 +663,12 @@ void _Map::CheckEntityCollisionsInGrid(const glm::vec2 &Position, float Radius, 
 
 				_Hit Hit;
 				if(CenterVector.x == 0.0f && CenterVector.y == 0.0f) {
-					Hit.Push.x = 1.0f;
+					Hit.Push.x = PushFactor;
 					Hit.Push.y = 0.0f;
 				}
 				else {
 					Hit.Push = glm::normalize(CenterVector);
-					Hit.Push *= RadiiSum - sqrtf(DistanceSquared);
+					Hit.Push *= (RadiiSum - sqrtf(DistanceSquared)) * PushFactor;
 				}
 				Hits.push_back(Hit);
 			}
@@ -686,6 +686,7 @@ void _Map::CheckEntityCollisionsInGrid(const glm::vec2 &Position, float Radius, 
 			_Hit Hit;
 			Hit.AxisAlignedPush = false;
 			if(CheckAABBCollision(Position, Radius, AABB, true, Hit)) {
+				Hit.Push *= PushFactor;
 				Hits.push_back(Hit);
 				if(Hit.AxisAlignedPush)
 					AxisAlignedPush = true;

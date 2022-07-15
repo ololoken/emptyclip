@@ -419,7 +419,7 @@ void _Entity::Move(double FrameTime) {
 	glm::vec2 NewPosition = Position + MoveDirection;
 	bool AxisAlignedPush = false;
 	if(!IsInvulnerable())
-		Map->CheckEntityCollisionsInGrid(NewPosition, Radius, this, Hits, AxisAlignedPush);
+		Map->CheckEntityCollisionsInGrid(NewPosition, Radius, this, Hits, AxisAlignedPush, OBJECT_PUSH_FACTOR);
 
 	// Resolve pushes
 	for(auto Hit : Hits) {
@@ -474,18 +474,18 @@ void _Entity::Render(double BlendFactor) {
 		glm::vec2(Scale)
 	);
 
-	/*
-	ae::Graphics.SetProgram(ae::Assets.Programs["pos"]);
-	ae::Graphics.SetDepthMask(false);
-	ae::Graphics.SetDepthTest(false);
-	ae::Graphics.SetColor(COLOR_WHITE);
-	if(Circle)
-		ae::Graphics.DrawCircle(glm::vec3(DrawPosition, 0), Radius);
-	else
-		ae::Graphics.DrawRectangle3D(Position - glm::vec2(Radius), Position + glm::vec2(Radius), false);
-	ae::Graphics.SetDepthTest(true);
-	ae::Graphics.SetProgram(ae::Assets.Programs["pos_uv"]);
-	*/
+	if(false) {
+		ae::Graphics.SetProgram(ae::Assets.Programs["pos"]);
+		ae::Graphics.SetDepthMask(false);
+		ae::Graphics.SetDepthTest(false);
+		ae::Graphics.SetColor(COLOR_WHITE);
+		if(Circle)
+			ae::Graphics.DrawCircle(glm::vec3(DrawPosition, 0), Radius);
+		else
+			ae::Graphics.DrawRectangle3D(Position - glm::vec2(Radius), Position + glm::vec2(Radius), false);
+		ae::Graphics.SetDepthTest(true);
+		ae::Graphics.SetProgram(ae::Assets.Programs["pos_uv"]);
+	}
 }
 
 // Update current health
