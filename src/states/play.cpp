@@ -104,7 +104,7 @@ void _PlayState::Init() {
 	Framebuffer = new ae::_Framebuffer(ae::Graphics.CurrentSize);
 
 	// Load level
-	Map = new _Map(Level);
+	Map = new _Map(Level, Player->Progression+1);
 	Map->InitializeTiles();
 	Player->Map = Map;
 	Player->MapID = Map->Filename;
@@ -1375,12 +1375,14 @@ void _PlayState::UpdateEvents(double FrameTime) {
 			case EVENT_SPAWN: {
 				const std::vector<_EventTile> &Tiles = Event->Tiles;
 				for(size_t i = 0; i < Tiles.size(); i++) {
-					Position.x = Tiles[i].Coord.x + 0.5f;
-					Position.y = Tiles[i].Coord.y + 0.5f;
-					_Monster *Monster = Stats.CreateMonster(Event->MonsterID, Event->SpawnLevel + Player->GetAddedLevel(), Position);
-					Monster->Player = Player;
-					AddMonster(Monster);
-					Particles->Create(_ParticleSpawn(GameAssets.GetParticleTemplate(Event->ParticleID), glm::vec2(0), Position, OBJECT_Z, 0));
+					for(int j = 0; j <= Player->Progression; j++) {
+						Position.x = Tiles[i].Coord.x + 0.5f + ae::GetRandomReal(-0.25f, 0.25f);
+						Position.y = Tiles[i].Coord.y + 0.5f + ae::GetRandomReal(-0.25f, 0.25f);
+						_Monster *Monster = Stats.CreateMonster(Event->MonsterID, Event->SpawnLevel + Player->GetAddedLevel(), Position);
+						Monster->Player = Player;
+						AddMonster(Monster);
+						Particles->Create(_ParticleSpawn(GameAssets.GetParticleTemplate(Event->ParticleID), glm::vec2(0), Position, OBJECT_Z, 0));
+					}
 				}
 
 				Decrement = true;

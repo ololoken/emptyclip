@@ -17,7 +17,7 @@ Empty Clip 2.0.0 -
 - Items can be dropped by clicking the middle mouse button
 - Updated item tooltip and added equipped item comparison
 - Ammo is now stored as a number of rounds for each ammo type
-- Ammo and keys are now picked up automatically
+- Ammo, keys, and medkits are now picked up automatically
 - Keys are now stored in a keychain and are kept until the end of the level
 - Armor now affects movement speed, damage resist, and max ammo capacity
 - Added mods for armor
@@ -27,6 +27,7 @@ Empty Clip 2.0.0 -
 - Removed strength requirement from armor
 - Removed player profiles
 - Players now respawn at their last checkpoint with invulnerability for three seconds
+- The game now gets harder with every campaign completion
 - Added damage number particles
 - Improved bullet hole decals
 - The game now pauses while menu is open

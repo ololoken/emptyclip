@@ -174,7 +174,7 @@ class _Map {
 	public:
 
 		_Map();
-		_Map(const std::string &Filename);
+		_Map(const std::string &Filename, int SpawnMultiplier=1);
 		~_Map();
 
 		void InitializeTiles();

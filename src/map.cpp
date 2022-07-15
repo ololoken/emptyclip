@@ -66,7 +66,7 @@ _Map::_Map() :
 }
 
 // Initialize
-_Map::_Map(const std::string &Filename) : _Map() {
+_Map::_Map(const std::string &Filename, int SpawnMultiplier) : _Map() {
 	if(Filename == "")
 		throw std::runtime_error("Empty file name");
 
@@ -159,7 +159,7 @@ _Map::_Map(const std::string &Filename) : _Map() {
 					_ObjectTemplate &Template = Stats.Objects.at(EventMonsterID);
 					if(Template.Type == _Object::MONSTER) {
 						if(Template.Attributes.at("ai_type").Int)
-							Monsters += TilesSize * EventLevel;
+							Monsters += TilesSize * EventLevel * SpawnMultiplier;
 						else
 							Crates += TilesSize * EventLevel;
 					}
