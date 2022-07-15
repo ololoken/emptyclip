@@ -976,11 +976,14 @@ void _PlayState::ResolveAttack(_Entity *Attacker, int GridType) {
 						// Update stats
 						if(Attacker->Type == _Object::PLAYER) {
 							_Monster *Monster = (_Monster *)Hit.Object;
-							if(Monster->IsCrate())
+							if(Monster->IsCrate()) {
 								HUD->Crates[0]++;
-							else
+							}
+							else {
 								HUD->Kills[0]++;
-							Attacker->UpdateKillCount(1);
+								Attacker->UpdateKillCount(1);
+							}
+
 							Attacker->UpdateExperience(Hit.Object->ExperienceGiven);
 						}
 					}
