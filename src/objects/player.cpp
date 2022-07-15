@@ -901,7 +901,7 @@ void _Player::StartReloading() {
 void _Player::CancelReloading() {
 
 	// Stop existing sound
-	if(ReloadSound && ReloadSound->IsPlaying())
+	if(ReloadSound)
 		ReloadSound->Stop();
 
 	ReloadSound = nullptr;
@@ -931,7 +931,8 @@ void _Player::UpdateReloading() {
 	if(!Reloading || ReloadTimer <= ReloadPeriod)
 		return;
 
-	Reloading = false;
+	// Stop reload sound
+	CancelReloading();
 
 	// Check weapon type
 	if(!CanReload())
