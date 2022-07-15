@@ -2074,16 +2074,15 @@ void _EditorState::ExecuteSelectPalette(ae::_Element *Button, int ClickType) {
 		case EDITMODE_EVENTS:
 			if(!EventSelected()) {
 				switch(Button->Index) {
-					case EVENT_DOOR:
-						SetEventProperties(0, 1, 1, "");
-					break;
 					case EVENT_SPAWN:
 						SetEventProperties(0, 1, 1, "smoke0");
 					break;
 					case EVENT_TEXT:
 						SetEventProperties(5, 1, 1, "");
 					break;
+					case EVENT_DOOR:
 					case EVENT_SOUND:
+					case EVENT_WALLSWITCH:
 					case EVENT_FLOORSWITCH:
 					case EVENT_ENABLE:
 						SetEventProperties(0, 1, 1, "");
@@ -2309,16 +2308,6 @@ void _EditorState::SelectObject() {
 		if(!ObjectInSelectedList(SelectedObject)) {
 			DeselectObjects();
 			SelectedObjects.push_back(SelectedObject);
-			if(EventSelected()) {
-				switch(SelectedObject->Type) {
-					case _Object::MONSTER:
-						UpdateEventID(EDITINPUT_MONSTERIDENTIFIER, SelectedObject->ID);
-					break;
-					default:
-						UpdateEventID(EDITINPUT_ITEMIDENTIFIER, SelectedObject->ID);
-					break;
-				}
-			}
 		}
 	}
 	else {
