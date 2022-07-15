@@ -18,19 +18,10 @@
 #include <events.h>
 
 // Constructor
-_Event::_Event(int Type, int Active, const glm::ivec2 &Start, const glm::ivec2 &End, int Level, int SpawnLevel, double ActivationPeriod, const std::string &ItemID, const std::string &MonsterID, const std::string &ParticleID) :
-	Type(Type),
-	Active(Active),
-	Level(Level),
-	SpawnLevel(SpawnLevel),
+_Event::_Event() :
+	SpawnMultiplier(1),
 	Switched(false),
-	Start(Start),
-	End(End),
-	ItemID(ItemID),
-	MonsterID(MonsterID),
-	ParticleID(ParticleID),
-	Timer(0),
-	ActivationPeriod(ActivationPeriod) {
+	Timer(0.0) {
 
 }
 

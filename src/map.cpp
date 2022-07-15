@@ -116,52 +116,48 @@ _Map::_Map(const std::string &Filename, int SpawnMultiplier) : _Map() {
 	// Load events
 	for(size_t i = 0; i < EventCount; i++) {
 
-		int EventType;
-		int EventActive;
-		int EventLevel;
-		int EventSpawnLevel;
-		glm::ivec2 EventStart;
-		glm::ivec2 EventEnd;
-		double EventActivationPeriod;
+		// Create event
+		_Event *Event = new _Event();
+
 		size_t TilesSize;
 		InputFile
-				>> EventType
-				>> EventActive
-				>> EventStart.x
-				>> EventStart.y
-				>> EventEnd.x
-				>> EventEnd.y
-				>> EventLevel
-				>> EventSpawnLevel
-				>> EventActivationPeriod
+				>> Event->Type
+				>> Event->Active
+				>> Event->Start.x
+				>> Event->Start.y
+				>> Event->End.x
+				>> Event->End.y
+				>> Event->Level
+				>> Event->SpawnLevel
+				>> Event->ActivationPeriod
 				>> TilesSize;
 
 		InputFile.ignore(std::numeric_limits<std::streamsize>::max(), ' ');
-		std::string EventItemID;
-		std::string EventMonsterID;
-		std::string EventParticleID;
-		std::getline(InputFile, EventItemID, '\t');
-		std::getline(InputFile, EventMonsterID, '\t');
-		std::getline(InputFile, EventParticleID, '\n');
+		std::getline(InputFile, Event->ItemID, '\t');
+		std::getline(InputFile, Event->MonsterID, '\t');
+		std::getline(InputFile, Event->ParticleID, '\n');
 
 		// Check for existence
-		if(EventMonsterID != "" && Stats.Objects.find(EventMonsterID) == Stats.Objects.end())
-			throw std::runtime_error("Cannot find monster: " + EventMonsterID);
-		if(EventParticleID != "" && GameAssets.Particles.find(EventParticleID) == GameAssets.Particles.end())
-			throw std::runtime_error("Cannot find particle: " + EventParticleID);
+		if(Event->MonsterID != "" && Stats.Objects.find(Event->MonsterID) == Stats.Objects.end())
+			throw std::runtime_error("Cannot find monster: " + Event->MonsterID);
+		if(Event->ParticleID != "" && GameAssets.Particles.find(Event->ParticleID) == GameAssets.Particles.end())
+			throw std::runtime_error("Cannot find particle: " + Event->ParticleID);
 
 		// Add to stats
-		switch(EventType) {
+		switch(Event->Type) {
 			case EVENT_SPAWN: {
-				EventLevel = std::max(1, EventLevel);
+				Event->Level = std::max(1, Event->Level);
 
-				if(!EventMonsterID.empty()) {
-					_ObjectTemplate &Template = Stats.Objects.at(EventMonsterID);
+				if(!Event->MonsterID.empty()) {
+					_ObjectTemplate &Template = Stats.Objects.at(Event->MonsterID);
 					if(Template.Type == _Object::MONSTER) {
-						if(Template.Attributes.at("ai_type").Int)
-							Monsters += TilesSize * EventLevel * SpawnMultiplier;
-						else
-							Crates += TilesSize * EventLevel;
+						if(Template.Attributes.at("ai_type").Int) {
+							Monsters += TilesSize * Event->Level * SpawnMultiplier;
+							Event->SpawnMultiplier = SpawnMultiplier;
+						}
+						else {
+							Crates += TilesSize * Event->Level;
+						}
 					}
 				}
 			} break;
@@ -171,7 +167,6 @@ _Map::_Map(const std::string &Filename, int SpawnMultiplier) : _Map() {
 		}
 
 		// Create event
-		_Event *Event = new _Event(EventType, EventActive, EventStart, EventEnd, EventLevel, EventSpawnLevel, EventActivationPeriod, EventItemID, EventMonsterID, EventParticleID);
 		for(size_t j = 0; j < TilesSize; j++) {
 			glm::ivec2 Tile;
 			int TileLayer, TileBlockID;
@@ -182,7 +177,7 @@ _Map::_Map(const std::string &Filename, int SpawnMultiplier) : _Map() {
 
 		// Add to list
 		Events.push_back(Event);
-		if(EventType == EVENT_CHECK)
+		if(Event->Type == EVENT_CHECK)
 			CheckpointEvents.push_back(Event);
 	}
 

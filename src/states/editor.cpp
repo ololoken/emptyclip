@@ -1647,7 +1647,17 @@ void _EditorState::AddEvent(int Type) {
 		break;
 	}
 
-	_Event *Event = new _Event(Type, EventActive, Start, End, EventLevel, EventSpawnLevel, EventActivationPeriod, EventItemID, EventMonsterID, EventParticleID);
+	_Event *Event = new _Event();
+	Event->Type = Type;
+	Event->Active = EventActive;
+	Event->Start = Start;
+	Event->End = End;
+	Event->Level = EventLevel;
+	Event->SpawnLevel = EventSpawnLevel;
+	Event->ActivationPeriod = EventActivationPeriod;
+	Event->ItemID = ItemID;
+	Event->MonsterID = MonsterID;
+	Event->ParticleID = ParticleID;
 	if(TileLayer != -1) {
 		int BlockIndex = Map->GetSelectedBlock(TileLayer, Start);
 		Event->AddTile(_EventTile(Start, TileLayer, BlockIndex));
@@ -1953,9 +1963,17 @@ void _EditorState::ExecutePaste(bool Viewport) {
 				DrawStart = Map->GetValidCoord(StartPosition);
 				DrawEnd = Map->GetValidCoord(ClipboardEvent->End - ClipboardEvent->Start + glm::ivec2(StartPosition));
 
-				_Event *Event = new _Event(ClipboardEvent->Type, ClipboardEvent->Active, DrawStart, DrawEnd,
-										ClipboardEvent->Level, ClipboardEvent->SpawnLevel, ClipboardEvent->ActivationPeriod, ClipboardEvent->ItemID,
-										ClipboardEvent->MonsterID, ClipboardEvent->ParticleID);
+				_Event *Event = new _Event();
+				Event->Type = ClipboardEvent->Type;
+				Event->Active = ClipboardEvent->Active;
+				Event->Start = DrawStart;
+				Event->End = DrawEnd;
+				Event->Level = ClipboardEvent->Level;
+				Event->SpawnLevel = ClipboardEvent->SpawnLevel;
+				Event->ActivationPeriod = ClipboardEvent->ActivationPeriod;
+				Event->ItemID = ClipboardEvent->ItemID;
+				Event->MonsterID = ClipboardEvent->MonsterID;
+				Event->ParticleID = ClipboardEvent->ParticleID;
 
 				Map->AddEvent(Event);
 			}

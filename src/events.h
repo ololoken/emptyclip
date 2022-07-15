@@ -53,7 +53,7 @@ class _Event {
 
 	public:
 
-		_Event(int Type, int Active, const glm::ivec2 &Start, const glm::ivec2 &End, int Level, int SpawnLevel, double ActivationPeriod, const std::string &ItemID, const std::string &MonsterID, const std::string &ParticleID);
+		_Event();
 		~_Event();
 
 		void Update(double FrameTime);
@@ -72,6 +72,7 @@ class _Event {
 		int Active;
 		int Level;
 		int SpawnLevel;
+		int SpawnMultiplier;
 		bool Switched;
 		glm::ivec2 Start;
 		glm::ivec2 End;
