@@ -12,7 +12,7 @@ tutorial_pickup	Press [c red]Spacebar[c white] to pick up items.\n\nPress [c red
 tutorial_heal	Hold [c red]Q[c white] to slowly heal yourself.
 tutorial_melee	Press [c red]Mouse button 4[c white] to attack with your melee weapon.
 tutorial_switch	Press [c red]Spacebar[c white] to activate the switch.
-tutorial_fire	Press [c red]Left-click[c white] to shoot your gun. Hold [c red]right-click[c white] to aim and reduce recoil at the cost of movement speed.\n\nWhen the reticle turns [c yellow]yellow[c white], critical hit chance is doubled.
+tutorial_fire	Press [c red]Left-click[c white] to shoot your gun.\nHold [c red]right-click[c white] to aim and reduce recoil at the cost of movement speed.\n\nWhen the reticle turns [c yellow]yellow[c white], critical hit chance is doubled.
 tutorial_keys	Keys are kept until the end of the level.\n\nHold [c red]A[c white] to sprint back.
 tutorial_crate	Attack the crate to open it.
 tutorial_swap	Press [c red]W[c white] to switch weapons.

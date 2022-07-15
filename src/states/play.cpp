@@ -1023,7 +1023,7 @@ void _PlayState::HandlePickup() {
 			PickupObject(NearbyItem, AmountAdded);
 			if(!AmountAdded) {
 				IgnoreItems[NearbyItem] = 1;
-				return;
+				continue;
 			}
 
 			// Set up particle
