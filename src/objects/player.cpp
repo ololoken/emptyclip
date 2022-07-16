@@ -548,7 +548,7 @@ int _Player::SpentSkillPoints() const {
 	return Sum;
 }
 
-// Adds an item to the player's possession, returns 0 on full, return 1 on delete, return 2 on combine
+// Adds an item to the player's possession, returns 0 on full, return 1 on remove, return 2 on delete
 int _Player::AddItem(_Item *Item, int &AmountAdded) {
 
 	switch(Item->Type) {
@@ -590,7 +590,7 @@ int _Player::AddItem(_Item *Item, int &AmountAdded) {
 		} break;
 		case _Object::AMMO: {
 			if(Ammo[Item->ID] == AmmoMax[Item->ID])
-				return 0;
+				return 2;
 
 			// Add pickup bonus
 			int PickupAmount = Item->Attributes["amount"].Int * PickupModifier + 0.5f;
@@ -603,7 +603,7 @@ int _Player::AddItem(_Item *Item, int &AmountAdded) {
 		}
 		case _Object::MEDKIT: {
 			if(Health == MaxHealth)
-				return 0;
+				return 2;
 
 			int AmountToMax = MaxHealth - Health;
 			int HealAmount = (int)(GAME_MEDKIT_HEALTH_PERCENT * HealModifier) * 0.01f * MaxHealth;

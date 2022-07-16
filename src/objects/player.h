@@ -91,7 +91,6 @@ class _Player : public _Entity {
 		bool UseItem(int Index, bool Event);
 		int FindItem(int Index);
 		int FindItem(const std::string &ID);
-		void ResetUseTimer() { UseTimer = 0; }
 		void ConsumeInventory(int Index, bool Delete=true);
 		int ReduceAmmo(int Amount) override;
 		bool WeaponHasAmmo(int AttackType) const override;

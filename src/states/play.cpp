@@ -1080,23 +1080,19 @@ void _PlayState::PickupObject(_Item *Item, int &AmountAdded) {
 		if(Item == ClosestItem)
 			ClosestItem = nullptr;
 
-		Player->ResetUseTimer();
+		Player->UseTimer = 0.0;
+
+		// Remove item from map
 		Map->RemoveItem(Item);
+
+		// Delete item
 		if(AddResult == 2) {
 			delete Item;
 			CursorItemTimer = 0;
 		}
 	}
-	else {
-		if(IgnoreItems.find(Item) == IgnoreItems.end()) {
-			if(Item->Type == _Object::AMMO)
-				HUD->ShowTextMessage("AMMO FULL", HUD_INVENTORYFULLTIME, false);
-			else if(Item->Type == _Object::MEDKIT)
-				HUD->ShowTextMessage("HEALTH FULL", HUD_INVENTORYFULLTIME, false);
-			else
-				HUD->ShowTextMessage("INVENTORY FULL", HUD_INVENTORYFULLTIME);
-		}
-	}
+	else
+		HUD->ShowTextMessage("INVENTORY FULL", HUD_INVENTORYFULLTIME);
 }
 
 // Processes the use key to open doors, hit switches, and pickup items
@@ -1154,7 +1150,7 @@ void _PlayState::ActivateEvent() {
 		// Toggle event
 		Event->Switched = !Event->Switched;
 
-		Player->ResetUseTimer();
+		Player->UseTimer = 0.0;
 	}
 }
 
