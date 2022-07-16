@@ -99,8 +99,8 @@ void _EditorState::Init() {
 	// Create button groups
 	PaletteElement[EDITMODE_BLOCKS] = ae::Assets.Elements["element_editor_palette_block"];
 	PaletteElement[EDITMODE_EVENTS] = ae::Assets.Elements["element_editor_palette_events"];
-	PaletteElement[EDITMODE_MONSTERS] = ae::Assets.Elements["element_editor_palette_monsters"];
 	PaletteElement[EDITMODE_ITEMS] = ae::Assets.Elements["element_editor_palette_items"];
+	PaletteElement[EDITMODE_MONSTERS] = ae::Assets.Elements["element_editor_palette_monsters"];
 
 	// Assign layer buttons
 	LayerButtons[MAPLAYER_BASE] = ae::Assets.Elements["button_editor_layer_base"];
@@ -114,8 +114,8 @@ void _EditorState::Init() {
 	// Assign palette buttons
 	ModeButtons[EDITMODE_BLOCKS] = ae::Assets.Elements["button_editor_mode_block"];
 	ModeButtons[EDITMODE_EVENTS] = ae::Assets.Elements["button_editor_mode_event"];
-	ModeButtons[EDITMODE_MONSTERS] = ae::Assets.Elements["button_editor_mode_mons"];
 	ModeButtons[EDITMODE_ITEMS] = ae::Assets.Elements["button_editor_mode_item"];
+	ModeButtons[EDITMODE_MONSTERS] = ae::Assets.Elements["button_editor_mode_mons"];
 
 	// Reset state
 	ResetEditorState();
@@ -369,10 +369,10 @@ bool _EditorState::HandleKey(const ae::_KeyEvent &KeyEvent) {
 				ExecuteSwitchMode(EDITMODE_EVENTS);
 			break;
 			case SDL_SCANCODE_3:
-				ExecuteSwitchMode(EDITMODE_MONSTERS);
+				ExecuteSwitchMode(EDITMODE_ITEMS);
 			break;
 			case SDL_SCANCODE_4:
-				ExecuteSwitchMode(EDITMODE_ITEMS);
+				ExecuteSwitchMode(EDITMODE_MONSTERS);
 			break;
 			case SDL_SCANCODE_GRAVE:
 			    ExecuteDeselect();
@@ -423,10 +423,6 @@ bool _EditorState::HandleKey(const ae::_KeyEvent &KeyEvent) {
 					ExecuteIOCommand(EDITINPUT_PARTICLEIDENTIFIER);
 					Framework.IgnoreNextInputEvent = true;
 				}
-			break;
-			case SDL_SCANCODE_Z:
-				if(IsCtrlDown)
-					ExecuteUndo();
 			break;
 			case SDL_SCANCODE_N:
 				if(IsCtrlDown)
@@ -1080,6 +1076,14 @@ void _EditorState::LoadPalettes() {
 		EventTextures.push_back(Icons[i].Texture);
 	Icons.clear();
 
+	// Load items
+	for(const auto &Item : Stats.Objects) {
+		if(Item.second.IsItem() && Item.second.IconID != "")
+			Icons.push_back(_Brush(Item.first, Item.second.Name, ae::Assets.Textures[Item.second.IconID], Item.second.Color, Item.second.Type));
+	}
+	LoadPaletteButtons(Icons, EDITMODE_ITEMS);
+	Icons.clear();
+
 	// Load monsters
 	for(const auto &Monster : Stats.Objects) {
 		if(Monster.second.Type != _Object::MONSTER)
@@ -1089,14 +1093,6 @@ void _EditorState::LoadPalettes() {
 		Icons.push_back(_Brush(Monster.first, Monster.second.Name, MonsterIcon, Monster.second.Color, _Object::MONSTER));
 	}
 	LoadPaletteButtons(Icons, EDITMODE_MONSTERS);
-	Icons.clear();
-
-	// Load items
-	for(const auto &Item : Stats.Objects) {
-		if(Item.second.IsItem() && Item.second.IconID != "")
-			Icons.push_back(_Brush(Item.first, Item.second.Name, ae::Assets.Textures[Item.second.IconID], Item.second.Color, Item.second.Type));
-	}
-	LoadPaletteButtons(Icons, EDITMODE_ITEMS);
 }
 
 // Free memory used by palette
@@ -1353,7 +1349,7 @@ void _EditorState::DrawBrush() {
 	if(IconID != "") {
 		MainFont->DrawText(IconID, glm::ivec2(IconPosition + NamePosition), ae::LEFT_BASELINE);
 
-		if(EditMode == EDITMODE_MONSTERS || EditMode == EDITMODE_ITEMS) {
+		if(EditMode == EDITMODE_ITEMS || EditMode == EDITMODE_MONSTERS ) {
 
 			// Draw object level
 			NamePosition.y += TextSpacingY;
@@ -1479,6 +1475,9 @@ void _EditorState::ProcessIcons(int Index, int Type) {
 		case ICON_MONSTER:
 			ExecuteSwitchMode(EDITMODE_MONSTERS);
 		break;
+		case ICON_NONE:
+			ExecuteDeselect();
+		break;
 		case ICON_DELETE:
 			ExecuteDelete();
 		break;
@@ -1491,10 +1490,7 @@ void _EditorState::ProcessIcons(int Index, int Type) {
 		case ICON_SHOW:
 			ExecuteHighlightBlocks();
 		break;
-		case ICON_UNDO:
-			ExecuteUndo();
-		break;
-		case ICON_CLEAR:
+		case ICON_NEW:
 			ExecuteClear();
 		break;
 		case ICON_GRID:
@@ -1617,6 +1613,7 @@ void _EditorState::AddEvent(int Type) {
 		}
 	}
 
+	bool AddTile = false;
 	int TileLayer = -1;
 	glm::ivec2 Start = DrawStart;
 	glm::ivec2 End = DrawEnd - 1;
@@ -1629,16 +1626,17 @@ void _EditorState::AddEvent(int Type) {
 		case EVENT_DOOR:
 			EventItemID = ItemID;
 			TileLayer = MAPLAYER_FLAT;
+			AddTile = true;
 		break;
 		case EVENT_WALLSWITCH:
 			EventItemID = ItemID;
 			TileLayer = EditLayer;
+			AddTile = true;
 		break;
 		case EVENT_SPAWN:
 			EventLevel = std::max(1, EventLevel);
 			EventMonsterID = MonsterID;
 			EventParticleID = ParticleID;
-			TileLayer = EditLayer;
 		break;
 		case EVENT_TELEPORT:
 			EventParticleID = ParticleID;
@@ -1658,7 +1656,7 @@ void _EditorState::AddEvent(int Type) {
 	Event->ItemID = ItemID;
 	Event->MonsterID = MonsterID;
 	Event->ParticleID = ParticleID;
-	if(TileLayer != -1) {
+	if(AddTile) {
 		int BlockIndex = Map->GetSelectedBlock(TileLayer, Start);
 		Event->AddTile(_EventTile(Start, TileLayer, BlockIndex));
 	}
@@ -1992,19 +1990,6 @@ void _EditorState::ExecuteDeselect() {
 	DeselectObjects();
 }
 
-// Executes the undo command
-void _EditorState::ExecuteUndo() {
-	switch(EditMode) {
-		case EDITMODE_BLOCKS:
-			if(UndoNumber[EditLayer] > 0) {
-				Map->RemoveLastBlock(EditLayer);
-				DeselectBlock();
-				UndoNumber[EditLayer]--;
-			}
-		break;
-	}
-}
-
 // Moves to the previous/next icon in the palette
 void _EditorState::ExecuteUpdateSelectedPalette(int Change) {
 	std::vector<ae::_Element *> &Children = PaletteElement[EditMode]->Children;
@@ -2102,12 +2087,12 @@ void _EditorState::ExecuteSelectPalette(ae::_Element *Button, int ClickType) {
 		default:
 			if(ClickType == 1 && EventSelected()) {
 				switch(EditMode) {
-					case EDITMODE_MONSTERS:
-						SelectedEvent->MonsterID = Button->Name;
-						ExecuteSwitchMode(EDITMODE_EVENTS);
-					break;
 					case EDITMODE_ITEMS:
 						SelectedEvent->ItemID = Button->Name;
+						ExecuteSwitchMode(EDITMODE_EVENTS);
+					break;
+					case EDITMODE_MONSTERS:
+						SelectedEvent->MonsterID = Button->Name;
 						ExecuteSwitchMode(EDITMODE_EVENTS);
 					break;
 					default:

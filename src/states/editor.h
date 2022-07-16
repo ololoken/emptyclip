@@ -54,16 +54,15 @@ enum EditorIconTypes {
 	ICON_DOWN,
 	ICON_BLOCK,
 	ICON_EVENT,
-	ICON_MONSTER,
 	ICON_ITEM,
+	ICON_MONSTER,
+	ICON_NONE,
 	ICON_DELETE,
 	ICON_COPY,
 	ICON_PASTE,
 	ICON_SHOW,
-	ICON_UNDO,
-	ICON_CLEAR,
 	ICON_GRID,
-	ICON_MSET,
+	ICON_NEW,
 	ICON_LOAD,
 	ICON_SAVE,
 	ICON_TEST
@@ -72,8 +71,8 @@ enum EditorIconTypes {
 enum EditorModeType {
 	EDITMODE_BLOCKS,
 	EDITMODE_EVENTS,
-	EDITMODE_MONSTERS,
 	EDITMODE_ITEMS,
+	EDITMODE_MONSTERS,
 	EDITMODE_COUNT
 };
 
@@ -197,7 +196,6 @@ class _EditorState : public ae::_State {
 		void ExecuteCopy();
 		void ExecutePaste(bool Viewport);
 		void ExecuteDeselect();
-		void ExecuteUndo();
 		void ExecuteChangeZ(float Change, int Type);
 		void ExecuteChangeLevel(int Change);
 		void ExecuteChangePeriod(double Value);

@@ -9,3 +9,4 @@ hud_message	fonts/pt_sans_bold.ttf	text	48	1
 hud_damage	fonts/pt_sans_bold.ttf	text	24	1
 console	fonts/vera_mono_bold.ttf	text	14	1
 editor	fonts/vera_mono_bold.ttf	text	16	0
+editor_tiny	fonts/pt_sans_bold.ttf	text	11	0
