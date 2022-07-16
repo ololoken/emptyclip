@@ -286,17 +286,17 @@
 			<element id="label_button_editor_active" font="editor_tiny" text="Active" offset_x="0" offset_y="12" alignment_x="1" alignment_y="3" scaled="false"/>
 			<element id="label_button_editor_active_key" font="editor_tiny" text="A" offset_x="0" offset_y="26" alignment_x="1" alignment_y="3" scaled="false"/>
 		</element>
-		<element id="button_editor_itemidentifier" style="style_editor_button_cyan" hover_style="style_editor_button_selected" offset_x="204" size_x="32" size_y="32" alignment_x="0" alignment_y="0" clickable="true" scaled="false" index="6">
-			<element id="label_button_editor_itemidentifier" font="editor_tiny" text="Item" offset_x="0" offset_y="12" alignment_x="1" alignment_y="3" scaled="false"/>
-			<element id="label_button_editor_itemidentifier_key" font="editor_tiny" text="S I" offset_x="0" offset_y="26" alignment_x="1" alignment_y="3" scaled="false"/>
+		<element id="button_editor_itemid" style="style_editor_button_cyan" hover_style="style_editor_button_selected" offset_x="204" size_x="32" size_y="32" alignment_x="0" alignment_y="0" clickable="true" scaled="false" index="6">
+			<element id="label_button_editor_itemid" font="editor_tiny" text="Item" offset_x="0" offset_y="12" alignment_x="1" alignment_y="3" scaled="false"/>
+			<element id="label_button_editor_itemid_key" font="editor_tiny" text="S I" offset_x="0" offset_y="26" alignment_x="1" alignment_y="3" scaled="false"/>
 		</element>
-		<element id="button_editor_monsidentifier" style="style_editor_button_cyan" hover_style="style_editor_button_selected" offset_x="238" size_x="32" size_y="32" alignment_x="0" alignment_y="0" clickable="true" scaled="false" index="7">
-			<element id="label_button_editor_monsidentifier" font="editor_tiny" text="Mons" offset_x="0" offset_y="12" alignment_x="1" alignment_y="3" scaled="false"/>
-			<element id="label_button_editor_monsidentifier_key" font="editor_tiny" text="S M" offset_x="0" offset_y="26" alignment_x="1" alignment_y="3" scaled="false"/>
+		<element id="button_editor_monsid" style="style_editor_button_cyan" hover_style="style_editor_button_selected" offset_x="238" size_x="32" size_y="32" alignment_x="0" alignment_y="0" clickable="true" scaled="false" index="7">
+			<element id="label_button_editor_monsid" font="editor_tiny" text="Mons" offset_x="0" offset_y="12" alignment_x="1" alignment_y="3" scaled="false"/>
+			<element id="label_button_editor_monsid_key" font="editor_tiny" text="S M" offset_x="0" offset_y="26" alignment_x="1" alignment_y="3" scaled="false"/>
 		</element>
-		<element id="button_editor_partidentifier" style="style_editor_button_cyan" hover_style="style_editor_button_selected" offset_x="272" size_x="32" size_y="32" alignment_x="0" alignment_y="0" clickable="true" scaled="false" index="8">
-			<element id="label_button_editor_partidentifier" font="editor_tiny" text="Part" offset_x="0" offset_y="12" alignment_x="1" alignment_y="3" scaled="false"/>
-			<element id="label_button_editor_partidentifier_key" font="editor_tiny" text="S P" offset_x="0" offset_y="26" alignment_x="1" alignment_y="3" scaled="false"/>
+		<element id="button_editor_partid" style="style_editor_button_cyan" hover_style="style_editor_button_selected" offset_x="272" size_x="32" size_y="32" alignment_x="0" alignment_y="0" clickable="true" scaled="false" index="8">
+			<element id="label_button_editor_partid" font="editor_tiny" text="Part" offset_x="0" offset_y="12" alignment_x="1" alignment_y="3" scaled="false"/>
+			<element id="label_button_editor_partid_key" font="editor_tiny" text="S P" offset_x="0" offset_y="26" alignment_x="1" alignment_y="3" scaled="false"/>
 		</element>
 	</element>
 	<element id="element_editor_palette_block" size_x="256" size_y="560" alignment_x="2" alignment_y="0" scaled="false"/>
