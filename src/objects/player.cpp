@@ -684,28 +684,26 @@ void _Player::SwapInventory(int SlotFrom, int SlotTo) {
 	if(SlotFrom == SlotTo)
 		return;
 
-	bool CanSwap = false;
+	// Try mod
+	if(AddMod(SlotFrom, SlotTo))
+		return;
 
 	// Check for simple swap
+	bool CanSwap = false;
 	if(IsBagIndex(SlotFrom) && IsBagIndex(SlotTo)) {
 		CanSwap = true;
 	}
 	// Equipment swap
 	else if((IsEquipmentIndex(SlotFrom) && IsBagIndex(SlotTo)) || (IsEquipmentIndex(SlotTo) && IsBagIndex(SlotFrom)) || (IsEquipmentIndex(SlotTo) && IsEquipmentIndex(SlotFrom))) {
-		if(IsEquipmentIndex(SlotTo)) {
-
-			// Try mod
-			if(!AddMod(SlotFrom, SlotTo)) {
-				CanSwap = CanEquipItem(Inventory[SlotFrom], SlotTo);
-			}
-		}
+		if(IsEquipmentIndex(SlotTo))
+			CanSwap = CanEquipItem(Inventory[SlotFrom], SlotTo);
 		else
 			CanSwap = CanEquipItem(Inventory[SlotTo], SlotFrom);
 	}
 
 	if(CanSwap) {
 
-		if(SlotTo == INVENTORY_MAINHAND || (IsHandIndex(SlotFrom) && IsHandIndex(SlotTo))) {
+		if(SlotTo == INVENTORY_MAINHAND || SlotFrom == INVENTORY_MAINHAND || (IsHandIndex(SlotFrom) && IsHandIndex(SlotTo)) ) {
 			StartWeaponSwitch(SlotFrom, SlotTo);
 		}
 		else {

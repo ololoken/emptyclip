@@ -326,9 +326,9 @@ void _Item::DrawTooltip(const _Player *Player, size_t CompareSlot, int Inventory
 		} break;
 		case _Object::MOD: {
 			if(Template.Attributes.at("object_type").Int == _Object::WEAPON)
-				HelpTextList.push_back("Drag to equipped weapon");
+				HelpTextList.push_back("Drag onto weapon");
 			else if(Template.Attributes.at("object_type").Int == _Object::ARMOR)
-				HelpTextList.push_back("Drag to equipped armor");
+				HelpTextList.push_back("Drag onto armor");
 
 			DrawPosition.y += Spacing.y;
 			std::string Percent = Template.Attributes.at("percent_sign").Int ? "%" : "";
