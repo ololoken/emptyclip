@@ -872,17 +872,19 @@ void _HUD::ShowTextMessage(const std::string &Message, double Time, bool Overrid
 }
 
 // Show message box
-void _HUD::ShowMessageBox(const std::string &Message, double Time) {
+void _HUD::ShowMessageBox(const std::string &Message, double Time, const glm::vec2 &Size) {
 	if(Message == "")
 		return;
 
 	if(MessageBoxTimer > 0.0 && Elements[LABEL_MESSAGEBOX]->Text == Message)
 		return;
 
+	Elements[ELEMENT_MESSAGE]->BaseSize = Size;
+	Elements[ELEMENT_MESSAGE]->CalculateBounds();
+	Elements[ELEMENT_MESSAGE]->SetFade(1.0f);
+
 	Elements[LABEL_MESSAGEBOX]->Text = Message;
 	Elements[LABEL_MESSAGEBOX]->SetWrap(Elements[ELEMENT_MESSAGE]->Size.x - 35 * ae::_Element::GetUIScale());
-
-	Elements[ELEMENT_MESSAGE]->SetFade(1.0f);
 	MessageBoxTimer = Time;
 }
 

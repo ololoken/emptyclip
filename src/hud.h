@@ -110,7 +110,7 @@ class _HUD {
 		void DrawDeathScreen();
 
 		void ShowTextMessage(const std::string &Message, double Time, bool Override=true);
-		void ShowMessageBox(const std::string &Message, double Time);
+		void ShowMessageBox(const std::string &Message, double Time, const glm::vec2 &Size);
 
 		// Inventory
 		_Item *CursorItem;

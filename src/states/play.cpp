@@ -1132,7 +1132,7 @@ void _PlayState::ActivateEvent() {
 		// Check for key in inventory and use it
 		if(!Event->ItemID.empty()) {
 			if(Player->Keys.find(Event->ItemID) == Player->Keys.end()) {
-				HUD->ShowMessageBox("You need the " + Stats.Objects.at(Event->ItemID).Name, HUD_KEY_MESSAGETIME);
+				HUD->ShowMessageBox("You need the " + Stats.Objects.at(Event->ItemID).Name, HUD_KEY_MESSAGETIME, UI_MESSAGE_SMALL_SIZE);
 				return;
 			}
 
@@ -1308,7 +1308,7 @@ void _PlayState::CheckEvents(const _Entity *Entity) {
 				if(ShowMessage) {
 					if(IsTutorial)
 						ae::Audio.PlaySound(ae::Assets.Sounds["game_message0"]);
-					HUD->ShowMessageBox(Stats.Strings[Event->ItemID], Event->ActivationPeriod);
+					HUD->ShowMessageBox(Stats.Strings[Event->ItemID], Event->ActivationPeriod, UI_MESSAGE_SIZE);
 				}
 				if(Event->Level != 0)
 					Event->Active = false;
@@ -1356,7 +1356,7 @@ void _PlayState::CheckEvents(const _Entity *Entity) {
 			} break;
 			case EVENT_SECRET: {
 				ae::Audio.PlaySound(ae::Assets.Sounds["game_secret0"]);
-				HUD->ShowMessageBox("You have found a secret!", HUD_SECRET_MESSAGETIME);
+				HUD->ShowMessageBox("You have found a secret!", HUD_SECRET_MESSAGETIME, UI_MESSAGE_SMALL_SIZE);
 				HUD->Secrets[0]++;
 				Event->Active = false;
 			} break;

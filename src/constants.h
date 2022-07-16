@@ -132,6 +132,8 @@ const  double       MENU_DOUBLECLICK_TIME          =  0.250;
 //     UI
 const  glm::vec2    UI_INVENTORY_ITEM_SIZE         =  glm::vec2(64,64);
 const  glm::vec2    UI_HUD_AMMO_SIZE               =  glm::vec2(32,32);
+const  glm::vec2    UI_MESSAGE_SIZE                =  glm::vec2(550,200);
+const  glm::vec2    UI_MESSAGE_SMALL_SIZE          =  glm::vec2(425,125);
 //     HUD
 const  double       HUD_ENTITYHEALTHDISPLAYPERIOD  =  5.0;
 const  float        HUD_PLAYER_HEALTH_WARNING      =  0.5f;
