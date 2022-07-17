@@ -29,6 +29,7 @@ const  glm::ivec2   DEFAULT_WINDOW_SIZE            =  glm::ivec2(1440,900);
 const  int          DEFAULT_FULLSCREEN             =  1;
 const  int          DEFAULT_AUDIOENABLED           =  1;
 const  int          DEFAULT_VSYNC                  =  1;
+const  int          DEFAULT_ANISOTROPHY            =  8;
 const  double       DEFAULT_MAXFPS                 =  240.0;
 //     Config
 const  int          CONFIG_VERSION                 =  3;

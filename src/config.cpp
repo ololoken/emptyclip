@@ -80,7 +80,7 @@ void _Config::SetDefaults() {
 	Version = CONFIG_VERSION;
 	WindowSize = DEFAULT_WINDOW_SIZE;
 	MSAA = 0;
-	Anisotrophy = 0;
+	Anisotrophy = DEFAULT_ANISOTROPHY;
 	Fullscreen = DEFAULT_FULLSCREEN;
 	Vsync = DEFAULT_VSYNC;
 	MaxFPS = DEFAULT_MAXFPS;
@@ -222,7 +222,7 @@ void _Config::Save() {
 	File << "vsync=" << Vsync << std::endl;
 	File << "max_fps=" << MaxFPS << std::endl;
 	File << "msaa=" << MSAA << std::endl;
-	File << "aniso=" << Anisotrophy << std::endl;
+	File << "anisotrophy=" << Anisotrophy << std::endl;
 	File << "audio_enabled=" << AudioEnabled << std::endl;
 	File << "weapon_flashes=" << WeaponFlashes << std::endl;
 	File << "tutorial=" << Tutorial << std::endl;
