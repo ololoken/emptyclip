@@ -196,60 +196,58 @@ bool _PlayState::HandleAction(int InputType, size_t Action, int Value) {
 		return false;
 
 	if(!Player->IsDying()) {
-		if(!Player->SelfHealing) {
-			switch(Action) {
-				case Action::GAME_INVENTORY:
-					HUD->SetInventoryOpen(!HUD->InventoryOpen);
-					Player->SetAiming(false);
-					Player->SetSprinting(false);
-				break;
-				case Action::GAME_FIRE:
-					if(!HUD->InventoryOpen && !Player->IsMeleeAttacking()) {
+		switch(Action) {
+			case Action::GAME_INVENTORY:
+				HUD->SetInventoryOpen(!HUD->InventoryOpen);
+				Player->SetAiming(false);
+				Player->SetSprinting(false);
+			break;
+			case Action::GAME_FIRE:
+				if(!HUD->InventoryOpen && !Player->IsMeleeAttacking()) {
 
-						// Use melee weapon if player has no main hand
-						int AttackType = WEAPONATTACK_MAIN;
-						if(!Player->HasMainHand() && Player->HasMelee())
-							AttackType = WEAPONATTACK_MELEE;
+					// Use melee weapon if player has no main hand
+					int AttackType = WEAPONATTACK_MAIN;
+					if(!Player->HasMainHand() && Player->HasMelee())
+						AttackType = WEAPONATTACK_MELEE;
 
-						// Can reload
-						if(Player->Reloading && Player->WeaponHasAmmo(AttackType))
-							Player->CancelReloading();
+					// Can reload
+					if(Player->Reloading && Player->WeaponHasAmmo(AttackType))
+						Player->CancelReloading();
 
-						// Play sound
-						if(Player->CanAttack(AttackType) && !Player->WeaponHasAmmo(AttackType))
-							ae::Audio.PlaySound(Player->GetSound(SOUND_EMPTY, AttackType));
+					// Play sound
+					if(Player->CanAttack(AttackType) && !Player->WeaponHasAmmo(AttackType))
+						ae::Audio.PlaySound(Player->GetSound(SOUND_EMPTY, AttackType));
 
-						if(Player->CheckAttackTimer(AttackType) && Player->FireRateType[AttackType] == FIRERATE_SEMI && (!Player->BurstRounds[AttackType] || (Player->BurstRounds[AttackType] && Player->BurstRoundsShot == 0))) {
-							Player->BurstRoundsShot = 0;
-							Player->AttackRequested = true;
-							Player->AttackRequestType = AttackType;
-						}
+					if(Player->CheckAttackTimer(AttackType) && Player->FireRateType[AttackType] == FIRERATE_SEMI && (!Player->BurstRounds[AttackType] || (Player->BurstRounds[AttackType] && Player->BurstRoundsShot == 0))) {
+						Player->BurstRoundsShot = 0;
+						Player->AttackRequested = true;
+						Player->AttackRequestType = AttackType;
 					}
-				break;
-				case Action::GAME_MELEE:
-					if(!HUD->InventoryOpen) {
-						if(Player->Reloading)
-							Player->CancelReloading();
+				}
+			break;
+			case Action::GAME_MELEE:
+				if(!HUD->InventoryOpen) {
+					if(Player->Reloading)
+						Player->CancelReloading();
 
-						if(Player->FireRateType[WEAPONATTACK_MELEE] == FIRERATE_SEMI) {
-							Player->AttackRequested = true;
-							Player->AttackRequestType = WEAPONATTACK_MELEE;
-						}
+					if(Player->FireRateType[WEAPONATTACK_MELEE] == FIRERATE_SEMI) {
+						Player->AttackRequested = true;
+						Player->AttackRequestType = WEAPONATTACK_MELEE;
 					}
-				break;
-				case Action::GAME_RELOAD:
-					if(!HUD->IsDragging())
-						Player->StartReloading();
-				break;
-				case Action::GAME_WEAPONSWITCH:
-					if(!HUD->IsDragging())
-						Player->StartWeaponSwitch(INVENTORY_MAINHAND, INVENTORY_OFFHAND);
-				break;
-				case Action::GAME_FLASHLIGHT:
-					Player->Flashlight = !Player->Flashlight;
-					ae::Audio.PlaySound(ae::Assets.Sounds["game_flashlight0"]);
-				break;
-			}
+				}
+			break;
+			case Action::GAME_RELOAD:
+				if(!HUD->IsDragging())
+					Player->StartReloading();
+			break;
+			case Action::GAME_WEAPONSWITCH:
+				if(!HUD->IsDragging())
+					Player->StartWeaponSwitch(INVENTORY_MAINHAND, INVENTORY_OFFHAND);
+			break;
+			case Action::GAME_FLASHLIGHT:
+				Player->Flashlight = !Player->Flashlight;
+				ae::Audio.PlaySound(ae::Assets.Sounds["game_flashlight0"]);
+			break;
 		}
 	}
 	else {
@@ -280,7 +278,7 @@ bool _PlayState::HandleKey(const ae::_KeyEvent &KeyEvent) {
 					Player->Respawn();
 					Save.SavePlayer(Player);
 				}
-				else if(!Player->IsDying() && !Player->SelfHealing) {
+				else if(!Player->IsDying()) {
 					if(HUD->InventoryOpen) {
 						HUD->SetInventoryOpen(false);
 					}
@@ -378,7 +376,7 @@ bool _PlayState::HandleCommand(ae::_Console *Console) {
 			if(!Player)
 				return true;
 
-			Player->Reset();
+			Player->Reset(true);
 			Console->AddMessage("player reset");
 		}
 		else
@@ -442,59 +440,45 @@ void _PlayState::Update(double FrameTime) {
 		if(Player->Action != ACTION_MELEE)
 			Player->FacePosition(WorldCursor);
 
-		// Handle healing
-		Player->SelfHealing = Player->CanSelfHeal() && ae::Actions.State[Action::GAME_HEAL].Value > 0.0f;
-		if(!Player->SelfHealing) {
+		// Move types
+		if(ae::Actions.State[Action::GAME_UP].Value > 0.0f && ae::Actions.State[Action::GAME_LEFT].Value > 0.0f)
+			Player->MoveState = MOVE_FORWARDLEFT;
+		else if(ae::Actions.State[Action::GAME_UP].Value > 0.0f && ae::Actions.State[Action::GAME_RIGHT].Value > 0.0f)
+			Player->MoveState = MOVE_FORWARDRIGHT;
+		else if(ae::Actions.State[Action::GAME_DOWN].Value > 0.0f && ae::Actions.State[Action::GAME_LEFT].Value > 0.0f)
+			Player->MoveState = MOVE_BACKWARDLEFT;
+		else if(ae::Actions.State[Action::GAME_DOWN].Value > 0.0f && ae::Actions.State[Action::GAME_RIGHT].Value > 0.0f)
+			Player->MoveState = MOVE_BACKWARDRIGHT;
+		else if(ae::Actions.State[Action::GAME_LEFT].Value > 0.0f)
+			Player->MoveState = MOVE_LEFT;
+		else if(ae::Actions.State[Action::GAME_RIGHT].Value > 0.0f)
+			Player->MoveState = MOVE_RIGHT;
+		else if(ae::Actions.State[Action::GAME_UP].Value > 0.0f)
+			Player->MoveState = MOVE_FORWARD;
+		else if(ae::Actions.State[Action::GAME_DOWN].Value > 0.0f)
+			Player->MoveState = MOVE_BACKWARD;
+		else
+			Player->MoveState = MOVE_NONE;
 
-			// Move types
-			if(ae::Actions.State[Action::GAME_UP].Value > 0.0f && ae::Actions.State[Action::GAME_LEFT].Value > 0.0f)
-				Player->MoveState = MOVE_FORWARDLEFT;
-			else if(ae::Actions.State[Action::GAME_UP].Value > 0.0f && ae::Actions.State[Action::GAME_RIGHT].Value > 0.0f)
-				Player->MoveState = MOVE_FORWARDRIGHT;
-			else if(ae::Actions.State[Action::GAME_DOWN].Value > 0.0f && ae::Actions.State[Action::GAME_LEFT].Value > 0.0f)
-				Player->MoveState = MOVE_BACKWARDLEFT;
-			else if(ae::Actions.State[Action::GAME_DOWN].Value > 0.0f && ae::Actions.State[Action::GAME_RIGHT].Value > 0.0f)
-				Player->MoveState = MOVE_BACKWARDRIGHT;
-			else if(ae::Actions.State[Action::GAME_LEFT].Value > 0.0f)
-				Player->MoveState = MOVE_LEFT;
-			else if(ae::Actions.State[Action::GAME_RIGHT].Value > 0.0f)
-				Player->MoveState = MOVE_RIGHT;
-			else if(ae::Actions.State[Action::GAME_UP].Value > 0.0f)
-				Player->MoveState = MOVE_FORWARD;
-			else if(ae::Actions.State[Action::GAME_DOWN].Value > 0.0f)
-				Player->MoveState = MOVE_BACKWARD;
-			else
-				Player->MoveState = MOVE_NONE;
+		// Attack or aim
+		if(!HUD->InventoryOpen) {
 
-			// Attack or aim
-			if(!HUD->InventoryOpen) {
-
-				// Attack again
-				if(!Player->IsMeleeAttacking() && Player->FireRateType[WEAPONATTACK_MAIN] == FIRERATE_AUTO && ae::Actions.State[Action::GAME_FIRE].Value > 0.0f) {
-					Player->AttackRequested = true;
-					Player->AttackRequestType = WEAPONATTACK_MAIN;
-				}
-				if(Player->FireRateType[WEAPONATTACK_MELEE] == FIRERATE_AUTO && ae::Actions.State[Action::GAME_MELEE].Value > 0.0f) {
-					Player->AttackRequested = true;
-					Player->AttackRequestType = WEAPONATTACK_MELEE;
-				}
-
-				// Aim
-				Player->SetAiming(ae::Actions.State[Action::GAME_AIM].Value > 0.0f && !Player->Reloading && !Player->SwitchingWeapons);
-				Player->SetSprinting(ae::Actions.State[Action::GAME_SPRINT].Value > 0.0f);
+			// Attack again
+			if(!Player->IsMeleeAttacking() && Player->FireRateType[WEAPONATTACK_MAIN] == FIRERATE_AUTO && ae::Actions.State[Action::GAME_FIRE].Value > 0.0f) {
+				Player->AttackRequested = true;
+				Player->AttackRequestType = WEAPONATTACK_MAIN;
+			}
+			if(Player->FireRateType[WEAPONATTACK_MELEE] == FIRERATE_AUTO && ae::Actions.State[Action::GAME_MELEE].Value > 0.0f) {
+				Player->AttackRequested = true;
+				Player->AttackRequestType = WEAPONATTACK_MELEE;
 			}
 
-			Player->UseRequested = ae::Actions.State[Action::GAME_USE].Value;
-			Player->SelfHealTimer = 0.0;
+			// Aim
+			Player->SetAiming(ae::Actions.State[Action::GAME_AIM].Value > 0.0f && !Player->Reloading && !Player->SwitchingWeapons);
+			Player->SetSprinting(ae::Actions.State[Action::GAME_SPRINT].Value > 0.0f);
 		}
-		else {
-			HUD->CursorItem = nullptr;
-			Player->MoveState = MOVE_NONE;
-			Player->SetAiming(false);
-			Player->SetSprinting(false);
-			Player->UseRequested = false;
-			Player->AttackRequested = false;
-		}
+
+		Player->UseRequested = ae::Actions.State[Action::GAME_USE].Value;
 	}
 	else
 		HUD->SetInventoryOpen(false);

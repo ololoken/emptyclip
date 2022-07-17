@@ -56,7 +56,7 @@ class _Player : public _Entity {
 		_Player(const _ObjectTemplate &PlayerTemplate);
 		~_Player() override;
 
-		void Reset();
+		void Reset(bool Recalculate=false);
 
 		bool IsMelee() const;
 
@@ -103,10 +103,9 @@ class _Player : public _Entity {
 		bool CanAttack(int AttackType) const override { return !IsMeleeAttacking() && !Reloading && !SwitchingWeapons && !IsDying(); }
 		bool CanPickup() const { return !IsDying() && CanUse(); }
 		bool CanUse() const { return UseTimer > UsePeriod; }
-		bool CanDropItem() const { return !Reloading && !SwitchingWeapons && !SelfHealing; }
+		bool CanDropItem() const { return !Reloading && !SwitchingWeapons; }
 		bool CanSwitchWeapons() const { return !SwitchingWeapons && !Reloading && !IsMeleeAttacking() && !IsDying(); }
 		bool CanReload() const;
-		bool CanSelfHeal() const;
 		bool IsSteady() const override { return HasMainHand() && CurrentAccuracy <= MinAccuracy; }
 
 		void SetColorID(const std::string &ColorID) { this->ColorID = ColorID; UpdateColor(); }
@@ -115,7 +114,6 @@ class _Player : public _Entity {
 
 		double GetReloadPercent() const { return std::min(1.0, ReloadTimer / ReloadPeriod); }
 		double GetWeaponSwitchPercent() const { return std::min(1.0, WeaponSwitchTimer / WeaponSwitchPeriod); }
-		double GetSelfHealPercent() const { return std::min(1.0, SelfHealTimer / SelfHealPeriod); }
 		float GetCrosshairRadius(const glm::vec2 &Cursor);
 		const _ParticleTemplate *GetParticle(int ParticleType) const override;
 		_Item *GetMainHand() const { return Inventory[INVENTORY_MAINHAND]; }
@@ -172,6 +170,9 @@ class _Player : public _Entity {
 		int Skills[SKILL_COUNT];
 		int SkillPointsRemaining;
 		int DropRate;
+		double SelfHealStartTime;
+		double SelfHealPeriod;
+		double SelfHealTimer;
 		float HealModifier;
 		float PickupModifier;
 
@@ -182,16 +183,14 @@ class _Player : public _Entity {
 		float ZoomScale;
 		double WeaponSwitchTimer;
 		double ReloadTimer;
-		double SelfHealTimer;
+		double LastHitTimer;
 		double UseTimer;
 		double WeaponSwitchPeriod;
 		double ReloadPeriod;
-		double SelfHealPeriod;
 		double UsePeriod;
 		int FireRateType[WEAPONATTACK_COUNT];
 		bool Reloading;
 		bool SwitchingWeapons;
-		bool SelfHealing;
 
 		// Sounds
 		const ae::_AudioSource *ReloadSound;

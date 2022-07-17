@@ -67,9 +67,10 @@ const  int          ENTITY_MAX_DAMAGE_RESIST       =  90;
 //     Player
 const  int          PLAYER_SAVEVERSION             =  5;
 const  float        PLAYER_RADIUS                  =  0.35f;
-const  double       PLAYER_SELFHEAL_PERIOD         =  4;
-const  int          PLAYER_SELFHEAL_PERCENT        =  25;
-const  float        PLAYER_STARTING_HEALTH_FACTOR  =  0.75f;
+const  double       PLAYER_HEAL_STARTTIME          =  5.0;
+const  double       PLAYER_HEAL_PERIOD             =  1.0;
+const  float        PLAYER_HEAL_THRESHOLD          =  0.75;
+const  float        PLAYER_STARTING_HEALTH_FACTOR  =  0.5f;
 const  float        PLAYER_LEGCHANGEFACTOR         =  0.2f;
 const  float        PLAYER_MOVESPEED               =  4.5f;
 const  float        PLAYER_BACKWARDS_SPEEDFACTOR   =  0.5f;

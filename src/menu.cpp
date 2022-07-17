@@ -58,7 +58,6 @@ const int KeyBindings[] = {
 	Action::GAME_MELEE,
 	Action::GAME_RELOAD,
 	Action::GAME_WEAPONSWITCH,
-	Action::GAME_HEAL,
 	Action::GAME_INVENTORY,
 };
 
@@ -76,7 +75,6 @@ const std::string KEYLABEL_IDENTIFIERS[] = {
 	"label_options_config_melee",
 	"label_options_config_reload",
 	"label_options_config_weaponswitch",
-	"label_options_config_medkit",
 	"label_options_config_inventory",
 };
 

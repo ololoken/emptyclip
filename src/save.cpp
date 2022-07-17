@@ -83,6 +83,7 @@ void _Save::CreateNewPlayer(size_t Slot, const std::string &Name, const std::str
 		return;
 
 	Players[Slot] = new _Player(Stats.Objects.at("player"));
+	Players[Slot]->Reset(true);
 	Players[Slot]->SavePath = GetConfigPath(Slot);
 	Players[Slot]->Name = Name;
 	Players[Slot]->Health = Players[Slot]->MaxHealth * PLAYER_STARTING_HEALTH_FACTOR;

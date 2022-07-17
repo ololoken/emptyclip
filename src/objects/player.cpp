@@ -69,8 +69,6 @@ _Player::_Player(const _ObjectTemplate &PlayerTemplate) :
 	_SoundGroup &SoundGroup = GameAssets.SoundGroups.at("player");
 	for(int i = 0; i < SOUND_COUNT; i++)
 		Sounds[i] = SoundGroup.SoundID[i];
-
-	Reset();
 }
 
 // Destructor
@@ -89,7 +87,7 @@ void _Player::DeleteItems() {
 }
 
 // Resets the player state
-void _Player::Reset() {
+void _Player::Reset(bool Recalculate) {
 	Kills = 0;
 	Deaths = 0;
 	PlayTime = 0;
@@ -117,7 +115,6 @@ void _Player::Reset() {
 	Reloading = false;
 	ReloadSound = nullptr;
 	SwitchingWeapons = false;
-	SelfHealing = false;
 	Aiming = false;
 	Sprinting = false;
 	AttackRequested = false;
@@ -131,12 +128,14 @@ void _Player::Reset() {
 	WeaponSwitchTimer = 0.0;
 	ReloadTimer = 0.0;
 	SelfHealTimer = 0.0;
+	LastHitTimer = 0.0;
 	UseTimer = 0.0;
 	WeaponSwitchFrom = -1;
 	WeaponSwitchTo = -1;
 	Stamina = 100.0f;
 	InvulnerableTimer = 0.0;
 	Flashlight = false;
+	StopAudio();
 	for(int i = 0; i < SKILL_COUNT; i++)
 		Skills[i] = 0;
 
@@ -144,11 +143,9 @@ void _Player::Reset() {
 	Ammo.clear();
 	Keys.clear();
 
-	CalculateExperienceStats();
-	CalculateSkillsRemaining();
-	RecalculateStats();
+	if(Recalculate)
+		RecalculateStats();
 	ResetWeaponAnimation();
-	StopAudio();
 
 	Animation->Play(0);
 	Animation->Stop();
@@ -230,7 +227,8 @@ void _Player::RecalculateStats() {
 	}
 	ReloadPeriod = Weapon[WEAPONATTACK_MAIN].Attributes["reload_period"].Double / Stats.GetSkillBonusMultiplier(Skills[SKILL_DEXTERITY], SKILL_DEXTERITY);
 	WeaponSwitchPeriod = PLAYER_WEAPONSWITCHPERIOD / Stats.GetSkillBonusMultiplier(Skills[SKILL_DEXTERITY], SKILL_DEXTERITY);
-	SelfHealPeriod = PLAYER_SELFHEAL_PERIOD / Stats.GetSkillBonusMultiplier(Skills[SKILL_CUNNING], SKILL_CUNNING, 1);
+	SelfHealStartTime = PLAYER_HEAL_STARTTIME / Stats.GetSkillBonusMultiplier(Skills[SKILL_CUNNING], SKILL_CUNNING, 1);
+	SelfHealPeriod = PLAYER_HEAL_PERIOD / Stats.GetSkillBonusMultiplier(Skills[SKILL_CUNNING], SKILL_CUNNING, 1);
 	ZoomScale = Weapon[WEAPONATTACK_MAIN].Attributes["zoom_scale"].Float;
 
 	BaseMoveSpeed = 100 + Stats.GetSkill(Skills[SKILL_CUNNING], SKILL_CUNNING);
@@ -277,11 +275,12 @@ void _Player::Update(double FrameTime) {
 	WeaponSwitchTimer += FrameTime;
 	ReloadTimer += FrameTime;
 	UseTimer += FrameTime;
-	if(SelfHealing) {
-		SelfHealTimer += FrameTime;
-		if(SelfHealTimer >= SelfHealPeriod) {
-			SelfHealTimer = 0;
-			int HealAmount = (PLAYER_SELFHEAL_PERCENT * HealModifier + 0.5f) * 0.01f * MaxHealth;
+	LastHitTimer += FrameTime;
+	if(LastHitTimer >= PLAYER_HEAL_STARTTIME && Health < MaxHealth * PLAYER_HEAL_THRESHOLD) {
+		SelfHealTimer -= FrameTime;
+		if(SelfHealTimer <= 0) {
+			SelfHealTimer += SelfHealPeriod;
+			int HealAmount = std::max(1, (int)(HealModifier * MaxHealth * 0.01f));
 			UpdateHealth(HealAmount);
 		}
 	}
@@ -1163,15 +1162,12 @@ void _Player::UpdateColor() {
 // Called when the player gets hit
 void _Player::OnHit(_Entity *Attacker, const _Hit &Hit) {
 	_Entity::OnHit(Attacker, Hit);
-	SelfHealTimer = 0.0;
+	LastHitTimer = 0.0;
+	SelfHealTimer = SelfHealPeriod;
 }
 
 int _Player::GetInventoryMaxStack() const {
 	return INVENTORY_MAX_STACK;
-}
-
-bool _Player::CanSelfHeal() const {
-	return Health < MaxHealth && !SwitchingWeapons && !Reloading && !IsMeleeAttacking() && !IsDying();
 }
 
 bool _Player::CanReload() const {

@@ -427,10 +427,6 @@ void _HUD::Render(const ae::_Camera *Camera, bool FullMap) {
 	if(Player->SwitchingWeapons)
 		DrawIndicator("Switching Weapons", Player->GetWeaponSwitchPercent(), ae::Assets.Textures["textures/hud/indicator_weaponswitch.png"]);
 
-	// Heal indicator
-	if(Player->SelfHealing)
-		DrawIndicator("Healing", Player->GetSelfHealPercent(), ae::Assets.Textures["textures/hud/indicator_heal.png"]);
-
 	// Draw weapons
 	DrawHUDWeapon(Player->GetMainHand(), ae::Assets.Elements["element_hud_mainhand"], ae::Assets.Elements["image_mainhand_icon"], ae::Assets.Elements["label_hud_mainhand_ammo"]);
 	DrawHUDWeapon(Player->GetOffHand(), ae::Assets.Elements["element_hud_offhand"], ae::Assets.Elements["image_offhand_icon"], ae::Assets.Elements["label_hud_offhand_ammo"]);
@@ -657,7 +653,7 @@ void _HUD::DrawCharacterScreen() {
 	DrawPosition.y += 10 * ae::_Element::GetUIScale();
 
 	// Defense
-	Buffer << int(PLAYER_SELFHEAL_PERCENT * Player->HealModifier + 0.5f) << "%";
+	Buffer << int(Player->HealModifier + 0.5f) << "%";
 	DrawAttribute("Self Heal Percent", Buffer, DrawPosition);
 
 	Buffer << Player->DamageBlock;
