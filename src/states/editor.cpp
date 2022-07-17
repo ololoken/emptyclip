@@ -619,6 +619,11 @@ void _EditorState::HandleMouseWheel(int Direction) {
 		if(IsShiftDown)
 			Multiplier = 10.0f * Direction;
 
+		if(SelectedBlock && IsCtrlDown) {
+			ExecuteChangeZ(-Direction, !IsShiftDown);
+			return;
+		}
+
 		// Zoom
 		Camera->UpdateDistance(-Multiplier);
 	}
