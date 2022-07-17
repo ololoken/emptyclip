@@ -107,7 +107,7 @@ void _Player::Reset(bool Recalculate) {
 	DropRate = 100;
 	PickupModifier = 1.0f;
 	HealModifier = 1.0f;
-	MapID = GAME_STARTLEVEL;
+	MapID = GAME_FIRSTLEVEL;
 	CheckpointIndex = 0;
 	Progression = 0;
 	Active = true;
