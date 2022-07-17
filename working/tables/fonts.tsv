@@ -1,4 +1,4 @@
-identifier	font	program	size	scaled
+id	font	program	size	scaled
 menu_buttons	fonts/pt_sans_bold.ttf	text	34	1
 hud_tiny	fonts/pt_sans_bold.ttf	text	16	1
 hud_char	fonts/pt_sans_bold.ttf	text	18	1

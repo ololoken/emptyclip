@@ -1,4 +1,4 @@
-name	vertex	fragment	attribs	max_lights
+id	vertex	fragment	attribs	max_lights
 text	shaders/ortho_pos_uv.vert	shaders/text.frag	2	0
 pos	shaders/pos.vert	shaders/pos.frag	1	0
 pos_uv	shaders/pos_uv.vert	shaders/pos_uv.frag	2	10

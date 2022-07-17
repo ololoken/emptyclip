@@ -1,4 +1,4 @@
-id	name	icon_texture	amount	max
+id	name	icon_id	amount	max
 ammo_pistol	Pistol Ammo	textures/items/ammo_pistol.png	10	75
 ammo_magnum	Magnum Ammo	textures/items/ammo_magnum.png	6	30
 ammo_shells	Shotgun Shells	textures/items/ammo_shotgun.png	10	50

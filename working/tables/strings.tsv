@@ -1,4 +1,4 @@
-identifier	text
+id	text
 test	This is a test message
 start_campaign	Campaign mode is similar to a linear first-person shooter game, with secrets and bosses.
 start_adventure	Adventure mode is an open-ended game where you can explore dungeons, find new towns, gamble for items, etc.

@@ -1,4 +1,4 @@
-identifier	red	green	blue	alpha
+id	r	g	b	a
 white	1	1	1	1
 red	1	0	0	1
 red_dark	0.5	0	0	1

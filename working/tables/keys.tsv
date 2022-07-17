@@ -1,4 +1,4 @@
-do	name	icon_id	doorcolor_id
+id	name	icon_id	doorcolor_id
 key_red	Red Key	textures/items/key_red.png	red
 key_green	Green Key	textures/items/key_green.png	green
 key_blue	Blue Key	textures/items/key_blue.png	blue
