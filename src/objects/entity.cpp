@@ -415,20 +415,20 @@ void _Entity::Move(double FrameTime) {
 		CurrentAccuracy = std::min(CurrentAccuracy + Speed * MoveRecoil, MaxAccuracy[WEAPONATTACK_MAIN]);
 
 	// Get a list of entities that the object is colliding with
-	std::vector<_Hit> Hits;
 	glm::vec2 NewPosition = Position + MoveDirection;
 	bool AxisAlignedPush = false;
-	if(!IsInvulnerable())
-		Map->CheckEntityCollisionsInGrid(NewPosition, Radius, this, Hits, AxisAlignedPush, OBJECT_PUSH_FACTOR);
+	if(!IsInvulnerable()) {
+		std::vector<_Hit> &Hits = Map->CheckEntityCollisionsInGrid(NewPosition, Radius, this, AxisAlignedPush, OBJECT_PUSH_FACTOR);
 
-	// Resolve pushes
-	for(auto Hit : Hits) {
+		// Resolve pushes
+		for(auto Hit : Hits) {
 
-		// If at least one push is axis aligned, don't push with diagonals
-		if(AxisAlignedPush && Hit.Push.x != 0 && Hit.Push.y != 0)
-			continue;
+			// If at least one push is axis aligned, don't push with diagonals
+			if(AxisAlignedPush && Hit.Push.x != 0 && Hit.Push.y != 0)
+				continue;
 
-		NewPosition += Hit.Push;
+			NewPosition += Hit.Push;
+		}
 	}
 
 	// Check collisions with walls and map boundaries

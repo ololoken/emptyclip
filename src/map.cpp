@@ -63,6 +63,9 @@ _Map::_Map() :
 	AmbientLightPeriod(0.0),
 	AmbientLightTimer(0.0) {
 
+	ObjectsToCheck.reserve(10);
+	CollisionHits.reserve(10);
+	CollisionPushes.reserve(10);
 }
 
 // Initialize
@@ -473,7 +476,7 @@ bool _Map::CheckTileCollisions(const glm::vec2 &TargetPosition, float Radius, gl
 	int TopTile = (int)Top;
 	int BottomTile = (int)Bottom;
 
-	std::vector<glm::vec2> Pushes;
+	CollisionPushes.clear();
 	bool AxisAlignedPush = false;
 	for(int i = LeftTile; i <= RightTile; i++) {
 		for(int j = TopTile; j <= BottomTile; j++) {
@@ -485,7 +488,7 @@ bool _Map::CheckTileCollisions(const glm::vec2 &TargetPosition, float Radius, gl
 			Hit.AxisAlignedPush = false;
 			if(CheckAABBCollision(NewPosition, Radius, AABB, true, Hit)) {
 				Touching = true;
-				Pushes.push_back(Hit.Push);
+				CollisionPushes.push_back(Hit.Push);
 
 				// Flag at least one axis aligned push
 				if(Hit.AxisAlignedPush)
@@ -495,7 +498,7 @@ bool _Map::CheckTileCollisions(const glm::vec2 &TargetPosition, float Radius, gl
 	}
 
 	// Resolve collision
-	for(const auto &Push : Pushes) {
+	for(const auto &Push : CollisionPushes) {
 		if(!(AxisAlignedPush && Push.x != 0 && Push.y != 0)) {
 			NewPosition += Push;
 		}
@@ -626,7 +629,7 @@ void _Map::GetCloseObjects(const glm::vec2 &Position, float Radius, int GridType
 }
 
 // Returns a list of entities that an object is colliding with
-void _Map::CheckEntityCollisionsInGrid(const glm::vec2 &Position, float Radius, const _Object *SkipObject, std::vector<_Hit> &Hits, bool &AxisAlignedPush, float PushFactor) const {
+std::vector<_Hit> &_Map::CheckEntityCollisionsInGrid(const glm::vec2 &Position, float Radius, const _Object *SkipObject, bool &AxisAlignedPush, float PushFactor) {
 	if(!Data)
 		throw std::runtime_error("Tile data uninitialized!");
 
@@ -635,7 +638,7 @@ void _Map::CheckEntityCollisionsInGrid(const glm::vec2 &Position, float Radius, 
 	GetTileBounds(Position, Radius, TileBounds);
 
 	// Get unique list of objects to check against
-	std::unordered_map<_Entity *, int> CheckEntities(10);
+	ObjectsToCheck.clear();
 	for(int i = TileBounds.Start.x; i <= TileBounds.End.x; i++) {
 		for(int j = TileBounds.Start.y; j <= TileBounds.End.y; j++) {
 			for(int k = 0; k < 2; k++) {
@@ -644,16 +647,15 @@ void _Map::CheckEntityCollisionsInGrid(const glm::vec2 &Position, float Radius, 
 					if(Entity == SkipObject || Entity->IsDying())
 						continue;
 
-					CheckEntities[Entity] = 1;
+					ObjectsToCheck[Entity] = 1;
 				}
 			}
 		}
 	}
 
-	Hits.reserve(CheckEntities.size());
-
 	// Get push vectors for each hit object
-	for(const auto &HitEntity : CheckEntities) {
+	CollisionHits.clear();
+	for(const auto &HitEntity : ObjectsToCheck) {
 		_Entity *Entity = HitEntity.first;
 		if(Entity->Circle) {
 			float DistanceSquared = glm::distance2(Entity->Position, Position);
@@ -672,7 +674,7 @@ void _Map::CheckEntityCollisionsInGrid(const glm::vec2 &Position, float Radius, 
 					Hit.Push = glm::normalize(CenterVector);
 					Hit.Push *= (RadiiSum - sqrtf(DistanceSquared)) * PushFactor;
 				}
-				Hits.push_back(Hit);
+				CollisionHits.push_back(Hit);
 			}
 		}
 		else {
@@ -689,12 +691,14 @@ void _Map::CheckEntityCollisionsInGrid(const glm::vec2 &Position, float Radius, 
 			Hit.AxisAlignedPush = false;
 			if(CheckAABBCollision(Position, Radius, AABB, true, Hit)) {
 				Hit.Push *= PushFactor;
-				Hits.push_back(Hit);
+				CollisionHits.push_back(Hit);
 				if(Hit.AxisAlignedPush)
 					AxisAlignedPush = true;
 			}
 		}
 	}
+
+	return CollisionHits;
 }
 
 // Checks for melee collisions with entities in the collision grid
