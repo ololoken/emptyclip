@@ -1718,7 +1718,7 @@ int _Map::RenderForeground() {
 		return 0;
 
 	// Set up graphics
-	ae::Graphics.SetProgram(ae::Assets.Programs["pos_uv"]);
+	ae::Graphics.SetProgram(ae::Assets.Programs["map_norm"]);
 	ae::Graphics.SetColor(glm::vec4(1.0f));
 	ae::Graphics.SetDepthMask(true);
 	ae::Graphics.SetDepthTest(true);
