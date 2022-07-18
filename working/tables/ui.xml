@@ -177,10 +177,12 @@
 			<element id="label_button_editor_fore_key" font="editor_tiny" text="F" offset_x="0" offset_y="26" alignment_x="1" alignment_y="3" scaled="false"/>
 		</element>
 		<element id="button_editor_move_layer_up" style="style_editor_button_brown" hover_style="style_editor_button_selected" offset_x="268" size_x="32" size_y="32" alignment_x="0" alignment_y="0" clickable="true" scaled="false" index="7">
-			<element id="label_button_editor_move_layer_up" font="editor_tiny" text="Up" offset_x="0" offset_y="19" alignment_x="1" alignment_y="3" scaled="false"/>
+			<element id="label_button_editor_move_layer_up1" font="editor_tiny" text="Layer" offset_x="0" offset_y="12" alignment_x="1" alignment_y="3" scaled="false"/>
+			<element id="label_button_editor_move_layer_up2" font="editor_tiny" text="Up" offset_x="0" offset_y="26" alignment_x="1" alignment_y="3" scaled="false"/>
 		</element>
 		<element id="button_editor_move_layer_down" style="style_editor_button_brown" hover_style="style_editor_button_selected" offset_x="302" size_x="32" size_y="32" alignment_x="0" alignment_y="0" clickable="true" scaled="false" index="8">
-			<element id="label_button_editor_move_layer_down" font="editor_tiny" text="Down" offset_x="0" offset_y="19" alignment_x="1" alignment_y="3" scaled="false"/>
+			<element id="label_button_editor_move_layer_down1" font="editor_tiny" text="Layer" offset_x="0" offset_y="12" alignment_x="1" alignment_y="3" scaled="false"/>
+			<element id="label_button_editor_move_layer_down2" font="editor_tiny" text="Down" offset_x="0" offset_y="26" alignment_x="1" alignment_y="3" scaled="false"/>
 		</element>
 		<element id="button_editor_mode_block" style="style_editor_button_purple" hover_style="style_editor_button_selected" offset_x="366" size_x="32" size_y="32" alignment_x="0" alignment_y="0" clickable="true" scaled="false" index="9">
 			<element id="label_button_editor_block" font="editor_tiny" text="Block" offset_x="0" offset_y="12" alignment_x="1" alignment_y="3" scaled="false"/>
