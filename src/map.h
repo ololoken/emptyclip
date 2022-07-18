@@ -272,6 +272,7 @@ class _Map {
 		int Monsters;
 		int Crates;
 		int Secrets;
+		bool AmbientClock;
 
 		// Objects
 		ae::_Camera *Camera;
