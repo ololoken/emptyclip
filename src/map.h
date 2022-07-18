@@ -211,8 +211,8 @@ class _Map {
 		bool HasEvents(const glm::ivec2 &Position) const;
 
 		glm::vec4 GetAmbientLight() const { return OldAmbientLight * (1.0f - AmbientLightBlendFactor) + AmbientLight * AmbientLightBlendFactor; }
-		void SetAmbientLight(const glm::vec4 &Color) { OldAmbientLight = AmbientLight; AmbientLight = Color; }
-		void SetAmbientLightChangePeriod(double Value) { AmbientLightPeriod = Value; AmbientLightTimer = AmbientLightBlendFactor = 0.0; }
+		void SetAmbientLight(const std::string &ColorID, double ChangePeriod);
+		void SetAmbientLight(const glm::vec4 &Color, double ChangePeriod);
 
 		int RenderFloors();
 		int RenderWalls();
@@ -265,6 +265,7 @@ class _Map {
 
 		// Stats
 		std::string Filename;
+		glm::vec4 MapAmbientLight;
 		glm::ivec2 Size;
 		int MapType;
 		int Level;

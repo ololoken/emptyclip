@@ -1329,10 +1329,8 @@ void _PlayState::CheckEvents(const _Entity *Entity) {
 					Event->StartTimer();
 					ActiveEvents.push_back(Event);
 				}
-				else {
-					Map->SetAmbientLight(ae::Assets.Colors[Event->ItemID]);
-					Map->SetAmbientLightChangePeriod(LIGHT_CHANGE_PERIOD);
-				}
+				else
+					Map->SetAmbientLight(Event->ItemID, LIGHT_CHANGE_PERIOD);
 			} break;
 			case EVENT_SECRET: {
 				ae::Audio.PlaySound(ae::Assets.Sounds["game_secret0"]);
@@ -1396,8 +1394,7 @@ void _PlayState::UpdateEvents(double FrameTime) {
 				Decrement = true;
 			} break;
 			case EVENT_LIGHT: {
-				Map->SetAmbientLight(ae::Assets.Colors[Event->ItemID]);
-				Map->SetAmbientLightChangePeriod(LIGHT_CHANGE_PERIOD);
+				Map->SetAmbientLight(Event->ItemID, LIGHT_CHANGE_PERIOD);
 				Decrement = true;
 			} break;
 			default:

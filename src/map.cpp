@@ -47,6 +47,7 @@ inline bool CompareHitDistance(_Hit &First, _Hit &Second) {
 
 // Initialize
 _Map::_Map() :
+	MapAmbientLight(0.5f, 0.5f, 0.5f, 1.0f),
 	Size{MAP_WIDTH, MAP_HEIGHT},
 	MapType(MAPTYPE_CAMPAIGN),
 	Level(1),
@@ -57,8 +58,8 @@ _Map::_Map() :
 	ObjectManager(new _ObjectManager()),
 	MinimapCaptureSize(HUD_MINIMAP_CAPTURE_SIZE),
 	Data(nullptr),
-	AmbientLight(0.5f, 0.5f, 0.5f, 1.0f),
-	OldAmbientLight(0.5f, 0.5f, 0.5f, 1.0f),
+	AmbientLight(MapAmbientLight),
+	OldAmbientLight(MapAmbientLight),
 	AmbientLightBlendFactor(1.0f),
 	AmbientLightPeriod(0.0),
 	AmbientLightTimer(0.0) {
@@ -117,6 +118,11 @@ _Map::_Map(const std::string &Filename, int SpawnMultiplier) : _Map() {
 					case 's': {
 						File >> Size.x >> Size.y;
 					} break;
+					// Ambient light
+					case 'a': {
+						File >> MapAmbientLight.r >> MapAmbientLight.g >> MapAmbientLight.b;
+						AmbientLight = OldAmbientLight = MapAmbientLight;
+					} break;
 				}
 			} break;
 			// Objects
@@ -160,7 +166,7 @@ _Map::_Map(const std::string &Filename, int SpawnMultiplier) : _Map() {
 						Event = new _Event();
 						Events.push_back(Event);
 					} break;
-					// ID
+					// Type
 					case 't': {
 						File >> Event->Type;
 					} break;
@@ -327,7 +333,8 @@ _Map::~_Map() {
 	for(const auto &Particle : Particles)
 		delete Particle;
 
-	if(Data != nullptr) {
+	// Delete tile data
+	if(Data) {
 		for(int i = 0; i < Size.x; i++)
 			delete[] Data[i];
 		delete[] Data;
@@ -337,7 +344,7 @@ _Map::~_Map() {
 // Saves the level to a file
 bool _Map::Save(const std::string &String) {
 
-	// Add extensions
+	// Add extension
 	Filename = FixFilename(String);
 
 	// Open gz output stream
@@ -352,6 +359,7 @@ bool _Map::Save(const std::string &String) {
 	File << "Hl " << Level << '\n';
 	File << "Ht " << MapType << '\n';
 	File << "Hs " << Size.x << ' ' << Size.y << '\n';
+	File << "Ha " << MapAmbientLight.r << ' ' << MapAmbientLight.g << ' ' << MapAmbientLight.b << '\n';
 
 	// Objects
 	for(const auto &ObjectSpawn : ObjectSpawns) {
@@ -377,7 +385,7 @@ bool _Map::Save(const std::string &String) {
 		if(Event->ParticleID.size())
 			File << "EP " << Event->ParticleID << '\n';
 
-		// Write tiles
+		// Event tiles
 		for(const auto &Tile : Event->Tiles) {
 			File << "Dn" << '\n';
 			File << "Dp " << Tile.Coord.x << ' ' << Tile.Coord.y << '\n';
@@ -1362,6 +1370,23 @@ bool _Map::HasEvents(const glm::ivec2 &Position) const {
 		throw std::runtime_error("Tile data uninitialized!");
 
 	return Data[Position.x][Position.y].Events.size() > 0;
+}
+
+// Change ambient light with color id
+void _Map::SetAmbientLight(const std::string &ColorID, double ChangePeriod) {
+	if(ColorID.empty())
+		SetAmbientLight(MapAmbientLight, ChangePeriod);
+	else
+		SetAmbientLight(ae::Assets.Colors[ColorID], ChangePeriod);
+}
+
+// Change ambient light
+void _Map::SetAmbientLight(const glm::vec4 &Color, double ChangePeriod) {
+	OldAmbientLight = AmbientLight;
+	AmbientLight = Color;
+	AmbientLightPeriod = ChangePeriod;
+	AmbientLightTimer = 0.0;
+	AmbientLightBlendFactor = 0.0;
 }
 
 // Gets a list of event based on a position
