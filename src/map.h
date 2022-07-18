@@ -109,6 +109,19 @@ struct _TileBounds {
 // Holds data for a block of tiles
 struct _Block {
 
+	_Block() :
+		Start(0.0f),
+		End(0.0f),
+		Texture(nullptr),
+		AltTexture(nullptr),
+		MinZ(0.0f),
+		MaxZ(0.0f),
+		Rotation(0.0f),
+		ScaleX(0.0f),
+		Wall(false),
+		Walkable(false)
+	{ }
+
 	void GetBounds(glm::vec4 &Bounds) { Bounds[0] = Start.x; Bounds[1] = Start.y; Bounds[2] = End.x + 1.0f; Bounds[3] = End.y + 1.0f; }
 
 	glm::ivec2 Start;

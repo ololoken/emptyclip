@@ -76,160 +76,244 @@ _Map::_Map(const std::string &Filename, int SpawnMultiplier) : _Map() {
 	this->Filename = FixFilename(Filename);
 
 	// Load file
-	gzifstream InputFile(("maps/" + this->Filename).c_str(), std::ios::in);
-	if(!InputFile)
+	gzifstream File(("maps/" + this->Filename).c_str(), std::ios::in);
+	if(!File)
 		throw std::runtime_error("Cannot load file: " + this->Filename);
 
-	// Get file version
-	int FileVersion;
-	InputFile >> FileVersion;
-	if(FileVersion != MAP_FILEVERSION)
-		throw std::runtime_error("Level version mismatch: ");
+	// Read file
+	_ObjectSpawn *ObjectSpawn = nullptr;
+	_Event *Event = nullptr;
+	_Block *Block = nullptr;
+	_EventTile *EventTile = nullptr;
+	while(!File.eof() && File.peek() != EOF) {
 
-	// Level used for default item/monster levels
-	InputFile >> Level;
+		// Read chunk type
+		char ChunkType;
+		File >> ChunkType;
 
-	// Get map type
-	InputFile >> MapType;
+		// Handle chunk type
+		switch(ChunkType) {
+			// Header
+			case 'H': {
+				char SubChunkType;
+				File >> SubChunkType;
+				switch(SubChunkType) {
+					// Version
+					case 'v': {
+						int FileVersion;
+						File >> FileVersion;
+						if(FileVersion != MAP_FILEVERSION)
+							throw std::runtime_error("Level version mismatch: " + std::to_string(FileVersion));
+					} break;
+					// Level used for default item/monster levels
+					case 'l': {
+						File >> Level;
+					} break;
+					// Type
+					case 't': {
+						File >> MapType;
+					} break;
+					// Size
+					case 's': {
+						File >> Size.x >> Size.y;
+					} break;
+				}
+			} break;
+			// Objects
+			case 'O': {
+				char SubChunkType;
+				File >> SubChunkType;
+				switch(SubChunkType) {
+					// New
+					case 'n': {
+						ObjectSpawn = new _ObjectSpawn();
+						ObjectSpawns.push_back(ObjectSpawn);
+					} break;
+					// ID
+					case 'i': {
+						File.ignore(1);
+						std::getline(File, ObjectSpawn->ID, '\n');
+						if(Stats.Objects.find(ObjectSpawn->ID) == Stats.Objects.end())
+							throw std::runtime_error(std::string(__func__) + " Unknown object '" + ObjectSpawn->ID + "'");
 
-	// Read dimensions
-	InputFile >> Size.x >> Size.y;
+						ObjectSpawn->Type = Stats.Objects.at(ObjectSpawn->ID).Type;
+					} break;
+					// Level
+					case 'l': {
+						File >> ObjectSpawn->Level;
+					} break;
+					// Position
+					case 'p': {
+						glm::vec2 Position;
+						File >> Position.x >> Position.y;
+						ObjectSpawn->Position = Position;
+					} break;
+				}
+			} break;
+			// Events
+			case 'E': {
+				char SubChunkType;
+				File >> SubChunkType;
+				switch(SubChunkType) {
+					// New
+					case 'n': {
+						Event = new _Event();
+						Events.push_back(Event);
+					} break;
+					// ID
+					case 't': {
+						File >> Event->Type;
+					} break;
+					// Active
+					case 'a': {
+						File >> Event->Active;
+					} break;
+					// Bounds
+					case 'b': {
+						File >> Event->Start.x >> Event->Start.y >> Event->End.x >> Event->End.y;
+					} break;
+					// Level
+					case 'l': {
+						File >> Event->Level;
+					} break;
+					// Spawn level
+					case 's': {
+						File >> Event->SpawnLevel;
+					} break;
+					// Activation period
+					case 'p': {
+						File >> Event->ActivationPeriod;
+					} break;
+					// Generic ID
+					case 'I': {
+						File.ignore(1);
+						std::getline(File, Event->ItemID, '\n');
+					} break;
+					// Monster ID
+					case 'M': {
+						File.ignore(1);
+						std::getline(File, Event->MonsterID, '\n');
+						if(Stats.Objects.find(Event->MonsterID) == Stats.Objects.end())
+							throw std::runtime_error("Unknown monster '" + Event->MonsterID + "'");
+					} break;
+					// Particle ID
+					case 'P': {
+						File.ignore(1);
+						std::getline(File, Event->ParticleID, '\n');
+						if(GameAssets.Particles.find(Event->ParticleID) == GameAssets.Particles.end())
+							throw std::runtime_error("Unknown particle '" + Event->ParticleID + "'");
+					} break;
+				}
+			} break;
+			// Event data
+			case 'D': {
+				char SubChunkType;
+				File >> SubChunkType;
+				switch(SubChunkType) {
+					// New
+					case 'n': {
+						Event->Tiles.push_back(_EventTile());
+						EventTile = &Event->Tiles.back();
+					} break;
+					// Position
+					case 'p': {
+						File >> EventTile->Coord.x >> EventTile->Coord.y;
+					} break;
+					// Layer
+					case 'l': {
+						File >> EventTile->Layer;
+					} break;
+					// Block ID
+					case 'B': {
+						File >> EventTile->BlockID;
+					} break;
+				}
+			} break;
+			// Blocks
+			case 'B': {
+				char SubChunkType;
+				File >> SubChunkType;
+				switch(SubChunkType) {
+					// New
+					case 'n': {
+						int Layer;
+						File >> Layer;
+						Blocks[Layer].push_back(_Block());
+						Block = &Blocks[Layer].back();
+						if(Layer == MAPLAYER_WALL)
+							Block->Wall = true;
+						else
+							Block->Wall = false;
+					} break;
+					// Bounds
+					case 'b': {
+						File >> Block->Start.x >> Block->Start.y >> Block->End.x >> Block->End.y >> Block->MinZ	>> Block->MaxZ;
+					} break;
+					// Rotation
+					case 'r': {
+						File >> Block->Rotation;
+					} break;
+					// Mirrored
+					case 'm': {
+						File >> Block->ScaleX;
+					} break;
+					// Walkable
+					case 'w': {
+						File >> Block->Walkable;
+					} break;
+					// Texture
+					case 't': {
+						char TextureType;
+						File >> TextureType;
 
-	// Load objects
-	size_t ObjectCount;
-	InputFile >> ObjectCount;
-	for(size_t i = 0; i < ObjectCount; i++) {
-
-		// Load Data
-		_ObjectSpawn *Object = new _ObjectSpawn();
-		InputFile >> Object->ID >> Object->Level >> Object->Position.x >> Object->Position.y;
-
-		// Check for object
-		if(Stats.Objects.find(Object->ID) == Stats.Objects.end())
-			throw std::runtime_error(std::string(__func__) + " Unknown object '" + Object->ID + "'");
-
-		Object->Type = Stats.Objects.at(Object->ID).Type;
-		ObjectSpawns.push_back(Object);
+						File.ignore(1);
+						std::string TexturePath;
+						std::getline(File, TexturePath, '\n');
+						if(TextureType == '1') {
+							Block->Texture = ae::Assets.Textures[TexturePath];
+							if(!Block->Texture)
+								throw std::runtime_error("Unknown texture  '" + TexturePath + "'");
+						}
+						else {
+							Block->AltTexture = ae::Assets.Textures[TexturePath];
+							if(!Block->AltTexture)
+								throw std::runtime_error("Unknown texture  '" + TexturePath + "'");
+						}
+					} break;
+				}
+			} break;
+		}
 	}
 
-	// Read events count
-	size_t EventCount;
-	InputFile >> EventCount;
-
-	// Load events
-	for(size_t i = 0; i < EventCount; i++) {
-
-		// Create event
-		_Event *Event = new _Event();
-
-		size_t TilesSize;
-		InputFile
-				>> Event->Type
-				>> Event->Active
-				>> Event->Start.x
-				>> Event->Start.y
-				>> Event->End.x
-				>> Event->End.y
-				>> Event->Level
-				>> Event->SpawnLevel
-				>> Event->ActivationPeriod
-				>> TilesSize;
-
-		InputFile.ignore(std::numeric_limits<std::streamsize>::max(), ' ');
-		std::getline(InputFile, Event->ItemID, '\t');
-		std::getline(InputFile, Event->MonsterID, '\t');
-		std::getline(InputFile, Event->ParticleID, '\n');
-
-		// Check for existence
-		if(Event->MonsterID != "" && Stats.Objects.find(Event->MonsterID) == Stats.Objects.end())
-			throw std::runtime_error("Cannot find monster: " + Event->MonsterID);
-		if(Event->ParticleID != "" && GameAssets.Particles.find(Event->ParticleID) == GameAssets.Particles.end())
-			throw std::runtime_error("Cannot find particle: " + Event->ParticleID);
-
-		// Add to stats
+	// Add to stats
+	for(const auto &Event : Events) {
 		switch(Event->Type) {
 			case EVENT_SPAWN: {
 				Event->Level = std::max(1, Event->Level);
-
 				if(!Event->MonsterID.empty()) {
 					_ObjectTemplate &Template = Stats.Objects.at(Event->MonsterID);
 					if(Template.Type == _Object::MONSTER) {
+						int TileCount = (int)Event->Tiles.size();
 						if(Template.Attributes.at("ai_type").Int) {
-							Monsters += TilesSize * Event->Level * SpawnMultiplier;
+							Monsters += TileCount * Event->Level * SpawnMultiplier;
 							Event->SpawnMultiplier = SpawnMultiplier;
 						}
 						else {
-							Crates += TilesSize * Event->Level;
+							Crates += TileCount * Event->Level;
 						}
 					}
 				}
 			} break;
+			case EVENT_CHECK:
+				CheckpointEvents.push_back(Event);
+			break;
 			case EVENT_SECRET:
 				Secrets++;
 			break;
 		}
-
-		// Create event
-		for(size_t j = 0; j < TilesSize; j++) {
-			glm::ivec2 Tile;
-			int TileLayer, TileBlockID;
-			InputFile >> Tile.x >> Tile.y >> TileLayer >> TileBlockID;
-			Tile = GetValidCoord(Tile);
-			Event->AddTile(_EventTile(Tile, TileLayer, TileBlockID));
-		}
-
-		// Add to list
-		Events.push_back(Event);
-		if(Event->Type == EVENT_CHECK)
-			CheckpointEvents.push_back(Event);
 	}
 
-	// Read block size
-	size_t BlockCount;
-	InputFile >> BlockCount;
-
-	// Load blocks
-	_Block Block;
-	for(size_t i = 0; i < BlockCount; i++) {
-
-		int Layer;
-		InputFile
-			>> Layer
-			>> Block.Start.x
-			>> Block.Start.y
-			>> Block.End.x
-			>> Block.End.y
-			>> Block.MinZ
-			>> Block.MaxZ
-			>> Block.Rotation
-			>> Block.ScaleX
-			>> Block.Wall
-			>> Block.Walkable;
-
-		InputFile.ignore(std::numeric_limits<std::streamsize>::max(), ' ');
-		std::string TexturePath;
-		std::string AltTexturePath;
-		std::getline(InputFile, TexturePath, '\t');
-		std::getline(InputFile, AltTexturePath, '\n');
-
-		Block.Texture = ae::Assets.Textures[TexturePath];
-		if(TexturePath != "" && !Block.Texture)
-			throw std::runtime_error("Cannot find texture: " + TexturePath);
-
-		if(AltTexturePath != "") {
-			Block.AltTexture = ae::Assets.Textures[AltTexturePath];
-			if(!Block.AltTexture)
-				throw std::runtime_error("Cannot find alt texture: " + AltTexturePath);
-		}
-		else
-			Block.AltTexture = nullptr;
-
-		Block.Start = GetValidCoord(Block.Start);
-		Block.End = GetValidCoord(Block.End);
-		Blocks[Layer].push_back(Block);
-	}
-
-	InputFile.close();
+	File.close();
 }
 
 // Shut down
@@ -252,6 +336,78 @@ _Map::~_Map() {
 			delete[] Data[i];
 		delete[] Data;
 	}
+}
+
+// Saves the level to a file
+bool _Map::Save(const std::string &String) {
+
+	// Add extensions
+	Filename = FixFilename(String);
+
+	// Open gz output stream
+	gzofstream File(("maps/" + Filename).c_str(), std::ios::out);
+	if(!File)
+		throw std::runtime_error("Cannot create file: " + Filename);
+
+	File << std::showpoint << std::fixed << std::setprecision(2);
+
+	// Header
+	File << "Hv " << MAP_FILEVERSION << '\n';
+	File << "Hl " << Level << '\n';
+	File << "Ht " << MapType << '\n';
+	File << "Hs " << Size.x << ' ' << Size.y << '\n';
+
+	// Objects
+	for(const auto &ObjectSpawn : ObjectSpawns) {
+		File << "On" << '\n';
+		File << "Oi " << ObjectSpawn->ID << '\n';
+		File << "Ol " << ObjectSpawn->Level << '\n';
+		File << "Op " << ObjectSpawn->Position.x << ' ' << ObjectSpawn->Position.y << '\n';
+	}
+
+	// Events
+	for(const auto &Event : Events) {
+		File << "En" << '\n';
+		File << "Et " << Event->Type << '\n';
+		File << "Ea " << Event->Active << '\n';
+		File << "Eb " << Event->Start.x << ' ' << Event->Start.y << ' ' << Event->End.x << ' ' << Event->End.y << '\n';
+		File << "El " << Event->Level << '\n';
+		File << "Es " << Event->SpawnLevel << '\n';
+		File << "Ep " << Event->ActivationPeriod << '\n';
+		if(Event->ItemID.size())
+			File << "EI " << Event->ItemID << '\n';
+		if(Event->MonsterID.size())
+			File << "EM " << Event->MonsterID << '\n';
+		if(Event->ParticleID.size())
+			File << "EP " << Event->ParticleID << '\n';
+
+		// Write tiles
+		for(const auto &Tile : Event->Tiles) {
+			File << "Dn" << '\n';
+			File << "Dp " << Tile.Coord.x << ' ' << Tile.Coord.y << '\n';
+			File << "Dl " << Tile.Layer << '\n';
+			File << "DB " << Tile.BlockID << '\n';
+		}
+	}
+
+	// Blocks
+	for(int i = 0; i < MAPLAYER_COUNT; i++) {
+		for(const auto &Block : Blocks[i]) {
+			File << "Bn" << i << '\n';
+			File << "Bb " << Block.Start.x << ' ' << Block.Start.y << ' ' << Block.End.x << ' ' << Block.End.y << ' ' << Block.MinZ << ' ' << Block.MaxZ << '\n';
+			File << "Br " << Block.Rotation << '\n';
+			File << "Bm " << Block.ScaleX << '\n';
+			File << "Bw " << Block.Walkable << '\n';
+			if(Block.Texture)
+				File << "Bt1 " << Block.Texture->Name << '\n';
+			if(Block.AltTexture)
+				File << "Bt2 " << Block.AltTexture->Name << '\n';
+		}
+	}
+
+	File.close();
+
+	return true;
 }
 
 // Create tile data
@@ -320,92 +476,6 @@ void _Map::InitializeTiles() {
 			}
 		}
 	}
-}
-
-// Saves the level to a file
-bool _Map::Save(const std::string &String) {
-
-	Filename = FixFilename(String);
-	gzofstream Output(("maps/" + Filename).c_str(), std::ios::out);
-	if(!Output)
-		throw std::runtime_error("Cannot create file: " + Filename);
-
-	Output << std::showpoint << std::fixed << std::setprecision(2);
-
-	// Header
-	Output
-		<< MAP_FILEVERSION << '\n'
-		<< Level << '\n'
-		<< MapType << '\n'
-		<< Size.x << ' ' << Size.y << '\n';
-
-	// Objects
-	Output << ObjectSpawns.size() << '\n';
-	for(size_t i = 0; i < ObjectSpawns.size(); i++) {
-		Output
-			<< ObjectSpawns[i]->ID << ' '
-			<< ObjectSpawns[i]->Level << ' '
-			<< ObjectSpawns[i]->Position.x << ' '
-			<< ObjectSpawns[i]->Position.y
-			<< '\n';
-	}
-
-	// Events
-	Output << Events.size() << '\n';
-	for(size_t i = 0; i < Events.size(); i++) {
-		Output
-			<< Events[i]->Type << ' '
-			<< Events[i]->Active << ' '
-			<< Events[i]->Start.x << ' '
-			<< Events[i]->Start.y << ' '
-			<< Events[i]->End.x << ' '
-			<< Events[i]->End.y << ' '
-			<< Events[i]->Level << ' '
-			<< Events[i]->SpawnLevel << ' '
-			<< Events[i]->ActivationPeriod << ' '
-			<< Events[i]->Tiles.size() << ' '
-			<< Events[i]->ItemID << '\t'
-			<< Events[i]->MonsterID << '\t'
-			<< Events[i]->ParticleID << '\n';
-
-		// Write tiles
-		for(size_t j = 0; j < Events[i]->Tiles.size(); j++)
-			Output << Events[i]->Tiles[j].Coord.x << ' ' << Events[i]->Tiles[j].Coord.y << ' ' << Events[i]->Tiles[j].Layer << ' ' << Events[i]->Tiles[j].BlockID << '\n';
-	}
-
-	// Blocks
-	Output << GetTotalBlockSize() << '\n';
-	for(int i = 0; i < MAPLAYER_COUNT; i++) {
-		for(size_t j = 0; j < Blocks[i].size(); j++) {
-
-			std::string TextureID;
-			if(Blocks[i][j].Texture)
-				TextureID = Blocks[i][j].Texture->Name;
-
-			std::string AltTextureID;
-			if(Blocks[i][j].AltTexture)
-				AltTextureID = Blocks[i][j].AltTexture->Name;
-
-			Output
-				<< i << ' '
-				<< Blocks[i][j].Start.x << ' '
-				<< Blocks[i][j].Start.y << ' '
-				<< Blocks[i][j].End.x << ' '
-				<< Blocks[i][j].End.y << ' '
-				<< Blocks[i][j].MinZ << ' '
-				<< Blocks[i][j].MaxZ << ' '
-				<< Blocks[i][j].Rotation << ' '
-				<< Blocks[i][j].ScaleX << ' '
-				<< Blocks[i][j].Wall << ' '
-				<< Blocks[i][j].Walkable << ' '
-				<< TextureID << '\t'
-				<< AltTextureID << '\n';
-		}
-	}
-
-	Output.close();
-
-	return true;
 }
 
 // Adds an object to the collision grid

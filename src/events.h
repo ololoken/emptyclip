@@ -40,7 +40,8 @@ enum EventType {
 };
 
 struct _EventTile {
-	_EventTile() { }
+
+	_EventTile() : Coord(0.0f), Layer(0), BlockID(0) { }
 	_EventTile(const glm::ivec2 &Coord, int Layer, int BlockID) : Coord(Coord), Layer(Layer), BlockID(BlockID) { }
 
 	glm::ivec2 Coord;
