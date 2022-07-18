@@ -1,6 +1,7 @@
 Empty Clip 2.0.0 -
 - Updated engine to use ae, which adds SDL2, OpenGL 3.3, and OpenAL support
 - Optimized rendering code and added support for high refresh monitors
+- Added per-pixel lighting and day/night cycle
 - Completely redesigned interface and added support for different screen resolutions
 - Inventory is bigger and can now hold equipment
 - Added equipment slot for melee weapons and separate hotkey for melee attacks (Mouse button 4 by default)

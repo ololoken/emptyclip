@@ -45,10 +45,29 @@ inline bool CompareHitDistance(_Hit &First, _Hit &Second) {
 	return First.DistanceSquared < Second.DistanceSquared;
 }
 
+// Colors of each time cycle
+const std::vector<glm::vec4> DayCycles = {
+	{ 0.0625f, 0.0625f, 0.375f,  1 },
+	{ 0.125f,  0.125f,  0.125f,  1 },
+	{ 0.75f,   0.75f,   0.5625f, 1 },
+	{ 0.6875f, 0.5625f, 0.375f,  1 },
+	{ 0.625f,  0.5f,    0.375f,  1 },
+};
+
+// Time of each cycle change
+const std::vector<double> DayCyclesTime = {
+	0.0  * 60.0,
+	6.0  * 60.0,
+	12.5 * 60.0,
+	16.5 * 60.0,
+	18.0 * 60.0,
+};
+
 // Initialize
 _Map::_Map() :
 	MapAmbientLight(0.5f, 0.5f, 0.5f, 1.0f),
 	Size{MAP_WIDTH, MAP_HEIGHT},
+	Clock(480.0),
 	MapType(MAPTYPE_CAMPAIGN),
 	Level(1),
 	Monsters(0),
@@ -76,6 +95,7 @@ _Map::_Map(const std::string &Filename, int SpawnMultiplier) : _Map() {
 		throw std::runtime_error("Empty file name");
 
 	this->Filename = FixFilename(Filename);
+	SpawnMultiplier = std::min(SpawnMultiplier, GAME_MAX_PROGRESSION_SPAWN);
 
 	// Load file
 	gzifstream File(("maps/" + this->Filename).c_str(), std::ios::in);
@@ -1378,6 +1398,57 @@ bool _Map::HasEvents(const glm::ivec2 &Position) const {
 	return Data[Position.x][Position.y].Events.size() > 0;
 }
 
+// Update ambient light
+void _Map::UpdateAmbientLight(double FrameTime) {
+
+	// Handle changes
+	if(AmbientLightPeriod > 0 && AmbientLightTimer <= AmbientLightPeriod) {
+		AmbientLightBlendFactor = AmbientLightTimer / AmbientLightPeriod;
+		AmbientLightTimer += FrameTime;
+	}
+	else
+		AmbientLightBlendFactor = 1.0f;
+
+	// Check for day night cycle
+	if(!AmbientClock)
+		return;
+
+	// Update clock
+	Clock += FrameTime;
+
+	// Find index by time
+	size_t NextCycle = DayCyclesTime.size();
+	for(size_t i = 0; i < DayCyclesTime.size(); i++) {
+		if(Clock < DayCyclesTime[i]) {
+			NextCycle = i;
+			break;
+		}
+	}
+
+	// Get indices for current and next cycle
+	size_t CurrentCycle = NextCycle - 1;
+	if(CurrentCycle >= DayCyclesTime.size())
+		CurrentCycle = 0;
+	if(NextCycle >= DayCyclesTime.size())
+		NextCycle = 0;
+
+	// Get current time diff
+	double Diff = Clock - DayCyclesTime[CurrentCycle];
+	if(Diff < 0)
+		Diff += MAP_DAY_LENGTH;
+
+	// Get length of cycle
+	double Length = DayCyclesTime[NextCycle] - DayCyclesTime[CurrentCycle];
+	if(Length < 0)
+		Length += MAP_DAY_LENGTH;
+
+	// Get percent to next cycle
+	float Percent = (float)(Diff / Length);
+
+	// Set color
+	AmbientLight = glm::mix(DayCycles[CurrentCycle], DayCycles[NextCycle], Percent);
+}
+
 // Change ambient light with color id
 void _Map::SetAmbientLight(const std::string &ColorID, double ChangePeriod) {
 	if(ColorID.empty())
@@ -1876,20 +1947,15 @@ int _Map::RenderParticles(int Type) {
 // Update map
 void _Map::Update(double FrameTime) {
 
+	// Update ambient light
+	UpdateAmbientLight(FrameTime);
+
 	// Add blocks and events to minimap
 	MinimapLayers.clear();
 	AddMinimapLayers();
 
 	// Update objects
 	ObjectManager->Update(FrameTime, this);
-
-	// Update ambient light
-	if(AmbientLightPeriod > 0 && AmbientLightTimer <= AmbientLightPeriod) {
-		AmbientLightBlendFactor = AmbientLightTimer / AmbientLightPeriod;
-		AmbientLightTimer += FrameTime;
-	}
-	else
-		AmbientLightBlendFactor = 1.0f;
 }
 
 // Adds an item to the item list and collision grid

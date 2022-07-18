@@ -267,6 +267,7 @@ class _Map {
 		std::string Filename;
 		glm::vec4 MapAmbientLight;
 		glm::ivec2 Size;
+		double Clock;
 		int MapType;
 		int Level;
 		int Monsters;
@@ -286,6 +287,7 @@ class _Map {
 
 	private:
 
+		void UpdateAmbientLight(double FrameTime);
 		bool CheckAABBCollision(const glm::vec2 &Position, float Radius, const float *AABB, bool Resolve, _Hit &Hit) const;
 
 		// Blocks

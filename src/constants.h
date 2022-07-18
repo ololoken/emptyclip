@@ -45,6 +45,8 @@ const  int          GAME_PROGRESSION_DIFFICULTY    =  5;
 const  double       GAME_EXPERIENCE_LOST           =  0.1;
 const  double       GAME_INVULNERABLE_TIME         =  3.0;
 const  int          GAME_MEDKIT_HEALTH_PERCENT     =  25;
+const  int          GAME_MAX_PROGRESSION           =  1000;
+const  int          GAME_MAX_PROGRESSION_SPAWN     =  10;
 //     Camera
 const  float        CAMERA_DISTANCE                =  6.5f;
 const  float        CAMERA_DISTANCE_AIMED          =  7.0f;
@@ -119,6 +121,7 @@ const  float        MAP_LAYEROFFSET                =  0.01f;
 const  int          MAP_WIDTH                      =  100;
 const  int          MAP_HEIGHT                     =  100;
 const  float        MAP_EPSILON                    =  0.0001f;
+const  double       MAP_DAY_LENGTH                 =  24.0*60.0;
 //     Editor
 const  std::string  EDITOR_TESTLEVEL               =  "test.map";
 const  float        EDITOR_OBJECTRADIUS            =  0.3f;

@@ -334,11 +334,20 @@ bool _PlayState::HandleCommand(ae::_Console *Console) {
 
 	// Handle dev commands
 	if(DevMode) {
-		if(Console->Command == "experience") {
-			if(Parameters.size() == 1) {
-				if(!Player)
-					return true;
+		if(Console->Command == "clock") {
+			if(!Map)
+				return true;
 
+			if(Parameters.size() == 1)
+				Map->Clock = std::clamp(ae::ToNumber<double>(Parameters[0]), 0.0, MAP_DAY_LENGTH);
+			else
+				Console->AddMessage("clock = " + std::to_string(Map->Clock));
+		}
+		else if(Console->Command == "experience") {
+			if(!Player)
+				return true;
+
+			if(Parameters.size() == 1) {
 				bool Adjust = false;
 				if(Parameters[0][0] == '+' || Parameters[0][0] == '-')
 					Adjust = true;
@@ -355,10 +364,10 @@ bool _PlayState::HandleCommand(ae::_Console *Console) {
 			Console->AddMessage("god = " + std::to_string(GodMode));
 		}
 		else if(Console->Command == "health") {
-			if(Parameters.size() == 1) {
-				if(!Player)
-					return true;
+			if(!Player)
+				return true;
 
+			if(Parameters.size() == 1) {
 				bool Adjust = false;
 				if(Parameters[0][0] == '+' || Parameters[0][0] == '-')
 					Adjust = true;
@@ -371,7 +380,18 @@ bool _PlayState::HandleCommand(ae::_Console *Console) {
 			else
 				Console->AddMessage("usage: " + Console->Command + " [+-][amount]");
 		}
+		else if(Console->Command == "progression") {
+			if(!Player)
+				return true;
 
+			if(Parameters.size() == 1) {
+				Player->Progression = std::clamp(ae::ToNumber<int>(Parameters[0]), 0, GAME_MAX_PROGRESSION);
+				Player->ProgressionTime = 0;
+				Player->RecalculateStats();
+			}
+			else
+				Console->AddMessage("usage: " + Console->Command + " [level]");
+		}
 		else if(Console->Command == "reset") {
 			if(!Player)
 				return true;
