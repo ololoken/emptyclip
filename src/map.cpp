@@ -240,10 +240,6 @@ _Map::_Map(const std::string &Filename, int SpawnMultiplier) : _Map() {
 						File >> Layer;
 						Blocks[Layer].push_back(_Block());
 						Block = &Blocks[Layer].back();
-						if(Layer == MAPLAYER_WALL)
-							Block->Wall = true;
-						else
-							Block->Wall = false;
 					} break;
 					// Bounds
 					case 'b': {
@@ -443,12 +439,10 @@ void _Map::InitializeTiles() {
 	for(size_t k = 0; k < Blocks[MAPLAYER_WALL].size(); k++) {
 		for(int i = Blocks[MAPLAYER_WALL][k].Start.x; i <= Blocks[MAPLAYER_WALL][k].End.x; i++) {
 			for(int j = Blocks[MAPLAYER_WALL][k].Start.y; j <= Blocks[MAPLAYER_WALL][k].End.y; j++) {
-				if(Blocks[MAPLAYER_WALL][k].Wall) {
-					if(Blocks[MAPLAYER_WALL][k].Walkable)
-						Data[i][j].Collision &= ~_Tile::ENTITY & ~_Tile::BULLET;
-					else
-						Data[i][j].Collision |= _Tile::ENTITY | _Tile::BULLET;
-				}
+				if(Blocks[MAPLAYER_WALL][k].Walkable)
+					Data[i][j].Collision &= ~_Tile::ENTITY & ~_Tile::BULLET;
+				else
+					Data[i][j].Collision |= _Tile::ENTITY | _Tile::BULLET;
 			}
 		}
 	}

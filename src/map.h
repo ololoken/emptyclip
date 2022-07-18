@@ -118,7 +118,6 @@ struct _Block {
 		MaxZ(0.0f),
 		Rotation(0.0f),
 		ScaleX(0.0f),
-		Wall(false),
 		Walkable(false)
 	{ }
 
@@ -132,7 +131,6 @@ struct _Block {
 	float MaxZ;
 	float Rotation;
 	float ScaleX;
-	bool Wall;
 	bool Walkable;
 };
 

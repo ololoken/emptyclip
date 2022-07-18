@@ -754,7 +754,6 @@ void _EditorState::Update(double FrameTime) {
 					Block.AltTexture = AltTexture;
 					Block.Rotation = Rotation;
 					Block.ScaleX = ScaleX;
-					Block.Wall = (EditLayer == MAPLAYER_WALL);
 					Block.Walkable = Walkable || (EditLayer == MAPLAYER_FORE);
 
 					Map->AddBlock(EditLayer, Block);
@@ -2159,14 +2158,7 @@ void _EditorState::ExecuteUpdateLayer(int Layer, bool Move) {
 			SelectedBlockIndex = Map->GetLastBlock(Layer, &SelectedBlock);
 
 			// Change block properties
-			if(Layer == MAPLAYER_WALL) {
-				SelectedBlock->Wall = true;
-				SelectedBlock->Walkable = false;
-			}
-			else {
-				SelectedBlock->Wall = false;
-				SelectedBlock->Walkable = true;
-			}
+			SelectedBlock->Walkable = (Layer == MAPLAYER_WALL) ? false : true;
 		}
 		else
 			DeselectBlock();
