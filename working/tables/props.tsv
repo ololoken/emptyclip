@@ -1,2 +1,2 @@
 id	name	icon_id	mesh_id	halfsize_x	halfsize_y	scale
-tree	Tree	textures/props/tree.png	meshes/tree.mesh	0.6	0.6	10
+tree	Tree	textures/props/tree.png	meshes/tree.mesh	0.3	0	10

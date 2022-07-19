@@ -730,7 +730,8 @@ _Object *_Stats::CreateProp(const std::string &ID, const glm::vec2 &Position) co
 	Prop->Mesh = ae::Assets.Meshes.at(Template.MeshID);
 	Prop->Texture = ae::Assets.Textures.at(Template.IconID);
 	Prop->Radius = Template.Attributes.at("halfsize_x").Float;
-	Prop->Circle = false;
+	if(Template.Attributes.at("halfsize_y").Float != 0.0f)
+		Prop->Circle = false;
 	Prop->Scale = Template.Attributes.at("scale").Float;
 
 	return Prop;
