@@ -569,7 +569,7 @@ void _PlayState::Update(double FrameTime) {
 	if(Player->Aiming) {
 		glm::vec2 CursorVector = WorldCursor - Player->Position;
 		Map->CollisionHits.clear();
-		Map->CheckBulletCollisions(Player, glm::normalize(CursorVector), Map->CollisionHits, GRID_PROP, true, 1, _Tile::BULLET);
+		Map->CheckBulletCollisions(Player, glm::normalize(CursorVector), Map->CollisionHits, GRID_MONSTER, true, 1, _Tile::BULLET);
 		if(Map->CollisionHits.size()) {
 			glm::vec2 HitVector = Map->CollisionHits.front().Position - Player->Position;
 			if(glm::dot(CursorVector, CursorVector) < glm::dot(HitVector, HitVector))
@@ -1475,7 +1475,7 @@ void _PlayState::SpawnObject(_ObjectSpawn *ObjectSpawn, bool GenerateStats, int 
 			Map->Monsters++;
 	}
 	else if(ObjectSpawn->Type == _Object::PROP)
-		Map->AddObject(Stats.CreateProp(ObjectSpawn->ID, ObjectSpawn->Position), GRID_PROP);
+		Map->AddObject(Stats.CreateProp(ObjectSpawn->ID, ObjectSpawn->Position), GRID_MONSTER);
 	else
 		Map->AddObject(Stats.CreateItem(ObjectSpawn->ID, ObjectSpawn->Level + AddedLevel, 0, 1, ObjectSpawn->Position, GenerateStats), GRID_ITEM);
 }

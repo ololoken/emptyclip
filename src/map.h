@@ -44,7 +44,6 @@ enum MapLayerTypes {
 enum CollisionGridType {
 	GRID_PLAYER,
 	GRID_MONSTER,
-	GRID_PROP,
 	GRID_ITEM,
 	GRID_COUNT
 };
