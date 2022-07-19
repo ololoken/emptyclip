@@ -44,6 +44,7 @@ enum MapLayerTypes {
 enum CollisionGridType {
 	GRID_PLAYER,
 	GRID_MONSTER,
+	GRID_PROP,
 	GRID_ITEM,
 	GRID_COUNT
 };
@@ -194,11 +195,11 @@ class _Map {
 		void Update(double FrameTime);
 
 		bool CheckTileCollisions(const glm::vec2 &TargetPosition, float Radius, glm::vec2 &NewPosition);
-		std::vector<_Hit> &CheckEntityCollisionsInGrid(const glm::vec2 &Position, float Radius, const _Object *SkipObject, bool &AxisAlignedPush, float PushFactor=1.0f);
+		std::vector<_Hit> &CheckCollisionsInGrid(const glm::vec2 &Position, float Radius, const _Object *SkipObject, bool &AxisAlignedPush, float PushFactor=1.0f);
 		_Object *GetCloseObject(const glm::vec2 &Position, float Radius, int GridType) const;
 		void GetCloseObjects(const glm::vec2 &Position, float Radius, int GridType, std::unordered_map<_Object *, int> &Objects, _Object **ClosestObject) const;
 		void CheckMeleeCollisions(_Entity *Attacker, int GridType, int Penetration, std::vector<_Hit> &Hits) const;
-		void CheckBulletCollisions(const glm::vec2 &Position, const glm::vec2 &Direction, std::vector<_Hit> &Hits, int GridType, bool CheckObjects, int Penetration, int CollisionFlag) const;
+		void CheckBulletCollisions(_Entity *Attacker, const glm::vec2 &Direction, std::vector<_Hit> &Hits, int GridType, bool CheckObjects, int Penetration, int CollisionFlag) const;
 		bool IsVisible(const glm::vec2 &Start, const glm::vec2 &End, int CheckFlag) const;
 		bool CanMoveTo(const glm::vec2 &Start, const glm::vec2 &End, const glm::vec2 &Size) const;
 		void AddObjectToGrid(_Object *Object, int Type);
@@ -255,8 +256,8 @@ class _Map {
 		const _Block *GetBlock(int Layer, const size_t Index) const;
 		glm::vec2 GetValidPosition(const glm::vec2 &Position) const;
 
-		void AddItem(_Item *Item);
-		void RemoveItem(_Item *Item);
+		void AddObject(_Object *Object, int GridType);
+		void RemoveObject(_Object *Object, int GridType);
 
 		bool CheckMinimapBounds(const glm::vec4 &Bounds);
 		void AddMinimapLayers();

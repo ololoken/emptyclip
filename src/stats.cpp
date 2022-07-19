@@ -605,7 +605,13 @@ void _Stats::LoadProps(const std::string &Path) {
 		std::getline(File, ID, '\t');
 		std::getline(File, Template.Name, '\t');
 		std::getline(File, Template.IconID, '\t');
-		std::getline(File, Template.MeshID, '\n');
+		std::getline(File, Template.MeshID, '\t');
+
+		File
+			>> Template.Attributes["halfsize_x"].Float
+			>> Template.Attributes["halfsize_y"].Float;
+
+		File.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
 		// Check for loaded textures
 		if(!ae::Assets.Textures[Template.IconID])
@@ -713,7 +719,7 @@ _Monster *_Stats::CreateMonster(const std::string &ID, int Level, const glm::vec
 	return Monster;
 }
 
-// Create pop
+// Create prop
 _Object *_Stats::CreateProp(const std::string &ID, const glm::vec2 &Position) const {
 	const _ObjectTemplate &Template = Objects.at(ID);
 
@@ -722,6 +728,8 @@ _Object *_Stats::CreateProp(const std::string &ID, const glm::vec2 &Position) co
 	Prop->SetPosition(Position);
 	Prop->Mesh = ae::Assets.Meshes.at(Template.MeshID);
 	Prop->Texture = ae::Assets.Textures.at(Template.IconID);
+	Prop->Radius = Template.Attributes.at("halfsize_x").Float;
+	Prop->Circle = false;
 
 	return Prop;
 }

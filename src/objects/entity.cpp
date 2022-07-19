@@ -419,7 +419,7 @@ void _Entity::Move(double FrameTime) {
 	glm::vec2 NewPosition = Position + MoveDirection;
 	bool AxisAlignedPush = false;
 	if(!IsInvulnerable()) {
-		std::vector<_Hit> &Hits = Map->CheckEntityCollisionsInGrid(NewPosition, Radius, this, AxisAlignedPush, OBJECT_PUSH_FACTOR);
+		std::vector<_Hit> &Hits = Map->CheckCollisionsInGrid(NewPosition, Radius, this, AxisAlignedPush, OBJECT_PUSH_FACTOR);
 
 		// Resolve pushes
 		for(auto Hit : Hits) {
@@ -437,10 +437,10 @@ void _Entity::Move(double FrameTime) {
 
 	// Determine if the object has moved
 	if(Position != NewPosition) {
-		int AltGridType = (Type == _Object::PLAYER) ? GRID_PLAYER : GRID_MONSTER;
+		int GridType = (Type == _Object::PLAYER) ? GRID_PLAYER : GRID_MONSTER;
 
 		// Update grid and position
-		Map->RemoveObjectFromGrid(this, AltGridType);
+		Map->RemoveObjectFromGrid(this, GridType);
 
 		// Check for updated tile position
 		glm::ivec2 LastTilePosition = Map->GetValidCoord(Position);
@@ -450,7 +450,7 @@ void _Entity::Move(double FrameTime) {
 
 		Position = NewPosition;
 
-		Map->AddObjectToGrid(this, AltGridType);
+		Map->AddObjectToGrid(this, GridType);
 
 		PositionChanged = true;
 	}

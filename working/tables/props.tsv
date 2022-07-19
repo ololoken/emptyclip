@@ -1,2 +1,2 @@
-id	name	icon_id	mesh_id
-test	Test	textures/props/stone.png	meshes/test.mesh
+id	name	icon_id	mesh_id	halfsize_x	halfsize_y
+test	Test	textures/props/stone.png	meshes/test.mesh	0.6	0.6

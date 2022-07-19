@@ -646,7 +646,7 @@ void _Player::DropItem(int Slot) {
 
 	// Add item to map
 	Item->SetPosition(Position + _Map::GenerateRandomPointInCircle(PLAYER_RADIUS));
-	Map->AddItem(Item);
+	Map->AddObject(Item, GRID_ITEM);
 }
 
 // Equip an item

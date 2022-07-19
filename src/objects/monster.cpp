@@ -175,7 +175,7 @@ void _Monster::OnAttack(_Entity *Victim, const _Hit &Hit) {
 
 		// Ray cast away from player
 		std::vector<_Hit> Hits;
-		Map->CheckBulletCollisions(Position, glm::normalize(Position - Player->Position), Hits, GRID_MONSTER, true, 1, _Tile::ENTITY);
+		Map->CheckBulletCollisions(this, glm::normalize(Position - Player->Position), Hits, GRID_MONSTER, true, 1, _Tile::ENTITY);
 		if(Hits.size())
 			SetTarget(Hits.front().Position);
 	}

@@ -571,7 +571,7 @@ void _PlayState::Update(double FrameTime) {
 		}
 		else {
 			std::vector<_Hit> Hits;
-			Map->CheckBulletCollisions(Player->Position, WorldCursor - Player->Position, Hits, 0, false, 1, _Tile::BULLET);
+			Map->CheckBulletCollisions(Player, WorldCursor - Player->Position, Hits, 0, false, 1, _Tile::BULLET);
 			if(Hits.size())
 				Camera->UpdatePosition((Hits.front().Position - Player->Position) / Player->ZoomScale);
 		}
@@ -940,7 +940,7 @@ void _PlayState::ResolveAttack(_Entity *Attacker, int GridType) {
 
 			// Check distance to the wall
 			float ShotDirection = Attacker->GenerateShotDirection();
-			Map->CheckBulletCollisions(Attacker->Position, glm::rotate(glm::vec2(0, -1), glm::radians(ShotDirection)), Hits, GridType, true, Attacker->Penetration[Attacker->AttackRequestType], _Tile::BULLET);
+			Map->CheckBulletCollisions(Attacker, glm::rotate(glm::vec2(0, -1), glm::radians(ShotDirection)), Hits, GridType, true, Attacker->Penetration[Attacker->AttackRequestType], _Tile::BULLET);
 
 			// Generate tracer particle
 			_ParticleTemplate *Template = &GameAssets.Particles["tracer0"];
@@ -1100,7 +1100,7 @@ void _PlayState::PickupObject(_Item *Item, int &AmountAdded) {
 		Player->UseTimer = 0.0;
 
 		// Remove item from map
-		Map->RemoveItem(Item);
+		Map->RemoveObject(Item, GRID_ITEM);
 
 		// Delete item
 		if(AddResult == 2) {
@@ -1471,15 +1471,14 @@ void _PlayState::SpawnObject(_ObjectSpawn *ObjectSpawn, bool GenerateStats, int 
 			Map->Monsters++;
 	}
 	else if(ObjectSpawn->Type == _Object::PROP)
-		Map->ObjectManager->AddObject(Stats.CreateProp(ObjectSpawn->ID, ObjectSpawn->Position));
+		Map->AddObject(Stats.CreateProp(ObjectSpawn->ID, ObjectSpawn->Position), GRID_PROP);
 	else
-		Map->AddItem(Stats.CreateItem(ObjectSpawn->ID, ObjectSpawn->Level + AddedLevel, 0, 1, ObjectSpawn->Position, GenerateStats));
+		Map->AddObject(Stats.CreateItem(ObjectSpawn->ID, ObjectSpawn->Level + AddedLevel, 0, 1, ObjectSpawn->Position, GenerateStats), GRID_ITEM);
 }
 
 // Adds a monster to the monster list and collision grid
 void _PlayState::AddMonster(_Monster *Monster) {
 	Monster->Map = Map;
-
 	Monsters.push_back(Monster);
 	Map->AddObjectToGrid(Monster, GRID_MONSTER);
 }
