@@ -65,8 +65,8 @@ void _ObjectManager::Update(double FrameTime, _Map *Map) {
 			if(Map->CheckMinimapBounds(Bounds)) {
 				_MinimapLayer MinimapLayer;
 				MinimapLayer.Bounds = glm::vec4(
-					Object->Position.x - Object->Scale * 0.25f,	Object->Position.y - Object->Scale * 0.25f,
-					Object->Position.x + Object->Scale * 0.25f, Object->Position.y + Object->Scale * 0.25f
+					Object->Position.x - Object->Radius, Object->Position.y - Object->Radius,
+					Object->Position.x + Object->Radius, Object->Position.y + Object->Radius
 				);
 
 				MinimapLayer.Color = COLOR_WHITE;
@@ -84,6 +84,9 @@ void _ObjectManager::Update(double FrameTime, _Map *Map) {
 					break;
 					case _Object::MEDKIT:
 						MinimapLayer.Color = HUD_MINIMAP_MEDKIT_COLOR;
+					break;
+					case _Object::PROP:
+						MinimapLayer.Color = HUD_MINIMAP_WALL_COLOR;
 					break;
 				}
 				Map->MinimapLayers.push_back(MinimapLayer);
