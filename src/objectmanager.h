@@ -34,6 +34,7 @@ class _ObjectManager {
 			RENDER_ITEMS,
 			RENDER_PLAYER,
 			RENDER_MONSTER,
+			RENDER_PROP,
 			RENDER_COUNT
 		};
 
@@ -42,7 +43,7 @@ class _ObjectManager {
 
 		// Updates
 		void Update(double FrameTime, _Map *Map);
-		void Render(double BlendFactor);
+		int Render(int Type, double BlendFactor);
 
 		// Management
 		void AddObject(_Object *Object);

@@ -1920,6 +1920,17 @@ int _Map::RenderForeground() {
 	return Count;
 }
 
+// Render map props
+int _Map::RenderProps() {
+	ae::Graphics.SetProgram(ae::Assets.Programs["map_norm"]);
+	ae::Assets.Programs["map_norm"]->ResetTextureTransform();
+	ae::Graphics.SetDepthMask(true);
+	ae::Graphics.SetDepthTest(true);
+	int Count = ObjectManager->Render(_ObjectManager::RENDER_PROP, 0.0);
+
+	return Count;
+}
+
 // Render map decals
 int _Map::RenderParticles(int Type) {
 

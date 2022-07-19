@@ -45,6 +45,7 @@ void _Stats::Init() {
 	LoadWeapons("tables/weapons.tsv");
 	LoadItemDrops("tables/itemdrops.tsv");
 	LoadMonsters("tables/monsters.tsv");
+	LoadProps("tables/props.tsv");
 
 	_ObjectTemplate PlayerTemplate(_Object::PLAYER);
 	Objects.insert(std::make_pair("player", PlayerTemplate));
@@ -197,7 +198,6 @@ void _Stats::LoadWeapons(const std::string &Path) {
 
 		_ObjectTemplate Template(_Object::WEAPON);
 		std::string ID;
-		std::string ColorID;
 		std::string SoundGroupID;
 		std::string WeaponParticlesID;
 		std::getline(File, ID, '\t');
@@ -242,9 +242,6 @@ void _Stats::LoadWeapons(const std::string &Path) {
 		// Check for loaded textures
 		if(Template.IconID != "" && !ae::Assets.Textures[Template.IconID])
 			throw std::runtime_error(std::string(__func__) + " - Texture not found: " + Template.IconID);
-
-		// Set color
-		SetColor(Template.Color, ColorID);
 
 		// Check for attack sound
 		if(GameAssets.SoundGroups.find(SoundGroupID) == GameAssets.SoundGroups.end())
@@ -374,7 +371,6 @@ void _Stats::LoadMedkits(const std::string &Path) {
 
 		_ObjectTemplate Template(_Object::MEDKIT);
 		std::string ID;
-		std::string ColorID;
 		std::getline(File, ID, '\t');
 		std::getline(File, Template.Name, '\t');
 		std::getline(File, Template.IconID, '\n');
@@ -590,6 +586,45 @@ void _Stats::LoadMonsters(const std::string &Path) {
 	File.close();
 }
 
+// Load 3d props
+void _Stats::LoadProps(const std::string &Path) {
+
+	// Load file
+	std::ifstream File(Path, std::ios::in);
+	if(!File)
+		throw std::runtime_error("Error loading: " + Path);
+
+	// Skip header
+	File.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+
+	// Read file
+	while(!File.eof() && File.peek() != EOF) {
+
+		_ObjectTemplate Template(_Object::PROP);
+		std::string ID;
+		std::getline(File, ID, '\t');
+		std::getline(File, Template.Name, '\t');
+		std::getline(File, Template.IconID, '\t');
+		std::getline(File, Template.MeshID, '\n');
+
+		// Check for loaded textures
+		if(!ae::Assets.Textures[Template.IconID])
+			throw std::runtime_error(std::string(__func__) + " unknown texture '" + Template.IconID + "'");
+
+		// Check for loaded mesh
+		if(!ae::Assets.Meshes[Template.MeshID])
+			throw std::runtime_error(std::string(__func__) + " unknown mesh '" + Template.MeshID + "'");
+
+		// Check for duplicates
+		if(Objects.find(ID) != Objects.end())
+			throw std::runtime_error(std::string(__func__) + " duplicate id '" + ID + "'");
+
+		Objects.insert(std::make_pair(ID, Template));
+	}
+
+	File.close();
+}
+
 // Create item
 _Item *_Stats::CreateItem(const std::string &ID, int Level, int Quality, int Count, const glm::vec2 &Position, bool RandomStats) {
 	_ObjectTemplate &Template = Objects.at(ID);
@@ -645,7 +680,7 @@ _Item *_Stats::CreateItem(const std::string &ID, int Level, int Quality, int Cou
 
 // Create monster
 _Monster *_Stats::CreateMonster(const std::string &ID, int Level, const glm::vec2 &Position) {
-	_ObjectTemplate &Template = Objects.at(ID);
+	const _ObjectTemplate &Template = Objects.at(ID);
 
 	// Create object
 	_Monster *Monster = new _Monster(Template);
@@ -676,6 +711,19 @@ _Monster *_Stats::CreateMonster(const std::string &ID, int Level, const glm::vec
 	Monster->RecalculateStats();
 
 	return Monster;
+}
+
+// Create pop
+_Object *_Stats::CreateProp(const std::string &ID, const glm::vec2 &Position) const {
+	const _ObjectTemplate &Template = Objects.at(ID);
+
+	// Create object
+	_Object *Prop = new _Object(Template);
+	Prop->SetPosition(Position);
+	Prop->Mesh = ae::Assets.Meshes.at(Template.MeshID);
+	Prop->Texture = ae::Assets.Textures.at(Template.IconID);
+
+	return Prop;
 }
 
 // Returns the level given the experience number
@@ -750,5 +798,5 @@ void _Stats::SetColor(glm::vec4 &Color, const std::string &ColorID) {
 
 // Determine if template is an item
 bool _ObjectTemplate::IsItem() const {
-	return Type > _Object::MONSTER;
+	return Type >= _Object::WEAPON && Type <= _Object::MEDKIT;
 }

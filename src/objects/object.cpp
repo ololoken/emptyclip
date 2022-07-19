@@ -17,6 +17,7 @@
 *******************************************************************************/
 #include <objects/object.h>
 #include <ae/random.h>
+#include <ae/graphics.h>
 #include <constants.h>
 #include <stats.h>
 #include <glm/geometric.hpp>
@@ -41,8 +42,16 @@ _Object::_Object(const _ObjectTemplate &ObjectTemplate) :
 	Color(ObjectTemplate.Color),
 	Rotation(0.0f),
 	Scale(1.0f),
-	PositionZ(OBJECT_Z)	{
+	PositionZ(0.0f)	{
 
+}
+
+// Render object
+void _Object::Render(double BlendFactor) {
+	if(Mesh && Texture) {
+		ae::Graphics.SetColor(Color);
+		ae::Graphics.DrawMesh(glm::vec3(Position, PositionZ), Mesh, Texture);
+	}
 }
 
 // Set two range attributes given a level, spread and multiplier

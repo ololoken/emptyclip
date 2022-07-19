@@ -200,6 +200,10 @@
 			<element id="label_button_editor_mons" font="editor_tiny" text="Mons" offset_x="0" offset_y="12" alignment_x="1" alignment_y="3" scaled="false"/>
 			<element id="label_button_editor_mons_key" font="editor_tiny" text="4" offset_x="0" offset_y="26" alignment_x="1" alignment_y="3" scaled="false"/>
 		</element>
+		<element id="button_editor_mode_prop" style="style_editor_button_purple" hover_style="style_editor_button_selected" offset_x="502" size_x="32" size_y="32" alignment_x="0" alignment_y="0" clickable="true" scaled="false" index="12">
+			<element id="label_button_editor_prop" font="editor_tiny" text="Props" offset_x="0" offset_y="12" alignment_x="1" alignment_y="3" scaled="false"/>
+			<element id="label_button_editor_prop_key" font="editor_tiny" text="5" offset_x="0" offset_y="26" alignment_x="1" alignment_y="3" scaled="false"/>
+		</element>
 		<element id="button_editor_none" style="style_editor_button_green" hover_style="style_editor_button_selected" offset_y="34" size_x="32" size_y="32" alignment_x="0" alignment_y="0" clickable="true" scaled="false" index="13">
 			<element id="label_button_editor_none" font="editor_tiny" text="None" offset_x="0" offset_y="12" alignment_x="1" alignment_y="3" scaled="false"/>
 			<element id="label_button_editor_none_key" font="editor_tiny" text="~" offset_x="0" offset_y="26" alignment_x="1" alignment_y="3" scaled="false"/>
@@ -303,8 +307,9 @@
 	</element>
 	<element id="element_editor_palette_block" size_x="256" size_y="560" alignment_x="2" alignment_y="0" scaled="false"/>
 	<element id="element_editor_palette_events" size_x="256" size_y="560" alignment_x="2" alignment_y="0" scaled="false"/>
-	<element id="element_editor_palette_monsters" size_x="256" size_y="560" alignment_x="2" alignment_y="0" scaled="false"/>
 	<element id="element_editor_palette_items" size_x="256" size_y="560" alignment_x="2" alignment_y="0" scaled="false"/>
+	<element id="element_editor_palette_monsters" size_x="256" size_y="560" alignment_x="2" alignment_y="0" scaled="false"/>
+	<element id="element_editor_palette_props" size_x="256" size_y="560" alignment_x="2" alignment_y="0" scaled="false"/>
 	<element id="element_editor_input" style="style_menu_textbox" offset_x="140" offset_y="-10" size_x="220" size_y="32" alignment_x="0" alignment_y="2" scaled="false">
 		<element id="textbox_editor_input" font="editor" offset_x="5" offset_y="22" alignment_x="0" alignment_y="3" maxlength="50" scaled="false">
 			<element id="label_editor_input" font="editor" offset_x="-10" alignment_x="2" alignment_y="3" scaled="false"/>

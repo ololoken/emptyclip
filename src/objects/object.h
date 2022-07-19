@@ -31,6 +31,7 @@ struct _ObjectTemplate;
 namespace ae {
 	class _Buffer;
 	class _Texture;
+	class _Mesh;
 }
 
 // Object class
@@ -50,6 +51,7 @@ class _Object {
 			KEY,
 			AMMO,
 			MEDKIT,
+			PROP,
 			COUNT
 		};
 
@@ -57,7 +59,7 @@ class _Object {
 		virtual ~_Object() { }
 
 		virtual void Update(double FrameTime) { }
-		virtual void Render(double BlendFactor) { }
+		virtual void Render(double BlendFactor);
 		virtual void Serialize(ae::_Buffer &Buffer) { }
 
 		void GetRenderBounds(glm::vec4 &Bounds);
@@ -99,6 +101,7 @@ class _Object {
 
 		// Graphics
 		const ae::_Texture *Texture;
+		const ae::_Mesh *Mesh;
 		glm::vec4 Color;
 		float Rotation;
 		float Scale;

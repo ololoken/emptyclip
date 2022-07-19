@@ -88,6 +88,7 @@ _Entity::_Entity(const _ObjectTemplate &EntityTemplate) :
 	for(int i = 0; i < SOUND_COUNT; i++)
 		Sounds[i] = nullptr;
 
+	PositionZ = OBJECT_Z;
 	Animation = new ae::_Animation(nullptr);
 	Map = nullptr;
 }

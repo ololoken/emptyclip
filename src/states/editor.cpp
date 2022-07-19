@@ -19,7 +19,7 @@
 #include <states/play.h>
 #include <ae/camera.h>
 #include <ae/texture.h>
-#include <ae/graphics.h>
+#include <ae/mesh.h>
 #include <ae/graphics.h>
 #include <ae/font.h>
 #include <ae/ui.h>
@@ -65,6 +65,7 @@ const int PaletteSizes[EDITMODE_COUNT] = {
 	64,
 	64,
 	64,
+	64,
 };
 
 // Constructor
@@ -101,6 +102,7 @@ void _EditorState::Init() {
 	PaletteElement[EDITMODE_EVENTS] = ae::Assets.Elements["element_editor_palette_events"];
 	PaletteElement[EDITMODE_ITEMS] = ae::Assets.Elements["element_editor_palette_items"];
 	PaletteElement[EDITMODE_MONSTERS] = ae::Assets.Elements["element_editor_palette_monsters"];
+	PaletteElement[EDITMODE_PROPS] = ae::Assets.Elements["element_editor_palette_props"];
 
 	// Assign layer buttons
 	LayerButtons[MAPLAYER_BASE] = ae::Assets.Elements["button_editor_layer_base"];
@@ -116,6 +118,7 @@ void _EditorState::Init() {
 	ModeButtons[EDITMODE_EVENTS] = ae::Assets.Elements["button_editor_mode_event"];
 	ModeButtons[EDITMODE_ITEMS] = ae::Assets.Elements["button_editor_mode_item"];
 	ModeButtons[EDITMODE_MONSTERS] = ae::Assets.Elements["button_editor_mode_mons"];
+	ModeButtons[EDITMODE_PROPS] = ae::Assets.Elements["button_editor_mode_prop"];
 
 	// Reset state
 	ResetEditorState();
@@ -373,6 +376,9 @@ bool _EditorState::HandleKey(const ae::_KeyEvent &KeyEvent) {
 			break;
 			case SDL_SCANCODE_4:
 				ExecuteSwitchMode(EDITMODE_MONSTERS);
+			break;
+			case SDL_SCANCODE_5:
+				ExecuteSwitchMode(EDITMODE_PROPS);
 			break;
 			case SDL_SCANCODE_GRAVE:
 			    ExecuteDeselect();
@@ -857,8 +863,7 @@ void _EditorState::Render(double BlendFactor) {
 
 	// Draw objects
 	ae::Graphics.SetProgram(ae::Assets.Programs["pos_uv"]);
-	ae::Graphics.SetDepthMask(false);
-	ae::Graphics.SetVBO(ae::VBO_QUAD);
+	ae::Graphics.SetDepthTest(true);
 	for(const auto &ObjectSpawn : Map->ObjectSpawns)
 		DrawObject(0.0f, 0.0f, ObjectSpawn, 1.0f);
 
@@ -945,9 +950,9 @@ void _EditorState::Render(double BlendFactor) {
 	ae::Graphics.SetDepthMask(false);
 
 	// Draw object levels
-	if(Camera->GetPosition().z <= 20) {
+	if(Camera->GetPosition().z <= EDITOR_LEVEL_Z) {
 		for(const auto &Object : Map->ObjectSpawns) {
-			if(Object->Type == _Object::AMMO)
+			if(Object->Type == _Object::AMMO || Object->Type == _Object::MEDKIT ||  Object->Type == _Object::PROP || Object->Type == _Object::KEY)
 				continue;
 
 			glm::vec2 TextPosition;
@@ -1097,6 +1102,18 @@ void _EditorState::LoadPalettes() {
 		Icons.push_back(_Brush(Monster.first, Monster.second.Name, MonsterIcon, Monster.second.Color, _Object::MONSTER));
 	}
 	LoadPaletteButtons(Icons, EDITMODE_MONSTERS);
+	Icons.clear();
+
+	// Load props
+	for(const auto &Prop : Stats.Objects) {
+		if(Prop.second.Type != _Object::PROP)
+			continue;
+
+		const ae::_Texture *PropIcon = ae::Assets.Textures["textures/icons/" + Prop.first + ".png"];
+		Icons.push_back(_Brush(Prop.first, Prop.second.Name, PropIcon, Prop.second.Color, Prop.second.Type));
+	}
+	LoadPaletteButtons(Icons, EDITMODE_PROPS);
+	Icons.clear();
 }
 
 // Free memory used by palette
@@ -1401,9 +1418,10 @@ void _EditorState::DrawEventTiles(_Event *Event, const glm::vec4 &Color) {
 // Draws an object
 void _EditorState::DrawObject(float OffsetX, float OffsetY, const _ObjectSpawn *Object, float Alpha) {
 	float Scale = ITEM_SCALE;
-	float Depth = ITEM_Z;
+	float Depth = 0.0f;
 	glm::vec4 Color;
 	const ae::_Texture *Texture = nullptr;
+	const ae::_Mesh *Mesh = nullptr;
 	switch(Object->Type) {
 		case _Object::MONSTER: {
 			_ObjectTemplate &Monster = Stats.Objects.at(Object->ID);
@@ -1421,6 +1439,13 @@ void _EditorState::DrawObject(float OffsetX, float OffsetY, const _ObjectSpawn *
 			_ObjectTemplate &Item = Stats.Objects.at(Object->ID);
 			Texture = ae::Assets.Textures[Item.IconID];
 			Color = Item.Color;
+			Depth = ITEM_Z;
+		} break;
+		case _Object::PROP: {
+			_ObjectTemplate &Item = Stats.Objects.at(Object->ID);
+			Texture = ae::Assets.Textures[Item.IconID];
+			Mesh = ae::Assets.Meshes[Item.MeshID];
+			Color = Item.Color;
 		} break;
 	}
 
@@ -1429,11 +1454,20 @@ void _EditorState::DrawObject(float OffsetX, float OffsetY, const _ObjectSpawn *
 		return;
 
 	Color.a *= Alpha;
-	if(Texture != nullptr) {
-		ae::Graphics.SetProgram(ae::Assets.Programs["pos_uv"]);
-		ae::Assets.Programs["pos_uv"]->ResetTextureTransform();
-		ae::Graphics.SetColor(Color);
-		ae::Graphics.DrawSprite(glm::vec3(DrawPosition, Depth), Texture, 0.0f, glm::vec2(Scale));
+	if(Texture) {
+		if(Mesh) {
+			ae::Graphics.SetDepthMask(true);
+			ae::Graphics.SetProgram(ae::Assets.Programs["map_norm"]);
+			ae::Assets.Programs["map_norm"]->ResetTextureTransform();
+			ae::Graphics.DrawMesh(glm::vec3(DrawPosition, Depth), Mesh, Texture);
+		}
+		else {
+			ae::Graphics.SetDepthMask(false);
+			ae::Graphics.SetProgram(ae::Assets.Programs["pos_uv"]);
+			ae::Assets.Programs["pos_uv"]->ResetTextureTransform();
+			ae::Graphics.SetColor(Color);
+			ae::Graphics.DrawSprite(glm::vec3(DrawPosition, Depth), Texture, 0.0f, glm::vec2(Scale));
+		}
 	}
 }
 

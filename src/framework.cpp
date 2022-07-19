@@ -363,9 +363,6 @@ void _Framework::HandleCommand(ae::_Console *Console) {
 // Load game assets
 void _Framework::LoadAssets() {
 
-	ae::Assets.LoadPrograms("tables/programs.tsv");
-	ae::Assets.LoadFonts("tables/fonts.tsv", false);
-
 	// Load textures
 	ae::_TextureSettings TextureSettings;
 	TextureSettings.WrapMode = ae::_Texture::REPEAT;
@@ -376,6 +373,7 @@ void _Framework::LoadAssets() {
 	TextureSettings.WrapMode = ae::_Texture::REPEAT;
 	TextureSettings.Mipmaps = true;
 	ae::Assets.LoadTextureDirectory(MAP_TEXTURE_PATH, TextureSettings);
+	ae::Assets.LoadTextureDirectory("textures/props/", TextureSettings);
 
 	TextureSettings.WrapMode = ae::_Texture::CLAMP_TO_EDGE;
 	TextureSettings.Mipmaps = false;
@@ -394,6 +392,11 @@ void _Framework::LoadAssets() {
 	TextureSettings.Mipmaps = true;
 	ae::Assets.LoadTextureDirectory("textures/lights/", TextureSettings);
 	ae::Assets.LoadTextureDirectory("textures/melee/", TextureSettings);
+
+	// Load assets
+	ae::Assets.LoadPrograms("tables/programs.tsv");
+	ae::Assets.LoadFonts("tables/fonts.tsv", false);
+	ae::Assets.LoadMeshDirectory("meshes/");
 	ae::Assets.LoadColors("tables/colors.tsv");
 	GameAssets.LoadSounds("tables/sounds.tsv", "sounds/");
 	GameAssets.LoadSoundGroups("tables/sound_groups.tsv");
@@ -407,4 +410,3 @@ void _Framework::LoadAssets() {
 
 	ae::Assets.LoadFonts("tables/fonts.tsv");
 }
-

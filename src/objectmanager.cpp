@@ -92,7 +92,9 @@ void _ObjectManager::Update(double FrameTime, _Map *Map) {
 			// Add to render list
 			if(Map->Camera->IsAABBInView(Bounds)) {
 				if(Object->Template.IsItem())
-					RenderList[0].push_back(Object);
+					RenderList[RENDER_ITEMS].push_back(Object);
+				else if(Object->Template.Type == _Object::PROP)
+					RenderList[RENDER_PROP].push_back(Object);
 			}
 
 			++Iterator;
@@ -101,17 +103,11 @@ void _ObjectManager::Update(double FrameTime, _Map *Map) {
 }
 
 // Render objects
-void _ObjectManager::Render(double BlendFactor) {
-	ae::Graphics.SetProgram(ae::Assets.Programs["map"]);
-	ae::Assets.Programs["map"]->ResetTextureTransform();
-	ae::Graphics.SetDepthMask(false);
-	ae::Graphics.SetDepthTest(true);
+int _ObjectManager::Render(int Type, double BlendFactor) {
+	for(auto Iterator : RenderList[Type])
+		Iterator->Render(BlendFactor);
 
-	// Draw objects
-	for(int i = 0; i < RENDER_COUNT; i++) {
-		for(auto Iterator : RenderList[i])
-			Iterator->Render(BlendFactor);
-	}
+	return (int)RenderList[Type].size();
 }
 
 // Deletes all of the objects

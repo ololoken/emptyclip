@@ -219,6 +219,7 @@ class _Map {
 		int RenderFlatWalls();
 		int RenderParticles(int Type);
 		int RenderForeground();
+		int RenderProps();
 		void RenderEvents(std::vector<const ae::_Texture *> &Textures);
 		void RenderGrid(int Mode);
 		void DrawMinimap(bool FullMap, ae::_Bounds &MinimapBounds);

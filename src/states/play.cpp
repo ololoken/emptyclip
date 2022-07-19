@@ -527,7 +527,7 @@ void _PlayState::Update(double FrameTime) {
 
 	// Update objects
 	Map->Update(FrameTime);
-	Map->ObjectManager->RenderList[1].push_back(Player);
+	Map->ObjectManager->RenderList[_ObjectManager::RENDER_PLAYER].push_back(Player);
 
 	// Update monsters
 	int PlayerHealth = Player->Health;
@@ -705,15 +705,23 @@ void _PlayState::Render(double BlendFactor) {
 	ae::Graphics.SetDepthTest(false);
 	int ParticleRenderCount = Map->RenderParticles(_Particles::FLOOR_DECALS);
 
-	// Draw walls clipped with MaxZ=OBJECT_Z
+	// Draw walls and props below objects
 	BlockRenderCount += Map->RenderWalls();
+	int PropRenderCount = Map->RenderProps();
 
 	// Draw objects
-	Map->ObjectManager->Render(BlendFactor);
+	ae::Graphics.SetProgram(ae::Assets.Programs["map"]);
+	ae::Assets.Programs["map"]->ResetTextureTransform();
+	ae::Graphics.SetDepthMask(false);
+	ae::Graphics.SetDepthTest(true);
+	Map->ObjectManager->Render(_ObjectManager::RENDER_ITEMS, BlendFactor);
+	Map->ObjectManager->Render(_ObjectManager::RENDER_PLAYER, BlendFactor);
+	Map->ObjectManager->Render(_ObjectManager::RENDER_MONSTER, BlendFactor);
 
-	// Draw the rest of the walls
+	// Draw walls and props again on top of objects
 	BlockRenderCount += Map->RenderWalls();
 	BlockRenderCount += Map->RenderFlatWalls();
+	PropRenderCount += Map->RenderProps();
 
 	// Draw wall decals
 	ae::Graphics.SetProgram(ae::Assets.Programs["map"]);
@@ -833,12 +841,17 @@ void _PlayState::Render(double BlendFactor) {
 		Buffer.str("");
 
 		DrawPosition.y += Spacing.y;
-		Buffer << Map->ObjectManager->RenderList[0].size() << " items rendered";
+		Buffer << PropRenderCount << " props rendered";
 		ae::Assets.Fonts["hud_tiny"]->DrawText(Buffer.str(), DrawPosition);
 		Buffer.str("");
 
 		DrawPosition.y += Spacing.y;
-		Buffer << Map->ObjectManager->RenderList[2].size() << " monsters rendered";
+		Buffer << Map->ObjectManager->RenderList[_ObjectManager::RENDER_ITEMS].size() << " items rendered";
+		ae::Assets.Fonts["hud_tiny"]->DrawText(Buffer.str(), DrawPosition);
+		Buffer.str("");
+
+		DrawPosition.y += Spacing.y;
+		Buffer << Map->ObjectManager->RenderList[_ObjectManager::RENDER_MONSTER].size() << " monsters rendered";
 		ae::Assets.Fonts["hud_tiny"]->DrawText(Buffer.str(), DrawPosition);
 		Buffer.str("");
 
@@ -1230,7 +1243,7 @@ void _PlayState::UpdateMonsters(double FrameTime) {
 
 			// Add to render list
 			if(Camera->IsAABBInView(Bounds))
-				Map->ObjectManager->RenderList[2].push_back(Monster);
+				Map->ObjectManager->RenderList[_ObjectManager::RENDER_ITEMS].push_back(Monster);
 
 			++MonsterIterator;
 		}
@@ -1457,6 +1470,8 @@ void _PlayState::SpawnObject(_ObjectSpawn *ObjectSpawn, bool GenerateStats, int 
 		else
 			Map->Monsters++;
 	}
+	else if(ObjectSpawn->Type == _Object::PROP)
+		Map->ObjectManager->AddObject(Stats.CreateProp(ObjectSpawn->ID, ObjectSpawn->Position));
 	else
 		Map->AddItem(Stats.CreateItem(ObjectSpawn->ID, ObjectSpawn->Level + AddedLevel, 0, 1, ObjectSpawn->Position, GenerateStats));
 }

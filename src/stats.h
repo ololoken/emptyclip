@@ -24,6 +24,7 @@
 #include <string>
 
 // Forward Declarations
+class _Object;
 class _Item;
 class _Weapon;
 class _Monster;
@@ -72,6 +73,7 @@ struct _ObjectTemplate {
 	std::string AnimationID;
 	std::string SoundGroupID;
 	std::string ItemDropID;
+	std::string MeshID;
 	const ae::_Sound *SoundID[SOUND_COUNT];
 	const _ParticleGroup *ParticleGroup;
 	glm::vec4 Color;
@@ -100,9 +102,11 @@ class _Stats {
 		void LoadMods(const std::string &Path);
 		void LoadItemDrops(const std::string &Path);
 		void LoadMonsters(const std::string &Path);
+		void LoadProps(const std::string &Path);
 
 		_Item *CreateItem(const std::string &ID, int Level, int Quality, int Count, const glm::vec2 &Position, bool RandomStats);
 		_Monster *CreateMonster(const std::string &ID, int Level, const glm::vec2 &Position);
+		_Object *CreateProp(const std::string &ID, const glm::vec2 &Position) const;
 
 		const _Level &FindLevel(int64_t Experience);
 		int GetLevelHealth(int Level) { return Levels[Level-1].HealthBonus; }

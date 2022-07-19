@@ -130,6 +130,7 @@ const  int          EDITOR_DEFAULT_LAYER           =  1;
 const  int          EDITOR_DEFAULT_GRIDMODE        =  5;
 const  glm::ivec2   EDITOR_VIEWPORT_OFFSET         =  glm::ivec2(256,168);
 const  int          EDITOR_PALETTE_SELECTEDSIZE    =  32;
+const  float        EDITOR_LEVEL_Z                 =  20.0f;
 //     Menu
 const  float        MENU_ACCEPTINPUT_FADE          =  0.7f;
 const  double       MENU_DOUBLECLICK_TIME          =  0.250;
