@@ -24,7 +24,6 @@
 
 // Forward Declarations
 class _Map;
-struct _ParticleTemplate;
 struct _Hit;
 namespace ae {
 	class _Animation;
@@ -105,14 +104,13 @@ class _Entity : public _Object {
 		virtual void UpdateSpeed(float Factor) {}
 		int GenerateDamage(int AttackType, int DamageBlock, int DamageResist, bool Steady, bool &Crit);
 		virtual bool IsSteady() const { return false; }
-		bool IsDying() const { return Action == ACTION_DYING || Action == ACTION_STARTDEATH; }
+		bool IsDying() const override { return Action == ACTION_DYING || Action == ACTION_STARTDEATH; }
 		bool IsDead() const { return Action == ACTION_DYING && !Active; }
 		bool IsInvulnerable() const { return InvulnerableTimer > 0.0; }
 
 		float GetHealthPercentage() const { return (float)Health / MaxHealth; }
 		float GetStaminaPercentage() const { return Stamina / MaxStamina; }
 
-		virtual const _ParticleTemplate *GetParticle(int ParticleType) const { return nullptr; }
 		virtual const ae::_Sound *GetSound(int Type, int AttackType) const { return Sounds[Type]; }
 
 		void StartTriggerDownAudio();

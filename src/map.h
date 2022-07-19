@@ -141,7 +141,7 @@ struct _Hit {
 	_Hit() { }
 	_Hit(int Type) : Object(nullptr), Type(Type) { }
 
-	_Entity *Object;
+	_Object *Object;
 	glm::vec2 Normal;
 	glm::vec2 Position;
 	glm::vec2 Push;
@@ -199,7 +199,7 @@ class _Map {
 		_Object *GetCloseObject(const glm::vec2 &Position, float Radius, int GridType) const;
 		void GetCloseObjects(const glm::vec2 &Position, float Radius, int GridType, std::unordered_map<_Object *, int> &Objects, _Object **ClosestObject) const;
 		void CheckMeleeCollisions(_Entity *Attacker, int GridType, int Penetration, std::vector<_Hit> &Hits) const;
-		void CheckBulletCollisions(_Entity *Attacker, const glm::vec2 &Direction, std::vector<_Hit> &Hits, int GridType, bool CheckObjects, int Penetration, int CollisionFlag) const;
+		void CheckBulletCollisions(_Object *Attacker, const glm::vec2 &Direction, std::vector<_Hit> &Hits, int GridType, bool TestObjects, int Penetration, int CollisionFlag);
 		bool IsVisible(const glm::vec2 &Start, const glm::vec2 &End, int CheckFlag) const;
 		bool CanMoveTo(const glm::vec2 &Start, const glm::vec2 &End, const glm::vec2 &Size) const;
 		void AddObjectToGrid(_Object *Object, int Type);
@@ -299,7 +299,7 @@ class _Map {
 
 		// Objects
 		std::vector<_Particle *> Particles;
-		std::unordered_map<_Entity *, int> ObjectsToCheck;
+		std::unordered_map<_Object *, int> ObjectMap;
 		std::vector<_Hit> CollisionHits;
 		std::vector<glm::vec2> CollisionPushes;
 

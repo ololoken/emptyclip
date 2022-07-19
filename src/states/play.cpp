@@ -571,7 +571,7 @@ void _PlayState::Update(double FrameTime) {
 		}
 		else {
 			std::vector<_Hit> Hits;
-			Map->CheckBulletCollisions(Player, WorldCursor - Player->Position, Hits, 0, false, 1, _Tile::BULLET);
+			Map->CheckBulletCollisions(Player, glm::normalize(WorldCursor - Player->Position), Hits, 0, false, 1, _Tile::BULLET);
 			if(Hits.size())
 				Camera->UpdatePosition((Hits.front().Position - Player->Position) / Player->ZoomScale);
 		}
@@ -965,10 +965,11 @@ void _PlayState::ResolveAttack(_Entity *Attacker, int GridType) {
 					GenerateHitEffects(Attacker, HIT_WALL, Hit);
 				break;
 				case HIT_OBJECT: {
+					_Entity *HitEntity = (_Entity *)Hit.Object;
 
 					// Generate damage
 					bool Crit = false;
-					int Damage = Attacker->GenerateDamage(Attacker->AttackRequestType, Hit.Object->DamageBlock, Hit.Object->DamageResist, Steady, Crit);
+					int Damage = Attacker->GenerateDamage(Attacker->AttackRequestType, HitEntity->DamageBlock, HitEntity->DamageResist, Steady, Crit);
 					if(GodMode && Hit.Object->Type == _Object::PLAYER)
 						Damage = 0;
 
@@ -986,14 +987,14 @@ void _PlayState::ResolveAttack(_Entity *Attacker, int GridType) {
 					Particles->Add(DamageParticle);
 
 					// Update health
-					Hit.Object->UpdateHealth(-Damage);
+					HitEntity->UpdateHealth(-Damage);
 					if(Hit.Object->IsDying()) {
 
 						// Handle item drops
-						CreateItemDrop(Hit.Object, Player->DropRate * 0.01f);
+						CreateItemDrop(HitEntity, Player->DropRate * 0.01f);
 
 						// Dying sound
-						ae::Audio.PlaySound(Hit.Object->GetSound(SOUND_DEATH, -1), ae::_SoundSettings(glm::vec3(Hit.Position.x, 0.0f, Hit.Position.y)));
+						ae::Audio.PlaySound(HitEntity->GetSound(SOUND_DEATH, -1), ae::_SoundSettings(glm::vec3(Hit.Position.x, 0.0f, Hit.Position.y)));
 
 						// Update stats
 						if(Attacker->Type == _Object::PLAYER) {
@@ -1006,7 +1007,7 @@ void _PlayState::ResolveAttack(_Entity *Attacker, int GridType) {
 								Attacker->UpdateKillCount(1);
 							}
 
-							Attacker->UpdateExperience(Hit.Object->ExperienceGiven);
+							Attacker->UpdateExperience(HitEntity->ExperienceGiven);
 						}
 					}
 
@@ -1017,12 +1018,12 @@ void _PlayState::ResolveAttack(_Entity *Attacker, int GridType) {
 					}
 
 					// Callback functions
-					Attacker->OnAttack(Hit.Object, Hit);
-					Hit.Object->OnHit(Attacker, Hit);
+					Attacker->OnAttack(HitEntity, Hit);
+					HitEntity->OnHit(Attacker, Hit);
 
 					// Set HUD last hit object
 					if(Hit.Object->Type == _Object::MONSTER) {
-						HUD->SetLastEntityHit(Hit.Object);
+						HUD->SetLastEntityHit(HitEntity);
 					}
 				} break;
 			}

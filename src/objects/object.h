@@ -28,6 +28,7 @@
 // Forward Declarations
 class _Map;
 struct _ObjectTemplate;
+struct _ParticleTemplate;
 namespace ae {
 	class _Buffer;
 	class _Texture;
@@ -61,6 +62,9 @@ class _Object {
 		virtual void Update(double FrameTime) { }
 		virtual void Render(double BlendFactor);
 		virtual void Serialize(ae::_Buffer &Buffer) { }
+		virtual bool IsDying() const { return false; }
+
+		virtual const _ParticleTemplate *GetParticle(int ParticleType) const { return nullptr; }
 
 		void GetRenderBounds(glm::vec4 &Bounds);
 		void FacePosition(const glm::vec2 &Target);
