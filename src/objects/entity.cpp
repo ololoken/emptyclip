@@ -72,6 +72,7 @@ _Entity::_Entity(const _ObjectTemplate &EntityTemplate) :
 	CritDamage{100, 100},
 	BurstRounds{0, 0},
 	BurstPeriod{0.0, 0.0},
+	MainWeaponType(0),
 	AttackRequestType(0),
 	BurstRoundsShot(0),
 	AttackRequested(false),

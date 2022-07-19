@@ -738,11 +738,11 @@ std::vector<_Hit> &_Map::CheckCollisionsInGrid(const glm::vec2 &Position, float 
 		for(int j = TileBounds.Start.y; j <= TileBounds.End.y; j++) {
 			for(int k = GRID_PLAYER; k <= GRID_MONSTER; k++) {
 				for(auto &Iterator : Data[i][j].Objects[k]) {
-					_Entity *Entity = (_Entity *)Iterator.first;
-					if(Entity == SkipObject || Entity->IsDying())
+					_Object *Object = Iterator.first;
+					if(Object == SkipObject || Object->IsDying())
 						continue;
 
-					ObjectMap[Entity] = 1;
+					ObjectMap[Object] = 1;
 				}
 			}
 		}
@@ -797,7 +797,7 @@ std::vector<_Hit> &_Map::CheckCollisionsInGrid(const glm::vec2 &Position, float 
 }
 
 // Checks for melee collisions with entities in the collision grid
-void _Map::CheckMeleeCollisions(_Entity *Attacker, int GridType, int Penetration, std::vector<_Hit> &Hits) const {
+void _Map::CheckMeleeCollisions(_Entity *Attacker, int GridType, int Penetration, std::vector<_Hit> &Hits) {
 	if(!Data)
 		throw std::runtime_error("Tile data uninitialized!");
 
@@ -823,37 +823,39 @@ void _Map::CheckMeleeCollisions(_Entity *Attacker, int GridType, int Penetration
 	}
 
 	// Check tiles for objects
-	std::unordered_map<_Entity *, int> CheckedEntities(10);
+	ObjectMap.clear();
 	for(int i = TileBounds.Start.x; i <= TileBounds.End.x; i++) {
 		for(int j = TileBounds.Start.y; j <= TileBounds.End.y; j++) {
 			for(auto &Iterator : Data[i][j].Objects[GridType]) {
-				_Entity *Entity = (_Entity *)Iterator.first;
+				_Object *Object = Iterator.first;
+				if(Object->Type == _Object::PROP)
+					continue;
 
 				// Check unique list of entities
-				if(CheckedEntities.find(Entity) != CheckedEntities.end())
+				if(ObjectMap.find(Object) != ObjectMap.end())
 					continue;
 
 				// Add to list of hit entities
-				CheckedEntities[Entity] = 1;
+				ObjectMap[Object] = 1;
 
 				// Check if dying
-				if(Entity->IsDying())
+				if(Object->IsDying())
 					continue;
 
 				// Test if attacker is within attack range
 				float DistanceSquared = HUGE_VAL;
-				if(!Entity->IsTouchingCircle(Attacker->Position, AttackRange, DistanceSquared))
+				if(!Object->IsTouchingCircle(Attacker->Position, AttackRange, DistanceSquared))
 					continue;
 
 				// Do additional tests when the player is attacking
 				if(Attacker->Type == _Object::PLAYER) {
 
 					// Test left side
-					float Time = Entity->RayIntersection(LeftLineStart, Direction);
+					float Time = Object->RayIntersection(LeftLineStart, Direction);
 					if(Time >= AttackRange) {
 
 						// Test right side
-						Time = Entity->RayIntersection(RightLineStart, Direction);
+						Time = Object->RayIntersection(RightLineStart, Direction);
 						if(Time >= AttackRange)
 							continue;
 					}
@@ -868,14 +870,14 @@ void _Map::CheckMeleeCollisions(_Entity *Attacker, int GridType, int Penetration
 				*/
 
 					// Check for walls
-					if(!IsVisible(Attacker->Position, Entity->Position, _Tile::BULLET))
+					if(!IsVisible(Attacker->Position, Object->Position, _Tile::BULLET))
 						continue;
 				}
 
 				// Add to potential hits
 				_Hit Hit(HIT_OBJECT);
-				Hit.Object = Entity;
-				Hit.Position = Entity->Position;
+				Hit.Object = Object;
+				Hit.Position = Object->Position;
 				Hit.DistanceSquared = DistanceSquared;
 				Hits.push_back(Hit);
 
