@@ -1442,10 +1442,11 @@ void _EditorState::DrawObject(float OffsetX, float OffsetY, const _ObjectSpawn *
 			Depth = ITEM_Z;
 		} break;
 		case _Object::PROP: {
-			_ObjectTemplate &Item = Stats.Objects.at(Object->ID);
-			Texture = ae::Assets.Textures[Item.IconID];
-			Mesh = ae::Assets.Meshes[Item.MeshID];
-			Color = Item.Color;
+			_ObjectTemplate &ObjectTemplate = Stats.Objects.at(Object->ID);
+			Texture = ae::Assets.Textures[ObjectTemplate.IconID];
+			Mesh = ae::Assets.Meshes[ObjectTemplate.MeshID];
+			Color = ObjectTemplate.Color;
+			Scale = ObjectTemplate.Attributes.at("scale").Float;
 		} break;
 	}
 
@@ -1459,7 +1460,7 @@ void _EditorState::DrawObject(float OffsetX, float OffsetY, const _ObjectSpawn *
 			ae::Graphics.SetDepthMask(true);
 			ae::Graphics.SetProgram(ae::Assets.Programs["map_norm"]);
 			ae::Assets.Programs["map_norm"]->ResetTextureTransform();
-			ae::Graphics.DrawMesh(glm::vec3(DrawPosition, Depth), Mesh, Texture);
+			ae::Graphics.DrawMesh(glm::vec3(DrawPosition, Depth), Mesh, Texture, glm::vec3(Scale));
 		}
 		else {
 			ae::Graphics.SetDepthMask(false);

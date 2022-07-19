@@ -609,7 +609,8 @@ void _Stats::LoadProps(const std::string &Path) {
 
 		File
 			>> Template.Attributes["halfsize_x"].Float
-			>> Template.Attributes["halfsize_y"].Float;
+			>> Template.Attributes["halfsize_y"].Float
+			>> Template.Attributes["scale"].Float;
 
 		File.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
@@ -730,6 +731,7 @@ _Object *_Stats::CreateProp(const std::string &ID, const glm::vec2 &Position) co
 	Prop->Texture = ae::Assets.Textures.at(Template.IconID);
 	Prop->Radius = Template.Attributes.at("halfsize_x").Float;
 	Prop->Circle = false;
+	Prop->Scale = Template.Attributes.at("scale").Float;
 
 	return Prop;
 }

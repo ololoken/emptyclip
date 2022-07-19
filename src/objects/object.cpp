@@ -50,7 +50,7 @@ _Object::_Object(const _ObjectTemplate &ObjectTemplate) :
 void _Object::Render(double BlendFactor) {
 	if(Mesh && Texture) {
 		ae::Graphics.SetColor(Color);
-		ae::Graphics.DrawMesh(glm::vec3(Position, PositionZ), Mesh, Texture);
+		ae::Graphics.DrawMesh(glm::vec3(Position, PositionZ), Mesh, Texture, glm::vec3(Scale));
 	}
 }
 
