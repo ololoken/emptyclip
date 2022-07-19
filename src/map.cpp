@@ -1461,15 +1461,15 @@ void _Map::UpdateAmbientLight(double FrameTime) {
 }
 
 // Change ambient light with color id
-void _Map::SetAmbientLight(const std::string &ColorID, double ChangePeriod) {
+void _Map::SetAmbientLight(const std::string &ColorID) {
 	if(ColorID.empty())
-		SetAmbientLight(MapAmbientLight, ChangePeriod);
+		TargetAmbientLight = MapAmbientLight;
 	else
-		SetAmbientLight(ae::Assets.Colors[ColorID], ChangePeriod);
+		TargetAmbientLight = ae::Assets.Colors[ColorID];
 }
 
 // Change ambient light
-void _Map::SetAmbientLight(const glm::vec4 &Color, double ChangePeriod) {
+void _Map::SetAmbientLight(const glm::vec4 &Color) {
 	TargetAmbientLight = Color;
 }
 

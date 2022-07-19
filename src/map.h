@@ -213,8 +213,8 @@ class _Map {
 		bool HasEvents(const glm::ivec2 &Position) const;
 
 		glm::vec4 GetAmbientLight() const { return AmbientLight; }
-		void SetAmbientLight(const std::string &ColorID, double ChangePeriod);
-		void SetAmbientLight(const glm::vec4 &Color, double ChangePeriod);
+		void SetAmbientLight(const std::string &ColorID);
+		void SetAmbientLight(const glm::vec4 &Color);
 
 		int RenderFloors();
 		int RenderWalls();

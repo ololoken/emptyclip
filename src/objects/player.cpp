@@ -1079,7 +1079,7 @@ void _Player::Respawn() {
 	Map->AddObjectToGrid(this, GRID_PLAYER);
 	TileChanged = true;
 
-	Map->SetAmbientLight(Map->MapAmbientLight, LIGHT_CHANGE_PERIOD);
+	Map->SetAmbientLight(Map->MapAmbientLight);
 
 	InvulnerableTimer = GAME_INVULNERABLE_TIME;
 }
