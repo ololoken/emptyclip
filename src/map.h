@@ -212,7 +212,7 @@ class _Map {
 		void SwapBlockTextures(int Layer, int Index);
 		bool HasEvents(const glm::ivec2 &Position) const;
 
-		glm::vec4 GetAmbientLight() const { return OldAmbientLight * (1.0f - AmbientLightBlendFactor) + AmbientLight * AmbientLightBlendFactor; }
+		glm::vec4 GetAmbientLight() const { return AmbientLight; }
 		void SetAmbientLight(const std::string &ColorID, double ChangePeriod);
 		void SetAmbientLight(const glm::vec4 &Color, double ChangePeriod);
 
@@ -306,11 +306,7 @@ class _Map {
 
 		// Lights
 		glm::vec4 AmbientLight;
-		glm::vec4 OldAmbientLight;
-		float AmbientLightBlendFactor;
-		double AmbientLightPeriod;
-		double AmbientLightTimer;
-
+		glm::vec4 TargetAmbientLight;
 };
 
 // Returns a coordinate inside the map

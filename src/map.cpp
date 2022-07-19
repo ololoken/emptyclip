@@ -79,10 +79,7 @@ _Map::_Map() :
 	MinimapCaptureSize(HUD_MINIMAP_CAPTURE_SIZE),
 	Data(nullptr),
 	AmbientLight(MapAmbientLight),
-	OldAmbientLight(MapAmbientLight),
-	AmbientLightBlendFactor(1.0f),
-	AmbientLightPeriod(0.0),
-	AmbientLightTimer(0.0) {
+	TargetAmbientLight(MapAmbientLight) {
 
 	ObjectMap.reserve(10);
 	CollisionHits.reserve(10);
@@ -142,7 +139,7 @@ _Map::_Map(const std::string &Filename, int SpawnMultiplier) : _Map() {
 					// Ambient light
 					case 'a': {
 						File >> MapAmbientLight.r >> MapAmbientLight.g >> MapAmbientLight.b;
-						AmbientLight = OldAmbientLight = MapAmbientLight;
+						AmbientLight = TargetAmbientLight = MapAmbientLight;
 					} break;
 					// Ambient light uses day/night cycle
 					case 'c': {
@@ -1416,52 +1413,51 @@ bool _Map::HasEvents(const glm::ivec2 &Position) const {
 // Update ambient light
 void _Map::UpdateAmbientLight(double FrameTime) {
 
-	// Handle changes
-	if(AmbientLightPeriod > 0 && AmbientLightTimer <= AmbientLightPeriod) {
-		AmbientLightBlendFactor = AmbientLightTimer / AmbientLightPeriod;
-		AmbientLightTimer += FrameTime;
-	}
-	else
-		AmbientLightBlendFactor = 1.0f;
-
 	// Check for day night cycle
-	if(!AmbientClock)
-		return;
+	if(AmbientClock) {
 
-	// Update clock
-	Clock += FrameTime;
+		// Update clock
+		Clock += FrameTime;
 
-	// Find index by time
-	size_t NextCycle = DayCyclesTime.size();
-	for(size_t i = 0; i < DayCyclesTime.size(); i++) {
-		if(Clock < DayCyclesTime[i]) {
-			NextCycle = i;
-			break;
+		// Find index by time
+		size_t NextCycle = DayCyclesTime.size();
+		for(size_t i = 0; i < DayCyclesTime.size(); i++) {
+			if(Clock < DayCyclesTime[i]) {
+				NextCycle = i;
+				break;
+			}
 		}
+
+		// Get indices for current and next cycle
+		size_t CurrentCycle = NextCycle - 1;
+		if(CurrentCycle >= DayCyclesTime.size())
+			CurrentCycle = 0;
+		if(NextCycle >= DayCyclesTime.size())
+			NextCycle = 0;
+
+		// Get current time diff
+		double Diff = Clock - DayCyclesTime[CurrentCycle];
+		if(Diff < 0)
+			Diff += MAP_DAY_LENGTH;
+
+		// Get length of cycle
+		double Length = DayCyclesTime[NextCycle] - DayCyclesTime[CurrentCycle];
+		if(Length < 0)
+			Length += MAP_DAY_LENGTH;
+
+		// Get percent to next cycle
+		float Percent = (float)(Diff / Length);
+
+		// Set color
+		AmbientLight = glm::mix(DayCycles[CurrentCycle], DayCycles[NextCycle], Percent);
 	}
-
-	// Get indices for current and next cycle
-	size_t CurrentCycle = NextCycle - 1;
-	if(CurrentCycle >= DayCyclesTime.size())
-		CurrentCycle = 0;
-	if(NextCycle >= DayCyclesTime.size())
-		NextCycle = 0;
-
-	// Get current time diff
-	double Diff = Clock - DayCyclesTime[CurrentCycle];
-	if(Diff < 0)
-		Diff += MAP_DAY_LENGTH;
-
-	// Get length of cycle
-	double Length = DayCyclesTime[NextCycle] - DayCyclesTime[CurrentCycle];
-	if(Length < 0)
-		Length += MAP_DAY_LENGTH;
-
-	// Get percent to next cycle
-	float Percent = (float)(Diff / Length);
-
-	// Set color
-	AmbientLight = glm::mix(DayCycles[CurrentCycle], DayCycles[NextCycle], Percent);
+	else {
+		glm::vec4 Delta = TargetAmbientLight - AmbientLight;
+		if(glm::dot(Delta, Delta) < 0.0001f)
+			AmbientLight = TargetAmbientLight;
+		else
+			AmbientLight += Delta * (float)FrameTime * LIGHT_CHANGE_SPEED;
+	}
 }
 
 // Change ambient light with color id
@@ -1474,11 +1470,7 @@ void _Map::SetAmbientLight(const std::string &ColorID, double ChangePeriod) {
 
 // Change ambient light
 void _Map::SetAmbientLight(const glm::vec4 &Color, double ChangePeriod) {
-	OldAmbientLight = AmbientLight;
-	AmbientLight = Color;
-	AmbientLightPeriod = ChangePeriod;
-	AmbientLightTimer = 0.0;
-	AmbientLightBlendFactor = 0.0;
+	TargetAmbientLight = Color;
 }
 
 // Gets a list of event based on a position
