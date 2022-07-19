@@ -47,12 +47,13 @@
 #include <particles.h>
 #include <stats.h>
 #include <actiontype.h>
-#include <glm/gtx/rotate_vector.hpp>
-#include <glm/gtc/type_ptr.hpp>
 #include <stdexcept>
 #include <fstream>
 #include <iostream>
 #include <algorithm>
+#include <glm/gtx/rotate_vector.hpp>
+#include <glm/gtc/type_ptr.hpp>
+#include <glm/gtx/norm.hpp>
 
 _PlayState PlayState;
 
@@ -566,15 +567,17 @@ void _PlayState::Update(double FrameTime) {
 
 	// Get zoom state
 	if(Player->Aiming) {
-		if(Map->IsVisible(Player->Position, WorldCursor, _Tile::BULLET)) {
-			Camera->UpdatePosition((WorldCursor - Player->Position) / Player->ZoomScale);
+		glm::vec2 CursorVector = WorldCursor - Player->Position;
+		Map->CollisionHits.clear();
+		Map->CheckBulletCollisions(Player, glm::normalize(CursorVector), Map->CollisionHits, GRID_PROP, true, 1, _Tile::BULLET);
+		if(Map->CollisionHits.size()) {
+			glm::vec2 HitVector = Map->CollisionHits.front().Position - Player->Position;
+			if(glm::dot(CursorVector, CursorVector) < glm::dot(HitVector, HitVector))
+				Camera->UpdatePosition(CursorVector / Player->ZoomScale);
+			else
+				Camera->UpdatePosition(HitVector / Player->ZoomScale);
 		}
-		else {
-			std::vector<_Hit> Hits;
-			Map->CheckBulletCollisions(Player, glm::normalize(WorldCursor - Player->Position), Hits, 0, false, 1, _Tile::BULLET);
-			if(Hits.size())
-				Camera->UpdatePosition((Hits.front().Position - Player->Position) / Player->ZoomScale);
-		}
+
 		Camera->SetDistance(CAMERA_DISTANCE_AIMED);
 	}
 	else

@@ -49,7 +49,7 @@ const  int          GAME_MAX_PROGRESSION           =  1000;
 const  int          GAME_MAX_PROGRESSION_SPAWN     =  10;
 //     Camera
 const  float        CAMERA_DISTANCE                =  6.5f;
-const  float        CAMERA_DISTANCE_AIMED          =  7.0f;
+const  float        CAMERA_DISTANCE_AIMED          =  CAMERA_DISTANCE;
 const  float        CAMERA_DIVISOR                 =  0.2f;
 const  float        CAMERA_EDITOR_DIVISOR          =  0.05f;
 const  float        CAMERA_FOVY                    =  90.0f;

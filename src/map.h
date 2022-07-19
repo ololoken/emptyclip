@@ -183,6 +183,8 @@ struct _MinimapLayer {
 // Classes
 class _Map {
 
+	friend class _PlayState;
+
 	public:
 
 		_Map();
