@@ -155,6 +155,7 @@ struct _ObjectSpawn {
 	_ObjectSpawn() :
 		ID(""),
 		Position{0, 0},
+		Scale(1.0f),
 		Type(0),
 		Level(1),
 		Deleted(false) { }
@@ -162,12 +163,14 @@ struct _ObjectSpawn {
 	_ObjectSpawn(const std::string &ID, const glm::vec2 &Position, int Type, int Level) :
 		ID(ID),
 		Position(Position),
+		Scale(1.0f),
 		Type(Type),
 		Level(Level),
 		Deleted(false) { }
 
 	std::string ID;
 	glm::vec2 Position;
+	float Scale;
 	int Type;
 	int Level;
 	bool Deleted;

@@ -525,7 +525,7 @@ void _EditorState::HandleMouseButton(const ae::_MouseEvent &MouseEvent) {
 							default: {
 								ae::_Element *Button = Brush[EditMode];
 								if(Button)
-									SpawnObject(Map->GetValidPosition(WorldCursor), (intptr_t)Button->UserData, Button->Name, ObjectLevel, IsShiftDown);
+									SpawnObject(Map->GetValidPosition(WorldCursor), 1.0f, (intptr_t)Button->UserData, Button->Name, ObjectLevel, IsShiftDown);
 							} break;
 						}
 					}
@@ -621,26 +621,39 @@ void _EditorState::HandleMouseButton(const ae::_MouseEvent &MouseEvent) {
 // Mouse wheel handler
 void _EditorState::HandleMouseWheel(int Direction) {
 
+	// Inside viewport
 	if(ae::Input.GetMouse().x < ae::Graphics.ViewportSize.x && ae::Input.GetMouse().y < ae::Graphics.ViewportSize.y) {
 		float Multiplier = 1.0f * Direction;
 		if(IsShiftDown)
 			Multiplier = 10.0f * Direction;
 
-		if(SelectedBlock && IsCtrlDown) {
-			ExecuteChangeZ(-Direction, !IsShiftDown);
-			return;
+		if(IsCtrlDown) {
+			if(SelectedBlock) {
+				ExecuteChangeZ(-Direction, !IsShiftDown);
+				return;
+			}
+
+			if(SelectedObjects.size()) {
+				for(const auto &Object : SelectedObjects)
+					Object->Scale += Multiplier * 0.05f;
+
+				return;
+			}
 		}
 
 		// Zoom
 		Camera->UpdateDistance(-Multiplier);
 	}
 	else {
+
+		// Inside palette
 		if(ae::Input.GetMouse().x >= ae::Graphics.ViewportSize.x) {
 			if(Direction > 0)
 				PaletteElement[EditMode]->UpdateChildrenOffset(glm::ivec2(0, PaletteSizes[EditMode]));
 			else
 				PaletteElement[EditMode]->UpdateChildrenOffset(glm::ivec2(0, -PaletteSizes[EditMode]));
 		}
+		// Inside controls
 		else {
 			if(EditMode == EDITMODE_EVENTS) {
 				if(SelectedEvent)
@@ -869,6 +882,7 @@ void _EditorState::Render(double BlendFactor) {
 		DrawObject(0.0f, 0.0f, ObjectSpawn, 1.0f);
 
 	// Outline selected item
+	ae::Graphics.SetDepthTest(false);
 	ae::Graphics.SetProgram(ae::Assets.Programs["pos"]);
 	ae::Graphics.SetColor(COLOR_WHITE);
 	for(auto Iterator : SelectedObjects) {
@@ -877,6 +891,7 @@ void _EditorState::Render(double BlendFactor) {
 	}
 
 	// Draw faded items while moving
+	ae::Graphics.SetDepthTest(true);
 	ae::Graphics.SetProgram(ae::Assets.Programs["pos_uv"]);
 	ae::Graphics.SetVBO(ae::VBO_QUAD);
 	for(auto Iterator : SelectedObjects)
@@ -1197,6 +1212,7 @@ void _EditorState::DrawBrush() {
 	glm::vec2 IconPosition(382 + EDITOR_PALETTE_SELECTEDSIZE, ae::Graphics.CurrentSize.y - EDITOR_PALETTE_SELECTEDSIZE - 8);
 	glm::vec2 NamePosition = glm::vec2(EDITOR_PALETTE_SELECTEDSIZE + 16, -EDITOR_PALETTE_SELECTEDSIZE / 2);
 	float IconRotation = 0;
+	float IconScale = 1.0f;
 	float IconScaleX = 1.0f;
 	float TextSpacingY = 18;
 	int SelectedObjectLevel = 1;
@@ -1356,6 +1372,7 @@ void _EditorState::DrawBrush() {
 				IconID = (*Iterator)->ID;
 				IconText = "";
 				IconTexture = nullptr;
+				IconScale = (*Iterator)->Scale;
 				SelectedObjectLevel = (*Iterator)->Level;
 			}
 
@@ -1380,6 +1397,12 @@ void _EditorState::DrawBrush() {
 			// Draw object total in level
 			NamePosition.y += TextSpacingY;
 			MainFont->DrawText("Total: " + IconTotal, glm::ivec2(IconPosition + NamePosition), ae::LEFT_BASELINE);
+		}
+		else if(EditMode == EDITMODE_PROPS) {
+
+			// Draw object scale
+			NamePosition.y += TextSpacingY;
+			MainFont->DrawText("Scale: " + std::to_string(IconScale), glm::ivec2(IconPosition + NamePosition), ae::LEFT_BASELINE);
 		}
 	}
 
@@ -1417,15 +1440,15 @@ void _EditorState::DrawEventTiles(_Event *Event, const glm::vec4 &Color) {
 }
 
 // Draws an object
-void _EditorState::DrawObject(float OffsetX, float OffsetY, const _ObjectSpawn *Object, float Alpha) {
+void _EditorState::DrawObject(float OffsetX, float OffsetY, const _ObjectSpawn *ObjectSpawn, float Alpha) {
 	float Scale = ITEM_SCALE;
 	float Depth = 0.0f;
 	glm::vec4 Color;
 	const ae::_Texture *Texture = nullptr;
 	const ae::_Mesh *Mesh = nullptr;
-	switch(Object->Type) {
+	switch(ObjectSpawn->Type) {
 		case _Object::MONSTER: {
-			_ObjectTemplate &Monster = Stats.Objects.at(Object->ID);
+			_ObjectTemplate &Monster = Stats.Objects.at(ObjectSpawn->ID);
 			Texture = ae::Assets.Textures["textures/icons/" + Monster.AnimationID + ".png"];
 			Color = Monster.Color;
 			Scale = Monster.Attributes.at("scale").Float;
@@ -1437,39 +1460,41 @@ void _EditorState::DrawObject(float OffsetX, float OffsetY, const _ObjectSpawn *
 		case _Object::ARMOR:
 		case _Object::WEAPON:
 		case _Object::MEDKIT: {
-			_ObjectTemplate &Item = Stats.Objects.at(Object->ID);
+			_ObjectTemplate &Item = Stats.Objects.at(ObjectSpawn->ID);
 			Texture = ae::Assets.Textures[Item.IconID];
 			Color = Item.Color;
 			Depth = ITEM_Z;
 		} break;
 		case _Object::PROP: {
-			_ObjectTemplate &ObjectTemplate = Stats.Objects.at(Object->ID);
+			_ObjectTemplate &ObjectTemplate = Stats.Objects.at(ObjectSpawn->ID);
 			Texture = ae::Assets.Textures[ObjectTemplate.IconID];
 			Mesh = ae::Assets.Meshes[ObjectTemplate.MeshID];
 			Color = ObjectTemplate.Color;
-			Scale = ObjectTemplate.Attributes.at("scale").Float;
+			Scale = ObjectTemplate.Attributes.at("scale").Float * ObjectSpawn->Scale;
 		} break;
 	}
 
-	glm::vec2 DrawPosition(Object->Position.x + OffsetX, Object->Position.y + OffsetY);
+	if(!Texture)
+		return;
+
+	glm::vec2 DrawPosition(ObjectSpawn->Position.x + OffsetX, ObjectSpawn->Position.y + OffsetY);
 	if(!Camera->IsCircleInView(DrawPosition, Scale))
 		return;
 
 	Color.a *= Alpha;
-	if(Texture) {
-		if(Mesh) {
-			ae::Graphics.SetDepthMask(true);
-			ae::Graphics.SetProgram(ae::Assets.Programs["map_norm"]);
-			ae::Assets.Programs["map_norm"]->ResetTextureTransform();
-			ae::Graphics.DrawMesh(glm::vec3(DrawPosition, Depth), Mesh, Texture, glm::vec3(-Scale, Scale, Scale));
-		}
-		else {
-			ae::Graphics.SetDepthMask(false);
-			ae::Graphics.SetProgram(ae::Assets.Programs["pos_uv"]);
-			ae::Assets.Programs["pos_uv"]->ResetTextureTransform();
-			ae::Graphics.SetColor(Color);
-			ae::Graphics.DrawSprite(glm::vec3(DrawPosition, Depth), Texture, 0.0f, glm::vec2(Scale));
-		}
+	if(Mesh) {
+		ae::Graphics.SetDepthMask(true);
+		ae::Graphics.SetProgram(ae::Assets.Programs["map_norm"]);
+		ae::Assets.Programs["map_norm"]->ResetTextureTransform();
+		ae::Graphics.SetColor(Color);
+		ae::Graphics.DrawMesh(glm::vec3(DrawPosition, Depth), Mesh, Texture, glm::vec3(-Scale, Scale, Scale));
+	}
+	else {
+		ae::Graphics.SetDepthMask(false);
+		ae::Graphics.SetProgram(ae::Assets.Programs["pos_uv"]);
+		ae::Assets.Programs["pos_uv"]->ResetTextureTransform();
+		ae::Graphics.SetColor(Color);
+		ae::Graphics.DrawSprite(glm::vec3(DrawPosition, Depth), Texture, 0.0f, glm::vec2(Scale));
 	}
 }
 
@@ -1618,16 +1643,12 @@ void _EditorState::ProcessEventIcons(int Index, int Type) {
 }
 
 // Adds an object to the list
-void _EditorState::SpawnObject(const glm::vec2 &Position, int Type, const std::string &ID, int Level, bool Align) {
-	glm::vec2 SpawnPosition;
+void _EditorState::SpawnObject(const glm::vec2 &Position, float Scale, int Type, const std::string &ID, int Level, bool Align) {
+	glm::vec2 SpawnPosition = Align ? AlignToGrid(Position) : Position;
 
-	if(Align)
-		SpawnPosition = AlignToGrid(Position);
-	else
-		SpawnPosition = Position;
-
-	_ObjectSpawn *Object = new _ObjectSpawn(ID, SpawnPosition, Type, Level);
-	Map->ObjectSpawns.push_back(Object);
+	_ObjectSpawn *ObjectSpawn = new _ObjectSpawn(ID, SpawnPosition, Type, Level);
+	ObjectSpawn->Scale = Scale;
+	Map->ObjectSpawns.push_back(ObjectSpawn);
 }
 
 // Adds an event to the list
@@ -2018,7 +2039,7 @@ void _EditorState::ExecutePaste(bool Viewport) {
 		break;
 		default:
 			for(auto Iterator : ClipboardObjects)
-				SpawnObject(GetValidObjectPosition(StartPosition - CopiedPosition + Iterator->Position), Iterator->Type, Iterator->ID, 1, IsShiftDown);
+				SpawnObject(GetValidObjectPosition(StartPosition - CopiedPosition + Iterator->Position), Iterator->Scale, Iterator->Type, Iterator->ID, 1, IsShiftDown);
 		break;
 	}
 }

@@ -154,7 +154,7 @@ class _EditorState : public ae::_State {
 		bool LoadMap(const std::string &File, bool UseSavedCameraPosition=false);
 		void ResetEditorState();
 
-		void DrawObject(float OffsetX, float OffsetY, const _ObjectSpawn *Object, float Alpha);
+		void DrawObject(float OffsetX, float OffsetY, const _ObjectSpawn *ObjectSpawn, float Alpha);
 		void DrawBrush();
 		void DrawEventTiles(_Event *Event, const glm::vec4 &Color);
 		void ProcessIcons(int Index, int Type);
@@ -167,7 +167,7 @@ class _EditorState : public ae::_State {
 
 		void AddEvent(int Type);
 		void UpdateEventID(int Type, const std::string &ID);
-		void SpawnObject(const glm::vec2 &Position, int Type, const std::string &ID, int Level, bool Align);
+		void SpawnObject(const glm::vec2 &Position, float Scale, int Type, const std::string &ID, int Level, bool Align);
 		void SelectObject();
 		void SelectObjects();
 		void DeselectBlock() { SelectedBlockIndex = -1, SelectedBlock = nullptr; }

@@ -106,7 +106,7 @@ class _Stats {
 
 		_Item *CreateItem(const std::string &ID, int Level, int Quality, int Count, const glm::vec2 &Position, bool RandomStats);
 		_Monster *CreateMonster(const std::string &ID, int Level, const glm::vec2 &Position);
-		_Object *CreateProp(const std::string &ID, const glm::vec2 &Position) const;
+		_Object *CreateProp(const std::string &ID, const glm::vec2 &Position, float Scale) const;
 
 		const _Level &FindLevel(int64_t Experience);
 		int GetLevelHealth(int Level) { return Levels[Level-1].HealthBonus; }

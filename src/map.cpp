@@ -176,6 +176,10 @@ _Map::_Map(const std::string &Filename, int SpawnMultiplier) : _Map() {
 						File >> Position.x >> Position.y;
 						ObjectSpawn->Position = Position;
 					} break;
+					// Scale
+					case 's': {
+						File >> ObjectSpawn->Scale;
+					} break;
 				}
 			} break;
 			// Events
@@ -390,6 +394,8 @@ bool _Map::Save(const std::string &String) {
 		File << "Oi " << ObjectSpawn->ID << '\n';
 		File << "Ol " << ObjectSpawn->Level << '\n';
 		File << "Op " << ObjectSpawn->Position.x << ' ' << ObjectSpawn->Position.y << '\n';
+		if(ObjectSpawn->Scale != 1.0f)
+			File << "Os " << ObjectSpawn->Scale << '\n';
 	}
 
 	// Events

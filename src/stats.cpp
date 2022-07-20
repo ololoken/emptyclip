@@ -721,7 +721,7 @@ _Monster *_Stats::CreateMonster(const std::string &ID, int Level, const glm::vec
 }
 
 // Create prop
-_Object *_Stats::CreateProp(const std::string &ID, const glm::vec2 &Position) const {
+_Object *_Stats::CreateProp(const std::string &ID, const glm::vec2 &Position, float Scale) const {
 	const _ObjectTemplate &Template = Objects.at(ID);
 
 	// Create object
@@ -729,10 +729,10 @@ _Object *_Stats::CreateProp(const std::string &ID, const glm::vec2 &Position) co
 	Prop->SetPosition(Position);
 	Prop->Mesh = ae::Assets.Meshes.at(Template.MeshID);
 	Prop->Texture = ae::Assets.Textures.at(Template.IconID);
-	Prop->Radius = Template.Attributes.at("halfsize_x").Float;
+	Prop->Radius = Template.Attributes.at("halfsize_x").Float * Scale;
 	if(Template.Attributes.at("halfsize_y").Float != 0.0f)
 		Prop->Circle = false;
-	Prop->Scale = Template.Attributes.at("scale").Float;
+	Prop->Scale = Template.Attributes.at("scale").Float * Scale;
 
 	return Prop;
 }
