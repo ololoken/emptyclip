@@ -23,8 +23,6 @@
 #include <glm/vec2.hpp>
 
 // Forward Declarations
-class _Element;
-class _Font;
 class _Entity;
 class _Player;
 class _Item;

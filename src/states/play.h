@@ -23,7 +23,6 @@
 #include <list>
 
 // Forward Declarations
-class _Font;
 class _HUD;
 class _Map;
 class _Event;

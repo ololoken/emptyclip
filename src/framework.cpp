@@ -16,6 +16,10 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 *******************************************************************************/
 #include <framework.h>
+#include <states/null.h>
+#include <states/convert.h>
+#include <states/play.h>
+#include <states/editor.h>
 #include <ae/framelimit.h>
 #include <ae/random.h>
 #include <ae/state.h>
@@ -34,10 +38,6 @@
 #include <stdexcept>
 #include <constants.h>
 #include <stats.h>
-#include <states/null.h>
-#include <states/convert.h>
-#include <states/play.h>
-#include <states/editor.h>
 #include <SDL.h>
 #include <algorithm>
 

@@ -85,6 +85,7 @@ void _EditorState::Init() {
 	ae::Graphics.Element->SetActive(false);
 	ae::Graphics.Element->Active = true;
 	ae::FocusedElement = nullptr;
+	//ae::_Mesh::ConvertOBJ("meshes/stump.obj");
 
 	// Load command buttons
 	MainFont = ae::Assets.Fonts["editor"];
@@ -1460,7 +1461,7 @@ void _EditorState::DrawObject(float OffsetX, float OffsetY, const _ObjectSpawn *
 			ae::Graphics.SetDepthMask(true);
 			ae::Graphics.SetProgram(ae::Assets.Programs["map_norm"]);
 			ae::Assets.Programs["map_norm"]->ResetTextureTransform();
-			ae::Graphics.DrawMesh(glm::vec3(DrawPosition, Depth), Mesh, Texture, glm::vec3(Scale));
+			ae::Graphics.DrawMesh(glm::vec3(DrawPosition, Depth), Mesh, Texture, glm::vec3(-Scale, Scale, Scale));
 		}
 		else {
 			ae::Graphics.SetDepthMask(false);
