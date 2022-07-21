@@ -1246,8 +1246,10 @@ void _PlayState::UpdateMonsters(double FrameTime) {
 				ResolveAttack(Monster, GRID_PLAYER);
 
 			// Add to render list
-			if(Camera->IsAABBInView(Bounds))
-				Map->ObjectManager->RenderList[_ObjectManager::RENDER_ITEMS].push_back(Monster);
+			if(Camera->IsAABBInView(Bounds)) {
+				int RenderListType = Monster->IsCrate() ? _ObjectManager::RENDER_PROP : _ObjectManager::RENDER_MONSTER;
+				Map->ObjectManager->RenderList[RenderListType].push_back(Monster);
+			}
 
 			++MonsterIterator;
 		}

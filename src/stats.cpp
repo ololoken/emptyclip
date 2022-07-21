@@ -526,6 +526,7 @@ void _Stats::LoadMonsters(const std::string &Path) {
 		std::getline(File, ID, '\t');
 		std::getline(File, Template.Name, '\t');
 		std::getline(File, Template.AnimationID, '\t');
+		std::getline(File, Template.MeshID, '\t');
 		std::getline(File, ColorID, '\t');
 		std::getline(File, WeaponParticlesID, '\t');
 		std::getline(File, Template.SoundGroupID, '\t');
@@ -575,6 +576,10 @@ void _Stats::LoadMonsters(const std::string &Path) {
 		// Check for item group
 		if(Template.ItemDropID != "" && ItemDrops.find(Template.ItemDropID) == ItemDrops.end())
 			throw std::runtime_error(std::string(__func__) + " Unknown itemdrop_id: '" + Template.ItemDropID + "' for " + ID);
+
+		// Check for mesh
+		if(Template.MeshID != "" && ae::Assets.Meshes.find(Template.MeshID) == ae::Assets.Meshes.end())
+			throw std::runtime_error(std::string(__func__) + " Unknown mesh_id: '" + Template.MeshID + "' for " + ID);
 
 		// Check for duplicates
 		if(Stats.Objects.find(ID) != Stats.Objects.end())
@@ -692,6 +697,7 @@ _Monster *_Stats::CreateMonster(const std::string &ID, int Level, const glm::vec
 	// Create object
 	_Monster *Monster = new _Monster(Template);
 	Monster->SetPosition(Position);
+	Monster->Mesh = ae::Assets.Meshes.at(Template.MeshID);
 	Monster->Animation->Reels = ae::Assets.Animations[Template.AnimationID];
 	Monster->Animation->CalculateTextureCoords();
 	Monster->Level = Level;
@@ -715,6 +721,11 @@ _Monster *_Stats::CreateMonster(const std::string &ID, int Level, const glm::vec
 		Monster->AttackRange[i] = Template.Attributes.at("attack_range").Float;
 		Monster->AttackMoveSpeed[i] = Template.Attributes.at("attack_movespeed").Float;
 	}
+	if(Monster->IsCrate()) {
+		Monster->Texture = Monster->Animation->Reels[0]->Texture;
+		Monster->PositionZ = 0.0f;
+	}
+
 	Monster->RecalculateStats();
 
 	return Monster;

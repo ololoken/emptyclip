@@ -78,7 +78,8 @@ _Entity::_Entity(const _ObjectTemplate &EntityTemplate) :
 	AttackRequested(false),
 	AttackMade(false),
 	ExperienceGiven(0),
-	TargetPosition{0, 0} {
+	TargetPosition{0, 0},
+	AIType(AI_NONE) {
 
 	for(int i = 0; i < WEAPON_COUNT; i++)
 		WeaponOffset[i] = glm::vec2(0.0f, 0.0f);
@@ -464,29 +465,34 @@ void _Entity::Move(double FrameTime) {
 
 // Draws the object
 void _Entity::Render(double BlendFactor) {
-	ae::Graphics.SetColor(Color);
-	glm::vec2 DrawPosition(Position * (float)BlendFactor + LastPosition * (float)(1.0f - BlendFactor));
+	if(IsCrate()) {
+		_Object::Render(BlendFactor);
+	}
+	else {
+		ae::Graphics.SetColor(Color);
+		glm::vec2 DrawPosition(Position * (float)BlendFactor + LastPosition * (float)(1.0f - BlendFactor));
 
-	ae::Graphics.SetColor(Color);
-	ae::Graphics.DrawAnimationFrame(
-		glm::vec3(DrawPosition, PositionZ),
-		Animation->Reels[Animation->Reel]->Texture,
-		glm::vec4(Animation->TextureCoords),
-		Rotation,
-		glm::vec2(Scale)
-	);
+		ae::Graphics.SetColor(Color);
+		ae::Graphics.DrawAnimationFrame(
+			glm::vec3(DrawPosition, PositionZ),
+			Animation->Reels[Animation->Reel]->Texture,
+			glm::vec4(Animation->TextureCoords),
+			Rotation,
+			glm::vec2(Scale)
+		);
 
-	if(false) {
-		ae::Graphics.SetProgram(ae::Assets.Programs["pos"]);
-		ae::Graphics.SetDepthMask(false);
-		ae::Graphics.SetDepthTest(false);
-		ae::Graphics.SetColor(COLOR_WHITE);
-		if(Circle)
-			ae::Graphics.DrawCircle(glm::vec3(DrawPosition, 0), Radius);
-		else
-			ae::Graphics.DrawRectangle3D(Position - glm::vec2(Radius), Position + glm::vec2(Radius), false);
-		ae::Graphics.SetDepthTest(true);
-		ae::Graphics.SetProgram(ae::Assets.Programs["pos_uv"]);
+		if(false) {
+			ae::Graphics.SetProgram(ae::Assets.Programs["pos"]);
+			ae::Graphics.SetDepthMask(false);
+			ae::Graphics.SetDepthTest(false);
+			ae::Graphics.SetColor(COLOR_WHITE);
+			if(Circle)
+				ae::Graphics.DrawCircle(glm::vec3(DrawPosition, 0), Radius);
+			else
+				ae::Graphics.DrawRectangle3D(Position - glm::vec2(Radius), Position + glm::vec2(Radius), false);
+			ae::Graphics.SetDepthTest(true);
+			ae::Graphics.SetProgram(ae::Assets.Programs["pos_uv"]);
+		}
 	}
 }
 

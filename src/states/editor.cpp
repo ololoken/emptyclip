@@ -85,7 +85,7 @@ void _EditorState::Init() {
 	ae::Graphics.Element->SetActive(false);
 	ae::Graphics.Element->Active = true;
 	ae::FocusedElement = nullptr;
-	//ae::_Mesh::ConvertOBJ("meshes/stump.obj");
+	//ae::_Mesh::ConvertOBJ("meshes/test.obj", true, true);
 
 	// Load command buttons
 	MainFont = ae::Assets.Fonts["editor"];
@@ -1450,9 +1450,10 @@ void _EditorState::DrawObject(float OffsetX, float OffsetY, const _ObjectSpawn *
 		case _Object::MONSTER: {
 			_ObjectTemplate &Monster = Stats.Objects.at(ObjectSpawn->ID);
 			Texture = ae::Assets.Textures["textures/icons/" + Monster.AnimationID + ".png"];
+			Mesh = ae::Assets.Meshes[Monster.MeshID];
 			Color = Monster.Color;
 			Scale = Monster.Attributes.at("scale").Float;
-			Depth = OBJECT_Z;
+			Depth = Mesh ? 0.0f : OBJECT_Z;
 		} break;
 		case _Object::KEY:
 		case _Object::AMMO:
@@ -1487,7 +1488,7 @@ void _EditorState::DrawObject(float OffsetX, float OffsetY, const _ObjectSpawn *
 		ae::Graphics.SetProgram(ae::Assets.Programs["map_norm"]);
 		ae::Assets.Programs["map_norm"]->ResetTextureTransform();
 		ae::Graphics.SetColor(Color);
-		ae::Graphics.DrawMesh(glm::vec3(DrawPosition, Depth), Mesh, Texture, glm::vec3(-Scale, Scale, Scale));
+		ae::Graphics.DrawMesh(glm::vec3(DrawPosition, Depth), Mesh, Texture, glm::vec3(Scale));
 	}
 	else {
 		ae::Graphics.SetDepthMask(false);

@@ -31,14 +31,6 @@ class _Monster : public _Entity {
 	public:
 
 		// Enumerations
-		enum AITypes {
-			AI_NONE,
-			AI_BOSS,
-			AI_BASIC,
-			AI_HITANDRUN,
-			AI_COUNT
-		};
-
 		enum GoalTypes {
 			GOAL_PURSUE,
 			GOAL_RETREAT,
@@ -53,13 +45,11 @@ class _Monster : public _Entity {
 		void OnHit(_Entity *Attacker, const _Hit &Hit) override;
 		void OnPlayerDeath();
 
-		bool IsCrate() const { return AIType == AI_NONE; }
 		const _ParticleTemplate *GetParticle(int ParticleType) const override;
 
 		// AI
 		const _Player *Player;
 		const _ItemDrop *ItemDrop;
-		int AIType;
 
 	private:
 

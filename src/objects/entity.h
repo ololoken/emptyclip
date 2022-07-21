@@ -70,6 +70,15 @@ enum EntityAnimationTypes {
 	ENTITY_ANIMATIONDYING,
 };
 
+// Types of AI
+enum AITypes {
+	AI_NONE,
+	AI_BOSS,
+	AI_BASIC,
+	AI_HITANDRUN,
+	AI_COUNT
+};
+
 // Classes
 class _Entity : public _Object {
 
@@ -87,6 +96,7 @@ class _Entity : public _Object {
 		bool StartAttack();
 		float GenerateShotDirection();
 		bool IsMeleeAttacking() const { return Action == ACTION_MELEE || Action == ACTION_STARTMELEE; }
+		bool IsCrate() const { return AIType == AI_NONE; }
 
 		bool CheckBurstTimer(int AttackType) const { return AttackTimer[AttackType] >= BurstPeriod[AttackType]; }
 		bool CheckAttackTimer(int AttackType) const { return AttackTimer[AttackType] >= AttackPeriod[AttackType]; }
@@ -181,6 +191,7 @@ class _Entity : public _Object {
 		// Monsters
 		int64_t ExperienceGiven;
 		glm::vec2 TargetPosition;
+		int AIType;
 
 	protected:
 
