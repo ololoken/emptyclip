@@ -1426,6 +1426,8 @@ void _Map::UpdateAmbientLight(double FrameTime) {
 
 		// Update clock
 		Clock += FrameTime;
+		if(Clock >= MAP_DAY_LENGTH)
+			Clock -= MAP_DAY_LENGTH;
 
 		// Find index by time
 		size_t NextCycle = DayCyclesTime.size();
