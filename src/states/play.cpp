@@ -959,14 +959,15 @@ void _PlayState::ResolveAttack(_Entity *Attacker, int GridType) {
 			switch(Hit.Type) {
 				case HIT_NONE:
 				break;
-				case HIT_WALL:
+				case HIT_WALL: {
 					if(!PlayedHitWallSound) {
 						ae::Audio.PlaySound(Attacker->GetSound(SOUND_RICOCHET, WEAPONATTACK_MAIN), ae::_SoundSettings(glm::vec3(Hit.Position.x, 0.0f, Hit.Position.y)));
 						PlayedHitWallSound = true;
 					}
 
-					GenerateHitEffects(Attacker, HIT_WALL, Hit);
-				break;
+					bool CreateWallDecal = (Hit.Object && Hit.Object->Type == _Object::PROP) ? false : true;
+					GenerateHitEffects(Attacker, HIT_WALL, Hit, CreateWallDecal);
+				} break;
 				case HIT_OBJECT: {
 					_Entity *HitEntity = (_Entity *)Hit.Object;
 
@@ -1502,7 +1503,7 @@ void _PlayState::RemoveMonster(_Monster *Monster) {
 }
 
 // Generate particles depending on hit type
-void _PlayState::GenerateHitEffects(_Entity *Attacker, const int Type, const _Hit &Hit) {
+void _PlayState::GenerateHitEffects(_Entity *Attacker, const int Type, const _Hit &Hit, bool CreateWallDecal) {
 	if(Type == -1) {
 		glm::vec2 ParticlePosition = Attacker->Position + glm::rotate(Attacker->WeaponOffset[Attacker->MainWeaponType], glm::radians(Attacker->Rotation));
 		Particles->Create(_ParticleSpawn(Attacker->GetParticle(PARTICLE_FIRE), glm::vec2(0), ParticlePosition, OBJECT_Z, Attacker->Rotation));
@@ -1510,7 +1511,8 @@ void _PlayState::GenerateHitEffects(_Entity *Attacker, const int Type, const _Hi
 	}
 	else if(Type == HIT_WALL) {
 		Particles->Create(_ParticleSpawn(Attacker->GetParticle(PARTICLE_RICOCHET), Hit.Normal, Hit.Position, OBJECT_Z, Attacker->Rotation));
-		Particles->Create(_ParticleSpawn(Attacker->GetParticle(PARTICLE_BULLETHOLE), Hit.Normal, Hit.Position, OBJECT_Z, Attacker->Rotation));
+		if(CreateWallDecal)
+			Particles->Create(_ParticleSpawn(Attacker->GetParticle(PARTICLE_BULLETHOLE), Hit.Normal, Hit.Position, OBJECT_Z, Attacker->Rotation));
 	}
 	else if(Type == HIT_OBJECT) {
 		glm::vec2 ParticlePosition = _Map::GenerateRandomPointInCircle(0.2f) + Hit.Object->Position;

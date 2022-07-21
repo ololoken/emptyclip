@@ -1064,6 +1064,7 @@ void _Map::CheckBulletCollisions(_Object *Attacker, const glm::vec2 &Direction, 
 	glm::vec2 WallHitPosition;
 	glm::vec2 WallBoundary;
 	Hit.Type = HIT_WALL;
+	Hit.Object = nullptr;
 	if(EndedOnX) {
 
 		// Get correct side of the wall
