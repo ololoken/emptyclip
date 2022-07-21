@@ -39,6 +39,7 @@ _Object::_Object(const _ObjectTemplate &ObjectTemplate) :
 	Radius(0.25f),
 	Circle(true),
 	Texture(nullptr),
+	Mesh(nullptr),
 	Color(ObjectTemplate.Color),
 	Rotation(0.0f),
 	Scale(1.0f),

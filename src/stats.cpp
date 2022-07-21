@@ -697,7 +697,8 @@ _Monster *_Stats::CreateMonster(const std::string &ID, int Level, const glm::vec
 	// Create object
 	_Monster *Monster = new _Monster(Template);
 	Monster->SetPosition(Position);
-	Monster->Mesh = ae::Assets.Meshes.at(Template.MeshID);
+	if(!Template.MeshID.empty())
+		Monster->Mesh = ae::Assets.Meshes.at(Template.MeshID);
 	Monster->Animation->Reels = ae::Assets.Animations[Template.AnimationID];
 	Monster->Animation->CalculateTextureCoords();
 	Monster->Level = Level;
