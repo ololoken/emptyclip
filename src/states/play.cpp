@@ -90,6 +90,7 @@ void _PlayState::Init() {
 			Save.LoadPlayer(Player);
 		}
 		catch(std::exception &Error) {
+			Player->Reset(true);
 			Save.SavePlayer(Player);
 		}
 	}
