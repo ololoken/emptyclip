@@ -408,7 +408,7 @@ void _Entity::Move(double FrameTime) {
 		UpdateSpeed(PLAYER_BACKWARDS_SPEEDFACTOR);
 
 	// Get speed
-	float Speed = MoveSpeed * MoveModifier * FrameTime;
+	float Speed = std::min(MoveSpeed * MoveModifier, OBJECT_MAX_SPEED) * FrameTime;
 
 	// Update move vector
 	MoveDirection *= Speed;

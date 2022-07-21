@@ -104,6 +104,7 @@ const  int          ITEM_MAX_MOVESPEED             =  90;
 const  float        OBJECT_Z                       =  0.3f;
 const  int          OBJECT_MAX_LEVEL               =  1000;
 const  float        OBJECT_PUSH_FACTOR             =  0.5f;
+const  float        OBJECT_MAX_SPEED               =  15.0f;
 //     AI
 const  double       AI_REACTION_TIME_MIN           =  GAME_TIMESTEP;
 const  double       AI_REACTION_TIME_MAX           =  0.3;
