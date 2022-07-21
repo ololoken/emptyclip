@@ -643,12 +643,18 @@ bool _Map::CheckAABBCollision(const glm::vec2 &Position, float Radius, const flo
 		// Check if object is inside the AABB
 		if(ClampCount == 0) {
 			glm::vec2 Center((AABB[0] + AABB[2]) * 0.5f, (AABB[1] + AABB[3]) * 0.5f);
-			if(Position.x <= Center.x)
-				Hit.Push.x = -(AABB[0] - Position.x - Radius);
-			else if(Position.x > Center.x)
-				Hit.Push.x = (AABB[0] - Position.x) + 1 + Radius;
 
-			Hit.Push.y = 0.0f;
+			// Push left or right
+			if(Position.x <= Center.x)
+				Hit.Push.x = -(Position.x - AABB[0] + Radius);
+			else if(Position.x > Center.x)
+				Hit.Push.x = AABB[2] - Position.x + Radius;
+
+			// Push up or down
+			if(Position.y <= Center.y)
+				Hit.Push.y = -(Position.y - AABB[1] + Radius);
+			else if(Position.y > Center.y)
+				Hit.Push.y = AABB[3] - Position.y + Radius;
 		}
 		else {
 
