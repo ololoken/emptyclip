@@ -80,6 +80,7 @@ void _Item::DrawTooltip(const _Player *Player, size_t CompareSlot, int Inventory
 
 	glm::vec2 Size = glm::vec2(500, 150) * ae::_Element::GetUIScale();
 	glm::vec2 Spacing = glm::vec2(0, 36) * ae::_Element::GetUIScale();
+	glm::vec2 SmallSpacing = glm::vec2(0, 24) * ae::_Element::GetUIScale();
 
 	// Set size based on type
 	if(Type == _Object::WEAPON)
@@ -97,12 +98,12 @@ void _Item::DrawTooltip(const _Player *Player, size_t CompareSlot, int Inventory
 	bool HasOneBonus = false;
 	for(int i = 1; i < MOD_COUNT; i++) {
 		if(Bonus[i]) {
-			Size.y += Spacing.y;
+			Size.y += SmallSpacing.y;
 			HasOneBonus = true;
 		}
 	}
 	if(HasOneBonus)
-		Size.y += 40 * ae::_Element::GetUIScale();
+		Size.y += Spacing.y;
 
 	// Get title width
 	ae::_TextBounds TextBounds;
@@ -361,7 +362,7 @@ void _Item::DrawTooltip(const _Player *Player, size_t CompareSlot, int Inventory
 		Buffer.str("");
 	}
 
-	// Bonuses
+	// Mod bonuses
 	TextColor = COLOR_WHITE;
 	if(HasOneBonus)
 		DrawPosition.y += Spacing.y * 0.5f;
@@ -370,14 +371,14 @@ void _Item::DrawTooltip(const _Player *Player, size_t CompareSlot, int Inventory
 		if(!Bonus[i])
 			continue;
 
-		DrawPosition.y += Spacing.y;
+		DrawPosition.y += SmallSpacing.y;
 
 		std::string Percent = " ";
 		if(Stats.Objects.at(Stats.ModNames[i]).Attributes.at("percent_sign").Int)
 			Percent = "% ";
 
 		Buffer << "+" << Bonus[i] << Percent << ModTypeToString(i);
-		ae::Assets.Fonts["hud_medium"]->DrawText(Buffer.str(), glm::ivec2(DrawPosition), ae::CENTER_BASELINE, TextColor);
+		ae::Assets.Fonts["hud_small"]->DrawText(Buffer.str(), glm::ivec2(DrawPosition), ae::CENTER_BASELINE, TextColor);
 		Buffer.str("");
 	}
 
