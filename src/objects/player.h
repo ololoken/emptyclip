@@ -131,6 +131,7 @@ class _Player : public _Entity {
 		std::string MapID;
 		int CheckpointIndex;
 		int Progression;
+		double Clock;
 
 		// Saves
 		std::string SavePath;

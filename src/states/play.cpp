@@ -111,7 +111,7 @@ void _PlayState::Init() {
 	Framebuffer = new ae::_Framebuffer(ae::Graphics.CurrentSize);
 
 	// Load level
-	Map = new _Map(Level, Player->Progression+1);
+	Map = new _Map(Level, Player->Clock, Player->Progression+1);
 	Map->InitializeTiles();
 	Player->Map = Map;
 	Player->MapID = Map->Filename;
@@ -337,13 +337,13 @@ bool _PlayState::HandleCommand(ae::_Console *Console) {
 	// Handle dev commands
 	if(DevMode) {
 		if(Console->Command == "clock") {
-			if(!Map)
+			if(!Player)
 				return true;
 
 			if(Parameters.size() == 1)
-				Map->Clock = std::clamp(ae::ToNumber<double>(Parameters[0]), 0.0, MAP_DAY_LENGTH);
+				Player->Clock = std::clamp(ae::ToNumber<double>(Parameters[0]), 0.0, MAP_DAY_LENGTH);
 			else
-				Console->AddMessage("clock = " + std::to_string(Map->Clock));
+				Console->AddMessage("clock = " + std::to_string(Player->Clock));
 		}
 		else if(Console->Command == "experience") {
 			if(!Player)
@@ -531,7 +531,7 @@ void _PlayState::Update(double FrameTime) {
 	}
 
 	// Update objects
-	Map->Update(FrameTime);
+	Map->Update(FrameTime, Player->Clock);
 	Map->ObjectManager->RenderList[_ObjectManager::RENDER_PLAYER].push_back(Player);
 
 	// Update monsters
@@ -648,12 +648,12 @@ void _PlayState::Render(double BlendFactor) {
 	ae::Assets.Programs["map"]->Lights[0].Color = PlayerLightColor;
 	ae::Assets.Programs["map"]->Lights[0].Position = LightPosition;
 	ae::Assets.Programs["map"]->Lights[0].Attenuation = LightAttenuantion;
-	ae::Assets.Programs["map"]->AmbientLight = Map->GetAmbientLight();
+	ae::Assets.Programs["map"]->AmbientLight = Map->AmbientLight;
 	ae::Assets.Programs["map_norm"]->LightCount = 1;
 	ae::Assets.Programs["map_norm"]->Lights[0].Color = PlayerLightColor;
 	ae::Assets.Programs["map_norm"]->Lights[0].Position = LightPosition;
 	ae::Assets.Programs["map_norm"]->Lights[0].Attenuation = LightAttenuantion;
-	ae::Assets.Programs["map_norm"]->AmbientLight = Map->GetAmbientLight();
+	ae::Assets.Programs["map_norm"]->AmbientLight = Map->AmbientLight;
 
 	// Setup the viewing matrix
 	ae::Graphics.Setup3D();

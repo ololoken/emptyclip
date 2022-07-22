@@ -47,6 +47,7 @@ const  double       GAME_INVULNERABLE_TIME         =  3.0;
 const  int          GAME_MEDKIT_HEALTH_PERCENT     =  25;
 const  int          GAME_MAX_PROGRESSION           =  1000;
 const  int          GAME_MAX_PROGRESSION_SPAWN     =  10;
+const  double       GAME_DEFAULT_CLOCK             =  720.0;
 //     Camera
 const  float        CAMERA_DISTANCE                =  6.5f;
 const  float        CAMERA_DISTANCE_AIMED          =  CAMERA_DISTANCE;

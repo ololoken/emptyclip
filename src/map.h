@@ -190,13 +190,13 @@ class _Map {
 	public:
 
 		_Map();
-		_Map(const std::string &Filename, int SpawnMultiplier=1);
+		_Map(const std::string &Filename, double Clock=0.0, int SpawnMultiplier=1);
 		~_Map();
 
 		void InitializeTiles();
 		bool Save(const std::string &String);
 
-		void Update(double FrameTime);
+		void Update(double FrameTime, double Clock);
 
 		bool CheckTileCollisions(const glm::vec2 &TargetPosition, float Radius, glm::vec2 &NewPosition);
 		std::vector<_Hit> &CheckCollisionsInGrid(const glm::vec2 &Position, float Radius, const _Object *SkipObject, bool &AxisAlignedPush, float PushFactor=1.0f);
@@ -215,9 +215,7 @@ class _Map {
 		void SwapBlockTextures(int Layer, int Index);
 		bool HasEvents(const glm::ivec2 &Position) const;
 
-		glm::vec4 GetAmbientLight() const { return AmbientLight; }
 		void SetAmbientLight(const std::string &ColorID);
-		void SetAmbientLight(const glm::vec4 &Color);
 
 		int RenderFloors();
 		int RenderWalls();
@@ -271,14 +269,14 @@ class _Map {
 
 		// Stats
 		std::string Filename;
-		glm::vec4 MapAmbientLight;
+		glm::vec4 BaseAmbientLight;
 		glm::ivec2 Size;
-		double Clock;
 		int MapType;
 		int Level;
 		int Monsters;
 		int Crates;
 		int Secrets;
+		bool BaseAmbientClock;
 		bool AmbientClock;
 		bool SimpleAI;
 
@@ -292,9 +290,14 @@ class _Map {
 		std::vector<_MinimapLayer> MinimapLayers;
 		glm::vec2 MinimapCaptureSize;
 
+		// Lights
+		glm::vec4 AmbientLight;
+		glm::vec4 TargetAmbientLight;
+
 	private:
 
-		void UpdateAmbientLight(double FrameTime);
+		void GetClockLight(double Clock, glm::vec4 &LightColor);
+		void UpdateAmbientLight(double FrameTime, double Clock);
 		bool CheckAABBCollision(const glm::vec2 &Position, float Radius, const float *AABB, bool Resolve, _Hit &Hit) const;
 
 		// Blocks
@@ -307,10 +310,6 @@ class _Map {
 		std::unordered_map<_Object *, int> ObjectMap;
 		std::vector<_Hit> CollisionHits;
 		std::vector<glm::vec2> CollisionPushes;
-
-		// Lights
-		glm::vec4 AmbientLight;
-		glm::vec4 TargetAmbientLight;
 };
 
 // Returns a coordinate inside the map

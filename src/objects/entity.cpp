@@ -387,6 +387,10 @@ void _Entity::Move(double FrameTime) {
 				if(Rotation < 0.0f)
 					Rotation += 360.0f;
 			}
+			else {
+				MoveDirection.x = 0;
+				MoveDirection.y = 0;
+			}
 		} break;
 		default:
 		break;

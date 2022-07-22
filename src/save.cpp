@@ -45,6 +45,7 @@ enum SaveChunkTypes {
 	CHUNK_KEYS,
 	CHUNK_DEATHS,
 	CHUNK_PROGRESSIONTIME,
+	CHUNK_CLOCK,
 };
 
 // Write a chunk to a stream
@@ -223,6 +224,9 @@ void _Save::LoadPlayer(_Player *Player) {
 			case CHUNK_SKILLS:
 				File.read((char *)&Player->Skills, sizeof(Player->Skills));
 			break;
+			case CHUNK_CLOCK:
+				File.read((char *)&Player->Clock, sizeof(Player->Clock));
+			break;
 			case CHUNK_ITEMS: {
 				ae::_Buffer Buffer(Size);
 				File.read(&Buffer[0], Size);
@@ -276,6 +280,7 @@ void _Save::SavePlayer(_Player *Player) {
 	WriteChunk(File, CHUNK_HEALTH, (char *)&Player->Health, sizeof(Player->Health));
 	WriteChunk(File, CHUNK_PLAYTIME, (char *)&Player->PlayTime, sizeof(Player->PlayTime));
 	WriteChunk(File, CHUNK_PROGRESSIONTIME, (char *)&Player->ProgressionTime, sizeof(Player->ProgressionTime));
+	WriteChunk(File, CHUNK_CLOCK, (char *)&Player->Clock, sizeof(Player->Clock));
 	WriteChunk(File, CHUNK_KILLS, (char *)&Player->Kills, sizeof(Player->Kills));
 	WriteChunk(File, CHUNK_DEATHS, (char *)&Player->Deaths, sizeof(Player->Deaths));
 	WriteChunk(File, CHUNK_SKILLS, (char *)&Player->Skills, sizeof(Player->Skills));

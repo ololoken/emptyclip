@@ -92,6 +92,7 @@ void _Player::Reset(bool Recalculate) {
 	Deaths = 0;
 	PlayTime = 0;
 	ProgressionTime = 0;
+	Clock = GAME_DEFAULT_CLOCK;
 	LevelTime = 0;
 	Radius = PLAYER_RADIUS;
 	Name = "test";
@@ -269,9 +270,6 @@ void _Player::RecalculateStats() {
 void _Player::Update(double FrameTime) {
 	LastPosition = Position;
 
-	for(int i = 0; i < WEAPONATTACK_COUNT; i++)
-		AttackTimer[i] += FrameTime;
-
 	UpdateRecoil(FrameTime);
 
 	// Update timers
@@ -291,11 +289,19 @@ void _Player::Update(double FrameTime) {
 		}
 	}
 
+	for(int i = 0; i < WEAPONATTACK_COUNT; i++)
+		AttackTimer[i] += FrameTime;
+
 	if(InvulnerableTimer > 0) {
 		InvulnerableTimer -= FrameTime;
 		if(InvulnerableTimer < 0)
 			InvulnerableTimer = 0.0;
 	}
+
+	// Update clock
+	Clock += FrameTime;
+	if(Clock >= MAP_DAY_LENGTH)
+		Clock -= MAP_DAY_LENGTH;
 
 	// Update stamina
 	if(!IsDying() && !Sprinting)
@@ -1091,7 +1097,8 @@ void _Player::Respawn() {
 	Map->AddObjectToGrid(this, GRID_PLAYER);
 	TileChanged = true;
 
-	Map->SetAmbientLight(Map->MapAmbientLight);
+	Map->AmbientClock = Map->BaseAmbientClock;
+	Map->TargetAmbientLight = Map->BaseAmbientLight;
 
 	InvulnerableTimer = GAME_INVULNERABLE_TIME;
 }

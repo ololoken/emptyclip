@@ -65,22 +65,22 @@ const std::vector<double> DayCyclesTime = {
 
 // Initialize
 _Map::_Map() :
-	MapAmbientLight(0.5f, 0.5f, 0.5f, 1.0f),
+	BaseAmbientLight(0.5f, 0.5f, 0.5f, 1.0f),
 	Size{MAP_WIDTH, MAP_HEIGHT},
-	Clock(480.0),
 	MapType(MAPTYPE_CAMPAIGN),
 	Level(1),
 	Monsters(0),
 	Crates(0),
 	Secrets(0),
+	BaseAmbientClock(false),
 	AmbientClock(false),
 	SimpleAI(false),
 	Camera(nullptr),
 	ObjectManager(new _ObjectManager()),
 	MinimapCaptureSize(HUD_MINIMAP_CAPTURE_SIZE),
-	Data(nullptr),
-	AmbientLight(MapAmbientLight),
-	TargetAmbientLight(MapAmbientLight) {
+	AmbientLight(BaseAmbientLight),
+	TargetAmbientLight(BaseAmbientLight),
+	Data(nullptr) {
 
 	ObjectMap.reserve(10);
 	CollisionHits.reserve(10);
@@ -88,7 +88,7 @@ _Map::_Map() :
 }
 
 // Initialize
-_Map::_Map(const std::string &Filename, int SpawnMultiplier) : _Map() {
+_Map::_Map(const std::string &Filename, double Clock, int SpawnMultiplier) : _Map() {
 	if(Filename == "")
 		throw std::runtime_error("Empty file name");
 
@@ -139,12 +139,13 @@ _Map::_Map(const std::string &Filename, int SpawnMultiplier) : _Map() {
 					} break;
 					// Ambient light
 					case 'a': {
-						File >> MapAmbientLight.r >> MapAmbientLight.g >> MapAmbientLight.b;
-						AmbientLight = TargetAmbientLight = MapAmbientLight;
+						File >> BaseAmbientLight.r >> BaseAmbientLight.g >> BaseAmbientLight.b;
+						AmbientLight = TargetAmbientLight = BaseAmbientLight;
 					} break;
 					// Ambient light uses day/night cycle
 					case 'c': {
-						File >> AmbientClock;
+						File >> BaseAmbientClock;
+						AmbientClock = BaseAmbientClock;
 					} break;
 					// Benchmark flag
 					case 'b': {
@@ -346,6 +347,10 @@ _Map::_Map(const std::string &Filename, int SpawnMultiplier) : _Map() {
 		}
 	}
 
+	// Set up lights
+	if(BaseAmbientClock)
+		GetClockLight(Clock, AmbientLight);
+
 	File.close();
 }
 
@@ -390,7 +395,7 @@ bool _Map::Save(const std::string &String) {
 	File << "Hl " << Level << '\n';
 	File << "Ht " << MapType << '\n';
 	File << "Hs " << Size.x << ' ' << Size.y << '\n';
-	File << "Ha " << MapAmbientLight.r << ' ' << MapAmbientLight.g << ' ' << MapAmbientLight.b << '\n';
+	File << "Ha " << BaseAmbientLight.r << ' ' << BaseAmbientLight.g << ' ' << BaseAmbientLight.b << '\n';
 	File << "Hc " << AmbientClock << '\n';
 	File << "Hb " << SimpleAI << '\n';
 
@@ -1432,68 +1437,65 @@ bool _Map::HasEvents(const glm::ivec2 &Position) const {
 }
 
 // Update ambient light
-void _Map::UpdateAmbientLight(double FrameTime) {
+void _Map::UpdateAmbientLight(double FrameTime, double Clock) {
 
 	// Check for day night cycle
-	if(AmbientClock) {
+	if(AmbientClock)
+		GetClockLight(Clock, TargetAmbientLight);
 
-		// Update clock
-		Clock += FrameTime;
-		if(Clock >= MAP_DAY_LENGTH)
-			Clock -= MAP_DAY_LENGTH;
+	glm::vec4 Delta = TargetAmbientLight - AmbientLight;
+	if(glm::dot(Delta, Delta) < 0.0001f)
+		AmbientLight = TargetAmbientLight;
+	else
+		AmbientLight += Delta * (float)FrameTime * LIGHT_CHANGE_SPEED;
+}
 
-		// Find index by time
-		size_t NextCycle = DayCyclesTime.size();
-		for(size_t i = 0; i < DayCyclesTime.size(); i++) {
-			if(Clock < DayCyclesTime[i]) {
-				NextCycle = i;
-				break;
-			}
+// Get light from day night cycle
+void _Map::GetClockLight(double Clock, glm::vec4 &LightColor) {
+
+	// Find index by time
+	size_t NextCycle = DayCyclesTime.size();
+	for(size_t i = 0; i < DayCyclesTime.size(); i++) {
+		if(Clock < DayCyclesTime[i]) {
+			NextCycle = i;
+			break;
 		}
-
-		// Get indices for current and next cycle
-		size_t CurrentCycle = NextCycle - 1;
-		if(CurrentCycle >= DayCyclesTime.size())
-			CurrentCycle = 0;
-		if(NextCycle >= DayCyclesTime.size())
-			NextCycle = 0;
-
-		// Get current time diff
-		double Diff = Clock - DayCyclesTime[CurrentCycle];
-		if(Diff < 0)
-			Diff += MAP_DAY_LENGTH;
-
-		// Get length of cycle
-		double Length = DayCyclesTime[NextCycle] - DayCyclesTime[CurrentCycle];
-		if(Length < 0)
-			Length += MAP_DAY_LENGTH;
-
-		// Get percent to next cycle
-		float Percent = (float)(Diff / Length);
-
-		// Set color
-		AmbientLight = glm::mix(DayCycles[CurrentCycle], DayCycles[NextCycle], Percent);
 	}
-	else {
-		glm::vec4 Delta = TargetAmbientLight - AmbientLight;
-		if(glm::dot(Delta, Delta) < 0.0001f)
-			AmbientLight = TargetAmbientLight;
-		else
-			AmbientLight += Delta * (float)FrameTime * LIGHT_CHANGE_SPEED;
-	}
+
+	// Get indices for current and next cycle
+	size_t CurrentCycle = NextCycle - 1;
+	if(CurrentCycle >= DayCyclesTime.size())
+		CurrentCycle = 0;
+	if(NextCycle >= DayCyclesTime.size())
+		NextCycle = 0;
+
+	// Get current time diff
+	double Diff = Clock - DayCyclesTime[CurrentCycle];
+	if(Diff < 0)
+		Diff += MAP_DAY_LENGTH;
+
+	// Get length of cycle
+	double Length = DayCyclesTime[NextCycle] - DayCyclesTime[CurrentCycle];
+	if(Length < 0)
+		Length += MAP_DAY_LENGTH;
+
+	// Get percent to next cycle
+	float Percent = (float)(Diff / Length);
+
+	// Set color
+	LightColor = glm::mix(DayCycles[CurrentCycle], DayCycles[NextCycle], Percent);
 }
 
 // Change ambient light with color id
 void _Map::SetAmbientLight(const std::string &ColorID) {
-	if(ColorID.empty())
-		TargetAmbientLight = MapAmbientLight;
-	else
+	if(ColorID.empty()) {
+		TargetAmbientLight = BaseAmbientLight;
+		AmbientClock = BaseAmbientClock;
+	}
+	else {
+		AmbientClock = false;
 		TargetAmbientLight = ae::Assets.Colors[ColorID];
-}
-
-// Change ambient light
-void _Map::SetAmbientLight(const glm::vec4 &Color) {
-	TargetAmbientLight = Color;
+	}
 }
 
 // Gets a list of event based on a position
@@ -1986,10 +1988,10 @@ int _Map::RenderParticles(int Type) {
 }
 
 // Update map
-void _Map::Update(double FrameTime) {
+void _Map::Update(double FrameTime, double Clock) {
 
 	// Update ambient light
-	UpdateAmbientLight(FrameTime);
+	UpdateAmbientLight(FrameTime, Clock);
 
 	// Add blocks and events to minimap
 	MinimapLayers.clear();
