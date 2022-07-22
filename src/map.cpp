@@ -74,6 +74,7 @@ _Map::_Map() :
 	Crates(0),
 	Secrets(0),
 	AmbientClock(false),
+	SimpleAI(false),
 	Camera(nullptr),
 	ObjectManager(new _ObjectManager()),
 	MinimapCaptureSize(HUD_MINIMAP_CAPTURE_SIZE),
@@ -144,6 +145,10 @@ _Map::_Map(const std::string &Filename, int SpawnMultiplier) : _Map() {
 					// Ambient light uses day/night cycle
 					case 'c': {
 						File >> AmbientClock;
+					} break;
+					// Benchmark flag
+					case 'b': {
+						File >> SimpleAI;
 					} break;
 				}
 			} break;
@@ -387,6 +392,7 @@ bool _Map::Save(const std::string &String) {
 	File << "Hs " << Size.x << ' ' << Size.y << '\n';
 	File << "Ha " << MapAmbientLight.r << ' ' << MapAmbientLight.g << ' ' << MapAmbientLight.b << '\n';
 	File << "Hc " << AmbientClock << '\n';
+	File << "Hb " << SimpleAI << '\n';
 
 	// Objects
 	for(const auto &ObjectSpawn : ObjectSpawns) {

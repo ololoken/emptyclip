@@ -1490,6 +1490,8 @@ void _PlayState::SpawnObject(_ObjectSpawn *ObjectSpawn, bool GenerateStats, int 
 // Adds a monster to the monster list and collision grid
 void _PlayState::AddMonster(_Monster *Monster) {
 	Monster->Map = Map;
+	if(Map->SimpleAI)
+		Monster->AIType = AI_SIMPLE;
 	Monsters.push_back(Monster);
 	Map->AddObjectToGrid(Monster, GRID_MONSTER);
 }

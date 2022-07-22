@@ -329,8 +329,40 @@ void _Entity::Move(double FrameTime) {
 	}
 
 	// Get move direction
-	glm::vec2 MoveDirection(0);
+	glm::vec2 MoveDirection;
 	switch(MoveState) {
+		case MOVE_FORWARD:
+			MoveDirection.x = 0;
+			MoveDirection.y = -1;
+		break;
+		case MOVE_BACKWARD:
+			MoveDirection.x = 0;
+			MoveDirection.y = 1;
+		break;
+		case MOVE_LEFT:
+			MoveDirection.x = -1;
+			MoveDirection.y = 0;
+		break;
+		case MOVE_RIGHT:
+			MoveDirection.x = 1;
+			MoveDirection.y = 0;
+		break;
+		case MOVE_FORWARDLEFT:
+			MoveDirection.x = -SQRT1_2;
+			MoveDirection.y = -SQRT1_2;
+		break;
+		case MOVE_FORWARDRIGHT:
+			MoveDirection.x = SQRT1_2;
+			MoveDirection.y = -SQRT1_2;
+		break;
+		case MOVE_BACKWARDLEFT:
+			MoveDirection.x = -SQRT1_2;
+			MoveDirection.y = SQRT1_2;
+		break;
+		case MOVE_BACKWARDRIGHT:
+			MoveDirection.x = SQRT1_2;
+			MoveDirection.y = SQRT1_2;
+		break;
 		case MOVE_TARGET: {
 
 			// Get vector to target
@@ -356,41 +388,15 @@ void _Entity::Move(double FrameTime) {
 					Rotation += 360.0f;
 			}
 		} break;
-		case MOVE_FORWARD:
-			MoveDirection.y = -1;
-		break;
-		case MOVE_BACKWARD:
-			MoveDirection.y = 1;
-		break;
-		case MOVE_LEFT:
-			MoveDirection.x = -1;
-		break;
-		case MOVE_RIGHT:
-			MoveDirection.x = 1;
-		break;
-		case MOVE_FORWARDLEFT:
-			MoveDirection.x = -SQRT1_2;
-			MoveDirection.y = -SQRT1_2;
-		break;
-		case MOVE_FORWARDRIGHT:
-			MoveDirection.x = SQRT1_2;
-			MoveDirection.y = -SQRT1_2;
-		break;
-		case MOVE_BACKWARDLEFT:
-			MoveDirection.x = -SQRT1_2;
-			MoveDirection.y = SQRT1_2;
-		break;
-		case MOVE_BACKWARDRIGHT:
-			MoveDirection.x = SQRT1_2;
-			MoveDirection.y = SQRT1_2;
-		break;
 		default:
 		break;
 	}
 
 	// Moving backwards
-	if(glm::dot(MoveDirection, Direction) < 0)
-		UpdateSpeed(PLAYER_BACKWARDS_SPEEDFACTOR);
+	if(Type == _Object::PLAYER) {
+		if(glm::dot(MoveDirection, Direction) < 0)
+			UpdateSpeed(PLAYER_BACKWARDS_SPEEDFACTOR);
+	}
 
 	// Get speed
 	float Speed = std::min(MoveSpeed * MoveModifier, OBJECT_MAX_SPEED) * FrameTime;
@@ -399,7 +405,7 @@ void _Entity::Move(double FrameTime) {
 	MoveDirection *= Speed;
 
 	// Update accuracy
-	if(MoveState)
+	if(MoveState && Type == _Object::PLAYER)
 		CurrentAccuracy = std::min(CurrentAccuracy + Speed * MoveRecoil, MaxAccuracy[WEAPONATTACK_MAIN]);
 
 	// Get a list of entities that the object is colliding with

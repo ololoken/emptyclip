@@ -77,6 +77,7 @@ enum EntityAnimationTypes {
 // Types of AI
 enum AITypes {
 	AI_NONE,
+	AI_SIMPLE,
 	AI_BOSS,
 	AI_BASIC,
 	AI_HITANDRUN,

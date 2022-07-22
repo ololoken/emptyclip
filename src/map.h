@@ -280,6 +280,7 @@ class _Map {
 		int Crates;
 		int Secrets;
 		bool AmbientClock;
+		bool SimpleAI;
 
 		// Objects
 		ae::_Camera *Camera;

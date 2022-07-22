@@ -106,8 +106,11 @@ void _Monster::Update(double FrameTime) {
 	bool PlayerVisible = false;
 	float PlayerDistanceSquared = glm::distance2(Position, Player->Position);
 	if(PlayerDistanceSquared <= ViewRangeSquared) {
-
-		if(Goal == GOAL_PURSUE) {
+		if(AIType == AI_SIMPLE) {
+			PlayerVisible = true;
+			SetTarget(Player->Position);
+		}
+		else if(Goal == GOAL_PURSUE) {
 
 			// Check if player is visible
 			PlayerVisible = FreePathing ? true : Map->CanMoveTo(Position, Player->Position, glm::vec2(Radius, Radius) * 0.3f);
@@ -122,6 +125,7 @@ void _Monster::Update(double FrameTime) {
 				GenerateReactionTime();
 		}
 	}
+	// Stop AI if player gets too far away
 	else if(PlayerDistanceSquared >= ENTITY_MAX_ACTIVE_RANGE * ENTITY_MAX_ACTIVE_RANGE) {
 		PlayerVisible = false;
 		MoveState = MOVE_NONE;
@@ -129,20 +133,22 @@ void _Monster::Update(double FrameTime) {
 	}
 
 	// Set return position if monster can't see player anymore
-	if(PlayerVisible != LastPlayerVisible && !PlayerVisible && Goal == GOAL_PURSUE) {
-		ReturnPosition = Position;
-		ReturnTimer = AI_RETURN_TIME;
-	}
-	LastPlayerVisible = PlayerVisible;
+	if(AIType != AI_SIMPLE) {
+		if(PlayerVisible != LastPlayerVisible && !PlayerVisible && Goal == GOAL_PURSUE) {
+			ReturnPosition = Position;
+			ReturnTimer = AI_RETURN_TIME;
+		}
+		LastPlayerVisible = PlayerVisible;
 
-	// Check for reaching target
-	float TargetDistanceSquared = glm::distance2(Position, TargetPosition);
-	if(TargetDistanceSquared <= Radius * Radius * 1.1f) {
-		if(MoveState != MOVE_NONE)
-			GenerateReactionTime();
+		// Check for reaching target
+		float TargetDistanceSquared = glm::distance2(Position, TargetPosition);
+		if(TargetDistanceSquared <= Radius * Radius * 1.1f) {
+			if(MoveState != MOVE_NONE)
+				GenerateReactionTime();
 
-		MoveState = MOVE_NONE;
-		Goal = GOAL_PURSUE;
+			MoveState = MOVE_NONE;
+			Goal = GOAL_PURSUE;
+		}
 	}
 
 	// Check for attack range
@@ -150,18 +156,23 @@ void _Monster::Update(double FrameTime) {
 		StartAttack();
 
 	// Move
-	LastPosition = Position;
-	Move(FrameTime);
-
-	// Check for inactive distance
-	if(glm::distance2(LastPosition, Position) > StopThresholdSquared) {
-		StaticTimer = 0;
+	if(MoveState == MOVE_NONE) {
+		PositionChanged = false;
 	}
-	// Stop monster when static
-	else if(StaticTimer > ENTITY_STATIC_TIME) {
-		MoveState = MOVE_NONE;
-		Goal = GOAL_PURSUE;
-		GenerateReactionTime();
+	else {
+		LastPosition = Position;
+		Move(FrameTime);
+
+		// Check for inactive distance
+		if(glm::distance2(LastPosition, Position) > StopThresholdSquared) {
+			StaticTimer = 0;
+		}
+		// Stop monster when static
+		else if(StaticTimer > ENTITY_STATIC_TIME) {
+			MoveState = MOVE_NONE;
+			Goal = GOAL_PURSUE;
+			GenerateReactionTime();
+		}
 	}
 }
 
