@@ -102,6 +102,7 @@ class _Object {
 		glm::vec2 Direction;
 		float Radius;
 		bool Circle;
+		bool FreePathing;
 
 		// Graphics
 		const ae::_Texture *Texture;

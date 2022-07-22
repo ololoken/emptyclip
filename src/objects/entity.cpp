@@ -352,7 +352,7 @@ void _Entity::Move(double FrameTime) {
 			glm::vec2 TargetVector = TargetPosition - Position;
 
 			// Correct move direction based on wall state
-			if(WallState) {
+			if(WallState && !FreePathing) {
 				if((WallState & WALL_RIGHT) && TargetVector.x > 0)
 					TargetVector.x = 0;
 				if((WallState & WALL_LEFT) && TargetVector.x < 0)
@@ -420,7 +420,7 @@ void _Entity::Move(double FrameTime) {
 	// Get a list of entities that the object is colliding with
 	glm::vec2 NewPosition = Position + MoveDirection;
 	bool AxisAlignedPush = false;
-	if(!IsInvulnerable()) {
+	if(!IsInvulnerable() && !FreePathing) {
 		std::vector<_Hit> &Hits = Map->CheckCollisionsInGrid(NewPosition, Radius, this, AxisAlignedPush, OBJECT_PUSH_FACTOR);
 
 		// Resolve pushes
@@ -435,7 +435,8 @@ void _Entity::Move(double FrameTime) {
 	}
 
 	// Check collisions with walls and map boundaries
-	Map->CheckTileCollisions(NewPosition, Radius, NewPosition);
+	if(!FreePathing)
+		Map->CheckTileCollisions(NewPosition, Radius, NewPosition);
 
 	// Determine if the object has moved
 	if(Position != NewPosition) {

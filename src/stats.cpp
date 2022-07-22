@@ -541,6 +541,7 @@ void _Stats::LoadMonsters(const std::string &Path) {
 			>> Template.Attributes["view_range"].Float
 			>> Template.Attributes["xp"].Float
 			>> Template.Attributes["xp_level"].Float
+			>> Template.Attributes["freepathing"].Int
 			>> Template.Attributes["move_speed"].Float
 			>> Template.Attributes["move_speed_level"].Float
 			>> Template.Attributes["radius"].Float
@@ -706,6 +707,7 @@ _Monster *_Stats::CreateMonster(const std::string &ID, int Level, const glm::vec
 		Monster->ItemDrop = &ItemDrops[Template.ItemDropID];
 
 	// Set stats
+	Monster->FreePathing = Template.Attributes.at("freepathing").Int;
 	Monster->Recoil = 0;
 	Monster->RecoilRegen = 0;
 	Monster->DamageBlock = 0;
