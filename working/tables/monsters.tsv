@@ -16,17 +16,17 @@ monster_skeleton	Skeleton	skeleton			monster	skeleton	monster_medium	1	55	20	3	0
 monster_beast	Beast	beast			monster	beast	monster_large	1	150	50	3	0	12	30	30	0	1	0.03	0.4	2	0	1.2	35	25	0.1	2.5	1	0.1
 monster_fighter	Fighter	fighter			monster	fighter	monster_medium	1	70	20	3	0	15	15	15	0	2.35	0.07	0.3	1	0	0.9	17	12	0.1	0.7	1	0.25
 monster_gunner	Gunner	gunner			monster	gunner	monster_medium	1	50	20	3	0	20	15	15	0	2	0.08	0.3	1	15	10	20	15	0.1	1.5	2	0.1
-monster_wisp	Wisp	wisp		ghost	monster	wisp	monster_large	1	65	25	3	0	12	20	20	1	2.6	0.05	0.4	1.5	0	3	25	20	0.1	1	1	0.6
+monster_wisp	Wisp	wisp		ghost	monster	wisp	monster_large	1	115	35	3	0	12	20	20	1	1.75	0.05	0.4	1.5	0	3	50	20	0.1	1	1	0.6
 monster_alien	Alien	alien			monster	player	monster_large	1	70	20	3	0	20	30	30	0	2	0.05	0.3	1	15	10	20	15	0.1	1.2	2	0.1
 boss_01	Zombie Chieftain	zombie		dark	monster	zombie	boss	1	500	250	2	0	50	500	250	0	1	0.1	0.4	1.5	0	1.2	35	25	0.1	1.7	1	0.5
 boss_02	Black Wolf	dog		dark	monster	dog	boss	1	250	100	2	0	50	500	100	0	9	0.05	0.3	1.2	0	1.2	40	15	0.1	0.9	1	0.4
 boss_03	Frozen Beast	beast		blue	monster	beast	boss	1	2500	1000	2	0	50	5000	1000	0	2.3	0.05	0.7	5	0	3	100	35	0.1	1	1	0.3
-boss_04	Boss	zombie			monster	player	boss	1	500	0	2	0	50	500	0	0	1	0	0.3	0.8	0	0.7	0	0	0.1	1.7	1	0.1
-boss_05	Boss	zombie			monster	player	boss	1	500	0	2	0	50	500	0	0	1	0	0.3	0.8	0	0.7	0	0	0.1	1.7	1	0.1
-boss_06	Boss	zombie			monster	player	boss	1	500	0	2	0	50	500	0	0	1	0	0.3	0.8	0	0.7	0	0	0.1	1.7	1	0.1
-boss_07	Boss	zombie			monster	player	boss	1	500	0	2	0	50	500	0	0	1	0	0.3	0.8	0	0.7	0	0	0.1	1.7	1	0.1
-boss_08	Boss	zombie			monster	player	boss	1	500	0	2	0	50	500	0	0	1	0	0.3	0.8	0	0.7	0	0	0.1	1.7	1	0.1
-boss_09	Boss	zombie			monster	player	boss	1	500	0	2	0	50	500	0	0	1	0	0.3	0.8	0	0.7	0	0	0.1	1.7	1	0.1
-boss_10	Boss	zombie			monster	player	boss	1	500	0	2	0	50	500	0	0	1	0	0.3	0.8	0	0.7	0	0	0.1	1.7	1	0.1
-boss_11	Boss	zombie			monster	player	boss	1	500	0	2	0	50	500	0	0	1	0	0.3	0.8	0	0.7	0	0	0.1	1.7	1	0.1
-boss_12	Boss	zombie			monster	player	boss	1	500	0	2	0	50	500	0	0	1	0	0.3	0.8	0	0.7	0	0	0.1	1.7	1	0.1
+boss_04	Arach	spider		green	monster	spider	boss	1	5000	1500	2	0	50	10000	2500	0	3.5	0.05	0.5	2	0	0.7	75	45	0.1	1	1	0.25
+boss_05	Boss	zombie			monster	player	boss	1	500	0	2	0	50	500	0	0	1	0.05	0.3	0.8	0	0.7	0	0	0.1	1.7	1	0.1
+boss_06	Boss	zombie			monster	player	boss	1	500	0	2	0	50	500	0	0	1	0.05	0.3	0.8	0	0.7	0	0	0.1	1.7	1	0.1
+boss_07	Boss	zombie			monster	player	boss	1	500	0	2	0	50	500	0	0	1	0.05	0.3	0.8	0	0.7	0	0	0.1	1.7	1	0.1
+boss_08	Boss	zombie			monster	player	boss	1	500	0	2	0	50	500	0	0	1	0.05	0.3	0.8	0	0.7	0	0	0.1	1.7	1	0.1
+boss_09	Boss	zombie			monster	player	boss	1	500	0	2	0	50	500	0	0	1	0.05	0.3	0.8	0	0.7	0	0	0.1	1.7	1	0.1
+boss_10	Boss	zombie			monster	player	boss	1	500	0	2	0	50	500	0	0	1	0.05	0.3	0.8	0	0.7	0	0	0.1	1.7	1	0.1
+boss_11	Boss	zombie			monster	player	boss	1	500	0	2	0	50	500	0	0	1	0.05	0.3	0.8	0	0.7	0	0	0.1	1.7	1	0.1
+boss_12	Boss	zombie			monster	player	boss	1	500	0	2	0	50	500	0	0	1	0.05	0.3	0.8	0	0.7	0	0	0.1	1.7	1	0.1
