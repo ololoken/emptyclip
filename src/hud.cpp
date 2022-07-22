@@ -307,7 +307,7 @@ void _HUD::Update(double FrameTime, float Radius) {
 				continue;
 
 			SkillButton->Enabled = false;
-			if(Player->SkillPointsRemaining && Player->Skills[i] < Stats.GetMaxSkillLevel(Player->Level))
+			if(Player->SkillPointsRemaining && Player->Skills[i] < Stats.GetMaxSkillLevel(Player->Level) && Player->Skills[i] < GAME_SKILLLEVELS)
 				SkillButton->Enabled = true;
 		}
 	}
@@ -838,10 +838,15 @@ void _HUD::UpdateSkillTooltip(int Skill, const glm::vec2 &Position) {
 	Elements[LABEL_SKILL_LEVEL_NEXT]->Text = BufferNext.str();
 
 	// Max skill level
+	ae::Assets.Elements["label_hud_skill_more"]->Text = "";
 	ae::Assets.Elements["label_hud_skill_max"]->Text = "";
-	if(Player->Skills[Skill] >= Stats.GetMaxSkillLevel(Player->Level)) {
-		ae::Assets.Elements["label_hud_skill_max"]->Text = "Player Level " + std::to_string(Player->Level + 1) + " Required";
+	ae::Assets.Elements["label_hud_skill_next"]->Text = "Next Level";
+	if(Player->Skills[Skill] >= GAME_SKILLLEVELS) {
+		ae::Assets.Elements["label_hud_skill_next"]->Text = "";
+		ae::Assets.Elements["label_hud_skill_max"]->Text = "Max Level";
 	}
+	else if(Player->Skills[Skill] >= Stats.GetMaxSkillLevel(Player->Level))
+		ae::Assets.Elements["label_hud_skill_more"]->Text = "Player Level " + std::to_string(Player->Level + 1) + " Required";
 }
 
 // Draw death message

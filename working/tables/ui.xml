@@ -145,7 +145,8 @@
 		<element id="label_hud_skill_level" font="hud_small" offset_x="30" offset_y="134" alignment_x="0" alignment_y="3"/>
 		<element id="label_hud_skill_next" font="hud_small" text="Next Level" offset_x="20" offset_y="164" alignment_x="0" alignment_y="3"/>
 		<element id="label_hud_skill_level_next" font="hud_small" offset_x="30" offset_y="188" alignment_x="0" alignment_y="3"/>
-		<element id="label_hud_skill_max" font="hud_medium" color="red" offset_x="20" offset_y="230" alignment_x="0" alignment_y="3"/>
+		<element id="label_hud_skill_max" font="hud_medium" color="red" offset_x="20" offset_y="200" alignment_x="0" alignment_y="3"/>
+		<element id="label_hud_skill_more" font="hud_medium" color="red" offset_x="20" offset_y="230" alignment_x="0" alignment_y="3"/>
 	</element>
 	<element id="element_editor_command" offset_x="16" size_x="700" size_y="147" alignment_x="0" alignment_y="2" scaled="false">
 		<element id="button_editor_layer_base" style="style_editor_button_brown" hover_style="style_editor_button_selected" size_x="32" size_y="32" alignment_x="0" alignment_y="0" clickable="true" scaled="false" index="0">
