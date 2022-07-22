@@ -1553,7 +1553,6 @@ void _Map::ChangeLayer(int OldLayer, int NewLayer, int Index) {
 	// Add new block
 	Blocks[NewLayer].push_back(Blocks[OldLayer][Index]);
 	Blocks[OldLayer].erase(Blocks[OldLayer].begin() + Index);
-
 }
 
 // Draws a grid on the map
