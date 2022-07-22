@@ -16,5 +16,5 @@ skeleton	skeleton_move	skeleton_melee	skeleton_die
 beast	beast_move	beast_melee	beast_die			
 fighter	fighter_move	fighter_melee	fighter_die			
 gunner	gunner_move	gunner_shoot	gunner_die			
-demon	demon_move	demon_melee	demon_die			
+wisp	wisp_move	wisp_melee	wisp_die			
 alien	alien_move	alien_shoot	alien_die			

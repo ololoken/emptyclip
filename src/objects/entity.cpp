@@ -515,3 +515,10 @@ void _Entity::OnAttack(_Entity *Victim, const _Hit &Hit) {
 void _Entity::OnHit(_Entity *Attacker, const _Hit &Hit) {
 	ae::Audio.PlaySound(GetSound(SOUND_TAKEDAMAGE, -1), ae::_SoundSettings(glm::vec3(Hit.Position.x, 0.0f, Hit.Position.y)));
 }
+
+// Update move modifier
+void _Entity::UpdateSpeed(float Factor) {
+	MoveModifier = 1.0f;
+	if(Action == ACTION_SHOOT || Action == ACTION_MELEE)
+		MoveModifier *= AttackMoveSpeed[AttackRequestType];
+}

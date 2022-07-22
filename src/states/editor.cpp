@@ -936,11 +936,9 @@ void _EditorState::Render(double BlendFactor) {
 		ae::Graphics.DrawRectangle3D(glm::vec2(SelectedEvent->Start.x + 0.02f, SelectedEvent->Start.y + 0.02f), glm::vec2(SelectedEvent->End.x + 0.98f, SelectedEvent->End.y + 0.98f), false);
 
 		// Draw tiles for events with the same type
-		if(IsAltDown) {
-			for(const auto &Event : Map->Events) {
-				if(Event != SelectedEvent && Event->Type == SelectedEvent->Type)
-					DrawEventTiles(Event, glm::vec4(0.5f, 0.5f, 0.5f, 0.5));
-			}
+		for(const auto &Event : Map->Events) {
+			if(Event != SelectedEvent && Event->Type == SelectedEvent->Type)
+				DrawEventTiles(Event, glm::vec4(0.5f, 0.5f, 0.5f, 0.5));
 		}
 
 		// Outline affected tiles and blocks

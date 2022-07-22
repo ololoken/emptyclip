@@ -510,6 +510,9 @@ void _PlayState::Update(double FrameTime) {
 	if(Player->PositionChanged)
 		IgnoreItems.clear();
 
+	if(GodMode)
+		Player->Stamina = Player->MaxStamina;
+
 	// Handle gun flashes
 	if(Player->Action == ACTION_STARTSHOOT)
 		FlashTimer = LIGHT_FLASH_TIME;

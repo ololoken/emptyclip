@@ -111,7 +111,7 @@ class _Entity : public _Object {
 		void UpdateHealth(int Adjust);
 		virtual void OnAttack(_Entity *Victim, const _Hit &Hit);
 		virtual void OnHit(_Entity *Attacker, const _Hit &Hit);
-		virtual void UpdateSpeed(float Factor) {}
+		virtual void UpdateSpeed(float Factor);
 		int GenerateDamage(int AttackType, int DamageBlock, int DamageResist, bool Steady, bool &Crit);
 		virtual bool IsSteady() const { return false; }
 		bool IsDying() const override { return Action == ACTION_DYING || Action == ACTION_STARTDEATH; }

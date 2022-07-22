@@ -39,6 +39,8 @@ skeleton_move0	skeleton_move0.ogg	0.7	5
 sniper_fire0	sniper_fire0.ogg	0.45	2
 spider_attack0	spider_attack0.ogg	0.7	5
 spider_die0	spider_die0.ogg	0.7	5
+wisp_attack0	wisp_attack0.ogg	0.7	5
+wisp_die0	wisp_die0.ogg	0.7	3
 zombie_attack0	zombie_attack0.ogg	0.8	3
 zombie_die0	zombie_die0.ogg	0.7	3
 zombie_hit0	zombie_hit0.ogg	0.7	5
