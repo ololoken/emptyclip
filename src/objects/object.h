@@ -35,6 +35,54 @@ namespace ae {
 	class _Mesh;
 }
 
+// Used for animation
+enum ActionType {
+	ACTION_IDLE,
+	ACTION_MOVING,
+	ACTION_STARTMELEE,
+	ACTION_MELEE,
+	ACTION_STARTSHOOT,
+	ACTION_SHOOT,
+	ACTION_STARTDEATH,
+	ACTION_DYING,
+};
+
+// Used to determine what direction an entity wants to go
+enum MoveType {
+	MOVE_NONE,
+	MOVE_FORWARD,
+	MOVE_LEFT,
+	MOVE_RIGHT,
+	MOVE_BACKWARD,
+	MOVE_FORWARDRIGHT,
+	MOVE_FORWARDLEFT,
+	MOVE_BACKWARDRIGHT,
+	MOVE_BACKWARDLEFT,
+	MOVE_TARGET,
+};
+
+enum WeaponAttackType {
+	WEAPONATTACK_MAIN,
+	WEAPONATTACK_MELEE,
+	WEAPONATTACK_COUNT,
+};
+
+// Indices into the animation array
+enum EntityAnimationTypes {
+	ANIMATION_MOVE,
+	ANIMATION_ATTACK,
+	ANIMATION_DIE,
+};
+
+// Types of AI
+enum AITypes {
+	AI_NONE,
+	AI_BOSS,
+	AI_BASIC,
+	AI_HITANDRUN,
+	AI_COUNT
+};
+
 // Object class
 class _Object {
 
@@ -62,7 +110,7 @@ class _Object {
 		virtual void Update(double FrameTime) { }
 		virtual void Render(double BlendFactor);
 		virtual void Serialize(ae::_Buffer &Buffer) { }
-		virtual bool IsDying() const { return false; }
+		bool IsDying() const { return Action == ACTION_DYING || Action == ACTION_STARTDEATH; }
 
 		virtual const _ParticleTemplate *GetParticle(int ParticleType) const { return nullptr; }
 
@@ -91,6 +139,9 @@ class _Object {
 		int Type;
 		int Level;
 		bool Active;
+
+		// Character
+		ActionType Action;
 
 		// Map
 		_Map *Map;

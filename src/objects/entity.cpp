@@ -49,12 +49,11 @@ _Entity::_Entity(const _ObjectTemplate &EntityTemplate) :
 	MaxHealth(0),
 	DamageBlock(0),
 	DamageResist(0),
-	Action(ACTION_IDLE),
-	WalkingAnimation(ENTITY_ANIMATIONWALKING),
-	MeleeAnimation(ENTITY_ANIMATIONATTACK),
-	ShootingOnehandAnimation(ENTITY_ANIMATIONATTACK),
-	ShootingTwohandAnimation(ENTITY_ANIMATIONATTACK),
-	DyingAnimation(ENTITY_ANIMATIONDYING),
+	WalkingAnimation(ANIMATION_MOVE),
+	MeleeAnimation(ANIMATION_ATTACK),
+	ShootingOnehandAnimation(ANIMATION_ATTACK),
+	ShootingTwohandAnimation(ANIMATION_ATTACK),
+	DyingAnimation(ANIMATION_DIE),
 	InvulnerableTimer(0.0),
 	CurrentAccuracy(0),
 	MinAccuracy(0),
@@ -215,20 +214,6 @@ void _Entity::StartTriggerDownAudio() {
 void _Entity::StopAudio() {
 	delete TriggerDownAudio;
 	TriggerDownAudio = nullptr;
-}
-
-// Update the entity
-void _Entity::Update(double FrameTime) {
-	LastPosition = Position;
-
-	InvulnerableTimer -= FrameTime;
-	if(InvulnerableTimer < 0)
-		InvulnerableTimer = 0.0;
-
-	for(int i = 0; i < WEAPONATTACK_COUNT; i++)
-		AttackTimer[i] += FrameTime;
-
-	UpdateRecoil(FrameTime);
 }
 
 // Updates the animation

@@ -267,8 +267,14 @@ void _Player::RecalculateStats() {
 
 // Update the player
 void _Player::Update(double FrameTime) {
-	_Entity::Update(FrameTime);
+	LastPosition = Position;
 
+	for(int i = 0; i < WEAPONATTACK_COUNT; i++)
+		AttackTimer[i] += FrameTime;
+
+	UpdateRecoil(FrameTime);
+
+	// Update timers
 	PlayTime += FrameTime;
 	ProgressionTime += FrameTime;
 	LevelTime += FrameTime;
@@ -283,6 +289,12 @@ void _Player::Update(double FrameTime) {
 			int HealAmount = std::max(1, (int)(HealModifier * MaxHealth * 0.01f));
 			UpdateHealth(HealAmount);
 		}
+	}
+
+	if(InvulnerableTimer > 0) {
+		InvulnerableTimer -= FrameTime;
+		if(InvulnerableTimer < 0)
+			InvulnerableTimer = 0.0;
 	}
 
 	// Update stamina

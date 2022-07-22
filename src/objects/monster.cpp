@@ -76,11 +76,21 @@ void _Monster::RecalculateStats() {
 
 // Update
 void _Monster::Update(double FrameTime) {
-	_Entity::Update(FrameTime);
-	if(!Player)
-		return;
 
+	// Update animation
+	UpdateAnimation(FrameTime);
+
+	// Move the monster
+	if(IsDying() || !AIType || Player->IsInvulnerable() || Player->IsDying()) {
+		MoveState = MOVE_NONE;
+		PositionChanged = false;
+		return;
+	}
+
+	// Update timers
 	StaticTimer += FrameTime;
+	for(int i = 0; i < WEAPONATTACK_COUNT; i++)
+		AttackTimer[i] += FrameTime;
 
 	// Handle returning to original position
 	if(ReturnTimer > 0.0) {
@@ -91,13 +101,6 @@ void _Monster::Update(double FrameTime) {
 			SetTarget(ReturnPosition);
 		}
 	}
-
-	// Update animation
-	UpdateAnimation(FrameTime);
-
-	// Move the monster
-	if(IsDying() || !AIType || Player->IsInvulnerable() || Player->IsDying())
-		return;
 
 	// Check for player in range
 	bool PlayerVisible = false;
@@ -147,11 +150,11 @@ void _Monster::Update(double FrameTime) {
 		StartAttack();
 
 	// Move
-	glm::vec2 OldPosition = Position;
+	LastPosition = Position;
 	Move(FrameTime);
 
 	// Check for inactive distance
-	if(glm::distance2(OldPosition, Position) > StopThresholdSquared) {
+	if(glm::distance2(LastPosition, Position) > StopThresholdSquared) {
 		StaticTimer = 0;
 	}
 	// Stop monster when static

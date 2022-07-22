@@ -31,6 +31,7 @@ _Object::_Object(const _ObjectTemplate &ObjectTemplate) :
 	Type(ObjectTemplate.Type),
 	Level(1),
 	Active(true),
+	Action(ACTION_IDLE),
 	Map(nullptr),
 	TileChanged(false),
 	Position(0, 0),

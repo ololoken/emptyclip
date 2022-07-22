@@ -31,54 +31,6 @@ namespace ae {
 	class _Sound;
 }
 
-// Used to determine what direction an entity wants to go
-enum MoveType {
-	MOVE_NONE,
-	MOVE_FORWARD,
-	MOVE_LEFT,
-	MOVE_RIGHT,
-	MOVE_BACKWARD,
-	MOVE_FORWARDRIGHT,
-	MOVE_FORWARDLEFT,
-	MOVE_BACKWARDRIGHT,
-	MOVE_BACKWARDLEFT,
-	MOVE_TARGET,
-};
-
-enum WeaponAttackType {
-	WEAPONATTACK_MAIN,
-	WEAPONATTACK_MELEE,
-	WEAPONATTACK_COUNT,
-};
-
-// Used for animation
-enum ActionType {
-	ACTION_IDLE,
-	ACTION_MOVING,
-	ACTION_STARTMELEE,
-	ACTION_MELEE,
-	ACTION_STARTSHOOT,
-	ACTION_SHOOT,
-	ACTION_STARTDEATH,
-	ACTION_DYING,
-};
-
-// Indices into the animation array
-enum EntityAnimationTypes {
-	ENTITY_ANIMATIONWALKING,
-	ENTITY_ANIMATIONATTACK,
-	ENTITY_ANIMATIONDYING,
-};
-
-// Types of AI
-enum AITypes {
-	AI_NONE,
-	AI_BOSS,
-	AI_BASIC,
-	AI_HITANDRUN,
-	AI_COUNT
-};
-
 // Classes
 class _Entity : public _Object {
 
@@ -87,7 +39,6 @@ class _Entity : public _Object {
 		_Entity(const _ObjectTemplate &EntityTemplate);
 		~_Entity() override;
 
-		virtual void Update(double FrameTime) override;
 		virtual void Render(double BlendFactor) override;
 		virtual void RecalculateStats() { }
 
@@ -114,7 +65,6 @@ class _Entity : public _Object {
 		virtual void UpdateSpeed(float Factor);
 		int GenerateDamage(int AttackType, int DamageBlock, int DamageResist, bool Steady, bool &Crit);
 		virtual bool IsSteady() const { return false; }
-		bool IsDying() const override { return Action == ACTION_DYING || Action == ACTION_STARTDEATH; }
 		bool IsDead() const { return Action == ACTION_DYING && !Active; }
 		bool IsInvulnerable() const { return InvulnerableTimer > 0.0; }
 
@@ -153,7 +103,6 @@ class _Entity : public _Object {
 		int DamageResist;
 
 		// States
-		ActionType Action;
 		int WalkingAnimation;
 		int MeleeAnimation;
 		int ShootingOnehandAnimation;
