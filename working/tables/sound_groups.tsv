@@ -1,5 +1,5 @@
 id	fire	triggerdown	ricochet	empty	reload	hit	take damage	death	move
-player	player_swing0					player_punch0	player_hit0	player_die0	player_move0
+player	player_swing0					player_punch0	player_hit0		player_move0
 knife	knife_fire0					knife_hit0			
 club	player_swing0					club_hit0			
 pistol	pistol_fire0		pistol_ricochet0	pistol_empty0	pistol_reload0				

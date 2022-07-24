@@ -505,6 +505,8 @@ void _PlayState::Update(double FrameTime) {
 	else
 		HUD->SetInventoryOpen(false);
 
+	int PlayerHealth = Player->Health;
+
 	// Update player
 	Player->Update(FrameTime);
 	if(Player->PositionChanged)
@@ -535,7 +537,6 @@ void _PlayState::Update(double FrameTime) {
 	Map->ObjectManager->RenderList[_ObjectManager::RENDER_PLAYER].push_back(Player);
 
 	// Update monsters
-	int PlayerHealth = Player->Health;
 	UpdateMonsters(FrameTime);
 
 	// Check for player dying
@@ -1088,6 +1089,9 @@ void _PlayState::HandlePickup() {
 // Called when the player dies
 void _PlayState::PlayerDied() {
 
+	// Dying sound
+	ae::Audio.PlaySound(ae::Assets.Sounds["player_die0"], ae::_SoundSettings(glm::vec3(Player->Position.x, 0.0f, Player->Position.y)));
+
 	// Update monsters
 	for(const auto &Entity : Monsters) {
 		_Monster *Monster = (_Monster *)Entity;
@@ -1381,6 +1385,11 @@ void _PlayState::CheckEvents(const _Entity *Entity) {
 				HUD->ShowMessageBox("You have found a secret!", HUD_SECRET_MESSAGETIME, UI_MESSAGE_SMALL_SIZE);
 				HUD->Secrets[0]++;
 				Event->Active = false;
+			} break;
+			case EVENT_LAVA: {
+				ae::Audio.PlaySound(ae::Assets.Sounds["game_lava0"]);
+				Player->UpdateHealth(-GAME_LAVA_DAMAGE * Event->Level);
+				Particles->Create(_ParticleSpawn(GameAssets.GetParticleTemplate(Event->ParticleID), glm::vec2(0), Player->Position, OBJECT_Z, 0));
 			} break;
 			default:
 			break;

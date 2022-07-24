@@ -1094,6 +1094,7 @@ void _EditorState::LoadPalettes() {
 	Icons.push_back(_Brush("tele", "Teleporter", ae::Assets.Textures["textures/editor_repeat/event_tele.png"], COLOR_WHITE));
 	Icons.push_back(_Brush("light", "Lights", ae::Assets.Textures["textures/editor_repeat/event_light.png"], COLOR_WHITE));
 	Icons.push_back(_Brush("secret", "Secret", ae::Assets.Textures["textures/editor_repeat/event_secret.png"], COLOR_WHITE));
+	Icons.push_back(_Brush("lava", "Lava", ae::Assets.Textures["textures/editor_repeat/event_lava.png"], COLOR_WHITE));
 	LoadPaletteButtons(Icons, EDITMODE_EVENTS);
 	for(size_t i = 0; i < Icons.size(); i++)
 		EventTextures.push_back(Icons[i].Texture);
@@ -2137,6 +2138,9 @@ void _EditorState::ExecuteSelectPalette(ae::_Element *Button, int ClickType) {
 					break;
 					case EVENT_LIGHT:
 						SetEventProperties(1, 0, 1, "");
+					break;
+					case EVENT_LAVA:
+						SetEventProperties(0, 1, 1, "smoke0");
 					break;
 					default:
 						SetEventProperties(0, 0, 1, "");
