@@ -71,7 +71,7 @@ class _Entity : public _Object {
 		float GetHealthPercentage() const { return (float)Health / MaxHealth; }
 		float GetStaminaPercentage() const { return Stamina / MaxStamina; }
 
-		virtual const ae::_Sound *GetSound(int Type, int AttackType) const { return Sounds[Type]; }
+		virtual const ae::_Sound *GetSound(int SoundType, int AttackType) const;
 
 		void StartTriggerDownAudio();
 		void StopAudio();
@@ -81,7 +81,7 @@ class _Entity : public _Object {
 		glm::vec2 WeaponOffset[WEAPON_COUNT];
 
 		// Audio
-		const ae::_Sound *Sounds[SOUND_COUNT];
+		std::vector<const ae::_Sound *> Sounds[SOUND_COUNT];
 		ae::_AudioSource *TriggerDownAudio;
 
 		// Movement

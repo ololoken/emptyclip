@@ -37,7 +37,7 @@ namespace ae {
 struct _SoundGroup {
 	_SoundGroup() { }
 
-	const ae::_Sound *SoundID[SOUND_COUNT];
+	std::vector<const ae::_Sound *> SoundID[SOUND_COUNT];
 };
 
 // Classes

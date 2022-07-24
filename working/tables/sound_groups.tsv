@@ -12,7 +12,7 @@ rifle	rifle_fire0		pistol_ricochet0	pistol_empty0	pistol_reload0
 sniper	sniper_fire0		pistol_ricochet0	pistol_empty0	pistol_reload0				
 minigun		minigun_fire0	pistol_ricochet0	pistol_empty0	pistol_reload0				
 zombie	zombie_attack0						zombie_hit0	zombie_die0	zombie_move0
-dog	dog_fire0						zombie_hit0	dog_die0	dog_move0
+dog	dog_fire0						zombie_hit0	dog_die0,dog_die1	dog_move0
 bat								spider_die0	
 spider						spider_attack0	zombie_hit0	spider_die0	
 skeleton						player_punch0		skeleton_die0	skeleton_move0

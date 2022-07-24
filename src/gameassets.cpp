@@ -100,6 +100,10 @@ void _GameAssets::LoadSoundGroups(const std::string &Path) {
 		std::string ID;
 		std::getline(File, ID, '\t');
 
+		// Check for duplicates
+		if(SoundGroups.find(ID) != SoundGroups.end())
+			throw std::runtime_error(std::string(__func__) + " - Duplicate entry '" + ID + "'");
+
 		// Read rest of line into buffer
 		std::string Line;
 		std::getline(File, Line, '\n');
@@ -108,23 +112,18 @@ void _GameAssets::LoadSoundGroups(const std::string &Path) {
 		// Read sounds
 		_SoundGroup SoundGroup;
 		for(int i = 0; i < SOUND_COUNT; i++) {
-			std::string SoundID;
-			std::getline(Buffer, SoundID, '\t');
+			std::string SoundIDs;
+			std::getline(Buffer, SoundIDs, '\t');
 
-			// Check for sound
-			if(SoundID != "") {
+			std::vector<std::string> Tokens;
+			ae::TokenizeString(SoundIDs, Tokens, ',');
+			for(const auto &SoundID : Tokens) {
 				if(ae::Assets.Sounds.find(SoundID) == ae::Assets.Sounds.end())
 					throw std::runtime_error(std::string(__func__) + " Unknown sound_id '" + SoundID + "'");
 
-				SoundGroup.SoundID[i] = ae::Assets.Sounds.at(SoundID);
+				SoundGroup.SoundID[i].push_back(ae::Assets.Sounds.at(SoundID));
 			}
-			else
-				SoundGroup.SoundID[i] = nullptr;
 		}
-
-		// Check for duplicates
-		if(SoundGroups.find(ID) != SoundGroups.end())
-			throw std::runtime_error(std::string(__func__) + " - Duplicate entry '" + ID + "'");
 
 		SoundGroups[ID] = SoundGroup;
 	}

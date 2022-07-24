@@ -1143,15 +1143,12 @@ void _Player::ApplyDeathPenalty() {
 
 // Returns a sound index
 const ae::_Sound *_Player::GetSound(int SoundType, int AttackType) const {
-	if(AttackType < 0)
-		return Sounds[SoundType];
-
 	if(AttackType == WEAPONATTACK_MAIN && HasMainHand())
-		return GetMainHand()->Template.SoundID[SoundType];
+		return GetMainHand()->GetSound(SoundType);
 	else if(AttackType == WEAPONATTACK_MELEE && HasMelee())
-		return GetMelee()->Template.SoundID[SoundType];
+		return GetMelee()->GetSound(SoundType);
 
-	return Sounds[SoundType];
+	return _Entity::GetSound(SoundType, AttackType);
 }
 
 // Get a particle from either the main weapon or player group

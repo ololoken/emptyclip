@@ -86,9 +86,6 @@ _Entity::_Entity(const _ObjectTemplate &EntityTemplate) :
 	for(int i = 0; i < WEAPONATTACK_COUNT; i++)
 		Penetration[i] = 1;
 
-	for(int i = 0; i < SOUND_COUNT; i++)
-		Sounds[i] = nullptr;
-
 	PositionZ = OBJECT_Z;
 	Animation = new ae::_Animation(nullptr);
 	Map = nullptr;
@@ -155,6 +152,14 @@ int _Entity::GenerateDamage(int AttackType, int DamageBlock, int DamageResist, b
 		Damage = ENTITY_MINDAMAGEPOINTS;
 
 	return Damage;
+}
+
+// Return sound for a sound type
+const ae::_Sound *_Entity::GetSound(int SoundType, int AttackType) const {
+	if(Sounds[SoundType].empty())
+		return nullptr;
+
+	return Sounds[SoundType][ae::GetRandomInt((size_t)0, Sounds[SoundType].size()-1)];
 }
 
 // Starts the attack animation, return true to stop next burst fire
