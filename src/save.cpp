@@ -183,14 +183,6 @@ void _Save::LoadPlayer(_Player *Player) {
 				File.read(Buffer, Size);
 				Buffer[Size] = 0;
 				Player->MapID = Buffer;
-
-				//TODO remove
-				if(Player->MapID == "mansion0.map.gz")
-					Player->MapID = "c01.map.gz";
-				else if(Player->MapID == "mansion1.map.gz")
-					Player->MapID = "c02.map.gz";
-				else if(Player->MapID == "basement0.map.gz")
-					Player->MapID = "c03.map.gz";
 			} break;
 			case CHUNK_CHECKPOINT:
 				File.read((char *)&Player->CheckpointIndex, sizeof(Player->CheckpointIndex));
