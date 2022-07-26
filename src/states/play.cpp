@@ -1212,6 +1212,8 @@ void _PlayState::CreateItemDrop(const _Entity *Entity, float DropRate) {
 			Stats.GetRandomDrop(Monster->ItemDrop, &ObjectSpawn);
 			if(ObjectSpawn.Type) {
 				ObjectSpawn.Position = _Map::GenerateRandomPointInCircle(PLAYER_RADIUS) + Monster->Position;
+				if(!Map->CheckCollisionFlag(Map->GetValidCoord(ObjectSpawn.Position), _Tile::ENTITY))
+					ObjectSpawn.Position = Player->Position;
 				ObjectSpawn.Level = Monster->Level;
 				SpawnObject(&ObjectSpawn, true);
 			}
