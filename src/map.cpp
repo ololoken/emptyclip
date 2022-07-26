@@ -768,7 +768,7 @@ std::vector<_Hit> &_Map::CheckCollisionsInGrid(const glm::vec2 &Position, float 
 			for(int k = GRID_PLAYER; k <= GRID_MONSTER; k++) {
 				for(auto &Iterator : Data[i][j].Objects[k]) {
 					_Object *Object = Iterator.first;
-					if(Object == SkipObject || Object->IsDying())
+					if(Object == SkipObject || Object->IsDying() || Object->FreePathing)
 						continue;
 
 					ObjectMap[Object] = 1;
