@@ -1310,7 +1310,7 @@ void _PlayState::CheckEvents(const _Entity *Entity) {
 				Level = Event->ItemID;
 
 				// End of the game
-				if(Level == "") {
+				if(Level == "" || (Framework.DemoMode && Level == "c04")) {
 					Level = GAME_FIRSTLEVEL;
 					Player->Progression++;
 					Player->ProgressionTime = 0;

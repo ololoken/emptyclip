@@ -22,11 +22,13 @@ if(WIN32)
 endif()
 
 # enable editor
-set("DISABLE_EDITOR=${DISABLE_EDITOR}")
-if(DISABLE_EDITOR)
-	add_definitions("-DENABLE_EDITOR=0")
-else()
-	add_definitions("-DENABLE_EDITOR=1")
+if("$ENV{DISABLE_EDITOR}")
+	add_definitions("-DDISABLE_EDITOR")
+endif()
+
+# three level demo mode
+if("$ENV{DEMO_MODE}")
+	add_definitions("-DDEMO_MODE")
 endif()
 
 # compiler flags

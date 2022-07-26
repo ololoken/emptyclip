@@ -54,6 +54,11 @@ void _Framework::Init(int ArgumentCount, char **Arguments) {
 	FrameworkState = INIT;
 	IgnoreNextInputEvent = false;
 	State = &NullState;
+	DemoMode = false;
+
+	#ifdef DEMO_MODE
+	DemoMode = true;
+	#endif
 
 	bool AudioEnabled = Config.AudioEnabled;
 	bool Fullscreen = Config.Fullscreen;
@@ -72,11 +77,11 @@ void _Framework::Init(int ArgumentCount, char **Arguments) {
 			Fullscreen = false;
 		}
 		else if(Token == "-editor") {
-			if(ENABLE_EDITOR) {
+			#ifndef DISABLE_EDITOR
 				State = &EditorState;
 				if(TokensRemaining && Arguments[i+1][0] != '-')
 					EditorState.SetMapFilename(Arguments[++i]);
-			}
+			#endif
 		}
 		else if(Token == "-convert" && TokensRemaining > 0) {
 			State = &ConvertState;

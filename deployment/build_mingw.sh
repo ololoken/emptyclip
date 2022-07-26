@@ -29,7 +29,7 @@ build() {
 	builddir="$projectdir/build/mingw$bits"
 	mkdir -p "$builddir"
 	pushd "$builddir" || exit
-	cmake -GNinja -DDISABLE_EDITOR="${DISABLE_EDITOR}" -DCMAKE_TOOLCHAIN_FILE="../../cmake/mingw${bits}.cmake" -DCMAKE_BUILD_TYPE=Release ../../
+	cmake -GNinja -DCMAKE_TOOLCHAIN_FILE="../../cmake/mingw${bits}.cmake" -DCMAKE_BUILD_TYPE=Release ../../
 
 	# build
 	if ! ninja; then
@@ -47,6 +47,11 @@ build() {
 	cp -r "${projectdir}/working" "${archive_base}"
 	rm "${projectdir}/working/${project}.exe"
 	rm -f "${archive_base}/maps/test.map.gz"
+
+	if [ "${DEMO_MODE}" = "1" ]; then
+		rm -f "${archive_base}/maps/"*.map.gz
+		cp "${projectdir}/working/maps/"{c01,c02,c03,bench}.map.gz "${archive_base}/maps/"
+	fi
 
 	# remove linux only files
 	rm -f "${archive_base}"/"${project}"{,_debug}

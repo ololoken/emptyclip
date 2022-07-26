@@ -57,6 +57,7 @@ class _Framework {
 		// State
 		bool Done;
 		bool IgnoreNextInputEvent;
+		bool DemoMode;
 
 	private:
 
