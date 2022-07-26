@@ -25,6 +25,7 @@
 #include <ae/audio.h>
 #include <ae/ui.h>
 #include <ae/random.h>
+#include <framework.h>
 #include <gameassets.h>
 #include <stats.h>
 #include <map.h>
@@ -1105,7 +1106,10 @@ void _Player::Respawn() {
 
 // Get added monster/item level based on progression
 int _Player::GetAddedLevel() const {
-	return Progression * GAME_PROGRESSION_DIFFICULTY;
+	if(Framework.DemoMode)
+		return Progression * GAME_PROGRESSION_DEMO_DIFFICULTY;
+	else
+		return Progression * GAME_PROGRESSION_DIFFICULTY;
 }
 
 // Sets the weapon animation for the player
