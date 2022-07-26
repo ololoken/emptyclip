@@ -478,6 +478,9 @@ void _Map::InitializeTiles() {
 						Data[i][j].Collision &= ~_Tile::ENTITY;
 					else
 						Data[i][j].Collision |= _Tile::ENTITY;
+
+					// Don't allow changing of bullet flags
+					Data[i][j].CollisionChangeMask &= ~_Tile::BULLET;
 				}
 			}
 		}
@@ -491,6 +494,9 @@ void _Map::InitializeTiles() {
 					Data[i][j].Collision &= ~_Tile::ENTITY & ~_Tile::BULLET;
 				else
 					Data[i][j].Collision |= _Tile::ENTITY | _Tile::BULLET;
+
+				// Walls override floor change masks
+				Data[i][j].CollisionChangeMask = _Tile::ENTITY | _Tile::BULLET;
 			}
 		}
 	}

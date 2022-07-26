@@ -88,7 +88,7 @@ struct _Tile {
 		BULLET = 2,
 	};
 
-	_Tile() : Collision(0), CollisionChangeMask(~0) { }
+	_Tile() : Collision(0), CollisionChangeMask(ENTITY | BULLET) { }
 
 	bool CanWalk() { return !(Collision & ENTITY); }
 	bool CanShoot() { return !(Collision & BULLET); }
