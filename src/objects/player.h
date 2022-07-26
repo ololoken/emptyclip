@@ -184,7 +184,6 @@ class _Player : public _Entity {
 		float ZoomScale;
 		double WeaponSwitchTimer;
 		double ReloadTimer;
-		double LastHitTimer;
 		double UseTimer;
 		double WeaponSwitchPeriod;
 		double ReloadPeriod;

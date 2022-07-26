@@ -109,6 +109,7 @@ class _Entity : public _Object {
 		int ShootingTwohandAnimation;
 		int DyingAnimation;
 		double InvulnerableTimer;
+		double LastHitTimer;
 
 		// Attacking attributes
 		float CurrentAccuracy;

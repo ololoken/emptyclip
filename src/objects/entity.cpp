@@ -55,6 +55,7 @@ _Entity::_Entity(const _ObjectTemplate &EntityTemplate) :
 	ShootingTwohandAnimation(ANIMATION_ATTACK),
 	DyingAnimation(ANIMATION_DIE),
 	InvulnerableTimer(0.0),
+	LastHitTimer(0.0),
 	CurrentAccuracy(0),
 	MinAccuracy(0),
 	MaxAccuracy{0, 0},
@@ -179,12 +180,14 @@ bool _Entity::StartAttack() {
 
 	// Set animation
 	if(AttackRequestType == WEAPONATTACK_MELEE || MainWeaponType == WEAPON_MELEE) {
+		LastHitTimer = 0.0;
 		Action = ACTION_STARTMELEE;
 
 		// Play weapon sound
 		ae::Audio.PlaySound(GetSound(SOUND_FIRE, AttackRequestType), ae::_SoundSettings(glm::vec3(Position.x, 0.0f, Position.y)));
 	}
 	else {
+		LastHitTimer = 0.0;
 		Action = ACTION_STARTSHOOT;
 		AttackTimer[WEAPONATTACK_MELEE] = 0.0;
 	}
@@ -502,6 +505,9 @@ void _Entity::UpdateHealth(int Adjust) {
 	if(IsInvulnerable())
 		return;
 
+	if(Adjust < 0)
+		LastHitTimer = 0.0;
+
 	Health = std::clamp(Health + Adjust, 0, MaxHealth);
 	if(Health == 0 && !IsDying())
 		Action = ACTION_STARTDEATH;
@@ -514,6 +520,7 @@ void _Entity::OnAttack(_Entity *Victim, const _Hit &Hit) {
 
 // Called when an entity is hit
 void _Entity::OnHit(_Entity *Attacker, const _Hit &Hit) {
+	LastHitTimer = 0.0;
 	ae::Audio.PlaySound(GetSound(SOUND_TAKEDAMAGE, -1), ae::_SoundSettings(glm::vec3(Hit.Position.x, 0.0f, Hit.Position.y)));
 }
 
