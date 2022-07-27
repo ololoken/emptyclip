@@ -396,7 +396,9 @@ void _Player::UpdateAnimation(double FrameTime, bool PlaySound) {
 
 // Draws the player
 void _Player::Render(double BlendFactor) {
-	glm::vec2 DrawPosition(Position * (float)BlendFactor + LastPosition * (float)(1.0 - BlendFactor));
+	glm::vec2 DrawPosition;
+	GetDrawPosition(DrawPosition, BlendFactor);
+
 	float Alpha = 1.0f;
 	if(IsInvulnerable())
 		Alpha = std::abs(std::fmod(InvulnerableTimer * 5, 1.0)) >= 0.5 ? 0.25f : 0.75f;

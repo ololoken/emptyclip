@@ -64,6 +64,7 @@ _Object::_Object(const _ObjectTemplate &ObjectTemplate) :
 void _Object::Update(double FrameTime) {
 	switch(Type) {
 		case PROJECTILE: {
+			LastPosition = Position;
 			Position += Velocity * (float)FrameTime;
 			CheckProjectileCollisions();
 		} break;
@@ -73,11 +74,14 @@ void _Object::Update(double FrameTime) {
 // Render object
 void _Object::Render(double BlendFactor) {
 	if(Texture) {
+		glm::vec2 DrawPosition;
+		GetDrawPosition(DrawPosition, BlendFactor);
+
 		ae::Graphics.SetColor(Color);
 		if(Mesh)
-			ae::Graphics.DrawMesh(glm::vec3(Position, PositionZ), Mesh, Texture, glm::vec3(Scale));
+			ae::Graphics.DrawMesh(glm::vec3(DrawPosition, PositionZ), Mesh, Texture, glm::vec3(Scale));
 		else
-			ae::Graphics.DrawSprite(glm::vec3(Position, PositionZ), Texture, Rotation, glm::vec2(Scale));
+			ae::Graphics.DrawSprite(glm::vec3(DrawPosition, PositionZ), Texture, Rotation, glm::vec2(Scale));
 	}
 }
 
@@ -279,8 +283,10 @@ void _Object::CheckProjectileCollisions() {
 	std::vector<_Hit> &Hits = Map->CheckCollisionsInGrid(Position, Radius, GRID_MONSTER);
 	for(const auto &Hit : Hits) {
 		_Entity *HitEntity = (_Entity *)Hit.Object;
-		if(HitEntity->Type == PROP)
-			continue;
+		if(HitEntity->Type == PROP) {
+			Active = false;
+			break;
+		}
 
 		if(HitObjects.find(HitEntity) != HitObjects.end())
 			continue;

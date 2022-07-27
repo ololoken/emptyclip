@@ -482,8 +482,8 @@ void _Entity::Render(double BlendFactor) {
 		_Object::Render(BlendFactor);
 	}
 	else {
-		ae::Graphics.SetColor(Color);
-		glm::vec2 DrawPosition(Position * (float)BlendFactor + LastPosition * (float)(1.0f - BlendFactor));
+		glm::vec2 DrawPosition;
+		GetDrawPosition(DrawPosition, BlendFactor);
 
 		ae::Graphics.SetColor(Color);
 		ae::Graphics.DrawAnimationFrame(

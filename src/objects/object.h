@@ -119,6 +119,7 @@ class _Object {
 		void GetRenderBounds(glm::vec4 &Bounds);
 		void FacePosition(const glm::vec2 &Target);
 		void SetPosition(const glm::vec2 &NewPosition);
+		void GetDrawPosition(glm::vec2 &DrawPosition, double BlendFactor) { DrawPosition = Position * (float)BlendFactor + LastPosition * (float)(1.0 - BlendFactor); }
 		glm::vec2 GetDirectionVector(float RotationOffset = 0.0f) const;
 		float RayIntersection(const glm::vec2 &Origin, const glm::vec2 &Direction) const;
 		bool IsTouchingCircle(const glm::vec2 &CircleCenter, float CircleRadius, float &DistanceSquared) const;

@@ -573,14 +573,16 @@ void _PlayState::Update(double FrameTime) {
 	// Get zoom state
 	if(Player->Aiming) {
 		glm::vec2 CursorVector = WorldCursor - Player->Position;
-		Map->CollisionHits.clear();
-		Map->CheckBulletCollisions(Player, glm::normalize(CursorVector), Map->CollisionHits, GRID_MONSTER, true, 1, _Tile::BULLET);
-		if(Map->CollisionHits.size()) {
-			glm::vec2 HitVector = Map->CollisionHits.front().Position - Player->Position;
-			if(glm::dot(CursorVector, CursorVector) < glm::dot(HitVector, HitVector))
-				Camera->UpdatePosition(CursorVector / Player->ZoomScale);
-			else
-				Camera->UpdatePosition(HitVector / Player->ZoomScale);
+		if(CursorVector.x != 0 && CursorVector.y != 0) {
+			Map->CollisionHits.clear();
+			Map->CheckBulletCollisions(Player, glm::normalize(CursorVector), Map->CollisionHits, GRID_MONSTER, true, 1, _Tile::BULLET);
+			if(Map->CollisionHits.size()) {
+				glm::vec2 HitVector = Map->CollisionHits.front().Position - Player->Position;
+				if(glm::dot(CursorVector, CursorVector) < glm::dot(HitVector, HitVector))
+					Camera->UpdatePosition(CursorVector / Player->ZoomScale);
+				else
+					Camera->UpdatePosition(HitVector / Player->ZoomScale);
+			}
 		}
 
 		Camera->SetDistance(CAMERA_DISTANCE_AIMED);
@@ -767,6 +769,8 @@ void _PlayState::Render(double BlendFactor) {
 		}
 
 		// Draw weapon ranges
+		glm::vec2 DrawPosition;
+		Player->GetDrawPosition(DrawPosition, BlendFactor);
 		for(int i = 0; i < WEAPONATTACK_COUNT; i++) {
 			glm::vec4 Color = COLOR_WHITE;
 			if(i == 1)
@@ -778,16 +782,16 @@ void _PlayState::Render(double BlendFactor) {
 
 			ae::Graphics.SetProgram(ae::Assets.Programs["pos"]);
 			ae::Graphics.SetColor(Color);
-			ae::Graphics.DrawCircle(glm::vec3(Player->Position, 0), Range);
+			ae::Graphics.DrawCircle(glm::vec3(DrawPosition, 0), Range);
 
 			glm::vec2 Direction = Player->GetDirectionVector();
 			glm::vec2 NormalDirection(-Direction.y, Direction.x);
 
-			glm::vec2 LeftLineStart = Player->Position - NormalDirection * Player->AttackWidth[i];
+			glm::vec2 LeftLineStart = DrawPosition - NormalDirection * Player->AttackWidth[i];
 			glm::vec2 LeftLineEnd = LeftLineStart + Direction * Range;
 			ae::Graphics.DrawLine(LeftLineStart, LeftLineEnd);
 
-			glm::vec2 RightLineStart = Player->Position + NormalDirection * Player->AttackWidth[i];
+			glm::vec2 RightLineStart = DrawPosition + NormalDirection * Player->AttackWidth[i];
 			glm::vec2 RightLineEnd = RightLineStart + Direction * Range;
 			ae::Graphics.DrawLine(RightLineStart, RightLineEnd);
 			//glm::vec2 LeftLine = Player->Position + Player->GetDirectionVector(-Player->MaxAccuracy[i] * 0.5f) * Range;
