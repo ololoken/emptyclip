@@ -775,8 +775,9 @@ std::vector<_Hit> &_Map::CheckCollisionsInGrid(const glm::vec2 &Position, float 
 	CollisionHits.clear();
 	for(const auto &HitObjects : ObjectMap) {
 		_Hit Hit;
-		if(HitObjects.first->IsTouchingCircle(Position, Radius, Hit.DistanceSquared)) {
-			Hit.Object = HitObjects.first;
+		Hit.Object = HitObjects.first;
+		if(Hit.Object->IsTouchingCircle(Position, Radius, Hit.DistanceSquared)) {
+			Hit.Position = Position;
 			CollisionHits.push_back(Hit);
 		}
 	}

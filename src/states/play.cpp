@@ -436,6 +436,7 @@ void _PlayState::Update(double FrameTime) {
 	//if(ae::Graphics.Element->HitElement)
 	//	std::cout << ae::Graphics.Element->HitElement->Name << std::endl;
 
+	int OldLevel = Player->Level;
 	Timer += FrameTime;
 	FlashTimer = std::max(0.0, FlashTimer - FrameTime);
 
@@ -559,7 +560,6 @@ void _PlayState::Update(double FrameTime) {
 	UpdateEvents(FrameTime);
 
 	// Apply the damage
-	int OldLevel = Player->Level;
 	if(Player->AttackMade)
 		ResolveAttack(Player, GRID_MONSTER);
 
@@ -992,40 +992,19 @@ void _PlayState::ResolveAttack(_Entity *Attacker, int GridType) {
 				} break;
 				case HIT_OBJECT: {
 					_Entity *HitEntity = (_Entity *)Hit.Object;
+					bool HitPlayer = Hit.Object->Type == _Object::PLAYER;
 
 					// Generate damage
 					bool Crit = false;
 					int Damage = Attacker->GenerateDamage(Attacker->AttackRequestType, HitEntity->DamageBlock, HitEntity->DamageResist, Steady, Crit);
-					if(GodMode && Hit.Object->Type == _Object::PLAYER)
+					if(GodMode && HitPlayer)
 						Damage = 0;
 
 					// Generate damage particles
-					GenerateDamageText(Hit.Position, Damage, Crit, Hit.Object->Type ==  _Object::PLAYER);
+					GenerateDamageText(Hit.Position, Damage, Crit, HitPlayer);
 
 					// Update health
 					HitEntity->UpdateHealth(-Damage);
-					if(Hit.Object->IsDying()) {
-
-						// Handle item drops
-						CreateItemDrop(HitEntity, Player->DropRate * 0.01f);
-
-						// Dying sound
-						ae::Audio.PlaySound(HitEntity->GetSound(SOUND_DEATH, -1), ae::_SoundSettings(glm::vec3(Hit.Position.x, 0.0f, Hit.Position.y)));
-
-						// Update stats
-						if(Attacker->Type == _Object::PLAYER) {
-							_Monster *Monster = (_Monster *)Hit.Object;
-							if(Monster->IsCrate()) {
-								HUD->Crates[0]++;
-							}
-							else {
-								HUD->Kills[0]++;
-								Attacker->UpdateKillCount(1);
-							}
-
-							Attacker->UpdateExperience(HitEntity->ExperienceGiven);
-						}
-					}
 
 					// Generate bullet effects once for each hit object
 					if(DecalObjects.find(Hit.Object) == DecalObjects.end()) {
@@ -1037,10 +1016,6 @@ void _PlayState::ResolveAttack(_Entity *Attacker, int GridType) {
 					Attacker->OnAttack(HitEntity, Hit);
 					HitEntity->OnHit(Attacker, Hit);
 
-					// Set HUD last hit object
-					if(Hit.Object->Type == _Object::MONSTER) {
-						HUD->SetLastEntityHit(HitEntity);
-					}
 				} break;
 			}
 		}

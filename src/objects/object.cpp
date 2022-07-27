@@ -68,8 +68,11 @@ void _Object::Update(double FrameTime) {
 				std::vector<_Hit> &Hits = Map->CheckCollisionsInGrid(Position, Radius, GRID_MONSTER);
 				if(Hits.size()) {
 					_Entity *HitEntity = (_Entity *)Hits.front().Object;
+					_Entity *OwnerEntity = (_Entity *)Owner;
 					PlayState.GenerateDamageText(Position, Damage, false, Type == PLAYER);
 					HitEntity->UpdateHealth(-Damage);
+					OwnerEntity->OnAttack(HitEntity, Hits.front());
+					HitEntity->OnHit(OwnerEntity, Hits.front());
 					Active = false;
 				}
 			}

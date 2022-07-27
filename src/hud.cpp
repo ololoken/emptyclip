@@ -315,7 +315,7 @@ void _HUD::Update(double FrameTime, float Radius) {
 		ae::Graphics.SetCursor(false);
 
 	// Update health display
-	if(LastEntityHit != nullptr && (LastEntityHitTimer > HUD_ENTITYHEALTHDISPLAYPERIOD || !LastEntityHit->Active))
+	if(LastEntityHit != nullptr && (LastEntityHitTimer > HUD_ENTITYHEALTHDISPLAYPERIOD))
 		LastEntityHit = nullptr;
 
 	MessageTimer -= FrameTime;

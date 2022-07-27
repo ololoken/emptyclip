@@ -110,6 +110,9 @@ class _HUD {
 		void ShowTextMessage(const std::string &Message, double Time, bool Override=true);
 		void ShowMessageBox(const std::string &Message, double Time, const glm::vec2 &Size);
 
+		// Objects
+		_Entity *LastEntityHit;
+
 		// Inventory
 		_Item *CursorItem;
 		_Item *CursorOverItem;
@@ -143,7 +146,6 @@ class _HUD {
 		int CursorInventorySlot;
 
 		// Displays
-		_Entity *LastEntityHit;
 		double LastEntityHitTimer;
 		float CrosshairScale;
 

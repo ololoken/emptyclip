@@ -65,6 +65,7 @@ class _PlayState : public ae::_State {
 
 		void GenerateHitEffects(_Entity *Attacker, const int Type, const _Hit &Hit, bool CreateWallDecal=true);
 		void GenerateDamageText(glm::vec2 Position, int Value, bool Crit, bool HitPlayer);
+		void CreateItemDrop(const _Entity *Entity, float DropRate);
 
 		// Parameters
 		std::string Level;
@@ -76,6 +77,7 @@ class _PlayState : public ae::_State {
 		int CheckpointIndex;
 
 		// Objects
+		_HUD *HUD;
 		_Player *Player;
 		double FlashTimer;
 
@@ -98,7 +100,6 @@ class _PlayState : public ae::_State {
 		void SpawnObject(_ObjectSpawn *ObjectSpawn, bool GenerateStats=false, int AddedLevel=0);
 		void UseObject(_Item *Item);
 		void PickupObject(_Item *Item, int &AmountAdded);
-		void CreateItemDrop(const _Entity *Entity, float DropRate);
 
 		// Game
 		double Timer;
@@ -114,7 +115,6 @@ class _PlayState : public ae::_State {
 
 		// HUD
 		std::unordered_map<_Item *, int> IgnoreItems;
-		_HUD *HUD;
 		_Item *CursorItem;
 		_Item *PreviousCursorItem;
 		_Object *ClosestItem;

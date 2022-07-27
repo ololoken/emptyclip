@@ -17,15 +17,17 @@
 *******************************************************************************/
 #include <objects/entity.h>
 #include <objects/monster.h>
+#include <objects/player.h>
+#include <states/play.h>
 #include <ae/graphics.h>
 #include <ae/random.h>
 #include <ae/assets.h>
 #include <ae/program.h>
 #include <ae/animation.h>
 #include <ae/audio.h>
+#include <hud.h>
 #include <map.h>
 #include <constants.h>
-#include <iostream>
 #include <algorithm>
 #include <glm/gtx/norm.hpp>
 
@@ -99,6 +101,9 @@ _Entity::~_Entity() {
 	delete Animation;
 
 	StopAudio();
+
+	if(PlayState.HUD->LastEntityHit == this)
+		PlayState.HUD->LastEntityHit = nullptr;
 }
 
 // Generates a direction (in degrees) and updates the entity's accuracy
@@ -505,12 +510,43 @@ void _Entity::UpdateHealth(int Adjust) {
 	if(IsInvulnerable())
 		return;
 
-	if(Adjust < 0)
+	// Check taking damage
+	if(Adjust < 0) {
 		LastHitTimer = 0.0;
 
+		// Set HUD last hit object
+		if(Type == MONSTER)
+			PlayState.HUD->SetLastEntityHit(this);
+	}
+
+	// Update health
 	Health = std::clamp(Health + Adjust, 0, MaxHealth);
-	if(Health == 0 && !IsDying())
+
+	// Check dying
+	if(Health == 0 && !IsDying()) {
+
+		// Play sound
+		ae::Audio.PlaySound(GetSound(SOUND_DEATH, -1), ae::_SoundSettings(glm::vec3(Position.x, 0.0f, Position.y)));
+
+		if(Type == MONSTER) {
+
+			// Handle item drops
+			PlayState.CreateItemDrop(this, PlayState.Player->DropRate * 0.01f);
+
+			// Update stats
+			if(IsCrate()) {
+				PlayState.HUD->Crates[0]++;
+			}
+			else {
+				PlayState.HUD->Kills[0]++;
+				PlayState.Player->UpdateKillCount(1);
+			}
+
+			PlayState.Player->UpdateExperience(ExperienceGiven);
+		}
+
 		Action = ACTION_STARTDEATH;
+	}
 }
 
 // Called when an entity lands a hit
