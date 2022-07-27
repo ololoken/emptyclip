@@ -4,8 +4,9 @@ key_boss	0	0	0	0	0	0	0	0	0	0	0	0	1
 ammo_pistol	1	0	0	0	0	0	0	0	0	12	12	0	0
 ammo_magnum	0	1	0	0	0	0	0	0	0	0	12	15	0
 ammo_shells	1	0	0	0	0	0	0	0	0	12	12	0	0
-ammo_rifle	1	1	0	0	0	0	0	0	0	12	12	15	0
+ammo_rifle	1	0	0	0	0	0	0	0	0	12	12	15	0
 ammo_heavy	0	1	0	0	0	0	0	0	0	0	0	15	0
+ammo_plasma	0	1	0	0	0	0	0	0	0	0	6	15	0
 medkit	0	0	1	0	0	0	0	0	0	25	25	25	0
 weapon_knife	0	0	0	0	0	1	0	0	0	1	1	0	0
 weapon_spear	0	0	0	0	0	1	0	0	0	1	1	1	0
@@ -16,6 +17,7 @@ weapon_boltrifle	0	0	0	1	0	0	0	0	0	1	1	1	0
 weapon_assaultrifle	0	0	0	0	0	0	0	0	0	0	0	1	0
 weapon_tacticalrifle	0	0	0	0	1	0	0	0	0	0	0	1	0
 weapon_minigun	0	0	0	0	0	0	0	0	0	0	0	1	0
+weapon_plasmarifle	0	0	0	0	0	0	0	0	0	0	0	1	0
 armor_light	0	0	0	0	0	0	1	0	0	1	1	1	0
 armor_medium	0	0	0	0	0	0	1	0	0	1	1	1	0
 armor_heavy	0	0	0	0	0	0	1	0	0	1	1	1	0
