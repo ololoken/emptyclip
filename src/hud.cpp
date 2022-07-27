@@ -268,7 +268,13 @@ void _HUD::MouseEvent(const ae::_MouseEvent &MouseEvent) {
 	HitElement = Elements[ELEMENT_SKILLS]->HitElement;
 	if(MouseEvent.Pressed && MouseEvent.Button == SDL_BUTTON_LEFT) {
 		if(HitElement && HitElement->Index >= 0 && HitElement->Children.front()->Enabled) {
-			Player->UpdateSkill(HitElement->Index, ae::Input.ModKeyDown(KMOD_SHIFT) ? 5 : 1);
+			int Amount = 1;
+			if(ae::Input.ModKeyDown(KMOD_CTRL))
+				Amount = 100;
+			else if(ae::Input.ModKeyDown(KMOD_SHIFT))
+				Amount = 5;
+
+			Player->UpdateSkill(HitElement->Index, Amount);
 		}
 	}
 }
