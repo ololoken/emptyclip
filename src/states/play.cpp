@@ -944,11 +944,6 @@ void _PlayState::ResolveAttack(_Entity *Attacker, int GridType) {
 		// Check for projectile weapons
 		if(Attacker->Projectiles[Attacker->AttackRequestType]) {
 
-			// Increase chance when aiming is at min accuracy
-			int CritChance = Attacker->CritChance[Attacker->AttackRequestType];
-			if(Steady)
-				CritChance *= PLAYER_STEADY_CRIT_FACTOR;
-
 			// Create projectile
 			_Object *Projectile = Stats.CreateProjectile(*Attacker->Projectiles[Attacker->AttackRequestType], Attacker->Position);
 			Projectile->Map = Map;
@@ -956,11 +951,13 @@ void _PlayState::ResolveAttack(_Entity *Attacker, int GridType) {
 			Projectile->Rotation = Attacker->GenerateShotDirection();
 			Projectile->Direction = glm::rotate(glm::vec2(0, -1), glm::radians(Projectile->Rotation));
 			Projectile->Velocity = Projectile->Direction * Attacker->ProjectileSpeed[Attacker->AttackRequestType];
-			Projectile->Damage = ae::GetRandomInt(Attacker->MinDamage[Attacker->AttackRequestType], Attacker->MaxDamage[Attacker->AttackRequestType]);
-			if(ae::GetRandomInt(1, 100) <= CritChance) {
-				Projectile->Damage *= Attacker->CritDamage[Attacker->AttackRequestType] * 0.01f;
-				Projectile->Crit = true;
-			}
+			Projectile->MinDamage = Attacker->MinDamage[Attacker->AttackRequestType];
+			Projectile->MaxDamage = Attacker->MaxDamage[Attacker->AttackRequestType];
+			Projectile->Depth = Attacker->Penetration[Attacker->AttackRequestType];
+			Projectile->CritChance = Attacker->CritChance[Attacker->AttackRequestType];
+			Projectile->CritDamage = Attacker->CritDamage[Attacker->AttackRequestType];
+			if(Steady)
+				Projectile->CritChance *= PLAYER_STEADY_CRIT_FACTOR;
 
 			Map->ObjectManager->AddObject(Projectile);
 		}
@@ -1535,8 +1532,7 @@ void _PlayState::GenerateHitEffects(_Entity *Attacker, const int Type, const _Hi
 
 // Create damage number particles
 void _PlayState::GenerateDamageText(glm::vec2 Position, int Value, bool Crit, bool HitPlayer) {
-	if(HitPlayer)
-		Position += _Map::GenerateRandomPointInCircle(0.3f);
+	Position += _Map::GenerateRandomPointInCircle(0.2f);
 
 	// Create particle
 	_Particle *DamageParticle = new _Particle(_ParticleSpawn(GameAssets.GetParticleTemplate("text0"), glm::vec2(0), Position, OBJECT_Z, 0));

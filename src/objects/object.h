@@ -122,6 +122,7 @@ class _Object {
 		glm::vec2 GetDirectionVector(float RotationOffset = 0.0f) const;
 		float RayIntersection(const glm::vec2 &Origin, const glm::vec2 &Direction) const;
 		bool IsTouchingCircle(const glm::vec2 &CircleCenter, float CircleRadius, float &DistanceSquared) const;
+		void CheckProjectileCollisions();
 
 		virtual std::string GetTypeAsString() const { return "Object"; }
 		void SetAttributeRange(const std::string &AttributeName, float Multiplier);
@@ -141,9 +142,15 @@ class _Object {
 		std::string ID;
 		int Type;
 		int Level;
-		int Damage;
-		bool Crit;
 		bool Active;
+
+		// Projectiles
+		std::unordered_map<_Object *, int> HitObjects;
+		int MinDamage;
+		int MaxDamage;
+		int CritChance;
+		int CritDamage;
+		int Depth;
 
 		// Character
 		ActionType Action;

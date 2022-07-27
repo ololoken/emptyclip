@@ -34,9 +34,8 @@ _Object::_Object(const _ObjectTemplate &ObjectTemplate) :
 	Name(ObjectTemplate.Name),
 	Type(ObjectTemplate.Type),
 	Level(1),
-	Damage(0),
-	Crit(false),
 	Active(true),
+	Depth(0),
 	Action(ACTION_IDLE),
 	Map(nullptr),
 	TileChanged(false),
@@ -58,43 +57,10 @@ _Object::_Object(const _ObjectTemplate &ObjectTemplate) :
 
 // Update object
 void _Object::Update(double FrameTime) {
-
 	switch(Type) {
 		case PROJECTILE: {
 			Position += Velocity * (float)FrameTime;
-			glm::vec2 HitPosition;
-			if(Map->ResolveTileCollisions(Position, Radius, HitPosition)) {
-
-				/*
-				_Hit &Hit = Map->CollisionHits.front();
-				_Entity *OwnerEntity = (_Entity *)Owner;
-				_Hit WallHit;
-				WallHit.Position = Hit.ClosetPoint;
-				WallHit.Normal = glm::normalize(HitPosition - Position);
-				PlayState.GenerateHitEffects(OwnerEntity, HIT_WALL, WallHit, true);
-				*/
-
-				Active = false;
-			}
-			else {
-				std::vector<_Hit> &Hits = Map->CheckCollisionsInGrid(Position, Radius, GRID_MONSTER);
-				if(Hits.size()) {
-					_Hit &Hit = Hits.front();
-					_Entity *HitEntity = (_Entity *)Hit.Object;
-					if(HitEntity->Type != PROP) {
-						_Entity *OwnerEntity = (_Entity *)Owner;
-						int HitDamage = HitEntity->ReduceDamage(Damage);
-
-						PlayState.GenerateDamageText(Position, HitDamage, Crit, Type == PLAYER);
-						PlayState.GenerateHitEffects(OwnerEntity, HIT_OBJECT, Hit);
-						HitEntity->UpdateHealth(-HitDamage);
-						OwnerEntity->OnAttack(HitEntity, Hit);
-						HitEntity->OnHit(OwnerEntity, Hit);
-					}
-
-					Active = false;
-				}
-			}
+			CheckProjectileCollisions();
 		} break;
 	}
 }
@@ -283,5 +249,64 @@ bool _Object::IsTouchingCircle(const glm::vec2 &CircleCenter, float CircleRadius
 		// Test circle collision with point
 		float DistanceSquared = glm::distance2(ClosetPoint, CircleCenter);
 		return DistanceSquared < CircleRadius * CircleRadius;
+	}
+}
+
+// Check collisions between projectiles and objects
+void _Object::CheckProjectileCollisions() {
+
+	// Check wall hits
+	glm::vec2 HitPosition;
+	if(Map->ResolveTileCollisions(Position, Radius, HitPosition)) {
+	/*
+		_Hit &Hit = Map->CollisionHits.front();
+		_Entity *OwnerEntity = (_Entity *)Owner;
+		_Hit WallHit;
+		WallHit.Position = Hit.ClosetPoint;
+		WallHit.Normal = glm::normalize(HitPosition - Position);
+		PlayState.GenerateHitEffects(OwnerEntity, HIT_WALL, WallHit, true);
+	*/
+		Active = false;
+		return;
+	}
+
+	// Check object hits
+	std::vector<_Hit> &Hits = Map->CheckCollisionsInGrid(Position, Radius, GRID_MONSTER);
+	for(const auto &Hit : Hits) {
+		_Entity *HitEntity = (_Entity *)Hit.Object;
+		if(HitEntity->Type == PROP)
+			continue;
+
+		if(HitObjects.find(HitEntity) != HitObjects.end())
+			continue;
+
+		HitObjects[HitEntity] = 1;
+
+		// Get damage
+		int Damage = ae::GetRandomInt(MinDamage, MaxDamage);
+		bool Crit = false;
+		if(ae::GetRandomInt(1, 100) <= CritChance) {
+			Damage *= CritDamage * 0.01f;
+			Crit = true;
+		}
+
+		// Apply damage
+		Damage = HitEntity->ReduceDamage(Damage);
+		HitEntity->UpdateHealth(-Damage);
+
+		// Callbacks
+		_Entity *OwnerEntity = (_Entity *)Owner;
+		OwnerEntity->OnAttack(HitEntity, Hit);
+		HitEntity->OnHit(OwnerEntity, Hit);
+
+		// Particles
+		PlayState.GenerateHitEffects(OwnerEntity, HIT_OBJECT, Hit);
+		PlayState.GenerateDamageText(Hit.Position, Damage, Crit, Type == PLAYER);
+
+		Depth--;
+		if(Depth <= 0) {
+			Active = false;
+			break;
+		}
 	}
 }
