@@ -42,6 +42,7 @@ void _Stats::Init() {
 	LoadKeys("tables/keys.tsv");
 	LoadMedkits("tables/medkits.tsv");
 	LoadMods("tables/mods.tsv");
+	LoadProjectiles("tables/projectiles.tsv");
 	LoadWeapons("tables/weapons.tsv");
 	LoadItemDrops("tables/itemdrops.tsv");
 	LoadMonsters("tables/monsters.tsv");
@@ -206,6 +207,7 @@ void _Stats::LoadWeapons(const std::string &Path) {
 		std::getline(File, Template.MeleeID, '\t');
 		std::getline(File, SoundGroupID, '\t');
 		std::getline(File, WeaponParticlesID, '\t');
+		std::getline(File, Template.ProjectileID, '\t');
 		std::getline(File, Template.AmmoID, '\t');
 
 		File
@@ -235,17 +237,26 @@ void _Stats::LoadWeapons(const std::string &Path) {
 			>> Template.Attributes["attack_movespeed"].Float
 			>> Template.Attributes["melee_width"].Float
 			>> Template.Attributes["scale_x"].Float
-			>> Template.Attributes["scale_y"].Float;
+			>> Template.Attributes["scale_y"].Float
+			>> Template.Attributes["projectile_speed"].Float;
 
 		File.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
 		// Check for loaded textures
 		if(Template.IconID != "" && !ae::Assets.Textures[Template.IconID])
-			throw std::runtime_error(std::string(__func__) + " - Texture not found: " + Template.IconID);
+			throw std::runtime_error(std::string(__func__) + " unknown texture '" + Template.IconID + "'");
+
+		// Check for projectile
+		if(Template.ProjectileID != "" && Objects.find(Template.ProjectileID) == Objects.end())
+			throw std::runtime_error(std::string(__func__) + " unknown projectile '" + Template.ProjectileID + "'");
+
+		// Check for ammo
+		if(Template.AmmoID != "" && Objects.find(Template.AmmoID) == Objects.end())
+			throw std::runtime_error(std::string(__func__) + " unknown ammo '" + Template.AmmoID + "'");
 
 		// Check for attack sound
 		if(GameAssets.SoundGroups.find(SoundGroupID) == GameAssets.SoundGroups.end())
-			throw std::runtime_error(std::string(__func__) + " Unknown sound group: " + SoundGroupID);
+			throw std::runtime_error(std::string(__func__) + " unknown sound group '" + SoundGroupID + "'");
 
 		// Set sound ids
 		_SoundGroup &SoundGroupTemplate = GameAssets.SoundGroups.at(SoundGroupID);
@@ -638,6 +649,45 @@ void _Stats::LoadProps(const std::string &Path) {
 	File.close();
 }
 
+// Load projectiles
+void _Stats::LoadProjectiles(const std::string &Path) {
+
+	// Load file
+	std::ifstream File(Path, std::ios::in);
+	if(!File)
+		throw std::runtime_error("Error loading: " + Path);
+
+	// Skip header
+	File.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+
+	// Read file
+	while(!File.eof() && File.peek() != EOF) {
+
+		_ObjectTemplate Template(_Object::PROJECTILE);
+		std::string ID;
+		std::getline(File, ID, '\t');
+		std::getline(File, Template.IconID, '\t');
+
+		File
+			>> Template.Attributes["radius"].Float
+			>> Template.Attributes["scale"].Float;
+
+		File.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+
+		// Check for loaded textures
+		if(!ae::Assets.Textures[Template.IconID])
+			throw std::runtime_error(std::string(__func__) + " unknown texture '" + Template.IconID + "'");
+
+		// Check for duplicates
+		if(Objects.find(ID) != Objects.end())
+			throw std::runtime_error(std::string(__func__) + " duplicate id '" + ID + "'");
+
+		Objects.insert(std::make_pair(ID, Template));
+	}
+
+	File.close();
+}
+
 // Create item
 _Item *_Stats::CreateItem(const std::string &ID, int Level, int Quality, int Count, const glm::vec2 &Position, bool RandomStats) {
 	_ObjectTemplate &Template = Objects.at(ID);
@@ -749,6 +799,20 @@ _Object *_Stats::CreateProp(const std::string &ID, const glm::vec2 &Position, fl
 	Prop->Scale = Template.Attributes.at("scale").Float * Scale;
 
 	return Prop;
+}
+
+// Create projectile
+_Object *_Stats::CreateProjectile(const _ObjectTemplate &Template, const glm::vec2 &Position) const {
+
+	// Create object
+	_Object *Projectile = new _Object(Template);
+	Projectile->SetPosition(Position);
+	Projectile->Texture = ae::Assets.Textures.at(Template.IconID);
+	Projectile->Radius = Template.Attributes.at("radius").Float;
+	Projectile->Scale = Template.Attributes.at("scale").Float;
+	Projectile->PositionZ = OBJECT_Z;
+
+	return Projectile;
 }
 
 // Returns the level given the experience number

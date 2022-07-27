@@ -102,13 +102,14 @@ class _Object {
 			AMMO,
 			MEDKIT,
 			PROP,
+			PROJECTILE,
 			COUNT
 		};
 
 		_Object(const _ObjectTemplate &ObjectTemplate);
 		virtual ~_Object() { }
 
-		virtual void Update(double FrameTime) { }
+		virtual void Update(double FrameTime);
 		virtual void Render(double BlendFactor);
 		virtual void Serialize(ae::_Buffer &Buffer) { }
 		bool IsDying() const { return Action == ACTION_DYING || Action == ACTION_STARTDEATH; }
@@ -135,6 +136,7 @@ class _Object {
 
 		// Attributes
 		std::unordered_map<std::string, _Value> Attributes;
+		_Object *Owner;
 		std::string Name;
 		std::string ID;
 		int Type;
@@ -152,6 +154,7 @@ class _Object {
 		glm::vec2 Position;
 		glm::vec2 LastPosition;
 		glm::vec2 Direction;
+		glm::vec2 Velocity;
 		float Radius;
 		bool Circle;
 		bool FreePathing;

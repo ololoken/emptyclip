@@ -723,6 +723,7 @@ void _PlayState::Render(double BlendFactor) {
 	ae::Graphics.SetDepthMask(false);
 	ae::Graphics.SetDepthTest(true);
 	Map->ObjectManager->Render(_ObjectManager::RENDER_ITEMS, BlendFactor);
+	Map->ObjectManager->Render(_ObjectManager::RENDER_PROJECTILES, BlendFactor);
 	Map->ObjectManager->Render(_ObjectManager::RENDER_PLAYER, BlendFactor);
 	Map->ObjectManager->Render(_ObjectManager::RENDER_MONSTER, BlendFactor);
 
@@ -926,6 +927,21 @@ void _PlayState::ResolveAttack(_Entity *Attacker, int GridType) {
 	}
 
 	Attacker->StartTriggerDownAudio();
+
+	// Check for projectile weapons
+	if(Attacker->Projectiles[Attacker->AttackRequestType]) {
+
+		// Create projectile
+		_Object *Projectile = Stats.CreateProjectile(*Attacker->Projectiles[Attacker->AttackRequestType], Attacker->Position);
+		Projectile->Map = Map;
+		Projectile->Owner = Attacker;
+		Projectile->Rotation = Attacker->GenerateShotDirection();
+		Projectile->Direction = glm::rotate(glm::vec2(0, -1), glm::radians(Projectile->Rotation));
+		Projectile->Velocity = Projectile->Direction * Attacker->ProjectileSpeed[Attacker->AttackRequestType];
+		Map->ObjectManager->AddObject(Projectile);
+
+		return;
+	}
 
 	// For each bullet that the weapon fires
 	bool PlayedHitWallSound = false;

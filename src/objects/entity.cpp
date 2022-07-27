@@ -72,6 +72,8 @@ _Entity::_Entity(const _ObjectTemplate &EntityTemplate) :
 	CritDamage{100, 100},
 	BurstRounds{0, 0},
 	BurstPeriod{0.0, 0.0},
+	Projectiles{nullptr, nullptr},
+	ProjectileSpeed{0.0f, 0.0f},
 	MainWeaponType(0),
 	AttackRequestType(0),
 	BurstRoundsShot(0),
@@ -101,14 +103,12 @@ _Entity::~_Entity() {
 
 // Generates a direction (in degrees) and updates the entity's accuracy
 float _Entity::GenerateShotDirection() {
-	float RandomOffset;
-	float NewDirection;
 
 	// Generate the offset
-	RandomOffset = ae::GetRandomReal(-CurrentAccuracy / 2.0f, CurrentAccuracy / 2.0f);
+	float RandomOffset = ae::GetRandomReal(-CurrentAccuracy / 2.0f, CurrentAccuracy / 2.0f);
 
 	// Figure out new direction
-	NewDirection = Rotation + RandomOffset;
+	float NewDirection = Rotation + RandomOffset;
 
 	// Check bounds
 	if(NewDirection < 0.0f)
@@ -424,7 +424,7 @@ void _Entity::Move(double FrameTime) {
 	glm::vec2 NewPosition = Position + MoveDirection;
 	bool AxisAlignedPush = false;
 	if(!IsInvulnerable() && !FreePathing) {
-		std::vector<_Hit> &Hits = Map->CheckCollisionsInGrid(NewPosition, Radius, this, AxisAlignedPush, OBJECT_PUSH_FACTOR);
+		std::vector<_Hit> &Hits = Map->ResolveCollisionsInGrid(NewPosition, Radius, this, AxisAlignedPush, OBJECT_PUSH_FACTOR);
 
 		// Resolve pushes
 		for(auto Hit : Hits) {
@@ -439,7 +439,7 @@ void _Entity::Move(double FrameTime) {
 
 	// Check collisions with walls and map boundaries
 	if(!FreePathing)
-		Map->CheckTileCollisions(NewPosition, Radius, NewPosition);
+		Map->ResolveTileCollisions(NewPosition, Radius, NewPosition);
 
 	// Determine if the object has moved
 	if(Position != NewPosition) {

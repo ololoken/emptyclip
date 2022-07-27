@@ -20,6 +20,7 @@
 #include <ae/graphics.h>
 #include <constants.h>
 #include <stats.h>
+#include <map.h>
 #include <glm/geometric.hpp>
 #include <glm/gtx/rotate_vector.hpp>
 #include <glm/gtx/norm.hpp>
@@ -27,6 +28,7 @@
 // Constructor
 _Object::_Object(const _ObjectTemplate &ObjectTemplate) :
 	Template(ObjectTemplate),
+	Owner(nullptr),
 	Name(ObjectTemplate.Name),
 	Type(ObjectTemplate.Type),
 	Level(1),
@@ -34,9 +36,10 @@ _Object::_Object(const _ObjectTemplate &ObjectTemplate) :
 	Action(ACTION_IDLE),
 	Map(nullptr),
 	TileChanged(false),
-	Position(0, 0),
-	LastPosition(0, 0),
-	Direction(0.0, 1.0f),
+	Position(0.0f),
+	LastPosition(0.0f),
+	Direction(0.0f, 1.0f),
+	Velocity(0.0f),
 	Radius(0.25f),
 	Circle(true),
 	FreePathing(false),
@@ -49,11 +52,33 @@ _Object::_Object(const _ObjectTemplate &ObjectTemplate) :
 
 }
 
+// Update object
+void _Object::Update(double FrameTime) {
+
+	switch(Type) {
+		case PROJECTILE: {
+			Position += Velocity * (float)FrameTime;
+			if(Map->ResolveTileCollisions(Position, Radius, Position)) {
+				Active = false;
+			}
+			else {
+				_Hit Hit;
+				if(Map->CheckCollisionsInGrid(Position, Radius, GRID_MONSTER, Hit)) {
+					Active = false;
+				}
+			}
+		} break;
+	}
+}
+
 // Render object
 void _Object::Render(double BlendFactor) {
-	if(Mesh && Texture) {
+	if(Texture) {
 		ae::Graphics.SetColor(Color);
-		ae::Graphics.DrawMesh(glm::vec3(Position, PositionZ), Mesh, Texture, glm::vec3(Scale));
+		if(Mesh)
+			ae::Graphics.DrawMesh(glm::vec3(Position, PositionZ), Mesh, Texture, glm::vec3(Scale));
+		else
+			ae::Graphics.DrawSprite(glm::vec3(Position, PositionZ), Texture, Rotation, glm::vec2(Scale));
 	}
 }
 

@@ -62,7 +62,7 @@ void _ObjectManager::Update(double FrameTime, _Map *Map) {
 			Object->GetRenderBounds(Bounds);
 
 			// Add to minimap
-			if(Map->CheckMinimapBounds(Bounds)) {
+			if(Object->Type != _Object::PROJECTILE && Map->CheckMinimapBounds(Bounds)) {
 				_MinimapLayer MinimapLayer;
 				MinimapLayer.Bounds = glm::vec4(
 					Object->Position.x - Object->Radius, Object->Position.y - Object->Radius,
@@ -98,6 +98,8 @@ void _ObjectManager::Update(double FrameTime, _Map *Map) {
 					RenderList[RENDER_ITEMS].push_back(Object);
 				else if(Object->Template.Type == _Object::PROP)
 					RenderList[RENDER_PROP].push_back(Object);
+				else if(Object->Template.Type == _Object::PROJECTILE)
+					RenderList[RENDER_PROJECTILES].push_back(Object);
 			}
 
 			++Iterator;

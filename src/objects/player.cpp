@@ -162,13 +162,19 @@ void _Player::RecalculateStats() {
 	CalculateSkillsRemaining();
 
 	_ObjectTemplate Weapon[WEAPONATTACK_COUNT] = { _Object::WEAPON, _Object::WEAPON };
-	for(int i = 0; i < WEAPONATTACK_COUNT; i++)
+	for(int i = 0; i < WEAPONATTACK_COUNT; i++) {
+		Projectiles[i] = nullptr;
 		Weapon[i].Attributes = Stats.WeaponFists->Attributes;
+	}
 
 	// See if the player is using a weapon
 	if(HasMainHand()) {
 		Weapon[WEAPONATTACK_MAIN].Attributes = GetMainHand()->Attributes;
 		MainWeaponType = GetMainHand()->Attributes.at("weapon_type").Int;
+		if(!GetMainHand()->Template.ProjectileID.empty()) {
+			Projectiles[WEAPONATTACK_MAIN] = &Stats.Objects.at(GetMainHand()->Template.ProjectileID);
+			ProjectileSpeed[WEAPONATTACK_MAIN] = GetMainHand()->Template.Attributes.at("projectile_speed").Float;
+		}
 	}
 	else
 		MainWeaponType = WEAPON_MELEE;
@@ -177,6 +183,10 @@ void _Player::RecalculateStats() {
 	if(HasMelee()) {
 		Weapon[WEAPONATTACK_MELEE].Attributes = GetMelee()->Attributes;
 		MeleeTexture = ae::Assets.Textures[GetMelee()->Template.MeleeID];
+		if(!GetMelee()->Template.ProjectileID.empty()) {
+			Projectiles[WEAPONATTACK_MELEE] = &Stats.Objects.at(GetMelee()->Template.ProjectileID);
+			ProjectileSpeed[WEAPONATTACK_MELEE] = GetMainHand()->Template.Attributes.at("projectile_speed").Float;
+		}
 	}
 	else
 		MeleeTexture =  ae::Assets.Textures[Stats.WeaponFists->Template.MeleeID];

@@ -387,6 +387,7 @@ void _Framework::LoadAssets() {
 	ae::Assets.LoadTextureDirectory("textures/icons/", TextureSettings);
 	ae::Assets.LoadTextureDirectory("textures/menu/", TextureSettings);
 	ae::Assets.LoadTextureDirectory("textures/particles/", TextureSettings);
+	ae::Assets.LoadTextureDirectory("textures/projectiles/", TextureSettings);
 
 	TextureSettings.WrapMode = ae::_Texture::CLAMP_TO_EDGE;
 	TextureSettings.Mipmaps = true;

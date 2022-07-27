@@ -45,6 +45,7 @@ enum CollisionGridType {
 	GRID_PLAYER,
 	GRID_MONSTER,
 	GRID_ITEM,
+	GRID_PROJECTILE,
 	GRID_COUNT
 };
 
@@ -198,8 +199,9 @@ class _Map {
 
 		void Update(double FrameTime, double Clock);
 
-		bool CheckTileCollisions(const glm::vec2 &TargetPosition, float Radius, glm::vec2 &NewPosition);
-		std::vector<_Hit> &CheckCollisionsInGrid(const glm::vec2 &Position, float Radius, const _Object *SkipObject, bool &AxisAlignedPush, float PushFactor=1.0f);
+		bool ResolveTileCollisions(const glm::vec2 &TargetPosition, float Radius, glm::vec2 &NewPosition);
+		bool CheckCollisionsInGrid(const glm::vec2 &Position, float Radius, int GridType, _Hit &Hit);
+		std::vector<_Hit> &ResolveCollisionsInGrid(const glm::vec2 &Position, float Radius, const _Object *SkipObject, bool &AxisAlignedPush, float PushFactor=1.0f);
 		_Object *GetCloseObject(const glm::vec2 &Position, float Radius, int GridType) const;
 		void GetCloseObjects(const glm::vec2 &Position, float Radius, int GridType, std::unordered_map<_Object *, int> &Objects, _Object **ClosestObject) const;
 		void CheckMeleeCollisions(_Entity *Attacker, int GridType, int Penetration, std::vector<_Hit> &Hits);

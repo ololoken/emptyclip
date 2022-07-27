@@ -35,6 +35,7 @@ class _ObjectManager {
 			RENDER_PLAYER,
 			RENDER_MONSTER,
 			RENDER_PROP,
+			RENDER_PROJECTILES,
 			RENDER_COUNT
 		};
 

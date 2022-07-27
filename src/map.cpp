@@ -559,9 +559,7 @@ void _Map::RemoveObjectFromGrid(_Object *Object, int Type) {
 }
 
 // Check collision with tiles and resolve
-bool _Map::CheckTileCollisions(const glm::vec2 &TargetPosition, float Radius, glm::vec2 &NewPosition) {
-	if(!Data)
-		throw std::runtime_error("Tile data uninitialized!");
+bool _Map::ResolveTileCollisions(const glm::vec2 &TargetPosition, float Radius, glm::vec2 &NewPosition) {
 
 	NewPosition = TargetPosition;
 	float Left = NewPosition.x - Radius;
@@ -752,8 +750,41 @@ void _Map::GetCloseObjects(const glm::vec2 &Position, float Radius, int GridType
 	}
 }
 
+// Check for collisions in a grid
+bool _Map::CheckCollisionsInGrid(const glm::vec2 &Position, float Radius, int GridType, _Hit &Hit) {
+
+	// Get the object's bounding rectangle
+	_TileBounds TileBounds;
+	GetTileBounds(Position, Radius, TileBounds);
+
+	// Get unique list of objects to check against
+	ObjectMap.clear();
+	for(int i = TileBounds.Start.x; i <= TileBounds.End.x; i++) {
+		for(int j = TileBounds.Start.y; j <= TileBounds.End.y; j++) {
+			for(auto &Iterator : Data[i][j].Objects[GridType]) {
+				_Object *Object = Iterator.first;
+				if(Object->IsDying())
+					continue;
+
+				ObjectMap[Object] = 1;
+			}
+		}
+	}
+
+	// Check potential objects
+	for(const auto &HitObjects : ObjectMap) {
+		_Object *Object = HitObjects.first;
+		float DistanceSquared;
+		if(Object->IsTouchingCircle(Position, Radius, DistanceSquared)) {
+			return true;
+		}
+	}
+
+	return false;
+}
+
 // Returns a list of entities that an object is colliding with
-std::vector<_Hit> &_Map::CheckCollisionsInGrid(const glm::vec2 &Position, float Radius, const _Object *SkipObject, bool &AxisAlignedPush, float PushFactor) {
+std::vector<_Hit> &_Map::ResolveCollisionsInGrid(const glm::vec2 &Position, float Radius, const _Object *SkipObject, bool &AxisAlignedPush, float PushFactor) {
 	if(!Data)
 		throw std::runtime_error("Tile data uninitialized!");
 
