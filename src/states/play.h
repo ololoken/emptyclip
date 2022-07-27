@@ -64,6 +64,7 @@ class _PlayState : public ae::_State {
 		void Render(double BlendFactor) override;
 
 		void GenerateHitEffects(_Entity *Attacker, const int Type, const _Hit &Hit, bool CreateWallDecal=true);
+		void GenerateDamageText(glm::vec2 Position, int Value, bool Crit, bool HitPlayer);
 
 		// Parameters
 		std::string Level;

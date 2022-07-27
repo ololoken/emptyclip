@@ -751,7 +751,7 @@ void _Map::GetCloseObjects(const glm::vec2 &Position, float Radius, int GridType
 }
 
 // Check for collisions in a grid
-bool _Map::CheckCollisionsInGrid(const glm::vec2 &Position, float Radius, int GridType, _Hit &Hit) {
+std::vector<_Hit> &_Map::CheckCollisionsInGrid(const glm::vec2 &Position, float Radius, int GridType) {
 
 	// Get the object's bounding rectangle
 	_TileBounds TileBounds;
@@ -772,15 +772,20 @@ bool _Map::CheckCollisionsInGrid(const glm::vec2 &Position, float Radius, int Gr
 	}
 
 	// Check potential objects
+	CollisionHits.clear();
 	for(const auto &HitObjects : ObjectMap) {
-		_Object *Object = HitObjects.first;
-		float DistanceSquared;
-		if(Object->IsTouchingCircle(Position, Radius, DistanceSquared)) {
-			return true;
+		_Hit Hit;
+		if(HitObjects.first->IsTouchingCircle(Position, Radius, Hit.DistanceSquared)) {
+			Hit.Object = HitObjects.first;
+			CollisionHits.push_back(Hit);
 		}
 	}
 
-	return false;
+	// Sort by distance
+	if(CollisionHits.size() > 1)
+		std::sort(CollisionHits.begin(), CollisionHits.end(), CompareHitDistance);
+
+	return CollisionHits;
 }
 
 // Returns a list of entities that an object is colliding with

@@ -16,6 +16,8 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 *******************************************************************************/
 #include <objects/object.h>
+#include <objects/entity.h>
+#include <states/play.h>
 #include <ae/random.h>
 #include <ae/graphics.h>
 #include <constants.h>
@@ -32,6 +34,7 @@ _Object::_Object(const _ObjectTemplate &ObjectTemplate) :
 	Name(ObjectTemplate.Name),
 	Type(ObjectTemplate.Type),
 	Level(1),
+	Damage(0),
 	Active(true),
 	Action(ACTION_IDLE),
 	Map(nullptr),
@@ -62,8 +65,11 @@ void _Object::Update(double FrameTime) {
 				Active = false;
 			}
 			else {
-				_Hit Hit;
-				if(Map->CheckCollisionsInGrid(Position, Radius, GRID_MONSTER, Hit)) {
+				std::vector<_Hit> &Hits = Map->CheckCollisionsInGrid(Position, Radius, GRID_MONSTER);
+				if(Hits.size()) {
+					_Entity *HitEntity = (_Entity *)Hits.front().Object;
+					PlayState.GenerateDamageText(Position, Damage, false, Type == PLAYER);
+					HitEntity->UpdateHealth(-Damage);
 					Active = false;
 				}
 			}

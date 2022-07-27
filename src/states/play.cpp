@@ -938,6 +938,7 @@ void _PlayState::ResolveAttack(_Entity *Attacker, int GridType) {
 		Projectile->Rotation = Attacker->GenerateShotDirection();
 		Projectile->Direction = glm::rotate(glm::vec2(0, -1), glm::radians(Projectile->Rotation));
 		Projectile->Velocity = Projectile->Direction * Attacker->ProjectileSpeed[Attacker->AttackRequestType];
+		Projectile->Damage = ae::GetRandomInt(Attacker->MinDamage[Attacker->AttackRequestType], Attacker->MaxDamage[Attacker->AttackRequestType]);
 		Map->ObjectManager->AddObject(Projectile);
 
 		return;
@@ -998,18 +999,8 @@ void _PlayState::ResolveAttack(_Entity *Attacker, int GridType) {
 					if(GodMode && Hit.Object->Type == _Object::PLAYER)
 						Damage = 0;
 
-					// Create damage number particles
-					glm::vec2 DamagePosition = Hit.Position;
-					if(Hit.Object->Type ==  _Object::PLAYER)
-						DamagePosition += _Map::GenerateRandomPointInCircle(0.3f);
-					_Particle *DamageParticle = new _Particle(_ParticleSpawn(GameAssets.GetParticleTemplate("text0"), glm::vec2(0), DamagePosition, OBJECT_Z, 0));
-					DamageParticle->Text = std::to_string(Damage);
-					if(Hit.Object->Type ==  _Object::PLAYER)
-						DamageParticle->Color = COLOR_RED;
-
-					if(Crit)
-						DamageParticle->Color = COLOR_YELLOW;
-					Particles->Add(DamageParticle);
+					// Generate damage particles
+					GenerateDamageText(Hit.Position, Damage, Crit, Hit.Object->Type ==  _Object::PLAYER);
 
 					// Update health
 					HitEntity->UpdateHealth(-Damage);
@@ -1553,6 +1544,24 @@ void _PlayState::GenerateHitEffects(_Entity *Attacker, const int Type, const _Hi
 		Particles->Create(_ParticleSpawn(Hit.Object->GetParticle(PARTICLE_HIT), Hit.Normal, Hit.Position, OBJECT_Z, Attacker->Rotation));
 		Particles->Create(_ParticleSpawn(Hit.Object->GetParticle(PARTICLE_FLOORDECAL), Hit.Normal, ParticlePosition, 0.06f, Attacker->Rotation));
 	}
+}
+
+// Create damage number particles
+void _PlayState::GenerateDamageText(glm::vec2 Position, int Value, bool Crit, bool HitPlayer) {
+	if(HitPlayer)
+		Position += _Map::GenerateRandomPointInCircle(0.3f);
+
+	// Create particle
+	_Particle *DamageParticle = new _Particle(_ParticleSpawn(GameAssets.GetParticleTemplate("text0"), glm::vec2(0), Position, OBJECT_Z, 0));
+	DamageParticle->Text = std::to_string(Value);
+
+	// Set color
+	if(HitPlayer)
+		DamageParticle->Color = COLOR_RED;
+	if(Crit)
+		DamageParticle->Color = COLOR_YELLOW;
+
+	Particles->Add(DamageParticle);
 }
 
 // Determine if game is paused

@@ -141,6 +141,7 @@ class _Object {
 		std::string ID;
 		int Type;
 		int Level;
+		int Damage;
 		bool Active;
 
 		// Character
