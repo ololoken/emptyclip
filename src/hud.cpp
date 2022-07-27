@@ -477,8 +477,11 @@ void _HUD::Render(const ae::_Camera *Camera, bool FullMap) {
 		Player->Map->DrawMinimap(FullMap, MinimapBounds);
 	}
 
-	// Draw character screen
-	DrawCharacterScreen();
+	// Draw inventory and character screen
+	if(InventoryOpen) {
+		DrawCharacterScreen();
+		DrawInventory();
+	}
 
 	// Draw item tooltip
 	if(CursorOverItem && CursorItem != CursorOverItem) {
@@ -597,13 +600,8 @@ void _HUD::DrawHUDWeapon(const _Item *Weapon, ae::_Element *Element, ae::_Elemen
 	Element->Render();
 }
 
-// Draw the inventory and character screen
+// Draw character skills and stats
 void _HUD::DrawCharacterScreen() {
-	if(!InventoryOpen)
-		return;
-
-	// Draw the inventory background
-	Elements[ELEMENT_INVENTORY]->Render();
 
 	// Set skill labels
 	std::ostringstream Buffer;
@@ -699,6 +697,17 @@ void _HUD::DrawCharacterScreen() {
 		DrawAttribute("Progression Time", Buffer, DrawPosition);
 	}
 
+	// Draw cursor skill
+	if(CursorSkill != -1)
+		Elements[ELEMENT_SKILLINFO]->Render();
+}
+
+// Draw inventory
+void _HUD::DrawInventory() {
+
+	// Draw the inventory background
+	Elements[ELEMENT_INVENTORY]->Render();
+
 	// Draw inventory
 	bool DrawLevel = ae::Input.ModKeyDown(KMOD_ALT);
 	for(int i = INVENTORY_MAINHAND; i < INVENTORY_BAGEND; i++) {
@@ -731,10 +740,6 @@ void _HUD::DrawCharacterScreen() {
 		if(DrawLevel)
 			DrawItemLevel(CursorItem, Position - Button->Size * 0.5f);
 	}
-
-	// Draw cursor skill
-	if(CursorSkill != -1)
-		Elements[ELEMENT_SKILLINFO]->Render();
 }
 
 // Draw character stat on character screen

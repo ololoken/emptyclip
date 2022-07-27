@@ -104,6 +104,7 @@ class _HUD {
 
 		void Render(const ae::_Camera *Camera, bool FullMap);
 		void DrawCharacterScreen();
+		void DrawInventory();
 		void DrawCrosshair(const glm::vec2 &Position);
 		void DrawDeathScreen();
 
