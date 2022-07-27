@@ -25,7 +25,7 @@ pistol_fire0	pistol_fire0.ogg	0.5	5
 pistol_fire1	pistol_fire1.ogg	0.5	5
 pistol_reload0	pistol_reload0.ogg	1	1
 pistol_ricochet0	pistol_ricochet0.ogg	0.8	3
-plasma_fire0	plasma_fire0.ogg	0.5	3
+plasma_fire0	plasma_fire0.ogg	0.7	5
 player_die0	player_die0.ogg	0.7	1
 player_hit0	player_hit0.ogg	0.7	1
 player_move0	player_move0.ogg	0.1	1
