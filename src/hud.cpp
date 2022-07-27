@@ -131,6 +131,7 @@ _HUD::_HUD(_Player *Player) :
 	ae::Assets.Elements["element_hud_melee"]->SetActive(true);
 
 	Elements[ELEMENT_INVENTORY] = ae::Assets.Elements["element_inventory"];
+	Elements[ELEMENT_INVENTORY_OVERLAY] = ae::Assets.Elements["element_inventory_overlay"];
 	Elements[ELEMENT_SKILLS] = ae::Assets.Elements["element_skills"];
 	Elements[LABEL_SKILL_REMAINING] = ae::Assets.Elements["label_hud_skill_remaining_value"];
 	Elements[LABEL_SKILL0] = ae::Assets.Elements["label_hud_skill0_value"];
@@ -143,6 +144,7 @@ _HUD::_HUD(_Player *Player) :
 	Elements[LABEL_SKILL7] = ae::Assets.Elements["label_hud_skill7_value"];
 	Elements[LABEL_SKILL8] = ae::Assets.Elements["label_hud_skill8_value"];
 	Elements[ELEMENT_INVENTORY]->SetActive(false);
+	Elements[ELEMENT_INVENTORY_OVERLAY]->SetActive(false);
 	Elements[ELEMENT_SKILLS]->SetActive(false);
 
 	Elements[ELEMENT_SKILLINFO] = ae::Assets.Elements["element_skill_info"];
@@ -706,32 +708,34 @@ void _HUD::DrawCharacterScreen() {
 void _HUD::DrawInventory() {
 
 	// Draw the inventory background
+	Elements[ELEMENT_INVENTORY_OVERLAY]->SetActive(false);
 	Elements[ELEMENT_INVENTORY]->Render();
 
 	// Draw inventory
-	bool DrawExtra = ae::Input.ModKeyDown(KMOD_ALT);
-	for(int i = INVENTORY_MAINHAND; i < INVENTORY_BAGEND; i++) {
-		bool DrawIcon = (!Player->HasInventory(i) || Player->Inventory[i] == CursorItem) ? false : true;
-
-		ae::_Element *Button = Elements[ELEMENT_INVENTORY]->Children[i];
-		if(!Button)
+	ae::Graphics.SetProgram(ae::Assets.Programs["ortho_pos_uv"]);
+	for(size_t i = INVENTORY_MAINHAND; i < INVENTORY_BAGEND; i++) {
+		bool DrawIcon = (!Player->HasInventory((int)i) || Player->Inventory[i] == CursorItem) ? false : true;
+		if(!DrawIcon)
 			continue;
 
-		if(DrawIcon) {
-			ae::Graphics.SetProgram(ae::Assets.Programs["ortho_pos_uv"]);
-			ae::Graphics.DrawScaledImage(Button->Bounds.GetCenter(), Player->Inventory[i]->Texture, UI_INVENTORY_ITEM_SIZE, Player->Inventory[i]->Color);
-		}
+		ae::_Element *Button = Elements[ELEMENT_INVENTORY]->Children[i];
+		ae::Graphics.DrawScaledImage(Button->Bounds.GetCenter(), Player->Inventory[i]->Texture, UI_INVENTORY_ITEM_SIZE, Player->Inventory[i]->Color);
+	}
 
-		if(DrawExtra) {
-			ae::Graphics.SetProgram(ae::Assets.Programs["ortho_pos"]);
-			ae::Graphics.SetColor(glm::vec4(0.0f, 0.0f, 0.0f, 0.6f));
-			ae::Graphics.DrawRectangle(Button->Bounds, true);
-			if(DrawIcon) {
-				DrawItemLevel(Player->Inventory[i], Button->Bounds.Start);
-				DrawItemQuality(Player->Inventory[i], Button->Bounds.Start);
-				DrawItemValue(Player->Inventory[i], Button->Bounds.Start);
-			}
+	// Draw extra information
+	if(ae::Input.ModKeyDown(KMOD_ALT)) {
+		Elements[ELEMENT_INVENTORY_OVERLAY]->SetActive(true);
+		Elements[ELEMENT_INVENTORY_OVERLAY]->Render();
+		for(size_t i = INVENTORY_MAINHAND; i < INVENTORY_BAGEND; i++) {
+			if(Player->Inventory[i] == CursorItem)
+				continue;
+
+			ae::_Element *Button = Elements[ELEMENT_INVENTORY]->Children[i];
+			DrawItemLevel(Player->Inventory[i], Button->Bounds.Start);
+			DrawItemQuality(Player->Inventory[i], Button->Bounds.Start);
+			DrawItemValue(Player->Inventory[i], Button->Bounds.Start);
 		}
+		Elements[ELEMENT_INVENTORY_OVERLAY]->SetActive(false);
 	}
 
 	// Draw cursor item
@@ -754,6 +758,9 @@ void _HUD::DrawAttribute(const std::string &Label, std::ostringstream &Buffer, g
 
 // Draw quick glance value attribute for item
 void _HUD::DrawItemValue(_Item *Item, const glm::vec2 &Position) {
+	if(!Item)
+		return;
+
 	std::ostringstream Buffer;
 	switch(Item->Type) {
 		case _Object::MOD:
@@ -775,6 +782,9 @@ void _HUD::DrawItemValue(_Item *Item, const glm::vec2 &Position) {
 
 // Draw item quality
 void _HUD::DrawItemQuality(_Item *Item, const glm::vec2 &Position) {
+	if(!Item)
+		return;
+
 	std::ostringstream Buffer;
 	Buffer << Item->Quality << "%";
 	Fonts[FONT_TINY]->DrawText(Buffer.str(), Position + glm::vec2(74, 18) * ae::_Element::GetUIScale(), ae::RIGHT_BASELINE, COLOR_WHITE);
@@ -782,6 +792,9 @@ void _HUD::DrawItemQuality(_Item *Item, const glm::vec2 &Position) {
 
 // Draw item level
 void _HUD::DrawItemLevel(_Item *Item, const glm::vec2 &Position) {
+	if(!Item)
+		return;
+
 	std::ostringstream Buffer;
 	Buffer << Item->Level;
 	Fonts[FONT_TINY]->DrawText(Buffer.str(), Position + glm::vec2(4, 18) * ae::_Element::GetUIScale(), ae::LEFT_BASELINE, COLOR_GOLD);

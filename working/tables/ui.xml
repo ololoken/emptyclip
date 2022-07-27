@@ -77,6 +77,7 @@
 		<element id="button_inventory_bag13" style="style_hud_inventory" offset_x="80" offset_y="240" size_x="80" size_y="80" alignment_x="0" alignment_y="0" clickable="true" index="17"/>
 		<element id="button_inventory_bag14" style="style_hud_inventory" offset_x="160" offset_y="240" size_x="80" size_y="80" alignment_x="0" alignment_y="0" clickable="true" index="18"/>
 		<element id="button_inventory_bag15" style="style_hud_inventory" offset_x="240" offset_y="240" size_x="80" size_y="80" alignment_x="0" alignment_y="0" clickable="true" index="19"/>
+		<element id="element_inventory_overlay" style="style_hud_inventory_overlay" size_x="100%" size_y="100%"/>
 	</element>
 	<element id="element_skills" style="style_hud_skills" size_x="330" size_y="100%" alignment_x="2">
 		<element id="element_skills_0" offset_x="-200" offset_y="50" size_x="16" size_y="16" alignment_x="2" alignment_y="0" clickable="true" index="0">
