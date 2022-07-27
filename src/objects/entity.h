@@ -63,7 +63,7 @@ class _Entity : public _Object {
 		virtual void OnAttack(_Entity *Victim, const _Hit &Hit);
 		virtual void OnHit(_Entity *Attacker, const _Hit &Hit);
 		virtual void UpdateSpeed(float Factor);
-		int GenerateDamage(int AttackType, bool Steady, bool &Crit);
+		int GenerateDamage(int AttackType, float DamageModifier, bool Steady, bool &Crit);
 		int ReduceDamage(int Damage);
 		virtual bool IsSteady() const { return false; }
 		bool IsDead() const { return Action == ACTION_DYING && !Active; }
@@ -127,6 +127,7 @@ class _Entity : public _Object {
 		int MinDamage[WEAPONATTACK_COUNT];
 		int MaxDamage[WEAPONATTACK_COUNT];
 		int Penetration[WEAPONATTACK_COUNT];
+		float PenetrationDamage[WEAPONATTACK_COUNT];
 		float AttackMoveSpeed[WEAPONATTACK_COUNT];
 		int AttackCount[WEAPONATTACK_COUNT];
 		int CritChance[WEAPONATTACK_COUNT];

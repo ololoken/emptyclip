@@ -146,6 +146,7 @@ class _Object {
 
 		// Projectiles
 		std::unordered_map<_Object *, int> HitObjects;
+		float PenetrationDamage;
 		int MinDamage;
 		int MaxDamage;
 		int CritChance;

@@ -35,6 +35,11 @@ _Object::_Object(const _ObjectTemplate &ObjectTemplate) :
 	Type(ObjectTemplate.Type),
 	Level(1),
 	Active(true),
+	PenetrationDamage(0.0f),
+	MinDamage(0),
+	MaxDamage(0),
+	CritChance(0),
+	CritDamage(0),
 	Depth(0),
 	Action(ACTION_IDLE),
 	Map(nullptr),
@@ -303,6 +308,9 @@ void _Object::CheckProjectileCollisions() {
 		PlayState.GenerateHitEffects(OwnerEntity, HIT_OBJECT, Hit);
 		PlayState.GenerateDamageText(Hit.Position, Damage, Crit, Type == PLAYER);
 
+		// Apply depth
+		MinDamage *= PenetrationDamage;
+		MaxDamage *= PenetrationDamage;
 		Depth--;
 		if(Depth <= 0) {
 			Active = false;

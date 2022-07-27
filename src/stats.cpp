@@ -233,6 +233,7 @@ void _Stats::LoadWeapons(const std::string &Path) {
 			>> Template.Attributes["attack_count"].Int
 			>> Template.Attributes["rounds"].Int
 			>> Template.Attributes["penetration"].Int
+			>> Template.Attributes["penetration_damage"].Float
 			>> Template.Attributes["crit_chance"].Int
 			>> Template.Attributes["attack_movespeed"].Float
 			>> Template.Attributes["melee_width"].Float

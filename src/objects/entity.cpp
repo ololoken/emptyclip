@@ -88,8 +88,10 @@ _Entity::_Entity(const _ObjectTemplate &EntityTemplate) :
 	for(int i = 0; i < WEAPON_COUNT; i++)
 		WeaponOffset[i] = glm::vec2(0.0f, 0.0f);
 
-	for(int i = 0; i < WEAPONATTACK_COUNT; i++)
+	for(int i = 0; i < WEAPONATTACK_COUNT; i++) {
 		Penetration[i] = 1;
+		PenetrationDamage[i] = 0.0f;
+	}
 
 	PositionZ = OBJECT_Z;
 	Animation = new ae::_Animation(nullptr);
@@ -133,10 +135,10 @@ float _Entity::GenerateShotDirection() {
 }
 
 // Generates damage after defenses
-int _Entity::GenerateDamage(int AttackType, bool Steady, bool &Crit) {
+int _Entity::GenerateDamage(int AttackType, float DamageModifier, bool Steady, bool &Crit) {
 
 	// Generate base damage
-	int Damage = ae::GetRandomInt(MinDamage[AttackType], MaxDamage[AttackType]);
+	int Damage = ae::GetRandomInt((int)(MinDamage[AttackType] * DamageModifier), (int)(MaxDamage[AttackType] * DamageModifier));
 
 	// Increase chance when aiming is at min accuracy
 	int Chance = CritChance[AttackType];
@@ -148,7 +150,6 @@ int _Entity::GenerateDamage(int AttackType, bool Steady, bool &Crit) {
 		Damage *= CritDamage[AttackType] * 0.01f;
 		Crit = true;
 	}
-
 
 	return Damage;
 }

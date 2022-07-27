@@ -956,6 +956,7 @@ void _PlayState::ResolveAttack(_Entity *Attacker, int GridType) {
 			Projectile->Depth = Attacker->Penetration[Attacker->AttackRequestType];
 			Projectile->CritChance = Attacker->CritChance[Attacker->AttackRequestType];
 			Projectile->CritDamage = Attacker->CritDamage[Attacker->AttackRequestType];
+			Projectile->PenetrationDamage = Attacker->PenetrationDamage[Attacker->AttackRequestType];
 			if(Steady)
 				Projectile->CritChance *= PLAYER_STEADY_CRIT_FACTOR;
 
@@ -983,6 +984,7 @@ void _PlayState::ResolveAttack(_Entity *Attacker, int GridType) {
 			}
 
 			// Generate particle effects and reduce health
+			float PenetrationDamage = 1.0f;
 			for(const auto &Hit : Hits) {
 				switch(Hit.Type) {
 					case HIT_NONE:
@@ -1002,7 +1004,7 @@ void _PlayState::ResolveAttack(_Entity *Attacker, int GridType) {
 
 						// Generate damage
 						bool Crit = false;
-						int Damage = Attacker->GenerateDamage(Attacker->AttackRequestType, Steady, Crit);
+						int Damage = Attacker->GenerateDamage(Attacker->AttackRequestType, PenetrationDamage, Steady, Crit);
 						if(GodMode && HitPlayer)
 							Damage = 0;
 
@@ -1024,6 +1026,8 @@ void _PlayState::ResolveAttack(_Entity *Attacker, int GridType) {
 						Attacker->OnAttack(HitEntity, Hit);
 						HitEntity->OnHit(Attacker, Hit);
 
+						// Apply penetration
+						PenetrationDamage *= Attacker->PenetrationDamage[Attacker->AttackRequestType];
 					} break;
 				}
 			}

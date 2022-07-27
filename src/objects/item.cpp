@@ -79,13 +79,13 @@ void _Item::DrawAttribute(const std::string &Attribute, const std::string &Label
 void _Item::DrawTooltip(const _Player *Player, size_t CompareSlot, int InventorySlot, glm::vec2 DrawPosition) {
 	std::ostringstream Buffer;
 
-	glm::vec2 Size = glm::vec2(500, 150) * ae::_Element::GetUIScale();
+	glm::vec2 Size = glm::vec2(520, 150) * ae::_Element::GetUIScale();
 	glm::vec2 Spacing = glm::vec2(0, 36) * ae::_Element::GetUIScale();
 	glm::vec2 SmallSpacing = glm::vec2(0, 24) * ae::_Element::GetUIScale();
 
 	// Set size based on type
 	if(Type == _Object::WEAPON)
-		Size.y = 540 * ae::_Element::GetUIScale();
+		Size.y = 560 * ae::_Element::GetUIScale();
 	else if(Type == _Object::ARMOR)
 		Size.y = 380 * ae::_Element::GetUIScale();
 	else if(Type == _Object::MEDKIT)
@@ -210,8 +210,24 @@ void _Item::DrawTooltip(const _Player *Player, size_t CompareSlot, int Inventory
 				DrawAttribute("attack_count", IsMelee() ? "Attacks" : "Bullets Shot", DrawPosition, EquippedItem, false, false);
 
 			// Penetration
-			if(Attributes.at("penetration").Int > 1)
+			if(Attributes.at("penetration").Int > 1) {
 				DrawAttribute("penetration", "Penetration", DrawPosition, EquippedItem, false, false);
+
+				// Penetration Damage
+				TextColor = COLOR_WHITE;
+				if(EquippedItem) {
+					if(Attributes.at("penetration_damage").Float > EquippedItem->Attributes.at("penetration_damage").Float)
+						TextColor = COLOR_GREEN;
+					else if(Attributes.at("penetration_damage").Float < EquippedItem->Attributes.at("penetration_damage").Float)
+						TextColor = COLOR_RED;
+				}
+
+				DrawPosition.y += Spacing.y;
+				Buffer << ae::Round1(100 * Attributes.at("penetration_damage").Float) << "%";
+				ae::Assets.Fonts["hud_medium"]->DrawText("Penetration Damage", glm::ivec2(DrawPosition - DrawOffset), ae::RIGHT_BASELINE);
+				ae::Assets.Fonts["hud_medium"]->DrawText(Buffer.str(), glm::ivec2(DrawPosition + DrawOffset), ae::LEFT_BASELINE, TextColor);
+				Buffer.str("");
+			}
 
 			// Fire rate
 			if(Attributes.at("fire_period").Double) {
@@ -439,6 +455,7 @@ void _Item::RecalculateStats() {
 			Attributes["recoil_regen"].Float = Template.Attributes.at("recoil_regen").Float * GetBonusMultiplier(MOD_HANDLING);
 			Attributes["move_recoil"].Float = Template.Attributes.at("move_recoil").Float * GetBonusMultiplier(MOD_HANDLING, true);
 			Attributes["penetration"].Int = Template.Attributes.at("penetration").Int + Bonus[MOD_PENETRATION];
+			Attributes["penetration_damage"].Float = std::clamp(Template.Attributes.at("penetration_damage").Float * QualityFactor, 0.0f, 1.0f);
 			Attributes["crit_chance"].Int = Template.Attributes.at("crit_chance").Int * QualityFactor + 0.5f;
 
 			SetAmmo(Attributes["ammo"].Int);
