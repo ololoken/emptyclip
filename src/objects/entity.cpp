@@ -433,7 +433,7 @@ void _Entity::Move(double FrameTime) {
 	glm::vec2 NewPosition = Position + MoveDirection;
 	bool AxisAlignedPush = false;
 	if(!IsInvulnerable() && !FreePathing) {
-		std::vector<_Hit> &Hits = Map->ResolveCollisionsInGrid(NewPosition, Radius, this, AxisAlignedPush, OBJECT_PUSH_FACTOR);
+		std::vector<_Hit> &Hits = Map->ResolveCollisionsInGrid(NewPosition, Radius, this, AxisAlignedPush, Type == PLAYER ? PLAYER_PUSH_FACTOR : ENTITY_PUSH_FACTOR);
 
 		// Resolve pushes
 		for(auto Hit : Hits) {
@@ -448,7 +448,7 @@ void _Entity::Move(double FrameTime) {
 
 	// Check collisions with walls and map boundaries
 	if(!FreePathing)
-		Map->ResolveTileCollisions(NewPosition, Radius, NewPosition);
+		Map->ResolveTileCollisions(NewPosition, Radius, _Tile::ENTITY, NewPosition);
 
 	// Determine if the object has moved
 	if(Position != NewPosition) {

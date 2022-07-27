@@ -63,6 +63,7 @@ const  double       WEAPON_MINFIREPERIOD                 =  GAME_TIMESTEP;
 //     Audio
 const  float        AUDIO_MAX_DISTANCE                   =  30.0f;
 //     Entities
+const  float        ENTITY_PUSH_FACTOR                   =  0.4f;
 const  float        ENTITY_MOVESOUNDDELAYFACTOR          =  0.02625f;
 const  int          ENTITY_MINDAMAGEPOINTS               =  1;
 const  float        ENTITY_STOP_THRESHOLD                =  0.005f;
@@ -79,6 +80,7 @@ const  float        PLAYER_STARTING_HEALTH_FACTOR        =  0.5f;
 const  float        PLAYER_LEGCHANGEFACTOR               =  0.2f;
 const  float        PLAYER_MOVESPEED                     =  4.5f;
 const  float        PLAYER_BACKWARDS_SPEEDFACTOR         =  0.5f;
+const  float        PLAYER_PUSH_FACTOR                   =  0.5f;
 const  int          PLAYER_CRIT_DAMAGE                   =  200;
 const  int          PLAYER_STEADY_CRIT_FACTOR            =  2;
 const  float        PLAYER_AIM_MOVESPEEDFACTOR           =  0.333333f;
@@ -106,7 +108,6 @@ const  int          ITEM_MAX_MOVESPEED                   =  90;
 //     Objects
 const  float        OBJECT_Z                             =  0.3f;
 const  int          OBJECT_MAX_LEVEL                     =  1000;
-const  float        OBJECT_PUSH_FACTOR                   =  0.5f;
 const  float        OBJECT_MAX_SPEED                     =  15.0f;
 //     AI
 const  double       AI_REACTION_TIME_MIN                 =  GAME_TIMESTEP;

@@ -1005,10 +1005,9 @@ void _PlayState::ResolveAttack(_Entity *Attacker, int GridType) {
 						// Generate damage
 						bool Crit = false;
 						int Damage = Attacker->GenerateDamage(Attacker->AttackRequestType, PenetrationDamage, Steady, Crit);
+						Damage = HitEntity->ReduceDamage(Damage);
 						if(GodMode && HitPlayer)
 							Damage = 0;
-
-						Damage = HitEntity->ReduceDamage(Damage);
 
 						// Generate damage particles
 						GenerateDamageText(Hit.Position, Damage, Crit, HitPlayer);

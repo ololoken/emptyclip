@@ -558,7 +558,7 @@ void _Map::RemoveObjectFromGrid(_Object *Object, int Type) {
 }
 
 // Check collision with tiles and resolve
-bool _Map::ResolveTileCollisions(const glm::vec2 &TargetPosition, float Radius, glm::vec2 &NewPosition) {
+bool _Map::ResolveTileCollisions(const glm::vec2 &TargetPosition, float Radius, int CollisionFlag, glm::vec2 &NewPosition) {
 
 	NewPosition = TargetPosition;
 	float Left = NewPosition.x - Radius;
@@ -595,7 +595,7 @@ bool _Map::ResolveTileCollisions(const glm::vec2 &TargetPosition, float Radius, 
 	bool AxisAlignedPush = false;
 	for(int i = LeftTile; i <= RightTile; i++) {
 		for(int j = TopTile; j <= BottomTile; j++) {
-			if(Data[i][j].CanWalk())
+			if(!(Data[i][j].Collision & CollisionFlag))
 				continue;
 
 			float AABB[4] = { (float)i, (float)j, i + 1.0f, j + 1.0f };

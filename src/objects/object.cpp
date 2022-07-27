@@ -262,7 +262,7 @@ void _Object::CheckProjectileCollisions() {
 
 	// Check wall hits
 	glm::vec2 HitPosition;
-	if(Map->ResolveTileCollisions(Position, Radius, HitPosition)) {
+	if(Map->ResolveTileCollisions(Position, Radius, _Tile::BULLET, HitPosition)) {
 	/*
 		_Hit &Hit = Map->CollisionHits.front();
 		_Entity *OwnerEntity = (_Entity *)Owner;
