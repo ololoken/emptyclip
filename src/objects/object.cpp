@@ -35,6 +35,7 @@ _Object::_Object(const _ObjectTemplate &ObjectTemplate) :
 	Type(ObjectTemplate.Type),
 	Level(1),
 	Damage(0),
+	Crit(false),
 	Active(true),
 	Action(ACTION_IDLE),
 	Map(nullptr),
@@ -82,9 +83,11 @@ void _Object::Update(double FrameTime) {
 					_Entity *HitEntity = (_Entity *)Hit.Object;
 					if(HitEntity->Type != PROP) {
 						_Entity *OwnerEntity = (_Entity *)Owner;
-						PlayState.GenerateDamageText(Position, Damage, false, Type == PLAYER);
+						int HitDamage = HitEntity->ReduceDamage(Damage);
+
+						PlayState.GenerateDamageText(Position, HitDamage, Crit, Type == PLAYER);
 						PlayState.GenerateHitEffects(OwnerEntity, HIT_OBJECT, Hit);
-						HitEntity->UpdateHealth(-Damage);
+						HitEntity->UpdateHealth(-HitDamage);
 						OwnerEntity->OnAttack(HitEntity, Hit);
 						HitEntity->OnHit(OwnerEntity, Hit);
 					}

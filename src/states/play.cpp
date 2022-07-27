@@ -928,22 +928,6 @@ void _PlayState::ResolveAttack(_Entity *Attacker, int GridType) {
 
 	Attacker->StartTriggerDownAudio();
 
-	// Check for projectile weapons
-	if(Attacker->Projectiles[Attacker->AttackRequestType]) {
-
-		// Create projectile
-		_Object *Projectile = Stats.CreateProjectile(*Attacker->Projectiles[Attacker->AttackRequestType], Attacker->Position);
-		Projectile->Map = Map;
-		Projectile->Owner = Attacker;
-		Projectile->Rotation = Attacker->GenerateShotDirection();
-		Projectile->Direction = glm::rotate(glm::vec2(0, -1), glm::radians(Projectile->Rotation));
-		Projectile->Velocity = Projectile->Direction * Attacker->ProjectileSpeed[Attacker->AttackRequestType];
-		Projectile->Damage = ae::GetRandomInt(Attacker->MinDamage[Attacker->AttackRequestType], Attacker->MaxDamage[Attacker->AttackRequestType]);
-		Map->ObjectManager->AddObject(Projectile);
-
-		return;
-	}
-
 	// For each bullet that the weapon fires
 	bool PlayedHitWallSound = false;
 	std::unordered_map<_Object *, int> DecalObjects;
@@ -957,66 +941,94 @@ void _PlayState::ResolveAttack(_Entity *Attacker, int GridType) {
 		if(Attacker->AttackRequestType == WEAPONATTACK_MAIN && Attacker->IsSteady())
 			Steady = true;
 
-		// Check weapon type
-		if(WeaponType == WEAPON_MELEE) {
-			Map->CheckMeleeCollisions(Attacker, GridType, Attacker->Penetration[Attacker->AttackRequestType], Hits);
+		// Check for projectile weapons
+		if(Attacker->Projectiles[Attacker->AttackRequestType]) {
+
+			// Increase chance when aiming is at min accuracy
+			int CritChance = Attacker->CritChance[Attacker->AttackRequestType];
+			if(Steady)
+				CritChance *= PLAYER_STEADY_CRIT_FACTOR;
+
+			// Create projectile
+			_Object *Projectile = Stats.CreateProjectile(*Attacker->Projectiles[Attacker->AttackRequestType], Attacker->Position);
+			Projectile->Map = Map;
+			Projectile->Owner = Attacker;
+			Projectile->Rotation = Attacker->GenerateShotDirection();
+			Projectile->Direction = glm::rotate(glm::vec2(0, -1), glm::radians(Projectile->Rotation));
+			Projectile->Velocity = Projectile->Direction * Attacker->ProjectileSpeed[Attacker->AttackRequestType];
+			Projectile->Damage = ae::GetRandomInt(Attacker->MinDamage[Attacker->AttackRequestType], Attacker->MaxDamage[Attacker->AttackRequestType]);
+			if(ae::GetRandomInt(1, 100) <= CritChance) {
+				Projectile->Damage *= Attacker->CritDamage[Attacker->AttackRequestType] * 0.01f;
+				Projectile->Crit = true;
+			}
+
+			Map->ObjectManager->AddObject(Projectile);
 		}
 		else {
 
-			// Check distance to the wall
-			float ShotDirection = Attacker->GenerateShotDirection();
-			Map->CheckBulletCollisions(Attacker, glm::rotate(glm::vec2(0, -1), glm::radians(ShotDirection)), Hits, GridType, true, Attacker->Penetration[Attacker->AttackRequestType], _Tile::BULLET);
+			// Check weapon type
+			if(WeaponType == WEAPON_MELEE) {
+				Map->CheckMeleeCollisions(Attacker, GridType, Attacker->Penetration[Attacker->AttackRequestType], Hits);
+			}
+			else {
 
-			// Generate tracer particle
-			_ParticleTemplate *Template = &GameAssets.Particles["tracer0"];
-			glm::vec2 ParticleStart = Attacker->Position + glm::rotate(glm::vec2(0, -Template->Size.y * 0.5f) + Attacker->WeaponOffset[Attacker->MainWeaponType], glm::radians(ShotDirection));
-			_Particle *Tracer = new _Particle(_ParticleSpawn(Template, glm::vec2(0), ParticleStart, OBJECT_Z, ShotDirection));
-			float Distance = glm::length(Hits.front().Position - Attacker->Position) - Template->Size.y;
-			Tracer->Lifetime = Distance * Template->VelocityScale.y * GAME_FPS;
-			Particles->Add(Tracer);
-		}
+				// Check distance to the wall
+				float ShotDirection = Attacker->GenerateShotDirection();
+				Map->CheckBulletCollisions(Attacker, glm::rotate(glm::vec2(0, -1), glm::radians(ShotDirection)), Hits, GridType, true, Attacker->Penetration[Attacker->AttackRequestType], _Tile::BULLET);
 
-		// Generate particle effects and reduce health
-		for(const auto &Hit : Hits) {
-			switch(Hit.Type) {
-				case HIT_NONE:
-				break;
-				case HIT_WALL: {
-					if(!PlayedHitWallSound) {
-						ae::Audio.PlaySound(Attacker->GetSound(SOUND_RICOCHET, WEAPONATTACK_MAIN), ae::_SoundSettings(glm::vec3(Hit.Position.x, 0.0f, Hit.Position.y)));
-						PlayedHitWallSound = true;
-					}
+				// Generate tracer particle
+				_ParticleTemplate *Template = &GameAssets.Particles["tracer0"];
+				glm::vec2 ParticleStart = Attacker->Position + glm::rotate(glm::vec2(0, -Template->Size.y * 0.5f) + Attacker->WeaponOffset[Attacker->MainWeaponType], glm::radians(ShotDirection));
+				_Particle *Tracer = new _Particle(_ParticleSpawn(Template, glm::vec2(0), ParticleStart, OBJECT_Z, ShotDirection));
+				float Distance = glm::length(Hits.front().Position - Attacker->Position) - Template->Size.y;
+				Tracer->Lifetime = Distance * Template->VelocityScale.y * GAME_FPS;
+				Particles->Add(Tracer);
+			}
 
-					bool CreateWallDecal = (Hit.Object && Hit.Object->Type == _Object::PROP) ? false : true;
-					GenerateHitEffects(Attacker, HIT_WALL, Hit, CreateWallDecal);
-				} break;
-				case HIT_OBJECT: {
-					_Entity *HitEntity = (_Entity *)Hit.Object;
-					bool HitPlayer = Hit.Object->Type == _Object::PLAYER;
+			// Generate particle effects and reduce health
+			for(const auto &Hit : Hits) {
+				switch(Hit.Type) {
+					case HIT_NONE:
+					break;
+					case HIT_WALL: {
+						if(!PlayedHitWallSound) {
+							ae::Audio.PlaySound(Attacker->GetSound(SOUND_RICOCHET, WEAPONATTACK_MAIN), ae::_SoundSettings(glm::vec3(Hit.Position.x, 0.0f, Hit.Position.y)));
+							PlayedHitWallSound = true;
+						}
 
-					// Generate damage
-					bool Crit = false;
-					int Damage = Attacker->GenerateDamage(Attacker->AttackRequestType, HitEntity->DamageBlock, HitEntity->DamageResist, Steady, Crit);
-					if(GodMode && HitPlayer)
-						Damage = 0;
+						bool CreateWallDecal = (Hit.Object && Hit.Object->Type == _Object::PROP) ? false : true;
+						GenerateHitEffects(Attacker, HIT_WALL, Hit, CreateWallDecal);
+					} break;
+					case HIT_OBJECT: {
+						_Entity *HitEntity = (_Entity *)Hit.Object;
+						bool HitPlayer = Hit.Object->Type == _Object::PLAYER;
 
-					// Generate damage particles
-					GenerateDamageText(Hit.Position, Damage, Crit, HitPlayer);
+						// Generate damage
+						bool Crit = false;
+						int Damage = Attacker->GenerateDamage(Attacker->AttackRequestType, Steady, Crit);
+						if(GodMode && HitPlayer)
+							Damage = 0;
 
-					// Update health
-					HitEntity->UpdateHealth(-Damage);
+						Damage = HitEntity->ReduceDamage(Damage);
 
-					// Generate bullet effects once for each hit object
-					if(DecalObjects.find(Hit.Object) == DecalObjects.end()) {
-						GenerateHitEffects(Attacker, HIT_OBJECT, Hit);
-						DecalObjects[Hit.Object] = 1;
-					}
+						// Generate damage particles
+						GenerateDamageText(Hit.Position, Damage, Crit, HitPlayer);
 
-					// Callback functions
-					Attacker->OnAttack(HitEntity, Hit);
-					HitEntity->OnHit(Attacker, Hit);
+						// Update health
+						HitEntity->UpdateHealth(-Damage);
 
-				} break;
+						// Generate bullet effects once for each hit object
+						if(DecalObjects.find(Hit.Object) == DecalObjects.end()) {
+							GenerateHitEffects(Attacker, HIT_OBJECT, Hit);
+							DecalObjects[Hit.Object] = 1;
+						}
+
+						// Callback functions
+						Attacker->OnAttack(HitEntity, Hit);
+						HitEntity->OnHit(Attacker, Hit);
+
+					} break;
+				}
 			}
 		}
 	}

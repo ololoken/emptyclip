@@ -142,6 +142,7 @@ class _Object {
 		int Type;
 		int Level;
 		int Damage;
+		bool Crit;
 		bool Active;
 
 		// Character

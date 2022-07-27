@@ -133,7 +133,7 @@ float _Entity::GenerateShotDirection() {
 }
 
 // Generates damage after defenses
-int _Entity::GenerateDamage(int AttackType, int DamageBlock, int DamageResist, bool Steady, bool &Crit) {
+int _Entity::GenerateDamage(int AttackType, bool Steady, bool &Crit) {
 
 	// Generate base damage
 	int Damage = ae::GetRandomInt(MinDamage[AttackType], MaxDamage[AttackType]);
@@ -149,15 +149,18 @@ int _Entity::GenerateDamage(int AttackType, int DamageBlock, int DamageResist, b
 		Crit = true;
 	}
 
-	// Reduce damage
-	Damage -= (int)(Damage * DamageResist * 0.01f);
-	Damage -= DamageBlock;
-
-	// Cap the damage
-	if(Damage < ENTITY_MINDAMAGEPOINTS)
-		Damage = ENTITY_MINDAMAGEPOINTS;
 
 	return Damage;
+}
+
+// Reduce damage by block/resist
+int _Entity::ReduceDamage(int Value) {
+	Value -= (int)(Value * DamageResist * 0.01f);
+	Value -= DamageBlock;
+	if(Value < ENTITY_MINDAMAGEPOINTS)
+		Value = ENTITY_MINDAMAGEPOINTS;
+
+	return Value;
 }
 
 // Return sound for a sound type

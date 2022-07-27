@@ -63,7 +63,8 @@ class _Entity : public _Object {
 		virtual void OnAttack(_Entity *Victim, const _Hit &Hit);
 		virtual void OnHit(_Entity *Attacker, const _Hit &Hit);
 		virtual void UpdateSpeed(float Factor);
-		int GenerateDamage(int AttackType, int DamageBlock, int DamageResist, bool Steady, bool &Crit);
+		int GenerateDamage(int AttackType, bool Steady, bool &Crit);
+		int ReduceDamage(int Damage);
 		virtual bool IsSteady() const { return false; }
 		bool IsDead() const { return Action == ACTION_DYING && !Active; }
 		bool IsInvulnerable() const { return InvulnerableTimer > 0.0; }
