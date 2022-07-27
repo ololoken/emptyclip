@@ -144,6 +144,7 @@ struct _Hit {
 	_Object *Object;
 	glm::vec2 Normal;
 	glm::vec2 Position;
+	glm::vec2 ClosetPoint;
 	glm::vec2 Push;
 	float DistanceSquared;
 	bool AxisAlignedPush;
@@ -287,6 +288,7 @@ class _Map {
 		std::unique_ptr<_ObjectManager> ObjectManager;
 		std::vector<_ObjectSpawn *> ObjectSpawns;
 		std::vector<_Event *> Events;
+		std::vector<_Hit> CollisionHits;
 
 		// Minimap
 		std::vector<_MinimapLayer> MinimapLayers;
@@ -310,8 +312,6 @@ class _Map {
 		// Objects
 		std::vector<_Particle *> Particles;
 		std::unordered_map<_Object *, int> ObjectMap;
-		std::vector<_Hit> CollisionHits;
-		std::vector<glm::vec2> CollisionPushes;
 };
 
 // Returns a coordinate inside the map

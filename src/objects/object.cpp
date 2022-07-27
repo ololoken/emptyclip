@@ -61,18 +61,34 @@ void _Object::Update(double FrameTime) {
 	switch(Type) {
 		case PROJECTILE: {
 			Position += Velocity * (float)FrameTime;
-			if(Map->ResolveTileCollisions(Position, Radius, Position)) {
+			glm::vec2 HitPosition;
+			if(Map->ResolveTileCollisions(Position, Radius, HitPosition)) {
+
+				/*
+				_Hit &Hit = Map->CollisionHits.front();
+				_Entity *OwnerEntity = (_Entity *)Owner;
+				_Hit WallHit;
+				WallHit.Position = Hit.ClosetPoint;
+				WallHit.Normal = glm::normalize(HitPosition - Position);
+				PlayState.GenerateHitEffects(OwnerEntity, HIT_WALL, WallHit, true);
+				*/
+
 				Active = false;
 			}
 			else {
 				std::vector<_Hit> &Hits = Map->CheckCollisionsInGrid(Position, Radius, GRID_MONSTER);
 				if(Hits.size()) {
-					_Entity *HitEntity = (_Entity *)Hits.front().Object;
-					_Entity *OwnerEntity = (_Entity *)Owner;
-					PlayState.GenerateDamageText(Position, Damage, false, Type == PLAYER);
-					HitEntity->UpdateHealth(-Damage);
-					OwnerEntity->OnAttack(HitEntity, Hits.front());
-					HitEntity->OnHit(OwnerEntity, Hits.front());
+					_Hit &Hit = Hits.front();
+					_Entity *HitEntity = (_Entity *)Hit.Object;
+					if(HitEntity->Type != PROP) {
+						_Entity *OwnerEntity = (_Entity *)Owner;
+						PlayState.GenerateDamageText(Position, Damage, false, Type == PLAYER);
+						PlayState.GenerateHitEffects(OwnerEntity, HIT_OBJECT, Hit);
+						HitEntity->UpdateHealth(-Damage);
+						OwnerEntity->OnAttack(HitEntity, Hit);
+						HitEntity->OnHit(OwnerEntity, Hit);
+					}
+
 					Active = false;
 				}
 			}

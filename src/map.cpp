@@ -84,7 +84,6 @@ _Map::_Map() :
 
 	ObjectMap.reserve(10);
 	CollisionHits.reserve(10);
-	CollisionPushes.reserve(10);
 }
 
 // Initialize
@@ -592,7 +591,7 @@ bool _Map::ResolveTileCollisions(const glm::vec2 &TargetPosition, float Radius, 
 	int TopTile = (int)Top;
 	int BottomTile = (int)Bottom;
 
-	CollisionPushes.clear();
+	CollisionHits.clear();
 	bool AxisAlignedPush = false;
 	for(int i = LeftTile; i <= RightTile; i++) {
 		for(int j = TopTile; j <= BottomTile; j++) {
@@ -604,7 +603,7 @@ bool _Map::ResolveTileCollisions(const glm::vec2 &TargetPosition, float Radius, 
 			Hit.AxisAlignedPush = false;
 			if(CheckAABBCollision(NewPosition, Radius, AABB, true, Hit)) {
 				Touching = true;
-				CollisionPushes.push_back(Hit.Push);
+				CollisionHits.push_back(Hit);
 
 				// Flag at least one axis aligned push
 				if(Hit.AxisAlignedPush)
@@ -614,9 +613,9 @@ bool _Map::ResolveTileCollisions(const glm::vec2 &TargetPosition, float Radius, 
 	}
 
 	// Resolve collision
-	for(const auto &Push : CollisionPushes) {
-		if(!(AxisAlignedPush && Push.x != 0 && Push.y != 0)) {
-			NewPosition += Push;
+	for(const auto &Hit : CollisionHits) {
+		if(!(AxisAlignedPush && Hit.Push.x != 0 && Hit.Push.y != 0)) {
+			NewPosition += Hit.Push;
 		}
 	}
 
@@ -628,26 +627,26 @@ bool _Map::CheckAABBCollision(const glm::vec2 &Position, float Radius, const flo
 	int ClampCount = 0;
 
 	// Get closest point on AABB
-	glm::vec2 ClosetPoint = Position;
-	if(ClosetPoint.x < AABB[0]) {
-		ClosetPoint.x = AABB[0];
+	Hit.ClosetPoint = Position;
+	if(Hit.ClosetPoint.x < AABB[0]) {
+		Hit.ClosetPoint.x = AABB[0];
 		ClampCount++;
 	}
-	if(ClosetPoint.y < AABB[1]) {
-		ClosetPoint.y = AABB[1];
+	if(Hit.ClosetPoint.y < AABB[1]) {
+		Hit.ClosetPoint.y = AABB[1];
 		ClampCount++;
 	}
-	if(ClosetPoint.x > AABB[2]) {
-		ClosetPoint.x = AABB[2];
+	if(Hit.ClosetPoint.x > AABB[2]) {
+		Hit.ClosetPoint.x = AABB[2];
 		ClampCount++;
 	}
-	if(ClosetPoint.y > AABB[3]) {
-		ClosetPoint.y = AABB[3];
+	if(Hit.ClosetPoint.y > AABB[3]) {
+		Hit.ClosetPoint.y = AABB[3];
 		ClampCount++;
 	}
 
 	// Test circle collision with point
-	float DistanceSquared = glm::distance2(ClosetPoint, Position);
+	float DistanceSquared = glm::distance2(Hit.ClosetPoint, Position);
 	bool Touching = DistanceSquared < Radius * Radius;
 
 	// Push object out
@@ -674,7 +673,7 @@ bool _Map::CheckAABBCollision(const glm::vec2 &Position, float Radius, const flo
 		else {
 
 			// Get push direction
-			Hit.Push = Position - ClosetPoint;
+			Hit.Push = Position - Hit.ClosetPoint;
 
 			// Get push amount
 			float Amount = Radius - glm::length(Hit.Push);
