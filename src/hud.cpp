@@ -709,22 +709,29 @@ void _HUD::DrawInventory() {
 	Elements[ELEMENT_INVENTORY]->Render();
 
 	// Draw inventory
-	bool DrawLevel = ae::Input.ModKeyDown(KMOD_ALT);
+	bool DrawExtra = ae::Input.ModKeyDown(KMOD_ALT);
 	for(int i = INVENTORY_MAINHAND; i < INVENTORY_BAGEND; i++) {
-		if(!Player->HasInventory(i) || Player->Inventory[i] == CursorItem)
-			continue;
+		bool DrawIcon = (!Player->HasInventory(i) || Player->Inventory[i] == CursorItem) ? false : true;
 
 		ae::_Element *Button = Elements[ELEMENT_INVENTORY]->Children[i];
 		if(!Button)
 			continue;
 
-		ae::Graphics.SetProgram(ae::Assets.Programs["ortho_pos_uv"]);
-		ae::Graphics.DrawScaledImage(Button->Bounds.GetCenter(), Player->Inventory[i]->Texture, UI_INVENTORY_ITEM_SIZE, Player->Inventory[i]->Color);
-		if(i >= INVENTORY_BAGSTART && Player->Inventory[i]->CanStack())
-			DrawItemCount(Player->Inventory[i], Button->Bounds.End);
+		if(DrawIcon) {
+			ae::Graphics.SetProgram(ae::Assets.Programs["ortho_pos_uv"]);
+			ae::Graphics.DrawScaledImage(Button->Bounds.GetCenter(), Player->Inventory[i]->Texture, UI_INVENTORY_ITEM_SIZE, Player->Inventory[i]->Color);
+		}
 
-		if(DrawLevel)
-			DrawItemLevel(Player->Inventory[i], Button->Bounds.Start);
+		if(DrawExtra) {
+			ae::Graphics.SetProgram(ae::Assets.Programs["ortho_pos"]);
+			ae::Graphics.SetColor(glm::vec4(0.0f, 0.0f, 0.0f, 0.6f));
+			ae::Graphics.DrawRectangle(Button->Bounds, true);
+			if(DrawIcon) {
+				DrawItemLevel(Player->Inventory[i], Button->Bounds.Start);
+				DrawItemQuality(Player->Inventory[i], Button->Bounds.Start);
+				DrawItemValue(Player->Inventory[i], Button->Bounds.Start);
+			}
+		}
 	}
 
 	// Draw cursor item
@@ -732,13 +739,6 @@ void _HUD::DrawInventory() {
 		glm::vec2 Position(ae::Input.GetMouse() - ClickOffset);
 		ae::Graphics.SetProgram(ae::Assets.Programs["ortho_pos_uv"]);
 		ae::Graphics.DrawScaledImage(Position, CursorItem->Texture, UI_INVENTORY_ITEM_SIZE, CursorItem->Color);
-
-		ae::_Element *Button = Elements[ELEMENT_INVENTORY]->Children[DragStart->Index];
-		if(CursorItem->CanStack())
-			DrawItemCount(CursorItem, Position + Button->Size * 0.5f);
-
-		if(DrawLevel)
-			DrawItemLevel(CursorItem, Position - Button->Size * 0.5f);
 	}
 }
 
@@ -752,11 +752,32 @@ void _HUD::DrawAttribute(const std::string &Label, std::ostringstream &Buffer, g
 	DrawPosition.y += 20 * ae::_Element::GetUIScale();
 }
 
-// Draw the item count text
-void _HUD::DrawItemCount(_Item *Item, const glm::vec2 &Position) {
+// Draw quick glance value attribute for item
+void _HUD::DrawItemValue(_Item *Item, const glm::vec2 &Position) {
 	std::ostringstream Buffer;
-	Buffer << Item->Count;
-	Fonts[FONT_TINY]->DrawText(Buffer.str(), Position - glm::vec2(4 * ae::_Element::GetUIScale()), ae::RIGHT_BASELINE, COLOR_WHITE);
+	switch(Item->Type) {
+		case _Object::MOD:
+			Buffer << "+" << Item->Attributes["bonus"].Int;
+		break;
+		case _Object::WEAPON:
+			Buffer << ae::Round1(Item->GetAverageDamage());
+		break;
+		case _Object::ARMOR:
+			Buffer << Item->Attributes["damage_block"].Int;
+		break;
+		default:
+			return;
+		break;
+	}
+
+	Fonts[FONT_TINY]->DrawText(Buffer.str(), Position + glm::vec2(74, 74) * ae::_Element::GetUIScale(), ae::RIGHT_BASELINE, COLOR_WHITE);
+}
+
+// Draw item quality
+void _HUD::DrawItemQuality(_Item *Item, const glm::vec2 &Position) {
+	std::ostringstream Buffer;
+	Buffer << Item->Quality << "%";
+	Fonts[FONT_TINY]->DrawText(Buffer.str(), Position + glm::vec2(74, 18) * ae::_Element::GetUIScale(), ae::RIGHT_BASELINE, COLOR_WHITE);
 }
 
 // Draw item level

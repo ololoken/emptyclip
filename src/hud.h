@@ -129,7 +129,8 @@ class _HUD {
 
 		void DrawIndicator(const std::string &String, float Percent=0.0f, const ae::_Texture *Texture=nullptr);
 		void DrawHUDWeapon(const _Item *Weapon, ae::_Element *Element, ae::_Element *Image, ae::_Element *Label);
-		void DrawItemCount(_Item *Item, const glm::vec2 &Position);
+		void DrawItemValue(_Item *Item, const glm::vec2 &Position);
+		void DrawItemQuality(_Item *Item, const glm::vec2 &Position);
 		void DrawItemLevel(_Item *Item, const glm::vec2 &Position);
 		void DrawAttribute(const std::string &Label, std::ostringstream &Buffer, glm::vec2 &DrawPosition) const;
 		void UpdateSkillTooltip(int Skill, const glm::vec2 &DrawPosition);
