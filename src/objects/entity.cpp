@@ -104,7 +104,7 @@ _Entity::~_Entity() {
 
 	StopAudio();
 
-	if(PlayState.HUD->LastEntityHit == this)
+	if(PlayState.HUD && PlayState.HUD->LastEntityHit == this)
 		PlayState.HUD->LastEntityHit = nullptr;
 }
 
