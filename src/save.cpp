@@ -162,9 +162,10 @@ void _Save::LoadPlayer(_Player *Player) {
 			case CHUNK_SAVEVERSION: {
 				int SaveVersion;
 				File.read((char *)&SaveVersion, sizeof(SaveVersion));
-
-				if(SaveVersion != PLAYER_SAVEVERSION)
+				if(SaveVersion != PLAYER_SAVEVERSION) {
+					std::rename(Player->SavePath.c_str(), (Player->SavePath + "." + std::to_string(SaveVersion)).c_str());
 					throw std::runtime_error("Save version mismatch");
+				}
 			} break;
 			case CHUNK_PLAYERNAME: {
 				char Buffer[1024];
