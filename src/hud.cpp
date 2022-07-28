@@ -104,25 +104,25 @@ _HUD::_HUD(_Player *Player) :
 	Elements[ELEMENT_ENEMYINFO]->SetActive(true);
 
 	Elements[ELEMENT_PLAYERHEALTH] = ae::Assets.Elements["element_hud_player_health"];
-	Elements[IMAGE_PLAYERHEALTH] = ae::Assets.Elements["image_player_health_full"];
+	Elements[IMAGE_PLAYERHEALTH] = ae::Assets.Elements["image_hud_player_health_full"];
 	Elements[LABEL_PLAYERHEALTH] = ae::Assets.Elements["label_hud_player_health_text"];
 	Elements[ELEMENT_PLAYERHEALTH]->SetActive(true);
 
 	Elements[ELEMENT_PLAYERSTAMINA] = ae::Assets.Elements["element_hud_player_stamina"];
-	Elements[IMAGE_PLAYERSTAMINA] = ae::Assets.Elements["image_player_stamina_full"];
+	Elements[IMAGE_PLAYERSTAMINA] = ae::Assets.Elements["image_hud_player_stamina_full"];
 	Elements[ELEMENT_PLAYERSTAMINA]->SetActive(true);
 
 	Elements[LABEL_ENEMYHEALTH] = ae::Assets.Elements["label_hud_enemy_health_text"];
-	Elements[IMAGE_ENEMYHEALTH] = ae::Assets.Elements["image_enemy_health_full"];
+	Elements[IMAGE_ENEMYHEALTH] = ae::Assets.Elements["image_hud_enemy_health_full"];
 	Elements[IMAGE_ENEMYHEALTH]->SetActive(true);
 
 	Elements[ELEMENT_INDICATOR] = ae::Assets.Elements["element_hud_indicator"];
-	Elements[IMAGE_RELOAD] = ae::Assets.Elements["image_indicator_progress"];
+	Elements[IMAGE_RELOAD] = ae::Assets.Elements["image_hud_indicator_progress"];
 	Elements[LABEL_INDICATOR] = ae::Assets.Elements["label_hud_indicator_text"];
 	Elements[ELEMENT_INDICATOR]->SetActive(true);
 
 	Elements[ELEMENT_EXPERIENCE] = ae::Assets.Elements["element_hud_experience"];
-	Elements[IMAGE_EXPERIENCE] = ae::Assets.Elements["image_experience_bar_full"];
+	Elements[IMAGE_EXPERIENCE] = ae::Assets.Elements["image_hud_experience_bar_full"];
 	Elements[LABEL_EXPERIENCE] = ae::Assets.Elements["label_hud_experience_text"];
 	Elements[ELEMENT_EXPERIENCE]->SetActive(true);
 
@@ -436,9 +436,9 @@ void _HUD::Render(const ae::_Camera *Camera, bool FullMap) {
 		DrawIndicator("Switching Weapons", Player->GetWeaponSwitchPercent(), ae::Assets.Textures["textures/hud/indicator_weaponswitch.png"]);
 
 	// Draw weapons
-	DrawHUDWeapon(Player->GetMainHand(), ae::Assets.Elements["element_hud_mainhand"], ae::Assets.Elements["image_mainhand_icon"], ae::Assets.Elements["label_hud_mainhand_ammo"]);
-	DrawHUDWeapon(Player->GetOffHand(), ae::Assets.Elements["element_hud_offhand"], ae::Assets.Elements["image_offhand_icon"], ae::Assets.Elements["label_hud_offhand_ammo"]);
-	DrawHUDWeapon(Player->GetMelee(), ae::Assets.Elements["element_hud_melee"], ae::Assets.Elements["image_melee_icon"], nullptr);
+	DrawHUDWeapon(Player->GetMainHand(), ae::Assets.Elements["element_hud_mainhand"], ae::Assets.Elements["image_hud_mainhand_icon"], ae::Assets.Elements["label_hud_mainhand_ammo"]);
+	DrawHUDWeapon(Player->GetOffHand(), ae::Assets.Elements["element_hud_offhand"], ae::Assets.Elements["image_hud_offhand_icon"], ae::Assets.Elements["label_hud_offhand_ammo"]);
+	DrawHUDWeapon(Player->GetMelee(), ae::Assets.Elements["element_hud_melee"], ae::Assets.Elements["image_hud_melee_icon"], nullptr);
 
 	// Draw ammo amounts
 	glm::vec2 AmmoSpacing = glm::vec2(0, 22) * ae::_Element::GetUIScale();

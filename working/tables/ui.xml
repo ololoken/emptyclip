@@ -1,5 +1,184 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <element base_height="1080">
+<element id="element_menu_title" size_x="512" size_y="0">
+		<element id="image_menu_title_logo" texture="textures/menu/title.png" size_x="512" size_y="128" offset_y="-450" alignment_y="0"/>
+		<element id="button_menu_title_single" style="style_menu_button" hover_style="style_menu_button_hover" offset_y="-112" size_x="280" size_y="66" alignment_y="0" clickable="true">
+			<element id="label_menu_title_single" font="menu_buttons" text="Play" offset_y="44" alignment_y="3"/>
+		</element>
+		<element id="button_menu_title_options" style="style_menu_button" hover_style="style_menu_button_hover" offset_y="0" size_x="280" size_y="66" alignment_y="0" clickable="true">
+			<element id="label_menu_title_options" font="menu_buttons" text="Options" offset_y="44" alignment_y="3"/>
+		</element>
+		<element id="button_menu_title_exit" style="style_menu_button" hover_style="style_menu_button_hover" offset_y="112" size_x="280" size_y="66" alignment_y="0" clickable="true">
+			<element id="label_menu_title_exit" font="menu_buttons" text="Exit" offset_y="44" alignment_y="3"/>
+		</element>
+	</element>
+	<element id="element_menu_singleplayer" size_x="800" size_y="984">
+		<element id="label_menu_singleplayer_title" font="hud_large" text="Characters" offset_y="-350"/>
+		<element id="button_menu_singleplayer_slot0" style="style_menu_box" hover_style="style_menu_hover" offset_x="-400" offset_y="-150" size_x="128" size_y="128" clickable="true" index="0">
+			<element id="label_menu_singleplayer_slot0_text" font="hud_medium" text="Empty Slot" offset_y="160" alignment_y="3" format="true"/>
+		</element>
+		<element id="button_menu_singleplayer_slot1" style="style_menu_box" hover_style="style_menu_hover" offset_x="-200" offset_y="-150" size_x="128" size_y="128" clickable="true" index="1">
+			<element id="label_menu_singleplayer_slot1_text" font="hud_medium" text="Empty Slot" offset_y="160" alignment_y="3" format="true"/>
+		</element>
+		<element id="button_menu_singleplayer_slot2" style="style_menu_box" hover_style="style_menu_hover" offset_y="-150" size_x="128" size_y="128" clickable="true" index="2">
+			<element id="label_menu_singleplayer_slot2_text" font="hud_medium" text="Empty Slot" offset_y="160" alignment_y="3" format="true"/>
+		</element>
+		<element id="button_menu_singleplayer_slot3" style="style_menu_box" hover_style="style_menu_hover" offset_x="200" offset_y="-150" size_x="128" size_y="128" clickable="true" index="3">
+			<element id="label_menu_singleplayer_slot3_text" font="hud_medium" text="Empty Slot" offset_y="160" alignment_y="3" format="true"/>
+		</element>
+		<element id="button_menu_singleplayer_slot4" style="style_menu_box" hover_style="style_menu_hover" offset_x="400" offset_y="-150" size_x="128" size_y="128" clickable="true" index="4">
+			<element id="label_menu_singleplayer_slot4_text" font="hud_medium" text="Empty Slot" offset_y="160" alignment_y="3" format="true"/>
+		</element>
+		<element id="button_menu_singleplayer_slot5" style="style_menu_box" hover_style="style_menu_hover" offset_x="-400" offset_y="50" size_x="128" size_y="128" clickable="true" index="5">
+			<element id="label_menu_singleplayer_slot5_text" font="hud_medium" text="Empty Slot" offset_y="160" alignment_y="3" format="true"/>
+		</element>
+		<element id="button_menu_singleplayer_slot6" style="style_menu_box" hover_style="style_menu_hover" offset_x="-200" offset_y="50" size_x="128" size_y="128" clickable="true" index="6">
+			<element id="label_menu_singleplayer_slot6_text" font="hud_medium" text="Empty Slot" offset_y="160" alignment_y="3" format="true"/>
+		</element>
+		<element id="button_menu_singleplayer_slot7" style="style_menu_box" hover_style="style_menu_hover" offset_y="50" size_x="128" size_y="128" clickable="true" index="7">
+			<element id="label_menu_singleplayer_slot7_text" font="hud_medium" text="Empty Slot" offset_y="160" alignment_y="3" format="true"/>
+		</element>
+		<element id="button_menu_singleplayer_slot8" style="style_menu_box" hover_style="style_menu_hover" offset_x="200" offset_y="50" size_x="128" size_y="128" clickable="true" index="8">
+			<element id="label_menu_singleplayer_slot8_text" font="hud_medium" text="Empty Slot" offset_y="160" alignment_y="3" format="true"/>
+		</element>
+		<element id="button_menu_singleplayer_slot9" style="style_menu_box" hover_style="style_menu_hover" offset_x="400" offset_y="50" size_x="128" size_y="128" clickable="true" index="9">
+			<element id="label_menu_singleplayer_slot9_text" font="hud_medium" text="Empty Slot" offset_y="160" alignment_y="3" format="true"/>
+		</element>
+		<element id="button_menu_singleplayer_delete" style="style_menu_button" hover_style="style_menu_button_hover" offset_x="-240" offset_y="300" size_x="200" size_y="66" clickable="true">
+			<element id="label_menu_singleplayer_defaults" font="menu_buttons" text="Delete" offset_y="44" alignment_y="3"/>
+		</element>
+		<element id="button_menu_singleplayer_play" style="style_menu_button" hover_style="style_menu_button_hover" offset_y="300" size_x="200" size_y="66" clickable="true">
+			<element id="label_menu_singleplayer_save" font="menu_buttons" text="Play" offset_y="44" alignment_y="3"/>
+		</element>
+		<element id="button_menu_singleplayer_back" style="style_menu_button" hover_style="style_menu_button_hover" offset_x="240" offset_y="300" size_x="200" size_y="66" clickable="true">
+			<element id="label_menu_singleplayer_cancel" font="menu_buttons" text="Back" offset_y="44" alignment_y="3"/>
+		</element>
+	</element>
+	<element id="element_menu_new" style="style_menu_window" size_x="400" size_y="350">
+		<element id="element_menu_new_input" style="style_menu_textbox" offset_x="60" offset_y="110" size_x="250" size_y="42" alignment_x="0" alignment_y="0">
+			<element id="textbox_menu_new_name_input" font="hud_medium" offset_x="5" offset_y="30" alignment_x="0" alignment_y="3" maxlength="15">
+				<element id="label_menu_new_name_input" font="hud_medium" text="Name" offset_x="-5" offset_y="-40" alignment_x="0" alignment_y="3"/>
+			</element>
+		</element>
+		<element id="image_menu_new_player_legs0" texture="textures/menu/legs4.png" color="dark"offset_x="60" offset_y="200" size_x="64" size_y="64" alignment_x="0" alignment_y="0"/>
+		<element id="image_menu_new_player_torso0" texture="textures/menu/walking_onehand4.png" offset_x="60" offset_y="200" size_x="64" size_y="64" alignment_x="0" alignment_y="0"/>
+		<element id="image_menu_new_player_legs1" texture="textures/menu/legs4.png" color="red" offset_x="130" offset_y="200" size_x="64" size_y="64" alignment_x="0" alignment_y="0"/>
+		<element id="image_menu_new_player_torso1" texture="textures/menu/walking_onehand4.png" offset_x="130" offset_y="200" size_x="64" size_y="64" alignment_x="0" alignment_y="0"/>
+		<element id="image_menu_new_player_legs2" texture="textures/menu/legs4.png" color="green" offset_x="200" offset_y="200" size_x="64" size_y="64" alignment_x="0" alignment_y="0"/>
+		<element id="image_menu_new_player_torso2" texture="textures/menu/walking_onehand4.png" offset_x="200" offset_y="200" size_x="64" size_y="64" alignment_x="0" alignment_y="0"/>
+		<element id="image_menu_new_player_legs3" texture="textures/menu/legs4.png" color="blue" offset_x="270" offset_y="200" size_x="64" size_y="64" alignment_x="0" alignment_y="0"/>
+		<element id="image_menu_new_player_torso3" texture="textures/menu/walking_onehand4.png" offset_x="270" offset_y="200" size_x="64" size_y="64" alignment_x="0" alignment_y="0"/>
+		<element id="button_menu_new_create" style="style_menu_button" hover_style="style_menu_button_hover" offset_x="-80" offset_y="-25" size_x="140" size_y="44" alignment_y="2" clickable="true">
+			<element id="label_menu_new_create" font="hud_medium" text="Create" offset_y="32" alignment_y="3"/>
+		</element>
+		<element id="button_menu_new_cancel" style="style_menu_button" hover_style="style_menu_button_hover" offset_x="80" offset_y="-25" size_x="140" size_y="44" alignment_y="2" clickable="true">
+			<element id="label_menu_new_cancel" font="hud_medium" text="Cancel" offset_y="32" alignment_y="3"/>
+		</element>
+		<element id="button_menu_new_color0" hover_style="style_menu_select" offset_x="60" offset_y="200" size_x="64" size_y="64" alignment_x="0" alignment_y="0" clickable="true">
+			<element id="label_menu_new_color" font="hud_medium" text="Color" offset_y="-10" alignment_x="0" alignment_y="3"/>
+		</element>
+		<element id="button_menu_new_color1" hover_style="style_menu_select" offset_x="130" offset_y="200" size_x="64" size_y="64" alignment_x="0" alignment_y="0" clickable="true"/>
+		<element id="button_menu_new_color2" hover_style="style_menu_select" offset_x="200" offset_y="200" size_x="64" size_y="64" alignment_x="0" alignment_y="0" clickable="true"/>
+		<element id="button_menu_new_color3" hover_style="style_menu_select" offset_x="270" offset_y="200" size_x="64" size_y="64" alignment_x="0" alignment_y="0" clickable="true"/>
+		<element id="label_menu_new_title" font="menu_buttons" text="Create New Player" offset_y="50" alignment_y="3"/>
+	</element>
+	<element id="element_menu_options" size_x="650" size_y="984">
+		<element id="label_menu_options_title" font="hud_large" text="Options" offset_y="50" alignment_y="3"/>
+		<element id="label_menu_options_fullscreen" font="menu_buttons" text="Fullscreen" offset_x="-92" offset_y="140" alignment_y="3">
+			<element id="button_menu_options_fullscreen" style="style_menu_textbox" hover_style="style_menu_button_hover" offset_x="107" offset_y="-10" size_x="44" size_y="44" alignment_x="0" clickable="true">
+				<element id="label_menu_options_fullscreen_check" font="hud_medium" text="X"/>
+			</element>
+		</element>
+		<element id="label_menu_options_volume" font="menu_buttons" text="Sound Volume" offset_x="-120" offset_y="230" alignment_y="3">
+			<element id="element_menu_options_soundvolume" style="style_menu_textbox" offset_x="240" offset_y="-10" size_x="210" size_y="42" alignment_x="1" clickable="true">
+				<element id="button_menu_options_soundvolume" style="style_menu_button" size_x="20" size_y="42" alignment_x="0" alignment_y="0" draggable="true"/>
+				<element id="label_menu_options_soundvolume_value" text="1.0" font="hud_medium" offset_x="224" offset_y="30" alignment_x="0" alignment_y="3"/>
+			</element>
+		</element>
+		<element id="element_menu_controls" offset_y="100" alignment_y="0">
+			<element id="label_menu_options_controls" font="menu_buttons" text="Controls" offset_y="200" alignment_y="3"/>
+			<element id="button_menu_options_defaults" style="style_menu_button" hover_style="style_menu_button_hover" offset_x="-240" offset_y="750" size_x="220" size_y="66" alignment_y="0" clickable="true">
+				<element id="label_menu_options_defaults" font="menu_buttons" text="Defaults" offset_y="44" alignment_y="3"/>
+			</element>
+			<element id="button_menu_options_save" style="style_menu_button" hover_style="style_menu_button_hover" offset_y="750" size_x="220" size_y="66" alignment_y="0" clickable="true">
+				<element id="label_menu_options_save" font="menu_buttons" text="Save" offset_y="44" alignment_y="3"/>
+			</element>
+			<element id="button_menu_options_cancel" style="style_menu_button" hover_style="style_menu_button_hover" offset_x="240" offset_y="750" size_x="220" size_y="66" alignment_y="0" clickable="true">
+				<element id="label_menu_options_cancel" font="menu_buttons" text="Cancel" offset_y="44" alignment_y="3"/>
+			</element>
+			<element id="button_menu_options_input_up" style="style_menu_box" hover_style="style_menu_hover" offset_x="-125" offset_y="250" size_x="140" size_y="50" alignment_y="0" clickable="true">
+				<element id="label_menu_options_up" font="hud_small" text="Move Up" offset_x="-160" offset_y="32" alignment_y="3"/>
+				<element id="label_menu_options_config_up" font="hud_small" offset_y="32" alignment_y="3"/>
+			</element>
+			<element id="button_menu_options_input_down" style="style_menu_box" hover_style="style_menu_hover" offset_x="-125" offset_y="310" size_x="140" size_y="50" alignment_y="0" clickable="true">
+				<element id="label_menu_options_down" font="hud_small" text="Move Down" offset_x="-160" offset_y="32" alignment_y="3"/>
+				<element id="label_menu_options_config_down" font="hud_small" offset_y="32" alignment_y="3"/>
+			</element>
+			<element id="button_menu_options_input_left" style="style_menu_box" hover_style="style_menu_hover" offset_x="-125" offset_y="370" size_x="140" size_y="50" alignment_y="0" clickable="true">
+				<element id="label_menu_options_left" font="hud_small" text="Move Left" offset_x="-160" offset_y="32" alignment_y="3"/>
+				<element id="label_menu_options_config_left" font="hud_small" offset_y="32" alignment_y="3"/>
+			</element>
+			<element id="button_menu_options_input_right" style="style_menu_box" hover_style="style_menu_hover" offset_x="-125" offset_y="430" size_x="140" size_y="50" alignment_y="0" clickable="true">
+				<element id="label_menu_options_right" font="hud_small" text="Move Right" offset_x="-160" offset_y="32" alignment_y="3"/>
+				<element id="label_menu_options_config_right" font="hud_small" offset_y="32" alignment_y="3"/>
+			</element>
+			<element id="button_menu_options_input_use" style="style_menu_box" hover_style="style_menu_hover" offset_x="-125" offset_y="490" size_x="140" size_y="50" alignment_y="0" clickable="true">
+				<element id="label_menu_options_use" font="hud_small" text="Use" offset_x="-160" offset_y="32" alignment_y="3"/>
+				<element id="label_menu_options_config_use" font="hud_small" offset_y="32" alignment_y="3"/>
+			</element>
+			<element id="button_menu_options_input_sprint" style="style_menu_box" hover_style="style_menu_hover" offset_x="-125" offset_y="550" size_x="140" size_y="50" alignment_y="0" clickable="true">
+				<element id="label_menu_options_sprint" font="hud_small" text="Sprint" offset_x="-160" offset_y="32" alignment_y="3"/>
+				<element id="label_menu_options_config_sprint" font="hud_small" offset_y="32" alignment_y="3"/>
+			</element>
+			<element id="button_menu_options_input_map" style="style_menu_box" hover_style="style_menu_hover" offset_x="-125" offset_y="610" size_x="140" size_y="50" alignment_y="0" clickable="true">
+				<element id="label_menu_options_map" font="hud_small" text="View Map" offset_x="-160" offset_y="32" alignment_y="3"/>
+				<element id="label_menu_options_config_map" font="hud_small" offset_y="32" alignment_y="3"/>
+			</element>
+			<element id="button_menu_options_input_fire" style="style_menu_box" hover_style="style_menu_hover" offset_x="225" offset_y="250" size_x="140" size_y="50" alignment_y="0" clickable="true">
+				<element id="label_menu_options_fire" font="hud_small" text="Fire" offset_x="-160" offset_y="32" alignment_y="3"/>
+				<element id="label_menu_options_config_fire" font="hud_small" offset_y="32" alignment_y="3"/>
+			</element>
+			<element id="button_menu_options_input_aim" style="style_menu_box" hover_style="style_menu_hover" offset_x="225" offset_y="310" size_x="140" size_y="50" alignment_y="0" clickable="true">
+				<element id="label_menu_options_aim" font="hud_small" text="Aim" offset_x="-160" offset_y="32" alignment_y="3"/>
+				<element id="label_menu_options_config_aim" font="hud_small" offset_y="32" alignment_y="3"/>
+			</element>
+			<element id="button_menu_options_input_melee" style="style_menu_box" hover_style="style_menu_hover" offset_x="225" offset_y="370" size_x="140" size_y="50" alignment_y="0" clickable="true">
+				<element id="label_menu_options_melee" font="hud_small" text="Melee" offset_x="-160" offset_y="32" alignment_y="3"/>
+				<element id="label_menu_options_config_melee" font="hud_small" offset_y="32" alignment_y="3"/>
+			</element>
+			<element id="button_menu_options_input_reload" style="style_menu_box" hover_style="style_menu_hover" offset_x="225" offset_y="430" size_x="140" size_y="50" alignment_y="0" clickable="true">
+				<element id="label_menu_options_reload" font="hud_small" text="Reload" offset_x="-160" offset_y="32" alignment_y="3"/>
+				<element id="label_menu_options_config_reload" font="hud_small" offset_y="32" alignment_y="3"/>
+			</element>
+			<element id="button_menu_options_input_switch" style="style_menu_box" hover_style="style_menu_hover" offset_x="225" offset_y="490" size_x="140" size_y="50" alignment_y="0" clickable="true">
+				<element id="label_menu_options_weaponswitch" font="hud_small" text="Weapon Switch" offset_x="-160" offset_y="32" alignment_y="3"/>
+				<element id="label_menu_options_config_weaponswitch" font="hud_small" offset_y="32" alignment_y="3"/>
+			</element>
+			<element id="button_menu_options_input_flashlight" style="style_menu_box" hover_style="style_menu_hover" offset_x="225" offset_y="550" size_x="140" size_y="50" alignment_y="0" clickable="true">
+				<element id="label_menu_options_flashlight" font="hud_small" text="Flashlight" offset_x="-160" offset_y="32" alignment_y="3"/>
+				<element id="label_menu_options_config_flashlight" font="hud_small" offset_y="32" alignment_y="3"/>
+			</element>
+			<element id="button_menu_options_input_inventory" style="style_menu_box" hover_style="style_menu_hover" offset_x="225" offset_y="610" size_x="140" size_y="50" alignment_y="0" clickable="true">
+				<element id="label_menu_options_inventory" font="hud_small" text="Open Inventory" offset_x="-160" offset_y="32" alignment_y="3"/>
+				<element id="label_menu_options_config_inventory" font="hud_small" offset_y="32" alignment_y="3"/>
+			</element>
+		</element>
+	</element>
+	<element id="element_menu_ingame" size_x="512" size_y="0">
+		<element id="button_menu_ingame_resume" style="style_menu_button" hover_style="style_menu_button_hover" offset_y="-112" size_x="280" size_y="66" alignment_y="0" clickable="true">
+			<element id="label_menu_ingame_resume_text" font="menu_buttons" text="Resume" offset_y="44" alignment_y="3"/>
+		</element>
+		<element id="button_menu_ingame_options" style="style_menu_button" hover_style="style_menu_button_hover" offset_y="0" size_x="280" size_y="66" alignment_y="0" clickable="true">
+			<element id="label_menu_ingame_options_text" font="menu_buttons" text="Options" offset_y="44" alignment_y="3"/>
+		</element>
+		<element id="button_menu_ingame_mainmenu" style="style_menu_button" hover_style="style_menu_button_hover" offset_y="112" size_x="280" size_y="66" alignment_y="0" clickable="true">
+			<element id="label_menu_ingame_mainmenu_text" font="menu_buttons" text="Main Menu" offset_y="44" alignment_y="3"/>
+		</element>
+	</element>
+	<element id="element_menu_popup" style="style_menu_window" size_x="340" size_y="100">
+		<element id="label_menu_options_accept_text" font="hud_medium" text="Press a key or button for" offset_y="35" alignment_y="3"/>
+		<element id="label_menu_options_accept_text_action" font="hud_medium" offset_y="75" alignment_y="3"/>
+	</element>
 	<element id="element_hud_player_info" offset_x="20" offset_y="40" alignment_x="0" alignment_y="0">
 		<element id="label_hud_player_name" font="menu_buttons" alignment_x="0" alignment_y="3"/>
 		<element id="label_hud_player_level" font="hud_small" offset_y="30" alignment_x="0" alignment_y="3"/>
@@ -17,40 +196,40 @@
 		<element id="label_hud_level_time" font="hud_char" offset_x="-50" offset_y="95" alignment_x="0" alignment_y="3"/>
 	</element>
 	<element id="element_hud_enemy_info" offset_y="50" size_x="250" alignment_y="0">
-		<element id="image_enemy_health_empty" texture="textures/hud_repeat/health_empty.png" size_x="250" size_y="32" alignment_x="0" alignment_y="0"/>
-		<element id="image_enemy_health_full" texture="textures/hud_repeat/health_full.png" size_y="32" alignment_x="0" alignment_y="0"/>
+		<element id="image_hud_enemy_health_empty" texture="textures/hud_repeat/health_empty.png" size_x="250" size_y="32" alignment_x="0" alignment_y="0"/>
+		<element id="image_hud_enemy_health_full" texture="textures/hud_repeat/health_full.png" size_y="32" alignment_x="0" alignment_y="0"/>
 		<element id="label_hud_enemy_name" font="hud_medium" offset_y="-9" alignment_y="3"/>
 		<element id="label_hud_enemy_health_text" font="hud_small" offset_y="24" alignment_y="3"/>
 	</element>
 	<element id="element_hud_player_health" offset_y="-96" size_x="200" alignment_y="2">
-		<element id="image_player_health_empty" texture="textures/hud_repeat/health_empty.png" size_x="200" size_y="32" alignment_x="0" alignment_y="0"/>
-		<element id="image_player_health_full" texture="textures/hud_repeat/health_full.png" size_y="32" alignment_x="0" alignment_y="0"/>
+		<element id="image_hud_player_health_empty" texture="textures/hud_repeat/health_empty.png" size_x="200" size_y="32" alignment_x="0" alignment_y="0"/>
+		<element id="image_hud_player_health_full" texture="textures/hud_repeat/health_full.png" size_y="32" alignment_x="0" alignment_y="0"/>
 		<element id="label_hud_player_health_text" font="hud_small" offset_y="24" alignment_y="3"/>
 	</element>
 	<element id="element_hud_player_stamina" offset_y="-116" size_x="200" alignment_y="2">
-		<element id="image_player_stamina_empty" texture="textures/hud_repeat/stamina_empty.png" size_x="200" size_y="8" alignment_x="0" alignment_y="0"/>
-		<element id="image_player_stamina_full" texture="textures/hud_repeat/stamina_full.png" size_y="8" alignment_x="0" alignment_y="0"/>
+		<element id="image_hud_player_stamina_empty" texture="textures/hud_repeat/stamina_empty.png" size_x="200" size_y="8" alignment_x="0" alignment_y="0"/>
+		<element id="image_hud_player_stamina_full" texture="textures/hud_repeat/stamina_full.png" size_y="8" alignment_x="0" alignment_y="0"/>
 	</element>
 	<element id="element_hud_indicator" style="style_hud_indicator" offset_y="166" size_x="256" size_y="32">
-		<element id="image_indicator_progress" size_x="256" size_y="32" alignment_x="0" alignment_y="0" stretch="false"/>
+		<element id="image_hud_indicator_progress" size_x="256" size_y="32" alignment_x="0" alignment_y="0" stretch="false"/>
 		<element id="label_hud_indicator_text" font="hud_small" offset_y="-16" alignment_y="3"/>
 	</element>
 	<element id="element_hud_experience" offset_y="-6" size_x="550" size_y="8" alignment_y="2">
-		<element id="image_experience_bar" texture="textures/hud_repeat/experience_empty.png" size_x="550" size_y="8" alignment_x="0" alignment_y="0"/>
-		<element id="image_experience_bar_full" texture="textures/hud_repeat/experience_full.png" size_x="550" size_y="8" alignment_x="0" alignment_y="0"/>
+		<element id="image_hud_experience_bar" texture="textures/hud_repeat/experience_empty.png" size_x="550" size_y="8" alignment_x="0" alignment_y="0"/>
+		<element id="image_hud_experience_bar_full" texture="textures/hud_repeat/experience_full.png" size_x="550" size_y="8" alignment_x="0" alignment_y="0"/>
 		<element id="label_hud_experience_text" font="hud_tiny" offset_y="-8" alignment_y="3"/>
 	</element>
 	<element id="element_hud_mainhand" offset_x="-190" offset_y="-110" alignment_y="2">
-		<element id="image_mainhand_icon" size_x="64" size_y="64" alignment_y="0" stretch="true"/>
+		<element id="image_hud_mainhand_icon" size_x="64" size_y="64" alignment_y="0" stretch="true"/>
 		<element id="label_hud_mainhand_ammo" font="hud_medium" offset_y="88" alignment_y="3"/>
 	</element>
 	<element id="element_hud_offhand" offset_x="160" offset_y="-110" alignment_y="2">
-		<element id="image_offhand_icon" size_x="64" size_y="64" alignment_y="0" stretch="true"/>
+		<element id="image_hud_offhand_icon" size_x="64" size_y="64" alignment_y="0" stretch="true"/>
 		<element id="label_hud_offhand_ammo" font="hud_medium" offset_y="88" alignment_y="3"/>
 		<element id="label_hud_offhand_switch_key" font="hud_char" offset_x="24" offset_y="58" alignment_y="3"/>
 	</element>
 	<element id="element_hud_melee" offset_x="230" offset_y="-110" alignment_y="2">
-		<element id="image_melee_icon" size_x="64" size_y="64" alignment_y="0" stretch="true"/>
+		<element id="image_hud_melee_icon" size_x="64" size_y="64" alignment_y="0" stretch="true"/>
 		<element id="label_hud_melee_key" font="hud_char" offset_x="24" offset_y="58" alignment_y="3"/>
 	</element>
 	<element id="element_hud_messagebox" style="style_menu_window" offset_y="-150" alignment_y="2">
@@ -316,185 +495,6 @@
 		<element id="textbox_editor_input" font="editor" offset_x="5" offset_y="22" alignment_x="0" alignment_y="3" maxlength="50" scaled="false">
 			<element id="label_editor_input" font="editor" offset_x="-10" alignment_x="2" alignment_y="3" scaled="false"/>
 		</element>
-	</element>
-	<element id="element_menu_title" size_x="512" size_y="0">
-		<element id="image_menu_title_logo" texture="textures/menu/title.png" size_x="512" size_y="128" offset_y="-450" alignment_y="0"/>
-		<element id="button_title_single" style="style_menu_button" hover_style="style_menu_button_hover" offset_y="-112" size_x="280" size_y="66" alignment_y="0" clickable="true">
-			<element id="label_menu_title_single" font="menu_buttons" text="Play" offset_y="44" alignment_y="3"/>
-		</element>
-		<element id="button_title_options" style="style_menu_button" hover_style="style_menu_button_hover" offset_y="0" size_x="280" size_y="66" alignment_y="0" clickable="true">
-			<element id="label_menu_title_options" font="menu_buttons" text="Options" offset_y="44" alignment_y="3"/>
-		</element>
-		<element id="button_title_exit" style="style_menu_button" hover_style="style_menu_button_hover" offset_y="112" size_x="280" size_y="66" alignment_y="0" clickable="true">
-			<element id="label_menu_title_exit" font="menu_buttons" text="Exit" offset_y="44" alignment_y="3"/>
-		</element>
-	</element>
-	<element id="element_menu_singleplayer" size_x="800" size_y="984">
-		<element id="label_menu_singleplayer_title" font="hud_large" text="Characters" offset_y="-350"/>
-		<element id="button_singleplayer_slot0" style="style_menu_box" hover_style="style_menu_hover" offset_x="-400" offset_y="-150" size_x="128" size_y="128" clickable="true" index="0">
-			<element id="label_menu_singleplayer_slot0_text" font="hud_medium" text="Empty Slot" offset_y="160" alignment_y="3" format="true"/>
-		</element>
-		<element id="button_singleplayer_slot1" style="style_menu_box" hover_style="style_menu_hover" offset_x="-200" offset_y="-150" size_x="128" size_y="128" clickable="true" index="1">
-			<element id="label_menu_singleplayer_slot1_text" font="hud_medium" text="Empty Slot" offset_y="160" alignment_y="3" format="true"/>
-		</element>
-		<element id="button_singleplayer_slot2" style="style_menu_box" hover_style="style_menu_hover" offset_y="-150" size_x="128" size_y="128" clickable="true" index="2">
-			<element id="label_menu_singleplayer_slot2_text" font="hud_medium" text="Empty Slot" offset_y="160" alignment_y="3" format="true"/>
-		</element>
-		<element id="button_singleplayer_slot3" style="style_menu_box" hover_style="style_menu_hover" offset_x="200" offset_y="-150" size_x="128" size_y="128" clickable="true" index="3">
-			<element id="label_menu_singleplayer_slot3_text" font="hud_medium" text="Empty Slot" offset_y="160" alignment_y="3" format="true"/>
-		</element>
-		<element id="button_singleplayer_slot4" style="style_menu_box" hover_style="style_menu_hover" offset_x="400" offset_y="-150" size_x="128" size_y="128" clickable="true" index="4">
-			<element id="label_menu_singleplayer_slot4_text" font="hud_medium" text="Empty Slot" offset_y="160" alignment_y="3" format="true"/>
-		</element>
-		<element id="button_singleplayer_slot5" style="style_menu_box" hover_style="style_menu_hover" offset_x="-400" offset_y="50" size_x="128" size_y="128" clickable="true" index="5">
-			<element id="label_menu_singleplayer_slot5_text" font="hud_medium" text="Empty Slot" offset_y="160" alignment_y="3" format="true"/>
-		</element>
-		<element id="button_singleplayer_slot6" style="style_menu_box" hover_style="style_menu_hover" offset_x="-200" offset_y="50" size_x="128" size_y="128" clickable="true" index="6">
-			<element id="label_menu_singleplayer_slot6_text" font="hud_medium" text="Empty Slot" offset_y="160" alignment_y="3" format="true"/>
-		</element>
-		<element id="button_singleplayer_slot7" style="style_menu_box" hover_style="style_menu_hover" offset_y="50" size_x="128" size_y="128" clickable="true" index="7">
-			<element id="label_menu_singleplayer_slot7_text" font="hud_medium" text="Empty Slot" offset_y="160" alignment_y="3" format="true"/>
-		</element>
-		<element id="button_singleplayer_slot8" style="style_menu_box" hover_style="style_menu_hover" offset_x="200" offset_y="50" size_x="128" size_y="128" clickable="true" index="8">
-			<element id="label_menu_singleplayer_slot8_text" font="hud_medium" text="Empty Slot" offset_y="160" alignment_y="3" format="true"/>
-		</element>
-		<element id="button_singleplayer_slot9" style="style_menu_box" hover_style="style_menu_hover" offset_x="400" offset_y="50" size_x="128" size_y="128" clickable="true" index="9">
-			<element id="label_menu_singleplayer_slot9_text" font="hud_medium" text="Empty Slot" offset_y="160" alignment_y="3" format="true"/>
-		</element>
-		<element id="button_singleplayer_delete" style="style_menu_button" hover_style="style_menu_button_hover" offset_x="-240" offset_y="300" size_x="200" size_y="66" clickable="true">
-			<element id="label_singleplayer_defaults" font="menu_buttons" text="Delete" offset_y="44" alignment_y="3"/>
-		</element>
-		<element id="button_singleplayer_play" style="style_menu_button" hover_style="style_menu_button_hover" offset_y="300" size_x="200" size_y="66" clickable="true">
-			<element id="label_singleplayer_save" font="menu_buttons" text="Play" offset_y="44" alignment_y="3"/>
-		</element>
-		<element id="button_singleplayer_back" style="style_menu_button" hover_style="style_menu_button_hover" offset_x="240" offset_y="300" size_x="200" size_y="66" clickable="true">
-			<element id="label_singleplayer_cancel" font="menu_buttons" text="Back" offset_y="44" alignment_y="3"/>
-		</element>
-	</element>
-	<element id="element_menu_new" style="style_menu_window" size_x="400" size_y="350">
-		<element id="element_menu_new_input" style="style_menu_textbox" offset_x="60" offset_y="110" size_x="250" size_y="42" alignment_x="0" alignment_y="0">
-			<element id="textbox_new_name_input" font="hud_medium" offset_x="5" offset_y="30" alignment_x="0" alignment_y="3" maxlength="15">
-				<element id="label_new_name_input" font="hud_medium" text="Name" offset_x="-5" offset_y="-40" alignment_x="0" alignment_y="3"/>
-			</element>
-		</element>
-		<element id="image_menu_new_player_legs0" texture="textures/menu/legs4.png" color="dark"offset_x="60" offset_y="200" size_x="64" size_y="64" alignment_x="0" alignment_y="0"/>
-		<element id="image_menu_new_player_torso0" texture="textures/menu/walking_onehand4.png" offset_x="60" offset_y="200" size_x="64" size_y="64" alignment_x="0" alignment_y="0"/>
-		<element id="image_menu_new_player_legs1" texture="textures/menu/legs4.png" color="red" offset_x="130" offset_y="200" size_x="64" size_y="64" alignment_x="0" alignment_y="0"/>
-		<element id="image_menu_new_player_torso1" texture="textures/menu/walking_onehand4.png" offset_x="130" offset_y="200" size_x="64" size_y="64" alignment_x="0" alignment_y="0"/>
-		<element id="image_menu_new_player_legs2" texture="textures/menu/legs4.png" color="green" offset_x="200" offset_y="200" size_x="64" size_y="64" alignment_x="0" alignment_y="0"/>
-		<element id="image_menu_new_player_torso2" texture="textures/menu/walking_onehand4.png" offset_x="200" offset_y="200" size_x="64" size_y="64" alignment_x="0" alignment_y="0"/>
-		<element id="image_menu_new_player_legs3" texture="textures/menu/legs4.png" color="blue" offset_x="270" offset_y="200" size_x="64" size_y="64" alignment_x="0" alignment_y="0"/>
-		<element id="image_menu_new_player_torso3" texture="textures/menu/walking_onehand4.png" offset_x="270" offset_y="200" size_x="64" size_y="64" alignment_x="0" alignment_y="0"/>
-		<element id="button_new_create" style="style_menu_button" hover_style="style_menu_button_hover" offset_x="-80" offset_y="-25" size_x="140" size_y="44" alignment_y="2" clickable="true">
-			<element id="label_new_create" font="hud_medium" text="Create" offset_y="32" alignment_y="3"/>
-		</element>
-		<element id="button_new_cancel" style="style_menu_button" hover_style="style_menu_button_hover" offset_x="80" offset_y="-25" size_x="140" size_y="44" alignment_y="2" clickable="true">
-			<element id="label_new_cancel" font="hud_medium" text="Cancel" offset_y="32" alignment_y="3"/>
-		</element>
-		<element id="button_new_color0" hover_style="style_menu_select" offset_x="60" offset_y="200" size_x="64" size_y="64" alignment_x="0" alignment_y="0" clickable="true">
-			<element id="label_new_color" font="hud_medium" text="Color" offset_y="-10" alignment_x="0" alignment_y="3"/>
-		</element>
-		<element id="button_new_color1" hover_style="style_menu_select" offset_x="130" offset_y="200" size_x="64" size_y="64" alignment_x="0" alignment_y="0" clickable="true"/>
-		<element id="button_new_color2" hover_style="style_menu_select" offset_x="200" offset_y="200" size_x="64" size_y="64" alignment_x="0" alignment_y="0" clickable="true"/>
-		<element id="button_new_color3" hover_style="style_menu_select" offset_x="270" offset_y="200" size_x="64" size_y="64" alignment_x="0" alignment_y="0" clickable="true"/>
-		<element id="label_new_title" font="menu_buttons" text="Create New Player" offset_y="50" alignment_y="3"/>
-	</element>
-	<element id="element_menu_options" size_x="650" size_y="984">
-		<element id="label_options_title" font="hud_large" text="Options" offset_y="50" alignment_y="3"/>
-		<element id="label_menu_options_fullscreen" font="menu_buttons" text="Fullscreen" offset_x="-92" offset_y="140" alignment_y="3">
-			<element id="button_menu_options_fullscreen" style="style_menu_textbox" hover_style="style_menu_button_hover" offset_x="107" offset_y="-10" size_x="44" size_y="44" alignment_x="0" clickable="true">
-				<element id="label_menu_options_fullscreen_check" font="hud_medium" text="X"/>
-			</element>
-		</element>
-		<element id="label_options_volume" font="menu_buttons" text="Sound Volume" offset_x="-120" offset_y="230" alignment_y="3">
-			<element id="element_menu_options_soundvolume" style="style_menu_textbox" offset_x="240" offset_y="-10" size_x="210" size_y="42" alignment_x="1" clickable="true">
-				<element id="button_menu_options_soundvolume" style="style_menu_button" size_x="20" size_y="42" alignment_x="0" alignment_y="0" draggable="true"/>
-				<element id="label_menu_options_soundvolume_value" text="1.0" font="hud_medium" offset_x="224" offset_y="30" alignment_x="0" alignment_y="3"/>
-			</element>
-		</element>
-		<element id="element_menu_controls" offset_y="100" alignment_y="0">
-			<element id="label_options_controls" font="menu_buttons" text="Controls" offset_y="200" alignment_y="3"/>
-			<element id="button_options_defaults" style="style_menu_button" hover_style="style_menu_button_hover" offset_x="-240" offset_y="750" size_x="220" size_y="66" alignment_y="0" clickable="true">
-				<element id="label_options_defaults" font="menu_buttons" text="Defaults" offset_y="44" alignment_y="3"/>
-			</element>
-			<element id="button_options_save" style="style_menu_button" hover_style="style_menu_button_hover" offset_y="750" size_x="220" size_y="66" alignment_y="0" clickable="true">
-				<element id="label_options_save" font="menu_buttons" text="Save" offset_y="44" alignment_y="3"/>
-			</element>
-			<element id="button_options_cancel" style="style_menu_button" hover_style="style_menu_button_hover" offset_x="240" offset_y="750" size_x="220" size_y="66" alignment_y="0" clickable="true">
-				<element id="label_options_cancel" font="menu_buttons" text="Cancel" offset_y="44" alignment_y="3"/>
-			</element>
-			<element id="button_options_input_up" style="style_menu_box" hover_style="style_menu_hover" offset_x="-125" offset_y="250" size_x="140" size_y="50" alignment_y="0" clickable="true">
-				<element id="label_options_up" font="hud_small" text="Move Up" offset_x="-160" offset_y="32" alignment_y="3"/>
-				<element id="label_options_config_up" font="hud_small" offset_y="32" alignment_y="3"/>
-			</element>
-			<element id="button_options_input_down" style="style_menu_box" hover_style="style_menu_hover" offset_x="-125" offset_y="310" size_x="140" size_y="50" alignment_y="0" clickable="true">
-				<element id="label_options_down" font="hud_small" text="Move Down" offset_x="-160" offset_y="32" alignment_y="3"/>
-				<element id="label_options_config_down" font="hud_small" offset_y="32" alignment_y="3"/>
-			</element>
-			<element id="button_options_input_left" style="style_menu_box" hover_style="style_menu_hover" offset_x="-125" offset_y="370" size_x="140" size_y="50" alignment_y="0" clickable="true">
-				<element id="label_options_left" font="hud_small" text="Move Left" offset_x="-160" offset_y="32" alignment_y="3"/>
-				<element id="label_options_config_left" font="hud_small" offset_y="32" alignment_y="3"/>
-			</element>
-			<element id="button_options_input_right" style="style_menu_box" hover_style="style_menu_hover" offset_x="-125" offset_y="430" size_x="140" size_y="50" alignment_y="0" clickable="true">
-				<element id="label_options_right" font="hud_small" text="Move Right" offset_x="-160" offset_y="32" alignment_y="3"/>
-				<element id="label_options_config_right" font="hud_small" offset_y="32" alignment_y="3"/>
-			</element>
-			<element id="button_options_input_use" style="style_menu_box" hover_style="style_menu_hover" offset_x="-125" offset_y="490" size_x="140" size_y="50" alignment_y="0" clickable="true">
-				<element id="label_options_use" font="hud_small" text="Use" offset_x="-160" offset_y="32" alignment_y="3"/>
-				<element id="label_options_config_use" font="hud_small" offset_y="32" alignment_y="3"/>
-			</element>
-			<element id="button_options_input_sprint" style="style_menu_box" hover_style="style_menu_hover" offset_x="-125" offset_y="550" size_x="140" size_y="50" alignment_y="0" clickable="true">
-				<element id="label_options_sprint" font="hud_small" text="Sprint" offset_x="-160" offset_y="32" alignment_y="3"/>
-				<element id="label_options_config_sprint" font="hud_small" offset_y="32" alignment_y="3"/>
-			</element>
-			<element id="button_options_input_map" style="style_menu_box" hover_style="style_menu_hover" offset_x="-125" offset_y="610" size_x="140" size_y="50" alignment_y="0" clickable="true">
-				<element id="label_options_map" font="hud_small" text="View Map" offset_x="-160" offset_y="32" alignment_y="3"/>
-				<element id="label_options_config_map" font="hud_small" offset_y="32" alignment_y="3"/>
-			</element>
-			<element id="button_options_input_fire" style="style_menu_box" hover_style="style_menu_hover" offset_x="225" offset_y="250" size_x="140" size_y="50" alignment_y="0" clickable="true">
-				<element id="label_options_fire" font="hud_small" text="Fire" offset_x="-160" offset_y="32" alignment_y="3"/>
-				<element id="label_options_config_fire" font="hud_small" offset_y="32" alignment_y="3"/>
-			</element>
-			<element id="button_options_input_aim" style="style_menu_box" hover_style="style_menu_hover" offset_x="225" offset_y="310" size_x="140" size_y="50" alignment_y="0" clickable="true">
-				<element id="label_options_aim" font="hud_small" text="Aim" offset_x="-160" offset_y="32" alignment_y="3"/>
-				<element id="label_options_config_aim" font="hud_small" offset_y="32" alignment_y="3"/>
-			</element>
-			<element id="button_options_input_melee" style="style_menu_box" hover_style="style_menu_hover" offset_x="225" offset_y="370" size_x="140" size_y="50" alignment_y="0" clickable="true">
-				<element id="label_options_melee" font="hud_small" text="Melee" offset_x="-160" offset_y="32" alignment_y="3"/>
-				<element id="label_options_config_melee" font="hud_small" offset_y="32" alignment_y="3"/>
-			</element>
-			<element id="button_options_input_reload" style="style_menu_box" hover_style="style_menu_hover" offset_x="225" offset_y="430" size_x="140" size_y="50" alignment_y="0" clickable="true">
-				<element id="label_options_reload" font="hud_small" text="Reload" offset_x="-160" offset_y="32" alignment_y="3"/>
-				<element id="label_options_config_reload" font="hud_small" offset_y="32" alignment_y="3"/>
-			</element>
-			<element id="button_options_input_switch" style="style_menu_box" hover_style="style_menu_hover" offset_x="225" offset_y="490" size_x="140" size_y="50" alignment_y="0" clickable="true">
-				<element id="label_options_weaponswitch" font="hud_small" text="Weapon Switch" offset_x="-160" offset_y="32" alignment_y="3"/>
-				<element id="label_options_config_weaponswitch" font="hud_small" offset_y="32" alignment_y="3"/>
-			</element>
-			<element id="button_options_input_flashlight" style="style_menu_box" hover_style="style_menu_hover" offset_x="225" offset_y="550" size_x="140" size_y="50" alignment_y="0" clickable="true">
-				<element id="label_options_flashlight" font="hud_small" text="Flashlight" offset_x="-160" offset_y="32" alignment_y="3"/>
-				<element id="label_options_config_flashlight" font="hud_small" offset_y="32" alignment_y="3"/>
-			</element>
-			<element id="button_options_input_inventory" style="style_menu_box" hover_style="style_menu_hover" offset_x="225" offset_y="610" size_x="140" size_y="50" alignment_y="0" clickable="true">
-				<element id="label_options_inventory" font="hud_small" text="Open Inventory" offset_x="-160" offset_y="32" alignment_y="3"/>
-				<element id="label_options_config_inventory" font="hud_small" offset_y="32" alignment_y="3"/>
-			</element>
-		</element>
-	</element>
-	<element id="element_menu_ingame" size_x="512" size_y="0">
-		<element id="button_ingame_resume" style="style_menu_button" hover_style="style_menu_button_hover" offset_y="-112" size_x="280" size_y="66" alignment_y="0" clickable="true">
-			<element id="label_menu_ingame_resume_text" font="menu_buttons" text="Resume" offset_y="44" alignment_y="3"/>
-		</element>
-		<element id="button_ingame_options" style="style_menu_button" hover_style="style_menu_button_hover" offset_y="0" size_x="280" size_y="66" alignment_y="0" clickable="true">
-			<element id="label_menu_ingame_options_text" font="menu_buttons" text="Options" offset_y="44" alignment_y="3"/>
-		</element>
-		<element id="button_ingame_menu" style="style_menu_button" hover_style="style_menu_button_hover" offset_y="112" size_x="280" size_y="66" alignment_y="0" clickable="true">
-			<element id="label_menu_ingame_menu_text" font="menu_buttons" text="Main Menu" offset_y="44" alignment_y="3"/>
-		</element>
-	</element>
-	<element id="element_menu_popup" style="style_menu_window" size_x="340" size_y="100">
-		<element id="label_menu_options_accept_text" font="hud_medium" text="Press a key or button for" offset_y="35" alignment_y="3"/>
-		<element id="label_menu_options_accept_text_action" font="hud_medium" offset_y="75" alignment_y="3"/>
 	</element>
 	<element id="image_menu_bg" texture="textures/menu/sky.png" size_x="1024" size_y="768"/>
 	<element id="label_game_version" font="hud_tiny" offset_x="20" offset_y="-20" alignment_x="0" alignment_y="2"/>

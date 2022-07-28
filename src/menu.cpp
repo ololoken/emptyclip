@@ -40,9 +40,9 @@
 
 _Menu Menu;
 
-const std::string InputBoxPrefix = "button_options_input_";
-const std::string PlayerButtonPrefix = "button_singleplayer_slot";
-const std::string PlayerColorButtonPrefix = "button_new_color";
+const std::string InputBoxPrefix = "button_menu_options_input_";
+const std::string PlayerButtonPrefix = "button_menu_singleplayer_slot";
+const std::string PlayerColorButtonPrefix = "button_menu_new_color";
 
 const int KeyBindings[] = {
 	Action::GAME_UP,
@@ -62,20 +62,20 @@ const int KeyBindings[] = {
 };
 
 const std::string KEYLABEL_IDENTIFIERS[] = {
-	"label_options_config_up",
-	"label_options_config_down",
-	"label_options_config_left",
-	"label_options_config_right",
-	"label_options_config_use",
-	"label_options_config_sprint",
-	"label_options_config_map",
-	"label_options_config_flashlight",
-	"label_options_config_fire",
-	"label_options_config_aim",
-	"label_options_config_melee",
-	"label_options_config_reload",
-	"label_options_config_weaponswitch",
-	"label_options_config_inventory",
+	"label_menu_options_config_up",
+	"label_menu_options_config_down",
+	"label_menu_options_config_left",
+	"label_menu_options_config_right",
+	"label_menu_options_config_use",
+	"label_menu_options_config_sprint",
+	"label_menu_options_config_map",
+	"label_menu_options_config_flashlight",
+	"label_menu_options_config_fire",
+	"label_menu_options_config_aim",
+	"label_menu_options_config_melee",
+	"label_menu_options_config_reload",
+	"label_menu_options_config_weaponswitch",
+	"label_menu_options_config_inventory",
 };
 
 const char *COLORS[] = {
@@ -170,7 +170,7 @@ void _Menu::InitNewPlayer() {
 	CurrentLayout = ae::Assets.Elements["element_menu_new"];
 	CurrentLayout->SetActive(true);
 
-	ae::_Element *Name = ae::Assets.Elements["textbox_new_name_input"];
+	ae::_Element *Name = ae::Assets.Elements["textbox_menu_new_name_input"];
 	ae::FocusedElement = Name;
 	Name->Text.clear();
 	Name->ResetCursor();
@@ -340,20 +340,20 @@ void _Menu::HandleMouseButton(const ae::_MouseEvent &MouseEvent) {
 
 		switch(State) {
 			case STATE_TITLE: {
-				if(Clicked->Name == "button_title_single") {
+				if(Clicked->Name == "button_menu_title_single") {
 					InitSinglePlayer();
 				}
-				else if(Clicked->Name == "button_title_options") {
+				else if(Clicked->Name == "button_menu_title_options") {
 					InitOptions();
 				}
-				else if(Clicked->Name == "button_title_exit") {
+				else if(Clicked->Name == "button_menu_title_exit") {
 					Framework.Done = true;
 				}
 			} break;
 			case STATE_SINGLEPLAYER: {
 				if(SinglePlayerState == SINGLEPLAYER_NONE) {
 
-					if(Clicked->Name == "button_singleplayer_delete") {
+					if(Clicked->Name == "button_menu_singleplayer_delete") {
 						if(SelectedSlot != -1) {
 							Save.DeletePlayer(SelectedSlot);
 							RefreshSaveSlots();
@@ -362,12 +362,12 @@ void _Menu::HandleMouseButton(const ae::_MouseEvent &MouseEvent) {
 							SelectedSlot = -1;
 						}
 					}
-					else if(Clicked->Name == "button_singleplayer_play") {
+					else if(Clicked->Name == "button_menu_singleplayer_play") {
 						if(SelectedSlot != -1 && Save.GetPlayer(SelectedSlot)) {
 							LaunchGame();
 						}
 					}
-					else if(Clicked->Name == "button_singleplayer_back") {
+					else if(Clicked->Name == "button_menu_singleplayer_back") {
 						InitTitle();
 					}
 					else if(Clicked->Name.substr(0, PlayerButtonPrefix.size()) == PlayerButtonPrefix) {
@@ -396,10 +396,10 @@ void _Menu::HandleMouseButton(const ae::_MouseEvent &MouseEvent) {
 						SelectedColor = Clicked->Index;
 						ColorButtons[SelectedColor]->Checked = true;
 					}
-					else if(Clicked->Name == "button_new_create") {
+					else if(Clicked->Name == "button_menu_new_create") {
 						CreatePlayer();
 					}
-					else if(Clicked->Name == "button_new_cancel") {
+					else if(Clicked->Name == "button_menu_new_cancel") {
 						CancelCreate();
 					}
 				}
@@ -410,21 +410,21 @@ void _Menu::HandleMouseButton(const ae::_MouseEvent &MouseEvent) {
 						SetFullscreen(!Config.Fullscreen);
 						UpdateOptions();
 					}
-					else if(Clicked->Name == "button_options_defaults") {
+					else if(Clicked->Name == "button_menu_options_defaults") {
 						Config.LoadDefaultInputBindings(false);
 						Config.SoundVolume = 1.0f;
 						ae::Audio.SetSoundVolume(Config.SoundVolume);
 						UpdateOptions();
 						RefreshInputLabels();
 					}
-					else if(Clicked->Name == "button_options_save") {
+					else if(Clicked->Name == "button_menu_options_save") {
 						Config.Save();
 						if(Framework.GetState() == &PlayState)
 							InitInGame();
 						else
 							InitTitle();
 					}
-					else if(Clicked->Name == "button_options_cancel") {
+					else if(Clicked->Name == "button_menu_options_cancel") {
 						Config.Load();
 						if(Framework.GetState() == &PlayState)
 							InitInGame();
@@ -439,13 +439,13 @@ void _Menu::HandleMouseButton(const ae::_MouseEvent &MouseEvent) {
 				}
 			} break;
 			case STATE_INGAME: {
-				if(Clicked->Name == "button_ingame_resume") {
+				if(Clicked->Name == "button_menu_ingame_resume") {
 					InitPlay();
 				}
-				else if(Clicked->Name == "button_ingame_options") {
+				else if(Clicked->Name == "button_menu_ingame_options") {
 					InitOptions();
 				}
-				else if(Clicked->Name == "button_ingame_menu") {
+				else if(Clicked->Name == "button_menu_ingame_mainmenu") {
 					Framework.ChangeState(&NullState);
 				}
 			} break;
@@ -610,14 +610,14 @@ void _Menu::CancelCreate() {
 
 // Handle player creation
 void _Menu::CreatePlayer() {
-	if(ae::Assets.Elements["textbox_new_name_input"]->Text.length() == 0)
+	if(ae::Assets.Elements["textbox_menu_new_name_input"]->Text.length() == 0)
 		return;
 
 	CurrentLayout = ae::Assets.Elements["element_menu_singleplayer"];
 	SinglePlayerState = SINGLEPLAYER_NONE;
 
 	if(SelectedSlot != -1) {
-		Save.CreateNewPlayer(SelectedSlot, ae::Assets.Elements["textbox_new_name_input"]->Text, COLORS[SelectedColor]);
+		Save.CreateNewPlayer(SelectedSlot, ae::Assets.Elements["textbox_menu_new_name_input"]->Text, COLORS[SelectedColor]);
 		RefreshSaveSlots();
 		ae::FocusedElement = nullptr;
 	}
