@@ -1,11 +1,5 @@
 id	text
 test	This is a test message
-start_campaign	Campaign mode is similar to a linear first-person shooter game, with secrets and bosses.
-start_adventure	Adventure mode is an open-ended game where you can explore dungeons, find new towns, gamble for items, etc.
-world_dungeon0	Old Dungeon
-world_dungeon1	Emerald Dungeon
-world_dungeon2	Ruby Dungeon
-world_dungeon3	Sapphire Dungeon
 tutorial_move	Press the keys [c red]ESDF[c white] to move your character.\n\nMove the [c red]mouse[c white] to look around.
 tutorial_door	To open the door, press [c red]Spacebar[c white] while facing it.
 tutorial_pickup	Press [c red]Spacebar[c white] to pick up items.\n\nPress [c red]C[c white] to open your inventory.
@@ -18,6 +12,9 @@ tutorial_crate	Attack the crate to open it.
 tutorial_swap	Press [c red]W[c white] to switch weapons.
 tutorial_map	Hold [c red]Tab[c white] to view the map.\n\nYellow icons are keys.
 tutorial_flashlight	Press [c red]V[c white] to turn your flashlight on.
-tutorial_boss	Kill the boss to get the last key!
+tutorial_boss	Kill the boss to get the final key!
+tutorial_handling	Increasing your gun handling stat reduces the recoil of your guns.
+tutorial_skills	Skill points can be spent to increase various attributes when you level up. Try increasing [c red]Fortitude[c white] if you are having problems staying alive.
+tutorial_alt	Holding [c red]Alt[c white] will show additional information on the inventory screen.
 mansion_tree	A nearby tree falls...
 mansion_switches	Find the switches to lower the gates.
