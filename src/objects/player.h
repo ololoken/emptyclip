@@ -69,7 +69,7 @@ class _Player : public _Entity {
 		void UpdateReloading();
 		void UpdateWeaponSwitch();
 		void UpdateSpeed(float Factor) override;
-		void UpdateKillCount(int Value) override { Kills += Value; }
+		void UpdateKillCount(int Value) override { TotalKills += Value; }
 		void UpdateSkill(int Index, int Value);
 		void StartReloading();
 		void CancelReloading();
@@ -159,8 +159,12 @@ class _Player : public _Entity {
 		double LevelTime;
 		double ProgressionTime;
 		double PlayTime;
-		int Deaths;
-		int Kills;
+		int TotalDeaths;
+		int TotalKills;
+		int ProgressionKills;
+		int ProgressionDeaths;
+		int ProgressionCrates;
+		int ProgressionSecrets;
 		int64_t Gold;
 		int64_t Experience;
 		int64_t ExperienceNextLevel;

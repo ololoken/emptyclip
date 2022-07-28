@@ -89,8 +89,12 @@ void _Player::DeleteItems() {
 
 // Resets the player state
 void _Player::Reset(bool Recalculate) {
-	Kills = 0;
-	Deaths = 0;
+	TotalKills = 0;
+	TotalDeaths = 0;
+	ProgressionKills = 0;
+	ProgressionCrates = 0;
+	ProgressionSecrets = 0;
+	ProgressionDeaths = 0;
 	PlayTime = 0;
 	ProgressionTime = 0;
 	Clock = GAME_DEFAULT_CLOCK;
@@ -1152,7 +1156,8 @@ void _Player::ResetWeaponAnimation() {
 void _Player::ApplyDeathPenalty() {
 	Reloading = false;
 	SwitchingWeapons = false;
-	Deaths++;
+	TotalDeaths++;
+	ProgressionDeaths++;
 
 	Experience -= ExperienceLost;
 	CalculateExperienceStats();

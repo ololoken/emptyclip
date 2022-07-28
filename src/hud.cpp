@@ -680,14 +680,14 @@ void _HUD::DrawCharacterScreen() {
 	Buffer << Player->DropRate << "%";
 	DrawAttribute("Drop Rate", Buffer, DrawPosition);
 
-	Buffer << Player->Kills;
-	DrawAttribute("Kills", Buffer, DrawPosition);
+	Buffer << Player->TotalKills;
+	DrawAttribute("Total Kills", Buffer, DrawPosition);
 
-	Buffer << Player->Deaths;
-	DrawAttribute("Deaths", Buffer, DrawPosition);
+	Buffer << Player->TotalDeaths;
+	DrawAttribute("Total Deaths", Buffer, DrawPosition);
 
 	FormatTimeHMS(Buffer, Player->PlayTime);
-	DrawAttribute("Play Time", Buffer, DrawPosition);
+	DrawAttribute("Total Play Time", Buffer, DrawPosition);
 
 	if(Player->Progression) {
 		DrawPosition.y += 10 * ae::_Element::GetUIScale();

@@ -46,6 +46,10 @@ enum SaveChunkTypes {
 	CHUNK_DEATHS,
 	CHUNK_PROGRESSIONTIME,
 	CHUNK_CLOCK,
+	CHUNK_PROGRESSIONKILLS,
+	CHUNK_PROGRESSIONCRATES,
+	CHUNK_PROGRESSIONSECRETS,
+	CHUNK_PROGRESSIONDEATHS,
 };
 
 // Write a chunk to a stream
@@ -202,17 +206,29 @@ void _Save::LoadPlayer(_Player *Player) {
 				if(Player->Health <= 0)
 					Player->Health = 1;
 			break;
-			case CHUNK_PLAYTIME: {
+			case CHUNK_PLAYTIME:
 				File.read((char *)&Player->PlayTime, sizeof(Player->PlayTime));
-			} break;
-			case CHUNK_PROGRESSIONTIME: {
+			break;
+			case CHUNK_PROGRESSIONTIME:
 				File.read((char *)&Player->ProgressionTime, sizeof(Player->ProgressionTime));
-			} break;
+			break;
+			case CHUNK_PROGRESSIONKILLS:
+				File.read((char *)&Player->ProgressionKills, sizeof(Player->ProgressionKills));
+			break;
+			case CHUNK_PROGRESSIONCRATES:
+				File.read((char *)&Player->ProgressionCrates, sizeof(Player->ProgressionCrates));
+			break;
+			case CHUNK_PROGRESSIONSECRETS:
+				File.read((char *)&Player->ProgressionSecrets, sizeof(Player->ProgressionSecrets));
+			break;
+			case CHUNK_PROGRESSIONDEATHS:
+				File.read((char *)&Player->ProgressionDeaths, sizeof(Player->ProgressionDeaths));
+			break;
 			case CHUNK_KILLS:
-				File.read((char *)&Player->Kills, sizeof(Player->Kills));
+				File.read((char *)&Player->TotalKills, sizeof(Player->TotalKills));
 			break;
 			case CHUNK_DEATHS:
-				File.read((char *)&Player->Deaths, sizeof(Player->Deaths));
+				File.read((char *)&Player->TotalDeaths, sizeof(Player->TotalDeaths));
 			break;
 			case CHUNK_SKILLS:
 				File.read((char *)&Player->Skills, sizeof(Player->Skills));
@@ -274,9 +290,13 @@ void _Save::SavePlayer(_Player *Player) {
 	WriteChunk(File, CHUNK_PLAYTIME, (char *)&Player->PlayTime, sizeof(Player->PlayTime));
 	WriteChunk(File, CHUNK_PROGRESSIONTIME, (char *)&Player->ProgressionTime, sizeof(Player->ProgressionTime));
 	WriteChunk(File, CHUNK_CLOCK, (char *)&Player->Clock, sizeof(Player->Clock));
-	WriteChunk(File, CHUNK_KILLS, (char *)&Player->Kills, sizeof(Player->Kills));
-	WriteChunk(File, CHUNK_DEATHS, (char *)&Player->Deaths, sizeof(Player->Deaths));
+	WriteChunk(File, CHUNK_KILLS, (char *)&Player->TotalKills, sizeof(Player->TotalKills));
+	WriteChunk(File, CHUNK_DEATHS, (char *)&Player->TotalDeaths, sizeof(Player->TotalDeaths));
 	WriteChunk(File, CHUNK_SKILLS, (char *)&Player->Skills, sizeof(Player->Skills));
+	WriteChunk(File, CHUNK_PROGRESSIONKILLS, (char *)&Player->ProgressionKills, sizeof(Player->ProgressionKills));
+	WriteChunk(File, CHUNK_PROGRESSIONCRATES, (char *)&Player->ProgressionCrates, sizeof(Player->ProgressionCrates));
+	WriteChunk(File, CHUNK_PROGRESSIONSECRETS, (char *)&Player->ProgressionSecrets, sizeof(Player->ProgressionSecrets));
+	WriteChunk(File, CHUNK_PROGRESSIONDEATHS, (char *)&Player->ProgressionDeaths, sizeof(Player->ProgressionDeaths));
 
 	SaveItems(Player, File);
 	SaveAmmo(Player, File);

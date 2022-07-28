@@ -389,6 +389,10 @@ bool _PlayState::HandleCommand(ae::_Console *Console) {
 			if(Parameters.size() == 1) {
 				Player->Progression = std::clamp(ae::ToNumber<int>(Parameters[0]), 0, GAME_MAX_PROGRESSION);
 				Player->ProgressionTime = 0;
+				Player->ProgressionKills = 0;
+				Player->ProgressionCrates = 0;
+				Player->ProgressionSecrets = 0;
+				Player->ProgressionDeaths = 0;
 				Player->RecalculateStats();
 			}
 			else
@@ -1322,13 +1326,21 @@ void _PlayState::CheckEvents(const _Entity *Entity) {
 
 				// End of the game
 				if(Level == "" || (Framework.DemoMode && Level == "c04")) {
-					Menu.SetScoreStats(true, Player->LevelTime, HUD->Kills, HUD->Crates, HUD->Secrets);
+					Menu.SetScoreStats(true, Player->LevelTime, HUD->Kills, HUD->Crates, HUD->Secrets, Player->Progression + 1);
 					Level = GAME_FIRSTLEVEL;
 					Player->Progression++;
 					Player->ProgressionTime = 0;
+					Player->ProgressionKills = 0;
+					Player->ProgressionCrates = 0;
+					Player->ProgressionSecrets = 0;
+					Player->ProgressionDeaths = 0;
 				}
-				else
-					Menu.SetScoreStats(false, Player->LevelTime, HUD->Kills, HUD->Crates, HUD->Secrets);
+				else {
+					Player->ProgressionKills += HUD->Kills[0];
+					Player->ProgressionCrates += HUD->Crates[0];
+					Player->ProgressionSecrets += HUD->Secrets[0];
+					Menu.SetScoreStats(false, Player->LevelTime, HUD->Kills, HUD->Crates, HUD->Secrets, 0);
+				}
 
 				Player->LevelTime = 0;
 				Player->CheckpointIndex = Event->Level;

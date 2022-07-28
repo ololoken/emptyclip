@@ -578,13 +578,13 @@ void _Menu::Render() {
 }
 
 // Update score screen label values
-void _Menu::SetScoreStats(bool EndOfGame, double LevelTime, int *Kills, int *Crates, int *Secrets) {
+void _Menu::SetScoreStats(bool EndOfGame, double LevelTime, int *Kills, int *Crates, int *Secrets, int Progression) {
 	std::ostringstream Buffer;
 
 	// Set title
 	if(EndOfGame) {
 		ae::Assets.Elements["label_menu_score_title"]->Text = "Campaign Complete!";
-		ae::Assets.Elements["label_menu_score_continue"]->Text = "Start Progression 1";
+		ae::Assets.Elements["label_menu_score_continue"]->Text = "Start Progression " + std::to_string(Progression);
 		ae::Assets.Elements["button_menu_score_continue"]->BaseOffset.x = -210;
 		ae::Assets.Elements["button_menu_score_continue"]->BaseSize.x = 380;
 		ae::Assets.Elements["button_menu_score_continue"]->CalculateBounds();

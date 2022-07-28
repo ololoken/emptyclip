@@ -97,7 +97,7 @@ class _Menu {
 		void Update(double FrameTime);
 		void Render();
 
-		void SetScoreStats(bool EndOfGame, double LevelTime, int *Kills, int *Crates, int *Secrets);
+		void SetScoreStats(bool EndOfGame, double LevelTime, int *Kills, int *Crates, int *Secrets, int Progression);
 
 		const StateType &GetState() const { return State; }
 
