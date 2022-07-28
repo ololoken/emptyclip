@@ -398,8 +398,19 @@ bool _PlayState::HandleCommand(ae::_Console *Console) {
 			if(!Player)
 				return true;
 
-			Player->Reset(true);
-			Console->AddMessage("player reset");
+			if(Parameters.size() == 1) {
+				if(Parameters[0] == "skills") {
+					for(int i = 0; i < SKILL_COUNT; i++)
+						Player->Skills[i] = 0;
+
+					Player->RecalculateStats();
+					Console->AddMessage("skills reset");
+				}
+			}
+			else {
+				Player->Reset(true);
+				Console->AddMessage("player reset");
+			}
 		}
 		else
 			return false;
