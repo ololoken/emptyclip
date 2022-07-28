@@ -29,6 +29,7 @@
 #include <ae/ui.h>
 #include <ae/audio.h>
 #include <actiontype.h>
+#include <hud.h>
 #include <constants.h>
 #include <gameassets.h>
 #include <config.h>
@@ -40,11 +41,11 @@
 
 _Menu Menu;
 
-const std::string InputBoxPrefix = "button_menu_options_input_";
-const std::string PlayerButtonPrefix = "button_menu_singleplayer_slot";
-const std::string PlayerColorButtonPrefix = "button_menu_new_color";
+static const std::string InputBoxPrefix = "button_menu_options_input_";
+static const std::string PlayerButtonPrefix = "button_menu_singleplayer_slot";
+static const std::string PlayerColorButtonPrefix = "button_menu_new_color";
 
-const int KeyBindings[] = {
+static const int KeyBindings[] = {
 	Action::GAME_UP,
 	Action::GAME_DOWN,
 	Action::GAME_LEFT,
@@ -61,7 +62,7 @@ const int KeyBindings[] = {
 	Action::GAME_INVENTORY,
 };
 
-const std::string KEYLABEL_IDENTIFIERS[] = {
+static const std::string KEYLABEL_IDENTIFIERS[] = {
 	"label_menu_options_config_up",
 	"label_menu_options_config_down",
 	"label_menu_options_config_left",
@@ -78,7 +79,7 @@ const std::string KEYLABEL_IDENTIFIERS[] = {
 	"label_menu_options_config_inventory",
 };
 
-const char *COLORS[] = {
+static const char *COLORS[] = {
 	"black",
 	"red",
 	"green",
@@ -97,9 +98,6 @@ _Menu::_Menu() {
 
 // Initialize
 void _Menu::InitTitle() {
-	ae::Graphics.Element->SetActive(false);
-	ae::Graphics.Element->Active = true;
-
 	ChangeLayout("element_menu_title");
 
 	std::string BuildVersion;
@@ -161,6 +159,18 @@ void _Menu::InitPlay() {
 	CurrentLayout = nullptr;
 
 	State = STATE_NONE;
+}
+
+// Init the end of level score screen
+void _Menu::InitScore() {
+	ChangeLayout("element_menu_score");
+
+	ae::Graphics.SetCursor(true);
+
+	Background = ae::Assets.Elements["image_menu_bg"];
+	HandleResize();
+
+	State = STATE_SCORE;
 }
 
 // Init new player popup
@@ -262,7 +272,6 @@ bool _Menu::HandleKey(const ae::_KeyEvent &KeyEvent) {
 				Framework.Done = true;
 		} break;
 		case STATE_SINGLEPLAYER: {
-
 			if(SinglePlayerState == SINGLEPLAYER_NONE) {
 				if(KeyEvent.Pressed && KeyEvent.Scancode == SDL_SCANCODE_ESCAPE)
 					InitTitle();
@@ -296,6 +305,12 @@ bool _Menu::HandleKey(const ae::_KeyEvent &KeyEvent) {
 		case STATE_INGAME: {
 			if(KeyEvent.Pressed && KeyEvent.Scancode == SDL_SCANCODE_ESCAPE)
 				InitPlay();
+		} break;
+		case STATE_SCORE: {
+			if(KeyEvent.Pressed && KeyEvent.Scancode == SDL_SCANCODE_ESCAPE) {
+				InitPlay();
+				Framework.ChangeState(&PlayState);
+			}
 		} break;
 		default:
 		break;
@@ -449,6 +464,15 @@ void _Menu::HandleMouseButton(const ae::_MouseEvent &MouseEvent) {
 					Framework.ChangeState(&NullState);
 				}
 			} break;
+			case STATE_SCORE: {
+				if(Clicked->Name == "button_menu_score_continue") {
+					InitPlay();
+					Framework.ChangeState(&PlayState);
+				}
+				else if(Clicked->Name == "button_menu_score_mainmenu") {
+					InitTitle();
+				}
+			} break;
 			default:
 			break;
 		}
@@ -474,6 +498,7 @@ void _Menu::SetFullscreen(bool Fullscreen) {
 
 	// Reload fonts
 	ae::Assets.LoadFonts("tables/fonts.tsv");
+	ae::Graphics.ResetState();
 }
 
 // Update phase
@@ -510,6 +535,7 @@ void _Menu::Render() {
 		case STATE_TITLE: {
 			if(CurrentLayout)
 				CurrentLayout->Render();
+
 			ae::Assets.Elements["label_game_version"]->Render();
 		} break;
 		case STATE_OPTIONS: {
@@ -537,9 +563,12 @@ void _Menu::Render() {
 				if(CurrentLayout)
 					CurrentLayout->Render();
 			}
-
 		} break;
 		case STATE_INGAME: {
+			if(CurrentLayout)
+				CurrentLayout->Render();
+		} break;
+		case STATE_SCORE: {
 			if(CurrentLayout)
 				CurrentLayout->Render();
 		} break;
@@ -548,13 +577,53 @@ void _Menu::Render() {
 	}
 }
 
+// Update score screen label values
+void _Menu::SetScoreStats(bool EndOfGame, double LevelTime, int *Kills, int *Crates, int *Secrets) {
+	std::ostringstream Buffer;
+
+	// Set title
+	if(EndOfGame) {
+		ae::Assets.Elements["label_menu_score_title"]->Text = "Campaign Complete!";
+		ae::Assets.Elements["label_menu_score_continue"]->Text = "Start Progression 1";
+		ae::Assets.Elements["button_menu_score_continue"]->BaseOffset.x = -210;
+		ae::Assets.Elements["button_menu_score_continue"]->BaseSize.x = 380;
+		ae::Assets.Elements["button_menu_score_continue"]->CalculateBounds();
+	}
+	else {
+		ae::Assets.Elements["label_menu_score_title"]->Text = "Level Complete!";
+		ae::Assets.Elements["label_menu_score_continue"]->Text = "Continue";
+		ae::Assets.Elements["button_menu_score_continue"]->BaseOffset.x = -120;
+		ae::Assets.Elements["button_menu_score_continue"]->BaseSize.x = 200;
+		ae::Assets.Elements["button_menu_score_continue"]->CalculateBounds();
+	}
+
+	// Set time
+	char TimeBuffer[256];
+	 _HUD::FormatTime(TimeBuffer, LevelTime);
+	ae::Assets.Elements["label_menu_score_time_value"]->Text = TimeBuffer;
+
+	// Set kills
+	Buffer << Kills[0] << "/" << Kills[1];
+	ae::Assets.Elements["label_menu_score_kills_value"]->Text = Buffer.str();
+	Buffer.str("");
+
+	// Set crates
+	Buffer << Crates[0] << "/" << Crates[1];
+	ae::Assets.Elements["label_menu_score_crates_value"]->Text = Buffer.str();
+	Buffer.str("");
+
+	// Set secrets
+	Buffer << Secrets[0] << "/" << Secrets[1];
+	ae::Assets.Elements["label_menu_score_secrets_value"]->Text = Buffer.str();
+	Buffer.str("");
+}
+
 // Change menu layout
 void _Menu::ChangeLayout(const std::string &ElementName) {
 	ae::Assets.Elements["label_game_version"]->SetActive(false);
 
-	if(CurrentLayout) {
+	if(CurrentLayout)
 		CurrentLayout->SetActive(false);
-	}
 
 	CurrentLayout = ae::Assets.Elements[ElementName];
 	CurrentLayout->SetActive(true);

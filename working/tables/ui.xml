@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <element base_height="1080">
-<element id="element_menu_title" size_x="512" size_y="0">
+	<element id="element_menu_title" size_x="512" size_y="0">
 		<element id="image_menu_title_logo" texture="textures/menu/title.png" size_x="512" size_y="128" offset_y="-450" alignment_y="0"/>
 		<element id="button_menu_title_single" style="style_menu_button" hover_style="style_menu_button_hover" offset_y="-112" size_x="280" size_y="66" alignment_y="0" clickable="true">
 			<element id="label_menu_title_single" font="menu_buttons" text="Play" offset_y="44" alignment_y="3"/>
@@ -45,13 +45,13 @@
 			<element id="label_menu_singleplayer_slot9_text" font="hud_medium" text="Empty Slot" offset_y="160" alignment_y="3" format="true"/>
 		</element>
 		<element id="button_menu_singleplayer_delete" style="style_menu_button" hover_style="style_menu_button_hover" offset_x="-240" offset_y="300" size_x="200" size_y="66" clickable="true">
-			<element id="label_menu_singleplayer_defaults" font="menu_buttons" text="Delete" offset_y="44" alignment_y="3"/>
+			<element id="label_menu_singleplayer_delete" font="menu_buttons" text="Delete" offset_y="44" alignment_y="3"/>
 		</element>
 		<element id="button_menu_singleplayer_play" style="style_menu_button" hover_style="style_menu_button_hover" offset_y="300" size_x="200" size_y="66" clickable="true">
-			<element id="label_menu_singleplayer_save" font="menu_buttons" text="Play" offset_y="44" alignment_y="3"/>
+			<element id="label_menu_singleplayer_play" font="menu_buttons" text="Play" offset_y="44" alignment_y="3"/>
 		</element>
 		<element id="button_menu_singleplayer_back" style="style_menu_button" hover_style="style_menu_button_hover" offset_x="240" offset_y="300" size_x="200" size_y="66" clickable="true">
-			<element id="label_menu_singleplayer_cancel" font="menu_buttons" text="Back" offset_y="44" alignment_y="3"/>
+			<element id="label_menu_singleplayer_back" font="menu_buttons" text="Back" offset_y="44" alignment_y="3"/>
 		</element>
 	</element>
 	<element id="element_menu_new" style="style_menu_window" size_x="400" size_y="350">
@@ -178,6 +178,31 @@
 	<element id="element_menu_popup" style="style_menu_window" size_x="340" size_y="100">
 		<element id="label_menu_options_accept_text" font="hud_medium" text="Press a key or button for" offset_y="35" alignment_y="3"/>
 		<element id="label_menu_options_accept_text_action" font="hud_medium" offset_y="75" alignment_y="3"/>
+	</element>
+	<element id="element_menu_score" size_x="512" size_y="984">
+		<element id="label_menu_score_title" font="hud_large" text="Level Complete!" offset_y="-350"/>
+		<element id="element_menu_score_time" offset_y="-150">
+			<element id="label_menu_score_time" font="menu_buttons" text="Time" offset_x="-10" alignment_x="2" alignment_y="3"/>
+			<element id="label_menu_score_time_value" font="menu_buttons" text="" offset_x="10" alignment_x="0" alignment_y="3"/>
+		</element>
+		<element id="element_menu_score_kills" offset_y="-75">
+			<element id="label_menu_score_kills" font="menu_buttons" text="Kills" offset_x="-10" alignment_x="2" alignment_y="3"/>
+			<element id="label_menu_score_kills_value" font="menu_buttons" text="" offset_x="10" alignment_x="0" alignment_y="3"/>
+		</element>
+		<element id="element_menu_score_crates" offset_y="0">
+			<element id="label_menu_score_crates" font="menu_buttons" text="Crates" offset_x="-10" alignment_x="2" alignment_y="3"/>
+			<element id="label_menu_score_crates_value" font="menu_buttons" text="" offset_x="10" alignment_x="0" alignment_y="3"/>
+		</element>
+		<element id="element_menu_score_secrets" offset_y="75">
+			<element id="label_menu_score_secrets" font="menu_buttons" text="Secrets" offset_x="-10" alignment_x="2" alignment_y="3"/>
+			<element id="label_menu_score_secrets_value" font="menu_buttons" text="" offset_x="10" alignment_x="0" alignment_y="3"/>
+		</element>
+		<element id="button_menu_score_continue" style="style_menu_button" hover_style="style_menu_button_hover" offset_x="-210" offset_y="400" size_x="380" size_y="66" clickable="true">
+			<element id="label_menu_score_continue" font="menu_buttons" text="Continue" offset_y="44" alignment_y="3"/>
+		</element>
+		<element id="button_menu_score_mainmenu" style="style_menu_button" hover_style="style_menu_button_hover" offset_x="120" offset_y="400" size_x="200" size_y="66" clickable="true">
+			<element id="label_menu_score_mainmenu" font="menu_buttons" text="Main Menu" offset_y="44" alignment_y="3"/>
+		</element>
 	</element>
 	<element id="element_hud_player_info" offset_x="20" offset_y="40" alignment_x="0" alignment_y="0">
 		<element id="label_hud_player_name" font="menu_buttons" alignment_x="0" alignment_y="3"/>

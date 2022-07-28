@@ -23,12 +23,22 @@
 
 _NullState NullState;
 
+// Constructor
+_NullState::_NullState() :
+	LevelComplete(false) {
+}
+
 void _NullState::Init() {
-	Menu.InitTitle();
-};
+	if(LevelComplete)
+		Menu.InitScore();
+	else
+		Menu.InitTitle();
+
+	LevelComplete = false;
+}
 
 void _NullState::Close() {
-};
+}
 
 // Key handler
 bool _NullState::HandleKey(const ae::_KeyEvent &KeyEvent) {
@@ -37,7 +47,7 @@ bool _NullState::HandleKey(const ae::_KeyEvent &KeyEvent) {
 		return Menu.HandleKey(KeyEvent);
 
 	return false;
-};
+}
 
 // Mouse handler
 void _NullState::HandleMouseButton(const ae::_MouseEvent &MouseEvent) {
@@ -53,7 +63,7 @@ void _NullState::HandleWindow(uint8_t Event) {
 // Handle quit events
 void _NullState::HandleQuit() {
 	Framework.Done = true;
-};
+}
 
 // Update
 void _NullState::Update(double FrameTime) {
@@ -62,9 +72,9 @@ void _NullState::Update(double FrameTime) {
 	//	std::cout << ae::Graphics.Element->HitElement->Name << std::endl;
 
 	Menu.Update(FrameTime);
-};
+}
 
 // Render the state
 void _NullState::Render(double BlendFactor) {
 	Menu.Render();
-};
+}

@@ -29,6 +29,7 @@ Empty Clip 2.0.0 -
 - Removed player profiles
 - Players now respawn at their last checkpoint with invulnerability for three seconds
 - The game now gets harder with every campaign completion
+- Added end of level screen
 - Added damage number particles
 - Improved bullet hole decals
 - The game now pauses while menu is open

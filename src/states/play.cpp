@@ -1317,19 +1317,18 @@ void _PlayState::CheckEvents(const _Entity *Entity) {
 					break;
 				}
 			break;
-			case EVENT_ENDLEVEL:
+			case EVENT_ENDLEVEL: {
 				Level = Event->ItemID;
 
 				// End of the game
 				if(Level == "" || (Framework.DemoMode && Level == "c04")) {
+					Menu.SetScoreStats(true, Player->LevelTime, HUD->Kills, HUD->Crates, HUD->Secrets);
 					Level = GAME_FIRSTLEVEL;
 					Player->Progression++;
 					Player->ProgressionTime = 0;
-					Framework.ChangeState(&NullState);
 				}
-				// Next level
 				else
-					Framework.ChangeState(&PlayState);
+					Menu.SetScoreStats(false, Player->LevelTime, HUD->Kills, HUD->Crates, HUD->Secrets);
 
 				Player->LevelTime = 0;
 				Player->CheckpointIndex = Event->Level;
@@ -1337,7 +1336,10 @@ void _PlayState::CheckEvents(const _Entity *Entity) {
 				if(Map->MapType == MAPTYPE_CAMPAIGN)
 					Player->Keys.clear();
 				Save.SavePlayer(Player);
-			break;
+
+				NullState.LevelComplete = true;
+				Framework.ChangeState(&NullState);
+			} break;
 			case EVENT_TEXT: {
 				bool ShowMessage = true;
 				bool IsTutorial = Event->ItemID.find("tutorial_") == 0;

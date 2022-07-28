@@ -40,6 +40,7 @@ class _Menu {
 			STATE_SINGLEPLAYER,
 			STATE_OPTIONS,
 			STATE_INGAME,
+			STATE_SCORE,
 		};
 
 		enum OptionsStateType {
@@ -85,6 +86,7 @@ class _Menu {
 		void InitOptions();
 		void InitInGame();
 		void InitPlay();
+		void InitScore();
 		void Close();
 
 		bool HandleKey(const ae::_KeyEvent &KeyEvent);
@@ -94,6 +96,8 @@ class _Menu {
 
 		void Update(double FrameTime);
 		void Render();
+
+		void SetScoreStats(bool EndOfGame, double LevelTime, int *Kills, int *Crates, int *Secrets);
 
 		const StateType &GetState() const { return State; }
 

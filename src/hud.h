@@ -112,6 +112,9 @@ class _HUD {
 		void ShowTextMessage(const std::string &Message, double Time, bool Override=true);
 		void ShowMessageBox(const std::string &Message, double Time, const glm::vec2 &Size);
 
+		static void FormatTime(char *Buffer, double Time);
+		static void FormatTimeHMS(std::ostringstream &Buffer, int64_t Time);
+
 		// Objects
 		_Entity *LastEntityHit;
 
@@ -135,8 +138,6 @@ class _HUD {
 		void DrawItemLevel(_Item *Item, const glm::vec2 &Position);
 		void DrawAttribute(const std::string &Label, std::ostringstream &Buffer, glm::vec2 &DrawPosition) const;
 		void UpdateSkillTooltip(int Skill, const glm::vec2 &DrawPosition);
-		void FormatTime(char *Buffer, double Time);
-		void FormatTimeHMS(std::ostringstream &Buffer, int64_t Time);
 
 		// State
 		_Player *Player;
