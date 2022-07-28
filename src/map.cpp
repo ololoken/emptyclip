@@ -1823,7 +1823,7 @@ int _Map::RenderFloors() {
 }
 
 // Renders the walls
-int _Map::RenderWalls() {
+int _Map::RenderWalls(bool SkipFloating) {
 	if(!Camera)
 		return 0;
 
@@ -1838,6 +1838,8 @@ int _Map::RenderWalls() {
 	int Count = 0;
 	for(size_t i = 0; i < Blocks[MAPLAYER_WALL].size(); i++) {
 		_Block *Block = &Blocks[MAPLAYER_WALL][i];
+		if(SkipFloating && Block->MinZ > 0)
+			continue;
 
 		// Always draw walls that go lower than floor
 		bool Draw = true;

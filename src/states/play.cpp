@@ -727,7 +727,7 @@ void _PlayState::Render(double BlendFactor) {
 	int ParticleRenderCount = Map->RenderParticles(_Particles::FLOOR_DECALS);
 
 	// Draw walls and props below objects
-	BlockRenderCount += Map->RenderWalls();
+	BlockRenderCount += Map->RenderWalls(true);
 	int PropRenderCount = Map->RenderProps();
 
 	// Draw objects

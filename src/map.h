@@ -221,7 +221,7 @@ class _Map {
 		void SetAmbientLight(const std::string &ColorID);
 
 		int RenderFloors();
-		int RenderWalls();
+		int RenderWalls(bool SkipFloating=false);
 		int RenderFlatWalls();
 		int RenderParticles(int Type);
 		int RenderForeground();

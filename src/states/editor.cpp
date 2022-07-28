@@ -872,8 +872,8 @@ void _EditorState::Render(double BlendFactor) {
 		}
 	}
 
-	// Draw walls clipped with MaxZ=OBJECT_Z
-	Map->RenderWalls();
+	// Draw walls below objects
+	Map->RenderWalls(true);
 
 	// Draw objects
 	ae::Graphics.SetProgram(ae::Assets.Programs["pos_uv"]);
