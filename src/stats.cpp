@@ -84,7 +84,7 @@ void _Stats::LoadStrings(const std::string &Path) {
 
 		// Check for duplicates
 		if(Strings.find(ID) != Strings.end())
-			throw std::runtime_error(std::string(__func__) + " - Duplicate entry '" + ID + "'");
+			throw std::runtime_error(std::string(__func__) + " duplicate id '" + ID + "'");
 
 		Strings[ID] = Text;
 	}
@@ -160,8 +160,7 @@ void _Stats::LoadAmmo(const std::string &Path) {
 	while(!File.eof() && File.peek() != EOF) {
 
 		_ObjectTemplate Template(_Object::AMMO);
-		std::string ID;
-		std::getline(File, ID, '\t');
+		std::getline(File, Template.ID, '\t');
 		std::getline(File, Template.Name, '\t');
 		std::getline(File, Template.IconID, '\t');
 
@@ -170,14 +169,14 @@ void _Stats::LoadAmmo(const std::string &Path) {
 
 		// Check for loaded textures
 		if(!ae::Assets.Textures[Template.IconID])
-			throw std::runtime_error(std::string(__func__) + " - Texture not found: " + Template.IconID);
+			throw std::runtime_error(std::string(__func__) + " unknown texture '" + Template.IconID + "'");
 
 		// Check for duplicates
-		if(Objects.find(ID) != Objects.end())
-			throw std::runtime_error(std::string(__func__) + " - Duplicate entry '" + ID + "'");
+		if(Objects.find(Template.ID) != Objects.end())
+			throw std::runtime_error(std::string(__func__) + " duplicate id '" + Template.ID + "'");
 
-		Objects.insert(std::make_pair(ID, Template));
-		AmmoNames.push_back(ID);
+		Objects.insert(std::make_pair(Template.ID, Template));
+		AmmoNames.push_back(Template.ID);
 	}
 
 	File.close();
@@ -198,10 +197,9 @@ void _Stats::LoadWeapons(const std::string &Path) {
 	while(!File.eof() && File.peek() != EOF) {
 
 		_ObjectTemplate Template(_Object::WEAPON);
-		std::string ID;
 		std::string SoundGroupID;
 		std::string WeaponParticlesID;
-		std::getline(File, ID, '\t');
+		std::getline(File, Template.ID, '\t');
 		std::getline(File, Template.Name, '\t');
 		std::getline(File, Template.IconID, '\t');
 		std::getline(File, Template.MeleeID, '\t');
@@ -271,10 +269,10 @@ void _Stats::LoadWeapons(const std::string &Path) {
 			Template.ParticleGroup = &BlankWeaponParticle;
 
 		// Check for duplicates
-		if(Objects.find(ID) != Objects.end())
-			throw std::runtime_error(std::string(__func__) + " - Duplicate entry '" + ID + "'");
+		if(Objects.find(Template.ID) != Objects.end())
+			throw std::runtime_error(std::string(__func__) + " duplicate id '" + Template.ID + "'");
 
-		Objects.insert(std::make_pair(ID, Template));
+		Objects.insert(std::make_pair(Template.ID, Template));
 	}
 
 	File.close();
@@ -295,8 +293,7 @@ void _Stats::LoadArmor(const std::string &Path) {
 	while(!File.eof() && File.peek() != EOF) {
 
 		_ObjectTemplate Template(_Object::ARMOR);
-		std::string ID;
-		std::getline(File, ID, '\t');
+		std::getline(File, Template.ID, '\t');
 		std::getline(File, Template.Name, '\t');
 		std::getline(File, Template.IconID, '\t');
 
@@ -316,13 +313,13 @@ void _Stats::LoadArmor(const std::string &Path) {
 
 		// Check for loaded textures
 		if(!ae::Assets.Textures[Template.IconID])
-			throw std::runtime_error(std::string(__func__) + " - Texture not found: " + Template.IconID);
+			throw std::runtime_error(std::string(__func__) + " unknown texture '" + Template.IconID + "'");
 
 		// Check for duplicates
-		if(Objects.find(ID) != Objects.end())
-			throw std::runtime_error(std::string(__func__) + " - Duplicate entry '" + ID + "'");
+		if(Objects.find(Template.ID) != Objects.end())
+			throw std::runtime_error(std::string(__func__) + " duplicate id '" + Template.ID + "'");
 
-		Objects.insert(std::make_pair(ID, Template));
+		Objects.insert(std::make_pair(Template.ID, Template));
 	}
 
 	File.close();
@@ -343,25 +340,24 @@ void _Stats::LoadKeys(const std::string &Path) {
 	while(!File.eof() && File.peek() != EOF) {
 
 		_ObjectTemplate Template(_Object::KEY);
-		std::string ID;
 		std::string DoorColorID;
-		std::getline(File, ID, '\t');
+		std::getline(File, Template.ID, '\t');
 		std::getline(File, Template.Name, '\t');
 		std::getline(File, Template.IconID, '\t');
 		std::getline(File, DoorColorID, '\n');
 
 		// Check for loaded textures
 		if(!ae::Assets.Textures[Template.IconID])
-			throw std::runtime_error(std::string(__func__) + " - Cannot find texture: " + Template.IconID);
+			throw std::runtime_error(std::string(__func__) + " unknown texture '" + Template.IconID + "'");
 
 		// Set color
 		SetColor(Template.DoorColor, DoorColorID);
 
 		// Check for duplicates
-		if(Objects.find(ID) != Objects.end())
-			throw std::runtime_error(std::string(__func__) + " - Duplicate entry '" + ID + "'");
+		if(Objects.find(Template.ID) != Objects.end())
+			throw std::runtime_error(std::string(__func__) + " duplicate id '" + Template.ID + "'");
 
-		Objects.insert(std::make_pair(ID, Template));
+		Objects.insert(std::make_pair(Template.ID, Template));
 	}
 
 	File.close();
@@ -417,8 +413,7 @@ void _Stats::LoadMods(const std::string &Path) {
 	while(!File.eof() && File.peek() != EOF) {
 
 		_ObjectTemplate Template(_Object::MOD);
-		std::string ID;
-		std::getline(File, ID, '\t');
+		std::getline(File, Template.ID, '\t');
 		std::getline(File, Template.Name, '\t');
 		std::getline(File, Template.IconID, '\t');
 
@@ -434,14 +429,14 @@ void _Stats::LoadMods(const std::string &Path) {
 
 		// Check for loaded textures
 		if(!ae::Assets.Textures[Template.IconID])
-			throw std::runtime_error(std::string(__func__) + " - Cannot find texture: " + Template.IconID);
+			throw std::runtime_error(std::string(__func__) + " unknown texture '" + Template.IconID + "'");
 
 		// Check for duplicates
-		if(Objects.find(ID) != Objects.end())
-			throw std::runtime_error(std::string(__func__) + " - Duplicate entry '" + ID + "'");
+		if(Objects.find(Template.ID) != Objects.end())
+			throw std::runtime_error(std::string(__func__) + " duplicate id '" + Template.ID + "'");
 
-		Objects.insert(std::make_pair(ID, Template));
-		ModNames.push_back(ID);
+		Objects.insert(std::make_pair(Template.ID, Template));
+		ModNames.push_back(Template.ID);
 	}
 
 	File.close();
@@ -495,7 +490,7 @@ void _Stats::LoadItemDrops(const std::string &Path) {
 		}
 		else {
 			if(Objects.find(ItemDropEntry.ItemID) == Objects.end())
-				throw std::runtime_error(std::string(__func__) + " Unknown item_id '" + ItemDropEntry.ItemID + "' in " + Path);
+				throw std::runtime_error(std::string(__func__) + " unknown item_id '" + ItemDropEntry.ItemID + "' in " + Path);
 
 			ItemDropEntry.Type = Objects.at(ItemDropEntry.ItemID).Type;
 		}
@@ -532,10 +527,9 @@ void _Stats::LoadMonsters(const std::string &Path) {
 	while(!File.eof() && File.peek() != EOF) {
 
 		_ObjectTemplate Template(_Object::MONSTER);
-		std::string ID;
 		std::string WeaponParticlesID;
 		std::string ColorID;
-		std::getline(File, ID, '\t');
+		std::getline(File, Template.ID, '\t');
 		std::getline(File, Template.Name, '\t');
 		std::getline(File, Template.AnimationID, '\t');
 		std::getline(File, Template.MeshID, '\t');
@@ -571,7 +565,7 @@ void _Stats::LoadMonsters(const std::string &Path) {
 
 		// Check for animation
 		if(ae::Assets.Animations.find(Template.AnimationID) == ae::Assets.Animations.end())
-			throw std::runtime_error(std::string(__func__) + " - Unknown animation_id: '" + Template.AnimationID + "' for " + ID);
+			throw std::runtime_error(std::string(__func__) + " unknown animation_id '" + Template.AnimationID + "' for '" + Template.ID + "'");
 
 		// Set color
 		SetColor(Template.Color, ColorID);
@@ -584,21 +578,21 @@ void _Stats::LoadMonsters(const std::string &Path) {
 
 		// Check for sound group
 		if(GameAssets.SoundGroups.find(Template.SoundGroupID) == GameAssets.SoundGroups.end())
-			throw std::runtime_error(std::string(__func__) + " Unknown soundgroup_id: '" + Template.SoundGroupID + "' for " + ID);
+			throw std::runtime_error(std::string(__func__) + " unknown soundgroup_id '" + Template.SoundGroupID + "' for '" + Template.ID + "'");
 
 		// Check for item group
 		if(Template.ItemDropID != "" && ItemDrops.find(Template.ItemDropID) == ItemDrops.end())
-			throw std::runtime_error(std::string(__func__) + " Unknown itemdrop_id: '" + Template.ItemDropID + "' for " + ID);
+			throw std::runtime_error(std::string(__func__) + " unknown itemdrop_id '" + Template.ItemDropID + "' for '" + Template.ID + "'");
 
 		// Check for mesh
 		if(Template.MeshID != "" && ae::Assets.Meshes.find(Template.MeshID) == ae::Assets.Meshes.end())
-			throw std::runtime_error(std::string(__func__) + " Unknown mesh_id: '" + Template.MeshID + "' for " + ID);
+			throw std::runtime_error(std::string(__func__) + " unknown mesh_id '" + Template.MeshID + "' for '" + Template.ID + "'");
 
 		// Check for duplicates
-		if(Stats.Objects.find(ID) != Stats.Objects.end())
-			throw std::runtime_error(std::string(__func__) + " Duplicate id: '" + ID + "'");
+		if(Stats.Objects.find(Template.ID) != Stats.Objects.end())
+			throw std::runtime_error(std::string(__func__) + " duplicate id '" + Template.ID + "'");
 
-		Objects.insert(std::make_pair(ID, Template));
+		Objects.insert(std::make_pair(Template.ID, Template));
 	}
 
 	File.close();
@@ -619,8 +613,7 @@ void _Stats::LoadProps(const std::string &Path) {
 	while(!File.eof() && File.peek() != EOF) {
 
 		_ObjectTemplate Template(_Object::PROP);
-		std::string ID;
-		std::getline(File, ID, '\t');
+		std::getline(File, Template.ID, '\t');
 		std::getline(File, Template.Name, '\t');
 		std::getline(File, Template.IconID, '\t');
 		std::getline(File, Template.MeshID, '\t');
@@ -641,10 +634,10 @@ void _Stats::LoadProps(const std::string &Path) {
 			throw std::runtime_error(std::string(__func__) + " unknown mesh '" + Template.MeshID + "'");
 
 		// Check for duplicates
-		if(Objects.find(ID) != Objects.end())
-			throw std::runtime_error(std::string(__func__) + " duplicate id '" + ID + "'");
+		if(Objects.find(Template.ID) != Objects.end())
+			throw std::runtime_error(std::string(__func__) + " duplicate id '" + Template.ID + "'");
 
-		Objects.insert(std::make_pair(ID, Template));
+		Objects.insert(std::make_pair(Template.ID, Template));
 	}
 
 	File.close();
@@ -665,8 +658,7 @@ void _Stats::LoadProjectiles(const std::string &Path) {
 	while(!File.eof() && File.peek() != EOF) {
 
 		_ObjectTemplate Template(_Object::PROJECTILE);
-		std::string ID;
-		std::getline(File, ID, '\t');
+		std::getline(File, Template.ID, '\t');
 		std::getline(File, Template.IconID, '\t');
 
 		File
@@ -680,10 +672,10 @@ void _Stats::LoadProjectiles(const std::string &Path) {
 			throw std::runtime_error(std::string(__func__) + " unknown texture '" + Template.IconID + "'");
 
 		// Check for duplicates
-		if(Objects.find(ID) != Objects.end())
-			throw std::runtime_error(std::string(__func__) + " duplicate id '" + ID + "'");
+		if(Objects.find(Template.ID) != Objects.end())
+			throw std::runtime_error(std::string(__func__) + " duplicate id '" + Template.ID + "'");
 
-		Objects.insert(std::make_pair(ID, Template));
+		Objects.insert(std::make_pair(Template.ID, Template));
 	}
 
 	File.close();

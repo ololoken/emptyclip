@@ -102,7 +102,7 @@ void _GameAssets::LoadSoundGroups(const std::string &Path) {
 
 		// Check for duplicates
 		if(SoundGroups.find(ID) != SoundGroups.end())
-			throw std::runtime_error(std::string(__func__) + " - Duplicate entry '" + ID + "'");
+			throw std::runtime_error(std::string(__func__) + " duplicate id '" + ID + "'");
 
 		// Read rest of line into buffer
 		std::string Line;

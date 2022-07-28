@@ -66,6 +66,7 @@ struct _ObjectTemplate {
 	_ObjectTemplate(int Type) : ParticleGroup(nullptr), Color(1.0f), DoorColor(1.0f), Type(Type) { }
 	bool IsItem() const;
 
+	std::string ID;
 	std::string Name;
 	std::string IconID;
 	std::string MeleeID;

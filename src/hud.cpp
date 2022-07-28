@@ -499,11 +499,11 @@ void _HUD::Render(const ae::_Camera *Camera, bool FullMap) {
 					}
 				}
 				else {
-					_Item *CompareWeapon = Player->GetOffHand();
-					CompareSlot = INVENTORY_OFFHAND;
-					if(Player->GetMainHand() && Player->GetMainHand()->Attributes.at("weapon_type").Int == CursorOverItem->Attributes.at("weapon_type").Int) {
-						CompareWeapon = Player->GetMainHand();
-						CompareSlot = INVENTORY_MAINHAND;
+					_Item *CompareWeapon = Player->GetMainHand();
+					CompareSlot = INVENTORY_MAINHAND;
+					if(Player->GetOffHand() && Player->GetOffHand()->Template.ID == CursorOverItem->Template.ID) {
+						CompareWeapon = Player->GetOffHand();
+						CompareSlot = INVENTORY_OFFHAND;
 					}
 
 					if(CompareWeapon)
