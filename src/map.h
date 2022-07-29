@@ -272,6 +272,7 @@ class _Map {
 
 		// Stats
 		std::string Filename;
+		std::string Name;
 		glm::vec4 BaseAmbientLight;
 		glm::ivec2 Size;
 		int MapType;

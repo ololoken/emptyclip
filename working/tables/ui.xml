@@ -533,4 +533,5 @@
 	<element id="image_menu_bg" texture="textures/menu/sky.png" size_x="1024" size_y="768"/>
 	<element id="label_game_version" font="hud_tiny" offset_x="20" offset_y="-20" alignment_x="0" alignment_y="2"/>
 	<element id="label_hud_message" font="hud_message" offset_y="150" alignment_y="0"/>
+	<element id="label_hud_levelname" font="hud_large" offset_y="200" alignment_y="0"/>
 </element>

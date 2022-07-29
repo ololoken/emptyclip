@@ -847,7 +847,7 @@ float _Player::GetCrosshairRadius(const glm::vec2 &Cursor) {
 // Checks if the player's weapon has ammo
 bool _Player::WeaponHasAmmo(int AttackType) const {
 	if(AttackType == WEAPONATTACK_MAIN) {
-		if(!HasMainHand() || Stats.Objects.at(GetMainHand()->ID).AmmoID == "")
+		if(!HasMainHand() || Stats.Objects.at(GetMainHand()->ID).AmmoID.empty())
 			return true;
 
 		return GetMainHand()->Attributes.at("ammo").Int > 0;

@@ -463,7 +463,7 @@ void _Stats::LoadItemDrops(const std::string &Path) {
 	std::vector<std::string> ItemDropNames;
 	std::string DropName;
 	while(std::getline(Buffer, DropName, '\t')) {
-		if(DropName == "")
+		if(DropName.empty())
 			continue;
 
 		ItemDropNames.push_back(DropName);

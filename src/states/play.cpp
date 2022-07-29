@@ -104,7 +104,7 @@ void _PlayState::Init() {
 		Player->CheckpointIndex = CheckpointIndex;
 
 	// Check for level override
-	if(Level == "")
+	if(Level.empty())
 		Level = Player->MapID;
 
 	// Create framebuffer for mixing lights
@@ -125,12 +125,16 @@ void _PlayState::Init() {
 	for(const auto &ObjectSpawn : Map->ObjectSpawns)
 		SpawnObject(ObjectSpawn, false, Player->GetAddedLevel());
 
-	// Initialize objects
+	// Initialize HUD
 	HUD = new _HUD(Player);
 	HUD->SetStats(Map->Monsters, Map->Crates, Map->Secrets);
+	if(Player->CheckpointIndex == 0 && !Map->Name.empty())
+		HUD->ShowLevelName(Map->Name, UI_LEVELNAME_TIME);
+
+	// Initialize particles
 	Particles = new _Particles();
 
-	// Set up camera
+	// Initialize camera
 	ae::_CameraSettings CameraSettings;
 	CameraSettings.UpdateDivisor = CAMERA_DIVISOR;
 	Camera = new ae::_Camera(CameraSettings);
@@ -1325,7 +1329,7 @@ void _PlayState::CheckEvents(const _Entity *Entity) {
 				Level = Event->ItemID;
 
 				// End of the game
-				if(Level == "" || (Framework.DemoMode && Level == "c04")) {
+				if(Level.empty() || (Framework.DemoMode && Level == "c04")) {
 					Menu.SetScoreStats(true, Player->LevelTime, HUD->Kills, HUD->Crates, HUD->Secrets, Player->Progression + 1);
 					Level = GAME_FIRSTLEVEL;
 					Player->Progression++;

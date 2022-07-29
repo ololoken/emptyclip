@@ -59,6 +59,7 @@ class _HUD {
 			ELEMENT_SKILLINFO,
 			LABEL_MESSAGE,
 			LABEL_MESSAGEBOX,
+			LABEL_LEVELNAME,
 			LABEL_PLAYERNAME,
 			LABEL_PLAYERLEVEL,
 			LABEL_PLAYERHEALTH,
@@ -111,6 +112,7 @@ class _HUD {
 
 		void ShowTextMessage(const std::string &Message, double Time, bool Override=true);
 		void ShowMessageBox(const std::string &Message, double Time, const glm::vec2 &Size);
+		void ShowLevelName(const std::string &Name, double Time);
 
 		static void FormatTime(char *Buffer, double Time);
 		static void FormatTimeHMS(std::ostringstream &Buffer, int64_t Time);
@@ -156,6 +158,7 @@ class _HUD {
 		// Messages
 		double MessageTimer;
 		double MessageBoxTimer;
+		double LevelNameTimer;
 
 		// Text
 		ae::_Font *Fonts[FONT_COUNT];

@@ -88,7 +88,7 @@ _Map::_Map() :
 
 // Initialize
 _Map::_Map(const std::string &Filename, double Clock, int SpawnMultiplier) : _Map() {
-	if(Filename == "")
+	if(Filename.empty())
 		throw std::runtime_error("Empty file name");
 
 	this->Filename = FixFilename(Filename);
@@ -135,6 +135,10 @@ _Map::_Map(const std::string &Filename, double Clock, int SpawnMultiplier) : _Ma
 					// Size
 					case 's': {
 						File >> Size.x >> Size.y;
+					} break;
+					case 'n': {
+						File.ignore(1);
+						std::getline(File, Name, '\n');
 					} break;
 					// Ambient light
 					case 'a': {
@@ -394,6 +398,7 @@ bool _Map::Save(const std::string &String) {
 	File << "Hl " << Level << '\n';
 	File << "Ht " << MapType << '\n';
 	File << "Hs " << Size.x << ' ' << Size.y << '\n';
+	File << "Hn " << Name << '\n';
 	File << "Ha " << BaseAmbientLight.r << ' ' << BaseAmbientLight.g << ' ' << BaseAmbientLight.b << '\n';
 	File << "Hc " << AmbientClock << '\n';
 	File << "Hb " << SimpleAI << '\n';

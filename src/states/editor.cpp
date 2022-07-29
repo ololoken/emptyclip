@@ -287,7 +287,7 @@ bool _EditorState::HandleKey(const ae::_KeyEvent &KeyEvent) {
 				const std::string InputText = InputBox->Children.front()->Text;
 				switch(EditorInput) {
 					case EDITINPUT_LOAD: {
-						if(InputText == "")
+						if(InputText.empty())
 							break;
 
 						if(LoadMap(InputText, false))
@@ -295,7 +295,7 @@ bool _EditorState::HandleKey(const ae::_KeyEvent &KeyEvent) {
 
 					} break;
 					case EDITINPUT_SAVE:
-						if(InputText == "" || !Map->Save(InputText))
+						if(InputText.empty() || !Map->Save(InputText))
 							SavedText[EditorInput] = "";
 						else {
 							SavedText[EditorInput] = InputText;

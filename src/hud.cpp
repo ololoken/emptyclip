@@ -70,6 +70,7 @@ _HUD::_HUD(_Player *Player) :
 	CrosshairScale = 0.0f;
 	MessageTimer = 0.0;
 	MessageBoxTimer = 0.0;
+	LevelNameTimer = 0.0;
 	InventoryOpen = false;
 
 	// Get textures
@@ -82,9 +83,11 @@ _HUD::_HUD(_Player *Player) :
 	// Elements
 	Elements[LABEL_MESSAGE] = ae::Assets.Elements["label_hud_message"];
 	Elements[LABEL_MESSAGEBOX] = ae::Assets.Elements["label_hud_messagebox_text"];
+	Elements[LABEL_LEVELNAME] = ae::Assets.Elements["label_hud_levelname"];
 
 	Elements[LABEL_MESSAGE]->SetActive(true);
 	Elements[LABEL_MESSAGEBOX]->SetActive(true);
+	Elements[LABEL_LEVELNAME]->SetActive(true);
 
 	Elements[ELEMENT_PLAYERINFO] = ae::Assets.Elements["element_hud_player_info"];
 	Elements[LABEL_PLAYERNAME] = ae::Assets.Elements["label_hud_player_name"];
@@ -328,11 +331,15 @@ void _HUD::Update(double FrameTime, float Radius) {
 
 	MessageTimer -= FrameTime;
 	if(MessageTimer < 0.0)
-		MessageTimer = 0;
+		MessageTimer = 0.0;
 
 	MessageBoxTimer -= FrameTime;
 	if(MessageBoxTimer < 0.0)
-		MessageBoxTimer = 0;
+		MessageBoxTimer = 0.0;
+
+	LevelNameTimer -= FrameTime;
+	if(LevelNameTimer < 0.0)
+		LevelNameTimer = 0.0;
 }
 
 // Draw phase
@@ -356,6 +363,14 @@ void _HUD::Render(const ae::_Camera *Camera, bool FullMap) {
 			Elements[ELEMENT_MESSAGE]->SetFade(MessageBoxTimer);
 
 		Elements[ELEMENT_MESSAGE]->Render();
+	}
+
+	// Level Name
+	if(LevelNameTimer > 0.0) {
+		if(LevelNameTimer < 1.0)
+			Elements[LABEL_LEVELNAME]->SetFade(LevelNameTimer);
+
+		Elements[LABEL_LEVELNAME]->Render();
 	}
 
 	// Draw enemy health
@@ -919,7 +934,7 @@ void _HUD::ShowTextMessage(const std::string &Message, double Time, bool Overrid
 
 // Show message box
 void _HUD::ShowMessageBox(const std::string &Message, double Time, const glm::vec2 &Size) {
-	if(Message == "")
+	if(Message.empty())
 		return;
 
 	if(MessageBoxTimer > 0.0 && Elements[LABEL_MESSAGEBOX]->Text == Message)
@@ -932,6 +947,13 @@ void _HUD::ShowMessageBox(const std::string &Message, double Time, const glm::ve
 	Elements[LABEL_MESSAGEBOX]->Text = Message;
 	Elements[LABEL_MESSAGEBOX]->SetWrap(Elements[ELEMENT_MESSAGE]->Size.x - 35 * ae::_Element::GetUIScale());
 	MessageBoxTimer = Time;
+}
+
+// Display level name
+void _HUD::ShowLevelName(const std::string &Name, double Time) {
+	Elements[LABEL_LEVELNAME]->Text = Name;
+	Elements[LABEL_LEVELNAME]->SetFade(1.0f);
+	LevelNameTimer = Time;
 }
 
 // Format time for elapsed time
