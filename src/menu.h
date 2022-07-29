@@ -51,6 +51,7 @@ class _Menu {
 		enum SinglePlayerStateType {
 			SINGLEPLAYER_NONE,
 			SINGLEPLAYER_NEW_PLAYER,
+			SINGLEPLAYER_DELETE,
 		};
 
 		enum KeyLabelType {
@@ -87,6 +88,7 @@ class _Menu {
 		void InitInGame();
 		void InitPlay();
 		void InitScore();
+		void ConfirmAction();
 		void Close();
 
 		bool HandleKey(const ae::_KeyEvent &KeyEvent);
@@ -101,6 +103,7 @@ class _Menu {
 
 		const StateType &GetState() const { return State; }
 
+
 	private:
 
 		void ChangeLayout(const std::string &ElementName);
@@ -112,7 +115,7 @@ class _Menu {
 		void UpdateVolume();
 		void RefreshInputLabels();
 		void RefreshSaveSlots();
-		void CancelCreate();
+		void SinglePlayerCancel();
 		void CreatePlayer();
 		void ClearAction(int Action, int Type);
 		void RemapInput(int InputType, int Input);

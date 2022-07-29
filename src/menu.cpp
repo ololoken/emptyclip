@@ -279,7 +279,7 @@ bool _Menu::HandleKey(const ae::_KeyEvent &KeyEvent) {
 			else {
 				if(KeyEvent.Pressed) {
 					if(KeyEvent.Scancode == SDL_SCANCODE_ESCAPE)
-						CancelCreate();
+						SinglePlayerCancel();
 					else if(KeyEvent.Scancode == SDL_SCANCODE_RETURN)
 						CreatePlayer();
 				}
@@ -366,57 +366,67 @@ void _Menu::HandleMouseButton(const ae::_MouseEvent &MouseEvent) {
 				}
 			} break;
 			case STATE_SINGLEPLAYER: {
-				if(SinglePlayerState == SINGLEPLAYER_NONE) {
-
-					if(Clicked->Name == "button_menu_singleplayer_delete") {
-						if(SelectedSlot != -1) {
-							Save.DeletePlayer(SelectedSlot);
-							RefreshSaveSlots();
-
-							SaveSlots[SelectedSlot]->Checked = false;
-							SelectedSlot = -1;
+				switch(SinglePlayerState) {
+					case SINGLEPLAYER_NONE:
+						if(Clicked->Name == "button_menu_singleplayer_delete") {
+							if(SelectedSlot != -1) {
+								CurrentLayout->SetClickable(false);
+								SinglePlayerState = SINGLEPLAYER_DELETE;
+								ConfirmAction();
+							}
 						}
-					}
-					else if(Clicked->Name == "button_menu_singleplayer_play") {
-						if(SelectedSlot != -1 && Save.GetPlayer(SelectedSlot)) {
-							LaunchGame();
+						else if(Clicked->Name == "button_menu_singleplayer_play") {
+							if(SelectedSlot != -1 && Save.GetPlayer(SelectedSlot)) {
+								LaunchGame();
+							}
 						}
-					}
-					else if(Clicked->Name == "button_menu_singleplayer_back") {
-						InitTitle();
-					}
-					else if(Clicked->Name.substr(0, PlayerButtonPrefix.size()) == PlayerButtonPrefix) {
-
-						// Deselect previous slot
-						if(SelectedSlot != -1)
-							SaveSlots[SelectedSlot]->Checked = false;
-
-						// Set up create player screen
-						if(!Save.GetPlayer(Clicked->Index)) {
-							InitNewPlayer();
+						else if(Clicked->Name == "button_menu_singleplayer_back") {
+							InitTitle();
 						}
+						else if(Clicked->Name.substr(0, PlayerButtonPrefix.size()) == PlayerButtonPrefix) {
 
-						SelectedSlot = Clicked->Index;
-						SaveSlots[SelectedSlot]->Checked = true;
+							// Deselect previous slot
+							if(SelectedSlot != -1)
+								SaveSlots[SelectedSlot]->Checked = false;
 
-						if(DoubleClick)
-							LaunchGame();
-					}
-				}
-				else {
-					if(Clicked->Name.substr(0, PlayerColorButtonPrefix.size()) == PlayerColorButtonPrefix) {
-						if(SelectedColor != -1)
-							ColorButtons[SelectedColor]->Checked = false;
+							// Set up create player screen
+							if(!Save.GetPlayer(Clicked->Index)) {
+								InitNewPlayer();
+							}
 
-						SelectedColor = Clicked->Index;
-						ColorButtons[SelectedColor]->Checked = true;
-					}
-					else if(Clicked->Name == "button_menu_new_create") {
-						CreatePlayer();
-					}
-					else if(Clicked->Name == "button_menu_new_cancel") {
-						CancelCreate();
-					}
+							SelectedSlot = Clicked->Index;
+							SaveSlots[SelectedSlot]->Checked = true;
+
+							if(DoubleClick)
+								LaunchGame();
+						}
+					break;
+					case SINGLEPLAYER_NEW_PLAYER:
+						if(Clicked->Name.substr(0, PlayerColorButtonPrefix.size()) == PlayerColorButtonPrefix) {
+							if(SelectedColor != -1)
+								ColorButtons[SelectedColor]->Checked = false;
+
+							SelectedColor = Clicked->Index;
+							ColorButtons[SelectedColor]->Checked = true;
+						}
+						else if(Clicked->Name == "button_menu_new_create") {
+							CreatePlayer();
+						}
+						else if(Clicked->Name == "button_menu_new_cancel") {
+							SinglePlayerCancel();
+						}
+					break;
+					case SINGLEPLAYER_DELETE:
+						if(Clicked->Name == "button_confirm_ok") {
+							if(SelectedSlot != -1) {
+								Save.DeletePlayer(SelectedSlot);
+								InitSinglePlayer();
+							}
+						}
+						else if(Clicked->Name == "button_confirm_cancel") {
+							SinglePlayerCancel();
+						}
+					break;
 				}
 			} break;
 			case STATE_OPTIONS: {
@@ -558,7 +568,7 @@ void _Menu::Render() {
 					Player->Render2D(SaveSlots[i]->Bounds.GetCenter());
 			}
 
-			if(SinglePlayerState == SINGLEPLAYER_NEW_PLAYER) {
+			if(SinglePlayerState == SINGLEPLAYER_NEW_PLAYER || SinglePlayerState == SINGLEPLAYER_DELETE) {
 				ae::Graphics.FadeScreen(ae::Assets.Programs["ortho_pos"], MENU_ACCEPTINPUT_FADE);
 				if(CurrentLayout)
 					CurrentLayout->Render();
@@ -583,14 +593,14 @@ void _Menu::SetScoreStats(bool EndOfGame, double LevelTime, int *Kills, int *Cra
 
 	// Set title
 	if(EndOfGame) {
-		ae::Assets.Elements["label_menu_score_title"]->Text = "Campaign Complete!";
+		ae::Assets.Elements["label_menu_score_title"]->Text = "Campaign Completed!";
 		ae::Assets.Elements["label_menu_score_continue"]->Text = "Start Progression " + std::to_string(Progression);
 		ae::Assets.Elements["button_menu_score_continue"]->BaseOffset.x = -210;
 		ae::Assets.Elements["button_menu_score_continue"]->BaseSize.x = 380;
 		ae::Assets.Elements["button_menu_score_continue"]->CalculateBounds();
 	}
 	else {
-		ae::Assets.Elements["label_menu_score_title"]->Text = "Level Complete!";
+		ae::Assets.Elements["label_menu_score_title"]->Text = "Level Completed!";
 		ae::Assets.Elements["label_menu_score_continue"]->Text = "Continue";
 		ae::Assets.Elements["button_menu_score_continue"]->BaseOffset.x = -120;
 		ae::Assets.Elements["button_menu_score_continue"]->BaseSize.x = 200;
@@ -599,7 +609,7 @@ void _Menu::SetScoreStats(bool EndOfGame, double LevelTime, int *Kills, int *Cra
 
 	// Set time
 	char TimeBuffer[256];
-	 _HUD::FormatTime(TimeBuffer, LevelTime);
+	_HUD::FormatTime(TimeBuffer, LevelTime);
 	ae::Assets.Elements["label_menu_score_time_value"]->Text = TimeBuffer;
 
 	// Set kills
@@ -667,14 +677,15 @@ void _Menu::RefreshInputLabels() {
 	}
 }
 
-// Cancel create screen
-void _Menu::CancelCreate() {
+// Cancel on single player screen
+void _Menu::SinglePlayerCancel() {
 	CurrentLayout = ae::Assets.Elements["element_menu_singleplayer"];
 	CurrentLayout->SetClickable(true);
 	SinglePlayerState = SINGLEPLAYER_NONE;
 	ae::FocusedElement = nullptr;
 
 	SaveSlots[SelectedSlot]->Checked = false;
+	SelectedSlot = -1;
 }
 
 // Handle player creation
@@ -720,4 +731,12 @@ void _Menu::RemapInput(int InputType, int Input) {
 
 	// Update menu labels
 	RefreshInputLabels();
+}
+
+// Show the confirm screen
+void _Menu::ConfirmAction() {
+	CurrentLayout = ae::Assets.Elements["element_confirm"];
+	ae::Assets.Elements["label_confirm_warning"]->Text = "Are you sure?";
+
+	CurrentLayout->SetActive(true);
 }
