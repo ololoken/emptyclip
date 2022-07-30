@@ -127,9 +127,7 @@ float _Entity::GenerateShotDirection() {
 	float BurstModifier = BurstRounds[WEAPONATTACK_MAIN] ? 1.0f / BurstRounds[WEAPONATTACK_MAIN] : 1.0f;
 
 	// Update accuracy based on the weapon's recoil
-	CurrentAccuracy += Recoil * RecoilModifier * BurstModifier;
-	if(CurrentAccuracy > MaxAccuracy[WEAPONATTACK_MAIN])
-		CurrentAccuracy = MaxAccuracy[WEAPONATTACK_MAIN];
+	CurrentAccuracy = std::min(CurrentAccuracy + Recoil * RecoilModifier * BurstModifier, MaxAccuracy[WEAPONATTACK_MAIN]);
 
 	return NewDirection;
 }
@@ -326,13 +324,9 @@ void _Entity::UpdateAnimation(double FrameTime, bool PlaySound) {
 	}
 }
 
-// Updates the entity's accuracy according to the weapon's recoil
+// Update accuracy based on weapon's recoil regen
 void _Entity::UpdateRecoil(double FrameTime) {
-
-	// Update accuracy
-	CurrentAccuracy -= RecoilRegen * FrameTime / RecoilModifier;
-	if(CurrentAccuracy < MinAccuracy)
-		CurrentAccuracy = MinAccuracy;
+	CurrentAccuracy = std::max(CurrentAccuracy - RecoilRegen * FrameTime / RecoilModifier, (double)MinAccuracy);
 }
 
 // Moves the object with collision detection
@@ -560,8 +554,9 @@ void _Entity::OnAttack(_Entity *Victim, const _Hit &Hit) {
 
 // Called when an entity is hit
 void _Entity::OnHit(_Entity *Attacker, const _Hit &Hit) {
-	LastHitTimer = 0.0;
 	ae::Audio.PlaySound(GetSound(SOUND_TAKEDAMAGE, -1), ae::_SoundSettings(glm::vec3(Hit.Position.x, 0.0f, Hit.Position.y)));
+	CurrentAccuracy = std::min(CurrentAccuracy + Recoil, MaxAccuracy[WEAPONATTACK_MAIN]);
+	LastHitTimer = 0.0;
 }
 
 // Update move modifier

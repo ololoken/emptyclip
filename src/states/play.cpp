@@ -773,8 +773,9 @@ void _PlayState::Render(double BlendFactor) {
 	BlockRenderCount += Map->RenderForeground();
 
 	// Draw the crosshair
+	glm::vec2 CursorDrawPosition = WorldCursor * (float)BlendFactor + PreviousWorldCursor * (float)(1.0f - BlendFactor);
 	if(!Player->IsDying())
-		HUD->DrawCrosshair(WorldCursor * (float)BlendFactor + PreviousWorldCursor * (float)(1.0f - BlendFactor));
+		HUD->DrawCrosshair(CursorDrawPosition);
 
 	// Debug
 	if(GodMode && DevMode && DebugMode) {
@@ -827,6 +828,16 @@ void _PlayState::Render(double BlendFactor) {
 	ae::Graphics.SetStaticUniforms();
 	ae::Graphics.SetDepthTest(false);
 	ae::Graphics.SetDepthMask(false);
+
+	// Show accuracy in degrees
+	if(ae::Input.ModKeyDown(KMOD_ALT)) {
+		glm::vec2 AccuracyDrawPosition;
+		Camera->ConvertWorldToScreen(CursorDrawPosition, AccuracyDrawPosition);
+		std::ostringstream Buffer;
+		Buffer << ae::Round1(Player->CurrentAccuracy);
+		ae::Assets.Fonts["hud_tiny"]->DrawText(Buffer.str(), glm::ivec2(AccuracyDrawPosition + glm::vec2(7, 7)), ae::LEFT_BASELINE);
+		Buffer.str("");
+	}
 
 	// Draw damage text numbers
 	Particles->Render(_Particles::TEXT);

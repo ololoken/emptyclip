@@ -58,6 +58,10 @@ _Player::_Player(const _ObjectTemplate &PlayerTemplate) :
 	for(int i = 2; i < WEAPON_COUNT; i++)
 		WeaponOffset[i] = PLAYER_WEAPONOFFSET;
 
+	// Allow attacks when player loads
+	for(int i = 0; i < WEAPONATTACK_COUNT; i++)
+		AttackTimer[i] = 100.0;
+
 	// Inventory
 	for(int i = 0; i < INVENTORY_SIZE; i++)
 		Inventory[i] = nullptr;
