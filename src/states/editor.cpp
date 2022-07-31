@@ -27,6 +27,7 @@
 #include <ae/program.h>
 #include <ae/animation.h>
 #include <ae/framebuffer.h>
+#include <ae/util.h>
 #include <objects/monster.h>
 #include <objects/player.h>
 #include <gameassets.h>
@@ -402,9 +403,15 @@ bool _EditorState::HandleKey(const ae::_KeyEvent &KeyEvent) {
 				else
 					ExecuteCopy();
 			break;
-			case SDL_SCANCODE_V:
-				ExecutePaste(true, IsShiftDown);
-			break;
+			case SDL_SCANCODE_V: {
+				int PasteMode = 0;
+				if(IsShiftDown)
+					PasteMode = 1;
+				else if(IsCtrlDown)
+					PasteMode = 2;
+
+				ExecutePaste(true, PasteMode);
+			} break;
 			case SDL_SCANCODE_G:
 				if(IsShiftDown)
 					ExecuteUpdateGridMode(-1);
@@ -1238,8 +1245,10 @@ void _EditorState::DrawBrush() {
 			float BlockMaxZ;
 			bool BlockWalkable;
 			float TextRotation;
+			glm::vec4 BlockColor(1.0f);
 			if(BlockSelected()) {
 				IconText = "";
+				BlockColor = SelectedBlock->Color;
 				IconTexture = SelectedBlock->Texture;
 				if(IconTexture)
 					IconText = IconTexture->Name;
@@ -1270,33 +1279,40 @@ void _EditorState::DrawBrush() {
 
 			IconID = "";
 
-			glm::vec2 TextPosition(IconPosition.x + EDITOR_PALETTE_SELECTEDSIZE + 290, IconPosition.y - EDITOR_PALETTE_SELECTEDSIZE - 3);
+			glm::vec2 TextPosition(IconPosition.x + EDITOR_PALETTE_SELECTEDSIZE + 290, IconPosition.y - EDITOR_PALETTE_SELECTEDSIZE - 21);
 			glm::vec2 ValueOffset(5, 0);
 			std::ostringstream Buffer;
+
+			Buffer << ae::Round2(BlockColor.r) << ","  << ae::Round2(BlockColor.g) << "," << ae::Round2(BlockColor.b);
+			MainFont->DrawText("Color:", glm::ivec2(TextPosition), ae::RIGHT_BASELINE);
+			MainFont->DrawText(Buffer.str(), glm::ivec2(TextPosition + ValueOffset));
+			Buffer.str("");
+			TextPosition.y += TextSpacingY;
+
 			Buffer << TextRotation;
 			MainFont->DrawText("Rotation:", glm::ivec2(TextPosition), ae::RIGHT_BASELINE);
 			MainFont->DrawText(Buffer.str(), glm::ivec2(TextPosition + ValueOffset));
 			Buffer.str("");
-
 			TextPosition.y += TextSpacingY;
+
 			Buffer << BlockMinZ;
 			MainFont->DrawText("Min Z:", glm::ivec2(TextPosition), ae::RIGHT_BASELINE);
 			MainFont->DrawText(Buffer.str(), glm::ivec2(TextPosition + ValueOffset));
 			Buffer.str("");
-
 			TextPosition.y += TextSpacingY;
+
 			Buffer << BlockMaxZ;
 			MainFont->DrawText("Max Z:", glm::ivec2(TextPosition), ae::RIGHT_BASELINE);
 			MainFont->DrawText(Buffer.str(), glm::ivec2(TextPosition + ValueOffset));
 			Buffer.str("");
-
 			TextPosition.y += TextSpacingY;
+
 			Buffer << IconScaleX;
 			MainFont->DrawText("ScaleX:", glm::ivec2(TextPosition), ae::RIGHT_BASELINE);
 			MainFont->DrawText(Buffer.str(), glm::ivec2(TextPosition + ValueOffset));
 			Buffer.str("");
-
 			TextPosition.y += TextSpacingY;
+
 			Buffer << BlockWalkable;
 			MainFont->DrawText("Walk:", glm::ivec2(TextPosition), ae::RIGHT_BASELINE);
 			MainFont->DrawText(Buffer.str(), glm::ivec2(TextPosition + ValueOffset));
@@ -2009,7 +2025,7 @@ void _EditorState::ExecuteCopy() {
 }
 
 // Executes the paste command
-void _EditorState::ExecutePaste(bool Viewport, bool ColorOnly) {
+void _EditorState::ExecutePaste(bool Viewport, int PasteMode) {
 	glm::vec2 StartPosition;
 
 	if(Viewport)
@@ -2020,9 +2036,12 @@ void _EditorState::ExecutePaste(bool Viewport, bool ColorOnly) {
 	switch(EditMode) {
 		case EDITMODE_BLOCKS:
 			if(BlockCopied) {
-				if(ColorOnly) {
+				if(PasteMode) {
 					if(SelectedBlock) {
-						SelectedBlock->Color = ClipboardBlock.Color;
+						if(PasteMode == 1)
+							SelectedBlock->Color = ClipboardBlock.Color;
+						else if(PasteMode == 2)
+							SelectedBlock->Texture = ClipboardBlock.Texture;
 					}
 				}
 				else {

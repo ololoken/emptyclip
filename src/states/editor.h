@@ -196,7 +196,7 @@ class _EditorState : public ae::_State {
 		void ExecuteTest();
 		void ExecuteDelete();
 		void ExecuteCopy();
-		void ExecutePaste(bool Viewport, bool ColorOnly=false);
+		void ExecutePaste(bool Viewport, int PasteMode=0);
 		void ExecuteDeselect();
 		void ExecuteChangeZ(float Change, int Type);
 		void ExecuteChangeLevel(int Change);
