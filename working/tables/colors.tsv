@@ -39,3 +39,6 @@ editor_hover	1	1	1	0.2
 ghost	1	1	1	0.1
 inventory_overlay	0	0	0	0.6
 teleport	0.13	0.04	0.37	1
+wood_red	0.66	0.33	0.33	1
+wood_green	0.33	0.66	0.33	1
+wood_blue	0.25	0.4	0.75	1
