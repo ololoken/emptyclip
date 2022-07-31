@@ -284,7 +284,11 @@ _Map::_Map(const std::string &Filename, double Clock, int SpawnMultiplier) : _Ma
 					} break;
 					// Bounds
 					case 'b': {
-						File >> Block->Start.x >> Block->Start.y >> Block->End.x >> Block->End.y >> Block->MinZ	>> Block->MaxZ;
+						File >> Block->Start.x >> Block->Start.y >> Block->End.x >> Block->End.y >> Block->MinZ >> Block->MaxZ;
+					} break;
+					// Color
+					case 'c': {
+						File >> Block->Color.r >> Block->Color.g >> Block->Color.b >> Block->Color.a;
 					} break;
 					// Rotation
 					case 'r': {
@@ -443,6 +447,7 @@ bool _Map::Save(const std::string &String) {
 		for(const auto &Block : Blocks[i]) {
 			File << "Bn" << i << '\n';
 			File << "Bb " << Block.Start.x << ' ' << Block.Start.y << ' ' << Block.End.x << ' ' << Block.End.y << ' ' << Block.MinZ << ' ' << Block.MaxZ << '\n';
+			File << "Bc" << Block.Color.r << ' ' << Block.Color.g << ' ' << Block.Color.b << ' ' << Block.Color.a << '\n';
 			File << "Br " << Block.Rotation << '\n';
 			File << "Bm " << Block.ScaleX << '\n';
 			File << "Bw " << Block.Walkable << '\n';
@@ -1755,7 +1760,6 @@ int _Map::RenderFloors() {
 
 	// Draw base layer
 	ae::Graphics.SetProgram(ae::Assets.Programs["map"]);
-	ae::Graphics.SetColor(glm::vec4(1.0f));
 	ae::Graphics.SetDepthTest(false);
 	ae::Graphics.SetDepthMask(false);
 
@@ -1773,6 +1777,7 @@ int _Map::RenderFloors() {
 		if(!Draw || !Block->Texture)
 			continue;
 
+		ae::Graphics.SetColor(Block->Color);
 		ae::Graphics.DrawRepeatable(
 			glm::vec3(Block->Start.x, Block->Start.y, Block->MinZ + MAP_LAYEROFFSET * i),
 			glm::vec3(Block->End.x + 1.0f, Block->End.y + 1.0f, Block->MinZ + MAP_LAYEROFFSET * i),
@@ -1802,6 +1807,7 @@ int _Map::RenderFloors() {
 				if(!Draw || !Block->Texture)
 					continue;
 
+				ae::Graphics.SetColor(Block->Color);
 				ae::Graphics.DrawRepeatable(
 					glm::vec3(Block->Start.x, Block->Start.y, Block->MinZ + MAP_LAYEROFFSET * i),
 					glm::vec3(Block->End.x + 1.0f, Block->End.y + 1.0f, Block->MinZ + MAP_LAYEROFFSET * i),
@@ -1813,6 +1819,7 @@ int _Map::RenderFloors() {
 				Count++;
 			}
 			else if(Block->Texture) {
+				ae::Graphics.SetColor(Block->Color);
 				ae::Graphics.DrawCube(
 					glm::vec3(Block->Start.x, Block->Start.y, Block->MinZ),
 					glm::vec3(Block->End.x - Block->Start.x + 1.0f, Block->End.y - Block->Start.y + 1.0f, Block->MaxZ - Block->MinZ),
@@ -1834,7 +1841,6 @@ int _Map::RenderWalls(bool SkipFloating) {
 
 	// Set up graphics
 	ae::Graphics.SetProgram(ae::Assets.Programs["map_norm"]);
-	ae::Graphics.SetColor(glm::vec4(1.0f));
 	ae::Graphics.SetDepthMask(true);
 	ae::Graphics.SetDepthTest(true);
 	ae::Graphics.SetCullFace(true);
@@ -1859,6 +1865,7 @@ int _Map::RenderWalls(bool SkipFloating) {
 			continue;
 
 		// Draw cube
+		ae::Graphics.SetColor(Block->Color);
 		ae::Graphics.DrawCube(
 			glm::vec3(Block->Start.x, Block->Start.y, Block->MinZ),
 			glm::vec3(Block->End.x - Block->Start.x + 1.0f, Block->End.y - Block->Start.y + 1.0f, Block->MaxZ - Block->MinZ),
@@ -1877,7 +1884,6 @@ int _Map::RenderWalls(bool SkipFloating) {
 int _Map::RenderFlatWalls() {
 
 	ae::Graphics.SetProgram(ae::Assets.Programs["map_norm"]);
-	ae::Graphics.SetColor(glm::vec4(1.0f));
 	ae::Graphics.SetDepthMask(false);
 	ae::Graphics.SetDepthTest(true);
 
@@ -1919,6 +1925,8 @@ int _Map::RenderFlatWalls() {
 				Offset.x = -0.5f;
 			}
 		}
+
+		ae::Graphics.SetColor(Block->Color);
 		ae::Graphics.DrawWall(
 			glm::vec3(glm::vec2(Block->Start) + Offset, Block->MinZ),
 			glm::vec3(Block->End.x - Block->Start.x + 1.0f, Block->End.y - Block->Start.y + 1.0f, Block->MaxZ - Block->MinZ),
@@ -1965,7 +1973,6 @@ int _Map::RenderForeground() {
 
 	// Set up graphics
 	ae::Graphics.SetProgram(ae::Assets.Programs["map_norm"]);
-	ae::Graphics.SetColor(glm::vec4(1.0f));
 	ae::Graphics.SetDepthMask(true);
 	ae::Graphics.SetDepthTest(true);
 
@@ -1986,6 +1993,7 @@ int _Map::RenderForeground() {
 			continue;
 
 		// Draw
+		ae::Graphics.SetColor(Block->Color);
 		ae::Graphics.DrawRepeatable(
 			glm::vec3(Block->Start.x, Block->Start.y, Block->MaxZ + MAP_LAYEROFFSET),
 			glm::vec3(Block->End.x + 1.0f, Block->End.y + 1.0f, Block->MaxZ + MAP_LAYEROFFSET),

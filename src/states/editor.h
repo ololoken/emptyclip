@@ -103,6 +103,7 @@ enum EditorInputTypes {
 	EDITINPUT_ITEMIDENTIFIER,
 	EDITINPUT_MONSTERIDENTIFIER,
 	EDITINPUT_PARTICLEIDENTIFIER,
+	EDITINPUT_COLOR,
 	EDITINPUT_COUNT
 };
 
@@ -195,7 +196,7 @@ class _EditorState : public ae::_State {
 		void ExecuteTest();
 		void ExecuteDelete();
 		void ExecuteCopy();
-		void ExecutePaste(bool Viewport);
+		void ExecutePaste(bool Viewport, bool ColorOnly=false);
 		void ExecuteDeselect();
 		void ExecuteChangeZ(float Change, int Type);
 		void ExecuteChangeLevel(int Change);

@@ -2,6 +2,7 @@ id	r	g	b	a
 white	1	1	1	1
 red	1	0	0	1
 red_dark	0.5	0	0	1
+red_darker	0.25	0	0	1
 green	0	1	0	1
 green_dark	0	0.5	0	1
 blue	0	0	1	1
@@ -37,3 +38,4 @@ ambient_dawn	0.625	0.5	0.375	1
 editor_hover	1	1	1	0.2
 ghost	1	1	1	0.1
 inventory_overlay	0	0	0	0.6
+teleport	0.13	0.04	0.37	1

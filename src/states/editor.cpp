@@ -57,6 +57,7 @@ const char *InputBoxStrings[EDITINPUT_COUNT] = {
 	"Set item",
 	"Set monster",
 	"Set particle",
+	"Color",
 };
 
 // Input box
@@ -309,6 +310,12 @@ bool _EditorState::HandleKey(const ae::_KeyEvent &KeyEvent) {
 						if(!EventSelected())
 							SavedText[EditorInput] = InputText;
 					break;
+					case EDITINPUT_COLOR:
+						if(BlockSelected()) {
+							if(ae::Assets.Colors.find(InputText) != ae::Assets.Colors.end())
+								SelectedBlock->Color = ae::Assets.Colors[InputText];
+						}
+					break;
 				}
 				ae::FocusedElement = nullptr;
 				EditorInput = -1;
@@ -388,10 +395,15 @@ bool _EditorState::HandleKey(const ae::_KeyEvent &KeyEvent) {
 				ExecuteDelete();
 			break;
 			case SDL_SCANCODE_C:
-				ExecuteCopy();
+				if(IsShiftDown) {
+					ExecuteIOCommand(EDITINPUT_COLOR);
+					Framework.IgnoreNextInputEvent = true;
+				}
+				else
+					ExecuteCopy();
 			break;
 			case SDL_SCANCODE_V:
-				ExecutePaste(true);
+				ExecutePaste(true, IsShiftDown);
 			break;
 			case SDL_SCANCODE_G:
 				if(IsShiftDown)
@@ -1997,7 +2009,7 @@ void _EditorState::ExecuteCopy() {
 }
 
 // Executes the paste command
-void _EditorState::ExecutePaste(bool Viewport) {
+void _EditorState::ExecutePaste(bool Viewport, bool ColorOnly) {
 	glm::vec2 StartPosition;
 
 	if(Viewport)
@@ -2008,13 +2020,20 @@ void _EditorState::ExecutePaste(bool Viewport) {
 	switch(EditMode) {
 		case EDITMODE_BLOCKS:
 			if(BlockCopied) {
-				int Width = ClipboardBlock.End.x - ClipboardBlock.Start.x;
-				int Height = ClipboardBlock.End.y - ClipboardBlock.Start.y;
-				ClipboardBlock.Start = Map->GetValidCoord(glm::ivec2(StartPosition));
-				ClipboardBlock.End = Map->GetValidCoord(glm::ivec2(StartPosition.x + Width, StartPosition.y + Height));
+				if(ColorOnly) {
+					if(SelectedBlock) {
+						SelectedBlock->Color = ClipboardBlock.Color;
+					}
+				}
+				else {
+					int Width = ClipboardBlock.End.x - ClipboardBlock.Start.x;
+					int Height = ClipboardBlock.End.y - ClipboardBlock.Start.y;
+					ClipboardBlock.Start = Map->GetValidCoord(glm::ivec2(StartPosition));
+					ClipboardBlock.End = Map->GetValidCoord(glm::ivec2(StartPosition.x + Width, StartPosition.y + Height));
 
-				UndoNumber[EditLayer]++;
-				Map->AddBlock(EditLayer, ClipboardBlock);
+					UndoNumber[EditLayer]++;
+					Map->AddBlock(EditLayer, ClipboardBlock);
+				}
 			}
 		break;
 		case EDITMODE_EVENTS:
