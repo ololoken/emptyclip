@@ -340,7 +340,16 @@ bool _PlayState::HandleCommand(ae::_Console *Console) {
 
 	// Handle dev commands
 	if(DevMode) {
-		if(Console->Command == "clock") {
+		if(Console->Command == "ammo") {
+			if(!Player)
+				return true;
+
+			for(const auto &Ammo : Stats.AmmoNames)
+				Player->Ammo[Ammo] = Player->AmmoMax[Ammo];
+
+			Console->AddMessage("ammo replenished");
+		}
+		else if(Console->Command == "clock") {
 			if(!Player)
 				return true;
 
@@ -385,6 +394,17 @@ bool _PlayState::HandleCommand(ae::_Console *Console) {
 			}
 			else
 				Console->AddMessage("usage: " + Console->Command + " [+-][amount]");
+		}
+		else if(Console->Command == "keys") {
+			if(!Player)
+				return true;
+
+			Player->Keys["key_red"] = 1;
+			Player->Keys["key_green"] = 1;
+			Player->Keys["key_blue"] = 1;
+			Player->Keys["key_boss"] = 1;
+
+			Console->AddMessage("keys acquired");
 		}
 		else if(Console->Command == "progression") {
 			if(!Player)
