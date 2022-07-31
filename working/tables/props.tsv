@@ -1,3 +1,4 @@
 id	name	texture_id	mesh_id	halfsize_x	halfsize_y	scale
 stump	Stump	textures/props/stump.png	meshes/stump.mesh	0.5	0	1
 tree	Tree	textures/props/tree.png	meshes/tree.mesh	0.5	0	20
+toilet	Toilet	textures/props/toilet.png	meshes/toilet.mesh	0.5	0	1
