@@ -78,6 +78,7 @@ enum EditorModeType {
 };
 
 enum EditorBlockIconTypes {
+	ICON_COLOR,
 	ICON_WALK,
 	ICON_ROTATE,
 	ICON_MIRROR,

@@ -863,6 +863,7 @@ void _EditorState::Render(double BlendFactor) {
 				ae::Graphics.SetDepthTest(true);
 			}
 			else {
+				ae::Graphics.SetColor(COLOR_WHITE);
 				if(EditLayer == MAPLAYER_FORE)
 					ae::Graphics.DrawRepeatable(glm::vec3(DrawStart.x, DrawStart.y, MaxZ + MAP_LAYEROFFSET), glm::vec3(DrawEnd.x, DrawEnd.y, MaxZ + MAP_LAYEROFFSET), Brush[EditMode]->Style->Texture, Rotation, ScaleX);
 				else if(EditLayer == MAPLAYER_FLAT) {
@@ -1607,6 +1608,10 @@ void _EditorState::ProcessIcons(int Index, int Type) {
 // Processes clicks on the block buttons
 void _EditorState::ProcessBlockIcons(int Index, int Type) {
 	switch(Index) {
+		case ICON_COLOR:
+			if(SelectedBlock)
+				ExecuteIOCommand(EDITINPUT_COLOR);
+		break;
 		case ICON_WALK:
 			ExecuteWalkable();
 		break;
@@ -2036,13 +2041,15 @@ void _EditorState::ExecutePaste(bool Viewport, int PasteMode) {
 	switch(EditMode) {
 		case EDITMODE_BLOCKS:
 			if(BlockCopied) {
-				if(PasteMode) {
-					if(SelectedBlock) {
-						if(PasteMode == 1)
-							SelectedBlock->Color = ClipboardBlock.Color;
-						else if(PasteMode == 2)
-							SelectedBlock->Texture = ClipboardBlock.Texture;
+				if(SelectedBlock) {
+					if(PasteMode == 0) {
+						SelectedBlock->Color = ClipboardBlock.Color;
+						SelectedBlock->Texture = ClipboardBlock.Texture;
 					}
+					else if(PasteMode == 1)
+						SelectedBlock->Color = ClipboardBlock.Color;
+					else if(PasteMode == 2)
+						SelectedBlock->Texture = ClipboardBlock.Texture;
 				}
 				else {
 					int Width = ClipboardBlock.End.x - ClipboardBlock.Start.x;

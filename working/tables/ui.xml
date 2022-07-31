@@ -461,23 +461,27 @@
 		</element>
 	</element>
 	<element id="element_editor_blocks" offset_x="382" offset_y="-81" size_x="304" size_y="32" alignment_x="0" alignment_y="2" scaled="false">
-		<element id="button_editor_walk" style="style_editor_button_cyan" hover_style="style_editor_button_selected" size_x="32" size_y="32" alignment_x="0" alignment_y="0" clickable="true" scaled="false" index="0">
+		<element id="button_editor_color" style="style_editor_button_cyan" hover_style="style_editor_button_selected" size_x="32" size_y="32" alignment_x="0" alignment_y="0" clickable="true" scaled="false" index="0">
+			<element id="label_button_editor_color" font="editor_tiny" text="Color" offset_x="0" offset_y="12" alignment_x="1" alignment_y="3" scaled="false"/>
+			<element id="label_button_editor_color_key" font="editor_tiny" text="S C" offset_x="0" offset_y="26" alignment_x="1" alignment_y="3" scaled="false"/>
+		</element>
+		<element id="button_editor_walk" style="style_editor_button_cyan" hover_style="style_editor_button_selected" offset_x="34" size_x="32" size_y="32" alignment_x="0" alignment_y="0" clickable="true" scaled="false" index="1">
 			<element id="label_button_editor_walk" font="editor_tiny" text="Walk" offset_x="0" offset_y="12" alignment_x="1" alignment_y="3" scaled="false"/>
 			<element id="label_button_editor_walk_key" font="editor_tiny" text="A" offset_x="0" offset_y="26" alignment_x="1" alignment_y="3" scaled="false"/>
 		</element>
-		<element id="button_editor_rotate" style="style_editor_button_cyan" hover_style="style_editor_button_selected" offset_x="34" size_x="32" size_y="32" alignment_x="0" alignment_y="0" clickable="true" scaled="false" index="1">
+		<element id="button_editor_rotate" style="style_editor_button_cyan" hover_style="style_editor_button_selected" offset_x="68" size_x="32" size_y="32" alignment_x="0" alignment_y="0" clickable="true" scaled="false" index="2">
 			<element id="label_button_editor_rotate" font="editor_tiny" text="Rot" offset_x="0" offset_y="12" alignment_x="1" alignment_y="3" scaled="false"/>
 			<element id="label_button_editor_rotate_key" font="editor_tiny" text="R" offset_x="0" offset_y="26" alignment_x="1" alignment_y="3" scaled="false"/>
 		</element>
-		<element id="button_editor_mirror" style="style_editor_button_cyan" hover_style="style_editor_button_selected" offset_x="68" size_x="32" size_y="32" alignment_x="0" alignment_y="0" clickable="true" scaled="false" index="2">
+		<element id="button_editor_mirror" style="style_editor_button_cyan" hover_style="style_editor_button_selected" offset_x="102" size_x="32" size_y="32" alignment_x="0" alignment_y="0" clickable="true" scaled="false" index="3">
 			<element id="label_button_editor_mirror" font="editor_tiny" text="Mirr" offset_x="0" offset_y="12" alignment_x="1" alignment_y="3" scaled="false"/>
 			<element id="label_button_editor_mirror_key" font="editor_tiny" text="M" offset_x="0" offset_y="26" alignment_x="1" alignment_y="3" scaled="false"/>
 		</element>
-		<element id="button_editor_raise" style="style_editor_button_cyan" hover_style="style_editor_button_selected" offset_x="102" size_x="32" size_y="32" alignment_x="0" alignment_y="0" clickable="true" scaled="false" index="3">
+		<element id="button_editor_raise" style="style_editor_button_cyan" hover_style="style_editor_button_selected" offset_x="136" size_x="32" size_y="32" alignment_x="0" alignment_y="0" clickable="true" scaled="false" index="4">
 			<element id="label_button_editor_raise" font="editor_tiny" text="Raise" offset_x="0" offset_y="12" alignment_x="1" alignment_y="3" scaled="false"/>
 			<element id="label_button_editor_raise_key" font="editor_tiny" text="KP +" offset_x="0" offset_y="26" alignment_x="1" alignment_y="3" scaled="false"/>
 		</element>
-		<element id="button_editor_lower" style="style_editor_button_cyan" hover_style="style_editor_button_selected" offset_x="136" size_x="32" size_y="32" alignment_x="0" alignment_y="0" clickable="true" scaled="false" index="4">
+		<element id="button_editor_lower" style="style_editor_button_cyan" hover_style="style_editor_button_selected" offset_x="170" size_x="32" size_y="32" alignment_x="0" alignment_y="0" clickable="true" scaled="false" index="5">
 			<element id="label_button_editor_lower" font="editor_tiny" text="Lower" offset_x="0" offset_y="12" alignment_x="1" alignment_y="3" scaled="false"/>
 			<element id="label_button_editor_lower_key" font="editor_tiny" text="KP -" offset_x="0" offset_y="26" alignment_x="1" alignment_y="3" scaled="false"/>
 		</element>
