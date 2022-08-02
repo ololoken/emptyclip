@@ -94,6 +94,10 @@ _Map::_Map(const std::string &Filename, double Clock, int SpawnMultiplier) : _Ma
 	this->Filename = FixFilename(Filename);
 	SpawnMultiplier = std::min(SpawnMultiplier, GAME_MAX_PROGRESSION_SPAWN);
 
+	// Used when resizing maps
+	glm::ivec2 Offset(0, 0);
+	bool Adjust = (Offset.x != 0 && Offset.y != 0);
+
 	// Load file
 	gzifstream File(("maps/" + this->Filename).c_str(), std::ios::in);
 	if(!File)
@@ -184,6 +188,8 @@ _Map::_Map(const std::string &Filename, double Clock, int SpawnMultiplier) : _Ma
 						glm::vec2 Position;
 						File >> Position.x >> Position.y;
 						ObjectSpawn->Position = Position;
+						if(Adjust)
+							ObjectSpawn->Position += glm::vec2(Offset);
 					} break;
 					// Scale
 					case 's': {
@@ -212,6 +218,10 @@ _Map::_Map(const std::string &Filename, double Clock, int SpawnMultiplier) : _Ma
 					// Bounds
 					case 'b': {
 						File >> Event->Start.x >> Event->Start.y >> Event->End.x >> Event->End.y;
+						if(Adjust) {
+							Event->Start += Offset;
+							Event->End += Offset;
+						}
 					} break;
 					// Level
 					case 'l': {
@@ -259,6 +269,8 @@ _Map::_Map(const std::string &Filename, double Clock, int SpawnMultiplier) : _Ma
 					// Position
 					case 'p': {
 						File >> EventTile->Coord.x >> EventTile->Coord.y;
+						if(Adjust)
+							EventTile->Coord += Offset;
 					} break;
 					// Layer
 					case 'l': {
@@ -285,6 +297,10 @@ _Map::_Map(const std::string &Filename, double Clock, int SpawnMultiplier) : _Ma
 					// Bounds
 					case 'b': {
 						File >> Block->Start.x >> Block->Start.y >> Block->End.x >> Block->End.y >> Block->MinZ >> Block->MaxZ;
+						if(Adjust) {
+							Block->Start += Offset;
+							Block->End += Offset;
+						}
 					} break;
 					// Color
 					case 'c': {
@@ -444,7 +460,7 @@ bool _Map::Save(const std::string &String) {
 
 	// Blocks
 	for(int i = 0; i < MAPLAYER_COUNT; i++) {
-		for(const auto &Block : Blocks[i]) {
+		for(auto &Block : Blocks[i]) {
 			File << "Bn" << i << '\n';
 			File << "Bb " << Block.Start.x << ' ' << Block.Start.y << ' ' << Block.End.x << ' ' << Block.End.y << ' ' << Block.MinZ << ' ' << Block.MaxZ << '\n';
 			File << "Bc" << Block.Color.r << ' ' << Block.Color.g << ' ' << Block.Color.b << ' ' << Block.Color.a << '\n';
