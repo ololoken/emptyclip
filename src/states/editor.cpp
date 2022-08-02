@@ -648,7 +648,7 @@ void _EditorState::HandleMouseWheel(int Direction) {
 
 		if(IsCtrlDown) {
 			if(SelectedBlock) {
-				ExecuteChangeZ(-Direction, !IsShiftDown);
+				ExecuteChangeZ(-Direction * 0.5f, !IsShiftDown);
 				return;
 			}
 
