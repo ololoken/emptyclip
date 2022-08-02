@@ -23,6 +23,7 @@ void main() {
 
 	// Get light color from ambient and mixed light framebuffer
 	vec4 light_color = ambient_light + texelFetch(sampler1, ivec2(gl_FragCoord.xy), 0);
+	light_color.a = 1;
 
 	// Calculate Lambertian lighting
 	for(int i = 0; i < light_count; i++) {

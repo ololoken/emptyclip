@@ -832,8 +832,6 @@ void _EditorState::Render(double BlendFactor) {
 	// Setup 3D transformation
 	ae::Graphics.Setup3D();
 	Camera->Set3DProjection(BlendFactor);
-	ae::Assets.Programs["pos_uv"]->AmbientLight = glm::vec4(1);
-	ae::Assets.Programs["pos_uv"]->LightCount = 0;
 	ae::Assets.Programs["map"]->LightCount = 0;
 	ae::Assets.Programs["map"]->AmbientLight = glm::vec4(1);
 	ae::Assets.Programs["map_norm"]->LightCount = 0;
