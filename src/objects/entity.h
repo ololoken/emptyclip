@@ -39,6 +39,7 @@ class _Entity : public _Object {
 		_Entity(const _ObjectTemplate &EntityTemplate);
 		~_Entity() override;
 
+		virtual void Update(double FrameTime) override;
 		virtual void Render(double BlendFactor) override;
 		virtual void RecalculateStats() { }
 
@@ -84,6 +85,7 @@ class _Entity : public _Object {
 		// Audio
 		std::vector<const ae::_Sound *> Sounds[SOUND_COUNT];
 		ae::_AudioSource *TriggerDownAudio;
+		double FireSoundTimer = 0.0;
 
 		// Movement
 		MoveType MoveState;

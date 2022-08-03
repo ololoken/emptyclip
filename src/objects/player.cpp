@@ -288,6 +288,7 @@ void _Player::RecalculateStats() {
 
 // Update the player
 void _Player::Update(double FrameTime) {
+	_Entity::Update(FrameTime);
 	LastPosition = Position;
 
 	UpdateRecoil(FrameTime);

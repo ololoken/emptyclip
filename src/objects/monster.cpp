@@ -76,13 +76,7 @@ void _Monster::RecalculateStats() {
 
 // Update
 void _Monster::Update(double FrameTime) {
-
-	// Update free pathing
-	if(FreePathingTimer > 0.0) {
-		FreePathingTimer -= FrameTime;
-		if(FreePathingTimer < 0.0)
-			FreePathingTimer = 0.0f;
-	}
+	_Entity::Update(FrameTime);
 
 	// Update animation
 	UpdateAnimation(FrameTime);

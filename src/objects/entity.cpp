@@ -108,6 +108,23 @@ _Entity::~_Entity() {
 		PlayState.HUD->LastEntityHit = nullptr;
 }
 
+// Update entity
+void _Entity::Update(double FrameTime) {
+
+	// Update timers
+	if(FreePathingTimer > 0.0) {
+		FreePathingTimer -= FrameTime;
+		if(FreePathingTimer < 0.0)
+			FreePathingTimer = 0.0;
+	}
+
+	if(FireSoundTimer > 0.0) {
+		FireSoundTimer -= FrameTime;
+		if(FireSoundTimer < 0.0)
+			FireSoundTimer = 0.0;
+	}
+}
+
 // Generates a direction (in degrees) and updates the entity's accuracy
 float _Entity::GenerateShotDirection() {
 
@@ -191,7 +208,10 @@ bool _Entity::StartAttack() {
 		Action = ACTION_STARTMELEE;
 
 		// Play weapon sound
-		ae::Audio.PlaySound(GetSound(SOUND_FIRE, AttackRequestType), ae::_SoundSettings(glm::vec3(Position.x, 0.0f, Position.y)));
+		if(FireSoundTimer == 0.0) {
+			ae::Audio.PlaySound(GetSound(SOUND_FIRE, AttackRequestType), ae::_SoundSettings(glm::vec3(Position.x, 0.0f, Position.y)));
+			FireSoundTimer = ENTITY_MAX_FIRESOUND_PERIOD;
+		}
 	}
 	else {
 		LastHitTimer = 0.0;

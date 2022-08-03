@@ -974,10 +974,14 @@ void _PlayState::ResolveAttack(_Entity *Attacker, int GridType) {
 	if(WeaponType != WEAPON_MELEE) {
 		_Hit Hit(HIT_NONE);
 		GenerateHitEffects(Attacker, -1, Hit);
-		if(Attacker->Type == _Object::PLAYER)
-			ae::Audio.PlaySound(Attacker->GetSound(SOUND_FIRE, WEAPONATTACK_MAIN));
-		else
-			ae::Audio.PlaySound(Attacker->GetSound(SOUND_FIRE, WEAPONATTACK_MAIN), ae::_SoundSettings(glm::vec3(Attacker->Position.x, 0.0f, Attacker->Position.y)));
+		if(Attacker->FireSoundTimer == 0.0) {
+			if(Attacker->Type == _Object::PLAYER)
+				ae::Audio.PlaySound(Attacker->GetSound(SOUND_FIRE, WEAPONATTACK_MAIN));
+			else
+				ae::Audio.PlaySound(Attacker->GetSound(SOUND_FIRE, WEAPONATTACK_MAIN), ae::_SoundSettings(glm::vec3(Attacker->Position.x, 0.0f, Attacker->Position.y)));
+
+			Attacker->FireSoundTimer = ENTITY_MAX_FIRESOUND_PERIOD;
+		}
 	}
 
 	Attacker->StartTriggerDownAudio();
