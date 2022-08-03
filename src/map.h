@@ -89,7 +89,7 @@ struct _Tile {
 		BULLET = 2,
 	};
 
-	_Tile() : Collision(0), CollisionChangeMask(ENTITY | BULLET) { }
+	_Tile() : Collision(0), CollisionChangeMask(ENTITY | BULLET) {}
 
 	bool CanWalk() { return !(Collision & ENTITY); }
 	bool CanShoot() { return !(Collision & BULLET); }
@@ -140,8 +140,8 @@ struct _Block {
 // Holds information about a hit entity
 struct _Hit {
 
-	_Hit() { }
-	_Hit(int Type) : Object(nullptr), Type(Type) { }
+	_Hit() {}
+	_Hit(int Type) : Object(nullptr), Type(Type) {}
 
 	_Object *Object;
 	glm::vec2 Normal;
@@ -163,7 +163,7 @@ struct _ObjectSpawn {
 		Scale(1.0f),
 		Type(0),
 		Level(1),
-		Deleted(false) { }
+		Deleted(false) {}
 
 	_ObjectSpawn(const std::string &ID, const glm::vec2 &Position, int Type, int Level) :
 		ID(ID),
@@ -172,7 +172,7 @@ struct _ObjectSpawn {
 		Scale(1.0f),
 		Type(Type),
 		Level(Level),
-		Deleted(false) { }
+		Deleted(false) {}
 
 	std::string ID;
 	glm::vec2 Position;

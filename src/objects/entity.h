@@ -41,7 +41,7 @@ class _Entity : public _Object {
 
 		virtual void Update(double FrameTime) override;
 		virtual void Render(double BlendFactor) override;
-		virtual void RecalculateStats() { }
+		virtual void RecalculateStats() {}
 
 		void Move(double FrameTime);
 
@@ -56,8 +56,8 @@ class _Entity : public _Object {
 		virtual int ReduceAmmo(int Amount) { return Amount; }
 		virtual bool WeaponHasAmmo(int AttackType) const { return true; }
 
-		virtual void UpdateExperience(int64_t ExperienceGained) { }
-		virtual void UpdateKillCount(int Value) { }
+		virtual void UpdateExperience(int64_t ExperienceGained) {}
+		virtual void UpdateKillCount(int Value) {}
 		virtual void UpdateAnimation(double FrameTime, bool PlaySound=true);
 
 		void UpdateHealth(int Adjust);
@@ -84,76 +84,76 @@ class _Entity : public _Object {
 
 		// Audio
 		std::vector<const ae::_Sound *> Sounds[SOUND_COUNT];
-		ae::_AudioSource *TriggerDownAudio = nullptr;
-		double FireSoundTimer = 0.0;
+		ae::_AudioSource *TriggerDownAudio{nullptr};
+		double FireSoundTimer{0.0};
 
 		// Movement
-		MoveType MoveState = MOVE_NONE;
-		float MoveSpeed = 0.0f;
-		float MoveModifier = 1.0f;
-		float Stamina = 1.0f;
-		float MaxStamina = 1.0f;
-		float StaminaRegenModifier = 1.0f;
-		int BaseMoveSpeed = 0;
-		int WallState = 0;
-		bool Tired = false;
-		bool PositionChanged = false;
+		MoveType MoveState{MOVE_NONE};
+		float MoveSpeed{0.0f};
+		float MoveModifier{1.0f};
+		float Stamina{1.0f};
+		float MaxStamina{1.0f};
+		float StaminaRegenModifier{1.0f};
+		int BaseMoveSpeed{0};
+		int WallState{0};
+		bool Tired{false};
+		bool PositionChanged{false};
 
 		// Stats
-		int Health = 0;
-		int MaxHealth = 0;
-		int DamageBlock = 0;
-		int DamageResist = 0;
+		int Health{0};
+		int MaxHealth{0};
+		int DamageBlock{0};
+		int DamageResist{0};
 
 		// States
-		int WalkingAnimation = ANIMATION_MOVE;
-		int MeleeAnimation = ANIMATION_ATTACK;
-		int ShootingOnehandAnimation = ANIMATION_ATTACK;
-		int ShootingTwohandAnimation = ANIMATION_ATTACK;
-		int DyingAnimation = ANIMATION_DIE;
-		double InvulnerableTimer = 0.0;
-		double LastHitTimer = 0.0;
+		int WalkingAnimation{ANIMATION_MOVE};
+		int MeleeAnimation{ANIMATION_ATTACK};
+		int ShootingOnehandAnimation{ANIMATION_ATTACK};
+		int ShootingTwohandAnimation{ANIMATION_ATTACK};
+		int DyingAnimation{ANIMATION_DIE};
+		double InvulnerableTimer{0.0};
+		double LastHitTimer{0.0};
 
 		// Attacking attributes
-		float CurrentAccuracy = 0.0f;
-		float MinAccuracy = 0.0f;
-		float MaxAccuracy[WEAPONATTACK_COUNT] = {0.0f, 0.0f};
-		float Recoil = 0.0f;
-		float RecoilRegen = 0.0f;
-		float RecoilModifier = 1.0f;
-		float MoveRecoil = 0.0f;
-		float AttackRange[WEAPONATTACK_COUNT] = {0.0f, 0.0f};
-		double AttackTimer[WEAPONATTACK_COUNT] = {0.0, 0.0};
-		double AttackPeriod[WEAPONATTACK_COUNT] = {0.0, 0.0};
-		float AttackWidth[WEAPONATTACK_COUNT] = {0.0f, 0.0f};
-		int MinDamage[WEAPONATTACK_COUNT] = {0, 0};
-		int MaxDamage[WEAPONATTACK_COUNT] = {0, 0};
-		int Penetration[WEAPONATTACK_COUNT] = {1, 1};
-		float PenetrationDamage[WEAPONATTACK_COUNT] = {0.0f, 0.0f};
-		float AttackMoveSpeed[WEAPONATTACK_COUNT] = {0.0f, 0.0f};
-		int AttackCount[WEAPONATTACK_COUNT] = {1, 1};
-		int CritChance[WEAPONATTACK_COUNT] = {0, 0};
-		int CritDamage[WEAPONATTACK_COUNT] = {100, 100};
-		int BurstRounds[WEAPONATTACK_COUNT] = {0, 0};
-		double BurstPeriod[WEAPONATTACK_COUNT] = {0.0, 0.0};
-		const _ObjectTemplate *Projectiles[WEAPONATTACK_COUNT] = {nullptr, nullptr};
-		float ProjectileSpeed[WEAPONATTACK_COUNT] = {0.0f, 0.0f};
-		int MainWeaponType = 0;
-		int AttackRequestType = 0;
-		int BurstRoundsShot = 0;
-		bool AttackRequested = false;
-		bool AttackMade = false;
+		float CurrentAccuracy{0.0f};
+		float MinAccuracy{0.0f};
+		float MaxAccuracy[WEAPONATTACK_COUNT]{0.0f, 0.0f};
+		float Recoil{0.0f};
+		float RecoilRegen{0.0f};
+		float RecoilModifier{1.0f};
+		float MoveRecoil{0.0f};
+		float AttackRange[WEAPONATTACK_COUNT]{0.0f};
+		double AttackTimer[WEAPONATTACK_COUNT]{0.0};
+		double AttackPeriod[WEAPONATTACK_COUNT]{0.0};
+		float AttackWidth[WEAPONATTACK_COUNT]{0.0f};
+		int MinDamage[WEAPONATTACK_COUNT]{0};
+		int MaxDamage[WEAPONATTACK_COUNT]{0};
+		int Penetration[WEAPONATTACK_COUNT]{1, 1};
+		float PenetrationDamage[WEAPONATTACK_COUNT]{0.0f};
+		float AttackMoveSpeed[WEAPONATTACK_COUNT]{0.0f};
+		int AttackCount[WEAPONATTACK_COUNT]{1, 1};
+		int CritChance[WEAPONATTACK_COUNT]{0};
+		int CritDamage[WEAPONATTACK_COUNT]{100, 100};
+		int BurstRounds[WEAPONATTACK_COUNT]{0};
+		double BurstPeriod[WEAPONATTACK_COUNT]{0.0};
+		const _ObjectTemplate *Projectiles[WEAPONATTACK_COUNT]{nullptr};
+		float ProjectileSpeed[WEAPONATTACK_COUNT]{0.0f};
+		int MainWeaponType{0};
+		int AttackRequestType{0};
+		int BurstRoundsShot{0};
+		bool AttackRequested{false};
+		bool AttackMade{false};
 
 		// Monsters
-		int64_t ExperienceGiven = 0;
+		int64_t ExperienceGiven{0};
 		glm::vec2 TargetPosition{0.0f};
-		int AIType = AI_NONE;
+		int AIType{AI_NONE};
 
 	protected:
 
-		virtual void ApplyDeathPenalty() { }
-		virtual void SetLegAnimationPlayMode(int Mode) { }
-		virtual void SetAnimationPlaybackSpeedFactor() { }
+		virtual void ApplyDeathPenalty() {}
+		virtual void SetLegAnimationPlayMode(int Mode) {}
+		virtual void SetAnimationPlaybackSpeedFactor() {}
 		void UpdateRecoil(double FrameTime);
 
 };

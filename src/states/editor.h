@@ -110,13 +110,13 @@ enum EditorInputTypes {
 
 // Used for the map editor
 struct _Brush {
-	_Brush() { }
+	_Brush() {}
 	_Brush(const std::string &ID, const std::string &Text, const ae::_Texture *Texture, const glm::vec4 &Color, int ObjectType=-1) :
 		ID(ID),
 		Text(Text),
 		Texture(Texture),
 		Color(Color),
-		ObjectType(ObjectType) { }
+		ObjectType(ObjectType) {}
 
 	std::string ID;
 	std::string Text;
@@ -132,7 +132,7 @@ class _EditorState : public ae::_State {
 
 		// Setup
 		_EditorState();
-		virtual ~_EditorState() { }
+		virtual ~_EditorState() override {}
 
 		void Init() override;
 		void Close() override;
@@ -172,8 +172,8 @@ class _EditorState : public ae::_State {
 		void SpawnObject(const glm::vec2 &Position, float Rotation, float Scale, int Type, const std::string &ID, int Level, bool Align);
 		void SelectObject();
 		void SelectObjects();
-		void DeselectBlock() { SelectedBlockIndex = -1, SelectedBlock = nullptr; }
-		void DeselectEvent() { SelectedEventIndex = -1, SelectedEvent = nullptr; }
+		void DeselectBlock() { SelectedBlockIndex = -1; SelectedBlock = nullptr; }
+		void DeselectEvent() { SelectedEventIndex = -1; SelectedEvent = nullptr; }
 		void DeselectObjects() { SelectedObjects.clear(); }
 		void ClearClipboard();
 		bool BlockSelected() { return SelectedBlockIndex != -1; }

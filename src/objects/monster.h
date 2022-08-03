@@ -48,8 +48,8 @@ class _Monster : public _Entity {
 		const _ParticleTemplate *GetParticle(int ParticleType) const override;
 
 		// AI
-		const _Player *Player = nullptr;
-		const _ItemDrop *ItemDrop = nullptr;
+		const _Player *Player{nullptr};
+		const _ItemDrop *ItemDrop{nullptr};
 
 	private:
 
@@ -57,13 +57,13 @@ class _Monster : public _Entity {
 		void GenerateReactionTime();
 
 		glm::vec2 ReturnPosition{0.0f};
-		bool LastPlayerVisible;
-		int AttacksMade;
-		int Goal;
-		float AttackRangeSquared;
-		float ViewRangeSquared;
-		float StopThresholdSquared;
-		double StaticTimer;
-		double ReactionTimer;
-		double ReturnTimer;
+		bool LastPlayerVisible{false};
+		int AttacksMade{0};
+		int Goal{GOAL_PURSUE};
+		float AttackRangeSquared{0.0f};
+		float ViewRangeSquared{0.0f};
+		float StopThresholdSquared{0.0f};
+		double StaticTimer{0.0};
+		double ReactionTimer{0.0};
+		double ReturnTimer{0.0};
 };

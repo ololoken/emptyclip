@@ -56,12 +56,6 @@ _Monster::_Monster(const _ObjectTemplate &MonsterTemplate) :
 	else
 		Rotation = ae::GetRandomReal(0.0f, 359.0f);
 
-	LastPlayerVisible = false;
-	Goal = GOAL_PURSUE;
-	AttacksMade = 0;
-	StaticTimer = 0.0;
-	ReactionTimer = 0.0;
-	ReturnTimer = 0.0;
 	GenerateReactionTime();
 }
 

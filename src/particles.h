@@ -37,7 +37,7 @@ struct _ParticleSpawn {
 		Normal(Normal),
 		Position(Position),
 		PositionZ(PositionZ),
-		RotationAdjust(RotationAdjust) { }
+		RotationAdjust(RotationAdjust) {}
 
 	const _ParticleTemplate *Template;
 	std::string Text;

@@ -42,25 +42,25 @@ class _Particle {
 		void Render(const ae::_Camera *Camera);
 
 		// Attributes
-		int Type;
-		double Lifetime;
-		bool Deleted = false;
+		int Type{0};
+		double Lifetime{0.0};
+		bool Deleted{false};
 
 		// Graphics
-		const ae::_Texture *Texture;
-		const ae::_Font *Font;
+		const ae::_Texture *Texture{nullptr};
+		const ae::_Font *Font{nullptr};
 		std::string Text;
-		glm::vec4 Color;
-		glm::vec2 Scale;
-		float Rotation;
-		float AlphaSpeed;
-		float PositionZ;
-		float ScaleAspect;
+		glm::vec4 Color{1.0f};
+		glm::vec2 Scale{1.0f, 1.0f};
+		float Rotation{0.0f};
+		float AlphaSpeed{0.0f};
+		float PositionZ{0.0f};
+		float ScaleAspect{1.0f};
 
 		// Physics
-		glm::vec2 Position;
-		glm::vec2 Velocity;
-		glm::vec2 Acceleration;
-		float TurnSpeed;
+		glm::vec2 Position{0.0f};
+		glm::vec2 Velocity{0.0f};
+		glm::vec2 Acceleration{0.0f};
+		float TurnSpeed{0.0f};
 
 };

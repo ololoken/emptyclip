@@ -107,11 +107,11 @@ class _Object {
 		};
 
 		_Object(const _ObjectTemplate &ObjectTemplate);
-		virtual ~_Object() { }
+		virtual ~_Object() {}
 
 		virtual void Update(double FrameTime);
 		virtual void Render(double BlendFactor);
-		virtual void Serialize(ae::_Buffer &Buffer) { }
+		virtual void Serialize(ae::_Buffer &Buffer) {}
 		bool IsDying() const { return Action == ACTION_DYING || Action == ACTION_STARTDEATH; }
 		bool CanFreePath() const { return FreePathing || FreePathingTimer > 0.0; }
 
@@ -139,45 +139,45 @@ class _Object {
 
 		// Attributes
 		std::unordered_map<std::string, _Value> Attributes;
-		_Object *Owner = nullptr;
+		_Object *Owner{nullptr};
 		std::string Name;
 		std::string ID;
-		int Type = NONE;
-		int Level = 1;
-		bool Active = true;
+		int Type{NONE};
+		int Level{1};
+		bool Active{true};
 
 		// Projectiles
 		std::unordered_map<_Object *, int> HitObjects;
-		float PenetrationDamage = 0.0f;
-		int MinDamage = 0;
-		int MaxDamage = 0;
-		int CritChance = 0;
-		int CritDamage = 0;
-		int Depth = 0;
+		float PenetrationDamage{0.0f};
+		int MinDamage{0};
+		int MaxDamage{0};
+		int CritChance{0};
+		int CritDamage{0};
+		int Depth{0};
 
 		// Character
-		ActionType Action = ACTION_IDLE;
+		ActionType Action{ACTION_IDLE};
 
 		// Map
-		_Map *Map = nullptr;
-		bool TileChanged = false;
+		_Map *Map{nullptr};
+		bool TileChanged{false};
 
 		// Physics
 		glm::vec2 Position{0.0f};
 		glm::vec2 LastPosition{0.0f};
 		glm::vec2 Direction{0.0f, 1.0f};
 		glm::vec2 Velocity{0.0f};
-		double FreePathingTimer = 0.0;
-		float Radius = 0.25f;
-		bool Circle = true;
-		bool FreePathing = false;
+		double FreePathingTimer{0.0};
+		float Radius{0.25f};
+		bool Circle{true};
+		bool FreePathing{false};
 
 		// Graphics
-		const ae::_Texture *Texture = nullptr;
-		const ae::_Mesh *Mesh = nullptr;
+		const ae::_Texture *Texture{nullptr};
+		const ae::_Mesh *Mesh{nullptr};
 		glm::vec4 Color{1.0f};
-		float Rotation = 0.0f;
-		float Scale = 1.0f;
-		float PositionZ = 0.0f;
+		float Rotation{0.0f};
+		float Scale{1.0f};
+		float PositionZ{0.0f};
 
 };

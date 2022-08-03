@@ -35,7 +35,7 @@ namespace ae {
 
 // Stores a list of sounds
 struct _SoundGroup {
-	_SoundGroup() { }
+	_SoundGroup() {}
 
 	std::vector<const ae::_Sound *> SoundID[SOUND_COUNT];
 };
