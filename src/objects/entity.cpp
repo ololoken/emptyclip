@@ -38,15 +38,15 @@ _Entity::_Entity(const _ObjectTemplate &EntityTemplate) :
 	_Object(EntityTemplate),
 	TriggerDownAudio(nullptr),
 	MoveState(MOVE_NONE),
-	BaseMoveSpeed(0),
 	MoveSpeed(0),
 	MoveModifier(1.0f),
-	PositionChanged(false),
 	Stamina(1),
 	MaxStamina(1),
 	StaminaRegenModifier(1.0f),
+	BaseMoveSpeed(0),
 	WallState(0),
 	Tired(false),
+	PositionChanged(false),
 	Health(0),
 	MaxHealth(0),
 	DamageBlock(0),
@@ -380,7 +380,7 @@ void _Entity::Move(double FrameTime) {
 			glm::vec2 TargetVector = TargetPosition - Position;
 
 			// Correct move direction based on wall state
-			if(WallState && !FreePathing) {
+			if(WallState && !CanFreePath()) {
 				if((WallState & WALL_RIGHT) && TargetVector.x > 0)
 					TargetVector.x = 0;
 				if((WallState & WALL_LEFT) && TargetVector.x < 0)
@@ -426,7 +426,7 @@ void _Entity::Move(double FrameTime) {
 	// Get a list of entities that the object is colliding with
 	glm::vec2 NewPosition = Position + MoveDirection;
 	bool AxisAlignedPush = false;
-	if(!IsInvulnerable() && !FreePathing) {
+	if(!IsInvulnerable() && !CanFreePath()) {
 		std::vector<_Hit> &Hits = Map->ResolveCollisionsInGrid(NewPosition, Radius, this, AxisAlignedPush, Type == PLAYER ? PLAYER_PUSH_FACTOR : ENTITY_PUSH_FACTOR);
 
 		// Resolve pushes
@@ -441,7 +441,7 @@ void _Entity::Move(double FrameTime) {
 	}
 
 	// Check collisions with walls and map boundaries
-	if(!FreePathing)
+	if(!CanFreePath())
 		Map->ResolveTileCollisions(NewPosition, Radius, _Tile::ENTITY, NewPosition);
 
 	// Determine if the object has moved

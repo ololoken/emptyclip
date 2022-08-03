@@ -1479,6 +1479,7 @@ void _PlayState::UpdateEvents(double FrameTime) {
 						Position.y = Tiles[i].Coord.y + 0.5f;
 						_Monster *Monster = Stats.CreateMonster(Event->MonsterID, Event->SpawnLevel + Player->GetAddedLevel(), Position);
 						Monster->Player = Player;
+						Monster->FreePathingTimer = ENTITY_FREEPATHING_TIMER_INCREMENT * j;
 						AddMonster(Monster);
 						Particles->Create(_ParticleSpawn(GameAssets.GetParticleTemplate(Event->ParticleID), glm::vec2(0), Position, OBJECT_Z, 0));
 					}

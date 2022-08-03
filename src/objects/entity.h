@@ -87,15 +87,15 @@ class _Entity : public _Object {
 
 		// Movement
 		MoveType MoveState;
-		int BaseMoveSpeed;
 		float MoveSpeed;
 		float MoveModifier;
-		bool PositionChanged;
 		float Stamina;
 		float MaxStamina;
 		float StaminaRegenModifier;
+		int BaseMoveSpeed;
 		int WallState;
 		bool Tired;
+		bool PositionChanged;
 
 		// Stats
 		int Health;

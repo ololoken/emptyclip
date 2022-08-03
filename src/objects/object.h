@@ -113,6 +113,7 @@ class _Object {
 		virtual void Render(double BlendFactor);
 		virtual void Serialize(ae::_Buffer &Buffer) { }
 		bool IsDying() const { return Action == ACTION_DYING || Action == ACTION_STARTDEATH; }
+		bool CanFreePath() const { return FreePathing || FreePathingTimer > 0.0; }
 
 		virtual const _ParticleTemplate *GetParticle(int ParticleType) const { return nullptr; }
 
@@ -129,7 +130,7 @@ class _Object {
 		void SetAttributeRange(const std::string &AttributeName, float Multiplier);
 		void SetAttributeLevel(const std::string &AttributeName, float Multiplier);
 		void SetAttributeSpread(const std::string &AttributeName, float Multiplier);
-		float GetAttributeLevel(const std::string &AttributeName, float Multiplier);
+		float GetAttributeLevel(const std::string &AttributeName, float Multiplier, int MaxLevel=0);
 		void GetAttributeRange(const std::string &AttributeName, float Multiplier, int &Min, int &Max);
 		void SetMaxMods(bool RandomStats=false);
 
@@ -166,6 +167,7 @@ class _Object {
 		glm::vec2 LastPosition;
 		glm::vec2 Direction;
 		glm::vec2 Velocity;
+		double FreePathingTimer = 0.0;
 		float Radius;
 		bool Circle;
 		bool FreePathing;

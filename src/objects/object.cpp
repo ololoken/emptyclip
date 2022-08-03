@@ -104,8 +104,9 @@ void _Object::SetAttributeSpread(const std::string &AttributeName, float Multipl
 }
 
 // Get an attribute value given a level and multiplier
-float _Object::GetAttributeLevel(const std::string &AttributeName, float Multiplier) {
-	float LevelValue = Level > 0 ? Template.Attributes.at(AttributeName + "_level").Float * (Level - 1) : 0;
+float _Object::GetAttributeLevel(const std::string &AttributeName, float Multiplier, int MaxLevel) {
+	int CalcLevel = MaxLevel ? std::min(Level, MaxLevel) : Level;
+	float LevelValue = CalcLevel > 0 ? Template.Attributes.at(AttributeName + "_level").Float * (CalcLevel - 1) : 0;
 	float Value = Template.Attributes.at(AttributeName).Float + LevelValue;
 	if(Value < 0)
 		return Value / Multiplier;

@@ -77,6 +77,13 @@ void _Monster::RecalculateStats() {
 // Update
 void _Monster::Update(double FrameTime) {
 
+	// Update free pathing
+	if(FreePathingTimer > 0.0) {
+		FreePathingTimer -= FrameTime;
+		if(FreePathingTimer < 0.0)
+			FreePathingTimer = 0.0f;
+	}
+
 	// Update animation
 	UpdateAnimation(FrameTime);
 
@@ -113,7 +120,7 @@ void _Monster::Update(double FrameTime) {
 		else if(Goal == GOAL_PURSUE) {
 
 			// Check if player is visible
-			PlayerVisible = FreePathing ? true : Map->CanMoveTo(Position, Player->Position, glm::vec2(Radius, Radius) * 0.3f);
+			PlayerVisible = CanFreePath() ? true : Map->CanMoveTo(Position, Player->Position, glm::vec2(Radius, Radius) * 0.3f);
 			if(PlayerVisible) {
 				ReactionTimer -= FrameTime;
 				if(ReactionTimer <= 0) {

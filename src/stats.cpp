@@ -754,7 +754,7 @@ _Monster *_Stats::CreateMonster(const std::string &ID, int Level, const glm::vec
 	Monster->Recoil = 0;
 	Monster->RecoilRegen = 0;
 	Monster->DamageBlock = 0;
-	Monster->MoveSpeed = Monster->GetAttributeLevel("move_speed", 1.0f);
+	Monster->MoveSpeed = Monster->GetAttributeLevel("move_speed", 1.0f, ENTITY_MAX_MOVESPEED_LEVEL);
 	Monster->Radius = Template.Attributes.at("radius").Float;
 	Monster->Scale = Template.Attributes.at("scale").Float;
 	Monster->Health = Monster->MaxHealth = Monster->GetAttributeLevel("health", 1.0f);
