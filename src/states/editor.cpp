@@ -648,7 +648,7 @@ void _EditorState::HandleMouseWheel(int Direction) {
 
 		if(IsCtrlDown) {
 			if(SelectedBlock) {
-				ExecuteChangeZ(-Direction * 0.5f, !IsShiftDown);
+				ExecuteChangeZ(Direction * 0.5f, !IsShiftDown);
 				return;
 			}
 
@@ -1043,7 +1043,7 @@ void _EditorState::Render(double BlendFactor) {
 
 	// Bottom right
 	DrawPosition.x = ae::Graphics.ViewportSize.x - 30;
-	DrawPosition.y = ae::Graphics.ViewportSize.y - 40;
+	DrawPosition.y = ae::Graphics.ViewportSize.y - 45;
 	glm::vec2 DrawOffset(5, 0);
 
 	// Draw grid size
@@ -1245,9 +1245,11 @@ void _EditorState::DrawBrush() {
 			bool BlockWalkable;
 			float TextRotation;
 			glm::vec4 BlockColor(1.0f);
+			glm::vec2 BlockSize(0.0f);
 			if(BlockSelected()) {
 				IconText = "";
 				BlockColor = SelectedBlock->Color;
+				BlockSize = SelectedBlock->End - SelectedBlock->Start + glm::ivec2(1);
 				IconTexture = SelectedBlock->Texture;
 				if(IconTexture)
 					IconText = IconTexture->Name;
@@ -1278,9 +1280,17 @@ void _EditorState::DrawBrush() {
 
 			IconID = "";
 
-			glm::vec2 TextPosition(IconPosition.x + EDITOR_PALETTE_SELECTEDSIZE + 290, IconPosition.y - EDITOR_PALETTE_SELECTEDSIZE - 21);
+			glm::vec2 TextPosition(IconPosition.x + EDITOR_PALETTE_SELECTEDSIZE + 290, ae::Graphics.ViewportSize.y + 30);
 			glm::vec2 ValueOffset(5, 0);
 			std::ostringstream Buffer;
+
+			if(BlockSize.x != 0 && BlockSize.y != 0) {
+				Buffer << BlockSize.x << "x" << BlockSize.y;
+				MainFont->DrawText("Size:", glm::ivec2(TextPosition), ae::RIGHT_BASELINE);
+				MainFont->DrawText(Buffer.str(), glm::ivec2(TextPosition + ValueOffset));
+				Buffer.str("");
+			}
+			TextPosition.y += TextSpacingY;
 
 			Buffer << ae::Round2(BlockColor.r) << ","  << ae::Round2(BlockColor.g) << "," << ae::Round2(BlockColor.b);
 			MainFont->DrawText("Color:", glm::ivec2(TextPosition), ae::RIGHT_BASELINE);
