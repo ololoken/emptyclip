@@ -35,7 +35,7 @@ sudo pacman -S base-devel ninja cmake sdl2 sdl2_image openal libvorbis libogg fr
 -- Build executable --
 ./build.sh
 
--- Running the game without installing --
+-- Run the game without installing --
 cd working && ./emptyclip
 
 -- Installing --
@@ -76,11 +76,11 @@ Hold A to sprint
 Press Spacebar to pick up items, open doors, or activate switches
 Press R to reload your gun
 Press W to switch weapons
-Press Q to self heal
 Press V to toggle your flashlight
 Press C to open your inventory or see character stats
 Hold Tab to view the map
 Press Middle Mouse Button to drop an item on the inventory screen
+Hold Alt to show more information on the inventory screen
 Press Escape to open the game menu or quit the game in test mode
 Press F1 to open the game menu
 Press F2 to show technical stats
