@@ -4,6 +4,7 @@
 *.~lock*
 *.zip
 *.exe
+*.obj
 /*.sh
 CMakeLists.txt.user
 build/

@@ -2036,7 +2036,9 @@ int _Map::RenderProps() {
 	ae::Assets.Programs["map_norm"]->ResetTextureTransform();
 	ae::Graphics.SetDepthMask(true);
 	ae::Graphics.SetDepthTest(true);
+	ae::Graphics.SetCullFace(true);
 	int Count = ObjectManager->Render(_ObjectManager::RENDER_PROP, 0.0);
+	ae::Graphics.SetCullFace(false);
 
 	return Count;
 }

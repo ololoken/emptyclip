@@ -1531,7 +1531,9 @@ void _EditorState::DrawObject(float OffsetX, float OffsetY, const _ObjectSpawn *
 		ae::Graphics.SetProgram(ae::Assets.Programs["map_norm"]);
 		ae::Assets.Programs["map_norm"]->ResetTextureTransform();
 		ae::Graphics.SetColor(Color);
+		ae::Graphics.SetCullFace(true);
 		ae::Graphics.DrawMesh(glm::vec3(DrawPosition, Depth), Mesh, Texture, Rotation, glm::vec3(Scale));
+		ae::Graphics.SetCullFace(false);
 	}
 	else {
 		ae::Graphics.SetDepthMask(false);
