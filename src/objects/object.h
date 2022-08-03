@@ -139,45 +139,45 @@ class _Object {
 
 		// Attributes
 		std::unordered_map<std::string, _Value> Attributes;
-		_Object *Owner;
+		_Object *Owner = nullptr;
 		std::string Name;
 		std::string ID;
-		int Type;
-		int Level;
-		bool Active;
+		int Type = NONE;
+		int Level = 1;
+		bool Active = true;
 
 		// Projectiles
 		std::unordered_map<_Object *, int> HitObjects;
-		float PenetrationDamage;
-		int MinDamage;
-		int MaxDamage;
-		int CritChance;
-		int CritDamage;
-		int Depth;
+		float PenetrationDamage = 0.0f;
+		int MinDamage = 0;
+		int MaxDamage = 0;
+		int CritChance = 0;
+		int CritDamage = 0;
+		int Depth = 0;
 
 		// Character
-		ActionType Action;
+		ActionType Action = ACTION_IDLE;
 
 		// Map
-		_Map *Map;
-		bool TileChanged;
+		_Map *Map = nullptr;
+		bool TileChanged = false;
 
 		// Physics
-		glm::vec2 Position;
-		glm::vec2 LastPosition;
-		glm::vec2 Direction;
-		glm::vec2 Velocity;
+		glm::vec2 Position{0.0f};
+		glm::vec2 LastPosition{0.0f};
+		glm::vec2 Direction{0.0f, 1.0f};
+		glm::vec2 Velocity{0.0f};
 		double FreePathingTimer = 0.0;
-		float Radius;
-		bool Circle;
-		bool FreePathing;
+		float Radius = 0.25f;
+		bool Circle = true;
+		bool FreePathing = false;
 
 		// Graphics
-		const ae::_Texture *Texture;
-		const ae::_Mesh *Mesh;
-		glm::vec4 Color;
-		float Rotation;
-		float Scale;
-		float PositionZ;
+		const ae::_Texture *Texture = nullptr;
+		const ae::_Mesh *Mesh = nullptr;
+		glm::vec4 Color{1.0f};
+		float Rotation = 0.0f;
+		float Scale = 1.0f;
+		float PositionZ = 0.0f;
 
 };

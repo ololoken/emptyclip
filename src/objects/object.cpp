@@ -30,33 +30,9 @@
 // Constructor
 _Object::_Object(const _ObjectTemplate &ObjectTemplate) :
 	Template(ObjectTemplate),
-	Owner(nullptr),
 	Name(ObjectTemplate.Name),
 	Type(ObjectTemplate.Type),
-	Level(1),
-	Active(true),
-	PenetrationDamage(0.0f),
-	MinDamage(0),
-	MaxDamage(0),
-	CritChance(0),
-	CritDamage(0),
-	Depth(0),
-	Action(ACTION_IDLE),
-	Map(nullptr),
-	TileChanged(false),
-	Position(0.0f),
-	LastPosition(0.0f),
-	Direction(0.0f, 1.0f),
-	Velocity(0.0f),
-	Radius(0.25f),
-	Circle(true),
-	FreePathing(false),
-	Texture(nullptr),
-	Mesh(nullptr),
-	Color(ObjectTemplate.Color),
-	Rotation(0.0f),
-	Scale(1.0f),
-	PositionZ(0.0f)	{
+	Color(ObjectTemplate.Color)	{
 
 }
 
