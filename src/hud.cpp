@@ -54,24 +54,7 @@ static std::vector<_MinimapLegend> MinimapLegends = {
 };
 
 // Initialize
-_HUD::_HUD(_Player *Player) :
-	Kills{0, 0},
-	Crates{0, 0},
-	Secrets{0, 0},
-	Player(Player) {
-
-	LastEntityHit = nullptr;
-	DragStart = nullptr;
-	CursorItem = nullptr;
-	CursorOverItem = nullptr;
-	CursorOverWorld = false;
-	CursorSkill = -1;
-	CursorInventorySlot = -1;
-	CrosshairScale = 0.0f;
-	MessageTimer = 0.0;
-	MessageBoxTimer = 0.0;
-	LevelNameTimer = 0.0;
-	InventoryOpen = false;
+_HUD::_HUD(_Player *Player) : Player(Player) {
 
 	// Get textures
 	Fonts[FONT_TINY] = ae::Assets.Fonts["hud_tiny"];

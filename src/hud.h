@@ -118,18 +118,18 @@ class _HUD {
 		static void FormatTimeHMS(std::ostringstream &Buffer, int64_t Time);
 
 		// Objects
-		_Entity *LastEntityHit;
+		_Entity *LastEntityHit{nullptr};
 
 		// Inventory
-		_Item *CursorItem;
-		_Item *CursorOverItem;
-		bool CursorOverWorld;
-		bool InventoryOpen;
+		_Item *CursorItem{nullptr};
+		_Item *CursorOverItem{nullptr};
+		bool CursorOverWorld{false};
+		bool InventoryOpen{false};
 
 		// Stats
-		int Kills[2];
-		int Crates[2];
-		int Secrets[2];
+		int Kills[2]{0};
+		int Crates[2]{0};
+		int Secrets[2]{0};
 
 	private:
 
@@ -142,27 +142,27 @@ class _HUD {
 		void UpdateSkillTooltip(int Skill, const glm::vec2 &DrawPosition);
 
 		// State
-		_Player *Player;
+		_Player *Player{nullptr};
 
 		// UI
-		ae::_Element *Elements[ELEMENT_COUNT];
-		ae::_Element *DragStart;
-		glm::ivec2 ClickOffset;
-		int CursorSkill;
-		int CursorInventorySlot;
+		ae::_Element *Elements[ELEMENT_COUNT]{nullptr};
+		ae::_Element *DragStart{nullptr};
+		glm::ivec2 ClickOffset{0};
+		int CursorSkill{-1};
+		int CursorInventorySlot{-1};
 
 		// Displays
-		double LastEntityHitTimer;
-		float CrosshairScale;
+		double LastEntityHitTimer{0.0};
+		float CrosshairScale{0.0f};
 
 		// Messages
-		double MessageTimer;
-		double MessageBoxTimer;
-		double LevelNameTimer;
+		double MessageTimer{0.0};
+		double MessageBoxTimer{0.0};
+		double LevelNameTimer{0.0};
 
 		// Text
-		ae::_Font *Fonts[FONT_COUNT];
+		ae::_Font *Fonts[FONT_COUNT]{nullptr};
 
 		// Textures
-		const ae::_Texture *CrosshairTexture;
+		const ae::_Texture *CrosshairTexture{nullptr};
 };

@@ -70,18 +70,6 @@ const int PaletteSizes[EDITMODE_COUNT] = {
 	64,
 };
 
-// Constructor
-_EditorState::_EditorState() :
-	SavedCameraPosition(0, 0, CAMERA_DISTANCE),
-	SavedCheckpointIndex(0),
-	MapFilename(""),
-	SavedLayer(0),
-	SavedPalette(0),
-	SavedGridMode(5),
-	SavedHighlightBlocks(false) {
-
-}
-
 // Initialize
 void _EditorState::Init() {
 	ae::Graphics.Element->SetActive(false);
@@ -156,7 +144,7 @@ void _EditorState::Init() {
 	HighlightBlocks = SavedHighlightBlocks;
 }
 
-// Shutdown
+// Close
 void _EditorState::Close() {
 	Camera->GetDrawPosition(0, SavedCameraPosition);
 	SavedLayer = EditLayer;

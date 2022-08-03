@@ -65,22 +65,11 @@ const std::vector<double> DayCyclesTime = {
 
 // Initialize
 _Map::_Map() :
-	BaseAmbientLight(0.5f, 0.5f, 0.5f, 1.0f),
 	Size{MAP_WIDTH, MAP_HEIGHT},
-	MapType(MAPTYPE_CAMPAIGN),
-	Level(1),
-	Monsters(0),
-	Crates(0),
-	Secrets(0),
-	BaseAmbientClock(false),
-	AmbientClock(false),
-	SimpleAI(false),
-	Camera(nullptr),
 	ObjectManager(new _ObjectManager()),
 	MinimapCaptureSize(HUD_MINIMAP_CAPTURE_SIZE),
 	AmbientLight(BaseAmbientLight),
-	TargetAmbientLight(BaseAmbientLight),
-	Data(nullptr) {
+	TargetAmbientLight(BaseAmbientLight) {
 
 	ObjectMap.reserve(10);
 	CollisionHits.reserve(10);

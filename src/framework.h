@@ -52,12 +52,12 @@ class _Framework {
 		void ChangeState(ae::_State *RequestedState);
 
 		// Console
-		ae::_Console *Console;
+		ae::_Console *Console{nullptr};
 
 		// State
-		bool Done;
-		bool IgnoreNextInputEvent;
-		bool DemoMode;
+		bool Done{false};
+		bool IgnoreNextInputEvent{false};
+		bool DemoMode{false};
 
 	private:
 
@@ -66,15 +66,15 @@ class _Framework {
 		void LoadAssets();
 
 		// States
-		StateType FrameworkState;
-		ae::_State *State;
-		ae::_State *RequestedState;
+		StateType FrameworkState{INIT};
+		ae::_State *State{nullptr};
+		ae::_State *RequestedState{nullptr};
 
 		// Time
-		ae::_FrameLimit *FrameLimit;
-		uint64_t Timer;
-		double TimeStep;
-		double TimeStepAccumulator;
+		ae::_FrameLimit *FrameLimit{nullptr};
+		uint64_t Timer{0};
+		double TimeStep{0.0};
+		double TimeStepAccumulator{0.0};
 
 };
 

@@ -74,8 +74,8 @@ class _Particles {
 		void Clear();
 
 		// Objects
-		const ae::_Camera *Camera;
-		_Map *Map;
+		const ae::_Camera *Camera{nullptr};
+		_Map *Map{nullptr};
 
 	private:
 

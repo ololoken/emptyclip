@@ -63,7 +63,7 @@ struct _ItemDrop {
 // Object template
 struct _ObjectTemplate {
 
-	_ObjectTemplate(int Type) : ParticleGroup(nullptr), Color(1.0f), DoorColor(1.0f), Type(Type) {}
+	_ObjectTemplate(int Type) : Type(Type) {}
 	bool IsItem() const;
 
 	std::string ID;
@@ -77,10 +77,10 @@ struct _ObjectTemplate {
 	std::string ItemDropID;
 	std::string MeshID;
 	std::vector<const ae::_Sound *> SoundID[SOUND_COUNT];
-	const _ParticleGroup *ParticleGroup;
-	glm::vec4 Color;
-	glm::vec4 DoorColor;
-	int Type;
+	const _ParticleGroup *ParticleGroup{nullptr};
+	glm::vec4 Color{1.0f};
+	glm::vec4 DoorColor{1.0f};
+	int Type{0};
 
 	std::unordered_map<std::string, _Value> Attributes;
 };
@@ -128,7 +128,7 @@ class _Stats {
 		std::unordered_map<std::string, _ObjectTemplate> Objects;
 		std::unordered_map<std::string, _ItemDrop> ItemDrops;
 		std::vector<_Level> Levels;
-		_Item *WeaponFists;
+		_Item *WeaponFists{nullptr};
 
 		std::vector<std::string> AmmoNames;
 		std::vector<std::string> ModNames;

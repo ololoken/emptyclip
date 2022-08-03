@@ -17,18 +17,6 @@
 *******************************************************************************/
 #include <events.h>
 
-// Constructor
-_Event::_Event() :
-	SpawnMultiplier(1),
-	Switched(false),
-	Timer(0.0) {
-
-}
-
-// Destructor
-_Event::~_Event() {
-}
-
 // Adds a tile to the list
 void _Event::AddTile(_EventTile Tile) {
 

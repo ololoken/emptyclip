@@ -24,8 +24,6 @@ class _NullState : public ae::_State {
 
 	public:
 
-		_NullState();
-
 		// Setup
 		void Init() override;
 		void Close() override;
@@ -40,7 +38,7 @@ class _NullState : public ae::_State {
 		void Update(double FrameTime) override;
 		void Render(double BlendFactor) override;
 
-		bool LevelComplete;
+		bool LevelComplete{false};
 
 	protected:
 

@@ -20,8 +20,8 @@
 // Libraries
 #include <objects/templates.h>
 #include <glm/vec2.hpp>
-#include <string>
 #include <unordered_map>
+#include <string>
 #include <vector>
 
 // Forward Declarations
@@ -35,8 +35,6 @@ namespace ae {
 
 // Stores a list of sounds
 struct _SoundGroup {
-	_SoundGroup() {}
-
 	std::vector<const ae::_Sound *> SoundID[SOUND_COUNT];
 };
 

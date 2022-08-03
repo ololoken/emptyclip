@@ -22,10 +22,7 @@
 #include <objects/particle.h>
 
 // Constructor
-_Particles::_Particles() :
-	Camera(nullptr),
-	Map(nullptr) {
-
+_Particles::_Particles() {
 	for(int i = 0; i < COUNT; i++)
 		RenderList[i].reserve(5000);
 }

@@ -84,12 +84,11 @@ struct _Hit;
 
 // Holds data for a single tile
 struct _Tile {
+
 	enum CollisionFlagType {
 		ENTITY = 1,
 		BULLET = 2,
 	};
-
-	_Tile() : Collision(0), CollisionChangeMask(ENTITY | BULLET) {}
 
 	bool CanWalk() { return !(Collision & ENTITY); }
 	bool CanShoot() { return !(Collision & BULLET); }
@@ -97,8 +96,8 @@ struct _Tile {
 	std::unordered_map<_Object *, int> Objects[GRID_COUNT];
 	std::vector<_Event *> Events;
 	std::vector<_Particle *> Particles;
-	int Collision;
-	int CollisionChangeMask;
+	int Collision{0};
+	int CollisionChangeMask{ENTITY | BULLET};
 };
 
 // Holds data for a tile bound
@@ -110,31 +109,18 @@ struct _TileBounds {
 // Holds data for a block of tiles
 struct _Block {
 
-	_Block() :
-		Color(1.0f),
-		Start(0.0f),
-		End(0.0f),
-		Texture(nullptr),
-		AltTexture(nullptr),
-		MinZ(0.0f),
-		MaxZ(0.0f),
-		Rotation(0.0f),
-		ScaleX(0.0f),
-		Walkable(false)
-	{ }
-
 	void GetBounds(glm::vec4 &Bounds) { Bounds[0] = Start.x; Bounds[1] = Start.y; Bounds[2] = End.x + 1.0f; Bounds[3] = End.y + 1.0f; }
 
-	glm::vec4 Color;
-	glm::ivec2 Start;
-	glm::ivec2 End;
-	const ae::_Texture *Texture;
-	const ae::_Texture *AltTexture;
-	float MinZ;
-	float MaxZ;
-	float Rotation;
-	float ScaleX;
-	bool Walkable;
+	glm::vec4 Color{1.0f};
+	glm::ivec2 Start{0};
+	glm::ivec2 End{0};
+	const ae::_Texture *Texture{nullptr};
+	const ae::_Texture *AltTexture{nullptr};
+	float MinZ{0.0f};
+	float MaxZ{0.0f};
+	float Rotation{0.0f};
+	float ScaleX{0.0f};
+	bool Walkable{false};
 };
 
 // Holds information about a hit entity
@@ -156,31 +142,16 @@ struct _Hit {
 // Holds information about object spawns
 struct _ObjectSpawn {
 
-	_ObjectSpawn() :
-		ID(""),
-		Position{0, 0},
-		Rotation(0.0f),
-		Scale(1.0f),
-		Type(0),
-		Level(1),
-		Deleted(false) {}
-
-	_ObjectSpawn(const std::string &ID, const glm::vec2 &Position, int Type, int Level) :
-		ID(ID),
-		Position(Position),
-		Rotation(0.0f),
-		Scale(1.0f),
-		Type(Type),
-		Level(Level),
-		Deleted(false) {}
+	_ObjectSpawn() {}
+	_ObjectSpawn(const std::string &ID, const glm::vec2 &Position, int Type, int Level) : ID(ID), Position(Position), Type(Type), Level(Level) {}
 
 	std::string ID;
-	glm::vec2 Position;
-	float Rotation;
-	float Scale;
-	int Type;
-	int Level;
-	bool Deleted;
+	glm::vec2 Position{0.0f};
+	float Rotation{0.0f};
+	float Scale{1.0f};
+	int Type{0};
+	int Level{1};
+	bool Deleted{false};
 };
 
 // Holds minimap layer data
@@ -278,19 +249,19 @@ class _Map {
 		// Stats
 		std::string Filename;
 		std::string Name;
-		glm::vec4 BaseAmbientLight;
-		glm::ivec2 Size;
-		int MapType;
-		int Level;
-		int Monsters;
-		int Crates;
-		int Secrets;
-		bool BaseAmbientClock;
-		bool AmbientClock;
-		bool SimpleAI;
+		glm::vec4 BaseAmbientLight{0.5f, 0.5f, 0.5f, 1.0f};
+		glm::ivec2 Size{0, 0};
+		int MapType{MAPTYPE_CAMPAIGN};
+		int Level{1};
+		int Monsters{0};
+		int Crates{0};
+		int Secrets{0};
+		bool BaseAmbientClock{false};
+		bool AmbientClock{false};
+		bool SimpleAI{false};
 
 		// Objects
-		ae::_Camera *Camera;
+		ae::_Camera *Camera{nullptr};
 		std::unique_ptr<_ObjectManager> ObjectManager;
 		std::vector<_ObjectSpawn *> ObjectSpawns;
 		std::vector<_Event *> Events;
@@ -298,7 +269,7 @@ class _Map {
 
 		// Minimap
 		std::vector<_MinimapLayer> MinimapLayers;
-		glm::vec2 MinimapCaptureSize;
+		glm::vec2 MinimapCaptureSize{0.0f};
 
 		// Lights
 		glm::vec4 AmbientLight;
@@ -311,7 +282,7 @@ class _Map {
 		bool CheckAABBCollision(const glm::vec2 &Position, float Radius, const float *AABB, bool Resolve, _Hit &Hit) const;
 
 		// Blocks
-		_Tile **Data;
+		_Tile **Data{nullptr};
 		std::vector<_Block> Blocks[MAPLAYER_COUNT];
 		std::vector<_Event *> CheckpointEvents;
 

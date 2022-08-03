@@ -23,11 +23,7 @@
 
 _NullState NullState;
 
-// Constructor
-_NullState::_NullState() :
-	LevelComplete(false) {
-}
-
+// Initialize
 void _NullState::Init() {
 	if(LevelComplete)
 		Menu.InitScore();
@@ -37,6 +33,7 @@ void _NullState::Init() {
 	LevelComplete = false;
 }
 
+// Close
 void _NullState::Close() {
 }
 

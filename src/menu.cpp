@@ -86,16 +86,6 @@ static const char *COLORS[] = {
 	"blue",
 };
 
-// Constructor
-_Menu::_Menu() {
-	State = STATE_NONE;
-	CurrentLayout = nullptr;
-	Background = nullptr;
-	OptionsState = OPTION_NONE;
-	SinglePlayerState = SINGLEPLAYER_NONE;
-	PreviousClickTimer = 0.0;
-}
-
 // Initialize
 void _Menu::InitTitle() {
 	ChangeLayout("element_menu_title");

@@ -57,22 +57,6 @@
 
 _PlayState PlayState;
 
-// Constructor
-_PlayState::_PlayState() {
-	Framebuffer = nullptr;
-	Player = nullptr;
-	Level = "";
-	TestMode = false;
-	DevMode = false;
-	GodMode = false;
-	DebugMode = false;
-	FromEditor = false;
-	LastClosestItem = nullptr;
-	ClosestItem = nullptr;
-	ClosestItemTimer = 0.0;
-	FlashTimer = 0.0;
-}
-
 // Load level and set up objects
 void _PlayState::Init() {
 	ae::Graphics.SetViewport(ae::Graphics.CurrentSize);

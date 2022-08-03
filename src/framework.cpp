@@ -46,15 +46,8 @@ _Framework Framework;
 
 // Initialize
 void _Framework::Init(int ArgumentCount, char **Arguments) {
-	Console = nullptr;
-	RequestedState = nullptr;
-	Done = false;
-	TimeStepAccumulator = 0.0;
 	TimeStep = GAME_TIMESTEP;
-	FrameworkState = INIT;
-	IgnoreNextInputEvent = false;
 	State = &NullState;
-	DemoMode = false;
 
 	#ifdef DEMO_MODE
 	DemoMode = true;

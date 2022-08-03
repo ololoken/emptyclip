@@ -130,10 +130,6 @@ class _EditorState : public ae::_State {
 
 	public:
 
-		// Setup
-		_EditorState();
-		virtual ~_EditorState() override {}
-
 		void Init() override;
 		void Close() override;
 
@@ -215,14 +211,14 @@ class _EditorState : public ae::_State {
 		void ExecuteUpdateMapLevel(int Change);
 
 		// Parameters
-		glm::vec3 SavedCameraPosition;
-		int CheckpointIndex;
-		int SavedCheckpointIndex;
+		glm::vec3 SavedCameraPosition{0.0f, 0.0f, 6.5f};
+		int CheckpointIndex{0};
+		int SavedCheckpointIndex{0};
 		std::string MapFilename;
-		int SavedLayer;
-		int SavedPalette;
-		int SavedGridMode;
-		bool SavedHighlightBlocks;
+		int SavedLayer{0};
+		int SavedPalette{0};
+		int SavedGridMode{5};
+		bool SavedHighlightBlocks{false};
 
 		// Graphics
 		ae::_Framebuffer *Framebuffer;

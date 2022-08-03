@@ -80,8 +80,6 @@ class _Menu {
 			COLOR_COUNT,
 		};
 
-		_Menu();
-
 		void InitTitle();
 		void InitSinglePlayer();
 		void InitOptions();
@@ -121,27 +119,27 @@ class _Menu {
 		void RemapInput(int InputType, int Input);
 
 		// States
-		StateType State;
+		StateType State{STATE_NONE};
 
 		// UI
-		ae::_Element *Background;
-		ae::_Element *CurrentLayout;
-		ae::_Element *InputLabels[LABEL_COUNT];
-		ae::_Element *SaveSlots[_Save::SLOT_COUNT];
-		ae::_Element *ColorButtons[4];
+		ae::_Element *Background{nullptr};
+		ae::_Element *CurrentLayout{nullptr};
+		ae::_Element *InputLabels[LABEL_COUNT]{nullptr};
+		ae::_Element *SaveSlots[_Save::SLOT_COUNT]{nullptr};
+		ae::_Element *ColorButtons[4]{nullptr};
 
 		// Double click
-		ae::_Element *PreviousClick;
-		double PreviousClickTimer;
+		ae::_Element *PreviousClick{nullptr};
+		double PreviousClickTimer{0.0};
 
 		// Options
-		OptionsStateType OptionsState;
-		int CurrentAction;
+		OptionsStateType OptionsState{OPTION_NONE};
+		int CurrentAction{-1};
 
 		// Singleplayer
-		SinglePlayerStateType SinglePlayerState;
-		int SelectedSlot;
-		int SelectedColor;
+		SinglePlayerStateType SinglePlayerState{SINGLEPLAYER_NONE};
+		int SelectedSlot{-1};
+		int SelectedColor{0};
 };
 
 extern _Menu Menu;

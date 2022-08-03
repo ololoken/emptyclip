@@ -55,9 +55,6 @@ class _Event {
 
 	public:
 
-		_Event();
-		~_Event();
-
 		void Update(double FrameTime);
 
 		void AddTile(_EventTile Tile);
@@ -70,18 +67,18 @@ class _Event {
 
 		void GetBounds(glm::vec4 &Bounds) { Bounds[0] = Start.x; Bounds[1] = Start.y; Bounds[2] = End.x + 1.0f; Bounds[3] = End.y + 1.0f; }
 
-		int Type;
-		int Active;
-		int Level;
-		int SpawnLevel;
-		int SpawnMultiplier;
-		bool Switched;
-		glm::ivec2 Start;
-		glm::ivec2 End;
+		int Type{0};
+		int Active{false};
+		int Level{0};
+		int SpawnLevel{0};
+		int SpawnMultiplier{1};
+		bool Switched{false};
+		glm::ivec2 Start{0};
+		glm::ivec2 End{0};
 		std::vector<_EventTile> Tiles;
 		std::string ItemID;
 		std::string MonsterID;
 		std::string ParticleID;
-		double Timer;
-		double ActivationPeriod;
+		double Timer{0.0};
+		double ActivationPeriod{0.0};
 };

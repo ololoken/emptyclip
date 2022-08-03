@@ -47,7 +47,6 @@ class _PlayState : public ae::_State {
 	public:
 
 		// Setup
-		_PlayState();
 		void Init() override;
 		void Close() override;
 
@@ -69,17 +68,17 @@ class _PlayState : public ae::_State {
 
 		// Parameters
 		std::string Level;
-		bool TestMode;
-		bool FromEditor;
-		bool DebugMode;
-		bool DevMode;
-		bool GodMode;
-		int CheckpointIndex;
+		bool TestMode{false};
+		bool FromEditor{false};
+		bool DebugMode{false};
+		bool DevMode{false};
+		bool GodMode{false};
+		int CheckpointIndex{0};
 
 		// Objects
-		_HUD *HUD;
-		_Player *Player;
-		double FlashTimer;
+		_HUD *HUD{nullptr};
+		_Player *Player{nullptr};
+		double FlashTimer{0.0};
 
 	protected:
 
@@ -102,35 +101,35 @@ class _PlayState : public ae::_State {
 		void PickupObject(_Item *Item, int &AmountAdded);
 
 		// Game
-		double Timer;
-		double CursorItemTimer;
+		double Timer{0.0};
+		double CursorItemTimer{0.0};
 
 		// Map
-		_Map *Map;
+		_Map *Map{nullptr};
 
 		// Objects
 		std::list<_Entity *> Monsters;
 		std::list<_Event *> ActiveEvents;
-		int ActiveAI;
+		int ActiveAI{0};
 
 		// HUD
 		std::unordered_map<_Item *, int> IgnoreItems;
-		_Item *CursorItem;
-		_Item *PreviousCursorItem;
-		_Object *ClosestItem;
-		_Object *LastClosestItem;
-		double ClosestItemTimer;
+		_Item *CursorItem{nullptr};
+		_Item *PreviousCursorItem{nullptr};
+		_Object *ClosestItem{nullptr};
+		_Object *LastClosestItem{nullptr};
+		double ClosestItemTimer{0.0};
 
 		// Graphics
-		ae::_Framebuffer *Framebuffer;
+		ae::_Framebuffer *Framebuffer{nullptr};
 
 		// Particles
-		_Particles *Particles;
+		_Particles *Particles{nullptr};
 
 		// Camera
-		ae::_Camera *Camera;
-		glm::vec2 PreviousWorldCursor;
-		glm::vec2 WorldCursor;
+		ae::_Camera *Camera{nullptr};
+		glm::vec2 PreviousWorldCursor{0.0f};
+		glm::vec2 WorldCursor{0.0f};
 };
 
 extern _PlayState PlayState;
