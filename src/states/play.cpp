@@ -332,7 +332,7 @@ bool _PlayState::HandleCommand(ae::_Console *Console) {
 	else if(Console->Command == "suicide") {
 		if(Player) {
 			Player->UpdateHealth(-10000000);
-			ae::Audio.PlaySound(Player->GetSound(SOUND_DEATH, -1), ae::_SoundSettings(glm::vec3(Player->Position.x, 0.0f, Player->Position.y)));
+			ae::Audio.PlaySound(ae::Assets.Sounds["player_die0"], ae::_SoundSettings(glm::vec3(Player->Position.x, 0.0f, Player->Position.y)));
 		}
 
 		return true;
