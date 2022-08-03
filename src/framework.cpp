@@ -399,7 +399,8 @@ void _Framework::LoadAssets() {
 	ae::Assets.LoadFonts("tables/fonts.tsv", false);
 	ae::Assets.LoadMeshDirectory("meshes/");
 	ae::Assets.LoadColors("tables/colors.tsv");
-	GameAssets.LoadSounds("tables/sounds.tsv", "sounds/");
+	ae::Assets.LoadSoundPack("data/sounds");
+	GameAssets.LoadSounds("tables/sounds.tsv");
 	GameAssets.LoadSoundGroups("tables/sound_groups.tsv");
 	GameAssets.LoadParticles("tables/particles.tsv");
 	GameAssets.LoadParticleGroups("tables/particle_groups.tsv");

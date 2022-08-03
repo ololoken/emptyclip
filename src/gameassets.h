@@ -46,7 +46,7 @@ class _GameAssets {
 		void Init();
 		void Close();
 
-		void LoadSounds(const std::string &Path, const std::string &SoundPath);
+		void LoadSounds(const std::string &Path);
 		void LoadSoundGroups(const std::string &Path);
 		void LoadParticles(const std::string &Path);
 		void LoadParticleGroups(const std::string &Path);

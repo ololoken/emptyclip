@@ -46,7 +46,7 @@ void _GameAssets::Close() {
 }
 
 // Load sounds
-void _GameAssets::LoadSounds(const std::string &Path, const std::string &SoundPath) {
+void _GameAssets::LoadSounds(const std::string &Path) {
 
 	// Load file
 	std::ifstream File(Path, std::ios::in);
@@ -59,12 +59,10 @@ void _GameAssets::LoadSounds(const std::string &Path, const std::string &SoundPa
 	// Read file
 	while(!File.eof() && File.peek() != EOF) {
 		std::string ID;
-		std::string SoundFile;
 		std::getline(File, ID, '\t');
-		std::getline(File, SoundFile, '\t');
 
 		// Load sound
-		ae::_Sound *Sound = ae::Audio.LoadSound(SoundPath + SoundFile);
+		ae::_Sound *Sound = ae::Assets.Sounds[ID];
 
 		// Read parameters
 		float Volume;
@@ -78,7 +76,6 @@ void _GameAssets::LoadSounds(const std::string &Path, const std::string &SoundPa
 		}
 
 		ae::Audio.LoadChannel(Sound);
-		ae::Assets.Sounds[ID] = Sound;
 	}
 
 	File.close();

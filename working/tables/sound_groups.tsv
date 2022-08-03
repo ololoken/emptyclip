@@ -1,23 +1,23 @@
 id	fire	triggerdown	ricochet	empty	reload	hit	take damage	death	move
-player	player_swing0					player_punch0	player_hit0		player_move0
-knife	knife_fire0					knife_hit0			
-club	player_swing0					club_hit0			
-pistol	pistol_fire0		pistol_ricochet0	pistol_empty0	pistol_reload0				
-pistol_heavy	pistol_fire1		pistol_ricochet0	pistol_empty0	pistol_reload0				
-plasma	plasma_fire0			pistol_empty0	pistol_reload0				
-revolver	revolver_fire0		pistol_ricochet0	pistol_empty0	revolver_reload0				
-shotgun	shotgun_fire0		pistol_ricochet0	pistol_empty0	shotgun_reload0				
-boltrifle	boltrifle_fire0		pistol_ricochet0	pistol_empty0	shotgun_reload0				
-rifle	rifle_fire0		pistol_ricochet0	pistol_empty0	pistol_reload0				
-sniper	sniper_fire0		pistol_ricochet0	pistol_empty0	pistol_reload0				
-minigun		minigun_fire0	pistol_ricochet0	pistol_empty0	pistol_reload0				
-zombie	zombie_attack0						zombie_hit0	zombie_die0	zombie_move0
-dog	dog_attack0,dog_attack1						zombie_hit0	dog_die0,dog_die1	dog_move0
-bat								spider_die0	
-spider						spider_attack0	zombie_hit0	spider_die0	
-skeleton						player_punch0		skeleton_die0	skeleton_move0
-beast	player_swing0					monster_punch0	monster_hit0	monster_hit0	beast_move0
-fighter						player_punch0		zombie_die0	
-gunner	rifle_fire0		pistol_ricochet0					zombie_die0	
-wisp	wisp_attack0							wisp_die0	
-crate								crate_die0	
+player	player_swing0.ogg					player_punch0.ogg	player_hit0.ogg		player_move0.ogg
+knife	knife_fire0.ogg					knife_hit0.ogg			
+club	player_swing0.ogg					club_hit0.ogg			
+pistol	pistol_fire0.ogg		pistol_ricochet0.ogg	pistol_empty0.ogg	pistol_reload0.ogg				
+pistol_heavy	pistol_fire1.ogg		pistol_ricochet0.ogg	pistol_empty0.ogg	pistol_reload0.ogg				
+plasma	plasma_fire0.ogg			pistol_empty0.ogg	pistol_reload0.ogg				
+revolver	revolver_fire0.ogg		pistol_ricochet0.ogg	pistol_empty0.ogg	revolver_reload0.ogg				
+shotgun	shotgun_fire0.ogg		pistol_ricochet0.ogg	pistol_empty0.ogg	shotgun_reload0.ogg				
+boltrifle	boltrifle_fire0.ogg		pistol_ricochet0.ogg	pistol_empty0.ogg	shotgun_reload0.ogg				
+rifle	rifle_fire0.ogg		pistol_ricochet0.ogg	pistol_empty0.ogg	pistol_reload0.ogg				
+sniper	sniper_fire0.ogg		pistol_ricochet0.ogg	pistol_empty0.ogg	pistol_reload0.ogg				
+minigun		minigun_fire0.ogg	pistol_ricochet0.ogg	pistol_empty0.ogg	pistol_reload0.ogg				
+zombie	zombie_attack0.ogg						zombie_hit0.ogg	zombie_die0.ogg	zombie_move0.ogg
+dog	dog_attack0.ogg,dog_attack1.ogg						zombie_hit0.ogg	dog_die0.ogg,dog_die1.ogg	dog_move0.ogg
+bat								spider_die0.ogg	
+spider						spider_attack0.ogg	zombie_hit0.ogg	spider_die0.ogg	
+skeleton						player_punch0.ogg		skeleton_die0.ogg	skeleton_move0.ogg
+beast	player_swing0.ogg					monster_punch0.ogg	monster_hit0.ogg	monster_hit0.ogg	beast_move0.ogg
+fighter						player_punch0.ogg		zombie_die0.ogg	
+gunner	rifle_fire0.ogg		pistol_ricochet0.ogg					zombie_die0.ogg	
+wisp	wisp_attack0.ogg							wisp_die0.ogg	
+crate								crate_die0.ogg	
