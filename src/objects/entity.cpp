@@ -35,67 +35,10 @@ const double SQRT1_2 = 0.70710678118654752440;
 
 // Constructor
 _Entity::_Entity(const _ObjectTemplate &EntityTemplate) :
-	_Object(EntityTemplate),
-	TriggerDownAudio(nullptr),
-	MoveState(MOVE_NONE),
-	MoveSpeed(0),
-	MoveModifier(1.0f),
-	Stamina(1),
-	MaxStamina(1),
-	StaminaRegenModifier(1.0f),
-	BaseMoveSpeed(0),
-	WallState(0),
-	Tired(false),
-	PositionChanged(false),
-	Health(0),
-	MaxHealth(0),
-	DamageBlock(0),
-	DamageResist(0),
-	WalkingAnimation(ANIMATION_MOVE),
-	MeleeAnimation(ANIMATION_ATTACK),
-	ShootingOnehandAnimation(ANIMATION_ATTACK),
-	ShootingTwohandAnimation(ANIMATION_ATTACK),
-	DyingAnimation(ANIMATION_DIE),
-	InvulnerableTimer(0.0),
-	LastHitTimer(0.0),
-	CurrentAccuracy(0),
-	MinAccuracy(0),
-	MaxAccuracy{0, 0},
-	Recoil(0),
-	RecoilRegen(0),
-	RecoilModifier(1.0f),
-	MoveRecoil(0.0f),
-	AttackRange{0, 0},
-	AttackTimer{0, 0},
-	AttackPeriod{0, 0},
-	AttackWidth{0, 0},
-	AttackCount{1, 1},
-	CritChance{0, 0},
-	CritDamage{100, 100},
-	BurstRounds{0, 0},
-	BurstPeriod{0.0, 0.0},
-	Projectiles{nullptr, nullptr},
-	ProjectileSpeed{0.0f, 0.0f},
-	MainWeaponType(0),
-	AttackRequestType(0),
-	BurstRoundsShot(0),
-	AttackRequested(false),
-	AttackMade(false),
-	ExperienceGiven(0),
-	TargetPosition{0, 0},
-	AIType(AI_NONE) {
-
-	for(int i = 0; i < WEAPON_COUNT; i++)
-		WeaponOffset[i] = glm::vec2(0.0f, 0.0f);
-
-	for(int i = 0; i < WEAPONATTACK_COUNT; i++) {
-		Penetration[i] = 1;
-		PenetrationDamage[i] = 0.0f;
-	}
+	_Object(EntityTemplate) {
 
 	PositionZ = OBJECT_Z;
 	Animation = new ae::_Animation(nullptr);
-	Map = nullptr;
 }
 
 // Destructor

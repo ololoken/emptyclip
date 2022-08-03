@@ -28,7 +28,6 @@
 _Particle::_Particle(const _ParticleSpawn &Spawn) :
 	Type(Spawn.Template->Type),
 	Lifetime(Spawn.Template->Lifetime),
-	Deleted(false),
 	Texture(Spawn.Template->Texture),
 	Font(Spawn.Template->Font),
 	Text(Spawn.Text),

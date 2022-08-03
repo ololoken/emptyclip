@@ -33,9 +33,7 @@
 
 // Constructor
 _Item::_Item(const _ObjectTemplate &ItemTemplate) :
-	_Object(ItemTemplate),
-	Quality(0),
-	Count(1) {
+	_Object(ItemTemplate) {
 
 	PositionZ = ITEM_Z;
 }

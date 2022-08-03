@@ -85,8 +85,8 @@ class _Item : public _Object {
 		virtual std::string GetTypeAsString() const override;
 		std::string ModTypeToString(int ModType);
 
-		int Quality;
-		int Count;
+		int Quality = 0;
+		int Count = 1;
 
 		std::vector<_Item *> Mods;
 		int Bonus[MOD_COUNT];

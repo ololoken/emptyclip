@@ -29,10 +29,7 @@ const glm::vec2 MONSTER_WEAPONOFFSET = glm::vec2(32.0f / 64.0f - 0.5f, -0.5f);
 
 // Constructor
 _Monster::_Monster(const _ObjectTemplate &MonsterTemplate) :
-	_Entity(MonsterTemplate),
-	Player(nullptr),
-	ItemDrop(nullptr),
-	ReturnPosition(0.0f) {
+	_Entity(MonsterTemplate) {
 
 	// Set stats
 	MainWeaponType = Template.Attributes.at("weapon_type").Int;

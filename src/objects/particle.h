@@ -44,7 +44,7 @@ class _Particle {
 		// Attributes
 		int Type;
 		double Lifetime;
-		bool Deleted;
+		bool Deleted = false;
 
 		// Graphics
 		const ae::_Texture *Texture;
