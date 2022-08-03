@@ -159,6 +159,7 @@ struct _ObjectSpawn {
 	_ObjectSpawn() :
 		ID(""),
 		Position{0, 0},
+		Rotation(0.0f),
 		Scale(1.0f),
 		Type(0),
 		Level(1),
@@ -167,6 +168,7 @@ struct _ObjectSpawn {
 	_ObjectSpawn(const std::string &ID, const glm::vec2 &Position, int Type, int Level) :
 		ID(ID),
 		Position(Position),
+		Rotation(0.0f),
 		Scale(1.0f),
 		Type(Type),
 		Level(Level),
@@ -174,6 +176,7 @@ struct _ObjectSpawn {
 
 	std::string ID;
 	glm::vec2 Position;
+	float Rotation;
 	float Scale;
 	int Type;
 	int Level;

@@ -778,7 +778,7 @@ _Monster *_Stats::CreateMonster(const std::string &ID, int Level, const glm::vec
 }
 
 // Create prop
-_Object *_Stats::CreateProp(const std::string &ID, const glm::vec2 &Position, float Scale) const {
+_Object *_Stats::CreateProp(const std::string &ID, const glm::vec2 &Position, float Rotation, float Scale) const {
 	const _ObjectTemplate &Template = Objects.at(ID);
 
 	// Create object
@@ -789,6 +789,7 @@ _Object *_Stats::CreateProp(const std::string &ID, const glm::vec2 &Position, fl
 	Prop->Radius = Template.Attributes.at("halfsize_x").Float * Scale;
 	if(Template.Attributes.at("halfsize_y").Float != 0.0f)
 		Prop->Circle = false;
+	Prop->Rotation = Rotation;
 	Prop->Scale = Template.Attributes.at("scale").Float * Scale;
 
 	return Prop;

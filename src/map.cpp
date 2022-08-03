@@ -191,6 +191,10 @@ _Map::_Map(const std::string &Filename, double Clock, int SpawnMultiplier) : _Ma
 						if(Adjust)
 							ObjectSpawn->Position += glm::vec2(Offset);
 					} break;
+					// Rotation
+					case 'r': {
+						File >> ObjectSpawn->Rotation;
+					} break;
 					// Scale
 					case 's': {
 						File >> ObjectSpawn->Scale;
@@ -429,6 +433,8 @@ bool _Map::Save(const std::string &String) {
 		File << "Oi " << ObjectSpawn->ID << '\n';
 		File << "Ol " << ObjectSpawn->Level << '\n';
 		File << "Op " << ObjectSpawn->Position.x << ' ' << ObjectSpawn->Position.y << '\n';
+		if(ObjectSpawn->Rotation != 0.0f)
+			File << "Or " << ObjectSpawn->Rotation << '\n';
 		if(ObjectSpawn->Scale != 1.0f)
 			File << "Os " << ObjectSpawn->Scale << '\n';
 	}

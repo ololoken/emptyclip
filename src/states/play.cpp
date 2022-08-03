@@ -1552,7 +1552,7 @@ void _PlayState::SpawnObject(_ObjectSpawn *ObjectSpawn, bool GenerateStats, int 
 			Map->Monsters++;
 	}
 	else if(ObjectSpawn->Type == _Object::PROP)
-		Map->AddObject(Stats.CreateProp(ObjectSpawn->ID, ObjectSpawn->Position, ObjectSpawn->Scale), GRID_MONSTER);
+		Map->AddObject(Stats.CreateProp(ObjectSpawn->ID, ObjectSpawn->Position, ObjectSpawn->Rotation, ObjectSpawn->Scale), GRID_MONSTER);
 	else
 		Map->AddObject(Stats.CreateItem(ObjectSpawn->ID, ObjectSpawn->Level + AddedLevel, 0, 1, ObjectSpawn->Position, GenerateStats), GRID_ITEM);
 }

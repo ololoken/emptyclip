@@ -544,7 +544,7 @@ void _EditorState::HandleMouseButton(const ae::_MouseEvent &MouseEvent) {
 							default: {
 								ae::_Element *Button = Brush[EditMode];
 								if(Button)
-									SpawnObject(Map->GetValidPosition(WorldCursor), 1.0f, (intptr_t)Button->UserData, Button->Name, ObjectLevel, IsShiftDown);
+									SpawnObject(Map->GetValidPosition(WorldCursor), Rotation, 1.0f, (intptr_t)Button->UserData, Button->Name, ObjectLevel, IsShiftDown);
 							} break;
 						}
 					}
@@ -1408,6 +1408,7 @@ void _EditorState::DrawBrush() {
 				IconID = (*Iterator)->ID;
 				IconText = "";
 				IconTexture = nullptr;
+				IconRotation = (*Iterator)->Rotation;
 				IconScale = (*Iterator)->Scale;
 				SelectedObjectLevel = (*Iterator)->Level;
 			}
@@ -1435,6 +1436,10 @@ void _EditorState::DrawBrush() {
 			MainFont->DrawText("Total: " + IconTotal, glm::ivec2(IconPosition + NamePosition), ae::LEFT_BASELINE);
 		}
 		else if(EditMode == EDITMODE_PROPS) {
+
+			// Draw object rotation
+			NamePosition.y += TextSpacingY;
+			MainFont->DrawText("Rotation: " + std::to_string(IconRotation), glm::ivec2(IconPosition + NamePosition), ae::LEFT_BASELINE);
 
 			// Draw object scale
 			NamePosition.y += TextSpacingY;
@@ -1477,6 +1482,7 @@ void _EditorState::DrawEventTiles(_Event *Event, const glm::vec4 &Color) {
 
 // Draws an object
 void _EditorState::DrawObject(float OffsetX, float OffsetY, const _ObjectSpawn *ObjectSpawn, float Alpha) {
+	float Rotation = 0.0f;
 	float Scale = ITEM_SCALE;
 	float Depth = 0.0f;
 	glm::vec4 Color;
@@ -1506,6 +1512,7 @@ void _EditorState::DrawObject(float OffsetX, float OffsetY, const _ObjectSpawn *
 			_ObjectTemplate &ObjectTemplate = Stats.Objects.at(ObjectSpawn->ID);
 			Texture = ae::Assets.Textures[ObjectTemplate.IconID];
 			Mesh = ae::Assets.Meshes[ObjectTemplate.MeshID];
+			Rotation = ObjectSpawn->Rotation;
 			Color = ObjectTemplate.Color;
 			Scale = ObjectTemplate.Attributes.at("scale").Float * ObjectSpawn->Scale;
 		} break;
@@ -1524,14 +1531,14 @@ void _EditorState::DrawObject(float OffsetX, float OffsetY, const _ObjectSpawn *
 		ae::Graphics.SetProgram(ae::Assets.Programs["map_norm"]);
 		ae::Assets.Programs["map_norm"]->ResetTextureTransform();
 		ae::Graphics.SetColor(Color);
-		ae::Graphics.DrawMesh(glm::vec3(DrawPosition, Depth), Mesh, Texture, glm::vec3(Scale));
+		ae::Graphics.DrawMesh(glm::vec3(DrawPosition, Depth), Mesh, Texture, Rotation, glm::vec3(Scale));
 	}
 	else {
 		ae::Graphics.SetDepthMask(false);
 		ae::Graphics.SetProgram(ae::Assets.Programs["pos_uv"]);
 		ae::Assets.Programs["pos_uv"]->ResetTextureTransform();
 		ae::Graphics.SetColor(Color);
-		ae::Graphics.DrawSprite(glm::vec3(DrawPosition, Depth), Texture, 0.0f, glm::vec2(Scale));
+		ae::Graphics.DrawSprite(glm::vec3(DrawPosition, Depth), Texture, Rotation, glm::vec2(Scale));
 	}
 }
 
@@ -1684,10 +1691,11 @@ void _EditorState::ProcessEventIcons(int Index, int Type) {
 }
 
 // Adds an object to the list
-void _EditorState::SpawnObject(const glm::vec2 &Position, float Scale, int Type, const std::string &ID, int Level, bool Align) {
+void _EditorState::SpawnObject(const glm::vec2 &Position, float Rotation, float Scale, int Type, const std::string &ID, int Level, bool Align) {
 	glm::vec2 SpawnPosition = Align ? AlignToGrid(Position) : Position;
 
 	_ObjectSpawn *ObjectSpawn = new _ObjectSpawn(ID, SpawnPosition, Type, Level);
+	ObjectSpawn->Rotation = Rotation;
 	ObjectSpawn->Scale = Scale;
 	Map->ObjectSpawns.push_back(ObjectSpawn);
 }
@@ -1844,14 +1852,23 @@ void _EditorState::ExecuteWalkable() {
 // Executes the rotate command
 void _EditorState::ExecuteRotate() {
 	if(BlockSelected()) {
-		SelectedBlock->Rotation += 90;
-		if(SelectedBlock->Rotation > 359)
-			SelectedBlock->Rotation = 0;
+		SelectedBlock->Rotation += 90.0f;
+		if(SelectedBlock->Rotation > 359.0f)
+			SelectedBlock->Rotation = 0.0f;
+	}
+	else if(ObjectsSelected()) {
+		if(SelectedObjects.size()) {
+			for(const auto &Object : SelectedObjects) {
+				Object->Rotation += 90.0f;
+				if(Object->Rotation > 359.0f)
+					Object->Rotation = 0.0f;
+			}
+		}
 	}
 	else {
-		Rotation += 90;
-		if(Rotation > 359)
-			Rotation = 0;
+		Rotation += 90.0f;
+		if(Rotation > 359.0f)
+			Rotation = 0.0f;
 	}
 }
 
@@ -2092,7 +2109,7 @@ void _EditorState::ExecutePaste(bool Viewport, int PasteMode) {
 		break;
 		default:
 			for(auto Iterator : ClipboardObjects)
-				SpawnObject(GetValidObjectPosition(StartPosition - CopiedPosition + Iterator->Position), Iterator->Scale, Iterator->Type, Iterator->ID, 1, IsShiftDown);
+				SpawnObject(GetValidObjectPosition(StartPosition - CopiedPosition + Iterator->Position), Iterator->Rotation, Iterator->Scale, Iterator->Type, Iterator->ID, 1, IsShiftDown);
 		break;
 	}
 }

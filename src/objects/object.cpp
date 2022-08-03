@@ -79,7 +79,7 @@ void _Object::Render(double BlendFactor) {
 
 		ae::Graphics.SetColor(Color);
 		if(Mesh)
-			ae::Graphics.DrawMesh(glm::vec3(DrawPosition, PositionZ), Mesh, Texture, glm::vec3(Scale));
+			ae::Graphics.DrawMesh(glm::vec3(DrawPosition, PositionZ), Mesh, Texture, Rotation, glm::vec3(Scale));
 		else
 			ae::Graphics.DrawSprite(glm::vec3(DrawPosition, PositionZ), Texture, Rotation, glm::vec2(Scale));
 	}
