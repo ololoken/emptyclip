@@ -69,7 +69,7 @@ void _Stats::LoadStrings(const std::string &Path) {
 	// Load file
 	std::ifstream File(Path, std::ios::in);
 	if(!File)
-		throw std::runtime_error("Error loading: " + Path);
+		throw std::runtime_error(std::string(__func__) + " error opening '" + Path + "'");
 
 	// Ignore the first line
 	File.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
@@ -98,7 +98,7 @@ void _Stats::LoadLevels(const std::string &Path) {
 	// Open file
 	std::ifstream File(Path, std::ios::in);
 	if(!File)
-		throw std::runtime_error("Error loading: " + Path);
+		throw std::runtime_error(std::string(__func__) + " error opening '" + Path + "'");
 
 	// Skip header
 	File.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
@@ -151,7 +151,7 @@ void _Stats::LoadAmmo(const std::string &Path) {
 	// Load file
 	std::ifstream File(Path, std::ios::in);
 	if(!File)
-		throw std::runtime_error("Error loading: " + Path);
+		throw std::runtime_error(std::string(__func__) + " error opening '" + Path + "'");
 
 	// Skip header
 	File.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
@@ -188,7 +188,7 @@ void _Stats::LoadWeapons(const std::string &Path) {
 	// Load file
 	std::ifstream File(Path, std::ios::in);
 	if(!File)
-		throw std::runtime_error("Error loading: " + Path);
+		throw std::runtime_error(std::string(__func__) + " error opening '" + Path + "'");
 
 	// Skip header
 	File.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
@@ -284,7 +284,7 @@ void _Stats::LoadArmor(const std::string &Path) {
 	// Load file
 	std::ifstream File(Path, std::ios::in);
 	if(!File)
-		throw std::runtime_error("Error loading: " + Path);
+		throw std::runtime_error(std::string(__func__) + " error opening '" + Path + "'");
 
 	// Skip header
 	File.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
@@ -331,7 +331,7 @@ void _Stats::LoadKeys(const std::string &Path) {
 	// Load file
 	std::ifstream File(Path, std::ios::in);
 	if(!File)
-		throw std::runtime_error("Error loading: " + Path);
+		throw std::runtime_error(std::string(__func__) + " error opening '" + Path + "'");
 
 	// Skip header
 	File.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
@@ -369,7 +369,7 @@ void _Stats::LoadMedkits(const std::string &Path) {
 	// Load file
 	std::ifstream File(Path, std::ios::in);
 	if(!File)
-		throw std::runtime_error("Error loading: " + Path);
+		throw std::runtime_error(std::string(__func__) + " error opening '" + Path + "'");
 
 	// Skip header
 	File.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
@@ -404,7 +404,7 @@ void _Stats::LoadMods(const std::string &Path) {
 	// Load file
 	std::ifstream File(Path, std::ios::in);
 	if(!File)
-		throw std::runtime_error("Error loading: " + Path);
+		throw std::runtime_error(std::string(__func__) + " error opening '" + Path + "'");
 
 	// Skip header
 	File.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
@@ -448,7 +448,7 @@ void _Stats::LoadItemDrops(const std::string &Path) {
 	// Load file
 	std::ifstream File(Path, std::ios::in);
 	if(!File)
-		throw std::runtime_error("Error loading: " + Path);
+		throw std::runtime_error(std::string(__func__) + " error opening '" + Path + "'");
 
 	// Skip first field
 	File.ignore(std::numeric_limits<std::streamsize>::max(), '\t');
@@ -518,7 +518,7 @@ void _Stats::LoadMonsters(const std::string &Path) {
 	// Load file
 	std::ifstream File(Path, std::ios::in);
 	if(!File)
-		throw std::runtime_error("Error loading: " + Path);
+		throw std::runtime_error(std::string(__func__) + " error opening '" + Path + "'");
 
 	// Skip header
 	File.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
@@ -604,7 +604,7 @@ void _Stats::LoadProps(const std::string &Path) {
 	// Load file
 	std::ifstream File(Path, std::ios::in);
 	if(!File)
-		throw std::runtime_error("Error loading: " + Path);
+		throw std::runtime_error(std::string(__func__) + " error opening '" + Path + "'");
 
 	// Skip header
 	File.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
@@ -649,7 +649,7 @@ void _Stats::LoadProjectiles(const std::string &Path) {
 	// Load file
 	std::ifstream File(Path, std::ios::in);
 	if(!File)
-		throw std::runtime_error("Error loading: " + Path);
+		throw std::runtime_error(std::string(__func__) + " error opening '" + Path + "'");
 
 	// Skip header
 	File.ignore(std::numeric_limits<std::streamsize>::max(), '\n');

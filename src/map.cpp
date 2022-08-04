@@ -78,7 +78,7 @@ _Map::_Map() :
 // Initialize
 _Map::_Map(const std::string &Filename, double Clock, int SpawnMultiplier) : _Map() {
 	if(Filename.empty())
-		throw std::runtime_error("Empty file name");
+		throw std::runtime_error(std::string(__func__) + " empty file name");
 
 	this->Filename = FixFilename(Filename);
 	SpawnMultiplier = std::min(SpawnMultiplier, GAME_MAX_PROGRESSION_SPAWN);
@@ -90,7 +90,7 @@ _Map::_Map(const std::string &Filename, double Clock, int SpawnMultiplier) : _Ma
 	// Load file
 	gzifstream File(("maps/" + this->Filename).c_str(), std::ios::in);
 	if(!File)
-		throw std::runtime_error("Cannot load file: " + this->Filename);
+		throw std::runtime_error(std::string(__func__) + " error opening '" + this->Filename + "'");
 
 	// Read file
 	_ObjectSpawn *ObjectSpawn = nullptr;
@@ -115,7 +115,7 @@ _Map::_Map(const std::string &Filename, double Clock, int SpawnMultiplier) : _Ma
 						int FileVersion;
 						File >> FileVersion;
 						if(FileVersion != MAP_FILEVERSION)
-							throw std::runtime_error("Level version mismatch: " + std::to_string(FileVersion));
+							throw std::runtime_error(std::string(__func__) + " level version mismatch '" + std::to_string(FileVersion) + "'");
 					} break;
 					// Level used for default item/monster levels
 					case 'l': {
@@ -238,14 +238,14 @@ _Map::_Map(const std::string &Filename, double Clock, int SpawnMultiplier) : _Ma
 						File.ignore(1);
 						std::getline(File, Event->MonsterID, '\n');
 						if(Stats.Objects.find(Event->MonsterID) == Stats.Objects.end())
-							throw std::runtime_error("Unknown monster '" + Event->MonsterID + "'");
+							throw std::runtime_error(std::string(__func__) + " unknown monster '" + Event->MonsterID + "'");
 					} break;
 					// Particle ID
 					case 'P': {
 						File.ignore(1);
 						std::getline(File, Event->ParticleID, '\n');
 						if(GameAssets.Particles.find(Event->ParticleID) == GameAssets.Particles.end())
-							throw std::runtime_error("Unknown particle '" + Event->ParticleID + "'");
+							throw std::runtime_error(std::string(__func__) + " unknown particle '" + Event->ParticleID + "'");
 					} break;
 				}
 			} break;
@@ -322,12 +322,12 @@ _Map::_Map(const std::string &Filename, double Clock, int SpawnMultiplier) : _Ma
 						if(TextureType == '1') {
 							Block->Texture = ae::Assets.Textures[TexturePath];
 							if(!Block->Texture)
-								throw std::runtime_error("Unknown texture  '" + TexturePath + "'");
+								throw std::runtime_error(std::string(__func__) + " unknown texture  '" + TexturePath + "'");
 						}
 						else {
 							Block->AltTexture = ae::Assets.Textures[TexturePath];
 							if(!Block->AltTexture)
-								throw std::runtime_error("Unknown texture  '" + TexturePath + "'");
+								throw std::runtime_error(std::string(__func__) + " unknown texture  '" + TexturePath + "'");
 						}
 					} break;
 				}
@@ -402,7 +402,7 @@ bool _Map::Save(const std::string &String) {
 	// Open gz output stream
 	gzofstream File(("maps/" + Filename).c_str(), std::ios::out);
 	if(!File)
-		throw std::runtime_error("Cannot create file: " + Filename);
+		throw std::runtime_error(std::string(__func__) + " error opening '" + Filename + "'");
 
 	File << std::showpoint << std::fixed << std::setprecision(2);
 
@@ -548,8 +548,6 @@ void _Map::InitializeTiles() {
 
 // Adds an object to the collision grid
 void _Map::AddObjectToGrid(_Object *Object, int Type) {
-	if(!Data)
-		throw std::runtime_error("Tile data uninitialized!");
 
 	// Get the object's bounding rectangle
 	_TileBounds TileBounds;
@@ -564,8 +562,6 @@ void _Map::AddObjectToGrid(_Object *Object, int Type) {
 
 // Removes an object from the collision grid
 void _Map::RemoveObjectFromGrid(_Object *Object, int Type) {
-	if(!Data)
-		throw std::runtime_error("Tile data uninitialized!");
 
 	// Get the object's bounding rectangle
 	_TileBounds TileBounds;
@@ -714,8 +710,6 @@ bool _Map::CheckAABBCollision(const glm::vec2 &Position, float Radius, const flo
 
 // Get the first object that collides with a circle
 _Object *_Map::GetCloseObject(const glm::vec2 &Position, float Radius, int GridType) const {
-	if(!Data)
-		throw std::runtime_error("Tile data uninitialized!");
 
 	// Get the object's bounding rectangle
 	_TileBounds TileBounds;
@@ -740,8 +734,6 @@ _Object *_Map::GetCloseObject(const glm::vec2 &Position, float Radius, int GridT
 
 // Return objects that are touching a circle
 void _Map::GetCloseObjects(const glm::vec2 &Position, float Radius, int GridType, std::unordered_map<_Object *, int> &Objects, _Object **ClosestObject) const {
-	if(!Data)
-		throw std::runtime_error("Tile data uninitialized!");
 
 	// Get bounding rectangle
 	_TileBounds TileBounds;
@@ -811,8 +803,6 @@ std::vector<_Hit> &_Map::CheckCollisionsInGrid(const glm::vec2 &Position, float 
 
 // Returns a list of entities that an object is colliding with
 std::vector<_Hit> &_Map::ResolveCollisionsInGrid(const glm::vec2 &Position, float Radius, const _Object *SkipObject, bool &AxisAlignedPush, float PushFactor) {
-	if(!Data)
-		throw std::runtime_error("Tile data uninitialized!");
 
 	// Get the object's bounding rectangle
 	_TileBounds TileBounds;
@@ -884,8 +874,6 @@ std::vector<_Hit> &_Map::ResolveCollisionsInGrid(const glm::vec2 &Position, floa
 
 // Checks for melee collisions with entities in the collision grid
 void _Map::CheckMeleeCollisions(_Entity *Attacker, int GridType, int Penetration, std::vector<_Hit> &Hits) {
-	if(!Data)
-		throw std::runtime_error("Tile data uninitialized!");
 
 	// Get the object's bounding rectangle
 	_TileBounds TileBounds;
@@ -989,8 +977,6 @@ void _Map::CheckMeleeCollisions(_Entity *Attacker, int GridType, int Penetration
 
 // Determines which walls are adjacent to the object
 int _Map::GetWallState(const glm::vec2 &Position, float Radius) const {
-	if(!Data)
-		throw std::runtime_error("Tile data uninitialized!");
 
 	// Get the tile the object is standing on
 	glm::ivec2 TileCoord = GetValidCoord(Position);
@@ -1037,8 +1023,6 @@ void _Map::GetAdjacentTile(const glm::vec2 &Position, float Direction, glm::ivec
 
 // Checks bullet collisions with objects and walls
 void _Map::CheckBulletCollisions(_Object *Attacker, const glm::vec2 &Direction, std::vector<_Hit> &Hits, int GridType, bool TestObjects, int Penetration, int CollisionFlag) {
-	if(!Data)
-		throw std::runtime_error("Tile data uninitialized!");
 
 	// Initialize state
 	_Hit Hit;
@@ -1493,9 +1477,6 @@ void _Map::ToggleEventActive(int Index) {
 
 // Determines if a tile has any events
 bool _Map::HasEvents(const glm::ivec2 &Position) const {
-	if(!Data)
-		throw std::runtime_error("Tile data uninitialized!");
-
 	return Data[Position.x][Position.y].Events.size() > 0;
 }
 
@@ -1563,9 +1544,6 @@ void _Map::SetAmbientLight(const std::string &ColorID) {
 
 // Gets a list of event based on a position
 std::vector<_Event *> &_Map::GetEventList(const glm::ivec2 &Position) {
-	if(!Data)
-		throw std::runtime_error("Tile data uninitialized!");
-
 	return Data[Position.x][Position.y].Events;
 }
 
@@ -1684,9 +1662,6 @@ void _Map::HighlightBlocks(int Layer) {
 
 // Add particle to grid
 void _Map::AddParticle(_Particle *Particle) {
-	if(!Data)
-		throw std::runtime_error("Tile data uninitialized!");
-
 	glm::ivec2 Coord = GetValidCoord(glm::ivec2(Particle->Position.x, Particle->Position.y));
 	Data[Coord.x][Coord.y].Particles.push_back(Particle);
 
@@ -1709,8 +1684,6 @@ glm::vec2 _Map::GetValidPosition(const glm::vec2 &Position) const {
 
 // Opens a door or hits a floor switch
 void _Map::ChangeMapState(const _Event *Event) {
-	if(!Data)
-		throw std::runtime_error("Tile data uninitialized!");
 
 	// Check for the proper event
 	if(!(Event->Type == EVENT_DOOR || Event->Type == EVENT_WALLSWITCH || Event->Type == EVENT_FLOORSWITCH))
@@ -1739,8 +1712,6 @@ void _Map::ChangeMapState(const _Event *Event) {
 
 // Determines if the map state can be changed
 bool _Map::CanChangeMapState(const _Event *Event) {
-	if(!Data)
-		throw std::runtime_error("Tile data uninitialized!");
 
 	// Check for the proper event
 	const std::vector<_EventTile> &Tiles = Event->Tiles;

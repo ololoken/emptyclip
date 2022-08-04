@@ -104,7 +104,7 @@ void _Framework::Init(int ArgumentCount, char **Arguments) {
 
 	// Initialize SDL
 	if(SDL_Init(SDL_INIT_VIDEO) < 0)
-		throw std::runtime_error("Failed to initialize SDL");
+		throw std::runtime_error(std::string(__func__) + " failed to initialize SDL");
 
 	// Initialize audio
 	ae::Audio.Init(AudioEnabled, false);

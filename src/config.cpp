@@ -57,7 +57,7 @@ void _Config::Init(const std::string &ConfigFile) {
 		SDL_free(PrefPath);
 	}
 	else {
-		throw std::runtime_error("Cannot create config path!");
+		throw std::runtime_error(std::string(__func__) + " unable to create config path!");
 	}
 
 	ConfigFilePath = ConfigPath + ConfigFile;

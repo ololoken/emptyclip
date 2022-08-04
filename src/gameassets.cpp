@@ -51,7 +51,7 @@ void _GameAssets::LoadSounds(const std::string &Path) {
 	// Load file
 	std::ifstream File(Path, std::ios::in);
 	if(!File)
-		throw std::runtime_error("Error loading: " + Path);
+		throw std::runtime_error(std::string(__func__) + " error opening '" + Path + "'");
 
 	// Skip header
 	File.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
@@ -87,7 +87,7 @@ void _GameAssets::LoadSoundGroups(const std::string &Path) {
 	// Load file
 	std::ifstream File(Path, std::ios::in);
 	if(!File)
-		throw std::runtime_error("Error loading: " + Path);
+		throw std::runtime_error(std::string(__func__) + " error opening '" + Path + "'");
 
 	// Skip header
 	File.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
@@ -134,7 +134,7 @@ void _GameAssets::LoadParticles(const std::string &Path) {
 	// Load file
 	std::ifstream File(Path, std::ios::in);
 	if(!File)
-		throw std::runtime_error("Error loading: " + Path);
+		throw std::runtime_error(std::string(__func__) + " error opening '" + Path + "'");
 
 	// Skip header
 	File.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
@@ -164,7 +164,7 @@ void _GameAssets::LoadParticles(const std::string &Path) {
 		// Get texture
 		Particle.Texture = ae::Assets.Textures[TextureID];
 		if(TextureID != "" && !Particle.Texture)
-			throw std::runtime_error("Unable to find texture: " + TextureID);
+			throw std::runtime_error(std::string(__func__) + " unknown texture '" + TextureID + "'");
 
 		// Set color
 		Particle.Color = ae::Assets.Colors[ColorID];
@@ -172,7 +172,7 @@ void _GameAssets::LoadParticles(const std::string &Path) {
 		// Get font
 		Particle.Font = ae::Assets.Fonts[FontID];
 		if(FontID != "" && !Particle.Font)
-			throw std::runtime_error("Unable to find font: " + FontID);
+			throw std::runtime_error(std::string(__func__) + " unknown font '" + FontID + "'");
 
 		Particles[ID] = Particle;
 	}
@@ -186,7 +186,7 @@ void _GameAssets::LoadParticleGroups(const std::string &Path) {
 	// Load file
 	std::ifstream File(Path, std::ios::in);
 	if(!File)
-		throw std::runtime_error("Error loading: " + Path);
+		throw std::runtime_error(std::string(__func__) + " error opening '" + Path + "'");
 
 	// Skip header
 	File.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
