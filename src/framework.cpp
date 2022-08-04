@@ -367,32 +367,33 @@ void _Framework::LoadAssets() {
 	ae::_TextureSettings TextureSettings;
 	TextureSettings.WrapMode = ae::_Texture::REPEAT;
 	TextureSettings.Mipmaps = false;
-	ae::Assets.LoadTextureDirectory("textures/editor_repeat/", TextureSettings);
-	ae::Assets.LoadTextureDirectory("textures/hud_repeat/", TextureSettings);
+	ae::Assets.LoadTexturePack("textures/editor_repeat", TextureSettings);
+	ae::Assets.LoadTexturePack("textures/hud_repeat", TextureSettings);
 
 	TextureSettings.WrapMode = ae::_Texture::REPEAT;
 	TextureSettings.Mipmaps = true;
-	ae::Assets.LoadTextureDirectory(MAP_TEXTURE_PATH, TextureSettings);
-	ae::Assets.LoadTextureDirectory("textures/props/", TextureSettings);
+	ae::Assets.LoadTexturePack(MAP_TEXTURE_PATH, TextureSettings);
+	ae::Assets.LoadTexturePack("textures/props", TextureSettings);
 
 	TextureSettings.WrapMode = ae::_Texture::CLAMP_TO_EDGE;
 	TextureSettings.Mipmaps = false;
-	ae::Assets.LoadTextureDirectory("textures/editor/", TextureSettings);
-	ae::Assets.LoadTextureDirectory("textures/hud/", TextureSettings);
-	ae::Assets.LoadTextureDirectory("textures/icons/", TextureSettings);
-	ae::Assets.LoadTextureDirectory("textures/menu/", TextureSettings);
-	ae::Assets.LoadTextureDirectory("textures/particles/", TextureSettings);
-	ae::Assets.LoadTextureDirectory("textures/projectiles/", TextureSettings);
+	ae::Assets.LoadTexturePack("textures/editor", TextureSettings);
+	ae::Assets.LoadTexturePack("textures/hud", TextureSettings);
+	ae::Assets.LoadTexturePack("textures/icons", TextureSettings);
+	ae::Assets.LoadTexturePack("textures/menu", TextureSettings);
+	ae::Assets.LoadTexturePack("textures/particles", TextureSettings);
+	ae::Assets.LoadTexturePack("textures/projectiles", TextureSettings);
 
 	TextureSettings.WrapMode = ae::_Texture::CLAMP_TO_EDGE;
 	TextureSettings.Mipmaps = true;
+	ae::Assets.LoadTexturePack("textures/animations", TextureSettings);
+	ae::Assets.LoadTexturePack("textures/items", TextureSettings);
 	ae::Assets.LoadReels("tables/reels.tsv", TextureSettings);
-	ae::Assets.LoadTextureDirectory("textures/items/", TextureSettings);
 
 	TextureSettings.WrapMode = ae::_Texture::CLAMP_TO_BORDER;
 	TextureSettings.Mipmaps = true;
-	ae::Assets.LoadTextureDirectory("textures/lights/", TextureSettings);
-	ae::Assets.LoadTextureDirectory("textures/melee/", TextureSettings);
+	ae::Assets.LoadTexturePack("textures/lights", TextureSettings);
+	ae::Assets.LoadTexturePack("textures/melee", TextureSettings);
 
 	// Load assets
 	ae::Assets.LoadPrograms("tables/programs.tsv");

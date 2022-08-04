@@ -1,14 +1,20 @@
 #!/bin/bash
 
+# set pack script
+PACK="../../ext/ae/scripts/pack.py"
+
+# set up
 mkdir -p ../../working/data
 mkdir -p ../../working/textures
 
+# pack textures
 for f in textures/*; do
-	#./pack.py ./ "$f"
+	$PACK ./ "$f"
 
 	pack=$(basename "$f")
-	#mv -v "$pack.bin" "../../working/textures/$pack"
+	mv -v "$pack.bin" "../../working/textures/$pack"
 done
 
-../../ext/ae/scripts/pack.py ./ sounds
+# pack sounds
+$PACK ./ sounds
 mv -v sounds.bin ../../working/data/sounds
