@@ -388,7 +388,7 @@ void _Framework::LoadAssets() {
 	TextureSettings.Mipmaps = true;
 	ae::Assets.LoadTexturePack("textures/animations", TextureSettings);
 	ae::Assets.LoadTexturePack("textures/items", TextureSettings);
-	ae::Assets.LoadReels("tables/reels.tsv", TextureSettings);
+	ae::Assets.LoadReels("tables/reels.tsv");
 
 	TextureSettings.WrapMode = ae::_Texture::CLAMP_TO_BORDER;
 	TextureSettings.Mipmaps = true;
