@@ -418,6 +418,10 @@ bool _PlayState::HandleCommand(ae::_Console *Console) {
 					Player->RecalculateStats();
 					Console->AddMessage("skills reset");
 				}
+				else if(Parameters[0] == "keys") {
+					Player->Keys.clear();
+					Console->AddMessage("keys reset");
+				}
 			}
 			else {
 				Player->Reset(true);
