@@ -909,7 +909,7 @@ void _EditorState::Render(double BlendFactor) {
 	Map->RenderFlatWalls();
 
 	// Draw the foreground tiles
-	Map->RenderForeground();
+	Map->RenderForeground(glm::vec2(-1), EditLayer != MAPLAYER_FORE);
 
 	// Draw the events
 	if(EditMode == EDITMODE_EVENTS)

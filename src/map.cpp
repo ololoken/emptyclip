@@ -1952,7 +1952,7 @@ void _Map::RenderEvents(std::vector<const ae::_Texture *> &Textures) {
 }
 
 // Renders the foreground tiles
-int _Map::RenderForeground() {
+int _Map::RenderForeground(const glm::vec2 &PlayerPosition, bool AlwaysFade) {
 	if(!Camera)
 		return 0;
 
@@ -1963,22 +1963,27 @@ int _Map::RenderForeground() {
 
 	// Draw foreground
 	int Count = 0;
-	for(size_t i = 0; i < Blocks[6].size(); i++) {
-		_Block *Block = &Blocks[6][i];
+	for(size_t i = 0; i < Blocks[MAPLAYER_FORE].size(); i++) {
+		_Block *Block = &Blocks[MAPLAYER_FORE][i];
 
 		// Check bounds
 		bool Draw = true;
+		glm::vec4 Color = Block->Color;
 		if(Block->MinZ >= 0) {
 			glm::vec4 Bounds;
 			Block->GetBounds(Bounds);
 			Draw = Camera->IsAABBInView(Bounds);
+
+			// Change alpha when player is directly under block
+			if(Draw && (AlwaysFade || (PlayerPosition.x >= Bounds[0] && PlayerPosition.y >= Bounds[1] && PlayerPosition.x <= Bounds[2] && PlayerPosition.y <= Bounds[3])))
+				Color.a = MAP_FOREGROUND_FADE;
 		}
 
 		if(!Draw)
 			continue;
 
 		// Draw
-		ae::Graphics.SetColor(Block->Color);
+		ae::Graphics.SetColor(Color);
 		ae::Graphics.DrawRepeatable(
 			glm::vec3(Block->Start.x, Block->Start.y, Block->MaxZ + MAP_LAYEROFFSET),
 			glm::vec3(Block->End.x + 1.0f, Block->End.y + 1.0f, Block->MaxZ + MAP_LAYEROFFSET),

@@ -200,7 +200,7 @@ class _Map {
 		int RenderWalls(bool SkipFloating=false);
 		int RenderFlatWalls();
 		int RenderParticles(int Type);
-		int RenderForeground();
+		int RenderForeground(const glm::vec2 &PlayerPosition, bool AlwaysFade);
 		int RenderProps();
 		void RenderEvents(std::vector<const ae::_Texture *> &Textures);
 		void RenderGrid(int Mode);

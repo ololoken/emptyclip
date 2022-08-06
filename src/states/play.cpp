@@ -774,7 +774,7 @@ void _PlayState::Render(double BlendFactor) {
 	ae::Graphics.DisableParticleBlending();
 
 	// Draw the foreground tiles
-	BlockRenderCount += Map->RenderForeground();
+	BlockRenderCount += Map->RenderForeground(Player->Position, false);
 
 	// Draw the crosshair
 	glm::vec2 CursorDrawPosition = WorldCursor * (float)BlendFactor + PreviousWorldCursor * (float)(1.0f - BlendFactor);

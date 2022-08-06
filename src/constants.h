@@ -125,6 +125,7 @@ const  float        MAP_MINZ                             =  0.0f;
 const  float        MAP_FLATZ                            =  1.0f;
 const  float        MAP_WALLZ                            =  2.0f;
 const  float        MAP_FOREGROUNDZ                      =  3.0f;
+const  float        MAP_FOREGROUND_FADE                  =  0.2f;
 const  float        MAP_LAYEROFFSET                      =  0.001f;
 const  int          MAP_WIDTH                            =  100;
 const  int          MAP_HEIGHT                           =  100;
