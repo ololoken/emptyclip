@@ -172,6 +172,8 @@ void _Player::RecalculateStats() {
 	_ObjectTemplate Weapon[WEAPONATTACK_COUNT] = { _Object::WEAPON, _Object::WEAPON };
 	for(int i = 0; i < WEAPONATTACK_COUNT; i++) {
 		Projectiles[i] = nullptr;
+		Stats.WeaponFists->Level = Level;
+		Stats.WeaponFists->RecalculateStats();
 		Weapon[i].Attributes = Stats.WeaponFists->Attributes;
 	}
 
