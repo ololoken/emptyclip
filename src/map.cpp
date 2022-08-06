@@ -521,10 +521,13 @@ void _Map::InitializeTiles() {
 		}
 	}
 
-	// Flat layer overrides existing collision flags
+	// Flat layer overrides existing collision flags if MinZ <= 0
 	for(size_t k = 0; k < Blocks[MAPLAYER_FLAT].size(); k++) {
 		for(int i = Blocks[MAPLAYER_FLAT][k].Start.x; i <= Blocks[MAPLAYER_FLAT][k].End.x; i++) {
 			for(int j = Blocks[MAPLAYER_FLAT][k].Start.y; j <= Blocks[MAPLAYER_FLAT][k].End.y; j++) {
+				if(Blocks[MAPLAYER_FLAT][k].MinZ > 0)
+					continue;
+
 				if(Blocks[MAPLAYER_FLAT][k].Walkable)
 					Data[i][j].Collision = 0;
 				else
