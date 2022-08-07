@@ -183,6 +183,7 @@ void _Entity::StartTriggerDownAudio() {
 		return;
 
 	TriggerDownAudio = new ae::_AudioSource(Sound);
+	TriggerDownAudio->SetGain(Sound->Volume * ae::Audio.GetSoundVolume());
 	TriggerDownAudio->SetRelative(true);
 	TriggerDownAudio->SetLooping(true);
 	TriggerDownAudio->Play();
