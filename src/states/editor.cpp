@@ -2099,7 +2099,7 @@ void _EditorState::ExecutePaste(bool Viewport, int PasteMode) {
 		break;
 		default:
 			for(auto Iterator : ClipboardObjects)
-				SpawnObject(GetValidObjectPosition(StartPosition - CopiedPosition + Iterator->Position), Iterator->Rotation, Iterator->Scale, Iterator->Type, Iterator->ID, 1, IsShiftDown);
+				SpawnObject(GetValidObjectPosition(StartPosition - CopiedPosition + Iterator->Position), Iterator->Rotation, Iterator->Scale, Iterator->Type, Iterator->ID, Iterator->Level, IsShiftDown);
 		break;
 	}
 }

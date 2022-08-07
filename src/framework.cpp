@@ -372,7 +372,7 @@ void _Framework::LoadAssets() {
 
 	TextureSettings.WrapMode = ae::_Texture::REPEAT;
 	TextureSettings.Mipmaps = true;
-	ae::Assets.LoadTexturePack(MAP_TEXTURE_PATH, TextureSettings);
+	ae::Assets.LoadTexturePack("textures/map", TextureSettings);
 	ae::Assets.LoadTexturePack("textures/props", TextureSettings);
 
 	TextureSettings.WrapMode = ae::_Texture::CLAMP_TO_EDGE;

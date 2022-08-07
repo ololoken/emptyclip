@@ -80,10 +80,11 @@ void _Item::DrawTooltip(const _Player *Player, size_t CompareSlot, int Inventory
 	glm::vec2 Size = glm::vec2(520, 150) * ae::_Element::GetUIScale();
 	glm::vec2 Spacing = glm::vec2(0, 36) * ae::_Element::GetUIScale();
 	glm::vec2 SmallSpacing = glm::vec2(0, 24) * ae::_Element::GetUIScale();
+	glm::vec2 HelpSpacing = glm::vec2(0, 32) * ae::_Element::GetUIScale();
 
 	// Set size based on type
 	if(Type == _Object::WEAPON)
-		Size.y = 560 * ae::_Element::GetUIScale();
+		Size.y = 580 * ae::_Element::GetUIScale();
 	else if(Type == _Object::ARMOR)
 		Size.y = 380 * ae::_Element::GetUIScale();
 	else if(Type == _Object::MEDKIT)
@@ -92,6 +93,10 @@ void _Item::DrawTooltip(const _Player *Player, size_t CompareSlot, int Inventory
 		Size.x = 520 * ae::_Element::GetUIScale();
 		Size.y = 300 * ae::_Element::GetUIScale();
 	}
+
+	// Remove space for help text
+	if(InventorySlot < INVENTORY_BAGSTART && (Type == _Object::WEAPON || Type == _Object::ARMOR))
+		Size.y -= HelpSpacing.y * ae::_Element::GetUIScale();
 
 	// Increase size for each unique mod
 	bool HasOneBonus = false;
@@ -401,7 +406,7 @@ void _Item::DrawTooltip(const _Player *Player, size_t CompareSlot, int Inventory
 	DrawPosition.y += 60 * ae::_Element::GetUIScale();
 	for(const auto &Text : HelpTextList) {
 		ae::Assets.Fonts["hud_small"]->DrawText(Text, glm::ivec2(DrawPosition), ae::CENTER_BASELINE, COLOR_GRAY);
-		DrawPosition.y += 32 * ae::_Element::GetUIScale();
+		DrawPosition.y += HelpSpacing.y * ae::_Element::GetUIScale();
 	}
 }
 

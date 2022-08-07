@@ -236,7 +236,7 @@ bool _PlayState::HandleAction(int InputType, size_t Action, int Value) {
 			break;
 			case Action::GAME_FLASHLIGHT:
 				Player->Flashlight = !Player->Flashlight;
-				ae::Audio.PlaySound(ae::Assets.Sounds["game_flashlight0"]);
+				ae::Audio.PlaySound(ae::Assets.Sounds["game_flashlight0.ogg"]);
 			break;
 		}
 	}
@@ -316,7 +316,7 @@ bool _PlayState::HandleCommand(ae::_Console *Console) {
 	else if(Console->Command == "suicide") {
 		if(Player) {
 			Player->UpdateHealth(-10000000);
-			ae::Audio.PlaySound(ae::Assets.Sounds["player_die0"], ae::_SoundSettings(glm::vec3(Player->Position.x, 0.0f, Player->Position.y)));
+			ae::Audio.PlaySound(ae::Assets.Sounds["player_die0.ogg"], ae::_SoundSettings(glm::vec3(Player->Position.x, 0.0f, Player->Position.y)));
 		}
 
 		return true;
@@ -1130,7 +1130,7 @@ void _PlayState::HandlePickup() {
 void _PlayState::PlayerDied() {
 
 	// Dying sound
-	ae::Audio.PlaySound(ae::Assets.Sounds["player_die0"], ae::_SoundSettings(glm::vec3(Player->Position.x, 0.0f, Player->Position.y)));
+	ae::Audio.PlaySound(ae::Assets.Sounds["player_die0.ogg"], ae::_SoundSettings(glm::vec3(Player->Position.x, 0.0f, Player->Position.y)));
 
 	// Update monsters
 	for(const auto &Entity : Monsters) {
@@ -1387,7 +1387,7 @@ void _PlayState::CheckEvents(const _Entity *Entity) {
 
 				if(ShowMessage) {
 					if(IsTutorial)
-						ae::Audio.PlaySound(ae::Assets.Sounds["game_message0"]);
+						ae::Audio.PlaySound(ae::Assets.Sounds["game_message0.ogg"]);
 					HUD->ShowMessageBox(Stats.Strings[Event->ItemID], Event->ActivationPeriod, UI_MESSAGE_SIZE);
 				}
 				if(Event->Level != 0)
@@ -1433,13 +1433,13 @@ void _PlayState::CheckEvents(const _Entity *Entity) {
 					Map->SetAmbientLight(Event->ItemID);
 			} break;
 			case EVENT_SECRET: {
-				ae::Audio.PlaySound(ae::Assets.Sounds["game_secret0"]);
+				ae::Audio.PlaySound(ae::Assets.Sounds["game_secret0.ogg"]);
 				HUD->ShowMessageBox("You have found a secret!", HUD_SECRET_MESSAGETIME, UI_MESSAGE_SMALL_SIZE);
 				HUD->Secrets[0]++;
 				Event->Active = false;
 			} break;
 			case EVENT_LAVA: {
-				ae::Audio.PlaySound(ae::Assets.Sounds["game_lava0"]);
+				ae::Audio.PlaySound(ae::Assets.Sounds["game_lava0.ogg"]);
 				if(!GodMode)
 					Player->UpdateHealth(-GAME_LAVA_DAMAGE * (Event->Level + Player->Progression));
 				Particles->Create(_ParticleSpawn(GameAssets.GetParticleTemplate(Event->ParticleID), glm::vec2(0), Player->Position, OBJECT_Z, 0));
