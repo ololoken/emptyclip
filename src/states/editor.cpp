@@ -614,6 +614,8 @@ void _EditorState::HandleMouseButton(const ae::_MouseEvent &MouseEvent) {
 						Iterator->Position = GetMoveDeltaPosition(Iterator->Position);
 					}
 					MoveDelta = glm::vec2(0, 0);
+					if(SelectedBlock && OldStart != SelectedBlock->Start)
+						DeselectBlock();
 				}
 
 				if(DraggingBox) {
@@ -2197,7 +2199,7 @@ void _EditorState::ExecuteSelectPalette(ae::_Element *Button, int ClickType) {
 						SetEventProperties(0, 0, 1, "smoke0");
 					break;
 					case EVENT_LIGHT:
-						SetEventProperties(1, 0, 1, "");
+						SetEventProperties(0, 0, 1, "");
 					break;
 					case EVENT_LAVA:
 						SetEventProperties(0, 1, 1, "smoke0");
