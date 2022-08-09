@@ -740,7 +740,7 @@ void _PlayState::Render(double BlendFactor) {
 	ae::Assets.Programs["map"]->ResetTextureTransform();
 	ae::Graphics.SetDepthMask(false);
 	ae::Graphics.SetDepthTest(false);
-	int ParticleRenderCount = Map->RenderParticles(_Particles::FLOOR_DECALS);
+	int ParticleRenderCount = Map->RenderParticles(_Particles::FLOOR_DECALS, BlendFactor);
 
 	// Draw walls and props below objects
 	BlockRenderCount += Map->RenderWalls(true);
@@ -765,16 +765,16 @@ void _PlayState::Render(double BlendFactor) {
 	ae::Graphics.SetProgram(ae::Assets.Programs["map"]);
 	ae::Assets.Programs["map"]->ResetTextureTransform();
 	ae::Graphics.SetDepthMask(false);
-	ParticleRenderCount += Map->RenderParticles(_Particles::WALL_DECALS);
+	ParticleRenderCount += Map->RenderParticles(_Particles::WALL_DECALS, BlendFactor);
 
 	// Draw particles
 	ae::Graphics.EnableParticleBlending();
 	ae::Graphics.SetProgram(ae::Assets.Programs["map"]);
 	ae::Assets.Programs["map"]->ResetTextureTransform();
-	Particles->Render(_Particles::NORMAL);
+	Particles->Render(_Particles::NORMAL, BlendFactor);
 	ae::Graphics.SetProgram(ae::Assets.Programs["pos_uv"]);
 	ae::Assets.Programs["pos_uv"]->ResetTextureTransform();
-	Particles->Render(_Particles::EMISSIVE);
+	Particles->Render(_Particles::EMISSIVE, BlendFactor);
 	ae::Graphics.DisableParticleBlending();
 
 	// Draw the foreground tiles
@@ -848,7 +848,7 @@ void _PlayState::Render(double BlendFactor) {
 	}
 
 	// Draw damage text numbers
-	Particles->Render(_Particles::TEXT);
+	Particles->Render(_Particles::TEXT, BlendFactor);
 
 	/*
 	glm::ivec2 Start(Camera->GetAABB()[0], Camera->GetAABB()[1]);
@@ -997,14 +997,15 @@ void _PlayState::ResolveAttack(_Entity *Attacker, int GridType) {
 			Projectile->Rotation = Attacker->GenerateShotDirection();
 			Projectile->Direction = glm::rotate(glm::vec2(0, -1), glm::radians(Projectile->Rotation));
 			Projectile->Velocity = Projectile->Direction * Attacker->ProjectileSpeed[Attacker->AttackRequestType];
-			Projectile->MinDamage = Attacker->MinDamage[Attacker->AttackRequestType];
-			Projectile->MaxDamage = Attacker->MaxDamage[Attacker->AttackRequestType];
+			Projectile->ProjectileMinDamage = Attacker->MinDamage[Attacker->AttackRequestType];
+			Projectile->ProjectileMaxDamage = Attacker->MaxDamage[Attacker->AttackRequestType];
 			Projectile->Depth = Attacker->Penetration[Attacker->AttackRequestType];
-			Projectile->CritChance = Attacker->CritChance[Attacker->AttackRequestType];
-			Projectile->CritDamage = Attacker->CritDamage[Attacker->AttackRequestType];
-			Projectile->PenetrationDamage = Attacker->PenetrationDamage[Attacker->AttackRequestType];
+			Projectile->ProjectileCritChance = Attacker->CritChance[Attacker->AttackRequestType];
+			Projectile->ProjectileCritDamage = Attacker->CritDamage[Attacker->AttackRequestType];
+			Projectile->ProjectilePenetrationDamage = Attacker->PenetrationDamage[Attacker->AttackRequestType];
+			Projectile->ProjectileExplosionSize = Attacker->ExplosionSize[Attacker->AttackRequestType];
 			if(Steady)
-				Projectile->CritChance *= PLAYER_STEADY_CRIT_FACTOR;
+				Projectile->ProjectileCritChance *= PLAYER_STEADY_CRIT_FACTOR;
 
 			Map->ObjectManager->AddObject(Projectile);
 		}
@@ -1605,6 +1606,16 @@ void _PlayState::GenerateDamageText(glm::vec2 Position, int Value, bool Crit, bo
 		DamageParticle->Color = COLOR_YELLOW;
 
 	Particles->Add(DamageParticle);
+}
+
+// Generate explosion particles
+void _PlayState::GenerateExplosion(const _ParticleTemplate *ParticleTemplate, const glm::vec2 &Position, const glm::vec2 &Scale) {
+	if(!Particles->Create(_ParticleSpawn(ParticleTemplate, glm::vec2(0), Position, OBJECT_Z, 0)))
+		return;
+
+	// Set scale
+	_Particle *Particle = Particles->Particles.back();
+	Particle->Scale = Scale;
 }
 
 // Determine if game is paused

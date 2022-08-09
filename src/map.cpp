@@ -792,7 +792,7 @@ std::vector<_Hit> &_Map::CheckCollisionsInGrid(const glm::vec2 &Position, float 
 		_Hit Hit;
 		Hit.Object = HitObjects.first;
 		if(Hit.Object->IsTouchingCircle(Position, Radius, Hit.DistanceSquared)) {
-			Hit.Position = Position;
+			Hit.Position = Hit.Object->Position;
 			CollisionHits.push_back(Hit);
 		}
 	}
@@ -2012,7 +2012,7 @@ int _Map::RenderProps() {
 }
 
 // Render map decals
-int _Map::RenderParticles(int Type) {
+int _Map::RenderParticles(int Type, double BlendFactor) {
 
 	// Get start and end range of tiles to render
 	glm::ivec2 Start = GetValidCoord(glm::ivec2(Camera->AABB[0] - PARTICLE_GRID_PADDING, Camera->AABB[1] - PARTICLE_GRID_PADDING));
@@ -2026,7 +2026,7 @@ int _Map::RenderParticles(int Type) {
 				if(Particle->Type != Type)
 					continue;
 
-				Particle->Render(Camera);
+				Particle->Render(Camera, BlendFactor);
 				Count++;
 			}
 		}

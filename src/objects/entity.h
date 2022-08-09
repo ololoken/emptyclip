@@ -138,6 +138,7 @@ class _Entity : public _Object {
 		double BurstPeriod[WEAPONATTACK_COUNT]{0.0};
 		const _ObjectTemplate *Projectiles[WEAPONATTACK_COUNT]{nullptr};
 		float ProjectileSpeed[WEAPONATTACK_COUNT]{0.0f};
+		float ExplosionSize[WEAPONATTACK_COUNT]{0.0f};
 		int MainWeaponType{0};
 		int AttackRequestType{0};
 		int BurstRoundsShot{0};

@@ -237,7 +237,8 @@ void _Stats::LoadWeapons(const std::string &Path) {
 			>> Template.Attributes["melee_width"].Float
 			>> Template.Attributes["scale_x"].Float
 			>> Template.Attributes["scale_y"].Float
-			>> Template.Attributes["projectile_speed"].Float;
+			>> Template.Attributes["projectile_speed"].Float
+			>> Template.Attributes["explosion_size"].Float;
 
 		File.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
@@ -658,8 +659,10 @@ void _Stats::LoadProjectiles(const std::string &Path) {
 	while(!File.eof() && File.peek() != EOF) {
 
 		_ObjectTemplate Template(_Object::PROJECTILE);
+		std::string SoundGroupID;
 		std::getline(File, Template.ID, '\t');
 		std::getline(File, Template.IconID, '\t');
+		std::getline(File, SoundGroupID, '\t');
 
 		File
 			>> Template.Attributes["radius"].Float
@@ -670,6 +673,15 @@ void _Stats::LoadProjectiles(const std::string &Path) {
 		// Check for loaded textures
 		if(!ae::Assets.Textures[Template.IconID])
 			throw std::runtime_error(std::string(__func__) + " unknown texture '" + Template.IconID + "'");
+
+		// Check for sound group
+		if(GameAssets.SoundGroups.find(SoundGroupID) == GameAssets.SoundGroups.end())
+			throw std::runtime_error(std::string(__func__) + " unknown sound group '" + SoundGroupID + "'");
+
+		// Set sound ids
+		_SoundGroup &SoundGroupTemplate = GameAssets.SoundGroups.at(SoundGroupID);
+		for(int i = 0; i < SOUND_COUNT; i++)
+			Template.SoundID[i] = SoundGroupTemplate.SoundID[i];
 
 		// Check for duplicates
 		if(Objects.find(Template.ID) != Objects.end())

@@ -62,9 +62,9 @@ void _Particles::Update(double FrameTime) {
 }
 
 // Render
-void _Particles::Render(int Type) {
+void _Particles::Render(int Type, double BlendFactor) {
 	for(auto Iterator : RenderList[Type])
-		Iterator->Render(Camera);
+		Iterator->Render(Camera, BlendFactor);
 }
 
 // Deletes all
@@ -84,14 +84,14 @@ void _Particles::Add(_Particle *Particle) {
 }
 
 // Spawn a particle
-void _Particles::Create(const _ParticleSpawn &Spawn) {
+bool _Particles::Create(const _ParticleSpawn &Spawn) {
 	if(!Spawn.Template)
-		return;
+		return false;
 
 	// Add floor and wall decals to map grid
 	if(Spawn.Template->Type == FLOOR_DECALS || Spawn.Template->Type == WALL_DECALS) {
-		if(!Map)
-			return;
+		if(!Map || !Spawn.Template->Count)
+			return false;
 
 		// Create particles and add to grid
 		for(int i = 0; i < Spawn.Template->Count; i++) {
@@ -99,7 +99,7 @@ void _Particles::Create(const _ParticleSpawn &Spawn) {
 			Map->AddParticle(Particle);
 		}
 
-		return;
+		return true;
 	}
 
 	// Add general particles
@@ -107,4 +107,6 @@ void _Particles::Create(const _ParticleSpawn &Spawn) {
 		_Particle *Particle = new _Particle(Spawn);
 		Particles.push_back(Particle);
 	}
+
+	return Spawn.Template->Count > 0;
 }

@@ -27,6 +27,7 @@ namespace ae {
 	class _Camera;
 	class _Texture;
 	class _Font;
+	class _Animation;
 }
 struct _ParticleSpawn;
 
@@ -39,7 +40,7 @@ class _Particle {
 		~_Particle();
 
 		void Update(double FrameTime);
-		void Render(const ae::_Camera *Camera);
+		void Render(const ae::_Camera *Camera, double BlendFactor);
 
 		// Attributes
 		int Type{0};
@@ -49,6 +50,7 @@ class _Particle {
 		// Graphics
 		const ae::_Texture *Texture{nullptr};
 		const ae::_Font *Font{nullptr};
+		ae::_Animation *Animation{nullptr};
 		std::string Text;
 		glm::vec4 Color{1.0f};
 		glm::vec2 Scale{1.0f, 1.0f};
@@ -58,6 +60,7 @@ class _Particle {
 		float ScaleAspect{1.0f};
 
 		// Physics
+		glm::vec2 LastPosition{0.0f};
 		glm::vec2 Position{0.0f};
 		glm::vec2 Velocity{0.0f};
 		glm::vec2 Acceleration{0.0f};

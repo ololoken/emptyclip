@@ -21,6 +21,7 @@
 #include <ae/font.h>
 #include <ae/camera.h>
 #include <ae/random.h>
+#include <ae/animation.h>
 #include <particles.h>
 #include <glm/gtx/rotate_vector.hpp>
 
@@ -36,7 +37,7 @@ _Particle::_Particle(const _ParticleSpawn &Spawn) :
 	PositionZ(Spawn.PositionZ),
 	ScaleAspect(Spawn.Template->ScaleAspect) {
 
-	// Random
+	// Randomize
 	Position = Spawn.Position;
 	Rotation = Spawn.RotationAdjust + (float)(ae::GetRandomReal(Spawn.Template->StartDirection.x, Spawn.Template->StartDirection.y));
 	Velocity = glm::rotate(glm::vec2(0, -1), glm::radians(this->Rotation)) * (float)ae::GetRandomReal(Spawn.Template->VelocityScale.x, Spawn.Template->VelocityScale.y);
@@ -58,14 +59,31 @@ _Particle::_Particle(const _ParticleSpawn &Spawn) :
 		Position += Spawn.Normal * 0.01f;
 		Rotation = glm::degrees(atan2(Spawn.Normal.y, Spawn.Normal.x)) + 90.0f;
 	}
+	LastPosition = Position;
+
+	// Create animation
+	if(Spawn.Template->Reel) {
+		Animation = new ae::_Animation(nullptr);
+		Animation->Reels.push_back(Spawn.Template->Reel);
+		Animation->CalculateTextureCoords();
+		Animation->Play(0);
+	}
 }
 
 // Destructor
 _Particle::~_Particle() {
+	delete Animation;
 }
 
 // Update
 void _Particle::Update(double FrameTime) {
+	LastPosition = Position;
+	if(Animation) {
+		Animation->Update(FrameTime);
+		if(Animation->IsStopped())
+			Deleted = true;
+	}
+
 	Position += Velocity * (float)FrameTime;
 	Velocity += Acceleration * (float)FrameTime;
 	Rotation += TurnSpeed * FrameTime;
@@ -75,19 +93,31 @@ void _Particle::Update(double FrameTime) {
 	if(Color.a < 0.0f)
 		Color.a = 0.0f;
 
-	if(Lifetime < 0)
+	if(!Animation && Lifetime < 0)
 		Deleted = true;
 }
 
 // Render
-void _Particle::Render(const ae::_Camera *Camera) {
+void _Particle::Render(const ae::_Camera *Camera, double BlendFactor) {
+	glm::vec2 DrawPosition = Position * (float)BlendFactor + LastPosition * (float)(1.0 - BlendFactor);
+
+	if(Animation) {
+		ae::Graphics.SetColor(Color);
+		ae::Graphics.DrawAnimationFrame(
+			glm::vec3(DrawPosition, PositionZ),
+			Animation->Reels[Animation->Reel]->Texture,
+			glm::vec4(Animation->TextureCoords),
+			Rotation,
+			Scale
+		);
+	}
 
 	if(Texture) {
 		ae::Graphics.SetColor(Color);
 		if(Type == _Particles::WALL_DECALS)
 			ae::Graphics.DrawWallDecal(glm::vec3(Position, PositionZ), Texture, Rotation, Scale);
 		else
-			ae::Graphics.DrawSprite(glm::vec3(Position, PositionZ), Texture, Rotation, Scale);
+			ae::Graphics.DrawSprite(glm::vec3(DrawPosition, PositionZ), Texture, Rotation, Scale);
 	}
 
 	if(Font && Text != "") {

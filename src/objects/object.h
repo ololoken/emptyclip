@@ -33,6 +33,7 @@ namespace ae {
 	class _Buffer;
 	class _Texture;
 	class _Mesh;
+	class _Sound;
 }
 
 // Used for animation
@@ -116,6 +117,7 @@ class _Object {
 		bool CanFreePath() const { return FreePathing || FreePathingTimer > 0.0; }
 
 		virtual const _ParticleTemplate *GetParticle(int ParticleType) const { return nullptr; }
+		const ae::_Sound *GetSound(int SoundType) const;
 
 		void GetRenderBounds(glm::vec4 &Bounds);
 		void FacePosition(const glm::vec2 &Target);
@@ -148,11 +150,12 @@ class _Object {
 
 		// Projectiles
 		std::unordered_map<_Object *, int> HitObjects;
-		float PenetrationDamage{0.0f};
-		int MinDamage{0};
-		int MaxDamage{0};
-		int CritChance{0};
-		int CritDamage{0};
+		float ProjectilePenetrationDamage{0.0f};
+		float ProjectileExplosionSize{0.0f};
+		int ProjectileMinDamage{0};
+		int ProjectileMaxDamage{0};
+		int ProjectileCritChance{0};
+		int ProjectileCritDamage{0};
 		int Depth{0};
 
 		// Character

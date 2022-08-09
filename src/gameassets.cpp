@@ -63,6 +63,8 @@ void _GameAssets::LoadSounds(const std::string &Path) {
 
 		// Load sound
 		ae::_Sound *Sound = ae::Assets.Sounds[ID];
+		if(!Sound)
+			throw std::runtime_error(std::string(__func__) + " unknown sound_id '" + ID + "'");
 
 		// Read parameters
 		float Volume;
@@ -70,10 +72,8 @@ void _GameAssets::LoadSounds(const std::string &Path) {
 		File >> Volume >> Limit;
 		File.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
-		if(Sound) {
-			Sound->Volume = Volume;
-			Sound->Limit = Limit;
-		}
+		Sound->Volume = Volume;
+		Sound->Limit = Limit;
 
 		ae::Audio.LoadChannel(Sound);
 	}
@@ -146,8 +146,10 @@ void _GameAssets::LoadParticles(const std::string &Path) {
 		std::string TextureID;
 		std::string ColorID;
 		std::string FontID;
+		std::string ReelID;
 		std::getline(File, ID, '\t');
 		std::getline(File, TextureID, '\t');
+		std::getline(File, ReelID, '\t');
 		std::getline(File, ColorID, '\t');
 		std::getline(File, FontID, '\t');
 
@@ -160,6 +162,12 @@ void _GameAssets::LoadParticles(const std::string &Path) {
 		// Check for duplicates
 		if(Particles.find(ID) != Particles.end())
 			throw std::runtime_error(std::string(__func__) + " duplicate entry '" + ID + "'");
+
+		// Check for reel
+		if(ReelID != "" && ae::Assets.Reels.find(ReelID) == ae::Assets.Reels.end())
+			throw std::runtime_error(std::string(__func__) + " unknown reel_id '" + ReelID + "'");
+
+		Particle.Reel = ae::Assets.Reels[ReelID];
 
 		// Get texture
 		Particle.Texture = ae::Assets.Textures[TextureID];

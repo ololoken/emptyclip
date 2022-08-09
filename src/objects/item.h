@@ -22,9 +22,6 @@
 
 // Forward Declarations
 class _Player;
-namespace ae {
-	class _Sound;
-}
 
 // Mod types
 enum ModType {
@@ -79,8 +76,6 @@ class _Item : public _Object {
 		bool IsMelee() const { return Attributes.at("weapon_type").Int == WEAPON_MELEE; }
 		float GetAverageDamage() const;
 		float GetAverageAccuracy() const;
-
-		const ae::_Sound *GetSound(int SoundType) const;
 
 		virtual std::string GetTypeAsString() const override;
 		std::string ModTypeToString(int ModType);

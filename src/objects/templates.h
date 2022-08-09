@@ -28,6 +28,7 @@
 namespace ae {
 	class _Texture;
 	class _Font;
+	struct _Reel;
 }
 
 // Determines if you can hold down the mouse to fire or not
@@ -39,6 +40,7 @@ enum FireRateType {
 // Types of weapon particles
 enum ParticleTypes {
 	PARTICLE_FIRE,
+	PARTICLE_EXPLOSION,
 	PARTICLE_SMOKE,
 	PARTICLE_RICOCHET,
 	PARTICLE_BULLETHOLE,
@@ -50,6 +52,7 @@ enum ParticleTypes {
 // Types of sounds
 enum SoundTypes {
 	SOUND_FIRE,
+	SOUND_EXPLODE,
 	SOUND_TRIGGERDOWN,
 	SOUND_RICOCHET,
 	SOUND_EMPTY,
@@ -84,6 +87,7 @@ struct _ParticleTemplate {
 	glm::vec4 Color;
 	const ae::_Texture *Texture;
 	const ae::_Font *Font;
+	const ae::_Reel *Reel;
 	double Lifetime;
 	float AccelerationScale;
 	float AlphaSpeed;

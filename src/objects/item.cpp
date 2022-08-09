@@ -528,15 +528,6 @@ float _Item::GetAverageAccuracy() const {
 	return (Attributes.at("min_accuracy").Float + Attributes.at("max_accuracy").Float) * 0.5f;
 }
 
-// Get weapon sound for a sound type
-const ae::_Sound *_Item::GetSound(int SoundType) const {
-	const auto &SoundIDs = Template.SoundID[SoundType];
-	if(SoundIDs.empty())
-		return nullptr;
-
-	return SoundIDs[ae::GetRandomInt((size_t)0, SoundIDs.size()-1)];
-}
-
 // Get type as string
 std::string _Item::GetTypeAsString() const {
 

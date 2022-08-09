@@ -66,21 +66,19 @@ class _Particles {
 
 		// Updates
 		void Update(double FrameTime);
-		void Render(int Type);
+		void Render(int Type, double BlendFactor);
 
 		// Management
 		void Add(_Particle *Particle);
-		void Create(const _ParticleSpawn &Spawn);
+		bool Create(const _ParticleSpawn &Spawn);
 		void Clear();
 
 		// Objects
+		std::list<_Particle *> Particles;
 		const ae::_Camera *Camera{nullptr};
 		_Map *Map{nullptr};
 
 	private:
-
-		// Objects
-		std::list<_Particle *> Particles;
 
 		// Rendering
 		std::vector<_Particle *> RenderList[COUNT];

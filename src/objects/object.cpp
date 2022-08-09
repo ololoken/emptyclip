@@ -20,6 +20,7 @@
 #include <states/play.h>
 #include <ae/random.h>
 #include <ae/graphics.h>
+#include <ae/audio.h>
 #include <constants.h>
 #include <stats.h>
 #include <map.h>
@@ -59,6 +60,14 @@ void _Object::Render(double BlendFactor) {
 		else
 			ae::Graphics.DrawSprite(glm::vec3(DrawPosition, PositionZ), Texture, Rotation, glm::vec2(Scale));
 	}
+}
+// Get sound for a sound type
+const ae::_Sound *_Object::GetSound(int SoundType) const {
+	const auto &SoundIDs = Template.SoundID[SoundType];
+	if(SoundIDs.empty())
+		return nullptr;
+
+	return SoundIDs[ae::GetRandomInt((size_t)0, SoundIDs.size()-1)];
 }
 
 // Set two range attributes given a level, spread and multiplier
@@ -240,6 +249,7 @@ bool _Object::IsTouchingCircle(const glm::vec2 &CircleCenter, float CircleRadius
 
 // Check collisions between projectiles and objects
 void _Object::CheckProjectileCollisions() {
+	_Entity *OwnerEntity = (_Entity *)Owner;
 
 	// Check wall hits
 	glm::vec2 HitPosition;
@@ -253,51 +263,97 @@ void _Object::CheckProjectileCollisions() {
 		PlayState.GenerateHitEffects(OwnerEntity, HIT_WALL, WallHit, true);
 	*/
 		Active = false;
-		return;
+	}
+	else {
+
+		// Check object hits
+		std::vector<_Hit> &Hits = Map->CheckCollisionsInGrid(Position, Radius, GRID_MONSTER);
+		for(const auto &Hit : Hits) {
+			_Entity *HitEntity = (_Entity *)Hit.Object;
+			if(HitEntity->Type == PROP) {
+				Active = false;
+				break;
+			}
+
+			if(HitObjects.find(HitEntity) != HitObjects.end())
+				continue;
+
+			HitObjects[HitEntity] = 1;
+
+			// Proceed to explosion
+			if(ProjectileExplosionSize > 0.0f) {
+				HitPosition = HitEntity->Position;
+				Active = false;
+				break;
+			}
+
+			// Get damage
+			int Damage = ae::GetRandomInt(ProjectileMinDamage, ProjectileMaxDamage);
+			bool Crit = false;
+			if(ae::GetRandomInt(1, 100) <= ProjectileCritChance) {
+				Damage *= ProjectileCritDamage * 0.01f;
+				Crit = true;
+			}
+
+			// Apply damage
+			Damage = HitEntity->ReduceDamage(Damage);
+			HitEntity->UpdateHealth(-Damage);
+
+			// Callbacks
+			//OwnerEntity->OnAttack(HitEntity, Hit);
+			HitEntity->OnHit(OwnerEntity, Hit);
+
+			// Particles
+			PlayState.GenerateHitEffects(OwnerEntity, HIT_OBJECT, Hit);
+			PlayState.GenerateDamageText(Hit.Position, Damage, Crit, Type == PLAYER);
+
+			// Apply depth
+			ProjectileMinDamage *= ProjectilePenetrationDamage;
+			ProjectileMaxDamage *= ProjectilePenetrationDamage;
+			Depth--;
+			if(Depth <= 0) {
+				Active = false;
+				break;
+			}
+		}
 	}
 
-	// Check object hits
-	std::vector<_Hit> &Hits = Map->CheckCollisionsInGrid(Position, Radius, GRID_MONSTER);
-	for(const auto &Hit : Hits) {
-		_Entity *HitEntity = (_Entity *)Hit.Object;
-		if(HitEntity->Type == PROP) {
-			Active = false;
-			break;
-		}
+	// Hit
+	if(!Active) {
+		ae::Audio.PlaySound(GetSound(SOUND_EXPLODE), ae::_SoundSettings(glm::vec3(Position.x, 0.0f, Position.y)));
 
-		if(HitObjects.find(HitEntity) != HitObjects.end())
-			continue;
+		// Explode
+		if(ProjectileExplosionSize == 0.0f)
+			return;
 
-		HitObjects[HitEntity] = 1;
+		// Generate particle
+		PlayState.GenerateExplosion(OwnerEntity->GetParticle(PARTICLE_EXPLOSION), HitPosition, glm::vec2(ProjectileExplosionSize));
 
-		// Get damage
-		int Damage = ae::GetRandomInt(MinDamage, MaxDamage);
-		bool Crit = false;
-		if(ae::GetRandomInt(1, 100) <= CritChance) {
-			Damage *= CritDamage * 0.01f;
-			Crit = true;
-		}
+		// Check hits
+		std::vector<_Hit> &Hits = Map->CheckCollisionsInGrid(Position, ProjectileExplosionSize * 0.5f, GRID_MONSTER);
+		for(const auto &Hit : Hits) {
+			_Entity *HitEntity = (_Entity *)Hit.Object;
+			if(HitEntity->Type == PROP)
+				continue;
 
-		// Apply damage
-		Damage = HitEntity->ReduceDamage(Damage);
-		HitEntity->UpdateHealth(-Damage);
+			// Get damage
+			int Damage = ae::GetRandomInt(ProjectileMinDamage, ProjectileMaxDamage);
+			bool Crit = false;
+			if(ae::GetRandomInt(1, 100) <= ProjectileCritChance) {
+				Damage *= ProjectileCritDamage * 0.01f;
+				Crit = true;
+			}
 
-		// Callbacks
-		_Entity *OwnerEntity = (_Entity *)Owner;
-		OwnerEntity->OnAttack(HitEntity, Hit);
-		HitEntity->OnHit(OwnerEntity, Hit);
+			// Apply damage
+			Damage = HitEntity->ReduceDamage(Damage);
+			HitEntity->UpdateHealth(-Damage);
 
-		// Particles
-		PlayState.GenerateHitEffects(OwnerEntity, HIT_OBJECT, Hit);
-		PlayState.GenerateDamageText(Hit.Position, Damage, Crit, Type == PLAYER);
+			// Callbacks
+			//OwnerEntity->OnAttack(HitEntity, Hit);
+			HitEntity->OnHit(OwnerEntity, Hit);
 
-		// Apply depth
-		MinDamage *= PenetrationDamage;
-		MaxDamage *= PenetrationDamage;
-		Depth--;
-		if(Depth <= 0) {
-			Active = false;
-			break;
+			// Particles
+			PlayState.GenerateDamageText(Hit.Position, Damage, Crit, Type == PLAYER);
 		}
 	}
 }
