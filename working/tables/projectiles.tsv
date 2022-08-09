@@ -1,2 +1,3 @@
 id	icon_id	radius	scale
 plasma	textures/projectiles/plasma.png	0.25	0.5
+rocket	textures/projectiles/rocket.png	0.25	0.5
