@@ -84,7 +84,7 @@ void _Item::DrawTooltip(const _Player *Player, size_t CompareSlot, int Inventory
 
 	// Set size based on type
 	if(Type == _Object::WEAPON)
-		Size.y = 580 * ae::_Element::GetUIScale();
+		Size.y = 600 * ae::_Element::GetUIScale();
 	else if(Type == _Object::ARMOR)
 		Size.y = 380 * ae::_Element::GetUIScale();
 	else if(Type == _Object::MEDKIT)
@@ -309,6 +309,23 @@ void _Item::DrawTooltip(const _Player *Player, size_t CompareSlot, int Inventory
 				Buffer.str("");
 			}
 
+			// Explosion Size
+			if(Attributes.at("explosion_size").Float > 0.0f) {
+				TextColor = COLOR_WHITE;
+				if(EquippedItem) {
+					if(Attributes.at("explosion_size").Float > EquippedItem->Attributes.at("explosion_size").Float)
+						TextColor = COLOR_GREEN;
+					else if(Attributes.at("explosion_size").Float < EquippedItem->Attributes.at("explosion_size").Float)
+						TextColor = COLOR_RED;
+				}
+
+				DrawPosition.y += Spacing.y;
+				Buffer << Attributes.at("explosion_size").Float;
+				ae::Assets.Fonts["hud_medium"]->DrawText("Explosion Size", glm::ivec2(DrawPosition - DrawOffset), ae::RIGHT_BASELINE);
+				ae::Assets.Fonts["hud_medium"]->DrawText(Buffer.str(), glm::ivec2(DrawPosition + DrawOffset), ae::LEFT_BASELINE, TextColor);
+				Buffer.str("");
+			}
+
 			// Reload speed
 			if(Attributes.at("reload_period").Double > 1) {
 				TextColor = COLOR_WHITE;
@@ -460,6 +477,7 @@ void _Item::RecalculateStats() {
 			Attributes["penetration"].Int = Template.Attributes.at("penetration").Int + Bonus[MOD_PENETRATION];
 			Attributes["penetration_damage"].Float = std::clamp(Template.Attributes.at("penetration_damage").Float * QualityFactor, 0.0f, 1.0f);
 			Attributes["crit_chance"].Int = Template.Attributes.at("crit_chance").Int * QualityFactor + 0.5f;
+			Attributes["explosion_size"].Float = Template.Attributes.at("explosion_size").Float * QualityFactor + 0.5f;
 
 			SetAmmo(Attributes["ammo"].Int);
 		break;
@@ -499,6 +517,10 @@ bool _Item::AddMod(_Item *Mod) {
 
 			// Reload amount only affects manual reload weapons
 			if(ModType == MOD_RELOADAMOUNT && !Template.Attributes.at("reload_amount").Int)
+				return false;
+
+			// Penetration doesn't affect explosion weapons
+			if(ModType == MOD_PENETRATION && Template.Attributes.at("explosion_size").Float > 0.0f)
 				return false;
 
 			if(ModType == MOD_ACCURACY && IsMelee())
