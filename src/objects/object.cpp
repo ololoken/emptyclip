@@ -317,6 +317,10 @@ void _Object::CheckProjectileCollisions() {
 			if(Hit.Object->Type == PROP)
 				continue;
 
+			// Check for walls
+			if(!Map->IsVisible(Position, Hit.Object->Position, _Tile::BULLET))
+				continue;
+
 			// Apply damage
 			ApplyDamage(Hit);
 		}
