@@ -316,7 +316,7 @@ void _Object::CheckProjectileCollisions() {
 		std::vector<_Hit> &Hits = Map->CheckCollisionsInGrid(Position, ExplosionRadius, GRID_MONSTER);
 
 		// Check self hit
-		if(OwnerEntity->Type == _Object::PLAYER && !OwnerEntity->IsInvulnerable()) {
+		if(OwnerEntity->Type == _Object::PLAYER && !OwnerEntity->IsInvulnerable() && !PlayState.GodMode) {
 			float DistanceSquared;
 			if(OwnerEntity->IsTouchingCircle(Position, ExplosionRadius, DistanceSquared)) {
 				_Hit Hit;
