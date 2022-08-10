@@ -29,6 +29,7 @@
 class _Map;
 struct _ObjectTemplate;
 struct _ParticleTemplate;
+struct _Hit;
 namespace ae {
 	class _Buffer;
 	class _Texture;
@@ -126,7 +127,6 @@ class _Object {
 		glm::vec2 GetDirectionVector(float RotationOffset = 0.0f) const;
 		float RayIntersection(const glm::vec2 &Origin, const glm::vec2 &Direction) const;
 		bool IsTouchingCircle(const glm::vec2 &CircleCenter, float CircleRadius, float &DistanceSquared) const;
-		void CheckProjectileCollisions();
 
 		virtual std::string GetTypeAsString() const { return "Object"; }
 		void SetAttributeRange(const std::string &AttributeName, float Multiplier);
@@ -135,6 +135,9 @@ class _Object {
 		float GetAttributeLevel(const std::string &AttributeName, float Multiplier, int MaxLevel=0);
 		void GetAttributeRange(const std::string &AttributeName, float Multiplier, int &Min, int &Max);
 		void SetMaxMods(bool RandomStats=false);
+
+		void CheckProjectileCollisions();
+		void ApplyDamage(const _Hit &Hit);
 
 		// Template
 		const _ObjectTemplate &Template;

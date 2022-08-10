@@ -58,6 +58,7 @@ class _Particles {
 			FLOOR_DECALS,
 			WALL_DECALS,
 			TEXT,
+			EMISSIVE_ANIMATION,
 			COUNT,
 		};
 
