@@ -77,13 +77,13 @@ _Particle::~_Particle() {
 
 // Update
 void _Particle::Update(double FrameTime) {
-	LastPosition = Position;
 	if(Animation) {
 		Animation->Update(FrameTime);
 		if(Animation->IsStopped())
 			Deleted = true;
 	}
 
+	LastPosition = Position;
 	Position += Velocity * (float)FrameTime;
 	Velocity += Acceleration * (float)FrameTime;
 	Rotation += TurnSpeed * FrameTime;

@@ -53,6 +53,7 @@ _Entity::~_Entity() {
 
 // Update entity
 void _Entity::Update(double FrameTime) {
+	UpdateRecoil(FrameTime);
 
 	// Update timers
 	if(FreePathingTimer > 0.0) {

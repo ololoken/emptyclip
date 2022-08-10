@@ -10,4 +10,4 @@ weapon_assaultrifle	Assault Rifle	textures/items/weapon_assaultrifle.png		rifle	
 weapon_tacticalrifle	Tactical Rifle	textures/items/weapon_tacticalrifle.png		rifle	gun		ammo_rifle	4	18	15	0.1	5	20	0.8	10	5	3	0	0	0.4	3	0.07	0	2.2	0.5	0.183673469387755	1	20	1	0.75	5	0.5	0	0	0	0	0
 weapon_minigun	Minigun	textures/items/weapon_minigun.png		minigun	gun_big		ammo_heavy	5	10	20	0.5	20	20	0.3	15	5	5	0	1	0.1	0	0	0	5	0.5	0.183673469387755	1	100	1	0.85	5	0.1	0	0	0	0	0
 weapon_plasmarifle	Plasma Rifle	textures/items/weapon_plasmarifle.png		plasma	plasma	plasma	ammo_plasma	4	25	15	0.2	5	12	0.4	10	7	3	0	1	0.13	0	0	0	2.75	0.5	0.183673469387755	1	40	1	0.85	5	0.3	0	0	0	30	0
-weapon_rocketlauncher	Rocket Launcher	textures/items/weapon_rocketlauncher.png		rocketlauncher	rocketlauncher	rocket	ammo_rocket	5	150	25	0.2	5	27.5	0.909090909090909	100	15	20	0	0	1	0	0	0	5	0.5	0.183673469387755	1	1	1	0.85	20	0.5	0	0	0	30	7.5
+weapon_rocketlauncher	Rocket Launcher	textures/items/weapon_rocketlauncher.png		rocketlauncher	rocketlauncher	rocket	ammo_rocket	5	150	25	0.2	2	27.5	0.909090909090909	100	15	20	0	0	1	0	0	0	5	0.5	0.183673469387755	1	1	1	0.85	20	0.5	0	0	0	30	7.5

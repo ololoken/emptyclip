@@ -36,12 +36,12 @@ dog_move	textures/animations/dog_move.png	0.21	64	64	0	4	2	2
 dog_melee	textures/animations/dog_melee.png	0.05	64	64	0	2	0	0
 dog_die	textures/animations/dog_die.png	0.13	64	64	0	2	0	0
 gunner_move	textures/animations/gunner_move.png	0.24	64	64	0	4	2	2
-gunner_shoot	textures/animations/gunner_shoot.png	0.08	64	64	0	2	0	0
+gunner_shoot	textures/animations/gunner_shoot.png	2	64	64	0	0	0	0
 gunner_die	textures/animations/gunner_die.png	0.13	64	64	0	2	0	0
 wisp_move	textures/animations/wisp_move.png	0.24	128	128	0	4	0	2
 wisp_melee	textures/animations/wisp_melee.png	0.1	128	128	0	2	0	0
 wisp_die	textures/animations/wisp_die.png	0.13	128	128	0	2	0	0
 alien_move	textures/animations/alien_move.png	0.24	64	64	0	4	2	2
-alien_shoot	textures/animations/alien_shoot.png	0.075	64	64	0	2	0	0
+alien_shoot	textures/animations/alien_shoot.png	2	64	64	0	0	0	0
 alien_die	textures/animations/alien_die.png	0.13	64	64	0	2	0	0
 explosion	textures/animations/explosion.png	0.03	128	128	0	4	0	0

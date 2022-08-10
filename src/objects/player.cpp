@@ -295,8 +295,6 @@ void _Player::Update(double FrameTime) {
 	_Entity::Update(FrameTime);
 	LastPosition = Position;
 
-	UpdateRecoil(FrameTime);
-
 	// Update timers
 	PlayTime += FrameTime;
 	ProgressionTime += FrameTime;

@@ -1294,8 +1294,10 @@ void _PlayState::UpdateMonsters(double FrameTime) {
 			}
 
 			// Attack
-			if(Monster->AttackMade)
+			if(Monster->AttackMade) {
+				Monster->FacePosition(Player->Position);
 				ResolveAttack(Monster, GRID_PLAYER);
+			}
 
 			// Add to render list
 			if(Camera->IsAABBInView(Bounds)) {

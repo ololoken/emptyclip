@@ -143,8 +143,8 @@ void _Monster::Update(double FrameTime) {
 		}
 	}
 
-	// Check for attack range
-	if(PlayerDistanceSquared <= AttackRangeSquared)
+	// Check for attacks
+	if(PlayerDistanceSquared <= AttackRangeSquared && PlayerVisible && CanAttack(WEAPONATTACK_MAIN))
 		StartAttack();
 
 	// Move
