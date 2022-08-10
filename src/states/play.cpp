@@ -316,7 +316,7 @@ bool _PlayState::HandleCommand(ae::_Console *Console) {
 	else if(Console->Command == "suicide") {
 		if(Player) {
 			Player->UpdateHealth(-10000000);
-			ae::Audio.PlaySound(ae::Assets.Sounds["player_die0.ogg"], ae::_SoundSettings(glm::vec3(Player->Position.x, 0.0f, Player->Position.y)));
+			ae::Audio.PlaySound(ae::Assets.Sounds["player_die0.ogg"], ae::_SoundSettings(glm::vec3(Player->Position.x, 0.0f, Player->Position.y), 1.0f, AUDIO_REFERENCE_DISTANCE, AUDIO_MAX_DISTANCE, AUDIO_ROLL_OFF));
 		}
 
 		return true;
@@ -969,7 +969,7 @@ void _PlayState::ResolveAttack(_Entity *Attacker, int GridType) {
 			if(Attacker->Type == _Object::PLAYER)
 				ae::Audio.PlaySound(Attacker->GetSound(SOUND_FIRE, WEAPONATTACK_MAIN));
 			else
-				ae::Audio.PlaySound(Attacker->GetSound(SOUND_FIRE, WEAPONATTACK_MAIN), ae::_SoundSettings(glm::vec3(Attacker->Position.x, 0.0f, Attacker->Position.y)));
+				ae::Audio.PlaySound(Attacker->GetSound(SOUND_FIRE, WEAPONATTACK_MAIN), ae::_SoundSettings(glm::vec3(Attacker->Position.x, 0.0f, Attacker->Position.y), 1.0f, AUDIO_REFERENCE_DISTANCE, AUDIO_MAX_DISTANCE, AUDIO_ROLL_OFF));
 
 			Attacker->FireSoundTimer = ENTITY_MAX_FIRESOUND_PERIOD;
 		}
@@ -1041,7 +1041,7 @@ void _PlayState::ResolveAttack(_Entity *Attacker, int GridType) {
 					break;
 					case HIT_WALL: {
 						if(!PlayedHitWallSound) {
-							ae::Audio.PlaySound(Attacker->GetSound(SOUND_RICOCHET, WEAPONATTACK_MAIN), ae::_SoundSettings(glm::vec3(Hit.Position.x, 0.0f, Hit.Position.y)));
+							ae::Audio.PlaySound(Attacker->GetSound(SOUND_RICOCHET, WEAPONATTACK_MAIN), ae::_SoundSettings(glm::vec3(Hit.Position.x, 0.0f, Hit.Position.y), 1.0f, AUDIO_REFERENCE_DISTANCE, AUDIO_MAX_DISTANCE, AUDIO_ROLL_OFF));
 							PlayedHitWallSound = true;
 						}
 
@@ -1134,7 +1134,7 @@ void _PlayState::HandlePickup() {
 void _PlayState::PlayerDied() {
 
 	// Dying sound
-	ae::Audio.PlaySound(ae::Assets.Sounds["player_die0.ogg"], ae::_SoundSettings(glm::vec3(Player->Position.x, 0.0f, Player->Position.y)));
+	ae::Audio.PlaySound(ae::Assets.Sounds["player_die0.ogg"], ae::_SoundSettings(glm::vec3(Player->Position.x, 0.0f, Player->Position.y), 1.0f, AUDIO_REFERENCE_DISTANCE, AUDIO_MAX_DISTANCE, AUDIO_ROLL_OFF));
 
 	// Update monsters
 	for(const auto &Entity : Monsters) {
@@ -1488,7 +1488,7 @@ void _PlayState::UpdateEvents(double FrameTime) {
 			case EVENT_SOUND: {
 				const std::vector<_EventTile> &Tiles = Event->Tiles;
 				if(Tiles.size())
-					ae::Audio.PlaySound(ae::Assets.Sounds[Event->ItemID], ae::_SoundSettings(glm::vec3(Tiles.front().Coord.x, 0, Tiles.front().Coord.y)));
+					ae::Audio.PlaySound(ae::Assets.Sounds[Event->ItemID], ae::_SoundSettings(glm::vec3(Tiles.front().Coord.x, 0, Tiles.front().Coord.y), 1.0f, AUDIO_REFERENCE_DISTANCE, AUDIO_MAX_DISTANCE, AUDIO_ROLL_OFF));
 				else
 					ae::Audio.PlaySound(ae::Assets.Sounds[Event->ItemID]);
 				Decrement = true;

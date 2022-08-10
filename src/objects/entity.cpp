@@ -153,7 +153,7 @@ bool _Entity::StartAttack() {
 
 		// Play weapon sound
 		if(FireSoundTimer == 0.0) {
-			ae::Audio.PlaySound(GetSound(SOUND_FIRE, AttackRequestType), ae::_SoundSettings(glm::vec3(Position.x, 0.0f, Position.y)));
+			ae::Audio.PlaySound(GetSound(SOUND_FIRE, AttackRequestType), ae::_SoundSettings(glm::vec3(Position.x, 0.0f, Position.y), 1.0f, AUDIO_REFERENCE_DISTANCE, AUDIO_MAX_DISTANCE, AUDIO_ROLL_OFF));
 			FireSoundTimer = ENTITY_MAX_FIRESOUND_PERIOD;
 		}
 	}
@@ -285,7 +285,7 @@ void _Entity::UpdateAnimation(double FrameTime, bool PlaySound) {
 
 		// Play move sound on first and last frame of animation
 		if(Animation->Reel == (size_t)WalkingAnimation && PositionChanged && Action == ACTION_MOVING && PlaySound && (Animation->Frame == 0 || Animation->Frame == Animation->Reels[Animation->Reel]->EndFrame))
-			ae::Audio.PlaySound(GetSound(SOUND_MOVE, -1), glm::vec3(Position.x, 0.0f, Position.y));
+			ae::Audio.PlaySound(GetSound(SOUND_MOVE, -1), ae::_SoundSettings(glm::vec3(Position.x, 0.0f, Position.y), 1.0f, AUDIO_REFERENCE_DISTANCE, AUDIO_MAX_DISTANCE, AUDIO_ROLL_OFF));
 	}
 }
 
@@ -489,7 +489,7 @@ void _Entity::UpdateHealth(int Adjust) {
 	if(Health == 0 && !IsDying()) {
 
 		// Play sound
-		ae::Audio.PlaySound(GetSound(SOUND_DEATH, -1), ae::_SoundSettings(glm::vec3(Position.x, 0.0f, Position.y)));
+		ae::Audio.PlaySound(GetSound(SOUND_DEATH, -1), ae::_SoundSettings(glm::vec3(Position.x, 0.0f, Position.y), 1.0f, AUDIO_REFERENCE_DISTANCE, AUDIO_MAX_DISTANCE, AUDIO_ROLL_OFF));
 
 		if(Type == MONSTER) {
 
@@ -514,12 +514,12 @@ void _Entity::UpdateHealth(int Adjust) {
 
 // Called when an entity lands a hit
 void _Entity::OnAttack(_Entity *Victim, const _Hit &Hit) {
-	ae::Audio.PlaySound(GetSound(SOUND_HIT, AttackRequestType), ae::_SoundSettings(glm::vec3(Hit.Position.x, 0.0f, Hit.Position.y)));
+	ae::Audio.PlaySound(GetSound(SOUND_HIT, AttackRequestType), ae::_SoundSettings(glm::vec3(Hit.Position.x, 0.0f, Hit.Position.y), 1.0f, AUDIO_REFERENCE_DISTANCE, AUDIO_MAX_DISTANCE, AUDIO_ROLL_OFF));
 }
 
 // Called when an entity is hit
 void _Entity::OnHit(_Entity *Attacker, const _Hit &Hit) {
-	ae::Audio.PlaySound(GetSound(SOUND_TAKEDAMAGE, -1), ae::_SoundSettings(glm::vec3(Hit.Position.x, 0.0f, Hit.Position.y)));
+	ae::Audio.PlaySound(GetSound(SOUND_TAKEDAMAGE, -1), ae::_SoundSettings(glm::vec3(Hit.Position.x, 0.0f, Hit.Position.y), 1.0f, AUDIO_REFERENCE_DISTANCE, AUDIO_MAX_DISTANCE, AUDIO_ROLL_OFF));
 	CurrentAccuracy = std::min(CurrentAccuracy + Recoil, MaxAccuracy[WEAPONATTACK_MAIN]);
 	LastHitTimer = 0.0;
 }
