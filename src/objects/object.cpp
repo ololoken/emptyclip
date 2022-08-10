@@ -312,7 +312,21 @@ void _Object::CheckProjectileCollisions() {
 		PlayState.GenerateExplosion(OwnerEntity->GetParticle(PARTICLE_EXPLOSION), HitPosition, glm::vec2(ProjectileExplosionSize));
 
 		// Check hits
-		std::vector<_Hit> &Hits = Map->CheckCollisionsInGrid(Position, ProjectileExplosionSize * 0.5f, GRID_MONSTER);
+		float ExplosionRadius = ProjectileExplosionSize * 0.5f;
+		std::vector<_Hit> &Hits = Map->CheckCollisionsInGrid(Position, ExplosionRadius, GRID_MONSTER);
+
+		// Check self hit
+		if(OwnerEntity->Type == _Object::PLAYER && !OwnerEntity->IsInvulnerable()) {
+			float DistanceSquared;
+			if(OwnerEntity->IsTouchingCircle(Position, ExplosionRadius, DistanceSquared)) {
+				_Hit Hit;
+				Hit.Object = OwnerEntity;
+				Hit.Position = OwnerEntity->Position;
+				Hits.push_back(Hit);
+			}
+		}
+
+		// Apply damage
 		for(const auto &Hit : Hits) {
 			if(Hit.Object->Type == PROP)
 				continue;
@@ -350,5 +364,5 @@ void _Object::ApplyDamage(const _Hit &Hit) {
 
 	// Particles
 	PlayState.GenerateHitEffects(OwnerEntity, HIT_OBJECT, Hit);
-	PlayState.GenerateDamageText(Hit.Position, Damage, Crit, Type == PLAYER);
+	PlayState.GenerateDamageText(Hit.Position, Damage, Crit, HitEntity->Type == PLAYER);
 }
