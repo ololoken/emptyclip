@@ -1985,8 +1985,8 @@ int _Map::RenderForeground(const glm::vec2 &PlayerPosition, bool AlwaysFade) {
 		// Draw
 		ae::Graphics.SetColor(Color);
 		ae::Graphics.DrawRepeatable(
-			glm::vec3(Block->Start.x, Block->Start.y, Block->MaxZ + MAP_LAYEROFFSET),
-			glm::vec3(Block->End.x + 1.0f, Block->End.y + 1.0f, Block->MaxZ + MAP_LAYEROFFSET),
+			glm::vec3(Block->Start.x, Block->Start.y, Block->MaxZ),
+			glm::vec3(Block->End.x + 1.0f, Block->End.y + 1.0f, Block->MaxZ),
 			Block->Texture,
 			Block->Rotation,
 			Block->ScaleX
