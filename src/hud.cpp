@@ -85,6 +85,10 @@ _HUD::_HUD(_Player *Player) : Player(Player) {
 	Elements[LABEL_LEVELTIME] = ae::Assets.Elements["label_hud_level_time"];
 	Elements[ELEMENT_LEVELINFO]->SetActive(true);
 
+	Elements[ELEMENT_CLOCK] = ae::Assets.Elements["element_hud_clock"];
+	Elements[LABEL_CLOCK] = ae::Assets.Elements["label_hud_clock"];
+	Elements[ELEMENT_CLOCK]->SetActive(true);
+
 	Elements[ELEMENT_ENEMYINFO] = ae::Assets.Elements["element_hud_enemy_info"];
 	Elements[LABEL_ENEMYNAME] = ae::Assets.Elements["label_hud_enemy_name"];
 	Elements[ELEMENT_ENEMYINFO]->SetActive(true);
@@ -268,11 +272,23 @@ void _HUD::MouseEvent(const ae::_MouseEvent &MouseEvent) {
 }
 
 // Update phase
-void _HUD::Update(double FrameTime, float Radius) {
+void _HUD::Update(double FrameTime, float Radius, double Clock) {
 	LastEntityHitTimer += FrameTime;
 	CursorOverItem = nullptr;
 	CursorInventorySlot = -1;
 	CursorSkill = -1;
+
+	// Update clock
+	std::ostringstream Buffer;
+	if(ae::Input.ModKeyDown(KMOD_ALT)) {
+		std::time_t CurrentTime = std::time(nullptr);
+		Buffer << std::put_time(std::localtime(&CurrentTime), "%X");
+	}
+	else
+		GetClockAsString(Buffer, Clock, false);
+
+	Elements[LABEL_CLOCK]->Text = Buffer.str();
+	Buffer.str("");
 
 	// Update crosshair
 	CrosshairScale += (Radius - CrosshairScale) / HUD_CROSSHAIRDIVISOR;
@@ -355,6 +371,10 @@ void _HUD::Render(const ae::_Camera *Camera, bool FullMap) {
 
 		Elements[LABEL_LEVELNAME]->Render();
 	}
+
+	// Clock
+	if(!FullMap)
+		Elements[ELEMENT_CLOCK]->Render();
 
 	// Draw enemy health
 	std::ostringstream Buffer;
@@ -890,6 +910,27 @@ void _HUD::UpdateSkillTooltip(int Skill, const glm::vec2 &Position) {
 	}
 	else if(Player->Skills[Skill] >= Stats.GetMaxSkillLevel(Player->Level))
 		ae::Assets.Elements["label_hud_skill_more"]->Text = "Player Level " + std::to_string(Player->Level + 1) + " Required";
+}
+
+// Format day night clock
+void _HUD::GetClockAsString(std::ostringstream &Buffer, double Clock, bool Clock24Hour) const {
+	int Hours = (int)(Clock / 60.0);
+	int Minutes = (int)std::fmod(Clock, 60.0);
+	if(!Clock24Hour) {
+		if(Hours == 0)
+			Hours = 12;
+		else if(Hours > 12)
+			Hours -= 12;
+
+		Buffer << Hours << ":" << std::setfill('0') << std::setw(2) << Minutes;
+		if(Clock < MAP_DAY_LENGTH / 2)
+			Buffer << " AM";
+		else
+			Buffer << " PM";
+	}
+	else {
+		Buffer << std::setfill('0') << std::setw(2) << Hours << ":" << std::setfill('0') << std::setw(2) << Minutes;
+	}
 }
 
 // Draw death message

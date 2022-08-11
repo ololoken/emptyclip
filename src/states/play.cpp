@@ -628,7 +628,7 @@ void _PlayState::Update(double FrameTime) {
 		CursorItemTimer = 0;
 
 	// Update the HUD
-	HUD->Update(FrameTime, Player->GetCrosshairRadius(WorldCursor));
+	HUD->Update(FrameTime, Player->GetCrosshairRadius(WorldCursor), Player->Clock);
 
 	// Reset timer if player isn't idle
 	if(Player->Action != ACTION_IDLE)

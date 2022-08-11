@@ -213,6 +213,9 @@
 		</element>
 		<element id="label_confirm_warning" font="hud_medium" text="Are you sure?" offset_y="56" alignment_y="3"/>
 	</element>
+	<element id="element_hud_clock" alignment_x="2" alignment_y="0" size_x="210">
+		<element id="label_hud_clock" font="hud_tiny" offset_x="0" offset_y="230" alignment_x="0" alignment_y="3"/>
+	</element>
 	<element id="element_hud_player_info" offset_x="20" offset_y="40" alignment_x="0" alignment_y="0">
 		<element id="label_hud_player_name" font="menu_buttons" alignment_x="0" alignment_y="3"/>
 		<element id="label_hud_player_level" font="hud_small" offset_y="30" alignment_x="0" alignment_y="3"/>

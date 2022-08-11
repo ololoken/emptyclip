@@ -57,6 +57,7 @@ class _HUD {
 			ELEMENT_SKILLS,
 			ELEMENT_MESSAGE,
 			ELEMENT_SKILLINFO,
+			ELEMENT_CLOCK,
 			LABEL_MESSAGE,
 			LABEL_MESSAGEBOX,
 			LABEL_LEVELNAME,
@@ -67,6 +68,7 @@ class _HUD {
 			LABEL_LEVELCRATES,
 			LABEL_LEVELSECRETS,
 			LABEL_LEVELTIME,
+			LABEL_CLOCK,
 			LABEL_ENEMYNAME,
 			LABEL_ENEMYHEALTH,
 			LABEL_INDICATOR,
@@ -102,7 +104,7 @@ class _HUD {
 		bool IsDragging() const { return CursorItem != nullptr; }
 
 		void MouseEvent(const ae::_MouseEvent &MouseEvent);
-		void Update(double FrameTime, float Radius);
+		void Update(double FrameTime, float Radius, double Clock);
 
 		void Render(const ae::_Camera *Camera, bool FullMap);
 		void DrawCharacterScreen();
@@ -140,6 +142,7 @@ class _HUD {
 		void DrawItemLevel(_Item *Item, const glm::vec2 &Position);
 		void DrawAttribute(const std::string &Label, std::ostringstream &Buffer, glm::vec2 &DrawPosition) const;
 		void UpdateSkillTooltip(int Skill, const glm::vec2 &DrawPosition);
+		void GetClockAsString(std::ostringstream &Buffer, double Clock, bool Clock24Hour) const;
 
 		// State
 		_Player *Player{nullptr};
