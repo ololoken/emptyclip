@@ -62,7 +62,7 @@ void _ObjectManager::Update(double FrameTime, _Map *Map) {
 			Object->GetRenderBounds(Bounds);
 
 			// Add to minimap
-			if(Object->Type != _Object::PROJECTILE && Map->CheckMinimapBounds(Bounds)) {
+			if(Map->CheckMinimapBounds(Bounds)) {
 				_MinimapLayer MinimapLayer;
 				MinimapLayer.Bounds = glm::vec4(
 					Object->Position.x - Object->Radius, Object->Position.y - Object->Radius,
@@ -87,6 +87,9 @@ void _ObjectManager::Update(double FrameTime, _Map *Map) {
 					break;
 					case _Object::PROP:
 						MinimapLayer.Color = HUD_MINIMAP_WALL_COLOR;
+					break;
+					case _Object::PROJECTILE:
+						MinimapLayer.Color = HUD_MINIMAP_PROJECTILE_COLOR;
 					break;
 				}
 				Map->MinimapLayers.push_back(MinimapLayer);

@@ -576,7 +576,7 @@ void _PlayState::Update(double FrameTime) {
 
 	// Add player to minimap
 	_MinimapLayer MinimapLayer;
-	MinimapLayer.Color = COLOR_DARK;
+	MinimapLayer.Color = HUD_MINIMAP_PLAYER_COLOR;
 	MinimapLayer.Bounds = glm::vec4(
 		Player->Position.x - Player->Scale * 0.25f, Player->Position.y - Player->Scale * 0.25f,
 		Player->Position.x + Player->Scale * 0.25f, Player->Position.y + Player->Scale * 0.25f

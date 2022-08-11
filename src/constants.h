@@ -173,13 +173,14 @@ const  glm::vec2    HUD_MINIMAP_SIZE                     =  glm::vec2(200,200);
 const  glm::vec2    HUD_MINIMAP_PADDING                  =  glm::vec2(10,10);
 const  glm::vec4    HUD_MINIMAP_BACKGROUND_COLOR         =  glm::vec4(0.0f, 0.0f,0.0f, 0.8f);
 const  glm::vec4    HUD_MINIMAP_ENEMY_COLOR              =  glm::vec4(1.0f,0.0f,0.0f,1.0f);
-const  glm::vec4    HUD_MINIMAP_PLAYER_COLOR             =  glm::vec4(1.0f,0.0f,0.0f,1.0f);
+const  glm::vec4    HUD_MINIMAP_PLAYER_COLOR             =  glm::vec4(0.3f,0.3f,0.3f,1.0f);
 const  glm::vec4    HUD_MINIMAP_EQUIPMENT_COLOR          =  glm::vec4(0.0f,1.0f,0.0f,1.0f);
 const  glm::vec4    HUD_MINIMAP_KEY_COLOR                =  glm::vec4(1.0f,1.0f,0.0f,1.0f);
 const  glm::vec4    HUD_MINIMAP_AMMO_COLOR               =  glm::vec4(0.0f,1.0f,1.0f,1.0f);
 const  glm::vec4    HUD_MINIMAP_MEDKIT_COLOR             =  glm::vec4(1.0f,1.0f,1.0f,1.0f);
 const  glm::vec4    HUD_MINIMAP_CRATE_COLOR              =  glm::vec4(1.0f,0.0f,1.0f,1.0f);
 const  glm::vec4    HUD_MINIMAP_WALL_COLOR               =  glm::vec4(0.40f,0.36f,0.29f,0.4f);
+const  glm::vec4    HUD_MINIMAP_PROJECTILE_COLOR         =  glm::vec4(0.5f,0.5f,0.5f,1.0f);
 const  glm::vec4    HUD_MINIMAP_DOOR_COLOR               =  glm::vec4(0.28f,0.28f,0.28f,1.0f);
 const  glm::vec4    HUD_MINIMAP_TOGGLED_COLOR            =  glm::vec4(0.035f,0.035f,0.035f,1.0f);
 //     Light
