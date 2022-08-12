@@ -1880,32 +1880,31 @@ void _EditorState::ExecuteMirror() {
 
 // Executes the mirror texture command
 void _EditorState::ExecuteToggleTile() {
+	if(!EventSelected())
+		return;
 
-	if(EventSelected()) {
-		auto Iterator = SelectedEvent->FindTile(WorldCursorIndex);
-		if(Iterator != SelectedEvent->Tiles.end()) {
-			SelectedEvent->RemoveTile(Iterator);
-		}
-		else {
-			switch(SelectedEvent->Type) {
-				case EVENT_DOOR:
-				case EVENT_WALLSWITCH:
-				case EVENT_FLOORSWITCH: {
-					_Block *Block;
-					int BlockIndex = Map->GetSelectedBlock(EditLayer, WorldCursorIndex, &Block);
-					SelectedEvent->AddTile(_EventTile(WorldCursorIndex, EditLayer, BlockIndex));
-				} break;
-				case EVENT_ENABLE: {
-					_Event *Event;
-					int EventIndex = Map->GetSelectedEvent(WorldCursorIndex, &Event);
-					SelectedEvent->AddTile(_EventTile(WorldCursorIndex, -1, EventIndex));
-				} break;
-				default:
-					SelectedEvent->AddTile(_EventTile(WorldCursorIndex, -1, -1));
-				break;
-			}
+	auto Iterator = SelectedEvent->FindTile(WorldCursorIndex);
+	if(Iterator == SelectedEvent->Tiles.end()) {
+		switch(SelectedEvent->Type) {
+			case EVENT_DOOR:
+			case EVENT_WALLSWITCH:
+			case EVENT_FLOORSWITCH: {
+				_Block *Block;
+				int BlockIndex = Map->GetSelectedBlock(EditLayer, WorldCursorIndex, &Block);
+				SelectedEvent->AddTile(_EventTile(WorldCursorIndex, EditLayer, BlockIndex));
+			} break;
+			case EVENT_ENABLE: {
+				_Event *Event;
+				int EventIndex = Map->GetSelectedEvent(WorldCursorIndex, &Event);
+				SelectedEvent->AddTile(_EventTile(WorldCursorIndex, -1, EventIndex));
+			} break;
+			default:
+				SelectedEvent->AddTile(_EventTile(WorldCursorIndex, -1, -1));
+			break;
 		}
 	}
+	else if(!IsShiftDown)
+		SelectedEvent->RemoveTile(Iterator);
 }
 
 // Executes the undo command
