@@ -2114,12 +2114,17 @@ void _Map::AddMinimapLayers() {
 		if(Event->Type != EVENT_DOOR && Event->Type != EVENT_WALLSWITCH)
 			continue;
 
+		// Ignore switched doors
+		if(Event->Type == EVENT_DOOR && Event->Switched)
+			continue;
+
 		// Check bounds
 		glm::vec4 Bounds;
 		Event->GetBounds(Bounds);
 		if(!CheckMinimapBounds(Bounds))
 			continue;
 
+		// Add to minimap
 		_MinimapLayer MinimapLayer;
 		MinimapLayer.Bounds = Bounds;
 		if(Event->Switched)
@@ -2128,6 +2133,7 @@ void _Map::AddMinimapLayers() {
 			MinimapLayer.Color = HUD_MINIMAP_DOOR_COLOR;
 		else
 			MinimapLayer.Color = Stats.Objects.at(Event->ItemID).DoorColor;
+
 		MinimapLayers.push_back(MinimapLayer);
 	}
 }
