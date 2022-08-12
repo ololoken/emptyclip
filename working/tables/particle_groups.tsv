@@ -3,6 +3,6 @@ player						bloodspurt0	blood0,blood1,blood2,blood3,blood4
 monster						bloodspurt0	blood0,blood1,blood2,blood3,blood4
 crate							crate0
 gun	gun_fire0		gun_smoke0	bullet_spark0	bullet_hole0		
-gun_big	gun_fire1		gun_smoke0	bullet_spark0	bullet_hole0		
+gun_big	gun_fire1		gun_smoke1	bullet_spark0	bullet_hole0		
 plasma	plasma_fire0		plasma_smoke0	plasma_spark0			
 rocketlauncher	gun_fire1	explosion0					
