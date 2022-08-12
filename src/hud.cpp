@@ -411,8 +411,7 @@ void _HUD::Render(const ae::_Camera *Camera, bool FullMap) {
 		LevelPercentage = Player->ExperienceNextLevel > 0 ? 1.0f - (float)Player->ExperienceNeeded / Player->ExperienceNextLevel : 0;
 		Buffer << Player->ExperienceNextLevel - Player->ExperienceNeeded << " / " << Player->ExperienceNextLevel << " XP";
 	}
-	else
-		Buffer.str("");
+
 	Elements[LABEL_EXPERIENCE]->Text = Buffer.str();
 	Buffer.str("");
 	Elements[IMAGE_EXPERIENCE]->SetWidth(Elements[ELEMENT_EXPERIENCE]->Size.x * LevelPercentage);
@@ -608,9 +607,19 @@ void _HUD::DrawHUDWeapon(const _Item *Weapon, ae::_Element *Element, ae::_Elemen
 
 	Image->Texture = Weapon->Texture;
 	Image->Color = Weapon->Color;
-	if(Weapon->Attributes.at("rounds").Int) {
+	int Rounds = Weapon->Attributes.at("rounds").Int;
+	if(Rounds) {
+
+		// Set font size
+		if(Rounds > 9999)
+			Label->Font = ae::Assets.Fonts["hud_tiny"];
+		else if(Rounds > 999)
+			Label->Font = ae::Assets.Fonts["hud_small"];
+		else
+			Label->Font = ae::Assets.Fonts["hud_medium"];
+
 		std::ostringstream Buffer;
-		Buffer << Weapon->Attributes.at("ammo").Int << "/" << Weapon->Attributes.at("rounds").Int;
+		Buffer << Weapon->Attributes.at("ammo").Int << "/" << Rounds;
 		if(Label)
 			Label->Text = Buffer.str();
 	}
