@@ -44,4 +44,4 @@ wisp_die	textures/animations/wisp_die.png	0.13	128	128	0	2	0	0
 alien_move	textures/animations/alien_move.png	0.24	64	64	0	4	2	2
 alien_shoot	textures/animations/alien_shoot.png	2	64	64	0	0	0	0
 alien_die	textures/animations/alien_die.png	0.13	64	64	0	2	0	0
-explosion	textures/animations/explosion.png	0.03	128	128	0	4	0	0
+explosion	textures/animations/explosion.png	0.04	128	128	0	5	0	0

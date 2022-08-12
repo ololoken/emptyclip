@@ -338,7 +338,7 @@ void _Framework::HandleCommand(ae::_Console *Console) {
 	else if(Console->Command == "volume") {
 		if(Parameters.size() == 1) {
 			Config.SoundVolume = Config.MusicVolume = std::clamp(ae::ToNumber<float>(Console->Parameters), 0.0f, 1.0f);
-			//Audio.SetSoundVolume(Config.SoundVolume);
+			ae::Audio.SetSoundVolume(Config.SoundVolume);
 			Config.Save();
 		}
 		else

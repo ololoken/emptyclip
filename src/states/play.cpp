@@ -778,10 +778,14 @@ void _PlayState::Render(double BlendFactor) {
 	ae::Graphics.SetProgram(MapProgram);
 	MapProgram->ResetTransform(MapProgram->TextureTransformID);
 	Particles->Render(_Particles::NORMAL, BlendFactor);
+	ae::Graphics.DisableParticleBlending();
 
-	// Emissive particles
+	// Emissive animating particles
 	ae::Graphics.SetProgram(ae::Assets.Programs["pos_uv"]);
 	Particles->Render(_Particles::EMISSIVE_ANIMATION, BlendFactor);
+
+	// Normal emissive particles
+	ae::Graphics.EnableParticleBlending();
 	ae::Assets.Programs["pos_uv"]->ResetTransform(ae::Assets.Programs["pos_uv"]->TextureTransformID);
 	Particles->Render(_Particles::EMISSIVE, BlendFactor);
 	ae::Graphics.DisableParticleBlending();
