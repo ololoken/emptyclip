@@ -660,9 +660,11 @@ void _Stats::LoadProjectiles(const std::string &Path) {
 
 		_ObjectTemplate Template(_Object::PROJECTILE);
 		std::string SoundGroupID;
+		std::string ParticleID;
 		std::getline(File, Template.ID, '\t');
 		std::getline(File, Template.IconID, '\t');
 		std::getline(File, SoundGroupID, '\t');
+		std::getline(File, ParticleID, '\t');
 
 		File
 			>> Template.Attributes["radius"].Float
@@ -674,14 +676,23 @@ void _Stats::LoadProjectiles(const std::string &Path) {
 		if(!ae::Assets.Textures[Template.IconID])
 			throw std::runtime_error(std::string(__func__) + " unknown texture '" + Template.IconID + "'");
 
-		// Check for sound group
-		if(GameAssets.SoundGroups.find(SoundGroupID) == GameAssets.SoundGroups.end())
-			throw std::runtime_error(std::string(__func__) + " unknown sound group '" + SoundGroupID + "'");
-
 		// Set sound ids
-		_SoundGroup &SoundGroupTemplate = GameAssets.SoundGroups.at(SoundGroupID);
-		for(int i = 0; i < SOUND_COUNT; i++)
-			Template.SoundID[i] = SoundGroupTemplate.SoundID[i];
+		if(!SoundGroupID.empty()) {
+			if(GameAssets.SoundGroups.find(SoundGroupID) == GameAssets.SoundGroups.end())
+				throw std::runtime_error(std::string(__func__) + " unknown sound group '" + SoundGroupID + "'");
+
+			_SoundGroup &SoundGroupTemplate = GameAssets.SoundGroups.at(SoundGroupID);
+			for(int i = 0; i < SOUND_COUNT; i++)
+				Template.SoundID[i] = SoundGroupTemplate.SoundID[i];
+		}
+
+		// Set particle
+		if(!ParticleID.empty()) {
+			if(GameAssets.Particles.find(ParticleID) == GameAssets.Particles.end())
+				throw std::runtime_error(std::string(__func__) + " unknown particle_id '" + ParticleID + "'");
+
+			Template.ParticleTemplate = &GameAssets.Particles.at(ParticleID);
+		}
 
 		// Check for duplicates
 		if(Objects.find(Template.ID) != Objects.end())

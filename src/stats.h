@@ -78,6 +78,7 @@ struct _ObjectTemplate {
 	std::string MeshID;
 	std::vector<const ae::_Sound *> SoundID[SOUND_COUNT];
 	const _ParticleGroup *ParticleGroup{nullptr};
+	const _ParticleTemplate *ParticleTemplate{nullptr};
 	glm::vec4 Color{1.0f};
 	glm::vec4 DoorColor{1.0f};
 	int Type{0};

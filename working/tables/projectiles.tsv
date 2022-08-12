@@ -1,3 +1,3 @@
-id	icon_id	soundgroup_id	radius	scale
-plasma	textures/projectiles/plasma.png	plasma	0.25	0.5
-rocket	textures/projectiles/rocket.png	rocketlauncher	0.25	0.5
+id	icon_id	soundgroup_id	particle_id	radius	scale
+plasma	textures/projectiles/plasma.png	plasma		0.25	0.5
+rocket	textures/projectiles/rocket.png	rocketlauncher	rocket_smoke0	0.25	0.5

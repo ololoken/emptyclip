@@ -1629,6 +1629,11 @@ void _PlayState::GenerateExplosion(const _ParticleTemplate *ParticleTemplate, co
 	Particle->Scale = Scale;
 }
 
+// Generate projectile particle effects
+void _PlayState::GenerateProjectileEffects(const _ParticleTemplate *ParticleTemplate, const glm::vec2 &Position) {
+	Particles->Create(_ParticleSpawn(ParticleTemplate, glm::vec2(0), Position, OBJECT_Z, 0));
+}
+
 // Determine if game is paused
 bool _PlayState::IsPaused() {
 	return Menu.GetState() != _Menu::STATE_NONE;
