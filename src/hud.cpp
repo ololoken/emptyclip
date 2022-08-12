@@ -585,7 +585,7 @@ void _HUD::DrawCrosshair(const glm::vec2 &Position) {
 
 	ae::Graphics.SetProgram(ae::Assets.Programs["pos_uv"]);
 	ae::Graphics.SetColor(Color);
-	ae::Assets.Programs["pos_uv"]->ResetTextureTransform();
+	ae::Assets.Programs["pos_uv"]->ResetTransform(ae::Assets.Programs["pos_uv"]->TextureTransformID);
 	ae::Graphics.DrawSprite(glm::vec3(Position, 0.0f), CrosshairTexture, 0);
 }
 

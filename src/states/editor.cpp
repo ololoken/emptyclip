@@ -1438,9 +1438,10 @@ void _EditorState::DrawBrush() {
 	}
 
 	if(IconTexture) {
-		ae::Graphics.SetProgram(ae::Assets.Programs["ortho_pos_uv"]);
-		ae::Assets.Programs["ortho_pos_uv"]->ResetTextureTransform();
+		 ae::_Program *Program = ae::Assets.Programs["ortho_pos_uv"];
+		ae::Graphics.SetProgram(Program);
 		ae::Graphics.SetColor(IconColor);
+		Program->ResetTransform(Program->TextureTransformID);
 		glm::vec3 DrawPosition = glm::vec3(IconPosition, 0.0f);
 		glm::vec2 IconScale = glm::vec2(IconScaleX * EDITOR_PALETTE_SELECTEDSIZE * 2, EDITOR_PALETTE_SELECTEDSIZE * 2);
 		ae::Graphics.DrawSprite(DrawPosition, IconTexture, IconRotation * IconScaleX, IconScale);
@@ -1516,20 +1517,25 @@ void _EditorState::DrawObject(float OffsetX, float OffsetY, const _ObjectSpawn *
 		return;
 
 	Color.a *= Alpha;
+	ae::_Program *Program;
 	if(Mesh) {
-		ae::Graphics.SetDepthMask(true);
-		ae::Graphics.SetProgram(ae::Assets.Programs["map_norm"]);
-		ae::Assets.Programs["map_norm"]->ResetTextureTransform();
+		Program = ae::Assets.Programs["map_norm"];
+		ae::Graphics.SetProgram(Program);
+		Program->ResetTransform(Program->TextureTransformID);
+
 		ae::Graphics.SetColor(Color);
+		ae::Graphics.SetDepthMask(true);
 		ae::Graphics.SetCullFace(true);
 		ae::Graphics.DrawMesh(glm::vec3(DrawPosition, Depth), Mesh, Texture, Rotation, glm::vec3(Scale));
 		ae::Graphics.SetCullFace(false);
 	}
 	else {
-		ae::Graphics.SetDepthMask(false);
-		ae::Graphics.SetProgram(ae::Assets.Programs["pos_uv"]);
-		ae::Assets.Programs["pos_uv"]->ResetTextureTransform();
+		Program = ae::Assets.Programs["pos_uv"];
+		ae::Graphics.SetProgram(Program);
+		Program->ResetTransform(Program->TextureTransformID);
+
 		ae::Graphics.SetColor(Color);
+		ae::Graphics.SetDepthMask(false);
 		ae::Graphics.DrawSprite(glm::vec3(DrawPosition, Depth), Texture, Rotation, glm::vec2(Scale));
 	}
 }

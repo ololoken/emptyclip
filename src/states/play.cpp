@@ -661,6 +661,10 @@ void _PlayState::Render(double BlendFactor) {
 	if(IsPaused())
 		BlendFactor = 0;
 
+	// Set up programs
+	ae::_Program *MapProgram = ae::Assets.Programs["map"];
+
+	// Get player light
 	glm::vec4 PlayerLightColor;
 	glm::vec3 LightAttenuantion;
 	if(Config.WeaponFlashes && FlashTimer > 0.0) {
@@ -674,11 +678,11 @@ void _PlayState::Render(double BlendFactor) {
 
 	// Set up lights
 	glm::vec3 LightPosition(glm::vec2(Player->Position), 1.0f);
-	ae::Assets.Programs["map"]->LightCount = 1;
-	ae::Assets.Programs["map"]->Lights[0].Color = PlayerLightColor;
-	ae::Assets.Programs["map"]->Lights[0].Position = LightPosition;
-	ae::Assets.Programs["map"]->Lights[0].Attenuation = LightAttenuantion;
-	ae::Assets.Programs["map"]->AmbientLight = Map->AmbientLight;
+	MapProgram->LightCount = 1;
+	MapProgram->Lights[0].Color = PlayerLightColor;
+	MapProgram->Lights[0].Position = LightPosition;
+	MapProgram->Lights[0].Attenuation = LightAttenuantion;
+	MapProgram->AmbientLight = Map->AmbientLight;
 	ae::Assets.Programs["map_norm"]->LightCount = 1;
 	ae::Assets.Programs["map_norm"]->Lights[0].Color = PlayerLightColor;
 	ae::Assets.Programs["map_norm"]->Lights[0].Position = LightPosition;
@@ -690,8 +694,8 @@ void _PlayState::Render(double BlendFactor) {
 	Camera->Set3DProjection(BlendFactor);
 
 	// Setup the viewing matrix
-	ae::Graphics.SetProgram(ae::Assets.Programs["map"]);
-	ae::Assets.Programs["map"]->SetUniformMat4("view_projection_transform", Camera->Transform);
+	ae::Graphics.SetProgram(MapProgram);
+	MapProgram->SetUniformMat4("view_projection_transform", Camera->Transform);
 	ae::Graphics.SetProgram(ae::Assets.Programs["map_norm"]);
 	ae::Assets.Programs["map_norm"]->SetUniformMat4("view_projection_transform", Camera->Transform);
 	ae::Graphics.SetProgram(ae::Assets.Programs["pos"]);
@@ -722,7 +726,7 @@ void _PlayState::Render(double BlendFactor) {
 
 	// Set framebuffer texture
 	if(Framebuffer) {
-		ae::Assets.Programs["map"]->Use();
+		MapProgram->Use();
 		ae::Graphics.SetActiveTexture(1);
 		Framebuffer->BindTexture();
 		ae::Graphics.SetActiveTexture(0);
@@ -736,8 +740,9 @@ void _PlayState::Render(double BlendFactor) {
 	int BlockRenderCount = Map->RenderFloors();
 
 	// Draw floor decals
-	ae::Graphics.SetProgram(ae::Assets.Programs["map"]);
-	ae::Assets.Programs["map"]->ResetTextureTransform();
+	ae::Graphics.SetProgram(MapProgram);
+	MapProgram->ResetTransform(MapProgram->TextureTransformID);
+	MapProgram->ResetTransform(MapProgram->NormalTransformID);
 	ae::Graphics.SetDepthMask(false);
 	ae::Graphics.SetDepthTest(false);
 	int ParticleRenderCount = Map->RenderParticles(_Particles::FLOOR_DECALS, BlendFactor);
@@ -747,8 +752,8 @@ void _PlayState::Render(double BlendFactor) {
 	int PropRenderCount = Map->RenderProps();
 
 	// Draw objects
-	ae::Graphics.SetProgram(ae::Assets.Programs["map"]);
-	ae::Assets.Programs["map"]->ResetTextureTransform();
+	ae::Graphics.SetProgram(MapProgram);
+	MapProgram->ResetTransform(MapProgram->TextureTransformID);
 	ae::Graphics.SetDepthMask(false);
 	ae::Graphics.SetDepthTest(true);
 	Map->ObjectManager->Render(_ObjectManager::RENDER_ITEMS, BlendFactor);
@@ -762,21 +767,22 @@ void _PlayState::Render(double BlendFactor) {
 	PropRenderCount += Map->RenderProps();
 
 	// Draw wall decals
-	ae::Graphics.SetProgram(ae::Assets.Programs["map"]);
-	ae::Assets.Programs["map"]->ResetTextureTransform();
+	ae::Graphics.SetProgram(MapProgram);
+	MapProgram->ResetTransform(MapProgram->TextureTransformID);
+	MapProgram->ResetTransform(MapProgram->NormalTransformID);
 	ae::Graphics.SetDepthMask(false);
 	ParticleRenderCount += Map->RenderParticles(_Particles::WALL_DECALS, BlendFactor);
 
 	// Draw particles
 	ae::Graphics.EnableParticleBlending();
-	ae::Graphics.SetProgram(ae::Assets.Programs["map"]);
-	ae::Assets.Programs["map"]->ResetTextureTransform();
+	ae::Graphics.SetProgram(MapProgram);
+	MapProgram->ResetTransform(MapProgram->TextureTransformID);
 	Particles->Render(_Particles::NORMAL, BlendFactor);
 
 	// Emissive particles
 	ae::Graphics.SetProgram(ae::Assets.Programs["pos_uv"]);
 	Particles->Render(_Particles::EMISSIVE_ANIMATION, BlendFactor);
-	ae::Assets.Programs["pos_uv"]->ResetTextureTransform();
+	ae::Assets.Programs["pos_uv"]->ResetTransform(ae::Assets.Programs["pos_uv"]->TextureTransformID);
 	Particles->Render(_Particles::EMISSIVE, BlendFactor);
 	ae::Graphics.DisableParticleBlending();
 

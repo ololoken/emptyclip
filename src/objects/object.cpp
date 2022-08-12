@@ -50,16 +50,17 @@ void _Object::Update(double FrameTime) {
 
 // Render object
 void _Object::Render(double BlendFactor) {
-	if(Texture) {
-		glm::vec2 DrawPosition;
-		GetDrawPosition(DrawPosition, BlendFactor);
+	if(!Texture)
+		return;
 
-		ae::Graphics.SetColor(Color);
-		if(Mesh)
-			ae::Graphics.DrawMesh(glm::vec3(DrawPosition, PositionZ), Mesh, Texture, Rotation, glm::vec3(Scale));
-		else
-			ae::Graphics.DrawSprite(glm::vec3(DrawPosition, PositionZ), Texture, Rotation, glm::vec2(Scale));
-	}
+	glm::vec2 DrawPosition;
+	GetDrawPosition(DrawPosition, BlendFactor);
+
+	ae::Graphics.SetColor(Color);
+	if(Mesh)
+		ae::Graphics.DrawMesh(glm::vec3(DrawPosition, PositionZ), Mesh, Texture, Rotation, glm::vec3(Scale));
+	else
+		ae::Graphics.DrawSprite(glm::vec3(DrawPosition, PositionZ), Texture, Rotation, glm::vec2(Scale));
 }
 // Get sound for a sound type
 const ae::_Sound *_Object::GetSound(int SoundType) const {

@@ -1744,9 +1744,11 @@ int _Map::RenderFloors() {
 		return 0;
 
 	// Draw base layer
-	ae::Graphics.SetProgram(ae::Assets.Programs["map"]);
+	ae::_Program *Program = ae::Assets.Programs["map"];
+	ae::Graphics.SetProgram(Program);
 	ae::Graphics.SetDepthTest(false);
 	ae::Graphics.SetDepthMask(false);
+	Program->ResetTransform(Program->NormalTransformID);
 
 	int Count = 0;
 	for(size_t i = 0; i < Blocks[MAPLAYER_BASE].size(); i++) {
@@ -1825,10 +1827,12 @@ int _Map::RenderWalls(bool SkipFloating) {
 		return 0;
 
 	// Set up graphics
-	ae::Graphics.SetProgram(ae::Assets.Programs["map_norm"]);
+	ae::_Program *Program = ae::Assets.Programs["map_norm"];
+	ae::Graphics.SetProgram(Program);
 	ae::Graphics.SetDepthMask(true);
 	ae::Graphics.SetDepthTest(true);
 	ae::Graphics.SetCullFace(true);
+	Program->ResetTransform(Program->NormalTransformID);
 
 	// Draw walls
 	int Count = 0;
@@ -1868,9 +1872,11 @@ int _Map::RenderWalls(bool SkipFloating) {
 // Render flat walls
 int _Map::RenderFlatWalls() {
 
-	ae::Graphics.SetProgram(ae::Assets.Programs["map_norm"]);
+	ae::_Program *Program = ae::Assets.Programs["map_norm"];
+	ae::Graphics.SetProgram(Program);
 	ae::Graphics.SetDepthMask(false);
 	ae::Graphics.SetDepthTest(true);
+	Program->ResetTransform(Program->NormalTransformID);
 
 	int Count = 0;
 	for(size_t i = 0; i < Blocks[MAPLAYER_FLAT].size(); i++) {
@@ -1957,9 +1963,11 @@ int _Map::RenderForeground(const glm::vec2 &PlayerPosition, bool AlwaysFade) {
 		return 0;
 
 	// Set up graphics
-	ae::Graphics.SetProgram(ae::Assets.Programs["map_norm"]);
+	ae::_Program *Program = ae::Assets.Programs["map_norm"];
+	ae::Graphics.SetProgram(Program);
 	ae::Graphics.SetDepthMask(true);
 	ae::Graphics.SetDepthTest(true);
+	Program->ResetTransform(Program->NormalTransformID);
 
 	// Draw foreground
 	int Count = 0;
@@ -2000,11 +2008,13 @@ int _Map::RenderForeground(const glm::vec2 &PlayerPosition, bool AlwaysFade) {
 
 // Render map props
 int _Map::RenderProps() {
-	ae::Graphics.SetProgram(ae::Assets.Programs["map_norm"]);
-	ae::Assets.Programs["map_norm"]->ResetTextureTransform();
+	ae::_Program *Program = ae::Assets.Programs["map_norm"];
+	ae::Graphics.SetProgram(Program);
 	ae::Graphics.SetDepthMask(true);
 	ae::Graphics.SetDepthTest(true);
 	ae::Graphics.SetCullFace(true);
+	Program->ResetTransform(Program->NormalTransformID);
+	Program->ResetTransform(Program->TextureTransformID);
 	int Count = ObjectManager->Render(_ObjectManager::RENDER_PROP, 0.0);
 	ae::Graphics.SetCullFace(false);
 
