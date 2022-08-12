@@ -544,7 +544,7 @@ void _PlayState::Update(double FrameTime) {
 		Player->Stamina = Player->MaxStamina;
 
 	// Handle gun flashes
-	if(Player->Action == ACTION_STARTSHOOT)
+	if(Player->Action == ACTION_STARTSHOOT && Player->HasMainHand() && Player->GetMainHand()->Template.Attributes.at("flash").Int)
 		FlashTimer = LIGHT_FLASH_TIME;
 
 	// Check for events

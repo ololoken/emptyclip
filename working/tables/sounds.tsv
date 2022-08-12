@@ -3,6 +3,8 @@ beast_move0.ogg	0.7	5
 boltrifle_fire0.ogg	0.7	3
 club_hit0.ogg	0.7	1
 crate_die0.ogg	0.4	2
+crossbow_fire0.ogg	0.35	3
+crossbow_reload0.ogg	0.3	1
 dog_attack0.ogg	0.7	5
 dog_attack1.ogg	0.65	5
 dog_die0.ogg	0.7	5

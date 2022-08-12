@@ -12,6 +12,7 @@ rifle	rifle_fire0.ogg			pistol_ricochet0.ogg	pistol_empty0.ogg	pistol_reload0.og
 sniper	sniper_fire0.ogg			pistol_ricochet0.ogg	pistol_empty0.ogg	pistol_reload0.ogg				
 minigun			minigun_fire0.ogg	pistol_ricochet0.ogg	pistol_empty0.ogg	pistol_reload0.ogg				
 rocketlauncher	rocketlauncher_fire0.ogg	rocket_explode0.ogg								
+crossbow	crossbow_fire0.ogg					crossbow_reload0.ogg				
 zombie	zombie_attack0.ogg							zombie_hit0.ogg	zombie_die0.ogg	zombie_move0.ogg
 dog	dog_attack0.ogg,dog_attack1.ogg							zombie_hit0.ogg	dog_die0.ogg,dog_die1.ogg	dog_move0.ogg
 bat									spider_die0.ogg	

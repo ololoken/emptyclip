@@ -8,6 +8,7 @@ ammo_rifle	1	0	0	0	0	0	0	0	0	12	12	15	0
 ammo_heavy	0	1	0	0	0	0	0	0	0	0	0	15	0
 ammo_plasma	0	1	0	0	0	0	0	0	0	0	6	15	0
 ammo_rocket	0	0	0	0	0	0	0	0	0	0	0	5	0
+ammo_bolt	0	1	0	0	0	0	0	0	0	0	6	6	0
 medkit	0	0	1	0	0	0	0	0	0	25	25	25	0
 weapon_knife	0	0	0	0	0	1	0	0	0	1	1	0	0
 weapon_spear	0	0	0	0	0	1	0	0	0	1	1	1	0

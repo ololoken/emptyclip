@@ -238,7 +238,8 @@ void _Stats::LoadWeapons(const std::string &Path) {
 			>> Template.Attributes["scale_x"].Float
 			>> Template.Attributes["scale_y"].Float
 			>> Template.Attributes["projectile_speed"].Float
-			>> Template.Attributes["explosion_size"].Float;
+			>> Template.Attributes["explosion_size"].Float
+			>> Template.Attributes["flash"].Int;
 
 		File.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
@@ -255,13 +256,15 @@ void _Stats::LoadWeapons(const std::string &Path) {
 			throw std::runtime_error(std::string(__func__) + " unknown ammo '" + Template.AmmoID + "'");
 
 		// Check for attack sound
-		if(GameAssets.SoundGroups.find(SoundGroupID) == GameAssets.SoundGroups.end())
-			throw std::runtime_error(std::string(__func__) + " unknown sound group '" + SoundGroupID + "'");
+		if(!SoundGroupID.empty()) {
+			if(GameAssets.SoundGroups.find(SoundGroupID) == GameAssets.SoundGroups.end())
+				throw std::runtime_error(std::string(__func__) + " unknown sound group '" + SoundGroupID + "'");
 
-		// Set sound ids
-		_SoundGroup &SoundGroupTemplate = GameAssets.SoundGroups.at(SoundGroupID);
-		for(int i = 0; i < SOUND_COUNT; i++)
-			Template.SoundID[i] = SoundGroupTemplate.SoundID[i];
+			// Set sound ids
+			_SoundGroup &SoundGroupTemplate = GameAssets.SoundGroups.at(SoundGroupID);
+			for(int i = 0; i < SOUND_COUNT; i++)
+				Template.SoundID[i] = SoundGroupTemplate.SoundID[i];
+		}
 
 		// Set particles
 		if(GameAssets.ParticleGroups.find(WeaponParticlesID) != GameAssets.ParticleGroups.end())

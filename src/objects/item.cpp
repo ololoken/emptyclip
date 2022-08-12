@@ -463,7 +463,7 @@ void _Item::RecalculateStats() {
 
 	float QualityFactor = 1.0f + Quality * 0.01f;
 	switch(Type) {
-		case _Object::WEAPON:
+		case _Object::WEAPON: {
 			SetAttributeRange("damage", GetBonusMultiplier(MOD_DAMAGE));
 			SetAttributeSpread("accuracy", GetBonusMultiplier(MOD_ACCURACY, true));
 			Attributes["rounds"].Int = Template.Attributes.at("rounds").Int * GetBonusMultiplier(MOD_MAXROUNDS) + 0.5f;
@@ -477,10 +477,12 @@ void _Item::RecalculateStats() {
 			Attributes["penetration"].Int = Template.Attributes.at("penetration").Int + Bonus[MOD_PENETRATION];
 			Attributes["penetration_damage"].Float = std::clamp(Template.Attributes.at("penetration_damage").Float * QualityFactor, 0.0f, 1.0f);
 			Attributes["crit_chance"].Int = Template.Attributes.at("crit_chance").Int * QualityFactor + 0.5f;
-			Attributes["explosion_size"].Float = Template.Attributes.at("explosion_size").Float * QualityFactor + 0.5f;
+
+			float ExplosionSize = Template.Attributes.at("explosion_size").Float;
+			Attributes["explosion_size"].Float = ExplosionSize > 0.0f ? ExplosionSize * QualityFactor + 0.5f : 0.0f;
 
 			SetAmmo(Attributes["ammo"].Int);
-		break;
+		} break;
 		case _Object::ARMOR:
 			SetAttributeLevel("damage_block", QualityFactor);
 			SetAttributeLevel("damage_resist", QualityFactor);
