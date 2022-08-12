@@ -16,6 +16,8 @@ tutorial_boss	Kill the boss to get the final key!
 tutorial_handling	Increasing your gun handling stat reduces the recoil of your guns.
 tutorial_skills	Skill points can be spent to increase various attributes when you level up. Try increasing [c red]Fortitude[c white] if you are having problems staying alive.
 tutorial_alt	Holding [c red]Alt[c white] will show additional information on the inventory screen.
+tutorial_mod	Mods can be used to enhance your gear.\n\nOpen your inventory and try adding a mod to one of your weapons or armor.
+tutorial_quality	The [c red]level[c white] of an item determines the amount of damage or defense it has. Item [c red]quality[c white] is random and affects all of its stats.
 tutorial_bolt	The Bolt-Action Rifle can be used to pick off enemies from a distance. Try holding [c red]right-click[c white] to pan the camera around.
 mansion_tree	A nearby tree falls...
 mansion_switches	Find the switches to lower the gates.
