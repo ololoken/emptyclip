@@ -4,7 +4,6 @@ cmake_minimum_required(VERSION 2.8.12)
 add_definitions(-DGAME_VERSION="2.0.0")
 add_definitions("-DGLM_FORCE_RADIANS")
 add_definitions("-DGLM_ENABLE_EXPERIMENTAL")
-add_definitions("-DAE_NO_DATABASE")
 add_definitions("-DAE_NO_NETWORK")
 
 # projects
@@ -51,6 +50,7 @@ find_package(Vorbis REQUIRED)
 find_package(Ogg REQUIRED)
 find_package(Freetype REQUIRED)
 find_package(ZLIB REQUIRED)
+find_package(SQLite REQUIRED)
 find_package(Threads REQUIRED)
 
 # set include directories
@@ -63,6 +63,7 @@ include_directories(${OPENAL_INCLUDE_DIR})
 include_directories(${VORBIS_INCLUDE_DIR})
 include_directories(${OGG_INCLUDE_DIR})
 include_directories(${FREETYPE_INCLUDE_DIRS})
+include_directories(${SQLITE_INCLUDE_DIR})
 include_directories(${ZLIB_INCLUDE_DIRS})
 
 # add source code
@@ -94,6 +95,14 @@ if(EXISTS "${PROJECT_SOURCE_DIR}/assets/source/process.sh" AND NOT WIN32)
 		WORKING_DIRECTORY "${PROJECT_SOURCE_DIR}/assets/source/"
 	)
 	add_custom_target(data ALL DEPENDS "${PROJECT_SOURCE_DIR}/working/data/sounds")
+
+	# build stats
+	add_custom_command(
+		OUTPUT "${PROJECT_SOURCE_DIR}/working/data/stats.db"
+		COMMAND "${PROJECT_SOURCE_DIR}/assets/source/build_stats.sh"
+		WORKING_DIRECTORY "${PROJECT_SOURCE_DIR}/assets/source/"
+	)
+	add_custom_target(stats ALL DEPENDS "${PROJECT_SOURCE_DIR}/working/data/stats.db")
 endif()
 
 # add custom target to generate version.h
@@ -116,6 +125,7 @@ target_link_libraries(${CMAKE_PROJECT_NAME}
 	${OGG_LIBRARIES}
 	${LUA_LIBRARIES}
 	${FREETYPE_LIBRARIES}
+	${SQLITE_LIBRARIES}
 	${ZLIB_LIBRARIES}
 	${CMAKE_THREAD_LIBS_INIT}
 	${EXTRA_LIBS}

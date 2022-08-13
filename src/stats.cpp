@@ -21,6 +21,7 @@
 #include <ae/random.h>
 #include <ae/assets.h>
 #include <ae/animation.h>
+#include <ae/database.h>
 #include <gameassets.h>
 #include <constants.h>
 #include <map.h>
@@ -32,6 +33,8 @@ _Stats Stats;
 
 // Initialize
 void _Stats::Init() {
+	Database = new ae::_Database("data/stats.db", true);
+
 	BlankWeaponParticle = _ParticleGroup();
 
 	LoadStrings("tables/strings.tsv");
@@ -61,35 +64,22 @@ void _Stats::Close() {
 	Skills.clear();
 	Objects.clear();
 	ItemDrops.clear();
+	delete Database;
 }
 
 // Load strings
 void _Stats::LoadStrings(const std::string &Path) {
 
-	// Load file
-	std::ifstream File(Path, std::ios::in);
-	if(!File)
-		throw std::runtime_error(std::string(__func__) + " error opening '" + Path + "'");
+	// Run query
+	Database->PrepareQuery("SELECT * FROM strings");
 
-	// Ignore the first line
-	File.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-
-	// Read file
-	while(!File.eof() && File.peek() != EOF) {
-
-		std::string ID;
-		std::string Text;
-		std::getline(File, ID, '\t');
-		std::getline(File, Text, '\n');
-
-		// Check for duplicates
-		if(Strings.find(ID) != Strings.end())
-			throw std::runtime_error(std::string(__func__) + " duplicate id '" + ID + "'");
-
+	// Get data
+	while(Database->FetchRow()) {
+		std::string ID = Database->GetString("id");
+		std::string Text = Database->GetString("text");
 		Strings[ID] = Text;
 	}
-
-	File.close();
+	Database->CloseQuery();
 }
 
 // Load level stats

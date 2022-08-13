@@ -31,6 +31,7 @@ class _Monster;
 struct _ObjectSpawn;
 namespace ae {
 	class _Sound;
+	class _Database;
 }
 
 // Used for level information
@@ -133,6 +134,8 @@ class _Stats {
 
 		std::vector<std::string> AmmoNames;
 		std::vector<std::string> ModNames;
+
+		ae::_Database *Database;
 
 	private:
 
