@@ -21,9 +21,9 @@ zombie_die	textures/animations/zombie_die.png	0.13	64	64	0	4	0	0
 bat_move	textures/animations/bat_move.png	0.24	64	64	0	4	2	2
 bat_melee	textures/animations/bat_melee.png	0.1	64	64	0	2	0	0
 bat_die	textures/animations/bat_die.png	0.13	64	64	0	2	0	0
-skeleton_move	textures/animations/skeleton_move.png	0.24	64	64	0	4	2	2
-skeleton_melee	textures/animations/skeleton_melee.png	0.1	64	64	0	2	0	0
-skeleton_die	textures/animations/skeleton_die.png	0.13	64	64	0	2	0	0
+skeleton_move	textures/animations/skeleton_move.png	0.24	128	128	0	4	2	2
+skeleton_melee	textures/animations/skeleton_melee.png	0.1	128	128	0	2	0	0
+skeleton_die	textures/animations/skeleton_die.png	0.13	128	128	0	2	0	0
 spider_move	textures/animations/spider_move.png	0.06	64	64	0	4	2	2
 spider_melee	textures/animations/spider_melee.png	0.07	64	64	0	2	0	0
 spider_die	textures/animations/spider_die.png	0.13	64	64	0	2	0	0
