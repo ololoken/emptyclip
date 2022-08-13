@@ -397,9 +397,9 @@ void _Framework::LoadAssets() {
 
 	// Load assets
 	ae::Assets.LoadPrograms("tables/programs.tsv");
-	ae::Assets.LoadFonts("tables/fonts.tsv", false);
+	ae::Assets.LoadFonts("ui/fonts.tsv", false);
 	ae::Assets.LoadMeshDirectory("meshes/");
-	ae::Assets.LoadColors("tables/colors.tsv");
+	ae::Assets.LoadColors("ui/colors.tsv");
 	ae::Assets.LoadSoundPack("data/sounds");
 	GameAssets.LoadSounds("tables/sounds.tsv");
 	GameAssets.LoadSoundGroups("tables/sound_groups.tsv");
@@ -407,9 +407,9 @@ void _Framework::LoadAssets() {
 	GameAssets.LoadParticleGroups("tables/particle_groups.tsv");
 
 	ae::Assets.LoadAnimations("tables/animations.tsv");
-	ae::Assets.LoadStyles("tables/styles.tsv");
-	ae::Assets.LoadUI("tables/ui.xml");
-	//Assets.SaveUI("tables/ui_new.xml");
+	ae::Assets.LoadStyles("ui/styles.tsv");
+	ae::Assets.LoadUI("ui/elements.xml");
+	//Assets.SaveUI("tables/elements_new.xml");
 
-	ae::Assets.LoadFonts("tables/fonts.tsv");
+	ae::Assets.LoadFonts("ui/fonts.tsv");
 }

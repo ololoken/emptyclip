@@ -45,7 +45,6 @@ enum CollisionGridType {
 	GRID_PLAYER,
 	GRID_MONSTER,
 	GRID_ITEM,
-	GRID_PROJECTILE,
 	GRID_COUNT
 };
 
