@@ -1,4 +1,4 @@
-id	texture_id	reel_id	color	font	type	count	lifetime	direction min	direction max	turn speed min	turn speed max	velocity scale min	velocity scale max	acceleration scale	size min	size max	z deviation	scale aspect	alpha speed
+id	texture_id	reel_id	color	font	type	count	lifetime	direction_min	direction_max	turn_speed_min	turn_speed_max	velocity_scale_min	velocity_scale_max	acceleration_scale	size_min	size_max	z_deviation	scale_aspect	alpha_speed
 gun_fire0	textures/particles/bullet_fire0.png				1	1	0.02	0	0	0	0	0	0	0	0.2	0.2	0	1	0
 gun_fire1	textures/particles/bullet_fire0.png				1	1	0.02	0	0	0	0	0	0	0	0.35	0.35	0	1	0
 gun_smoke0	textures/particles/smoke0.png				0	2	3	0	359	-100	100	0	0.12	-0.2	0.1	0.3	0	1	-0.5

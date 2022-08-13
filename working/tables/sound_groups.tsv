@@ -1,4 +1,4 @@
-id	fire	explode	triggerdown	ricochet	empty	reload	hit	take damage	death	move
+id	fire	explode	triggerdown	ricochet	empty	reload	hit	take_damage	death	move
 player	player_swing0.ogg						player_punch0.ogg	player_hit0.ogg		player_move0.ogg
 knife	knife_fire0.ogg						knife_hit0.ogg			
 club	player_swing0.ogg						club_hit0.ogg			
