@@ -4,6 +4,7 @@ crate_ammo1	Ammo Crate II	crate_ammo1	meshes/box.mesh		crate	crate	crate_ammo1	5
 crate_health0	Health Crate	crate_health0	meshes/box.mesh		crate	crate	crate_health0	2	25	25	0	0	0	0	0	0	0	0	0.48	1	0	0	0	0	0	0	0	0
 crate_gun0	Gun Crate I	crate_gun0	meshes/box.mesh		crate	crate	crate_gun0	1	25	25	0	0	0	0	0	0	0	0	0.48	1	0	0	0	0	0	0	0	0
 crate_gun1	Gun Crate II	crate_gun1	meshes/box.mesh		crate	crate	crate_gun1	1	25	25	0	0	0	0	0	0	0	0	0.48	1	0	0	0	0	0	0	0	0
+crate_gun2	Gun Crate III	crate_gun2	meshes/box.mesh		crate	crate	crate_gun2	1	25	25	0	0	0	0	0	0	0	0	0.48	1	0	0	0	0	0	0	0	0
 crate_melee0	Melee Crate I	crate_melee0	meshes/box.mesh		crate	crate	crate_melee0	1	25	25	0	0	0	0	0	0	0	0	0.48	1	0	0	0	0	0	0	0	0
 crate_armor0	Armor Crate I	crate_armor0	meshes/box.mesh		crate	crate	crate_armor0	1	25	25	0	0	0	0	0	0	0	0	0.48	1	0	0	0	0	0	0	0	0
 crate_mod0	Mod Crate I	crate_mod0	meshes/box.mesh		crate	crate	crate_mod0	2	25	25	0	0	0	0	0	0	0	0	0.48	1	0	0	0	0	0	0	0	0
