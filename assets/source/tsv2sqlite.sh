@@ -20,10 +20,11 @@ file=${basename%%.*}
 
 # convert header to array
 IFS=$'\t' read -r -a fields <<< "$(head -n1 "$in")"
+unset IFS
 
 # build create table sql
-sql=$(printf ", %s TEXT PRIMARY KEY, %s TEXT" "${fields[0]}" "${fields[@]:1}")
-sql="CREATE TABLE ${file}(${sql:2})";
+sql="${fields[0]} TEXT PRIMARY KEY$(printf ", %s TEXT" "${fields[@]:1}")"
+sql="CREATE TABLE ${file}(${sql})";
 
 # create table and import data
 sqlite3 "$out" "$sql"

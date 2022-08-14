@@ -79,29 +79,28 @@ void _Stats::LoadStrings(const std::string &Path) {
 		std::string Text = Database->GetString("text");
 		Strings[ID] = Text;
 	}
+
 	Database->CloseQuery();
 }
 
 // Load level stats
 void _Stats::LoadLevels(const std::string &Path) {
 
-	// Open file
-	std::ifstream File(Path, std::ios::in);
-	if(!File)
-		throw std::runtime_error(std::string(__func__) + " error opening '" + Path + "'");
+	// Run query
+	Database->PrepareQuery("SELECT * FROM levels");
 
-	// Skip header
-	File.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-
-	// Read file
-	while(!File.eof() && File.peek() != EOF) {
+	// Get data
+	while(Database->FetchRow()) {
 		_Level Level;
 		Level.Level = (int)Levels.size() + 1;
-		File >> Level.Experience >> Level.HealthBonus >> Level.SkillPoints;
-		File.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+		Level.Experience = Database->GetInt64("experience");
+		Level.HealthBonus = Database->GetInt<int>("health");
+		Level.SkillPoints = Database->GetInt<int>("skill_points");
 
 		Levels.push_back(Level);
 	}
+
+	Database->CloseQuery();
 
 	// Calculate next level
 	for(size_t i = 1; i < Levels.size(); i++)
@@ -113,125 +112,113 @@ void _Stats::LoadLevels(const std::string &Path) {
 
 // Load skill stats
 void _Stats::LoadSkills(const std::string &Path) {
-	_Skill Skill;
 
-	// Load file
-	std::ifstream InputFile(Path, std::ios::in);
-	if(!InputFile)
-		throw std::runtime_error("LoadSkills: Cannot open " + Path);
+	// Run query
+	Database->PrepareQuery("SELECT * FROM skills");
 
-	Skills.clear();
-
-	// Load the data
-	InputFile.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-	for(int i = 0; i < GAME_SKILLLEVELS+1; i++) {
-		if(InputFile.eof())
-			throw std::runtime_error("Premature end of file" + Path);
-
-		for(int i = 0; i < SKILL_COUNT * 2; i++)
-			InputFile >> Skill.Data[i >> 1][i % 2];
-
+	// Get data
+	while(Database->FetchRow()) {
+		_Skill Skill;
+		Skill.Data[SKILL_STRENGTH][0] = Database->GetInt<int>("strength0");
+		Skill.Data[SKILL_STRENGTH][1] = Database->GetInt<int>("strength1");
+		Skill.Data[SKILL_DEXTERITY][0] = Database->GetInt<int>("dexterity0");
+		Skill.Data[SKILL_DEXTERITY][1] = Database->GetInt<int>("dexterity1");
+		Skill.Data[SKILL_FORTITUDE][0] = Database->GetInt<int>("fortitude0");
+		Skill.Data[SKILL_FORTITUDE][1] = Database->GetInt<int>("fortitude1");
+		Skill.Data[SKILL_VITALITY][0] = Database->GetInt<int>("vitality0");
+		Skill.Data[SKILL_VITALITY][1] = Database->GetInt<int>("vitality1");
+		Skill.Data[SKILL_AGILITY][0] = Database->GetInt<int>("agility0");
+		Skill.Data[SKILL_AGILITY][1] = Database->GetInt<int>("agility1");
+		Skill.Data[SKILL_CUNNING][0] = Database->GetInt<int>("cunning0");
+		Skill.Data[SKILL_CUNNING][1] = Database->GetInt<int>("cunning1");
+		Skill.Data[SKILL_ENDURANCE][0] = Database->GetInt<int>("endurance0");
+		Skill.Data[SKILL_ENDURANCE][1] = Database->GetInt<int>("endurance1");
+		Skill.Data[SKILL_PERCEPTION][0] = Database->GetInt<int>("perception0");
+		Skill.Data[SKILL_PERCEPTION][1] = Database->GetInt<int>("perception1");
+		Skill.Data[SKILL_LUCK][0] = Database->GetInt<int>("luck0");
+		Skill.Data[SKILL_LUCK][1] = Database->GetInt<int>("luck1");
 		Skills.push_back(Skill);
 	}
+
+	Database->CloseQuery();
 }
 
 // Load ammo stats
 void _Stats::LoadAmmo(const std::string &Path) {
 
-	// Load file
-	std::ifstream File(Path, std::ios::in);
-	if(!File)
-		throw std::runtime_error(std::string(__func__) + " error opening '" + Path + "'");
+	// Run query
+	Database->PrepareQuery("SELECT * FROM ammo");
 
-	// Skip header
-	File.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-
-	// Read file
-	while(!File.eof() && File.peek() != EOF) {
-
+	// Get data
+	while(Database->FetchRow()) {
 		_ObjectTemplate Template(_Object::AMMO);
-		std::getline(File, Template.ID, '\t');
-		std::getline(File, Template.Name, '\t');
-		std::getline(File, Template.IconID, '\t');
-
-		File >> Template.Attributes["amount"].Int >> Template.Attributes["amount_max"].Int;
-		File.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+		Template.ID = Database->GetString("id");
+		Template.Name = Database->GetString("name");
+		Template.IconID = Database->GetString("icon_id");
+		Template.Attributes["amount"].Int = Database->GetInt<int>("amount");
+		Template.Attributes["amount_max"].Int = Database->GetInt<int>("max");
 
 		// Check for loaded textures
 		if(!ae::Assets.Textures[Template.IconID])
 			throw std::runtime_error(std::string(__func__) + " unknown texture '" + Template.IconID + "'");
 
-		// Check for duplicates
-		if(Objects.find(Template.ID) != Objects.end())
-			throw std::runtime_error(std::string(__func__) + " duplicate id '" + Template.ID + "'");
-
 		Objects.insert(std::make_pair(Template.ID, Template));
 		AmmoNames.push_back(Template.ID);
 	}
 
-	File.close();
+	Database->CloseQuery();
 }
 
 // Load weapon stats
 void _Stats::LoadWeapons(const std::string &Path) {
 
-	// Load file
-	std::ifstream File(Path, std::ios::in);
-	if(!File)
-		throw std::runtime_error(std::string(__func__) + " error opening '" + Path + "'");
+	// Run query
+	Database->PrepareQuery("SELECT * FROM weapons");
 
-	// Skip header
-	File.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-
-	// Read file
-	while(!File.eof() && File.peek() != EOF) {
-
+	// Get data
+	while(Database->FetchRow()) {
 		_ObjectTemplate Template(_Object::WEAPON);
-		std::string SoundGroupID;
 		std::string WeaponParticlesID;
-		std::getline(File, Template.ID, '\t');
-		std::getline(File, Template.Name, '\t');
-		std::getline(File, Template.IconID, '\t');
-		std::getline(File, Template.MeleeID, '\t');
-		std::getline(File, SoundGroupID, '\t');
-		std::getline(File, WeaponParticlesID, '\t');
-		std::getline(File, Template.ProjectileID, '\t');
-		std::getline(File, Template.AmmoID, '\t');
+		Template.ID = Database->GetString("id");
+		Template.Name = Database->GetString("name");
+		Template.IconID = Database->GetString("icon_id");
+		Template.MeleeID = Database->GetString("melee_id");
+		Template.SoundGroupID = Database->GetString("soundgroup_id");
+		Template.ProjectileID = Database->GetString("projectile_id");
+		Template.AmmoID = Database->GetString("ammo_id");
+		WeaponParticlesID = Database->GetString("particlegroup_id");
 
-		File
-			>> Template.Attributes["weapon_type"].Int
-			>> Template.Attributes["damage"].Float
-			>> Template.Attributes["damage_level"].Float
-			>> Template.Attributes["damage_spread"].Float
-			>> Template.Attributes["zoom_scale"].Float
-			>> Template.Attributes["accuracy"].Float
-			>> Template.Attributes["accuracy_spread"].Float
-			>> Template.Attributes["recoil"].Float
-			>> Template.Attributes["recoil_regen"].Float
-			>> Template.Attributes["move_recoil"].Float
-			>> Template.Attributes["range"].Float
-			>> Template.Attributes["fire_rate"].Int
-			>> Template.Attributes["fire_period"].Double
-			>> Template.Attributes["burst_rounds"].Int
-			>> Template.Attributes["burst_period"].Double
-			>> Template.Attributes["reload_amount"].Int
-			>> Template.Attributes["reload_period"].Double
-			>> Template.Attributes["mods"].Float
-			>> Template.Attributes["mods_level"].Float
-			>> Template.Attributes["attack_count"].Int
-			>> Template.Attributes["rounds"].Int
-			>> Template.Attributes["penetration"].Int
-			>> Template.Attributes["penetration_damage"].Float
-			>> Template.Attributes["crit_chance"].Int
-			>> Template.Attributes["attack_movespeed"].Float
-			>> Template.Attributes["melee_width"].Float
-			>> Template.Attributes["scale_x"].Float
-			>> Template.Attributes["scale_y"].Float
-			>> Template.Attributes["projectile_speed"].Float
-			>> Template.Attributes["explosion_size"].Float
-			>> Template.Attributes["flash"].Int;
-
-		File.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+		Template.Attributes["weapon_type"].Int = Database->GetInt<int>("weapon_type");
+		Template.Attributes["damage"].Float = Database->GetReal("damage");
+		Template.Attributes["damage_level"].Float = Database->GetReal("damage_level");
+		Template.Attributes["damage_spread"].Float = Database->GetReal("damage_spread");
+		Template.Attributes["zoom_scale"].Float = Database->GetReal("zoom_scale");
+		Template.Attributes["accuracy"].Float = Database->GetReal("accuracy");
+		Template.Attributes["accuracy_spread"].Float = Database->GetReal("accuracy_spread");
+		Template.Attributes["recoil"].Float = Database->GetReal("recoil");
+		Template.Attributes["recoil_regen"].Float = Database->GetReal("recoil_regen");
+		Template.Attributes["move_recoil"].Float = Database->GetReal("move_recoil");
+		Template.Attributes["range"].Float = Database->GetReal("range");
+		Template.Attributes["fire_rate"].Int = Database->GetInt<int>("fire_rate");
+		Template.Attributes["fire_period"].Double = Database->GetReal("fire_period");
+		Template.Attributes["burst_rounds"].Int = Database->GetInt<int>("burst_rounds");
+		Template.Attributes["burst_period"].Double = Database->GetReal("burst_period");
+		Template.Attributes["reload_amount"].Int = Database->GetInt<int>("reload_amount");
+		Template.Attributes["reload_period"].Double = Database->GetReal("reload_period");
+		Template.Attributes["mods"].Float = Database->GetReal("mods");
+		Template.Attributes["mods_level"].Float = Database->GetReal("mods_level");
+		Template.Attributes["attack_count"].Int = Database->GetInt<int>("attack_count");
+		Template.Attributes["rounds"].Int = Database->GetInt<int>("rounds");
+		Template.Attributes["penetration"].Int = Database->GetInt<int>("penetration");
+		Template.Attributes["penetration_damage"].Float = Database->GetReal("penetration_damage");
+		Template.Attributes["crit_chance"].Int = Database->GetInt<int>("crit_chance");
+		Template.Attributes["attack_movespeed"].Float = Database->GetReal("attack_movespeed");
+		Template.Attributes["melee_width"].Float = Database->GetReal("melee_width");
+		Template.Attributes["scale_x"].Float = Database->GetReal("scale_x");
+		Template.Attributes["scale_y"].Float = Database->GetReal("scale_y");
+		Template.Attributes["projectile_speed"].Float = Database->GetReal("projectile_speed");
+		Template.Attributes["explosion_size"].Float = Database->GetReal("explosion_size");
+		Template.Attributes["flash"].Int = Database->GetInt<int>("flash");
 
 		// Check for loaded textures
 		if(Template.IconID != "" && !ae::Assets.Textures[Template.IconID])
@@ -246,12 +233,12 @@ void _Stats::LoadWeapons(const std::string &Path) {
 			throw std::runtime_error(std::string(__func__) + " unknown ammo '" + Template.AmmoID + "'");
 
 		// Check for attack sound
-		if(!SoundGroupID.empty()) {
-			if(GameAssets.SoundGroups.find(SoundGroupID) == GameAssets.SoundGroups.end())
-				throw std::runtime_error(std::string(__func__) + " unknown sound group '" + SoundGroupID + "'");
+		if(!Template.SoundGroupID.empty()) {
+			if(GameAssets.SoundGroups.find(Template.SoundGroupID) == GameAssets.SoundGroups.end())
+				throw std::runtime_error(std::string(__func__) + " unknown sound group '" + Template.SoundGroupID + "'");
 
 			// Set sound ids
-			_SoundGroup &SoundGroupTemplate = GameAssets.SoundGroups.at(SoundGroupID);
+			_SoundGroup &SoundGroupTemplate = GameAssets.SoundGroups.at(Template.SoundGroupID);
 			for(int i = 0; i < SOUND_COUNT; i++)
 				Template.SoundID[i] = SoundGroupTemplate.SoundID[i];
 		}
@@ -262,83 +249,58 @@ void _Stats::LoadWeapons(const std::string &Path) {
 		else
 			Template.ParticleGroup = &BlankWeaponParticle;
 
-		// Check for duplicates
-		if(Objects.find(Template.ID) != Objects.end())
-			throw std::runtime_error(std::string(__func__) + " duplicate id '" + Template.ID + "'");
-
 		Objects.insert(std::make_pair(Template.ID, Template));
 	}
 
-	File.close();
+	Database->CloseQuery();
 }
 
 // Load armor stats
 void _Stats::LoadArmor(const std::string &Path) {
 
-	// Load file
-	std::ifstream File(Path, std::ios::in);
-	if(!File)
-		throw std::runtime_error(std::string(__func__) + " error opening '" + Path + "'");
+	// Run query
+	Database->PrepareQuery("SELECT * FROM armor");
 
-	// Skip header
-	File.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-
-	// Read file
-	while(!File.eof() && File.peek() != EOF) {
-
+	// Get data
+	while(Database->FetchRow()) {
 		_ObjectTemplate Template(_Object::ARMOR);
-		std::getline(File, Template.ID, '\t');
-		std::getline(File, Template.Name, '\t');
-		std::getline(File, Template.IconID, '\t');
-
-		File
-			>> Template.Attributes["damage_block"].Float
-			>> Template.Attributes["damage_block_level"].Float
-			>> Template.Attributes["damage_resist"].Float
-			>> Template.Attributes["damage_resist_level"].Float
-			>> Template.Attributes["max_ammo"].Float
-			>> Template.Attributes["max_ammo_level"].Float
-			>> Template.Attributes["move_speed"].Float
-			>> Template.Attributes["move_speed_level"].Float
-			>> Template.Attributes["mods"].Float
-			>> Template.Attributes["mods_level"].Float;
-
-		File.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+		Template.ID = Database->GetString("id");
+		Template.Name = Database->GetString("name");
+		Template.IconID = Database->GetString("icon_id");
+		Template.Attributes["damage_block"].Float = Database->GetReal("damage_block");
+		Template.Attributes["damage_block_level"].Float = Database->GetReal("damage_block_level");
+		Template.Attributes["damage_resist"].Float = Database->GetReal("damage_resist");
+		Template.Attributes["damage_resist_level"].Float = Database->GetReal("damage_resist_level");
+		Template.Attributes["max_ammo"].Float = Database->GetReal("max_ammo");
+		Template.Attributes["max_ammo_level"].Float = Database->GetReal("max_ammo_level");
+		Template.Attributes["move_speed"].Float = Database->GetReal("move_speed");
+		Template.Attributes["move_speed_level"].Float = Database->GetReal("move_speed_level");
+		Template.Attributes["mods"].Float = Database->GetReal("mods");
+		Template.Attributes["mods_level"].Float = Database->GetReal("mods_level");
 
 		// Check for loaded textures
 		if(!ae::Assets.Textures[Template.IconID])
 			throw std::runtime_error(std::string(__func__) + " unknown texture '" + Template.IconID + "'");
 
-		// Check for duplicates
-		if(Objects.find(Template.ID) != Objects.end())
-			throw std::runtime_error(std::string(__func__) + " duplicate id '" + Template.ID + "'");
-
 		Objects.insert(std::make_pair(Template.ID, Template));
 	}
 
-	File.close();
+	Database->CloseQuery();
 }
 
 // Load key stats
 void _Stats::LoadKeys(const std::string &Path) {
 
-	// Load file
-	std::ifstream File(Path, std::ios::in);
-	if(!File)
-		throw std::runtime_error(std::string(__func__) + " error opening '" + Path + "'");
+	// Run query
+	Database->PrepareQuery("SELECT * FROM keys");
 
-	// Skip header
-	File.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-
-	// Read file
-	while(!File.eof() && File.peek() != EOF) {
-
+	// Get data
+	while(Database->FetchRow()) {
 		_ObjectTemplate Template(_Object::KEY);
-		std::string DoorColorID;
-		std::getline(File, Template.ID, '\t');
-		std::getline(File, Template.Name, '\t');
-		std::getline(File, Template.IconID, '\t');
-		std::getline(File, DoorColorID, '\n');
+		Template.ID = Database->GetString("id");
+		Template.Name = Database->GetString("name");
+		Template.IconID = Database->GetString("icon_id");
+		std::string DoorColorID = Database->GetString("doorcolor_id");
 
 		// Check for loaded textures
 		if(!ae::Assets.Textures[Template.IconID])
@@ -347,93 +309,64 @@ void _Stats::LoadKeys(const std::string &Path) {
 		// Set color
 		SetColor(Template.DoorColor, DoorColorID);
 
-		// Check for duplicates
-		if(Objects.find(Template.ID) != Objects.end())
-			throw std::runtime_error(std::string(__func__) + " duplicate id '" + Template.ID + "'");
-
 		Objects.insert(std::make_pair(Template.ID, Template));
 	}
 
-	File.close();
+	Database->CloseQuery();
 }
 
 // Load medkit stats
 void _Stats::LoadMedkits(const std::string &Path) {
 
-	// Load file
-	std::ifstream File(Path, std::ios::in);
-	if(!File)
-		throw std::runtime_error(std::string(__func__) + " error opening '" + Path + "'");
+	// Run query
+	Database->PrepareQuery("SELECT * FROM medkits");
 
-	// Skip header
-	File.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-
-	// Read file
-	while(!File.eof() && File.peek() != EOF) {
-
+	// Get data
+	while(Database->FetchRow()) {
 		_ObjectTemplate Template(_Object::MEDKIT);
-		std::string ID;
-		std::getline(File, ID, '\t');
-		std::getline(File, Template.Name, '\t');
-		std::getline(File, Template.IconID, '\n');
+		Template.ID = Database->GetString("id");
+		Template.Name = Database->GetString("name");
+		Template.IconID = Database->GetString("icon_id");
 
 		// Check for loaded textures
 		if(!ae::Assets.Textures[Template.IconID])
 			throw std::runtime_error(std::string(__func__) + " unknown texture '" + Template.IconID + "'");
 
-		// Check for duplicates
-		if(Objects.find(ID) != Objects.end())
-			throw std::runtime_error(std::string(__func__) + " duplicate id '" + ID + "'");
-
-		Objects.insert(std::make_pair(ID, Template));
+		Objects.insert(std::make_pair(Template.ID, Template));
 	}
 
-	File.close();
+	Database->CloseQuery();
 }
 
 // Load mod stats
 void _Stats::LoadMods(const std::string &Path) {
 	ModNames.push_back("");
 
-	// Load file
-	std::ifstream File(Path, std::ios::in);
-	if(!File)
-		throw std::runtime_error(std::string(__func__) + " error opening '" + Path + "'");
+	// Run query
+	Database->PrepareQuery("SELECT * FROM mods");
 
-	// Skip header
-	File.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-
-	// Read file
-	while(!File.eof() && File.peek() != EOF) {
-
+	// Get data
+	while(Database->FetchRow()) {
 		_ObjectTemplate Template(_Object::MOD);
-		std::getline(File, Template.ID, '\t');
-		std::getline(File, Template.Name, '\t');
-		std::getline(File, Template.IconID, '\t');
-
-		File
-			>> Template.Attributes["mod_type"].Int
-			>> Template.Attributes["object_type"].Int
-			>> Template.Attributes["weapon_type"].Int
-			>> Template.Attributes["bonus"].Float
-			>> Template.Attributes["bonus_level"].Float
-			>> Template.Attributes["percent_sign"].Int;
-
-		File.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+		Template.ID = Database->GetString("id");
+		Template.Name = Database->GetString("name");
+		Template.IconID = Database->GetString("icon_id");
+		Template.Attributes["mod_type"].Int = Database->GetInt<int>("mod_type");
+		Template.Attributes["object_type"].Int = Database->GetInt<int>("object_type");
+		Template.Attributes["weapon_type"].Int = Database->GetInt<int>("weapon_type");
+		Template.Attributes["bonus"].Float = Database->GetReal("bonus");
+		Template.Attributes["bonus_level"].Float = Database->GetReal("bonus_level");
+		Template.Attributes["percent_sign"].Int = Database->GetInt<int>("percent_sign");
 
 		// Check for loaded textures
 		if(!ae::Assets.Textures[Template.IconID])
 			throw std::runtime_error(std::string(__func__) + " unknown texture '" + Template.IconID + "'");
 
-		// Check for duplicates
-		if(Objects.find(Template.ID) != Objects.end())
-			throw std::runtime_error(std::string(__func__) + " duplicate id '" + Template.ID + "'");
-
 		Objects.insert(std::make_pair(Template.ID, Template));
 		ModNames.push_back(Template.ID);
 	}
 
-	File.close();
+	Database->CloseQuery();
 }
 
 // Load item drops
@@ -509,60 +442,47 @@ void _Stats::LoadItemDrops(const std::string &Path) {
 // Load monsters
 void _Stats::LoadMonsters(const std::string &Path) {
 
-	// Load file
-	std::ifstream File(Path, std::ios::in);
-	if(!File)
-		throw std::runtime_error(std::string(__func__) + " error opening '" + Path + "'");
+	// Run query
+	Database->PrepareQuery("SELECT * FROM monsters");
 
-	// Skip header
-	File.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-
-	// Read file
-	while(!File.eof() && File.peek() != EOF) {
-
-		_ObjectTemplate Template(_Object::MONSTER);
+	// Get data
+	while(Database->FetchRow()) {
 		std::string WeaponParticlesID;
-		std::string ColorID;
-		std::getline(File, Template.ID, '\t');
-		std::getline(File, Template.Name, '\t');
-		std::getline(File, Template.AnimationID, '\t');
-		std::getline(File, Template.MeshID, '\t');
-		std::getline(File, ColorID, '\t');
-		std::getline(File, WeaponParticlesID, '\t');
-		std::getline(File, Template.SoundGroupID, '\t');
-		std::getline(File, Template.ItemDropID, '\t');
+		_ObjectTemplate Template(_Object::MONSTER);
+		Template.ID = Database->GetString("id");
+		Template.Name = Database->GetString("name");
+		Template.AnimationID = Database->GetString("animation_id");
+		Template.MeshID = Database->GetString("mesh_id");
+		SetColor(Template.Color, Database->GetString("color_id"));
+		WeaponParticlesID = Database->GetString("particlegroup_id");
+		Template.SoundGroupID = Database->GetString("soundgroup_id");
+		Template.ItemDropID = Database->GetString("itemdrop_id");
 
-		File
-			>> Template.Attributes["drop_count"].Int
-			>> Template.Attributes["health"].Float
-			>> Template.Attributes["health_level"].Float
-			>> Template.Attributes["ai_type"].Int
-			>> Template.Attributes["ai_attacks"].Int
-			>> Template.Attributes["view_range"].Float
-			>> Template.Attributes["xp"].Float
-			>> Template.Attributes["xp_level"].Float
-			>> Template.Attributes["freepathing"].Int
-			>> Template.Attributes["move_speed"].Float
-			>> Template.Attributes["move_speed_level"].Float
-			>> Template.Attributes["radius"].Float
-			>> Template.Attributes["scale"].Float
-			>> Template.Attributes["accuracy"].Int
-			>> Template.Attributes["attack_range"].Float
-			>> Template.Attributes["damage"].Float
-			>> Template.Attributes["damage_level"].Float
-			>> Template.Attributes["damage_spread"].Float
-			>> Template.Attributes["attack_period"].Double
-			>> Template.Attributes["weapon_type"].Int
-			>> Template.Attributes["attack_movespeed"].Float;
-
-		File.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+		Template.Attributes["drop_count"].Int = Database->GetInt<int>("drop_count");
+		Template.Attributes["health"].Float = Database->GetReal("health");
+		Template.Attributes["health_level"].Float = Database->GetReal("health_level");
+		Template.Attributes["ai_type"].Int = Database->GetInt<int>("ai_type");
+		Template.Attributes["ai_attacks"].Int = Database->GetInt<int>("ai_attacks");
+		Template.Attributes["view_range"].Float = Database->GetReal("view_range");
+		Template.Attributes["xp"].Float = Database->GetReal("xp");
+		Template.Attributes["xp_level"].Float = Database->GetReal("xp_level");
+		Template.Attributes["freepathing"].Int = Database->GetInt<int>("freepathing");
+		Template.Attributes["move_speed"].Float = Database->GetReal("move_speed");
+		Template.Attributes["move_speed_level"].Float = Database->GetReal("move_speed_level");
+		Template.Attributes["radius"].Float = Database->GetReal("radius");
+		Template.Attributes["scale"].Float = Database->GetReal("scale");
+		Template.Attributes["accuracy"].Int = Database->GetInt<int>("accuracy");
+		Template.Attributes["attack_range"].Float = Database->GetReal("attack_range");
+		Template.Attributes["damage"].Float = Database->GetReal("damage");
+		Template.Attributes["damage_level"].Float = Database->GetReal("damage_level");
+		Template.Attributes["damage_spread"].Float = Database->GetReal("damage_spread");
+		Template.Attributes["attack_period"].Double = Database->GetReal("attack_period");
+		Template.Attributes["weapon_type"].Int = Database->GetInt<int>("weapon_type");
+		Template.Attributes["attack_movespeed"].Float = Database->GetReal("attack_movespeed");
 
 		// Check for animation
 		if(ae::Assets.Animations.find(Template.AnimationID) == ae::Assets.Animations.end())
 			throw std::runtime_error(std::string(__func__) + " unknown animation_id '" + Template.AnimationID + "' for '" + Template.ID + "'");
-
-		// Set color
-		SetColor(Template.Color, ColorID);
 
 		// Set particles
 		if(GameAssets.ParticleGroups.find(WeaponParticlesID) != GameAssets.ParticleGroups.end())
@@ -582,42 +502,28 @@ void _Stats::LoadMonsters(const std::string &Path) {
 		if(Template.MeshID != "" && ae::Assets.Meshes.find(Template.MeshID) == ae::Assets.Meshes.end())
 			throw std::runtime_error(std::string(__func__) + " unknown mesh_id '" + Template.MeshID + "' for '" + Template.ID + "'");
 
-		// Check for duplicates
-		if(Stats.Objects.find(Template.ID) != Stats.Objects.end())
-			throw std::runtime_error(std::string(__func__) + " duplicate id '" + Template.ID + "'");
-
 		Objects.insert(std::make_pair(Template.ID, Template));
 	}
 
-	File.close();
+	Database->CloseQuery();
 }
 
 // Load 3d props
 void _Stats::LoadProps(const std::string &Path) {
 
-	// Load file
-	std::ifstream File(Path, std::ios::in);
-	if(!File)
-		throw std::runtime_error(std::string(__func__) + " error opening '" + Path + "'");
+	// Run query
+	Database->PrepareQuery("SELECT * FROM props");
 
-	// Skip header
-	File.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-
-	// Read file
-	while(!File.eof() && File.peek() != EOF) {
-
+	// Get data
+	while(Database->FetchRow()) {
 		_ObjectTemplate Template(_Object::PROP);
-		std::getline(File, Template.ID, '\t');
-		std::getline(File, Template.Name, '\t');
-		std::getline(File, Template.IconID, '\t');
-		std::getline(File, Template.MeshID, '\t');
-
-		File
-			>> Template.Attributes["halfsize_x"].Float
-			>> Template.Attributes["halfsize_y"].Float
-			>> Template.Attributes["scale"].Float;
-
-		File.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+		Template.ID = Database->GetString("id");
+		Template.Name = Database->GetString("name");
+		Template.IconID = Database->GetString("texture_id");
+		Template.MeshID = Database->GetString("mesh_id");
+		Template.Attributes["halfsize_x"].Float = Database->GetReal("halfsize_x");
+		Template.Attributes["halfsize_y"].Float = Database->GetReal("halfsize_y");
+		Template.Attributes["scale"].Float = Database->GetReal("scale");
 
 		// Check for loaded textures
 		if(!ae::Assets.Textures[Template.IconID])
@@ -627,43 +533,29 @@ void _Stats::LoadProps(const std::string &Path) {
 		if(!ae::Assets.Meshes[Template.MeshID])
 			throw std::runtime_error(std::string(__func__) + " unknown mesh '" + Template.MeshID + "'");
 
-		// Check for duplicates
-		if(Objects.find(Template.ID) != Objects.end())
-			throw std::runtime_error(std::string(__func__) + " duplicate id '" + Template.ID + "'");
-
 		Objects.insert(std::make_pair(Template.ID, Template));
 	}
 
-	File.close();
+	Database->CloseQuery();
 }
 
 // Load projectiles
 void _Stats::LoadProjectiles(const std::string &Path) {
 
-	// Load file
-	std::ifstream File(Path, std::ios::in);
-	if(!File)
-		throw std::runtime_error(std::string(__func__) + " error opening '" + Path + "'");
+	// Run query
+	Database->PrepareQuery("SELECT * FROM projectiles");
 
-	// Skip header
-	File.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-
-	// Read file
-	while(!File.eof() && File.peek() != EOF) {
-
+	// Get data
+	while(Database->FetchRow()) {
 		_ObjectTemplate Template(_Object::PROJECTILE);
 		std::string SoundGroupID;
 		std::string ParticleID;
-		std::getline(File, Template.ID, '\t');
-		std::getline(File, Template.IconID, '\t');
-		std::getline(File, SoundGroupID, '\t');
-		std::getline(File, ParticleID, '\t');
-
-		File
-			>> Template.Attributes["radius"].Float
-			>> Template.Attributes["scale"].Float;
-
-		File.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+		Template.ID = Database->GetString("id");
+		Template.IconID = Database->GetString("icon_id");
+		SoundGroupID = Database->GetString("soundgroup_id");
+		ParticleID = Database->GetString("particle_id");
+		Template.Attributes["radius"].Float = Database->GetReal("radius");
+		Template.Attributes["scale"].Float = Database->GetReal("scale");
 
 		// Check for loaded textures
 		if(!ae::Assets.Textures[Template.IconID])
@@ -687,14 +579,10 @@ void _Stats::LoadProjectiles(const std::string &Path) {
 			Template.ParticleTemplate = &GameAssets.Particles.at(ParticleID);
 		}
 
-		// Check for duplicates
-		if(Objects.find(Template.ID) != Objects.end())
-			throw std::runtime_error(std::string(__func__) + " duplicate id '" + Template.ID + "'");
-
 		Objects.insert(std::make_pair(Template.ID, Template));
 	}
 
-	File.close();
+	Database->CloseQuery();
 }
 
 // Create item
