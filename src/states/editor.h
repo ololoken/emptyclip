@@ -180,7 +180,7 @@ class _EditorState : public ae::_State {
 		std::string GetEventID(int Type);
 		glm::vec2 GetValidObjectPosition(const glm::vec2 &Position) const;
 		bool ObjectInSelectedList(_ObjectSpawn *Object);
-		glm::vec2 AlignToGrid(const glm::vec2 &Position) const;
+		glm::vec2 AlignToGrid(const glm::vec2 &Position) const { return glm::vec2((int)Position.x + 0.5f, (int)Position.y + 0.5f); }
 
 		glm::vec2 GetMoveDeltaPosition(const glm::vec2 &Position);
 

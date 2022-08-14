@@ -2431,11 +2431,6 @@ void _EditorState::SelectObjects() {
 	Map->GetSelectedObjects(ClickedPosition, WorldCursor, &SelectedObjects, EditMode == EDITMODE_MONSTERS);
 }
 
-// Aligns an object to the grid
-glm::vec2 _EditorState::AlignToGrid(const glm::vec2 &Position) const {
-	return glm::vec2((int)Position.x + 0.5f, (int)Position.y + 0.5f);
-}
-
 // Get tentative position
 glm::vec2 _EditorState::GetMoveDeltaPosition(const glm::vec2 &Position) {
 	glm::vec2 NewPosition;
