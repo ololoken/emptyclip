@@ -105,7 +105,7 @@ void _Monster::Update(double FrameTime) {
 		else if(Goal == GOAL_PURSUE) {
 
 			// Check if player is visible
-			PlayerVisible = CanFreePath() ? true : Map->CanMoveTo(Position, Player->Position, glm::vec2(Radius, Radius) * 0.3f);
+			PlayerVisible = (AIType == AI_GHOST) ? true : Map->CanMoveTo(Position, Player->Position, glm::vec2(Radius, Radius) * 0.3f);
 			if(PlayerVisible) {
 				ReactionTimer -= FrameTime;
 				if(ReactionTimer <= 0) {

@@ -83,6 +83,7 @@ enum AITypes {
 	AI_BOSS,
 	AI_BASIC,
 	AI_HITANDRUN,
+	AI_GHOST,
 	AI_COUNT
 };
 
