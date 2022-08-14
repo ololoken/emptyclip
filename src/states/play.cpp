@@ -962,9 +962,14 @@ void _PlayState::ResolveAttack(_Entity *Attacker, int GridType) {
 	if(!Attacker->WeaponHasAmmo(Attacker->AttackRequestType))
 		return;
 
+	int RoundsShot = 1;
+	if(Attacker->FireAllRounds[Attacker->AttackRequestType]) {
+		RoundsShot = Attacker->GetWeaponAmmo();
+	}
+
 	// Reduce ammo
 	if(!GodMode)
-		Attacker->ReduceAmmo(1);
+		Attacker->ReduceAmmo(RoundsShot);
 
 	// Weapon type specific code
 	int WeaponType = WEAPON_MELEE;
@@ -992,7 +997,8 @@ void _PlayState::ResolveAttack(_Entity *Attacker, int GridType) {
 	std::unordered_map<_Object *, int> DecalObjects;
 	std::vector<_Hit> Hits;
 	Hits.reserve(Attacker->Penetration[Attacker->AttackRequestType]);
-	for(int i = 0; i < Attacker->AttackCount[Attacker->AttackRequestType]; i++) {
+	int AttackCount = RoundsShot * Attacker->AttackCount[Attacker->AttackRequestType];
+	for(int i = 0; i < AttackCount; i++) {
 		Hits.clear();
 
 		// Check if gun was at min accuracy

@@ -55,6 +55,7 @@ class _Entity : public _Object {
 		virtual bool CanAttack(int AttackType) const { return CheckAttackTimer(AttackType) && !IsMeleeAttacking() && !IsDying() && MainWeaponType != WEAPON_NONE; }
 		virtual int ReduceAmmo(int Amount) { return Amount; }
 		virtual bool WeaponHasAmmo(int AttackType) const { return true; }
+		virtual int GetWeaponAmmo() const { return 0; }
 
 		virtual void UpdateExperience(int64_t ExperienceGained) {}
 		virtual void UpdateKillCount(int Value) {}
@@ -132,6 +133,7 @@ class _Entity : public _Object {
 		float PenetrationDamage[WEAPONATTACK_COUNT]{0.0f};
 		float AttackMoveSpeed[WEAPONATTACK_COUNT]{0.0f};
 		int AttackCount[WEAPONATTACK_COUNT]{1, 1};
+		int FireAllRounds[WEAPONATTACK_COUNT]{0, 0};
 		int CritChance[WEAPONATTACK_COUNT]{0};
 		int CritDamage[WEAPONATTACK_COUNT]{100, 100};
 		int BurstRounds[WEAPONATTACK_COUNT]{0};

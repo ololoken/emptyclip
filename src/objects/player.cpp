@@ -239,6 +239,7 @@ void _Player::RecalculateStats() {
 		Penetration[i] = Weapon[i].Attributes["penetration"].Int;
 		PenetrationDamage[i] = Weapon[i].Attributes["penetration_damage"].Float;
 		AttackCount[i] = Weapon[i].Attributes["attack_count"].Int;
+		FireAllRounds[i] = Weapon[i].Attributes["fire_allrounds"].Int;
 		CritChance[i] = Weapon[i].Attributes["crit_chance"].Int;
 		CritDamage[i] = PLAYER_CRIT_DAMAGE + Stats.GetSkill(Skills[SKILL_PERCEPTION], SKILL_PERCEPTION, 1);
 		BurstRounds[i] = Weapon[i].Attributes["burst_rounds"].Int;
@@ -864,6 +865,14 @@ bool _Player::WeaponHasAmmo(int AttackType) const {
 	}
 
 	return false;
+}
+
+// Get number of rounds in main weapon
+int _Player::GetWeaponAmmo() const {
+	if(!HasMainHand())
+		return 0;
+
+	return GetMainHand()->Attributes.at("ammo").Int;
 }
 
 // Checks if the player has ammo for the main weapon

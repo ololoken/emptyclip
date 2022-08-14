@@ -94,6 +94,7 @@ class _Player : public _Entity {
 		void ConsumeInventory(int Index, bool Delete=true);
 		int ReduceAmmo(int Amount) override;
 		bool WeaponHasAmmo(int AttackType) const override;
+		int GetWeaponAmmo() const override;
 		bool HasAmmoForMain() const;
 		bool HasMainHand() const { return GetMainHand() != nullptr; }
 		bool HasOffHand() const { return GetOffHand() != nullptr; }

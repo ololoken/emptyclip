@@ -199,6 +199,7 @@ void _Stats::LoadWeapons(const std::string &Path) {
 		Template.Attributes["range"].Float = Database->GetReal("range");
 		Template.Attributes["fire_rate"].Int = Database->GetInt<int>("fire_rate");
 		Template.Attributes["fire_period"].Double = Database->GetReal("fire_period");
+		Template.Attributes["fire_allrounds"].Int = Database->GetInt<int>("fire_allrounds");
 		Template.Attributes["burst_rounds"].Int = Database->GetInt<int>("burst_rounds");
 		Template.Attributes["burst_period"].Double = Database->GetReal("burst_period");
 		Template.Attributes["reload_amount"].Int = Database->GetInt<int>("reload_amount");
@@ -605,6 +606,7 @@ _Item *_Stats::CreateItem(const std::string &ID, int Level, int Quality, int Cou
 			Item->Attributes["attack_width"].Float = Template.Attributes["melee_width"].Float;
 			Item->Attributes["scale_x"].Float = Template.Attributes["scale_x"].Float;
 			Item->Attributes["scale_y"].Float = Template.Attributes["scale_y"].Float;
+			Item->Attributes["fire_allrounds"].Int = Template.Attributes["fire_allrounds"].Int;
 			Item->SetMaxMods(RandomStats);
 		} break;
 		case _Object::ARMOR:
