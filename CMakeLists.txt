@@ -21,8 +21,8 @@ if(WIN32)
 endif()
 
 # enable editor
-if("$ENV{DISABLE_EDITOR}")
-	add_definitions("-DDISABLE_EDITOR")
+if("$ENV{ENABLE_EDITOR}")
+	add_definitions("-DENABLE_EDITOR")
 endif()
 
 # three level demo mode

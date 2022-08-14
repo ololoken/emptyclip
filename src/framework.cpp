@@ -70,7 +70,7 @@ void _Framework::Init(int ArgumentCount, char **Arguments) {
 			Fullscreen = false;
 		}
 		else if(Token == "-editor") {
-			#ifndef DISABLE_EDITOR
+			#ifdef ENABLE_EDITOR
 				State = &EditorState;
 				if(TokensRemaining && Arguments[i+1][0] != '-')
 					EditorState.SetMapFilename(Arguments[++i]);
