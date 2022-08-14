@@ -25,8 +25,6 @@
 #include <gameassets.h>
 #include <constants.h>
 #include <map.h>
-#include <fstream>
-#include <sstream>
 #include <stdexcept>
 
 _Stats Stats;
@@ -372,44 +370,38 @@ void _Stats::LoadMods(const std::string &Path) {
 // Load item drops
 void _Stats::LoadItemDrops(const std::string &Path) {
 
-	// Load file
-	std::ifstream File(Path, std::ios::in);
-	if(!File)
-		throw std::runtime_error(std::string(__func__) + " error opening '" + Path + "'");
-
-	// Skip first field
-	File.ignore(std::numeric_limits<std::streamsize>::max(), '\t');
-
-	// Read rest of line into buffer
-	std::string Line;
-	std::getline(File, Line, '\n');
-	std::stringstream Buffer(Line);
-
 	// Get item drop names first
-	int Drops = 0;
-	std::vector<std::string> ItemDropNames;
-	std::string DropName;
-	while(std::getline(Buffer, DropName, '\t')) {
-		if(DropName.empty())
-			continue;
+	Database->PrepareQuery("PRAGMA table_info(itemdrops)");
 
-		ItemDropNames.push_back(DropName);
+	// Skip first column
+	Database->FetchRow();
 
-		auto ItemDropIterator = ItemDrops.find(DropName);
-		if(ItemDropIterator == ItemDrops.end()) {
-			_ItemDrop ItemDrop;
-			ItemDrop.OddsSum = 0;
-			ItemDrops[DropName] = ItemDrop;
-		}
+	// Get data
+	size_t Drops = 0;
+	std::vector<std::string> ItemDropIDs;
+	while(Database->FetchRow()) {
+		std::string ItemDropID = Database->GetString(1);
+		ItemDropIDs.push_back(ItemDropID);
+
+		auto ItemDropIterator = ItemDrops.find(ItemDropID);
+		if(ItemDropIterator != ItemDrops.end())
+			throw std::runtime_error(std::string(__func__) + " duplicate itemdrop_id '" + ItemDropID + "' in " + Path);
+
+		_ItemDrop ItemDrop;
+		ItemDrop.OddsSum = 0;
+		ItemDrops[ItemDropID] = ItemDrop;
 
 		Drops++;
 	}
+	Database->CloseQuery();
 
-	// Read rest of data
-	while(!File.eof() && File.peek() != EOF) {
+	// Run query
+	Database->PrepareQuery("SELECT * FROM itemdrops");
 
+	// Get data
+	while(Database->FetchRow()) {
 		_ItemDropEntry ItemDropEntry;
-		std::getline(File, ItemDropEntry.ItemID, '\t');
+		ItemDropEntry.ItemID = Database->GetString("id");
 
 		// Check for object
 		if(ItemDropEntry.ItemID == "none") {
@@ -423,20 +415,18 @@ void _Stats::LoadItemDrops(const std::string &Path) {
 		}
 
 		// Add counts to item drops
-		for(int i = 0; i < Drops; i++) {
-			File >> ItemDropEntry.Odds;
+		for(size_t i = 0; i < Drops; i++) {
+			ItemDropEntry.Odds = Database->GetInt<int>((int)(i + 1));
 			if(ItemDropEntry.Odds <= 0)
 				continue;
 
-			ItemDrops[ItemDropNames[i]].OddsSum += ItemDropEntry.Odds;
-			ItemDropEntry.Odds = ItemDrops[ItemDropNames[i]].OddsSum;
-			ItemDrops[ItemDropNames[i]].Entries.push_back(ItemDropEntry);
+			ItemDrops[ItemDropIDs[i]].OddsSum += ItemDropEntry.Odds;
+			ItemDropEntry.Odds = ItemDrops[ItemDropIDs[i]].OddsSum;
+			ItemDrops[ItemDropIDs[i]].Entries.push_back(ItemDropEntry);
 		}
-
-		File.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 	}
 
-	File.close();
+	Database->CloseQuery();
 }
 
 // Load monsters
