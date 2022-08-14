@@ -1,10 +1,12 @@
 id	texture	frame_period	frame_width	frame_height	start_frame	end_frame	default_frame	repeat_type
 crate_ammo0	textures/animations/crate_ammo0.png	0.05	64	64	0	0	0	0
 crate_ammo1	textures/animations/crate_ammo1.png	0.05	64	64	0	0	0	0
+crate_ammo2	textures/animations/crate_ammo2.png	0.05	64	64	0	0	0	0
 crate_health0	textures/animations/crate_health0.png	0.05	64	64	0	0	0	0
 crate_gun0	textures/animations/crate_gun0.png	0.05	64	64	0	0	0	0
 crate_gun1	textures/animations/crate_gun1.png	0.05	64	64	0	0	0	0
 crate_gun2	textures/animations/crate_gun2.png	0.05	64	64	0	0	0	0
+crate_gun3	textures/animations/crate_gun3.png	0.05	64	64	0	0	0	0
 crate_melee0	textures/animations/crate_melee0.png	0.05	64	64	0	0	0	0
 crate_armor0	textures/animations/crate_armor0.png	0.05	64	64	0	0	0	0
 crate_mod0	textures/animations/crate_mod0.png	0.05	64	64	0	0	0	0

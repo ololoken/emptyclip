@@ -1,40 +1,41 @@
-id	crate_ammo0	crate_ammo1	crate_health0	crate_gun0	crate_gun1	crate_gun2	crate_melee0	crate_armor0	crate_mod0	crate_mod1	monster_small	monster_medium	monster_large	boss
-none	0	0	0	0	0	0	0	0	0	0	100	100	100	0
-key_boss	0	0	0	0	0	0	0	0	0	0	0	0	0	1
-ammo_pistol	1	0	0	0	0	0	0	0	0	0	12	12	0	0
-ammo_magnum	0	1	0	0	0	0	0	0	0	0	0	12	15	0
-ammo_shells	1	0	0	0	0	0	0	0	0	0	12	12	0	0
-ammo_rifle	1	0	0	0	0	0	0	0	0	0	12	12	15	0
-ammo_heavy	0	1	0	0	0	0	0	0	0	0	0	0	15	0
-ammo_plasma	0	1	0	0	0	0	0	0	0	0	0	6	15	0
-ammo_rocket	0	0	0	0	0	0	0	0	0	0	0	0	5	0
-ammo_bolt	0	1	0	0	0	0	0	0	0	0	0	6	6	0
-medkit	0	0	1	0	0	0	0	0	0	0	25	25	25	0
-weapon_knife	0	0	0	0	0	0	1	0	0	0	1	1	0	0
-weapon_spear	0	0	0	0	0	0	1	0	0	0	1	1	1	0
-weapon_pistol	0	0	0	1	0	0	0	0	0	0	1	1	0	0
-weapon_revolver	0	0	0	0	1	0	0	0	0	0	0	1	0	0
-weapon_shotgun	0	0	0	1	0	0	0	0	0	0	1	1	1	0
-weapon_boltrifle	0	0	0	1	0	0	0	0	0	0	1	1	1	0
-weapon_assaultrifle	0	0	0	0	0	0	0	0	0	0	0	0	1	0
-weapon_tacticalrifle	0	0	0	0	1	0	0	0	0	0	0	0	1	0
-weapon_minigun	0	0	0	0	0	1	0	0	0	0	0	0	1	0
-weapon_plasmarifle	0	0	0	0	0	1	0	0	0	0	0	0	1	0
-weapon_rocketlauncher	0	0	0	0	0	1	0	0	0	0	0	0	0	0
-weapon_crossbow	0	0	0	0	0	1	0	0	0	0	0	0	0	0
-weapon_carbine	0	0	0	0	1	0	0	0	0	0	0	0	0	0
-armor_light	0	0	0	0	0	0	0	1	0	0	1	1	1	0
-armor_medium	0	0	0	0	0	0	0	1	0	0	1	1	1	0
-armor_heavy	0	0	0	0	0	0	0	1	0	0	1	1	1	0
-mod_maxrounds	0	0	0	0	0	0	0	0	1	0	1	1	1	0
-mod_damage	0	0	0	0	0	0	0	0	1	0	1	1	1	0
-mod_accuracy	0	0	0	0	0	0	0	0	1	0	1	1	1	0
-mod_attackspeed	0	0	0	0	0	0	0	0	1	0	1	1	1	0
-mod_reloadspeed	0	0	0	0	0	0	0	0	1	0	1	1	1	0
-mod_reloadamount	0	0	0	0	0	0	0	0	0	1	0	0	1	0
-mod_penetration	0	0	0	0	0	0	0	0	0	1	0	0	1	0
-mod_handling	0	0	0	0	0	0	0	0	1	0	1	1	1	0
-mod_damageblock	0	0	0	0	0	0	0	0	1	0	1	1	1	0
-mod_damageresist	0	0	0	0	0	0	0	0	1	0	1	1	1	0
-mod_maxammo	0	0	0	0	0	0	0	0	1	0	1	1	1	0
-mod_movespeed	0	0	0	0	0	0	0	0	1	0	1	1	1	0
+id	crate_ammo0	crate_ammo1	crate_ammo2	crate_health0	crate_gun0	crate_gun1	crate_gun2	crate_gun3	crate_melee0	crate_armor0	crate_mod0	crate_mod1	monster_small	monster_medium	monster_large	monster_special	boss
+none	0	0	0	0	0	0	0	0	0	0	0	0	100	100	100	100	0
+key_boss	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1
+ammo_pistol	1	0	0	0	0	0	0	0	0	0	0	0	12	12	0	0	0
+ammo_magnum	0	1	0	0	0	0	0	0	0	0	0	0	0	12	15	6	0
+ammo_shells	1	0	0	0	0	0	0	0	0	0	0	0	12	12	0	0	0
+ammo_rifle	1	1	0	0	0	0	0	0	0	0	0	0	12	12	15	0	0
+ammo_heavy	0	1	0	0	0	0	0	0	0	0	0	0	0	6	15	15	0
+ammo_plasma	0	0	1	0	0	0	0	0	0	0	0	0	0	6	0	15	0
+ammo_rocket	0	0	1	0	0	0	0	0	0	0	0	0	0	0	5	15	0
+ammo_bolt	0	0	1	0	0	0	0	0	0	0	0	0	0	6	15	6	0
+medkit	0	0	0	1	0	0	0	0	0	0	0	0	25	25	25	25	0
+weapon_knife	0	0	0	0	0	0	0	0	1	0	0	0	1	1	0	0	0
+weapon_spear	0	0	0	0	0	0	0	0	1	0	0	0	1	1	1	0	0
+weapon_pistol	0	0	0	0	1	0	0	0	0	0	0	0	1	1	0	0	0
+weapon_revolver	0	0	0	0	0	1	0	0	0	0	0	0	0	1	0	0	0
+weapon_shotgun	0	0	0	0	1	0	0	0	0	0	0	0	1	1	0	0	0
+weapon_boltrifle	0	0	0	0	1	0	0	0	0	0	0	0	1	1	0	0	0
+weapon_assaultrifle	0	0	0	0	0	0	1	0	0	0	0	0	0	0	1	0	0
+weapon_tacticalrifle	0	0	0	0	0	1	0	0	0	0	0	0	0	0	1	0	0
+weapon_minigun	0	0	0	0	0	0	0	1	0	0	0	0	0	0	0	1	0
+weapon_plasmarifle	0	0	0	0	0	0	0	1	0	0	0	0	0	0	0	1	0
+weapon_rocketlauncher	0	0	0	0	0	0	0	1	0	0	0	0	0	0	0	1	0
+weapon_crossbow	0	0	0	0	0	0	1	0	0	0	0	0	0	0	1	1	0
+weapon_carbine	0	0	0	0	0	0	1	0	0	0	0	0	0	1	1	0	0
+weapon_sawedoff	0	0	0	0	0	1	0	0	0	0	0	0	0	1	1	0	0
+armor_light	0	0	0	0	0	0	0	0	0	1	0	0	1	1	1	1	0
+armor_medium	0	0	0	0	0	0	0	0	0	1	0	0	1	1	1	1	0
+armor_heavy	0	0	0	0	0	0	0	0	0	1	0	0	1	1	1	1	0
+mod_maxrounds	0	0	0	0	0	0	0	0	0	0	1	0	1	1	1	1	0
+mod_damage	0	0	0	0	0	0	0	0	0	0	1	0	1	1	1	1	0
+mod_accuracy	0	0	0	0	0	0	0	0	0	0	1	0	1	1	1	1	0
+mod_attackspeed	0	0	0	0	0	0	0	0	0	0	1	0	1	1	1	1	0
+mod_reloadspeed	0	0	0	0	0	0	0	0	0	0	1	0	1	1	1	1	0
+mod_reloadamount	0	0	0	0	0	0	0	0	0	0	0	1	0	0	1	1	0
+mod_penetration	0	0	0	0	0	0	0	0	0	0	0	1	0	0	1	1	0
+mod_handling	0	0	0	0	0	0	0	0	0	0	1	0	1	1	1	1	0
+mod_damageblock	0	0	0	0	0	0	0	0	0	0	1	0	1	1	1	1	0
+mod_damageresist	0	0	0	0	0	0	0	0	0	0	1	0	1	1	1	1	0
+mod_maxammo	0	0	0	0	0	0	0	0	0	0	1	0	1	1	1	1	0
+mod_movespeed	0	0	0	0	0	0	0	0	0	0	1	0	1	1	1	1	0
