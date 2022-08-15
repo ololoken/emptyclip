@@ -97,10 +97,12 @@ if(EXISTS "${PROJECT_SOURCE_DIR}/assets/source/process.sh" AND NOT WIN32)
 	add_custom_target(data ALL DEPENDS "${PROJECT_SOURCE_DIR}/working/data/sounds")
 
 	# build stats
+	file(GLOB SOURCE_TSVS "${PROJECT_SOURCE_DIR}/assets/source/stats/*.tsv")
 	add_custom_command(
 		OUTPUT "${PROJECT_SOURCE_DIR}/working/data/stats.db"
 		COMMAND "${PROJECT_SOURCE_DIR}/assets/source/build_stats.sh"
 		WORKING_DIRECTORY "${PROJECT_SOURCE_DIR}/assets/source/"
+		DEPENDS "${SOURCE_TSVS}"
 	)
 	add_custom_target(stats ALL DEPENDS "${PROJECT_SOURCE_DIR}/working/data/stats.db")
 endif()
