@@ -58,6 +58,7 @@ enum EditorIconTypes {
 	ICON_MONSTER,
 	ICON_NONE,
 	ICON_DELETE,
+	ICON_SPLIT,
 	ICON_COPY,
 	ICON_PASTE,
 	ICON_SHOW,
@@ -194,6 +195,7 @@ class _EditorState : public ae::_State {
 		void ExecuteDelete();
 		void ExecuteCopy();
 		void ExecutePaste(bool Viewport, int PasteMode=0);
+		void ExecuteSplit();
 		void ExecuteDeselect();
 		void ExecuteChangeZ(float Change, int Type);
 		void ExecuteChangeLevel(int Change);

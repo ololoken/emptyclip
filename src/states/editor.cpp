@@ -383,6 +383,9 @@ bool _EditorState::HandleKey(const ae::_KeyEvent &KeyEvent) {
 			case SDL_SCANCODE_D:
 				ExecuteDelete();
 			break;
+			case SDL_SCANCODE_X:
+				ExecuteSplit();
+			break;
 			case SDL_SCANCODE_C:
 				if(IsShiftDown) {
 					ExecuteIOCommand(EDITINPUT_COLOR);
@@ -2109,6 +2112,50 @@ void _EditorState::ExecutePaste(bool Viewport, int PasteMode) {
 				SpawnObject(GetValidObjectPosition(StartPosition - CopiedPosition + Iterator->Position), Iterator->Rotation, Iterator->Scale, Iterator->Type, Iterator->ID, Iterator->Level, IsShiftDown);
 		break;
 	}
+}
+
+// Split block into two
+void _EditorState::ExecuteSplit() {
+	if(!BlockSelected())
+		return;
+
+	// Check for square blocks
+	glm::vec2 Size = SelectedBlock->End - SelectedBlock->Start;
+	if(Size.x == Size.y)
+		return;
+
+	// Cut horizontally
+	_Block NewBlock = *SelectedBlock;
+	if(SelectedBlock->GetLargestAxis()) {
+
+		// Check cut point
+		int CutPoint = (int)WorldCursor.y - 1;
+		if(CutPoint < SelectedBlock->Start.y || CutPoint >= SelectedBlock->End.y)
+			return;
+
+		// Get new block bounds
+		NewBlock.Start = glm::vec2(SelectedBlock->End.x, CutPoint + 1);
+
+		// Resize first block
+		SelectedBlock->End = glm::vec2(SelectedBlock->End.x, CutPoint);
+	}
+	// Cut vertically
+	else {
+
+		// Check cut point
+		int CutPoint = (int)WorldCursor.x - 1;
+		if(CutPoint < SelectedBlock->Start.x || CutPoint >= SelectedBlock->End.x)
+			return;
+
+		// Get new block bounds
+		NewBlock.Start = glm::vec2(CutPoint + 1, SelectedBlock->End.y);
+
+		// Resize first block
+		SelectedBlock->End = glm::vec2(CutPoint, SelectedBlock->End.y);
+	}
+
+	// Create new half
+	Map->AddBlock(EditLayer, NewBlock);
 }
 
 // Executes the deselect command

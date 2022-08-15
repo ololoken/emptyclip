@@ -109,6 +109,7 @@ struct _TileBounds {
 struct _Block {
 
 	void GetBounds(glm::vec4 &Bounds) { Bounds[0] = Start.x; Bounds[1] = Start.y; Bounds[2] = End.x + 1.0f; Bounds[3] = End.y + 1.0f; }
+	int GetLargestAxis() { if(End.y - Start.y > End.x - Start.x) { return 1; } else { return 0; } }
 
 	glm::vec4 Color{1.0f};
 	glm::ivec2 Start{0};
