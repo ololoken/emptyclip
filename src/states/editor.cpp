@@ -2134,7 +2134,7 @@ void _EditorState::ExecuteSplit() {
 			return;
 
 		// Get new block bounds
-		NewBlock.Start = glm::vec2(SelectedBlock->End.x, CutPoint + 1);
+		NewBlock.Start = glm::vec2(SelectedBlock->Start.x, CutPoint + 1);
 
 		// Resize first block
 		SelectedBlock->End = glm::vec2(SelectedBlock->End.x, CutPoint);
@@ -2148,11 +2148,12 @@ void _EditorState::ExecuteSplit() {
 			return;
 
 		// Get new block bounds
-		NewBlock.Start = glm::vec2(CutPoint + 1, SelectedBlock->End.y);
+		NewBlock.Start = glm::vec2(CutPoint + 1, SelectedBlock->Start.y);
 
 		// Resize first block
 		SelectedBlock->End = glm::vec2(CutPoint, SelectedBlock->End.y);
 	}
+	DeselectBlock();
 
 	// Create new half
 	Map->AddBlock(EditLayer, NewBlock);
