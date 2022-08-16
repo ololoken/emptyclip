@@ -167,13 +167,14 @@ class _EditorState : public ae::_State {
 		void AddEvent(int Type);
 		void UpdateEventID(int Type, const std::string &ID);
 		void SpawnObject(const glm::vec2 &Position, float Rotation, float Scale, int Type, const std::string &ID, int Level, bool Align);
+		void SelectBlocks();
 		void SelectObject();
 		void SelectObjects();
-		void DeselectBlock() { SelectedBlockIndex = -1; SelectedBlock = nullptr; }
+		void UpdateSelectionBounds();
+		void DeselectBlocks() { SelectedBlocks.clear(); }
 		void DeselectEvent() { SelectedEventIndex = -1; SelectedEvent = nullptr; }
 		void DeselectObjects() { SelectedObjects.clear(); }
 		void ClearClipboard();
-		bool BlockSelected() { return SelectedBlockIndex != -1; }
 		bool EventSelected() { return SelectedEventIndex != -1; }
 		bool ObjectsSelected() { return SelectedObjects.size() != 0; }
 
@@ -194,7 +195,7 @@ class _EditorState : public ae::_State {
 		void ExecuteTest();
 		void ExecuteDelete();
 		void ExecuteCopy();
-		void ExecutePaste(bool Viewport, int PasteMode=0);
+		void ExecutePaste(int PasteMode=0);
 		void ExecuteSplit();
 		void ExecuteDeselect();
 		void ExecuteChangeZ(float Change, int Type);
@@ -209,7 +210,7 @@ class _EditorState : public ae::_State {
 		void ExecuteSwitchMode(int State);
 		void ExecuteUpdateLayer(int Layer, bool Move);
 		void ExecuteShiftLayer(int Change);
-		void ExecuteUpdateBlockLimits(int Direction, bool Expand);
+		void ExecuteUpdateBlockSize(int Direction, bool Expand);
 		void ExecuteUpdateMapLevel(int Change);
 
 		// Parameters
@@ -231,7 +232,6 @@ class _EditorState : public ae::_State {
 		glm::vec2 WorldCursor;
 		glm::ivec2 WorldCursorIndex;
 		int GridMode;
-		int UndoNumber[MAPLAYER_COUNT];
 		bool IsDrawing;
 		bool IsMoving;
 		bool IsShiftDown;
@@ -258,20 +258,20 @@ class _EditorState : public ae::_State {
 		ae::_Element *InputBox;
 
 		// Blocks
-		_Block *SelectedBlock;
-		_Block ClipboardBlock;
+		std::vector<size_t> SelectedBlocks;
+		glm::ivec4 SelectionBounds;
+		std::vector<_Block> ClipboardBlocks[MAPLAYER_COUNT];
 		std::string AltTextureID;
 		float MinZ;
 		float MaxZ;
 		float ScaleX;
 		float Rotation;
-		int SelectedBlockIndex;
 		int SelectedEventIndex;
 		glm::ivec2 DrawStart;
 		glm::ivec2 DrawEnd;
 		glm::ivec2 OldStart;
 		glm::ivec2 OldEnd;
-		glm::ivec2 SavedIndex;
+		glm::ivec2 SavedWorldCursorIndex;
 		bool FinishDrawing;
 		bool HighlightBlocks;
 		bool Walkable;

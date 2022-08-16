@@ -112,6 +112,8 @@ struct _Block {
 	int GetLargestAxis() { if(End.y - Start.y > End.x - Start.x) { return 1; } else { return 0; } }
 
 	glm::vec4 Color{1.0f};
+	glm::ivec2 MoveStart{0};
+	glm::ivec2 MoveEnd{0};
 	glm::ivec2 Start{0};
 	glm::ivec2 End{0};
 	const ae::_Texture *Texture{nullptr};
@@ -212,16 +214,16 @@ class _Map {
 		void AddParticle(_Particle *Particle);
 		void GetSelectedObject(const glm::vec2 &Position, float RadiusSquared, _ObjectSpawn **Object, size_t *Index);
 		void GetSelectedObjects(const glm::vec2 &Start, const glm::vec2 &End, std::vector<_ObjectSpawn *> *SelectedObjects, int Type);
-		int GetSelectedBlock(int Layer, const glm::ivec2 &Index, _Block **Block);
-		int GetSelectedBlock(int Layer, const glm::ivec2 &Index);
+		void GetSelectedBlocks(const glm::vec2 &Start, const glm::vec2 &End, int Layer, std::vector<size_t> &SelectedBlocks, glm::ivec4 &SelectionBounds);
+		size_t GetSelectedBlock(int Layer, const glm::ivec2 &Index, _Block **Block);
+		size_t GetSelectedBlock(int Layer, const glm::ivec2 &Index);
 		int GetSelectedEvent(const glm::ivec2 &Index, _Event **Event);
-		int GetLastBlock(int Layer, _Block **Block);
+		void GetLastBlock(int Layer, _Block **Block);
 		int GetLayerSize(int Index);
 		void ChangeLayer(int OldLayer, int NewLayer, int Index);
 		void DeleteBlockIDFromTiles(int Layer, int Index);
-		void RemoveLastBlock(int Layer) { if(Blocks[Layer].size() > 0) Blocks[Layer].pop_back(); }
-		void RemoveBlock(int Layer, int Index);
 		void RemoveEvent(int Index);
+		void DeleteBlocks(int Layer, std::vector<size_t> &BlockIDs);
 		void CleanObjectSpawns();
 
 		void ClearEvent(const _Event *Event);
@@ -234,7 +236,7 @@ class _Map {
 		glm::ivec2 GetValidCoord(const glm::ivec2 &Coord) const;
 		bool CheckCollisionFlag(const glm::ivec2 &Position, int Flag) const;
 		void GetTileBounds(const glm::vec2 &Position, float Radius, _TileBounds &TileBounds) const;
-		const _Block *GetBlock(int Layer, const size_t Index) const;
+		_Block *GetBlock(int Layer, const size_t Index);
 		glm::vec2 GetValidPosition(const glm::vec2 &Position) const;
 
 		void AddObject(_Object *Object, int GridType);

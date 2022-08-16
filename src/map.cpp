@@ -1338,10 +1338,7 @@ bool _Map::CanMoveTo(const glm::vec2 &Start, const glm::vec2 &End, const glm::ve
 
 // Return an object at a given position
 void _Map::GetSelectedObject(const glm::vec2 &Position, float RadiusSquared, _ObjectSpawn **Object, size_t *Index) {
-
 	for(size_t i = 0; i < ObjectSpawns.size(); i++) {
-
-		// Circle test
 		if(glm::distance2(ObjectSpawns[i]->Position, Position) < RadiusSquared) {
 			*Object = ObjectSpawns[i];
 			*Index = i;
@@ -1354,25 +1351,7 @@ void _Map::GetSelectedObject(const glm::vec2 &Position, float RadiusSquared, _Ob
 
 // Returns all the objects that fall inside the rectangle
 void _Map::GetSelectedObjects(const glm::vec2 &Start, const glm::vec2 &End, std::vector<_ObjectSpawn *> *SelectedObjects, int Type) {
-
-	glm::vec2 StartPoint, EndPoint;
-	if(End.x < Start.x) {
-		StartPoint.x = End.x;
-		EndPoint.x = Start.x;
-	}
-	else {
-		StartPoint.x = Start.x;
-		EndPoint.x = End.x;
-	}
-
-	if(End.y < Start.y) {
-		StartPoint.y = End.y;
-		EndPoint.y = Start.y;
-	}
-	else {
-		StartPoint.y = Start.y;
-		EndPoint.y = End.y;
-	}
+	glm::vec4 Bounds(glm::min(Start, End), glm::max(Start, End));
 
 	for(const auto &ObjectSpawn : ObjectSpawns) {
 		if(Type == 0 && ObjectSpawn->Type == _Object::MONSTER)
@@ -1380,19 +1359,33 @@ void _Map::GetSelectedObjects(const glm::vec2 &Start, const glm::vec2 &End, std:
 		else if(Type == 1 && ObjectSpawn->Type != _Object::MONSTER)
 			continue;
 
-		if(ObjectSpawn->Position.x > StartPoint.x && ObjectSpawn->Position.y > StartPoint.y && ObjectSpawn->Position.x <= EndPoint.x && ObjectSpawn->Position.y <= EndPoint.y) {
+		if(ObjectSpawn->Position.x > Bounds[0] && ObjectSpawn->Position.y > Bounds[1] && ObjectSpawn->Position.x <= Bounds[2] && ObjectSpawn->Position.y <= Bounds[3]) {
 			SelectedObjects->push_back(ObjectSpawn);
 		}
 	}
 }
 
-// Removes a block from the list
-void _Map::RemoveBlock(int Layer, int Index) {
-	if(Index < 0 || Index >= (int)Blocks[Layer].size())
-		return;
+// Get a list of blocks inside the bounds of a selection box
+void _Map::GetSelectedBlocks(const glm::vec2 &Start, const glm::vec2 &End, int Layer, std::vector<size_t> &SelectedBlocks, glm::ivec4 &SelectionBounds) {
+	glm::vec4 Bounds(glm::min(Start, End), glm::max(Start, End));
 
-	DeleteBlockIDFromTiles(Layer, Index);
-	Blocks[Layer].erase(Blocks[Layer].begin() + Index);
+	SelectionBounds[0] = Size.x;
+	SelectionBounds[1] = Size.y;
+	SelectionBounds[2] = -1;
+	SelectionBounds[3] = -1;
+	for(int i = (int)(Blocks[Layer].size())-1; i >= 0; i--) {
+		_Block &Block = Blocks[Layer][i];
+		if(Bounds[0] > Block.End.x + 1 || Bounds[2] < Block.Start.x || Bounds[1] > Block.End.y + 1 || Bounds[3] < Block.Start.y)
+			continue;
+
+		SelectionBounds[0] = std::min(SelectionBounds[0], Block.Start.x);
+		SelectionBounds[1] = std::min(SelectionBounds[1], Block.Start.y);
+		SelectionBounds[2] = std::max(SelectionBounds[2], Block.End.x);
+		SelectionBounds[3] = std::max(SelectionBounds[3], Block.End.y);
+		Block.MoveStart = Block.Start;
+		Block.MoveEnd = Block.End;
+		SelectedBlocks.push_back(i);
+	}
 }
 
 // Deletes a block id from the events list given a block id and layer
@@ -1411,6 +1404,20 @@ void _Map::RemoveEvent(int Index) {
 	Events.erase(Events.begin() + Index);
 }
 
+// Remove deleted blocks
+void _Map::DeleteBlocks(int Layer, std::vector<size_t> &BlockIDs) {
+
+	// Sort block ids descending
+	std::sort(BlockIDs.begin(), BlockIDs.end(), std::greater<int>());
+
+	// Remove blocks from events
+	for(size_t i = 0; i < BlockIDs.size(); i++) {
+		int Index = BlockIDs[i];
+		DeleteBlockIDFromTiles(Layer, Index);
+		Blocks[Layer].erase(Blocks[Layer].begin() + Index);
+	}
+}
+
 // Remove deleted object spawns
 void _Map::CleanObjectSpawns() {
 	for(auto Iterator = ObjectSpawns.begin(); Iterator != ObjectSpawns.end(); ) {
@@ -1423,30 +1430,30 @@ void _Map::CleanObjectSpawns() {
 	}
 }
 
-// Return the block at a given position
-int _Map::GetSelectedBlock(int Layer, const glm::ivec2 &Index) {
+// Return the block index at a given layer and position
+size_t _Map::GetSelectedBlock(int Layer, const glm::ivec2 &Index) {
 	for(int i = (int)(Blocks[Layer].size())-1; i >= 0; i--) {
 		if(Index.x >= Blocks[Layer][i].Start.x && Index.y >= Blocks[Layer][i].Start.y && Index.x <= Blocks[Layer][i].End.x && Index.y <= Blocks[Layer][i].End.y)
 			return i;
 	}
 
-	return -1;
+	return (size_t)-1;
 }
 
 // Return the block at a given position
-int _Map::GetSelectedBlock(int Layer, const glm::ivec2 &Index, _Block **Block) {
-	int BlockIndex = GetSelectedBlock(Layer, Index);
-	if(BlockIndex != -1) {
+size_t _Map::GetSelectedBlock(int Layer, const glm::ivec2 &Index, _Block **Block) {
+	size_t BlockIndex = GetSelectedBlock(Layer, Index);
+	if(BlockIndex != (size_t)-1) {
 		*Block = &Blocks[Layer][BlockIndex];
 		return BlockIndex;
 	}
 
 	*Block = nullptr;
-	return -1;
+	return (size_t)-1;
 }
 
 // Returns a block by its layer and index
-const _Block *_Map::GetBlock(int Layer, const size_t Index) const {
+_Block *_Map::GetBlock(int Layer, const size_t Index) {
 	if(Layer < 0 || Layer >= MAPLAYER_COUNT || Index >= Blocks[Layer].size())
 		return nullptr;
 
@@ -1454,14 +1461,13 @@ const _Block *_Map::GetBlock(int Layer, const size_t Index) const {
 }
 
 // Gets the last block in the list
-int _Map::GetLastBlock(int Layer, _Block **Block) {
-	if(Blocks[Layer].size() > 0) {
-		*Block = &Blocks[Layer][Blocks[Layer].size() - 1];
-		return Blocks[Layer].size() - 1;
+void _Map::GetLastBlock(int Layer, _Block **Block) {
+	if(Blocks[Layer].size() == 0) {
+		*Block = nullptr;
+		return;
 	}
 
-	*Block = nullptr;
-	return -1;
+	*Block = &Blocks[Layer][Blocks[Layer].size() - 1];
 }
 
 // Get the size of a layer
@@ -1588,7 +1594,7 @@ int _Map::GetSelectedEvent(const glm::ivec2 &Index, _Event **ReturnEvent) {
 	return -1;
 }
 
-// Changes the layer that block is in
+// Changes the layer a block is in
 void _Map::ChangeLayer(int OldLayer, int NewLayer, int Index) {
 
 	// Delete block ids from events
