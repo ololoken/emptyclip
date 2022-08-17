@@ -1460,24 +1460,6 @@ _Block *_Map::GetBlock(int Layer, const size_t Index) {
 	return &Blocks[Layer][Index];
 }
 
-// Gets the last block in the list
-void _Map::GetLastBlock(int Layer, _Block **Block) {
-	if(Blocks[Layer].size() == 0) {
-		*Block = nullptr;
-		return;
-	}
-
-	*Block = &Blocks[Layer][Blocks[Layer].size() - 1];
-}
-
-// Get the size of a layer
-int _Map::GetLayerSize(int Index) {
-	if(Index < 0 || Index >= MAPLAYER_COUNT)
-		return -1;
-
-	return Blocks[Index].size();
-}
-
 // Toggles an event's active state
 void _Map::ToggleEventActive(int Index) {
 	if(Index >= 0 && Index < (int)Events.size())
@@ -1595,7 +1577,7 @@ int _Map::GetSelectedEvent(const glm::ivec2 &Index, _Event **ReturnEvent) {
 }
 
 // Changes the layer a block is in
-void _Map::ChangeLayer(int OldLayer, int NewLayer, int Index) {
+size_t _Map::ChangeLayer(int OldLayer, int NewLayer, int Index) {
 
 	// Delete block ids from events
 	DeleteBlockIDFromTiles(OldLayer, Index);
@@ -1603,6 +1585,8 @@ void _Map::ChangeLayer(int OldLayer, int NewLayer, int Index) {
 	// Add new block
 	Blocks[NewLayer].push_back(Blocks[OldLayer][Index]);
 	Blocks[OldLayer].erase(Blocks[OldLayer].begin() + Index);
+
+	return Blocks[NewLayer].size() - 1;
 }
 
 // Draws a grid on the map

@@ -582,16 +582,6 @@ void _EditorState::HandleMouseButton(const ae::_MouseEvent &MouseEvent) {
 									OldStart = SelectedEvent->Start;
 									OldEnd = SelectedEvent->End;
 									SavedWorldCursorIndex = WorldCursorIndex;
-
-									// Remove bad tiles
-									std::vector<_EventTile> &Tiles = SelectedEvent->Tiles;
-									for(size_t i = 0; i < Tiles.size(); i++) {
-										int LayerSize = Map->GetLayerSize(Tiles[i].Layer);
-										if(Tiles[i].BlockID != -1 && LayerSize != -1 && Tiles[i].BlockID >= LayerSize) {
-											std::cout << "Bad BlockID cleansed in layer" << Tiles[i].Layer << ": " << Tiles[i].BlockID << " vs " << LayerSize << std::endl;
-											Tiles[i].BlockID = -1;
-										}
-									}
 									IsMoving = true;
 								}
 							break;
@@ -2414,19 +2404,31 @@ void _EditorState::ExecuteUpdateLayer(int Layer, bool Move) {
 	if(EditLayer == Layer)
 		return;
 
+	// Changing layers for a selection of blocks
 	if(Move && SelectedBlocks.size()) {
-		for(const auto &Index : SelectedBlocks) {
-			Map->ChangeLayer(EditLayer, Layer, Index);
 
-			_Block *Block;
-			Map->GetLastBlock(Layer, &Block);
+		// Sort ids descending so erasing starts from the end
+		std::sort(SelectedBlocks.begin(), SelectedBlocks.end(), std::greater<int>());
+
+		// Create new selection array
+		std::vector<size_t> NewSelection;
+		NewSelection.reserve(SelectedBlocks.size());
+		for(const auto &Index : SelectedBlocks) {
+
+			// Change layers and add to new selection
+			size_t NewIndex = Map->ChangeLayer(EditLayer, Layer, Index);
+			NewSelection.push_back(NewIndex);
 
 			// Change block properties
+			_Block *Block =	Map->GetBlock(Layer, NewIndex);
 			Block->Walkable = (Layer == MAPLAYER_WALL) ? false : true;
 		}
-	}
 
-	DeselectBlocks();
+		// Assign new selection
+		SelectedBlocks = NewSelection;
+	}
+	else
+		SelectedBlocks.clear();
 
 	if(Layer == MAPLAYER_FLAT) {
 		MaxZ = MAP_FLATZ;
