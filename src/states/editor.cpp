@@ -628,20 +628,6 @@ void _EditorState::HandleMouseButton(const ae::_MouseEvent &MouseEvent) {
 
 				if(DraggingBox) {
 					DraggingBox = false;
-
-					/*
-					// Select single block
-					if(ClickedPosition == WorldCursor) {
-						SelectedBlocks.clear();
-						size_t SelectedBlockIndex = Map->GetSelectedBlock(EditLayer, WorldCursorIndex);
-						if(SelectedBlockIndex != (size_t)-1) {
-							SelectedBlocks.push_back(SelectedBlockIndex);
-							UpdateSelectionBounds();
-						}
-
-						break;
-					}*/
-
 					switch(EditMode) {
 						case EDITMODE_BLOCKS:
 							SelectBlocks();
