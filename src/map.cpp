@@ -46,7 +46,7 @@ inline bool CompareHitDistance(_Hit &First, _Hit &Second) {
 }
 
 // Colors of each time cycle
-const std::vector<glm::vec4> DayCycles = {
+static const std::vector<glm::vec4> DayCycles = {
 	{ 0.0625f, 0.0625f, 0.375f,  1 },
 	{ 0.125f,  0.125f,  0.125f,  1 },
 	{ 0.75f,   0.75f,   0.5625f, 1 },
@@ -55,12 +55,22 @@ const std::vector<glm::vec4> DayCycles = {
 };
 
 // Time of each cycle change
-const std::vector<double> DayCyclesTime = {
+static const std::vector<double> DayCyclesTime = {
 	0.0  * 60.0,
 	6.0  * 60.0,
 	12.5 * 60.0,
 	16.5 * 60.0,
 	18.0 * 60.0,
+};
+
+// Colors for highlighting blocks at different MinZ values
+static const std::vector<glm::vec4> HighlightColors = {
+	COLOR_MAGENTA,
+	COLOR_YELLOW,
+	COLOR_CYAN,
+	COLOR_RED,
+	COLOR_GREEN,
+	COLOR_BLUE,
 };
 
 // Initialize
@@ -1649,8 +1659,14 @@ void _Map::DrawMinimap(bool FullMap, ae::_Bounds &MinimapBounds) {
 // Draws rectangles around all the blocks
 void _Map::HighlightBlocks(int Layer) {
 	ae::Graphics.SetColor(COLOR_MAGENTA);
-	for(size_t i = 0; i < Blocks[Layer].size(); i++)
-		ae::Graphics.DrawRectangle3D(glm::vec2(Blocks[Layer][i].Start.x, Blocks[Layer][i].Start.y), glm::vec2(Blocks[Layer][i].End.x + 1.0f, Blocks[Layer][i].End.y + 1.0f), false);
+	for(size_t i = 0; i < Blocks[Layer].size(); i++) {
+		_Block &Block = Blocks[Layer][i];
+		if(Layer == MAPLAYER_WALL) {
+			size_t ColorIndex = std::clamp((size_t)(Block.MinZ * 2), (size_t)0, HighlightColors.size()-1);
+			ae::Graphics.SetColor(HighlightColors[ColorIndex]);
+		}
+		ae::Graphics.DrawRectangle3D(glm::vec2(Block.Start.x, Block.Start.y), glm::vec2(Block.End.x + 1.0f, Block.End.y + 1.0f), false);
+	}
 }
 
 // Add particle to grid
