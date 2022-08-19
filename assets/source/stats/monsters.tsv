@@ -20,7 +20,7 @@ monster_beast	Beast	beast				monster	beast	monster_large	1	150	50	3	0	18	30	30	0
 monster_fighter	Mercenary	fighter				monster	fighter	monster_medium	1	70	20	3	0	20	15	15	0	2.35	0.07	0.3	1	0	0.9	17	12	0.1	0.7	1	0.25	0
 monster_gunner	Mercenary	gunner				monster	gunner	monster_special	1	50	20	3	0	25	15	15	0	2	0.08	0.3	1	15	15	20	15	0.1	1.5	2	0	0
 monster_wisp	Wisp	wisp		ghost		monster	wisp	monster_large	1	115	35	5	0	20	20	20	1	1.75	0.05	0.4	1.5	0	3	50	20	0.1	1	1	0.6	0
-monster_demon	Demon	demon			fireball	monster	wisp	monster_special	1	90	30	3	0	25	25	20	0	1.5	0.05	0.3	2.5	0	15	30	25	0.1	2	1	0.1	15
+monster_demon	Demon	demon			fireball	monster	demon	monster_special	1	90	30	3	0	25	25	20	0	1.5	0.05	0.3	2.5	0	15	30	25	0.1	2	1	0.1	15
 monster_alien	Alien	alien				monster	player	monster_special	1	70	20	3	0	25	30	30	0	2	0.05	0.3	1	10	10	20	15	0.1	1.2	2	0.1	0
 boss_01	Zombie Chieftain	zombie		dark		monster	zombie	boss	1	500	250	2	0	50	500	250	0	1	0.1	0.4	1.5	0	1.2	35	25	0.1	1.7	1	0.5	0
 boss_02	Black Wolf	dog		dark		monster	dog	boss	1	250	150	4	3	50	750	150	0	9	0.05	0.3	1.2	0	1.2	40	15	0.1	0.9	1	0.4	0
