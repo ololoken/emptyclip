@@ -1011,6 +1011,7 @@ void _PlayState::ResolveAttack(_Entity *Attacker, int GridType) {
 
 			// Create projectile
 			_Object *Projectile = Stats.CreateProjectile(*Attacker->Projectiles[Attacker->AttackRequestType], Attacker->Position);
+			Projectile->GridCheckType = (Attacker->Type == _Object::PLAYER) ? GRID_MONSTER : GRID_PLAYER;
 			Projectile->Map = Map;
 			Projectile->Owner = Attacker;
 			Projectile->Rotation = Attacker->GenerateShotDirection();

@@ -176,6 +176,7 @@ class _Object {
 		glm::vec2 Velocity{0.0f};
 		double FreePathingTimer{0.0};
 		float Radius{0.25f};
+		int GridCheckType{0};
 		bool Circle{true};
 		bool FreePathing{false};
 

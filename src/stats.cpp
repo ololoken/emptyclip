@@ -444,6 +444,7 @@ void _Stats::LoadMonsters(const std::string &Path) {
 		Template.Name = Database->GetString("name");
 		Template.AnimationID = Database->GetString("animation_id");
 		Template.MeshID = Database->GetString("mesh_id");
+		Template.ProjectileID = Database->GetString("projectile_id");
 		SetColor(Template.Color, Database->GetString("color_id"));
 		WeaponParticlesID = Database->GetString("particlegroup_id");
 		Template.SoundGroupID = Database->GetString("soundgroup_id");
@@ -470,6 +471,7 @@ void _Stats::LoadMonsters(const std::string &Path) {
 		Template.Attributes["attack_period"].Double = Database->GetReal("attack_period");
 		Template.Attributes["weapon_type"].Int = Database->GetInt<int>("weapon_type");
 		Template.Attributes["attack_movespeed"].Float = Database->GetReal("attack_movespeed");
+		Template.Attributes["projectile_speed"].Float = Database->GetReal("projectile_speed");
 
 		// Check for animation
 		if(ae::Assets.Animations.find(Template.AnimationID) == ae::Assets.Animations.end())
@@ -639,6 +641,11 @@ _Monster *_Stats::CreateMonster(const std::string &ID, int Level, const glm::vec
 	Monster->SetPosition(Position);
 	if(!Template.MeshID.empty())
 		Monster->Mesh = ae::Assets.Meshes.at(Template.MeshID);
+	if(!Template.ProjectileID.empty()) {
+		Monster->Projectiles[WEAPONATTACK_MAIN] = &Stats.Objects.at(Template.ProjectileID);
+		Monster->ProjectileSpeed[WEAPONATTACK_MAIN] = Template.Attributes.at("projectile_speed").Float;
+		Monster->ExplosionSize[WEAPONATTACK_MAIN] = 0.0f;
+	}
 	Monster->Animation->Reels = ae::Assets.Animations[Template.AnimationID];
 	Monster->Animation->CalculateTextureCoords();
 	Monster->Level = Level;

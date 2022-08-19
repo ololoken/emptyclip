@@ -270,7 +270,7 @@ void _Object::CheckProjectileCollisions() {
 	else {
 
 		// Check object hits
-		std::vector<_Hit> &Hits = Map->CheckCollisionsInGrid(Position, Radius, GRID_MONSTER);
+		std::vector<_Hit> &Hits = Map->CheckCollisionsInGrid(Position, Radius, GridCheckType);
 		for(const auto &Hit : Hits) {
 			if(Hit.Object->Type == PROP) {
 				Active = false;
@@ -316,7 +316,7 @@ void _Object::CheckProjectileCollisions() {
 
 		// Check hits
 		float ExplosionRadius = ProjectileExplosionSize * 0.5f;
-		std::vector<_Hit> &Hits = Map->CheckCollisionsInGrid(Position, ExplosionRadius, GRID_MONSTER);
+		std::vector<_Hit> &Hits = Map->CheckCollisionsInGrid(Position, ExplosionRadius, GridCheckType);
 
 		// Check self hit
 		if(OwnerEntity->Type == _Object::PLAYER && !OwnerEntity->IsInvulnerable() && !PlayState.GodMode) {
