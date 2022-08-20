@@ -2117,6 +2117,12 @@ void _Map::AddMinimapLayers() {
 
 	// Add doors to minimap
 	for(const auto &Event : Events) {
+
+		// Ignore inactive events
+		if(!Event->Active)
+			continue;
+
+		// Ignore events except doors and wall switches
 		if(Event->Type != EVENT_DOOR && Event->Type != EVENT_WALLSWITCH)
 			continue;
 
