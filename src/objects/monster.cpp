@@ -96,6 +96,7 @@ void _Monster::Update(double FrameTime) {
 
 	// Check for player in range
 	bool PlayerVisible = false;
+	bool CanShoot = false;
 	float PlayerDistanceSquared = glm::distance2(Position, Player->Position);
 	if(PlayerDistanceSquared <= ViewRangeSquared) {
 		if(AIType == AI_SIMPLE) {
@@ -103,14 +104,17 @@ void _Monster::Update(double FrameTime) {
 			SetTarget(Player->Position);
 		}
 		else if(Goal == GOAL_PURSUE) {
+			if(IsRanged())
+				CanShoot = Map->IsVisible(Position, Player->Position, _Tile::BULLET);
 
 			// Check if player is visible
 			PlayerVisible = (AIType == AI_GHOST) ? true : Map->CanMoveTo(Position, Player->Position, glm::vec2(Radius, Radius) * 0.3f);
-			if(PlayerVisible) {
+			if(PlayerVisible || CanShoot) {
 				ReactionTimer -= FrameTime;
 				if(ReactionTimer <= 0) {
 					ReactionTimer = 0.0;
-					SetTarget(Player->Position);
+					if(PlayerVisible)
+						SetTarget(Player->Position);
 				}
 			}
 			else
@@ -144,7 +148,7 @@ void _Monster::Update(double FrameTime) {
 	}
 
 	// Check for attacks
-	if(PlayerDistanceSquared <= AttackRangeSquared && PlayerVisible && CanAttack(WEAPONATTACK_MAIN))
+	if(PlayerDistanceSquared <= AttackRangeSquared && (CanShoot || PlayerVisible) && CanAttack(WEAPONATTACK_MAIN))
 		StartAttack();
 
 	// Move

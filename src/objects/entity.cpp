@@ -25,6 +25,7 @@
 #include <ae/program.h>
 #include <ae/animation.h>
 #include <ae/audio.h>
+#include <stats.h>
 #include <hud.h>
 #include <map.h>
 #include <constants.h>
@@ -91,6 +92,11 @@ float _Entity::GenerateShotDirection() {
 	CurrentAccuracy = std::min(CurrentAccuracy + Recoil * RecoilModifier * BurstModifier, MaxAccuracy[WEAPONATTACK_MAIN]);
 
 	return NewDirection;
+}
+
+// Determine if entity uses ranged attacks
+bool _Entity::IsRanged() const {
+	return !Template.ProjectileID.empty() || MainWeaponType == WEAPON_PISTOL;
 }
 
 // Generates damage after defenses
