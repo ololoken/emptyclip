@@ -259,7 +259,7 @@ void _Framework::Update() {
 				Done = true;
 		} break;
 		case UPDATE: {
-			TimeStepAccumulator += FrameTime;
+			TimeStepAccumulator += std::min(FrameTime, TimeStep);
 			while(TimeStepAccumulator >= TimeStep) {
 				State->Update(TimeStep);
 				if(Console) {
