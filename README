@@ -27,8 +27,8 @@ libvorbis
 libogg
 zlib
 
--- Installing dependencies on Ubuntu 20.04 --
-sudo apt install ninja-build cmake build-essential libsdl2-dev libsdl2-image-dev libopenal-dev libvorbis-dev libfreetype6-dev libsqlite3-dev
+-- Installing dependencies on Debian --
+sudo apt install ninja-build cmake build-essential libsdl2-dev libsdl2-image-dev libopenal-dev libvorbis-dev libfreetype6-dev libsqlite3-dev sqlite3
 
 -- Installing dependencies on Arch Linux --
 sudo pacman -S base-devel ninja cmake sdl2 sdl2_image openal libvorbis libogg freetype2 sqlite

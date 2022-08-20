@@ -1272,12 +1272,11 @@ void _PlayState::CreateItemDrop(const _Entity *Entity, float DropRate) {
 			_ObjectSpawn ObjectSpawn;
 			Stats.GetRandomDrop(Monster->ItemDrop, &ObjectSpawn);
 			if(ObjectSpawn.Type) {
+				ObjectSpawn.Position = _Map::GenerateRandomPointInCircle(PLAYER_RADIUS) + Monster->Position;
 
 				// Spawn object on player if item can't be reached
 				if(!Map->CheckCollisionFlag(Map->GetValidCoord(ObjectSpawn.Position), _Tile::ENTITY) || (Monster->FreePathing && Monster->Template.ItemDropID == "boss"))
 					ObjectSpawn.Position = Player->Position;
-				else
-					ObjectSpawn.Position = _Map::GenerateRandomPointInCircle(PLAYER_RADIUS) + Monster->Position;
 
 				ObjectSpawn.Level = Monster->Level;
 				SpawnObject(&ObjectSpawn, true);
