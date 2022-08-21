@@ -90,7 +90,7 @@ void _Monster::Update(double FrameTime) {
 		if(ReturnTimer <= 0.0) {
 			ReturnTimer = 0.0;
 			Goal = GOAL_PURSUE;
-			SetTarget(ReturnPosition);
+			SetTarget(ReturnPosition, Radius);
 		}
 	}
 
@@ -101,7 +101,7 @@ void _Monster::Update(double FrameTime) {
 	if(PlayerDistanceSquared <= ViewRangeSquared) {
 		if(AIType == AI_SIMPLE) {
 			PlayerVisible = true;
-			SetTarget(Player->Position);
+			SetTarget(Player->Position, Player->Radius);
 		}
 		else if(Goal == GOAL_PURSUE) {
 			if(IsRanged())
@@ -114,7 +114,7 @@ void _Monster::Update(double FrameTime) {
 				if(ReactionTimer <= 0) {
 					ReactionTimer = 0.0;
 					if(PlayerVisible)
-						SetTarget(Player->Position);
+						SetTarget(Player->Position, Player->Radius);
 				}
 			}
 			else
@@ -138,7 +138,8 @@ void _Monster::Update(double FrameTime) {
 
 		// Check for reaching target
 		float TargetDistanceSquared = glm::distance2(Position, TargetPosition);
-		if(TargetDistanceSquared <= Radius * Radius * 1.1f) {
+		float RadiiSum = Radius + TargetRadius;
+		if(TargetDistanceSquared <= RadiiSum * RadiiSum * 1.1f) {
 			if(MoveState != MOVE_NONE)
 				GenerateReactionTime();
 
@@ -156,7 +157,6 @@ void _Monster::Update(double FrameTime) {
 		PositionChanged = false;
 	}
 	else {
-		LastPosition = Position;
 		Move(FrameTime);
 
 		// Check for inactive distance
@@ -187,7 +187,7 @@ void _Monster::OnAttack(_Entity *Victim, const _Hit &Hit) {
 		std::vector<_Hit> Hits;
 		Map->CheckBulletCollisions(this, glm::normalize(Position - Player->Position), Hits, GRID_MONSTER, true, 1, _Tile::ENTITY);
 		if(Hits.size())
-			SetTarget(Hits.front().Position);
+			SetTarget(Hits.front().Position, Radius);
 	}
 }
 
@@ -199,7 +199,7 @@ void _Monster::OnHit(_Entity *Attacker, const _Hit &Hit) {
 		return;
 
 	Goal = GOAL_PURSUE;
-	SetTarget(Attacker->Position);
+	SetTarget(Attacker->Position, Attacker->Radius);
 }
 
 // Called when the player dies
@@ -222,9 +222,10 @@ const _ParticleTemplate *_Monster::GetParticle(int ParticleType) const {
 }
 
 // Set a target position
-void _Monster::SetTarget(const glm::vec2 &NewTargetPosition) {
+void _Monster::SetTarget(const glm::vec2 &NewTargetPosition, float NewTargetRadius) {
 	FacePosition(NewTargetPosition);
 	TargetPosition = NewTargetPosition;
+	TargetRadius = NewTargetRadius;
 	MoveState = MOVE_TARGET;
 	StaticTimer = 0.0;
 }

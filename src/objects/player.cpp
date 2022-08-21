@@ -295,7 +295,6 @@ void _Player::RecalculateStats() {
 // Update the player
 void _Player::Update(double FrameTime) {
 	_Entity::Update(FrameTime);
-	LastPosition = Position;
 
 	// Update timers
 	PlayTime += FrameTime;
@@ -475,6 +474,8 @@ void _Player::Render(double BlendFactor) {
 		Rotation,
 		glm::vec2(Scale)
 	);
+
+	//RenderRadius(DrawPosition);
 }
 
 // Draws the player in screen space

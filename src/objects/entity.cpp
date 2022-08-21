@@ -54,6 +54,7 @@ _Entity::~_Entity() {
 
 // Update entity
 void _Entity::Update(double FrameTime) {
+	LastPosition = Position;
 	UpdateRecoil(FrameTime);
 
 	// Update timers
@@ -459,19 +460,22 @@ void _Entity::Render(double BlendFactor) {
 			glm::vec2(Scale)
 		);
 
-		if(false) {
-			ae::Graphics.SetProgram(ae::Assets.Programs["pos"]);
-			ae::Graphics.SetDepthMask(false);
-			ae::Graphics.SetDepthTest(false);
-			ae::Graphics.SetColor(COLOR_WHITE);
-			if(Circle)
-				ae::Graphics.DrawCircle(glm::vec3(DrawPosition, 0), Radius);
-			else
-				ae::Graphics.DrawRectangle3D(Position - glm::vec2(Radius), Position + glm::vec2(Radius), false);
-			ae::Graphics.SetDepthTest(true);
-			ae::Graphics.SetProgram(ae::Assets.Programs["pos_uv"]);
-		}
+		//RenderRadius(DrawPosition);
 	}
+}
+
+// Render entity's radius
+void _Entity::RenderRadius(const glm::vec2 &DrawPosition) {
+	ae::Graphics.SetProgram(ae::Assets.Programs["pos"]);
+	ae::Graphics.SetDepthMask(false);
+	ae::Graphics.SetDepthTest(false);
+	ae::Graphics.SetColor(COLOR_WHITE);
+	if(Circle)
+		ae::Graphics.DrawCircle(glm::vec3(DrawPosition, 0), Radius);
+	else
+		ae::Graphics.DrawRectangle3D(Position - glm::vec2(Radius), Position + glm::vec2(Radius), false);
+	ae::Graphics.SetDepthTest(true);
+	ae::Graphics.SetProgram(ae::Assets.Programs["pos_uv"]);
 }
 
 // Update current health

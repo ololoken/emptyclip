@@ -53,7 +53,7 @@ class _Monster : public _Entity {
 
 	private:
 
-		void SetTarget(const glm::vec2 &NewTargetPosition);
+		void SetTarget(const glm::vec2 &NewTargetPosition, float NewTargetRadius);
 		void GenerateReactionTime();
 
 		glm::vec2 ReturnPosition{0.0f};

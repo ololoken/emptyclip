@@ -152,6 +152,7 @@ class _Entity : public _Object {
 		// Monsters
 		int64_t ExperienceGiven{0};
 		glm::vec2 TargetPosition{0.0f};
+		float TargetRadius{0.0f};
 		int AIType{AI_NONE};
 
 	protected:
@@ -159,6 +160,7 @@ class _Entity : public _Object {
 		virtual void ApplyDeathPenalty() {}
 		virtual void SetLegAnimationPlayMode(int Mode) {}
 		virtual void SetAnimationPlaybackSpeedFactor() {}
+		void RenderRadius(const glm::vec2 &DrawPosition);
 		void UpdateRecoil(double FrameTime);
 
 };

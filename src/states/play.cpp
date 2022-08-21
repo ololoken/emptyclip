@@ -804,9 +804,10 @@ void _PlayState::Render(double BlendFactor) {
 
 		// Draw monster target positions
 		ae::Graphics.SetProgram(ae::Assets.Programs["pos"]);
-		ae::Graphics.SetColor(glm::vec4(1, 0, 0, 1));
+		ae::Graphics.SetColor(COLOR_RED);
 		for(const auto &Object : Map->ObjectManager->RenderList[_ObjectManager::RENDER_MONSTER]) {
-			ae::Graphics.DrawCircle(glm::vec3(((_Entity *)Object)->TargetPosition, 0), 0.1f);
+			_Entity *Entity = (_Entity *)Object;
+			ae::Graphics.DrawCircle(glm::vec3(Entity->TargetPosition, 0), Entity->TargetRadius);
 		}
 
 		// Draw weapon ranges
