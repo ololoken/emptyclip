@@ -795,8 +795,8 @@ void _PlayState::Render(double BlendFactor) {
 	// Draw the foreground tiles
 	BlockRenderCount += Map->RenderForeground(Player->Position, false);
 
-	// Draw the crosshair
-	glm::vec2 CursorDrawPosition = WorldCursor * (float)BlendFactor + PreviousWorldCursor * (float)(1.0f - BlendFactor);
+	// Get cursor position
+	glm::vec2 CursorDrawPosition = (WorldCursor == PreviousWorldCursor) ? WorldCursor : WorldCursor * (float)BlendFactor + PreviousWorldCursor * (float)(1.0f - BlendFactor);
 	if(!Player->IsDying())
 		HUD->DrawCrosshair(CursorDrawPosition);
 
