@@ -206,21 +206,14 @@ void _HUD::MouseEvent(const ae::_MouseEvent &MouseEvent) {
 				ClickOffset = glm::vec2(MouseEvent.Position) - HitElement->Bounds.GetCenter();
 			}
 		}
+		// Was dragging an item
 		else {
-
-			// Was dragging an item
 			if(CursorItem) {
-
-				// Dropped outside the inventory
-				if(!HitElement) {
+				if(!HitElement)
 					Player->DropItem(DragStart->Index);
-				}
-				else if(HitElement->Index >= 0) {
+				else if(HitElement->Index >= 0)
 					Player->SwapInventory(DragStart->Index, HitElement->Index);
-				}
 			}
-
-			// Swap inventory
 			CursorItem = nullptr;
 			DragStart = nullptr;
 		}
