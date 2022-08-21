@@ -195,6 +195,15 @@ void _HUD::MouseEvent(const ae::_MouseEvent &MouseEvent) {
 	if(!InventoryOpen)
 		return;
 
+	// Pass event to inventory
+	Elements[ELEMENT_INVENTORY]->HandleMouseButton(MouseEvent.Pressed);
+
+	// Handle button clicks
+	ae::_Element *Clicked = Elements[ELEMENT_INVENTORY]->GetClickedElement();
+	if(Clicked && Clicked->Name == "button_inventory_sort")
+		Player->SortInventory();
+
+	// Get hit element
 	ae::_Element *HitElement = Elements[ELEMENT_INVENTORY]->HitElement;
 	if(MouseEvent.Button == SDL_BUTTON_LEFT) {
 

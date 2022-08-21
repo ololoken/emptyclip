@@ -82,6 +82,7 @@ class _Player : public _Entity {
 
 		int AddItem(_Item *Item, int &AmountAdded);
 		void DropItem(int Slot);
+		void SortInventory();
 		void SwapInventory(int SwapFrom, int SwapTo);
 		bool CanEquipItem(_Item *Item, int Slot);
 

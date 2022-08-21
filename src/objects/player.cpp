@@ -37,6 +37,44 @@
 #include <glm/ext/scalar_constants.hpp>
 #include <glm/gtx/rotate_vector.hpp>
 
+// Function for sorting by item stats
+inline bool CompareItemStats(_Item *First, _Item *Second) {
+	if(First->ID == Second->ID) {
+		if(First->Level == Second->Level) {
+			if(First->Quality == Second->Quality)
+				return First->Attributes.at("max_mods").Int > Second->Attributes.at("max_mods").Int;
+
+			return First->Quality > Second->Quality;
+		}
+
+		return First->Level > Second->Level;
+	}
+
+	return First->ID < Second->ID;
+}
+
+// Function for sorting items
+inline bool CompareItem(_Item *First, _Item *Second) {
+	if(First->Type == Second->Type) {
+		if(First->Type == _Object::WEAPON) {
+			if(First->Template.Attributes.at("weapon_type").Int == Second->Template.Attributes.at("weapon_type").Int)
+				return CompareItemStats(First, Second);
+
+			return First->Template.Attributes.at("weapon_type").Int < Second->Template.Attributes.at("weapon_type").Int;
+		}
+		else if(First->Type == _Object::MOD) {
+			if(First->Template.Attributes.at("mod_type").Int == Second->Template.Attributes.at("mod_type").Int)
+				return CompareItemStats(First, Second);
+
+			return First->Template.Attributes.at("mod_type").Int < Second->Template.Attributes.at("mod_type").Int;
+		}
+
+		return CompareItemStats(First, Second);
+	}
+
+	return First->Type < Second->Type;
+}
+
 // Constructor
 _Player::_Player(const _ObjectTemplate &PlayerTemplate) :
 	_Entity(PlayerTemplate) {
@@ -671,7 +709,7 @@ int _Player::AddItem(_Item *Item, int &AmountAdded) {
 	return 0;
 }
 
-// Drops an item from the player's inventory
+// Drop an item from the player's inventory
 void _Player::DropItem(int Slot) {
 	if(!CanDropItem() || Slot < 0 || Slot >= INVENTORY_SIZE)
 		return;
@@ -693,6 +731,28 @@ void _Player::DropItem(int Slot) {
 	// Add item to map
 	Item->SetPosition(Position + _Map::GenerateRandomPointInCircle(PLAYER_RADIUS));
 	Map->AddObject(Item, GRID_ITEM);
+}
+
+// Sort inventory
+void _Player::SortInventory() {
+
+	// Add items to sortable array
+	std::vector<_Item *> Bag;
+	Bag.reserve(INVENTORY_BAGSIZE);
+	for(int i = INVENTORY_BAGSTART; i < INVENTORY_BAGEND; i++) {
+		if(!Inventory[i])
+			continue;
+
+		Bag.push_back(Inventory[i]);
+		Inventory[i] = nullptr;
+	}
+
+	// Sort
+	std::sort(Bag.begin(), Bag.end(), CompareItem);
+
+	// Add items back in
+	for(size_t i = 0; i < Bag.size(); i++)
+		Inventory[INVENTORY_BAGSTART + i] = Bag[i];
 }
 
 // Equip an item
