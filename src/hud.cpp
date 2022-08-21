@@ -210,9 +210,14 @@ void _HUD::MouseEvent(const ae::_MouseEvent &MouseEvent) {
 		// Start dragging an item
 		if(MouseEvent.Pressed) {
 			if(HitElement && HitElement->Index >= 0 && Player->CanDropItem()) {
-				DragStart = HitElement;
-				CursorItem = Player->Inventory[DragStart->Index];
-				ClickOffset = glm::vec2(MouseEvent.Position) - HitElement->Bounds.GetCenter();
+				if(ae::Input.ModKeyDown(KMOD_CTRL)) {
+					Player->DropItem(HitElement->Index);
+				}
+				else {
+					DragStart = HitElement;
+					CursorItem = Player->Inventory[DragStart->Index];
+					ClickOffset = glm::vec2(MouseEvent.Position) - HitElement->Bounds.GetCenter();
+				}
 			}
 		}
 		// Was dragging an item

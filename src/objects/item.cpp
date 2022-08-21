@@ -80,18 +80,18 @@ void _Item::DrawTooltip(const _Player *Player, size_t CompareSlot, int Inventory
 	glm::vec2 Size = glm::vec2(520, 150) * ae::_Element::GetUIScale();
 	glm::vec2 Spacing = glm::vec2(0, 36) * ae::_Element::GetUIScale();
 	glm::vec2 SmallSpacing = glm::vec2(0, 24) * ae::_Element::GetUIScale();
-	glm::vec2 HelpSpacing = glm::vec2(0, 32) * ae::_Element::GetUIScale();
+	glm::vec2 HelpSpacing = glm::vec2(0, 30) * ae::_Element::GetUIScale();
 
 	// Set size based on type
 	if(Type == _Object::WEAPON)
-		Size.y = 600 * ae::_Element::GetUIScale();
+		Size.y = 630 * ae::_Element::GetUIScale();
 	else if(Type == _Object::ARMOR)
-		Size.y = 380 * ae::_Element::GetUIScale();
+		Size.y = 410 * ae::_Element::GetUIScale();
 	else if(Type == _Object::MEDKIT)
 		Size.y = 240 * ae::_Element::GetUIScale();
 	else if(Type == _Object::MOD) {
 		Size.x = 520 * ae::_Element::GetUIScale();
-		Size.y = 300 * ae::_Element::GetUIScale();
+		Size.y = 330 * ae::_Element::GetUIScale();
 	}
 
 	// Remove space for help text
@@ -381,6 +381,8 @@ void _Item::DrawTooltip(const _Player *Player, size_t CompareSlot, int Inventory
 			ae::Assets.Fonts["hud_medium"]->DrawText(Buffer.str(), glm::ivec2(DrawPosition), ae::CENTER_BASELINE, COLOR_GREEN);
 		} break;
 	}
+
+	HelpTextList.push_back("Ctrl+click to drop");
 
 	// Mods
 	if(Attributes.find("max_mods") != Attributes.end() && Attributes.at("max_mods").Int >= 1) {
