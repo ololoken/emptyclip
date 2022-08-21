@@ -106,7 +106,7 @@ const  double       PLAYER_WEAPONSWITCHPERIOD            =  0.5;
 const  double       PLAYER_USEPERIOD                     =  0.2;
 const  glm::vec4    PLAYER_LIGHT                         =  glm::vec4(0.5f, 0.5f, 0.5f, 1.0f);
 //     Inventory
-const  int          INVENTORY_BAGSIZE                    =  16;
+const  int          INVENTORY_BAGSIZE                    =  20;
 const  int          INVENTORY_MAX_STACK                  =  99;
 //     Items
 const  float        ITEM_SCALE                           =  0.5f;

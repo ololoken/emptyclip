@@ -14,10 +14,12 @@ style_editor_button_blue			ortho_pos_uv	textures/editor/button.png	blue	0
 style_editor_button_purple			ortho_pos_uv	textures/editor/button.png	purple_dark	0
 style_editor_button_cyan			ortho_pos_uv	textures/editor/button.png	cyan_dark	0
 style_editor_button_brown			ortho_pos_uv	textures/editor/button.png	brown	0
+style_hud_inventory_bg	inventory_bg		ortho_pos			1
+style_hud_inventory_body			ortho_pos_uv	textures/hud/body.png	inventory_body	1
 style_hud_inventory			ortho_pos_uv	textures/hud/inventory_slot.png		1
-style_hud_inventory_armor			ortho_pos_uv	textures/hud/inventory_armor.png		1
-style_hud_inventory_gun			ortho_pos_uv	textures/hud/inventory_gun.png		1
-style_hud_inventory_melee			ortho_pos_uv	textures/hud/inventory_melee.png		1
+style_hud_inventory_armor			ortho_pos_uv	textures/hud/inventory_armor.png	inventory_equipment	1
+style_hud_inventory_gun			ortho_pos_uv	textures/hud/inventory_gun.png	inventory_equipment	1
+style_hud_inventory_melee			ortho_pos_uv	textures/hud/inventory_melee.png	inventory_equipment	1
 style_hud_inventory_overlay	inventory_overlay		ortho_pos			1
 style_hud_skills	tooltip_bg		ortho_pos			1
 style_hud_plus			ortho_pos_uv	textures/hud/plus.png		1

@@ -27,6 +27,9 @@ menu_red_opaque	0.2	0.02	0.02	0.9
 menu_red_bg	0.5	0.05	0.05	0.38
 menu_red_border	0.5	0.05	0.05	1
 menu_darkred_bg	0.1	0.05	0.05	1
+inventory_bg	0.17	0.17	0.17	1
+inventory_body	1	1	1	0.3
+inventory_equipment	1	1	1	0.8
 tooltip_bg	0	0	0	0.8
 ambient_half	0.5	0.5	0.5	1
 ambient_dark	0.25	0.25	0.25	1

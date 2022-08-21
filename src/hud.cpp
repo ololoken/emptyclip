@@ -121,6 +121,7 @@ _HUD::_HUD(_Player *Player) : Player(Player) {
 	ae::Assets.Elements["element_hud_melee"]->SetActive(true);
 
 	Elements[ELEMENT_INVENTORY] = ae::Assets.Elements["element_inventory"];
+	Elements[ELEMENT_INVENTORY_BUTTONS] = ae::Assets.Elements["element_inventory_buttons"];
 	Elements[ELEMENT_INVENTORY_OVERLAY] = ae::Assets.Elements["element_inventory_overlay"];
 	Elements[ELEMENT_SKILLS] = ae::Assets.Elements["element_skills"];
 	Elements[LABEL_SKILL_REMAINING] = ae::Assets.Elements["label_hud_skill_remaining_value"];
@@ -134,7 +135,6 @@ _HUD::_HUD(_Player *Player) : Player(Player) {
 	Elements[LABEL_SKILL7] = ae::Assets.Elements["label_hud_skill7_value"];
 	Elements[LABEL_SKILL8] = ae::Assets.Elements["label_hud_skill8_value"];
 	Elements[ELEMENT_INVENTORY]->SetActive(false);
-	Elements[ELEMENT_INVENTORY_OVERLAY]->SetActive(false);
 	Elements[ELEMENT_SKILLS]->SetActive(false);
 
 	Elements[ELEMENT_SKILLINFO] = ae::Assets.Elements["element_skill_info"];
@@ -745,7 +745,7 @@ void _HUD::DrawInventory() {
 		if(!DrawIcon)
 			continue;
 
-		ae::_Element *Button = Elements[ELEMENT_INVENTORY]->Children[i];
+		ae::_Element *Button = Elements[ELEMENT_INVENTORY_BUTTONS]->Children[i];
 		ae::Graphics.DrawScaledImage(Button->Bounds.GetCenter(), Player->Inventory[i]->Texture, UI_INVENTORY_ITEM_SIZE, Player->Inventory[i]->Color);
 	}
 
@@ -757,7 +757,7 @@ void _HUD::DrawInventory() {
 			if(Player->Inventory[i] == CursorItem)
 				continue;
 
-			ae::_Element *Button = Elements[ELEMENT_INVENTORY]->Children[i];
+			ae::_Element *Button = Elements[ELEMENT_INVENTORY_BUTTONS]->Children[i];
 			DrawItemLevel(Player->Inventory[i], Button->Bounds.Start);
 			DrawItemQuality(Player->Inventory[i], Button->Bounds.Start);
 			DrawItemValue(Player->Inventory[i], Button->Bounds.Start);
