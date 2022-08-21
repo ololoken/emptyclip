@@ -252,7 +252,7 @@ void _Entity::UpdateAnimation(double FrameTime, bool PlaySound) {
 				Animation->Play(ShootingTwohandAnimation);
 			}
 
-			Animation->FramePeriod = AttackPeriod[WEAPONATTACK_MAIN];
+			Animation->FramePeriod = ShootPeriod[WEAPONATTACK_MAIN];
 			Action = ACTION_SHOOT;
 			AttackMade = true;
 		break;

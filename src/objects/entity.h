@@ -127,6 +127,7 @@ class _Entity : public _Object {
 		float AttackRange[WEAPONATTACK_COUNT]{0.0f};
 		double AttackTimer[WEAPONATTACK_COUNT]{0.0};
 		double AttackPeriod[WEAPONATTACK_COUNT]{0.0};
+		double ShootPeriod[WEAPONATTACK_COUNT]{0.0};
 		float AttackWidth[WEAPONATTACK_COUNT]{0.0f};
 		int MinDamage[WEAPONATTACK_COUNT]{0};
 		int MaxDamage[WEAPONATTACK_COUNT]{0};

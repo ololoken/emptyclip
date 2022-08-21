@@ -90,6 +90,7 @@ const  float        PLAYER_BACKWARDS_SPEEDFACTOR         =  0.5f;
 const  float        PLAYER_PUSH_FACTOR                   =  0.5f;
 const  int          PLAYER_CRIT_DAMAGE                   =  200;
 const  int          PLAYER_STEADY_CRIT_FACTOR            =  2;
+const  double       PLAYER_SHOOT_PERIOD                  =  0.5;
 const  float        PLAYER_AIM_MOVESPEEDFACTOR           =  0.333333f;
 const  float        PLAYER_AIM_RECOIL_MODIFIER           =  0.5f;
 const  float        PLAYER_SPRINT_RECOIL_MODIFIER        =  2.0f;
