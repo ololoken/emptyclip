@@ -663,6 +663,7 @@ void _PlayState::Render(double BlendFactor) {
 
 	// Set up programs
 	ae::_Program *MapProgram = ae::Assets.Programs["map"];
+	ae::_Program *MapNormProgram = ae::Assets.Programs["map_norm"];
 
 	// Get player light
 	glm::vec4 PlayerLightColor;
@@ -683,11 +684,11 @@ void _PlayState::Render(double BlendFactor) {
 	MapProgram->Lights[0].Position = LightPosition;
 	MapProgram->Lights[0].Attenuation = LightAttenuantion;
 	MapProgram->AmbientLight = Map->AmbientLight;
-	ae::Assets.Programs["map_norm"]->LightCount = 1;
-	ae::Assets.Programs["map_norm"]->Lights[0].Color = PlayerLightColor;
-	ae::Assets.Programs["map_norm"]->Lights[0].Position = LightPosition;
-	ae::Assets.Programs["map_norm"]->Lights[0].Attenuation = LightAttenuantion;
-	ae::Assets.Programs["map_norm"]->AmbientLight = Map->AmbientLight;
+	MapNormProgram->LightCount = 1;
+	MapNormProgram->Lights[0].Color = PlayerLightColor;
+	MapNormProgram->Lights[0].Position = LightPosition;
+	MapNormProgram->Lights[0].Attenuation = LightAttenuantion;
+	MapNormProgram->AmbientLight = Map->AmbientLight;
 
 	// Setup the viewing matrix
 	ae::Graphics.Setup3D();
@@ -696,8 +697,8 @@ void _PlayState::Render(double BlendFactor) {
 	// Setup the viewing matrix
 	ae::Graphics.SetProgram(MapProgram);
 	MapProgram->SetUniformMat4("view_projection_transform", Camera->Transform);
-	ae::Graphics.SetProgram(ae::Assets.Programs["map_norm"]);
-	ae::Assets.Programs["map_norm"]->SetUniformMat4("view_projection_transform", Camera->Transform);
+	ae::Graphics.SetProgram(MapNormProgram);
+	MapNormProgram->SetUniformMat4("view_projection_transform", Camera->Transform);
 	ae::Graphics.SetProgram(ae::Assets.Programs["pos"]);
 	ae::Assets.Programs["pos"]->SetUniformMat4("view_projection_transform", Camera->Transform);
 	ae::Graphics.SetProgram(ae::Assets.Programs["pos_uv"]);
@@ -730,7 +731,7 @@ void _PlayState::Render(double BlendFactor) {
 		ae::Graphics.SetActiveTexture(1);
 		Framebuffer->BindTexture();
 		ae::Graphics.SetActiveTexture(0);
-		ae::Assets.Programs["map_norm"]->Use();
+		MapNormProgram->Use();
 		ae::Graphics.SetActiveTexture(1);
 		Framebuffer->BindTexture();
 		ae::Graphics.SetActiveTexture(0);
@@ -767,9 +768,9 @@ void _PlayState::Render(double BlendFactor) {
 	PropRenderCount += Map->RenderProps();
 
 	// Draw wall decals
-	ae::Graphics.SetProgram(MapProgram);
-	MapProgram->ResetTransform(MapProgram->TextureTransformID);
-	MapProgram->ResetTransform(MapProgram->NormalTransformID);
+	ae::Graphics.SetProgram(MapNormProgram);
+	MapProgram->ResetTransform(MapNormProgram->TextureTransformID);
+	MapProgram->ResetTransform(MapNormProgram->NormalTransformID);
 	ae::Graphics.SetDepthMask(false);
 	ParticleRenderCount += Map->RenderParticles(_Particles::WALL_DECALS, BlendFactor);
 
@@ -777,6 +778,7 @@ void _PlayState::Render(double BlendFactor) {
 	ae::Graphics.EnableParticleBlending();
 	ae::Graphics.SetProgram(MapProgram);
 	MapProgram->ResetTransform(MapProgram->TextureTransformID);
+	MapProgram->ResetTransform(MapProgram->NormalTransformID);
 	Particles->Render(_Particles::NORMAL, BlendFactor);
 	ae::Graphics.DisableParticleBlending();
 

@@ -57,7 +57,14 @@ _Particle::_Particle(const _ParticleSpawn &Spawn) :
 
 	if(Type == _Particles::WALL_DECALS) {
 		Position += Spawn.Normal * 0.01f;
-		Rotation = glm::degrees(atan2(Spawn.Normal.y, Spawn.Normal.x)) + 90.0f;
+		if(Spawn.Normal.y < 0.0f)
+			Side = 3;
+		else if(Spawn.Normal.y > 0.0f)
+			Side = 1;
+		else if(Spawn.Normal.x < 0.0f)
+			Side = 2;
+		else if(Spawn.Normal.x > 0.0f)
+			Side = 4;
 	}
 	LastPosition = Position;
 
@@ -115,7 +122,7 @@ void _Particle::Render(const ae::_Camera *Camera, double BlendFactor) {
 	if(Texture) {
 		ae::Graphics.SetColor(Color);
 		if(Type == _Particles::WALL_DECALS)
-			ae::Graphics.DrawWallDecal(glm::vec3(Position, PositionZ), Texture, Rotation, Scale);
+			ae::Graphics.DrawWallDecal(glm::vec3(Position, PositionZ), Texture, Side, Scale);
 		else
 			ae::Graphics.DrawSprite(glm::vec3(DrawPosition, PositionZ), Texture, Rotation, Scale);
 	}

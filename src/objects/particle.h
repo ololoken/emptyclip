@@ -58,6 +58,7 @@ class _Particle {
 		float AlphaSpeed{0.0f};
 		float PositionZ{0.0f};
 		float ScaleAspect{1.0f};
+		int Side{0};
 
 		// Physics
 		glm::vec2 LastPosition{0.0f};
