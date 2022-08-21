@@ -679,6 +679,9 @@ void _EditorState::HandleMouseWheel(int Direction) {
 		}
 		// Inside controls
 		else {
+			if(IsShiftDown)
+				Direction *= 5;
+
 			if(EditMode == EDITMODE_EVENTS) {
 				if(SelectedEvent)
 					SelectedEvent->SpawnLevel = std::clamp(SelectedEvent->SpawnLevel + Direction, 1, OBJECT_MAX_LEVEL);
