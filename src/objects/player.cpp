@@ -38,10 +38,10 @@
 #include <glm/gtx/rotate_vector.hpp>
 
 // Function for sorting by item stats
-inline bool CompareItemStats(_Item *First, _Item *Second) {
+inline bool CompareItemStats(_Item *First, _Item *Second, bool CompareMods) {
 	if(First->ID == Second->ID) {
 		if(First->Level == Second->Level) {
-			if(First->Quality == Second->Quality)
+			if(CompareMods && First->Quality == Second->Quality)
 				return First->Attributes.at("max_mods").Int > Second->Attributes.at("max_mods").Int;
 
 			return First->Quality > Second->Quality;
@@ -58,18 +58,18 @@ inline bool CompareItem(_Item *First, _Item *Second) {
 	if(First->Type == Second->Type) {
 		if(First->Type == _Object::WEAPON) {
 			if(First->Template.Attributes.at("weapon_type").Int == Second->Template.Attributes.at("weapon_type").Int)
-				return CompareItemStats(First, Second);
+				return CompareItemStats(First, Second, true);
 
 			return First->Template.Attributes.at("weapon_type").Int < Second->Template.Attributes.at("weapon_type").Int;
 		}
 		else if(First->Type == _Object::MOD) {
 			if(First->Template.Attributes.at("mod_type").Int == Second->Template.Attributes.at("mod_type").Int)
-				return CompareItemStats(First, Second);
+				return CompareItemStats(First, Second, false);
 
 			return First->Template.Attributes.at("mod_type").Int < Second->Template.Attributes.at("mod_type").Int;
 		}
 
-		return CompareItemStats(First, Second);
+		return CompareItemStats(First, Second, true);
 	}
 
 	return First->Type < Second->Type;
