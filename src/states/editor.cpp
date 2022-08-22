@@ -142,6 +142,10 @@ void _EditorState::Init() {
 	CheckpointIndex = SavedCheckpointIndex;
 	GridMode = SavedGridMode;
 	HighlightBlocks = SavedHighlightBlocks;
+	MinZ = SavedMinZ;
+	MaxZ = SavedMaxZ;
+	if(SavedBrushIndex != -1)
+		Brush[EDITMODE_BLOCKS] = PaletteElement[EDITMODE_BLOCKS]->Children[SavedBrushIndex];
 }
 
 // Close
@@ -152,6 +156,10 @@ void _EditorState::Close() {
 	SavedHighlightBlocks = HighlightBlocks;
 	SavedGridMode = GridMode;
 	SavedCheckpointIndex = CheckpointIndex;
+	SavedMinZ = MinZ;
+	SavedMaxZ = MaxZ;
+	if(Brush[EDITMODE_BLOCKS])
+		SavedBrushIndex = Brush[EDITMODE_BLOCKS]->Index;
 
 	for(int i = 0; i < EDITMODE_COUNT; i++)
 		ClearPalette(i);

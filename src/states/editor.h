@@ -215,12 +215,15 @@ class _EditorState : public ae::_State {
 
 		// Parameters
 		glm::vec3 SavedCameraPosition{0.0f, 0.0f, 6.5f};
+		std::string MapFilename;
 		int CheckpointIndex{0};
 		int SavedCheckpointIndex{0};
-		std::string MapFilename;
 		int SavedLayer{0};
 		int SavedPalette{0};
 		int SavedGridMode{5};
+		int SavedBrushIndex{-1};
+		int SavedMinZ{0};
+		int SavedMaxZ{0};
 		bool SavedHighlightBlocks{false};
 
 		// Graphics
