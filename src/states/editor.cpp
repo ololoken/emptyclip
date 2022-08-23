@@ -235,7 +235,6 @@ void _EditorState::ResetEditorState() {
 	IsCtrlDown = false;
 	IsAltDown = false;
 	DraggingBox = false;
-	BlockCopied = false;
 	IsDrawing = false;
 	IsMoving = false;
 	FinishDrawing = false;
@@ -2089,19 +2088,39 @@ void _EditorState::ExecuteCopy() {
 
 	switch(EditMode) {
 		case EDITMODE_BLOCKS:
-			if(SelectedBlocks.size()) {
-				ClipboardBlocks[EditLayer].clear();
-				for(const auto &Index : SelectedBlocks) {
-					_Block Block = *Map->GetBlock(EditLayer, (size_t)Index);
-					Block.Start.x -= SelectionBounds[0];
-					Block.Start.y -= SelectionBounds[1];
-					Block.End.x -= SelectionBounds[0];
-					Block.End.y -= SelectionBounds[1];
-					ClipboardBlocks[EditLayer].push_back(Block);
+			if(SelectedBlocks.empty())
+				return;
+
+			// Copy block into brush
+			if(SelectedBlocks.size() == 1) {
+				_Block *Block = Map->GetBlock(EditLayer, SelectedBlocks[0]);
+				MinZ = Block->MinZ;
+				MaxZ = Block->MaxZ;
+				Rotation = Block->Rotation;
+				ScaleX = Block->ScaleX;
+				Walkable = Block->Walkable;
+				Brush[EDITMODE_BLOCKS] = GetBrushFromTexture(EDITMODE_BLOCKS, Block->Texture);
+				ae::_Element *AltBrush = GetBrushFromTexture(EDITMODE_BLOCKS, Block->AltTexture);
+				if(AltBrush) {
+					AltTextureID = AltBrush->Name;
+					AltTexture = AltBrush->Style->Texture;
 				}
-				DeselectBlocks();
-				BlockCopied = true;
+				else {
+					AltTextureID = "";
+					AltTexture = nullptr;
+				}
 			}
+
+			ClipboardBlocks[EditLayer].clear();
+			for(const auto &Index : SelectedBlocks) {
+				_Block Block = *Map->GetBlock(EditLayer, (size_t)Index);
+				Block.Start.x -= SelectionBounds[0];
+				Block.Start.y -= SelectionBounds[1];
+				Block.End.x -= SelectionBounds[0];
+				Block.End.y -= SelectionBounds[1];
+				ClipboardBlocks[EditLayer].push_back(Block);
+			}
+			DeselectBlocks();
 		break;
 		case EDITMODE_EVENTS:
 			if(EventSelected()) {
@@ -2123,27 +2142,25 @@ void _EditorState::ExecutePaste(int PasteMode) {
 	glm::vec2 StartPosition = WorldCursor;
 	switch(EditMode) {
 		case EDITMODE_BLOCKS:
-			if(BlockCopied) {
-				if(SelectedBlocks.size() && ClipboardBlocks[EditLayer].size() == 1) {
-					_Block &ClipboardBlock = ClipboardBlocks[EditLayer][0];
-					for(const auto &Index : SelectedBlocks) {
-						_Block *Block = Map->GetBlock(EditLayer, (size_t)Index);
-						if(PasteMode == 0) {
-							Block->Color = ClipboardBlock.Color;
-							Block->Texture = ClipboardBlock.Texture;
-						}
-						else if(PasteMode == 1)
-							Block->Color = ClipboardBlock.Color;
-						else if(PasteMode == 2)
-							Block->Texture = ClipboardBlock.Texture;
+			if(SelectedBlocks.size() && ClipboardBlocks[EditLayer].size() == 1) {
+				_Block &ClipboardBlock = ClipboardBlocks[EditLayer][0];
+				for(const auto &Index : SelectedBlocks) {
+					_Block *Block = Map->GetBlock(EditLayer, (size_t)Index);
+					if(PasteMode == 0) {
+						Block->Color = ClipboardBlock.Color;
+						Block->Texture = ClipboardBlock.Texture;
 					}
+					else if(PasteMode == 1)
+						Block->Color = ClipboardBlock.Color;
+					else if(PasteMode == 2)
+						Block->Texture = ClipboardBlock.Texture;
 				}
-				else {
-					for(auto Block : ClipboardBlocks[EditLayer]) {
-						Block.Start = Map->GetValidCoord(glm::ivec2(StartPosition) + Block.Start);
-						Block.End = Map->GetValidCoord(glm::ivec2(StartPosition) + Block.End);
-						Map->AddBlock(EditLayer, Block);
-					}
+			}
+			else {
+				for(auto Block : ClipboardBlocks[EditLayer]) {
+					Block.Start = Map->GetValidCoord(glm::ivec2(StartPosition) + Block.Start);
+					Block.End = Map->GetValidCoord(glm::ivec2(StartPosition) + Block.End);
+					Map->AddBlock(EditLayer, Block);
 				}
 			}
 		break;
@@ -2600,6 +2617,19 @@ glm::vec2 _EditorState::GetMoveDeltaPosition(const glm::vec2 &Position) {
 	return NewPosition;
 }
 
+// Find the brush that matches the given texture
+ae::_Element *_EditorState::GetBrushFromTexture(size_t PaletteType, const ae::_Texture *Texture) {
+	if(PaletteType >= EDITMODE_COUNT)
+		return nullptr;
+
+	for(const auto &Element : PaletteElement[PaletteType]->Children) {
+		if(Texture == Element->Style->Texture)
+			return Element;
+	}
+
+	return nullptr;
+}
+
 // Sets event properties
 void _EditorState::SetEventProperties(double ActivationPeriod, int Level, int Active, const std::string &ParticleID) {
 	EventActivationPeriod = ActivationPeriod;
@@ -2610,7 +2640,6 @@ void _EditorState::SetEventProperties(double ActivationPeriod, int Level, int Ac
 
 // Clears all the objects in the clipboard
 void _EditorState::ClearClipboard() {
-	BlockCopied = false;
 	ClipboardEvent = nullptr;
 	ClipboardObjects.clear();
 }
