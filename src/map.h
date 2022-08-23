@@ -108,7 +108,14 @@ struct _TileBounds {
 // Holds data for a block of tiles
 struct _Block {
 
-	void GetBounds(glm::vec4 &Bounds) { Bounds[0] = Start.x; Bounds[1] = Start.y; Bounds[2] = End.x + 1.0f; Bounds[3] = End.y + 1.0f; }
+	void GetBounds(glm::vec4 &Bounds, bool AdjustForZ) {
+		float Adjust = AdjustForZ ? std::abs(std::min(MinZ, MaxZ)) * 2.0f : 0.0f;
+		Bounds[0] = Start.x - Adjust;
+		Bounds[1] = Start.y - Adjust;
+		Bounds[2] = End.x + Adjust + 1.0f;
+		Bounds[3] = End.y + Adjust + 1.0f;
+	}
+
 	int GetLargestAxis() { if(End.y - Start.y > End.x - Start.x) { return 1; } else { return 0; } }
 
 	glm::vec4 Color{1.0f};

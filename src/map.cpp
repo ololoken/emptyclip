@@ -1760,13 +1760,10 @@ int _Map::RenderFloors() {
 	for(size_t i = 0; i < Blocks[MAPLAYER_BASE].size(); i++) {
 		_Block *Block = &Blocks[MAPLAYER_BASE][i];
 
-		bool Draw = true;
-		if(Block->MinZ >= 0) {
-			glm::vec4 Bounds;
-			Block->GetBounds(Bounds);
-			Draw = Camera->IsAABBInView(Bounds);
-		}
-
+		// Check render bounds
+		glm::vec4 Bounds;
+		Block->GetBounds(Bounds, true);
+		bool Draw = Camera->IsAABBInView(Bounds);
 		if(!Draw || !Block->Texture)
 			continue;
 
@@ -1788,18 +1785,15 @@ int _Map::RenderFloors() {
 	for(int i = MAPLAYER_FLOOR0; i <= MAPLAYER_FLOOR2; i++) {
 		for(int j = 0; j < (int)(Blocks[i].size()); j++) {
 			_Block *Block = &Blocks[i][j];
+
+			// Check render bounds
+			glm::vec4 Bounds;
+			Block->GetBounds(Bounds, true);
+			bool Draw = Camera->IsAABBInView(Bounds);
+			if(!Draw || !Block->Texture)
+				continue;
+
 			if(Block->MinZ == Block->MaxZ) {
-
-				bool Draw = true;
-				if(Block->MinZ >= 0) {
-					glm::vec4 Bounds;
-					Block->GetBounds(Bounds);
-					Draw = Camera->IsAABBInView(Bounds);
-				}
-
-				if(!Draw || !Block->Texture)
-					continue;
-
 				ae::Graphics.SetColor(Block->Color);
 				ae::Graphics.DrawRepeatable(
 					glm::vec3(Block->Start.x, Block->Start.y, Block->MinZ + MAP_LAYEROFFSET * i),
@@ -1808,8 +1802,6 @@ int _Map::RenderFloors() {
 					Block->Rotation,
 					Block->ScaleX
 				);
-
-				Count++;
 			}
 			else if(Block->Texture) {
 				ae::Graphics.SetColor(Block->Color);
@@ -1818,9 +1810,9 @@ int _Map::RenderFloors() {
 					glm::vec3(Block->End.x - Block->Start.x + 1.0f, Block->End.y - Block->Start.y + 1.0f, Block->MaxZ - Block->MinZ),
 					Block->Texture
 				);
-
-				Count++;
 			}
+
+			Count++;
 		}
 	}
 
@@ -1847,15 +1839,10 @@ int _Map::RenderWalls(bool SkipFloating) {
 		if(SkipFloating && Block->MinZ > 0)
 			continue;
 
-		// Always draw walls that go lower than floor
-		bool Draw = true;
-		if(Block->MinZ >= 0) {
-			glm::vec4 Bounds;
-			Block->GetBounds(Bounds);
-			Draw = Camera->IsAABBInView(Bounds);
-		}
-
-		// Skip
+		// Check render bounds
+		glm::vec4 Bounds;
+		Block->GetBounds(Bounds, true);
+		bool Draw = Camera->IsAABBInView(Bounds);
 		if(!Draw || !Block->Texture)
 			continue;
 
@@ -1888,14 +1875,10 @@ int _Map::RenderFlatWalls() {
 	for(size_t i = 0; i < Blocks[MAPLAYER_FLAT].size(); i++) {
 		_Block *Block = &Blocks[MAPLAYER_FLAT][i];
 
-		// Check bounds
-		bool Draw = true;
+		// Check render bounds
 		glm::vec4 Bounds;
-		if(Block->MinZ >= 0) {
-			Block->GetBounds(Bounds);
-			Draw = Camera->IsAABBInView(Bounds);
-		}
-
+		Block->GetBounds(Bounds, true);
+		bool Draw = Camera->IsAABBInView(Bounds);
 		if(!Draw || !Block->Texture)
 			continue;
 
@@ -1985,7 +1968,7 @@ int _Map::RenderForeground(const glm::vec2 &PlayerPosition, bool AlwaysFade) {
 		glm::vec4 Color = Block->Color;
 		if(Block->MinZ >= 0) {
 			glm::vec4 Bounds;
-			Block->GetBounds(Bounds);
+			Block->GetBounds(Bounds, false);
 			Draw = Camera->IsAABBInView(Bounds);
 
 			// Change alpha when player is directly under block
@@ -2100,7 +2083,7 @@ void _Map::AddMinimapLayers() {
 
 			// Check bounds
 			glm::vec4 Bounds;
-			Block->GetBounds(Bounds);
+			Block->GetBounds(Bounds, false);
 			if(!CheckMinimapBounds(Bounds))
 				continue;
 
