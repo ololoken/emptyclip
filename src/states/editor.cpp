@@ -2483,71 +2483,14 @@ void _EditorState::ExecuteShiftLayer(int Change) {
 
 // Executes the update block size command
 void _EditorState::ExecuteUpdateBlockSize(int Direction, bool Expand) {
-	glm::ivec2 Start;
-	glm::ivec2 End;
-	bool Change = false;
-	_Block *SelectedBlock = nullptr;
-	if(EditMode == EDITMODE_BLOCKS && SelectedBlocks.size() == 1) {
-		SelectedBlock = Map->GetBlock(EditLayer, SelectedBlocks[0]);
-		Start = SelectedBlock->Start;
-		End = SelectedBlock->End;
-		Change = true;
+	if(EditMode == EDITMODE_BLOCKS) {
+		for(const auto &Index : SelectedBlocks) {
+			_Block *SelectedBlock = Map->GetBlock(EditLayer, SelectedBlocks[Index]);
+			GetNewBlockSize(SelectedBlock->Start, SelectedBlock->End, Direction, Expand);
+		}
 	}
 	else if(EditMode == EDITMODE_EVENTS && EventSelected()) {
-		Start = SelectedEvent->Start;
-		End = SelectedEvent->End;
-		Change = true;
-	}
-
-	if(Change) {
-		switch(Direction) {
-			case 0:
-				if(Expand)
-					Start.x--;
-				else
-					End.x--;
-			break;
-			case 1:
-				if(Expand)
-					Start.y--;
-				else
-					End.y--;
-			break;
-			case 2:
-				if(Expand)
-					End.x++;
-				else
-					Start.x++;
-			break;
-			case 3:
-				if(Expand)
-					End.y++;
-				else
-					Start.y++;
-			break;
-		}
-
-		// Check limits
-		if(Start.x > End.x)
-			Start.x = End.x;
-
-		if(Start.y > End.y)
-			Start.y = End.y;
-
-		if(End.x < Start.x)
-			End.x = Start.x;
-
-		if(End.y < Start.y)
-			End.y = Start.y;
-
-		if(EditMode == EDITMODE_BLOCKS && SelectedBlock) {
-			SelectedBlock->Start = Map->GetValidCoord(Start);
-			SelectedBlock->End = Map->GetValidCoord(End);
-		}
-		else if(EditMode == EDITMODE_EVENTS && EventSelected()) {
-			SelectedEvent->Start = Map->GetValidCoord(Start);
-			SelectedEvent->End = Map->GetValidCoord(End);
-		}
+		GetNewBlockSize(SelectedEvent->Start, SelectedEvent->End, Direction, Expand);
 	}
 }
 
@@ -2642,4 +2585,50 @@ void _EditorState::SetEventProperties(double ActivationPeriod, int Level, int Ac
 void _EditorState::ClearClipboard() {
 	ClipboardEvent = nullptr;
 	ClipboardObjects.clear();
+}
+
+// Adjust start and end position of block
+void _EditorState::GetNewBlockSize(glm::ivec2 &Start, glm::ivec2 &End, int Direction, bool Expand) {
+
+	// Change side
+	if(Expand) {
+		switch(Direction) {
+			case 0:
+				if(Start.x > 0)
+					Start.x--;
+			break;
+			case 1:
+				if(Start.y > 0)
+					Start.y--;
+			break;
+			case 2:
+				if(End.x < Map->Size.x - 1)
+					End.x++;
+			break;
+			case 3:
+				if(End.y < Map->Size.y - 1)
+					End.y++;
+			break;
+		}
+	}
+	else {
+		switch(Direction) {
+			case 0:
+				if(End.x > Start.x)
+					End.x--;
+			break;
+			case 1:
+				if(End.y > Start.y)
+					End.y--;
+			break;
+			case 2:
+				if(Start.x < End.x)
+					Start.x++;
+			break;
+			case 3:
+				if(Start.y < End.y)
+					Start.y++;
+			break;
+		}
+	}
 }

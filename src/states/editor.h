@@ -186,6 +186,7 @@ class _EditorState : public ae::_State {
 
 		glm::vec2 GetMoveDeltaPosition(const glm::vec2 &Position);
 		ae::_Element *GetBrushFromTexture(size_t PaletteType, const ae::_Texture *Texture);
+		void GetNewBlockSize(glm::ivec2 &Start, glm::ivec2 &End, int Direction, bool Expand);
 
 		void ExecuteWalkable();
 		void ExecuteRotate();
