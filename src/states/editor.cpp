@@ -2485,7 +2485,7 @@ void _EditorState::ExecuteShiftLayer(int Change) {
 void _EditorState::ExecuteUpdateBlockSize(int Direction, bool Expand) {
 	if(EditMode == EDITMODE_BLOCKS) {
 		for(const auto &Index : SelectedBlocks) {
-			_Block *SelectedBlock = Map->GetBlock(EditLayer, SelectedBlocks[Index]);
+			_Block *SelectedBlock = Map->GetBlock(EditLayer, Index);
 			GetNewBlockSize(SelectedBlock->Start, SelectedBlock->End, Direction, Expand);
 		}
 	}
