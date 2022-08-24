@@ -979,7 +979,7 @@ void _EditorState::Render(double BlendFactor) {
 		ae::Graphics.DrawRectangle3D(glm::vec2(SelectedEvent->Start.x + 0.02f, SelectedEvent->Start.y + 0.02f), glm::vec2(SelectedEvent->End.x + 0.98f, SelectedEvent->End.y + 0.98f), false);
 
 		// Draw tiles for all spawn events
-		if(SelectedEvent->Type == EVENT_SPAWN) {
+		if(SelectedEvent->Type == EVENT_SPAWN || SelectedEvent->Type == EVENT_TELEPORT) {
 			for(const auto &Event : Map->Events) {
 				if(Event != SelectedEvent && Event->Type == SelectedEvent->Type)
 					DrawEventTiles(Event, glm::vec4(0.5f, 0.5f, 0.5f, 0.5));
