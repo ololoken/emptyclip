@@ -879,15 +879,16 @@ void _EditorState::Render(double BlendFactor) {
 	// Draw tentative block
 	if(IsDrawing) {
 		if(Brush[EditMode]) {
+			ae::Graphics.SetColor(COLOR_WHITE);
 			if(EditMode == EDITMODE_EVENTS) {
 				ae::Graphics.SetDepthTest(false);
 				ae::Graphics.DrawRepeatable(glm::vec3(DrawStart.x, DrawStart.y, MAP_LAYEROFFSET), glm::vec3(DrawEnd.x, DrawEnd.y, MAP_LAYEROFFSET), Brush[EditMode]->Style->Texture, 0, 1.0f);
 				ae::Graphics.SetDepthTest(true);
 			}
 			else {
-				ae::Graphics.SetColor(COLOR_WHITE);
-				if(EditLayer == MAPLAYER_FORE)
+				if(EditLayer == MAPLAYER_FORE) {
 					ae::Graphics.DrawRepeatable(glm::vec3(DrawStart.x, DrawStart.y, MaxZ + MAP_LAYEROFFSET), glm::vec3(DrawEnd.x, DrawEnd.y, MaxZ + MAP_LAYEROFFSET), Brush[EditMode]->Style->Texture, Rotation, ScaleX);
+				}
 				else if(EditLayer == MAPLAYER_FLAT) {
 					glm::vec2 Offset;
 					int Side;
