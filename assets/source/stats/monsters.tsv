@@ -31,5 +31,5 @@ boss_06	Tor	skeleton		brick		monster	skeleton	boss	1	12500	2500	2	0	50	20000	750
 boss_07a	Charl	fighter		brown		monster	fighter	boss	1	15000	5000	2	0	50	25000	10000	0	5	0.05	0.5	2.5	0	1.5	200	100	0.1	0.5	1	0.4	0
 boss_07b	Luth	gunner		gold		monster	gunner	boss	1	10000	3500	2	0	50	25000	10000	0	4	0.05	0.5	2.25	15	25	150	100	0.1	2	2	0.2	0
 boss_08	Mas	wisp		black		monster	wisp	boss	1	20000	7500	5	0	50	40000	15000	1	3	0.05	0.7	7	0	10	250	150	0.1	2	1	0.8	0
-boss_09	Boss	zombie				monster	player	boss	1	500	0	2	0	50	500	0	0	1	0.05	0.3	0.8	0	0.7	0	0	0.1	1.7	1	0.1	0
+boss_09	Daethor	demon		red	fireball_large	monster	demon	boss	1	25000	10000	2	0	50	50000	20000	0	2.5	0.05	0.3	5	3	25	300	200	0.1	2.5	1	0.1	15
 boss_10	Boss	zombie				monster	player	boss	1	500	0	2	0	50	500	0	0	1	0.05	0.3	0.8	0	0.7	0	0	0.1	1.7	1	0.1	0
