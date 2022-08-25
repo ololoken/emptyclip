@@ -23,4 +23,5 @@ fighter							player_punch0.ogg		zombie_die0.ogg
 gunner	rifle_fire0.ogg			pistol_ricochet0.ogg					zombie_die0.ogg	
 wisp	wisp_attack0.ogg								wisp_die0.ogg	
 demon	demon_attack0.ogg								demon_die0.ogg	
+alien	plasma_fire0.ogg								demon_die0.ogg	
 crate									crate_die0.ogg	
