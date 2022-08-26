@@ -399,7 +399,7 @@ void _Framework::LoadAssets() {
 	ae::Assets.LoadPrograms("tables/programs.tsv");
 	ae::Assets.LoadFonts("ui/fonts.tsv", false);
 	ae::Assets.LoadMeshDirectory("meshes/");
-	ae::Assets.LoadColors("ui/colors.tsv");
+	ae::Assets.LoadColors("tables/colors.tsv");
 	ae::Assets.LoadSoundPack("data/sounds");
 	GameAssets.LoadSounds("tables/sounds.tsv");
 	GameAssets.LoadSoundGroups("tables/sound_groups.tsv");
