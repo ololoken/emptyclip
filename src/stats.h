@@ -80,7 +80,9 @@ struct _ObjectTemplate {
 	std::vector<const ae::_Sound *> SoundID[SOUND_COUNT];
 	const _ParticleGroup *ParticleGroup{nullptr};
 	const _ParticleTemplate *ParticleTemplate{nullptr};
+	const ae::_Texture *LightTexture{nullptr};
 	glm::vec4 Color{1.0f};
+	glm::vec4 LightColor{1.0f};
 	glm::vec4 DoorColor{1.0f};
 	int Type{0};
 

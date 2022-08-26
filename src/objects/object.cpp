@@ -64,6 +64,16 @@ void _Object::Render(double BlendFactor) {
 	else
 		ae::Graphics.DrawSprite(glm::vec3(DrawPosition, PositionZ), Texture, Rotation, glm::vec2(Scale));
 }
+
+// Render lights
+void _Object::RenderLights(double BlendFactor) {
+	if(!LightTexture)
+		return;
+
+	ae::Graphics.SetColor(LightColor);
+	ae::Graphics.DrawSprite(glm::vec3(Position, 0), LightTexture, 0, LightScale);
+}
+
 // Get sound for a sound type
 const ae::_Sound *_Object::GetSound(int SoundType) const {
 	const auto &SoundIDs = Template.SoundID[SoundType];
@@ -125,6 +135,14 @@ void _Object::GetRenderBounds(glm::vec4 &Bounds) {
 	Bounds[1] = Position.y - Scale * 0.5f;
 	Bounds[2] = Position.x + Scale * 0.5f;
 	Bounds[3] = Position.y + Scale * 0.5f;
+}
+
+// Get bounds of object's light
+void _Object::GetLightBounds(glm::vec4 &Bounds) {
+	Bounds[0] = Position.x - LightScale[0] * 0.5f;
+	Bounds[1] = Position.y - LightScale[1] * 0.5f;
+	Bounds[2] = Position.x + LightScale[0] * 0.5f;
+	Bounds[3] = Position.y + LightScale[1] * 0.5f;
 }
 
 // Calculates the angle from a slope

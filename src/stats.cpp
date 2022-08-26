@@ -541,14 +541,15 @@ void _Stats::LoadProjectiles(const std::string &Path) {
 	// Get data
 	while(Database->FetchRow()) {
 		_ObjectTemplate Template(_Object::PROJECTILE);
-		std::string SoundGroupID;
-		std::string ParticleID;
 		Template.ID = Database->GetString("id");
 		Template.IconID = Database->GetString("icon_id");
-		SoundGroupID = Database->GetString("soundgroup_id");
-		ParticleID = Database->GetString("particle_id");
+		std::string SoundGroupID = Database->GetString("soundgroup_id");
+		std::string ParticleID = Database->GetString("particle_id");
+		std::string LightID = Database->GetString("light_id");
+		std::string LightColorID = Database->GetString("lightcolor_id");
 		Template.Attributes["radius"].Float = Database->GetReal("radius");
 		Template.Attributes["scale"].Float = Database->GetReal("scale");
+		Template.Attributes["light_scale"].Float = Database->GetReal("light_scale");
 
 		// Check for loaded textures
 		if(!ae::Assets.Textures[Template.IconID])
@@ -571,6 +572,17 @@ void _Stats::LoadProjectiles(const std::string &Path) {
 
 			Template.ParticleTemplate = &GameAssets.Particles.at(ParticleID);
 		}
+
+		// Set light texture
+		if(!LightID.empty()) {
+			if(ae::Assets.Textures.find(LightID) == ae::Assets.Textures.end())
+				throw std::runtime_error(std::string(__func__) + " unknown light_id '" + LightID + "'");
+
+			Template.LightTexture = ae::Assets.Textures.at(LightID);
+		}
+
+		// Set light color
+		SetColor(Template.LightColor, LightColorID);
 
 		Objects.insert(std::make_pair(Template.ID, Template));
 	}
@@ -708,6 +720,11 @@ _Object *_Stats::CreateProjectile(const _ObjectTemplate &Template, const glm::ve
 	Projectile->Radius = Template.Attributes.at("radius").Float;
 	Projectile->Scale = Template.Attributes.at("scale").Float;
 	Projectile->PositionZ = OBJECT_Z;
+	Projectile->LightTexture = Template.LightTexture;
+	if(Projectile->LightTexture) {
+		Projectile->LightColor = Template.LightColor;
+		Projectile->LightScale = glm::vec2(Template.Attributes.at("light_scale").Float);
+	}
 
 	return Projectile;
 }

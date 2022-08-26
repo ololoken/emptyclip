@@ -114,6 +114,7 @@ class _Object {
 
 		virtual void Update(double FrameTime);
 		virtual void Render(double BlendFactor);
+		virtual void RenderLights(double BlendFactor);
 		virtual void Serialize(ae::_Buffer &Buffer) {}
 		bool IsDying() const { return Action == ACTION_DYING || Action == ACTION_STARTDEATH; }
 		bool CanFreePath() const { return FreePathing || FreePathingTimer > 0.0; }
@@ -122,6 +123,7 @@ class _Object {
 		const ae::_Sound *GetSound(int SoundType) const;
 
 		void GetRenderBounds(glm::vec4 &Bounds);
+		void GetLightBounds(glm::vec4 &Bounds);
 		void FacePosition(const glm::vec2 &Target);
 		void SetPosition(const glm::vec2 &NewPosition);
 		void GetDrawPosition(glm::vec2 &DrawPosition, double BlendFactor) { DrawPosition = Position * (float)BlendFactor + LastPosition * (float)(1.0 - BlendFactor); }
@@ -182,8 +184,11 @@ class _Object {
 
 		// Graphics
 		const ae::_Texture *Texture{nullptr};
+		const ae::_Texture *LightTexture{nullptr};
 		const ae::_Mesh *Mesh{nullptr};
 		glm::vec4 Color{1.0f};
+		glm::vec4 LightColor{1.0f};
+		glm::vec2 LightScale{1.0f};
 		float Rotation{0.0f};
 		float Scale{1.0f};
 		float PositionZ{0.0f};

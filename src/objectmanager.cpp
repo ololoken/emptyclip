@@ -101,8 +101,16 @@ void _ObjectManager::Update(double FrameTime, _Map *Map) {
 					RenderList[RENDER_ITEMS].push_back(Object);
 				else if(Object->Template.Type == _Object::PROP)
 					RenderList[RENDER_PROP].push_back(Object);
-				else if(Object->Template.Type == _Object::PROJECTILE)
+				else if(Object->Template.Type == _Object::PROJECTILE) {
 					RenderList[RENDER_PROJECTILES].push_back(Object);
+				}
+			}
+
+			// Get light bounds
+			if(Object->LightTexture) {
+				Object->GetLightBounds(Bounds);
+				if(Map->Camera->IsAABBInView(Bounds))
+					RenderList[RENDER_LIGHTS].push_back(Object);
 			}
 
 			++Iterator;
@@ -114,6 +122,14 @@ void _ObjectManager::Update(double FrameTime, _Map *Map) {
 int _ObjectManager::Render(int Type, double BlendFactor) {
 	for(auto Iterator : RenderList[Type])
 		Iterator->Render(BlendFactor);
+
+	return (int)RenderList[Type].size();
+}
+
+// Render object lights
+int _ObjectManager::RenderLights(int Type, double BlendFactor) {
+	for(auto Iterator : RenderList[Type])
+		Iterator->RenderLights(BlendFactor);
 
 	return (int)RenderList[Type].size();
 }
