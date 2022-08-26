@@ -1,6 +1,6 @@
 id	icon_id	soundgroup_id	particle_id	light_id	lightcolor_id	light_scale	radius	scale
-plasma	textures/projectiles/plasma.png	plasma		textures/lights/circle.png	plasma	2	0.25	0.5
-rocket	textures/projectiles/rocket.png	rocketlauncher	rocket_smoke0	textures/lights/circle.png	fireball	5	0.25	0.5
+plasma	textures/projectiles/plasma.png	plasma		textures/lights/circle.png	plasma	1	0.25	0.5
+rocket	textures/projectiles/rocket.png	rocketlauncher	rocket_smoke0	textures/lights/circle.png	fireball	1	0.25	0.5
 bolt	textures/projectiles/bolt.png					0	0.25	0.5
-fireball	textures/projectiles/fireball.png		fireball_smoke0	textures/lights/circle.png	fireball	2	0.25	0.5
-fireball_large	textures/projectiles/fireball.png		fireball_smoke1	textures/lights/circle.png	fireball	4	0.5	1
+fireball	textures/projectiles/fireball.png		fireball_smoke0	textures/lights/circle.png	fireball	1	0.25	0.5
+fireball_large	textures/projectiles/fireball.png		fireball_smoke1	textures/lights/circle.png	fireball	2	0.5	1
