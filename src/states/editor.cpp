@@ -303,12 +303,14 @@ bool _EditorState::HandleKey(const ae::_KeyEvent &KeyEvent) {
 							SavedText[EditorInput] = InputText;
 					break;
 					case EDITINPUT_COLOR:
-						if(SelectedBlocks.size()) {
-							if(ae::Assets.Colors.find(InputText) != ae::Assets.Colors.end()) {
+						if(ae::Assets.Colors.find(InputText) != ae::Assets.Colors.end()) {
+							if(SelectedBlocks.size()) {
 								for(const auto &Index : SelectedBlocks) {
 									Map->GetBlock(EditLayer, Index)->Color = ae::Assets.Colors[InputText];
 								}
 							}
+							else
+								BrushColor = ae::Assets.Colors[InputText];
 						}
 					break;
 				}
@@ -394,7 +396,7 @@ bool _EditorState::HandleKey(const ae::_KeyEvent &KeyEvent) {
 			break;
 			case SDL_SCANCODE_C:
 				if(IsShiftDown) {
-					ExecuteIOCommand(EDITINPUT_COLOR);
+					ExecuteShowInput(EDITINPUT_COLOR);
 					Framework.IgnoreNextInputEvent = true;
 				}
 				else
@@ -426,7 +428,7 @@ bool _EditorState::HandleKey(const ae::_KeyEvent &KeyEvent) {
 			break;
 			case SDL_SCANCODE_M:
 				if(IsShiftDown) {
-					ExecuteIOCommand(EDITINPUT_MONSTERIDENTIFIER);
+					ExecuteShowInput(EDITINPUT_MONSTERIDENTIFIER);
 					Framework.IgnoreNextInputEvent = true;
 				}
 				else
@@ -443,7 +445,7 @@ bool _EditorState::HandleKey(const ae::_KeyEvent &KeyEvent) {
 			break;
 			case SDL_SCANCODE_P:
 				if(IsShiftDown) {
-					ExecuteIOCommand(EDITINPUT_PARTICLEIDENTIFIER);
+					ExecuteShowInput(EDITINPUT_PARTICLEIDENTIFIER);
 					Framework.IgnoreNextInputEvent = true;
 				}
 			break;
@@ -453,16 +455,16 @@ bool _EditorState::HandleKey(const ae::_KeyEvent &KeyEvent) {
 			break;
 			case SDL_SCANCODE_I:
 				if(IsShiftDown) {
-					ExecuteIOCommand(EDITINPUT_ITEMIDENTIFIER);
+					ExecuteShowInput(EDITINPUT_ITEMIDENTIFIER);
 					Framework.IgnoreNextInputEvent = true;
 				}
 			break;
 			case SDL_SCANCODE_L:
-				ExecuteIOCommand(EDITINPUT_LOAD);
+				ExecuteShowInput(EDITINPUT_LOAD);
 				Framework.IgnoreNextInputEvent = true;
 			break;
 			case SDL_SCANCODE_S:
-				ExecuteIOCommand(EDITINPUT_SAVE);
+				ExecuteShowInput(EDITINPUT_SAVE);
 				Framework.IgnoreNextInputEvent = true;
 			break;
 			case SDL_SCANCODE_T:
@@ -782,6 +784,7 @@ void _EditorState::Update(double FrameTime) {
 					Block.Rotation = Rotation;
 					Block.ScaleX = ScaleX;
 					Block.Walkable = Walkable || (EditLayer == MAPLAYER_FORE);
+					Block.Color = BrushColor;
 
 					Map->AddBlock(EditLayer, Block);
 				}
@@ -877,39 +880,38 @@ void _EditorState::Render(double BlendFactor) {
 	Map->RenderFloors();
 
 	// Draw tentative block
-	if(IsDrawing) {
-		if(Brush[EditMode]) {
+	if(IsDrawing && Brush[EditMode]) {
+		if(EditMode == EDITMODE_EVENTS) {
 			ae::Graphics.SetColor(COLOR_WHITE);
-			if(EditMode == EDITMODE_EVENTS) {
-				ae::Graphics.SetDepthTest(false);
-				ae::Graphics.DrawRepeatable(glm::vec3(DrawStart.x, DrawStart.y, MAP_LAYEROFFSET), glm::vec3(DrawEnd.x, DrawEnd.y, MAP_LAYEROFFSET), Brush[EditMode]->Style->Texture, 0, 1.0f);
-				ae::Graphics.SetDepthTest(true);
+			ae::Graphics.SetDepthTest(false);
+			ae::Graphics.DrawRepeatable(glm::vec3(DrawStart.x, DrawStart.y, MAP_LAYEROFFSET), glm::vec3(DrawEnd.x, DrawEnd.y, MAP_LAYEROFFSET), Brush[EditMode]->Style->Texture, 0, 1.0f);
+			ae::Graphics.SetDepthTest(true);
+		}
+		else {
+			ae::Graphics.SetColor(BrushColor);
+			if(EditLayer == MAPLAYER_FORE) {
+				ae::Graphics.DrawRepeatable(glm::vec3(DrawStart.x, DrawStart.y, MaxZ + MAP_LAYEROFFSET), glm::vec3(DrawEnd.x, DrawEnd.y, MaxZ + MAP_LAYEROFFSET), Brush[EditMode]->Style->Texture, Rotation, ScaleX);
 			}
-			else {
-				if(EditLayer == MAPLAYER_FORE) {
-					ae::Graphics.DrawRepeatable(glm::vec3(DrawStart.x, DrawStart.y, MaxZ + MAP_LAYEROFFSET), glm::vec3(DrawEnd.x, DrawEnd.y, MaxZ + MAP_LAYEROFFSET), Brush[EditMode]->Style->Texture, Rotation, ScaleX);
-				}
-				else if(EditLayer == MAPLAYER_FLAT) {
-					glm::vec2 Offset;
-					int Side;
-					if(Rotation == 0.0f || Rotation == 180.0f) {
-						Side = 3;
-						Offset.y = 0.5f;
-					}
-					else {
-						Side = 2;
-						Offset.x = 0.5f;
-					}
-					ae::Graphics.DrawWall(glm::vec3(glm::vec2(DrawStart) + Offset, MinZ), glm::vec3(DrawEnd.x - DrawStart.x, DrawEnd.y - DrawStart.y, MaxZ - MinZ), Brush[EditMode]->Style->Texture, Side);
+			else if(EditLayer == MAPLAYER_FLAT) {
+				glm::vec2 Offset;
+				int Side;
+				if(Rotation == 0.0f || Rotation == 180.0f) {
+					Side = 3;
+					Offset.y = 0.5f;
 				}
 				else {
-					if(MaxZ == MinZ) {
-						ae::Graphics.DrawRepeatable(glm::vec3(DrawStart.x, DrawStart.y, MinZ + MAP_LAYEROFFSET * EditLayer), glm::vec3(DrawEnd.x, DrawEnd.y, MinZ + MAP_LAYEROFFSET * EditLayer), Brush[EditMode]->Style->Texture, Rotation, ScaleX);
-					}
-					else {
-						ae::Graphics.SetVBO(ae::VBO_CUBE);
-						ae::Graphics.DrawCube(glm::vec3(DrawStart.x, DrawStart.y, MinZ), glm::vec3(DrawEnd.x - DrawStart.x, DrawEnd.y - DrawStart.y, MaxZ - MinZ), Brush[EditMode]->Style->Texture);
-					}
+					Side = 2;
+					Offset.x = 0.5f;
+				}
+				ae::Graphics.DrawWall(glm::vec3(glm::vec2(DrawStart) + Offset, MinZ), glm::vec3(DrawEnd.x - DrawStart.x, DrawEnd.y - DrawStart.y, MaxZ - MinZ), Brush[EditMode]->Style->Texture, Side);
+			}
+			else {
+				if(MaxZ == MinZ) {
+					ae::Graphics.DrawRepeatable(glm::vec3(DrawStart.x, DrawStart.y, MinZ + MAP_LAYEROFFSET * EditLayer), glm::vec3(DrawEnd.x, DrawEnd.y, MinZ + MAP_LAYEROFFSET * EditLayer), Brush[EditMode]->Style->Texture, Rotation, ScaleX);
+				}
+				else {
+					ae::Graphics.SetVBO(ae::VBO_CUBE);
+					ae::Graphics.DrawCube(glm::vec3(DrawStart.x, DrawStart.y, MinZ), glm::vec3(DrawEnd.x - DrawStart.x, DrawEnd.y - DrawStart.y, MaxZ - MinZ), Brush[EditMode]->Style->Texture);
 				}
 			}
 		}
@@ -1275,7 +1277,7 @@ void _EditorState::DrawBrush() {
 			float BlockMaxZ;
 			bool BlockWalkable;
 			float TextRotation;
-			glm::vec4 BlockColor(1.0f);
+			glm::vec4 BlockColor(BrushColor);
 			glm::vec2 BlockSize(0.0f);
 			if(SelectedBlocks.size() == 1) {
 				_Block *SelectedBlock = Map->GetBlock(EditLayer, SelectedBlocks[0]);
@@ -1646,10 +1648,10 @@ void _EditorState::ProcessIcons(int Index, int Type) {
 				ExecuteUpdateGridMode(1);
 		break;
 		case ICON_LOAD:
-			ExecuteIOCommand(EDITINPUT_LOAD);
+			ExecuteShowInput(EDITINPUT_LOAD);
 		break;
 		case ICON_SAVE:
-			ExecuteIOCommand(EDITINPUT_SAVE);
+			ExecuteShowInput(EDITINPUT_SAVE);
 		break;
 		case ICON_TEST:
 			ExecuteTest();
@@ -1664,7 +1666,7 @@ void _EditorState::ProcessBlockIcons(int Index, int Type) {
 	switch(Index) {
 		case ICON_COLOR:
 			if(SelectedBlocks.size())
-				ExecuteIOCommand(EDITINPUT_COLOR);
+				ExecuteShowInput(EDITINPUT_COLOR);
 		break;
 		case ICON_WALK:
 			ExecuteWalkable();
@@ -1718,13 +1720,13 @@ void _EditorState::ProcessEventIcons(int Index, int Type) {
 			ExecuteChangeActive();
 		break;
 		case ICON_ITEMIDENTIFIER:
-			ExecuteIOCommand(EDITINPUT_ITEMIDENTIFIER);
+			ExecuteShowInput(EDITINPUT_ITEMIDENTIFIER);
 		break;
 		case ICON_MONSTERIDENTIFIER:
-			ExecuteIOCommand(EDITINPUT_MONSTERIDENTIFIER);
+			ExecuteShowInput(EDITINPUT_MONSTERIDENTIFIER);
 		break;
 		case ICON_PARTICLEIDENTIFIER:
-			ExecuteIOCommand(EDITINPUT_PARTICLEIDENTIFIER);
+			ExecuteShowInput(EDITINPUT_PARTICLEIDENTIFIER);
 		break;
 	}
 }
@@ -2014,8 +2016,8 @@ void _EditorState::ExecuteUpdateCheckpointIndex(int Value) {
 	CheckpointIndex = std::max(0, CheckpointIndex + Value);
 }
 
-// Executes the an I/O command
-void _EditorState::ExecuteIOCommand(int Type) {
+// Executes the show input command
+void _EditorState::ExecuteShowInput(int Type) {
 	EditorInput = Type;
 	InputBox->SetActive(true);
 	ae::_Element *TextBox = InputBox->Children.front();
@@ -2100,6 +2102,7 @@ void _EditorState::ExecuteCopy() {
 				Rotation = Block->Rotation;
 				ScaleX = Block->ScaleX;
 				Walkable = Block->Walkable;
+				BrushColor = Block->Color;
 				Brush[EDITMODE_BLOCKS] = GetBrushFromTexture(EDITMODE_BLOCKS, Block->Texture);
 				ae::_Element *AltBrush = GetBrushFromTexture(EDITMODE_BLOCKS, Block->AltTexture);
 				if(AltBrush) {

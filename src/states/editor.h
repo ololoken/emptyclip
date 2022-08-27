@@ -192,7 +192,7 @@ class _EditorState : public ae::_State {
 		void ExecuteRotate();
 		void ExecuteMirror();
 		void ExecuteToggleTile();
-		void ExecuteIOCommand(int Type);
+		void ExecuteShowInput(int Type);
 		void ExecuteClear();
 		void ExecuteTest();
 		void ExecuteDelete();
@@ -261,6 +261,9 @@ class _EditorState : public ae::_State {
 		ae::_Element *EventElement;
 		ae::_Element *PaletteElement[EDITMODE_COUNT];
 		ae::_Element *InputBox;
+
+		// Brush
+		glm::vec4 BrushColor{1.0f};
 
 		// Blocks
 		std::vector<size_t> SelectedBlocks;
