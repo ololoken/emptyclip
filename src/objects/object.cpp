@@ -71,7 +71,7 @@ void _Object::RenderLights(double BlendFactor) {
 		return;
 
 	ae::Graphics.SetColor(LightColor);
-	ae::Graphics.DrawSprite(glm::vec3(Position, 0), LightTexture, 0, LightScale);
+	ae::Graphics.DrawSprite(glm::vec3(Position, OBJECT_Z), LightTexture, 0, LightScale);
 }
 
 // Get sound for a sound type
