@@ -121,6 +121,7 @@ void _PlayState::Init() {
 	// Initialize camera
 	ae::_CameraSettings CameraSettings;
 	CameraSettings.UpdateDivisor = CAMERA_DIVISOR;
+	CameraSettings.SnappingThreshold = CAMERA_SNAPPING_THRESHOLD;
 	Camera = new ae::_Camera(CameraSettings);
 	Camera->CalculateFrustum(ae::Graphics.AspectRatio);
 	Camera->ForcePosition(glm::vec3(Player->Position, CAMERA_DISTANCE));

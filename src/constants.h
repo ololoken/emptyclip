@@ -56,6 +56,7 @@ const  float        GAME_TILE_SIZE                       =  64.0f;
 const  float        CAMERA_DISTANCE                      =  6.5f;
 const  float        CAMERA_DISTANCE_AIMED                =  CAMERA_DISTANCE;
 const  float        CAMERA_DIVISOR                       =  0.2f;
+const  float        CAMERA_SNAPPING_THRESHOLD            =  0.0001f;
 const  float        CAMERA_EDITOR_DIVISOR                =  0.05f;
 const  float        CAMERA_FOVY                          =  90.0f;
 const  float        CAMERA_NEAR                          =  0.1f;
