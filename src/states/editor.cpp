@@ -573,8 +573,11 @@ void _EditorState::HandleMouseButton(const ae::_MouseEvent &MouseEvent) {
 											return;
 									}
 
-									// Make selection a single block
-									SelectedBlocks.clear();
+									// Shift adds to selection
+									if(IsShiftDown)
+										IsMoving = false;
+									else
+										SelectedBlocks.clear();
 									SelectedBlocks.push_back(SelectedBlockIndex);
 									UpdateSelectionBounds();
 								}
