@@ -421,7 +421,10 @@ bool _EditorState::HandleKey(const ae::_KeyEvent &KeyEvent) {
 				ExecuteHighlightBlocks();
 			break;
 			case SDL_SCANCODE_A:
-				ExecuteWalkable();
+				if(EditMode == EDITMODE_BLOCKS)
+					ExecuteWalkable();
+				else if(EditMode == EDITMODE_EVENTS)
+					ExecuteChangeActive();
 			break;
 			case SDL_SCANCODE_R:
 				ExecuteRotate();
