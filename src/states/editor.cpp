@@ -61,15 +61,6 @@ const char *InputBoxStrings[EDITINPUT_COUNT] = {
 	"Color",
 };
 
-// Input box
-const int PaletteSizes[EDITMODE_COUNT] = {
-	64,
-	64,
-	64,
-	64,
-	64,
-};
-
 // Initialize
 void _EditorState::Init() {
 	ae::Graphics.Element->SetActive(false);
@@ -688,9 +679,9 @@ void _EditorState::HandleMouseWheel(int Direction) {
 		// Inside palette
 		if(ae::Input.GetMouse().x >= ae::Graphics.ViewportSize.x) {
 			if(Direction > 0)
-				PaletteElement[EditMode]->UpdateChildrenOffset(glm::ivec2(0, PaletteSizes[EditMode]));
+				PaletteElement[EditMode]->UpdateChildrenOffset(glm::ivec2(0, EDITOR_PALETTE_SIZE));
 			else
-				PaletteElement[EditMode]->UpdateChildrenOffset(glm::ivec2(0, -PaletteSizes[EditMode]));
+				PaletteElement[EditMode]->UpdateChildrenOffset(glm::ivec2(0, -EDITOR_PALETTE_SIZE));
 		}
 		// Inside controls
 		else {
@@ -1226,7 +1217,7 @@ void _EditorState::LoadPaletteButtons(std::vector<_Brush> &Icons, int Type) {
 		Button->Name = Icons[i].ID;
 		Button->Parent = PaletteElement[Type];
 		Button->BaseOffset = Offset;
-		Button->BaseSize = glm::ivec2(PaletteSizes[Type], PaletteSizes[Type]);
+		Button->BaseSize = glm::ivec2(EDITOR_PALETTE_SIZE, EDITOR_PALETTE_SIZE);
 		Button->Alignment = ae::LEFT_TOP;
 		Button->Style = Style;
 		Button->HoverStyle = ae::Assets.Styles["style_editor_button_selected"];
@@ -1236,9 +1227,9 @@ void _EditorState::LoadPaletteButtons(std::vector<_Brush> &Icons, int Type) {
 
 		PaletteElement[Type]->Children.push_back(Button);
 
-		Offset.x += PaletteSizes[Type];
-		if(Offset.x > Width - PaletteSizes[Type]) {
-			Offset.y += PaletteSizes[Type];
+		Offset.x += EDITOR_PALETTE_SIZE;
+		if(Offset.x > Width - EDITOR_PALETTE_SIZE) {
+			Offset.y += EDITOR_PALETTE_SIZE;
 			Offset.x = 0;
 		}
 	}

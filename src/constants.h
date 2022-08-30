@@ -144,6 +144,7 @@ const  double       EDITOR_PERIODADJUST                  =  0.1;
 const  int          EDITOR_DEFAULT_LAYER                 =  1;
 const  int          EDITOR_DEFAULT_GRIDMODE              =  5;
 const  glm::ivec2   EDITOR_VIEWPORT_OFFSET               =  glm::ivec2(256,168);
+const  int          EDITOR_PALETTE_SIZE                  =  64;
 const  int          EDITOR_PALETTE_SELECTEDSIZE          =  32;
 const  float        EDITOR_LEVEL_Z                       =  20.0f;
 //     Menu
