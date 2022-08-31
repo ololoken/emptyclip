@@ -2110,6 +2110,7 @@ void _EditorState::ExecuteCopy() {
 		case EDITMODE_EVENTS:
 			if(EventSelected()) {
 				ClipboardEvent = SelectedEvent;
+				DeselectEvent();
 			}
 		break;
 		default:
