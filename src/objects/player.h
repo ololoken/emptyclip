@@ -61,7 +61,7 @@ class _Player : public _Entity {
 		bool IsMelee() const;
 
 		void Render(double BlendFactor) override;
-		void Render2D(const glm::ivec2 &Position);
+		void Render2D(const glm::ivec2 &DrawPosition);
 
 		void Update(double FrameTime) override;
 		void UpdateAnimation(double FrameTime, bool PlaySound=true) override;

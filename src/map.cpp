@@ -497,9 +497,9 @@ bool _Map::Save(const std::string &String) {
 void _Map::InitializeTiles() {
 
 	// Allocate memory
-	Data = new _Tile*[Size.x];
+	Data = new _Tile*[(size_t)Size.x];
 	for(int i = 0; i < Size.x; i++)
-		Data[i] = new _Tile[Size.y];
+		Data[i] = new _Tile[(size_t)Size.y];
 
 	// Clear out array
 	for(int i = 0; i < Size.x; i++) {
@@ -1393,7 +1393,7 @@ void _Map::GetSelectedBlocks(const glm::vec2 &Start, const glm::vec2 &End, int L
 	SelectionBounds[2] = -1;
 	SelectionBounds[3] = -1;
 	for(int i = (int)(Blocks[Layer].size())-1; i >= 0; i--) {
-		_Block &Block = Blocks[Layer][i];
+		_Block &Block = Blocks[Layer][(size_t)i];
 		if(Bounds[0] > Block.End.x + 1 || Bounds[2] < Block.Start.x || Bounds[1] > Block.End.y + 1 || Bounds[3] < Block.Start.y)
 			continue;
 
@@ -1403,7 +1403,7 @@ void _Map::GetSelectedBlocks(const glm::vec2 &Start, const glm::vec2 &End, int L
 		SelectionBounds[3] = std::max(SelectionBounds[3], Block.End.y);
 		Block.MoveStart = Block.Start;
 		Block.MoveEnd = Block.End;
-		SelectedBlocks.push_back(i);
+		SelectedBlocks.push_back((size_t)i);
 	}
 }
 
@@ -1419,7 +1419,7 @@ void _Map::RemoveEvent(int Index) {
 		return;
 
 	DeleteBlockIDFromTiles(-1, Index);
-	delete Events[Index];
+	delete Events[(size_t)Index];
 	Events.erase(Events.begin() + Index);
 }
 
@@ -1431,7 +1431,7 @@ void _Map::DeleteBlocks(int Layer, std::vector<size_t> &BlockIDs) {
 
 	// Remove blocks from events
 	for(size_t i = 0; i < BlockIDs.size(); i++) {
-		int Index = BlockIDs[i];
+		int Index = (int)BlockIDs[i];
 		DeleteBlockIDFromTiles(Layer, Index);
 		Blocks[Layer].erase(Blocks[Layer].begin() + Index);
 	}
@@ -1452,8 +1452,8 @@ void _Map::CleanObjectSpawns() {
 // Return the block index at a given layer and position
 size_t _Map::GetSelectedBlock(int Layer, const glm::ivec2 &Index) {
 	for(int i = (int)(Blocks[Layer].size())-1; i >= 0; i--) {
-		if(Index.x >= Blocks[Layer][i].Start.x && Index.y >= Blocks[Layer][i].Start.y && Index.x <= Blocks[Layer][i].End.x && Index.y <= Blocks[Layer][i].End.y)
-			return i;
+		if(Index.x >= Blocks[Layer][(size_t)i].Start.x && Index.y >= Blocks[Layer][(size_t)i].Start.y && Index.x <= Blocks[Layer][(size_t)i].End.x && Index.y <= Blocks[Layer][(size_t)i].End.y)
+			return (size_t)i;
 	}
 
 	return (size_t)-1;
@@ -1480,9 +1480,11 @@ _Block *_Map::GetBlock(int Layer, const size_t Index) {
 }
 
 // Toggles an event's active state
-void _Map::ToggleEventActive(int Index) {
-	if(Index >= 0 && Index < (int)Events.size())
-		Events[Index]->Active = !Events[Index]->Active;
+void _Map::ToggleEventActive(size_t Index) {
+	if(Index >= Events.size())
+		return;
+
+	Events[Index]->Active = !Events[Index]->Active;
 }
 
 // Determines if a tile has any events
@@ -1585,7 +1587,7 @@ int _Map::GetSelectedEvent(const glm::ivec2 &Index, _Event **ReturnEvent) {
 	for(auto Iterator = Events.rbegin(); Iterator != Events.rend(); ++Iterator) {
 		_Event *Event = *Iterator;
 
-		if(Index.x >= Event->Start.x && Index.y >=Event->Start.y && Index.x <= Event->End.x && Index.y <= Event->End.y) {
+		if(Index.x >= Event->Start.x && Index.y >= Event->Start.y && Index.x <= Event->End.x && Index.y <= Event->End.y) {
 			*ReturnEvent = Event;
 			return Events.size() - 1 - (Iterator - Events.rbegin());
 		}
@@ -1602,7 +1604,7 @@ size_t _Map::ChangeLayer(int OldLayer, int NewLayer, int Index) {
 	DeleteBlockIDFromTiles(OldLayer, Index);
 
 	// Add new block
-	Blocks[NewLayer].push_back(Blocks[OldLayer][Index]);
+	Blocks[NewLayer].push_back(Blocks[OldLayer][(size_t)Index]);
 	Blocks[OldLayer].erase(Blocks[OldLayer].begin() + Index);
 
 	return Blocks[NewLayer].size() - 1;
@@ -1710,7 +1712,7 @@ void _Map::ChangeMapState(const _Event *Event) {
 	const std::vector<_EventTile> &Tiles = Event->Tiles;
 
 	// Switch the texture of the first block for wall switches
-	int StartIndex = 0;
+	size_t StartIndex = 0;
 	if(Event->Type == EVENT_WALLSWITCH && Tiles.size() > 0 && Tiles[0].BlockID != -1) {
 		SwapBlockTextures(Tiles[0].Layer, Tiles[0].BlockID);
 		StartIndex = 1;
@@ -1749,7 +1751,7 @@ void _Map::SwapBlockTextures(int Layer, int Index) {
 	if(Index == -1)
 		return;
 
-	_Block *Block = &Blocks[Layer][Index];
+	_Block *Block = &Blocks[Layer][(size_t)Index];
 	std::swap(Block->Texture, Block->AltTexture);
 }
 
@@ -1792,7 +1794,7 @@ int _Map::RenderFloors() {
 	ae::Graphics.SetDepthMask(true);
 	ae::Graphics.SetDepthTest(true);
 	for(int i = MAPLAYER_FLOOR0; i <= MAPLAYER_FLOOR2; i++) {
-		for(int j = 0; j < (int)(Blocks[i].size()); j++) {
+		for(size_t j = 0; j < Blocks[i].size(); j++) {
 			_Block *Block = &Blocks[i][j];
 
 			// Check render bounds
@@ -1948,7 +1950,7 @@ void _Map::RenderEvents(std::vector<const ae::_Texture *> &Textures) {
 		ae::Graphics.DrawRepeatable(
 			glm::vec3(Events[i]->Start.x, Events[i]->Start.y, MAP_LAYEROFFSET),
 			glm::vec3(Events[i]->End.x + 1.0f, Events[i]->End.y + 1.0f, MAP_LAYEROFFSET),
-			Textures[Events[i]->Type],
+			Textures[(size_t)Events[i]->Type],
 			0,
 			1.0f
 		);

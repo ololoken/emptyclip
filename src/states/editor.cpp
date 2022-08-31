@@ -52,7 +52,7 @@ inline bool CompareBrush(_Brush &First, _Brush &Second) {
 }
 
 // Input box
-const char *InputBoxStrings[EDITINPUT_COUNT] = {
+static const char *InputBoxStrings[EDITINPUT_COUNT] = {
 	"Load map",
 	"Save map",
 	"Set item",

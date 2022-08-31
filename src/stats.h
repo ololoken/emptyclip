@@ -117,14 +117,14 @@ class _Stats {
 		_Object *CreateProjectile(const _ObjectTemplate &Template, const glm::vec2 &Position) const;
 
 		const _Level &FindLevel(int64_t Experience);
-		int GetLevelHealth(int Level) { return Levels[Level-1].HealthBonus; }
-		int GetSkillPointsRemaining(int Level) { return Levels[Level-1].SkillPoints; }
+		int GetLevelHealth(int Level) { return Levels[(size_t)Level-1].HealthBonus; }
+		int GetSkillPointsRemaining(int Level) { return Levels[(size_t)Level-1].SkillPoints; }
 		int GetMaxSkillLevel(int PlayerLevel) const;
 		int GetMaxLevel() const { return (int)Levels.size(); }
 
 		int GetValidSkillLevel(int Level);
-		int GetSkill(int Level, int Type, int Index=0) const { return Skills[Level].Data[Type][Index]; }
-		float GetSkillBonusMultiplier(int Level, int Type, int Index=0) const { return (100 + Skills[Level].Data[Type][Index]) * 0.01f; }
+		int GetSkill(int Level, int Type, int Index=0) const { return Skills[(size_t)Level].Data[Type][Index]; }
+		float GetSkillBonusMultiplier(int Level, int Type, int Index=0) const { return (100 + Skills[(size_t)Level].Data[Type][Index]) * 0.01f; }
 
 		void GetRandomDrop(const _ItemDrop *ItemDrop, _ObjectSpawn *ObjectSpawn);
 

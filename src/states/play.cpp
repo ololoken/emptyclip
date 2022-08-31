@@ -1256,7 +1256,7 @@ void _PlayState::CreateItemDrop(const _Entity *Entity, float DropRate) {
 		return;
 
 	// Get monster
-	_Monster *Monster = (_Monster *)Entity;
+	const _Monster *Monster = (const _Monster *)Entity;
 	if(!Monster->ItemDrop)
 		return;
 

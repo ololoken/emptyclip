@@ -517,14 +517,14 @@ void _Player::Render(double BlendFactor) {
 }
 
 // Draws the player in screen space
-void _Player::Render2D(const glm::ivec2 &Position) {
+void _Player::Render2D(const glm::ivec2 &DrawPosition) {
 	ae::Graphics.SetProgram(ae::Assets.Programs["ortho_pos_uv"]);
 
 	// Draw legs
 	const ae::_Reel *LegTemplate = LegAnimation->Reels[LegAnimation->Reel];
 	ae::Graphics.SetColor(Color);
 	ae::Graphics.DrawAnimationFrame(
-		glm::vec3(Position, 0),
+		glm::vec3(DrawPosition, 0),
 		LegTemplate->Texture,
 		glm::vec4(LegAnimation->TextureCoords),
 		Rotation,
@@ -535,7 +535,7 @@ void _Player::Render2D(const glm::ivec2 &Position) {
 	const ae::_Reel *WalkTemplate = Animation->Reels[Animation->Reel];
 	ae::Graphics.SetColor(COLOR_WHITE);
 	ae::Graphics.DrawAnimationFrame(
-		glm::vec3(Position, 0.01f),
+		glm::vec3(DrawPosition, 0.01f),
 		WalkTemplate->Texture,
 		glm::vec4(Animation->TextureCoords),
 		Rotation,
@@ -981,9 +981,9 @@ int _Player::FindItem(int ItemType) {
 }
 
 // Searchs the inventory for a certain item
-int _Player::FindItem(const std::string &ID) {
+int _Player::FindItem(const std::string &ItemID) {
 	for(int i = INVENTORY_BAGSTART; i < INVENTORY_BAGEND; i++) {
-		if(HasInventory(i) && Inventory[i]->ID == ID)
+		if(HasInventory(i) && Inventory[i]->ID == ItemID)
 			return i;
 	}
 
