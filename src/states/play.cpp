@@ -1539,6 +1539,10 @@ void _PlayState::UpdateEvents(double FrameTime) {
 			break;
 		}
 
+		// Play sound
+		if(!Event->SoundID.empty())
+			ae::Audio.PlaySound(ae::Assets.Sounds[Event->SoundID]);
+
 		// Decrease the event level
 		if(Decrement) {
 			Event->StartTimer();

@@ -257,6 +257,13 @@ _Map::_Map(const std::string &Filename, double Clock, int SpawnMultiplier) : _Ma
 						if(GameAssets.Particles.find(Event->ParticleID) == GameAssets.Particles.end())
 							throw std::runtime_error(std::string(__func__) + " unknown particle '" + Event->ParticleID + "'");
 					} break;
+					// Sound ID
+					case 'S': {
+						File.ignore(1);
+						std::getline(File, Event->SoundID, '\n');
+						if(ae::Assets.Sounds.find(Event->SoundID) == ae::Assets.Sounds.end())
+							throw std::runtime_error(std::string(__func__) + " unknown sound '" + Event->SoundID + "'");
+					} break;
 				}
 			} break;
 			// Event data
@@ -453,6 +460,8 @@ bool _Map::Save(const std::string &String) {
 			File << "EM " << Event->MonsterID << '\n';
 		if(Event->ParticleID.size())
 			File << "EP " << Event->ParticleID << '\n';
+		if(Event->SoundID.size())
+			File << "ES " << Event->SoundID << '\n';
 
 		// Event tiles
 		for(const auto &Tile : Event->Tiles) {

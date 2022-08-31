@@ -58,6 +58,7 @@ const char *InputBoxStrings[EDITINPUT_COUNT] = {
 	"Set item",
 	"Set monster",
 	"Set particle",
+	"Set sound",
 	"Color",
 };
 
@@ -285,9 +286,10 @@ bool _EditorState::HandleKey(const ae::_KeyEvent &KeyEvent) {
 							SavedText[EditorInput] = InputText;
 						}
 					break;
-					case EDITINPUT_ITEMIDENTIFIER:
-					case EDITINPUT_MONSTERIDENTIFIER:
-					case EDITINPUT_PARTICLEIDENTIFIER:
+					case EDITINPUT_ITEMID:
+					case EDITINPUT_MONSTERID:
+					case EDITINPUT_PARTICLEID:
+					case EDITINPUT_SOUNDID:
 						UpdateEventID(EditorInput, InputText);
 
 						if(!EventSelected())
@@ -422,7 +424,7 @@ bool _EditorState::HandleKey(const ae::_KeyEvent &KeyEvent) {
 			break;
 			case SDL_SCANCODE_M:
 				if(IsShiftDown) {
-					ExecuteShowInput(EDITINPUT_MONSTERIDENTIFIER);
+					ExecuteShowInput(EDITINPUT_MONSTERID);
 					Framework.IgnoreNextInputEvent = true;
 				}
 				else
@@ -439,7 +441,7 @@ bool _EditorState::HandleKey(const ae::_KeyEvent &KeyEvent) {
 			break;
 			case SDL_SCANCODE_P:
 				if(IsShiftDown) {
-					ExecuteShowInput(EDITINPUT_PARTICLEIDENTIFIER);
+					ExecuteShowInput(EDITINPUT_PARTICLEID);
 					Framework.IgnoreNextInputEvent = true;
 				}
 			break;
@@ -449,7 +451,7 @@ bool _EditorState::HandleKey(const ae::_KeyEvent &KeyEvent) {
 			break;
 			case SDL_SCANCODE_I:
 				if(IsShiftDown) {
-					ExecuteShowInput(EDITINPUT_ITEMIDENTIFIER);
+					ExecuteShowInput(EDITINPUT_ITEMID);
 					Framework.IgnoreNextInputEvent = true;
 				}
 			break;
@@ -458,8 +460,14 @@ bool _EditorState::HandleKey(const ae::_KeyEvent &KeyEvent) {
 				Framework.IgnoreNextInputEvent = true;
 			break;
 			case SDL_SCANCODE_S:
-				ExecuteShowInput(EDITINPUT_SAVE);
-				Framework.IgnoreNextInputEvent = true;
+				if(IsShiftDown) {
+					ExecuteShowInput(EDITINPUT_SOUNDID);
+					Framework.IgnoreNextInputEvent = true;
+				}
+				else {
+					ExecuteShowInput(EDITINPUT_SAVE);
+					Framework.IgnoreNextInputEvent = true;
+				}
 			break;
 			case SDL_SCANCODE_T:
 				ExecuteTest();
@@ -1366,6 +1374,7 @@ void _EditorState::DrawBrush() {
 			std::string ItemID;
 			std::string MonsterID;
 			std::string ParticleID;
+			std::string SoundID;
 			double ActivationPeriod;
 			int Active;
 			int Level;
@@ -1379,15 +1388,17 @@ void _EditorState::DrawBrush() {
 				ItemID = SelectedEvent->ItemID;
 				MonsterID = SelectedEvent->MonsterID;
 				ParticleID = SelectedEvent->ParticleID;
+				SoundID = SelectedEvent->SoundID;
 				Active = SelectedEvent->Active;
 				Level = SelectedEvent->Level;
 				SpawnLevel = SelectedEvent->SpawnLevel;
 				ActivationPeriod = SelectedEvent->ActivationPeriod;
 			}
 			else {
-				ItemID = SavedText[EDITINPUT_ITEMIDENTIFIER];
-				MonsterID = SavedText[EDITINPUT_MONSTERIDENTIFIER];
-				ParticleID = SavedText[EDITINPUT_PARTICLEIDENTIFIER];
+				ItemID = SavedText[EDITINPUT_ITEMID];
+				MonsterID = SavedText[EDITINPUT_MONSTERID];
+				ParticleID = SavedText[EDITINPUT_PARTICLEID];
+				SoundID = SavedText[EDITINPUT_SOUNDID];
 				Active = EventActive;
 				Level = EventLevel;
 				SpawnLevel = EventSpawnLevel;
@@ -1416,7 +1427,7 @@ void _EditorState::DrawBrush() {
 			Buffer.str("");
 
 			TextPosition.x += 150;
-			TextPosition.y -= TextSpacingY * 2;
+			TextPosition.y -= TextSpacingY * 3;
 			MainFont->DrawText("Item:", glm::ivec2(TextPosition), ae::RIGHT_BASELINE);
 			MainFont->DrawText(ItemID, glm::ivec2(TextPosition + ValueOffset));
 
@@ -1427,6 +1438,10 @@ void _EditorState::DrawBrush() {
 			TextPosition.y += TextSpacingY;
 			MainFont->DrawText("Particle:", glm::ivec2(TextPosition), ae::RIGHT_BASELINE);
 			MainFont->DrawText(ParticleID, glm::ivec2(TextPosition + ValueOffset));
+
+			TextPosition.y += TextSpacingY;
+			MainFont->DrawText("Sound:", glm::ivec2(TextPosition), ae::RIGHT_BASELINE);
+			MainFont->DrawText(SoundID, glm::ivec2(TextPosition + ValueOffset));
 
 			IconID = "";
 		} break;
@@ -1716,14 +1731,17 @@ void _EditorState::ProcessEventIcons(int Index, int Type) {
 		case ICON_ACTIVE:
 			ExecuteChangeActive();
 		break;
-		case ICON_ITEMIDENTIFIER:
-			ExecuteShowInput(EDITINPUT_ITEMIDENTIFIER);
+		case ICON_ITEMID:
+			ExecuteShowInput(EDITINPUT_ITEMID);
 		break;
-		case ICON_MONSTERIDENTIFIER:
-			ExecuteShowInput(EDITINPUT_MONSTERIDENTIFIER);
+		case ICON_MONSTERID:
+			ExecuteShowInput(EDITINPUT_MONSTERID);
 		break;
-		case ICON_PARTICLEIDENTIFIER:
-			ExecuteShowInput(EDITINPUT_PARTICLEIDENTIFIER);
+		case ICON_PARTICLEID:
+			ExecuteShowInput(EDITINPUT_PARTICLEID);
+		break;
+		case ICON_SOUNDID:
+			ExecuteShowInput(EDITINPUT_SOUNDID);
 		break;
 	}
 }
@@ -1743,51 +1761,24 @@ void _EditorState::AddEvent(int Type) {
 	if(Type == -1)
 		return;
 
-	// Get object identifiers
-	std::string ItemID = SavedText[EDITINPUT_ITEMIDENTIFIER];
-	std::string MonsterID = SavedText[EDITINPUT_MONSTERIDENTIFIER];
-	std::string ParticleID = SavedText[EDITINPUT_PARTICLEIDENTIFIER];
-
-	// Get selected object's identifier
-	if(ObjectsSelected()) {
-		_ObjectSpawn *SelectedObject = *SelectedObjects.begin();
-		switch(SelectedObject->Type) {
-			case _Object::MONSTER:
-				MonsterID = SelectedObject->ID;
-			break;
-			default:
-				ItemID = SelectedObject->ID;
-			break;
-		}
-	}
-
+	// Set up event
 	bool AddTile = false;
 	int TileLayer = -1;
 	glm::ivec2 Start = DrawStart;
 	glm::ivec2 End = DrawEnd - 1;
-	std::string EventItemID;
-	std::string EventMonsterID;
-	std::string EventParticleID;
-
-	// Setup the event
 	switch(Type) {
 		case EVENT_DOOR:
-			EventItemID = ItemID;
 			TileLayer = MAPLAYER_FLAT;
 			AddTile = true;
 		break;
 		case EVENT_WALLSWITCH:
-			EventItemID = ItemID;
 			TileLayer = EditLayer;
 			AddTile = true;
 		break;
 		case EVENT_SPAWN:
 			EventLevel = std::max(1, EventLevel);
-			EventMonsterID = MonsterID;
-			EventParticleID = ParticleID;
 		break;
 		case EVENT_TELEPORT:
-			EventParticleID = ParticleID;
 		break;
 		default:
 		break;
@@ -1801,9 +1792,10 @@ void _EditorState::AddEvent(int Type) {
 	Event->Level = EventLevel;
 	Event->SpawnLevel = EventSpawnLevel;
 	Event->ActivationPeriod = EventActivationPeriod;
-	Event->ItemID = ItemID;
-	Event->MonsterID = MonsterID;
-	Event->ParticleID = ParticleID;
+	Event->ItemID = SavedText[EDITINPUT_ITEMID];
+	Event->MonsterID = SavedText[EDITINPUT_MONSTERID];
+	Event->ParticleID = SavedText[EDITINPUT_PARTICLEID];
+	Event->SoundID = SavedText[EDITINPUT_SOUNDID];
 	if(AddTile) {
 		int BlockIndex = Map->GetSelectedBlock(TileLayer, Start);
 		Event->AddTile(_EventTile(Start, TileLayer, BlockIndex));
@@ -1812,37 +1804,45 @@ void _EditorState::AddEvent(int Type) {
 	Map->AddEvent(Event);
 }
 
-// Updates the selected event's object identifier
+// Updates the selected event's object id
 void _EditorState::UpdateEventID(int Type, const std::string &ID) {
-	if(EventSelected()) {
-		switch(Type) {
-			case EDITINPUT_ITEMIDENTIFIER:
-				SelectedEvent->ItemID = ID;
-			break;
-			case EDITINPUT_MONSTERIDENTIFIER:
-				SelectedEvent->MonsterID = ID;
-			break;
-			case EDITINPUT_PARTICLEIDENTIFIER:
-				SelectedEvent->ParticleID = ID;
-			break;
-		}
+	if(!EventSelected())
+		return;
+
+	switch(Type) {
+		case EDITINPUT_ITEMID:
+			SelectedEvent->ItemID = ID;
+		break;
+		case EDITINPUT_MONSTERID:
+			SelectedEvent->MonsterID = ID;
+		break;
+		case EDITINPUT_PARTICLEID:
+			SelectedEvent->ParticleID = ID;
+		break;
+		case EDITINPUT_SOUNDID:
+			SelectedEvent->SoundID = ID;
+		break;
 	}
 }
 
-// Gets the selected event's object identifier
+// Gets the selected event's object id
 std::string _EditorState::GetEventID(int Type) {
-	if(EventSelected()) {
-		switch(Type) {
-			case EDITINPUT_ITEMIDENTIFIER:
-				return SelectedEvent->ItemID;
-			break;
-			case EDITINPUT_MONSTERIDENTIFIER:
-				return SelectedEvent->MonsterID;
-			break;
-			case EDITINPUT_PARTICLEIDENTIFIER:
-				return SelectedEvent->ParticleID;
-			break;
-		}
+	if(!EventSelected())
+		return "";
+
+	switch(Type) {
+		case EDITINPUT_ITEMID:
+			return SelectedEvent->ItemID;
+		break;
+		case EDITINPUT_MONSTERID:
+			return SelectedEvent->MonsterID;
+		break;
+		case EDITINPUT_PARTICLEID:
+			return SelectedEvent->ParticleID;
+		break;
+		case EDITINPUT_SOUNDID:
+			return SelectedEvent->SoundID;
+		break;
 	}
 
 	return "";
@@ -1850,23 +1850,7 @@ std::string _EditorState::GetEventID(int Type) {
 
 // Returns a valid position for the object
 glm::vec2 _EditorState::GetValidObjectPosition(const glm::vec2 &Position) const {
-	glm::vec2 NewPosition;
-
-	if(Position.x < 0)
-		NewPosition.x = 0;
-	else if(Position.x >= Map->Size.x)
-		NewPosition.x = (float)Map->Size.x;
-	else
-		NewPosition.x = Position.x;
-
-	if(Position.y < 0)
-		NewPosition.y = 0;
-	else if(Position.y >= Map->Size.y)
-		NewPosition.y = (float)Map->Size.y;
-	else
-		NewPosition.y = Position.y;
-
-	return NewPosition;
+	return glm::clamp(Position, glm::vec2(0.0f), glm::vec2(Map->Size) - MAP_EPSILON);
 }
 
 // Determines if an object is part of the selected objects list
@@ -2020,7 +2004,7 @@ void _EditorState::ExecuteShowInput(int Type) {
 	ae::_Element *TextBox = InputBox->Children.front();
 	ae::_Element *Label = TextBox->Children.front();
 	Label->Text = InputBoxStrings[Type];
-	if(Type >= EDITINPUT_ITEMIDENTIFIER && Type <= EDITINPUT_PARTICLEIDENTIFIER && EventSelected())
+	if(Type >= EDITINPUT_ITEMID && Type <= EDITINPUT_SOUNDID && EventSelected())
 		TextBox->SetText(GetEventID(Type));
 	else
 		TextBox->SetText(SavedText[Type]);
@@ -2165,8 +2149,20 @@ void _EditorState::ExecutePaste(int PasteMode) {
 				}
 			}
 		break;
-		case EDITMODE_EVENTS:
-			if(ClipboardEvent != nullptr) {
+		case EDITMODE_EVENTS: {
+			if(!ClipboardEvent)
+				break;
+
+			if(SelectedEvent) {
+				SelectedEvent->Level = ClipboardEvent->Level;
+				SelectedEvent->SpawnLevel = ClipboardEvent->SpawnLevel;
+				SelectedEvent->ActivationPeriod = ClipboardEvent->ActivationPeriod;
+				SelectedEvent->ItemID = ClipboardEvent->ItemID;
+				SelectedEvent->MonsterID = ClipboardEvent->MonsterID;
+				SelectedEvent->ParticleID = ClipboardEvent->ParticleID;
+				SelectedEvent->SoundID = ClipboardEvent->SoundID;
+			}
+			else {
 				DrawStart = Map->GetValidCoord(StartPosition);
 				DrawEnd = Map->GetValidCoord(ClipboardEvent->End - ClipboardEvent->Start + glm::ivec2(StartPosition));
 
@@ -2181,10 +2177,11 @@ void _EditorState::ExecutePaste(int PasteMode) {
 				Event->ItemID = ClipboardEvent->ItemID;
 				Event->MonsterID = ClipboardEvent->MonsterID;
 				Event->ParticleID = ClipboardEvent->ParticleID;
+				Event->SoundID = ClipboardEvent->SoundID;
 
 				Map->AddEvent(Event);
 			}
-		break;
+		} break;
 		default:
 			for(auto Iterator : ClipboardObjects)
 				SpawnObject(GetValidObjectPosition(StartPosition - CopiedPosition + Iterator->Position), Iterator->Rotation, Iterator->Scale, Iterator->Type, Iterator->ID, Iterator->Level, IsShiftDown);
@@ -2579,7 +2576,7 @@ void _EditorState::SetEventProperties(double ActivationPeriod, int Level, int Ac
 	EventActivationPeriod = ActivationPeriod;
 	EventLevel = Level;
 	EventActive = Active;
-	SavedText[EDITINPUT_PARTICLEIDENTIFIER] = ParticleID;
+	SavedText[EDITINPUT_PARTICLEID] = ParticleID;
 }
 
 // Clears all the objects in the clipboard

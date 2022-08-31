@@ -62,7 +62,7 @@ static const int KeyBindings[] = {
 	Action::GAME_INVENTORY,
 };
 
-static const std::string KEYLABEL_IDENTIFIERS[] = {
+static const std::string KEYLABELS[] = {
 	"label_menu_options_config_up",
 	"label_menu_options_config_down",
 	"label_menu_options_config_left",
@@ -661,7 +661,7 @@ void _Menu::RefreshSaveSlots() {
 // Refreshes the input map labels
 void _Menu::RefreshInputLabels() {
 	for(size_t i = 0; i < LABEL_COUNT; i++) {
-		InputLabels[i] = ae::Assets.Elements[KEYLABEL_IDENTIFIERS[i]];
+		InputLabels[i] = ae::Assets.Elements[KEYLABELS[i]];
 		InputLabels[i]->Text = ae::Actions.GetInputNameForAction(i);
 		InputLabels[i]->Parent->Index = i;
 	}

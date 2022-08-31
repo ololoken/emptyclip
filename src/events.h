@@ -42,12 +42,12 @@ enum EventType {
 
 struct _EventTile {
 
-	_EventTile() : Coord(0.0f), Layer(0), BlockID(0) {}
+	_EventTile() { }
 	_EventTile(const glm::ivec2 &Coord, int Layer, int BlockID) : Coord(Coord), Layer(Layer), BlockID(BlockID) {}
 
-	glm::ivec2 Coord;
-	int Layer;
-	int BlockID;
+	glm::ivec2 Coord{0};
+	int Layer{0};
+	int BlockID{0};
 };
 
 // Classes
@@ -79,6 +79,7 @@ class _Event {
 		std::string ItemID;
 		std::string MonsterID;
 		std::string ParticleID;
+		std::string SoundID;
 		double Timer{0.0};
 		double ActivationPeriod{0.0};
 };
