@@ -22,3 +22,4 @@ gunner	gunner_move	gunner_shoot	gunner_die
 wisp	wisp_move	wisp_melee	wisp_die			
 demon	demon_move	demon_shoot	demon_die			
 alien	alien_move	alien_shoot	alien_die			
+bot	bot_move	bot_melee	bot_die			
