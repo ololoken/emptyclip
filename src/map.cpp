@@ -1780,8 +1780,8 @@ int _Map::RenderFloors() {
 
 		ae::Graphics.SetColor(Block->Color);
 		ae::Graphics.DrawRepeatable(
-			glm::vec3(Block->Start.x, Block->Start.y, Block->MinZ + MAP_LAYEROFFSET * i),
-			glm::vec3(Block->End.x + 1.0f, Block->End.y + 1.0f, Block->MinZ + MAP_LAYEROFFSET * i),
+			glm::vec3(Block->Start.x, Block->Start.y, Block->MinZ),
+			glm::vec3(Block->End.x + 1.0f, Block->End.y + 1.0f, Block->MinZ),
 			Block->Texture,
 			Block->Rotation,
 			Block->ScaleX

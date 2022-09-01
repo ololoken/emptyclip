@@ -1978,6 +1978,9 @@ void _EditorState::ExecuteChangeLevel(int Change) {
 
 // Executes the change activation period command
 void _EditorState::ExecuteChangePeriod(double Value) {
+	if(IsShiftDown)
+		Value *= 5;
+
 	if(EventSelected())
 		SelectedEvent->ActivationPeriod = std::max(0.0, SelectedEvent->ActivationPeriod + Value);
 	else
@@ -2436,7 +2439,7 @@ void _EditorState::ExecuteUpdateLayer(int Layer, bool Move) {
 
 			// Change block properties
 			_Block *Block =	Map->GetBlock(Layer, NewIndex);
-			Block->Walkable = (Layer == MAPLAYER_WALL) ? false : true;
+			Block->Walkable = (Layer == MAPLAYER_FLAT || Layer == MAPLAYER_WALL) ? false : true;
 		}
 
 		// Assign new selection
