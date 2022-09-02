@@ -1973,6 +1973,14 @@ void _EditorState::ExecuteChangeZ(float Change, int Type) {
 void _EditorState::ExecuteChangeLevel(int Change) {
 	if(EventSelected()) {
 		int MinLevel = SelectedEvent->Type == EVENT_SPAWN ? 1 : 0;
+
+		// Change level for all the next checkpoints if control is held
+		if(SelectedEvent->Type == EVENT_CHECK && IsCtrlDown && Change) {
+			for(auto &Event : Map->Events) {
+				if(Event->Type == SelectedEvent->Type && Event->Level > SelectedEvent->Level)
+					Event->Level = std::max(MinLevel, Event->Level + Change);
+			}
+		}
 		SelectedEvent->Level = std::max(MinLevel, SelectedEvent->Level + Change);
 	}
 	else
