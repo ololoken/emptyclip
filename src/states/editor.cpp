@@ -703,7 +703,12 @@ void _EditorState::HandleMouseWheel(int Direction) {
 					EventSpawnLevel = std::clamp(EventSpawnLevel + Direction, 1, OBJECT_MAX_LEVEL);
 			}
 			else {
-				ObjectLevel = std::clamp(ObjectLevel + Direction, 1, OBJECT_MAX_LEVEL);
+				if(SelectedObjects.size()) {
+					for(const auto &Object : SelectedObjects)
+						Object->Level = std::clamp(Object->Level + Direction, 1, OBJECT_MAX_LEVEL);
+				}
+				else
+					ObjectLevel = std::clamp(ObjectLevel + Direction, 1, OBJECT_MAX_LEVEL);
 			}
 		}
 	}
@@ -1885,13 +1890,11 @@ void _EditorState::ExecuteRotate() {
 				Block->Rotation = 0.0f;
 		}
 	}
-	else if(ObjectsSelected()) {
-		if(SelectedObjects.size()) {
-			for(const auto &Object : SelectedObjects) {
-				Object->Rotation += 90.0f;
-				if(Object->Rotation > 359.0f)
-					Object->Rotation = 0.0f;
-			}
+	else if(SelectedObjects.size()) {
+		for(const auto &Object : SelectedObjects) {
+			Object->Rotation += 90.0f;
+			if(Object->Rotation > 359.0f)
+				Object->Rotation = 0.0f;
 		}
 	}
 	else {
@@ -2058,7 +2061,7 @@ void _EditorState::ExecuteDelete() {
 			}
 		break;
 		default:
-			if(ObjectsSelected()) {
+			if(SelectedObjects.size()) {
 				for(auto &Object : SelectedObjects)
 					Object->Deleted = true;
 
@@ -2117,7 +2120,7 @@ void _EditorState::ExecuteCopy() {
 			}
 		break;
 		default:
-			if(ObjectsSelected()) {
+			if(SelectedObjects.size()) {
 				CopiedPosition = WorldCursor;
 				ClipboardObjects = SelectedObjects;
 			}

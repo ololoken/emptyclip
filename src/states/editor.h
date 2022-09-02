@@ -179,7 +179,6 @@ class _EditorState : public ae::_State {
 		void DeselectObjects() { SelectedObjects.clear(); }
 		void ClearClipboard();
 		bool EventSelected() { return SelectedEventIndex != -1; }
-		bool ObjectsSelected() { return SelectedObjects.size() != 0; }
 
 		void SetEventProperties(double ActivationPeriod, int Level, int Active, const std::string &ParticleID);
 		std::string GetEventID(int Type);
