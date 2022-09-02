@@ -382,7 +382,8 @@ void _Item::DrawTooltip(const _Player *Player, size_t CompareSlot, int Inventory
 		} break;
 	}
 
-	HelpTextList.push_back("Ctrl+click to drop");
+	if(InventorySlot >= 0)
+		HelpTextList.push_back("Ctrl+click to drop");
 
 	// Mods
 	if(Attributes.find("max_mods") != Attributes.end() && Attributes.at("max_mods").Int >= 1) {
@@ -470,6 +471,7 @@ void _Item::RecalculateStats() {
 			SetAttributeSpread("accuracy", GetBonusMultiplier(MOD_ACCURACY, true));
 			Attributes["rounds"].Int = Template.Attributes.at("rounds").Int * GetBonusMultiplier(MOD_MAXROUNDS) + 0.5f;
 			Attributes["fire_period"].Double = Template.Attributes.at("fire_period").Double * GetBonusMultiplier(MOD_ATTACKSPEED, true);
+			Attributes["shoot_period"].Double = Template.Attributes.at("shoot_period").Double * GetBonusMultiplier(MOD_HANDLING, true);
 			Attributes["attack_count"].Int = Template.Attributes.at("attack_count").Int;
 			Attributes["reload_period"].Double = Template.Attributes.at("reload_period").Double * GetBonusMultiplier(MOD_RELOADSPEED, true);
 			Attributes["reload_amount"].Int = Template.Attributes.at("reload_amount").Int + Bonus[MOD_RELOADAMOUNT];

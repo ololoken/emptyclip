@@ -274,7 +274,7 @@ void _Player::RecalculateStats() {
 		MinDamage[i] = Weapon[i].Attributes["min_damage"].Int * MeleeDamageModifier + 0.5f;
 		MaxDamage[i] = Weapon[i].Attributes["max_damage"].Int * MeleeDamageModifier + 0.5f;
 		AttackMoveSpeed[i] = Weapon[i].Attributes["attack_movespeed"].Float;
-		ShootPeriod[i] = PLAYER_SHOOT_PERIOD / Stats.GetSkillBonusMultiplier(Skills[SKILL_DEXTERITY], SKILL_DEXTERITY);
+		ShootPeriod[i] = Weapon[i].Attributes["shoot_period"].Double / Stats.GetSkillBonusMultiplier(Skills[SKILL_STRENGTH], SKILL_STRENGTH, 1);
 		Penetration[i] = Weapon[i].Attributes["penetration"].Int;
 		PenetrationDamage[i] = Weapon[i].Attributes["penetration_damage"].Float;
 		AttackCount[i] = Weapon[i].Attributes["attack_count"].Int;
