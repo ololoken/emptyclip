@@ -35,19 +35,19 @@ void _Stats::Init() {
 
 	BlankWeaponParticle = _ParticleGroup();
 
-	LoadStrings("tables/strings.tsv");
-	LoadLevels("tables/levels.tsv");
-	LoadSkills("tables/skills.tsv");
-	LoadAmmo("tables/ammo.tsv");
-	LoadArmor("tables/armor.tsv");
-	LoadKeys("tables/keys.tsv");
-	LoadMedkits("tables/medkits.tsv");
-	LoadMods("tables/mods.tsv");
-	LoadProjectiles("tables/projectiles.tsv");
-	LoadWeapons("tables/weapons.tsv");
-	LoadItemDrops("tables/itemdrops.tsv");
-	LoadMonsters("tables/monsters.tsv");
-	LoadProps("tables/props.tsv");
+	LoadStrings();
+	LoadLevels();
+	LoadSkills();
+	LoadAmmo();
+	LoadArmor();
+	LoadKeys();
+	LoadMedkits();
+	LoadMods();
+	LoadProjectiles();
+	LoadWeapons();
+	LoadItemDrops();
+	LoadMonsters();
+	LoadProps();
 
 	_ObjectTemplate PlayerTemplate(_Object::PLAYER);
 	Objects.insert(std::make_pair("player", PlayerTemplate));
@@ -66,7 +66,7 @@ void _Stats::Close() {
 }
 
 // Load strings
-void _Stats::LoadStrings(const std::string &Path) {
+void _Stats::LoadStrings() {
 
 	// Run query
 	Database->PrepareQuery("SELECT * FROM strings");
@@ -82,7 +82,7 @@ void _Stats::LoadStrings(const std::string &Path) {
 }
 
 // Load level stats
-void _Stats::LoadLevels(const std::string &Path) {
+void _Stats::LoadLevels() {
 
 	// Run query
 	Database->PrepareQuery("SELECT * FROM levels");
@@ -109,7 +109,7 @@ void _Stats::LoadLevels(const std::string &Path) {
 }
 
 // Load skill stats
-void _Stats::LoadSkills(const std::string &Path) {
+void _Stats::LoadSkills() {
 
 	// Run query
 	Database->PrepareQuery("SELECT * FROM skills");
@@ -142,7 +142,7 @@ void _Stats::LoadSkills(const std::string &Path) {
 }
 
 // Load ammo stats
-void _Stats::LoadAmmo(const std::string &Path) {
+void _Stats::LoadAmmo() {
 
 	// Run query
 	Database->PrepareQuery("SELECT * FROM ammo");
@@ -168,7 +168,7 @@ void _Stats::LoadAmmo(const std::string &Path) {
 }
 
 // Load weapon stats
-void _Stats::LoadWeapons(const std::string &Path) {
+void _Stats::LoadWeapons() {
 
 	// Run query
 	Database->PrepareQuery("SELECT * FROM weapons");
@@ -255,7 +255,7 @@ void _Stats::LoadWeapons(const std::string &Path) {
 }
 
 // Load armor stats
-void _Stats::LoadArmor(const std::string &Path) {
+void _Stats::LoadArmor() {
 
 	// Run query
 	Database->PrepareQuery("SELECT * FROM armor");
@@ -288,7 +288,7 @@ void _Stats::LoadArmor(const std::string &Path) {
 }
 
 // Load key stats
-void _Stats::LoadKeys(const std::string &Path) {
+void _Stats::LoadKeys() {
 
 	// Run query
 	Database->PrepareQuery("SELECT * FROM keys");
@@ -315,7 +315,7 @@ void _Stats::LoadKeys(const std::string &Path) {
 }
 
 // Load medkit stats
-void _Stats::LoadMedkits(const std::string &Path) {
+void _Stats::LoadMedkits() {
 
 	// Run query
 	Database->PrepareQuery("SELECT * FROM medkits");
@@ -338,7 +338,7 @@ void _Stats::LoadMedkits(const std::string &Path) {
 }
 
 // Load mod stats
-void _Stats::LoadMods(const std::string &Path) {
+void _Stats::LoadMods() {
 	ModNames.push_back("");
 
 	// Run query
@@ -369,7 +369,7 @@ void _Stats::LoadMods(const std::string &Path) {
 }
 
 // Load item drops
-void _Stats::LoadItemDrops(const std::string &Path) {
+void _Stats::LoadItemDrops() {
 
 	// Get item drop names first
 	Database->PrepareQuery("PRAGMA table_info(itemdrops)");
@@ -386,7 +386,7 @@ void _Stats::LoadItemDrops(const std::string &Path) {
 
 		auto ItemDropIterator = ItemDrops.find(ItemDropID);
 		if(ItemDropIterator != ItemDrops.end())
-			throw std::runtime_error(std::string(__func__) + " duplicate itemdrop_id '" + ItemDropID + "' in " + Path);
+			throw std::runtime_error(std::string(__func__) + " duplicate itemdrop_id '" + ItemDropID);
 
 		_ItemDrop ItemDrop;
 		ItemDrop.OddsSum = 0;
@@ -410,7 +410,7 @@ void _Stats::LoadItemDrops(const std::string &Path) {
 		}
 		else {
 			if(Objects.find(ItemDropEntry.ItemID) == Objects.end())
-				throw std::runtime_error(std::string(__func__) + " unknown item_id '" + ItemDropEntry.ItemID + "' in " + Path);
+				throw std::runtime_error(std::string(__func__) + " unknown item_id '" + ItemDropEntry.ItemID);
 
 			ItemDropEntry.Type = Objects.at(ItemDropEntry.ItemID).Type;
 		}
@@ -431,7 +431,7 @@ void _Stats::LoadItemDrops(const std::string &Path) {
 }
 
 // Load monsters
-void _Stats::LoadMonsters(const std::string &Path) {
+void _Stats::LoadMonsters() {
 
 	// Run query
 	Database->PrepareQuery("SELECT * FROM monsters");
@@ -502,7 +502,7 @@ void _Stats::LoadMonsters(const std::string &Path) {
 }
 
 // Load 3d props
-void _Stats::LoadProps(const std::string &Path) {
+void _Stats::LoadProps() {
 
 	// Run query
 	Database->PrepareQuery("SELECT * FROM props");
@@ -533,7 +533,7 @@ void _Stats::LoadProps(const std::string &Path) {
 }
 
 // Load projectiles
-void _Stats::LoadProjectiles(const std::string &Path) {
+void _Stats::LoadProjectiles() {
 
 	// Run query
 	Database->PrepareQuery("SELECT * FROM projectiles");

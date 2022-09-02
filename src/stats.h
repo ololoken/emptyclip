@@ -97,19 +97,19 @@ class _Stats {
 		void Init();
 		void Close();
 
-		void LoadStrings(const std::string &Path);
-		void LoadLevels(const std::string &Path);
-		void LoadSkills(const std::string &Path);
-		void LoadAmmo(const std::string &Path);
-		void LoadWeapons(const std::string &Path);
-		void LoadArmor(const std::string &Path);
-		void LoadKeys(const std::string &Path);
-		void LoadMedkits(const std::string &Path);
-		void LoadMods(const std::string &Path);
-		void LoadItemDrops(const std::string &Path);
-		void LoadMonsters(const std::string &Path);
-		void LoadProps(const std::string &Path);
-		void LoadProjectiles(const std::string &Path);
+		void LoadStrings();
+		void LoadLevels();
+		void LoadSkills();
+		void LoadAmmo();
+		void LoadWeapons();
+		void LoadArmor();
+		void LoadKeys();
+		void LoadMedkits();
+		void LoadMods();
+		void LoadItemDrops();
+		void LoadMonsters();
+		void LoadProps();
+		void LoadProjectiles();
 
 		_Item *CreateItem(const std::string &ID, int Level, int Quality, int Count, const glm::vec2 &Position, bool RandomStats);
 		_Monster *CreateMonster(const std::string &ID, int Level, const glm::vec2 &Position);
