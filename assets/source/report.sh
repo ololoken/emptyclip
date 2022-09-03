@@ -1,10 +1,14 @@
 #!/bin/bash
 
+set -euo pipefail
+
 # check programs
 type gawk >/dev/null 2>&1 || {
 	echo >&2 "'gawk' is not installed!"
 	exit 1
 }
+
+echo -e "*** WEAPONS ***\n"
 
 # weapon report
 gawk '
@@ -39,6 +43,39 @@ NR > 1 {
 	tdpm = total_damage * rounds
 	tdps = total_damage / fire_period
 
-	print $fields["id"], pen, pen_factor, damage, total_damage, round(fire_freq), round(dps), dpm, tdps, tdpm
+	print $fields["id"], pen, pen_factor, damage, round(total_damage), round(fire_freq), round(dps), round(dpm), round(tdps), round(tdpm)
 }
-' stats/weapons.tsv
+' stats/weapons.tsv | column -t -s $'\t'
+
+echo -e "\n*** MONSTERS ***\n"
+
+# monster report
+gawk '
+function min(x, y) { return x < y ? x : y }
+function max(x, y) { return x > y ? x : y }
+function round(value) { return int(value * 100) / 100 }
+
+BEGIN {
+	FS = OFS = "\t"
+}
+NR == 1 {
+	for(i = 1; i <= NF; i++)
+		fields[$i] = i
+
+	print "id", "xph1", "xph10", "h1", "h10", "d1", "d10", "dps1", "dps10"
+}
+NR > 1 && $fields["id"] ~ /^monster|boss/ {
+
+	h1 = $fields["health"]
+	h10 = h1 + ($fields["health_level"] - 1) * 10
+	xph1 = $fields["xp"] / h1
+	xph10 = ($fields["xp"] + ($fields["xp_level"] - 1) * 10) / h10
+	damage1 = $fields["damage"]
+	damage10 = damage1 + ($fields["damage_level"] - 1) * 10
+	attack_period = $fields["attack_period"]
+	dps1 = damage1 / attack_period
+	dps10 = damage10 / attack_period
+
+	print $fields["id"], round(xph1), round(xph10), h1, h10, damage1, damage10, round(dps1), round(dps10)
+}
+' stats/monsters.tsv | column -t -s $'\t'
