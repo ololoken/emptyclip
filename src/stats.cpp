@@ -117,24 +117,24 @@ void _Stats::LoadSkills() {
 	// Get data
 	while(Database->FetchRow()) {
 		_Skill Skill;
-		Skill.Data[SKILL_STRENGTH][0] = Database->GetInt<int>("strength0");
-		Skill.Data[SKILL_STRENGTH][1] = Database->GetInt<int>("strength1");
-		Skill.Data[SKILL_DEXTERITY][0] = Database->GetInt<int>("dexterity0");
-		Skill.Data[SKILL_DEXTERITY][1] = Database->GetInt<int>("dexterity1");
-		Skill.Data[SKILL_FORTITUDE][0] = Database->GetInt<int>("fortitude0");
-		Skill.Data[SKILL_FORTITUDE][1] = Database->GetInt<int>("fortitude1");
-		Skill.Data[SKILL_VITALITY][0] = Database->GetInt<int>("vitality0");
-		Skill.Data[SKILL_VITALITY][1] = Database->GetInt<int>("vitality1");
-		Skill.Data[SKILL_AGILITY][0] = Database->GetInt<int>("agility0");
-		Skill.Data[SKILL_AGILITY][1] = Database->GetInt<int>("agility1");
-		Skill.Data[SKILL_CUNNING][0] = Database->GetInt<int>("cunning0");
-		Skill.Data[SKILL_CUNNING][1] = Database->GetInt<int>("cunning1");
-		Skill.Data[SKILL_ENDURANCE][0] = Database->GetInt<int>("endurance0");
-		Skill.Data[SKILL_ENDURANCE][1] = Database->GetInt<int>("endurance1");
-		Skill.Data[SKILL_PERCEPTION][0] = Database->GetInt<int>("perception0");
-		Skill.Data[SKILL_PERCEPTION][1] = Database->GetInt<int>("perception1");
-		Skill.Data[SKILL_LUCK][0] = Database->GetInt<int>("luck0");
-		Skill.Data[SKILL_LUCK][1] = Database->GetInt<int>("luck1");
+		Skill.Data[SKILL_STRENGTH][0] = Database->GetReal("strength0");
+		Skill.Data[SKILL_STRENGTH][1] = Database->GetReal("strength1");
+		Skill.Data[SKILL_DEXTERITY][0] = Database->GetReal("dexterity0");
+		Skill.Data[SKILL_DEXTERITY][1] = Database->GetReal("dexterity1");
+		Skill.Data[SKILL_FORTITUDE][0] = Database->GetReal("fortitude0");
+		Skill.Data[SKILL_FORTITUDE][1] = Database->GetReal("fortitude1");
+		Skill.Data[SKILL_VITALITY][0] = Database->GetReal("vitality0");
+		Skill.Data[SKILL_VITALITY][1] = Database->GetReal("vitality1");
+		Skill.Data[SKILL_AGILITY][0] = Database->GetReal("agility0");
+		Skill.Data[SKILL_AGILITY][1] = Database->GetReal("agility1");
+		Skill.Data[SKILL_CUNNING][0] = Database->GetReal("cunning0");
+		Skill.Data[SKILL_CUNNING][1] = Database->GetReal("cunning1");
+		Skill.Data[SKILL_ENDURANCE][0] = Database->GetReal("endurance0");
+		Skill.Data[SKILL_ENDURANCE][1] = Database->GetReal("endurance1");
+		Skill.Data[SKILL_PERCEPTION][0] = Database->GetReal("perception0");
+		Skill.Data[SKILL_PERCEPTION][1] = Database->GetReal("perception1");
+		Skill.Data[SKILL_LUCK][0] = Database->GetReal("luck0");
+		Skill.Data[SKILL_LUCK][1] = Database->GetReal("luck1");
 		Skills.push_back(Skill);
 	}
 

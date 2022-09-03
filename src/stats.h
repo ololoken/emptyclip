@@ -45,7 +45,7 @@ struct _Level {
 
 // Holds skill information
 struct _Skill {
-	int Data[SKILL_COUNT][2];
+	float Data[SKILL_COUNT][2];
 };
 
 // A single entry for an item drop
@@ -123,8 +123,8 @@ class _Stats {
 		int GetMaxLevel() const { return (int)Levels.size(); }
 
 		int GetValidSkillLevel(int Level);
-		int GetSkill(int Level, int Type, int Index=0) const { return Skills[(size_t)Level].Data[Type][Index]; }
-		float GetSkillBonusMultiplier(int Level, int Type, int Index=0) const { return (100 + Skills[(size_t)Level].Data[Type][Index]) * 0.01f; }
+		float GetSkill(int Level, int Type, int Index=0) const { return Skills[(size_t)Level].Data[Type][Index]; }
+		float GetSkillBonusMultiplier(int Level, int Type, int Index=0) const { return (100.0f + Skills[(size_t)Level].Data[Type][Index]) * 0.01f; }
 
 		void GetRandomDrop(const _ItemDrop *ItemDrop, _ObjectSpawn *ObjectSpawn);
 

@@ -96,7 +96,7 @@ class _Entity : public _Object {
 		float Stamina{1.0f};
 		float MaxStamina{1.0f};
 		float StaminaRegenModifier{1.0f};
-		int BaseMoveSpeed{0};
+		float BaseMoveSpeed{0.0f};
 		int WallState{0};
 		bool Tired{false};
 		bool PositionChanged{false};
@@ -105,7 +105,7 @@ class _Entity : public _Object {
 		int Health{0};
 		int MaxHealth{0};
 		int DamageBlock{0};
-		int DamageResist{0};
+		float DamageResist{0.0f};
 
 		// States
 		int WalkingAnimation{ANIMATION_MOVE};
