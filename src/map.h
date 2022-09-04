@@ -177,7 +177,7 @@ class _Map {
 	public:
 
 		_Map();
-		_Map(const std::string &Filename, double Clock=0.0, int SpawnMultiplier=1);
+		_Map(const std::string &Filename, double Clock=0.0, int Progression=0);
 		~_Map();
 
 		void InitializeTiles();
@@ -250,6 +250,7 @@ class _Map {
 		bool CheckMinimapBounds(const glm::vec4 &Bounds);
 		void AddMinimapLayers();
 
+		int GetAddedLevel() const;
 		static glm::vec2 GenerateRandomPointInCircle(float Radius);
 		static std::string FixFilename(const std::string &Filename);
 
@@ -259,10 +260,12 @@ class _Map {
 		glm::vec4 BaseAmbientLight{0.5f, 0.5f, 0.5f, 1.0f};
 		glm::ivec2 Size{0, 0};
 		int MapType{MAPTYPE_CAMPAIGN};
+		int Progression{0};
 		int Level{1};
 		int Monsters{0};
 		int Crates{0};
 		int Secrets{0};
+		int TotalExperience{0};
 		bool BaseAmbientClock{false};
 		bool AmbientClock{false};
 		bool SimpleAI{false};

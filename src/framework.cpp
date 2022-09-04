@@ -49,10 +49,6 @@ void _Framework::Init(int ArgumentCount, char **Arguments) {
 	TimeStep = GAME_TIMESTEP;
 	State = &NullState;
 
-	#ifdef DEMO_MODE
-	DemoMode = true;
-	#endif
-
 	bool AudioEnabled = Config.AudioEnabled;
 	bool Fullscreen = Config.Fullscreen;
 

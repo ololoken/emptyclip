@@ -48,11 +48,6 @@ build() {
 	rm "${projectdir}/working/${project}.exe"
 	rm -f "${archive_base}/maps/test.map.gz"
 
-	if [ "${DEMO_MODE}" = "1" ]; then
-		rm -f "${archive_base}/maps/"*.map.gz
-		cp "${projectdir}/working/maps/"{c01,c02,c03,bench}.map.gz "${archive_base}/maps/"
-	fi
-
 	# remove linux only files
 	rm -f "${archive_base}"/"${project}"{,_debug}
 

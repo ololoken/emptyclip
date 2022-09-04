@@ -86,12 +86,13 @@ _Map::_Map() :
 }
 
 // Initialize
-_Map::_Map(const std::string &Filename, double Clock, int SpawnMultiplier) : _Map() {
+_Map::_Map(const std::string &Filename, double Clock, int Progression) : _Map() {
 	if(Filename.empty())
 		throw std::runtime_error(std::string(__func__) + " empty file name");
 
+	this->Progression = Progression;
 	this->Filename = FixFilename(Filename);
-	SpawnMultiplier = std::min(SpawnMultiplier, GAME_MAX_PROGRESSION_SPAWN);
+	int SpawnMultiplier = std::min(Progression + 1, GAME_MAX_PROGRESSION_SPAWN);
 
 	// Used when resizing maps
 	glm::ivec2 Offset(0, 0);
@@ -363,6 +364,9 @@ _Map::_Map(const std::string &Filename, double Clock, int SpawnMultiplier) : _Ma
 						int TileCount = (int)Event->Tiles.size();
 						if(Template.Attributes.at("ai_type").Int) {
 							Monsters += TileCount * Event->Level * SpawnMultiplier;
+							int Experience = Template.Attributes.at("xp").Float + Template.Attributes.at("xp_level").Float * (GetAddedLevel() + Event->SpawnLevel - 1);
+							Experience *= TileCount * Event->Level * SpawnMultiplier;
+							TotalExperience += Experience;
 							Event->SpawnMultiplier = SpawnMultiplier;
 						}
 						else {
@@ -2158,4 +2162,9 @@ std::string _Map::FixFilename(const std::string &Filename) {
 		NewFilename = NewFilename + ".gz";
 
 	return NewFilename;
+}
+
+// Get added monster/item level based on progression
+int _Map::GetAddedLevel() const {
+	return Progression * GAME_PROGRESSION_DIFFICULTY;
 }

@@ -78,7 +78,6 @@ class _Player : public _Entity {
 		void ResetAccuracy(bool CompleteReset);
 		void RecalculateStats() override;
 		void Respawn();
-		int GetAddedLevel() const;
 
 		int AddItem(_Item *Item, int &AmountAdded);
 		void DropItem(int Slot);

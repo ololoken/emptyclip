@@ -95,7 +95,7 @@ void _PlayState::Init() {
 	Framebuffer = new ae::_Framebuffer(ae::Graphics.CurrentSize);
 
 	// Load level
-	Map = new _Map(Level, Player->Clock, Player->Progression+1);
+	Map = new _Map(Level, Player->Clock, Player->Progression);
 	Map->InitializeTiles();
 	Player->Map = Map;
 	Player->MapID = Map->Filename;
@@ -107,7 +107,7 @@ void _PlayState::Init() {
 
 	// Spawn objects
 	for(const auto &ObjectSpawn : Map->ObjectSpawns)
-		SpawnObject(ObjectSpawn, false, Player->GetAddedLevel());
+		SpawnObject(ObjectSpawn, false, Map->GetAddedLevel());
 
 	// Initialize HUD
 	HUD = new _HUD(Player);
@@ -136,6 +136,10 @@ void _PlayState::Init() {
 
 	ae::Actions.ResetState();
 	ae::Audio.Stop();
+
+	// Print stats
+	if(DevMode)
+		Framework.Console->AddMessage("TotalExperience=" + std::to_string(Map->TotalExperience));
 
 	ActiveAI = 0;
 	Timer = 0;
@@ -1383,7 +1387,7 @@ void _PlayState::CheckEvents(const _Entity *Entity) {
 				Level = Event->ItemID;
 
 				// End of the game
-				if(Level.empty() || (Framework.DemoMode && Level == "c04")) {
+				if(Level.empty()) {
 					Menu.SetScoreStats(true, Player->LevelTime, HUD->Kills, HUD->Crates, HUD->Secrets, Player->Progression + 1);
 					Level = GAME_FIRSTLEVEL;
 					Player->Progression++;
@@ -1500,7 +1504,7 @@ void _PlayState::UpdateEvents(double FrameTime) {
 					for(int j = 0; j < Event->SpawnMultiplier; j++) {
 						Position.x = Tiles[i].Coord.x + 0.5f;
 						Position.y = Tiles[i].Coord.y + 0.5f;
-						_Monster *Monster = Stats.CreateMonster(Event->MonsterID, Event->SpawnLevel + Player->GetAddedLevel(), Position);
+						_Monster *Monster = Stats.CreateMonster(Event->MonsterID, Event->SpawnLevel + Map->GetAddedLevel(), Position);
 						Monster->Player = Player;
 						Monster->FreePathingTimer = ENTITY_FREEPATHING_TIMER_INCREMENT * j;
 						AddMonster(Monster);
@@ -1571,7 +1575,7 @@ void _PlayState::DeleteMonsters() {
 // Spawn an object in the map
 void _PlayState::SpawnObject(_ObjectSpawn *ObjectSpawn, bool GenerateStats, int AddedLevel) {
 	if(ObjectSpawn->Type == _Object::MONSTER) {
-		_Monster *Monster = Stats.CreateMonster(ObjectSpawn->ID, ObjectSpawn->Level + Player->GetAddedLevel(), ObjectSpawn->Position);
+		_Monster *Monster = Stats.CreateMonster(ObjectSpawn->ID, ObjectSpawn->Level + Map->GetAddedLevel(), ObjectSpawn->Position);
 		Monster->Player = Player;
 		AddMonster(Monster);
 		if(Monster->IsCrate())
