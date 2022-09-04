@@ -518,12 +518,19 @@ void _PlayState::Update(double FrameTime) {
 		// Attack or aim
 		if(!HUD->InventoryOpen) {
 
-			// Attack again
-			if(!Player->IsMeleeAttacking() && Player->FireRateType[WEAPONATTACK_MAIN] == FIRERATE_AUTO && ae::Actions.State[Action::GAME_FIRE].Value > 0.0f) {
+			// Use melee weapon if player has no main hand
+			int AttackType = WEAPONATTACK_MAIN;
+			if(!Player->HasMainHand() && Player->HasMelee())
+				AttackType = WEAPONATTACK_MELEE;
+
+			// Check holding down fire button to attack
+			if(!Player->IsMeleeAttacking() && Player->FireRateType[AttackType] == FIRERATE_AUTO && ae::Actions.State[Action::GAME_FIRE].Value > 0.0f) {
 				Player->AttackRequested = true;
-				Player->AttackRequestType = WEAPONATTACK_MAIN;
+				Player->AttackRequestType = AttackType;
 			}
-			if(Player->FireRateType[WEAPONATTACK_MELEE] == FIRERATE_AUTO && ae::Actions.State[Action::GAME_MELEE].Value > 0.0f) {
+
+			// Check holding down melee button to attack
+			if(!Player->IsMeleeAttacking() && Player->FireRateType[WEAPONATTACK_MELEE] == FIRERATE_AUTO && ae::Actions.State[Action::GAME_MELEE].Value > 0.0f) {
 				Player->AttackRequested = true;
 				Player->AttackRequestType = WEAPONATTACK_MELEE;
 			}
@@ -972,9 +979,8 @@ void _PlayState::ResolveAttack(_Entity *Attacker, int GridType) {
 		return;
 
 	int RoundsShot = 1;
-	if(Attacker->FireAllRounds[Attacker->AttackRequestType]) {
+	if(Attacker->FireAllRounds[Attacker->AttackRequestType])
 		RoundsShot = Attacker->GetWeaponAmmo();
-	}
 
 	// Reduce ammo
 	if(!GodMode)

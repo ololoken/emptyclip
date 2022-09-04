@@ -359,8 +359,10 @@ void _Item::DrawTooltip(const _Player *Player, size_t CompareSlot, int Inventory
 
 			DrawAttribute("damage_block", "Damage Block", DrawPosition, EquippedItem, false, false);
 			DrawAttribute("damage_resist", "Damage Resist", DrawPosition, EquippedItem, true, true);
-			DrawAttribute("max_ammo", "Max Ammo", DrawPosition, EquippedItem, true, true);
 			DrawAttribute("move_speed", "Move Speed", DrawPosition, EquippedItem, true, true);
+			DrawAttribute("max_ammo", "Max Ammo", DrawPosition, EquippedItem, true, true);
+			DrawAttribute("health", "Max Health", DrawPosition, EquippedItem, true, true);
+			DrawAttribute("melee", "Melee Damage", DrawPosition, EquippedItem, true, true);
 		} break;
 		case _Object::MOD: {
 			if(Template.Attributes.at("object_type").Int == _Object::WEAPON)
@@ -492,6 +494,8 @@ void _Item::RecalculateStats() {
 			SetAttributeLevel("damage_resist", QualityFactor);
 			SetAttributeLevel("max_ammo", QualityFactor);
 			SetAttributeLevel("move_speed", QualityFactor);
+			SetAttributeLevel("health", QualityFactor);
+			SetAttributeLevel("melee", QualityFactor);
 			Attributes.at("damage_block").Int += Bonus[MOD_DAMAGEBLOCK];
 			Attributes.at("damage_resist").Int += Bonus[MOD_DAMAGERESIST];
 			Attributes.at("max_ammo").Int += Bonus[MOD_MAXAMMO];

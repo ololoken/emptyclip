@@ -207,6 +207,13 @@ void _Player::RecalculateStats() {
 	CalculateExperienceStats();
 	CalculateSkillsRemaining();
 
+	// Reset base stats
+	DamageBlock = 0;
+	DamageResist = 0;
+	BaseMoveSpeed = 100.0f;
+	int HealthBonus = 100;
+	int MeleeDamage = 100;
+
 	_ObjectTemplate Weapon[WEAPONATTACK_COUNT] = { _Object::WEAPON, _Object::WEAPON };
 	for(int i = 0; i < WEAPONATTACK_COUNT; i++) {
 		Projectiles[i] = nullptr;
@@ -263,16 +270,39 @@ void _Player::RecalculateStats() {
 	// Set accuracy
 	ResetAccuracy(true);
 
-	// Attacking
+	// Set skill stats
+	BaseMoveSpeed += Stats.GetSkill(Skills[SKILL_CUNNING], SKILL_CUNNING);
+	MaxStamina = Stats.GetSkillBonusMultiplier(Skills[SKILL_ENDURANCE], SKILL_ENDURANCE);
+	StaminaRegenModifier = Stats.GetSkillBonusMultiplier(Skills[SKILL_ENDURANCE], SKILL_ENDURANCE);
+	WeaponSwitchPeriod = PLAYER_WEAPONSWITCHPERIOD / Stats.GetSkillBonusMultiplier(Skills[SKILL_DEXTERITY], SKILL_DEXTERITY);
+	HealthBonus += Stats.GetSkill(Skills[SKILL_VITALITY], SKILL_VITALITY);
+	HealModifier = Stats.GetSkillBonusMultiplier(Skills[SKILL_VITALITY], SKILL_VITALITY, 1);
+	SelfHealStartTime = PLAYER_HEAL_STARTTIME / Stats.GetSkillBonusMultiplier(Skills[SKILL_CUNNING], SKILL_CUNNING, 1);
+	SelfHealPeriod = PLAYER_HEAL_PERIOD / Stats.GetSkillBonusMultiplier(Skills[SKILL_CUNNING], SKILL_CUNNING, 1);
+
+	// Add armor bonuses
+	DamageBlock += Stats.GetSkill(Skills[SKILL_FORTITUDE], SKILL_FORTITUDE);
+	DamageResist += std::min(Stats.GetSkill(Skills[SKILL_FORTITUDE], SKILL_FORTITUDE, 1), ENTITY_MAX_DAMAGE_RESIST);
+	Attributes["max_ammo"].Int = 100 + Stats.GetSkill(Skills[SKILL_ENDURANCE], SKILL_ENDURANCE, 1);
+	if(GetArmor()) {
+		DamageBlock += GetArmor()->Attributes.at("damage_block").Int;
+		DamageResist += GetArmor()->Attributes.at("damage_resist").Int;
+		BaseMoveSpeed += GetArmor()->Attributes.at("move_speed").Int;
+		Attributes["max_ammo"].Int += GetArmor()->Attributes.at("max_ammo").Int;
+		HealthBonus += GetArmor()->Attributes.at("health").Int;
+		MeleeDamage += GetArmor()->Attributes.at("melee").Int;
+	}
+
+	// Set attack stats
 	for(int i = 0; i < WEAPONATTACK_COUNT; i++) {
 		float MeleeDamageModifier = 1.0f;
 		if((i == WEAPONATTACK_MAIN && MainWeaponType == WEAPON_MELEE) || i == WEAPONATTACK_MELEE)
-			MeleeDamageModifier = Stats.GetSkillBonusMultiplier(Skills[SKILL_STRENGTH], SKILL_STRENGTH);
+			MeleeDamageModifier = (MeleeDamage + Stats.GetSkill(Skills[SKILL_STRENGTH], SKILL_STRENGTH)) * 0.01f;
 
 		FireRateType[i] = Weapon[i].Attributes["fire_rate"].Int;
 		AttackPeriod[i] = std::max(Weapon[i].Attributes["fire_period"].Double / Stats.GetSkillBonusMultiplier(Skills[SKILL_AGILITY], SKILL_AGILITY), WEAPON_MINFIREPERIOD);
-		MinDamage[i] = Weapon[i].Attributes["min_damage"].Int * MeleeDamageModifier + 0.5f;
-		MaxDamage[i] = Weapon[i].Attributes["max_damage"].Int * MeleeDamageModifier + 0.5f;
+		MinDamage[i] = std::round(Weapon[i].Attributes["min_damage"].Int * MeleeDamageModifier);
+		MaxDamage[i] = std::round(Weapon[i].Attributes["max_damage"].Int * MeleeDamageModifier);
 		AttackMoveSpeed[i] = Weapon[i].Attributes["attack_movespeed"].Float;
 		ShootPeriod[i] = Weapon[i].Attributes["shoot_period"].Double / Stats.GetSkillBonusMultiplier(Skills[SKILL_STRENGTH], SKILL_STRENGTH, 1);
 		Penetration[i] = Weapon[i].Attributes["penetration"].Int;
@@ -291,30 +321,11 @@ void _Player::RecalculateStats() {
 		MeleeScale[i].y = Weapon[i].Attributes["scale_y"].Float;
 	}
 	ReloadPeriod = Weapon[WEAPONATTACK_MAIN].Attributes["reload_period"].Double / Stats.GetSkillBonusMultiplier(Skills[SKILL_DEXTERITY], SKILL_DEXTERITY);
-	WeaponSwitchPeriod = PLAYER_WEAPONSWITCHPERIOD / Stats.GetSkillBonusMultiplier(Skills[SKILL_DEXTERITY], SKILL_DEXTERITY);
-	SelfHealStartTime = PLAYER_HEAL_STARTTIME / Stats.GetSkillBonusMultiplier(Skills[SKILL_CUNNING], SKILL_CUNNING, 1);
-	SelfHealPeriod = PLAYER_HEAL_PERIOD / Stats.GetSkillBonusMultiplier(Skills[SKILL_CUNNING], SKILL_CUNNING, 1);
 	ZoomScale = Weapon[WEAPONATTACK_MAIN].Attributes["zoom_scale"].Float;
 
-	BaseMoveSpeed = 100.0f + Stats.GetSkill(Skills[SKILL_CUNNING], SKILL_CUNNING);
-	MaxHealth = Stats.GetLevelHealth(Level) * Stats.GetSkillBonusMultiplier(Skills[SKILL_VITALITY], SKILL_VITALITY) + 0.5f;
-	MaxStamina = Stats.GetSkillBonusMultiplier(Skills[SKILL_ENDURANCE], SKILL_ENDURANCE);
-	StaminaRegenModifier = Stats.GetSkillBonusMultiplier(Skills[SKILL_ENDURANCE], SKILL_ENDURANCE);
+	// Set final stats
+	MaxHealth = std::round(Stats.GetLevelHealth(Level) * HealthBonus * 0.01f);
 	Health = std::clamp(Health, 0, MaxHealth);
-	HealModifier = Stats.GetSkillBonusMultiplier(Skills[SKILL_VITALITY], SKILL_VITALITY, 1);
-
-	// Armor
-	DamageBlock = Stats.GetSkill(Skills[SKILL_FORTITUDE], SKILL_FORTITUDE);
-	DamageResist = std::min(Stats.GetSkill(Skills[SKILL_FORTITUDE], SKILL_FORTITUDE, 1), ENTITY_MAX_DAMAGE_RESIST);
-	Attributes["max_ammo"].Int = 100 + Stats.GetSkill(Skills[SKILL_ENDURANCE], SKILL_ENDURANCE, 1);
-	if(GetArmor()) {
-		DamageBlock += GetArmor()->Attributes.at("damage_block").Int;
-		DamageResist += GetArmor()->Attributes.at("damage_resist").Int;
-		BaseMoveSpeed += GetArmor()->Attributes.at("move_speed").Int;
-		Attributes["max_ammo"].Int += GetArmor()->Attributes.at("max_ammo").Int;
-	}
-
-	// Get final speed
 	MoveSpeed = BaseMoveSpeed * 0.01f * PLAYER_MOVESPEED;
 
 	// Handle max ammo
