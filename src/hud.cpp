@@ -205,62 +205,73 @@ void _HUD::MouseEvent(const ae::_MouseEvent &MouseEvent) {
 
 	// Get hit element
 	ae::_Element *HitElement = Elements[ELEMENT_INVENTORY]->HitElement;
-	if(MouseEvent.Button == SDL_BUTTON_LEFT) {
+	switch(MouseEvent.Button) {
+		case SDL_BUTTON_LEFT:
 
-		// Start dragging an item
-		if(MouseEvent.Pressed) {
-			if(HitElement && HitElement->Index >= 0 && Player->CanDropItem()) {
-				if(ae::Input.ModKeyDown(KMOD_CTRL)) {
-					Player->DropItem(HitElement->Index);
-				}
-				else {
-					DragStart = HitElement;
-					CursorItem = Player->Inventory[DragStart->Index];
-					ClickOffset = glm::vec2(MouseEvent.Position) - HitElement->Bounds.GetCenter();
-				}
-			}
-		}
-		// Was dragging an item
-		else {
-			if(CursorItem) {
-				if(!HitElement)
-					Player->DropItem(DragStart->Index);
-				else if(HitElement->Index >= 0)
-					Player->SwapInventory(DragStart->Index, HitElement->Index);
-			}
-			CursorItem = nullptr;
-			DragStart = nullptr;
-		}
-	}
-	else if(MouseEvent.Button == SDL_BUTTON_RIGHT) {
-		if(MouseEvent.Pressed) {
-			if(HitElement && HitElement->Index >= 0) {
-				const _Item *Item = Player->Inventory[HitElement->Index];
-				if(Item) {
-					switch(Item->Type) {
-						case _Object::WEAPON: {
-							if(Item->IsMelee())
-								Player->SwapInventory(HitElement->Index, INVENTORY_MELEE);
-							else
-								Player->SwapInventory(HitElement->Index, ae::Input.ModKeyDown(KMOD_CTRL) ? INVENTORY_OFFHAND : INVENTORY_MAINHAND);
-						} break;
-						case _Object::ARMOR:
-							Player->SwapInventory(HitElement->Index, INVENTORY_ARMOR);
-						break;
+			// Start dragging an item
+			if(MouseEvent.Pressed) {
+				if(HitElement && HitElement->Index >= 0 && Player->CanDropItem()) {
+					if(ae::Input.ModKeyDown(KMOD_CTRL)) {
+						Player->DropItem(HitElement->Index);
+					}
+					else {
+						DragStart = HitElement;
+						CursorItem = Player->Inventory[DragStart->Index];
+						ClickOffset = glm::vec2(MouseEvent.Position) - HitElement->Bounds.GetCenter();
 					}
 				}
+			}
+			// Was dragging an item
+			else {
+				if(CursorItem) {
+					if(!HitElement)
+						Player->DropItem(DragStart->Index);
+					else if(HitElement->Index >= 0)
+						Player->SwapInventory(DragStart->Index, HitElement->Index);
+				}
+				CursorItem = nullptr;
+				DragStart = nullptr;
+			}
+		break;
+		case SDL_BUTTON_RIGHT:
+			if(MouseEvent.Pressed) {
+				if(HitElement && HitElement->Index >= 0) {
+					_Item *Item = Player->Inventory[HitElement->Index];
+					if(Item) {
 
-				if(!Player->HasInventory(HitElement->Index))
-					CursorOverItem = nullptr;
+						// Equip item
+						if(_Player::IsBagIndex(HitElement->Index)) {
+							switch(Item->Type) {
+								case _Object::WEAPON: {
+									if(Item->IsMelee())
+										Player->SwapInventory(HitElement->Index, INVENTORY_MELEE);
+									else
+										Player->SwapInventory(HitElement->Index, ae::Input.ModKeyDown(KMOD_CTRL) ? INVENTORY_OFFHAND : INVENTORY_MAINHAND);
+								} break;
+								case _Object::ARMOR:
+									Player->SwapInventory(HitElement->Index, INVENTORY_ARMOR);
+								break;
+							}
+						}
+						// Unequip item
+						else if(_Player::IsEquipmentIndex(HitElement->Index)) {
+							if(Player->AddInventory(Item))
+								Player->Inventory[HitElement->Index] = nullptr;
+						}
+					}
+
+					if(!Player->HasInventory(HitElement->Index))
+						CursorOverItem = nullptr;
+				}
 			}
-		}
-	}
-	else if(MouseEvent.Button == SDL_BUTTON_MIDDLE) {
-		if(MouseEvent.Pressed) {
-			if(HitElement && HitElement->Index >= 0) {
-				Player->DropItem(HitElement->Index);
+		break;
+		case SDL_BUTTON_MIDDLE:
+			if(MouseEvent.Pressed) {
+				if(HitElement && HitElement->Index >= 0) {
+					Player->DropItem(HitElement->Index);
+				}
 			}
-		}
+		break;
 	}
 
 	// Level up skill

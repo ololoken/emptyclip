@@ -818,7 +818,6 @@ void _Player::SwapInventory(int SlotFrom, int SlotTo) {
 	}
 
 	if(CanSwap) {
-
 		if(SlotTo == INVENTORY_MAINHAND || SlotFrom == INVENTORY_MAINHAND || (IsHandIndex(SlotFrom) && IsHandIndex(SlotTo)) ) {
 			StartWeaponSwitch(SlotFrom, SlotTo);
 		}
@@ -874,9 +873,8 @@ int _Player::AddInventory(_Item *Item) {
 	// Search for an existing item or empty slot
 	int EmptySlot = -1;
 	for(int i = INVENTORY_BAGSTART; i < INVENTORY_BAGEND; i++) {
-		if(CombineItems(Item, Inventory[i]) == 2) {
+		if(CombineItems(Item, Inventory[i]) == 2)
 			return 2;
-		}
 
 		if(Inventory[i] == nullptr && EmptySlot == -1)
 			EmptySlot = i;

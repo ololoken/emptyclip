@@ -128,6 +128,10 @@ class _Player : public _Entity {
 		void SetLegAnimationPlayMode(int Mode) override;
 		void OnHit(_Entity *Attacker, const _Hit &Hit) override;
 
+		static bool IsBagIndex(int Index) { return Index >= INVENTORY_BAGSTART && Index < INVENTORY_BAGEND; }
+		static bool IsEquipmentIndex(int Index) { return Index <= INVENTORY_BAGSTART; }
+		static bool IsHandIndex(int Index) { return Index == INVENTORY_MAINHAND || Index == INVENTORY_OFFHAND; }
+
 		// Map
 		std::string MapID;
 		int CheckpointIndex;
@@ -201,10 +205,6 @@ class _Player : public _Entity {
 		const ae::_AudioSource *ReloadSound;
 
 	private:
-
-		bool IsBagIndex(int Index) { return Index >= INVENTORY_BAGSTART && Index < INVENTORY_BAGEND; }
-		bool IsEquipmentIndex(int Index) { return Index <= INVENTORY_BAGSTART; }
-		bool IsHandIndex(int Index) { return Index == INVENTORY_MAINHAND || Index == INVENTORY_OFFHAND; }
 
 		void SetAnimationPlaybackSpeedFactor() override;
 		void CalculateExperienceStats();
