@@ -282,12 +282,15 @@ bool _PlayState::HandleKey(const ae::_KeyEvent &KeyEvent) {
 						else
 							Framework.Done = true;
 					}
-					else
+					else {
+						Save.SavePlayer(Player);
 						Menu.InitInGame();
+					}
 				}
 			break;
 			case SDL_SCANCODE_F1:
 				HUD->SetInventoryOpen(false);
+				Save.SavePlayer(Player);
 				Menu.InitInGame();
 			break;
 		}
