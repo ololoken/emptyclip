@@ -868,11 +868,9 @@ void _PlayState::Render(double BlendFactor) {
 
 	// Show accuracy in degrees
 	if(ae::Input.ModKeyDown(KMOD_ALT)) {
-		glm::vec2 AccuracyDrawPosition;
-		Camera->ConvertWorldToScreen(CursorDrawPosition, AccuracyDrawPosition);
 		std::ostringstream Buffer;
 		Buffer << ae::Round1(Player->CurrentAccuracy);
-		ae::Assets.Fonts["hud_tiny"]->DrawText(Buffer.str(), glm::ivec2(AccuracyDrawPosition + glm::vec2(7, 7)), ae::LEFT_BASELINE);
+		ae::Assets.Fonts["hud_tiny"]->DrawText(Buffer.str(), ae::Input.GetMouse() + glm::ivec2(7, 7), ae::LEFT_BASELINE);
 		Buffer.str("");
 	}
 
