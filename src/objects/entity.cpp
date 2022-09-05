@@ -517,6 +517,9 @@ void _Entity::UpdateHealth(int Adjust) {
 
 			PlayState.Player->UpdateExperience(ExperienceGiven);
 		}
+		else if(Type == PLAYER) {
+			PlayState.Player->SetAiming(false);
+		}
 
 		Action = ACTION_STARTDEATH;
 	}

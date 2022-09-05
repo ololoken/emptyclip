@@ -114,7 +114,8 @@ const  int          INVENTORY_MAX_STACK                  =  99;
 const  float        ITEM_SCALE                           =  0.5f;
 const  float        ITEM_Z                               =  0.05f;
 const  int          ITEM_QUALITY_RANGE                   =  15;
-const  int          ITEM_MAX_MOVESPEED                   =  90;
+const  int          ITEM_MIN_MOVESPEED                   =  -90;
+const  int          ITEM_MAX_MOVESPEED                   =  100;
 //     Objects
 const  float        OBJECT_Z                             =  0.3f;
 const  int          OBJECT_MAX_LEVEL                     =  1000;
