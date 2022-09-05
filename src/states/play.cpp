@@ -289,7 +289,7 @@ bool _PlayState::HandleKey(const ae::_KeyEvent &KeyEvent) {
 				}
 			break;
 			case SDL_SCANCODE_F1:
-				HUD->MoveWorldItem();
+				HUD->SetInventoryOpen(false);
 				Menu.InitInGame();
 			break;
 		}

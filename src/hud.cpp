@@ -196,7 +196,7 @@ void _HUD::SetInventoryOpen(bool Value) {
 
 // Move item in the world to another location
 void _HUD::MoveWorldItem() {
-	if(DragStart)
+	if(DragStart || !CursorItem)
 		return;
 
 	// Get world position
