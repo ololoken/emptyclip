@@ -272,7 +272,8 @@ void _Save::LoadPlayer(_Player *Player) {
 void _Save::SavePlayer(_Player *Player) {
 
 	// Open file
-	std::ofstream File(Player->SavePath.c_str(), std::ios::out | std::ios::binary);
+	std::string SavePath = Config.ConfigPath + "_temp.save";
+	std::ofstream File(SavePath.c_str(), std::ios::out | std::ios::binary);
 	if(!File.is_open())
 		throw std::runtime_error("Cannot create save file: " + Player->SavePath);
 
@@ -303,6 +304,9 @@ void _Save::SavePlayer(_Player *Player) {
 	SaveKeys(Player, File);
 
 	File.close();
+
+	// Rename temp file
+	std::rename(SavePath.c_str(), Player->SavePath.c_str());
 }
 
 // Loads items from a stream
