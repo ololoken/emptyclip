@@ -21,7 +21,6 @@
 #include <gameassets.h>
 #include <stats.h>
 #include <map.h>
-#include <iostream>
 #include <glm/gtx/norm.hpp>
 
 // Constants

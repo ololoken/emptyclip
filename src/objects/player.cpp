@@ -29,7 +29,6 @@
 #include <gameassets.h>
 #include <stats.h>
 #include <map.h>
-#include <iostream>
 #include <stdexcept>
 #include <algorithm>
 #include <glm/geometric.hpp>

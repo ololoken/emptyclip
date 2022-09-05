@@ -281,8 +281,6 @@ bool _PlayState::HandleKey(const ae::_KeyEvent &KeyEvent) {
 							Framework.ChangeState(&EditorState);
 						else
 							Framework.Done = true;
-
-						Save.SavePlayer(Player);
 					}
 					else
 						Menu.InitInGame();
