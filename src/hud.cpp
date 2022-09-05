@@ -201,13 +201,11 @@ void _HUD::MoveWorldItem() {
 		return;
 
 	// Get world position
-	glm::vec2 WorldPosition;
-	Camera->ConvertScreenToWorld(ae::Input.GetMouse(), WorldPosition);
-	Player->Map->GetDropPosition(Player, PLAYER_REACH_DISTANCE, WorldPosition);
+	Player->Map->RemoveObject(CursorItem, GRID_ITEM);
+	Camera->ConvertScreenToWorld(ae::Input.GetMouse(), CursorItem->Position);
+	Player->Map->GetDropPosition(Player, PLAYER_REACH_DISTANCE, CursorItem->Position);
 
 	// Move item
-	Player->Map->RemoveObject(CursorItem, GRID_ITEM);
-	CursorItem->Position = WorldPosition;
 	Player->Map->AddObject(CursorItem, GRID_ITEM);
 
 	// Reset state
@@ -250,6 +248,7 @@ void _HUD::MouseEvent(const ae::_MouseEvent &MouseEvent) {
 					}
 					// Drag from world
 					else if(CursorOverItem && CursorOverItem->CanPickup()) {
+						ClickOffset = glm::vec2(0.0f);
 						CursorItem = CursorOverItem;
 						CursorItem->Visible = false;
 					}
@@ -258,6 +257,7 @@ void _HUD::MouseEvent(const ae::_MouseEvent &MouseEvent) {
 			// Was dragging an item
 			else {
 				if(CursorItem) {
+					CursorItem->Visible = true;
 
 					// From inventory
 					if(DragStart) {
