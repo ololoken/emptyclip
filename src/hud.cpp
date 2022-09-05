@@ -181,6 +181,11 @@ void _HUD::SetInventoryOpen(bool Value) {
 	else {
 		Elements[ELEMENT_INVENTORY]->SetActive(false);
 		Elements[ELEMENT_SKILLS]->SetActive(false);
+
+		// Was dragging an item
+		if(CursorItem)
+			MoveWorldItem();
+
 		DragStart = nullptr;
 		CursorItem = nullptr;
 		CursorOverItem = nullptr;
@@ -188,6 +193,26 @@ void _HUD::SetInventoryOpen(bool Value) {
 	}
 
 	ae::Graphics.SetCursor(InventoryOpen);
+}
+
+// Move item in the world to another location
+void _HUD::MoveWorldItem() {
+	if(DragStart)
+		return;
+
+	// Get world position
+	glm::vec2 WorldPosition;
+	Camera->ConvertScreenToWorld(ae::Input.GetMouse(), WorldPosition);
+	Player->Map->GetDropPosition(Player, PLAYER_REACH_DISTANCE, WorldPosition);
+
+	// Move item
+	Player->Map->RemoveObject(CursorItem, GRID_ITEM);
+	CursorItem->Position = WorldPosition;
+	Player->Map->AddObject(CursorItem, GRID_ITEM);
+
+	// Reset state
+	CursorItem->Visible = true;
+	CursorItem = nullptr;
 }
 
 // Handle mouse events
@@ -211,6 +236,8 @@ void _HUD::MouseEvent(const ae::_MouseEvent &MouseEvent) {
 			// Start dragging an item
 			if(MouseEvent.Pressed) {
 				if(Player->CanDragItem()) {
+
+					// Drag from inventory
 					if(HitElement && HitElement->Index >= 0) {
 						if(ae::Input.ModKeyDown(KMOD_CTRL)) {
 							Player->DropItem(HitElement->Index);
@@ -221,14 +248,18 @@ void _HUD::MouseEvent(const ae::_MouseEvent &MouseEvent) {
 							ClickOffset = glm::vec2(MouseEvent.Position) - HitElement->Bounds.GetCenter();
 						}
 					}
-					else if(CursorOverItem) {
-						//CursorItem = CursorOverItem;
+					// Drag from world
+					else if(CursorOverItem && CursorOverItem->CanPickup()) {
+						CursorItem = CursorOverItem;
+						CursorItem->Visible = false;
 					}
 				}
 			}
 			// Was dragging an item
 			else {
 				if(CursorItem) {
+
+					// From inventory
 					if(DragStart) {
 
 						// Drop in world
@@ -242,10 +273,18 @@ void _HUD::MouseEvent(const ae::_MouseEvent &MouseEvent) {
 							// Drop item
 							Player->DropItem(DragStart->Index, WorldPosition);
 						}
+						// Move item to another slot
 						else if(HitElement->Index >= 0)
 							Player->SwapInventory(DragStart->Index, HitElement->Index);
 					}
-					else if(CursorItem->CanPickup()) {
+					// From world
+					else {
+						if(HitElement) {
+						}
+						// Drop to another world location
+						else {
+							MoveWorldItem();
+						}
 						/*
 						int AmountAdded = 0;
 						int AddResult = Player->AddItem(CursorItem, AmountAdded);
@@ -267,8 +306,10 @@ void _HUD::MouseEvent(const ae::_MouseEvent &MouseEvent) {
 						//Player->AddInventory(CursorItem);
 						*/
 					}
+
+					CursorItem = nullptr;
 				}
-				CursorItem = nullptr;
+
 				DragStart = nullptr;
 			}
 		break;

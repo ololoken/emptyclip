@@ -289,6 +289,7 @@ bool _PlayState::HandleKey(const ae::_KeyEvent &KeyEvent) {
 				}
 			break;
 			case SDL_SCANCODE_F1:
+				HUD->MoveWorldItem();
 				Menu.InitInGame();
 			break;
 		}
@@ -1098,9 +1099,11 @@ void _PlayState::HandlePickup() {
 	Map->GetCloseObjects(Player->Position, Player->Radius, GRID_ITEM, NearbyItems, &ClosestItem);
 	for(auto &Iterator : NearbyItems) {
 		_Item *NearbyItem = (_Item *)Iterator.first;
+		if(!NearbyItem->Visible)
+			continue;
 
 		// Automatically pickup ammo
-		if(NearbyItem && NearbyItem->IsAutoPickup()) {
+		if(NearbyItem->IsAutoPickup()) {
 			int AmountAdded = 0;
 			int Type = NearbyItem->Type;
 			std::string Name = NearbyItem->Name;
@@ -1150,7 +1153,7 @@ void _PlayState::PlayerDied() {
 
 // Places an item into the player's inventory
 void _PlayState::PickupObject(_Item *Item, int &AmountAdded) {
-	if(!Item)
+	if(!Item || !Item->Visible)
 		return;
 
 	// Attempt to add item

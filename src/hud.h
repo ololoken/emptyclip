@@ -102,6 +102,7 @@ class _HUD {
 		void SetStats(int MaxKills, int MaxCrates, int MaxSecrets);
 		void SetLastEntityHit(_Entity *Entity);
 		void SetInventoryOpen(bool Value);
+		void MoveWorldItem();
 		bool IsDragging() const { return CursorItem != nullptr; }
 
 		void MouseEvent(const ae::_MouseEvent &MouseEvent);

@@ -191,5 +191,6 @@ class _Object {
 		float Rotation{0.0f};
 		float Scale{1.0f};
 		float PositionZ{0.0f};
+		bool Visible{true};
 
 };

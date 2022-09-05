@@ -440,6 +440,9 @@ void _Item::DrawTooltip(const _Player *Player, size_t CompareSlot, int Inventory
 
 // Draws the object
 void _Item::Render(double BlendFactor) {
+	if(!Visible)
+		return;
+
 	ae::Graphics.SetColor(Color);
 	ae::Graphics.DrawSprite(glm::vec3(Position, PositionZ), Texture, Rotation, glm::vec2(ITEM_SCALE));
 }
