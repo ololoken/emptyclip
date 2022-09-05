@@ -91,7 +91,7 @@ class _PlayState : public ae::_State {
 		void DeleteMonsters();
 		void UpdateMonsters(double FrameTime);
 
-		void ActivateEvent();
+		bool ActivateEvent();
 		void CheckEvents(const _Entity *Entity);
 		void UpdateEvents(double FrameTime);
 		void ResolveAttack(_Entity *Attacker, int GridType);

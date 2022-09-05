@@ -563,14 +563,14 @@ void _PlayState::Update(double FrameTime) {
 	if(Player->TileChanged)
 		CheckEvents(Player);
 
-	// Handle auto and manually picking up items
-	HandlePickup();
-
 	// Activate events
 	if(Player->UseRequested && Player->CanUse()) {
-		ActivateEvent();
-		Player->UseRequested = false;
+		if(ActivateEvent())
+			Player->UseRequested = false;
 	}
+
+	// Handle auto and manually picking up items
+	HandlePickup();
 
 	// Update objects
 	Map->Update(FrameTime, Player->Clock);
@@ -1211,8 +1211,9 @@ void _PlayState::UseObject(_Item *Item) {
 	PickupObject(Item, AmountAdded);
 }
 
-// Open door or handle switches
-void _PlayState::ActivateEvent() {
+// Open door or handle switches, return true on success
+bool _PlayState::ActivateEvent() {
+	bool Success = false;
 
 	// Open a door if possible
 	glm::ivec2 Position;
@@ -1235,7 +1236,7 @@ void _PlayState::ActivateEvent() {
 		if(!Event->ItemID.empty()) {
 			if(Player->Keys.find(Event->ItemID) == Player->Keys.end()) {
 				HUD->ShowMessageBox("You need the " + Stats.Objects.at(Event->ItemID).Name, HUD_KEY_MESSAGETIME, UI_MESSAGE_SMALL_SIZE);
-				return;
+				return Success;
 			}
 
 			std::string KeyName = Stats.Objects.at(Event->ItemID).Name;
@@ -1256,8 +1257,13 @@ void _PlayState::ActivateEvent() {
 		// Toggle event
 		Event->Switched = !Event->Switched;
 
+		// Reset player's use timer
 		Player->UseTimer = 0.0;
+
+		Success = true;
 	}
+
+	return Success;
 }
 
 // Creates a random item from an entity
