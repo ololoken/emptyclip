@@ -210,6 +210,7 @@ void _Player::RecalculateStats() {
 	// Reset base stats
 	DamageBlock = 0;
 	DamageResist = 0;
+	SelfHealPercent = PLAYER_HEAL_PERCENT;
 	BaseMoveSpeed = 100.0f;
 	int HealthBonus = 100;
 	int MeleeDamage = 100;
@@ -282,7 +283,7 @@ void _Player::RecalculateStats() {
 
 	// Add armor bonuses
 	DamageBlock += Stats.GetSkill(Skills[SKILL_FORTITUDE], SKILL_FORTITUDE);
-	DamageResist += std::min(Stats.GetSkill(Skills[SKILL_FORTITUDE], SKILL_FORTITUDE, 1), ENTITY_MAX_DAMAGE_RESIST);
+	DamageResist += Stats.GetSkill(Skills[SKILL_FORTITUDE], SKILL_FORTITUDE, 1);
 	Attributes["max_ammo"].Int = 100 + Stats.GetSkill(Skills[SKILL_ENDURANCE], SKILL_ENDURANCE, 1);
 	if(GetArmor()) {
 		DamageBlock += GetArmor()->Attributes.at("damage_block").Int;
@@ -327,6 +328,8 @@ void _Player::RecalculateStats() {
 	MaxHealth = std::round(Stats.GetLevelHealth(Level) * HealthBonus * 0.01f);
 	Health = std::clamp(Health, 0, MaxHealth);
 	MoveSpeed = BaseMoveSpeed * 0.01f * PLAYER_MOVESPEED;
+	DamageResist = std::min(DamageResist, ENTITY_MAX_DAMAGE_RESIST);
+	SelfHealPercent *= HealModifier;
 
 	// Handle max ammo
 	AmmoMax.clear();
@@ -357,7 +360,7 @@ void _Player::Update(double FrameTime) {
 		SelfHealTimer -= FrameTime;
 		if(SelfHealTimer <= 0) {
 			SelfHealTimer += SelfHealPeriod;
-			int HealAmount = std::max(1, (int)(HealModifier * MaxHealth * 0.01f));
+			int HealAmount = std::max(1, (int)(SelfHealPercent * MaxHealth * 0.01f));
 			UpdateHealth(HealAmount);
 		}
 	}

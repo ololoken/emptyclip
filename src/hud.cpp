@@ -174,13 +174,11 @@ void _HUD::SetInventoryOpen(bool Value) {
 		return;
 
 	InventoryOpen = Value;
-	if(InventoryOpen) {
-		Elements[ELEMENT_INVENTORY]->SetActive(true);
-		Elements[ELEMENT_SKILLS]->SetActive(true);
-	}
-	else {
-		Elements[ELEMENT_INVENTORY]->SetActive(false);
-		Elements[ELEMENT_SKILLS]->SetActive(false);
+	Elements[ELEMENT_INVENTORY]->SetActive(InventoryOpen);
+	Elements[ELEMENT_SKILLS]->SetActive(InventoryOpen);
+
+	// Reset state
+	if(!InventoryOpen) {
 
 		// Was dragging an item
 		if(CursorItem)
@@ -784,7 +782,7 @@ void _HUD::DrawCharacterScreen() {
 	DrawPosition.y += 10 * ae::_Element::GetUIScale();
 
 	// Defense
-	Buffer << int(Player->HealModifier + 0.5f) << "%";
+	Buffer << std::round(Player->SelfHealPercent) << "%";
 	DrawAttribute("Self Heal Percent", Buffer, DrawPosition);
 
 	Buffer << Player->DamageBlock;

@@ -184,6 +184,7 @@ class _Player : public _Entity {
 		double SelfHealStartTime;
 		double SelfHealPeriod;
 		double SelfHealTimer;
+		float SelfHealPercent;
 		float HealModifier;
 		float PickupModifier;
 
