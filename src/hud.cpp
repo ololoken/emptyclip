@@ -246,7 +246,7 @@ void _HUD::MouseEvent(const ae::_MouseEvent &MouseEvent) {
 						}
 					}
 					// Drag from world
-					else if(CursorOverItem && CursorOverItem->CanPickup() && glm::distance2(Player->Position, CursorOverItem->Position) < PLAYER_REACH_DISTANCE) {
+					else if(CursorOverItem && CursorOverItem->CanPickup() && glm::distance2(Player->Position, CursorOverItem->Position) <= PLAYER_REACH_DISTANCE_SQUARED) {
 						ClickOffset = glm::vec2(0.0f);
 						CursorItem = CursorOverItem;
 						CursorItem->Visible = false;

@@ -13,10 +13,10 @@ sniper	sniper_fire0.ogg			pistol_ricochet0.ogg	pistol_empty0.ogg	pistol_reload0.
 minigun			minigun_fire0.ogg	pistol_ricochet0.ogg	pistol_empty0.ogg	pistol_reload0.ogg				
 rocketlauncher	rocketlauncher_fire0.ogg	rocket_explode0.ogg								
 crossbow	crossbow_fire0.ogg					crossbow_reload0.ogg				
-zombie	zombie_attack0.ogg							zombie_hit0.ogg	zombie_die0.ogg	zombie_move0.ogg
-dog	dog_attack0.ogg,dog_attack1.ogg							zombie_hit0.ogg	dog_die0.ogg,dog_die1.ogg	dog_move0.ogg
-bat	bat_attack0.ogg,bat_attack1.ogg								spider_die0.ogg	
-spider							spider_attack0.ogg	zombie_hit0.ogg	spider_die0.ogg	
+zombie	zombie_attack0.ogg								zombie_die0.ogg	zombie_move0.ogg
+dog	dog_attack0.ogg,dog_attack1.ogg								dog_die0.ogg,dog_die1.ogg	dog_move0.ogg
+bat	bat_attack0.ogg,bat_attack1.ogg									
+spider							spider_attack0.ogg			
 skeleton							player_punch0.ogg		skeleton_die0.ogg	skeleton_move0.ogg
 beast	player_swing0.ogg						monster_punch0.ogg	monster_hit0.ogg	monster_hit0.ogg	beast_move0.ogg
 fighter							player_punch0.ogg		zombie_die0.ogg	player_move0.ogg

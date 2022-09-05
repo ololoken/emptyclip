@@ -1218,7 +1218,7 @@ void _Map::GetDropPosition(_Object *Player, float MaxDistance, glm::vec2 &WorldP
 		}
 		else if(OriginalDistanceSquared > MaxDistanceSquared) {
 			Direction = glm::normalize(Direction);
-			WorldPosition = Player->Position + Direction * MaxDistance;
+			WorldPosition = Player->Position + Direction * MaxDistance * 0.999f;
 		}
 	}
 }
