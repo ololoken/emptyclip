@@ -721,7 +721,7 @@ int _Player::AddItem(_Item *Item, int &AmountAdded) {
 }
 
 // Drop an item from the player's inventory
-void _Player::DropItem(int Slot) {
+void _Player::DropItem(int Slot, const glm::vec2 &DropPosition) {
 	if(!CanDropItem() || Slot < 0 || Slot >= INVENTORY_SIZE)
 		return;
 
@@ -740,7 +740,11 @@ void _Player::DropItem(int Slot) {
 	}
 
 	// Add item to map
-	Item->SetPosition(Position + _Map::GenerateRandomPointInCircle(PLAYER_RADIUS));
+	if(DropPosition.x < 0)
+		Item->SetPosition(Position + _Map::GenerateRandomPointInCircle(PLAYER_RADIUS));
+	else
+		Item->SetPosition(DropPosition);
+
 	Map->AddObject(Item, GRID_ITEM);
 }
 

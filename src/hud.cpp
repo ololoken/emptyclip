@@ -54,7 +54,7 @@ static std::vector<_MinimapLegend> MinimapLegends = {
 };
 
 // Initialize
-_HUD::_HUD(_Player *Player) : Player(Player) {
+_HUD::_HUD(const ae::_Camera *Camera, _Player *Player) : Camera(Camera), Player(Player) {
 
 	// Get textures
 	Fonts[FONT_TINY] = ae::Assets.Fonts["hud_tiny"];
@@ -210,24 +210,63 @@ void _HUD::MouseEvent(const ae::_MouseEvent &MouseEvent) {
 
 			// Start dragging an item
 			if(MouseEvent.Pressed) {
-				if(HitElement && HitElement->Index >= 0 && Player->CanDropItem()) {
-					if(ae::Input.ModKeyDown(KMOD_CTRL)) {
-						Player->DropItem(HitElement->Index);
+				if(Player->CanDragItem()) {
+					if(HitElement && HitElement->Index >= 0) {
+						if(ae::Input.ModKeyDown(KMOD_CTRL)) {
+							Player->DropItem(HitElement->Index);
+						}
+						else {
+							DragStart = HitElement;
+							CursorItem = Player->Inventory[DragStart->Index];
+							ClickOffset = glm::vec2(MouseEvent.Position) - HitElement->Bounds.GetCenter();
+						}
 					}
-					else {
-						DragStart = HitElement;
-						CursorItem = Player->Inventory[DragStart->Index];
-						ClickOffset = glm::vec2(MouseEvent.Position) - HitElement->Bounds.GetCenter();
+					else if(CursorOverItem) {
+						//CursorItem = CursorOverItem;
 					}
 				}
 			}
 			// Was dragging an item
 			else {
 				if(CursorItem) {
-					if(!HitElement)
-						Player->DropItem(DragStart->Index);
-					else if(HitElement->Index >= 0)
-						Player->SwapInventory(DragStart->Index, HitElement->Index);
+					if(DragStart) {
+
+						// Drop in world
+						if(!HitElement) {
+
+							// Get world position
+							glm::vec2 WorldPosition;
+							Camera->ConvertScreenToWorld(ae::Input.GetMouse(), WorldPosition);
+							Player->Map->GetDropPosition(Player, PLAYER_REACH_DISTANCE, WorldPosition);
+
+							// Drop item
+							Player->DropItem(DragStart->Index, WorldPosition);
+						}
+						else if(HitElement->Index >= 0)
+							Player->SwapInventory(DragStart->Index, HitElement->Index);
+					}
+					else if(CursorItem->CanPickup()) {
+						/*
+						int AmountAdded = 0;
+						int AddResult = Player->AddItem(CursorItem, AmountAdded);
+						if(AddResult) {
+							//if(Item == ClosestItem)
+							//	ClosestItem = nullptr;
+
+							Player->UseTimer = 0.0;
+
+							// Remove item from map
+							Player->Map->RemoveObject(CursorItem, GRID_ITEM);
+
+							// Delete item
+							if(AddResult == 2) {
+								delete CursorItem;
+								//CursorItemTimer = 0;
+							}
+						}
+						//Player->AddInventory(CursorItem);
+						*/
+					}
 				}
 				CursorItem = nullptr;
 				DragStart = nullptr;
@@ -360,7 +399,7 @@ void _HUD::Update(double FrameTime, float Radius, double Clock) {
 }
 
 // Draw phase
-void _HUD::Render(const ae::_Camera *Camera, bool FullMap) {
+void _HUD::Render(bool FullMap) {
 
 	// Set labels
 	ae::Assets.Elements["label_hud_offhand_switch_key"]->Text = ae::Actions.GetInputNameForAction(Action::GAME_WEAPONSWITCH);

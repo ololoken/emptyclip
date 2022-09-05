@@ -88,6 +88,7 @@ const  float        PLAYER_LEGCHANGEFACTOR               =  0.2f;
 const  float        PLAYER_MOVESPEED                     =  4.5f;
 const  float        PLAYER_BACKWARDS_SPEEDFACTOR         =  0.5f;
 const  float        PLAYER_PUSH_FACTOR                   =  0.5f;
+const  float        PLAYER_REACH_DISTANCE                =  1.0f;
 const  int          PLAYER_CRIT_DAMAGE                   =  200;
 const  int          PLAYER_STEADY_CRIT_FACTOR            =  2;
 const  double       PLAYER_SHOOT_PERIOD                  =  0.5;

@@ -109,15 +109,6 @@ void _PlayState::Init() {
 	for(const auto &ObjectSpawn : Map->ObjectSpawns)
 		SpawnObject(ObjectSpawn, false, Map->GetAddedLevel());
 
-	// Initialize HUD
-	HUD = new _HUD(Player);
-	HUD->SetStats(Map->Monsters, Map->Crates, Map->Secrets);
-	if(Player->CheckpointIndex == 0 && !Map->Name.empty())
-		HUD->ShowLevelName(Map->Name, UI_LEVELNAME_TIME);
-
-	// Initialize particles
-	Particles = new _Particles();
-
 	// Initialize camera
 	ae::_CameraSettings CameraSettings;
 	CameraSettings.UpdateDivisor = CAMERA_DIVISOR;
@@ -125,13 +116,21 @@ void _PlayState::Init() {
 	Camera = new ae::_Camera(CameraSettings);
 	Camera->CalculateFrustum(ae::Graphics.AspectRatio);
 	Camera->ForcePosition(glm::vec3(Player->Position, CAMERA_DISTANCE));
-
 	Map->Camera = Camera;
+
+	// Initialize particles
+	Particles = new _Particles();
 	Particles->Camera = Camera;
 	Particles->Map = Map;
+
+	// Initialize HUD
+	HUD = new _HUD(Camera, Player);
+	HUD->SetStats(Map->Monsters, Map->Crates, Map->Secrets);
+	if(Player->CheckpointIndex == 0 && !Map->Name.empty())
+		HUD->ShowLevelName(Map->Name, UI_LEVELNAME_TIME);
+
 	Camera->ConvertScreenToWorld(ae::Input.GetMouse(), WorldCursor);
 	PreviousWorldCursor = WorldCursor;
-
 	ae::Graphics.SetCursor(false);
 
 	ae::Actions.ResetState();
@@ -878,7 +877,7 @@ void _PlayState::Render(double BlendFactor) {
 	Particles->Render(_Particles::TEXT, BlendFactor);
 
 	// Render HUD
-	HUD->Render(Camera, ae::FocusedElement == nullptr && ae::Actions.State[Action::GAME_MAP].Value > 0.0f);
+	HUD->Render(ae::FocusedElement == nullptr && ae::Actions.State[Action::GAME_MAP].Value > 0.0f);
 
 	// Debug mode
 	if(DebugMode) {

@@ -772,10 +772,12 @@ void _Map::GetCloseObjects(const glm::vec2 &Position, float Radius, int GridType
 			for(auto Iterator : Data[i][j].Objects[GridType]) {
 				_Object *Object = Iterator.first;
 
+				// Check distance
 				float RadiiSum = Object->Radius + Radius;
 				float DistanceSquared = glm::distance2(Object->Position, Position);
 				if(DistanceSquared >= RadiiSum * RadiiSum)
 					continue;
+
 				Objects[Object] = 1;
 
 				// Keep track of closest object
@@ -1196,6 +1198,29 @@ void _Map::CheckBulletCollisions(_Object *Attacker, const glm::vec2 &Direction, 
 
 	Hit.Position = WallHitPosition + Attacker->Position;
 	Hits.push_back(Hit);
+}
+
+// Clip ray against walls
+void _Map::GetDropPosition(_Object *Player, float MaxDistance, glm::vec2 &WorldPosition) const {
+
+	// Check wall collisions
+	glm::vec2 Direction = WorldPosition - Player->Position;
+	std::vector<_Hit> Hits;
+	Player->Map->CheckBulletCollisions(Player, Direction, Hits, -1, false, 0, _Tile::ENTITY);
+
+	// Clip drop position
+	if(Hits.size()) {
+		float MaxDistanceSquared = MaxDistance * MaxDistance;
+		float OriginalDistanceSquared = glm::length2(Direction);
+		float HitDistanceSquared = glm::distance2(Hits[0].Position, Player->Position);
+		if(HitDistanceSquared < OriginalDistanceSquared && HitDistanceSquared < MaxDistanceSquared) {
+			WorldPosition = Hits[0].Position;
+		}
+		else if(OriginalDistanceSquared > MaxDistanceSquared) {
+			Direction = glm::normalize(Direction);
+			WorldPosition = Player->Position + Direction * MaxDistance;
+		}
+	}
 }
 
 // Determines if two positions are mutually visible

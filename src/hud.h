@@ -96,7 +96,7 @@ class _HUD {
 			ELEMENT_COUNT,
 		};
 
-		_HUD(_Player *Player);
+		_HUD(const ae::_Camera *Camera, _Player *Player);
 		~_HUD();
 
 		void SetStats(int MaxKills, int MaxCrates, int MaxSecrets);
@@ -107,7 +107,7 @@ class _HUD {
 		void MouseEvent(const ae::_MouseEvent &MouseEvent);
 		void Update(double FrameTime, float Radius, double Clock);
 
-		void Render(const ae::_Camera *Camera, bool FullMap);
+		void Render(bool FullMap);
 		void DrawCharacterScreen();
 		void DrawInventory();
 		void DrawCrosshair(const glm::vec2 &Position);
@@ -121,6 +121,7 @@ class _HUD {
 		static void FormatTimeHMS(std::ostringstream &Buffer, int64_t Time);
 
 		// Objects
+		const ae::_Camera *Camera{nullptr};
 		_Entity *LastEntityHit{nullptr};
 
 		// Inventory

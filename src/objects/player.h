@@ -80,7 +80,7 @@ class _Player : public _Entity {
 		void Respawn();
 
 		int AddItem(_Item *Item, int &AmountAdded);
-		void DropItem(int Slot);
+		void DropItem(int Slot, const glm::vec2 &DropPosition=glm::vec2(-1.0f));
 		void SortInventory();
 		void SwapInventory(int SwapFrom, int SwapTo);
 		bool CanEquipItem(_Item *Item, int Slot);
@@ -105,6 +105,7 @@ class _Player : public _Entity {
 		bool CanPickup() const { return !IsDying() && CanUse(); }
 		bool CanUse() const { return UseTimer > UsePeriod; }
 		bool CanDropItem() const { return !Reloading && !SwitchingWeapons; }
+		bool CanDragItem() const { return !Reloading && !SwitchingWeapons; }
 		bool CanSwitchWeapons() const { return !SwitchingWeapons && !Reloading && !IsMeleeAttacking() && !IsDying(); }
 		bool CanReload() const;
 		bool IsSteady() const override { return HasMainHand() && CurrentAccuracy <= MinAccuracy; }
