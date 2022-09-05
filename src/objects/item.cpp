@@ -518,6 +518,9 @@ void _Item::RecalculateStats() {
 
 // Add mod to item
 bool _Item::AddMod(_Item *Mod) {
+	if(Mod->Type != _Object::MOD)
+		return false;
+
 	if(Mod->Template.Attributes.at("object_type").Int != Type)
 		return false;
 

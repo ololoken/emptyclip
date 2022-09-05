@@ -37,6 +37,7 @@
 #include <iomanip>
 #include <SDL_mouse.h>
 #include <glm/gtc/type_ptr.hpp>
+#include <glm/gtx/norm.hpp>
 
 struct _MinimapLegend {
 	std::string Label;
@@ -245,15 +246,17 @@ void _HUD::MouseEvent(const ae::_MouseEvent &MouseEvent) {
 						}
 					}
 					// Drag from world
-					else if(CursorOverItem && CursorOverItem->CanPickup()) {
+					else if(CursorOverItem && CursorOverItem->CanPickup() && glm::distance2(Player->Position, CursorOverItem->Position) < PLAYER_REACH_DISTANCE) {
 						ClickOffset = glm::vec2(0.0f);
 						CursorItem = CursorOverItem;
 						CursorItem->Visible = false;
 					}
 				}
 			}
-			// Was dragging an item
+			// Mouse released
 			else {
+
+				// Was dragging an item
 				if(CursorItem) {
 					CursorItem->Visible = true;
 
@@ -278,31 +281,41 @@ void _HUD::MouseEvent(const ae::_MouseEvent &MouseEvent) {
 					// From world
 					else {
 						if(HitElement) {
-						}
-						// Drop to another world location
-						else {
-							MoveWorldItem();
-						}
-						/*
-						int AmountAdded = 0;
-						int AddResult = Player->AddItem(CursorItem, AmountAdded);
-						if(AddResult) {
-							//if(Item == ClosestItem)
-							//	ClosestItem = nullptr;
-
 							Player->UseTimer = 0.0;
 
-							// Remove item from map
-							Player->Map->RemoveObject(CursorItem, GRID_ITEM);
+							// Drag onto inventory
+							if(HitElement->Index >= 0) {
+								bool CanEquip = _Player::IsEquipmentIndex(HitElement->Index) && Player->CanEquipItem(CursorItem, HitElement->Index);
+								bool SetAndRemove = false;
 
-							// Delete item
-							if(AddResult == 2) {
-								delete CursorItem;
-								//CursorItemTimer = 0;
+								// Drag onto existing item
+								_Item *ExistingItem = Player->Inventory[HitElement->Index];
+								if(ExistingItem) {
+									if(ExistingItem->AddMod(CursorItem)) {
+										Player->Map->RemoveObject(CursorItem, GRID_ITEM);
+									}
+									else if(CanEquip) {
+										Player->DropItem(HitElement->Index);
+										SetAndRemove = true;
+									}
+								}
+								// Drag onto empty slot
+								else if(CanEquip || _Player::IsBagIndex(HitElement->Index)) {
+									SetAndRemove = true;
+								}
+
+								// Add item to inventory and remove from world
+								if(SetAndRemove) {
+									Player->Inventory[HitElement->Index] = CursorItem;
+									Player->Map->RemoveObject(CursorItem, GRID_ITEM);
+								}
+
+								Player->RecalculateStats();
 							}
 						}
-						//Player->AddInventory(CursorItem);
-						*/
+						// Drop to another world location
+						else
+							MoveWorldItem();
 					}
 
 					CursorItem = nullptr;
