@@ -134,7 +134,6 @@ class _Object {
 		virtual std::string GetTypeAsString() const { return "Object"; }
 		void SetAttributeRange(const std::string &AttributeName, float Multiplier);
 		void SetAttributeLevel(const std::string &AttributeName, float Multiplier);
-		void SetAttributeSpread(const std::string &AttributeName, float Multiplier);
 		float GetAttributeLevel(const std::string &AttributeName, float Multiplier, int MaxLevel=0);
 		void GetAttributeRange(const std::string &AttributeName, float Multiplier, int &Min, int &Max);
 		void SetMaxMods(bool RandomStats=false);

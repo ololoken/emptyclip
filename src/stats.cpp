@@ -191,8 +191,8 @@ void _Stats::LoadWeapons() {
 		Template.Attributes["damage_level"].Float = Database->GetReal("damage_level");
 		Template.Attributes["damage_spread"].Float = Database->GetReal("damage_spread");
 		Template.Attributes["zoom_scale"].Float = Database->GetReal("zoom_scale");
-		Template.Attributes["accuracy"].Float = Database->GetReal("accuracy");
-		Template.Attributes["accuracy_spread"].Float = Database->GetReal("accuracy_spread");
+		Template.Attributes["accuracy_min"].Float = Database->GetReal("accuracy_min");
+		Template.Attributes["accuracy_max"].Float = Database->GetReal("accuracy_max");
 		Template.Attributes["recoil"].Float = Database->GetReal("recoil");
 		Template.Attributes["recoil_regen"].Float = Database->GetReal("recoil_regen");
 		Template.Attributes["move_recoil"].Float = Database->GetReal("move_recoil");

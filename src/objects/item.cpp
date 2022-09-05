@@ -269,7 +269,7 @@ void _Item::DrawTooltip(const _Player *Player, size_t CompareSlot, int Inventory
 				if(ae::Input.ModKeyDown(KMOD_ALT))
 					Buffer << ae::Round1(GetAverageAccuracy()) << " avg";
 				else
-					Buffer << ae::Round1(Attributes.at("min_accuracy").Float) << " - " << ae::Round1(Attributes.at("max_accuracy").Float) << " deg";
+					Buffer << ae::Round1(Attributes.at("accuracy_min").Float) << " - " << ae::Round1(Attributes.at("accuracy_max").Float) << " deg";
 				ae::Assets.Fonts["hud_medium"]->DrawText("Accuracy", glm::ivec2(DrawPosition - DrawOffset), ae::RIGHT_BASELINE);
 				ae::Assets.Fonts["hud_medium"]->DrawText(Buffer.str(), glm::ivec2(DrawPosition + DrawOffset), ae::LEFT_BASELINE, TextColor);
 				Buffer.str("");
@@ -469,8 +469,10 @@ void _Item::RecalculateStats() {
 	float QualityFactor = 1.0f + Quality * 0.01f;
 	switch(Type) {
 		case _Object::WEAPON: {
+			float AccuracyMultiplier = GetBonusMultiplier(MOD_ACCURACY, true);
 			SetAttributeRange("damage", GetBonusMultiplier(MOD_DAMAGE));
-			SetAttributeSpread("accuracy", GetBonusMultiplier(MOD_ACCURACY, true));
+			Attributes["accuracy_min"].Float = Template.Attributes.at("accuracy_min").Float * AccuracyMultiplier;
+			Attributes["accuracy_max"].Float = Template.Attributes.at("accuracy_max").Float * AccuracyMultiplier;
 			Attributes["rounds"].Int = Template.Attributes.at("rounds").Int * GetBonusMultiplier(MOD_MAXROUNDS) + 0.5f;
 			Attributes["fire_period"].Double = Template.Attributes.at("fire_period").Double * GetBonusMultiplier(MOD_ATTACKSPEED, true);
 			Attributes["shoot_period"].Double = Template.Attributes.at("shoot_period").Double * GetBonusMultiplier(MOD_HANDLING, true);
@@ -557,7 +559,7 @@ float _Item::GetAverageDamage() const {
 
 // Get average accuracy from range
 float _Item::GetAverageAccuracy() const {
-	return (Attributes.at("min_accuracy").Float + Attributes.at("max_accuracy").Float) * 0.5f;
+	return (Attributes.at("accuracy_min").Float + Attributes.at("accuracy_max").Float) * 0.5f;
 }
 
 // Get type as string
