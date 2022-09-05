@@ -86,7 +86,7 @@ void _Item::DrawTooltip(const _Player *Player, size_t CompareSlot, int Inventory
 	if(Type == _Object::WEAPON)
 		Size.y = 630 * ae::_Element::GetUIScale();
 	else if(Type == _Object::ARMOR)
-		Size.y = 410 * ae::_Element::GetUIScale();
+		Size.y = 430 * ae::_Element::GetUIScale();
 	else if(Type == _Object::MEDKIT)
 		Size.y = 240 * ae::_Element::GetUIScale();
 	else if(Type == _Object::MOD) {
@@ -165,7 +165,12 @@ void _Item::DrawTooltip(const _Player *Player, size_t CompareSlot, int Inventory
 	DrawPosition.y += 10 * ae::_Element::GetUIScale();
 	glm::vec2 DrawOffset(8 * ae::_Element::GetUIScale(), 0);
 
+	// Add help text
 	std::vector<std::string> HelpTextList;
+	if(Player->IsEquipmentIndex(InventorySlot))
+		HelpTextList.push_back("Right-click to unequip");
+
+	// Show attributes
 	switch(Type) {
 		case _Object::WEAPON: {
 			if(InventorySlot >= INVENTORY_BAGSTART)
@@ -384,6 +389,7 @@ void _Item::DrawTooltip(const _Player *Player, size_t CompareSlot, int Inventory
 		} break;
 	}
 
+	// Add help text
 	if(InventorySlot >= 0)
 		HelpTextList.push_back("Ctrl+click to drop");
 
