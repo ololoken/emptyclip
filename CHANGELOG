@@ -3,11 +3,12 @@ Empty Clip 2.0.0 -
 - Optimized rendering code and added support for high refresh monitors
 - Added per-pixel lighting and day/night cycle
 - Completely redesigned interface and added support for different screen resolutions
+- Reworked campaign mode to have eight new levels for a total of ten
 - Inventory is bigger and can now hold equipment
 - Added equipment slot for melee weapons and separate hotkey for melee attacks (Mouse button 4 by default)
 - Added melee animations
-- Reworked skill system
-- Rewrote AI system
+- Reworked skill system to have nine attributes that affects various player stats
+- Rewrote and optimized AI code
 - Aiming now modifies recoil and recoil regen
 - Medkits are now used when touched
 - A portion of health is slowly recovered when out of combat
@@ -15,18 +16,23 @@ Empty Clip 2.0.0 -
 - Added sprinting and a stamina bar (Hold A by default)
 - Added flashlight hot key (V by default)
 - Equipment can be equipped by right-clicking in the inventory
-- Items can be dropped by clicking the middle mouse button
-- Updated item tooltip and added equipped item comparison
+- Weapons, armor, and mods now have levels and a random quality rating
+- Items in the world can be picked up or moved with the mouse while the inventory is open
+- Items can now be dropped with ctrl+click or middle mouse button
+- Redesigned item tooltip window and added equipped item comparison
 - Ammo is now stored as a number of rounds for each ammo type
 - Ammo and keys are now picked up automatically
 - Keys are now stored in a keychain and are kept until the end of the level
-- Armor now affects movement speed, damage resist, and max ammo capacity
+- Armor now affects movement speed and damage resist
 - Added mods for armor
 - Added new mods for weapons
+- Added new weapons
 - Shotguns now reload one shell at a time
 - Added bullet penetration for certain weapons
+- Added projectile weapons and explosions
 - Removed strength requirement from armor
 - Removed player profiles
+- Removed adventure and survival mode
 - Players now respawn at their last checkpoint with invulnerability for three seconds
 - The game now gets harder with every campaign completion
 - Added end of level screen
