@@ -41,7 +41,7 @@
 
 _Menu Menu;
 
-static const std::string InputBoxPrefix = "button_menu_options_input_";
+static const std::string InputBoxPrefix = "button_menu_controls_input_";
 static const std::string PlayerButtonPrefix = "button_menu_singleplayer_slot";
 static const std::string PlayerColorButtonPrefix = "button_menu_new_color";
 
@@ -63,20 +63,20 @@ static const int KeyBindings[] = {
 };
 
 static const std::string KEYLABELS[] = {
-	"label_menu_options_config_up",
-	"label_menu_options_config_down",
-	"label_menu_options_config_left",
-	"label_menu_options_config_right",
-	"label_menu_options_config_use",
-	"label_menu_options_config_sprint",
-	"label_menu_options_config_map",
-	"label_menu_options_config_flashlight",
-	"label_menu_options_config_fire",
-	"label_menu_options_config_aim",
-	"label_menu_options_config_melee",
-	"label_menu_options_config_reload",
-	"label_menu_options_config_weaponswitch",
-	"label_menu_options_config_inventory",
+	"label_menu_controls_config_up",
+	"label_menu_controls_config_down",
+	"label_menu_controls_config_left",
+	"label_menu_controls_config_right",
+	"label_menu_controls_config_use",
+	"label_menu_controls_config_sprint",
+	"label_menu_controls_config_map",
+	"label_menu_controls_config_flashlight",
+	"label_menu_controls_config_fire",
+	"label_menu_controls_config_aim",
+	"label_menu_controls_config_melee",
+	"label_menu_controls_config_reload",
+	"label_menu_controls_config_weaponswitch",
+	"label_menu_controls_config_inventory",
 };
 
 static const char *COLORS[] = {
@@ -112,6 +112,7 @@ void _Menu::InitSinglePlayer() {
 	RefreshSaveSlots();
 	for(int i = 0; i <= _Save::SLOT_9; i++)
 		SaveSlots[i]->Checked = false;
+
 	SelectedColor = 0;
 	SelectedSlot = -1;
 
@@ -123,13 +124,20 @@ void _Menu::InitSinglePlayer() {
 void _Menu::InitOptions() {
 	ChangeLayout("element_menu_options");
 
+	UpdateOptions();
+
+	State = STATE_OPTIONS;
+}
+
+// Controls
+void _Menu::InitControls() {
+	ChangeLayout("element_menu_controls");
+
 	RefreshInputLabels();
 	CurrentAction = -1;
 
-	UpdateOptions();
-
 	OptionsState = OPTION_NONE;
-	State = STATE_OPTIONS;
+	State = STATE_CONTROLS;
 }
 
 // In-game menu
@@ -146,6 +154,7 @@ void _Menu::InitInGame() {
 void _Menu::InitPlay() {
 	if(CurrentLayout)
 		CurrentLayout->SetActive(false);
+
 	CurrentLayout = nullptr;
 
 	State = STATE_NONE;
@@ -276,13 +285,19 @@ bool _Menu::HandleKey(const ae::_KeyEvent &KeyEvent) {
 			}
 		} break;
 		case STATE_OPTIONS: {
+			if(KeyEvent.Pressed && KeyEvent.Scancode == SDL_SCANCODE_ESCAPE) {
+				Config.Save();
+				if(Framework.GetState() == &PlayState)
+					InitInGame();
+				else
+					InitTitle();
+			}
+		} break;
+		case STATE_CONTROLS: {
 			if(OptionsState == OPTION_NONE) {
 				if(KeyEvent.Pressed && KeyEvent.Scancode == SDL_SCANCODE_ESCAPE) {
 					Config.Save();
-					if(Framework.GetState() == &PlayState)
-						InitInGame();
-					else
-						InitTitle();
+					InitOptions();
 				}
 			}
 			else {
@@ -316,7 +331,7 @@ void _Menu::HandleMouseButton(const ae::_MouseEvent &MouseEvent) {
 
 	// Accepting new action input
 	switch(State) {
-		case STATE_OPTIONS: {
+		case STATE_CONTROLS: {
 			if(OptionsState == OPTION_ACCEPT_INPUT) {
 				if(MouseEvent.Pressed) {
 					RemapInput(ae::_Input::MOUSE_BUTTON, MouseEvent.Button);
@@ -425,12 +440,13 @@ void _Menu::HandleMouseButton(const ae::_MouseEvent &MouseEvent) {
 						SetFullscreen(!Config.Fullscreen);
 						UpdateOptions();
 					}
+					else if(Clicked->Name == "button_menu_options_controls") {
+						InitControls();
+					}
 					else if(Clicked->Name == "button_menu_options_defaults") {
-						Config.LoadDefaultInputBindings(false);
 						Config.SoundVolume = 1.0f;
 						ae::Audio.SetSoundVolume(Config.SoundVolume);
 						UpdateOptions();
-						RefreshInputLabels();
 					}
 					else if(Clicked->Name == "button_menu_options_save") {
 						Config.Save();
@@ -449,8 +465,27 @@ void _Menu::HandleMouseButton(const ae::_MouseEvent &MouseEvent) {
 					else if(Clicked->Name.substr(0, InputBoxPrefix.size()) == InputBoxPrefix) {
 						OptionsState = OPTION_ACCEPT_INPUT;
 						CurrentAction = Clicked->Index;
-						ae::Assets.Elements["label_menu_options_accept_text_action"]->Text = Clicked->Children.front()->Text;
+						ae::Assets.Elements["label_menu_controls_accept_text_action"]->Text = Clicked->Children.front()->Text;
 					}
+				}
+			} break;
+			case STATE_CONTROLS: {
+				if(Clicked->Name == "button_menu_controls_defaults") {
+					Config.LoadDefaultInputBindings(false);
+					RefreshInputLabels();
+				}
+				else if(Clicked->Name == "button_menu_controls_save") {
+					Config.Save();
+					InitOptions();
+				}
+				else if(Clicked->Name == "button_menu_controls_cancel") {
+					Config.Load();
+					InitOptions();
+				}
+				else if(Clicked->Name.substr(0, InputBoxPrefix.size()) == InputBoxPrefix) {
+					OptionsState = OPTION_ACCEPT_INPUT;
+					CurrentAction = Clicked->Index;
+					ae::Assets.Elements["label_menu_controls_accept_text_action"]->Text = Clicked->Children.front()->Text;
 				}
 			} break;
 			case STATE_INGAME: {
@@ -539,6 +574,10 @@ void _Menu::Render() {
 			ae::Assets.Elements["label_game_version"]->Render();
 		} break;
 		case STATE_OPTIONS: {
+			if(CurrentLayout)
+				CurrentLayout->Render();
+		} break;
+		case STATE_CONTROLS: {
 			if(CurrentLayout)
 				CurrentLayout->Render();
 

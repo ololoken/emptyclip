@@ -39,6 +39,7 @@ class _Menu {
 			STATE_TITLE,
 			STATE_SINGLEPLAYER,
 			STATE_OPTIONS,
+			STATE_CONTROLS,
 			STATE_INGAME,
 			STATE_SCORE,
 		};
@@ -83,6 +84,7 @@ class _Menu {
 		void InitTitle();
 		void InitSinglePlayer();
 		void InitOptions();
+		void InitControls();
 		void InitInGame();
 		void InitPlay();
 		void InitScore();

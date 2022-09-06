@@ -84,83 +84,99 @@
 	</element>
 	<element id="element_menu_options" size_x="650" size_y="984">
 		<element id="label_menu_options_title" font="hud_large" text="Options" offset_y="50" alignment_y="3"/>
-		<element id="label_menu_options_fullscreen" font="menu_buttons" text="Fullscreen" offset_x="-92" offset_y="140" alignment_y="3">
-			<element id="button_menu_options_fullscreen" style="style_menu_textbox" hover_style="style_menu_button_hover" offset_x="107" offset_y="-10" size_x="44" size_y="44" alignment_x="0" clickable="true">
-				<element id="label_menu_options_fullscreen_check" font="hud_medium" text="X"/>
-			</element>
-		</element>
-		<element id="label_menu_options_volume" font="menu_buttons" text="Sound Volume" offset_x="-120" offset_y="230" alignment_y="3">
+		<element id="label_menu_options_volume" font="menu_buttons" text="Sound Volume" offset_x="-120" offset_y="140" alignment_y="3">
 			<element id="element_menu_options_soundvolume" style="style_menu_textbox" offset_x="240" offset_y="-10" size_x="210" size_y="42" alignment_x="1" clickable="true">
 				<element id="button_menu_options_soundvolume" style="style_menu_button" size_x="20" size_y="42" alignment_x="0" alignment_y="0" draggable="true"/>
 				<element id="label_menu_options_soundvolume_value" text="1.0" font="hud_medium" offset_x="224" offset_y="30" alignment_x="0" alignment_y="3"/>
 			</element>
 		</element>
-		<element id="element_menu_controls" offset_y="100" alignment_y="0">
-			<element id="label_menu_options_controls" font="menu_buttons" text="Controls" offset_y="200" alignment_y="3"/>
-			<element id="button_menu_options_defaults" style="style_menu_button" hover_style="style_menu_button_hover" offset_x="-240" offset_y="750" size_x="220" size_y="66" alignment_y="0" clickable="true">
+		<element id="label_menu_options_fullscreen" font="menu_buttons" text="Fullscreen" offset_x="-92" offset_y="230" alignment_y="3">
+			<element id="button_menu_options_fullscreen" style="style_menu_textbox" hover_style="style_menu_button_hover" offset_x="107" offset_y="-10" size_x="44" size_y="44" alignment_x="0" clickable="true">
+				<element id="label_menu_options_fullscreen_check" font="hud_medium" text="X"/>
+			</element>
+		</element>
+		<element id="element_menu_options_buttons" offset_y="350">
+			<element id="button_menu_options_controls" style="style_menu_button" hover_style="style_menu_button_hover" offset_x="0" offset_y="-130" size_x="220" size_y="66" alignment_y="0" clickable="true">
+				<element id="label_menu_options_controls" font="menu_buttons" text="Controls" offset_y="44" alignment_y="3"/>
+			</element>
+			<element id="button_menu_options_defaults" style="style_menu_button" hover_style="style_menu_button_hover" offset_x="-240" offset_y="0" size_x="220" size_y="66" alignment_y="0" clickable="true">
 				<element id="label_menu_options_defaults" font="menu_buttons" text="Defaults" offset_y="44" alignment_y="3"/>
 			</element>
-			<element id="button_menu_options_save" style="style_menu_button" hover_style="style_menu_button_hover" offset_y="750" size_x="220" size_y="66" alignment_y="0" clickable="true">
+			<element id="button_menu_options_save" style="style_menu_button" hover_style="style_menu_button_hover" offset_y="0" size_x="220" size_y="66" alignment_y="0" clickable="true">
 				<element id="label_menu_options_save" font="menu_buttons" text="Save" offset_y="44" alignment_y="3"/>
 			</element>
-			<element id="button_menu_options_cancel" style="style_menu_button" hover_style="style_menu_button_hover" offset_x="240" offset_y="750" size_x="220" size_y="66" alignment_y="0" clickable="true">
+			<element id="button_menu_options_cancel" style="style_menu_button" hover_style="style_menu_button_hover" offset_x="240" offset_y="0" size_x="220" size_y="66" alignment_y="0" clickable="true">
 				<element id="label_menu_options_cancel" font="menu_buttons" text="Cancel" offset_y="44" alignment_y="3"/>
 			</element>
-			<element id="button_menu_options_input_up" style="style_menu_box" hover_style="style_menu_hover" offset_x="-125" offset_y="250" size_x="140" size_y="50" alignment_y="0" clickable="true">
-				<element id="label_menu_options_up" font="hud_small" text="Move Up" offset_x="-160" offset_y="32" alignment_y="3"/>
-				<element id="label_menu_options_config_up" font="hud_small" offset_y="32" alignment_y="3"/>
+		</element>
+	</element>
+	<element id="element_menu_controls" size_y="984">
+		<element id="label_menu_controls_title" font="hud_large" text="Controls" offset_y="50" alignment_y="3"/>
+		<element id="button_menu_controls_input_up" style="style_menu_box" hover_style="style_menu_hover" offset_x="-125" offset_y="250" size_x="140" size_y="50" alignment_y="0" clickable="true">
+			<element id="label_menu_controls_up" font="hud_small" text="Move Up" offset_x="-160" offset_y="32" alignment_y="3"/>
+			<element id="label_menu_controls_config_up" font="hud_small" offset_y="32" alignment_y="3"/>
+		</element>
+		<element id="button_menu_controls_input_down" style="style_menu_box" hover_style="style_menu_hover" offset_x="-125" offset_y="310" size_x="140" size_y="50" alignment_y="0" clickable="true">
+			<element id="label_menu_controls_down" font="hud_small" text="Move Down" offset_x="-160" offset_y="32" alignment_y="3"/>
+			<element id="label_menu_controls_config_down" font="hud_small" offset_y="32" alignment_y="3"/>
+		</element>
+		<element id="button_menu_controls_input_left" style="style_menu_box" hover_style="style_menu_hover" offset_x="-125" offset_y="370" size_x="140" size_y="50" alignment_y="0" clickable="true">
+			<element id="label_menu_controls_left" font="hud_small" text="Move Left" offset_x="-160" offset_y="32" alignment_y="3"/>
+			<element id="label_menu_controls_config_left" font="hud_small" offset_y="32" alignment_y="3"/>
+		</element>
+		<element id="button_menu_controls_input_right" style="style_menu_box" hover_style="style_menu_hover" offset_x="-125" offset_y="430" size_x="140" size_y="50" alignment_y="0" clickable="true">
+			<element id="label_menu_controls_right" font="hud_small" text="Move Right" offset_x="-160" offset_y="32" alignment_y="3"/>
+			<element id="label_menu_controls_config_right" font="hud_small" offset_y="32" alignment_y="3"/>
+		</element>
+		<element id="button_menu_controls_input_use" style="style_menu_box" hover_style="style_menu_hover" offset_x="-125" offset_y="490" size_x="140" size_y="50" alignment_y="0" clickable="true">
+			<element id="label_menu_controls_use" font="hud_small" text="Use" offset_x="-160" offset_y="32" alignment_y="3"/>
+			<element id="label_menu_controls_config_use" font="hud_small" offset_y="32" alignment_y="3"/>
+		</element>
+		<element id="button_menu_controls_input_sprint" style="style_menu_box" hover_style="style_menu_hover" offset_x="-125" offset_y="550" size_x="140" size_y="50" alignment_y="0" clickable="true">
+			<element id="label_menu_controls_sprint" font="hud_small" text="Sprint" offset_x="-160" offset_y="32" alignment_y="3"/>
+			<element id="label_menu_controls_config_sprint" font="hud_small" offset_y="32" alignment_y="3"/>
+		</element>
+		<element id="button_menu_controls_input_map" style="style_menu_box" hover_style="style_menu_hover" offset_x="-125" offset_y="610" size_x="140" size_y="50" alignment_y="0" clickable="true">
+			<element id="label_menu_controls_map" font="hud_small" text="View Map" offset_x="-160" offset_y="32" alignment_y="3"/>
+			<element id="label_menu_controls_config_map" font="hud_small" offset_y="32" alignment_y="3"/>
+		</element>
+		<element id="button_menu_controls_input_fire" style="style_menu_box" hover_style="style_menu_hover" offset_x="225" offset_y="250" size_x="140" size_y="50" alignment_y="0" clickable="true">
+			<element id="label_menu_controls_fire" font="hud_small" text="Fire" offset_x="-160" offset_y="32" alignment_y="3"/>
+			<element id="label_menu_controls_config_fire" font="hud_small" offset_y="32" alignment_y="3"/>
+		</element>
+		<element id="button_menu_controls_input_aim" style="style_menu_box" hover_style="style_menu_hover" offset_x="225" offset_y="310" size_x="140" size_y="50" alignment_y="0" clickable="true">
+			<element id="label_menu_controls_aim" font="hud_small" text="Aim" offset_x="-160" offset_y="32" alignment_y="3"/>
+			<element id="label_menu_controls_config_aim" font="hud_small" offset_y="32" alignment_y="3"/>
+		</element>
+		<element id="button_menu_controls_input_melee" style="style_menu_box" hover_style="style_menu_hover" offset_x="225" offset_y="370" size_x="140" size_y="50" alignment_y="0" clickable="true">
+			<element id="label_menu_controls_melee" font="hud_small" text="Melee" offset_x="-160" offset_y="32" alignment_y="3"/>
+			<element id="label_menu_controls_config_melee" font="hud_small" offset_y="32" alignment_y="3"/>
+		</element>
+		<element id="button_menu_controls_input_reload" style="style_menu_box" hover_style="style_menu_hover" offset_x="225" offset_y="430" size_x="140" size_y="50" alignment_y="0" clickable="true">
+			<element id="label_menu_controls_reload" font="hud_small" text="Reload" offset_x="-160" offset_y="32" alignment_y="3"/>
+			<element id="label_menu_controls_config_reload" font="hud_small" offset_y="32" alignment_y="3"/>
+		</element>
+		<element id="button_menu_controls_input_switch" style="style_menu_box" hover_style="style_menu_hover" offset_x="225" offset_y="490" size_x="140" size_y="50" alignment_y="0" clickable="true">
+			<element id="label_menu_controls_weaponswitch" font="hud_small" text="Weapon Switch" offset_x="-160" offset_y="32" alignment_y="3"/>
+			<element id="label_menu_controls_config_weaponswitch" font="hud_small" offset_y="32" alignment_y="3"/>
+		</element>
+		<element id="button_menu_controls_input_flashlight" style="style_menu_box" hover_style="style_menu_hover" offset_x="225" offset_y="550" size_x="140" size_y="50" alignment_y="0" clickable="true">
+			<element id="label_menu_controls_flashlight" font="hud_small" text="Flashlight" offset_x="-160" offset_y="32" alignment_y="3"/>
+			<element id="label_menu_controls_config_flashlight" font="hud_small" offset_y="32" alignment_y="3"/>
+		</element>
+		<element id="button_menu_controls_input_inventory" style="style_menu_box" hover_style="style_menu_hover" offset_x="225" offset_y="610" size_x="140" size_y="50" alignment_y="0" clickable="true">
+			<element id="label_menu_controls_inventory" font="hud_small" text="Open Inventory" offset_x="-160" offset_y="32" alignment_y="3"/>
+			<element id="label_menu_controls_config_inventory" font="hud_small" offset_y="32" alignment_y="3"/>
+		</element>
+		<element id="element_menu_controls_buttons" offset_y="350">
+			<element id="button_menu_controls_defaults" style="style_menu_button" hover_style="style_menu_button_hover" offset_x="-240" offset_y="0" size_x="220" size_y="66" alignment_y="0" clickable="true">
+				<element id="label_menu_controls_defaults" font="menu_buttons" text="Defaults" offset_y="44" alignment_y="3"/>
 			</element>
-			<element id="button_menu_options_input_down" style="style_menu_box" hover_style="style_menu_hover" offset_x="-125" offset_y="310" size_x="140" size_y="50" alignment_y="0" clickable="true">
-				<element id="label_menu_options_down" font="hud_small" text="Move Down" offset_x="-160" offset_y="32" alignment_y="3"/>
-				<element id="label_menu_options_config_down" font="hud_small" offset_y="32" alignment_y="3"/>
+			<element id="button_menu_controls_save" style="style_menu_button" hover_style="style_menu_button_hover" offset_y="0" size_x="220" size_y="66" alignment_y="0" clickable="true">
+				<element id="label_menu_controls_save" font="menu_buttons" text="Save" offset_y="44" alignment_y="3"/>
 			</element>
-			<element id="button_menu_options_input_left" style="style_menu_box" hover_style="style_menu_hover" offset_x="-125" offset_y="370" size_x="140" size_y="50" alignment_y="0" clickable="true">
-				<element id="label_menu_options_left" font="hud_small" text="Move Left" offset_x="-160" offset_y="32" alignment_y="3"/>
-				<element id="label_menu_options_config_left" font="hud_small" offset_y="32" alignment_y="3"/>
-			</element>
-			<element id="button_menu_options_input_right" style="style_menu_box" hover_style="style_menu_hover" offset_x="-125" offset_y="430" size_x="140" size_y="50" alignment_y="0" clickable="true">
-				<element id="label_menu_options_right" font="hud_small" text="Move Right" offset_x="-160" offset_y="32" alignment_y="3"/>
-				<element id="label_menu_options_config_right" font="hud_small" offset_y="32" alignment_y="3"/>
-			</element>
-			<element id="button_menu_options_input_use" style="style_menu_box" hover_style="style_menu_hover" offset_x="-125" offset_y="490" size_x="140" size_y="50" alignment_y="0" clickable="true">
-				<element id="label_menu_options_use" font="hud_small" text="Use" offset_x="-160" offset_y="32" alignment_y="3"/>
-				<element id="label_menu_options_config_use" font="hud_small" offset_y="32" alignment_y="3"/>
-			</element>
-			<element id="button_menu_options_input_sprint" style="style_menu_box" hover_style="style_menu_hover" offset_x="-125" offset_y="550" size_x="140" size_y="50" alignment_y="0" clickable="true">
-				<element id="label_menu_options_sprint" font="hud_small" text="Sprint" offset_x="-160" offset_y="32" alignment_y="3"/>
-				<element id="label_menu_options_config_sprint" font="hud_small" offset_y="32" alignment_y="3"/>
-			</element>
-			<element id="button_menu_options_input_map" style="style_menu_box" hover_style="style_menu_hover" offset_x="-125" offset_y="610" size_x="140" size_y="50" alignment_y="0" clickable="true">
-				<element id="label_menu_options_map" font="hud_small" text="View Map" offset_x="-160" offset_y="32" alignment_y="3"/>
-				<element id="label_menu_options_config_map" font="hud_small" offset_y="32" alignment_y="3"/>
-			</element>
-			<element id="button_menu_options_input_fire" style="style_menu_box" hover_style="style_menu_hover" offset_x="225" offset_y="250" size_x="140" size_y="50" alignment_y="0" clickable="true">
-				<element id="label_menu_options_fire" font="hud_small" text="Fire" offset_x="-160" offset_y="32" alignment_y="3"/>
-				<element id="label_menu_options_config_fire" font="hud_small" offset_y="32" alignment_y="3"/>
-			</element>
-			<element id="button_menu_options_input_aim" style="style_menu_box" hover_style="style_menu_hover" offset_x="225" offset_y="310" size_x="140" size_y="50" alignment_y="0" clickable="true">
-				<element id="label_menu_options_aim" font="hud_small" text="Aim" offset_x="-160" offset_y="32" alignment_y="3"/>
-				<element id="label_menu_options_config_aim" font="hud_small" offset_y="32" alignment_y="3"/>
-			</element>
-			<element id="button_menu_options_input_melee" style="style_menu_box" hover_style="style_menu_hover" offset_x="225" offset_y="370" size_x="140" size_y="50" alignment_y="0" clickable="true">
-				<element id="label_menu_options_melee" font="hud_small" text="Melee" offset_x="-160" offset_y="32" alignment_y="3"/>
-				<element id="label_menu_options_config_melee" font="hud_small" offset_y="32" alignment_y="3"/>
-			</element>
-			<element id="button_menu_options_input_reload" style="style_menu_box" hover_style="style_menu_hover" offset_x="225" offset_y="430" size_x="140" size_y="50" alignment_y="0" clickable="true">
-				<element id="label_menu_options_reload" font="hud_small" text="Reload" offset_x="-160" offset_y="32" alignment_y="3"/>
-				<element id="label_menu_options_config_reload" font="hud_small" offset_y="32" alignment_y="3"/>
-			</element>
-			<element id="button_menu_options_input_switch" style="style_menu_box" hover_style="style_menu_hover" offset_x="225" offset_y="490" size_x="140" size_y="50" alignment_y="0" clickable="true">
-				<element id="label_menu_options_weaponswitch" font="hud_small" text="Weapon Switch" offset_x="-160" offset_y="32" alignment_y="3"/>
-				<element id="label_menu_options_config_weaponswitch" font="hud_small" offset_y="32" alignment_y="3"/>
-			</element>
-			<element id="button_menu_options_input_flashlight" style="style_menu_box" hover_style="style_menu_hover" offset_x="225" offset_y="550" size_x="140" size_y="50" alignment_y="0" clickable="true">
-				<element id="label_menu_options_flashlight" font="hud_small" text="Flashlight" offset_x="-160" offset_y="32" alignment_y="3"/>
-				<element id="label_menu_options_config_flashlight" font="hud_small" offset_y="32" alignment_y="3"/>
-			</element>
-			<element id="button_menu_options_input_inventory" style="style_menu_box" hover_style="style_menu_hover" offset_x="225" offset_y="610" size_x="140" size_y="50" alignment_y="0" clickable="true">
-				<element id="label_menu_options_inventory" font="hud_small" text="Open Inventory" offset_x="-160" offset_y="32" alignment_y="3"/>
-				<element id="label_menu_options_config_inventory" font="hud_small" offset_y="32" alignment_y="3"/>
+			<element id="button_menu_controls_cancel" style="style_menu_button" hover_style="style_menu_button_hover" offset_x="240" offset_y="0" size_x="220" size_y="66" alignment_y="0" clickable="true">
+				<element id="label_menu_controls_cancel" font="menu_buttons" text="Cancel" offset_y="44" alignment_y="3"/>
 			</element>
 		</element>
 	</element>
@@ -176,8 +192,8 @@
 		</element>
 	</element>
 	<element id="element_menu_popup" style="style_menu_window" size_x="340" size_y="100">
-		<element id="label_menu_options_accept_text" font="hud_medium" text="Press a key or button for" offset_y="35" alignment_y="3"/>
-		<element id="label_menu_options_accept_text_action" font="hud_medium" offset_y="75" alignment_y="3"/>
+		<element id="label_menu_controls_accept_text" font="hud_medium" text="Press a key or button for" offset_y="35" alignment_y="3"/>
+		<element id="label_menu_controls_accept_text_action" font="hud_medium" offset_y="75" alignment_y="3"/>
 	</element>
 	<element id="element_menu_score" size_x="512" size_y="984">
 		<element id="label_menu_score_title" font="hud_large" text="Level Completed!" offset_y="-350"/>
