@@ -136,7 +136,7 @@ class _Object {
 		void SetAttributeLevel(const std::string &AttributeName, float Multiplier);
 		float GetAttributeLevel(const std::string &AttributeName, float Multiplier, int MaxLevel=0);
 		void GetAttributeRange(const std::string &AttributeName, float Multiplier, int &Min, int &Max);
-		void SetMaxMods(bool RandomStats=false);
+		void SetMaxMods(float QualityFactor, bool RandomStats);
 
 		void CheckProjectileCollisions();
 		void ApplyDamage(const _Hit &Hit);

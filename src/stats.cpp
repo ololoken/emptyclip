@@ -612,6 +612,9 @@ _Item *_Stats::CreateItem(const std::string &ID, int Level, int Quality, int Cou
 	if(RandomStats)
 		Item->Quality = ae::GetRandomInt(-ITEM_QUALITY_RANGE, ITEM_QUALITY_RANGE);
 
+	// Get quality factor
+	float QualityFactor = 1.0f + Item->Quality * 0.01f;
+
 	// Set attributes based off type and item level
 	switch(Template.Type) {
 		case _Object::WEAPON: {
@@ -627,15 +630,15 @@ _Item *_Stats::CreateItem(const std::string &ID, int Level, int Quality, int Cou
 			Item->Attributes["scale_y"].Float = Template.Attributes["scale_y"].Float;
 			Item->Attributes["fire_allrounds"].Int = Template.Attributes["fire_allrounds"].Int;
 			Item->Attributes["shoot_period"].Double = Template.Attributes["shoot_period"].Double;
-			Item->SetMaxMods(RandomStats);
+			Item->SetMaxMods(QualityFactor, RandomStats);
 		} break;
 		case _Object::ARMOR:
-			Item->SetMaxMods(RandomStats);
+			Item->SetMaxMods(QualityFactor, RandomStats);
 		break;
 		case _Object::MOD:
 			Item->Attributes["mod_type"].Int = Template.Attributes["mod_type"].Int;
 			Item->Attributes["weapon_type"].Int = Template.Attributes["weapon_type"].Int;
-			Item->SetAttributeLevel("bonus", 1.0f + Item->Quality * 0.01f);
+			Item->SetAttributeLevel("bonus", QualityFactor);
 		break;
 		default:
 			Item->Attributes = Template.Attributes;

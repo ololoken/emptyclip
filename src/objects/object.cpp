@@ -113,10 +113,9 @@ void _Object::GetAttributeRange(const std::string &AttributeName, float Multipli
 	Max = Value + ValueRange;
 }
 
-// Set the max number of mods based on level
-void _Object::SetMaxMods(bool RandomStats) {
-	Attributes["max_mods"].Int = std::max(1, (int)(Template.Attributes.at("mods").Float + Template.Attributes.at("mods_level").Float * (Level - 1) + 0.5f));
-
+// Set the max number of mods based on level and quality
+void _Object::SetMaxMods(float QualityFactor, bool RandomStats) {
+	Attributes["max_mods"].Int = std::max(1, (int)std::round(QualityFactor * (Template.Attributes.at("mods").Float + Template.Attributes.at("mods_level").Float * (Level - 1))));
 	if(RandomStats)
 		Attributes["max_mods"].Int += ae::GetRandomInt(0, 1);
 }
