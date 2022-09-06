@@ -113,6 +113,16 @@
 				<element id="label_menu_options_gunflashes_check" font="hud_medium" text="X"/>
 			</element>
 		</element>
+		<element id="label_menu_options_walldecals" font="menu_buttons" text="Wall Decals" offset_x="-345" offset_y="550" alignment_x="2" alignment_y="3">
+			<element id="button_menu_options_walldecals" style="style_menu_textbox" hover_style="style_menu_button_hover" offset_x="35" offset_y="-10" size_x="44" size_y="44" alignment_x="0" clickable="true">
+				<element id="label_menu_options_walldecals_check" font="hud_medium" text="X"/>
+			</element>
+		</element>
+		<element id="label_menu_options_floordecals" font="menu_buttons" text="Floor Decals" offset_x="-345" offset_y="620" alignment_x="2" alignment_y="3">
+			<element id="button_menu_options_floordecals" style="style_menu_textbox" hover_style="style_menu_button_hover" offset_x="35" offset_y="-10" size_x="44" size_y="44" alignment_x="0" clickable="true">
+				<element id="label_menu_options_floordecals_check" font="hud_medium" text="X"/>
+			</element>
+		</element>
 		<element id="element_menu_options_buttons" offset_y="400">
 			<element id="button_menu_options_controls" style="style_menu_button" hover_style="style_menu_button_hover" offset_x="0" offset_y="-130" size_x="220" size_y="66" alignment_y="0" clickable="true">
 				<element id="label_menu_options_controls" font="menu_buttons" text="Controls" offset_y="44" alignment_y="3"/>
