@@ -113,6 +113,7 @@ class _Menu {
 
 		void UpdateOptions();
 		void UpdateVolume();
+		void UpdateMSAA();
 		void RefreshInputLabels();
 		void RefreshSaveSlots();
 		void SinglePlayerCancel();
@@ -136,6 +137,7 @@ class _Menu {
 
 		// Options
 		OptionsStateType OptionsState{OPTION_NONE};
+		std::vector<int> MSAAValues;
 		int CurrentAction{-1};
 
 		// Singleplayer

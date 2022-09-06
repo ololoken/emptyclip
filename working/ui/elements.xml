@@ -84,18 +84,25 @@
 	</element>
 	<element id="element_menu_options" size_x="650" size_y="984">
 		<element id="label_menu_options_title" font="hud_large" text="Options" offset_y="50" alignment_y="3"/>
-		<element id="label_menu_options_volume" font="menu_buttons" text="Sound Volume" offset_x="-120" offset_y="140" alignment_y="3">
+		<element id="label_menu_options_restart" font="hud_small" text="* Restart Required" offset_x="-300" offset_y="435" alignment_x="0" alignment_y="1"/>
+		<element id="label_menu_options_volume" font="menu_buttons" text="Sound Volume" offset_x="-120" offset_y="160" alignment_y="3">
 			<element id="element_menu_options_soundvolume" style="style_menu_textbox" offset_x="240" offset_y="-10" size_x="210" size_y="42" alignment_x="1" clickable="true">
 				<element id="button_menu_options_soundvolume" style="style_menu_button" size_x="20" size_y="42" alignment_x="0" alignment_y="0" draggable="true"/>
 				<element id="label_menu_options_soundvolume_value" text="1.0" font="hud_medium" offset_x="224" offset_y="30" alignment_x="0" alignment_y="3"/>
 			</element>
 		</element>
-		<element id="label_menu_options_fullscreen" font="menu_buttons" text="Fullscreen" offset_x="-92" offset_y="230" alignment_y="3">
+		<element id="label_menu_options_fullscreen" font="menu_buttons" text="Fullscreen" offset_x="-92" offset_y="250" alignment_y="3">
 			<element id="button_menu_options_fullscreen" style="style_menu_textbox" hover_style="style_menu_button_hover" offset_x="107" offset_y="-10" size_x="44" size_y="44" alignment_x="0" clickable="true">
 				<element id="label_menu_options_fullscreen_check" font="hud_medium" text="X"/>
 			</element>
 		</element>
-		<element id="element_menu_options_buttons" offset_y="350">
+		<element id="label_menu_options_msaa" font="menu_buttons" text="MSAA*" offset_x="-120" offset_y="320" alignment_y="3">
+			<element id="element_menu_options_msaa" style="style_menu_textbox" offset_x="240" offset_y="-10" size_x="210" size_y="42" alignment_x="1" clickable="true">
+				<element id="button_menu_options_msaa" style="style_menu_button" size_x="20" size_y="42" alignment_x="0" alignment_y="0" draggable="true"/>
+				<element id="label_menu_options_msaa_value" text="0" font="hud_medium" offset_x="224" offset_y="30" alignment_x="0" alignment_y="3"/>
+			</element>
+		</element>
+		<element id="element_menu_options_buttons" offset_y="400">
 			<element id="button_menu_options_controls" style="style_menu_button" hover_style="style_menu_button_hover" offset_x="0" offset_y="-130" size_x="220" size_y="66" alignment_y="0" clickable="true">
 				<element id="label_menu_options_controls" font="menu_buttons" text="Controls" offset_y="44" alignment_y="3"/>
 			</element>
@@ -168,7 +175,7 @@
 			<element id="label_menu_controls_inventory" font="hud_small" text="Open Inventory" offset_x="-160" offset_y="32" alignment_y="3"/>
 			<element id="label_menu_controls_config_inventory" font="hud_small" offset_y="32" alignment_y="3"/>
 		</element>
-		<element id="element_menu_controls_buttons" offset_y="350">
+		<element id="element_menu_controls_buttons" offset_y="400">
 			<element id="button_menu_controls_defaults" style="style_menu_button" hover_style="style_menu_button_hover" offset_x="-240" offset_y="0" size_x="220" size_y="66" alignment_y="0" clickable="true">
 				<element id="label_menu_controls_defaults" font="menu_buttons" text="Defaults" offset_y="44" alignment_y="3"/>
 			</element>

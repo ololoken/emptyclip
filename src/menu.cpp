@@ -37,6 +37,7 @@
 #include <version.h>
 #include <sstream>
 #include <iomanip>
+#include <algorithm>
 #include <SDL_mouse.h>
 
 _Menu Menu;
@@ -123,6 +124,15 @@ void _Menu::InitSinglePlayer() {
 // Options
 void _Menu::InitOptions() {
 	ChangeLayout("element_menu_options");
+
+	// Set up MSAA values
+	MSAAValues.clear();
+	MSAAValues.push_back(0);
+	int Samples = 1;
+	while(Samples <= ae::Graphics.MaxSamples) {
+		MSAAValues.push_back(Samples);
+		Samples *= 2;
+	}
 
 	UpdateOptions();
 
@@ -215,18 +225,33 @@ void _Menu::LaunchGame() {
 
 // Update option elements
 void _Menu::UpdateOptions() {
-	std::ostringstream Buffer;
-	Buffer << std::fixed << std::setprecision(2);
 
 	// Set fullscreen
 	ae::Assets.Elements["label_menu_options_fullscreen_check"]->Text = Config.Fullscreen ? "X" : "";
 
 	// Set sound volume
-	Buffer << Config.SoundVolume;
-	ae::Assets.Elements["label_menu_options_soundvolume_value"]->Text = Buffer.str();
-	Buffer.str("");
+	{
+		std::ostringstream Buffer;
+		Buffer << std::fixed << std::setprecision(2) << Config.SoundVolume;
+		ae::Assets.Elements["label_menu_options_soundvolume_value"]->Text = Buffer.str();
+		Buffer.str("");
 
-	ae::Assets.Elements["button_menu_options_soundvolume"]->SetOffsetPercent(glm::vec2(Config.SoundVolume, 0));
+		ae::Assets.Elements["button_menu_options_soundvolume"]->SetOffsetPercent(glm::vec2(Config.SoundVolume, 0));
+	}
+
+	// Set MSAA
+	{
+		float Offset = 0.0f;
+		for(size_t i = 0; i < MSAAValues.size(); i++) {
+			if(Config.MSAA == MSAAValues[i]) {
+				Offset = i * (1.0f / (MSAAValues.size() - 1));
+				break;
+			}
+		}
+
+		ae::Assets.Elements["button_menu_options_msaa"]->SetOffsetPercent(glm::vec2(Offset, 0));
+		ae::Assets.Elements["label_menu_options_msaa_value"]->Text = std::to_string(Config.MSAA);
+	}
 }
 
 // Update config and audio volumes from options
@@ -253,6 +278,31 @@ void _Menu::UpdateVolume() {
 		// Set volumes
 		Config.SoundVolume = ae::ToNumber<float>(SoundVolume->Text);
 		ae::Audio.SetSoundVolume(Config.SoundVolume);
+	}
+}
+
+// Update MSAA slider
+void _Menu::UpdateMSAA() {
+	ae::_Element *MSAASlider = ae::Assets.Elements["element_menu_options_msaa"];
+	ae::_Element *MSAAValue = ae::Assets.Elements["label_menu_options_msaa_value"];
+	ae::_Element *MSAAButton = ae::Assets.Elements["button_menu_options_msaa"];
+
+	// Handle clicking inside slider elements
+	if(!MSAAButton->PressedElement && MSAASlider->PressedElement) {
+		MSAAButton->PressedOffset = MSAAButton->Size / 2.0f;
+		MSAAButton->PressedElement = MSAAButton;
+	}
+
+	// Update value
+	if(MSAAButton->PressedElement) {
+		int Index = std::clamp((int)(MSAAValues.size() * MSAAButton->GetOffsetPercent().x), 0, (int)MSAAValues.size() - 1);
+
+		Config.MSAA = MSAAValues[Index];
+
+		std::ostringstream Buffer;
+		Buffer << std::fixed << Config.MSAA;
+		MSAAValue->Text = Buffer.str();
+		Buffer.str("");
 	}
 }
 
@@ -445,6 +495,7 @@ void _Menu::HandleMouseButton(const ae::_MouseEvent &MouseEvent) {
 					}
 					else if(Clicked->Name == "button_menu_options_defaults") {
 						Config.SoundVolume = 1.0f;
+						Config.MSAA = 0;
 						ae::Audio.SetSoundVolume(Config.SoundVolume);
 						UpdateOptions();
 					}
@@ -552,6 +603,7 @@ void _Menu::Update(double FrameTime) {
 		} break;
 		case STATE_OPTIONS:
 			UpdateVolume();
+			UpdateMSAA();
 		break;
 		default:
 		break;
