@@ -17,6 +17,7 @@
 *******************************************************************************/
 #include <particles.h>
 #include <ae/camera.h>
+#include <config.h>
 #include <map.h>
 #include <objects/templates.h>
 #include <objects/particle.h>

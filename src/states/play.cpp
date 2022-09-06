@@ -744,8 +744,12 @@ void _PlayState::Render(double BlendFactor) {
 		ae::Graphics.SetActiveTexture(0);
 	}
 
+	int BlockRenderCount = 0;
+	int ParticleRenderCount = 0;
+	int PropRenderCount = 0;
+
 	// Draw the floor
-	int BlockRenderCount = Map->RenderFloors();
+	BlockRenderCount += Map->RenderFloors();
 
 	// Draw floor decals
 	ae::Graphics.SetProgram(MapProgram);
@@ -753,11 +757,12 @@ void _PlayState::Render(double BlendFactor) {
 	MapProgram->ResetTransform(MapProgram->NormalTransformID);
 	ae::Graphics.SetDepthMask(false);
 	ae::Graphics.SetDepthTest(false);
-	int ParticleRenderCount = Map->RenderParticles(_Particles::FLOOR_DECALS, BlendFactor);
+	if(Config.FloorDecals)
+		ParticleRenderCount += Map->RenderParticles(_Particles::FLOOR_DECALS, BlendFactor);
 
 	// Draw walls and props below objects
 	BlockRenderCount += Map->RenderWalls(true);
-	int PropRenderCount = Map->RenderProps();
+	PropRenderCount += Map->RenderProps();
 
 	// Draw objects
 	ae::Graphics.SetProgram(MapProgram);
@@ -779,7 +784,8 @@ void _PlayState::Render(double BlendFactor) {
 	MapProgram->ResetTransform(MapNormProgram->TextureTransformID);
 	MapProgram->ResetTransform(MapNormProgram->NormalTransformID);
 	ae::Graphics.SetDepthMask(false);
-	ParticleRenderCount += Map->RenderParticles(_Particles::WALL_DECALS, BlendFactor);
+	if(Config.WallDecals)
+		ParticleRenderCount += Map->RenderParticles(_Particles::WALL_DECALS, BlendFactor);
 
 	// Draw particles
 	ae::Graphics.EnableParticleBlending();
@@ -1608,13 +1614,14 @@ void _PlayState::GenerateHitEffects(_Entity *Attacker, const int Type, const _Hi
 	}
 	else if(Type == HIT_WALL) {
 		Particles->Create(_ParticleSpawn(Attacker->GetParticle(PARTICLE_RICOCHET), Hit.Normal, Hit.Position, OBJECT_Z, Attacker->Rotation));
-		if(CreateWallDecal)
+		if(CreateWallDecal && Config.WallDecals)
 			Particles->Create(_ParticleSpawn(Attacker->GetParticle(PARTICLE_BULLETHOLE), Hit.Normal, Hit.Position, OBJECT_Z, Attacker->Rotation));
 	}
 	else if(Type == HIT_OBJECT) {
 		glm::vec2 ParticlePosition = _Map::GenerateRandomPointInCircle(0.2f) + Hit.Object->Position;
 		Particles->Create(_ParticleSpawn(Hit.Object->GetParticle(PARTICLE_HIT), Hit.Normal, Hit.Position, OBJECT_Z, Attacker->Rotation));
-		Particles->Create(_ParticleSpawn(Hit.Object->GetParticle(PARTICLE_FLOORDECAL), Hit.Normal, ParticlePosition, 0.06f, Attacker->Rotation));
+		if(Config.FloorDecals)
+			Particles->Create(_ParticleSpawn(Hit.Object->GetParticle(PARTICLE_FLOORDECAL), Hit.Normal, ParticlePosition, 0.06f, Attacker->Rotation));
 	}
 }
 

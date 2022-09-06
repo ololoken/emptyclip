@@ -51,6 +51,9 @@ class _Config {
 
 		// Game
 		bool WeaponFlashes;
+		bool WallDecals;
+		bool FloorDecals;
+		bool AutoEquip;
 		bool Tutorial;
 
 		// Audio
