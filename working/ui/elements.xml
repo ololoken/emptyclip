@@ -102,6 +102,12 @@
 				<element id="label_menu_options_msaa_value" text="0" font="hud_medium" offset_x="224" offset_y="30" alignment_x="0" alignment_y="3"/>
 			</element>
 		</element>
+		<element id="label_menu_options_aniso" font="menu_buttons" text="Anisotropic Filtering*" offset_x="-171" offset_y="390" alignment_y="3">
+			<element id="element_menu_options_aniso" style="style_menu_textbox" offset_x="291" offset_y="-10" size_x="210" size_y="42" alignment_x="1" clickable="true">
+				<element id="button_menu_options_aniso" style="style_menu_button" size_x="20" size_y="42" alignment_x="0" alignment_y="0" draggable="true"/>
+				<element id="label_menu_options_aniso_value" text="0" font="hud_medium" offset_x="224" offset_y="30" alignment_x="0" alignment_y="3"/>
+			</element>
+		</element>
 		<element id="element_menu_options_buttons" offset_y="400">
 			<element id="button_menu_options_controls" style="style_menu_button" hover_style="style_menu_button_hover" offset_x="0" offset_y="-130" size_x="220" size_y="66" alignment_y="0" clickable="true">
 				<element id="label_menu_options_controls" font="menu_buttons" text="Controls" offset_y="44" alignment_y="3"/>
