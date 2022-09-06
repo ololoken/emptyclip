@@ -920,8 +920,8 @@ void _Map::CheckMeleeCollisions(_Entity *Attacker, int GridType, int Penetration
 
 		// Get starting points of attack ranges
 		float AttackWidth = Attacker->AttackWidth[Attacker->AttackRequestType];
-		LeftLineStart = Attacker->Position - NormalDirection * AttackWidth;
-		RightLineStart = Attacker->Position + NormalDirection * AttackWidth;
+		LeftLineStart = Attacker->Position - NormalDirection * (AttackWidth - Attacker->MeleeOffset);
+		RightLineStart = Attacker->Position + NormalDirection * (AttackWidth + Attacker->MeleeOffset);
 	}
 
 	// Check tiles for objects

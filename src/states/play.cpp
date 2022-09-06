@@ -214,8 +214,7 @@ bool _PlayState::HandleAction(int InputType, size_t Action, int Value) {
 
 					if(Player->CheckAttackTimer(AttackType) && Player->FireRateType[AttackType] == FIRERATE_SEMI && (!Player->BurstRounds[AttackType] || (Player->BurstRounds[AttackType] && Player->BurstRoundsShot == 0))) {
 						Player->BurstRoundsShot = 0;
-						Player->AttackRequested = true;
-						Player->AttackRequestType = AttackType;
+						Player->RequestAttack(AttackType);
 					}
 				}
 			break;
@@ -224,10 +223,8 @@ bool _PlayState::HandleAction(int InputType, size_t Action, int Value) {
 					if(Player->Reloading)
 						Player->CancelReloading();
 
-					if(Player->FireRateType[WEAPONATTACK_MELEE] == FIRERATE_SEMI) {
-						Player->AttackRequested = true;
-						Player->AttackRequestType = WEAPONATTACK_MELEE;
-					}
+					if(Player->FireRateType[WEAPONATTACK_MELEE] == FIRERATE_SEMI)
+						Player->RequestAttack(WEAPONATTACK_MELEE);
 				}
 			break;
 			case Action::GAME_RELOAD:
@@ -525,16 +522,12 @@ void _PlayState::Update(double FrameTime) {
 				AttackType = WEAPONATTACK_MELEE;
 
 			// Check holding down fire button to attack
-			if(!Player->IsMeleeAttacking() && Player->FireRateType[AttackType] == FIRERATE_AUTO && ae::Actions.State[Action::GAME_FIRE].Value > 0.0f) {
-				Player->AttackRequested = true;
-				Player->AttackRequestType = AttackType;
-			}
+			if(!Player->IsMeleeAttacking() && Player->FireRateType[AttackType] == FIRERATE_AUTO && ae::Actions.State[Action::GAME_FIRE].Value > 0.0f)
+				Player->RequestAttack(AttackType);
 
 			// Check holding down melee button to attack
-			if(!Player->IsMeleeAttacking() && Player->FireRateType[WEAPONATTACK_MELEE] == FIRERATE_AUTO && ae::Actions.State[Action::GAME_MELEE].Value > 0.0f) {
-				Player->AttackRequested = true;
-				Player->AttackRequestType = WEAPONATTACK_MELEE;
-			}
+			if(!Player->IsMeleeAttacking() && Player->FireRateType[WEAPONATTACK_MELEE] == FIRERATE_AUTO && ae::Actions.State[Action::GAME_MELEE].Value > 0.0f)
+				Player->RequestAttack(WEAPONATTACK_MELEE);
 
 			// Aim
 			Player->SetAiming(ae::Actions.State[Action::GAME_AIM].Value > 0.0f && !Player->Reloading && !Player->SwitchingWeapons);
@@ -845,11 +838,11 @@ void _PlayState::Render(double BlendFactor) {
 			glm::vec2 Direction = Player->GetDirectionVector();
 			glm::vec2 NormalDirection(-Direction.y, Direction.x);
 
-			glm::vec2 LeftLineStart = DrawPosition - NormalDirection * Player->AttackWidth[i];
+			glm::vec2 LeftLineStart = DrawPosition - NormalDirection * (Player->AttackWidth[i] - Player->MeleeOffset);
 			glm::vec2 LeftLineEnd = LeftLineStart + Direction * Range;
 			ae::Graphics.DrawLine(LeftLineStart, LeftLineEnd);
 
-			glm::vec2 RightLineStart = DrawPosition + NormalDirection * Player->AttackWidth[i];
+			glm::vec2 RightLineStart = DrawPosition + NormalDirection * (Player->AttackWidth[i] + Player->MeleeOffset);
 			glm::vec2 RightLineEnd = RightLineStart + Direction * Range;
 			ae::Graphics.DrawLine(RightLineStart, RightLineEnd);
 			//glm::vec2 LeftLine = Player->Position + Player->GetDirectionVector(-Player->MaxAccuracy[i] * 0.5f) * Range;

@@ -71,6 +71,7 @@ class _Player : public _Entity {
 		void UpdateSpeed(float Factor) override;
 		void UpdateKillCount(int Value) override { TotalKills += Value; }
 		void UpdateSkill(int Index, int Value);
+
 		void StartReloading();
 		void CancelReloading();
 		void StartWeaponSwitch(int SlotFrom, int SlotTo);
@@ -84,7 +85,6 @@ class _Player : public _Entity {
 		void SortInventory();
 		void SwapInventory(int SwapFrom, int SwapTo);
 		bool CanEquipItem(_Item *Item, int Slot);
-
 		int AddInventory(_Item *Item);
 		int CombineItems(_Item *FromItem, _Item *ToItem);
 		bool AddMod(int FromIndex, int ToIndex);
@@ -101,6 +101,7 @@ class _Player : public _Entity {
 		bool HasMelee() const { return GetMelee() != nullptr; }
 		bool HasArmor() const { return GetArmor() != nullptr; }
 		bool HasInventory(int Index) const { return Index >= 0 && Inventory[Index] != nullptr; }
+
 		bool CanAttack(int AttackType) const override { return !IsMeleeAttacking() && !Reloading && !SwitchingWeapons && !IsDying(); }
 		bool CanPickup() const { return !IsDying() && CanUse(); }
 		bool CanUse() const { return UseTimer > UsePeriod; }
@@ -109,6 +110,7 @@ class _Player : public _Entity {
 		bool CanSwitchWeapons() const { return !SwitchingWeapons && !Reloading && !IsMeleeAttacking() && !IsDying(); }
 		bool CanReload() const;
 		bool IsSteady() const override { return HasMainHand() && CurrentAccuracy <= MinAccuracy; }
+		void RequestAttack(int RequestType);
 
 		void SetColorID(const std::string &ColorID) { this->ColorID = ColorID; UpdateColor(); }
 		void SetAiming(bool State);

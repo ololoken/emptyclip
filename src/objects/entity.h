@@ -143,6 +143,7 @@ class _Entity : public _Object {
 		const _ObjectTemplate *Projectiles[WEAPONATTACK_COUNT]{nullptr};
 		float ProjectileSpeed[WEAPONATTACK_COUNT]{0.0f};
 		float ExplosionSize[WEAPONATTACK_COUNT]{0.0f};
+		float MeleeOffset{0.0f};
 		int MainWeaponType{0};
 		int AttackRequestType{0};
 		int BurstRoundsShot{0};
