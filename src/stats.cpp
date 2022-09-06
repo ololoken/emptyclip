@@ -48,6 +48,7 @@ void _Stats::Init() {
 	LoadItemDrops();
 	LoadMonsters();
 	LoadProps();
+	LoadSpecials();
 
 	_ObjectTemplate PlayerTemplate(_Object::PLAYER);
 	Objects.insert(std::make_pair("player", PlayerTemplate));
@@ -595,6 +596,30 @@ void _Stats::LoadProjectiles() {
 	Database->CloseQuery();
 }
 
+// Load special enemy modifiers
+void _Stats::LoadSpecials() {
+
+	// Run query
+	Database->PrepareQuery("SELECT * FROM specials");
+
+	// Get data
+	while(Database->FetchRow()) {
+		_Special Special;
+		Special.Name = Database->GetString("name");
+		Special.DamageResist = Database->GetInt<int>("damage_resist");
+		Special.DamageFactor = Database->GetReal("damage");
+		Special.AttackSpeedFactor = Database->GetReal("attack_speed");
+		Special.MoveSpeedFactor = Database->GetReal("move_speed");
+		Special.FreePathing = Database->GetInt<int>("freepathing");
+		Special.ExperienceModifier = Database->GetReal("xp");
+		SetColor(Special.Color, Database->GetString("color_id"));
+
+		Specials.push_back(Special);
+	}
+
+	Database->CloseQuery();
+}
+
 // Create item
 _Item *_Stats::CreateItem(const std::string &ID, int Level, int Quality, int Count, const glm::vec2 &Position, bool RandomStats) {
 	_ObjectTemplate &Template = Objects.at(ID);
@@ -654,7 +679,7 @@ _Item *_Stats::CreateItem(const std::string &ID, int Level, int Quality, int Cou
 }
 
 // Create monster
-_Monster *_Stats::CreateMonster(const std::string &ID, int Level, const glm::vec2 &Position) {
+_Monster *_Stats::CreateMonster(const std::string &ID, int Level, const glm::vec2 &Position, size_t SpecialType) {
 	const _ObjectTemplate &Template = Objects.at(ID);
 
 	// Create object
@@ -694,6 +719,25 @@ _Monster *_Stats::CreateMonster(const std::string &ID, int Level, const glm::vec
 	if(Monster->IsCrate()) {
 		Monster->Texture = Monster->Animation->Reels[0]->Texture;
 		Monster->PositionZ = 0.0f;
+	}
+
+	// Create special monster variation
+	if(SpecialType) {
+		_Special *Special = &Stats.Specials[SpecialType];
+		for(int i = 0; i < WEAPONATTACK_COUNT; i++) {
+			Monster->MinDamage[i] = std::round(Monster->MinDamage[i] * Special->DamageFactor);
+			Monster->MaxDamage[i] = std::round(Monster->MaxDamage[i] * Special->DamageFactor);
+			Monster->AttackPeriod[i] /= Special->AttackSpeedFactor;
+		}
+		if(Special->FreePathing) {
+			Monster->FreePathing = true;
+			Monster->AIType = AI_GHOST;
+		}
+		Monster->Name = Special->Name + " " + Monster->Name;
+		Monster->Color = Special->Color;
+		Monster->MoveSpeed *= Special->MoveSpeedFactor;
+		Monster->DamageResist += Special->DamageResist;
+		Monster->ExperienceGiven *= Special->ExperienceModifier;
 	}
 
 	Monster->RecalculateStats();

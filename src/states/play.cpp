@@ -1483,10 +1483,17 @@ void _PlayState::UpdateEvents(double FrameTime) {
 			case EVENT_SPAWN: {
 				const std::vector<_EventTile> &Tiles = Event->Tiles;
 				for(size_t i = 0; i < Tiles.size(); i++) {
+
+					// Chance for special monster
+					int SpecialType = 0;
+					if(Player->Progression && ae::GetRandomInt(1, 100) <= Player->Progression * GAME_PROGRESSION_SPECIAL_CHANCE)
+						SpecialType = ae::GetRandomInt((size_t)1, Stats.Specials.size() - 1);
+
+					// Spawn monsters
 					for(int j = 0; j < Event->SpawnMultiplier; j++) {
 						Position.x = Tiles[i].Coord.x + 0.5f;
 						Position.y = Tiles[i].Coord.y + 0.5f;
-						_Monster *Monster = Stats.CreateMonster(Event->MonsterID, Event->SpawnLevel + Map->GetAddedLevel(), Position);
+						_Monster *Monster = Stats.CreateMonster(Event->MonsterID, Event->SpawnLevel + Map->GetAddedLevel(), Position, SpecialType);
 						Monster->Player = Player;
 						Monster->FreePathingTimer = ENTITY_FREEPATHING_TIMER_INCREMENT * j;
 						AddMonster(Monster);

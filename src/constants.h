@@ -51,6 +51,7 @@ const  int          GAME_MAX_PROGRESSION_SPAWN           =  10;
 const  double       GAME_DEFAULT_CLOCK                   =  720.0;
 const  int          GAME_LAVA_DAMAGE                     =  100;
 const  float        GAME_TILE_SIZE                       =  64.0f;
+const  int          GAME_PROGRESSION_SPECIAL_CHANCE      =  5;
 //     Camera
 const  float        CAMERA_DISTANCE                      =  6.5f;
 const  float        CAMERA_DISTANCE_AIMED                =  CAMERA_DISTANCE;

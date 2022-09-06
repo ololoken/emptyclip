@@ -61,6 +61,17 @@ struct _ItemDrop {
 	int OddsSum;
 };
 
+struct _Special {
+	std::string Name;
+	glm::vec4 Color{1.0f};
+	float DamageFactor{1.0f};
+	float AttackSpeedFactor{1.0f};
+	float MoveSpeedFactor{1.0f};
+	float ExperienceModifier{1.0f};
+	int DamageResist{0};
+	int FreePathing{0};
+};
+
 // Object template
 struct _ObjectTemplate {
 
@@ -110,9 +121,10 @@ class _Stats {
 		void LoadMonsters();
 		void LoadProps();
 		void LoadProjectiles();
+		void LoadSpecials();
 
 		_Item *CreateItem(const std::string &ID, int Level, int Quality, int Count, const glm::vec2 &Position, bool RandomStats);
-		_Monster *CreateMonster(const std::string &ID, int Level, const glm::vec2 &Position);
+		_Monster *CreateMonster(const std::string &ID, int Level, const glm::vec2 &Position, size_t SpecialType=0);
 		_Object *CreateProp(const std::string &ID, const glm::vec2 &Position, float Rotation, float Scale) const;
 		_Object *CreateProjectile(const _ObjectTemplate &Template, const glm::vec2 &Position) const;
 
@@ -131,6 +143,7 @@ class _Stats {
 		std::unordered_map<std::string, std::string> Strings;
 		std::unordered_map<std::string, _ObjectTemplate> Objects;
 		std::unordered_map<std::string, _ItemDrop> ItemDrops;
+		std::vector<_Special> Specials;
 		std::vector<_Level> Levels;
 		_Item *WeaponFists{nullptr};
 
