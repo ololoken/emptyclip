@@ -128,7 +128,7 @@ void _Menu::InitOptions() {
 	// Set up MSAA values
 	MSAAValues.clear();
 	MSAAValues.push_back(0);
-	int Samples = 1;
+	int Samples = 2;
 	while(Samples <= ae::Graphics.MaxSamples) {
 		MSAAValues.push_back(Samples);
 		Samples *= 2;

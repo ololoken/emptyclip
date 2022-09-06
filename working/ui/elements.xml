@@ -96,8 +96,8 @@
 				<element id="label_menu_options_fullscreen_check" font="hud_medium" text="X"/>
 			</element>
 		</element>
-		<element id="label_menu_options_msaa" font="menu_buttons" text="MSAA*" offset_x="-120" offset_y="320" alignment_y="3">
-			<element id="element_menu_options_msaa" style="style_menu_textbox" offset_x="240" offset_y="-10" size_x="210" size_y="42" alignment_x="1" clickable="true">
+		<element id="label_menu_options_msaa" font="menu_buttons" text="MSAA*" offset_x="-65" offset_y="320" alignment_y="3">
+			<element id="element_menu_options_msaa" style="style_menu_textbox" offset_x="185" offset_y="-10" size_x="210" size_y="42" alignment_x="1" clickable="true">
 				<element id="button_menu_options_msaa" style="style_menu_button" size_x="20" size_y="42" alignment_x="0" alignment_y="0" draggable="true"/>
 				<element id="label_menu_options_msaa_value" text="0" font="hud_medium" offset_x="224" offset_y="30" alignment_x="0" alignment_y="3"/>
 			</element>
