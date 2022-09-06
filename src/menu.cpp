@@ -235,8 +235,9 @@ void _Menu::LaunchGame() {
 // Update option elements
 void _Menu::UpdateOptions() {
 
-	// Set fullscreen
+	// Set checkboxes
 	ae::Assets.Elements["label_menu_options_fullscreen_check"]->Text = Config.Fullscreen ? "X" : "";
+	ae::Assets.Elements["label_menu_options_gunflashes_check"]->Text = Config.WeaponFlashes ? "X" : "";
 
 	// Set sound volume
 	{
@@ -536,6 +537,10 @@ void _Menu::HandleMouseButton(const ae::_MouseEvent &MouseEvent) {
 				if(OptionsState == OPTION_NONE) {
 					if(Clicked->Name == "button_menu_options_fullscreen") {
 						SetFullscreen(!Config.Fullscreen);
+						UpdateOptions();
+					}
+					else if(Clicked->Name == "button_menu_options_gunflashes") {
+						Config.WeaponFlashes = !Config.WeaponFlashes;
 						UpdateOptions();
 					}
 					else if(Clicked->Name == "button_menu_options_controls") {
