@@ -64,7 +64,7 @@ void _Config::Init(const std::string &ConfigFile) {
 	ae::MakeDirectory(ConfigPath);
 
 	// Load defaults
-	SetDefaults();
+	SetDefaults(false);
 
 	// Load config
 	Load();
@@ -75,13 +75,14 @@ void _Config::Close() {
 }
 
 // Set defaults
-void _Config::SetDefaults() {
+void _Config::SetDefaults(bool FromOptionsScreen) {
 
 	Version = CONFIG_VERSION;
 	WindowSize = DEFAULT_WINDOW_SIZE;
-	MSAA = 0;
+	MSAA = DEFAULT_MSAA;
 	Anisotrophy = DEFAULT_ANISOTROPHY;
-	Fullscreen = DEFAULT_FULLSCREEN;
+	if(!FromOptionsScreen)
+		Fullscreen = DEFAULT_FULLSCREEN;
 	Vsync = DEFAULT_VSYNC;
 	MaxFPS = DEFAULT_MAXFPS;
 	AudioEnabled = DEFAULT_AUDIOENABLED;
@@ -92,7 +93,8 @@ void _Config::SetDefaults() {
 	SoundVolume = 1.0f;
 	MusicVolume = 1.0f;
 
-	LoadDefaultInputBindings(false);
+	if(!FromOptionsScreen)
+		LoadDefaultInputBindings(false);
 }
 
 // Load default key bindings

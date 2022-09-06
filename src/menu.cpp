@@ -542,8 +542,7 @@ void _Menu::HandleMouseButton(const ae::_MouseEvent &MouseEvent) {
 						InitControls();
 					}
 					else if(Clicked->Name == "button_menu_options_defaults") {
-						Config.SoundVolume = 1.0f;
-						Config.MSAA = 0;
+						Config.SetDefaults(true);
 						ae::Audio.SetSoundVolume(Config.SoundVolume);
 						UpdateOptions();
 					}

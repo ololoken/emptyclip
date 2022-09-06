@@ -34,7 +34,7 @@ class _Config {
 
 		void Load();
 		void Save();
-		void SetDefaults();
+		void SetDefaults(bool FromOptionsScreen);
 		void LoadDefaultInputBindings(bool IfNone);
 
 		// State
