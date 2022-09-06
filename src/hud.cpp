@@ -358,7 +358,7 @@ void _HUD::MouseEvent(const ae::_MouseEvent &MouseEvent) {
 		break;
 		case SDL_BUTTON_MIDDLE:
 			if(MouseEvent.Pressed) {
-				if(HitElement && HitElement->Index >= 0) {
+				if(HitElement && HitElement->Index >= 0 && Player->Inventory[HitElement->Index] != CursorItem) {
 					Player->DropItem(HitElement->Index);
 				}
 			}
