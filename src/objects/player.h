@@ -132,7 +132,7 @@ class _Player : public _Entity {
 		void OnHit(_Entity *Attacker, const _Hit &Hit) override;
 
 		static bool IsBagIndex(int Index) { return Index >= INVENTORY_BAGSTART && Index < INVENTORY_BAGEND; }
-		static bool IsEquipmentIndex(int Index) { return Index >= 0 && Index <= INVENTORY_BAGSTART; }
+		static bool IsEquipmentIndex(int Index) { return Index >= 0 && Index < INVENTORY_BAGSTART; }
 		static bool IsHandIndex(int Index) { return Index == INVENTORY_MAINHAND || Index == INVENTORY_OFFHAND; }
 
 		// Map

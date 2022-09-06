@@ -25,6 +25,7 @@
 #include <ae/audio.h>
 #include <ae/ui.h>
 #include <ae/random.h>
+#include <config.h>
 #include <framework.h>
 #include <gameassets.h>
 #include <stats.h>
@@ -652,7 +653,7 @@ int _Player::AddItem(_Item *Item, int &AmountAdded) {
 	switch(Item->Type) {
 		case _Object::WEAPON: {
 			if(Item->IsMelee()) {
-				if(!HasMelee()) {
+				if(!HasMelee() && Config.AutoEquip) {
 					Inventory[INVENTORY_MELEE] = Item;
 					RecalculateStats();
 					ResetWeaponAnimation();
@@ -662,13 +663,13 @@ int _Player::AddItem(_Item *Item, int &AmountAdded) {
 					return AddInventory(Item);
 			}
 			else {
-				if(!HasMainHand()) {
+				if(!HasMainHand() && Config.AutoEquip) {
 					Inventory[INVENTORY_MAINHAND] = Item;
 					RecalculateStats();
 					ResetWeaponAnimation();
 					return 1;
 				}
-				else if(!HasOffHand()) {
+				else if(!HasOffHand() && Config.AutoEquip) {
 					Inventory[INVENTORY_OFFHAND] = Item;
 					return 1;
 				}
@@ -677,7 +678,7 @@ int _Player::AddItem(_Item *Item, int &AmountAdded) {
 			}
 		} break;
 		case _Object::ARMOR: {
-			if(!HasArmor()) {
+			if(!HasArmor() && Config.AutoEquip) {
 				Inventory[INVENTORY_ARMOR] = Item;
 				RecalculateStats();
 				return 1;

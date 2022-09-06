@@ -86,7 +86,7 @@ void _Item::DrawTooltip(const _Player *Player, size_t CompareSlot, int Inventory
 	if(Type == _Object::WEAPON)
 		Size.y = 630 * ae::_Element::GetUIScale();
 	else if(Type == _Object::ARMOR)
-		Size.y = 430 * ae::_Element::GetUIScale();
+		Size.y = 450 * ae::_Element::GetUIScale();
 	else if(Type == _Object::MEDKIT)
 		Size.y = 240 * ae::_Element::GetUIScale();
 	else if(Type == _Object::MOD) {
