@@ -225,7 +225,7 @@ class _Map {
 		void GetSelectedBlocks(const glm::vec2 &Start, const glm::vec2 &End, int Layer, std::vector<size_t> &SelectedBlocks, glm::ivec4 &SelectionBounds);
 		size_t GetSelectedBlock(int Layer, const glm::ivec2 &Index, _Block **Block);
 		size_t GetSelectedBlock(int Layer, const glm::ivec2 &Index);
-		int GetSelectedEvent(const glm::ivec2 &Index, _Event **Event);
+		int GetSelectedEvent(const glm::ivec2 &Index, int Type, _Event **Event);
 		size_t ChangeLayer(int OldLayer, int NewLayer, int Index);
 		void DeleteBlockIDFromTiles(int Layer, int Index);
 		void RemoveEvent(int Index);

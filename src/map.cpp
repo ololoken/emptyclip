@@ -1610,11 +1610,13 @@ glm::vec2 _Map::GetStartingPositionByCheckpoint(int CheckpointLevel) {
 }
 
 // Return the event at a given position
-int _Map::GetSelectedEvent(const glm::ivec2 &Index, _Event **ReturnEvent) {
+int _Map::GetSelectedEvent(const glm::ivec2 &Index, int Type, _Event **ReturnEvent) {
 
 	// Loop through events
 	for(auto Iterator = Events.rbegin(); Iterator != Events.rend(); ++Iterator) {
 		_Event *Event = *Iterator;
+		if(Type != -1 && Event->Type != Type)
+			continue;
 
 		if(Index.x >= Event->Start.x && Index.y >= Event->Start.y && Index.x <= Event->End.x && Index.y <= Event->End.y) {
 			*ReturnEvent = Event;

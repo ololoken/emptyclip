@@ -175,7 +175,7 @@ class _EditorState : public ae::_State {
 		void SelectObjects();
 		void UpdateSelectionBounds();
 		void DeselectBlocks() { SelectedBlocks.clear(); }
-		void DeselectEvent() { SelectedEventIndex = -1; SelectedEvent = nullptr; }
+		void DeselectEvent() { SelectedEventIndex = -1; SelectedEvent = nullptr; ShowEventType = -1; }
 		void DeselectObjects() { SelectedObjects.clear(); }
 		void ClearClipboard();
 		bool EventSelected() { return SelectedEventIndex != -1; }
@@ -245,7 +245,6 @@ class _EditorState : public ae::_State {
 		bool IsCtrlDown;
 		bool IsAltDown;
 		bool DraggingBox;
-		bool ShowOnlySelectedType;
 
 		// Text input
 		std::string SavedText[EDITINPUT_COUNT];
@@ -295,6 +294,7 @@ class _EditorState : public ae::_State {
 		int EventActive;
 		int EventLevel;
 		int EventSpawnLevel;
+		int ShowEventType;
 
 		// Objects
 		std::unordered_map<std::string, int> ObjectCounts;

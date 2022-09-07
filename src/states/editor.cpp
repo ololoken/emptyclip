@@ -230,7 +230,7 @@ void _EditorState::ResetEditorState() {
 	IsDrawing = false;
 	IsMoving = false;
 	FinishDrawing = false;
-	ShowOnlySelectedType = false;
+	ShowEventType = -1;
 
 	WorldCursorIndex.x = 0;
 	WorldCursorIndex.y = 0;
@@ -590,7 +590,7 @@ void _EditorState::HandleMouseButton(const ae::_MouseEvent &MouseEvent) {
 							case EDITMODE_EVENTS:
 
 								// Get the event
-								SelectedEventIndex = Map->GetSelectedEvent(WorldCursorIndex, &SelectedEvent);
+								SelectedEventIndex = Map->GetSelectedEvent(WorldCursorIndex, ShowEventType, &SelectedEvent);
 								if(EventSelected()) {
 
 									// Save old states
@@ -598,7 +598,8 @@ void _EditorState::HandleMouseButton(const ae::_MouseEvent &MouseEvent) {
 									OldEnd = SelectedEvent->End;
 									SavedWorldCursorIndex = WorldCursorIndex;
 									IsMoving = true;
-									ShowOnlySelectedType = IsCtrlDown ? true : false;
+									if(ShowEventType == -1)
+										ShowEventType = IsCtrlDown ? SelectedEvent->Type : -1;
 								}
 							break;
 							default:
@@ -963,13 +964,8 @@ void _EditorState::Render(double BlendFactor) {
 	Map->RenderForeground(glm::vec2(-1), EditLayer != MAPLAYER_FORE);
 
 	// Draw the events
-	if(EditMode == EDITMODE_EVENTS) {
-		int EventType = -1;
-		if(ShowOnlySelectedType && EventSelected())
-			EventType = SelectedEvent->Type;
-
-		Map->RenderEvents(EventTextures, EventType);
-	}
+	if(EditMode == EDITMODE_EVENTS)
+		Map->RenderEvents(EventTextures, ShowEventType);
 
 	ae::Graphics.SetDepthMask(false);
 	ae::Graphics.SetDepthTest(false);
@@ -1940,7 +1936,7 @@ void _EditorState::ExecuteToggleTile() {
 			} break;
 			case EVENT_ENABLE: {
 				_Event *Event;
-				int EventIndex = Map->GetSelectedEvent(WorldCursorIndex, &Event);
+				int EventIndex = Map->GetSelectedEvent(WorldCursorIndex, ShowEventType, &Event);
 				SelectedEvent->AddTile(_EventTile(WorldCursorIndex, -1, EventIndex));
 			} break;
 			default:
