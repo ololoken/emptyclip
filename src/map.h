@@ -212,7 +212,7 @@ class _Map {
 		int RenderParticles(int Type, double BlendFactor);
 		int RenderForeground(const glm::vec2 &PlayerPosition, bool AlwaysFade);
 		int RenderProps();
-		void RenderEvents(std::vector<const ae::_Texture *> &Textures);
+		void RenderEvents(std::vector<const ae::_Texture *> &Textures, int Type);
 		void RenderGrid(int Mode);
 		void DrawMinimap(bool FullMap, ae::_Bounds &MinimapBounds);
 		void HighlightBlocks(int Layer);

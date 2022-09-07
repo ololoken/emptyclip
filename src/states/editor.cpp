@@ -230,6 +230,7 @@ void _EditorState::ResetEditorState() {
 	IsDrawing = false;
 	IsMoving = false;
 	FinishDrawing = false;
+	ShowOnlySelectedType = false;
 
 	WorldCursorIndex.x = 0;
 	WorldCursorIndex.y = 0;
@@ -597,6 +598,7 @@ void _EditorState::HandleMouseButton(const ae::_MouseEvent &MouseEvent) {
 									OldEnd = SelectedEvent->End;
 									SavedWorldCursorIndex = WorldCursorIndex;
 									IsMoving = true;
+									ShowOnlySelectedType = IsCtrlDown ? true : false;
 								}
 							break;
 							default:
@@ -961,8 +963,13 @@ void _EditorState::Render(double BlendFactor) {
 	Map->RenderForeground(glm::vec2(-1), EditLayer != MAPLAYER_FORE);
 
 	// Draw the events
-	if(EditMode == EDITMODE_EVENTS)
-		Map->RenderEvents(EventTextures);
+	if(EditMode == EDITMODE_EVENTS) {
+		int EventType = -1;
+		if(ShowOnlySelectedType && EventSelected())
+			EventType = SelectedEvent->Type;
+
+		Map->RenderEvents(EventTextures, EventType);
+	}
 
 	ae::Graphics.SetDepthMask(false);
 	ae::Graphics.SetDepthTest(false);

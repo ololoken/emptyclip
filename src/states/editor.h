@@ -245,6 +245,7 @@ class _EditorState : public ae::_State {
 		bool IsCtrlDown;
 		bool IsAltDown;
 		bool DraggingBox;
+		bool ShowOnlySelectedType;
 
 		// Text input
 		std::string SavedText[EDITINPUT_COUNT];

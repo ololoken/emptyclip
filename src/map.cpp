@@ -1961,7 +1961,7 @@ int _Map::RenderFlatWalls() {
 }
 
 // Draws the events
-void _Map::RenderEvents(std::vector<const ae::_Texture *> &Textures) {
+void _Map::RenderEvents(std::vector<const ae::_Texture *> &Textures, int Type) {
 	if(!Camera)
 		return;
 
@@ -1971,6 +1971,9 @@ void _Map::RenderEvents(std::vector<const ae::_Texture *> &Textures) {
 
 	// Draw events
 	for(size_t i = 0; i < Events.size(); i++) {
+		if(Type != -1 && Events[i]->Type != Type)
+			continue;
+
 		glm::vec4 Bounds(Events[i]->Start.x, Events[i]->Start.y, Events[i]->End.x + 1.0f, Events[i]->End.y + 1.0f);
 		if(!Camera->IsAABBInView(Bounds))
 			continue;
