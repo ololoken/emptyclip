@@ -84,10 +84,12 @@ endif()
 if(EXISTS "${PROJECT_SOURCE_DIR}/assets/source/process.sh" AND NOT WIN32)
 
 	# pack data
+	file(GLOB SOURCE_OGGS "${PROJECT_SOURCE_DIR}/assets/source/sounds/*.ogg")
 	add_custom_command(
 		OUTPUT "${PROJECT_SOURCE_DIR}/working/data/sounds"
 		COMMAND "${PROJECT_SOURCE_DIR}/assets/source/process.sh"
 		WORKING_DIRECTORY "${PROJECT_SOURCE_DIR}/assets/source/"
+		DEPENDS "${SOURCE_OGGS}"
 	)
 	add_custom_target(data ALL DEPENDS "${PROJECT_SOURCE_DIR}/working/data/sounds")
 
