@@ -138,6 +138,7 @@ void _EditorState::Init() {
 	MaxZ = SavedMaxZ;
 	if(SavedBrushIndex != -1)
 		Brush[EDITMODE_BLOCKS] = PaletteElement[EDITMODE_BLOCKS]->Children[SavedBrushIndex];
+	ae::Assets.Elements["button_editor_show"]->Checked = HighlightBlocks;
 }
 
 // Close
@@ -259,6 +260,7 @@ void _EditorState::ResetEditorState() {
 	LayerButtons[EditLayer]->Checked = true;
 	ModeButtons[EditMode]->Checked = true;
 	ae::FocusedElement = nullptr;
+	ae::Assets.Elements["button_editor_show"]->Checked = HighlightBlocks;
 }
 
 // Key handler
