@@ -11,3 +11,4 @@ mod_damageblock	Damage Block Mod	textures/items/mod_damageblock.png	9	4	0	5	0.91
 mod_damageresist	Damage Resist Mod	textures/items/mod_damageresist.png	10	4	0	5	0.408163265306122	1
 mod_maxammo	Max Ammo Mod	textures/items/mod_maxammo.png	11	4	0	10	0.816326530612245	1
 mod_movespeed	Move Speed Mod	textures/items/mod_movespeed.png	12	4	0	5	0.408163265306122	1
+mod_maxroundsplus	Max Rounds Mod	textures/items/mod_maxroundsplus.png	13	3	0	0.66326530612244	0.0783007080383174	0

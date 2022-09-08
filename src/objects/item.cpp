@@ -482,7 +482,6 @@ void _Item::RecalculateStats() {
 			SetAttributeRange("damage", GetBonusMultiplier(MOD_DAMAGE));
 			Attributes["accuracy_min"].Float = Template.Attributes.at("accuracy_min").Float * AccuracyMultiplier;
 			Attributes["accuracy_max"].Float = Template.Attributes.at("accuracy_max").Float * AccuracyMultiplier;
-			Attributes["rounds"].Int = Template.Attributes.at("rounds").Int * GetBonusMultiplier(MOD_MAXROUNDS) + 0.5f;
 			Attributes["fire_period"].Double = Template.Attributes.at("fire_period").Double * GetBonusMultiplier(MOD_ATTACKSPEED, true);
 			Attributes["shoot_period"].Double = Template.Attributes.at("shoot_period").Double * GetBonusMultiplier(MOD_HANDLING, true);
 			Attributes["attack_count"].Int = Template.Attributes.at("attack_count").Int;
@@ -494,6 +493,7 @@ void _Item::RecalculateStats() {
 			Attributes["penetration"].Int = Template.Attributes.at("penetration").Int + Bonus[MOD_PENETRATION];
 			Attributes["penetration_damage"].Float = std::clamp(Template.Attributes.at("penetration_damage").Float * QualityFactor, 0.0f, 1.0f);
 			Attributes["crit_chance"].Int = Template.Attributes.at("crit_chance").Int * QualityFactor + 0.5f;
+			Attributes["rounds"].Int = std::round((Template.Attributes.at("rounds").Int + Bonus[MOD_MAXROUNDSPLUS]) * GetBonusMultiplier(MOD_MAXROUNDS));
 
 			float ExplosionSize = Template.Attributes.at("explosion_size").Float;
 			Attributes["explosion_size"].Float = ExplosionSize > 0.0f ? ExplosionSize * QualityFactor + 0.5f : 0.0f;
@@ -631,7 +631,7 @@ std::string _Item::ModTypeToString(int ModType) {
 
 	switch(ModType) {
 		case MOD_MAXROUNDS:
-			return "Round Size";
+			return "Max Rounds";
 		break;
 		case MOD_DAMAGE:
 			return "Damage";
@@ -670,6 +670,9 @@ std::string _Item::ModTypeToString(int ModType) {
 		break;
 		case MOD_MOVESPEED:
 			return "Move Speed";
+		break;
+		case MOD_MAXROUNDSPLUS:
+			return "Max Rounds";
 		break;
 	}
 
