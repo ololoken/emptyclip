@@ -1030,6 +1030,12 @@ void _EditorState::Render(double BlendFactor) {
 			if(Object->Type == _Object::AMMO || Object->Type == _Object::MEDKIT ||  Object->Type == _Object::PROP || Object->Type == _Object::KEY)
 				continue;
 
+			if(Object->Type == _Object::MONSTER && EditMode != EDITMODE_MONSTERS)
+				continue;
+
+			if(Object->Type != _Object::MONSTER && EditMode != EDITMODE_ITEMS)
+				continue;
+
 			glm::vec2 TextPosition;
 			Camera->ConvertWorldToScreen(Object->Position + glm::vec2(0.25, 0.25), TextPosition);
 			ae::Assets.Fonts["hud_small"]->DrawText(std::to_string(Object->Level), TextPosition, ae::CENTER_BASELINE);

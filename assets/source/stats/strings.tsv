@@ -19,5 +19,6 @@ tutorial_alt	Holding [c red]Alt[c white] will show additional information on the
 tutorial_mod	Mods can be used to enhance your gear.\n\nOpen your inventory and try adding a mod to one of your weapons or armor.
 tutorial_quality	The [c red]level[c white] of an item determines the amount of damage or defense it has. Item [c red]quality[c white] is random and affects all of its stats.
 tutorial_bolt	The Bolt-Action Rifle can be used to pick off enemies from a distance. Try holding [c red]right-click[c white] to pan the camera around.
+tutorial_crossbow	Like the Sawed-off Shotgun, the [c red]Crossbow[c white] shoots all of its loaded ammunition when fired.\n\nTry increasing its bolt capacity with mods.
 mansion_tree	A nearby tree falls...
 mansion_switches	Find the switches to lower the gates.
