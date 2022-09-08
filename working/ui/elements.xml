@@ -128,8 +128,13 @@
 				<element id="label_menu_options_autoequip_check" font="hud_medium" text="X"/>
 			</element>
 		</element>
+		<element id="label_menu_options_tutorial" font="menu_buttons" text="Show Tutorials" offset_x="-345" offset_y="760" alignment_x="2" alignment_y="3">
+			<element id="button_menu_options_tutorial" style="style_menu_textbox" hover_style="style_menu_button_hover" offset_x="35" offset_y="-10" size_x="44" size_y="44" alignment_x="0" clickable="true">
+				<element id="label_menu_options_tutorial_check" font="hud_medium" text="X"/>
+			</element>
+		</element>
 		<element id="element_menu_options_buttons" offset_y="400">
-			<element id="button_menu_options_controls" style="style_menu_button" hover_style="style_menu_button_hover" offset_x="0" offset_y="-130" size_x="220" size_y="66" alignment_y="0" clickable="true">
+			<element id="button_menu_options_controls" style="style_menu_button" hover_style="style_menu_button_hover" offset_x="0" offset_y="-86" size_x="220" size_y="66" alignment_y="0" clickable="true">
 				<element id="label_menu_options_controls" font="menu_buttons" text="Controls" offset_y="44" alignment_y="3"/>
 			</element>
 			<element id="button_menu_options_defaults" style="style_menu_button" hover_style="style_menu_button_hover" offset_x="-240" offset_y="0" size_x="220" size_y="66" alignment_y="0" clickable="true">

@@ -1403,16 +1403,15 @@ void _PlayState::CheckEvents(const _Entity *Entity) {
 				Framework.ChangeState(&NullState);
 			} break;
 			case EVENT_TEXT: {
-				bool ShowMessage = true;
-				bool IsTutorial = Event->ItemID.find("tutorial_") == 0;
-				if(IsTutorial && (!Config.Tutorial || Player->Progression))
-					ShowMessage = false;
 
-				if(ShowMessage) {
+				// Check for tutorial messages
+				bool IsTutorial = Event->ItemID.find("tutorial_") == 0;
+				if(!IsTutorial || (Config.Tutorial && !Player->Progression)) {
 					if(IsTutorial)
 						ae::Audio.PlaySound(ae::Assets.Sounds["game_message0.ogg"]);
 					HUD->ShowMessageBox(Stats.Strings[Event->ItemID], Event->ActivationPeriod, UI_MESSAGE_SIZE);
 				}
+
 				if(Event->Level != 0)
 					Event->Active = false;
 			} break;

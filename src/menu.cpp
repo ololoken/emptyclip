@@ -241,6 +241,7 @@ void _Menu::UpdateOptions() {
 	ae::Assets.Elements["label_menu_options_walldecals_check"]->Text = Config.WallDecals ? "X" : "";
 	ae::Assets.Elements["label_menu_options_floordecals_check"]->Text = Config.FloorDecals ? "X" : "";
 	ae::Assets.Elements["label_menu_options_autoequip_check"]->Text = Config.AutoEquip ? "X" : "";
+	ae::Assets.Elements["label_menu_options_tutorial_check"]->Text = Config.Tutorial ? "X" : "";
 
 	// Set sound volume
 	{
@@ -556,6 +557,10 @@ void _Menu::HandleMouseButton(const ae::_MouseEvent &MouseEvent) {
 					}
 					else if(Clicked->Name == "button_menu_options_autoequip") {
 						Config.AutoEquip = !Config.AutoEquip;
+						UpdateOptions();
+					}
+					else if(Clicked->Name == "button_menu_options_tutorial") {
+						Config.Tutorial = !Config.Tutorial;
 						UpdateOptions();
 					}
 					else if(Clicked->Name == "button_menu_options_controls") {
