@@ -231,7 +231,6 @@ void _Player::RecalculateStats() {
 		if(!GetMainHand()->Template.ProjectileID.empty()) {
 			Projectiles[WEAPONATTACK_MAIN] = &Stats.Objects.at(GetMainHand()->Template.ProjectileID);
 			ProjectileSpeed[WEAPONATTACK_MAIN] = GetMainHand()->Template.Attributes.at("projectile_speed").Float;
-			ExplosionSize[WEAPONATTACK_MAIN] = GetMainHand()->Template.Attributes.at("explosion_size").Float;
 		}
 	}
 	else
@@ -244,7 +243,6 @@ void _Player::RecalculateStats() {
 		if(!GetMelee()->Template.ProjectileID.empty()) {
 			Projectiles[WEAPONATTACK_MELEE] = &Stats.Objects.at(GetMelee()->Template.ProjectileID);
 			ProjectileSpeed[WEAPONATTACK_MELEE] = GetMainHand()->Template.Attributes.at("projectile_speed").Float;
-			ExplosionSize[WEAPONATTACK_MELEE] = GetMainHand()->Template.Attributes.at("explosion_size").Float;
 		}
 	}
 	else
@@ -318,6 +316,7 @@ void _Player::RecalculateStats() {
 			BurstPeriod[i] = std::max(Weapon[i].Attributes["burst_period"].Double / Stats.GetSkillBonusMultiplier(Skills[SKILL_AGILITY], SKILL_AGILITY), WEAPON_MINFIREPERIOD);
 		else
 			BurstPeriod[i] = AttackPeriod[i];
+		ExplosionSize[i] = Weapon[i].Attributes["explosion_size"].Float;
 		AttackWidth[i] = Weapon[i].Attributes["attack_width"].Float;
 		MeleeScale[i].x = Weapon[i].Attributes["scale_x"].Float;
 		MeleeScale[i].y = Weapon[i].Attributes["scale_y"].Float;

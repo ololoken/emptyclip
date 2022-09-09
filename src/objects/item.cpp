@@ -496,7 +496,7 @@ void _Item::RecalculateStats() {
 			Attributes["rounds"].Int = std::round((Template.Attributes.at("rounds").Int + Bonus[MOD_MAXROUNDSPLUS]) * GetBonusMultiplier(MOD_MAXROUNDS));
 
 			float ExplosionSize = Template.Attributes.at("explosion_size").Float;
-			Attributes["explosion_size"].Float = ExplosionSize > 0.0f ? ExplosionSize * QualityFactor + 0.5f : 0.0f;
+			Attributes["explosion_size"].Float = ExplosionSize > 0.0f ? ExplosionSize * GetBonusMultiplier(MOD_EXPLOSION) : 0.0f;
 
 			SetAmmo(Attributes["ammo"].Int);
 		} break;
@@ -536,7 +536,7 @@ bool _Item::AddMod(_Item *Mod) {
 
 			// Check for ammo
 			int ModType = Mod->Template.Attributes.at("mod_type").Int;
-			if(Template.Attributes.at("rounds").Int == 0 && (ModType == MOD_MAXROUNDS || ModType == MOD_RELOADSPEED || ModType == MOD_RELOADAMOUNT || ModType == MOD_HANDLING))
+			if(Template.Attributes.at("rounds").Int == 0 && (ModType == MOD_MAXROUNDS || ModType == MOD_MAXROUNDSPLUS || ModType == MOD_RELOADSPEED || ModType == MOD_RELOADAMOUNT || ModType == MOD_HANDLING))
 				return false;
 
 			// Reload amount only affects manual reload weapons
@@ -547,7 +547,12 @@ bool _Item::AddMod(_Item *Mod) {
 			if(ModType == MOD_PENETRATION && Template.Attributes.at("explosion_size").Float > 0.0f)
 				return false;
 
+			// Accuracy only affects guns
 			if(ModType == MOD_ACCURACY && IsMelee())
+				return false;
+
+			// Explosion only affects explosive weapons
+			if(ModType == MOD_EXPLOSION && Template.Attributes.at("explosion_size").Float == 0.0f)
 				return false;
 
 		} break;
@@ -673,6 +678,9 @@ std::string _Item::ModTypeToString(int ModType) {
 		break;
 		case MOD_MAXROUNDSPLUS:
 			return "Max Rounds";
+		break;
+		case MOD_EXPLOSION:
+			return "Explosion Size";
 		break;
 	}
 
