@@ -123,8 +123,11 @@ void _Save::LoadSaves() {
 
 	// Load slots with player names
 	for(size_t i = 0; i < Files.Nodes.size(); i++) {
-		size_t Extension = Files.Nodes[i].find(".save");
-		std::string SlotIndexString = Files.Nodes[i].substr(0, Extension);
+		size_t ExtensionPosition = Files.Nodes[i].find(".save");
+		if(ExtensionPosition != Files.Nodes[i].size() - 5)
+			continue;
+
+		std::string SlotIndexString = Files.Nodes[i].substr(0, ExtensionPosition);
 		size_t SlotIndex = atoi(SlotIndexString.c_str()) - 1;
 		if(SlotIndex > SLOT_9)
 			continue;
