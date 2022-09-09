@@ -805,6 +805,9 @@ bool _Player::CanEquipItem(_Item *Item, int Slot) {
 
 // Swap inventory
 void _Player::SwapInventory(int SlotFrom, int SlotTo) {
+	if(!IsValidInventory(SlotFrom) || !IsValidInventory(SlotTo))
+		return;
+
 	if(SlotFrom == SlotTo)
 		return;
 

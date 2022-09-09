@@ -134,6 +134,7 @@ class _Player : public _Entity {
 		static bool IsBagIndex(int Index) { return Index >= INVENTORY_BAGSTART && Index < INVENTORY_BAGEND; }
 		static bool IsEquipmentIndex(int Index) { return Index >= 0 && Index < INVENTORY_BAGSTART; }
 		static bool IsHandIndex(int Index) { return Index == INVENTORY_MAINHAND || Index == INVENTORY_OFFHAND; }
+		static bool IsValidInventory(int Index) { return Index >= 0 && Index < INVENTORY_BAGEND; }
 
 		// Map
 		std::string MapID;
