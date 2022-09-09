@@ -952,6 +952,7 @@ void _PlayState::ResolveAttack(_Entity *Attacker, int GridType) {
 	if(!Attacker->WeaponHasAmmo(Attacker->AttackRequestType))
 		return;
 
+	// Get number of rounds to fire
 	int RoundsShot = 1;
 	if(Attacker->FireAllRounds[Attacker->AttackRequestType])
 		RoundsShot = Attacker->GetWeaponAmmo();
@@ -1088,6 +1089,9 @@ void _PlayState::ResolveAttack(_Entity *Attacker, int GridType) {
 			}
 		}
 	}
+
+	// Update accuracy
+	Attacker->ApplyRecoil();
 }
 
 // Handle pickup

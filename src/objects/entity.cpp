@@ -86,13 +86,17 @@ float _Entity::GenerateShotDirection() {
 	else if(NewDirection >= 360.0f)
 		NewDirection -= 360.0f;
 
+	return NewDirection;
+}
+
+// Increase current accuracy
+void _Entity::ApplyRecoil() {
+
 	// Adjust recoil for burst weapons
 	float BurstModifier = BurstRounds[WEAPONATTACK_MAIN] ? 1.0f / BurstRounds[WEAPONATTACK_MAIN] : 1.0f;
 
 	// Update accuracy based on the weapon's recoil
 	CurrentAccuracy = std::min(CurrentAccuracy + Recoil * RecoilModifier * BurstModifier, MaxAccuracy[WEAPONATTACK_MAIN]);
-
-	return NewDirection;
 }
 
 // Determine if entity uses ranged attacks

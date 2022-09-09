@@ -47,6 +47,7 @@ class _Entity : public _Object {
 
 		bool StartAttack();
 		float GenerateShotDirection();
+		void ApplyRecoil();
 		bool IsRanged() const;
 		bool IsMeleeAttacking() const { return Action == ACTION_MELEE || Action == ACTION_STARTMELEE; }
 		bool IsCrate() const { return AIType == AI_NONE; }
