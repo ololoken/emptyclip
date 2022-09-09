@@ -812,6 +812,10 @@ void _Player::SwapInventory(int SlotFrom, int SlotTo) {
 	if(AddMod(SlotFrom, SlotTo))
 		return;
 
+	// Prevent swap with equipment and mods
+	if(Inventory[SlotFrom] && Inventory[SlotFrom]->Type == _Item::MOD && Inventory[SlotTo] && Inventory[SlotTo]->CanEquip())
+		return;
+
 	// Check for simple swap
 	bool CanSwap = false;
 	if(IsBagIndex(SlotFrom) && IsBagIndex(SlotTo)) {
@@ -825,28 +829,29 @@ void _Player::SwapInventory(int SlotFrom, int SlotTo) {
 			CanSwap = CanEquipItem(Inventory[SlotTo], SlotFrom);
 	}
 
-	if(CanSwap) {
-		if(SlotTo == INVENTORY_MAINHAND || SlotFrom == INVENTORY_MAINHAND || (IsHandIndex(SlotFrom) && IsHandIndex(SlotTo)) ) {
-			StartWeaponSwitch(SlotFrom, SlotTo);
-		}
-		else {
+	if(!CanSwap)
+		return;
 
-			// Try to combine items
-			int CombineResult = CombineItems(Inventory[SlotFrom], Inventory[SlotTo]);
-			if(CombineResult == 0) {
-				_Item *Temp = Inventory[SlotFrom];
-				Inventory[SlotFrom] = Inventory[SlotTo];
-				Inventory[SlotTo] = Temp;
-			}
-			else if(CombineResult == 2) {
-				delete Inventory[SlotFrom];
-				Inventory[SlotFrom] = nullptr;
-			}
-		}
-
-		RecalculateStats();
-		ResetWeaponAnimation();
+	if(SlotTo == INVENTORY_MAINHAND || SlotFrom == INVENTORY_MAINHAND || (IsHandIndex(SlotFrom) && IsHandIndex(SlotTo)) ) {
+		StartWeaponSwitch(SlotFrom, SlotTo);
 	}
+	else {
+
+		// Try to combine items
+		int CombineResult = CombineItems(Inventory[SlotFrom], Inventory[SlotTo]);
+		if(CombineResult == 0) {
+			_Item *Temp = Inventory[SlotFrom];
+			Inventory[SlotFrom] = Inventory[SlotTo];
+			Inventory[SlotTo] = Temp;
+		}
+		else if(CombineResult == 2) {
+			delete Inventory[SlotFrom];
+			Inventory[SlotFrom] = nullptr;
+		}
+	}
+
+	RecalculateStats();
+	ResetWeaponAnimation();
 }
 
 // Attempts to combine two items and deletes FromItem if successful

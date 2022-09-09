@@ -517,7 +517,18 @@ void _Item::RecalculateStats() {
 }
 
 // Add mod to item
-bool _Item::AddMod(_Item *Mod, bool TestOnly) {
+bool _Item::AddMod(_Item *Mod) {
+	if(!ModCompatible(Mod))
+		return false;
+
+	Mods.push_back(Mod);
+	RecalculateStats();
+
+	return true;
+}
+
+// Determine if an item is compatible with a mod
+bool _Item::ModCompatible(_Item *Mod) {
 	if(Mod->Type != _Object::MOD)
 		return false;
 
@@ -557,12 +568,6 @@ bool _Item::AddMod(_Item *Mod, bool TestOnly) {
 
 		} break;
 	}
-
-	if(TestOnly)
-		return true;
-
-	Mods.push_back(Mod);
-	RecalculateStats();
 
 	return true;
 }

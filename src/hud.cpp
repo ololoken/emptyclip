@@ -858,6 +858,25 @@ void _HUD::DrawInventory() {
 		ae::Graphics.DrawScaledImage(Button->Bounds.GetCenter(), Player->Inventory[i]->Texture, UI_INVENTORY_ITEM_SIZE, Player->Inventory[i]->Color);
 	}
 
+	// Draw overlay for compatible mod types
+	if(CursorItem && CursorItem->Type == _Item::MOD) {
+		ae::Graphics.SetProgram(ae::Assets.Programs["ortho_pos"]);
+		for(size_t i = INVENTORY_MAINHAND; i < INVENTORY_BAGEND; i++) {
+			_Item *Item = Player->Inventory[i];
+			if(!Item || !Item->CanEquip())
+				continue;
+
+			// Set overlay color
+			if(Item->ModCompatible(CursorItem))
+				ae::Graphics.SetColor(glm::vec4(0.0f, 1.0f, 0.0f, 0.2f));
+			else
+				ae::Graphics.SetColor(glm::vec4(1.0f, 0.0f, 0.0f, 0.2f));
+
+			ae::_Element *Button = Elements[ELEMENT_INVENTORY_BUTTONS]->Children[i];
+			ae::Graphics.DrawRectangle(glm::ivec2(Button->Bounds.Start), glm::ivec2(Button->Bounds.End), true);
+		}
+	}
+
 	// Draw extra information
 	if(ae::Input.ModKeyDown(KMOD_ALT)) {
 		Elements[ELEMENT_INVENTORY_OVERLAY]->SetActive(true);
