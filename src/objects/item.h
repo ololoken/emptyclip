@@ -67,7 +67,7 @@ class _Item : public _Object {
 		void DrawTooltip(const _Player *Player, size_t CompareSlot, int InventorySlot, glm::vec2 DrawPosition);
 		void Render(double BlendFactor) override;
 
-		bool AddMod(_Item *Mod);
+		bool AddMod(_Item *Mod, bool TestOnly=false);
 		float GetBonusMultiplier(int ModType, bool Inverse=false) const;
 
 		int UpdateCount(int Amount) { Count += Amount; return Count; }

@@ -517,7 +517,7 @@ void _Item::RecalculateStats() {
 }
 
 // Add mod to item
-bool _Item::AddMod(_Item *Mod) {
+bool _Item::AddMod(_Item *Mod, bool TestOnly) {
 	if(Mod->Type != _Object::MOD)
 		return false;
 
@@ -557,6 +557,10 @@ bool _Item::AddMod(_Item *Mod) {
 
 		} break;
 	}
+
+	if(TestOnly)
+		return true;
+
 	Mods.push_back(Mod);
 	RecalculateStats();
 
@@ -677,7 +681,7 @@ std::string _Item::ModTypeToString(int ModType) {
 			return "Move Speed";
 		break;
 		case MOD_MAXROUNDSPLUS:
-			return "Max Rounds";
+			return "Max Base Rounds";
 		break;
 		case MOD_EXPLOSION:
 			return "Explosion Size";
