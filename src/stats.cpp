@@ -215,6 +215,8 @@ void _Stats::LoadWeapons() {
 		Template.Attributes["crit_chance"].Int = Database->GetInt<int>("crit_chance");
 		Template.Attributes["attack_movespeed"].Float = Database->GetReal("attack_movespeed");
 		Template.Attributes["melee_width"].Float = Database->GetReal("melee_width");
+		Template.Attributes["melee_offset"].Float = Database->GetReal("melee_offset");
+		Template.Attributes["melee_switch"].Int = Database->GetInt<int>("melee_switch");
 		Template.Attributes["scale_x"].Float = Database->GetReal("scale_x");
 		Template.Attributes["scale_y"].Float = Database->GetReal("scale_y");
 		Template.Attributes["projectile_speed"].Float = Database->GetReal("projectile_speed");
@@ -653,6 +655,8 @@ _Item *_Stats::CreateItem(const std::string &ID, int Level, int Quality, int Cou
 			Item->Attributes["attack_width"].Float = Template.Attributes["melee_width"].Float;
 			Item->Attributes["scale_x"].Float = Template.Attributes["scale_x"].Float;
 			Item->Attributes["scale_y"].Float = Template.Attributes["scale_y"].Float;
+			Item->Attributes["melee_offset"].Float = Template.Attributes["melee_offset"].Float;
+			Item->Attributes["melee_switch"].Int = Template.Attributes["melee_switch"].Int;
 			Item->Attributes["fire_allrounds"].Int = Template.Attributes["fire_allrounds"].Int;
 			Item->Attributes["shoot_period"].Double = Template.Attributes["shoot_period"].Double;
 			Item->SetMaxMods(QualityFactor, RandomStats);

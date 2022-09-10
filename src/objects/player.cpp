@@ -171,7 +171,6 @@ void _Player::Reset(bool Recalculate) {
 	UsePeriod = PLAYER_USEPERIOD;
 	ZoomScale = PLAYER_ZOOMSCALE;
 	LegDirection = 0.0f;
-	MeleeOffset = PLAYER_MELEE_OFFSET;
 	MoveSpeed = 0.0f;
 	MoveState = MOVE_NONE;
 	WeaponSwitchTimer = 0.0;
@@ -320,6 +319,8 @@ void _Player::RecalculateStats() {
 		AttackWidth[i] = Weapon[i].Attributes["attack_width"].Float;
 		MeleeScale[i].x = Weapon[i].Attributes["scale_x"].Float;
 		MeleeScale[i].y = Weapon[i].Attributes["scale_y"].Float;
+		MeleeOffset[i] = Weapon[i].Attributes["melee_offset"].Float;
+		MeleeSwitch[i] = Weapon[i].Attributes["melee_switch"].Int;
 	}
 	ReloadPeriod = Weapon[WEAPONATTACK_MAIN].Attributes["reload_period"].Double / Stats.GetSkillBonusMultiplier(Skills[SKILL_DEXTERITY], SKILL_DEXTERITY);
 	ZoomScale = Weapon[WEAPONATTACK_MAIN].Attributes["zoom_scale"].Float;
@@ -483,11 +484,11 @@ void _Player::Render(double BlendFactor) {
 		float MeleePercent = std::clamp(AttackTimer[AttackRequestType] / AttackPeriod[AttackRequestType], 0.0, 1.0);
 		float MeleeMagnitude = std::sin(MeleePercent * glm::pi<double>());
 		glm::vec2 NormalDirection(-Direction.y, Direction.x);
-		glm::vec2 TextureCoordX = MeleeOffset < 0 ? glm::vec2(1.0f, 0.0f) : glm::vec2(0.0f, 1.0f);
+		glm::vec2 TextureCoordX = MeleeOffset[AttackRequestType] < 0 ? glm::vec2(1.0f, 0.0f) : glm::vec2(0.0f, 1.0f);
 
 		//TODO fix when range is < 0.5
 		// Start position of melee frame behind the player and shift position proportional to magnitude if range is bigger than the melee texture
-		glm::vec2 MeleePosition = DrawPosition + NormalDirection * MeleeOffset + Direction * (MeleeScale[AttackRequestType].y * 0.5f + (AttackRange[AttackRequestType] - MeleeScale[AttackRequestType].y) * MeleeMagnitude);
+		glm::vec2 MeleePosition = DrawPosition + NormalDirection * MeleeOffset[AttackRequestType] + Direction * (MeleeScale[AttackRequestType].y * 0.5f + (AttackRange[AttackRequestType] - MeleeScale[AttackRequestType].y) * MeleeMagnitude);
 		ae::Graphics.DrawAnimationFrame(
 			glm::vec3(MeleePosition, PositionZ + 0.005f),
 			MeleeTexture,
@@ -1293,7 +1294,8 @@ const _ParticleTemplate *_Player::GetParticle(int ParticleType) const {
 void _Player::RequestAttack(int RequestType) {
 	AttackRequested = true;
 	AttackRequestType = RequestType;
-	MeleeOffset = -MeleeOffset;
+	if(MeleeSwitch[RequestType])
+		MeleeOffset[RequestType] = -MeleeOffset[RequestType];
 }
 
 // Sets the color string and color of the player

@@ -844,11 +844,11 @@ void _PlayState::Render(double BlendFactor) {
 			glm::vec2 Direction = Player->GetDirectionVector();
 			glm::vec2 NormalDirection(-Direction.y, Direction.x);
 
-			glm::vec2 LeftLineStart = DrawPosition - NormalDirection * (Player->AttackWidth[i] - Player->MeleeOffset);
+			glm::vec2 LeftLineStart = DrawPosition - NormalDirection * (Player->AttackWidth[i] - Player->MeleeOffset[i]);
 			glm::vec2 LeftLineEnd = LeftLineStart + Direction * Range;
 			ae::Graphics.DrawLine(LeftLineStart, LeftLineEnd);
 
-			glm::vec2 RightLineStart = DrawPosition + NormalDirection * (Player->AttackWidth[i] + Player->MeleeOffset);
+			glm::vec2 RightLineStart = DrawPosition + NormalDirection * (Player->AttackWidth[i] + Player->MeleeOffset[i]);
 			glm::vec2 RightLineEnd = RightLineStart + Direction * Range;
 			ae::Graphics.DrawLine(RightLineStart, RightLineEnd);
 			//glm::vec2 LeftLine = Player->Position + Player->GetDirectionVector(-Player->MaxAccuracy[i] * 0.5f) * Range;
