@@ -216,12 +216,13 @@ void _Player::RecalculateStats() {
 	int MeleeDamage = 100;
 
 	_ObjectTemplate Weapon[WEAPONATTACK_COUNT] = { _Object::WEAPON, _Object::WEAPON };
-	for(int i = 0; i < WEAPONATTACK_COUNT; i++) {
+	for(int i = 0; i < WEAPONATTACK_COUNT; i++)
 		Projectiles[i] = nullptr;
-		Stats.WeaponFists->Level = Level;
-		Stats.WeaponFists->RecalculateStats();
-		Weapon[i].Attributes = Stats.WeaponFists->Attributes;
-	}
+
+	// Set default melee to fists
+	Stats.WeaponFists->Level = Level;
+	Stats.WeaponFists->RecalculateStats();
+	Weapon[WEAPONATTACK_MELEE].Attributes = Stats.WeaponFists->Attributes;
 
 	// See if the player is using a weapon
 	if(HasMainHand()) {
@@ -231,6 +232,8 @@ void _Player::RecalculateStats() {
 			Projectiles[WEAPONATTACK_MAIN] = &Stats.Objects.at(GetMainHand()->Template.ProjectileID);
 			ProjectileSpeed[WEAPONATTACK_MAIN] = GetMainHand()->Template.Attributes.at("projectile_speed").Float;
 		}
+
+		ZoomScale = Weapon[WEAPONATTACK_MAIN].Attributes["zoom_scale"].Float;
 	}
 	else
 		MainWeaponType = WEAPON_MELEE;
@@ -245,7 +248,7 @@ void _Player::RecalculateStats() {
 		}
 	}
 	else
-		MeleeTexture =  ae::Assets.Textures[Stats.WeaponFists->Template.MeleeID];
+		MeleeTexture = ae::Assets.Textures[Stats.WeaponFists->Template.MeleeID];
 
 	// Set up main stats based on weapon
 	Recoil = 0;
@@ -323,7 +326,6 @@ void _Player::RecalculateStats() {
 		MeleeSwitch[i] = Weapon[i].Attributes["melee_switch"].Int;
 	}
 	ReloadPeriod = Weapon[WEAPONATTACK_MAIN].Attributes["reload_period"].Double / Stats.GetSkillBonusMultiplier(Skills[SKILL_DEXTERITY], SKILL_DEXTERITY);
-	ZoomScale = Weapon[WEAPONATTACK_MAIN].Attributes["zoom_scale"].Float;
 
 	// Set final stats
 	MaxHealth = std::round(Stats.GetLevelHealth(Level) * HealthBonus * 0.01f);

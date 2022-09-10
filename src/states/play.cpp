@@ -201,7 +201,7 @@ bool _PlayState::HandleAction(int InputType, size_t Action, int Value) {
 
 					// Use melee weapon if player has no main hand
 					int AttackType = WEAPONATTACK_MAIN;
-					if(!Player->HasMainHand() && Player->HasMelee())
+					if(!Player->HasMainHand())
 						AttackType = WEAPONATTACK_MELEE;
 
 					// Can reload
@@ -518,7 +518,7 @@ void _PlayState::Update(double FrameTime) {
 
 			// Use melee weapon if player has no main hand
 			int AttackType = WEAPONATTACK_MAIN;
-			if(!Player->HasMainHand() && Player->HasMelee())
+			if(!Player->HasMainHand())
 				AttackType = WEAPONATTACK_MELEE;
 
 			// Check holding down fire button to attack
@@ -526,7 +526,7 @@ void _PlayState::Update(double FrameTime) {
 				Player->RequestAttack(AttackType);
 
 			// Check holding down melee button to attack
-			if(!Player->IsMeleeAttacking() && Player->FireRateType[WEAPONATTACK_MELEE] == FIRERATE_AUTO && ae::Actions.State[Action::GAME_MELEE].Value > 0.0f)
+			else if(!Player->IsMeleeAttacking() && Player->FireRateType[WEAPONATTACK_MELEE] == FIRERATE_AUTO && ae::Actions.State[Action::GAME_MELEE].Value > 0.0f)
 				Player->RequestAttack(WEAPONATTACK_MELEE);
 
 			// Aim
