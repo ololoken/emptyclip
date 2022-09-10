@@ -80,28 +80,51 @@ if(CMAKE_BUILD_TYPE STREQUAL "Debug")
 	set_target_properties(${CMAKE_PROJECT_NAME} PROPERTIES OUTPUT_NAME ${CMAKE_PROJECT_NAME}_debug)
 endif()
 
-# add command to build data
-if(EXISTS "${PROJECT_SOURCE_DIR}/assets/source/process.sh" AND NOT WIN32)
+# build data packs
+if(NOT WIN32)
 
-	# pack data
-	file(GLOB SOURCE_OGGS "${PROJECT_SOURCE_DIR}/assets/source/sounds/*.ogg")
-	add_custom_command(
-		OUTPUT "${PROJECT_SOURCE_DIR}/working/data/sounds"
-		COMMAND "${PROJECT_SOURCE_DIR}/assets/source/process.sh"
-		WORKING_DIRECTORY "${PROJECT_SOURCE_DIR}/assets/source/"
-		DEPENDS "${SOURCE_OGGS}"
-	)
-	add_custom_target(data ALL DEPENDS "${PROJECT_SOURCE_DIR}/working/data/sounds")
+	# build textures
+	set(ASSET_SOURCE_DIR "${PROJECT_SOURCE_DIR}/assets/source/")
+	if(EXISTS "${ASSET_SOURCE_DIR}/build_textures.sh")
+		file(GLOB TEXTURE_DIRS RELATIVE "${ASSET_SOURCE_DIR}/textures/" "${ASSET_SOURCE_DIR}/textures/*")
+		foreach(TEXTURE_DIR ${TEXTURE_DIRS})
+
+			# build textures
+			file(GLOB_RECURSE SOURCE_PNGS "${ASSET_SOURCE_DIR}/textures/${TEXTURE_DIR}/*.png")
+			add_custom_command(
+				OUTPUT "${PROJECT_SOURCE_DIR}/working/textures/${TEXTURE_DIR}"
+				COMMAND "${ASSET_SOURCE_DIR}/build_textures.sh" "textures/${TEXTURE_DIR}"
+				WORKING_DIRECTORY "${ASSET_SOURCE_DIR}"
+				DEPENDS "${SOURCE_PNGS}"
+			)
+			add_custom_target("textures_${TEXTURE_DIR}" ALL DEPENDS "${PROJECT_SOURCE_DIR}/working/textures/${TEXTURE_DIR}")
+		endforeach()
+	endif()
+
+	# build sounds
+	if(EXISTS "${ASSET_SOURCE_DIR}/build_sounds.sh")
+		file(GLOB SOURCE_OGGS "${ASSET_SOURCE_DIR}/sounds/*.ogg")
+		add_custom_command(
+			OUTPUT "${PROJECT_SOURCE_DIR}/working/data/sounds"
+			COMMAND "${ASSET_SOURCE_DIR}/build_sounds.sh"
+			WORKING_DIRECTORY "${ASSET_SOURCE_DIR}"
+			DEPENDS "${SOURCE_OGGS}"
+		)
+		add_custom_target(data ALL DEPENDS "${PROJECT_SOURCE_DIR}/working/data/sounds")
+	endif()
 
 	# build stats
-	file(GLOB SOURCE_TSVS "${PROJECT_SOURCE_DIR}/assets/source/stats/*.tsv")
-	add_custom_command(
-		OUTPUT "${PROJECT_SOURCE_DIR}/working/data/stats.db"
-		COMMAND "${PROJECT_SOURCE_DIR}/assets/source/build_stats.sh"
-		WORKING_DIRECTORY "${PROJECT_SOURCE_DIR}/assets/source/"
-		DEPENDS "${SOURCE_TSVS}"
-	)
-	add_custom_target(stats ALL DEPENDS "${PROJECT_SOURCE_DIR}/working/data/stats.db")
+	if(EXISTS "${ASSET_SOURCE_DIR}/build_stats.sh")
+		file(GLOB SOURCE_TSVS "${ASSET_SOURCE_DIR}/stats/*.tsv")
+		add_custom_command(
+			OUTPUT "${PROJECT_SOURCE_DIR}/working/data/stats.db"
+			COMMAND "${ASSET_SOURCE_DIR}/build_stats.sh"
+			WORKING_DIRECTORY "${ASSET_SOURCE_DIR}"
+			DEPENDS "${SOURCE_TSVS}"
+		)
+		add_custom_target(stats ALL DEPENDS "${PROJECT_SOURCE_DIR}/working/data/stats.db")
+	endif()
+
 endif()
 
 # add custom target to generate version.h
