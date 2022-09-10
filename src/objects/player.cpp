@@ -215,32 +215,36 @@ void _Player::RecalculateStats() {
 	int HealthBonus = 100;
 	int MeleeDamage = 100;
 
-	_ObjectTemplate Weapon[WEAPONATTACK_COUNT] = { _Object::WEAPON, _Object::WEAPON };
+	std::unordered_map<std::string, _Value> WeaponAttributes[WEAPONATTACK_COUNT];
+	const _ObjectTemplate *WeaponTemplate[WEAPONATTACK_COUNT]{nullptr};
 	for(int i = 0; i < WEAPONATTACK_COUNT; i++)
 		Projectiles[i] = nullptr;
 
 	// Set default melee to fists
 	Stats.WeaponFists->Level = Level;
 	Stats.WeaponFists->RecalculateStats();
-	Weapon[WEAPONATTACK_MELEE].Attributes = Stats.WeaponFists->Attributes;
+	WeaponAttributes[WEAPONATTACK_MELEE] = Stats.WeaponFists->Attributes;
+	WeaponTemplate[WEAPONATTACK_MELEE] = &Stats.WeaponFists->Template;
 
 	// See if the player is using a weapon
 	if(HasMainHand()) {
-		Weapon[WEAPONATTACK_MAIN].Attributes = GetMainHand()->Attributes;
-		MainWeaponType = GetMainHand()->Attributes.at("weapon_type").Int;
+		WeaponAttributes[WEAPONATTACK_MAIN] = GetMainHand()->Attributes;
+		WeaponTemplate[WEAPONATTACK_MAIN] = &GetMainHand()->Template;
+		MainWeaponType = WeaponTemplate[WEAPONATTACK_MAIN]->Attributes.at("weapon_type").Int;
 		if(!GetMainHand()->Template.ProjectileID.empty()) {
 			Projectiles[WEAPONATTACK_MAIN] = &Stats.Objects.at(GetMainHand()->Template.ProjectileID);
 			ProjectileSpeed[WEAPONATTACK_MAIN] = GetMainHand()->Template.Attributes.at("projectile_speed").Float;
 		}
 
-		ZoomScale = Weapon[WEAPONATTACK_MAIN].Attributes["zoom_scale"].Float;
+		ZoomScale = WeaponAttributes[WEAPONATTACK_MAIN]["zoom_scale"].Float;
 	}
 	else
 		MainWeaponType = WEAPON_MELEE;
 
 	// Get stats of melee weapon
 	if(HasMelee()) {
-		Weapon[WEAPONATTACK_MELEE].Attributes = GetMelee()->Attributes;
+		WeaponAttributes[WEAPONATTACK_MELEE] = GetMelee()->Attributes;
+		WeaponTemplate[WEAPONATTACK_MELEE] = &GetMelee()->Template;
 		MeleeTexture = ae::Assets.Textures[GetMelee()->Template.MeleeID];
 		if(!GetMelee()->Template.ProjectileID.empty()) {
 			Projectiles[WEAPONATTACK_MELEE] = &Stats.Objects.at(GetMelee()->Template.ProjectileID);
@@ -254,19 +258,19 @@ void _Player::RecalculateStats() {
 	Recoil = 0;
 	RecoilRegen = 0;
 	MoveRecoil = 0.0f;
-	AttackRange[WEAPONATTACK_MAIN] = Weapon[WEAPONATTACK_MAIN].Attributes["range"].Float;
-	AttackRange[WEAPONATTACK_MELEE] = Weapon[WEAPONATTACK_MELEE].Attributes["range"].Float;
+	AttackRange[WEAPONATTACK_MAIN] = WeaponAttributes[WEAPONATTACK_MAIN]["range"].Float;
+	AttackRange[WEAPONATTACK_MELEE] = WeaponAttributes[WEAPONATTACK_MELEE]["range"].Float;
 	CurrentAccuracyNormal = 0;
 	MinAccuracyNormal = 0;
 	MaxAccuracyNormal = 0;
 	if(MainWeaponType != WEAPON_MELEE) {
 		float StrengthSkillMultiplier = Stats.GetSkillBonusMultiplier(Skills[SKILL_STRENGTH], SKILL_STRENGTH);
 		float AccuracySkillMultiplier = 1.0f / Stats.GetSkillBonusMultiplier(Skills[SKILL_PERCEPTION], SKILL_PERCEPTION);
-		CurrentAccuracyNormal = MinAccuracyNormal = Weapon[WEAPONATTACK_MAIN].Attributes.at("accuracy_min").Float * AccuracySkillMultiplier;
-		MaxAccuracyNormal = Weapon[WEAPONATTACK_MAIN].Attributes.at("accuracy_max").Float * AccuracySkillMultiplier;
-		Recoil = Weapon[WEAPONATTACK_MAIN].Attributes["recoil"].Float / StrengthSkillMultiplier;
-		RecoilRegen = Weapon[WEAPONATTACK_MAIN].Attributes["recoil_regen"].Float * StrengthSkillMultiplier;
-		MoveRecoil = Weapon[WEAPONATTACK_MAIN].Attributes["move_recoil"].Float / StrengthSkillMultiplier;
+		CurrentAccuracyNormal = MinAccuracyNormal = WeaponAttributes[WEAPONATTACK_MAIN].at("accuracy_min").Float * AccuracySkillMultiplier;
+		MaxAccuracyNormal = WeaponAttributes[WEAPONATTACK_MAIN].at("accuracy_max").Float * AccuracySkillMultiplier;
+		Recoil = WeaponAttributes[WEAPONATTACK_MAIN]["recoil"].Float / StrengthSkillMultiplier;
+		RecoilRegen = WeaponAttributes[WEAPONATTACK_MAIN]["recoil_regen"].Float * StrengthSkillMultiplier;
+		MoveRecoil = WeaponAttributes[WEAPONATTACK_MAIN]["move_recoil"].Float / StrengthSkillMultiplier;
 	}
 
 	// Set accuracy
@@ -301,31 +305,33 @@ void _Player::RecalculateStats() {
 		if((i == WEAPONATTACK_MAIN && MainWeaponType == WEAPON_MELEE) || i == WEAPONATTACK_MELEE)
 			MeleeDamageModifier = (MeleeDamage + Stats.GetSkill(Skills[SKILL_STRENGTH], SKILL_STRENGTH)) * 0.01f;
 
-		FireRateType[i] = Weapon[i].Attributes["fire_rate"].Int;
-		AttackPeriod[i] = std::max(Weapon[i].Attributes["fire_period"].Double / Stats.GetSkillBonusMultiplier(Skills[SKILL_AGILITY], SKILL_AGILITY), WEAPON_MINFIREPERIOD);
-		MinDamage[i] = std::round(Weapon[i].Attributes["min_damage"].Int * MeleeDamageModifier);
-		MaxDamage[i] = std::round(Weapon[i].Attributes["max_damage"].Int * MeleeDamageModifier);
-		AttackMoveSpeed[i] = Weapon[i].Attributes["attack_movespeed"].Float;
-		ShootPeriod[i] = Weapon[i].Attributes["shoot_period"].Double / Stats.GetSkillBonusMultiplier(Skills[SKILL_STRENGTH], SKILL_STRENGTH, 1);
-		Penetration[i] = Weapon[i].Attributes["penetration"].Int;
-		PenetrationDamage[i] = Weapon[i].Attributes["penetration_damage"].Float;
-		AttackCount[i] = Weapon[i].Attributes["attack_count"].Int;
-		FireAllRounds[i] = Weapon[i].Attributes["fire_allrounds"].Int;
-		CritChance[i] = Weapon[i].Attributes["crit_chance"].Int;
+		FireRateType[i] = WeaponAttributes[i]["fire_rate"].Int;
+		AttackPeriod[i] = std::max(WeaponAttributes[i]["fire_period"].Double / Stats.GetSkillBonusMultiplier(Skills[SKILL_AGILITY], SKILL_AGILITY), WEAPON_MINFIREPERIOD);
+		MinDamage[i] = std::round(WeaponAttributes[i]["min_damage"].Int * MeleeDamageModifier);
+		MaxDamage[i] = std::round(WeaponAttributes[i]["max_damage"].Int * MeleeDamageModifier);
+		AttackMoveSpeed[i] = WeaponAttributes[i]["attack_movespeed"].Float;
+		ShootPeriod[i] = WeaponAttributes[i]["shoot_period"].Double / Stats.GetSkillBonusMultiplier(Skills[SKILL_STRENGTH], SKILL_STRENGTH, 1);
+		Penetration[i] = WeaponAttributes[i]["penetration"].Int;
+		PenetrationDamage[i] = WeaponAttributes[i]["penetration_damage"].Float;
+		AttackCount[i] = WeaponAttributes[i]["attack_count"].Int;
+		FireAllRounds[i] = WeaponAttributes[i]["fire_allrounds"].Int;
+		CritChance[i] = WeaponAttributes[i]["crit_chance"].Int;
 		CritDamage[i] = PLAYER_CRIT_DAMAGE + Stats.GetSkill(Skills[SKILL_PERCEPTION], SKILL_PERCEPTION, 1);
-		BurstRounds[i] = Weapon[i].Attributes["burst_rounds"].Int;
+		BurstRounds[i] = WeaponAttributes[i]["burst_rounds"].Int;
 		if(BurstRounds[i])
-			BurstPeriod[i] = std::max(Weapon[i].Attributes["burst_period"].Double / Stats.GetSkillBonusMultiplier(Skills[SKILL_AGILITY], SKILL_AGILITY), WEAPON_MINFIREPERIOD);
+			BurstPeriod[i] = std::max(WeaponAttributes[i]["burst_period"].Double / Stats.GetSkillBonusMultiplier(Skills[SKILL_AGILITY], SKILL_AGILITY), WEAPON_MINFIREPERIOD);
 		else
 			BurstPeriod[i] = AttackPeriod[i];
-		ExplosionSize[i] = Weapon[i].Attributes["explosion_size"].Float;
-		AttackWidth[i] = Weapon[i].Attributes["attack_width"].Float;
-		MeleeScale[i].x = Weapon[i].Attributes["scale_x"].Float;
-		MeleeScale[i].y = Weapon[i].Attributes["scale_y"].Float;
-		MeleeOffset[i] = Weapon[i].Attributes["melee_offset"].Float;
-		MeleeSwitch[i] = Weapon[i].Attributes["melee_switch"].Int;
+		ExplosionSize[i] = WeaponAttributes[i]["explosion_size"].Float;
+		if(WeaponTemplate[i]) {
+			AttackWidth[i] = WeaponTemplate[i]->Attributes.at("melee_width").Float;
+			MeleeScale[i].x = WeaponTemplate[i]->Attributes.at("scale_x").Float;
+			MeleeScale[i].y = WeaponTemplate[i]->Attributes.at("scale_y").Float;
+			MeleeOffset[i] = WeaponTemplate[i]->Attributes.at("melee_offset").Float;
+			MeleeSwitch[i] = WeaponTemplate[i]->Attributes.at("melee_switch").Int;
+		}
 	}
-	ReloadPeriod = Weapon[WEAPONATTACK_MAIN].Attributes["reload_period"].Double / Stats.GetSkillBonusMultiplier(Skills[SKILL_DEXTERITY], SKILL_DEXTERITY);
+	ReloadPeriod = WeaponAttributes[WEAPONATTACK_MAIN]["reload_period"].Double / Stats.GetSkillBonusMultiplier(Skills[SKILL_DEXTERITY], SKILL_DEXTERITY);
 
 	// Set final stats
 	MaxHealth = std::round(Stats.GetLevelHealth(Level) * HealthBonus * 0.01f);

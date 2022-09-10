@@ -378,7 +378,7 @@ void _Item::DrawTooltip(const _Player *Player, size_t CompareSlot, int Inventory
 			DrawPosition.y += Spacing.y;
 			std::string Percent = Template.Attributes.at("percent_sign").Int ? "%" : "";
 			Buffer << "+" << Attributes.at("bonus").Int << Percent;
-			ae::Assets.Fonts["hud_medium"]->DrawText(ModTypeToString(Attributes.at("mod_type").Int), glm::ivec2(DrawPosition - DrawOffset), ae::RIGHT_BASELINE);
+			ae::Assets.Fonts["hud_medium"]->DrawText(ModTypeToString(Template.Attributes.at("mod_type").Int), glm::ivec2(DrawPosition - DrawOffset), ae::RIGHT_BASELINE);
 			ae::Assets.Fonts["hud_medium"]->DrawText(Buffer.str(), glm::ivec2(DrawPosition + DrawOffset), ae::LEFT_BASELINE, TextColor);
 		} break;
 		case _Object::MEDKIT: {
@@ -473,7 +473,7 @@ void _Item::RecalculateStats() {
 
 	// Sum bonuses
 	for(size_t i = 0; i < Mods.size(); i++)
-		Bonus[Mods[i]->Attributes.at("mod_type").Int] += Mods[i]->Attributes.at("bonus").Int;
+		Bonus[Mods[i]->Template.Attributes.at("mod_type").Int] += Mods[i]->Attributes.at("bonus").Int;
 
 	float QualityFactor = 1.0f + Quality * 0.01f;
 	switch(Type) {
@@ -542,7 +542,7 @@ bool _Item::ModCompatible(_Item *Mod) {
 		case _Object::WEAPON: {
 
 			// Check weapon type
-			if(Mod->Template.Attributes.at("weapon_type").Int != 0 && Mod->Attributes.at("weapon_type").Int != Attributes.at("weapon_type").Int)
+			if(Mod->Template.Attributes.at("weapon_type").Int != 0 && Mod->Template.Attributes.at("weapon_type").Int != Template.Attributes.at("weapon_type").Int)
 				return false;
 
 			// Check for ammo
@@ -594,7 +594,7 @@ std::string _Item::GetTypeAsString() const {
 	switch(Type) {
 		case _Object::WEAPON: {
 			std::string WeaponTypeString;
-			switch(Attributes.at("weapon_type").Int) {
+			switch(Template.Attributes.at("weapon_type").Int) {
 				case WEAPON_MELEE:
 					WeaponTypeString = "Melee";
 				break;
@@ -702,4 +702,9 @@ void _Item::SetAmmo(int Value) {
 		return;
 
 	Attributes["ammo"].Int = std::clamp(Value, 0, Attributes["rounds"].Int);
+}
+
+// Return true if weapon is melee
+bool _Item::IsMelee() const {
+	return Template.Attributes.at("weapon_type").Int == WEAPON_MELEE;
 }

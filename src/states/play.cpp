@@ -70,13 +70,7 @@ void _PlayState::Init() {
 	if(TestMode) {
 		Player = new _Player(Stats.Objects.at("player"));
 		Player->SavePath = Config.ConfigPath + "test.save";
-		try {
-			Save.LoadPlayer(Player);
-		}
-		catch(std::exception &Error) {
-			Player->Reset(true);
-			Save.SavePlayer(Player);
-		}
+		Save.LoadPlayer(Player);
 	}
 
 	// Bad player

@@ -78,7 +78,7 @@ class _Item : public _Object {
 		bool IsAutoPickup() const { return Type == _Object::AMMO || Type == _Object::KEY || Type == _Object::MEDKIT; }
 
 		void SetAmmo(int Value);
-		bool IsMelee() const { return Attributes.at("weapon_type").Int == WEAPON_MELEE; }
+		bool IsMelee() const;
 		float GetAverageDamage() const;
 		float GetAverageAccuracy() const;
 

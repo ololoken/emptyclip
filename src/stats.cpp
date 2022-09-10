@@ -645,18 +645,12 @@ _Item *_Stats::CreateItem(const std::string &ID, int Level, int Quality, int Cou
 	// Set attributes based off type and item level
 	switch(Template.Type) {
 		case _Object::WEAPON: {
-			Item->Attributes["weapon_type"].Int = Template.Attributes["weapon_type"].Int;
 			Item->Attributes["zoom_scale"].Float = Template.Attributes["zoom_scale"].Float;
 			Item->Attributes["range"].Float = Template.Attributes["range"].Float;
 			Item->Attributes["fire_rate"].Int = Template.Attributes["fire_rate"].Int;
 			Item->Attributes["burst_rounds"].Int = Template.Attributes["burst_rounds"].Int;
 			Item->Attributes["burst_period"].Double = Template.Attributes["burst_period"].Double;
 			Item->Attributes["attack_movespeed"].Float = Template.Attributes["attack_movespeed"].Float;
-			Item->Attributes["attack_width"].Float = Template.Attributes["melee_width"].Float;
-			Item->Attributes["scale_x"].Float = Template.Attributes["scale_x"].Float;
-			Item->Attributes["scale_y"].Float = Template.Attributes["scale_y"].Float;
-			Item->Attributes["melee_offset"].Float = Template.Attributes["melee_offset"].Float;
-			Item->Attributes["melee_switch"].Int = Template.Attributes["melee_switch"].Int;
 			Item->Attributes["fire_allrounds"].Int = Template.Attributes["fire_allrounds"].Int;
 			Item->Attributes["shoot_period"].Double = Template.Attributes["shoot_period"].Double;
 			Item->SetMaxMods(QualityFactor, RandomStats);
@@ -665,8 +659,6 @@ _Item *_Stats::CreateItem(const std::string &ID, int Level, int Quality, int Cou
 			Item->SetMaxMods(QualityFactor, RandomStats);
 		break;
 		case _Object::MOD:
-			Item->Attributes["mod_type"].Int = Template.Attributes["mod_type"].Int;
-			Item->Attributes["weapon_type"].Int = Template.Attributes["weapon_type"].Int;
 			Item->SetAttributeLevel("bonus", QualityFactor);
 		break;
 		default:
