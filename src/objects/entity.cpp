@@ -220,7 +220,8 @@ void _Entity::UpdateAnimation(double FrameTime, bool PlaySound) {
 				Animation->Stop();
 			}
 			else {
-				Animation->Play(WalkingAnimation, MoveSpeed);
+				if(!AttackRequested)
+					Animation->Play(WalkingAnimation, MoveSpeed);
 				SetAnimationPlaybackSpeedFactor();
 				Action = ACTION_MOVING;
 			}
@@ -242,7 +243,6 @@ void _Entity::UpdateAnimation(double FrameTime, bool PlaySound) {
 		case ACTION_MELEE:
 			if(Animation->IsStopped()) {
 				Animation->Stop();
-				Animation->Play(WalkingAnimation, MoveSpeed);
 				SetAnimationPlaybackSpeedFactor();
 				Action = ACTION_IDLE;
 			}
