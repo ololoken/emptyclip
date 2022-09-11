@@ -120,6 +120,7 @@ void _Menu::Init() {
 		ae::_Element *Text = new ae::_Element();
 		Text->Parent = Title;
 		Text->Text = Achievement.Text;
+		Text->Color = glm::vec4(0.85f, 0.85f, 0.85f, 1.0f);
 		Text->BaseOffset = glm::vec2(0, 30);
 		Text->Alignment = ae::LEFT_BASELINE;
 		Text->Font = ae::Assets.Fonts["hud_small"];
@@ -748,6 +749,8 @@ void _Menu::HandleResize() {
 		Background->SetHeight(ae::Graphics.CurrentSize.y);
 		Background->SetActive(true);
 	}
+
+	ae::Assets.Elements["element_menu_achievements_container"]->CalculateBounds();
 }
 
 // Set fullscreen state of game
