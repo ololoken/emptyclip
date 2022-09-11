@@ -33,6 +33,7 @@
 #include <ae/audio.h>
 #include <ae/texture.h>
 #include <gameassets.h>
+#include <achievements.h>
 #include <menu.h>
 #include <config.h>
 #include <stdexcept>
@@ -126,6 +127,12 @@ void _Framework::Init(int ArgumentCount, char **Arguments) {
 	LoadAssets();
 	Stats.Init();
 	Menu.Init();
+	try {
+		Achievements.Load();
+	}
+	catch(std::exception &Error) {
+		Achievements.Save();
+	}
 
 	// Setup console
 	Console = new ae::_Console(ae::Assets.Programs["ortho_pos"], ae::Assets.Fonts["console"]);
@@ -161,6 +168,7 @@ void _Framework::Close() {
 	if(State)
 		State->Close();
 
+	Achievements.Save();
 	Stats.Close();
 	ae::Assets.Close();
 	GameAssets.Close();

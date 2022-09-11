@@ -35,6 +35,7 @@
 #include <ae/util.h>
 #include <ae/random.h>
 #include <ae/framebuffer.h>
+#include <achievements.h>
 #include <objectmanager.h>
 #include <framework.h>
 #include <menu.h>

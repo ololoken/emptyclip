@@ -29,6 +29,7 @@
 #include <ae/ui.h>
 #include <ae/audio.h>
 #include <actiontype.h>
+#include <achievements.h>
 #include <hud.h>
 #include <stats.h>
 #include <constants.h>
@@ -100,12 +101,13 @@ void _Menu::Init() {
 	for(const auto &Achievement : Stats.Achievements) {
 
 		ae::_Element *Button = new ae::_Element();
-		Button->Name = "element_menu_achievements_" + Achievement.ID;
+		Button->Name = Achievement.ID;
 		Button->Parent = AchievementContainer;
 		Button->BaseOffset = glm::vec2(-Size.x / 2 - Spacing.x, Offset.y);
 		Button->BaseSize = Size;
 		Button->Alignment = ae::_Alignment(ae::_Alignment::CENTER, ae::_Alignment::TOP);
 		Button->Style = ae::Assets.Styles["style_menu_window"];
+		Button->DisabledStyle = ae::Assets.Styles["style_menu_window_disabled"];
 		if(Column & 1)
 			Button->BaseOffset.x = -Button->BaseOffset.x;
 
@@ -246,6 +248,11 @@ void _Menu::InitScore() {
 // Init achievements screen
 void _Menu::InitAchievements() {
 	ChangeLayout("element_menu_achievements");
+
+	// Set enabled state
+	ae::_Element *AchievementContainer = ae::Assets.Elements["element_menu_achievements_container"];
+	for(const auto &Child : AchievementContainer->Children)
+		Child->SetEnabled(Achievements.Stats.find(Child->Name) != Achievements.Stats.end());
 
 	State = STATE_ACHIEVEMENTS;
 }

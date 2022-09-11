@@ -23,6 +23,8 @@ menu_selected	1	0.05	0.05	0.2
 menu_button	0.3	0.03	0.03	0.8
 menu_button_disabled	0.02	0.02	0.02	0.8
 menu_button_hover	0.5	0.05	0.05	0.8
+menu_border_disabled	0.2	0.2	0.2	0.9
+menu_window_disabled	0.08	0.08	0.08	0.9
 menu_red_opaque	0.2	0.02	0.02	0.9
 menu_red_bg	0.5	0.05	0.05	0.38
 menu_red_border	0.5	0.05	0.05	1

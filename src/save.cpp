@@ -21,11 +21,9 @@
 #include <ae/buffer.h>
 #include <config.h>
 #include <stats.h>
-#include <cstdlib>
 #include <sstream>
 #include <iostream>
 #include <fstream>
-#include <algorithm>
 
 enum SaveChunkTypes {
 	CHUNK_SAVEVERSION,
