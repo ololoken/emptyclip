@@ -42,6 +42,7 @@ class _Menu {
 			STATE_CONTROLS,
 			STATE_INGAME,
 			STATE_SCORE,
+			STATE_ACHIEVEMENTS,
 		};
 
 		enum OptionsStateType {
@@ -81,6 +82,7 @@ class _Menu {
 			COLOR_COUNT,
 		};
 
+		void Init();
 		void InitTitle();
 		void InitSinglePlayer();
 		void InitOptions();
@@ -88,6 +90,7 @@ class _Menu {
 		void InitInGame();
 		void InitPlay();
 		void InitScore();
+		void InitAchievements();
 		void ConfirmAction();
 		void Close();
 

@@ -72,6 +72,12 @@ struct _Special {
 	int FreePathing{0};
 };
 
+struct _Achievement {
+	std::string ID;
+	std::string Name;
+	std::string Text;
+};
+
 // Object template
 struct _ObjectTemplate {
 
@@ -122,6 +128,7 @@ class _Stats {
 		void LoadProps();
 		void LoadProjectiles();
 		void LoadSpecials();
+		void LoadAchievements();
 
 		_Item *CreateItem(const std::string &ID, int Level, int Quality, int Count, const glm::vec2 &Position, bool RandomStats);
 		_Monster *CreateMonster(const std::string &ID, int Level, const glm::vec2 &Position, size_t SpecialType=0);
@@ -145,6 +152,7 @@ class _Stats {
 		std::unordered_map<std::string, _ItemDrop> ItemDrops;
 		std::vector<_Special> Specials;
 		std::vector<_Level> Levels;
+		std::vector<_Achievement> Achievements;
 		_Item *WeaponFists{nullptr};
 
 		std::vector<std::string> AmmoNames;

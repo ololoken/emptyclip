@@ -49,6 +49,7 @@ void _Stats::Init() {
 	LoadMonsters();
 	LoadProps();
 	LoadSpecials();
+	LoadAchievements();
 
 	_ObjectTemplate PlayerTemplate(_Object::PLAYER);
 	Objects.insert(std::make_pair("player", PlayerTemplate));
@@ -617,6 +618,25 @@ void _Stats::LoadSpecials() {
 		SetColor(Special.Color, Database->GetString("color_id"));
 
 		Specials.push_back(Special);
+	}
+
+	Database->CloseQuery();
+}
+
+// Load achievement stats
+void _Stats::LoadAchievements() {
+
+	// Run query
+	Database->PrepareQuery("SELECT * FROM achievements");
+
+	// Get data
+	while(Database->FetchRow()) {
+		_Achievement Achievement;
+		Achievement.ID = Database->GetString("id");
+		Achievement.Name = Database->GetString("name");
+		Achievement.Text = Database->GetString("text");
+
+		Achievements.push_back(Achievement);
 	}
 
 	Database->CloseQuery();

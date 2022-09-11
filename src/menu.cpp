@@ -30,6 +30,7 @@
 #include <ae/audio.h>
 #include <actiontype.h>
 #include <hud.h>
+#include <stats.h>
 #include <constants.h>
 #include <gameassets.h>
 #include <config.h>
@@ -88,6 +89,56 @@ static const char *COLORS[] = {
 };
 
 // Initialize
+void _Menu::Init() {
+
+	// Create achievement buttons
+	ae::_Element *AchievementContainer = ae::Assets.Elements["element_menu_achievements_container"];
+	glm::vec2 Size = glm::vec2(500, 120);
+	glm::vec2 Spacing = glm::vec2(30, 140);
+	glm::vec2 Offset = glm::vec2(0, 0);
+	int Column = 0;
+	for(const auto &Achievement : Stats.Achievements) {
+
+		ae::_Element *Button = new ae::_Element();
+		Button->Name = "element_menu_achievements_" + Achievement.ID;
+		Button->Parent = AchievementContainer;
+		Button->BaseOffset = glm::vec2(-Size.x / 2 - Spacing.x, Offset.y);
+		Button->BaseSize = Size;
+		Button->Alignment = ae::_Alignment(ae::_Alignment::CENTER, ae::_Alignment::TOP);
+		Button->Style = ae::Assets.Styles["style_menu_window"];
+		if(Column & 1)
+			Button->BaseOffset.x = -Button->BaseOffset.x;
+
+		ae::_Element *Title = new ae::_Element();
+		Title->Parent = Button;
+		Title->Text = Achievement.Name;
+		Title->BaseOffset = glm::vec2(20, 40);
+		Title->Alignment = ae::LEFT_BASELINE;
+		Title->Font = ae::Assets.Fonts["hud_medium"];
+		Button->Children.push_back(Title);
+
+		ae::_Element *Text = new ae::_Element();
+		Text->Parent = Title;
+		Text->Text = Achievement.Text;
+		Text->BaseOffset = glm::vec2(0, 30);
+		Text->Alignment = ae::LEFT_BASELINE;
+		Text->Font = ae::Assets.Fonts["hud_small"];
+		Text->BaseSize = Size - glm::vec2(40, 20);
+		Text->Wrap = true;
+		Title->Children.push_back(Text);
+
+		AchievementContainer->Children.push_back(Button);
+		Column++;
+		if(Column > 1) {
+			Offset.y += Spacing.y;
+			Column = 0;
+		}
+	}
+
+	AchievementContainer->CalculateBounds();
+}
+
+// Init title screen
 void _Menu::InitTitle() {
 	ChangeLayout("element_menu_title");
 
@@ -189,6 +240,13 @@ void _Menu::InitScore() {
 	HandleResize();
 
 	State = STATE_SCORE;
+}
+
+// Init achievements screen
+void _Menu::InitAchievements() {
+	ChangeLayout("element_menu_achievements");
+
+	State = STATE_ACHIEVEMENTS;
 }
 
 // Init new player popup
@@ -437,6 +495,14 @@ bool _Menu::HandleKey(const ae::_KeyEvent &KeyEvent) {
 				}
 			}
 		} break;
+		case STATE_ACHIEVEMENTS: {
+			if(KeyEvent.Pressed && KeyEvent.Scancode == SDL_SCANCODE_ESCAPE) {
+				if(Framework.GetState() == &PlayState)
+					InitInGame();
+				else
+					InitTitle();
+			}
+		} break;
 		case STATE_INGAME: {
 			if(KeyEvent.Pressed && KeyEvent.Scancode == SDL_SCANCODE_ESCAPE)
 				InitPlay();
@@ -495,6 +561,9 @@ void _Menu::HandleMouseButton(const ae::_MouseEvent &MouseEvent) {
 				}
 				else if(Clicked->Name == "button_menu_title_options") {
 					InitOptions();
+				}
+				else if(Clicked->Name == "button_menu_title_achievements") {
+					InitAchievements();
 				}
 				else if(Clicked->Name == "button_menu_title_exit") {
 					Framework.Done = true;
@@ -638,6 +707,14 @@ void _Menu::HandleMouseButton(const ae::_MouseEvent &MouseEvent) {
 					ae::Assets.Elements["label_menu_controls_accept_text_action"]->Text = Clicked->Children.front()->Text;
 				}
 			} break;
+			case STATE_ACHIEVEMENTS: {
+				if(Clicked->Name == "button_menu_achievements_back") {
+					if(Framework.GetState() == &PlayState)
+						InitInGame();
+					else
+						InitTitle();
+				}
+			} break;
 			case STATE_INGAME: {
 				if(Clicked->Name == "button_menu_ingame_resume") {
 					InitPlay();
@@ -726,6 +803,10 @@ void _Menu::Render() {
 			ae::Assets.Elements["label_game_version"]->Render();
 		} break;
 		case STATE_OPTIONS: {
+			if(CurrentLayout)
+				CurrentLayout->Render();
+		} break;
+		case STATE_ACHIEVEMENTS: {
 			if(CurrentLayout)
 				CurrentLayout->Render();
 		} break;

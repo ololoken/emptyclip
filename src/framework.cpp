@@ -125,6 +125,7 @@ void _Framework::Init(int ArgumentCount, char **Arguments) {
 	ae::Graphics.SetCullFace(false);
 	LoadAssets();
 	Stats.Init();
+	Menu.Init();
 
 	// Setup console
 	Console = new ae::_Console(ae::Assets.Programs["ortho_pos"], ae::Assets.Fonts["console"]);

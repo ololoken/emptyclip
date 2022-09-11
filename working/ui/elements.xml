@@ -2,13 +2,16 @@
 <element base_height="1080">
 	<element id="element_menu_title" size_x="512" size_y="0">
 		<element id="image_menu_title_logo" texture="textures/menu/title.png" size_x="512" size_y="128" offset_y="-450" alignment_y="0"/>
-		<element id="button_menu_title_single" style="style_menu_button" hover_style="style_menu_button_hover" offset_y="-112" size_x="280" size_y="66" alignment_y="0" clickable="true">
+		<element id="button_menu_title_single" style="style_menu_button" hover_style="style_menu_button_hover" offset_y="-142" size_x="280" size_y="66" alignment_y="0" clickable="true">
 			<element id="label_menu_title_single" font="menu_buttons" text="Play" offset_y="44" alignment_y="3"/>
 		</element>
-		<element id="button_menu_title_options" style="style_menu_button" hover_style="style_menu_button_hover" offset_y="0" size_x="280" size_y="66" alignment_y="0" clickable="true">
+		<element id="button_menu_title_options" style="style_menu_button" hover_style="style_menu_button_hover" offset_y="-30" size_x="280" size_y="66" alignment_y="0" clickable="true">
 			<element id="label_menu_title_options" font="menu_buttons" text="Options" offset_y="44" alignment_y="3"/>
 		</element>
-		<element id="button_menu_title_exit" style="style_menu_button" hover_style="style_menu_button_hover" offset_y="112" size_x="280" size_y="66" alignment_y="0" clickable="true">
+		<element id="button_menu_title_achievements" style="style_menu_button" hover_style="style_menu_button_hover" offset_y="82" size_x="280" size_y="66" alignment_y="0" clickable="true">
+			<element id="label_menu_title_achievements" font="menu_buttons" text="Achievements" offset_y="44" alignment_y="3"/>
+		</element>
+		<element id="button_menu_title_exit" style="style_menu_button" hover_style="style_menu_button_hover" offset_y="300" size_x="280" size_y="66" alignment_y="0" clickable="true">
 			<element id="label_menu_title_exit" font="menu_buttons" text="Exit" offset_y="44" alignment_y="3"/>
 		</element>
 	</element>
@@ -260,6 +263,13 @@
 		</element>
 		<element id="button_menu_score_mainmenu" style="style_menu_button" hover_style="style_menu_button_hover" offset_x="120" offset_y="400" size_x="200" size_y="66" clickable="true">
 			<element id="label_menu_score_mainmenu" font="menu_buttons" text="Main Menu" offset_y="44" alignment_y="3"/>
+		</element>
+	</element>
+	<element id="element_menu_achievements" size_x="512" size_y="984">
+		<element id="label_menu_achievements_title" font="hud_large" text="Achievements" offset_y="-350"/>
+		<element id="element_menu_achievements_container" size_x="800" size_y="550"/>
+		<element id="button_menu_achievements_back" style="style_menu_button" hover_style="style_menu_button_hover" offset_x="0" offset_y="400" size_x="200" size_y="66" clickable="true">
+			<element id="label_menu_achievements_back" font="menu_buttons" text="Back" offset_y="44" alignment_y="3"/>
 		</element>
 	</element>
 	<element id="element_confirm" style="style_menu_window" size_x="420" size_y="182">
