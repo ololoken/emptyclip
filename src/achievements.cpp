@@ -39,6 +39,9 @@ _Achievements Achievements;
 
 // Load achievement stats
 void _Achievements::Load() {
+	if(!Enabled)
+		return;
+
 	std::string Path = Config.ConfigPath + FILENAME;
 
 	// Open file
@@ -91,6 +94,8 @@ void _Achievements::Load() {
 
 // Save achievement stats
 void _Achievements::Save() {
+	if(!Enabled)
+		return;
 
 	// Open file
 	std::string TempPath = Config.ConfigPath + "_stats.db";

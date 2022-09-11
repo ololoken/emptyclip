@@ -25,6 +25,11 @@ if("$ENV{ENABLE_EDITOR}")
 	add_definitions("-DENABLE_EDITOR")
 endif()
 
+# achievements
+if(DEFINED ENV{ENABLE_ACHIEVEMENTS})
+	add_definitions("-DENABLE_ACHIEVEMENTS=$ENV{ENABLE_ACHIEVEMENTS}")
+endif()
+
 # compiler flags
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Wno-unused-result -Wno-switch -Wno-unused-parameter -pedantic -std=c++17")
 if("${CMAKE_HOST_SYSTEM_PROCESSOR}" STREQUAL "x86_64")

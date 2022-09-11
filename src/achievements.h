@@ -29,6 +29,7 @@ class _Achievements {
 		void Load();
 		void Save();
 
+		bool Enabled{true};
 		std::string Path;
 
 		std::unordered_map<std::string, int> Stats;

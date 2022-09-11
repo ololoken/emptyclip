@@ -50,6 +50,9 @@ void _Framework::Init(int ArgumentCount, char **Arguments) {
 	TimeStep = GAME_TIMESTEP;
 	State = &NullState;
 
+	#if defined ENABLE_ACHIEVEMENTS && ENABLE_ACHIEVEMENTS == 0
+		Achievements.Enabled = false;
+	#endif
 	bool AudioEnabled = Config.AudioEnabled;
 	bool Fullscreen = Config.Fullscreen;
 

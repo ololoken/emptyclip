@@ -154,6 +154,11 @@ void _Menu::InitTitle() {
 	ae::Assets.Elements["label_game_version"]->Text = GAME_VERSION + BuildVersion;
 	ae::Assets.Elements["label_game_version"]->SetActive(true);
 
+	if(!Achievements.Enabled) {
+		ae::Assets.Elements["button_menu_title_achievements"]->SetEnabled(false);
+		ae::Assets.Elements["button_menu_ingame_achievements"]->SetEnabled(false);
+	}
+
 	Background = ae::Assets.Elements["image_menu_bg"];
 	HandleResize();
 
@@ -924,7 +929,7 @@ void _Menu::DrawMessages() {
 
 // Show achievement message
 void _Menu::UnlockAchievement(const std::string &ID) {
-	if(PlayState.TestMode || PlayState.DevMode)
+	if(PlayState.TestMode || PlayState.DevMode || !Achievements.Enabled)
 		return;
 
 	if(Achievements.Stats.find(ID) != Achievements.Stats.end())
