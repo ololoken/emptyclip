@@ -27,6 +27,7 @@
 #include <ae/audio.h>
 #include <stats.h>
 #include <hud.h>
+#include <menu.h>
 #include <map.h>
 #include <constants.h>
 #include <algorithm>
@@ -517,6 +518,8 @@ void _Entity::UpdateHealth(int Adjust) {
 			else {
 				PlayState.HUD->Kills[0]++;
 				PlayState.Player->UpdateKillCount(1);
+				if(PlayState.Player->TotalKills >= 1e6)
+					Menu.UnlockAchievement("1e6kills");
 			}
 
 			PlayState.Player->UpdateExperience(ExperienceGiven);

@@ -74,8 +74,11 @@ void _Achievements::Load() {
 
 				// Load stats
 				int Count = Buffer.Read<int>();
-				for(int i = 0; i < Count; i++)
-					Stats[Buffer.ReadString()] = 1;
+				for(int i = 0; i < Count; i++) {
+					const char *ID = Buffer.ReadString();
+					int Value = Buffer.Read<int>();
+					Stats[ID] = Value;
+				}
 			} break;
 			default:
 				File.ignore(Size);

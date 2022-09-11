@@ -114,6 +114,8 @@ const  float        PLAYER_MELEE_OFFSET                  =  0.15f;
 //     Achievements
 const  int          ACHIEVEMENTS_VERSION                 =  1;
 const  int          ACHIEVEMENTS_LINE_EM_UP_HITS         =  30;
+const  double       ACHIEVEMENTS_MESSAGE_TIMEOUT         =  5.0;
+const  double       ACHIEVEMENTS_MESSAGE_FADETIME        =  1.0;
 //     Inventory
 const  int          INVENTORY_BAGSIZE                    =  20;
 const  int          INVENTORY_MAX_STACK                  =  99;

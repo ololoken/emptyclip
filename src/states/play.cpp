@@ -465,15 +465,13 @@ void _PlayState::Update(double FrameTime) {
 	int OldLevel = Player->Level;
 	Timer += FrameTime;
 	FlashTimer = std::max(0.0, FlashTimer - FrameTime);
+	Menu.Update(FrameTime);
 
 	// Handle pause
 	if(IsPaused()) {
-		Menu.Update(FrameTime);
 		ae::Graphics.SetCursor(true);
-		if(HUD) {
-			HUD->CursorOverItem = nullptr;
-			HUD->CursorOverWorld = false;
-		}
+		HUD->CursorOverItem = nullptr;
+		HUD->CursorOverWorld = false;
 
 		return;
 	}
@@ -929,12 +927,11 @@ void _PlayState::Render(double BlendFactor) {
 	if(IsPaused() || Player->IsDead())
 		ae::Graphics.FadeScreen(ae::Assets.Programs["ortho_pos"], GAME_PAUSE_FADEAMOUNT);
 
-	// Draw in-game menu
-	if(IsPaused()) {
-		Menu.Render();
-	}
+	// Render menu
+	Menu.Render();
+
 	// Draw death screen
-	else if(Player->IsDead()) {
+	if(Player->IsDead()) {
 		ae::Graphics.SetCursor(1);
 		HUD->DrawDeathScreen();
 	}
@@ -1380,7 +1377,7 @@ void _PlayState::CheckEvents(const _Entity *Entity) {
 			break;
 			case EVENT_ENDLEVEL: {
 				Level = Event->ItemID;
-				bool GotOneHundredPercent = !(HUD->Kills[0] == HUD->Kills[1] && HUD->Crates[0] == HUD->Crates[1] && HUD->Secrets[0] == HUD->Secrets[1]);
+				bool GotOneHundredPercent = HUD->Kills[0] == HUD->Kills[1] && HUD->Crates[0] == HUD->Crates[1] && HUD->Secrets[0] == HUD->Secrets[1];
 				if(!GotOneHundredPercent)
 					Player->Stat100Percent = false;
 
@@ -1409,6 +1406,22 @@ void _PlayState::CheckEvents(const _Entity *Entity) {
 					Level = GAME_FIRSTLEVEL;
 
 					// Check achievements
+					if(Player->Progression == 0) {
+						if(Player->StatFistsOnly)
+							Menu.UnlockAchievement("fists");
+
+						if(Player->StatLoneWolf)
+							Menu.UnlockAchievement("lonewolf");
+					}
+
+					if(Player->Stat100Percent)
+						Menu.UnlockAchievement("all");
+
+					if(Player->Progression >= 10)
+						Menu.UnlockAchievement("p10");
+
+					if(Player->LavaTouches == 0)
+						Menu.UnlockAchievement("smoked");
 
 					// Reset stats
 					Player->Progression++;
@@ -1417,8 +1430,7 @@ void _PlayState::CheckEvents(const _Entity *Entity) {
 					Player->ProgressionCrates = 0;
 					Player->ProgressionSecrets = 0;
 					Player->ProgressionDeaths = 0;
-					Player->LavaTouches = 0;
-					//Player->ResetAchievementTracking();
+					Player->ResetAchievementTracking();
 				}
 				else {
 					Player->ProgressionKills += HUD->Kills[0];

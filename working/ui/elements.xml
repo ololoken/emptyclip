@@ -222,13 +222,16 @@
 		</element>
 	</element>
 	<element id="element_menu_ingame" size_x="512" size_y="0">
-		<element id="button_menu_ingame_resume" style="style_menu_button" hover_style="style_menu_button_hover" offset_y="-112" size_x="280" size_y="66" alignment_y="0" clickable="true">
+		<element id="button_menu_ingame_resume" style="style_menu_button" hover_style="style_menu_button_hover" offset_y="-168" size_x="280" size_y="66" alignment_y="0" clickable="true">
 			<element id="label_menu_ingame_resume_text" font="menu_buttons" text="Resume" offset_y="44" alignment_y="3"/>
 		</element>
-		<element id="button_menu_ingame_options" style="style_menu_button" hover_style="style_menu_button_hover" offset_y="0" size_x="280" size_y="66" alignment_y="0" clickable="true">
+		<element id="button_menu_ingame_options" style="style_menu_button" hover_style="style_menu_button_hover" offset_y="-56" size_x="280" size_y="66" alignment_y="0" clickable="true">
 			<element id="label_menu_ingame_options_text" font="menu_buttons" text="Options" offset_y="44" alignment_y="3"/>
 		</element>
-		<element id="button_menu_ingame_mainmenu" style="style_menu_button" hover_style="style_menu_button_hover" offset_y="112" size_x="280" size_y="66" alignment_y="0" clickable="true">
+		<element id="button_menu_ingame_achievements" style="style_menu_button" hover_style="style_menu_button_hover" offset_y="56" size_x="280" size_y="66" alignment_y="0" clickable="true">
+			<element id="label_menu_ingame_achievements" font="menu_buttons" text="Achievements" offset_y="44" alignment_y="3"/>
+		</element>
+		<element id="button_menu_ingame_mainmenu" style="style_menu_button" hover_style="style_menu_button_hover" offset_y="168" size_x="280" size_y="66" alignment_y="0" clickable="true">
 			<element id="label_menu_ingame_mainmenu_text" font="menu_buttons" text="Main Menu" offset_y="44" alignment_y="3"/>
 		</element>
 	</element>

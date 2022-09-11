@@ -23,6 +23,7 @@
 #include <ae/audio.h>
 #include <constants.h>
 #include <stats.h>
+#include <menu.h>
 #include <map.h>
 #include <glm/geometric.hpp>
 #include <glm/gtx/rotate_vector.hpp>
@@ -311,7 +312,9 @@ void _Object::CheckProjectileCollisions() {
 			}
 		}
 
-		//if(HitObjects.size() == PLAYER_LINE_EM_UP_HITS && Template.ID == "bolt")
+		// Check achievement
+		if(HitObjects.size() >= ACHIEVEMENTS_LINE_EM_UP_HITS && Template.ID == "bolt")
+			Menu.UnlockAchievement("pierce30");
 	}
 
 	// Hit

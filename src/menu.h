@@ -20,6 +20,7 @@
 // Libraries
 #include <save.h>
 #include <string>
+#include <list>
 
 // Forward Declarations
 namespace ae {
@@ -27,6 +28,11 @@ namespace ae {
 	struct _MouseEvent;
 	struct _KeyEvent;
 }
+
+struct _Message {
+	std::string Name;
+	double Time;
+};
 
 // Classes
 class _Menu {
@@ -101,7 +107,9 @@ class _Menu {
 
 		void Update(double FrameTime);
 		void Render();
+		void DrawMessages();
 
+		void UnlockAchievement(const std::string &ID);
 		void SetScoreStats(bool EndOfGame, double LevelTime, int *Kills, int *Crates, int *Secrets, int Progression, const std::string &WeaponsUsed);
 
 		const StateType &GetState() const { return State; }
@@ -148,6 +156,9 @@ class _Menu {
 		SinglePlayerStateType SinglePlayerState{SINGLEPLAYER_NONE};
 		int SelectedSlot{-1};
 		int SelectedColor{0};
+
+		// Achievements
+		std::list<_Message> AchievementMessages;
 };
 
 extern _Menu Menu;

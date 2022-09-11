@@ -28,6 +28,7 @@
 #include <ae/util.h>
 #include <ae/ui.h>
 #include <ae/audio.h>
+#include <ae/font.h>
 #include <actiontype.h>
 #include <achievements.h>
 #include <hud.h>
@@ -229,6 +230,7 @@ void _Menu::InitPlay() {
 		CurrentLayout->SetActive(false);
 
 	CurrentLayout = nullptr;
+	Background = nullptr;
 
 	State = STATE_NONE;
 }
@@ -295,6 +297,7 @@ void _Menu::LaunchGame() {
 	Framework.ChangeState(&PlayState);
 
 	SaveSlots[SelectedSlot]->Checked = false;
+	Background = nullptr;
 	State = STATE_NONE;
 }
 
@@ -730,6 +733,9 @@ void _Menu::HandleMouseButton(const ae::_MouseEvent &MouseEvent) {
 				else if(Clicked->Name == "button_menu_ingame_options") {
 					InitOptions();
 				}
+				else if(Clicked->Name == "button_menu_ingame_achievements") {
+					InitAchievements();
+				}
 				else if(Clicked->Name == "button_menu_ingame_mainmenu") {
 					Framework.ChangeState(&NullState);
 				}
@@ -777,6 +783,20 @@ void _Menu::SetFullscreen(bool Fullscreen) {
 void _Menu::Update(double FrameTime) {
 	PreviousClickTimer += FrameTime;
 
+	// Update messages
+	for(auto Iterator = AchievementMessages.begin(); Iterator != AchievementMessages.end(); ) {
+		_Message &Message = *Iterator;
+
+		// Update timer
+		Message.Time += FrameTime;
+		if(Message.Time >= ACHIEVEMENTS_MESSAGE_TIMEOUT) {
+			Iterator = AchievementMessages.erase(Iterator);
+		}
+		else
+			++Iterator;
+	}
+
+	// Update states
 	switch(State) {
 		case STATE_SINGLEPLAYER: {
 			for(int i = 0; i <= _Save::SLOT_9; i++) {
@@ -802,7 +822,7 @@ void _Menu::Render() {
 	ae::Graphics.Setup2D();
 	ae::Graphics.SetStaticUniforms();
 
-	if(Background)
+	if(State != STATE_NONE && Background)
 		Background->Render();
 
 	switch(State) {
@@ -856,6 +876,73 @@ void _Menu::Render() {
 		} break;
 		default:
 		break;
+	}
+
+	DrawMessages();
+}
+
+// Draw achievement messages
+void _Menu::DrawMessages() {
+
+	glm::vec2 DrawSize = glm::vec2(320, 100) * ae::_Element::GetUIScale();
+	glm::vec2 DrawPosition(ae::Graphics.CurrentSize.x - DrawSize.x, ae::Graphics.CurrentSize.y);
+	for(auto &Message : AchievementMessages) {
+		DrawPosition.y -= DrawSize.y;
+		ae::_Bounds Bounds(DrawPosition, DrawPosition + DrawSize);
+
+		// Get alpha
+		glm::vec4 Color;
+		double TimeLeft = ACHIEVEMENTS_MESSAGE_TIMEOUT - Message.Time;
+		float Fade = 1.0f;
+		if(TimeLeft < ACHIEVEMENTS_MESSAGE_FADETIME)
+			Fade = (float)(TimeLeft / ACHIEVEMENTS_MESSAGE_FADETIME);
+
+		// Draw box
+		ae::Graphics.SetProgram(ae::Assets.Programs["ortho_pos"]);
+		Color = ae::Assets.Colors["menu_red_opaque"];
+		Color.a = Fade;
+		ae::Graphics.SetColor(Color);
+		ae::Graphics.DrawRectangle(Bounds, true);
+
+		// Draw outline
+		Color = ae::Assets.Colors["menu_red_border"];
+		Color.a = Fade;
+		ae::Graphics.SetColor(Color);
+		ae::Graphics.DrawRectangle(Bounds, false);
+
+		// Draw text
+		Color = glm::vec4(1.0f);
+		Color.a = Fade;
+		ae::Assets.Fonts["hud_medium"]->DrawText("Achievement Unlocked!", DrawPosition + glm::vec2(15, 35) * ae::_Element::GetUIScale(), ae::LEFT_BASELINE, Color);
+
+		// Draw text
+		Color = glm::vec4(0.85f, 0.85f, 0.85f, 1.0f);
+		Color.a = Fade;
+		ae::Assets.Fonts["hud_small"]->DrawText(Message.Name, DrawPosition + glm::vec2(15, 65) * ae::_Element::GetUIScale(), ae::LEFT_BASELINE, Color);
+	}
+}
+
+// Show achievement message
+void _Menu::UnlockAchievement(const std::string &ID) {
+	if(Achievements.Stats.find(ID) != Achievements.Stats.end())
+		return;
+
+	// Find ID
+	for(const auto &Achievement : Stats.Achievements) {
+		if(Achievement.ID != ID)
+			continue;
+
+		// Add message
+		_Message Message;
+		Message.Name = Achievement.Name;
+		Message.Time = 0.0;
+		AchievementMessages.push_back(Message);
+
+		// Save stats
+		Achievements.Stats[ID] = 1;
+		Achievements.Save();
+
+		return;
 	}
 }
 

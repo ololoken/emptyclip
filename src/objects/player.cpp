@@ -208,6 +208,7 @@ void _Player::Reset(bool Recalculate) {
 
 // Reset flags associated with achievements
 void _Player::ResetAchievementTracking() {
+	LavaTouches = 0;
 	Stat100Percent = true;
 	StatLoneWolf = true;
 	StatFistsOnly = true;
