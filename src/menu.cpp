@@ -924,6 +924,9 @@ void _Menu::DrawMessages() {
 
 // Show achievement message
 void _Menu::UnlockAchievement(const std::string &ID) {
+	if(PlayState.TestMode || PlayState.DevMode)
+		return;
+
 	if(Achievements.Stats.find(ID) != Achievements.Stats.end())
 		return;
 
