@@ -370,13 +370,32 @@ bool _Menu::HandleKey(const ae::_KeyEvent &KeyEvent) {
 
 	switch(State) {
 		case STATE_TITLE: {
-			if(KeyEvent.Pressed && KeyEvent.Scancode == SDL_SCANCODE_ESCAPE)
-				Framework.Done = true;
+			if(KeyEvent.Pressed) {
+				if(KeyEvent.Scancode == SDL_SCANCODE_ESCAPE)
+					Framework.Done = true;
+				else if(KeyEvent.Scancode == SDL_SCANCODE_RETURN)
+					InitSinglePlayer();
+			}
 		} break;
 		case STATE_SINGLEPLAYER: {
 			if(SinglePlayerState == SINGLEPLAYER_NONE) {
-				if(KeyEvent.Pressed && KeyEvent.Scancode == SDL_SCANCODE_ESCAPE)
-					InitTitle();
+				if(KeyEvent.Pressed) {
+					if(KeyEvent.Scancode == SDL_SCANCODE_ESCAPE)
+						InitTitle();
+					else if(KeyEvent.Scancode == SDL_SCANCODE_RETURN) {
+						if(SelectedSlot == -1) {
+							for(int i = 0; i < _Save::SLOT_COUNT; i++) {
+								if(Save.GetPlayer(i)) {
+									SelectedSlot = i;
+									break;
+								}
+							}
+						}
+
+						if(SelectedSlot >= 0 && Save.GetPlayer(SelectedSlot))
+							LaunchGame();
+					}
+				}
 			}
 			else {
 				if(KeyEvent.Pressed) {
