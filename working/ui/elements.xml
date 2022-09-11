@@ -251,6 +251,10 @@
 			<element id="label_menu_score_secrets" font="menu_buttons" text="Secrets" offset_x="-10" alignment_x="2" alignment_y="3"/>
 			<element id="label_menu_score_secrets_value" font="menu_buttons" text="" offset_x="10" alignment_x="0" alignment_y="3"/>
 		</element>
+		<element id="element_menu_score_weapons" offset_y="150">
+			<element id="label_menu_score_weapons" font="menu_buttons" text="Weapons Used" offset_x="-10" alignment_x="2" alignment_y="3"/>
+			<element id="label_menu_score_weapons_value" font="hud_medium" size_x="600" offset_x="10" offset_y="-2" alignment_x="0" alignment_y="3"/>
+		</element>
 		<element id="button_menu_score_continue" style="style_menu_button" hover_style="style_menu_button_hover" offset_x="-120" offset_y="400" size_x="200" size_y="66" clickable="true">
 			<element id="label_menu_score_continue" font="menu_buttons" text="Continue" offset_y="44" alignment_y="3"/>
 		</element>

@@ -63,6 +63,7 @@ void _PlayState::Init() {
 	ae::Graphics.Element->SetActive(false);
 	ae::Graphics.Element->Active = true;
 
+	WeaponsUsed.clear();
 	CursorItem = nullptr;
 	PreviousCursorItem = nullptr;
 
@@ -946,6 +947,13 @@ void _PlayState::ResolveAttack(_Entity *Attacker, int GridType) {
 	if(!Attacker->WeaponHasAmmo(Attacker->AttackRequestType))
 		return;
 
+	// Keep track of weapon used
+	if(Attacker->Type == _Object::PLAYER) {
+		const char *WeaponID = Attacker->GetWeaponID(Attacker->AttackRequestType);
+		if(WeaponID)
+			WeaponsUsed[WeaponID]++;
+	}
+
 	// Get number of rounds to fire
 	int RoundsShot = 1;
 	if(Attacker->FireAllRounds[Attacker->AttackRequestType])
@@ -1371,23 +1379,51 @@ void _PlayState::CheckEvents(const _Entity *Entity) {
 			break;
 			case EVENT_ENDLEVEL: {
 				Level = Event->ItemID;
+				bool GotOneHundredPercent = !(HUD->Kills[0] == HUD->Kills[1] && HUD->Crates[0] == HUD->Crates[1] && HUD->Secrets[0] == HUD->Secrets[1]);
+				if(!GotOneHundredPercent)
+					Player->Stat100Percent = false;
+
+				// Build weapons used string
+				std::string WeaponsUsedString = "";
+				for(const auto &WeaponID : WeaponsUsed) {
+					if(Stats.Objects.find(WeaponID.first) == Stats.Objects.end())
+						continue;
+
+					if(!WeaponsUsedString.empty())
+						WeaponsUsedString += ", ";
+
+					WeaponsUsedString += Stats.Objects.at(WeaponID.first).Name;
+
+					// Check achievements
+					if(WeaponID.first != "weapon_fists")
+						Player->StatFistsOnly = false;
+
+					if(WeaponID.first != "weapon_knife" && WeaponID.first != "weapon_boltrifle")
+						Player->StatLoneWolf = false;
+				}
 
 				// End of the game
 				if(Level.empty()) {
-					Menu.SetScoreStats(true, Player->LevelTime, HUD->Kills, HUD->Crates, HUD->Secrets, Player->Progression + 1);
+					Menu.SetScoreStats(true, Player->LevelTime, HUD->Kills, HUD->Crates, HUD->Secrets, Player->Progression + 1, WeaponsUsedString);
 					Level = GAME_FIRSTLEVEL;
+
+					// Check achievements
+
+					// Reset stats
 					Player->Progression++;
 					Player->ProgressionTime = 0;
 					Player->ProgressionKills = 0;
 					Player->ProgressionCrates = 0;
 					Player->ProgressionSecrets = 0;
 					Player->ProgressionDeaths = 0;
+					Player->LavaTouches = 0;
+					//Player->ResetAchievementTracking();
 				}
 				else {
 					Player->ProgressionKills += HUD->Kills[0];
 					Player->ProgressionCrates += HUD->Crates[0];
 					Player->ProgressionSecrets += HUD->Secrets[0];
-					Menu.SetScoreStats(false, Player->LevelTime, HUD->Kills, HUD->Crates, HUD->Secrets, 0);
+					Menu.SetScoreStats(false, Player->LevelTime, HUD->Kills, HUD->Crates, HUD->Secrets, 0, WeaponsUsedString);
 				}
 
 				Player->LevelTime = 0;
@@ -1463,6 +1499,7 @@ void _PlayState::CheckEvents(const _Entity *Entity) {
 				if(!GodMode)
 					Player->UpdateHealth(-GAME_LAVA_DAMAGE * (Event->Level + Player->Progression));
 				Particles->Create(_ParticleSpawn(GameAssets.GetParticleTemplate(Event->ParticleID), glm::vec2(0), Player->Position, OBJECT_Z, 0));
+				Player->LavaTouches++;
 			} break;
 			default:
 			break;

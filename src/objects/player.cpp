@@ -137,6 +137,10 @@ void _Player::Reset(bool Recalculate) {
 	ProgressionCrates = 0;
 	ProgressionSecrets = 0;
 	ProgressionDeaths = 0;
+	LavaTouches = 0;
+	Stat100Percent = false;
+	StatLoneWolf = false;
+	StatFistsOnly = false;
 	PlayTime = 0;
 	ProgressionTime = 0;
 	Clock = GAME_DEFAULT_CLOCK;
@@ -200,6 +204,13 @@ void _Player::Reset(bool Recalculate) {
 	LegAnimation->Stop();
 
 	Health = MaxHealth;
+}
+
+// Reset flags associated with achievements
+void _Player::ResetAchievementTracking() {
+	Stat100Percent = true;
+	StatLoneWolf = true;
+	StatFistsOnly = true;
 }
 
 // Calculates the player's stats from weapons and skills
@@ -1327,6 +1338,20 @@ bool _Player::CanReload() const {
 
 bool _Player::IsMelee() const {
 	return GetMainHand() == nullptr || GetMainHand()->IsMelee();
+}
+
+// Get weapon id from attack type
+const char *_Player::GetWeaponID(int AttackType) {
+	if(AttackType == WEAPONATTACK_MAIN) {
+		if(GetMainHand())
+			return GetMainHand()->Template.ID.c_str();
+		else if(GetMelee())
+			return GetMelee()->Template.ID.c_str();
+	}
+	else if(GetMelee())
+		return GetMelee()->Template.ID.c_str();
+
+	return "weapon_fists";
 }
 
 void _Player::SetLegAnimationPlayMode(int Mode) {

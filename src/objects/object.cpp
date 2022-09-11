@@ -310,6 +310,8 @@ void _Object::CheckProjectileCollisions() {
 				break;
 			}
 		}
+
+		//if(HitObjects.size() == PLAYER_LINE_EM_UP_HITS && Template.ID == "bolt")
 	}
 
 	// Hit

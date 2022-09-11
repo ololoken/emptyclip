@@ -111,6 +111,8 @@ const  double       PLAYER_WEAPONSWITCHPERIOD            =  0.5;
 const  double       PLAYER_USEPERIOD                     =  0.2;
 const  glm::vec4    PLAYER_LIGHT                         =  glm::vec4(0.5f, 0.5f, 0.5f, 1.0f);
 const  float        PLAYER_MELEE_OFFSET                  =  0.15f;
+//     Achievements
+const  int          ACHIEVEMENTS_LINE_EM_UP_HITS         =  30;
 //     Inventory
 const  int          INVENTORY_BAGSIZE                    =  20;
 const  int          INVENTORY_MAX_STACK                  =  99;

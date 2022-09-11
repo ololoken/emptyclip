@@ -50,6 +50,10 @@ enum SaveChunkTypes {
 	CHUNK_PROGRESSIONCRATES,
 	CHUNK_PROGRESSIONSECRETS,
 	CHUNK_PROGRESSIONDEATHS,
+	CHUNK_LAVA_TOUCHES,
+	CHUNK_STAT_100PERCENT,
+	CHUNK_STAT_FISTSONLY,
+	CHUNK_STAT_LONEWOLF,
 };
 
 // Write a chunk to a stream
@@ -92,6 +96,7 @@ void _Save::CreateNewPlayer(size_t Slot, const std::string &Name, const std::str
 	Players[Slot]->SavePath = GetConfigPath(Slot);
 	Players[Slot]->Name = Name;
 	Players[Slot]->Health = Players[Slot]->MaxHealth * PLAYER_STARTING_HEALTH_FACTOR;
+	Players[Slot]->ResetAchievementTracking();
 	Players[Slot]->SetColorID(ColorID);
 
 	SavePlayer(Players[Slot]);
@@ -239,6 +244,18 @@ void _Save::LoadPlayer(_Player *Player) {
 			case CHUNK_CLOCK:
 				File.read((char *)&Player->Clock, sizeof(Player->Clock));
 			break;
+			case CHUNK_LAVA_TOUCHES:
+				File.read((char *)&Player->LavaTouches, sizeof(Player->LavaTouches));
+			break;
+			case CHUNK_STAT_100PERCENT:
+				File.read((char *)&Player->Stat100Percent, sizeof(Player->Stat100Percent));
+			break;
+			case CHUNK_STAT_FISTSONLY:
+				File.read((char *)&Player->StatFistsOnly, sizeof(Player->StatFistsOnly));
+			break;
+			case CHUNK_STAT_LONEWOLF:
+				File.read((char *)&Player->StatLoneWolf, sizeof(Player->StatLoneWolf));
+			break;
 			case CHUNK_ITEMS: {
 				ae::_Buffer Buffer(Size);
 				File.read(&Buffer[0], Size);
@@ -301,6 +318,10 @@ void _Save::SavePlayer(_Player *Player) {
 	WriteChunk(File, CHUNK_PROGRESSIONCRATES, (char *)&Player->ProgressionCrates, sizeof(Player->ProgressionCrates));
 	WriteChunk(File, CHUNK_PROGRESSIONSECRETS, (char *)&Player->ProgressionSecrets, sizeof(Player->ProgressionSecrets));
 	WriteChunk(File, CHUNK_PROGRESSIONDEATHS, (char *)&Player->ProgressionDeaths, sizeof(Player->ProgressionDeaths));
+	WriteChunk(File, CHUNK_LAVA_TOUCHES, (char *)&Player->LavaTouches, sizeof(Player->LavaTouches));
+	WriteChunk(File, CHUNK_STAT_100PERCENT, (char *)&Player->Stat100Percent, sizeof(Player->Stat100Percent));
+	WriteChunk(File, CHUNK_STAT_FISTSONLY, (char *)&Player->StatFistsOnly, sizeof(Player->StatFistsOnly));
+	WriteChunk(File, CHUNK_STAT_LONEWOLF, (char *)&Player->StatLoneWolf, sizeof(Player->StatLoneWolf));
 
 	SaveItems(Player, File);
 	SaveAmmo(Player, File);

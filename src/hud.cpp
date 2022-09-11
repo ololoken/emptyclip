@@ -816,6 +816,11 @@ void _HUD::DrawCharacterScreen() {
 	Buffer << Player->DropRate << "%";
 	DrawAttribute("Drop Rate", Buffer, DrawPosition);
 
+	if(Player->LavaTouches > 0) {
+		Buffer << Player->LavaTouches;
+		DrawAttribute("Lava Touches", Buffer, DrawPosition);
+	}
+
 	Buffer << Player->TotalKills;
 	DrawAttribute("Total Kills", Buffer, DrawPosition);
 

@@ -57,8 +57,10 @@ class _Player : public _Entity {
 		~_Player() override;
 
 		void Reset(bool Recalculate=false);
+		void ResetAchievementTracking();
 
 		bool IsMelee() const;
+		const char *GetWeaponID(int AttackType);
 
 		void Render(double BlendFactor) override;
 		void Render2D(const glm::ivec2 &DrawPosition);
@@ -174,6 +176,10 @@ class _Player : public _Entity {
 		int ProgressionDeaths;
 		int ProgressionCrates;
 		int ProgressionSecrets;
+		int LavaTouches;
+		bool Stat100Percent;
+		bool StatLoneWolf;
+		bool StatFistsOnly;
 		int64_t Gold;
 		int64_t Experience;
 		int64_t ExperienceNextLevel;

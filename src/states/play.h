@@ -20,6 +20,7 @@
 #include <ae/state.h>
 #include <color.h>
 #include <unordered_map>
+#include <map>
 #include <list>
 
 // Forward Declarations
@@ -121,6 +122,7 @@ class _PlayState : public ae::_State {
 		_Object *ClosestItem{nullptr};
 		_Object *LastClosestItem{nullptr};
 		double ClosestItemTimer{0.0};
+		std::map<std::string, int> WeaponsUsed;
 
 		// Graphics
 		ae::_Framebuffer *Framebuffer{nullptr};

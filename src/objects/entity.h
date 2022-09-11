@@ -72,6 +72,7 @@ class _Entity : public _Object {
 		virtual bool IsSteady() const { return false; }
 		bool IsDead() const { return Action == ACTION_DYING && !Active; }
 		bool IsInvulnerable() const { return InvulnerableTimer > 0.0; }
+		virtual const char *GetWeaponID(int AttackType) { return nullptr; }
 
 		float GetHealthPercentage() const { return (float)Health / MaxHealth; }
 		float GetStaminaPercentage() const { return Stamina / MaxStamina; }
