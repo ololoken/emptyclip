@@ -157,7 +157,6 @@ class _Entity : public _Object {
 		int64_t ExperienceGiven{0};
 		glm::vec2 TargetPosition{0.0f};
 		float TargetRadius{0.0f};
-		int AIType{AI_NONE};
 
 	protected:
 

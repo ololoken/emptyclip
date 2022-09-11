@@ -522,8 +522,8 @@ void _Map::InitializeTiles() {
 					else
 						Data[i][j].Collision |= _Tile::ENTITY;
 
-					// Don't allow changing of bullet flags
-					Data[i][j].CollisionChangeMask &= ~_Tile::BULLET;
+					// Don't allow changing of bullet/vision flags
+					Data[i][j].CollisionChangeMask &= ~(_Tile::BULLET | _Tile::VISION);
 				}
 			}
 		}
@@ -534,12 +534,12 @@ void _Map::InitializeTiles() {
 		for(int i = Blocks[MAPLAYER_WALL][k].Start.x; i <= Blocks[MAPLAYER_WALL][k].End.x; i++) {
 			for(int j = Blocks[MAPLAYER_WALL][k].Start.y; j <= Blocks[MAPLAYER_WALL][k].End.y; j++) {
 				if(Blocks[MAPLAYER_WALL][k].Walkable)
-					Data[i][j].Collision &= ~_Tile::ENTITY & ~_Tile::BULLET;
+					Data[i][j].Collision &= ~(_Tile::ENTITY | _Tile::BULLET | _Tile::VISION);
 				else
-					Data[i][j].Collision |= _Tile::ENTITY | _Tile::BULLET;
+					Data[i][j].Collision |= _Tile::ENTITY | _Tile::BULLET | _Tile::VISION;
 
 				// Walls override floor change masks
-				Data[i][j].CollisionChangeMask = _Tile::ENTITY | _Tile::BULLET;
+				Data[i][j].CollisionChangeMask = _Tile::ENTITY | _Tile::BULLET | _Tile::VISION;
 			}
 		}
 	}
@@ -556,8 +556,8 @@ void _Map::InitializeTiles() {
 				else
 					Data[i][j].Collision = _Tile::ENTITY;
 
-				// Don't allow changing of bullet flags
-				Data[i][j].CollisionChangeMask &= ~_Tile::BULLET;
+				// Don't allow changing of bullet/vision flags
+				Data[i][j].CollisionChangeMask &= ~(_Tile::BULLET | _Tile::VISION);
 			}
 		}
 	}
@@ -1103,6 +1103,10 @@ void _Map::CheckBulletCollisions(_Object *Attacker, const glm::vec2 &Direction, 
 			for(auto &Iterator : Data[TileTracer.x][TileTracer.y].Objects[GridType]) {
 				_Object *Object = Iterator.first;
 				if(Object->IsDying() || ObjectMap.find(Object) != ObjectMap.end())
+					continue;
+
+				// Skip monsters when zooming
+				if(CollisionFlag == _Tile::VISION && Object->Type == _Object::MONSTER && Object->AIType != AI_NONE)
 					continue;
 
 				// Only check object once
@@ -1754,7 +1758,7 @@ void _Map::ChangeMapState(const _Event *Event) {
 		_Tile *Tile = &Data[Tiles[i].Coord.x][Tiles[i].Coord.y];
 
 		// Change flags only allowed by the change mask
-		Tile->Collision ^= Tile->CollisionChangeMask & (_Tile::ENTITY | _Tile::BULLET);
+		Tile->Collision ^= Tile->CollisionChangeMask & (_Tile::ENTITY | _Tile::BULLET | _Tile::VISION);
 
 		// Switch textures
 		SwapBlockTextures(Tiles[i].Layer, Tiles[i].BlockID);

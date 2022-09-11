@@ -87,16 +87,18 @@ struct _Tile {
 	enum CollisionFlagType {
 		ENTITY = 1,
 		BULLET = 2,
+		VISION = 4,
 	};
 
 	bool CanWalk() { return !(Collision & ENTITY); }
 	bool CanShoot() { return !(Collision & BULLET); }
+	bool CanSee() { return !(Collision & VISION); }
 
 	std::unordered_map<_Object *, int> Objects[GRID_COUNT];
 	std::vector<_Event *> Events;
 	std::vector<_Particle *> Particles;
 	int Collision{0};
-	int CollisionChangeMask{ENTITY | BULLET};
+	int CollisionChangeMask{ENTITY | BULLET | VISION};
 };
 
 // Holds data for a tile bound

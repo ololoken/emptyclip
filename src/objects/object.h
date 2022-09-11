@@ -166,6 +166,9 @@ class _Object {
 		// Character
 		ActionType Action{ACTION_IDLE};
 
+		// Monsters
+		int AIType{AI_NONE};
+
 		// Map
 		_Map *Map{nullptr};
 		bool TileChanged{false};

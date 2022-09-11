@@ -602,7 +602,7 @@ void _PlayState::Update(double FrameTime) {
 		glm::vec2 CursorVector = WorldCursor - Player->Position;
 		if(CursorVector.x != 0 && CursorVector.y != 0) {
 			Map->CollisionHits.clear();
-			Map->CheckBulletCollisions(Player, glm::normalize(CursorVector), Map->CollisionHits, GRID_MONSTER, true, 1, _Tile::BULLET);
+			Map->CheckBulletCollisions(Player, glm::normalize(CursorVector), Map->CollisionHits, GRID_MONSTER, true, 1, _Tile::VISION);
 			if(Map->CollisionHits.size()) {
 				glm::vec2 HitVector = Map->CollisionHits.front().Position - Player->Position;
 				if(glm::dot(CursorVector, CursorVector) < glm::dot(HitVector, HitVector))
