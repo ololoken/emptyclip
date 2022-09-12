@@ -346,8 +346,10 @@ void _HUD::MouseEvent(const ae::_MouseEvent &MouseEvent) {
 						}
 						// Unequip item
 						else if(_Player::IsEquipmentIndex(HitElement->Index)) {
-							if(Player->AddInventory(Item))
+							if(Player->AddInventory(Item)) {
 								Player->Inventory[HitElement->Index] = nullptr;
+								Player->RecalculateStats();
+							}
 						}
 					}
 
