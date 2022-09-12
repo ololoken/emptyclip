@@ -224,6 +224,7 @@ void _Stats::LoadWeapons() {
 		Template.Attributes["explosion_size"].Float = Database->GetReal("explosion_size");
 		Template.Attributes["flash"].Int = Database->GetInt<int>("flash");
 		Template.Attributes["push"].Float = Database->GetReal("push");
+		Template.Attributes["force"].Float = Database->GetReal("force");
 
 		// Check for loaded textures
 		if(Template.IconID != "" && !ae::Assets.Textures[Template.IconID])
@@ -482,6 +483,7 @@ void _Stats::LoadMonsters() {
 		Template.Attributes["weapon_type"].Int = Database->GetInt<int>("weapon_type");
 		Template.Attributes["attack_movespeed"].Float = Database->GetReal("attack_movespeed");
 		Template.Attributes["projectile_speed"].Float = Database->GetReal("projectile_speed");
+		Template.Attributes["mass"].Float = Database->GetReal("mass");
 
 		// Check for animation
 		if(ae::Assets.Animations.find(Template.AnimationID) == ae::Assets.Animations.end())
@@ -712,6 +714,7 @@ _Monster *_Stats::CreateMonster(const std::string &ID, int Level, const glm::vec
 	Monster->Animation->Reels = ae::Assets.Animations[Template.AnimationID];
 	Monster->Animation->CalculateTextureCoords();
 	Monster->Level = Level;
+	Monster->Mass = Template.Attributes.at("mass").Float;
 	if(Template.ItemDropID != "")
 		Monster->ItemDrop = &ItemDrops[Template.ItemDropID];
 

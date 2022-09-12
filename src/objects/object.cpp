@@ -302,7 +302,11 @@ void _Object::CheckProjectileCollisions() {
 			// Apply damage
 			ApplyDamage(Hit);
 
+			// Apply force
+			Hit.Object->ApplyForce(Direction, ProjectileForce);
+
 			// Apply depth
+			ProjectileForce *= ProjectilePenetrationDamage;
 			ProjectileMinDamage *= ProjectilePenetrationDamage;
 			ProjectileMaxDamage *= ProjectilePenetrationDamage;
 			Depth--;
@@ -354,6 +358,13 @@ void _Object::CheckProjectileCollisions() {
 
 			// Apply damage
 			ApplyDamage(Hit);
+
+			// Apply force proportional to center distance
+			glm::vec2 CenterVector = Position - Hit.Position;
+			float CenterDistance = glm::length(CenterVector);
+			float ForceApplied = ProjectileForce * ((ExplosionRadius - CenterDistance) / ExplosionRadius);
+			if(ForceApplied > 0.0f)
+				Hit.Object->ApplyForce(glm::normalize(-CenterVector), ForceApplied);
 		}
 	}
 }
@@ -382,4 +393,17 @@ void _Object::ApplyDamage(const _Hit &Hit) {
 	// Particles
 	PlayState.GenerateHitEffects(OwnerEntity, HIT_OBJECT, Hit);
 	PlayState.GenerateDamageText(Hit.Position, Damage, Crit, HitEntity->Type == PLAYER);
+}
+
+// Apply force to object and cap velocity
+void _Object::ApplyForce(const glm::vec2 &ForceDirection, float ForceApplied) {
+	if(Mass <= 0.0f || ForceApplied <= 0.0f)
+		return;
+
+	Velocity += ForceDirection * ForceApplied / Mass;
+
+	// Check max velocity
+	float VelocityLength = glm::length(Velocity);
+	if(VelocityLength > Radius)
+		Velocity *= Radius / VelocityLength;
 }

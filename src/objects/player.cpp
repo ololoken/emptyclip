@@ -187,6 +187,7 @@ void _Player::Reset(bool Recalculate) {
 	Stamina = 100.0f;
 	InvulnerableTimer = 0.0;
 	Flashlight = false;
+	Mass = 1.0f;
 	StopAudio();
 	for(int i = 0; i < SKILL_COUNT; i++)
 		Skills[i] = 0;
@@ -342,6 +343,7 @@ void _Player::RecalculateStats() {
 			MeleeOffset[i] = WeaponTemplate[i]->Attributes.at("melee_offset").Float;
 			MeleeSwitch[i] = WeaponTemplate[i]->Attributes.at("melee_switch").Int;
 			Push[i] = WeaponTemplate[i]->Attributes.at("push").Float;
+			Force[i] = WeaponTemplate[i]->Attributes.at("force").Float;
 		}
 	}
 	ReloadPeriod = WeaponAttributes[WEAPONATTACK_MAIN]["reload_period"].Double / Stats.GetSkillBonusMultiplier(Skills[SKILL_DEXTERITY], SKILL_DEXTERITY);

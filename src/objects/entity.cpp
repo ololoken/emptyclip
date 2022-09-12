@@ -386,9 +386,9 @@ void _Entity::Move(double FrameTime) {
 
 	// Update velocity
 	Velocity *= 0.9f;
-	if(std::abs(Velocity.x) < 0.001f)
+	if(std::abs(Velocity.x) < 0.00001f)
 		Velocity.x = 0.0f;
-	if(std::abs(Velocity.y) < 0.001f)
+	if(std::abs(Velocity.y) < 0.00001f)
 		Velocity.y = 0.0f;
 
 	// Moving backwards

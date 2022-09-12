@@ -215,8 +215,6 @@ bool _PlayState::HandleAction(int InputType, size_t Action, int Value) {
 					if(Player->CheckAttackTimer(AttackType) && Player->FireRateType[AttackType] == FIRERATE_SEMI && (!Player->BurstRounds[AttackType] || (Player->BurstRounds[AttackType] && Player->BurstRoundsShot == 0))) {
 						Player->BurstRoundsShot = 0;
 						Player->RequestAttack(AttackType);
-						if(Player->Push[AttackType] != 0.0f)
-							Player->Velocity = -Player->Direction * Player->Push[AttackType];
 					}
 				}
 			break;
@@ -528,10 +526,6 @@ void _PlayState::Update(double FrameTime) {
 			// Check holding down melee button to attack
 			else if(!Player->IsMeleeAttacking() && Player->FireRateType[WEAPONATTACK_MELEE] == FIRERATE_AUTO && ae::Actions.State[Action::GAME_MELEE].Value > 0.0f)
 				Player->RequestAttack(WEAPONATTACK_MELEE);
-
-			// Add push
-			if(Player->AttackRequested && Player->Push[AttackType] != 0.0f)
-				Player->Velocity = -Player->Direction * Player->Push[AttackType];
 
 			// Aim
 			Player->SetAiming(ae::Actions.State[Action::GAME_AIM].Value > 0.0f && !Player->Reloading && !Player->SwitchingWeapons);
@@ -955,6 +949,9 @@ void _PlayState::ResolveAttack(_Entity *Attacker, int GridType) {
 	if(!Attacker->WeaponHasAmmo(Attacker->AttackRequestType))
 		return;
 
+	// Add push
+	Attacker->ApplyForce(-Attacker->Direction, Attacker->Push[Player->AttackRequestType]);
+
 	// Keep track of weapon used
 	if(Attacker->Type == _Object::PLAYER) {
 		const char *WeaponID = Attacker->GetWeaponID(Attacker->AttackRequestType);
@@ -1024,6 +1021,7 @@ void _PlayState::ResolveAttack(_Entity *Attacker, int GridType) {
 			Projectile->ProjectileCritDamage = Attacker->CritDamage[Attacker->AttackRequestType];
 			Projectile->ProjectilePenetrationDamage = Attacker->PenetrationDamage[Attacker->AttackRequestType];
 			Projectile->ProjectileExplosionSize = Attacker->ExplosionSize[Attacker->AttackRequestType];
+			Projectile->ProjectileForce = Attacker->Force[Attacker->AttackRequestType];
 			if(Steady)
 				Projectile->ProjectileCritChance *= PLAYER_STEADY_CRIT_FACTOR;
 
@@ -1032,14 +1030,17 @@ void _PlayState::ResolveAttack(_Entity *Attacker, int GridType) {
 		else {
 
 			// Check weapon type
+			glm::vec2 PushDirection;
 			if(WeaponType == WEAPON_MELEE) {
 				Map->CheckMeleeCollisions(Attacker, GridType, Attacker->Penetration[Attacker->AttackRequestType], Hits);
+				PushDirection = Attacker->Direction;
 			}
 			else {
 
 				// Check distance to the wall
 				float ShotDirection = Attacker->GenerateShotDirection();
-				Map->CheckBulletCollisions(Attacker, glm::rotate(glm::vec2(0, -1), glm::radians(ShotDirection)), Hits, GridType, true, Attacker->Penetration[Attacker->AttackRequestType], _Tile::BULLET);
+				PushDirection = glm::rotate(glm::vec2(0, -1), glm::radians(ShotDirection));
+				Map->CheckBulletCollisions(Attacker, PushDirection, Hits, GridType, true, Attacker->Penetration[Attacker->AttackRequestType], _Tile::BULLET);
 
 				// Generate tracer particle
 				_ParticleTemplate *Template = &GameAssets.Particles["tracer0"];
@@ -1094,6 +1095,9 @@ void _PlayState::ResolveAttack(_Entity *Attacker, int GridType) {
 
 						// Apply penetration
 						PenetrationDamage *= Attacker->PenetrationDamage[Attacker->AttackRequestType];
+
+						// Add force
+						HitEntity->ApplyForce(PushDirection, Attacker->Force[Attacker->AttackRequestType]);
 					} break;
 				}
 			}

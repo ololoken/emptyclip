@@ -140,6 +140,7 @@ class _Object {
 
 		void CheckProjectileCollisions();
 		void ApplyDamage(const _Hit &Hit);
+		void ApplyForce(const glm::vec2 &ForceDirection, float ForceApplied);
 
 		// Template
 		const _ObjectTemplate &Template;
@@ -157,6 +158,7 @@ class _Object {
 		std::unordered_map<_Object *, int> HitObjects;
 		float ProjectilePenetrationDamage{0.0f};
 		float ProjectileExplosionSize{0.0f};
+		float ProjectileForce{0.0f};
 		int ProjectileMinDamage{0};
 		int ProjectileMaxDamage{0};
 		int ProjectileCritChance{0};
@@ -180,6 +182,7 @@ class _Object {
 		glm::vec2 Velocity{0.0f};
 		double FreePathingTimer{0.0};
 		float Radius{0.25f};
+		float Mass{0.0f};
 		int GridCheckType{0};
 		bool Circle{true};
 		bool FreePathing{false};
