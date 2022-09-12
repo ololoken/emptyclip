@@ -1839,6 +1839,19 @@ void _EditorState::UpdateEventID(int Type, const std::string &ID) {
 			SelectedEvent->SoundID = ID;
 		break;
 	}
+
+	// Validate
+	switch(SelectedEvent->Type) {
+		case EVENT_SPAWN:
+			if(SelectedEvent->ItemID.size() && Stats.Objects.find(SelectedEvent->ItemID) == Stats.Objects.end())
+				SelectedEvent->ItemID = "";
+			if(SelectedEvent->MonsterID.size() && Stats.Objects.find(SelectedEvent->MonsterID) == Stats.Objects.end())
+				SelectedEvent->MonsterID = "";
+		break;
+	}
+
+	if(SelectedEvent->ParticleID.size() && GameAssets.Particles.find(SelectedEvent->ParticleID) == GameAssets.Particles.end())
+		SelectedEvent->ParticleID = "";
 }
 
 // Gets the selected event's object id
