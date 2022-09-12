@@ -64,6 +64,7 @@ static const int KeyBindings[] = {
 	Action::GAME_RELOAD,
 	Action::GAME_WEAPONSWITCH,
 	Action::GAME_INVENTORY,
+	Action::GAME_SORTINVENTORY,
 };
 
 static const std::string KEYLABELS[] = {
@@ -81,6 +82,7 @@ static const std::string KEYLABELS[] = {
 	"label_menu_controls_config_reload",
 	"label_menu_controls_config_weaponswitch",
 	"label_menu_controls_config_inventory",
+	"label_menu_controls_config_sortinventory",
 };
 
 static const char *COLORS[] = {

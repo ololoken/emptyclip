@@ -38,6 +38,7 @@ Empty Clip 2.0.0 -
 - Added end of level screen
 - Added achievements
 - Added damage number particles
+- Added inventory sort button and hotkey (Z by default)
 - Improved bullet hole decals
 - The game now pauses while menu is open
 - Fullscreen can be toggled with alt-enter

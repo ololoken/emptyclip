@@ -181,6 +181,10 @@
 			<element id="label_menu_controls_map" font="hud_small" text="View Map" offset_x="-160" offset_y="32" alignment_y="3"/>
 			<element id="label_menu_controls_config_map" font="hud_small" offset_y="32" alignment_y="3"/>
 		</element>
+		<element id="button_menu_controls_input_inventory" style="style_menu_box" hover_style="style_menu_hover" offset_x="-125" offset_y="670" size_x="140" size_y="50" alignment_y="0" clickable="true">
+			<element id="label_menu_controls_inventory" font="hud_small" text="Open Inventory" offset_x="-160" offset_y="32" alignment_y="3"/>
+			<element id="label_menu_controls_config_inventory" font="hud_small" offset_y="32" alignment_y="3"/>
+		</element>
 		<element id="button_menu_controls_input_fire" style="style_menu_box" hover_style="style_menu_hover" offset_x="225" offset_y="250" size_x="140" size_y="50" alignment_y="0" clickable="true">
 			<element id="label_menu_controls_fire" font="hud_small" text="Fire" offset_x="-160" offset_y="32" alignment_y="3"/>
 			<element id="label_menu_controls_config_fire" font="hud_small" offset_y="32" alignment_y="3"/>
@@ -205,9 +209,9 @@
 			<element id="label_menu_controls_flashlight" font="hud_small" text="Flashlight" offset_x="-160" offset_y="32" alignment_y="3"/>
 			<element id="label_menu_controls_config_flashlight" font="hud_small" offset_y="32" alignment_y="3"/>
 		</element>
-		<element id="button_menu_controls_input_inventory" style="style_menu_box" hover_style="style_menu_hover" offset_x="225" offset_y="610" size_x="140" size_y="50" alignment_y="0" clickable="true">
-			<element id="label_menu_controls_inventory" font="hud_small" text="Open Inventory" offset_x="-160" offset_y="32" alignment_y="3"/>
-			<element id="label_menu_controls_config_inventory" font="hud_small" offset_y="32" alignment_y="3"/>
+		<element id="button_menu_controls_input_sortinventory" style="style_menu_box" hover_style="style_menu_hover" offset_x="225" offset_y="610" size_x="140" size_y="50" alignment_y="0" clickable="true">
+			<element id="label_menu_controls_sortinventory" font="hud_small" text="Sort Inventory" offset_x="-160" offset_y="32" alignment_y="3"/>
+			<element id="label_menu_controls_config_sortinventory" font="hud_small" offset_y="32" alignment_y="3"/>
 		</element>
 		<element id="element_menu_controls_buttons" offset_y="400">
 			<element id="button_menu_controls_defaults" style="style_menu_button" hover_style="style_menu_button_hover" offset_x="-240" offset_y="0" size_x="220" size_y="66" alignment_y="0" clickable="true">

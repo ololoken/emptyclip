@@ -192,6 +192,10 @@ bool _PlayState::HandleAction(int InputType, size_t Action, int Value) {
 				Player->SetAiming(false);
 				Player->SetSprinting(false);
 			break;
+			case Action::GAME_SORTINVENTORY:
+				if(HUD->InventoryOpen)
+					Player->SortInventory();
+			break;
 			case Action::GAME_FIRE:
 				if(!HUD->InventoryOpen && !Player->IsMeleeAttacking()) {
 

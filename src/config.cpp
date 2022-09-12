@@ -47,6 +47,7 @@ void _Config::Init(const std::string &ConfigFile) {
 	ae::Actions.State[Action::GAME_RELOAD].Name = "game_reload";
 	ae::Actions.State[Action::GAME_WEAPONSWITCH].Name = "game_weaponswitch";
 	ae::Actions.State[Action::GAME_INVENTORY].Name = "game_inventory";
+	ae::Actions.State[Action::GAME_SORTINVENTORY].Name = "game_sortinventory";
 	ae::Actions.State[Action::MISC_CONSOLE].Name = "misc_console";
 	ae::Actions.State[Action::MISC_DEBUG].Name = "misc_debug";
 
@@ -117,6 +118,7 @@ void _Config::LoadDefaultInputBindings(bool IfNone) {
 	ae::Actions.AddInputMap(0, ae::_Input::KEYBOARD, SDL_SCANCODE_A, Action::GAME_SPRINT, 1.0f, -1.0f, IfNone);
 	ae::Actions.AddInputMap(0, ae::_Input::KEYBOARD, SDL_SCANCODE_SPACE, Action::GAME_USE, 1.0f, -1.0f, IfNone);
 	ae::Actions.AddInputMap(0, ae::_Input::KEYBOARD, SDL_SCANCODE_C, Action::GAME_INVENTORY, 1.0f, -1.0f, IfNone);
+	ae::Actions.AddInputMap(0, ae::_Input::KEYBOARD, SDL_SCANCODE_Z, Action::GAME_SORTINVENTORY, 1.0f, -1.0f, IfNone);
 	ae::Actions.AddInputMap(0, ae::_Input::MOUSE_BUTTON, 1, Action::GAME_FIRE, 1.0f, -1.0f, IfNone);
 	ae::Actions.AddInputMap(0, ae::_Input::MOUSE_BUTTON, 3, Action::GAME_AIM, 1.0f, -1.0f, IfNone);
 	ae::Actions.AddInputMap(0, ae::_Input::MOUSE_BUTTON, 4, Action::GAME_MELEE, 1.0f, -1.0f, IfNone);
