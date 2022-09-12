@@ -341,6 +341,7 @@ void _Player::RecalculateStats() {
 			MeleeScale[i].y = WeaponTemplate[i]->Attributes.at("scale_y").Float;
 			MeleeOffset[i] = WeaponTemplate[i]->Attributes.at("melee_offset").Float;
 			MeleeSwitch[i] = WeaponTemplate[i]->Attributes.at("melee_switch").Int;
+			Push[i] = WeaponTemplate[i]->Attributes.at("push").Float;
 		}
 	}
 	ReloadPeriod = WeaponAttributes[WEAPONATTACK_MAIN]["reload_period"].Double / Stats.GetSkillBonusMultiplier(Skills[SKILL_DEXTERITY], SKILL_DEXTERITY);
@@ -474,6 +475,7 @@ void _Player::UpdateAnimation(double FrameTime, bool PlaySound) {
 			AdjustLegDirection(135);
 		break;
 		default:
+			AdjustLegDirection(Rotation);
 		break;
 	}
 

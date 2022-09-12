@@ -146,6 +146,7 @@ class _Entity : public _Object {
 		float ProjectileSpeed[WEAPONATTACK_COUNT]{0.0f};
 		float ExplosionSize[WEAPONATTACK_COUNT]{0.0f};
 		float MeleeOffset[WEAPONATTACK_COUNT]{0.0f};
+		float Push[WEAPONATTACK_COUNT]{0.0f};
 		bool MeleeSwitch[WEAPONATTACK_COUNT]{false};
 		int MainWeaponType{0};
 		int AttackRequestType{0};

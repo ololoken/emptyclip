@@ -223,6 +223,7 @@ void _Stats::LoadWeapons() {
 		Template.Attributes["projectile_speed"].Float = Database->GetReal("projectile_speed");
 		Template.Attributes["explosion_size"].Float = Database->GetReal("explosion_size");
 		Template.Attributes["flash"].Int = Database->GetInt<int>("flash");
+		Template.Attributes["push"].Float = Database->GetReal("push");
 
 		// Check for loaded textures
 		if(Template.IconID != "" && !ae::Assets.Textures[Template.IconID])

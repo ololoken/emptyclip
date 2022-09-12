@@ -215,6 +215,8 @@ bool _PlayState::HandleAction(int InputType, size_t Action, int Value) {
 					if(Player->CheckAttackTimer(AttackType) && Player->FireRateType[AttackType] == FIRERATE_SEMI && (!Player->BurstRounds[AttackType] || (Player->BurstRounds[AttackType] && Player->BurstRoundsShot == 0))) {
 						Player->BurstRoundsShot = 0;
 						Player->RequestAttack(AttackType);
+						if(Player->Push[AttackType] != 0.0f)
+							Player->Velocity = -Player->Direction * Player->Push[AttackType];
 					}
 				}
 			break;
@@ -526,6 +528,10 @@ void _PlayState::Update(double FrameTime) {
 			// Check holding down melee button to attack
 			else if(!Player->IsMeleeAttacking() && Player->FireRateType[WEAPONATTACK_MELEE] == FIRERATE_AUTO && ae::Actions.State[Action::GAME_MELEE].Value > 0.0f)
 				Player->RequestAttack(WEAPONATTACK_MELEE);
+
+			// Add push
+			if(Player->AttackRequested && Player->Push[AttackType] != 0.0f)
+				Player->Velocity = -Player->Direction * Player->Push[AttackType];
 
 			// Aim
 			Player->SetAiming(ae::Actions.State[Action::GAME_AIM].Value > 0.0f && !Player->Reloading && !Player->SwitchingWeapons);

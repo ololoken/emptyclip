@@ -212,20 +212,18 @@ void _Entity::StopAudio() {
 void _Entity::UpdateAnimation(double FrameTime, bool PlaySound) {
 
 	// Update legs
-	SetLegAnimationPlayMode(PositionChanged ? ae::_Animation::PLAYING : ae::_Animation::STOPPED);
+	SetLegAnimationPlayMode(PositionChanged && MoveState ? ae::_Animation::PLAYING : ae::_Animation::STOPPED);
 
 	// Check action
 	switch(Action) {
 		case ACTION_IDLE:
-			if(!PositionChanged) {
-				Animation->Stop();
-			}
-			else {
-				if(!AttackRequested)
-					Animation->Play(WalkingAnimation, MoveSpeed);
+			if(PositionChanged && !AttackRequested && MoveState) {
+				Animation->Play(WalkingAnimation, MoveSpeed);
 				SetAnimationPlaybackSpeedFactor();
 				Action = ACTION_MOVING;
 			}
+			else
+				Animation->Stop();
 		break;
 		case ACTION_MOVING:
 			if(!PositionChanged) {
@@ -311,7 +309,7 @@ void _Entity::Move(double FrameTime) {
 	UpdateSpeed(1.0f);
 
 	// Check for moving
-	if(MoveState == MOVE_NONE) {
+	if(MoveState == MOVE_NONE && Velocity.x == 0.0f && Velocity.y == 0.0f) {
 		PositionChanged = false;
 		return;
 	}
@@ -381,8 +379,17 @@ void _Entity::Move(double FrameTime) {
 			}
 		} break;
 		default:
+			MoveDirection.x = 0;
+			MoveDirection.y = 0;
 		break;
 	}
+
+	// Update velocity
+	Velocity *= 0.9f;
+	if(std::abs(Velocity.x) < 0.001f)
+		Velocity.x = 0.0f;
+	if(std::abs(Velocity.y) < 0.001f)
+		Velocity.y = 0.0f;
 
 	// Moving backwards
 	if(Type == _Object::PLAYER) {
@@ -401,7 +408,7 @@ void _Entity::Move(double FrameTime) {
 		CurrentAccuracy = std::min(CurrentAccuracy + Speed * MoveRecoil, MaxAccuracy[WEAPONATTACK_MAIN]);
 
 	// Get a list of entities that the object is colliding with
-	glm::vec2 NewPosition = Position + MoveDirection;
+	glm::vec2 NewPosition = Position + MoveDirection + Velocity;
 	bool AxisAlignedPush = false;
 	if(!IsInvulnerable() && !CanFreePath()) {
 		std::vector<_Hit> &Hits = Map->ResolveCollisionsInGrid(NewPosition, Radius, this, AxisAlignedPush, Type == PLAYER ? PLAYER_PUSH_FACTOR : ENTITY_PUSH_FACTOR);
