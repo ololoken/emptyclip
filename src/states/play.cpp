@@ -1362,10 +1362,8 @@ void _PlayState::CheckEvents(const _Entity *Entity) {
 		// Perform action
 		switch(Event->Type) {
 			case EVENT_SPAWN:
-				if(Stats.Objects.find(Event->MonsterID) != Stats.Objects.end()) {
-					Event->StartTimer();
-					ActiveEvents.push_back(Event);
-				}
+				Event->StartTimer();
+				ActiveEvents.push_back(Event);
 				Event->Active = false;
 			break;
 			case EVENT_CHECK:
@@ -1550,22 +1548,33 @@ void _PlayState::UpdateEvents(double FrameTime) {
 			case EVENT_SPAWN: {
 				const std::vector<_EventTile> &Tiles = Event->Tiles;
 				for(size_t i = 0; i < Tiles.size(); i++) {
+					Position.x = Tiles[i].Coord.x + 0.5f;
+					Position.y = Tiles[i].Coord.y + 0.5f;
 
-					// Chance for special monster
-					int SpecialType = 0;
-					if(Player->Progression && ae::GetRandomInt(1, 100) <= Player->Progression * GAME_PROGRESSION_SPECIAL_CHANCE)
-						SpecialType = ae::GetRandomInt((size_t)1, Stats.Specials.size() - 1);
+					// Spawn monster
+					if(Event->MonsterID.size()) {
 
-					// Spawn monsters
-					for(int j = 0; j < Event->SpawnMultiplier; j++) {
-						Position.x = Tiles[i].Coord.x + 0.5f;
-						Position.y = Tiles[i].Coord.y + 0.5f;
-						_Monster *Monster = Stats.CreateMonster(Event->MonsterID, Event->SpawnLevel + Map->GetAddedLevel(), Position, SpecialType);
-						Monster->Player = Player;
-						Monster->FreePathingTimer = ENTITY_FREEPATHING_TIMER_INCREMENT * j;
-						AddMonster(Monster);
-						Particles->Create(_ParticleSpawn(GameAssets.GetParticleTemplate(Event->ParticleID), glm::vec2(0), Position, OBJECT_Z, 0));
+						// Chance for special monster
+						int SpecialType = 0;
+						if(Player->Progression && ae::GetRandomInt(1, 100) <= Player->Progression * GAME_PROGRESSION_SPECIAL_CHANCE)
+							SpecialType = ae::GetRandomInt((size_t)1, Stats.Specials.size() - 1);
+
+						// Spawn monsters
+						for(int j = 0; j < Event->SpawnMultiplier; j++) {
+							_Monster *Monster = Stats.CreateMonster(Event->MonsterID, Event->SpawnLevel + Map->GetAddedLevel(), Position, SpecialType);
+							Monster->Player = Player;
+							Monster->FreePathingTimer = ENTITY_FREEPATHING_TIMER_INCREMENT * j;
+							AddMonster(Monster);
+						}
 					}
+
+					// Spawn item
+					if(Event->ItemID.size())
+						Map->AddObject(Stats.CreateItem(Event->ItemID, Event->SpawnLevel + Map->GetAddedLevel(), 0, Event->Level, Position, true), GRID_ITEM);
+
+					// Spawn particles
+					if(Event->ParticleID.size())
+						Particles->Create(_ParticleSpawn(GameAssets.GetParticleTemplate(Event->ParticleID), glm::vec2(0), Position, OBJECT_Z, 0));
 				}
 
 				Decrement = true;
