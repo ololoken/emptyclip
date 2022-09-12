@@ -16,6 +16,7 @@ dog_attack1.ogg	0.65	5
 dog_die0.ogg	0.7	5
 dog_die1.ogg	0.7	5
 dog_move0.ogg	0.05	5
+equip_armor0.ogg	0.25	1
 event_crash0.ogg	1	1
 event_platform0.ogg	0.8	3
 event_rumble0.ogg	1	1
@@ -49,8 +50,8 @@ shotgun_fire0.ogg	0.7	3
 shotgun_reload0.ogg	0.7	1
 skeleton_die0.ogg	0.7	3
 skeleton_move0.ogg	0.7	5
-sniper_fire0.ogg	0.45	2
 smg_fire0.ogg	0.7	5
+sniper_fire0.ogg	0.45	2
 spider_attack0.ogg	0.7	5
 wisp_attack0.ogg	0.7	5
 wisp_die0.ogg	0.7	3

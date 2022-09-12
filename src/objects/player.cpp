@@ -760,6 +760,9 @@ void _Player::DropItem(int Slot, const glm::vec2 &DropPosition) {
 
 	// Check if the item was equipped
 	if(Slot < INVENTORY_BAGSTART) {
+		if(Slot == INVENTORY_ARMOR)
+			ae::Audio.PlaySound(ae::Assets.Sounds["equip_armor0.ogg"]);
+
 		RecalculateStats();
 		ResetWeaponAnimation();
 	}
@@ -864,6 +867,9 @@ void _Player::SwapInventory(int SlotFrom, int SlotTo) {
 		// Try to combine items
 		int CombineResult = CombineItems(Inventory[SlotFrom], Inventory[SlotTo]);
 		if(CombineResult == 0) {
+			if(SlotFrom == INVENTORY_ARMOR || SlotTo == INVENTORY_ARMOR)
+				ae::Audio.PlaySound(ae::Assets.Sounds["equip_armor0.ogg"]);
+
 			_Item *Temp = Inventory[SlotFrom];
 			Inventory[SlotFrom] = Inventory[SlotTo];
 			Inventory[SlotTo] = Temp;

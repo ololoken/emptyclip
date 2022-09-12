@@ -26,6 +26,7 @@
 #include <ae/program.h>
 #include <ae/assets.h>
 #include <ae/actions.h>
+#include <ae/audio.h>
 #include <ae/util.h>
 #include <ae/camera.h>
 #include <map.h>
@@ -308,6 +309,9 @@ void _HUD::MouseEvent(const ae::_MouseEvent &MouseEvent) {
 								if(SetAndRemove) {
 									Player->Inventory[HitElement->Index] = CursorItem;
 									Player->Map->RemoveObject(CursorItem, GRID_ITEM);
+
+									if(HitElement->Index == INVENTORY_ARMOR)
+										ae::Audio.PlaySound(ae::Assets.Sounds["equip_armor0.ogg"]);
 								}
 
 								Player->RecalculateStats();
@@ -347,6 +351,9 @@ void _HUD::MouseEvent(const ae::_MouseEvent &MouseEvent) {
 						// Unequip item
 						else if(_Player::IsEquipmentIndex(HitElement->Index)) {
 							if(Player->AddInventory(Item)) {
+								if(HitElement->Index == INVENTORY_ARMOR)
+									ae::Audio.PlaySound(ae::Assets.Sounds["equip_armor0.ogg"]);
+
 								Player->Inventory[HitElement->Index] = nullptr;
 								Player->RecalculateStats();
 							}
