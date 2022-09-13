@@ -24,7 +24,9 @@
 #include <ae/assets.h>
 #include <ae/input.h>
 #include <ae/util.h>
+#include <ae/actions.h>
 #include <ae/random.h>
+#include <actiontype.h>
 #include <constants.h>
 #include <stats.h>
 #include <sstream>
@@ -185,7 +187,7 @@ void _Item::DrawTooltip(const _Player *Player, size_t CompareSlot, int Inventory
 					TextColor = COLOR_RED;
 			}
 			DrawPosition.y += Spacing.y;
-			if(ae::Input.ModKeyDown(KMOD_ALT))
+			if(ae::Input.ModKeyDown(KMOD_ALT) || ae::Actions.State[Action::GAME_SHOWINFO].Value > 0.0f)
 				Buffer << ae::Round1(GetAverageDamage()) << " avg";
 			else
 				Buffer << Attributes.at("min_damage").Int << " - " << Attributes.at("max_damage").Int;
@@ -271,7 +273,7 @@ void _Item::DrawTooltip(const _Player *Player, size_t CompareSlot, int Inventory
 				}
 
 				DrawPosition.y += Spacing.y;
-				if(ae::Input.ModKeyDown(KMOD_ALT))
+				if(ae::Input.ModKeyDown(KMOD_ALT) || ae::Actions.State[Action::GAME_SHOWINFO].Value > 0.0f)
 					Buffer << ae::Round1(GetAverageAccuracy()) << " avg";
 				else
 					Buffer << ae::Round1(Attributes.at("accuracy_min").Float) << " - " << ae::Round1(Attributes.at("accuracy_max").Float) << " deg";

@@ -398,7 +398,7 @@ void _HUD::Update(double FrameTime, float Radius, double Clock) {
 
 	// Update clock
 	std::ostringstream Buffer;
-	if(ae::Input.ModKeyDown(KMOD_ALT)) {
+	if(ae::Input.ModKeyDown(KMOD_ALT) || ae::Actions.State[Action::GAME_SHOWINFO].Value > 0.0f) {
 		std::time_t CurrentTime = std::time(nullptr);
 		Buffer << std::put_time(std::localtime(&CurrentTime), "%X");
 	}
