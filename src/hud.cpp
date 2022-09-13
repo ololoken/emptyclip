@@ -956,7 +956,9 @@ void _HUD::DrawItemQuality(_Item *Item, const glm::vec2 &Position) {
 
 	std::ostringstream Buffer;
 	Buffer << Item->Quality << "%";
-	Fonts[FONT_TINY]->DrawText(Buffer.str(), Position + glm::vec2(74, 18) * ae::_Element::GetUIScale(), ae::RIGHT_BASELINE, COLOR_WHITE);
+	glm::vec4 DrawColor;
+	Item->GetQualityColor(DrawColor);
+	Fonts[FONT_TINY]->DrawText(Buffer.str(), Position + glm::vec2(74, 18) * ae::_Element::GetUIScale(), ae::RIGHT_BASELINE, DrawColor);
 }
 
 // Draw item level

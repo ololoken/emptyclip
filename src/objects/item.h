@@ -81,6 +81,7 @@ class _Item : public _Object {
 		bool IsMelee() const;
 		float GetAverageDamage() const;
 		float GetAverageAccuracy() const;
+		void GetQualityColor(glm::vec4 &ReturnColor) const;
 
 		virtual std::string GetTypeAsString() const override;
 		std::string ModTypeToString(int ModType);

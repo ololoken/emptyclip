@@ -588,6 +588,16 @@ float _Item::GetAverageAccuracy() const {
 	return (Attributes.at("accuracy_min").Float + Attributes.at("accuracy_max").Float) * 0.5f;
 }
 
+// Get quality color
+void _Item::GetQualityColor(glm::vec4 &ReturnColor) const {
+	if(Quality < 0)
+		ReturnColor = ITEM_QUALITY_GOOD_COLOR;
+	else if(Quality > 0)
+		ReturnColor = ITEM_QUALITY_BAD_COLOR;
+	else
+		ReturnColor = COLOR_WHITE;
+}
+
 // Get type as string
 std::string _Item::GetTypeAsString() const {
 

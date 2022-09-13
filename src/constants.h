@@ -121,10 +121,12 @@ const  int          INVENTORY_BAGSIZE                    =  20;
 const  int          INVENTORY_MAX_STACK                  =  99;
 //     Items
 const  float        ITEM_SCALE                           =  0.5f;
-const  float        ITEM_Z                               =  0.05f;
+const  float        ITEM_Z                               =  0.01f;
 const  int          ITEM_QUALITY_RANGE                   =  15;
 const  int          ITEM_MIN_MOVESPEED                   =  -90;
 const  int          ITEM_MAX_MOVESPEED                   =  100;
+const  glm::vec4    ITEM_QUALITY_GOOD_COLOR              =  glm::vec4(1.0f, 0.2f, 0.2f, 1.0f);
+const  glm::vec4    ITEM_QUALITY_BAD_COLOR               =  glm::vec4(0.2f, 1.0f, 0.2f, 1.0f);
 //     Objects
 const  float        OBJECT_Z                             =  0.3f;
 const  int          OBJECT_MAX_LEVEL                     =  1000;
