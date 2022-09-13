@@ -480,7 +480,6 @@ void _Player::UpdateAnimation(double FrameTime, bool PlaySound) {
 			AdjustLegDirection(Rotation);
 		break;
 	}
-
 }
 
 // Draws the player
@@ -1165,6 +1164,7 @@ void _Player::UpdateSpeed(float Factor) {
 		MoveModifier *= AttackMoveSpeed[AttackRequestType];
 
 	LegAnimation->FramePeriod = LegAnimation->Reels[0]->FramePeriod / MoveModifier;
+	LegAnimation->Timer = std::min(LegAnimation->Timer, LegAnimation->FramePeriod);
 	if(Animation->Reel == PLAYER_ANIMATIONWALKINGONEHAND || Animation->Reel == PLAYER_ANIMATIONWALKINGTWOHAND)
 		SetAnimationPlaybackSpeedFactor();
 }
