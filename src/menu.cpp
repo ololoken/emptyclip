@@ -810,6 +810,7 @@ void _Menu::Update(double FrameTime) {
 				_Player *Player = Save.GetPlayer(i);
 				if(Player) {
 					Player->PositionChanged = true;
+					Player->MoveState = MOVE_FORWARD;
 					Player->UpdateAnimation(FrameTime, false);
 				}
 			}
