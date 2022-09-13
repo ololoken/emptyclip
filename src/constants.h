@@ -79,6 +79,8 @@ const  float        ENTITY_MAX_DAMAGE_RESIST             =  90.0f;
 const  int          ENTITY_MAX_MOVESPEED_LEVEL           =  100;
 const  double       ENTITY_FREEPATHING_TIMER_INCREMENT   =  0.1;
 const  double       ENTITY_MAX_FIRESOUND_PERIOD          =  0.03;
+const  float        ENTITY_VELOCITY_FACTOR               =  0.9f;
+const  float        ENTITY_VELOCITY_THRESHOLD            =  0.00001f;
 //     Player
 const  int          PLAYER_SAVEVERSION                   =  5;
 const  float        PLAYER_RADIUS                        =  0.35f;
