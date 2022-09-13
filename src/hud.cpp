@@ -892,7 +892,7 @@ void _HUD::DrawInventory() {
 	}
 
 	// Draw extra information
-	if(ae::Input.ModKeyDown(KMOD_ALT)) {
+	if(ae::Input.ModKeyDown(KMOD_ALT) || ae::Actions.State[Action::GAME_SHOWINFO].Value > 0.0f) {
 		Elements[ELEMENT_INVENTORY_OVERLAY]->SetActive(true);
 		Elements[ELEMENT_INVENTORY_OVERLAY]->Render();
 		for(size_t i = INVENTORY_MAINHAND; i < INVENTORY_BAGEND; i++) {
