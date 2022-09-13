@@ -144,7 +144,7 @@ void _Monster::Update(double FrameTime) {
 		float TargetDistanceSquared = glm::distance2(Position, TargetPosition);
 		float RadiiSum = Radius + TargetRadius;
 		if(TargetDistanceSquared <= RadiiSum * RadiiSum * 1.1f) {
-			if(MoveState != MOVE_NONE)
+			if(MoveState != MOVE_NONE && !PlayerVisible)
 				GenerateReactionTime();
 
 			MoveState = MOVE_NONE;
