@@ -764,8 +764,7 @@ void _Player::DropItem(int Slot, const glm::vec2 &DropPosition) {
 
 	// Check if the item was equipped
 	if(Slot < INVENTORY_BAGSTART) {
-		if(Slot == INVENTORY_ARMOR)
-			ae::Audio.PlaySound(ae::Assets.Sounds["equip_armor0.ogg"]);
+		PlayEquipSound(Slot);
 
 		RecalculateStats();
 		ResetWeaponAnimation();
@@ -872,8 +871,8 @@ void _Player::SwapInventory(int SlotFrom, int SlotTo) {
 		// Try to combine items
 		int CombineResult = CombineItems(Inventory[SlotFrom], Inventory[SlotTo]);
 		if(CombineResult == 0) {
-			if(SlotFrom == INVENTORY_ARMOR || SlotTo == INVENTORY_ARMOR)
-				ae::Audio.PlaySound(ae::Assets.Sounds["equip_armor0.ogg"]);
+			if(!PlayEquipSound(SlotFrom))
+				PlayEquipSound(SlotTo);
 
 			_Item *Temp = Inventory[SlotFrom];
 			Inventory[SlotFrom] = Inventory[SlotTo];
@@ -1092,6 +1091,8 @@ void _Player::StartWeaponSwitch(int SlotFrom, int SlotTo) {
 	WeaponSwitchTo = SlotTo;
 	WeaponSwitchTimer = 0;
 	SwitchingWeapons = true;
+
+	ae::Audio.PlaySound(ae::Assets.Sounds["equip_gun0.ogg"]);
 }
 
 // Reloads the weapon when the timer goes off
@@ -1338,6 +1339,23 @@ void _Player::UpdateColor() {
 void _Player::OnHit(_Entity *Attacker, const _Hit &Hit) {
 	_Entity::OnHit(Attacker, Hit);
 	SelfHealTimer = SelfHealPeriod;
+}
+
+// Play equip sounds
+bool _Player::PlayEquipSound(int Slot) const {
+	switch(Slot) {
+		case INVENTORY_ARMOR:
+			ae::Audio.PlaySound(ae::Assets.Sounds["equip_armor0.ogg"]);
+			return true;
+		break;
+		case INVENTORY_MAINHAND:
+		case INVENTORY_OFFHAND:
+			ae::Audio.PlaySound(ae::Assets.Sounds["equip_gun0.ogg"]);
+			return true;
+		break;
+	}
+
+	return false;
 }
 
 int _Player::GetInventoryMaxStack() const {

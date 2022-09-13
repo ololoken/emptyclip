@@ -310,8 +310,7 @@ void _HUD::MouseEvent(const ae::_MouseEvent &MouseEvent) {
 									Player->Inventory[HitElement->Index] = CursorItem;
 									Player->Map->RemoveObject(CursorItem, GRID_ITEM);
 
-									if(HitElement->Index == INVENTORY_ARMOR)
-										ae::Audio.PlaySound(ae::Assets.Sounds["equip_armor0.ogg"]);
+									Player->PlayEquipSound(HitElement->Index);
 								}
 
 								Player->RecalculateStats();
@@ -351,8 +350,7 @@ void _HUD::MouseEvent(const ae::_MouseEvent &MouseEvent) {
 						// Unequip item
 						else if(_Player::IsEquipmentIndex(HitElement->Index)) {
 							if(Player->AddInventory(Item)) {
-								if(HitElement->Index == INVENTORY_ARMOR)
-									ae::Audio.PlaySound(ae::Assets.Sounds["equip_armor0.ogg"]);
+								Player->PlayEquipSound(HitElement->Index);
 
 								Player->Inventory[HitElement->Index] = nullptr;
 								Player->RecalculateStats();

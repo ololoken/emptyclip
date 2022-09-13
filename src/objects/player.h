@@ -132,6 +132,7 @@ class _Player : public _Entity {
 		void AdjustLegDirection(float Destination);
 		void SetLegAnimationPlayMode(int Mode) override;
 		void OnHit(_Entity *Attacker, const _Hit &Hit) override;
+		bool PlayEquipSound(int Slot) const;
 
 		static bool IsBagIndex(int Index) { return Index >= INVENTORY_BAGSTART && Index < INVENTORY_BAGEND; }
 		static bool IsEquipmentIndex(int Index) { return Index >= 0 && Index < INVENTORY_BAGSTART; }
