@@ -873,7 +873,7 @@ void _PlayState::Render(double BlendFactor) {
 		glm::vec4 Color;
 		for(auto Iterator : Map->ObjectManager->RenderList[_ObjectManager::RENDER_ITEMS]) {
 			_Item *Item = (_Item *)Iterator;
-			if(!Item->CanEquip())
+			if(!Item->CanLevel())
 				continue;
 
 			Camera->ConvertWorldToScreen(Iterator->Position, TextPosition);
