@@ -115,18 +115,20 @@ enum EditorInputTypes {
 struct _Brush {
 
 	_Brush() {}
-	_Brush(const std::string &ID, const std::string &Text, const ae::_Texture *Texture, const glm::vec4 &Color, int ObjectType=-1) :
+	_Brush(const std::string &ID, const std::string &Text, const ae::_Texture *Texture, const glm::vec4 &Color, int ObjectType=-1, int ModObjectType=-1) :
 		ID(ID),
 		Text(Text),
 		Texture(Texture),
 		Color(Color),
-		ObjectType(ObjectType) {}
+		ObjectType(ObjectType),
+		ModObjectType(ModObjectType) {}
 
 	std::string ID;
 	std::string Text;
 	const ae::_Texture *Texture;
 	glm::vec4 Color;
 	int ObjectType;
+	int ModObjectType;
 };
 
 // Editor state

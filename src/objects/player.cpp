@@ -226,7 +226,9 @@ void _Player::RecalculateStats() {
 	SelfHealPercent = PLAYER_HEAL_PERCENT;
 	BaseMoveSpeed = 100.0f;
 	int HealthBonus = 100;
-	int MeleeDamage = 100;
+	int WeaponDamage[WEAPON_COUNT];
+	for(int i = 0; i < WEAPON_COUNT; i++)
+		WeaponDamage[i] = 100;
 
 	std::unordered_map<std::string, _Value> WeaponAttributes[WEAPONATTACK_COUNT];
 	const _ObjectTemplate *WeaponTemplate[WEAPONATTACK_COUNT]{nullptr};
@@ -309,19 +311,28 @@ void _Player::RecalculateStats() {
 		BaseMoveSpeed += GetArmor()->Attributes.at("move_speed").Int;
 		Attributes["max_ammo"].Int += GetArmor()->Attributes.at("max_ammo").Int;
 		HealthBonus += GetArmor()->Attributes.at("health").Int;
-		MeleeDamage += GetArmor()->Attributes.at("melee").Int;
+		WeaponDamage[WEAPON_MELEE] += GetArmor()->Attributes.at("melee_damage").Int;
+		WeaponDamage[WEAPON_PISTOL] += GetArmor()->Attributes.at("pistol_damage").Int;
+		WeaponDamage[WEAPON_SHOTGUN] += GetArmor()->Attributes.at("shotgun_damage").Int;
+		WeaponDamage[WEAPON_RIFLE] += GetArmor()->Attributes.at("rifle_damage").Int;
+		WeaponDamage[WEAPON_HEAVY] += GetArmor()->Attributes.at("heavy_damage").Int;
 	}
 
 	// Set attack stats
 	for(int i = 0; i < WEAPONATTACK_COUNT; i++) {
-		float MeleeDamageModifier = 1.0f;
+		float WeaponDamageModifier = 1.0f;
+
+		// Handle melee damage stat
 		if((i == WEAPONATTACK_MAIN && MainWeaponType == WEAPON_MELEE) || i == WEAPONATTACK_MELEE)
-			MeleeDamageModifier = (MeleeDamage + Stats.GetSkill(Skills[SKILL_STRENGTH], SKILL_STRENGTH)) * 0.01f;
+			WeaponDamageModifier = (WeaponDamage[WEAPON_MELEE] + Stats.GetSkill(Skills[SKILL_STRENGTH], SKILL_STRENGTH)) * 0.01f;
+		// Handle other weapon types
+		else if(i == WEAPONATTACK_MAIN)
+			WeaponDamageModifier = WeaponDamage[MainWeaponType] * 0.01f;
 
 		FireRateType[i] = WeaponAttributes[i]["fire_rate"].Int;
 		AttackPeriod[i] = std::max(WeaponAttributes[i]["fire_period"].Double / Stats.GetSkillBonusMultiplier(Skills[SKILL_AGILITY], SKILL_AGILITY), WEAPON_MINFIREPERIOD);
-		MinDamage[i] = std::round(WeaponAttributes[i]["min_damage"].Int * MeleeDamageModifier);
-		MaxDamage[i] = std::round(WeaponAttributes[i]["max_damage"].Int * MeleeDamageModifier);
+		MinDamage[i] = std::round(WeaponAttributes[i]["min_damage"].Int * WeaponDamageModifier);
+		MaxDamage[i] = std::round(WeaponAttributes[i]["max_damage"].Int * WeaponDamageModifier);
 		AttackMoveSpeed[i] = WeaponAttributes[i]["attack_movespeed"].Float;
 		ShootPeriod[i] = WeaponAttributes[i]["shoot_period"].Double / Stats.GetSkillBonusMultiplier(Skills[SKILL_STRENGTH], SKILL_STRENGTH, 1);
 		Penetration[i] = WeaponAttributes[i]["penetration"].Int;

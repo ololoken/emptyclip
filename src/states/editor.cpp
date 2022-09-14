@@ -48,7 +48,14 @@
 _EditorState EditorState;
 
 inline bool CompareBrush(_Brush &First, _Brush &Second) {
-	return First.ObjectType < Second.ObjectType || (First.ObjectType == Second.ObjectType && First.ID < Second.ID);
+	if(First.ObjectType == Second.ObjectType) {
+		if(First.ModObjectType == Second.ModObjectType)
+			return First.ID < Second.ID;
+
+		return First.ModObjectType < Second.ModObjectType;
+	}
+
+	return First.ObjectType < Second.ObjectType;
 }
 
 // Input box
@@ -1174,8 +1181,13 @@ void _EditorState::LoadPalettes() {
 
 	// Load items
 	for(const auto &Item : Stats.Objects) {
-		if(Item.second.IsItem() && Item.second.IconID != "")
-			Icons.push_back(_Brush(Item.first, Item.second.Name, ae::Assets.Textures[Item.second.IconID], Item.second.Color, Item.second.Type));
+		if(Item.second.IsItem() && Item.second.IconID != "") {
+			int ModObjectType = -1;
+			if(Item.second.Type == _Object::MOD)
+				ModObjectType = Item.second.Attributes.at("object_type").Int;
+
+			Icons.push_back(_Brush(Item.first, Item.second.Name, ae::Assets.Textures[Item.second.IconID], Item.second.Color, Item.second.Type, ModObjectType));
+		}
 	}
 	LoadPaletteButtons(Icons, EDITMODE_ITEMS);
 	Icons.clear();

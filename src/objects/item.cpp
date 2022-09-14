@@ -369,7 +369,6 @@ void _Item::DrawTooltip(const _Player *Player, size_t CompareSlot, int Inventory
 			DrawAttribute("move_speed", "Move Speed", DrawPosition, EquippedItem, true, true);
 			DrawAttribute("max_ammo", "Max Ammo", DrawPosition, EquippedItem, true, true);
 			DrawAttribute("health", "Max Health", DrawPosition, EquippedItem, true, true);
-			DrawAttribute("melee", "Melee Damage", DrawPosition, EquippedItem, true, true);
 		} break;
 		case _Object::MOD: {
 			if(Template.Attributes.at("object_type").Int == _Object::WEAPON)
@@ -508,12 +507,16 @@ void _Item::RecalculateStats() {
 			SetAttributeLevel("max_ammo", QualityFactor);
 			SetAttributeLevel("move_speed", QualityFactor);
 			SetAttributeLevel("health", QualityFactor);
-			SetAttributeLevel("melee", QualityFactor);
 			Attributes.at("damage_block").Int += Bonus[MOD_DAMAGEBLOCK];
 			Attributes.at("damage_resist").Int += Bonus[MOD_DAMAGERESIST];
 			Attributes.at("max_ammo").Int += Bonus[MOD_MAXAMMO];
 			Attributes.at("move_speed").Int += Bonus[MOD_MOVESPEED];
 			Attributes.at("move_speed").Int = std::clamp(Attributes.at("move_speed").Int, ITEM_MIN_MOVESPEED, ITEM_MAX_MOVESPEED);
+			Attributes["melee_damage"].Int += Bonus[MOD_MELEEDAMAGE];
+			Attributes["pistol_damage"].Int = Bonus[MOD_PISTOLDAMAGE];
+			Attributes["shotgun_damage"].Int = Bonus[MOD_SHOTGUNDAMAGE];
+			Attributes["rifle_damage"].Int = Bonus[MOD_RIFLEDAMAGE];
+			Attributes["heavy_damage"].Int = Bonus[MOD_HEAVYDAMAGE];
 		break;
 	}
 }
@@ -702,6 +705,21 @@ std::string _Item::ModTypeToString(int ModType) {
 		break;
 		case MOD_EXPLOSION:
 			return "Explosion Size";
+		break;
+		case MOD_MELEEDAMAGE:
+			return "Melee Damage";
+		break;
+		case MOD_PISTOLDAMAGE:
+			return "Pistol Damage";
+		break;
+		case MOD_SHOTGUNDAMAGE:
+			return "Shotgun Damage";
+		break;
+		case MOD_RIFLEDAMAGE:
+			return "Rifle Damage";
+		break;
+		case MOD_HEAVYDAMAGE:
+			return "Heavy Damage";
 		break;
 	}
 

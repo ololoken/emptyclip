@@ -387,7 +387,6 @@ void _Framework::LoadAssets() {
 	TextureSettings.Mipmaps = false;
 	ae::Assets.LoadTexturePack("textures/editor", TextureSettings);
 	ae::Assets.LoadTexturePack("textures/hud", TextureSettings);
-	ae::Assets.LoadTexturePack("textures/icons", TextureSettings);
 	ae::Assets.LoadTexturePack("textures/menu", TextureSettings);
 	ae::Assets.LoadTexturePack("textures/particles", TextureSettings);
 	ae::Assets.LoadTexturePack("textures/projectiles", TextureSettings);
@@ -396,6 +395,7 @@ void _Framework::LoadAssets() {
 	TextureSettings.Mipmaps = true;
 	ae::Assets.LoadTexturePack("textures/animations", TextureSettings);
 	ae::Assets.LoadTexturePack("textures/items", TextureSettings);
+	ae::Assets.LoadTexturePack("textures/icons", TextureSettings);
 	ae::Assets.LoadReels("tables/reels.tsv");
 
 	TextureSettings.WrapMode = ae::_Texture::CLAMP_TO_BORDER;

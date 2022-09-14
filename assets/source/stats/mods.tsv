@@ -13,3 +13,8 @@ mod_maxammo	Max Ammo Mod	textures/items/mod_maxammo.png	11	4	0	10	0.909090909090
 mod_movespeed	Move Speed Mod	textures/items/mod_movespeed.png	12	4	0	1	0.237373737373737	1
 mod_maxroundsplus	Max Rounds Mod	textures/items/mod_maxroundsplus.png	13	3	0	0.588235294117647	0.0909090909090909	0
 mod_explosion	Explosion Size Mod	textures/items/mod_explosion.png	14	3	0	10	0.909090909090909	1
+mod_meleedamage	Melee Damage Mod	textures/items/mod_meleedamage.png	15	4	1	10	0.909090909090909	1
+mod_pistoldamage	Pistol Damage Mod	textures/items/mod_pistoldamage.png	16	4	2	10	0.909090909090909	1
+mod_shotgundamage	Shotgun Damage Mod	textures/items/mod_shotgundamage.png	17	4	3	10	0.909090909090909	1
+mod_rifledamage	Rifle Damage Mod	textures/items/mod_rifledamage.png	18	4	4	10	0.909090909090909	1
+mod_heavydamage	Heavy Damage Mod	textures/items/mod_heavydamage.png	19	4	5	10	0.909090909090909	1

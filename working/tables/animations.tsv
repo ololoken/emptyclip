@@ -10,6 +10,8 @@ crate_gun3	crate_gun3	crate_gun3	crate_gun3
 crate_melee0	crate_melee0	crate_melee0	crate_melee0			
 crate_armor0	crate_armor0	crate_armor0	crate_armor0			
 crate_mod0	crate_mod0	crate_mod0	crate_mod0			
+crate_mod1	crate_mod1	crate_mod1	crate_mod1			
+crate_mod2	crate_mod2	crate_mod2	crate_mod2			
 player	player_move_1h	player_move_2h	player_melee	player_shoot_1h	player_shoot_2h	player_die
 zombie	zombie_move	zombie_melee	zombie_die			
 dog	dog_move	dog_melee	dog_die			

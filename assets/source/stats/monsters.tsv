@@ -9,8 +9,9 @@ crate_gun2	Gun Crate III	crate_gun2	meshes/box.mesh			crate	crate	crate_gun2	1	2
 crate_gun3	Gun Crate IV	crate_gun3	meshes/box.mesh			crate	crate	crate_gun3	1	25	25	0	0	0	0	0	0	0	0	0.48	1	0	0	0	0	0	0	0	0	0	0
 crate_melee0	Melee Crate I	crate_melee0	meshes/box.mesh			crate	crate	crate_melee0	1	25	25	0	0	0	0	0	0	0	0	0.48	1	0	0	0	0	0	0	0	0	0	0
 crate_armor0	Armor Crate I	crate_armor0	meshes/box.mesh			crate	crate	crate_armor0	1	25	25	0	0	0	0	0	0	0	0	0.48	1	0	0	0	0	0	0	0	0	0	0
-crate_mod0	Mod Crate I	crate_mod0	meshes/box.mesh			crate	crate	crate_mod0	2	25	25	0	0	0	0	0	0	0	0	0.48	1	0	0	0	0	0	0	0	0	0	0
-crate_mod1	Mod Crate II	crate_mod0	meshes/box.mesh			crate	crate	crate_mod1	1	25	25	0	0	0	0	0	0	0	0	0.48	1	0	0	0	0	0	0	0	0	0	0
+crate_mod0	Weapon Mod Crate	crate_mod0	meshes/box.mesh			crate	crate	crate_mod0	2	25	25	0	0	0	0	0	0	0	0	0.48	1	0	0	0	0	0	0	0	0	0	0
+crate_mod1	Armor Mod Crate	crate_mod1	meshes/box.mesh			crate	crate	crate_mod1	1	25	25	0	0	0	0	0	0	0	0	0.48	1	0	0	0	0	0	0	0	0	0	0
+crate_mod2	Special Mod Crate	crate_mod2	meshes/box.mesh			crate	crate	crate_mod2	1	25	25	0	0	0	0	0	0	0	0	0.48	1	0	0	0	0	0	0	0	0	0	0
 monster_zombie	Zombie	zombie				monster	zombie	monster_small	1	50	25	3	0	15	10	5	0	0.3	0.05	0.3	0.8	0	0.7	10	5	0.1	1.7	1	0.1	0	1
 monster_dog	Dog	dog				monster	dog	monster_small	1	20	10	4	3	25	8	4	0	7	0.1	0.2	0.7	0	0.9	16	8	0.1	0.8	1	0.5	0	0.35
 monster_bat	Bat	bat		dark		monster	bat	monster_small	1	16	8	4	1	20	6	3	0	4	0.1	0.2	0.5	0	0.7	8	4	0.1	1.1	1	0.25	0	0.1
