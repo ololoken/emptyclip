@@ -766,13 +766,19 @@ void _HUD::DrawCharacterScreen() {
 
 	// Offense
 	if(Player->HasMainHand()) {
-		Buffer << Player->MinDamage[WEAPONATTACK_MAIN] << " - " << Player->MaxDamage[WEAPONATTACK_MAIN];
+		if(ae::Input.ModKeyDown(KMOD_ALT) || ae::Actions.State[Action::GAME_SHOWINFO].Value > 0.0f)
+			Buffer << ae::Round2((Player->MinDamage[WEAPONATTACK_MAIN] + Player->MaxDamage[WEAPONATTACK_MAIN]) * 0.5f) << " avg";
+		else
+			Buffer << Player->MinDamage[WEAPONATTACK_MAIN] << " - " << Player->MaxDamage[WEAPONATTACK_MAIN];
 		DrawAttribute("Damage", Buffer, DrawPosition);
 
-		Buffer << ae::Round1(Player->MinAccuracyNormal) << " - " << ae::Round1(Player->MaxAccuracyNormal);
+		if(ae::Input.ModKeyDown(KMOD_ALT) || ae::Actions.State[Action::GAME_SHOWINFO].Value > 0.0f)
+			Buffer << ae::Round2((Player->MinAccuracyNormal + Player->MaxAccuracyNormal) * 0.5f) << " avg";
+		else
+			Buffer << ae::Round2(Player->MinAccuracyNormal) << " - " << ae::Round2(Player->MaxAccuracyNormal);
 		DrawAttribute("Accuracy", Buffer, DrawPosition);
 
-		Buffer << ae::Round1(1.0 / Player->AttackPeriod[WEAPONATTACK_MAIN]) << "/s";
+		Buffer << ae::Round2(1.0 / Player->AttackPeriod[WEAPONATTACK_MAIN]) << "/s";
 		DrawAttribute("Fire Rate", Buffer, DrawPosition);
 
 		Buffer << Player->CritChance[WEAPONATTACK_MAIN] << "%";
@@ -784,7 +790,10 @@ void _HUD::DrawCharacterScreen() {
 
 	DrawPosition.y += 10 * ae::_Element::GetUIScale();
 
-	Buffer << Player->MinDamage[WEAPONATTACK_MELEE] << " - " << Player->MaxDamage[WEAPONATTACK_MELEE];
+	if(ae::Input.ModKeyDown(KMOD_ALT) || ae::Actions.State[Action::GAME_SHOWINFO].Value > 0.0f)
+		Buffer << ae::Round2((Player->MinDamage[WEAPONATTACK_MELEE] + Player->MaxDamage[WEAPONATTACK_MELEE]) * 0.5f) << " avg";
+	else
+		Buffer << Player->MinDamage[WEAPONATTACK_MELEE] << " - " << Player->MaxDamage[WEAPONATTACK_MELEE];
 	DrawAttribute("Melee Damage", Buffer, DrawPosition);
 
 	Buffer << ae::Round1(Player->AttackRange[WEAPONATTACK_MELEE]);

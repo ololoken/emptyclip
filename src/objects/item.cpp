@@ -274,9 +274,9 @@ void _Item::DrawTooltip(const _Player *Player, size_t CompareSlot, int Inventory
 
 				DrawPosition.y += Spacing.y;
 				if(ae::Input.ModKeyDown(KMOD_ALT) || ae::Actions.State[Action::GAME_SHOWINFO].Value > 0.0f)
-					Buffer << ae::Round1(GetAverageAccuracy()) << " avg";
+					Buffer << ae::Round2(GetAverageAccuracy()) << " avg";
 				else
-					Buffer << ae::Round1(Attributes.at("accuracy_min").Float) << " - " << ae::Round1(Attributes.at("accuracy_max").Float) << " deg";
+					Buffer << ae::Round2(Attributes.at("accuracy_min").Float) << " - " << ae::Round2(Attributes.at("accuracy_max").Float) << " deg";
 				ae::Assets.Fonts["hud_medium"]->DrawText("Accuracy", glm::ivec2(DrawPosition - DrawOffset), ae::RIGHT_BASELINE);
 				ae::Assets.Fonts["hud_medium"]->DrawText(Buffer.str(), glm::ivec2(DrawPosition + DrawOffset), ae::LEFT_BASELINE, TextColor);
 				Buffer.str("");
@@ -293,7 +293,7 @@ void _Item::DrawTooltip(const _Player *Player, size_t CompareSlot, int Inventory
 				}
 
 				DrawPosition.y += Spacing.y;
-				Buffer << ae::Round1(Attributes.at("recoil").Float);
+				Buffer << ae::Round2(Attributes.at("recoil").Float);
 				ae::Assets.Fonts["hud_medium"]->DrawText("Recoil", glm::ivec2(DrawPosition - DrawOffset), ae::RIGHT_BASELINE);
 				ae::Assets.Fonts["hud_medium"]->DrawText(Buffer.str(), glm::ivec2(DrawPosition + DrawOffset), ae::LEFT_BASELINE, TextColor);
 				Buffer.str("");
