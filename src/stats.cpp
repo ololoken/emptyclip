@@ -731,7 +731,8 @@ _Monster *_Stats::CreateMonster(const std::string &ID, int Level, const glm::vec
 	Monster->MinAccuracy = Template.Attributes.at("accuracy").Int;
 	for(int i = 0; i < WEAPONATTACK_COUNT; i++) {
 		Monster->GetAttributeRange("damage", 1.0f, Monster->MinDamage[i], Monster->MaxDamage[i]);
-		Monster->AttackTimer[i] = Monster->ShootPeriod[i] = Monster->AttackPeriod[i] = Template.Attributes.at("attack_period").Double;
+		Monster->AttackTimer[i] = Monster->AttackPeriod[i] = Template.Attributes.at("attack_period").Double;
+		Monster->ShootPeriod[i] = AI_SHOOT_PERIOD;
 		Monster->MaxAccuracy[i] = Template.Attributes.at("accuracy").Int;
 		Monster->AttackRange[i] = Template.Attributes.at("attack_range").Float;
 		Monster->AttackMoveSpeed[i] = Template.Attributes.at("attack_movespeed").Float;
