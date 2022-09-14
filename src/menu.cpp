@@ -101,6 +101,7 @@ void _Menu::Init() {
 	glm::vec2 Spacing = glm::vec2(30, 140);
 	glm::vec2 Offset = glm::vec2(0, 0);
 	int Column = 0;
+	int Index = 0;
 	for(const auto &Achievement : Stats.Achievements) {
 
 		ae::_Element *Button = new ae::_Element();
@@ -111,6 +112,7 @@ void _Menu::Init() {
 		Button->Alignment = ae::_Alignment(ae::_Alignment::CENTER, ae::_Alignment::TOP);
 		Button->Style = ae::Assets.Styles["style_menu_window"];
 		Button->DisabledStyle = ae::Assets.Styles["style_menu_window_disabled"];
+		Button->Index = Index++;
 		if(Column & 1)
 			Button->BaseOffset.x = -Button->BaseOffset.x;
 
@@ -120,6 +122,7 @@ void _Menu::Init() {
 		Title->BaseOffset = glm::vec2(20, 40);
 		Title->Alignment = ae::LEFT_BASELINE;
 		Title->Font = ae::Assets.Fonts["hud_medium"];
+		Title->Format = true;
 		Button->Children.push_back(Title);
 
 		ae::_Element *Text = new ae::_Element();
@@ -260,8 +263,27 @@ void _Menu::InitAchievements() {
 
 	// Set enabled state
 	ae::_Element *AchievementContainer = ae::Assets.Elements["element_menu_achievements_container"];
-	for(const auto &Child : AchievementContainer->Children)
+	for(const auto &Child : AchievementContainer->Children) {
 		Child->SetEnabled(Achievements.Stats.find(Child->Name) != Achievements.Stats.end());
+
+		// Check for failed achievements
+		if(!Child->Enabled && PlayState.Player) {
+			bool Failed = false;
+			if(Child->Name == "all" && !PlayState.Player->Stat100Percent)
+				Failed = true;
+			else if(Child->Name == "lonewolf" && !PlayState.Player->StatLoneWolf)
+				Failed = true;
+			else if(Child->Name == "fists" && !PlayState.Player->StatFistsOnly)
+				Failed = true;
+			else if(Child->Name == "smoked" && PlayState.Player->LavaTouches)
+				Failed = true;
+
+			if(Failed)
+				Child->Children[0]->Text += "  [c red]FAILED";
+		}
+		else
+			Child->Children[0]->Text = Stats.Achievements[Child->Index].Name;
+	}
 
 	State = STATE_ACHIEVEMENTS;
 }
