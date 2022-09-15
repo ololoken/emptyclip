@@ -114,7 +114,7 @@ class _Stats {
 		void Init();
 		void Close();
 
-		void LoadStrings();
+		void LoadText();
 		void LoadLevels();
 		void LoadSkills();
 		void LoadAmmo();

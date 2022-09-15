@@ -35,7 +35,7 @@ void _Stats::Init() {
 
 	BlankWeaponParticle = _ParticleGroup();
 
-	LoadStrings();
+	LoadText();
 	LoadLevels();
 	LoadSkills();
 	LoadAmmo();
@@ -68,10 +68,10 @@ void _Stats::Close() {
 }
 
 // Load strings
-void _Stats::LoadStrings() {
+void _Stats::LoadText() {
 
 	// Run query
-	Database->PrepareQuery("SELECT * FROM strings");
+	Database->PrepareQuery("SELECT * FROM text");
 
 	// Get data
 	while(Database->FetchRow()) {
