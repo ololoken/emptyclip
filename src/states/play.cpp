@@ -64,7 +64,6 @@ void _PlayState::Init() {
 	ae::Graphics.Element->SetActive(false);
 	ae::Graphics.Element->Active = true;
 
-	WeaponsUsed.clear();
 	CursorItem = nullptr;
 	PreviousCursorItem = nullptr;
 
@@ -975,11 +974,16 @@ void _PlayState::ResolveAttack(_Entity *Attacker, int GridType) {
 	// Add push
 	Attacker->ApplyForce(-Attacker->Direction, Attacker->Push[Player->AttackRequestType]);
 
-	// Keep track of weapon used
+	// Check achievements for weapons used
 	if(Attacker->Type == _Object::PLAYER) {
 		const char *WeaponID = Attacker->GetWeaponID(Attacker->AttackRequestType);
-		if(WeaponID)
-			WeaponsUsed[WeaponID]++;
+		if(WeaponID) {
+			std::string WeaponIDString = std::string(WeaponID);
+			if(Player->StatFistsOnly && WeaponIDString != "weapon_fists")
+				Player->StatFistsOnly = false;
+			if(Player->StatLoneWolf && WeaponIDString != "weapon_knife" && WeaponIDString != "weapon_boltrifle")
+				Player->StatLoneWolf = false;
+		}
 	}
 
 	// Get number of rounds to fire
@@ -1423,19 +1427,6 @@ void _PlayState::CheckEvents(const _Entity *Entity) {
 				bool GotOneHundredPercent = HUD->Kills[0] == HUD->Kills[1] && HUD->Crates[0] == HUD->Crates[1] && HUD->Secrets[0] == HUD->Secrets[1];
 				if(!GotOneHundredPercent)
 					Player->Stat100Percent = false;
-
-				// Build weapons used string
-				for(const auto &WeaponID : WeaponsUsed) {
-					if(Stats.Objects.find(WeaponID.first) == Stats.Objects.end())
-						continue;
-
-					// Check achievements
-					if(WeaponID.first != "weapon_fists")
-						Player->StatFistsOnly = false;
-
-					if(WeaponID.first != "weapon_knife" && WeaponID.first != "weapon_boltrifle")
-						Player->StatLoneWolf = false;
-				}
 
 				// End of the game
 				if(Level.empty()) {
