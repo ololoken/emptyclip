@@ -109,6 +109,7 @@ class _Player : public _Entity {
 		bool CanUse() const { return UseTimer > UsePeriod; }
 		bool CanDropItem() const { return !Reloading && !SwitchingWeapons; }
 		bool CanDragItem() const { return !Reloading && !SwitchingWeapons; }
+		bool CanEquipItem() const { return !Reloading && !SwitchingWeapons; }
 		bool CanSwitchWeapons() const { return !SwitchingWeapons && !Reloading && !IsMeleeAttacking() && !IsDying(); }
 		bool CanReload() const;
 		bool IsSteady() const override { return HasMainHand() && CurrentAccuracy <= MinAccuracy; }

@@ -26,6 +26,8 @@
 #include <ae/util.h>
 #include <ae/actions.h>
 #include <ae/random.h>
+#include <states/play.h>
+#include <hud.h>
 #include <actiontype.h>
 #include <constants.h>
 #include <stats.h>
@@ -172,10 +174,11 @@ void _Item::DrawTooltip(const _Player *Player, size_t CompareSlot, int Inventory
 	if(Player->IsEquipmentIndex(InventorySlot))
 		HelpTextList.push_back("Right-click to unequip");
 
+	bool ShowEquipHelp = InventorySlot >= INVENTORY_BAGSTART || (InventorySlot == -1 && PlayState.HUD->InventoryOpen);
 	// Show attributes
 	switch(Type) {
 		case _Object::WEAPON: {
-			if(InventorySlot >= INVENTORY_BAGSTART)
+			if(ShowEquipHelp)
 				HelpTextList.push_back("Right-click to equip");
 
 			// Damage
@@ -361,7 +364,7 @@ void _Item::DrawTooltip(const _Player *Player, size_t CompareSlot, int Inventory
 			}
 		} break;
 		case _Object::ARMOR: {
-			if(InventorySlot >= INVENTORY_BAGSTART)
+			if(ShowEquipHelp)
 				HelpTextList.push_back("Right-click to equip");
 
 			DrawAttribute("damage_block", "Damage Block", DrawPosition, EquippedItem, false, false);

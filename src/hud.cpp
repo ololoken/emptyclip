@@ -247,7 +247,7 @@ void _HUD::MouseEvent(const ae::_MouseEvent &MouseEvent) {
 						}
 					}
 					// Drag from world
-					else if(CursorOverItem && CursorOverItem->CanPickup() && glm::distance2(Player->Position, CursorOverItem->Position) <= PLAYER_REACH_DISTANCE_SQUARED) {
+					else if(CanGrabItem(CursorOverItem)) {
 						ClickOffset = glm::vec2(0.0f);
 						CursorItem = CursorOverItem;
 						CursorItem->Visible = false;
@@ -328,7 +328,9 @@ void _HUD::MouseEvent(const ae::_MouseEvent &MouseEvent) {
 			}
 		break;
 		case SDL_BUTTON_RIGHT:
-			if(MouseEvent.Pressed) {
+			if(MouseEvent.Pressed && Player->CanEquipItem()) {
+
+				// Equip from inventory
 				if(HitElement && HitElement->Index >= 0) {
 					_Item *Item = Player->Inventory[HitElement->Index];
 					if(Item) {
@@ -360,6 +362,30 @@ void _HUD::MouseEvent(const ae::_MouseEvent &MouseEvent) {
 
 					if(!Player->HasInventory(HitElement->Index))
 						CursorOverItem = nullptr;
+				}
+				// Equip from world
+				else if(CanGrabItem(CursorOverItem)) {
+					int Slot = -1;
+					switch(CursorOverItem->Type) {
+						case _Object::WEAPON: {
+							if(CursorOverItem->IsMelee())
+								Slot = INVENTORY_MELEE;
+							else
+								Slot = ae::Input.ModKeyDown(KMOD_CTRL) ? INVENTORY_OFFHAND : INVENTORY_MAINHAND;
+						} break;
+						case _Object::ARMOR:
+							Slot = INVENTORY_ARMOR;
+						break;
+					}
+
+					// Equip item
+					if(Slot != -1) {
+						Player->DropItem(Slot);
+						Player->Inventory[Slot] = CursorOverItem;
+						Player->Map->RemoveObject(CursorOverItem, GRID_ITEM);
+						Player->RecalculateStats();
+						Player->PlayEquipSound(Slot);
+					}
 				}
 			}
 		break;
@@ -1156,4 +1182,9 @@ void _HUD::FormatTimeHMS(std::ostringstream &Buffer, int64_t Time) {
 		Buffer << Time / 60 << "m";
 	else
 		Buffer << Time / 3600 << "h" << (Time / 60 % 60) << "m";
+}
+
+// Determine if an item can be grabbed in the world
+bool _HUD::CanGrabItem(const _Item *Item) {
+	return !CursorItem && Item && Item->CanPickup() && glm::distance2(Player->Position, Item->Position) <= PLAYER_REACH_DISTANCE_SQUARED;
 }

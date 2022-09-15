@@ -146,6 +146,7 @@ class _HUD {
 		void DrawAttribute(const std::string &Label, std::ostringstream &Buffer, glm::vec2 &DrawPosition) const;
 		void UpdateSkillTooltip(int Skill, const glm::vec2 &DrawPosition);
 		void GetClockAsString(std::ostringstream &Buffer, double Clock, bool Clock24Hour) const;
+		bool CanGrabItem(const _Item *Item);
 
 		// State
 		_Player *Player{nullptr};
