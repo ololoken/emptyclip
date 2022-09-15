@@ -249,9 +249,13 @@ void _HUD::MouseEvent(const ae::_MouseEvent &MouseEvent) {
 					}
 					// Drag from world
 					else if(CanGrabItem(CursorOverItem)) {
-						ClickOffset = glm::vec2(0.0f);
-						CursorItem = CursorOverItem;
-						CursorItem->Visible = false;
+						if(CursorOverItem->CanMove()) {
+							ClickOffset = glm::vec2(0.0f);
+							CursorItem = CursorOverItem;
+							CursorItem->Visible = false;
+						}
+						else
+							PlayState.PickupObject(CursorOverItem);
 					}
 				}
 			}
@@ -377,10 +381,9 @@ void _HUD::MouseEvent(const ae::_MouseEvent &MouseEvent) {
 						case _Object::ARMOR:
 							Slot = INVENTORY_ARMOR;
 						break;
-						case _Object::MOD: {
-							int AmountAdded = 0;
-							PlayState.PickupObject(CursorOverItem, AmountAdded);
-						} break;
+						default:
+							PlayState.PickupObject(CursorOverItem);
+						break;
 					}
 
 					// Equip item
@@ -1191,5 +1194,5 @@ void _HUD::FormatTimeHMS(std::ostringstream &Buffer, int64_t Time) {
 
 // Determine if an item can be grabbed in the world
 bool _HUD::CanGrabItem(const _Item *Item) {
-	return !CursorItem && Item && Item->CanPickup() && glm::distance2(Player->Position, Item->Position) <= PLAYER_REACH_DISTANCE_SQUARED;
+	return !CursorItem && Item && glm::distance2(Player->Position, Item->Position) <= PLAYER_REACH_DISTANCE_SQUARED;
 }

@@ -78,7 +78,7 @@ class _Item : public _Object {
 
 		int UpdateCount(int Amount) { Count += Amount; return Count; }
 		bool CanStack() const { return false; }
-		bool CanPickup() const { return Type == _Object::WEAPON || Type == _Object::ARMOR || Type == _Object::MOD; }
+		bool CanMove() const { return Type == _Object::WEAPON || Type == _Object::ARMOR || Type == _Object::MOD; }
 		bool CanEquip() const { return Type == _Object::WEAPON || Type == _Object::ARMOR; }
 		bool CanLevel() const { return Type == _Object::WEAPON || Type == _Object::ARMOR || Type == _Object::MOD; }
 		bool IsAutoPickup() const { return Type == _Object::AMMO || Type == _Object::KEY || Type == _Object::MEDKIT; }

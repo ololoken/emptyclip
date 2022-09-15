@@ -1143,35 +1143,12 @@ void _PlayState::HandlePickup() {
 		if(!NearbyItem->Visible)
 			continue;
 
-		// Automatically pickup ammo
+		// Automatically pickup ammo/health
 		if(NearbyItem->IsAutoPickup()) {
-			int AmountAdded = 0;
-			int Type = NearbyItem->Type;
-			std::string Name = NearbyItem->Name;
-			PickupObject(NearbyItem, AmountAdded);
-			if(!AmountAdded) {
+			if(!PickupObject(NearbyItem)) {
 				IgnoreItems[NearbyItem] = 1;
 				continue;
 			}
-
-			// Set up particle
-			glm::vec2 ParticlePosition(Player->Position.x, Player->Position.y - 0.5);
-			std::string ParticleText = "+";
-			glm::vec4 ParticleColor = COLOR_WHITE;
-			if(Type == _Object::AMMO)
-				ParticleText += std::to_string(AmountAdded);
-			else if(Type == _Object::MEDKIT) {
-				ParticleText += std::to_string(AmountAdded) + "HP";
-				ParticleColor = COLOR_GREEN;
-			}
-			else
-				ParticleText += Name;
-
-			// Add particle
-			_Particle *Particle = new _Particle(_ParticleSpawn(GameAssets.GetParticleTemplate("text0"), glm::vec2(0), ParticlePosition, OBJECT_Z, 0));
-			Particle->Text = ParticleText;
-			Particle->Color = ParticleColor;
-			Particles->Add(Particle);
 		}
 		// Manually pickup up an item
 		else if(Player->UseRequested)
@@ -1193,29 +1170,61 @@ void _PlayState::PlayerDied() {
 }
 
 // Places an item into the player's inventory
-void _PlayState::PickupObject(_Item *Item, int &AmountAdded) {
+int _PlayState::PickupObject(_Item *Item) {
 	if(!Item || !Item->Visible)
-		return;
+		return 0;
 
 	// Attempt to add item
+	int AmountAdded = 0;
 	int AddResult = Player->AddItem(Item, AmountAdded);
 	if(AddResult) {
 		if(Item == ClosestItem)
 			ClosestItem = nullptr;
 
-		Player->UseTimer = 0.0;
+		// Set up particles
+		if(Item->IsAutoPickup() && AmountAdded) {
+
+			// Initialize
+			glm::vec2 ParticlePosition(Player->Position.x, Player->Position.y - 0.5);
+			std::string ParticleText = "+";
+			glm::vec4 ParticleColor = COLOR_WHITE;
+			switch(Item->Type) {
+				case _Object::AMMO:
+					ParticleText += std::to_string(AmountAdded);
+				break;
+				case _Object::MEDKIT:
+					ParticleText += std::to_string(AmountAdded) + "HP";
+					ParticleColor = COLOR_GREEN;
+				break;
+				case _Object::KEY:
+					ParticleText += Item->Name;
+				break;
+			}
+
+			// Add particle
+			_Particle *Particle = new _Particle(_ParticleSpawn(GameAssets.GetParticleTemplate("text0"), glm::vec2(0), ParticlePosition, OBJECT_Z, 0));
+			Particle->Text = ParticleText;
+			Particle->Color = ParticleColor;
+			Particles->Add(Particle);
+		}
 
 		// Remove item from map
-		Map->RemoveObject(Item, GRID_ITEM);
+		Map->RemoveObjectFromGrid(Item, GRID_ITEM);
 
-		// Delete item
-		if(AddResult == 2) {
-			delete Item;
+		// Handle deletion
+		if(AddResult == 1)
+			Map->ObjectManager->RemoveObject(Item);
+		else if(AddResult == 2) {
+			Item->Active = false;
 			CursorItemTimer = 0;
 		}
+
+		Player->UseTimer = 0.0;
 	}
 	else
 		HUD->ShowTextMessage("INVENTORY FULL", HUD_INVENTORYFULLTIME);
+
+	return AmountAdded;
 }
 
 // Processes the use key to open doors, hit switches, and pickup items
@@ -1224,8 +1233,7 @@ void _PlayState::UseObject(_Item *Item) {
 		return;
 
 	// Pick up an item if available
-	int AmountAdded = 0;
-	PickupObject(Item, AmountAdded);
+	PickupObject(Item);
 }
 
 // Open door or handle switches, return true on success
