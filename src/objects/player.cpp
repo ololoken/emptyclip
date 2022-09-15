@@ -781,7 +781,7 @@ void _Player::DropItem(int Slot, const glm::vec2 &DropPosition) {
 	}
 
 	// Add item to map
-	if(DropPosition.x < 0)
+	if(DropPosition.x < 0.0f)
 		Item->SetPosition(Position + _Map::GenerateRandomPointInCircle(PLAYER_RADIUS));
 	else
 		Item->SetPosition(DropPosition);

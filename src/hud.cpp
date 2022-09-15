@@ -197,13 +197,20 @@ void _HUD::SetInventoryOpen(bool Value) {
 }
 
 // Move item in the world to another location
-void _HUD::MoveWorldItem() {
+void _HUD::MoveWorldItem(const glm::vec2 &DropPosition) {
 	if(DragStart || !CursorItem)
 		return;
 
 	// Get world position
 	Player->Map->RemoveObject(CursorItem, GRID_ITEM);
-	Camera->ConvertScreenToWorld(ae::Input.GetMouse(), CursorItem->Position);
+
+	// Default to mouse position
+	if(DropPosition.x < 0.0f)
+		Camera->ConvertScreenToWorld(ae::Input.GetMouse(), CursorItem->Position);
+	else
+		CursorItem->Position = DropPosition;
+
+	// Check drop position
 	Player->Map->GetDropPosition(Player, PLAYER_REACH_DISTANCE, CursorItem->Position);
 
 	// Move item
@@ -304,6 +311,9 @@ void _HUD::MouseEvent(const ae::_MouseEvent &MouseEvent) {
 										Player->DropItem(HitElement->Index);
 										SetAndRemove = true;
 									}
+									else {
+										MoveWorldItem(Player->Position);
+									}
 								}
 								// Drag onto empty slot
 								else if(CanEquip || _Player::IsBagIndex(HitElement->Index)) {
@@ -333,7 +343,7 @@ void _HUD::MouseEvent(const ae::_MouseEvent &MouseEvent) {
 			}
 		break;
 		case SDL_BUTTON_RIGHT:
-			if(MouseEvent.Pressed && Player->CanEquipItem()) {
+			if(MouseEvent.Pressed && Player->CanEquipItem() && !CursorItem) {
 
 				// Equip from inventory
 				if(HitElement && HitElement->Index >= 0) {
