@@ -981,7 +981,7 @@ void _Menu::UnlockAchievement(const std::string &ID) {
 }
 
 // Update score screen label values
-void _Menu::SetScoreStats(bool EndOfGame, double LevelTime, int *Kills, int *Crates, int *Secrets, int Progression, const std::string &WeaponsUsed) {
+void _Menu::SetScoreStats(bool EndOfGame, double LevelTime, int *Kills, int *Crates, int *Secrets, int Progression, bool GotOneHundredPercent) {
 	std::ostringstream Buffer;
 
 	// Set title
@@ -1020,10 +1020,8 @@ void _Menu::SetScoreStats(bool EndOfGame, double LevelTime, int *Kills, int *Cra
 	ae::Assets.Elements["label_menu_score_secrets_value"]->Text = Buffer.str();
 	Buffer.str("");
 
-	// Set weapons used
-	ae::_Element *WeaponsElement = ae::Assets.Elements["label_menu_score_weapons_value"];
-	WeaponsElement->Text = WeaponsUsed;
-	WeaponsElement->SetWrap(WeaponsElement->Size.x);
+	// Set completion text
+	ae::Assets.Elements["label_menu_score_completion"]->Color.a = GotOneHundredPercent ? 1.0f : 0.0f;
 }
 
 // Change menu layout

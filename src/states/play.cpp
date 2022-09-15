@@ -1425,15 +1425,9 @@ void _PlayState::CheckEvents(const _Entity *Entity) {
 					Player->Stat100Percent = false;
 
 				// Build weapons used string
-				std::string WeaponsUsedString = "";
 				for(const auto &WeaponID : WeaponsUsed) {
 					if(Stats.Objects.find(WeaponID.first) == Stats.Objects.end())
 						continue;
-
-					if(!WeaponsUsedString.empty())
-						WeaponsUsedString += ", ";
-
-					WeaponsUsedString += Stats.Objects.at(WeaponID.first).Name;
 
 					// Check achievements
 					if(WeaponID.first != "weapon_fists")
@@ -1445,7 +1439,7 @@ void _PlayState::CheckEvents(const _Entity *Entity) {
 
 				// End of the game
 				if(Level.empty()) {
-					Menu.SetScoreStats(true, Player->LevelTime, HUD->Kills, HUD->Crates, HUD->Secrets, Player->Progression + 1, WeaponsUsedString);
+					Menu.SetScoreStats(true, Player->LevelTime, HUD->Kills, HUD->Crates, HUD->Secrets, Player->Progression + 1, GotOneHundredPercent);
 					Level = GAME_FIRSTLEVEL;
 
 					// Check achievements
@@ -1479,7 +1473,7 @@ void _PlayState::CheckEvents(const _Entity *Entity) {
 					Player->ProgressionKills += HUD->Kills[0];
 					Player->ProgressionCrates += HUD->Crates[0];
 					Player->ProgressionSecrets += HUD->Secrets[0];
-					Menu.SetScoreStats(false, Player->LevelTime, HUD->Kills, HUD->Crates, HUD->Secrets, 0, WeaponsUsedString);
+					Menu.SetScoreStats(false, Player->LevelTime, HUD->Kills, HUD->Crates, HUD->Secrets, 0, GotOneHundredPercent);
 				}
 
 				Player->LevelTime = 0;
