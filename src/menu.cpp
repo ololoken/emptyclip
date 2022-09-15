@@ -167,6 +167,8 @@ void _Menu::InitTitle() {
 	Background = ae::Assets.Elements["image_menu_bg"];
 	HandleResize();
 
+	PlayState.Player = nullptr;
+
 	State = STATE_TITLE;
 }
 
@@ -267,6 +269,7 @@ void _Menu::InitAchievements() {
 		Child->SetEnabled(Achievements.Stats.find(Child->Name) != Achievements.Stats.end());
 
 		// Check for failed achievements
+		Child->Children[0]->Text = Stats.Achievements[Child->Index].Name;
 		if(!Child->Enabled && PlayState.Player) {
 			bool Failed = false;
 			if(Child->Name == "all" && !PlayState.Player->Stat100Percent)
@@ -281,8 +284,6 @@ void _Menu::InitAchievements() {
 			if(Failed)
 				Child->Children[0]->Text += "  [c red]FAILED";
 		}
-		else
-			Child->Children[0]->Text = Stats.Achievements[Child->Index].Name;
 	}
 
 	State = STATE_ACHIEVEMENTS;

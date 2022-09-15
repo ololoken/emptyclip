@@ -149,16 +149,16 @@ void _PlayState::Close() {
 
 	Player->StopAudio();
 
-	if(TestMode)
+	if(TestMode) {
 		delete Player;
+		Player = nullptr;
+	}
 
 	delete Particles;
 	delete Camera;
 	delete Map;
 	delete HUD;
 	delete Framebuffer;
-
-	Player = nullptr;
 }
 
 // Action handler
