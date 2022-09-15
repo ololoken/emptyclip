@@ -331,16 +331,16 @@
 		<element id="image_hud_experience_bar_full" texture="textures/hud_repeat/experience_full.png" size_x="550" size_y="8" alignment_x="0" alignment_y="0"/>
 		<element id="label_hud_experience_text" font="hud_tiny" offset_y="-8" alignment_y="3"/>
 	</element>
-	<element id="element_hud_mainhand" offset_x="-190" offset_y="-110" alignment_y="2">
+	<element id="element_hud_mainhand" offset_x="-190" offset_y="-46" size_x="64" size_y="64" alignment_y="2">
 		<element id="image_hud_mainhand_icon" size_x="64" size_y="64" alignment_y="0" stretch="true"/>
 		<element id="label_hud_mainhand_ammo" font="hud_medium" offset_y="88" alignment_y="3"/>
 	</element>
-	<element id="element_hud_offhand" offset_x="160" offset_y="-110" alignment_y="2">
+	<element id="element_hud_offhand" offset_x="160" offset_y="-46" size_x="64" size_y="64" alignment_y="2">
 		<element id="image_hud_offhand_icon" size_x="64" size_y="64" alignment_y="0" stretch="true"/>
 		<element id="label_hud_offhand_ammo" font="hud_medium" offset_y="88" alignment_y="3"/>
 		<element id="label_hud_offhand_switch_key" font="hud_char" offset_x="24" offset_y="58" alignment_y="3"/>
 	</element>
-	<element id="element_hud_melee" offset_x="230" offset_y="-110" alignment_y="2">
+	<element id="element_hud_melee" offset_x="230" offset_y="-46" size_x="64" size_y="64" alignment_y="2">
 		<element id="image_hud_melee_icon" size_x="64" size_y="64" alignment_y="0" stretch="true"/>
 		<element id="label_hud_melee_key" font="hud_char" offset_x="24" offset_y="58" alignment_y="3"/>
 	</element>

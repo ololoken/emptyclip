@@ -505,8 +505,14 @@ void _HUD::Update(double FrameTime, float Radius, double Clock) {
 void _HUD::Render(bool FullMap) {
 
 	// Set labels
-	ae::Assets.Elements["label_hud_offhand_switch_key"]->Text = ae::Actions.GetInputNameForAction(Action::GAME_WEAPONSWITCH);
-	ae::Assets.Elements["label_hud_melee_key"]->Text = ae::Actions.GetInputNameForAction(Action::GAME_MELEE);
+	if(ae::Input.ModKeyDown(KMOD_ALT) || ae::Actions.State[Action::GAME_SHOWINFO].Value > 0.0f) {
+		ae::Assets.Elements["label_hud_offhand_switch_key"]->Text = "";
+		ae::Assets.Elements["label_hud_melee_key"]->Text = "";
+	}
+	else {
+		ae::Assets.Elements["label_hud_offhand_switch_key"]->Text = ae::Actions.GetInputNameForAction(Action::GAME_WEAPONSWITCH);
+		ae::Assets.Elements["label_hud_melee_key"]->Text = ae::Actions.GetInputNameForAction(Action::GAME_MELEE);
+	}
 
 	// Message
 	if(MessageTimer > 0.0) {
@@ -761,13 +767,13 @@ void _HUD::DrawIndicator(const std::string &String, float Percent, const ae::_Te
 }
 
 // Draw the weapons on the HUD
-void _HUD::DrawHUDWeapon(const _Item *Weapon, ae::_Element *Element, ae::_Element *Image, ae::_Element *Label) {
-	if(!Weapon)
+void _HUD::DrawHUDWeapon(const _Item *Item, ae::_Element *Element, ae::_Element *Image, ae::_Element *Label) {
+	if(!Item)
 		return;
 
-	Image->Texture = Weapon->Texture;
-	Image->Color = Weapon->Color;
-	int Rounds = Weapon->Attributes.at("rounds").Int;
+	Image->Texture = Item->Texture;
+	Image->Color = Item->Color;
+	int Rounds = Item->Attributes.at("rounds").Int;
 	if(Rounds) {
 
 		// Set font size
@@ -779,7 +785,7 @@ void _HUD::DrawHUDWeapon(const _Item *Weapon, ae::_Element *Element, ae::_Elemen
 			Label->Font = ae::Assets.Fonts["hud_medium"];
 
 		std::ostringstream Buffer;
-		Buffer << Weapon->Attributes.at("ammo").Int << "/" << Rounds;
+		Buffer << Item->Attributes.at("ammo").Int << "/" << Rounds;
 		if(Label)
 			Label->Text = Buffer.str();
 	}
@@ -787,6 +793,23 @@ void _HUD::DrawHUDWeapon(const _Item *Weapon, ae::_Element *Element, ae::_Elemen
 		Label->Text = "";
 
 	Element->Render();
+
+	// Draw extra information
+	if(ae::Input.ModKeyDown(KMOD_ALT) || ae::Actions.State[Action::GAME_SHOWINFO].Value > 0.0f) {
+		glm::vec4 Color;
+		Item->GetQualityColor(Color);
+		std::ostringstream Buffer;
+
+		// Draw item level
+		Buffer << Item->Level;
+		ae::Assets.Fonts["hud_tiny"]->DrawText(Buffer.str(), glm::ivec2(Element->Bounds.GetCenter() + glm::vec2(0, -12) * ae::_Element::GetUIScale()), ae::CENTER_BASELINE, COLOR_GOLD);
+		Buffer.str("");
+
+		// Draw item quality
+		Buffer << Item->Quality << "%";
+		ae::Assets.Fonts["hud_tiny"]->DrawText(Buffer.str(), glm::ivec2(Element->Bounds.GetCenter() + glm::vec2(0, 24) * ae::_Element::GetUIScale()), ae::CENTER_BASELINE, Color);
+		Buffer.str("");
+	}
 }
 
 // Draw character skills and stats
@@ -977,31 +1000,31 @@ void _HUD::DrawAttribute(const std::string &Label, std::ostringstream &Buffer, g
 }
 
 // Draw quick glance value attribute for item
-void _HUD::DrawItemValue(_Item *Item, const glm::vec2 &Position) {
+void _HUD::DrawItemValue(const _Item *Item, const glm::vec2 &Position) {
 	if(!Item)
 		return;
 
 	std::ostringstream Buffer;
 	switch(Item->Type) {
 		case _Object::MOD:
-			Buffer << "+" << Item->Attributes["bonus"].Int;
+			Buffer << "+" << Item->Attributes.at("bonus").Int;
 		break;
 		case _Object::WEAPON:
 			Buffer << ae::Round1(Item->GetAverageDamage());
 		break;
 		case _Object::ARMOR:
-			Buffer << Item->Attributes["damage_block"].Int;
+			Buffer << Item->Attributes.at("damage_block").Int;
 		break;
 		default:
 			return;
 		break;
 	}
 
-	Fonts[FONT_TINY]->DrawText(Buffer.str(), Position + glm::vec2(74, 74) * ae::_Element::GetUIScale(), ae::RIGHT_BASELINE, COLOR_WHITE);
+	Fonts[FONT_TINY]->DrawText(Buffer.str(), glm::ivec2(Position + glm::vec2(74, 74) * ae::_Element::GetUIScale()), ae::RIGHT_BASELINE, COLOR_WHITE);
 }
 
 // Draw item quality
-void _HUD::DrawItemQuality(_Item *Item, const glm::vec2 &Position) {
+void _HUD::DrawItemQuality(const _Item *Item, const glm::vec2 &Position) {
 	if(!Item)
 		return;
 
@@ -1009,17 +1032,17 @@ void _HUD::DrawItemQuality(_Item *Item, const glm::vec2 &Position) {
 	Buffer << Item->Quality << "%";
 	glm::vec4 DrawColor;
 	Item->GetQualityColor(DrawColor);
-	Fonts[FONT_TINY]->DrawText(Buffer.str(), Position + glm::vec2(74, 18) * ae::_Element::GetUIScale(), ae::RIGHT_BASELINE, DrawColor);
+	Fonts[FONT_TINY]->DrawText(Buffer.str(), glm::ivec2(Position + glm::vec2(74, 18) * ae::_Element::GetUIScale()), ae::RIGHT_BASELINE, DrawColor);
 }
 
 // Draw item level
-void _HUD::DrawItemLevel(_Item *Item, const glm::vec2 &Position) {
+void _HUD::DrawItemLevel(const _Item *Item, const glm::vec2 &Position) {
 	if(!Item)
 		return;
 
 	std::ostringstream Buffer;
 	Buffer << Item->Level;
-	Fonts[FONT_TINY]->DrawText(Buffer.str(), Position + glm::vec2(4, 18) * ae::_Element::GetUIScale(), ae::LEFT_BASELINE, COLOR_GOLD);
+	Fonts[FONT_TINY]->DrawText(Buffer.str(), glm::ivec2(Position + glm::vec2(4, 18) * ae::_Element::GetUIScale()), ae::LEFT_BASELINE, COLOR_GOLD);
 }
 
 // Draw the skill popup window
