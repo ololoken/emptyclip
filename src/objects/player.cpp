@@ -294,7 +294,6 @@ void _Player::RecalculateStats() {
 	// Set skill stats
 	BaseMoveSpeed += Stats.GetSkill(Skills[SKILL_CUNNING], SKILL_CUNNING);
 	MaxStamina = Stats.GetSkillBonusMultiplier(Skills[SKILL_ENDURANCE], SKILL_ENDURANCE);
-	StaminaRegenModifier = Stats.GetSkillBonusMultiplier(Skills[SKILL_ENDURANCE], SKILL_ENDURANCE);
 	WeaponSwitchPeriod = PLAYER_WEAPONSWITCHPERIOD / Stats.GetSkillBonusMultiplier(Skills[SKILL_DEXTERITY], SKILL_DEXTERITY);
 	HealthBonus += Stats.GetSkill(Skills[SKILL_VITALITY], SKILL_VITALITY);
 	HealModifier = Stats.GetSkillBonusMultiplier(Skills[SKILL_VITALITY], SKILL_VITALITY, 1);
@@ -310,6 +309,7 @@ void _Player::RecalculateStats() {
 		DamageResist += GetArmor()->Attributes.at("damage_resist").Int;
 		BaseMoveSpeed += GetArmor()->Attributes.at("move_speed").Int;
 		Attributes["max_ammo"].Int += GetArmor()->Attributes.at("max_ammo").Int;
+		MaxStamina += GetArmor()->Attributes.at("max_stamina").Int * 0.01f;
 		HealthBonus += GetArmor()->Attributes.at("health").Int;
 		WeaponDamage[WEAPON_MELEE] += GetArmor()->Attributes.at("melee_damage").Int;
 		WeaponDamage[WEAPON_PISTOL] += GetArmor()->Attributes.at("pistol_damage").Int;
@@ -416,7 +416,7 @@ void _Player::Update(double FrameTime) {
 
 	// Update stamina
 	if(!IsDying() && !Sprinting)
-		Stamina += PLAYER_STAMINAREGEN * StaminaRegenModifier * FrameTime;
+		Stamina += MaxStamina * PLAYER_STAMINAREGEN * FrameTime;
 
 	if(Stamina > MaxStamina)
 	   Stamina = MaxStamina;

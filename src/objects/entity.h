@@ -97,7 +97,6 @@ class _Entity : public _Object {
 		float MoveModifier{1.0f};
 		float Stamina{1.0f};
 		float MaxStamina{1.0f};
-		float StaminaRegenModifier{1.0f};
 		float BaseMoveSpeed{0.0f};
 		int WallState{0};
 		bool Tired{false};
