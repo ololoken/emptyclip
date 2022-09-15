@@ -175,6 +175,7 @@ void _Item::DrawTooltip(const _Player *Player, size_t CompareSlot, int Inventory
 		HelpTextList.push_back("Right-click to unequip");
 
 	bool ShowEquipHelp = InventorySlot >= INVENTORY_BAGSTART || (InventorySlot == -1 && PlayState.HUD->InventoryOpen);
+
 	// Show attributes
 	switch(Type) {
 		case _Object::WEAPON: {
@@ -379,6 +380,9 @@ void _Item::DrawTooltip(const _Player *Player, size_t CompareSlot, int Inventory
 				HelpTextList.push_back("Drag onto weapon");
 			else if(Template.Attributes.at("object_type").Int == _Object::ARMOR)
 				HelpTextList.push_back("Drag onto armor");
+
+			if(InventorySlot == -1 && PlayState.HUD->InventoryOpen)
+				HelpTextList.push_back("Right-click to pick up");
 
 			DrawPosition.y += Spacing.y;
 			std::string Percent = Template.Attributes.at("percent_sign").Int ? "%" : "";

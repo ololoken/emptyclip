@@ -29,6 +29,7 @@
 #include <ae/audio.h>
 #include <ae/util.h>
 #include <ae/camera.h>
+#include <states/play.h>
 #include <map.h>
 #include <actiontype.h>
 #include <config.h>
@@ -376,6 +377,10 @@ void _HUD::MouseEvent(const ae::_MouseEvent &MouseEvent) {
 						case _Object::ARMOR:
 							Slot = INVENTORY_ARMOR;
 						break;
+						case _Object::MOD: {
+							int AmountAdded = 0;
+							PlayState.PickupObject(CursorOverItem, AmountAdded);
+						} break;
 					}
 
 					// Equip item
