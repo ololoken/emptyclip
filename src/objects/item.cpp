@@ -98,10 +98,6 @@ void _Item::DrawTooltip(const _Player *Player, size_t CompareSlot, int Inventory
 		Size.y = 330 * ae::_Element::GetUIScale();
 	}
 
-	// Remove space for help text
-	if(InventorySlot < INVENTORY_BAGSTART && (Type == _Object::WEAPON || Type == _Object::ARMOR))
-		Size.y -= HelpSpacing.y * ae::_Element::GetUIScale();
-
 	// Increase size for each unique mod
 	bool HasOneBonus = false;
 	for(int i = 1; i < MOD_COUNT; i++) {
