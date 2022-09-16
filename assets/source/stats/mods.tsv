@@ -18,3 +18,4 @@ mod_pistoldamage	Pistol Damage Mod	textures/items/mod_pistoldamage.png	16	4	2	10
 mod_shotgundamage	Shotgun Damage Mod	textures/items/mod_shotgundamage.png	17	4	3	10	0.909090909090909	1
 mod_rifledamage	Rifle Damage Mod	textures/items/mod_rifledamage.png	18	4	4	10	0.909090909090909	1
 mod_heavydamage	Heavy Damage Mod	textures/items/mod_heavydamage.png	19	4	5	10	0.909090909090909	1
+mod_critchance	Crit Chance Mod	textures/items/mod_critchance.png	20	3	0	1	0.237373737373737	1
