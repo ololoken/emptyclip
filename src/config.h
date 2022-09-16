@@ -46,7 +46,7 @@ class _Config {
 		double MaxFPS;
 		int Vsync;
 		int MSAA;
-		int Anisotrophy;
+		int Anisotropy;
 		int Fullscreen;
 
 		// Game

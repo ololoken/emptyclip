@@ -30,7 +30,7 @@ const  int          DEFAULT_FULLSCREEN                   =  1;
 const  int          DEFAULT_AUDIOENABLED                 =  1;
 const  int          DEFAULT_VSYNC                        =  1;
 const  int          DEFAULT_MSAA                         =  0;
-const  int          DEFAULT_ANISOTROPHY                  =  0;
+const  int          DEFAULT_ANISOTROPY                   =  1.0f;
 const  double       DEFAULT_MAXFPS                       =  240.0;
 //     Config
 const  int          CONFIG_VERSION                       =  3;

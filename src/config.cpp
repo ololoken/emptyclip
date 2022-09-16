@@ -81,7 +81,7 @@ void _Config::SetDefaults(bool FromOptionsScreen) {
 	Version = CONFIG_VERSION;
 	WindowSize = DEFAULT_WINDOW_SIZE;
 	MSAA = DEFAULT_MSAA;
-	Anisotrophy = DEFAULT_ANISOTROPHY;
+	Anisotropy = DEFAULT_ANISOTROPY;
 	if(!FromOptionsScreen)
 		Fullscreen = DEFAULT_FULLSCREEN;
 	Vsync = DEFAULT_VSYNC;
@@ -178,7 +178,7 @@ void _Config::Load() {
 	GetValue("fullscreen", Fullscreen);
 	GetValue("vsync", Vsync);
 	GetValue("max_fps", MaxFPS);
-	GetValue("anisotrophy", Anisotrophy);
+	GetValue("anisotropy", Anisotropy);
 	GetValue("msaa", MSAA);
 	GetValue("audio_enabled", AudioEnabled);
 	GetValue("weapon_flashes", WeaponFlashes);
@@ -233,7 +233,7 @@ void _Config::Save() {
 	File << "vsync=" << Vsync << std::endl;
 	File << "max_fps=" << MaxFPS << std::endl;
 	File << "msaa=" << MSAA << std::endl;
-	File << "anisotrophy=" << Anisotrophy << std::endl;
+	File << "anisotropy=" << Anisotropy << std::endl;
 	File << "audio_enabled=" << AudioEnabled << std::endl;
 	File << "weapon_flashes=" << WeaponFlashes << std::endl;
 	File << "wall_decals=" << WallDecals << std::endl;

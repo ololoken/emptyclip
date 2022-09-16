@@ -201,13 +201,12 @@ void _Menu::InitOptions() {
 		Samples *= 2;
 	}
 
-	// Set up Aniso values
-	AnisoValues.clear();
-	AnisoValues.push_back(0);
-	int Aniso = 2;
-	while(Aniso <= ae::Graphics.MaxAnisotropy) {
-		AnisoValues.push_back(Aniso);
-		Aniso *= 2;
+	// Set up anisotropy values
+	AnisotropyValues.clear();
+	int Anisotropy = 1;
+	while(Anisotropy <= ae::Graphics.MaxAnisotropy) {
+		AnisotropyValues.push_back(Anisotropy);
+		Anisotropy *= 2;
 	}
 
 	UpdateOptions();
@@ -369,15 +368,15 @@ void _Menu::UpdateOptions() {
 	// Set anisotropic filtering
 	{
 		float Offset = 0.0f;
-		for(size_t i = 0; i < AnisoValues.size(); i++) {
-			if(Config.Anisotrophy == AnisoValues[i]) {
-				Offset = i * (1.0f / (AnisoValues.size() - 1));
+		for(size_t i = 0; i < AnisotropyValues.size(); i++) {
+			if(Config.Anisotropy == AnisotropyValues[i]) {
+				Offset = i * (1.0f / (AnisotropyValues.size() - 1));
 				break;
 			}
 		}
 
-		ae::Assets.Elements["button_menu_options_aniso"]->SetOffsetPercent(glm::vec2(Offset, 0));
-		ae::Assets.Elements["label_menu_options_aniso_value"]->Text = std::to_string(Config.Anisotrophy);
+		ae::Assets.Elements["button_menu_options_anisotropy"]->SetOffsetPercent(glm::vec2(Offset, 0));
+		ae::Assets.Elements["label_menu_options_anisotropy_value"]->Text = std::to_string(Config.Anisotropy);
 	}
 }
 
@@ -434,26 +433,26 @@ void _Menu::UpdateMSAA() {
 }
 
 // Update anisotropic filtering slider
-void _Menu::UpdateAniso() {
-	ae::_Element *AnisoSlider = ae::Assets.Elements["element_menu_options_aniso"];
-	ae::_Element *AnisoValue = ae::Assets.Elements["label_menu_options_aniso_value"];
-	ae::_Element *AnisoButton = ae::Assets.Elements["button_menu_options_aniso"];
+void _Menu::UpdateAnisotropy() {
+	ae::_Element *AnisotropySlider = ae::Assets.Elements["element_menu_options_anisotropy"];
+	ae::_Element *AnisotropyValue = ae::Assets.Elements["label_menu_options_anisotropy_value"];
+	ae::_Element *AnisotropyButton = ae::Assets.Elements["button_menu_options_anisotropy"];
 
 	// Handle clicking inside slider elements
-	if(!AnisoButton->PressedElement && AnisoSlider->PressedElement) {
-		AnisoButton->PressedOffset = AnisoButton->Size / 2.0f;
-		AnisoButton->PressedElement = AnisoButton;
+	if(!AnisotropyButton->PressedElement && AnisotropySlider->PressedElement) {
+		AnisotropyButton->PressedOffset = AnisotropyButton->Size / 2.0f;
+		AnisotropyButton->PressedElement = AnisotropyButton;
 	}
 
 	// Update value
-	if(AnisoButton->PressedElement) {
-		int Index = std::clamp((int)(AnisoValues.size() * AnisoButton->GetOffsetPercent().x), 0, (int)AnisoValues.size() - 1);
+	if(AnisotropyButton->PressedElement) {
+		int Index = std::clamp((int)(AnisotropyValues.size() * AnisotropyButton->GetOffsetPercent().x), 0, (int)AnisotropyValues.size() - 1);
 
-		Config.Anisotrophy = AnisoValues[Index];
+		Config.Anisotropy = AnisotropyValues[Index];
 
 		std::ostringstream Buffer;
-		Buffer << std::fixed << Config.Anisotrophy;
-		AnisoValue->Text = Buffer.str();
+		Buffer << std::fixed << Config.Anisotropy;
+		AnisotropyValue->Text = Buffer.str();
 		Buffer.str("");
 	}
 }
@@ -841,7 +840,7 @@ void _Menu::Update(double FrameTime) {
 		case STATE_OPTIONS:
 			UpdateVolume();
 			UpdateMSAA();
-			UpdateAniso();
+			UpdateAnisotropy();
 		break;
 		default:
 		break;

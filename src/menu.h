@@ -125,7 +125,7 @@ class _Menu {
 		void UpdateOptions();
 		void UpdateVolume();
 		void UpdateMSAA();
-		void UpdateAniso();
+		void UpdateAnisotropy();
 		void RefreshInputLabels();
 		void RefreshSaveSlots();
 		void SinglePlayerCancel();
@@ -150,7 +150,7 @@ class _Menu {
 		// Options
 		OptionsStateType OptionsState{OPTION_NONE};
 		std::vector<int> MSAAValues;
-		std::vector<int> AnisoValues;
+		std::vector<int> AnisotropyValues;
 		int CurrentAction{-1};
 
 		// Singleplayer

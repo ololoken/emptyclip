@@ -120,7 +120,6 @@ void _Framework::Init(int ArgumentCount, char **Arguments) {
 	WindowSettings.Vsync = Config.Vsync;
 	WindowSettings.Size = Config.WindowSize;
 	WindowSettings.MSAA = Config.MSAA;
-	WindowSettings.Anisotrophy = Config.Anisotrophy;
 	WindowSettings.Position = glm::ivec2(SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED);
 
 	// Set up subsystems
@@ -380,6 +379,7 @@ void _Framework::LoadAssets() {
 
 	TextureSettings.WrapMode = ae::_Texture::REPEAT;
 	TextureSettings.Mipmaps = true;
+	TextureSettings.Anisotropy = Config.Anisotropy;
 	ae::Assets.LoadTexturePack("textures/map", TextureSettings);
 	ae::Assets.LoadTexturePack("textures/props", TextureSettings);
 
@@ -393,6 +393,7 @@ void _Framework::LoadAssets() {
 
 	TextureSettings.WrapMode = ae::_Texture::CLAMP_TO_EDGE;
 	TextureSettings.Mipmaps = true;
+	TextureSettings.Anisotropy = Config.Anisotropy;
 	ae::Assets.LoadTexturePack("textures/animations", TextureSettings);
 	ae::Assets.LoadTexturePack("textures/items", TextureSettings);
 	ae::Assets.LoadTexturePack("textures/icons", TextureSettings);
@@ -400,6 +401,7 @@ void _Framework::LoadAssets() {
 
 	TextureSettings.WrapMode = ae::_Texture::CLAMP_TO_BORDER;
 	TextureSettings.Mipmaps = true;
+	TextureSettings.Anisotropy = Config.Anisotropy;
 	ae::Assets.LoadTexturePack("textures/lights", TextureSettings);
 	ae::Assets.LoadTexturePack("textures/melee", TextureSettings);
 
