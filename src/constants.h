@@ -45,6 +45,7 @@ const  int          GAME_PLAYERLEVEL_SOFTCAP             =  181;
 const  int          GAME_SKILL_SOFTCAP                   =  100;
 const  int          GAME_MAX_SKILL_PERLEVEL              =  3;
 const  int          GAME_PROGRESSION_DIFFICULTY          =  10;
+const  float        GAME_PROGRESSION_STAT_MULTIPLIER     =  0.025f;
 const  double       GAME_EXPERIENCE_LOST                 =  0.1;
 const  double       GAME_INVULNERABLE_TIME               =  3.0;
 const  int          GAME_MEDKIT_HEALTH_PERCENT           =  25;

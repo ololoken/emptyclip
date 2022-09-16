@@ -1577,7 +1577,7 @@ void _PlayState::UpdateEvents(double FrameTime) {
 
 						// Spawn monsters
 						for(int j = 0; j < Event->SpawnMultiplier; j++) {
-							_Monster *Monster = Stats.CreateMonster(Event->MonsterID, Event->SpawnLevel + Map->GetAddedLevel(), Position, SpecialType);
+							_Monster *Monster = Stats.CreateMonster(Event->MonsterID, Event->SpawnLevel + Map->GetAddedLevel(), Map->Progression, Position, SpecialType);
 							Monster->Player = Player;
 							Monster->FreePathingTimer = ENTITY_FREEPATHING_TIMER_INCREMENT * j;
 							AddMonster(Monster);
@@ -1656,7 +1656,7 @@ void _PlayState::DeleteMonsters() {
 // Spawn an object in the map
 void _PlayState::SpawnObject(_ObjectSpawn *ObjectSpawn, bool GenerateStats, int AddedLevel) {
 	if(ObjectSpawn->Type == _Object::MONSTER) {
-		_Monster *Monster = Stats.CreateMonster(ObjectSpawn->ID, ObjectSpawn->Level + Map->GetAddedLevel(), ObjectSpawn->Position);
+		_Monster *Monster = Stats.CreateMonster(ObjectSpawn->ID, ObjectSpawn->Level + Map->GetAddedLevel(), Map->Progression, ObjectSpawn->Position);
 		Monster->Player = Player;
 		AddMonster(Monster);
 		if(Monster->IsCrate())

@@ -698,8 +698,11 @@ _Item *_Stats::CreateItem(const std::string &ID, int Level, int Quality, int Cou
 }
 
 // Create monster
-_Monster *_Stats::CreateMonster(const std::string &ID, int Level, const glm::vec2 &Position, size_t SpecialType) {
+_Monster *_Stats::CreateMonster(const std::string &ID, int Level, int Progression, const glm::vec2 &Position, size_t SpecialType) {
 	const _ObjectTemplate &Template = Objects.at(ID);
+
+	// Add extra difficulty for each progression
+	float StatMultiplier = 1.0f + Progression * GAME_PROGRESSION_STAT_MULTIPLIER;
 
 	// Create object
 	_Monster *Monster = new _Monster(Template);
@@ -726,11 +729,11 @@ _Monster *_Stats::CreateMonster(const std::string &ID, int Level, const glm::vec
 	Monster->MoveSpeed = Monster->GetAttributeLevel("move_speed", 1.0f, ENTITY_MAX_MOVESPEED_LEVEL);
 	Monster->Radius = Template.Attributes.at("radius").Float;
 	Monster->Scale = Template.Attributes.at("scale").Float;
-	Monster->Health = Monster->MaxHealth = Monster->GetAttributeLevel("health", 1.0f);
-	Monster->ExperienceGiven = Monster->GetAttributeLevel("xp", 1.0f);
+	Monster->Health = Monster->MaxHealth = Monster->GetAttributeLevel("health", StatMultiplier);
+	Monster->ExperienceGiven = Monster->GetAttributeLevel("xp", StatMultiplier);
 	Monster->MinAccuracy = Template.Attributes.at("accuracy").Int;
 	for(int i = 0; i < WEAPONATTACK_COUNT; i++) {
-		Monster->GetAttributeRange("damage", 1.0f, Monster->MinDamage[i], Monster->MaxDamage[i]);
+		Monster->GetAttributeRange("damage", StatMultiplier, Monster->MinDamage[i], Monster->MaxDamage[i]);
 		Monster->AttackTimer[i] = Monster->AttackPeriod[i] = Template.Attributes.at("attack_period").Double;
 		Monster->ShootPeriod[i] = AI_SHOOT_PERIOD;
 		Monster->MaxAccuracy[i] = Template.Attributes.at("accuracy").Int;

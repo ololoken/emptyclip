@@ -131,7 +131,7 @@ class _Stats {
 		void LoadAchievements();
 
 		_Item *CreateItem(const std::string &ID, int Level, int Quality, int Count, const glm::vec2 &Position, bool RandomStats);
-		_Monster *CreateMonster(const std::string &ID, int Level, const glm::vec2 &Position, size_t SpecialType=0);
+		_Monster *CreateMonster(const std::string &ID, int Level, int Progression, const glm::vec2 &Position, size_t SpecialType=0);
 		_Object *CreateProp(const std::string &ID, const glm::vec2 &Position, float Rotation, float Scale) const;
 		_Object *CreateProjectile(const _ObjectTemplate &Template, const glm::vec2 &Position) const;
 
