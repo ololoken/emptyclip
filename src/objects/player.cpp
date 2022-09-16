@@ -1354,6 +1354,7 @@ void _Player::OnHit(_Entity *Attacker, const _Hit &Hit) {
 
 // Play equip sounds
 bool _Player::PlayEquipSound(int Slot) const {
+
 	switch(Slot) {
 		case INVENTORY_ARMOR:
 			ae::Audio.PlaySound(ae::Assets.Sounds["equip_armor0.ogg"]);
@@ -1362,6 +1363,10 @@ bool _Player::PlayEquipSound(int Slot) const {
 		case INVENTORY_MAINHAND:
 		case INVENTORY_OFFHAND:
 			ae::Audio.PlaySound(ae::Assets.Sounds["equip_gun0.ogg"]);
+			return true;
+		break;
+		case INVENTORY_MELEE:
+			ae::Audio.PlaySound(ae::Assets.Sounds["equip_melee0.ogg"]);
 			return true;
 		break;
 	}
