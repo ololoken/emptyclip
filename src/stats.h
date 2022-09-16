@@ -138,6 +138,7 @@ class _Stats {
 		const _Level &FindLevel(int64_t Experience);
 		int GetLevelHealth(int Level) { return Levels[(size_t)Level-1].HealthBonus; }
 		int GetSkillPointsRemaining(int Level) { return Levels[(size_t)Level-1].SkillPoints; }
+		int GetSkillLevels() const { return (int)Skills.size() - 1; }
 		int GetMaxSkillLevel(int PlayerLevel) const;
 		int GetMaxLevel() const { return (int)Levels.size(); }
 
@@ -147,25 +148,25 @@ class _Stats {
 
 		void GetRandomDrop(const _ItemDrop *ItemDrop, _ObjectSpawn *ObjectSpawn);
 
+		ae::_Database *Database;
+
 		std::unordered_map<std::string, std::string> Strings;
 		std::unordered_map<std::string, _ObjectTemplate> Objects;
 		std::unordered_map<std::string, _ItemDrop> ItemDrops;
 		std::vector<_Special> Specials;
 		std::vector<_Level> Levels;
 		std::vector<_Achievement> Achievements;
-		_Item *WeaponFists{nullptr};
 
 		std::vector<std::string> AmmoNames;
 		std::vector<std::string> ModNames;
+		std::vector<_Skill> Skills;
 
-		ae::_Database *Database;
+		_Item *WeaponFists{nullptr};
 
 	private:
 
 		void SetColor(glm::vec4 &Color, const std::string &ColorID);
 		_ParticleGroup BlankWeaponParticle;
-
-		std::vector<_Skill> Skills;
 };
 
 extern _Stats Stats;

@@ -477,7 +477,7 @@ void _HUD::Update(double FrameTime, float Radius, double Clock) {
 				continue;
 
 			SkillButton->Enabled = false;
-			if(Player->SkillPointsRemaining && Player->Skills[i] < Stats.GetMaxSkillLevel(Player->Level) && Player->Skills[i] < GAME_SKILLLEVELS)
+			if(Player->SkillPointsRemaining && Player->Skills[i] < Stats.GetMaxSkillLevel(Player->Level) && Player->Skills[i] < Stats.GetSkillLevels())
 				SkillButton->Enabled = true;
 		}
 	}
@@ -1062,8 +1062,8 @@ void _HUD::UpdateSkillTooltip(int Skill, const glm::vec2 &Position) {
 	// Get skill description
 	std::ostringstream Buffer;
 	std::ostringstream BufferNext;
-	Buffer << std::setprecision(3);
-	BufferNext << std::setprecision(3);
+	Buffer << std::setprecision(5);
+	BufferNext << std::setprecision(5);
 	int Level = Player->Skills[Skill];
 	Elements[LABEL_SKILLTEXTALT]->Text = "";
 	switch(Skill) {
@@ -1071,7 +1071,7 @@ void _HUD::UpdateSkillTooltip(int Skill, const glm::vec2 &Position) {
 			Elements[LABEL_SKILLTEXT]->Text = "Increases Melee Damage";
 			Elements[LABEL_SKILLTEXTALT]->Text = "Increases Gun Handling";
 			Buffer << "+" << Stats.GetSkill(Level, Skill) << "%";
-			BufferNext << "+" << Stats.GetSkill(Stats.GetValidSkillLevel(Player->Skills[Skill]+1), Skill) << "%";
+			BufferNext << "+" << Stats.GetSkill(Stats.GetValidSkillLevel(Level+1), Skill) << "%";
 		break;
 		case SKILL_DEXTERITY:
 			Elements[LABEL_SKILLTEXT]->Text = "Increases Reload Speed";
@@ -1125,7 +1125,7 @@ void _HUD::UpdateSkillTooltip(int Skill, const glm::vec2 &Position) {
 
 	// Wrap text
 	Elements[LABEL_SKILL_LEVEL]->Text = Buffer.str();
-	if(Player->Skills[Skill]+1 > GAME_SKILLLEVELS)
+	if(Player->Skills[Skill]+1 > Stats.GetSkillLevels())
 		BufferNext.str("");
 	Elements[LABEL_SKILL_LEVEL_NEXT]->Text = BufferNext.str();
 
@@ -1133,12 +1133,20 @@ void _HUD::UpdateSkillTooltip(int Skill, const glm::vec2 &Position) {
 	ae::Assets.Elements["label_hud_skill_more"]->Text = "";
 	ae::Assets.Elements["label_hud_skill_max"]->Text = "";
 	ae::Assets.Elements["label_hud_skill_next"]->Text = "Next Level";
-	if(Player->Skills[Skill] >= GAME_SKILLLEVELS) {
+	if(Player->Skills[Skill] >= Stats.GetSkillLevels()) {
 		ae::Assets.Elements["label_hud_skill_next"]->Text = "";
 		ae::Assets.Elements["label_hud_skill_max"]->Text = "Max Level";
 	}
-	else if(Player->Skills[Skill] >= Stats.GetMaxSkillLevel(Player->Level))
-		ae::Assets.Elements["label_hud_skill_more"]->Text = "Player Level " + std::to_string(Player->Level + 1) + " Required";
+	else {
+		int LevelRequired = 0;
+		if(Player->Level <= GAME_PLAYERLEVEL_SOFTCAP && Player->Skills[Skill] >= GAME_SKILL_SOFTCAP)
+			LevelRequired = GAME_PLAYERLEVEL_SOFTCAP + 1;
+		else if(Player->Skills[Skill] >= Stats.GetMaxSkillLevel(Player->Level))
+			LevelRequired = Player->Level + 1;
+
+		if(LevelRequired)
+			ae::Assets.Elements["label_hud_skill_more"]->Text = "Player Level " + std::to_string(LevelRequired) + " Required";
+	}
 }
 
 // Format day night clock

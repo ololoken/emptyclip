@@ -817,15 +817,18 @@ const _Level &_Stats::FindLevel(int64_t Experience) {
 
 // Get max level for any skill given a player level
 int _Stats::GetMaxSkillLevel(int PlayerLevel) const {
-	return (PlayerLevel - 1) * GAME_MAX_SKILL_PERLEVEL;
+	if(PlayerLevel <= GAME_PLAYERLEVEL_SOFTCAP)
+		return std::min(GAME_SKILL_SOFTCAP, (PlayerLevel - 1) * GAME_MAX_SKILL_PERLEVEL);
+	else
+		return (PlayerLevel - GAME_PLAYERLEVEL_SOFTCAP) * GAME_MAX_SKILL_PERLEVEL + GAME_SKILL_SOFTCAP;
 }
 
 // Returns a skill value in a valid range
 int _Stats::GetValidSkillLevel(int Level) {
 	if(Level < 0)
 		return 0;
-	else if(Level >= GAME_SKILLLEVELS)
-		return GAME_SKILLLEVELS;
+	else if(Level >= Stats.GetSkillLevels())
+		return Stats.GetSkillLevels();
 
 	return Level;
 }
