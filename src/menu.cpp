@@ -202,6 +202,7 @@ void _Menu::InitOptions() {
 	}
 
 	// Set up anisotropy values
+	LastAnisotropy = Config.Anisotropy;
 	AnisotropyValues.clear();
 	int Anisotropy = 1;
 	while(Anisotropy <= ae::Graphics.MaxAnisotropy) {
@@ -449,11 +450,23 @@ void _Menu::UpdateAnisotropy() {
 		int Index = std::clamp((int)(AnisotropyValues.size() * AnisotropyButton->GetOffsetPercent().x), 0, (int)AnisotropyValues.size() - 1);
 
 		Config.Anisotropy = AnisotropyValues[Index];
+		if(LastAnisotropy != Config.Anisotropy) {
+			UpdateTextures();
+			LastAnisotropy = Config.Anisotropy;
+		}
 
 		std::ostringstream Buffer;
 		Buffer << std::fixed << Config.Anisotropy;
 		AnisotropyValue->Text = Buffer.str();
 		Buffer.str("");
+	}
+}
+
+// Update filtering for textures
+void _Menu::UpdateTextures() {
+	for(const auto &Texture : ae::Assets.Textures) {
+		if(Texture.second && Texture.second->Mipmaps)
+			Texture.second->UpdateAnisotropicFiltering(Config.Anisotropy);
 	}
 }
 
@@ -716,6 +729,7 @@ void _Menu::HandleMouseButton(const ae::_MouseEvent &MouseEvent) {
 					}
 					else if(Clicked->Name == "button_menu_options_cancel") {
 						Config.Load();
+						UpdateTextures();
 						if(Framework.GetState() == &PlayState)
 							InitInGame();
 						else
