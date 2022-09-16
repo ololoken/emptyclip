@@ -1008,6 +1008,8 @@ void _HUD::DrawItemValue(const _Item *Item, const glm::vec2 &Position) {
 	switch(Item->Type) {
 		case _Object::MOD:
 			Buffer << "+" << Item->Attributes.at("bonus").Int;
+			if(Item->Template.Attributes.at("percent_sign").Int)
+				Buffer << "%";
 		break;
 		case _Object::WEAPON:
 			Buffer << ae::Round1(Item->GetAverageDamage());
