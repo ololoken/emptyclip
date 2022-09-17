@@ -849,10 +849,10 @@ void _HUD::DrawCharacterScreen() {
 		DrawAttribute("Fire Rate", Buffer, DrawPosition);
 
 		Buffer << Player->CritChance[WEAPONATTACK_MAIN] << "%";
-		DrawAttribute("Crit Chance", Buffer, DrawPosition);
+		DrawAttribute("Critical Hit Chance", Buffer, DrawPosition);
 
 		Buffer << Player->CritDamage[WEAPONATTACK_MAIN] << "%";
-		DrawAttribute("Crit Damage", Buffer, DrawPosition);
+		DrawAttribute("Critical Hit Damage", Buffer, DrawPosition);
 	}
 
 	DrawPosition.y += 10 * ae::_Element::GetUIScale();

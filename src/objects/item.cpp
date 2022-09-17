@@ -211,7 +211,7 @@ void _Item::DrawTooltip(const _Player *Player, size_t CompareSlot, int Inventory
 				Buffer.str("");
 			}
 
-			// Crit chance
+			// Critical hit chance
 			if(Attributes.at("crit_chance").Int)
 				DrawAttribute("crit_chance", "Critical Hit Chance", DrawPosition, EquippedItem, false, true);
 
@@ -727,7 +727,7 @@ std::string _Item::ModTypeToString(int ModType) {
 			return "Heavy Damage";
 		break;
 		case MOD_CRITCHANCE:
-			return "Crit Chance";
+			return "Critical Hit Chance";
 		break;
 	}
 
