@@ -76,6 +76,7 @@ class _Entity : public _Object {
 
 		float GetHealthPercentage() const { return (float)Health / MaxHealth; }
 		float GetStaminaPercentage() const { return Stamina / MaxStamina; }
+		float GetPoisonIntensity() const { return std::min(PoisonTimer, 1.0) / 2.0f; }
 
 		virtual const ae::_Sound *GetSound(int SoundType, int AttackType) const;
 
@@ -116,6 +117,7 @@ class _Entity : public _Object {
 		int DyingAnimation{ANIMATION_DIE};
 		double InvulnerableTimer{0.0};
 		double LastHitTimer{0.0};
+		double PoisonTimer{0.0};
 
 		// Attacking attributes
 		float CurrentAccuracy{0.0f};
@@ -148,6 +150,7 @@ class _Entity : public _Object {
 		float Push[WEAPONATTACK_COUNT]{0.0f};
 		float Force[WEAPONATTACK_COUNT]{0.0f};
 		bool MeleeSwitch[WEAPONATTACK_COUNT]{false};
+		float PoisonPower{0.0f};
 		int MainWeaponType{0};
 		int AttackRequestType{0};
 		int BurstRoundsShot{0};

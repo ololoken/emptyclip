@@ -482,6 +482,7 @@ void _Stats::LoadMonsters() {
 		Template.Attributes["attack_period"].Double = Database->GetReal("attack_period");
 		Template.Attributes["weapon_type"].Int = Database->GetInt<int>("weapon_type");
 		Template.Attributes["attack_movespeed"].Float = Database->GetReal("attack_movespeed");
+		Template.Attributes["poison"].Float = Database->GetReal("poison");
 		Template.Attributes["projectile_speed"].Float = Database->GetReal("projectile_speed");
 		Template.Attributes["mass"].Float = Database->GetReal("mass");
 
@@ -732,6 +733,7 @@ _Monster *_Stats::CreateMonster(const std::string &ID, int Level, int Progressio
 	Monster->Health = Monster->MaxHealth = Monster->GetAttributeLevel("health", StatMultiplier);
 	Monster->ExperienceGiven = Monster->GetAttributeLevel("xp", StatMultiplier);
 	Monster->MinAccuracy = Template.Attributes.at("accuracy").Int;
+	Monster->PoisonPower = Template.Attributes.at("poison").Float;
 	for(int i = 0; i < WEAPONATTACK_COUNT; i++) {
 		Monster->GetAttributeRange("damage", StatMultiplier, Monster->MinDamage[i], Monster->MaxDamage[i]);
 		Monster->AttackTimer[i] = Monster->AttackPeriod[i] = Template.Attributes.at("attack_period").Double;

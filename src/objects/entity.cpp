@@ -548,12 +548,19 @@ void _Entity::OnAttack(_Entity *Victim, const _Hit &Hit) {
 void _Entity::OnHit(_Entity *Attacker, const _Hit &Hit) {
 	ae::Audio.PlaySound(GetSound(SOUND_TAKEDAMAGE, -1), ae::_SoundSettings(glm::vec3(Hit.Position.x, 0.0f, Hit.Position.y), 1.0f, AUDIO_REFERENCE_DISTANCE, AUDIO_MAX_DISTANCE, AUDIO_ROLL_OFF));
 	CurrentAccuracy = std::min(CurrentAccuracy + Recoil, MaxAccuracy[WEAPONATTACK_MAIN]);
+	PoisonTimer = std::max(PoisonTimer, (double)Attacker->PoisonPower);
 	LastHitTimer = 0.0;
 }
 
 // Update move modifier
 void _Entity::UpdateSpeed(float Factor) {
 	MoveModifier = 1.0f;
+
+	// Poisoned
+	if(PoisonTimer > 0.0)
+		MoveModifier *= 1.0f - GetPoisonIntensity();
+
+	// Attacking
 	if(Action == ACTION_SHOOT || Action == ACTION_MELEE)
 		MoveModifier *= AttackMoveSpeed[AttackRequestType];
 }

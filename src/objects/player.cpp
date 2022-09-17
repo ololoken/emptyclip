@@ -186,6 +186,7 @@ void _Player::Reset(bool Recalculate) {
 	WeaponSwitchTo = -1;
 	Stamina = 100.0f;
 	InvulnerableTimer = 0.0;
+	PoisonTimer = 0.0f;
 	Flashlight = false;
 	Mass = 1.0f;
 	StopAudio();
@@ -403,10 +404,16 @@ void _Player::Update(double FrameTime) {
 	for(int i = 0; i < WEAPONATTACK_COUNT; i++)
 		AttackTimer[i] += FrameTime;
 
-	if(InvulnerableTimer > 0) {
+	if(InvulnerableTimer > 0.0) {
 		InvulnerableTimer -= FrameTime;
-		if(InvulnerableTimer < 0)
+		if(InvulnerableTimer < 0.0)
 			InvulnerableTimer = 0.0;
+	}
+
+	if(PoisonTimer > 0.0) {
+		PoisonTimer -= FrameTime;
+		if(PoisonTimer < 0.0)
+			PoisonTimer = 0.0;
 	}
 
 	// Update clock
@@ -553,8 +560,14 @@ void _Player::Render(double BlendFactor) {
 	}
 	*/
 
+	glm::vec4 StateColor(1.0f);
+	if(PoisonTimer > 0.0) {
+		float RedGreen = 1.0f - GetPoisonIntensity();
+		StateColor = glm::vec4(RedGreen, 1.0f, RedGreen, 1.0f);
+	}
+
 	// Draw torso
-	ae::Graphics.SetColor(glm::vec4(1.0f, 1.0f, 1.0f, Alpha));
+	ae::Graphics.SetColor(StateColor);
 	ae::Graphics.DrawAnimationFrame(
 		glm::vec3(DrawPosition, PositionZ + 0.01f),
 		Animation->Reels[Animation->Reel]->Texture,
@@ -1161,18 +1174,14 @@ void _Player::UpdateWeaponSwitch() {
 
 // Updates the move speed modifier for aiming and running
 void _Player::UpdateSpeed(float Factor) {
+	_Entity::UpdateSpeed(Factor);
 
 	if(Aiming)
-		MoveModifier = PLAYER_AIM_MOVESPEEDFACTOR;
+		MoveModifier *= PLAYER_AIM_MOVESPEEDFACTOR;
 	else if(Sprinting)
-		MoveModifier = PLAYER_SPRINT_SPEEDFACTOR;
-	else
-		MoveModifier = 1.0f;
+		MoveModifier *= PLAYER_SPRINT_SPEEDFACTOR;
 
 	MoveModifier *= Factor;
-
-	if(Action == ACTION_SHOOT || Action == ACTION_MELEE)
-		MoveModifier *= AttackMoveSpeed[AttackRequestType];
 
 	LegAnimation->FramePeriod = LegAnimation->Reels[0]->FramePeriod / MoveModifier;
 	LegAnimation->Timer = std::min(LegAnimation->Timer, LegAnimation->FramePeriod);
