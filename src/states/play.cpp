@@ -1718,7 +1718,7 @@ void _PlayState::GenerateHitEffects(_Entity *Attacker, const int Type, const _Hi
 		glm::vec2 ParticlePosition = _Map::GenerateRandomPointInCircle(0.2f) + Hit.Object->Position;
 		Particles->Create(_ParticleSpawn(Hit.Object->GetParticle(PARTICLE_HIT), Hit.Normal, Hit.Position, OBJECT_Z, Attacker->Rotation));
 		if(Config.FloorDecals)
-			Particles->Create(_ParticleSpawn(Hit.Object->GetParticle(PARTICLE_FLOORDECAL), Hit.Normal, ParticlePosition, 0.06f, Attacker->Rotation));
+			Particles->Create(_ParticleSpawn(Hit.Object->GetParticle(PARTICLE_FLOORDECAL), Hit.Normal, ParticlePosition, ITEM_Z, Attacker->Rotation));
 	}
 }
 
