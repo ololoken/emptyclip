@@ -306,7 +306,6 @@ void _Entity::UpdateRecoil(double FrameTime) {
 
 // Moves the object with collision detection
 void _Entity::Move(double FrameTime) {
-	UpdateSpeed(1.0f);
 
 	// Check for moving
 	if(MoveState == MOVE_NONE && Velocity.x == 0.0f && Velocity.y == 0.0f) {
@@ -384,18 +383,22 @@ void _Entity::Move(double FrameTime) {
 		break;
 	}
 
+	// Moving backwards
+	if(Type == _Object::PLAYER) {
+		if(glm::dot(MoveDirection, Direction) < 0)
+			UpdateSpeed(PLAYER_BACKWARDS_SPEEDFACTOR);
+		else
+			UpdateSpeed(1.0f);
+	}
+	else
+		UpdateSpeed(1.0f);
+
 	// Update velocity
 	Velocity *= ENTITY_VELOCITY_FACTOR;
 	if(std::abs(Velocity.x) < ENTITY_VELOCITY_THRESHOLD)
 		Velocity.x = 0.0f;
 	if(std::abs(Velocity.y) < ENTITY_VELOCITY_THRESHOLD)
 		Velocity.y = 0.0f;
-
-	// Moving backwards
-	if(Type == _Object::PLAYER) {
-		if(glm::dot(MoveDirection, Direction) < 0)
-			UpdateSpeed(PLAYER_BACKWARDS_SPEEDFACTOR);
-	}
 
 	// Get speed
 	float Speed = std::min(MoveSpeed * MoveModifier, OBJECT_MAX_SPEED) * FrameTime;
