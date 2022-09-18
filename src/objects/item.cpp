@@ -568,6 +568,10 @@ bool _Item::ModCompatible(_Item *Mod) {
 			if(ModType == MOD_PENETRATION && Template.Attributes.at("explosion_size").Float > 0.0f)
 				return false;
 
+			// Attack speed doesn't affect weapons that fire all rounds
+			if(ModType == MOD_ATTACKSPEED && Template.Attributes.at("fire_allrounds").Int)
+			   return false;
+
 			// Accuracy only affects guns
 			if(ModType == MOD_ACCURACY && IsMelee())
 				return false;
