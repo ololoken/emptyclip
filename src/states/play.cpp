@@ -876,17 +876,28 @@ void _PlayState::Render(double BlendFactor) {
 				continue;
 
 			Camera->ConvertWorldToScreen(Iterator->Position, TextPosition);
-			Item->GetQualityColor(Color);
+			if(Item->Type == _Object::MOD) {
 
-			// Draw item level
-			Buffer << Item->Level;
-			ae::Assets.Fonts["hud_tiny"]->DrawText(Buffer.str(), glm::ivec2(TextPosition + glm::vec2(0, -2) * ae::_Element::GetUIScale()), ae::CENTER_BASELINE, COLOR_GOLD);
-			Buffer.str("");
+				// Show bonus value
+				Buffer << "+" << Item->Attributes.at("bonus").Int;
+				if(Item->Template.Attributes.at("percent_sign").Int)
+					Buffer << "%";
+				ae::Assets.Fonts["hud_tiny"]->DrawText(Buffer.str(), glm::ivec2(TextPosition + glm::vec2(0, 6) * ae::_Element::GetUIScale()), ae::CENTER_BASELINE, COLOR_WHITE);
+				Buffer.str("");
+			}
+			else {
+				Item->GetQualityColor(Color);
 
-			// Draw item quality
-			Buffer << Item->Quality << "%";
-			ae::Assets.Fonts["hud_tiny"]->DrawText(Buffer.str(), glm::ivec2(TextPosition + glm::vec2(0, 14) * ae::_Element::GetUIScale()), ae::CENTER_BASELINE, Color);
-			Buffer.str("");
+				// Draw item level
+				Buffer << Item->Level;
+				ae::Assets.Fonts["hud_tiny"]->DrawText(Buffer.str(), glm::ivec2(TextPosition + glm::vec2(0, -2) * ae::_Element::GetUIScale()), ae::CENTER_BASELINE, COLOR_GOLD);
+				Buffer.str("");
+
+				// Draw item quality
+				Buffer << Item->Quality << "%";
+				ae::Assets.Fonts["hud_tiny"]->DrawText(Buffer.str(), glm::ivec2(TextPosition + glm::vec2(0, 14) * ae::_Element::GetUIScale()), ae::CENTER_BASELINE, Color);
+				Buffer.str("");
+			}
 		}
 
 		Buffer << ae::Round1(Player->CurrentAccuracy);
