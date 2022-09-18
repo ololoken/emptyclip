@@ -44,6 +44,7 @@ void _Object::Update(double FrameTime) {
 		case PROJECTILE: {
 			LastPosition = Position;
 			Position += Velocity * (float)FrameTime;
+			Rotation += RotationSpeed;
 			if(Template.ParticleTemplate)
 				PlayState.GenerateProjectileEffects(Template.ParticleTemplate, Position);
 			CheckProjectileCollisions();

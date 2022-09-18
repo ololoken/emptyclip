@@ -563,6 +563,7 @@ void _Stats::LoadProjectiles() {
 		Template.Attributes["radius"].Float = Database->GetReal("radius");
 		Template.Attributes["scale"].Float = Database->GetReal("scale");
 		Template.Attributes["light_scale"].Float = Database->GetReal("light_scale");
+		Template.Attributes["rotation_speed"].Float = Database->GetReal("rotation_speed");
 
 		// Check for loaded textures
 		if(!ae::Assets.Textures[Template.IconID])
@@ -799,6 +800,7 @@ _Object *_Stats::CreateProjectile(const _ObjectTemplate &Template, const glm::ve
 	Projectile->Radius = Template.Attributes.at("radius").Float;
 	Projectile->Scale = Template.Attributes.at("scale").Float;
 	Projectile->PositionZ = OBJECT_Z;
+	Projectile->RotationSpeed = Template.Attributes.at("rotation_speed").Float;
 	Projectile->LightTexture = Template.LightTexture;
 	if(Projectile->LightTexture) {
 		Projectile->LightColor = Template.LightColor;

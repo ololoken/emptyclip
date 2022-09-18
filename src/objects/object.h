@@ -195,6 +195,7 @@ class _Object {
 		glm::vec4 LightColor{1.0f};
 		glm::vec2 LightScale{1.0f};
 		float Rotation{0.0f};
+		float RotationSpeed{0.0f};
 		float Scale{1.0f};
 		float PositionZ{0.0f};
 		bool Visible{true};
