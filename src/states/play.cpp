@@ -1029,6 +1029,7 @@ void _PlayState::ResolveAttack(_Entity *Attacker, int GridType) {
 
 	// For each bullet that the weapon fires
 	bool PlayedHitWallSound = false;
+	_Entity *FirstHit = nullptr;
 	std::unordered_map<_Object *, int> DecalObjects;
 	std::vector<_Hit> Hits;
 	Hits.reserve(Attacker->Penetration[Attacker->AttackRequestType]);
@@ -1108,6 +1109,10 @@ void _PlayState::ResolveAttack(_Entity *Attacker, int GridType) {
 						_Entity *HitEntity = (_Entity *)Hit.Object;
 						bool HitPlayer = Hit.Object->Type == _Object::PLAYER;
 
+						// Keep track of first hit entity
+						if(!HitPlayer && !FirstHit)
+							FirstHit = HitEntity;
+
 						// Generate damage
 						bool Crit = false;
 						int Damage = Attacker->GenerateDamage(Attacker->AttackRequestType, PenetrationDamage, Steady, Crit);
@@ -1141,6 +1146,10 @@ void _PlayState::ResolveAttack(_Entity *Attacker, int GridType) {
 			}
 		}
 	}
+
+	// Update HUD
+	if(FirstHit)
+		HUD->SetLastEntityHit(FirstHit);
 
 	// Update accuracy
 	Attacker->ApplyRecoil();
