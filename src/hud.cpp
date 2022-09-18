@@ -1219,10 +1219,11 @@ void _HUD::ShowLevelName(const std::string &Name, double Time) {
 
 // Format time for elapsed time
 void _HUD::FormatTime(char *Buffer, double Time) {
-	uint32_t Minutes = (uint32_t)(Time) / 60;
-	uint32_t Seconds = (uint32_t)(Time - Minutes * 60);
+	uint32_t Hours = Time / 3600;
+	uint32_t Minutes = (uint32_t)(Time / 60) % 60;
+	uint32_t Seconds = (uint32_t)(Time) % 60;
 	uint32_t Centiseconds = (uint32_t)((Time - (uint32_t)(Time)) * 100);
-	snprintf(Buffer, 255, "%.2d:%.2d.%.2d", Minutes, Seconds, Centiseconds);
+	snprintf(Buffer, 255, "%.2d:%.2d:%.2d.%.2d", Hours, Minutes, Seconds, Centiseconds);
 }
 
 // Format time with h m s
