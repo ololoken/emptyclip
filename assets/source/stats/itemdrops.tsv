@@ -22,6 +22,7 @@ weapon_minigun	0	0	0	0	0	0	0	1	0	0	0	0	0	0	0	0	1	0
 weapon_plasmarifle	0	0	0	0	0	0	0	1	0	0	0	0	0	0	0	0	1	0
 weapon_smg	0	0	0	0	0	1	0	0	0	0	0	0	0	0	1	1	0	0
 weapon_rocketlauncher	0	0	0	0	0	0	0	1	0	0	0	0	0	0	0	0	1	0
+weapon_sniper	0	0	0	0	0	0	0	1	0	0	0	0	0	0	0	0	1	0
 weapon_crossbow	0	0	0	0	0	0	1	0	0	0	0	0	0	0	0	1	1	0
 weapon_carbine	0	0	0	0	0	0	1	0	0	0	0	0	0	0	1	1	0	0
 weapon_sawedoff	0	0	0	0	0	1	0	0	0	0	0	0	0	0	1	1	0	0
