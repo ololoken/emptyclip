@@ -1537,7 +1537,7 @@ void _EditorState::DrawEventTiles(_Event *Event, const glm::vec4 &Color) {
 	const std::vector<_EventTile> &Tiles = Event->Tiles;
 	for(size_t i = 0; i < Tiles.size(); i++) {
 		ae::Graphics.SetColor(Color);
-		ae::Graphics.DrawRectangle3D(glm::vec2(Tiles[i].Coord.x + 0.2f, Tiles[i].Coord.y + 0.2f), glm::vec2(Tiles[i].Coord.x + 0.8f, Tiles[i].Coord.y + 0.8f), false);
+		ae::Graphics.DrawRectangle3D(glm::vec2(Tiles[i].Coord.x + 0.2f, Tiles[i].Coord.y + 0.2f), glm::vec2(Tiles[i].Coord.x + 0.8f, Tiles[i].Coord.y + 0.8f), true);
 
 		if(Tiles[i].BlockID == -1)
 			continue;
