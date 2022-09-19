@@ -157,11 +157,10 @@ void _Monster::Update(double FrameTime) {
 		StartAttack();
 
 	// Move
-	if(MoveState == MOVE_NONE) {
-		PositionChanged = false;
-	}
-	else {
-		Move(FrameTime);
+	Move(FrameTime);
+
+	// Check static timer
+	if(MoveState != MOVE_NONE) {
 
 		// Check for inactive distance
 		if(glm::distance2(LastPosition, Position) > StopThresholdSquared) {
