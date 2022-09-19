@@ -76,8 +76,8 @@ void _Monster::Update(double FrameTime) {
 		MoveState = MOVE_NONE;
 		PositionChanged = false;
 
-		// Update body position while dying
-		if(IsDying())
+		// Keep velocity updated
+		if(Player->IsInvulnerable() || IsDying())
 			Move(FrameTime);
 
 		return;

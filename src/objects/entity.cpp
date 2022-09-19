@@ -394,7 +394,18 @@ void _Entity::Move(double FrameTime) {
 		UpdateSpeed(1.0f);
 
 	// Update velocity
-	Velocity *= ENTITY_VELOCITY_FACTOR;
+	if(Velocity.x != 0.0f || Velocity.y != 0.0f) {
+		glm::vec2 FrictionVector = -glm::normalize(Velocity) * ENTITY_FRICTION_FACTOR;
+		bool WasNegativeX = Velocity.x < 0.0f;
+		bool WasNegativeY = Velocity.y < 0.0f;
+		Velocity += FrictionVector;
+		if((WasNegativeX && Velocity.x > 0.0f) || (!WasNegativeX && Velocity.x < 0.0f))
+			Velocity.x = 0.0f;
+		if((WasNegativeY && Velocity.y > 0.0f) || (!WasNegativeY && Velocity.y < 0.0f))
+			Velocity.y = 0.0f;
+	}
+
+	// Check velocity threshold
 	if(std::abs(Velocity.x) < ENTITY_VELOCITY_THRESHOLD)
 		Velocity.x = 0.0f;
 	if(std::abs(Velocity.y) < ENTITY_VELOCITY_THRESHOLD)
