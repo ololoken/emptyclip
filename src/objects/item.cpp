@@ -483,10 +483,9 @@ void _Item::RecalculateStats() {
 	float QualityFactor = 1.0f + Quality * 0.01f;
 	switch(Type) {
 		case _Object::WEAPON: {
-			float AccuracyMultiplier = GetBonusMultiplier(MOD_ACCURACY, true);
 			SetAttributeRange("damage", GetBonusMultiplier(MOD_DAMAGE));
-			Attributes["accuracy_min"].Float = Template.Attributes.at("accuracy_min").Float * AccuracyMultiplier;
-			Attributes["accuracy_max"].Float = Template.Attributes.at("accuracy_max").Float * AccuracyMultiplier;
+			Attributes["accuracy_min"].Float = Template.Attributes.at("accuracy_min").Float * GetBonusMultiplier(MOD_ACCURACY, true);
+			Attributes["accuracy_max"].Float = Template.Attributes.at("accuracy_max").Float;
 			Attributes["fire_period"].Double = Template.Attributes.at("fire_period").Double * GetBonusMultiplier(MOD_ATTACKSPEED, true);
 			Attributes["shoot_period"].Double = Template.Attributes.at("shoot_period").Double * GetBonusMultiplier(MOD_HANDLING, true);
 			Attributes["attack_count"].Int = Template.Attributes.at("attack_count").Int;
@@ -675,7 +674,7 @@ std::string _Item::ModTypeToString(int ModType) {
 			return "Damage";
 		break;
 		case MOD_ACCURACY:
-			return "Accuracy";
+			return "Minimum Accuracy";
 		break;
 		case MOD_ATTACKSPEED:
 			if(Type == _Object::MOD)
