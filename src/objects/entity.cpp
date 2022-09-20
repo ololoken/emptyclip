@@ -222,7 +222,7 @@ void _Entity::UpdateAnimation(double FrameTime, bool PlaySound) {
 				SetAnimationPlaybackSpeedFactor();
 				Action = ACTION_MOVING;
 			}
-			else
+			else if(Animation->Mode != ae::_Animation::STOPPED)
 				Animation->Stop();
 		break;
 		case ACTION_MOVING:
