@@ -506,7 +506,7 @@ void _Item::RecalculateStats() {
 			Attributes["move_recoil"].Float = Template.Attributes.at("move_recoil").Float * GetBonusMultiplier(MOD_HANDLING, true);
 			Attributes["penetration"].Int = Template.Attributes.at("penetration").Int + Bonus[MOD_PENETRATION];
 			Attributes["penetration_damage"].Float = std::clamp(Template.Attributes.at("penetration_damage").Float * QualityFactor, 0.0f, 1.0f);
-			Attributes["crit_chance"].Int = std::clamp(Template.Attributes.at("crit_chance").Int + Bonus[MOD_CRITCHANCE], 0, 100);
+			Attributes["crit_chance"].Int = std::clamp((int)(Template.Attributes.at("crit_chance").Int * QualityFactor) + Bonus[MOD_CRITCHANCE], 0, 100);
 			Attributes["rounds"].Int = std::round((Template.Attributes.at("rounds").Int + Bonus[MOD_MAXROUNDSPLUS]) * GetBonusMultiplier(MOD_MAXROUNDS));
 			if(Bonus[MOD_FULLAUTO])
 				Attributes["fire_rate"].Int = 1;
