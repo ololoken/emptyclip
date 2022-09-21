@@ -90,7 +90,7 @@ void _Item::DrawTooltip(const _Player *Player, size_t CompareSlot, int Inventory
 	if(Type == _Object::WEAPON)
 		Size.y = 630 * ae::_Element::GetUIScale();
 	else if(Type == _Object::ARMOR)
-		Size.y = 450 * ae::_Element::GetUIScale();
+		Size.y = 470 * ae::_Element::GetUIScale();
 	else if(Type == _Object::MEDKIT)
 		Size.y = 240 * ae::_Element::GetUIScale();
 	else if(Type == _Object::MOD) {
@@ -375,7 +375,7 @@ void _Item::DrawTooltip(const _Player *Player, size_t CompareSlot, int Inventory
 			DrawAttribute("move_speed", "Move Speed", DrawPosition, EquippedItem, true, true);
 			DrawAttribute("max_stamina", "Max Stamina", DrawPosition, EquippedItem, true, true);
 			DrawAttribute("max_ammo", "Max Ammo", DrawPosition, EquippedItem, true, true);
-			DrawAttribute("health", "Max Health", DrawPosition, EquippedItem, true, true);
+			DrawAttribute("max_health", "Max Health", DrawPosition, EquippedItem, true, true);
 		} break;
 		case _Object::MOD: {
 			if(Template.Attributes.at("object_type").Int == _Object::WEAPON)
@@ -528,12 +528,14 @@ void _Item::RecalculateStats() {
 			SetAttributeLevel("max_stamina", QualityFactor);
 			SetAttributeLevel("max_ammo", QualityFactor);
 			SetAttributeLevel("move_speed", QualityFactor);
-			SetAttributeLevel("health", QualityFactor);
+			SetAttributeLevel("max_health", QualityFactor);
 			Attributes.at("damage_block").Int += Bonus[MOD_DAMAGEBLOCK];
 			Attributes.at("damage_resist").Int += Bonus[MOD_DAMAGERESIST];
 			Attributes.at("max_ammo").Int += Bonus[MOD_MAXAMMO];
 			Attributes.at("move_speed").Int += Bonus[MOD_MOVESPEED];
 			Attributes.at("move_speed").Int = std::clamp(Attributes.at("move_speed").Int, ITEM_MIN_MOVESPEED, ITEM_MAX_MOVESPEED);
+			Attributes.at("max_health").Int += Bonus[MOD_MAXHEALTH];
+			Attributes.at("max_stamina").Int += Bonus[MOD_MAXSTAMINA];
 			Attributes["melee_damage"].Int += Bonus[MOD_MELEEDAMAGE];
 			Attributes["pistol_damage"].Int = Bonus[MOD_PISTOLDAMAGE];
 			Attributes["shotgun_damage"].Int = Bonus[MOD_SHOTGUNDAMAGE];
@@ -762,6 +764,12 @@ std::string _Item::ModTypeToString(int ModType) {
 		break;
 		case MOD_FULLAUTO:
 			return "Full Automatic";
+		break;
+		case MOD_MAXHEALTH:
+			return "Max Health";
+		break;
+		case MOD_MAXSTAMINA:
+			return "Max Stamina";
 		break;
 	}
 

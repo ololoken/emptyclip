@@ -463,7 +463,7 @@ void _PlayState::HandleQuit() {
 void _PlayState::Update(double FrameTime) {
 	ae::Graphics.Element->Update(FrameTime, ae::Input.GetMouse());
 	//if(ae::Graphics.Element->HitElement)
-	//	std::cout << ae::Graphics.Element->HitElement->Name << std::endl;
+	//	std::cout << ae::Graphics.Element->HitElement->ID << std::endl;
 
 	int OldLevel = Player->Level;
 	Timer += FrameTime;

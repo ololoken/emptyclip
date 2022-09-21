@@ -311,7 +311,7 @@ void _Player::RecalculateStats() {
 		BaseMoveSpeed += GetArmor()->Attributes.at("move_speed").Int;
 		Attributes["max_ammo"].Int += GetArmor()->Attributes.at("max_ammo").Int;
 		MaxStamina += GetArmor()->Attributes.at("max_stamina").Int * 0.01f;
-		HealthBonus += GetArmor()->Attributes.at("health").Int;
+		HealthBonus += GetArmor()->Attributes.at("max_health").Int;
 		WeaponDamage[WEAPON_MELEE] += GetArmor()->Attributes.at("melee_damage").Int;
 		WeaponDamage[WEAPON_PISTOL] += GetArmor()->Attributes.at("pistol_damage").Int;
 		WeaponDamage[WEAPON_SHOTGUN] += GetArmor()->Attributes.at("shotgun_damage").Int;

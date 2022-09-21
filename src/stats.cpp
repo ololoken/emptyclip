@@ -283,8 +283,8 @@ void _Stats::LoadArmor() {
 		Template.Attributes["max_ammo_level"].Float = Database->GetReal("max_ammo_level");
 		Template.Attributes["move_speed"].Float = Database->GetReal("move_speed");
 		Template.Attributes["move_speed_level"].Float = Database->GetReal("move_speed_level");
-		Template.Attributes["health"].Float = Database->GetReal("health");
-		Template.Attributes["health_level"].Float = Database->GetReal("health_level");
+		Template.Attributes["max_health"].Float = Database->GetReal("max_health");
+		Template.Attributes["max_health_level"].Float = Database->GetReal("max_health_level");
 		Template.Attributes["mods"].Float = Database->GetReal("mods");
 		Template.Attributes["mods_level"].Float = Database->GetReal("mods_level");
 
