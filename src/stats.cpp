@@ -662,8 +662,17 @@ _Item *_Stats::CreateItem(const std::string &ID, int Level, int Quality, int Cou
 	Item->Texture = ae::Assets.Textures[Template.IconID];
 
 	// Generate random quality
-	if(RandomStats)
+	if(RandomStats) {
 		Item->Quality = ae::GetRandomInt(-ITEM_QUALITY_RANGE, ITEM_QUALITY_RANGE);
+		if(Item->Quality == ITEM_QUALITY_RANGE && ae::GetRandomInt(1, ITEM_GOLD_CHANCE) == 1)
+			Item->Quality = ITEM_GOLD_QUALITY;
+	}
+
+	// Give light to gold items
+	if(Item->IsGold()) {
+		Item->LightTexture = ae::Assets.Textures["textures/lights/circle.png"];
+		Item->LightColor = COLOR_GOLD;
+	}
 
 	// Get quality factor
 	float QualityFactor = 1.0f + Item->Quality * 0.01f;

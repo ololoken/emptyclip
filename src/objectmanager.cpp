@@ -74,7 +74,10 @@ void _ObjectManager::Update(double FrameTime, _Map *Map) {
 					case _Object::WEAPON:
 					case _Object::ARMOR:
 					case _Object::MOD:
-						MinimapLayer.Color = HUD_MINIMAP_EQUIPMENT_COLOR;
+						if(Object->IsGold())
+							MinimapLayer.Color = COLOR_GOLD;
+						else
+							MinimapLayer.Color = HUD_MINIMAP_EQUIPMENT_COLOR;
 					break;
 					case _Object::KEY:
 						MinimapLayer.Color = HUD_MINIMAP_KEY_COLOR;

@@ -139,7 +139,13 @@ void _Item::DrawTooltip(const _Player *Player, size_t CompareSlot, int Inventory
 	// Draw name
 	DrawPosition.y += 40 * ae::_Element::GetUIScale();
 	DrawPosition.x += Size.x/2;
-	ae::Assets.Fonts["menu_buttons"]->DrawText(Name, glm::ivec2(DrawPosition), ae::CENTER_BASELINE);
+	std::string DrawName = Name;
+	glm::vec4 DrawColor = glm::vec4(1.0f);
+	if(IsGold()) {
+		DrawName = "Gold " + DrawName;
+		DrawColor = COLOR_GOLD;
+	}
+	ae::Assets.Fonts["menu_buttons"]->DrawText(DrawName, glm::ivec2(DrawPosition), ae::CENTER_BASELINE, DrawColor);
 
 	// Draw type
 	DrawPosition.y += 24 * ae::_Element::GetUIScale();
@@ -158,7 +164,7 @@ void _Item::DrawTooltip(const _Player *Player, size_t CompareSlot, int Inventory
 	if(Type == _Object::WEAPON || Type == _Object::ARMOR || Type == _Object::MOD) {
 		DrawPosition.y += 24 * ae::_Element::GetUIScale();
 		Buffer << "Quality " << Quality << "%";
-		ae::Assets.Fonts["hud_small"]->DrawText(Buffer.str(), glm::ivec2(DrawPosition), ae::CENTER_BASELINE);
+		ae::Assets.Fonts["hud_small"]->DrawText(Buffer.str(), glm::ivec2(DrawPosition), ae::CENTER_BASELINE, DrawColor);
 		Buffer.str("");
 	}
 
@@ -623,7 +629,9 @@ float _Item::GetAverageAccuracy() const {
 
 // Get quality color
 void _Item::GetQualityColor(glm::vec4 &ReturnColor) const {
-	if(Quality < 0)
+	if(IsGold())
+		ReturnColor = COLOR_GOLD;
+	else if(Quality < 0)
 		ReturnColor = ITEM_QUALITY_GOOD_COLOR;
 	else if(Quality > 0)
 		ReturnColor = ITEM_QUALITY_BAD_COLOR;

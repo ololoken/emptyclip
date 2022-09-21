@@ -943,7 +943,10 @@ void _HUD::DrawInventory() {
 			continue;
 
 		ae::_Element *Button = Elements[ELEMENT_INVENTORY_BUTTONS]->Children[i];
-		ae::Graphics.DrawScaledImage(Button->Bounds.GetCenter(), Player->Inventory[i]->Texture, UI_INVENTORY_ITEM_SIZE, Player->Inventory[i]->Color);
+		const _Item *Item = Player->Inventory[i];
+
+		// Draw icon
+		DrawInventoryItem(Button->Bounds.GetCenter(), Item->Texture, UI_INVENTORY_ITEM_SIZE, Item->Color, Item->IsGold() && !(CursorItem && CursorItem->Type == _Item::MOD));
 	}
 
 	// Draw overlay for compatible mod types
@@ -985,7 +988,7 @@ void _HUD::DrawInventory() {
 	if(CursorItem) {
 		glm::vec2 Position(ae::Input.GetMouse() - ClickOffset);
 		ae::Graphics.SetProgram(ae::Assets.Programs["ortho_pos_uv"]);
-		ae::Graphics.DrawScaledImage(Position, CursorItem->Texture, UI_INVENTORY_ITEM_SIZE, CursorItem->Color);
+		DrawInventoryItem(Position, CursorItem->Texture, UI_INVENTORY_ITEM_SIZE, CursorItem->Color, CursorItem->IsGold());
 	}
 }
 
@@ -997,6 +1000,15 @@ void _HUD::DrawAttribute(const std::string &Label, std::ostringstream &Buffer, g
 	Buffer.str("");
 
 	DrawPosition.y += 20 * ae::_Element::GetUIScale();
+}
+
+// Draw item icon
+void _HUD::DrawInventoryItem(const glm::vec2 &Position, const ae::_Texture *Texture, const glm::vec2 &Size, const glm::vec4 &Color, bool Gold) {
+	ae::Graphics.DrawScaledImage(Position, Texture, Size, Color);
+
+	// Highlight gold items
+	if(Gold)
+		ae::Graphics.DrawScaledImage(Position, ae::Assets.Textures["textures/lights/circle.png"], Size * 1.3f, glm::vec4(0.76f,  0.73f,  0.173f, 0.25f));
 }
 
 // Draw quick glance value attribute for item

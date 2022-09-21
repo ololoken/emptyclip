@@ -73,7 +73,7 @@ void _Object::RenderLights(double BlendFactor) {
 		return;
 
 	ae::Graphics.SetColor(LightColor);
-	ae::Graphics.DrawSprite(glm::vec3(Position, OBJECT_Z), LightTexture, 0, LightScale);
+	ae::Graphics.DrawSprite(glm::vec3(Position, PositionZ), LightTexture, 0, LightScale);
 }
 
 // Get sound for a sound type
@@ -117,9 +117,18 @@ void _Object::GetAttributeRange(const std::string &AttributeName, float Multipli
 
 // Set the max number of mods based on level and quality
 void _Object::SetMaxMods(float QualityFactor, bool RandomStats) {
-	Attributes["max_mods"].Int = std::max(1, (int)std::round(QualityFactor * (Template.Attributes.at("mods").Float + Template.Attributes.at("mods_level").Float * (Level - 1))));
-	if(RandomStats)
+	int LevelMods = std::round(Template.Attributes.at("mods").Float + Template.Attributes.at("mods_level").Float * (Level - 1));
+	Attributes["max_mods"].Int = std::max(1, (int)std::round(QualityFactor * LevelMods));
+	if(RandomStats) {
 		Attributes["max_mods"].Int += ae::GetRandomInt(0, 1);
+		if(IsGold())
+			Attributes["max_mods"].Int++;
+	}
+}
+
+// Check if item is gold
+bool _Object::IsGold() const {
+	return Quality == ITEM_GOLD_QUALITY;
 }
 
 // Get render bounds of object
