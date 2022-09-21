@@ -105,7 +105,7 @@ void _Menu::Init() {
 	for(const auto &Achievement : Stats.Achievements) {
 
 		ae::_Element *Button = new ae::_Element();
-		Button->Name = Achievement.ID;
+		Button->ID = Achievement.ID;
 		Button->Parent = AchievementContainer;
 		Button->BaseOffset = glm::vec2(-Size.x / 2 - Spacing.x, Offset.y);
 		Button->BaseSize = Size;
@@ -266,19 +266,19 @@ void _Menu::InitAchievements() {
 	// Set enabled state
 	ae::_Element *AchievementContainer = ae::Assets.Elements["element_menu_achievements_container"];
 	for(const auto &Child : AchievementContainer->Children) {
-		Child->SetEnabled(Achievements.Stats.find(Child->Name) != Achievements.Stats.end());
+		Child->SetEnabled(Achievements.Stats.find(Child->ID) != Achievements.Stats.end());
 
 		// Check for failed achievements
 		Child->Children[0]->Text = Stats.Achievements[Child->Index].Name;
 		if(!Child->Enabled && PlayState.Player) {
 			bool Failed = false;
-			if(Child->Name == "all" && !PlayState.Player->Stat100Percent)
+			if(Child->ID == "all" && !PlayState.Player->Stat100Percent)
 				Failed = true;
-			else if(Child->Name == "lonewolf" && !PlayState.Player->StatLoneWolf)
+			else if(Child->ID == "lonewolf" && !PlayState.Player->StatLoneWolf)
 				Failed = true;
-			else if(Child->Name == "fists" && !PlayState.Player->StatFistsOnly)
+			else if(Child->ID == "fists" && !PlayState.Player->StatFistsOnly)
 				Failed = true;
-			else if(Child->Name == "smoked" && PlayState.Player->LavaTouches)
+			else if(Child->ID == "smoked" && PlayState.Player->LavaTouches)
 				Failed = true;
 
 			if(Failed)
@@ -329,11 +329,6 @@ void _Menu::LaunchGame() {
 	SaveSlots[SelectedSlot]->Checked = false;
 	Background = nullptr;
 	State = STATE_NONE;
-}
-
-// Play menu sound
-void _Menu::PlayClickSound() {
-	ae::Audio.PlaySound(ae::Assets.Sounds["game_click0.ogg"]);
 }
 
 // Update option elements
@@ -614,38 +609,38 @@ void _Menu::HandleMouseButton(const ae::_MouseEvent &MouseEvent) {
 
 		switch(State) {
 			case STATE_TITLE: {
-				if(Clicked->Name == "button_menu_title_single") {
+				if(Clicked->ID == "button_menu_title_single") {
 					InitSinglePlayer();
 				}
-				else if(Clicked->Name == "button_menu_title_options") {
+				else if(Clicked->ID == "button_menu_title_options") {
 					InitOptions();
 				}
-				else if(Clicked->Name == "button_menu_title_achievements") {
+				else if(Clicked->ID == "button_menu_title_achievements") {
 					InitAchievements();
 				}
-				else if(Clicked->Name == "button_menu_title_exit") {
+				else if(Clicked->ID == "button_menu_title_exit") {
 					Framework.Done = true;
 				}
 			} break;
 			case STATE_SINGLEPLAYER: {
 				switch(SinglePlayerState) {
 					case SINGLEPLAYER_NONE:
-						if(Clicked->Name == "button_menu_singleplayer_delete") {
+						if(Clicked->ID == "button_menu_singleplayer_delete") {
 							if(SelectedSlot != -1) {
 								CurrentLayout->SetClickable(false);
 								SinglePlayerState = SINGLEPLAYER_DELETE;
 								ConfirmAction();
 							}
 						}
-						else if(Clicked->Name == "button_menu_singleplayer_play") {
+						else if(Clicked->ID == "button_menu_singleplayer_play") {
 							if(SelectedSlot != -1 && Save.GetPlayer(SelectedSlot)) {
 								LaunchGame();
 							}
 						}
-						else if(Clicked->Name == "button_menu_singleplayer_back") {
+						else if(Clicked->ID == "button_menu_singleplayer_back") {
 							InitTitle();
 						}
-						else if(Clicked->Name.substr(0, PlayerButtonPrefix.size()) == PlayerButtonPrefix) {
+						else if(Clicked->ID.substr(0, PlayerButtonPrefix.size()) == PlayerButtonPrefix) {
 
 							// Deselect previous slot
 							if(SelectedSlot != -1)
@@ -664,28 +659,28 @@ void _Menu::HandleMouseButton(const ae::_MouseEvent &MouseEvent) {
 						}
 					break;
 					case SINGLEPLAYER_NEW_PLAYER:
-						if(Clicked->Name.substr(0, PlayerColorButtonPrefix.size()) == PlayerColorButtonPrefix) {
+						if(Clicked->ID.substr(0, PlayerColorButtonPrefix.size()) == PlayerColorButtonPrefix) {
 							if(SelectedColor != -1)
 								ColorButtons[SelectedColor]->Checked = false;
 
 							SelectedColor = Clicked->Index;
 							ColorButtons[SelectedColor]->Checked = true;
 						}
-						else if(Clicked->Name == "button_menu_new_create") {
+						else if(Clicked->ID == "button_menu_new_create") {
 							CreatePlayer();
 						}
-						else if(Clicked->Name == "button_menu_new_cancel") {
+						else if(Clicked->ID == "button_menu_new_cancel") {
 							SinglePlayerCancel();
 						}
 					break;
 					case SINGLEPLAYER_DELETE:
-						if(Clicked->Name == "button_confirm_ok") {
+						if(Clicked->ID == "button_confirm_ok") {
 							if(SelectedSlot != -1) {
 								Save.DeletePlayer(SelectedSlot);
 								InitSinglePlayer();
 							}
 						}
-						else if(Clicked->Name == "button_confirm_cancel") {
+						else if(Clicked->ID == "button_confirm_cancel") {
 							SinglePlayerCancel();
 						}
 					break;
@@ -693,46 +688,46 @@ void _Menu::HandleMouseButton(const ae::_MouseEvent &MouseEvent) {
 			} break;
 			case STATE_OPTIONS: {
 				if(OptionsState == OPTION_NONE) {
-					if(Clicked->Name == "button_menu_options_fullscreen") {
+					if(Clicked->ID == "button_menu_options_fullscreen") {
 						SetFullscreen(!Config.Fullscreen);
 						UpdateOptions();
 					}
-					else if(Clicked->Name == "button_menu_options_gunflashes") {
+					else if(Clicked->ID == "button_menu_options_gunflashes") {
 						Config.WeaponFlashes = !Config.WeaponFlashes;
 						UpdateOptions();
 					}
-					else if(Clicked->Name == "button_menu_options_walldecals") {
+					else if(Clicked->ID == "button_menu_options_walldecals") {
 						Config.WallDecals = !Config.WallDecals;
 						UpdateOptions();
 					}
-					else if(Clicked->Name == "button_menu_options_floordecals") {
+					else if(Clicked->ID == "button_menu_options_floordecals") {
 						Config.FloorDecals = !Config.FloorDecals;
 						UpdateOptions();
 					}
-					else if(Clicked->Name == "button_menu_options_autoequip") {
+					else if(Clicked->ID == "button_menu_options_autoequip") {
 						Config.AutoEquip = !Config.AutoEquip;
 						UpdateOptions();
 					}
-					else if(Clicked->Name == "button_menu_options_tutorial") {
+					else if(Clicked->ID == "button_menu_options_tutorial") {
 						Config.Tutorial = !Config.Tutorial;
 						UpdateOptions();
 					}
-					else if(Clicked->Name == "button_menu_options_controls") {
+					else if(Clicked->ID == "button_menu_options_controls") {
 						InitControls();
 					}
-					else if(Clicked->Name == "button_menu_options_defaults") {
+					else if(Clicked->ID == "button_menu_options_defaults") {
 						Config.SetDefaults(true);
 						ae::Audio.SetSoundVolume(Config.SoundVolume);
 						UpdateOptions();
 					}
-					else if(Clicked->Name == "button_menu_options_save") {
+					else if(Clicked->ID == "button_menu_options_save") {
 						Config.Save();
 						if(Framework.GetState() == &PlayState)
 							InitInGame();
 						else
 							InitTitle();
 					}
-					else if(Clicked->Name == "button_menu_options_cancel") {
+					else if(Clicked->ID == "button_menu_options_cancel") {
 						Config.Load();
 						UpdateTextures();
 						if(Framework.GetState() == &PlayState)
@@ -740,7 +735,7 @@ void _Menu::HandleMouseButton(const ae::_MouseEvent &MouseEvent) {
 						else
 							InitTitle();
 					}
-					else if(Clicked->Name.substr(0, InputBoxPrefix.size()) == InputBoxPrefix) {
+					else if(Clicked->ID.substr(0, InputBoxPrefix.size()) == InputBoxPrefix) {
 						OptionsState = OPTION_ACCEPT_INPUT;
 						CurrentAction = Clicked->Index;
 						ae::Assets.Elements["label_menu_controls_accept_text_action"]->Text = Clicked->Children.front()->Text;
@@ -748,26 +743,26 @@ void _Menu::HandleMouseButton(const ae::_MouseEvent &MouseEvent) {
 				}
 			} break;
 			case STATE_CONTROLS: {
-				if(Clicked->Name == "button_menu_controls_defaults") {
+				if(Clicked->ID == "button_menu_controls_defaults") {
 					Config.LoadDefaultInputBindings(false);
 					RefreshInputLabels();
 				}
-				else if(Clicked->Name == "button_menu_controls_save") {
+				else if(Clicked->ID == "button_menu_controls_save") {
 					Config.Save();
 					InitOptions();
 				}
-				else if(Clicked->Name == "button_menu_controls_cancel") {
+				else if(Clicked->ID == "button_menu_controls_cancel") {
 					Config.Load();
 					InitOptions();
 				}
-				else if(Clicked->Name.substr(0, InputBoxPrefix.size()) == InputBoxPrefix) {
+				else if(Clicked->ID.substr(0, InputBoxPrefix.size()) == InputBoxPrefix) {
 					OptionsState = OPTION_ACCEPT_INPUT;
 					CurrentAction = Clicked->Index;
 					ae::Assets.Elements["label_menu_controls_accept_text_action"]->Text = Clicked->Children.front()->Text;
 				}
 			} break;
 			case STATE_ACHIEVEMENTS: {
-				if(Clicked->Name == "button_menu_achievements_back") {
+				if(Clicked->ID == "button_menu_achievements_back") {
 					if(Framework.GetState() == &PlayState)
 						InitInGame();
 					else
@@ -775,25 +770,25 @@ void _Menu::HandleMouseButton(const ae::_MouseEvent &MouseEvent) {
 				}
 			} break;
 			case STATE_INGAME: {
-				if(Clicked->Name == "button_menu_ingame_resume") {
+				if(Clicked->ID == "button_menu_ingame_resume") {
 					InitPlay();
 				}
-				else if(Clicked->Name == "button_menu_ingame_options") {
+				else if(Clicked->ID == "button_menu_ingame_options") {
 					InitOptions();
 				}
-				else if(Clicked->Name == "button_menu_ingame_achievements") {
+				else if(Clicked->ID == "button_menu_ingame_achievements") {
 					InitAchievements();
 				}
-				else if(Clicked->Name == "button_menu_ingame_mainmenu") {
+				else if(Clicked->ID == "button_menu_ingame_mainmenu") {
 					Framework.ChangeState(&NullState);
 				}
 			} break;
 			case STATE_SCORE: {
-				if(Clicked->Name == "button_menu_score_continue") {
+				if(Clicked->ID == "button_menu_score_continue") {
 					InitPlay();
 					Framework.ChangeState(&PlayState);
 				}
-				else if(Clicked->Name == "button_menu_score_mainmenu") {
+				else if(Clicked->ID == "button_menu_score_mainmenu") {
 					InitTitle();
 				}
 			} break;

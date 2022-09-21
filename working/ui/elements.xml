@@ -2,13 +2,13 @@
 <element base_height="1080">
 	<element id="element_menu_title" size_x="512">
 		<element id="image_menu_title_logo" texture="textures/menu/title.png" offset_y="-450" size_x="512" size_y="128" alignment_y="0"/>
-		<element id="button_menu_title_single" style="style_menu_button" hover_style="style_menu_button_hover" offset_y="-142" size_x="280" size_y="66" alignment_y="0" clickable="true">
+		<element id="button_menu_title_single" sound="game_click0.ogg" style="style_menu_button" hover_style="style_menu_button_hover" offset_y="-142" size_x="280" size_y="66" alignment_y="0" clickable="true">
 			<element id="label_menu_title_single" font="menu_buttons" text="Play" offset_y="44" alignment_y="3"/>
 		</element>
-		<element id="button_menu_title_options" style="style_menu_button" hover_style="style_menu_button_hover" offset_y="-30" size_x="280" size_y="66" alignment_y="0" clickable="true">
+		<element id="button_menu_title_options" sound="game_click0.ogg" style="style_menu_button" hover_style="style_menu_button_hover" offset_y="-30" size_x="280" size_y="66" alignment_y="0" clickable="true">
 			<element id="label_menu_title_options" font="menu_buttons" text="Options" offset_y="44" alignment_y="3"/>
 		</element>
-		<element id="button_menu_title_achievements" style="style_menu_button" hover_style="style_menu_button_hover" disabled_style="style_menu_button_disabled" offset_y="82" size_x="280" size_y="66" alignment_y="0" clickable="true">
+		<element id="button_menu_title_achievements" sound="game_click0.ogg" style="style_menu_button" hover_style="style_menu_button_hover" disabled_style="style_menu_button_disabled" offset_y="82" size_x="280" size_y="66" alignment_y="0" clickable="true">
 			<element id="label_menu_title_achievements" font="menu_buttons" text="Achievements" offset_y="44" alignment_y="3"/>
 		</element>
 		<element id="button_menu_title_exit" style="style_menu_button" hover_style="style_menu_button_hover" offset_y="300" size_x="280" size_y="66" alignment_y="0" clickable="true">
@@ -47,13 +47,13 @@
 		<element id="button_menu_singleplayer_slot9" style="style_menu_box" hover_style="style_menu_hover" offset_x="400" offset_y="50" size_x="128" size_y="128" clickable="true" index="9">
 			<element id="label_menu_singleplayer_slot9_text" font="hud_medium" text="Empty Slot" offset_y="160" alignment_y="3" format="true"/>
 		</element>
-		<element id="button_menu_singleplayer_delete" style="style_menu_button" hover_style="style_menu_button_hover" offset_x="-240" offset_y="300" size_x="200" size_y="66" clickable="true">
+		<element id="button_menu_singleplayer_delete" sound="game_click0.ogg" style="style_menu_button" hover_style="style_menu_button_hover" offset_x="-240" offset_y="300" size_x="200" size_y="66" clickable="true">
 			<element id="label_menu_singleplayer_delete" font="menu_buttons" text="Delete" offset_y="44" alignment_y="3"/>
 		</element>
-		<element id="button_menu_singleplayer_play" style="style_menu_button" hover_style="style_menu_button_hover" offset_y="300" size_x="200" size_y="66" clickable="true">
+		<element id="button_menu_singleplayer_play" sound="game_click0.ogg" style="style_menu_button" hover_style="style_menu_button_hover" offset_y="300" size_x="200" size_y="66" clickable="true">
 			<element id="label_menu_singleplayer_play" font="menu_buttons" text="Play" offset_y="44" alignment_y="3"/>
 		</element>
-		<element id="button_menu_singleplayer_back" style="style_menu_button" hover_style="style_menu_button_hover" offset_x="240" offset_y="300" size_x="200" size_y="66" clickable="true">
+		<element id="button_menu_singleplayer_back" sound="game_click0.ogg" style="style_menu_button" hover_style="style_menu_button_hover" offset_x="240" offset_y="300" size_x="200" size_y="66" clickable="true">
 			<element id="label_menu_singleplayer_back" font="menu_buttons" text="Back" offset_y="44" alignment_y="3"/>
 		</element>
 	</element>
@@ -71,10 +71,10 @@
 		<element id="image_menu_new_player_torso2" texture="textures/menu/walking_onehand4.png" offset_x="200" offset_y="200" size_x="64" size_y="64" alignment_x="0" alignment_y="0"/>
 		<element id="image_menu_new_player_legs3" texture="textures/menu/legs4.png" color="blue" offset_x="270" offset_y="200" size_x="64" size_y="64" alignment_x="0" alignment_y="0"/>
 		<element id="image_menu_new_player_torso3" texture="textures/menu/walking_onehand4.png" offset_x="270" offset_y="200" size_x="64" size_y="64" alignment_x="0" alignment_y="0"/>
-		<element id="button_menu_new_create" style="style_menu_button" hover_style="style_menu_button_hover" offset_x="-80" offset_y="-25" size_x="140" size_y="44" alignment_y="2" clickable="true">
+		<element id="button_menu_new_create" sound="game_click0.ogg" style="style_menu_button" hover_style="style_menu_button_hover" offset_x="-80" offset_y="-25" size_x="140" size_y="44" alignment_y="2" clickable="true">
 			<element id="label_menu_new_create" font="hud_medium" text="Create" offset_y="32" alignment_y="3"/>
 		</element>
-		<element id="button_menu_new_cancel" style="style_menu_button" hover_style="style_menu_button_hover" offset_x="80" offset_y="-25" size_x="140" size_y="44" alignment_y="2" clickable="true">
+		<element id="button_menu_new_cancel" sound="game_click0.ogg" style="style_menu_button" hover_style="style_menu_button_hover" offset_x="80" offset_y="-25" size_x="140" size_y="44" alignment_y="2" clickable="true">
 			<element id="label_menu_new_cancel" font="hud_medium" text="Cancel" offset_y="32" alignment_y="3"/>
 		</element>
 		<element id="button_menu_new_color0" hover_style="style_menu_select" offset_x="60" offset_y="200" size_x="64" size_y="64" alignment_x="0" alignment_y="0" clickable="true">
@@ -137,16 +137,16 @@
 			</element>
 		</element>
 		<element id="element_menu_options_buttons" offset_y="400">
-			<element id="button_menu_options_controls" style="style_menu_button" hover_style="style_menu_button_hover" offset_y="-86" size_x="220" size_y="66" alignment_y="0" clickable="true">
+			<element id="button_menu_options_controls" sound="game_click0.ogg" style="style_menu_button" hover_style="style_menu_button_hover" offset_y="-86" size_x="220" size_y="66" alignment_y="0" clickable="true">
 				<element id="label_menu_options_controls" font="menu_buttons" text="Controls" offset_y="44" alignment_y="3"/>
 			</element>
-			<element id="button_menu_options_defaults" style="style_menu_button" hover_style="style_menu_button_hover" offset_x="-240" size_x="220" size_y="66" alignment_y="0" clickable="true">
+			<element id="button_menu_options_defaults" sound="game_click0.ogg" style="style_menu_button" hover_style="style_menu_button_hover" offset_x="-240" size_x="220" size_y="66" alignment_y="0" clickable="true">
 				<element id="label_menu_options_defaults" font="menu_buttons" text="Defaults" offset_y="44" alignment_y="3"/>
 			</element>
-			<element id="button_menu_options_save" style="style_menu_button" hover_style="style_menu_button_hover" size_x="220" size_y="66" alignment_y="0" clickable="true">
+			<element id="button_menu_options_save" sound="game_click0.ogg" style="style_menu_button" hover_style="style_menu_button_hover" size_x="220" size_y="66" alignment_y="0" clickable="true">
 				<element id="label_menu_options_save" font="menu_buttons" text="Save" offset_y="44" alignment_y="3"/>
 			</element>
-			<element id="button_menu_options_cancel" style="style_menu_button" hover_style="style_menu_button_hover" offset_x="240" size_x="220" size_y="66" alignment_y="0" clickable="true">
+			<element id="button_menu_options_cancel" sound="game_click0.ogg" style="style_menu_button" hover_style="style_menu_button_hover" offset_x="240" size_x="220" size_y="66" alignment_y="0" clickable="true">
 				<element id="label_menu_options_cancel" font="menu_buttons" text="Cancel" offset_y="44" alignment_y="3"/>
 			</element>
 		</element>
@@ -214,28 +214,28 @@
 			<element id="label_menu_controls_config_sortinventory" font="hud_small" offset_y="32" alignment_y="3"/>
 		</element>
 		<element id="element_menu_controls_buttons" offset_y="400">
-			<element id="button_menu_controls_defaults" style="style_menu_button" hover_style="style_menu_button_hover" offset_x="-240" size_x="220" size_y="66" alignment_y="0" clickable="true">
+			<element id="button_menu_controls_defaults" sound="game_click0.ogg" style="style_menu_button" hover_style="style_menu_button_hover" offset_x="-240" size_x="220" size_y="66" alignment_y="0" clickable="true">
 				<element id="label_menu_controls_defaults" font="menu_buttons" text="Defaults" offset_y="44" alignment_y="3"/>
 			</element>
-			<element id="button_menu_controls_save" style="style_menu_button" hover_style="style_menu_button_hover" size_x="220" size_y="66" alignment_y="0" clickable="true">
+			<element id="button_menu_controls_save" sound="game_click0.ogg" style="style_menu_button" hover_style="style_menu_button_hover" size_x="220" size_y="66" alignment_y="0" clickable="true">
 				<element id="label_menu_controls_save" font="menu_buttons" text="Save" offset_y="44" alignment_y="3"/>
 			</element>
-			<element id="button_menu_controls_cancel" style="style_menu_button" hover_style="style_menu_button_hover" offset_x="240" size_x="220" size_y="66" alignment_y="0" clickable="true">
+			<element id="button_menu_controls_cancel" sound="game_click0.ogg" style="style_menu_button" hover_style="style_menu_button_hover" offset_x="240" size_x="220" size_y="66" alignment_y="0" clickable="true">
 				<element id="label_menu_controls_cancel" font="menu_buttons" text="Cancel" offset_y="44" alignment_y="3"/>
 			</element>
 		</element>
 	</element>
 	<element id="element_menu_ingame" size_x="512">
-		<element id="button_menu_ingame_resume" style="style_menu_button" hover_style="style_menu_button_hover" offset_y="-168" size_x="280" size_y="66" alignment_y="0" clickable="true">
+		<element id="button_menu_ingame_resume" sound="game_click0.ogg" style="style_menu_button" hover_style="style_menu_button_hover" offset_y="-168" size_x="280" size_y="66" alignment_y="0" clickable="true">
 			<element id="label_menu_ingame_resume_text" font="menu_buttons" text="Resume" offset_y="44" alignment_y="3"/>
 		</element>
-		<element id="button_menu_ingame_options" style="style_menu_button" hover_style="style_menu_button_hover" offset_y="-56" size_x="280" size_y="66" alignment_y="0" clickable="true">
+		<element id="button_menu_ingame_options" sound="game_click0.ogg" style="style_menu_button" hover_style="style_menu_button_hover" offset_y="-56" size_x="280" size_y="66" alignment_y="0" clickable="true">
 			<element id="label_menu_ingame_options_text" font="menu_buttons" text="Options" offset_y="44" alignment_y="3"/>
 		</element>
-		<element id="button_menu_ingame_achievements" style="style_menu_button" hover_style="style_menu_button_hover" disabled_style="style_menu_button_disabled" offset_y="56" size_x="280" size_y="66" alignment_y="0" clickable="true">
+		<element id="button_menu_ingame_achievements" sound="game_click0.ogg" style="style_menu_button" hover_style="style_menu_button_hover" disabled_style="style_menu_button_disabled" offset_y="56" size_x="280" size_y="66" alignment_y="0" clickable="true">
 			<element id="label_menu_ingame_achievements" font="menu_buttons" text="Achievements" offset_y="44" alignment_y="3"/>
 		</element>
-		<element id="button_menu_ingame_mainmenu" style="style_menu_button" hover_style="style_menu_button_hover" offset_y="168" size_x="280" size_y="66" alignment_y="0" clickable="true">
+		<element id="button_menu_ingame_mainmenu" sound="game_click0.ogg" style="style_menu_button" hover_style="style_menu_button_hover" offset_y="168" size_x="280" size_y="66" alignment_y="0" clickable="true">
 			<element id="label_menu_ingame_mainmenu_text" font="menu_buttons" text="Main Menu" offset_y="44" alignment_y="3"/>
 		</element>
 	</element>
@@ -261,10 +261,10 @@
 			<element id="label_menu_score_secrets" font="menu_buttons" text="Secrets" offset_x="-10" alignment_x="2" alignment_y="3"/>
 			<element id="label_menu_score_secrets_value" font="menu_buttons" offset_x="10" alignment_x="0" alignment_y="3"/>
 		</element>
-		<element id="button_menu_score_continue" style="style_menu_button" hover_style="style_menu_button_hover" offset_x="-120" offset_y="400" size_x="200" size_y="66" clickable="true">
+		<element id="button_menu_score_continue" sound="game_click0.ogg" style="style_menu_button" hover_style="style_menu_button_hover" offset_x="-120" offset_y="400" size_x="200" size_y="66" clickable="true">
 			<element id="label_menu_score_continue" font="menu_buttons" text="Continue" offset_y="44" alignment_y="3"/>
 		</element>
-		<element id="button_menu_score_mainmenu" style="style_menu_button" hover_style="style_menu_button_hover" offset_x="120" offset_y="400" size_x="200" size_y="66" clickable="true">
+		<element id="button_menu_score_mainmenu" sound="game_click0.ogg" style="style_menu_button" hover_style="style_menu_button_hover" offset_x="120" offset_y="400" size_x="200" size_y="66" clickable="true">
 			<element id="label_menu_score_mainmenu" font="menu_buttons" text="Main Menu" offset_y="44" alignment_y="3"/>
 		</element>
 		<element id="label_menu_score_completion" font="menu_buttons" text="100% Completion!" offset_y="210"/>
@@ -272,15 +272,15 @@
 	<element id="element_menu_achievements" size_x="512" size_y="984">
 		<element id="label_menu_achievements_title" font="hud_large" text="Achievements" offset_y="-350"/>
 		<element id="element_menu_achievements_container" size_x="800" size_y="550"/>
-		<element id="button_menu_achievements_back" style="style_menu_button" hover_style="style_menu_button_hover" offset_y="400" size_x="200" size_y="66" clickable="true">
+		<element id="button_menu_achievements_back" sound="game_click0.ogg" style="style_menu_button" hover_style="style_menu_button_hover" offset_y="400" size_x="200" size_y="66" clickable="true">
 			<element id="label_menu_achievements_back" font="menu_buttons" text="Back" offset_y="44" alignment_y="3"/>
 		</element>
 	</element>
 	<element id="element_confirm" style="style_menu_window" size_x="420" size_y="182">
-		<element id="button_confirm_ok" style="style_menu_button" hover_style="style_menu_button_hover" offset_x="-90" offset_y="34" size_x="140" size_y="44" clickable="true">
+		<element id="button_confirm_ok" sound="game_click0.ogg" style="style_menu_button" hover_style="style_menu_button_hover" offset_x="-90" offset_y="34" size_x="140" size_y="44" clickable="true">
 			<element id="label_confirm_ok" font="hud_medium" text="Ok" offset_y="32" alignment_y="3"/>
 		</element>
-		<element id="button_confirm_cancel" style="style_menu_button" hover_style="style_menu_button_hover" offset_x="90" offset_y="34" size_x="140" size_y="44" clickable="true">
+		<element id="button_confirm_cancel" sound="game_click0.ogg" style="style_menu_button" hover_style="style_menu_button_hover" offset_x="90" offset_y="34" size_x="140" size_y="44" clickable="true">
 			<element id="label_confirm_cancel" font="hud_medium" text="Cancel" offset_y="32" alignment_y="3"/>
 		</element>
 		<element id="label_confirm_warning" font="hud_medium" text="Are you sure?" offset_y="56" alignment_y="3"/>

@@ -555,7 +555,7 @@ void _EditorState::HandleMouseButton(const ae::_MouseEvent &MouseEvent) {
 							default: {
 								ae::_Element *Button = Brush[EditMode];
 								if(Button)
-									SpawnObject(Map->GetValidPosition(WorldCursor), Rotation, 1.0f, (intptr_t)Button->UserData, Button->Name, ObjectLevel, IsShiftDown);
+									SpawnObject(Map->GetValidPosition(WorldCursor), Rotation, 1.0f, (intptr_t)Button->UserData, Button->ID, ObjectLevel, IsShiftDown);
 							} break;
 						}
 					}
@@ -1250,7 +1250,7 @@ void _EditorState::LoadPaletteButtons(std::vector<_Brush> &Icons, int Type) {
 		Style->Stretch = true;
 
 		ae::_Element *Button = new ae::_Element();
-		Button->Name = Icons[i].ID;
+		Button->ID = Icons[i].ID;
 		Button->Parent = PaletteElement[Type];
 		Button->BaseOffset = Offset;
 		Button->BaseSize = glm::ivec2(EDITOR_PALETTE_SIZE, EDITOR_PALETTE_SIZE);
@@ -1285,7 +1285,7 @@ void _EditorState::DrawBrush() {
 	const ae::_Texture *IconTexture = nullptr;
 	glm::vec4 IconColor = COLOR_WHITE;
 	if(Brush[EditMode]) {
-		IconID = Brush[EditMode]->Name;
+		IconID = Brush[EditMode]->ID;
 		IconText = Brush[EditMode]->Style->Name;
 		IconTexture = Brush[EditMode]->Style->Texture;
 		IconColor = Brush[EditMode]->Style->TextureColor;
@@ -1332,7 +1332,7 @@ void _EditorState::DrawBrush() {
 			}
 			else {
 				if(Brush[EditMode])
-					IconText = Brush[EditMode]->Name;
+					IconText = Brush[EditMode]->ID;
 				if(EditLayer != MAPLAYER_FLAT)
 					IconRotation = Rotation;
 				TextRotation = Rotation;
@@ -1410,7 +1410,7 @@ void _EditorState::DrawBrush() {
 			if(EventSelected()) {
 				ae::_Element *Button = PaletteElement[EDITMODE_EVENTS]->Children[SelectedEvent->Type];
 				IconTexture = Button->Style->Texture;
-				IconID = Button->Name;
+				IconID = Button->ID;
 				IconText = Button->Style->Name;
 
 				ItemID = SelectedEvent->ItemID;
@@ -2137,7 +2137,7 @@ void _EditorState::ExecuteCopy() {
 				Brush[EDITMODE_BLOCKS] = GetBrushFromTexture(EDITMODE_BLOCKS, Block->Texture);
 				ae::_Element *AltBrush = GetBrushFromTexture(EDITMODE_BLOCKS, Block->AltTexture);
 				if(AltBrush) {
-					AltTextureID = AltBrush->Name;
+					AltTextureID = AltBrush->ID;
 					AltTexture = AltBrush->Style->Texture;
 				}
 				else {
@@ -2359,7 +2359,7 @@ void _EditorState::ExecuteSelectPalette(ae::_Element *Button, int ClickType) {
 					}
 				}
 				else {
-					AltTextureID = Button->Name;
+					AltTextureID = Button->ID;
 					AltTexture = Button->Style->Texture;
 				}
 			}
@@ -2407,11 +2407,11 @@ void _EditorState::ExecuteSelectPalette(ae::_Element *Button, int ClickType) {
 			if(ClickType == 1 && EventSelected()) {
 				switch(EditMode) {
 					case EDITMODE_ITEMS:
-						SelectedEvent->ItemID = Button->Name;
+						SelectedEvent->ItemID = Button->ID;
 						ExecuteSwitchMode(EDITMODE_EVENTS);
 					break;
 					case EDITMODE_MONSTERS:
-						SelectedEvent->MonsterID = Button->Name;
+						SelectedEvent->MonsterID = Button->ID;
 						ExecuteSwitchMode(EDITMODE_EVENTS);
 					break;
 					default:

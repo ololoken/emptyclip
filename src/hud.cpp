@@ -231,7 +231,7 @@ void _HUD::MouseEvent(const ae::_MouseEvent &MouseEvent) {
 
 	// Handle button clicks
 	ae::_Element *Clicked = Elements[ELEMENT_INVENTORY]->GetClickedElement();
-	if(Clicked && Clicked->Name == "button_inventory_sort")
+	if(Clicked && Clicked->ID == "button_inventory_sort")
 		Player->SortInventory();
 
 	// Get hit element
