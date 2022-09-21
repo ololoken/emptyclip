@@ -380,11 +380,13 @@ void _Item::DrawTooltip(const _Player *Player, size_t CompareSlot, int Inventory
 			if(InventorySlot == -1 && PlayState.HUD->InventoryOpen)
 				HelpTextList.push_back("Right-click to pick up");
 
-			DrawPosition.y += Spacing.y;
-			std::string Percent = Template.Attributes.at("percent_sign").Int ? "%" : "";
-			Buffer << "+" << Attributes.at("bonus").Int << Percent;
-			ae::Assets.Fonts["hud_medium"]->DrawText(ModTypeToString(Template.Attributes.at("mod_type").Int), glm::ivec2(DrawPosition - DrawOffset), ae::RIGHT_BASELINE);
-			ae::Assets.Fonts["hud_medium"]->DrawText(Buffer.str(), glm::ivec2(DrawPosition + DrawOffset), ae::LEFT_BASELINE, TextColor);
+			if(Template.Attributes.at("mod_type").Int != MOD_FULLAUTO) {
+				DrawPosition.y += Spacing.y;
+				std::string Percent = Template.Attributes.at("percent_sign").Int ? "%" : "";
+				Buffer << "+" << Attributes.at("bonus").Int << Percent;
+				ae::Assets.Fonts["hud_medium"]->DrawText(ModTypeToString(Template.Attributes.at("mod_type").Int), glm::ivec2(DrawPosition - DrawOffset), ae::RIGHT_BASELINE);
+				ae::Assets.Fonts["hud_medium"]->DrawText(Buffer.str(), glm::ivec2(DrawPosition + DrawOffset), ae::LEFT_BASELINE, TextColor);
+			}
 		} break;
 		case _Object::MEDKIT: {
 			HelpTextList.push_back("Used when picked up");
@@ -424,13 +426,21 @@ void _Item::DrawTooltip(const _Player *Player, size_t CompareSlot, int Inventory
 		if(!Bonus[i])
 			continue;
 
+		_ObjectTemplate &ModTemplate = Stats.Objects.at(Stats.ModNames[i]);
+
 		DrawPosition.y += SmallSpacing.y;
 
-		std::string Percent = " ";
-		if(Stats.Objects.at(Stats.ModNames[i]).Attributes.at("percent_sign").Int)
-			Percent = "% ";
+		// Set bonus
+		if(ModTemplate.Attributes.at("mod_type").Int != MOD_FULLAUTO) {
+			std::string Percent = " ";
+			if(ModTemplate.Attributes.at("percent_sign").Int)
+				Percent = "% ";
 
-		Buffer << "+" << Bonus[i] << Percent << ModTypeToString(i);
+			Buffer << "+" << Bonus[i] << Percent;
+		}
+
+		// Set label
+		Buffer << ModTypeToString(i);
 		ae::Assets.Fonts["hud_small"]->DrawText(Buffer.str(), glm::ivec2(DrawPosition), ae::CENTER_BASELINE, TextColor);
 		Buffer.str("");
 	}
@@ -498,6 +508,8 @@ void _Item::RecalculateStats() {
 			Attributes["penetration_damage"].Float = std::clamp(Template.Attributes.at("penetration_damage").Float * QualityFactor, 0.0f, 1.0f);
 			Attributes["crit_chance"].Int = std::clamp(Template.Attributes.at("crit_chance").Int + Bonus[MOD_CRITCHANCE], 0, 100);
 			Attributes["rounds"].Int = std::round((Template.Attributes.at("rounds").Int + Bonus[MOD_MAXROUNDSPLUS]) * GetBonusMultiplier(MOD_MAXROUNDS));
+			if(Bonus[MOD_FULLAUTO])
+				Attributes["fire_rate"].Int = 1;
 
 			float ExplosionSize = Template.Attributes.at("explosion_size").Float;
 			Attributes["explosion_size"].Float = ExplosionSize > 0.0f ? ExplosionSize * GetBonusMultiplier(MOD_EXPLOSION) : 0.0f;
@@ -577,6 +589,14 @@ bool _Item::ModCompatible(_Item *Mod) {
 
 			// Explosion only affects explosive weapons
 			if(ModType == MOD_EXPLOSION && Template.Attributes.at("explosion_size").Float == 0.0f)
+				return false;
+
+			// Full auto only affects semiauto weapons
+			if(ModType == MOD_FULLAUTO && Template.Attributes.at("fire_rate").Int == 1)
+				return false;
+
+			// Check max
+			if(Mod->Template.Attributes.at("max").Int && Bonus[ModType])
 				return false;
 
 		} break;
@@ -731,6 +751,9 @@ std::string _Item::ModTypeToString(int ModType) {
 		break;
 		case MOD_CRITCHANCE:
 			return "Critical Hit Chance";
+		break;
+		case MOD_FULLAUTO:
+			return "Full Automatic";
 		break;
 	}
 

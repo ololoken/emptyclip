@@ -367,6 +367,7 @@ void _Stats::LoadMods() {
 		Template.Attributes["bonus"].Float = Database->GetReal("bonus");
 		Template.Attributes["bonus_level"].Float = Database->GetReal("bonus_level");
 		Template.Attributes["percent_sign"].Int = Database->GetInt<int>("percent_sign");
+		Template.Attributes["max"].Int = Database->GetInt<int>("max");
 
 		// Check for loaded textures
 		if(!ae::Assets.Textures[Template.IconID])
