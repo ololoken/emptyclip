@@ -685,6 +685,7 @@ _Item *_Stats::CreateItem(const std::string &ID, int Level, int Quality, int Cou
 		break;
 		case _Object::MOD:
 			Item->SetAttributeLevel("bonus", QualityFactor);
+			Item->Attributes.at("bonus").Int = std::max(Item->Attributes.at("bonus").Int, 1);
 		break;
 		default:
 			Item->Attributes = Template.Attributes;

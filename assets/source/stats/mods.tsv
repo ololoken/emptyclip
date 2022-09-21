@@ -4,18 +4,18 @@ mod_damage	Damage Mod	textures/items/mod_damage.png	2	3	0	10	1	1
 mod_accuracy	Accuracy Mod	textures/items/mod_accuracy.png	3	3	0	10	1	1
 mod_attackspeed	Attack Speed Mod	textures/items/mod_attackspeed.png	4	3	0	10	1	1
 mod_reloadspeed	Reload Speed Mod	textures/items/mod_reloadspeed.png	5	3	0	10	1	1
-mod_reloadamount	Reload Amount Mod	textures/items/mod_reloadamount.png	6	3	0	1	0.095	0
-mod_penetration	Penetration Mod	textures/items/mod_penetration.png	7	3	0	1	0.095	0
+mod_reloadamount	Reload Amount Mod	textures/items/mod_reloadamount.png	6	3	0	0.5	0.1	0
+mod_penetration	Penetration Mod	textures/items/mod_penetration.png	7	3	0	0.5	0.1	0
 mod_handling	Handling Mod	textures/items/mod_handling.png	8	3	0	10	1	1
 mod_damageblock	Damage Block Mod	textures/items/mod_damageblock.png	9	4	0	1	1	0
-mod_damageresist	Damage Resist Mod	textures/items/mod_damageresist.png	10	4	0	1	0.245	1
+mod_damageresist	Damage Resist Mod	textures/items/mod_damageresist.png	10	4	0	0.5	0.25	1
 mod_maxammo	Max Ammo Mod	textures/items/mod_maxammo.png	11	4	0	10	1	1
-mod_movespeed	Move Speed Mod	textures/items/mod_movespeed.png	12	4	0	1	0.245	1
-mod_maxroundsplus	Max Rounds Mod	textures/items/mod_maxroundsplus.png	13	3	0	1	0.095	0
-mod_explosion	Explosion Size Mod	textures/items/mod_explosion.png	14	3	0	10	1	1
-mod_meleedamage	Melee Damage Mod	textures/items/mod_meleedamage.png	15	4	1	10	1	1
-mod_pistoldamage	Pistol Damage Mod	textures/items/mod_pistoldamage.png	16	4	2	10	1	1
-mod_shotgundamage	Shotgun Damage Mod	textures/items/mod_shotgundamage.png	17	4	3	10	1	1
-mod_rifledamage	Rifle Damage Mod	textures/items/mod_rifledamage.png	18	4	4	10	1	1
-mod_heavydamage	Heavy Damage Mod	textures/items/mod_heavydamage.png	19	4	5	10	1	1
-mod_critchance	Critical Hit Chance Mod	textures/items/mod_critchance.png	20	3	0	5	0.195	1
+mod_movespeed	Move Speed Mod	textures/items/mod_movespeed.png	12	4	0	0.5	0.25	1
+mod_maxroundsplus	Max Rounds Mod	textures/items/mod_maxroundsplus.png	13	3	0	0.5	0.1	0
+mod_explosion	Explosion Size Mod	textures/items/mod_explosion.png	14	3	0	9.5	0.5	1
+mod_meleedamage	Melee Damage Mod	textures/items/mod_meleedamage.png	15	4	1	9.5	0.5	1
+mod_pistoldamage	Pistol Damage Mod	textures/items/mod_pistoldamage.png	16	4	2	9.5	0.5	1
+mod_shotgundamage	Shotgun Damage Mod	textures/items/mod_shotgundamage.png	17	4	3	9.5	0.5	1
+mod_rifledamage	Rifle Damage Mod	textures/items/mod_rifledamage.png	18	4	4	9.5	0.5	1
+mod_heavydamage	Heavy Damage Mod	textures/items/mod_heavydamage.png	19	4	5	9.5	0.5	1
+mod_critchance	Critical Hit Chance Mod	textures/items/mod_critchance.png	20	3	0	4.5	0.2	1
