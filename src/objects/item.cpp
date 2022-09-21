@@ -592,7 +592,7 @@ bool _Item::ModCompatible(_Item *Mod) {
 				return false;
 
 			// Full auto only affects semiauto weapons
-			if(ModType == MOD_FULLAUTO && Template.Attributes.at("fire_rate").Int == 1)
+			if(ModType == MOD_FULLAUTO && (Template.Attributes.at("fire_rate").Int || Template.Attributes.at("fire_allrounds").Int))
 				return false;
 
 			// Check max
