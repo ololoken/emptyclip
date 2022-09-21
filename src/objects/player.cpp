@@ -804,7 +804,7 @@ void _Player::DropItem(int Slot, const glm::vec2 &DropPosition) {
 
 // Sort inventory
 void _Player::SortInventory() {
-	ae::Audio.PlaySound(ae::Assets.Sounds["game_sort0.ogg"]);
+	ae::Audio.PlaySound(ae::Assets.Sounds["game_click0.ogg"]);
 
 	// Add items to sortable array
 	std::vector<_Item *> Bag;

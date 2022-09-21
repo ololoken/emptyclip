@@ -23,12 +23,12 @@ equip_melee0.ogg	0.25	1
 event_crash0.ogg	1	1
 event_platform0.ogg	0.8	3
 event_rumble0.ogg	1	1
+game_click0.ogg	0.4	1
 game_flashlight0.ogg	1	1
 game_lava0.ogg	1	3
 game_levelup0.ogg	1	1
 game_message0.ogg	1	1
 game_secret0.ogg	1	1
-game_sort0.ogg	0.4	1
 knife_fire0.ogg	0.7	3
 knife_hit0.ogg	0.7	3
 minigun_fire0.ogg	0.7	1

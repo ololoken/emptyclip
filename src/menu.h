@@ -121,6 +121,7 @@ class _Menu {
 
 		void InitNewPlayer();
 		void LaunchGame();
+		void PlayClickSound();
 
 		void UpdateOptions();
 		void UpdateVolume();

@@ -331,6 +331,11 @@ void _Menu::LaunchGame() {
 	State = STATE_NONE;
 }
 
+// Play menu sound
+void _Menu::PlayClickSound() {
+	ae::Audio.PlaySound(ae::Assets.Sounds["game_click0.ogg"]);
+}
+
 // Update option elements
 void _Menu::UpdateOptions() {
 

@@ -419,7 +419,7 @@ void _Framework::LoadAssets() {
 	ae::Assets.LoadAnimations("tables/animations.tsv");
 	ae::Assets.LoadStyles("ui/styles.tsv");
 	ae::Assets.LoadUI("ui/elements.xml");
-	//Assets.SaveUI("tables/elements_new.xml");
+	//ae::Assets.SaveUI("ui/elements_new.xml");
 
 	ae::Assets.LoadFonts("ui/fonts.tsv");
 }
