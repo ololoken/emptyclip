@@ -29,6 +29,7 @@
 #include <ae/ui.h>
 #include <ae/audio.h>
 #include <ae/font.h>
+#include <ae/console.h>
 #include <actiontype.h>
 #include <achievements.h>
 #include <hud.h>
@@ -816,6 +817,9 @@ void _Menu::SetFullscreen(bool Fullscreen) {
 
 	Config.Fullscreen = Fullscreen;
 	Config.Save();
+
+	if(Framework.Console)
+		Framework.Console->UpdateSize();
 
 	// Reload fonts
 	ae::Assets.LoadFonts("ui/fonts.tsv");
