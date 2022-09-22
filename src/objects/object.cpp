@@ -415,14 +415,26 @@ void _Object::ApplyDamage(const _Hit &Hit) {
 }
 
 // Apply force to object and cap velocity
-void _Object::ApplyForce(const glm::vec2 &ForceDirection, float ForceApplied) {
-	if(Mass <= 0.0f || ForceApplied <= 0.0f)
+void _Object::ApplyForce(const glm::vec2 &ForceDirection, float Amount, bool LimitForce) {
+	if(Mass <= 0.0f || Amount <= 0.0f)
 		return;
 
-	Velocity += ForceDirection * ForceApplied / Mass;
+	// Get force
+	float ForceValue = Amount / Mass;
+
+	// Limit force before velocity is updated
+	float VelocityLength;
+	if(LimitForce) {
+		VelocityLength = glm::length(Velocity);
+		if(VelocityLength > ForceValue)
+			return;
+	}
+
+	// Update velocity
+	Velocity += ForceDirection * ForceValue;
 
 	// Check max velocity
-	float VelocityLength = glm::length(Velocity);
+	VelocityLength = glm::length(Velocity);
 	if(VelocityLength > Radius)
 		Velocity *= Radius / VelocityLength;
 }

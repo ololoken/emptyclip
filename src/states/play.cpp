@@ -983,7 +983,7 @@ void _PlayState::ResolveAttack(_Entity *Attacker, int GridType) {
 		return;
 
 	// Add push
-	Attacker->ApplyForce(-Attacker->Direction, Attacker->Push[Player->AttackRequestType]);
+	Attacker->ApplyForce(-Attacker->Direction, Attacker->Push[Player->AttackRequestType], true);
 
 	// Check achievements for weapons used
 	if(Attacker->Type == _Object::PLAYER) {

@@ -141,7 +141,7 @@ class _Object {
 
 		void CheckProjectileCollisions();
 		void ApplyDamage(const _Hit &Hit);
-		void ApplyForce(const glm::vec2 &ForceDirection, float ForceApplied);
+		void ApplyForce(const glm::vec2 &ForceDirection, float Amount, bool LimitForce=false);
 
 		// Template
 		const _ObjectTemplate &Template;
