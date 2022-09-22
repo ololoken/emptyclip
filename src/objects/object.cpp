@@ -22,6 +22,7 @@
 #include <ae/graphics.h>
 #include <ae/audio.h>
 #include <constants.h>
+#include <hud.h>
 #include <stats.h>
 #include <menu.h>
 #include <map.h>
@@ -73,7 +74,15 @@ void _Object::RenderLights(double BlendFactor) {
 		return;
 
 	ae::Graphics.SetColor(LightColor);
-	ae::Graphics.DrawSprite(glm::vec3(Position, PositionZ), LightTexture, 0, LightScale);
+	if(IsGold()) {
+		if(this == PlayState.HUD->CursorItem)
+			return;
+
+		for(int i = 0; i < 10; i++)
+			ae::Graphics.DrawSprite(glm::vec3(Position, PositionZ + i * 0.1f), LightTexture, 0, LightScale);
+	}
+	else
+		ae::Graphics.DrawSprite(glm::vec3(Position, PositionZ), LightTexture, 0, LightScale);
 }
 
 // Get sound for a sound type
