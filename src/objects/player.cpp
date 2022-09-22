@@ -738,11 +738,19 @@ int _Player::AddItem(_Item *Item, int &AmountAdded) {
 			if(Ammo[Item->ID] == AmmoMax[Item->ID])
 				return 2;
 
-			// Add pickup bonus
-			int PickupAmount = Item->Attributes["amount"].Int * PickupModifier + 0.5f;
-
 			int AmountToMax = AmmoMax[Item->ID] - Ammo[Item->ID];
-			AmountAdded = std::min(AmountToMax, PickupAmount);
+
+			// Check for gold ammo
+			if(Item->IsGold()) {
+				AmountAdded = AmountToMax;
+			}
+			else {
+
+				// Add pickup bonus
+				int PickupAmount = std::round(Item->Attributes["amount"].Int * PickupModifier);
+				AmountAdded = std::min(AmountToMax, PickupAmount);
+			}
+
 			Ammo[Item->ID] += AmountAdded;
 
 			return 2;
@@ -752,7 +760,8 @@ int _Player::AddItem(_Item *Item, int &AmountAdded) {
 				return 2;
 
 			int AmountToMax = MaxHealth - Health;
-			int HealAmount = (int)(GAME_MEDKIT_HEALTH_PERCENT * HealModifier) * 0.01f * MaxHealth;
+			int HealAmount = Item->IsGold() ? AmountToMax : (int)(GAME_MEDKIT_HEALTH_PERCENT * HealModifier) * 0.01f * MaxHealth;
+
 			UpdateHealth(HealAmount);
 
 			AmountAdded = std::min(AmountToMax, HealAmount);

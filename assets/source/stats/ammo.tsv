@@ -5,5 +5,5 @@ ammo_shells	Shotgun Shells	textures/items/ammo_shotgun.png	10	50
 ammo_rifle	Rifle Ammo	textures/items/ammo_rifle.png	20	100
 ammo_heavy	Heavy Ammo	textures/items/ammo_heavy.png	30	150
 ammo_plasma	Plasma Cells	textures/items/ammo_plasma.png	25	125
-ammo_rocket	Rocket	textures/items/ammo_rocket.png	2	10
-ammo_bolt	Bolt	textures/items/ammo_bolt.png	5	25
+ammo_rocket	Rockets	textures/items/ammo_rocket.png	2	10
+ammo_bolt	Bolts	textures/items/ammo_bolt.png	5	25
