@@ -63,10 +63,18 @@ inline bool CompareItem(_Item *First, _Item *Second) {
 			return First->Template.Attributes.at("weapon_type").Int < Second->Template.Attributes.at("weapon_type").Int;
 		}
 		else if(First->Type == _Object::MOD) {
-			if(First->Template.Attributes.at("mod_type").Int == Second->Template.Attributes.at("mod_type").Int)
-				return First->Attributes.at("bonus").Int > Second->Attributes.at("bonus").Int;
+			if(First->Template.Attributes.at("object_type").Int == Second->Template.Attributes.at("object_type").Int) {
+				if(First->Template.Attributes.at("mod_type").Int == Second->Template.Attributes.at("mod_type").Int) {
+					if(First->Attributes.at("bonus").Int == Second->Attributes.at("bonus").Int)
+						return First->Quality > Second->Quality;
 
-			return First->Template.Attributes.at("mod_type").Int < Second->Template.Attributes.at("mod_type").Int;
+					return First->Attributes.at("bonus").Int > Second->Attributes.at("bonus").Int;
+				}
+
+				return First->Template.Attributes.at("mod_type").Int < Second->Template.Attributes.at("mod_type").Int;
+			}
+
+			return First->Template.Attributes.at("object_type").Int < Second->Template.Attributes.at("object_type").Int;
 		}
 
 		return CompareItemStats(First, Second, true);
