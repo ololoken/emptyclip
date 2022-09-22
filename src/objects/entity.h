@@ -127,6 +127,7 @@ class _Entity : public _Object {
 		float RecoilRegen{0.0f};
 		float RecoilModifier{1.0f};
 		float MoveRecoil{0.0f};
+		double ReloadDelay{0.0};
 		float AttackRange[WEAPONATTACK_COUNT]{0.0f};
 		double AttackTimer[WEAPONATTACK_COUNT]{0.0};
 		double AttackPeriod[WEAPONATTACK_COUNT]{0.0};

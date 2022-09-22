@@ -358,6 +358,7 @@ void _Player::RecalculateStats() {
 			Force[i] = WeaponTemplate[i]->Attributes.at("force").Float;
 		}
 	}
+	ReloadDelay = AttackPeriod[WEAPONATTACK_MAIN] / Stats.GetSkillBonusMultiplier(Skills[SKILL_DEXTERITY], SKILL_DEXTERITY);
 	ReloadPeriod = WeaponAttributes[WEAPONATTACK_MAIN]["reload_period"].Double / Stats.GetSkillBonusMultiplier(Skills[SKILL_DEXTERITY], SKILL_DEXTERITY);
 
 	// Set final stats
@@ -1397,7 +1398,7 @@ int _Player::GetInventoryMaxStack() const {
 }
 
 bool _Player::CanReload() const {
-	return HasMainHand() && CheckAttackTimer(WEAPONATTACK_MAIN) && !Reloading && !SwitchingWeapons && !IsMeleeAttacking() && GetMainHand()->Attributes.at("ammo").Int != GetMainHand()->Attributes.at("rounds").Int && HasAmmoForMain();
+	return HasMainHand() && AttackTimer[WEAPONATTACK_MAIN] >= ReloadDelay && !Reloading && !SwitchingWeapons && !IsMeleeAttacking() && GetMainHand()->Attributes.at("ammo").Int != GetMainHand()->Attributes.at("rounds").Int && HasAmmoForMain();
 }
 
 bool _Player::IsMelee() const {
