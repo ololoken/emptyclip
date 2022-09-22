@@ -105,6 +105,7 @@ class _Menu {
 		void HandleMouseButton(const ae::_MouseEvent &MouseEvent);
 		void HandleResize();
 		void SetFullscreen(bool Fullscreen);
+		void ShowDefaultCursor(bool Value);
 
 		void Update(double FrameTime);
 		void Render();

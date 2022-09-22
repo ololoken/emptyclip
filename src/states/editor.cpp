@@ -128,7 +128,7 @@ void _EditorState::Init() {
 	// Set up graphics
 	ae::Graphics.SetViewport(ae::Graphics.CurrentSize - EDITOR_VIEWPORT_OFFSET);
 	Camera->CalculateFrustum(ae::Graphics.AspectRatio);
-	ae::Graphics.SetCursor(true);
+	Menu.ShowDefaultCursor(true);
 	Framebuffer = new ae::_Framebuffer(ae::Graphics.ViewportSize);
 
 	// Adjust UI

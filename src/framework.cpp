@@ -404,6 +404,7 @@ void _Framework::LoadAssets() {
 	TextureSettings.Anisotropy = Config.Anisotropy;
 	ae::Assets.LoadTexturePack("textures/lights", TextureSettings);
 	ae::Assets.LoadTexturePack("textures/melee", TextureSettings);
+	ae::Assets.LoadCursor("game", "ui/cursor_game.png", glm::ivec2(4, 4));
 
 	// Load assets
 	ae::Assets.LoadPrograms("tables/programs.tsv");

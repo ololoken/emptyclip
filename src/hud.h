@@ -170,7 +170,4 @@ class _HUD {
 
 		// Text
 		ae::_Font *Fonts[FONT_COUNT]{nullptr};
-
-		// Textures
-		const ae::_Texture *CrosshairTexture{nullptr};
 };

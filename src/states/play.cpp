@@ -126,7 +126,7 @@ void _PlayState::Init() {
 
 	Camera->ConvertScreenToWorld(ae::Input.GetMouse(), WorldCursor);
 	PreviousWorldCursor = WorldCursor;
-	ae::Graphics.SetCursor(false);
+	Menu.ShowDefaultCursor(false);
 
 	ae::Actions.ResetState();
 	ae::Audio.Stop();
@@ -472,7 +472,7 @@ void _PlayState::Update(double FrameTime) {
 
 	// Handle pause
 	if(IsPaused()) {
-		ae::Graphics.SetCursor(true);
+		Menu.ShowDefaultCursor(true);
 		HUD->CursorOverItem = nullptr;
 		HUD->CursorOverWorld = false;
 
@@ -969,7 +969,7 @@ void _PlayState::Render(double BlendFactor) {
 
 	// Draw death screen
 	if(Player->IsDead()) {
-		ae::Graphics.SetCursor(1);
+		Menu.ShowDefaultCursor(true);
 		HUD->DrawDeathScreen();
 	}
 }

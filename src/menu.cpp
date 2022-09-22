@@ -154,7 +154,7 @@ void _Menu::InitTitle() {
 	std::string BuildVersion;
 	if(std::string(BUILD_VERSION) != "")
 		BuildVersion = std::string("-") + BUILD_VERSION;
-	ae::Graphics.SetCursor(true);
+	ShowDefaultCursor(true);
 
 	ae::Assets.Elements["label_game_version"]->Text = GAME_VERSION + BuildVersion;
 	ae::Assets.Elements["label_game_version"]->SetActive(true);
@@ -230,7 +230,7 @@ void _Menu::InitControls() {
 void _Menu::InitInGame() {
 	ChangeLayout("element_menu_ingame");
 
-	ae::Graphics.SetCursor(true);
+	ShowDefaultCursor(true);
 	Background = nullptr;
 
 	State = STATE_INGAME;
@@ -251,7 +251,7 @@ void _Menu::InitPlay() {
 void _Menu::InitScore() {
 	ChangeLayout("element_menu_score");
 
-	ae::Graphics.SetCursor(true);
+	ShowDefaultCursor(true);
 
 	Background = ae::Assets.Elements["image_menu_bg"];
 	HandleResize();
@@ -820,6 +820,14 @@ void _Menu::SetFullscreen(bool Fullscreen) {
 	// Reload fonts
 	ae::Assets.LoadFonts("ui/fonts.tsv");
 	ae::Graphics.ResetState();
+}
+
+// Show menu cursor or game cursor
+void _Menu::ShowDefaultCursor(bool Value) {
+	if(Value)
+		ae::Graphics.SetCursor(ae::CURSOR_MAIN);
+	else
+		ae::Graphics.SetCursor(ae::Assets.Cursors["game"]);
 }
 
 // Update phase

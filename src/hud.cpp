@@ -31,6 +31,7 @@
 #include <ae/camera.h>
 #include <states/play.h>
 #include <map.h>
+#include <menu.h>
 #include <actiontype.h>
 #include <config.h>
 #include <stats.h>
@@ -64,7 +65,6 @@ _HUD::_HUD(const ae::_Camera *Camera, _Player *Player) : Camera(Camera), Player(
 	Fonts[FONT_SMALL] = ae::Assets.Fonts["hud_small"];
 	Fonts[FONT_MEDIUM] = ae::Assets.Fonts["hud_medium"];
 	Fonts[FONT_LARGE] = ae::Assets.Fonts["hud_large"];
-	CrosshairTexture = ae::Assets.Textures["textures/hud/crosshair0.png"];
 
 	// Elements
 	Elements[LABEL_MESSAGE] = ae::Assets.Elements["label_hud_message"];
@@ -193,7 +193,7 @@ void _HUD::SetInventoryOpen(bool Value) {
 		CursorOverWorld = false;
 	}
 
-	ae::Graphics.SetCursor(InventoryOpen);
+	Menu.ShowDefaultCursor(InventoryOpen);
 }
 
 // Move item in the world to another location
@@ -457,7 +457,7 @@ void _HUD::Update(double FrameTime, float Radius, double Clock) {
 
 	// Update inventory
 	if(InventoryOpen) {
-		ae::Graphics.SetCursor(true);
+		Menu.ShowDefaultCursor(true);
 
 		ae::_Element *HitElement;
 		HitElement = Elements[ELEMENT_INVENTORY]->HitElement;
@@ -482,7 +482,7 @@ void _HUD::Update(double FrameTime, float Radius, double Clock) {
 		}
 	}
 	else
-		ae::Graphics.SetCursor(false);
+		Menu.ShowDefaultCursor(false);
 
 	// Update health display
 	if(LastEntityHit != nullptr && (LastEntityHitTimer > HUD_ENTITYHEALTHDISPLAYPERIOD))
@@ -747,11 +747,6 @@ void _HUD::DrawCrosshair(const glm::vec2 &Position) {
 	ae::Graphics.SetProgram(ae::Assets.Programs["pos"]);
 	ae::Graphics.SetColor(Color);
 	ae::Graphics.DrawCircle(glm::vec3(Position, 0.0f), CrosshairScale);
-
-	ae::Graphics.SetProgram(ae::Assets.Programs["pos_uv"]);
-	ae::Graphics.SetColor(Color);
-	ae::Assets.Programs["pos_uv"]->ResetTransform(ae::Assets.Programs["pos_uv"]->TextureTransformID);
-	ae::Graphics.DrawSprite(glm::vec3(Position, 0.0f), CrosshairTexture, 0);
 }
 
 // Draws a box and text
