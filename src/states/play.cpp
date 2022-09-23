@@ -638,7 +638,7 @@ void _PlayState::Update(double FrameTime) {
 		ClosestItemTimer = 0.0;
 
 	// Show item tooltip when standing over item
-	if(!HUD->InventoryOpen && ClosestItem && ClosestItem == LastClosestItem && ClosestItem->Type != _Object::AMMO) {
+	if(!HUD->InventoryOpen && !Player->Aiming && ClosestItem && ClosestItem == LastClosestItem && ClosestItem->Type != _Object::AMMO) {
 		ClosestItemTimer += FrameTime;
 		if(!HUD->CursorOverItem && ClosestItemTimer >= HUD_STANDOVER_TIME) {
 			HUD->CursorOverItem = (_Item *)ClosestItem;
