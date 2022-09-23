@@ -71,7 +71,16 @@ void _PlayState::Init() {
 	if(TestMode) {
 		Player = new _Player(Stats.Objects.at("player"));
 		Player->SavePath = Config.ConfigPath + "test.save";
-		Save.LoadPlayer(Player);
+		try {
+			Save.LoadPlayer(Player);
+		}
+		catch(std::invalid_argument &Error) {
+
+			// Create new test save
+			Player->RecalculateStats();
+			Player->Health = Player->MaxHealth;
+			Save.SavePlayer(Player);
+		}
 	}
 
 	// Bad player

@@ -156,7 +156,7 @@ void _Save::LoadPlayer(_Player *Player) {
 	// Open file
 	std::ifstream File(Player->SavePath.c_str(), std::ios::in | std::ios::binary);
 	if(!File)
-		throw std::runtime_error("Cannot load save file: " + Player->SavePath);
+		throw std::invalid_argument("Cannot load save file: " + Player->SavePath);
 
 	// Read file
 	while(!File.eof() && File.peek() != EOF) {
