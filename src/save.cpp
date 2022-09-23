@@ -17,6 +17,7 @@
 *******************************************************************************/
 #include <save.h>
 #include <objects/player.h>
+#include <states/play.h>
 #include <ae/files.h>
 #include <ae/buffer.h>
 #include <config.h>
@@ -459,14 +460,21 @@ void _Save::SaveAmmo(_Player *Player, std::ofstream &File) {
 
 // Save keys
 void _Save::SaveKeys(_Player *Player, std::ofstream &File) {
-
-	// Write key type count
 	ae::_Buffer Buffer;
-	Buffer.Write<int>((int)Player->Keys.size());
 
-	// Write keys
-	for(const auto &Key : Player->Keys)
-		Buffer.WriteString(Key.first.c_str());
+	// Only save first two keys when boss key is found
+	if(!PlayState.TestMode && Player->Keys.find("key_boss") != Player->Keys.end()) {
+		Buffer.Write<int>(2);
+		Buffer.WriteString("key_green");
+		Buffer.WriteString("key_red");
+	}
+	else {
+
+		// Write keys
+		Buffer.Write<int>((int)Player->Keys.size());
+		for(const auto &Key : Player->Keys)
+			Buffer.WriteString(Key.first.c_str());
+	}
 
 	// Write chunk
 	WriteChunk(File, CHUNK_KEYS, &Buffer[0], Buffer.GetCurrentSize());
