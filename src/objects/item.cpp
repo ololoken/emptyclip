@@ -388,10 +388,16 @@ void _Item::DrawTooltip(const _Player *Player, size_t CompareSlot, int Inventory
 
 			if(Template.Attributes.at("mod_type").Int != MOD_FULLAUTO) {
 				DrawPosition.y += Spacing.y;
-				std::string Percent = Template.Attributes.at("percent_sign").Int ? "%" : "";
-				Buffer << "+" << Attributes.at("bonus").Int << Percent;
-				ae::Assets.Fonts["hud_medium"]->DrawText(ModTypeToString(Template.Attributes.at("mod_type").Int), glm::ivec2(DrawPosition - DrawOffset), ae::RIGHT_BASELINE);
-				ae::Assets.Fonts["hud_medium"]->DrawText(Buffer.str(), glm::ivec2(DrawPosition + DrawOffset), ae::LEFT_BASELINE, TextColor);
+				if(Template.Attributes.at("mod_type").Int == MOD_BURST) {
+					Buffer << Attributes.at("bonus").Int << " Round Burst Fire";
+					ae::Assets.Fonts["hud_medium"]->DrawText(Buffer.str(), glm::ivec2(DrawPosition), ae::CENTER_BASELINE, TextColor);
+				}
+				else {
+					std::string Percent = Template.Attributes.at("percent_sign").Int ? "%" : "";
+					Buffer << "+" << Attributes.at("bonus").Int << Percent;
+					ae::Assets.Fonts["hud_medium"]->DrawText(ModTypeToString(Template.Attributes.at("mod_type").Int), glm::ivec2(DrawPosition - DrawOffset), ae::RIGHT_BASELINE);
+					ae::Assets.Fonts["hud_medium"]->DrawText(Buffer.str(), glm::ivec2(DrawPosition + DrawOffset), ae::LEFT_BASELINE, TextColor);
+				}
 			}
 		} break;
 		case _Object::AMMO: {
@@ -448,7 +454,10 @@ void _Item::DrawTooltip(const _Player *Player, size_t CompareSlot, int Inventory
 		DrawPosition.y += SmallSpacing.y;
 
 		// Set bonus
-		if(ModTemplate.Attributes.at("mod_type").Int != MOD_FULLAUTO) {
+		if(ModTemplate.Attributes.at("mod_type").Int == MOD_BURST) {
+			Buffer << Bonus[i] << " Round ";
+		}
+		else if(ModTemplate.Attributes.at("mod_type").Int != MOD_FULLAUTO) {
 			std::string Percent = " ";
 			if(ModTemplate.Attributes.at("percent_sign").Int)
 				Percent = "% ";
@@ -527,6 +536,15 @@ void _Item::RecalculateStats() {
 			Attributes["rounds"].Int = std::round((Template.Attributes.at("rounds").Int + Bonus[MOD_MAXROUNDSPLUS]) * GetBonusMultiplier(MOD_MAXROUNDS));
 			if(Bonus[MOD_FULLAUTO])
 				Attributes["fire_rate"].Int = 1;
+
+			if(Bonus[MOD_BURST]) {
+				Attributes["burst_rounds"].Int = 3;
+				Attributes["fire_rate"].Int = 0;
+				if(Template.Attributes.at("fire_rate").Int == 0)
+					Attributes["burst_period"].Double = Template.Attributes.at("fire_period").Double / 3.0;
+				else
+					Attributes["burst_period"].Double = Template.Attributes.at("fire_period").Double * 0.75;
+			}
 
 			float ExplosionSize = Template.Attributes.at("explosion_size").Float;
 			Attributes["explosion_size"].Float = ExplosionSize > 0.0f ? ExplosionSize * GetBonusMultiplier(MOD_EXPLOSION) : 0.0f;
@@ -607,8 +625,28 @@ bool _Item::ModCompatible(_Item *Mod) {
 				return false;
 
 			// Full auto only affects semiauto weapons
-			if(ModType == MOD_FULLAUTO && (Template.Attributes.at("fire_rate").Int || Template.Attributes.at("fire_allrounds").Int || Template.Attributes.at("burst_rounds").Int))
-				return false;
+			if(ModType == MOD_FULLAUTO) {
+				if(IsMelee() || Template.Attributes.at("fire_rate").Int || Template.Attributes.at("fire_allrounds").Int || Template.Attributes.at("burst_rounds").Int)
+					return false;
+
+				// Check for burst mod
+				for(const auto &Mod : Mods) {
+					if(Mod->Type == _Object::MOD && Mod->Template.Attributes.at("mod_type").Int == MOD_BURST)
+						return false;
+				}
+			}
+
+			// Burst fire ignores existing burst fire weapons
+			if(ModType == MOD_BURST) {
+				if(IsMelee() || Template.Attributes.at("burst_rounds").Int || Template.Attributes.at("fire_allrounds").Int)
+					return false;
+
+				// Check for full auto mod
+				for(const auto &Mod : Mods) {
+					if(Mod->Type == _Object::MOD && Mod->Template.Attributes.at("mod_type").Int == MOD_FULLAUTO)
+						return false;
+				}
+			}
 
 			// Check max
 			if(Mod->Template.Attributes.at("max").Int && Bonus[ModType])
@@ -777,6 +815,9 @@ std::string _Item::ModTypeToString(int ModType) {
 		break;
 		case MOD_MAXSTAMINA:
 			return "Max Stamina";
+		break;
+		case MOD_BURST:
+			return "Burst Fire";
 		break;
 	}
 

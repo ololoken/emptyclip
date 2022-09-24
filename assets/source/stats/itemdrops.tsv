@@ -50,3 +50,4 @@ mod_maxroundsplus	0	0	0	0	0	0	0	0	0	0	0	0	1	0	0	1	1	0
 mod_explosion	0	0	0	0	0	0	0	0	0	0	0	0	1	0	0	0	1	0
 mod_critchance	0	0	0	0	0	0	0	0	0	0	0	0	1	0	0	0	1	0
 mod_fullauto	0	0	0	0	0	0	0	0	0	0	0	0	1	0	0	0	1	0
+mod_burst	0	0	0	0	0	0	0	0	0	0	0	0	1	0	0	0	1	0
