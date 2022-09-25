@@ -474,6 +474,7 @@ void _PlayState::Update(double FrameTime) {
 	//if(ae::Graphics.Element->HitElement)
 	//	std::cout << ae::Graphics.Element->HitElement->ID << std::endl;
 
+	int OldSkillPointsRemaining = Player->SkillPointsRemaining;
 	int OldLevel = Player->Level;
 	Timer += FrameTime;
 	FlashTimer = std::max(0.0, FlashTimer - FrameTime);
@@ -602,9 +603,15 @@ void _PlayState::Update(double FrameTime) {
 	if(Player->AttackMade)
 		ResolveAttack(Player, GRID_MONSTER);
 
-	// Level up screen
-	if(Player->Level > OldLevel)
-		HUD->ShowTextMessage("LEVEL UP! YOU HAVE UNSPENT SKILL POINTS", 5.0);
+	// Level up message
+	if(Player->Level > OldLevel) {
+		std::ostringstream Buffer;
+		Buffer << "LEVEL UP!";
+		if(Player->SkillPointsRemaining > OldSkillPointsRemaining)
+			Buffer << " YOU HAVE UNSPENT SKILL POINTS!";
+
+		HUD->ShowTextMessage(Buffer.str(), 5.0);
+	}
 
 	// Update camera
 	Camera->Set2DPosition(Player->Position);
