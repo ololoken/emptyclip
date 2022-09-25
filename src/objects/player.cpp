@@ -196,6 +196,7 @@ void _Player::Reset(bool Recalculate) {
 	InvulnerableTimer = 0.0;
 	PoisonTimer = 0.0f;
 	Flashlight = false;
+	LastGoodCoord = glm::vec2(0.0f);
 	Mass = 1.0f;
 	StopAudio();
 	for(int i = 0; i < SKILL_COUNT; i++)
@@ -455,14 +456,27 @@ void _Player::Update(double FrameTime) {
 		BurstRoundsShot = 0;
 	}
 
+	// Move player
 	Move(FrameTime);
 
-	if(Stamina > 0.0f && PositionChanged && Sprinting) {
-		Stamina -= PLAYER_SPRINTSTAMINA * FrameTime;
-		if(Stamina < 0.0f) {
-			Stamina = 0.0f;
-			SetSprinting(false);
-			Tired = true;
+	// Check for updated position
+	if(PositionChanged) {
+
+		// Warp out of walls
+		glm::ivec2 Coord = Map->GetValidCoord(Position);
+		if(!Map->CheckCollisionFlag(Coord, _Tile::ENTITY))
+			WarpPosition(glm::vec2(LastGoodCoord) + glm::vec2(0.5f));
+		else
+			LastGoodCoord = Coord;
+
+		// Update stamina
+		if(Stamina > 0.0f && Sprinting) {
+			Stamina -= PLAYER_SPRINTSTAMINA * FrameTime;
+			if(Stamina < 0.0f) {
+				Stamina = 0.0f;
+				SetSprinting(false);
+				Tired = true;
+			}
 		}
 	}
 }
@@ -1285,15 +1299,22 @@ void _Player::Respawn() {
 	RecalculateStats();
 	ResetWeaponAnimation();
 	StopAudio();
-	Map->RemoveObjectFromGrid(this, GRID_PLAYER);
-	SetPosition(Map->GetStartingPositionByCheckpoint(CheckpointIndex));
-	Map->AddObjectToGrid(this, GRID_PLAYER);
-	TileChanged = true;
+	WarpPosition(Map->GetStartingPositionByCheckpoint(CheckpointIndex));
 
 	Map->AmbientClock = Map->BaseAmbientClock;
 	Map->TargetAmbientLight = Map->BaseAmbientLight;
 
 	InvulnerableTimer = GAME_INVULNERABLE_TIME;
+}
+
+// Change player position and update grid
+void _Player::WarpPosition(const glm::vec2 &NewPosition) {
+	Map->RemoveObjectFromGrid(this, GRID_PLAYER);
+	SetPosition(NewPosition);
+	Map->AddObjectToGrid(this, GRID_PLAYER);
+
+	LastGoodCoord = Position;
+	TileChanged = true;
 }
 
 // Sets the weapon animation for the player

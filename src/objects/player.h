@@ -81,6 +81,7 @@ class _Player : public _Entity {
 		void ResetAccuracy(bool CompleteReset);
 		void RecalculateStats() override;
 		void Respawn();
+		void WarpPosition(const glm::vec2 &NewPosition);
 
 		int AddItem(_Item *Item, int &AmountAdded);
 		void DropItem(int Slot, const glm::vec2 &DropPosition=glm::vec2(-1.0f));
@@ -142,6 +143,7 @@ class _Player : public _Entity {
 
 		// Map
 		std::string MapID;
+		glm::ivec2 LastGoodCoord;
 		int CheckpointIndex;
 		int Progression;
 		double Clock;

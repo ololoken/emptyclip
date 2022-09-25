@@ -104,10 +104,8 @@ void _PlayState::Init() {
 	Player->Map = Map;
 	Player->MapID = Map->Filename;
 
-	// Set starting states
-	Player->SetPosition(Map->GetStartingPositionByCheckpoint(Player->CheckpointIndex));
-	Player->TileChanged = true;
-	Map->AddObjectToGrid(Player, GRID_PLAYER);
+	// Set starting position
+	Player->WarpPosition(Map->GetStartingPositionByCheckpoint(Player->CheckpointIndex));
 
 	// Spawn objects
 	for(const auto &ObjectSpawn : Map->ObjectSpawns)
@@ -870,6 +868,10 @@ void _PlayState::Render(double BlendFactor) {
 			//ae::Graphics.DrawLine(Player->Position, RightLine);
 		}
 
+		//ae::Graphics.SetProgram(ae::Assets.Programs["pos"]);
+		//ae::Graphics.SetColor(COLOR_BLUE);
+		//ae::Graphics.DrawRectangle3D(glm::vec2(Player->LastGoodCoord) + glm::vec2(0.5-0.25), glm::vec2(Player->LastGoodCoord) + glm::vec2(0.5+0.25), true);
+
 		ae::Graphics.SetDepthTest(true);
 	}
 
@@ -1549,11 +1551,7 @@ void _PlayState::CheckEvents(const _Entity *Entity) {
 				if(Event->Tiles.size() > 0) {
 					glm::vec2 NewPosition(Event->Tiles[0].Coord.x + 0.5f, Event->Tiles[0].Coord.y + 0.5f);
 					Particles->Create(_ParticleSpawn(GameAssets.GetParticleTemplate(Event->ParticleID), glm::vec2(0), NewPosition, OBJECT_Z, 0));
-
-					Map->RemoveObjectFromGrid(Player, GRID_PLAYER);
-					Player->SetPosition(NewPosition);
-					Map->AddObjectToGrid(Player, GRID_PLAYER);
-					Player->TileChanged = true;
+					Player->WarpPosition(NewPosition);
 				}
 			} break;
 			case EVENT_LIGHT: {
