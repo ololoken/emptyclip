@@ -2200,5 +2200,5 @@ std::string _Map::FixFilename(const std::string &Filename) {
 
 // Get added monster/item level based on progression
 int _Map::GetAddedLevel() const {
-	return Progression * GAME_PROGRESSION_DIFFICULTY;
+	return Progression * GAME_PROGRESSION_ADDED_LEVEL;
 }

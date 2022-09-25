@@ -740,6 +740,7 @@ _Monster *_Stats::CreateMonster(const std::string &ID, int Level, int Progressio
 	Monster->Recoil = 0;
 	Monster->RecoilRegen = 0;
 	Monster->DamageBlock = 0;
+	Monster->DamageResist = Progression * GAME_PROGRESSION_DAMAGE_RESIST;
 	Monster->MoveSpeed = Monster->GetAttributeLevel("move_speed", 1.0f, ENTITY_MAX_MOVESPEED_LEVEL);
 	Monster->Radius = Template.Attributes.at("radius").Float;
 	Monster->Scale = Template.Attributes.at("scale").Float;
@@ -779,6 +780,7 @@ _Monster *_Stats::CreateMonster(const std::string &ID, int Level, int Progressio
 		Monster->ExperienceGiven *= Special->ExperienceModifier;
 	}
 
+	Monster->DamageResist = std::min(Monster->DamageResist, ENTITY_MAX_DAMAGE_RESIST);
 	Monster->RecalculateStats();
 
 	return Monster;
