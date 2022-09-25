@@ -653,7 +653,8 @@ void _Player::UpdateExperience(int64_t ExperienceGained) {
 	if(Level > OldLevel) {
 		CalculateSkillsRemaining();
 		RecalculateStats();
-		Health = MaxHealth;
+		if(Health)
+			Health = MaxHealth;
 		ae::Audio.PlaySound(ae::Assets.Sounds["game_levelup0.ogg"]);
 	}
 }
