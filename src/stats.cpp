@@ -719,6 +719,7 @@ _Monster *_Stats::CreateMonster(const std::string &ID, int Level, int Progressio
 
 	// Create object
 	_Monster *Monster = new _Monster(Template);
+	Monster->SpawnPosition = Position;
 	Monster->SetPosition(Position);
 	if(!Template.MeshID.empty())
 		Monster->Mesh = ae::Assets.Meshes.at(Template.MeshID);

@@ -159,6 +159,13 @@ void _Monster::Update(double FrameTime) {
 	// Move
 	Move(FrameTime);
 
+	// Move out of walls
+	if(!FreePathing && !Map->CheckCollisionFlag(Map->GetValidCoord(Position), _Tile::ENTITY)) {
+		Map->RemoveObjectFromGrid(this, GRID_MONSTER);
+		SetPosition(SpawnPosition);
+		Map->AddObjectToGrid(this, GRID_MONSTER);
+	}
+
 	// Check static timer
 	if(MoveState != MOVE_NONE) {
 

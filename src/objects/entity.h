@@ -93,6 +93,7 @@ class _Entity : public _Object {
 		double FireSoundTimer{0.0};
 
 		// Movement
+		glm::vec2 SpawnPosition{0.0f};
 		MoveType MoveState{MOVE_NONE};
 		float MoveSpeed{0.0f};
 		float MoveModifier{1.0f};
