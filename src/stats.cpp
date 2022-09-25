@@ -761,7 +761,7 @@ _Monster *_Stats::CreateMonster(const std::string &ID, int Level, int Progressio
 	}
 
 	// Create special monster variation
-	if(SpecialType) {
+	if(SpecialType && !Monster->IsCrate()) {
 		_Special *Special = &Stats.Specials[SpecialType];
 		for(int i = 0; i < WEAPONATTACK_COUNT; i++) {
 			Monster->MinDamage[i] = std::round(Monster->MinDamage[i] * Special->DamageFactor);
