@@ -32,7 +32,7 @@ boss_05	Vir	bat		purple_dark		monster	bat	boss	1	7500	2000	2	0	50	15000	7500	0	4
 boss_06	Tor	skeleton		brick	bone	monster	skeleton	boss	1	12500	2500	2	0	50	25000	12500	0	2	0.05	0.4	2	5	20	225	110	0.1	1.5	1	0.4	1	7	2.5
 boss_07a	Charl	fighter		brown		monster	fighter	boss	1	15000	5000	2	0	50	30000	15000	0	3	0.05	0.5	2.5	0	1.5	200	100	0.1	0.5	1	0.4	0	0	3.5
 boss_07b	Luth	gunner		gold		monster	gunner	boss	1	10000	3500	2	0	50	25000	12500	0	3.25	0.05	0.5	2.25	15	25	150	100	0.1	2	2	0	0	0	3.5
-boss_08	Mas	wisp		black		monster	wisp	boss	1	20000	7500	5	0	50	40000	20000	1	3	0.05	0.7	7	0	10	250	125	0.1	2	1	0.8	0	0	5
+boss_08	Mas	wisp		black		monster	wisp	boss	1	20000	7500	5	0	50	40000	20000	1	1.5	0.05	1.5	7	0	5	250	125	0.1	2	1	0.8	0	0	5
 boss_09	Daethor	demon		red	fireball_large	monster	demon	boss	1	25000	10000	2	0	50	50000	25000	0	2.5	0.05	0.3	5	3	25	300	150	0.1	2.5	1	0	0	15	2.5
 boss_10a	Xau	alien			plasma_large	monster	alien	boss	1	30000	15000	2	0	50	60000	30000	0	3	0.05	0.5	2	3	25	350	175	0.1	2	2	0	0	20	3.5
 boss_10b	Cy	bot				monster	bot	boss	1	30000	15000	2	0	50	60000	30000	0	2.5	0.05	0.5	2	0	2	500	250	0.1	1.5	1	0.25	0	0	5
