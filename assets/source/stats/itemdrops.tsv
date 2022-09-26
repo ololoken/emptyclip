@@ -44,10 +44,10 @@ mod_pistoldamage	0	0	0	0	0	0	0	0	0	0	0	1	0	1	0	0	1	0
 mod_shotgundamage	0	0	0	0	0	0	0	0	0	0	0	1	0	0	1	1	1	0
 mod_rifledamage	0	0	0	0	0	0	0	0	0	0	0	1	0	0	1	1	1	0
 mod_heavydamage	0	0	0	0	0	0	0	0	0	0	0	1	0	0	1	1	1	0
-mod_reloadamount	0	0	0	0	0	0	0	0	0	0	0	0	1	0	0	1	1	0
-mod_penetration	0	0	0	0	0	0	0	0	0	0	0	0	1	0	0	1	1	0
-mod_maxroundsplus	0	0	0	0	0	0	0	0	0	0	0	0	1	0	0	1	1	0
-mod_explosion	0	0	0	0	0	0	0	0	0	0	0	0	1	0	0	0	1	0
-mod_critchance	0	0	0	0	0	0	0	0	0	0	0	0	1	0	0	0	1	0
+mod_reloadamount	0	0	0	0	0	0	0	0	0	0	0	0	3	0	0	1	1	0
+mod_penetration	0	0	0	0	0	0	0	0	0	0	0	0	3	0	0	1	1	0
+mod_maxroundsplus	0	0	0	0	0	0	0	0	0	0	0	0	3	0	0	1	1	0
+mod_explosion	0	0	0	0	0	0	0	0	0	0	0	0	3	0	0	0	1	0
+mod_critchance	0	0	0	0	0	0	0	0	0	0	0	0	3	0	0	0	1	0
 mod_fullauto	0	0	0	0	0	0	0	0	0	0	0	0	1	0	0	0	1	0
 mod_burst	0	0	0	0	0	0	0	0	0	0	0	0	1	0	0	0	1	0
