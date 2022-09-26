@@ -685,7 +685,9 @@ void _HUD::Render(bool FullMap) {
 				else {
 					_Item *CompareWeapon = Player->GetMainHand();
 					CompareSlot = INVENTORY_MAINHAND;
-					if(Player->GetOffHand() && Player->GetOffHand()->Template.ID == CursorOverItem->Template.ID) {
+
+					// Compare with offhand weapon as long as it's a different type than main hand
+					if(Player->GetOffHand() && Player->GetOffHand()->Template.ID == CursorOverItem->Template.ID && (!CompareWeapon || (CompareWeapon && CompareWeapon->Template.ID != CursorOverItem->Template.ID))) {
 						CompareWeapon = Player->GetOffHand();
 						CompareSlot = INVENTORY_OFFHAND;
 					}
