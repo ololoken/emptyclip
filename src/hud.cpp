@@ -844,6 +844,9 @@ void _HUD::DrawCharacterScreen() {
 		Buffer << ae::Round2(1.0 / Player->AttackPeriod[WEAPONATTACK_MAIN]) << "/s";
 		DrawAttribute("Fire Rate", Buffer, DrawPosition);
 
+		Buffer << ae::Round2(Player->Recoil) << " deg";
+		DrawAttribute("Recoil", Buffer, DrawPosition);
+
 		Buffer << Player->CritChance[WEAPONATTACK_MAIN] << "%";
 		DrawAttribute("Critical Hit Chance", Buffer, DrawPosition);
 

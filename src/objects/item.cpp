@@ -299,7 +299,7 @@ void _Item::DrawTooltip(const _Player *Player, size_t CompareSlot, int Inventory
 				}
 
 				DrawPosition.y += Spacing.y;
-				Buffer << ae::Round2(Attributes.at("recoil").Float);
+				Buffer << ae::Round2(Attributes.at("recoil").Float) << " deg";
 				ae::Assets.Fonts["hud_medium"]->DrawText("Recoil", glm::ivec2(DrawPosition - DrawOffset), ae::RIGHT_BASELINE);
 				ae::Assets.Fonts["hud_medium"]->DrawText(Buffer.str(), glm::ivec2(DrawPosition + DrawOffset), ae::LEFT_BASELINE, TextColor);
 				Buffer.str("");

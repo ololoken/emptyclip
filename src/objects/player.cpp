@@ -141,16 +141,17 @@ void _Player::DeleteItems() {
 void _Player::Reset(bool Recalculate) {
 	TotalKills = 0;
 	TotalDeaths = 0;
+	Progression = 0;
 	ProgressionKills = 0;
 	ProgressionCrates = 0;
 	ProgressionSecrets = 0;
 	ProgressionDeaths = 0;
+	ProgressionTime = 0;
 	LavaTouches = 0;
 	Stat100Percent = false;
 	StatLoneWolf = false;
 	StatFistsOnly = false;
 	PlayTime = 0;
-	ProgressionTime = 0;
 	Clock = GAME_DEFAULT_CLOCK;
 	LevelTime = 0;
 	Radius = PLAYER_RADIUS;
@@ -169,7 +170,6 @@ void _Player::Reset(bool Recalculate) {
 	HealModifier = 1.0f;
 	MapID = GAME_FIRSTLEVEL;
 	CheckpointIndex = 0;
-	Progression = 0;
 	Active = true;
 	Action = ACTION_IDLE;
 	Reloading = false;
@@ -221,8 +221,14 @@ void _Player::Reset(bool Recalculate) {
 void _Player::ResetAchievementTracking() {
 	LavaTouches = 0;
 	Stat100Percent = true;
-	StatLoneWolf = true;
-	StatFistsOnly = true;
+	if(Progression == 0) {
+		StatLoneWolf = true;
+		StatFistsOnly = true;
+	}
+	else {
+		StatLoneWolf = false;
+		StatFistsOnly = false;
+	}
 }
 
 // Calculates the player's stats from weapons and skills
