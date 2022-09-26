@@ -194,10 +194,14 @@ void _Menu::InitOptions() {
 	ChangeLayout("element_menu_options");
 
 	// Set up MSAA values
+	int MaxSamples = std::min(4, ae::Graphics.MaxSamples);
+
+	// Keep custom MSAA value
+	MaxSamples = std::max(MaxSamples, Config.MSAA);
 	MSAAValues.clear();
 	MSAAValues.push_back(0);
 	int Samples = 2;
-	while(Samples <= ae::Graphics.MaxSamples) {
+	while(Samples <= MaxSamples) {
 		MSAAValues.push_back(Samples);
 		Samples *= 2;
 	}
