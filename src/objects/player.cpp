@@ -832,6 +832,7 @@ void _Player::DropItem(int Slot, const glm::vec2 &DropPosition) {
 	else
 		Item->SetPosition(DropPosition);
 
+	Item->Visible = true;
 	Map->AddObject(Item, GRID_ITEM);
 }
 

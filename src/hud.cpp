@@ -305,14 +305,15 @@ void _HUD::MouseEvent(const ae::_MouseEvent &MouseEvent) {
 								_Item *ExistingItem = Player->Inventory[HitElement->Index];
 								if(ExistingItem) {
 									if(ExistingItem->AddMod(CursorItem)) {
+										CursorItem->Visible = false;
 										Player->Map->RemoveObject(CursorItem, GRID_ITEM);
 									}
-									else if(CanEquip) {
-										Player->DropItem(HitElement->Index);
-										SetAndRemove = true;
+									else if(CursorItem->Type == _Object::MOD && ExistingItem->CanEquip() && !ExistingItem->ModCompatible(CursorItem)) {
+										MoveWorldItem(Player->Position);
 									}
 									else {
-										MoveWorldItem(Player->Position);
+										Player->DropItem(HitElement->Index);
+										SetAndRemove = true;
 									}
 								}
 								// Drag onto empty slot
@@ -322,9 +323,9 @@ void _HUD::MouseEvent(const ae::_MouseEvent &MouseEvent) {
 
 								// Add item to inventory and remove from world
 								if(SetAndRemove) {
+									CursorItem->Visible = false;
 									Player->Inventory[HitElement->Index] = CursorItem;
 									Player->Map->RemoveObject(CursorItem, GRID_ITEM);
-
 									Player->PlayEquipSound(HitElement->Index);
 								}
 
