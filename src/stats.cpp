@@ -486,6 +486,7 @@ void _Stats::LoadMonsters() {
 		Template.Attributes["poison"].Float = Database->GetReal("poison");
 		Template.Attributes["projectile_speed"].Float = Database->GetReal("projectile_speed");
 		Template.Attributes["mass"].Float = Database->GetReal("mass");
+		Template.Attributes["force"].Float = Database->GetReal("force");
 
 		// Check for animation
 		if(ae::Assets.Animations.find(Template.AnimationID) == ae::Assets.Animations.end())
@@ -755,6 +756,7 @@ _Monster *_Stats::CreateMonster(const std::string &ID, int Level, int Progressio
 		Monster->MaxAccuracy[i] = Template.Attributes.at("accuracy").Int;
 		Monster->AttackRange[i] = Template.Attributes.at("attack_range").Float;
 		Monster->AttackMoveSpeed[i] = Template.Attributes.at("attack_movespeed").Float;
+		Monster->Force[i] = Template.Attributes.at("force").Float;
 	}
 	if(Monster->IsCrate()) {
 		Monster->Texture = Monster->Animation->Reels[0]->Texture;

@@ -27,7 +27,7 @@ Empty Clip 2.0.0 -
 - Added mods for armor
 - Added new mods for weapons
 - Added new weapons
-- Added weapon knockback
+- Added weapon and monster knockback/pull
 - Shotguns now reload one shell at a time
 - Added bullet penetration for certain weapons
 - Added projectile weapons and explosions

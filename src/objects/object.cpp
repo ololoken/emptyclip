@@ -416,7 +416,7 @@ void _Object::ApplyDamage(const _Hit &Hit) {
 
 // Apply force to object and cap velocity
 void _Object::ApplyForce(const glm::vec2 &ForceDirection, float Amount, bool LimitForce) {
-	if(Mass <= 0.0f || Amount <= 0.0f)
+	if(Mass <= 0.0f || Amount == 0.0f)
 		return;
 
 	// Get force
