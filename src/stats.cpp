@@ -60,7 +60,14 @@ void _Stats::Init() {
 
 // Shutdown
 void _Stats::Close() {
+
+	// Free memory
+	for(const auto &Unique : Uniques)
+		delete Unique;
+
 	delete WeaponFists;
+	delete Database;
+
 	Text.clear();
 	Levels.clear();
 	Skills.clear();
@@ -68,8 +75,8 @@ void _Stats::Close() {
 	ItemDrops.clear();
 	Specials.clear();
 	Uniques.clear();
+	UniquesByQuality.clear();
 	Achievements.clear();
-	delete Database;
 }
 
 // Load strings
@@ -643,14 +650,16 @@ void _Stats::LoadUniques() {
 
 	// Get data
 	while(Database->FetchRow()) {
-		_Unique Unique;
-		Unique.Name = Database->GetString("name");
-		Unique.Chance = std::max(1, Database->GetInt<int>("chance"));
-		Unique.Quality = Database->GetInt<int>("quality");
-		Unique.Progression = Database->GetInt<int>("progression");
-		SetColor(Unique.Color, Database->GetString("color_id"));
+		_Unique *Unique = new _Unique;
+		Unique->Name = Database->GetString("name");
+		Unique->Chance = std::max(1, Database->GetInt<int>("chance"));
+		Unique->Quality = Database->GetInt<int>("quality");
+		Unique->Progression = Database->GetInt<int>("progression");
+		Unique->Texture = ae::Assets.Textures["textures/lights/circle.png"];
+		SetColor(Unique->Color, Database->GetString("color_id"));
 
 		Uniques.push_back(Unique);
+		UniquesByQuality[Unique->Quality] = Unique;
 	}
 
 	Database->CloseQuery();
@@ -693,8 +702,8 @@ _Item *_Stats::CreateItem(const std::string &ID, int Level, int Quality, int Cou
 		Item->Quality = ae::GetRandomInt(-ITEM_QUALITY_RANGE, ITEM_QUALITY_RANGE);
 		if(Item->Quality == ITEM_QUALITY_RANGE) {
 			for(const auto &Unique : Stats.Uniques) {
-				if(Progression >= Unique.Progression && ae::GetRandomInt(1, Unique.Chance) == 1) {
-					Item->Quality = Unique.Quality;
+				if(Progression >= Unique->Progression && ae::GetRandomInt(1, Unique->Chance) == 1) {
+					Item->Quality = Unique->Quality;
 					break;
 				}
 			}
@@ -702,20 +711,16 @@ _Item *_Stats::CreateItem(const std::string &ID, int Level, int Quality, int Cou
 	}
 
 	// Set unique stats
-	if(Item->IsUnique()) {
-		for(const auto &Unique : Stats.Uniques) {
-			if(Unique.Quality == Item->Quality) {
-				Item->LightTexture = ae::Assets.Textures["textures/lights/circle.png"];
-				if(Item->IsAutoPickup()) {
-					Item->LightColor = COLOR_GOLD;
-					Item->Name = Item->Name + " Bundle";
-				}
-				else {
-					Item->LightColor = Unique.Color;
-					Item->Name = Unique.Name + " " + Item->Name;
-				}
-				break;
-			}
+	if(Item->IsUnique() && UniquesByQuality.find(Item->Quality) != UniquesByQuality.end()) {
+		_Unique *Unique = UniquesByQuality[Item->Quality];
+		Item->LightTexture = Unique->Texture;
+		if(Item->IsAutoPickup()) {
+			Item->LightColor = COLOR_GOLD;
+			Item->Name = Item->Name + " Bundle";
+		}
+		else {
+			Item->LightColor = Unique->Color;
+			Item->Name = Unique->Name + " " + Item->Name;
 		}
 	}
 

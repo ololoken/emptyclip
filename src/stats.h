@@ -74,7 +74,8 @@ struct _Special {
 
 struct _Unique {
 	std::string Name;
-	glm::vec4 Color{1.0f};
+	const ae::_Texture *Texture;
+	glm::vec4 Color;
 	int Chance;
 	int Quality;
 	int Progression;
@@ -163,10 +164,11 @@ class _Stats {
 		std::unordered_map<std::string, _ObjectTemplate> Objects;
 		std::unordered_map<std::string, _ItemDrop> ItemDrops;
 		std::vector<_Special> Specials;
-		std::vector<_Unique> Uniques;
+		std::vector<_Unique *> Uniques;
 		std::vector<_Level> Levels;
 		std::vector<_Achievement> Achievements;
 
+		std::unordered_map<int, _Unique *> UniquesByQuality;
 		std::vector<std::string> AmmoNames;
 		std::vector<std::string> ModNames;
 		std::vector<_Skill> Skills;
