@@ -114,8 +114,9 @@ const  float        PLAYER_ZOOMSCALE                     =  15.0f;
 const  float        PLAYER_MAXACCURACY                   =  170.0f;
 const  double       PLAYER_WEAPONSWITCHPERIOD            =  0.5;
 const  double       PLAYER_USEPERIOD                     =  0.2;
-const  glm::vec4    PLAYER_LIGHT                         =  glm::vec4(0.5f, 0.5f, 0.5f, 1.0f);
+const  glm::vec4    PLAYER_LIGHT                         =  glm::vec4(0.5f,0.5f,0.5f,1.0f);
 const  float        PLAYER_MELEE_OFFSET                  =  0.15f;
+const  glm::vec2    PLAYER_FLASHLIGHT_SIZE               =  glm::vec2(5,10);
 //     Achievements
 const  int          ACHIEVEMENTS_VERSION                 =  1;
 const  int          ACHIEVEMENTS_LINE_EM_UP_HITS         =  30;
@@ -130,8 +131,8 @@ const  float        ITEM_Z                               =  0.01f;
 const  int          ITEM_QUALITY_RANGE                   =  15;
 const  int          ITEM_MIN_MOVESPEED                   =  -90;
 const  int          ITEM_MAX_MOVESPEED                   =  100;
-const  glm::vec4    ITEM_QUALITY_GOOD_COLOR              =  glm::vec4(1.0f, 0.2f, 0.2f, 1.0f);
-const  glm::vec4    ITEM_QUALITY_BAD_COLOR               =  glm::vec4(0.2f, 1.0f, 0.2f, 1.0f);
+const  glm::vec4    ITEM_QUALITY_GOOD_COLOR              =  glm::vec4(1.0f,0.2f,0.2f,1.0f);
+const  glm::vec4    ITEM_QUALITY_BAD_COLOR               =  glm::vec4(0.2f,1.0f,0.2f,1.0f);
 //     Objects
 const  float        OBJECT_Z                             =  0.3f;
 const  int          OBJECT_MAX_LEVEL                     =  1000;
@@ -207,8 +208,8 @@ const  glm::vec4    HUD_MINIMAP_PROJECTILE_COLOR         =  glm::vec4(0.5f,0.5f,
 const  glm::vec4    HUD_MINIMAP_DOOR_COLOR               =  glm::vec4(0.28f,0.28f,0.28f,1.0f);
 const  glm::vec4    HUD_MINIMAP_TOGGLED_COLOR            =  glm::vec4(0.035f,0.035f,0.035f,1.0f);
 //     Light
-const  glm::vec3    LIGHT_ATTENUATION                    =  glm::vec3(1.0f, 0.2f, 0.1f);
-const  glm::vec3    LIGHT_FLASH_ATTENUATION              =  glm::vec3(1.0f, 0.1f, 0.05f);
-const  double       LIGHT_FLASH_TIME                     =  GAME_TIMESTEP * 2;
-const  glm::vec4    LIGHT_FLASH_COLOR                    =  glm::vec4(4.0f, 4.0f, 4.0f, 1.0f);
+const  glm::vec3    LIGHT_ATTENUATION                    =  glm::vec3(1.0f,0.2f,0.1f);
+const  glm::vec3    LIGHT_FLASH_ATTENUATION              =  glm::vec3(1.0f,0.1f,0.05f);
+const  double       LIGHT_FLASH_TIME                     =  GAME_TIMESTEP*2;
+const  glm::vec4    LIGHT_FLASH_COLOR                    =  glm::vec4(4.0f,4.0f,4.0f,1.0f);
 const  float        LIGHT_CHANGE_SPEED                   =  2.0f;

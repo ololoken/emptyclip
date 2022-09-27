@@ -736,8 +736,10 @@ void _PlayState::Render(double BlendFactor) {
 	ae::Graphics.SetProgram(ae::Assets.Programs["pos_uv"]);
 	ae::Graphics.EnableParticleBlending();
 	if(Player->Flashlight) {
+		glm::vec2 DrawPosition;
+		Player->GetDrawPosition(DrawPosition, BlendFactor);
 		ae::Graphics.SetColor(glm::vec4(1.0f));
-		ae::Graphics.DrawSprite(glm::vec3(Player->Position + glm::vec2(5) * Player->GetDirectionVector(), 0), ae::Assets.Textures["textures/lights/flashlight.png"], Player->Rotation, glm::vec2(5, 10));
+		ae::Graphics.DrawSprite(glm::vec3(DrawPosition + PLAYER_FLASHLIGHT_SIZE.x * Player->GetDirectionVector(), 0), ae::Assets.Textures["textures/lights/flashlight.png"], Player->Rotation, PLAYER_FLASHLIGHT_SIZE);
 	}
 	Map->ObjectManager->RenderLights(_ObjectManager::RENDER_LIGHTS, BlendFactor);
 	ae::Graphics.DisableParticleBlending();

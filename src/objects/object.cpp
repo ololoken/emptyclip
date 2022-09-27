@@ -73,16 +73,19 @@ void _Object::RenderLights(double BlendFactor) {
 	if(!LightTexture)
 		return;
 
+	glm::vec2 DrawPosition;
+	GetDrawPosition(DrawPosition, BlendFactor);
+
 	ae::Graphics.SetColor(LightColor);
 	if(IsUnique()) {
 		if(this == PlayState.HUD->CursorItem)
 			return;
 
 		for(int i = 0; i < 10; i++)
-			ae::Graphics.DrawSprite(glm::vec3(Position, PositionZ + i * 0.1f), LightTexture, 0, LightScale);
+			ae::Graphics.DrawSprite(glm::vec3(DrawPosition, PositionZ + i * 0.1f), LightTexture, 0, LightScale);
 	}
 	else
-		ae::Graphics.DrawSprite(glm::vec3(Position, PositionZ), LightTexture, 0, LightScale);
+		ae::Graphics.DrawSprite(glm::vec3(DrawPosition, PositionZ), LightTexture, 0, LightScale);
 }
 
 // Get sound for a sound type
