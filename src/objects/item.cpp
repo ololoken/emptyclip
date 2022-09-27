@@ -539,10 +539,7 @@ void _Item::RecalculateStats() {
 			if(Bonus[MOD_BURST]) {
 				Attributes["burst_rounds"].Int = Bonus[MOD_BURST];
 				Attributes["fire_rate"].Int = 0;
-				if(Template.Attributes.at("fire_rate").Int == 0)
-					Attributes["burst_period"].Double = Template.Attributes.at("fire_period").Double / 3.0;
-				else
-					Attributes["burst_period"].Double = Template.Attributes.at("fire_period").Double * 0.75;
+				Attributes["burst_period"].Double = Template.Attributes.at("fire_period").Double / Bonus[MOD_BURST];
 			}
 
 			float ExplosionSize = Template.Attributes.at("explosion_size").Float;
@@ -635,9 +632,9 @@ bool _Item::ModCompatible(_Item *Mod) {
 				}
 			}
 
-			// Burst fire ignores existing burst fire weapons
+			// Burst fire
 			if(ModType == MOD_BURST) {
-				if(IsMelee() || Template.Attributes.at("burst_rounds").Int || Template.Attributes.at("fire_allrounds").Int)
+				if(IsMelee() || Template.Attributes.at("fire_rate").Int || Template.Attributes.at("burst_rounds").Int || Template.Attributes.at("fire_allrounds").Int)
 					return false;
 
 				// Check for full auto mod
