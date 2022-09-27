@@ -1528,7 +1528,7 @@ void _PlayState::CheckEvents(const _Entity *Entity) {
 				if(!IsTutorial || (Config.Tutorial && !Player->Progression)) {
 					if(IsTutorial)
 						ae::Audio.PlaySound(ae::Assets.Sounds["game_message0.ogg"]);
-					HUD->ShowMessageBox(Stats.Strings[Event->ItemID], Event->ActivationPeriod, UI_MESSAGE_SIZE);
+					HUD->ShowMessageBox(Stats.Text[Event->ItemID], Event->ActivationPeriod, UI_MESSAGE_SIZE);
 				}
 
 				if(Event->Level != 0)
@@ -1626,7 +1626,7 @@ void _PlayState::UpdateEvents(double FrameTime) {
 
 					// Spawn item
 					if(Event->ItemID.size())
-						Map->AddObject(Stats.CreateItem(Event->ItemID, Event->SpawnLevel + Map->GetAddedLevel(), 0, Event->Level, Position, true), GRID_ITEM);
+						Map->AddObject(Stats.CreateItem(Event->ItemID, Event->SpawnLevel + Map->GetAddedLevel(), 0, Event->Level, Position, true, Player->Progression), GRID_ITEM);
 
 					// Spawn particles
 					if(Event->ParticleID.size())
@@ -1707,7 +1707,7 @@ void _PlayState::SpawnObject(_ObjectSpawn *ObjectSpawn, bool GenerateStats, int 
 	else if(ObjectSpawn->Type == _Object::PROP)
 		Map->AddObject(Stats.CreateProp(ObjectSpawn->ID, ObjectSpawn->Position, ObjectSpawn->Rotation, ObjectSpawn->Scale), GRID_MONSTER);
 	else
-		Map->AddObject(Stats.CreateItem(ObjectSpawn->ID, ObjectSpawn->Level + AddedLevel, 0, 1, ObjectSpawn->Position, GenerateStats), GRID_ITEM);
+		Map->AddObject(Stats.CreateItem(ObjectSpawn->ID, ObjectSpawn->Level + AddedLevel, 0, 1, ObjectSpawn->Position, GenerateStats, Player->Progression), GRID_ITEM);
 }
 
 // Adds a monster to the monster list and collision grid

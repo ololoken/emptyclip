@@ -77,6 +77,7 @@ struct _Unique {
 	glm::vec4 Color{1.0f};
 	int Chance;
 	int Quality;
+	int Progression;
 };
 
 struct _Achievement {
@@ -138,7 +139,7 @@ class _Stats {
 		void LoadUniques();
 		void LoadAchievements();
 
-		_Item *CreateItem(const std::string &ID, int Level, int Quality, int Count, const glm::vec2 &Position, bool RandomStats);
+		_Item *CreateItem(const std::string &ID, int Level, int Quality, int Count, const glm::vec2 &Position, bool RandomStats, int Progression=0);
 		_Monster *CreateMonster(const std::string &ID, int Level, int Progression, const glm::vec2 &Position, size_t SpecialType=0);
 		_Object *CreateProp(const std::string &ID, const glm::vec2 &Position, float Rotation, float Scale) const;
 		_Object *CreateProjectile(const _ObjectTemplate &Template, const glm::vec2 &Position) const;
@@ -158,7 +159,7 @@ class _Stats {
 
 		ae::_Database *Database;
 
-		std::unordered_map<std::string, std::string> Strings;
+		std::unordered_map<std::string, std::string> Text;
 		std::unordered_map<std::string, _ObjectTemplate> Objects;
 		std::unordered_map<std::string, _ItemDrop> ItemDrops;
 		std::vector<_Special> Specials;

@@ -61,7 +61,7 @@ void _Stats::Init() {
 // Shutdown
 void _Stats::Close() {
 	delete WeaponFists;
-	Strings.clear();
+	Text.clear();
 	Levels.clear();
 	Skills.clear();
 	Objects.clear();
@@ -81,8 +81,8 @@ void _Stats::LoadText() {
 	// Get data
 	while(Database->FetchRow()) {
 		std::string ID = Database->GetString("id");
-		std::string Text = Database->GetString("text");
-		Strings[ID] = Text;
+		std::string Value = Database->GetString("text");
+		Text[ID] = Value;
 	}
 
 	Database->CloseQuery();
@@ -647,6 +647,7 @@ void _Stats::LoadUniques() {
 		Unique.Name = Database->GetString("name");
 		Unique.Chance = std::max(1, Database->GetInt<int>("chance"));
 		Unique.Quality = Database->GetInt<int>("quality");
+		Unique.Progression = Database->GetInt<int>("progression");
 		SetColor(Unique.Color, Database->GetString("color_id"));
 
 		Uniques.push_back(Unique);
@@ -675,7 +676,7 @@ void _Stats::LoadAchievements() {
 }
 
 // Create item
-_Item *_Stats::CreateItem(const std::string &ID, int Level, int Quality, int Count, const glm::vec2 &Position, bool RandomStats) {
+_Item *_Stats::CreateItem(const std::string &ID, int Level, int Quality, int Count, const glm::vec2 &Position, bool RandomStats, int Progression) {
 	_ObjectTemplate &Template = Objects.at(ID);
 
 	// Create item
@@ -692,7 +693,7 @@ _Item *_Stats::CreateItem(const std::string &ID, int Level, int Quality, int Cou
 		Item->Quality = ae::GetRandomInt(-ITEM_QUALITY_RANGE, ITEM_QUALITY_RANGE);
 		if(Item->Quality == ITEM_QUALITY_RANGE) {
 			for(const auto &Unique : Stats.Uniques) {
-				if(ae::GetRandomInt(1, Unique.Chance) == 1) {
+				if(Progression >= Unique.Progression && ae::GetRandomInt(1, Unique.Chance) == 1) {
 					Item->Quality = Unique.Quality;
 					break;
 				}
