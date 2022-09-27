@@ -1343,6 +1343,8 @@ void _PlayState::CreateItemDrop(const _Entity *Entity, float DropRate) {
 	if(!Monster->ItemDrop)
 		return;
 
+	bool IsBoss = Monster->Template.ItemDropID == "boss";
+
 	// Roll for items
 	for(int i = 0; i < Monster->Template.Attributes.at("drop_count").Int; i++) {
 		int Rolls = (int)DropRate;
@@ -1352,6 +1354,10 @@ void _PlayState::CreateItemDrop(const _Entity *Entity, float DropRate) {
 		double MultiRoll = ae::GetRandomReal(0, 1);
 		if(MultiRoll <= MultiOdds)
 			Rolls++;
+
+		// Bosses only drop one item
+		if(IsBoss)
+			Rolls = 1;
 
 		// Roll for each item
 		for(int j = 0; j < Rolls; j++) {
@@ -1363,7 +1369,7 @@ void _PlayState::CreateItemDrop(const _Entity *Entity, float DropRate) {
 				ObjectSpawn.Position = _Map::GenerateRandomPointInCircle(PLAYER_RADIUS) + Monster->Position;
 
 				// Spawn object on player if item can't be reached
-				if(!Map->CheckCollisionFlag(Map->GetValidCoord(ObjectSpawn.Position), _Tile::ENTITY) || (Monster->FreePathing && Monster->Template.ItemDropID == "boss"))
+				if(!Map->CheckCollisionFlag(Map->GetValidCoord(ObjectSpawn.Position), _Tile::ENTITY) || IsBoss)
 					ObjectSpawn.Position = Player->Position;
 
 				ObjectSpawn.Level = Monster->Level;
