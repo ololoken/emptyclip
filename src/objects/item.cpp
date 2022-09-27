@@ -141,9 +141,8 @@ void _Item::DrawTooltip(const _Player *Player, size_t CompareSlot, int Inventory
 	DrawPosition.x += Size.x/2;
 	std::string DrawName = Name;
 	glm::vec4 DrawColor = glm::vec4(1.0f);
-	if(IsGold()) {
-		DrawName = "Gold " + DrawName;
-		DrawColor = COLOR_GOLD;
+	if(IsUnique()) {
+		DrawColor = LightColor;
 	}
 	ae::Assets.Fonts["menu_buttons"]->DrawText(DrawName, glm::ivec2(DrawPosition), ae::CENTER_BASELINE, DrawColor);
 
@@ -402,8 +401,8 @@ void _Item::DrawTooltip(const _Player *Player, size_t CompareSlot, int Inventory
 		} break;
 		case _Object::AMMO: {
 			DrawPosition.y += Spacing.y;
-			if(IsGold())
-				Buffer << "Restores all " << Name;
+			if(IsUnique())
+				Buffer << "Restores all " << Template.Name;
 			else
 				Buffer << "+" << std::round(Attributes["amount"].Int * Player->PickupModifier);
 			ae::Assets.Fonts["hud_medium"]->DrawText(Buffer.str(), glm::ivec2(DrawPosition), ae::CENTER_BASELINE);
@@ -411,7 +410,7 @@ void _Item::DrawTooltip(const _Player *Player, size_t CompareSlot, int Inventory
 		case _Object::MEDKIT: {
 			HelpTextList.push_back("Used when picked up");
 			DrawPosition.y += Spacing.y;
-			if(IsGold())
+			if(IsUnique())
 				Buffer << "+100% HP";
 			else
 				Buffer << "+" << (int)(GAME_MEDKIT_HEALTH_PERCENT * Player->HealModifier) << "% HP";
@@ -538,7 +537,7 @@ void _Item::RecalculateStats() {
 				Attributes["fire_rate"].Int = 1;
 
 			if(Bonus[MOD_BURST]) {
-				Attributes["burst_rounds"].Int = 3;
+				Attributes["burst_rounds"].Int = Bonus[MOD_BURST];
 				Attributes["fire_rate"].Int = 0;
 				if(Template.Attributes.at("fire_rate").Int == 0)
 					Attributes["burst_period"].Double = Template.Attributes.at("fire_period").Double / 3.0;
@@ -676,9 +675,7 @@ float _Item::GetAverageAccuracy() const {
 
 // Get quality color
 void _Item::GetQualityColor(glm::vec4 &ReturnColor) const {
-	if(IsGold())
-		ReturnColor = COLOR_GOLD;
-	else if(Quality < 0)
+	if(Quality < 0)
 		ReturnColor = ITEM_QUALITY_GOOD_COLOR;
 	else if(Quality > 0)
 		ReturnColor = ITEM_QUALITY_BAD_COLOR;

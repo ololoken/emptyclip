@@ -49,6 +49,7 @@ void _Stats::Init() {
 	LoadMonsters();
 	LoadProps();
 	LoadSpecials();
+	LoadUniques();
 	LoadAchievements();
 
 	_ObjectTemplate PlayerTemplate(_Object::PLAYER);
@@ -60,10 +61,14 @@ void _Stats::Init() {
 // Shutdown
 void _Stats::Close() {
 	delete WeaponFists;
+	Strings.clear();
 	Levels.clear();
 	Skills.clear();
 	Objects.clear();
 	ItemDrops.clear();
+	Specials.clear();
+	Uniques.clear();
+	Achievements.clear();
 	delete Database;
 }
 
@@ -630,6 +635,26 @@ void _Stats::LoadSpecials() {
 	Database->CloseQuery();
 }
 
+// Load unique modifiers
+void _Stats::LoadUniques() {
+
+	// Run query
+	Database->PrepareQuery("SELECT * FROM uniques");
+
+	// Get data
+	while(Database->FetchRow()) {
+		_Unique Unique;
+		Unique.Name = Database->GetString("name");
+		Unique.Chance = std::max(1, Database->GetInt<int>("chance"));
+		Unique.Quality = Database->GetInt<int>("quality");
+		SetColor(Unique.Color, Database->GetString("color_id"));
+
+		Uniques.push_back(Unique);
+	}
+
+	Database->CloseQuery();
+}
+
 // Load achievement stats
 void _Stats::LoadAchievements() {
 
@@ -663,16 +688,34 @@ _Item *_Stats::CreateItem(const std::string &ID, int Level, int Quality, int Cou
 	Item->Texture = ae::Assets.Textures[Template.IconID];
 
 	// Generate random quality
-	if(RandomStats) {
+	if(RandomStats && Item->CanUnique()) {
 		Item->Quality = ae::GetRandomInt(-ITEM_QUALITY_RANGE, ITEM_QUALITY_RANGE);
-		if(Item->Quality == ITEM_QUALITY_RANGE && ae::GetRandomInt(1, ITEM_GOLD_CHANCE) == 1)
-			Item->Quality = ITEM_GOLD_QUALITY;
+		if(Item->Quality == ITEM_QUALITY_RANGE) {
+			for(const auto &Unique : Stats.Uniques) {
+				if(ae::GetRandomInt(1, Unique.Chance) == 1) {
+					Item->Quality = Unique.Quality;
+					break;
+				}
+			}
+		}
 	}
 
-	// Give light to gold items
-	if(Item->IsGold()) {
-		Item->LightTexture = ae::Assets.Textures["textures/lights/circle.png"];
-		Item->LightColor = COLOR_GOLD;
+	// Set unique stats
+	if(Item->IsUnique()) {
+		for(const auto &Unique : Stats.Uniques) {
+			if(Unique.Quality == Item->Quality) {
+				Item->LightTexture = ae::Assets.Textures["textures/lights/circle.png"];
+				if(Item->IsAutoPickup()) {
+					Item->LightColor = COLOR_GOLD;
+					Item->Name = Item->Name + " Bundle";
+				}
+				else {
+					Item->LightColor = Unique.Color;
+					Item->Name = Unique.Name + " " + Item->Name;
+				}
+				break;
+			}
+		}
 	}
 
 	// Get quality factor

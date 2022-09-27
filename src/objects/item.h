@@ -22,6 +22,7 @@
 
 // Forward Declarations
 class _Player;
+struct _Unique;
 
 // Mod types
 enum ModType {
@@ -86,6 +87,7 @@ class _Item : public _Object {
 		bool CanMove() const { return Type == _Object::WEAPON || Type == _Object::ARMOR || Type == _Object::MOD; }
 		bool CanEquip() const { return Type == _Object::WEAPON || Type == _Object::ARMOR; }
 		bool CanLevel() const { return Type == _Object::WEAPON || Type == _Object::ARMOR || Type == _Object::MOD; }
+		bool CanUnique() const { return Type == _Object::WEAPON || Type == _Object::ARMOR || Type == _Object::MOD || Type == _Object::AMMO || Type == _Object::MEDKIT; }
 		bool IsAutoPickup() const { return Type == _Object::AMMO || Type == _Object::KEY || Type == _Object::MEDKIT; }
 
 		void SetAmmo(int Value);
@@ -101,6 +103,7 @@ class _Item : public _Object {
 
 		std::vector<_Item *> Mods;
 		int Bonus[MOD_COUNT]{0};
+		const _Unique *Unique{nullptr};
 
 	private:
 

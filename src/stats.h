@@ -72,6 +72,13 @@ struct _Special {
 	int FreePathing{0};
 };
 
+struct _Unique {
+	std::string Name;
+	glm::vec4 Color{1.0f};
+	int Chance;
+	int Quality;
+};
+
 struct _Achievement {
 	std::string ID;
 	std::string Name;
@@ -128,6 +135,7 @@ class _Stats {
 		void LoadProps();
 		void LoadProjectiles();
 		void LoadSpecials();
+		void LoadUniques();
 		void LoadAchievements();
 
 		_Item *CreateItem(const std::string &ID, int Level, int Quality, int Count, const glm::vec2 &Position, bool RandomStats);
@@ -154,6 +162,7 @@ class _Stats {
 		std::unordered_map<std::string, _ObjectTemplate> Objects;
 		std::unordered_map<std::string, _ItemDrop> ItemDrops;
 		std::vector<_Special> Specials;
+		std::vector<_Unique> Uniques;
 		std::vector<_Level> Levels;
 		std::vector<_Achievement> Achievements;
 

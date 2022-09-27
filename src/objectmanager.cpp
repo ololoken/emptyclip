@@ -64,17 +64,21 @@ void _ObjectManager::Update(double FrameTime, _Map *Map) {
 			// Add to minimap
 			if(Map->CheckMinimapBounds(Bounds)) {
 				_MinimapLayer MinimapLayer;
+
+				// Get bounds
+				float Size = Object->IsUnique() ? Object->Radius * 2.0f : Object->Radius;
 				MinimapLayer.Bounds = glm::vec4(
-					Object->Position.x - Object->Radius, Object->Position.y - Object->Radius,
-					Object->Position.x + Object->Radius, Object->Position.y + Object->Radius
+					Object->Position.x - Size, Object->Position.y - Size,
+					Object->Position.x + Size, Object->Position.y + Size
 				);
 
+				// Get color
 				MinimapLayer.Color = COLOR_WHITE;
 				switch(Object->Type) {
 					case _Object::WEAPON:
 					case _Object::ARMOR:
 					case _Object::MOD:
-						if(Object->IsGold())
+						if(Object->IsUnique())
 							MinimapLayer.Color = COLOR_GOLD;
 						else
 							MinimapLayer.Color = HUD_MINIMAP_EQUIPMENT_COLOR;

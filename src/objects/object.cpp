@@ -74,7 +74,7 @@ void _Object::RenderLights(double BlendFactor) {
 		return;
 
 	ae::Graphics.SetColor(LightColor);
-	if(IsGold()) {
+	if(IsUnique()) {
 		if(this == PlayState.HUD->CursorItem)
 			return;
 
@@ -130,14 +130,14 @@ void _Object::SetMaxMods(float QualityFactor, bool RandomStats) {
 	Attributes["max_mods"].Int = std::max(1, (int)std::round(QualityFactor * LevelMods));
 	if(RandomStats) {
 		Attributes["max_mods"].Int += ae::GetRandomInt(0, 1);
-		if(IsGold())
+		if(IsUnique())
 			Attributes["max_mods"].Int++;
 	}
 }
 
-// Check if item is gold
-bool _Object::IsGold() const {
-	return Quality == ITEM_GOLD_QUALITY;
+// Check if item is unique
+bool _Object::IsUnique() const {
+	return Quality > ITEM_QUALITY_RANGE;
 }
 
 // Get render bounds of object

@@ -137,7 +137,7 @@ class _Object {
 		float GetAttributeLevel(const std::string &AttributeName, float Multiplier, int MaxLevel=0);
 		void GetAttributeRange(const std::string &AttributeName, float Multiplier, int &Min, int &Max);
 		void SetMaxMods(float QualityFactor, bool RandomStats);
-		bool IsGold() const;
+		bool IsUnique() const;
 
 		void CheckProjectileCollisions();
 		void ApplyDamage(const _Hit &Hit);

@@ -770,8 +770,8 @@ int _Player::AddItem(_Item *Item, int &AmountAdded) {
 
 			int AmountToMax = AmmoMax[Item->ID] - Ammo[Item->ID];
 
-			// Check for gold ammo
-			if(Item->IsGold()) {
+			// Check for unique ammo
+			if(Item->IsUnique()) {
 				AmountAdded = AmountToMax;
 			}
 			else {
@@ -790,7 +790,7 @@ int _Player::AddItem(_Item *Item, int &AmountAdded) {
 				return 2;
 
 			int AmountToMax = MaxHealth - Health;
-			int HealAmount = Item->IsGold() ? AmountToMax : (int)(GAME_MEDKIT_HEALTH_PERCENT * HealModifier) * 0.01f * MaxHealth;
+			int HealAmount = Item->IsUnique() ? AmountToMax : (int)(GAME_MEDKIT_HEALTH_PERCENT * HealModifier) * 0.01f * MaxHealth;
 
 			UpdateHealth(HealAmount);
 
