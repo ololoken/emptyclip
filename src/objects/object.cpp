@@ -274,7 +274,7 @@ bool _Object::IsTouchingCircle(const glm::vec2 &CircleCenter, float CircleRadius
 			ClosetPoint.y = AABB[3];
 
 		// Test circle collision with point
-		float DistanceSquared = glm::distance2(ClosetPoint, CircleCenter);
+		DistanceSquared = glm::distance2(ClosetPoint, CircleCenter);
 		return DistanceSquared < CircleRadius * CircleRadius;
 	}
 }
