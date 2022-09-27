@@ -694,7 +694,7 @@ _Item *_Stats::CreateItem(const std::string &ID, int Level, int Quality, int Cou
 	Item->Level = Level;
 	Item->Quality = Quality;
 	Item->Count = Count;
-	Item->Position = Position;
+	Item->SetPosition(Position);
 	Item->Texture = ae::Assets.Textures[Template.IconID];
 
 	// Generate random quality

@@ -217,6 +217,7 @@ void _HUD::MoveWorldItem(const glm::vec2 &DropPosition) {
 	Player->Map->AddObject(CursorItem, GRID_ITEM);
 
 	// Reset state
+	CursorItem->LastPosition = CursorItem->Position;
 	CursorItem->Visible = true;
 	CursorItem = nullptr;
 }
