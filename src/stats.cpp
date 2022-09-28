@@ -48,6 +48,7 @@ void _Stats::Init() {
 	LoadItemDrops();
 	LoadMonsters();
 	LoadProps();
+	LoadProgression();
 	LoadSpecials();
 	LoadUniques();
 	LoadAchievements();
@@ -73,6 +74,7 @@ void _Stats::Close() {
 	Skills.clear();
 	Objects.clear();
 	ItemDrops.clear();
+	Progressions.clear();
 	Specials.clear();
 	Uniques.clear();
 	UniquesByQuality.clear();
@@ -618,6 +620,30 @@ void _Stats::LoadProjectiles() {
 	Database->CloseQuery();
 }
 
+// Load progression stats
+void _Stats::LoadProgression() {
+	Progressions.reserve(GAME_MAX_PROGRESSION + 1);
+
+	// Run query
+	Database->PrepareQuery("SELECT * FROM progression");
+
+	// Get data
+	while(Database->FetchRow()) {
+		_Progression Progression;
+		Progression.Progression = Database->GetInt<int>("progression");
+		Progression.Level = Database->GetInt<int>("level");
+		Progression.Spawn = Database->GetInt<int>("spawn");
+		Progression.SpecialChance = Database->GetInt<int>("special_chance");
+		Progression.Health = Database->GetReal("health");
+		Progression.Damage = Database->GetReal("damage");
+		Progression.Experience = Database->GetReal("experience");
+
+		Progressions.push_back(Progression);
+	}
+
+	Database->CloseQuery();
+}
+
 // Load special enemy modifiers
 void _Stats::LoadSpecials() {
 
@@ -764,9 +790,6 @@ _Item *_Stats::CreateItem(const std::string &ID, int Level, int Quality, int Cou
 _Monster *_Stats::CreateMonster(const std::string &ID, int Level, int Progression, const glm::vec2 &Position, size_t SpecialType) {
 	const _ObjectTemplate &Template = Objects.at(ID);
 
-	// Add extra difficulty for each progression
-	float StatMultiplier = 1.0f + Progression * GAME_PROGRESSION_STAT_MULTIPLIER;
-
 	// Create object
 	_Monster *Monster = new _Monster(Template);
 	Monster->SpawnPosition = Position;
@@ -790,16 +813,16 @@ _Monster *_Stats::CreateMonster(const std::string &ID, int Level, int Progressio
 	Monster->Recoil = 0;
 	Monster->RecoilRegen = 0;
 	Monster->DamageBlock = 0;
-	Monster->DamageResist = Progression * GAME_PROGRESSION_DAMAGE_RESIST;
+	Monster->DamageResist = 0;
 	Monster->MoveSpeed = Monster->GetAttributeLevel("move_speed", 1.0f, ENTITY_MAX_MOVESPEED_LEVEL);
 	Monster->Radius = Template.Attributes.at("radius").Float;
 	Monster->Scale = Template.Attributes.at("scale").Float;
-	Monster->Health = Monster->MaxHealth = Monster->GetAttributeLevel("health", StatMultiplier);
-	Monster->ExperienceGiven = Monster->GetAttributeLevel("xp", StatMultiplier);
+	Monster->Health = Monster->MaxHealth = Monster->GetAttributeLevel("health", Stats.Progressions[Progression].Health);
+	Monster->ExperienceGiven = Monster->GetAttributeLevel("xp", Stats.Progressions[Progression].Experience);
 	Monster->MinAccuracy = Template.Attributes.at("accuracy").Int;
 	Monster->PoisonPower = Template.Attributes.at("poison").Float;
 	for(int i = 0; i < WEAPONATTACK_COUNT; i++) {
-		Monster->GetAttributeRange("damage", StatMultiplier, Monster->MinDamage[i], Monster->MaxDamage[i]);
+		Monster->GetAttributeRange("damage", Stats.Progressions[Progression].Damage, Monster->MinDamage[i], Monster->MaxDamage[i]);
 		Monster->AttackTimer[i] = Monster->AttackPeriod[i] = Template.Attributes.at("attack_period").Double;
 		Monster->ShootPeriod[i] = AI_SHOOT_PERIOD;
 		Monster->MaxAccuracy[i] = Template.Attributes.at("accuracy").Int;

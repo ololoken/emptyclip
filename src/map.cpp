@@ -92,7 +92,7 @@ _Map::_Map(const std::string &Filename, double Clock, int Progression) : _Map() 
 
 	this->Progression = Progression;
 	this->Filename = FixFilename(Filename);
-	int SpawnMultiplier = std::min(Progression + 1, GAME_MAX_PROGRESSION_SPAWN);
+	int SpawnMultiplier = Stats.Progressions[Progression].Spawn;
 
 	// Used when resizing maps
 	glm::ivec2 Offset(0, 0);
@@ -2200,5 +2200,5 @@ std::string _Map::FixFilename(const std::string &Filename) {
 
 // Get added monster/item level based on progression
 int _Map::GetAddedLevel() const {
-	return Progression * GAME_PROGRESSION_ADDED_LEVEL;
+	return Stats.Progressions[Progression].Level;
 }

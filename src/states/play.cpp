@@ -1498,7 +1498,7 @@ void _PlayState::CheckEvents(const _Entity *Entity) {
 						Menu.UnlockAchievement("smoked");
 
 					// Reset stats
-					Player->Progression++;
+					Player->Progression = std::min(Player->Progression + 1, GAME_MAX_PROGRESSION);
 					Player->ProgressionTime = 0;
 					Player->ProgressionKills = 0;
 					Player->ProgressionCrates = 0;
@@ -1614,7 +1614,7 @@ void _PlayState::UpdateEvents(double FrameTime) {
 
 						// Chance for special monster
 						int SpecialType = 0;
-						if(Player->Progression && ae::GetRandomInt(1, 100) <= Player->Progression * GAME_PROGRESSION_SPECIAL_CHANCE)
+						if(Player->Progression && ae::GetRandomInt(1, 100) <= Stats.Progressions[Player->Progression].SpecialChance)
 							SpecialType = ae::GetRandomInt((size_t)1, Stats.Specials.size() - 1);
 
 						// Spawn monsters

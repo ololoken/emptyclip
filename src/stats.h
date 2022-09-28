@@ -61,6 +61,16 @@ struct _ItemDrop {
 	int OddsSum;
 };
 
+struct _Progression {
+	int Progression;
+	int Level;
+	int Spawn;
+	int SpecialChance;
+	float Health;
+	float Damage;
+	float Experience;
+};
+
 struct _Special {
 	std::string Name;
 	glm::vec4 Color{1.0f};
@@ -136,6 +146,7 @@ class _Stats {
 		void LoadMonsters();
 		void LoadProps();
 		void LoadProjectiles();
+		void LoadProgression();
 		void LoadSpecials();
 		void LoadUniques();
 		void LoadAchievements();
@@ -163,6 +174,7 @@ class _Stats {
 		std::unordered_map<std::string, std::string> Text;
 		std::unordered_map<std::string, _ObjectTemplate> Objects;
 		std::unordered_map<std::string, _ItemDrop> ItemDrops;
+		std::vector<_Progression> Progressions;
 		std::vector<_Special> Specials;
 		std::vector<_Unique *> Uniques;
 		std::vector<_Level> Levels;
