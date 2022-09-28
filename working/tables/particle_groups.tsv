@@ -1,6 +1,9 @@
 id	fire_id	explosion_id	gunsmoke_id	ricochet_id	bullethole_id	hit_id	floordecal_id
 player						bloodspurt0	blood0,blood1,blood2,blood3,blood4
 monster						bloodspurt0	blood0,blood1,blood2,blood3,blood4
+spider						greenspurt0	greenblood0,greenblood1
+skeleton							bone0
+demon						purplespurt0	purpleblood0,purpleblood1
 crate							crate0
 gun	gun_fire0		gun_smoke0	bullet_spark0	bullet_hole0		
 gun_big	gun_fire1		gun_smoke1	bullet_spark0	bullet_hole0		

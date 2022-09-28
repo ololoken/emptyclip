@@ -413,7 +413,7 @@ void _Object::ApplyDamage(const _Hit &Hit) {
 	HitEntity->OnHit(OwnerEntity, Hit);
 
 	// Particles
-	PlayState.GenerateHitEffects(OwnerEntity, HIT_OBJECT, Hit);
+	PlayState.GenerateHitEffects(OwnerEntity, HIT_OBJECT, Hit, !HitEntity->Health);
 	PlayState.GenerateDamageText(Hit.Position, Damage, Crit, HitEntity->Type == PLAYER);
 }
 

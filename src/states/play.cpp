@@ -1034,7 +1034,7 @@ void _PlayState::ResolveAttack(_Entity *Attacker, int GridType) {
 	// Play fire sound and generate fire/smoke particles
 	if(WeaponType != WEAPON_MELEE) {
 		_Hit Hit(HIT_NONE);
-		GenerateHitEffects(Attacker, -1, Hit);
+		GenerateHitEffects(Attacker, -1, Hit, false);
 		if(Attacker->FireSoundTimer == 0.0) {
 			if(Attacker->Type == _Object::PLAYER)
 				ae::Audio.PlaySound(Attacker->GetSound(SOUND_FIRE, WEAPONATTACK_MAIN));
@@ -1123,7 +1123,7 @@ void _PlayState::ResolveAttack(_Entity *Attacker, int GridType) {
 						}
 
 						bool CreateWallDecal = (Hit.Object && Hit.Object->Type == _Object::PROP) ? false : true;
-						GenerateHitEffects(Attacker, HIT_WALL, Hit, CreateWallDecal);
+						GenerateHitEffects(Attacker, HIT_WALL, Hit, false, CreateWallDecal);
 					} break;
 					case HIT_OBJECT: {
 						_Entity *HitEntity = (_Entity *)Hit.Object;
@@ -1146,12 +1146,6 @@ void _PlayState::ResolveAttack(_Entity *Attacker, int GridType) {
 						// Update health
 						HitEntity->UpdateHealth(-Damage);
 
-						// Generate bullet effects once for each hit object
-						if(DecalObjects.find(Hit.Object) == DecalObjects.end()) {
-							GenerateHitEffects(Attacker, HIT_OBJECT, Hit);
-							DecalObjects[Hit.Object] = 1;
-						}
-
 						// Callback functions
 						Attacker->OnAttack(HitEntity, Hit);
 						HitEntity->OnHit(Attacker, Hit);
@@ -1161,6 +1155,12 @@ void _PlayState::ResolveAttack(_Entity *Attacker, int GridType) {
 
 						// Add force
 						HitEntity->ApplyForce(PushDirection, Attacker->Force[Attacker->AttackRequestType]);
+
+						// Generate bullet effects once for each hit object
+						if(DecalObjects.find(Hit.Object) == DecalObjects.end()) {
+							GenerateHitEffects(Attacker, HIT_OBJECT, Hit, !HitEntity->Health);
+							DecalObjects[Hit.Object] = 1;
+						}
 					} break;
 				}
 			}
@@ -1734,7 +1734,7 @@ void _PlayState::RemoveMonster(_Monster *Monster) {
 }
 
 // Generate particles depending on hit type
-void _PlayState::GenerateHitEffects(_Entity *Attacker, const int Type, const _Hit &Hit, bool CreateWallDecal) {
+void _PlayState::GenerateHitEffects(_Entity *Attacker, const int Type, const _Hit &Hit, bool Death, bool CreateWallDecal) {
 	if(Type == -1) {
 		glm::vec2 ParticlePosition = Attacker->Position + glm::rotate(Attacker->WeaponOffset[Attacker->MainWeaponType], glm::radians(Attacker->Rotation));
 		Particles->Create(_ParticleSpawn(Attacker->GetParticle(PARTICLE_FIRE), glm::vec2(0), ParticlePosition, OBJECT_Z, Attacker->Rotation));
@@ -1748,7 +1748,7 @@ void _PlayState::GenerateHitEffects(_Entity *Attacker, const int Type, const _Hi
 	else if(Type == HIT_OBJECT) {
 		glm::vec2 ParticlePosition = _Map::GenerateRandomPointInCircle(0.2f) + Hit.Object->Position;
 		Particles->Create(_ParticleSpawn(Hit.Object->GetParticle(PARTICLE_HIT), Hit.Normal, Hit.Position, OBJECT_Z, Attacker->Rotation));
-		if(Config.FloorDecals)
+		if(Death && Config.FloorDecals)
 			Particles->Create(_ParticleSpawn(Hit.Object->GetParticle(PARTICLE_FLOORDECAL), Hit.Normal, ParticlePosition, ITEM_Z, Attacker->Rotation));
 	}
 }
