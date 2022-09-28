@@ -1,7 +1,7 @@
 name	color_id	chance	quality	progression
-Uncommon	light_blue	3	25	0
+Shiny	light_blue	3	25	0
 Rare	light_green	5	50	0
 Legendary	gold	10	75	1
 Demonic	red	20	100	3
 Angelic	silver	40	150	5
-Godly	purple	80	200	10
+Arcane	purple	80	200	10
