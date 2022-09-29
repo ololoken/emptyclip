@@ -1,6 +1,6 @@
 [submodule "cmake"]
 	path = cmake
-	url = https://github.com/jazztickets/cmake
+	url = https://gitlab.com/jazztickets/cmake.git
 [submodule "ext/ae"]
 	path = ext/ae
 	url = git@github.com:jazztickets/ae
