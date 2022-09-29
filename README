@@ -2,16 +2,16 @@ Empty Clip - Top-down shooter RPG
 by Alan Witkowski
 
 Home Page:
-https://github.com/jazztickets/emptyclip
+https://emptyclip.gitlab.io
 
 ----- DOWNLOADING -----
 
-Download and extract the latest emptyclip-*-src.tar.gz from https://github.com/jazztickets/emptyclip/releases
+Download and extract the latest emptyclip-*-src.tar.gz from https://gitlab.com/empty-clip/code/-/releases
 
 OR
 
 Clone the repository:
-git clone https://github.com/jazztickets/emptyclip.git --recurse-submodule
+git clone git@gitlab.com:empty-clip/code.git --recurse-submodules emptyclip
 
 ----- BUILDING ON LINUX -----
 

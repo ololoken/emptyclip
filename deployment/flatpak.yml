@@ -1,4 +1,4 @@
-app-id: io.github.jazztickets.emptyclip
+app-id: io.gitlab.empty-clip
 runtime: org.freedesktop.Platform
 runtime-version: '21.08'
 sdk: org.freedesktop.Sdk

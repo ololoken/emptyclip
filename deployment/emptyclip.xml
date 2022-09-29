@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <component type="desktop-application">
-	<id>io.github.jazztickets.emptyclip</id>
+	<id>io.gitlab.empty-clip</id>
 	<name>Empty Clip</name>
 	<summary>Empty Clip is a top-down shooter action RPG.</summary>
 	<description>
@@ -12,9 +12,8 @@
 		<category>RolePlaying</category>
 	</categories>
 	<content_rating type="oars-1.1" />
-	<url type="homepage">https://github.com/jazztickets/emptyclip</url>
-	<url type="help">https://jazztickets.github.io/docs/emptyclip/</url>
-	<url type="bugtracker">https://github.com/jazztickets/emptyclip/issues</url>
+	<url type="homepage">https://empty-clip.gitlab.io</url>
+	<url type="bugtracker">https://gitlab.com/empty-clip/code/-/issues</url>
 	<project_license>GPL-3.0-only</project_license>
 	<screenshots>
 		<screenshot type="default">
