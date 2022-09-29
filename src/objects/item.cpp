@@ -35,6 +35,8 @@
 #include <algorithm>
 #include <iomanip>
 
+static const float ATTRIBUTE_SPACING = 26;
+
 // Constructor
 _Item::_Item(const _ObjectTemplate &ItemTemplate) :
 	_Object(ItemTemplate) {
@@ -49,7 +51,7 @@ _Item::~_Item() {
 }
 
 // Draw attribute text
-void _Item::DrawAttribute(const std::string &Attribute, const std::string &Label, glm::vec2 &DrawPosition, const _Item *EquippedItem, bool Plus, bool Percent) const {
+void _Item::DrawAttribute(const ae::_Font *Font, const std::string &Attribute, const std::string &Label, glm::vec2 &DrawPosition, const _Item *EquippedItem, bool Plus, bool Percent) const {
 	if(!Attributes.at(Attribute).Int)
 		return;
 
@@ -72,30 +74,34 @@ void _Item::DrawAttribute(const std::string &Attribute, const std::string &Label
 
 	// Draw
 	glm::vec2 DrawOffset(8 * ae::_Element::GetUIScale(), 0);
-	DrawPosition.y += 36 * ae::_Element::GetUIScale();
-	ae::Assets.Fonts["hud_medium"]->DrawText(Label, glm::ivec2(DrawPosition - DrawOffset), ae::RIGHT_BASELINE);
-	ae::Assets.Fonts["hud_medium"]->DrawText(Buffer.str(), glm::ivec2(DrawPosition + DrawOffset), ae::LEFT_BASELINE, TextColor);
+	DrawPosition.y += ATTRIBUTE_SPACING * ae::_Element::GetUIScale();
+	Font->DrawText(Label, glm::ivec2(DrawPosition - DrawOffset), ae::RIGHT_BASELINE);
+	Font->DrawText(Buffer.str(), glm::ivec2(DrawPosition + DrawOffset), ae::LEFT_BASELINE, TextColor);
 }
 
 // Draw the item popup window
 void _Item::DrawTooltip(const _Player *Player, size_t CompareSlot, int InventorySlot, glm::vec2 DrawPosition) {
 	std::ostringstream Buffer;
 
-	glm::vec2 Size = glm::vec2(520, 150) * ae::_Element::GetUIScale();
-	glm::vec2 Spacing = glm::vec2(0, 36) * ae::_Element::GetUIScale();
-	glm::vec2 SmallSpacing = glm::vec2(0, 24) * ae::_Element::GetUIScale();
-	glm::vec2 HelpSpacing = glm::vec2(0, 30) * ae::_Element::GetUIScale();
+	glm::vec2 Size = glm::vec2(460, 150) * ae::_Element::GetUIScale();
+	glm::vec2 Spacing = glm::vec2(0, ATTRIBUTE_SPACING) * ae::_Element::GetUIScale();
+	glm::vec2 SmallSpacing = glm::vec2(0, 20) * ae::_Element::GetUIScale();
+	glm::vec2 HelpSpacing = glm::vec2(0, 24) * ae::_Element::GetUIScale();
+
+	const ae::_Font *AttributeFont = ae::Assets.Fonts["hud_damage"];
+	const ae::_Font *LargeFont = ae::Assets.Fonts["hud_medium"];
+	const ae::_Font *SmallFont = ae::Assets.Fonts["hud_char"];
 
 	// Set size based on type
 	if(Type == _Object::WEAPON)
-		Size.y = 630 * ae::_Element::GetUIScale();
+		Size.y = 480 * ae::_Element::GetUIScale();
 	else if(Type == _Object::ARMOR)
-		Size.y = 470 * ae::_Element::GetUIScale();
+		Size.y = 380 * ae::_Element::GetUIScale();
 	else if(Type == _Object::MEDKIT)
-		Size.y = 240 * ae::_Element::GetUIScale();
+		Size.y = 180 * ae::_Element::GetUIScale();
 	else if(Type == _Object::MOD) {
-		Size.x = 520 * ae::_Element::GetUIScale();
-		Size.y = 330 * ae::_Element::GetUIScale();
+		Size.x = 480 * ae::_Element::GetUIScale();
+		Size.y = 240 * ae::_Element::GetUIScale();
 	}
 
 	// Increase size for each unique mod
@@ -111,7 +117,7 @@ void _Item::DrawTooltip(const _Player *Player, size_t CompareSlot, int Inventory
 
 	// Get title width
 	ae::_TextBounds TextBounds;
-	ae::Assets.Fonts["menu_buttons"]->GetStringDimensions(Name, TextBounds);
+	LargeFont->GetStringDimensions(Name, TextBounds);
 	Size.x = std::max(Size.x, (float)TextBounds.Width) + 20 * ae::_Element::GetUIScale();
 
 	// Offset position
@@ -144,26 +150,26 @@ void _Item::DrawTooltip(const _Player *Player, size_t CompareSlot, int Inventory
 	if(IsUnique()) {
 		DrawColor = LightColor;
 	}
-	ae::Assets.Fonts["menu_buttons"]->DrawText(DrawName, glm::ivec2(DrawPosition), ae::CENTER_BASELINE, DrawColor);
+	LargeFont->DrawText(DrawName, glm::ivec2(DrawPosition), ae::CENTER_BASELINE, DrawColor);
 
 	// Draw type
-	DrawPosition.y += 24 * ae::_Element::GetUIScale();
-	ae::Assets.Fonts["hud_small"]->DrawText(GetTypeAsString(), glm::ivec2(DrawPosition), ae::CENTER_BASELINE);
+	DrawPosition.y += SmallSpacing.y;
+	SmallFont->DrawText(GetTypeAsString(), glm::ivec2(DrawPosition), ae::CENTER_BASELINE);
 
 	// Draw Level
 	if(Type != _Object::KEY && Type != _Object::AMMO && Type != _Object::MEDKIT) {
-		DrawPosition.y += 24 * ae::_Element::GetUIScale();
+		DrawPosition.y += SmallSpacing.y;
 		Buffer << "Level " << Level;
-		ae::Assets.Fonts["hud_small"]->DrawText(Buffer.str(), glm::ivec2(DrawPosition), ae::CENTER_BASELINE);
+		SmallFont->DrawText(Buffer.str(), glm::ivec2(DrawPosition), ae::CENTER_BASELINE);
 		Buffer.str("");
 	}
 
 	// Quality
 	glm::vec4 TextColor = COLOR_WHITE;
 	if(Type == _Object::WEAPON || Type == _Object::ARMOR || Type == _Object::MOD) {
-		DrawPosition.y += 24 * ae::_Element::GetUIScale();
+		DrawPosition.y += SmallSpacing.y;
 		Buffer << "Quality " << Quality << "%";
-		ae::Assets.Fonts["hud_small"]->DrawText(Buffer.str(), glm::ivec2(DrawPosition), ae::CENTER_BASELINE, DrawColor);
+		SmallFont->DrawText(Buffer.str(), glm::ivec2(DrawPosition), ae::CENTER_BASELINE, DrawColor);
 		Buffer.str("");
 	}
 
@@ -196,8 +202,8 @@ void _Item::DrawTooltip(const _Player *Player, size_t CompareSlot, int Inventory
 				Buffer << ae::Round1(GetAverageDamage()) << " avg";
 			else
 				Buffer << Attributes.at("min_damage").Int << " - " << Attributes.at("max_damage").Int;
-			ae::Assets.Fonts["hud_medium"]->DrawText("Damage", glm::ivec2(DrawPosition - DrawOffset), ae::RIGHT_BASELINE);
-			ae::Assets.Fonts["hud_medium"]->DrawText(Buffer.str(), glm::ivec2(DrawPosition + DrawOffset), ae::LEFT_BASELINE, TextColor);
+			AttributeFont->DrawText("Damage", glm::ivec2(DrawPosition - DrawOffset), ae::RIGHT_BASELINE);
+			AttributeFont->DrawText(Buffer.str(), glm::ivec2(DrawPosition + DrawOffset), ae::LEFT_BASELINE, TextColor);
 			Buffer.str("");
 
 			// Clip size
@@ -211,22 +217,22 @@ void _Item::DrawTooltip(const _Player *Player, size_t CompareSlot, int Inventory
 				}
 				DrawPosition.y += Spacing.y;
 				Buffer << Attributes.at("ammo").Int << "/" << Attributes.at("rounds").Int;
-				ae::Assets.Fonts["hud_medium"]->DrawText("Rounds", glm::ivec2(DrawPosition - DrawOffset), ae::RIGHT_BASELINE);
-				ae::Assets.Fonts["hud_medium"]->DrawText(Buffer.str(), glm::ivec2(DrawPosition + DrawOffset), ae::LEFT_BASELINE, TextColor);
+				AttributeFont->DrawText("Rounds", glm::ivec2(DrawPosition - DrawOffset), ae::RIGHT_BASELINE);
+				AttributeFont->DrawText(Buffer.str(), glm::ivec2(DrawPosition + DrawOffset), ae::LEFT_BASELINE, TextColor);
 				Buffer.str("");
 			}
 
 			// Critical hit chance
 			if(Attributes.at("crit_chance").Int)
-				DrawAttribute("crit_chance", "Critical Hit Chance", DrawPosition, EquippedItem, false, true);
+				DrawAttribute(AttributeFont, "crit_chance", "Critical Hit Chance", DrawPosition, EquippedItem, false, true);
 
 			// Attack count
 			if(Attributes.at("attack_count").Int > 1)
-				DrawAttribute("attack_count", IsMelee() ? "Attacks" : "Bullets Shot", DrawPosition, EquippedItem, false, false);
+				DrawAttribute(AttributeFont, "attack_count", IsMelee() ? "Attacks" : "Bullets Shot", DrawPosition, EquippedItem, false, false);
 
 			// Penetration
 			if(Attributes.at("penetration").Int > 1) {
-				DrawAttribute("penetration", "Penetration", DrawPosition, EquippedItem, false, false);
+				DrawAttribute(AttributeFont, "penetration", "Penetration", DrawPosition, EquippedItem, false, false);
 
 				// Penetration Damage
 				TextColor = COLOR_WHITE;
@@ -239,8 +245,8 @@ void _Item::DrawTooltip(const _Player *Player, size_t CompareSlot, int Inventory
 
 				DrawPosition.y += Spacing.y;
 				Buffer << ae::Round1(100 * Attributes.at("penetration_damage").Float) << "%";
-				ae::Assets.Fonts["hud_medium"]->DrawText("Penetration Damage", glm::ivec2(DrawPosition - DrawOffset), ae::RIGHT_BASELINE);
-				ae::Assets.Fonts["hud_medium"]->DrawText(Buffer.str(), glm::ivec2(DrawPosition + DrawOffset), ae::LEFT_BASELINE, TextColor);
+				AttributeFont->DrawText("Penetration Damage", glm::ivec2(DrawPosition - DrawOffset), ae::RIGHT_BASELINE);
+				AttributeFont->DrawText(Buffer.str(), glm::ivec2(DrawPosition + DrawOffset), ae::LEFT_BASELINE, TextColor);
 				Buffer.str("");
 			}
 
@@ -261,8 +267,8 @@ void _Item::DrawTooltip(const _Player *Player, size_t CompareSlot, int Inventory
 					AttackCountText = "Attack Speed";
 				else
 					AttackCountText = "Fire Rate";
-				ae::Assets.Fonts["hud_medium"]->DrawText(AttackCountText, glm::ivec2(DrawPosition - DrawOffset), ae::RIGHT_BASELINE);
-				ae::Assets.Fonts["hud_medium"]->DrawText(Buffer.str(), glm::ivec2(DrawPosition + DrawOffset), ae::LEFT_BASELINE, TextColor);
+				AttributeFont->DrawText(AttackCountText, glm::ivec2(DrawPosition - DrawOffset), ae::RIGHT_BASELINE);
+				AttributeFont->DrawText(Buffer.str(), glm::ivec2(DrawPosition + DrawOffset), ae::LEFT_BASELINE, TextColor);
 				Buffer.str("");
 				Buffer << std::setprecision(6);
 			}
@@ -282,8 +288,8 @@ void _Item::DrawTooltip(const _Player *Player, size_t CompareSlot, int Inventory
 					Buffer << ae::Round2(GetAverageAccuracy()) << " avg";
 				else
 					Buffer << ae::Round2(Attributes.at("accuracy_min").Float) << " - " << ae::Round2(Attributes.at("accuracy_max").Float) << " deg";
-				ae::Assets.Fonts["hud_medium"]->DrawText("Accuracy", glm::ivec2(DrawPosition - DrawOffset), ae::RIGHT_BASELINE);
-				ae::Assets.Fonts["hud_medium"]->DrawText(Buffer.str(), glm::ivec2(DrawPosition + DrawOffset), ae::LEFT_BASELINE, TextColor);
+				AttributeFont->DrawText("Accuracy", glm::ivec2(DrawPosition - DrawOffset), ae::RIGHT_BASELINE);
+				AttributeFont->DrawText(Buffer.str(), glm::ivec2(DrawPosition + DrawOffset), ae::LEFT_BASELINE, TextColor);
 				Buffer.str("");
 			}
 
@@ -299,8 +305,8 @@ void _Item::DrawTooltip(const _Player *Player, size_t CompareSlot, int Inventory
 
 				DrawPosition.y += Spacing.y;
 				Buffer << ae::Round2(Attributes.at("recoil").Float) << " deg";
-				ae::Assets.Fonts["hud_medium"]->DrawText("Recoil", glm::ivec2(DrawPosition - DrawOffset), ae::RIGHT_BASELINE);
-				ae::Assets.Fonts["hud_medium"]->DrawText(Buffer.str(), glm::ivec2(DrawPosition + DrawOffset), ae::LEFT_BASELINE, TextColor);
+				AttributeFont->DrawText("Recoil", glm::ivec2(DrawPosition - DrawOffset), ae::RIGHT_BASELINE);
+				AttributeFont->DrawText(Buffer.str(), glm::ivec2(DrawPosition + DrawOffset), ae::LEFT_BASELINE, TextColor);
 				Buffer.str("");
 			}
 
@@ -316,8 +322,8 @@ void _Item::DrawTooltip(const _Player *Player, size_t CompareSlot, int Inventory
 
 				DrawPosition.y += Spacing.y;
 				Buffer << Attributes.at("range").Float;
-				ae::Assets.Fonts["hud_medium"]->DrawText("Range", glm::ivec2(DrawPosition - DrawOffset), ae::RIGHT_BASELINE);
-				ae::Assets.Fonts["hud_medium"]->DrawText(Buffer.str(), glm::ivec2(DrawPosition + DrawOffset), ae::LEFT_BASELINE, TextColor);
+				AttributeFont->DrawText("Range", glm::ivec2(DrawPosition - DrawOffset), ae::RIGHT_BASELINE);
+				AttributeFont->DrawText(Buffer.str(), glm::ivec2(DrawPosition + DrawOffset), ae::LEFT_BASELINE, TextColor);
 				Buffer.str("");
 			}
 
@@ -333,8 +339,8 @@ void _Item::DrawTooltip(const _Player *Player, size_t CompareSlot, int Inventory
 
 				DrawPosition.y += Spacing.y;
 				Buffer << Attributes.at("explosion_size").Float;
-				ae::Assets.Fonts["hud_medium"]->DrawText("Explosion Size", glm::ivec2(DrawPosition - DrawOffset), ae::RIGHT_BASELINE);
-				ae::Assets.Fonts["hud_medium"]->DrawText(Buffer.str(), glm::ivec2(DrawPosition + DrawOffset), ae::LEFT_BASELINE, TextColor);
+				AttributeFont->DrawText("Explosion Size", glm::ivec2(DrawPosition - DrawOffset), ae::RIGHT_BASELINE);
+				AttributeFont->DrawText(Buffer.str(), glm::ivec2(DrawPosition + DrawOffset), ae::LEFT_BASELINE, TextColor);
 				Buffer.str("");
 			}
 
@@ -351,8 +357,8 @@ void _Item::DrawTooltip(const _Player *Player, size_t CompareSlot, int Inventory
 				DrawPosition.y += Spacing.y;
 				Buffer << ae::Round2(Attributes.at("reload_period").Double) << "s";
 				std::string AttackCountText;
-				ae::Assets.Fonts["hud_medium"]->DrawText("Reload Time", glm::ivec2(DrawPosition - DrawOffset), ae::RIGHT_BASELINE);
-				ae::Assets.Fonts["hud_medium"]->DrawText(Buffer.str(), glm::ivec2(DrawPosition + DrawOffset), ae::LEFT_BASELINE, TextColor);
+				AttributeFont->DrawText("Reload Time", glm::ivec2(DrawPosition - DrawOffset), ae::RIGHT_BASELINE);
+				AttributeFont->DrawText(Buffer.str(), glm::ivec2(DrawPosition + DrawOffset), ae::LEFT_BASELINE, TextColor);
 				Buffer.str("");
 			}
 
@@ -360,8 +366,8 @@ void _Item::DrawTooltip(const _Player *Player, size_t CompareSlot, int Inventory
 			if(!Template.AmmoID.empty()) {
 				DrawPosition.y += Spacing.y;
 				Buffer << Stats.Objects.at(Template.AmmoID).Name;
-				ae::Assets.Fonts["hud_medium"]->DrawText("Ammo Type", glm::ivec2(DrawPosition - DrawOffset), ae::RIGHT_BASELINE);
-				ae::Assets.Fonts["hud_medium"]->DrawText(Buffer.str(), glm::ivec2(DrawPosition + DrawOffset));
+				AttributeFont->DrawText("Ammo Type", glm::ivec2(DrawPosition - DrawOffset), ae::RIGHT_BASELINE);
+				AttributeFont->DrawText(Buffer.str(), glm::ivec2(DrawPosition + DrawOffset));
 				Buffer.str("");
 			}
 		} break;
@@ -369,12 +375,12 @@ void _Item::DrawTooltip(const _Player *Player, size_t CompareSlot, int Inventory
 			if(ShowEquipHelp)
 				HelpTextList.push_back("Right-click to equip");
 
-			DrawAttribute("damage_block", "Damage Block", DrawPosition, EquippedItem, false, false);
-			DrawAttribute("damage_resist", "Damage Resist", DrawPosition, EquippedItem, true, true);
-			DrawAttribute("move_speed", "Move Speed", DrawPosition, EquippedItem, true, true);
-			DrawAttribute("max_stamina", "Max Stamina", DrawPosition, EquippedItem, true, true);
-			DrawAttribute("max_ammo", "Max Ammo", DrawPosition, EquippedItem, true, true);
-			DrawAttribute("max_health", "Max Health", DrawPosition, EquippedItem, true, true);
+			DrawAttribute(AttributeFont, "damage_block", "Damage Block", DrawPosition, EquippedItem, false, false);
+			DrawAttribute(AttributeFont, "damage_resist", "Damage Resist", DrawPosition, EquippedItem, true, true);
+			DrawAttribute(AttributeFont, "move_speed", "Move Speed", DrawPosition, EquippedItem, true, true);
+			DrawAttribute(AttributeFont, "max_stamina", "Max Stamina", DrawPosition, EquippedItem, true, true);
+			DrawAttribute(AttributeFont, "max_ammo", "Max Ammo", DrawPosition, EquippedItem, true, true);
+			DrawAttribute(AttributeFont, "max_health", "Max Health", DrawPosition, EquippedItem, true, true);
 		} break;
 		case _Object::MOD: {
 			if(Template.Attributes.at("object_type").Int == _Object::WEAPON)
@@ -389,13 +395,13 @@ void _Item::DrawTooltip(const _Player *Player, size_t CompareSlot, int Inventory
 				DrawPosition.y += Spacing.y;
 				if(Template.Attributes.at("mod_type").Int == MOD_BURST) {
 					Buffer << Attributes.at("bonus").Int << " Round Burst Fire";
-					ae::Assets.Fonts["hud_medium"]->DrawText(Buffer.str(), glm::ivec2(DrawPosition), ae::CENTER_BASELINE, TextColor);
+					AttributeFont->DrawText(Buffer.str(), glm::ivec2(DrawPosition), ae::CENTER_BASELINE, TextColor);
 				}
 				else {
 					std::string Percent = Template.Attributes.at("percent_sign").Int ? "%" : "";
 					Buffer << "+" << Attributes.at("bonus").Int << Percent;
-					ae::Assets.Fonts["hud_medium"]->DrawText(ModTypeToString(Template.Attributes.at("mod_type").Int), glm::ivec2(DrawPosition - DrawOffset), ae::RIGHT_BASELINE);
-					ae::Assets.Fonts["hud_medium"]->DrawText(Buffer.str(), glm::ivec2(DrawPosition + DrawOffset), ae::LEFT_BASELINE, TextColor);
+					AttributeFont->DrawText(ModTypeToString(Template.Attributes.at("mod_type").Int), glm::ivec2(DrawPosition - DrawOffset), ae::RIGHT_BASELINE);
+					AttributeFont->DrawText(Buffer.str(), glm::ivec2(DrawPosition + DrawOffset), ae::LEFT_BASELINE, TextColor);
 				}
 			}
 		} break;
@@ -405,7 +411,7 @@ void _Item::DrawTooltip(const _Player *Player, size_t CompareSlot, int Inventory
 				Buffer << "Restores all " << Template.Name;
 			else
 				Buffer << "+" << std::round(Attributes["amount"].Int * Player->PickupModifier);
-			ae::Assets.Fonts["hud_medium"]->DrawText(Buffer.str(), glm::ivec2(DrawPosition), ae::CENTER_BASELINE);
+			AttributeFont->DrawText(Buffer.str(), glm::ivec2(DrawPosition), ae::CENTER_BASELINE);
 		} break;
 		case _Object::MEDKIT: {
 			HelpTextList.push_back("Used when picked up");
@@ -414,7 +420,7 @@ void _Item::DrawTooltip(const _Player *Player, size_t CompareSlot, int Inventory
 				Buffer << "+100% HP";
 			else
 				Buffer << "+" << (int)(GAME_MEDKIT_HEALTH_PERCENT * Player->HealModifier) << "% HP";
-			ae::Assets.Fonts["hud_medium"]->DrawText(Buffer.str(), glm::ivec2(DrawPosition), ae::CENTER_BASELINE, COLOR_GREEN);
+			AttributeFont->DrawText(Buffer.str(), glm::ivec2(DrawPosition), ae::CENTER_BASELINE, COLOR_GREEN);
 		} break;
 	}
 
@@ -434,13 +440,13 @@ void _Item::DrawTooltip(const _Player *Player, size_t CompareSlot, int Inventory
 
 		DrawPosition.y += Spacing.y;
 		Buffer << Mods.size() << "/" << Attributes.at("max_mods").Int;
-		ae::Assets.Fonts["hud_medium"]->DrawText("Mods", glm::ivec2(DrawPosition - DrawOffset), ae::RIGHT_BASELINE);
-		ae::Assets.Fonts["hud_medium"]->DrawText(Buffer.str(), glm::ivec2(DrawPosition + DrawOffset), ae::LEFT_BASELINE, TextColor);
+		AttributeFont->DrawText("Mods", glm::ivec2(DrawPosition - DrawOffset), ae::RIGHT_BASELINE);
+		AttributeFont->DrawText(Buffer.str(), glm::ivec2(DrawPosition + DrawOffset), ae::LEFT_BASELINE, TextColor);
 		Buffer.str("");
 	}
 
 	// Mod bonuses
-	TextColor = COLOR_WHITE;
+	TextColor = glm::vec4(0.85f, 0.85f, 0.85f, 1.0f);
 	if(HasOneBonus)
 		DrawPosition.y += Spacing.y * 0.5f;
 
@@ -466,15 +472,15 @@ void _Item::DrawTooltip(const _Player *Player, size_t CompareSlot, int Inventory
 
 		// Set label
 		Buffer << ModTypeToString(i);
-		ae::Assets.Fonts["hud_small"]->DrawText(Buffer.str(), glm::ivec2(DrawPosition), ae::CENTER_BASELINE, TextColor);
+		SmallFont->DrawText(Buffer.str(), glm::ivec2(DrawPosition), ae::CENTER_BASELINE, TextColor);
 		Buffer.str("");
 	}
 
 	// Draw ui hints
-	DrawPosition.y += 60 * ae::_Element::GetUIScale();
+	DrawPosition.y += 50 * ae::_Element::GetUIScale();
 	for(const auto &Text : HelpTextList) {
-		ae::Assets.Fonts["hud_small"]->DrawText(Text, glm::ivec2(DrawPosition), ae::CENTER_BASELINE, COLOR_GRAY);
-		DrawPosition.y += HelpSpacing.y * ae::_Element::GetUIScale();
+		SmallFont->DrawText(Text, glm::ivec2(DrawPosition), ae::CENTER_BASELINE, COLOR_GRAY);
+		DrawPosition.y += HelpSpacing.y;
 	}
 }
 

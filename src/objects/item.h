@@ -23,6 +23,9 @@
 // Forward Declarations
 class _Player;
 struct _Unique;
+namespace ae {
+	class _Font;
+}
 
 // Mod types
 enum ModType {
@@ -107,6 +110,6 @@ class _Item : public _Object {
 
 	private:
 
-		void DrawAttribute(const std::string &Attribute, const std::string &Label, glm::vec2 &DrawPosition, const _Item *EquippedItem, bool Plus, bool Percent) const;
+		void DrawAttribute(const ae::_Font *Font, const std::string &Attribute, const std::string &Label, glm::vec2 &DrawPosition, const _Item *EquippedItem, bool Plus, bool Percent) const;
 
 };
