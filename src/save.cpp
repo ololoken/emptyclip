@@ -174,7 +174,9 @@ void _Save::LoadPlayer(_Player *Player) {
 				int SaveVersion;
 				File.read((char *)&SaveVersion, sizeof(SaveVersion));
 				if(SaveVersion != PLAYER_SAVEVERSION) {
-					std::rename(Player->SavePath.c_str(), (Player->SavePath + "." + std::to_string(SaveVersion)).c_str());
+					std::string OldVersionPath = Player->SavePath + "." + std::to_string(SaveVersion);
+					std::remove(OldVersionPath.c_str());
+					std::rename(Player->SavePath.c_str(), OldVersionPath.c_str());
 					throw std::runtime_error("Save version mismatch");
 				}
 			} break;
@@ -329,6 +331,7 @@ void _Save::SavePlayer(_Player *Player) {
 	File.close();
 
 	// Rename temp file
+	std::remove(Player->SavePath.c_str());
 	std::rename(SavePath.c_str(), Player->SavePath.c_str());
 }
 

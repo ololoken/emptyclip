@@ -167,7 +167,9 @@ void _Config::Load() {
 	int ReadVersion = 0;
 	GetValue("version", ReadVersion);
 	if(ReadVersion != Version) {
-		std::rename(ConfigFilePath.c_str(), (ConfigFilePath + "." + std::to_string(ReadVersion)).c_str());
+		std::string OldVersionPath = ConfigFilePath + "." + std::to_string(ReadVersion);
+		std::remove(OldVersionPath.c_str());
+		std::rename(ConfigFilePath.c_str(), OldVersionPath.c_str());
 		Save();
 		return;
 	}

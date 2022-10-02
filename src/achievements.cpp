@@ -121,6 +121,7 @@ void _Achievements::Save() {
 
 	// Rename temp file
 	std::string Path = Config.ConfigPath + FILENAME;
+	std::remove(Path.c_str());
 	std::rename(TempPath.c_str(), Path.c_str());
 }
 
