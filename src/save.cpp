@@ -340,9 +340,8 @@ void _Save::LoadItems(_Player *Player, ae::_Buffer &Buffer) {
 
 	// Get inventory size
 	int ItemCount = Buffer.Read<int>();
-	if(ItemCount > INVENTORY_SIZE) {
+	if(ItemCount > INVENTORY_SIZE)
 		throw std::runtime_error("Too many items");
-	}
 
 	// Get items
 	for(int i = 0; i < ItemCount; i++) {
