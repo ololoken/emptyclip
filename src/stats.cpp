@@ -802,6 +802,7 @@ _Monster *_Stats::CreateMonster(const std::string &ID, int Level, int Progressio
 		Monster->ExplosionSize[WEAPONATTACK_MAIN] = 0.0f;
 	}
 	Monster->Animation->Reels = ae::Assets.Animations[Template.AnimationID];
+	Monster->Animation->Frame = Monster->Animation->Reels[Monster->WalkingAnimation]->DefaultFrame;
 	Monster->Animation->CalculateTextureCoords();
 	Monster->Level = Level;
 	Monster->Mass = Template.Attributes.at("mass").Float;
