@@ -1704,6 +1704,7 @@ void _PlayState::SpawnObject(_ObjectSpawn *ObjectSpawn, bool GenerateStats, int 
 		_Monster *Monster = Stats.CreateMonster(ObjectSpawn->ID, ObjectSpawn->Level + Map->GetAddedLevel(), Map->Progression, ObjectSpawn->Position);
 		Monster->Player = Player;
 		AddMonster(Monster);
+		Map->TotalExperience += Monster->ExperienceGiven;
 		if(Monster->IsCrate())
 			Map->Crates++;
 		else

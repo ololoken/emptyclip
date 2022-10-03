@@ -19,6 +19,7 @@
 #include <objects/entity.h>
 #include <objects/item.h>
 #include <objects/particle.h>
+#include <states/play.h>
 #include <ae/random.h>
 #include <ae/camera.h>
 #include <ae/texture.h>
@@ -362,15 +363,20 @@ _Map::_Map(const std::string &Filename, double Clock, int Progression) : _Map() 
 					_ObjectTemplate &Template = Stats.Objects.at(Event->MonsterID);
 					if(Template.Type == _Object::MONSTER) {
 						int TileCount = (int)Event->Tiles.size();
+
+						// Count stats
 						if(Template.Attributes.at("ai_type").Int) {
 							Monsters += TileCount * Event->Level * SpawnMultiplier;
-							int Experience = Template.Attributes.at("xp").Float + Template.Attributes.at("xp_level").Float * (GetAddedLevel() + Event->SpawnLevel - 1);
-							Experience *= TileCount * Event->Level * SpawnMultiplier;
-							TotalExperience += Experience;
 							Event->SpawnMultiplier = SpawnMultiplier;
 						}
-						else {
+						else
 							Crates += TileCount * Event->Level;
+
+						// Count experience (doesn't account for special types)
+						if(PlayState.DevMode) {
+							int Experience = Template.Attributes.at("xp").Float + Template.Attributes.at("xp_level").Float * (GetAddedLevel() + Event->SpawnLevel - 1);
+							int Multiplier = Template.Attributes.at("ai_type").Int ? SpawnMultiplier : 1;
+							TotalExperience += Experience * TileCount * Event->Level * Multiplier * Stats.Progressions[Progression].Experience;
 						}
 					}
 				}
