@@ -181,6 +181,7 @@ class _Object {
 		glm::vec2 Position{0.0f};
 		glm::vec2 LastPosition{0.0f};
 		glm::vec2 Direction{0.0f, 1.0f};
+		glm::vec2 LastDirection{0.0f};
 		glm::vec2 Velocity{0.0f};
 		double FreePathingTimer{0.0};
 		float Radius{0.25f};

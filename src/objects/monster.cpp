@@ -170,11 +170,23 @@ void _Monster::Update(double FrameTime) {
 	if(MoveState != MOVE_NONE) {
 
 		// Check for inactive distance
-		if(glm::distance2(LastPosition, Position) > StopThresholdSquared) {
+		if(glm::distance2(LastPosition, Position) > StopThresholdSquared)
 			StaticTimer = 0;
+
+		// Check for oscillating between opposite directions
+		if((LastDirection[0] < 0.0f && Direction[0] > 0.0f) || (LastDirection[0] > 0.0f && Direction[0] < 0.0f) || (LastDirection[1] < 0.0f && Direction[1] > 0.0f) || (LastDirection[1] > 0.0f && Direction[1] < 0.0f)) {
+			Wiggles++;
+			if(Wiggles >= 3) {
+				StaticTimer = ENTITY_STATIC_TIME;
+				Wiggles = 0;
+				FacePosition(TargetPosition);
+			}
 		}
+		else
+			Wiggles = 0;
+
 		// Stop monster when static
-		else if(StaticTimer > ENTITY_STATIC_TIME) {
+		if(StaticTimer >= ENTITY_STATIC_TIME) {
 			MoveState = MOVE_NONE;
 			Goal = GOAL_PURSUE;
 			GenerateReactionTime();

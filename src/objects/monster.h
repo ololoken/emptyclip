@@ -66,4 +66,5 @@ class _Monster : public _Entity {
 		double StaticTimer{0.0};
 		double ReactionTimer{0.0};
 		double ReturnTimer{0.0};
+		int Wiggles{0};
 };

@@ -56,6 +56,7 @@ _Entity::~_Entity() {
 // Update entity
 void _Entity::Update(double FrameTime) {
 	LastPosition = Position;
+	LastDirection = Direction;
 	UpdateRecoil(FrameTime);
 
 	// Update timers
