@@ -203,7 +203,7 @@ void _Item::DrawTooltip(const _Player *Player, size_t CompareSlot, int Inventory
 					TextColor = COLOR_RED;
 			}
 			DrawPosition.y += Spacing.y;
-			if(ae::Input.ModKeyDown(KMOD_ALT) || ae::Actions.State[Action::GAME_SHOWINFO].Value > 0.0f)
+			if(ae::Input.ModKeyDown(KMOD_ALT) || ae::Actions.State[Action::GAME_MOREINFO].Value > 0.0f)
 				Buffer << ae::Round1(GetAverageDamage()) << " avg";
 			else
 				Buffer << Attributes.at("min_damage").Int << " - " << Attributes.at("max_damage").Int;
@@ -289,7 +289,7 @@ void _Item::DrawTooltip(const _Player *Player, size_t CompareSlot, int Inventory
 				}
 
 				DrawPosition.y += Spacing.y;
-				if(ae::Input.ModKeyDown(KMOD_ALT) || ae::Actions.State[Action::GAME_SHOWINFO].Value > 0.0f)
+				if(ae::Input.ModKeyDown(KMOD_ALT) || ae::Actions.State[Action::GAME_MOREINFO].Value > 0.0f)
 					Buffer << ae::Round2(GetAverageAccuracy()) << " avg";
 				else
 					Buffer << ae::Round2(Attributes.at("accuracy_min").Float) << " - " << ae::Round2(Attributes.at("accuracy_max").Float) << " deg";

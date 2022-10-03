@@ -884,7 +884,7 @@ void _PlayState::Render(double BlendFactor) {
 	ae::Graphics.SetDepthMask(false);
 
 	// Show accuracy in degrees
-	if(ae::Input.ModKeyDown(KMOD_ALT) || ae::Actions.State[Action::GAME_SHOWINFO].Value > 0.0f) {
+	if(ae::Input.ModKeyDown(KMOD_ALT) || ae::Actions.State[Action::GAME_MOREINFO].Value > 0.0f) {
 
 		// Draw item level/quality
 		glm::vec2 TextPosition;
