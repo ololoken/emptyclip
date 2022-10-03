@@ -287,6 +287,7 @@ void _Stats::LoadArmor() {
 		Template.ID = Database->GetString("id");
 		Template.Name = Database->GetString("name");
 		Template.IconID = Database->GetString("icon_id");
+		Template.Attributes["mass"].Float = Database->GetReal("mass");
 		Template.Attributes["damage_block"].Float = Database->GetReal("damage_block");
 		Template.Attributes["damage_block_level"].Float = Database->GetReal("damage_block_level");
 		Template.Attributes["damage_resist"].Float = Database->GetReal("damage_resist");

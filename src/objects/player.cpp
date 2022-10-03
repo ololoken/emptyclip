@@ -237,6 +237,7 @@ void _Player::RecalculateStats() {
 	CalculateSkillsRemaining();
 
 	// Reset base stats
+	Mass = 1.0f;
 	DamageBlock = 0;
 	DamageResist = 0;
 	SelfHealPercent = PLAYER_HEAL_PERCENT;
@@ -321,6 +322,7 @@ void _Player::RecalculateStats() {
 	DamageResist += Stats.GetSkill(Skills[SKILL_FORTITUDE], SKILL_FORTITUDE, 1);
 	Attributes["max_ammo"].Int = 100 + Stats.GetSkill(Skills[SKILL_ENDURANCE], SKILL_ENDURANCE, 1);
 	if(GetArmor()) {
+		Mass += GetArmor()->Template.Attributes.at("mass").Float;
 		DamageBlock += GetArmor()->Attributes.at("damage_block").Int;
 		DamageResist += GetArmor()->Attributes.at("damage_resist").Int;
 		BaseMoveSpeed += GetArmor()->Attributes.at("move_speed").Int;
