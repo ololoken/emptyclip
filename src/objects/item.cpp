@@ -93,8 +93,13 @@ void _Item::DrawTooltip(const _Player *Player, size_t CompareSlot, int Inventory
 	const ae::_Font *SmallFont = ae::Assets.Fonts["hud_char"];
 
 	// Set size based on type
-	if(Type == _Object::WEAPON)
+	if(Type == _Object::WEAPON) {
 		Size.y = 480 * ae::_Element::GetUIScale();
+		if(Attributes["penetration"].Int > 1)
+			Size.y += Spacing.y;
+		if(Attributes["attack_count"].Int > 1)
+			Size.y += Spacing.y;
+	}
 	else if(Type == _Object::ARMOR)
 		Size.y = 380 * ae::_Element::GetUIScale();
 	else if(Type == _Object::MEDKIT)
