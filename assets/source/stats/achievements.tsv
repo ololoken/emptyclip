@@ -1,8 +1,9 @@
 id	name	text
-all	100%	Complete the campaign with every kill, crate, and secret
-smoked	Almost Got Smoked	Complete the campaign without ever touching lava
-lonewolf	The Lone Wolf	Complete the campaign with a new character, using only the Knife and Bolt-Action Rifle
-fists	A Fistful of Gibs	Complete the campaign with a new character, using only your Fists
-1e6kills	Mass Murderer	Get 1,000,000 kills with a single character
-pierce30	Line 'Em Up!	Hit 30 enemies with a single bolt
-p10	P10	Complete Progression 10
+all	100%	Get every kill, crate, and secret in a single campaign run.
+smoked	Almost Got Smoked	Complete the campaign without ever touching lava.
+lonewolf	The Lone Wolf	Complete the campaign with a new character, using only the knife and bolt-action rifle.
+fists	A Fistful of Gibs	Complete the campaign with a new character, using only your fists.
+1e6kills	Mass Murderer	Kill 1,000,000 enemies with a single character.
+pierce30	Line 'Em Up!	Hit 30 enemies with a single bolt.
+p10	P10	Complete Progression 10.
+bleedrun	Bleed Run	Complete the campaign in under three hours with a new character, without ever dying.

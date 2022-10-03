@@ -1486,6 +1486,9 @@ void _PlayState::CheckEvents(const _Entity *Entity) {
 
 						if(Player->StatLoneWolf)
 							Menu.UnlockAchievement("lonewolf");
+
+						if(Player->TotalDeaths == 0 && Player->PlayTime < ACHIEVEMENTS_BLEEDRUN_TIME)
+							Menu.UnlockAchievement("bleedrun");
 					}
 
 					if(Player->Stat100Percent)
