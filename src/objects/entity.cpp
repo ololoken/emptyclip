@@ -302,7 +302,7 @@ void _Entity::UpdateAnimation(double FrameTime, bool PlaySound) {
 
 // Update accuracy based on weapon's recoil regen
 void _Entity::UpdateRecoil(double FrameTime) {
-	CurrentAccuracy = std::max(CurrentAccuracy - RecoilRegen * FrameTime / RecoilModifier, (double)MinAccuracy);
+	CurrentAccuracy = std::max(CurrentAccuracy - AccuracyRegen * FrameTime / RecoilModifier, (double)MinAccuracy);
 }
 
 // Moves the object with collision detection

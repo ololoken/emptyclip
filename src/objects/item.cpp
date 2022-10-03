@@ -538,7 +538,7 @@ void _Item::RecalculateStats() {
 			Attributes["reload_period"].Double = Template.Attributes.at("reload_period").Double * GetBonusMultiplier(MOD_RELOADSPEED, true);
 			Attributes["reload_amount"].Int = Template.Attributes.at("reload_amount").Int + Bonus[MOD_RELOADAMOUNT];
 			Attributes["recoil"].Float = Template.Attributes.at("recoil").Float * GetBonusMultiplier(MOD_HANDLING, true);
-			Attributes["recoil_regen"].Float = Template.Attributes.at("recoil_regen").Float * GetBonusMultiplier(MOD_HANDLING);
+			Attributes["accuracy_regen"].Float = Template.Attributes.at("accuracy_regen").Float * GetBonusMultiplier(MOD_HANDLING);
 			Attributes["move_recoil"].Float = Template.Attributes.at("move_recoil").Float * GetBonusMultiplier(MOD_HANDLING, true);
 			Attributes["penetration"].Int = Template.Attributes.at("penetration").Int + Bonus[MOD_PENETRATION];
 			Attributes["penetration_damage"].Float = std::clamp(Template.Attributes.at("penetration_damage").Float * QualityFactor, 0.0f, 1.0f);

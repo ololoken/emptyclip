@@ -210,7 +210,7 @@ void _Stats::LoadWeapons() {
 		Template.Attributes["accuracy_min"].Float = Database->GetReal("accuracy_min");
 		Template.Attributes["accuracy_max"].Float = Database->GetReal("accuracy_max");
 		Template.Attributes["recoil"].Float = Database->GetReal("recoil");
-		Template.Attributes["recoil_regen"].Float = Database->GetReal("recoil_regen");
+		Template.Attributes["accuracy_regen"].Float = Database->GetReal("accuracy_regen");
 		Template.Attributes["move_recoil"].Float = Database->GetReal("move_recoil");
 		Template.Attributes["range"].Float = Database->GetReal("range");
 		Template.Attributes["fire_rate"].Int = Database->GetInt<int>("fire_rate");
@@ -813,7 +813,7 @@ _Monster *_Stats::CreateMonster(const std::string &ID, int Level, int Progressio
 	// Set stats
 	Monster->FreePathing = Template.Attributes.at("freepathing").Int;
 	Monster->Recoil = 0;
-	Monster->RecoilRegen = 0;
+	Monster->AccuracyRegen = 0;
 	Monster->DamageBlock = 0;
 	Monster->DamageResist = 0;
 	Monster->MoveSpeed = Monster->GetAttributeLevel("move_speed", 1.0f, ENTITY_MAX_MOVESPEED_LEVEL);

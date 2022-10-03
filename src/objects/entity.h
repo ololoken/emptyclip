@@ -125,7 +125,7 @@ class _Entity : public _Object {
 		float MinAccuracy{0.0f};
 		float MaxAccuracy[WEAPONATTACK_COUNT]{0.0f, 0.0f};
 		float Recoil{0.0f};
-		float RecoilRegen{0.0f};
+		float AccuracyRegen{0.0f};
 		float RecoilModifier{1.0f};
 		float MoveRecoil{0.0f};
 		double ReloadDelay{0.0};

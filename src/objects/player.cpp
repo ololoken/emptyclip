@@ -288,7 +288,7 @@ void _Player::RecalculateStats() {
 
 	// Set up main stats based on weapon
 	Recoil = 0;
-	RecoilRegen = 0;
+	AccuracyRegen = 0;
 	MoveRecoil = 0.0f;
 	AttackRange[WEAPONATTACK_MAIN] = WeaponAttributes[WEAPONATTACK_MAIN]["range"].Float;
 	AttackRange[WEAPONATTACK_MELEE] = WeaponAttributes[WEAPONATTACK_MELEE]["range"].Float;
@@ -301,7 +301,7 @@ void _Player::RecalculateStats() {
 		CurrentAccuracyNormal = MinAccuracyNormal = WeaponAttributes[WEAPONATTACK_MAIN].at("accuracy_min").Float * AccuracySkillMultiplier;
 		MaxAccuracyNormal = WeaponAttributes[WEAPONATTACK_MAIN].at("accuracy_max").Float * AccuracySkillMultiplier;
 		Recoil = WeaponAttributes[WEAPONATTACK_MAIN]["recoil"].Float / StrengthSkillMultiplier;
-		RecoilRegen = WeaponAttributes[WEAPONATTACK_MAIN]["recoil_regen"].Float * StrengthSkillMultiplier;
+		AccuracyRegen = WeaponAttributes[WEAPONATTACK_MAIN]["accuracy_regen"].Float * StrengthSkillMultiplier;
 		MoveRecoil = WeaponAttributes[WEAPONATTACK_MAIN]["move_recoil"].Float / StrengthSkillMultiplier;
 	}
 
