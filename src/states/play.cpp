@@ -144,6 +144,8 @@ void _PlayState::Init() {
 
 	ActiveAI = 0;
 	Timer = 0;
+	PreviousTouchingEndEvent = nullptr;
+	TouchingEndEvent = nullptr;
 }
 
 // Close map
@@ -245,6 +247,10 @@ bool _PlayState::HandleAction(int InputType, size_t Action, int Value) {
 				Player->Flashlight = !Player->Flashlight;
 				ae::Audio.PlaySound(ae::Assets.Sounds["game_flashlight0.ogg"]);
 			break;
+			case Action::GAME_USE:
+				if(TouchingEndEvent)
+					EndLevel();
+			break;
 		}
 	}
 	else {
@@ -325,7 +331,7 @@ bool _PlayState::HandleCommand(ae::_Console *Console) {
 	else if(Console->Command == "suicide") {
 		if(Player) {
 			Player->UpdateHealth(-10000000);
-			ae::Audio.PlaySound(ae::Assets.Sounds["player_die0.ogg"], ae::_SoundSettings(glm::vec3(Player->Position.x, 0.0f, Player->Position.y), 1.0f, AUDIO_REFERENCE_DISTANCE, AUDIO_MAX_DISTANCE, AUDIO_ROLL_OFF));
+			PlayerDied();
 		}
 
 		return true;
@@ -610,6 +616,10 @@ void _PlayState::Update(double FrameTime) {
 
 		HUD->ShowTextMessage(Buffer.str(), 5.0);
 	}
+
+	// Show end message
+	if(TouchingEndEvent)
+		HUD->ShowMessageBox("Press [c red]" + ae::Actions.GetInputNameForAction(Action::GAME_USE) + "[c white] to end the level", 9999999.0, UI_MESSAGE_SMALL_SIZE);
 
 	// Update camera
 	Camera->Set2DPosition(Player->Position);
@@ -1203,6 +1213,9 @@ void _PlayState::HandlePickup() {
 // Called when the player dies
 void _PlayState::PlayerDied() {
 
+	// Clear message
+	HUD->ClearMessageBox();
+
 	// Dying sound
 	ae::Audio.PlaySound(ae::Assets.Sounds["player_die0.ogg"], ae::_SoundSettings(glm::vec3(Player->Position.x, 0.0f, Player->Position.y), 1.0f, AUDIO_REFERENCE_DISTANCE, AUDIO_MAX_DISTANCE, AUDIO_ROLL_OFF));
 
@@ -1211,6 +1224,66 @@ void _PlayState::PlayerDied() {
 		_Monster *Monster = (_Monster *)Entity;
 		Monster->OnPlayerDeath();
 	}
+}
+
+// End level
+void _PlayState::EndLevel() {
+	Level = TouchingEndEvent->ItemID;
+	bool GotOneHundredPercent = HUD->Kills[0] == HUD->Kills[1] && HUD->Crates[0] == HUD->Crates[1] && HUD->Secrets[0] == HUD->Secrets[1];
+	if(!GotOneHundredPercent)
+		Player->Stat100Percent = false;
+
+	// End of the game
+	if(Level.empty()) {
+		Menu.SetScoreStats(true, Player->LevelTime, HUD->Kills, HUD->Crates, HUD->Secrets, Player->Progression + 1, GotOneHundredPercent);
+		Level = GAME_FIRSTLEVEL;
+
+		// Check achievements
+		if(Player->Progression == 0) {
+			if(Player->StatFistsOnly)
+				Menu.UnlockAchievement("fists");
+
+			if(Player->StatLoneWolf)
+				Menu.UnlockAchievement("lonewolf");
+
+			if(Player->TotalDeaths == 0 && Player->PlayTime < ACHIEVEMENTS_BLEEDRUN_TIME)
+				Menu.UnlockAchievement("bleedrun");
+		}
+
+		if(Player->Stat100Percent)
+			Menu.UnlockAchievement("all");
+
+		if(Player->Progression >= 10)
+			Menu.UnlockAchievement("p10");
+
+		if(Player->LavaTouches == 0)
+			Menu.UnlockAchievement("smoked");
+
+		// Reset stats
+		Player->Progression = std::min(Player->Progression + 1, GAME_MAX_PROGRESSION);
+		Player->ProgressionTime = 0;
+		Player->ProgressionKills = 0;
+		Player->ProgressionCrates = 0;
+		Player->ProgressionSecrets = 0;
+		Player->ProgressionDeaths = 0;
+		Player->ResetAchievementTracking();
+	}
+	else {
+		Player->ProgressionKills += HUD->Kills[0];
+		Player->ProgressionCrates += HUD->Crates[0];
+		Player->ProgressionSecrets += HUD->Secrets[0];
+		Menu.SetScoreStats(false, Player->LevelTime, HUD->Kills, HUD->Crates, HUD->Secrets, 0, GotOneHundredPercent);
+	}
+
+	Player->LevelTime = 0.0;
+	Player->CheckpointIndex = TouchingEndEvent->Level;
+	Player->MapID = Level;
+	if(Map->MapType == MAPTYPE_CAMPAIGN)
+		Player->Keys.clear();
+	Save.SavePlayer(Player);
+
+	NullState.LevelComplete = true;
+	Framework.ChangeState(&NullState);
 }
 
 // Places an item into the player's inventory
@@ -1432,6 +1505,8 @@ void _PlayState::UpdateMonsters(double FrameTime) {
 // Checks for the player triggering events
 void _PlayState::CheckEvents(const _Entity *Entity) {
 	Player->TileChanged = false;
+	PreviousTouchingEndEvent = TouchingEndEvent;
+	TouchingEndEvent = nullptr;
 
 	// Check for events triggered by walking
 	glm::ivec2 Position = Map->GetValidCoord(Entity->Position);
@@ -1469,62 +1544,7 @@ void _PlayState::CheckEvents(const _Entity *Entity) {
 				}
 			break;
 			case EVENT_ENDLEVEL: {
-				Level = Event->ItemID;
-				bool GotOneHundredPercent = HUD->Kills[0] == HUD->Kills[1] && HUD->Crates[0] == HUD->Crates[1] && HUD->Secrets[0] == HUD->Secrets[1];
-				if(!GotOneHundredPercent)
-					Player->Stat100Percent = false;
-
-				// End of the game
-				if(Level.empty()) {
-					Menu.SetScoreStats(true, Player->LevelTime, HUD->Kills, HUD->Crates, HUD->Secrets, Player->Progression + 1, GotOneHundredPercent);
-					Level = GAME_FIRSTLEVEL;
-
-					// Check achievements
-					if(Player->Progression == 0) {
-						if(Player->StatFistsOnly)
-							Menu.UnlockAchievement("fists");
-
-						if(Player->StatLoneWolf)
-							Menu.UnlockAchievement("lonewolf");
-
-						if(Player->TotalDeaths == 0 && Player->PlayTime < ACHIEVEMENTS_BLEEDRUN_TIME)
-							Menu.UnlockAchievement("bleedrun");
-					}
-
-					if(Player->Stat100Percent)
-						Menu.UnlockAchievement("all");
-
-					if(Player->Progression >= 10)
-						Menu.UnlockAchievement("p10");
-
-					if(Player->LavaTouches == 0)
-						Menu.UnlockAchievement("smoked");
-
-					// Reset stats
-					Player->Progression = std::min(Player->Progression + 1, GAME_MAX_PROGRESSION);
-					Player->ProgressionTime = 0;
-					Player->ProgressionKills = 0;
-					Player->ProgressionCrates = 0;
-					Player->ProgressionSecrets = 0;
-					Player->ProgressionDeaths = 0;
-					Player->ResetAchievementTracking();
-				}
-				else {
-					Player->ProgressionKills += HUD->Kills[0];
-					Player->ProgressionCrates += HUD->Crates[0];
-					Player->ProgressionSecrets += HUD->Secrets[0];
-					Menu.SetScoreStats(false, Player->LevelTime, HUD->Kills, HUD->Crates, HUD->Secrets, 0, GotOneHundredPercent);
-				}
-
-				Player->LevelTime = 0;
-				Player->CheckpointIndex = Event->Level;
-				Player->MapID = Level;
-				if(Map->MapType == MAPTYPE_CAMPAIGN)
-					Player->Keys.clear();
-				Save.SavePlayer(Player);
-
-				NullState.LevelComplete = true;
-				Framework.ChangeState(&NullState);
+				TouchingEndEvent = Event;
 			} break;
 			case EVENT_TEXT: {
 
@@ -1591,6 +1611,10 @@ void _PlayState::CheckEvents(const _Entity *Entity) {
 			break;
 		}
 	}
+
+	// Remove end of level message
+	if(PreviousTouchingEndEvent && !TouchingEndEvent)
+		HUD->ClearMessageBox(1.0);
 }
 
 // Update the active events

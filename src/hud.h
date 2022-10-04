@@ -114,6 +114,7 @@ class _HUD {
 		void DrawCrosshair(const glm::vec2 &Position);
 		void DrawDeathScreen();
 
+		void ClearMessageBox(double Duration=0.0) { MessageBoxTimer = Duration; }
 		void ShowTextMessage(const std::string &Message, double Time, bool Override=true);
 		void ShowMessageBox(const std::string &Message, double Time, const glm::vec2 &Size);
 		void ShowLevelName(const std::string &Name, double Time);

@@ -82,7 +82,6 @@ class _PlayState : public ae::_State {
 		// Objects
 		_HUD *HUD{nullptr};
 		_Player *Player{nullptr};
-		double FlashTimer{0.0};
 
 	protected:
 
@@ -99,6 +98,7 @@ class _PlayState : public ae::_State {
 		void ResolveAttack(_Entity *Attacker, int GridType);
 		void HandlePickup();
 		void PlayerDied();
+		void EndLevel();
 
 		void SpawnObject(_ObjectSpawn *ObjectSpawn, bool GenerateStats=false, int AddedLevel=0);
 		void UseObject(_Item *Item);
@@ -109,6 +109,8 @@ class _PlayState : public ae::_State {
 
 		// Map
 		_Map *Map{nullptr};
+		_Event *PreviousTouchingEndEvent{nullptr};
+		_Event *TouchingEndEvent{nullptr};
 
 		// Objects
 		std::list<_Entity *> Monsters;
@@ -126,6 +128,7 @@ class _PlayState : public ae::_State {
 
 		// Graphics
 		ae::_Framebuffer *Framebuffer{nullptr};
+		double FlashTimer{0.0};
 
 		// Particles
 		_Particles *Particles{nullptr};
