@@ -159,7 +159,7 @@ void _Menu::InitTitle() {
 		BuildVersion = std::string("-") + BUILD_VERSION;
 	ShowDefaultCursor(true);
 
-	ae::Assets.Elements["label_game_version"]->Text = GAME_VERSION + BuildVersion;
+	ae::Assets.Elements["label_game_version"]->Text = std::string("pre") + GAME_VERSION + BuildVersion;
 	ae::Assets.Elements["label_game_version"]->SetActive(true);
 
 	if(!Achievements.Enabled) {
