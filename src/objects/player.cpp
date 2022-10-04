@@ -591,10 +591,10 @@ void _Player::Render(double BlendFactor) {
 	}
 	*/
 
-	glm::vec4 StateColor(1.0f);
+	glm::vec4 StateColor(1.0f, 1.0f, 1.0f, Alpha);
 	if(PoisonTimer > 0.0) {
 		float RedGreen = 1.0f - GetPoisonIntensity();
-		StateColor = glm::vec4(RedGreen, 1.0f, RedGreen, 1.0f);
+		StateColor = glm::vec4(RedGreen, 1.0f, RedGreen, Alpha);
 	}
 
 	// Draw torso
