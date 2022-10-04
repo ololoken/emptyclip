@@ -130,6 +130,7 @@ const  int          ITEM_MIN_MOVESPEED                   =  -90;
 const  int          ITEM_MAX_MOVESPEED                   =  100;
 const  glm::vec4    ITEM_QUALITY_GOOD_COLOR              =  glm::vec4(1.0f,0.2f,0.2f,1.0f);
 const  glm::vec4    ITEM_QUALITY_BAD_COLOR               =  glm::vec4(0.2f,1.0f,0.2f,1.0f);
+const  float        ITEM_HIGHLIGHT_SCALE                 =  1.3f;
 //     Objects
 const  float        OBJECT_Z                             =  0.3f;
 const  int          OBJECT_MAX_LEVEL                     =  1000;

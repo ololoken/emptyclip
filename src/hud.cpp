@@ -793,6 +793,12 @@ void _HUD::DrawHUDWeapon(const _Item *Item, ae::_Element *Element, ae::_Element 
 
 	Element->Render();
 
+	// Highlight unique items
+	if(Item->IsUnique()) {
+		ae::Graphics.SetProgram(ae::Assets.Programs["ortho_pos_uv"]);
+		DrawUniqueHighlight(Element->Bounds.GetCenter(), Item);
+	}
+
 	// Draw extra information
 	if(ae::Input.ModKeyDown(KMOD_ALT) || ae::Actions.State[Action::GAME_MOREINFO].Value > 0.0f) {
 		glm::vec4 Color;
@@ -1009,11 +1015,15 @@ void _HUD::DrawInventoryItem(const glm::vec2 &Position, const _Item *Item, bool 
 	ae::Graphics.DrawScaledImage(Position, Item->Texture, UI_INVENTORY_ITEM_SIZE, Item->Color);
 
 	// Highlight unique items
-	if(Unique) {
-		glm::vec4 HighlightColor = Item->LightColor;
-		HighlightColor.a = 0.25f;
-		ae::Graphics.DrawScaledImage(Position, ae::Assets.Textures["textures/lights/circle.png"], UI_INVENTORY_ITEM_SIZE * 1.3f, HighlightColor);
-	}
+	if(Unique)
+		DrawUniqueHighlight(Position, Item);
+}
+
+// Draw unique item's highlight
+void _HUD::DrawUniqueHighlight(const glm::vec2 &Position, const _Item *Item) {
+	glm::vec4 HighlightColor = Item->LightColor;
+	HighlightColor.a = 0.25f;
+	ae::Graphics.DrawScaledImage(Position, ae::Assets.Textures["textures/lights/circle.png"], UI_INVENTORY_ITEM_SIZE * ITEM_HIGHLIGHT_SCALE, HighlightColor);
 }
 
 // Draw quick glance value attribute for item
