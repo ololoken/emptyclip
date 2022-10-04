@@ -236,7 +236,7 @@ void _Item::DrawTooltip(const _Player *Player, size_t CompareSlot, int Inventory
 				DrawAttribute(AttributeFont, "attack_count", IsMelee() ? "Attacks" : "Bullets Shot", DrawPosition, EquippedItem, false, false);
 
 			// Penetration
-			if(Attributes.at("penetration").Int > 1) {
+			if(Attributes.at("penetration").Int > 1 && Template.Attributes.at("explosion_size").Float == 0.0f) {
 				DrawAttribute(AttributeFont, "penetration", "Penetration", DrawPosition, EquippedItem, false, false);
 
 				// Penetration Damage
@@ -536,11 +536,11 @@ void _Item::RecalculateStats() {
 			Attributes["shoot_period"].Double = Template.Attributes.at("shoot_period").Double * GetBonusMultiplier(MOD_HANDLING, true);
 			Attributes["attack_count"].Int = Template.Attributes.at("attack_count").Int;
 			Attributes["reload_period"].Double = Template.Attributes.at("reload_period").Double * GetBonusMultiplier(MOD_RELOADSPEED, true);
-			Attributes["reload_amount"].Int = Template.Attributes.at("reload_amount").Int + Bonus[MOD_RELOADAMOUNT];
+			Attributes["reload_amount"].Int = (int)std::round(Template.Attributes.at("reload_amount").Int * QualityFactor) + Bonus[MOD_RELOADAMOUNT];
 			Attributes["recoil"].Float = Template.Attributes.at("recoil").Float * GetBonusMultiplier(MOD_HANDLING, true);
 			Attributes["accuracy_regen"].Float = Template.Attributes.at("accuracy_regen").Float * GetBonusMultiplier(MOD_HANDLING);
 			Attributes["move_recoil"].Float = Template.Attributes.at("move_recoil").Float * GetBonusMultiplier(MOD_HANDLING, true);
-			Attributes["penetration"].Int = Template.Attributes.at("penetration").Int + Bonus[MOD_PENETRATION];
+			Attributes["penetration"].Int = std::max(1, (int)std::round(Template.Attributes.at("penetration").Int * QualityFactor) + Bonus[MOD_PENETRATION]);
 			Attributes["penetration_damage"].Float = std::clamp(Template.Attributes.at("penetration_damage").Float * QualityFactor, 0.0f, 1.0f);
 			Attributes["crit_chance"].Int = std::clamp((int)(Template.Attributes.at("crit_chance").Int * QualityFactor) + Bonus[MOD_CRITCHANCE], 0, 100);
 			Attributes["rounds"].Int = std::round((Template.Attributes.at("rounds").Int + Bonus[MOD_MAXROUNDSPLUS]) * GetBonusMultiplier(MOD_MAXROUNDS));
