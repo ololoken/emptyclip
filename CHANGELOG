@@ -3,51 +3,50 @@ Empty Clip 2.0.0 -
 - Optimized rendering code and added support for high refresh monitors
 - Added per-pixel lighting and day/night cycle
 - Completely redesigned interface and added support for different screen resolutions
+- Reworked all game content and added new weapons, armor, monsters, mods, skills and gameplay mechanics
 - Reworked campaign mode to have eight new levels for a total of ten
+- The game now gets harder with every campaign completion
 - Inventory is bigger and can now hold equipment
 - Added equipment slot for melee weapons and separate hotkey for melee attacks (Mouse button 4 by default)
 - Added melee animations
-- Reworked skill system to have nine attributes that affects various player stats
+- Reworked skill system to have nine attributes that affect various player stats
 - Rewrote and optimized AI code
-- Aiming now modifies recoil and recoil regen
-- Medkits are now used when touched
-- A portion of health is slowly recovered when out of combat
+- Aiming (Hold right-click) now lowers recoil and increases accuracy regen
 - Added minimap and hotkey for full map view (Tab by default)
 - Added sprinting and a stamina bar (Hold A by default)
-- Added flashlight hot key (V by default)
-- Equipment can be equipped by right-clicking in the inventory
-- Weapons, armor, and mods now have levels and a random quality rating
+- Added a flashlight (V by default)
 - Items in the world can be picked up or moved with the mouse while the inventory is open
+- Equipment can now be equipped by right-clicking the item in the inventory or world
+- Weapons, armor, and mods now have levels and a random quality rating
+- Items now have six tiers of rarity, with some only available in later progressions
 - Items can now be dropped with ctrl+click or middle mouse button
-- Redesigned item tooltip window and added equipped item comparison
+- Redesigned item tooltips and added a comparison window for equipped items
+- Added inventory sort button and hotkey (Z by default)
 - Ammo is now stored as a number of rounds for each ammo type
 - Ammo and keys are now picked up automatically
+- Medkits are now used when touched
+- A portion of health is now slowly recovered when out of combat
 - Keys are now stored in a keychain and are kept until the end of the level
-- Armor now affects movement speed and damage resist
-- Added mods for armor
-- Added new mods for weapons
-- Added new weapons
-- Added weapon and monster knockback/pull
+- Removed strength requirement from armor
+- Armor now affects movement speed, damage resist, and player weight
+- Armor can now be modded
+- Added knockback/pull to weapons and monsters
 - Shotguns now reload one shell at a time
 - Added bullet penetration for certain weapons
 - Added projectile weapons and explosions
-- Removed strength requirement from armor
-- Removed player profiles
-- Removed adventure and survival mode
 - Players now respawn at their last checkpoint with invulnerability for three seconds
-- The game now gets harder with every campaign completion
-- Added end of level screen
-- Added achievements
+- Added an end of level screen
+- Added eight achievements
 - Added damage number particles
-- Added inventory sort button and hotkey (Z by default)
-- Improved bullet hole decals
+- Improved and optimized bullet hole decals
 - The game now pauses while menu is open
 - Fullscreen can be toggled with alt-enter
 - Mouse buttons can now be remapped
 - Added console window (open with tilde key)
+- Removed player profiles
+- Removed adventure and survival mode
 - Switched build system to CMake
 - Save files are now in ~/.local/share/emptyclip for linux
-- Lots of fixes and cleanup
 
 Empty Clip 1.0.3 - 4/06/2008
 - Added the ability to reset the level
