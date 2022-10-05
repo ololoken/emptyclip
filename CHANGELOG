@@ -48,7 +48,7 @@ Empty Clip 2.0.0 -
 - Switched build system to CMake
 - Save files are now in ~/.local/share/emptyclip for linux
 
-Empty Clip 1.0.3 - 4/06/2008
+Empty Clip 1.0.3 - 2008-04-06
 - Added the ability to reset the level
 - Press R to cancel a reload
 - Can now pick up items while reloading
@@ -59,7 +59,7 @@ Empty Clip 1.0.3 - 4/06/2008
 - Now using NSIS for the windows installer
 - Updated all libraries to the latest versions
 
-Empty Clip 1.0.2 - 6/08/2006
+Empty Clip 1.0.2 - 2006-06-08
 - Updated Windows version to SDL 1.2.10
 - Reduced compile time and game size by removing networking code
 - Fixed a rounding error in entity/wall collisions on large maps. Noticeable in skyscraper0.map on certain walls
@@ -68,7 +68,7 @@ Empty Clip 1.0.2 - 6/08/2006
 - Removed "-level" argument in favor of "-mod"
 - The linux binary package now comes with the binary compiled from scons, which has slightly different dependencies
 
-Empty Clip 1.0.1 - 5/28/2006
+Empty Clip 1.0.1 - 2006-05-28
 - Converted from make/autotools to SCons
 - Added a portal level where you choose which mode to start in
 - Made the first survival level accessible
@@ -78,3 +78,6 @@ Empty Clip 1.0.1 - 5/28/2006
 - Disabled the incomplete deathmatch mode for now
 - Adventure mode fixes
 - Added more debugging messages
+
+Empty Clip 1.0.0 - 2006-05-15
+- First release
