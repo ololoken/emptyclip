@@ -256,7 +256,7 @@ bool _Object::IsTouchingCircle(const glm::vec2 &CircleCenter, float CircleRadius
 	}
 	// Test against AABB object
 	else {
-		glm::vec2 ClosetPoint = CircleCenter;
+		glm::vec2 ClosestPoint = CircleCenter;
 
 		// Get AABB of object
 		float AABB[4] = {
@@ -267,17 +267,17 @@ bool _Object::IsTouchingCircle(const glm::vec2 &CircleCenter, float CircleRadius
 		};
 
 		// Get closest point on AABB
-		if(ClosetPoint.x < AABB[0])
-			ClosetPoint.x = AABB[0];
-		if(ClosetPoint.y < AABB[1])
-			ClosetPoint.y = AABB[1];
-		if(ClosetPoint.x > AABB[2])
-			ClosetPoint.x = AABB[2];
-		if(ClosetPoint.y > AABB[3])
-			ClosetPoint.y = AABB[3];
+		if(ClosestPoint.x < AABB[0])
+			ClosestPoint.x = AABB[0];
+		if(ClosestPoint.y < AABB[1])
+			ClosestPoint.y = AABB[1];
+		if(ClosestPoint.x > AABB[2])
+			ClosestPoint.x = AABB[2];
+		if(ClosestPoint.y > AABB[3])
+			ClosestPoint.y = AABB[3];
 
 		// Test circle collision with point
-		DistanceSquared = glm::distance2(ClosetPoint, CircleCenter);
+		DistanceSquared = glm::distance2(ClosestPoint, CircleCenter);
 		return DistanceSquared < CircleRadius * CircleRadius;
 	}
 }
@@ -293,7 +293,7 @@ void _Object::CheckProjectileCollisions() {
 		_Hit &Hit = Map->CollisionHits.front();
 		_Entity *OwnerEntity = (_Entity *)Owner;
 		_Hit WallHit;
-		WallHit.Position = Hit.ClosetPoint;
+		WallHit.Position = Hit.ClosestPoint;
 		WallHit.Normal = glm::normalize(HitPosition - Position);
 		PlayState.GenerateHitEffects(OwnerEntity, HIT_WALL, WallHit, true);
 	*/

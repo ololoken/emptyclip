@@ -143,7 +143,7 @@ struct _Hit {
 	_Object *Object;
 	glm::vec2 Normal;
 	glm::vec2 Position;
-	glm::vec2 ClosetPoint;
+	glm::vec2 ClosestPoint;
 	glm::vec2 Push;
 	float DistanceSquared;
 	bool AxisAlignedPush;
