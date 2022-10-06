@@ -195,6 +195,9 @@ void _Menu::InitSinglePlayer() {
 void _Menu::InitOptions() {
 	ChangeLayout("element_menu_options");
 
+	// Update text values
+	Stats.CreateTransformedText();
+
 	// Set up MSAA values
 	int MaxSamples = std::min(4, ae::Graphics.MaxSamples);
 

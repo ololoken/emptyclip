@@ -22,6 +22,8 @@
 #include <ae/assets.h>
 #include <ae/animation.h>
 #include <ae/database.h>
+#include <ae/actions.h>
+#include <actiontype.h>
 #include <gameassets.h>
 #include <constants.h>
 #include <map.h>
@@ -52,6 +54,8 @@ void _Stats::Init() {
 	LoadSpecials();
 	LoadUniques();
 	LoadAchievements();
+
+	CreateTransformedText();
 
 	_ObjectTemplate PlayerTemplate(_Object::PLAYER);
 	Objects.insert(std::make_pair("player", PlayerTemplate));
@@ -709,6 +713,23 @@ void _Stats::LoadAchievements() {
 	}
 
 	Database->CloseQuery();
+}
+
+// Convert {game_*} values to real button names
+void _Stats::CreateTransformedText() {
+	TransformedText.clear();
+	for(const auto &String : Text) {
+		TransformedText[String.first] = String.second;
+		for(int i = 0; i < Action::COUNT; i++) {
+			std::string Search = "{" + ae::Actions.State[i].Name + "}";
+			size_t Position = TransformedText[String.first].find(Search);
+			if(Position == std::string::npos)
+				continue;
+
+			// Replace text
+			TransformedText[String.first].replace(Position, Search.size(), ae::Actions.GetInputNameForAction(i));
+		}
+	}
 }
 
 // Create item

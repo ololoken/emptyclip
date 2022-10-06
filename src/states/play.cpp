@@ -1553,7 +1553,7 @@ void _PlayState::CheckEvents(const _Entity *Entity) {
 				if(!IsTutorial || (Config.Tutorial && !Player->Progression)) {
 					if(IsTutorial)
 						ae::Audio.PlaySound(ae::Assets.Sounds["game_message0.ogg"]);
-					HUD->ShowMessageBox(Stats.Text[Event->ItemID], Event->ActivationPeriod, UI_MESSAGE_SIZE);
+					HUD->ShowMessageBox(Stats.TransformedText[Event->ItemID], Event->ActivationPeriod, UI_MESSAGE_SIZE);
 				}
 
 				if(Event->Level != 0)

@@ -151,6 +151,8 @@ class _Stats {
 		void LoadUniques();
 		void LoadAchievements();
 
+		void CreateTransformedText();
+
 		_Item *CreateItem(const std::string &ID, int Level, int Quality, int Count, const glm::vec2 &Position, bool RandomStats, int Progression=0);
 		_Monster *CreateMonster(const std::string &ID, int Level, int Progression, const glm::vec2 &Position, size_t SpecialType=0);
 		_Object *CreateProp(const std::string &ID, const glm::vec2 &Position, float Rotation, float Scale) const;
@@ -171,7 +173,7 @@ class _Stats {
 
 		ae::_Database *Database;
 
-		std::unordered_map<std::string, std::string> Text;
+		std::unordered_map<std::string, std::string> TransformedText;
 		std::unordered_map<std::string, _ObjectTemplate> Objects;
 		std::unordered_map<std::string, _ItemDrop> ItemDrops;
 		std::vector<_Progression> Progressions;
@@ -191,6 +193,8 @@ class _Stats {
 
 		void SetColor(glm::vec4 &Color, const std::string &ColorID);
 		_ParticleGroup BlankWeaponParticle;
+
+		std::unordered_map<std::string, std::string> Text;
 };
 
 extern _Stats Stats;
