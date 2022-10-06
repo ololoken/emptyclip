@@ -1225,9 +1225,6 @@ void _HUD::ShowMessageBox(const std::string &Message, double Time, const glm::ve
 	if(Message.empty())
 		return;
 
-	if(MessageBoxTimer > 0.0 && Elements[LABEL_MESSAGEBOX]->Text == Message)
-		return;
-
 	Elements[ELEMENT_MESSAGE]->BaseSize = Size;
 	Elements[ELEMENT_MESSAGE]->CalculateBounds();
 	Elements[ELEMENT_MESSAGE]->SetFade(1.0f);
