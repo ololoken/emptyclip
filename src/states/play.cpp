@@ -1478,7 +1478,7 @@ void _PlayState::UpdateMonsters(double FrameTime) {
 			Monster->GetRenderBounds(Bounds);
 
 			// Add to minimap
-			if((Monster->MoveState || Monster->IsCrate() || HasBossKey) && Monster->Health > 0 && Map->CheckMinimapBounds(Bounds)) {
+			if((Monster->ShowOnMinimap() || HasBossKey) && Monster->Health > 0 && Map->CheckMinimapBounds(Bounds)) {
 				_MinimapLayer MinimapLayer;
 				MinimapLayer.Bounds = Bounds;
 				MinimapLayer.Color = Monster->IsCrate() ? HUD_MINIMAP_CRATE_COLOR : HUD_MINIMAP_ENEMY_COLOR;

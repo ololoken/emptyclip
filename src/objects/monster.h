@@ -44,6 +44,8 @@ class _Monster : public _Entity {
 		void OnAttack(_Entity *Victim, const _Hit &Hit) override;
 		void OnHit(_Entity *Attacker, const _Hit &Hit) override;
 		void OnPlayerDeath();
+		bool PlayerIsAttackable() const { return PlayerDistanceSquared <= AttackRangeSquared && (PlayerShootable || PlayerVisible); }
+		bool ShowOnMinimap() const { return Action != ACTION_IDLE || MoveState || PlayerIsAttackable() || IsCrate(); }
 
 		const _ParticleTemplate *GetParticle(int ParticleType) const override;
 
@@ -57,14 +59,17 @@ class _Monster : public _Entity {
 		void GenerateReactionTime();
 
 		glm::vec2 ReturnPosition{0.0f};
-		bool LastPlayerVisible{false};
-		int AttacksMade{0};
-		int Goal{GOAL_PURSUE};
-		float AttackRangeSquared{0.0f};
-		float ViewRangeSquared{0.0f};
-		float StopThresholdSquared{0.0f};
 		double StaticTimer{0.0};
 		double ReactionTimer{0.0};
 		double ReturnTimer{0.0};
+		float AttackRangeSquared{0.0f};
+		float ViewRangeSquared{0.0f};
+		float StopThresholdSquared{0.0f};
+		float PlayerDistanceSquared{0.0f};
+		int AttacksMade{0};
+		int Goal{GOAL_PURSUE};
 		int Wiggles{0};
+		bool PlayerVisible{false};
+		bool LastPlayerVisible{false};
+		bool PlayerShootable{false};
 };
