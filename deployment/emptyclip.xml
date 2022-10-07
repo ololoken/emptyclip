@@ -27,43 +27,43 @@
 	<screenshots>
 		<screenshot type="default">
 			<caption>Title screen</caption>
-			<image type="source" width="1920" height="1080">https://empty-clip.gitlab.io/img/s_01.webp</image>
+			<image type="source" width="1920" height="1080">https://empty-clip.gitlab.io/jpg/s_01.jpg</image>
 		</screenshot>
 		<screenshot type="default">
 			<caption>Zombies guarding a key</caption>
-			<image type="source" width="1920" height="1080">https://empty-clip.gitlab.io/img/s_02.webp</image>
+			<image type="source" width="1920" height="1080">https://empty-clip.gitlab.io/jpg/s_02.jpg</image>
 		</screenshot>
 		<screenshot type="default">
 			<caption>Inspecting a rare item</caption>
-			<image type="source" width="1920" height="1080">https://empty-clip.gitlab.io/img/s_03.webp</image>
+			<image type="source" width="1920" height="1080">https://empty-clip.gitlab.io/jpg/s_03.jpg</image>
 		</screenshot>
 		<screenshot type="default">
 			<caption>A chilling boss fight</caption>
-			<image type="source" width="1920" height="1080">https://empty-clip.gitlab.io/img/s_04.webp</image>
+			<image type="source" width="1920" height="1080">https://empty-clip.gitlab.io/jpg/s_04.jpg</image>
 		</screenshot>
 		<screenshot type="default">
 			<caption>Firing a crossbow into a swarm of skeletons</caption>
-			<image type="source" width="1920" height="1080">https://empty-clip.gitlab.io/img/s_05.webp</image>
+			<image type="source" width="1920" height="1080">https://empty-clip.gitlab.io/jpg/s_05.jpg</image>
 		</screenshot>
 		<screenshot type="default">
 			<caption>A challenging battle</caption>
-			<image type="source" width="1920" height="1080">https://empty-clip.gitlab.io/img/s_06.webp</image>
+			<image type="source" width="1920" height="1080">https://empty-clip.gitlab.io/jpg/s_06.jpg</image>
 		</screenshot>
 		<screenshot type="default">
 			<caption>An occupied apartment</caption>
-			<image type="source" width="1920" height="1080">https://empty-clip.gitlab.io/img/s_07.webp</image>
+			<image type="source" width="1920" height="1080">https://empty-clip.gitlab.io/jpg/s_07.jpg</image>
 		</screenshot>
 		<screenshot type="default">
 			<caption>Obliterating zombies with a rocket</caption>
-			<image type="source" width="1920" height="1080">https://empty-clip.gitlab.io/img/s_08.webp</image>
+			<image type="source" width="1920" height="1080">https://empty-clip.gitlab.io/jpg/s_08.jpg</image>
 		</screenshot>
 		<screenshot type="default">
 			<caption>Blasting a demon</caption>
-			<image type="source" width="1920" height="1080">https://empty-clip.gitlab.io/img/s_09.webp</image>
+			<image type="source" width="1920" height="1080">https://empty-clip.gitlab.io/jpg/s_09.jpg</image>
 		</screenshot>
 		<screenshot type="default">
 			<caption>Dodging fireballs in Hell</caption>
-			<image type="source" width="1920" height="1080">https://empty-clip.gitlab.io/img/s_10.webp</image>
+			<image type="source" width="1920" height="1080">https://empty-clip.gitlab.io/jpg/s_10.jpg</image>
 		</screenshot>
 	</screenshots>
 	<metadata_license>CC0-1.0</metadata_license>
