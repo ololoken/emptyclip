@@ -4,7 +4,15 @@
 	<name>Empty Clip</name>
 	<summary>Empty Clip is a top-down shooter action RPG.</summary>
 	<description>
-		<p>Travel through mansions, dungeons, forests, caves, cities, skyscrapers, hell, and alien worlds.</p>
+		<p>Blast your way through ten levels and boss fights in this top-down shooter action RPG.</p>
+		<ul>
+			<li>Utilize over 15 different weapons, including melee, pistols, shotguns, rifles, rocket launchers, crossbows, and miniguns.</li>
+			<li>Fight thousands of zombies, spiders, bats, skeletons, demons, aliens and more.</li>
+			<li>Discover rare items and secrets that spread across dungeons, woods, caves, cities, desert, hell, and alien worlds.</li>
+			<li>Customize your character with skill points and over 20 different equipment mods.</li>
+			<li>Each campaign completion increases in difficulty and rewards.</li>
+			<li>Complete eight different achievements for an even greater challenge.</li>
+		</ul>
 	</description>
 	<categories>
 		<category>Game</category>
@@ -17,12 +25,44 @@
 	<project_license>GPL-3.0-only</project_license>
 	<screenshots>
 		<screenshot type="default">
-			<caption></caption>
-			<image type="source" width="1920" height="1080">https://jazztickets.github.io/docs/emptyclip/img/s_0.jpg</image>
+			<caption>Title screen</caption>
+			<image type="source" width="1920" height="1080">https://empty-clip.gitlab.io/img/s_01.webp</image>
 		</screenshot>
-		<screenshot>
-			<caption></caption>
-			<image type="source" width="1920" height="1080">https://jazztickets.github.io/docs/emptyclip/img/s_1.jpg</image>
+		<screenshot type="default">
+			<caption>Zombies guarding a key</caption>
+			<image type="source" width="1920" height="1080">https://empty-clip.gitlab.io/img/s_02.webp</image>
+		</screenshot>
+		<screenshot type="default">
+			<caption>Inspecting a rare item</caption>
+			<image type="source" width="1920" height="1080">https://empty-clip.gitlab.io/img/s_03.webp</image>
+		</screenshot>
+		<screenshot type="default">
+			<caption>A chilling boss fight</caption>
+			<image type="source" width="1920" height="1080">https://empty-clip.gitlab.io/img/s_04.webp</image>
+		</screenshot>
+		<screenshot type="default">
+			<caption>Firing a crossbow into a swarm of skeletons</caption>
+			<image type="source" width="1920" height="1080">https://empty-clip.gitlab.io/img/s_05.webp</image>
+		</screenshot>
+		<screenshot type="default">
+			<caption>A challenging battle</caption>
+			<image type="source" width="1920" height="1080">https://empty-clip.gitlab.io/img/s_06.webp</image>
+		</screenshot>
+		<screenshot type="default">
+			<caption>An occupied apartment</caption>
+			<image type="source" width="1920" height="1080">https://empty-clip.gitlab.io/img/s_07.webp</image>
+		</screenshot>
+		<screenshot type="default">
+			<caption>Obliterating zombies with a rocket</caption>
+			<image type="source" width="1920" height="1080">https://empty-clip.gitlab.io/img/s_08.webp</image>
+		</screenshot>
+		<screenshot type="default">
+			<caption>Blasting a demon</caption>
+			<image type="source" width="1920" height="1080">https://empty-clip.gitlab.io/img/s_09.webp</image>
+		</screenshot>
+		<screenshot type="default">
+			<caption>Dodging fireballs in Hell</caption>
+			<image type="source" width="1920" height="1080">https://empty-clip.gitlab.io/img/s_10.webp</image>
 		</screenshot>
 	</screenshots>
 	<metadata_license>CC0-1.0</metadata_license>
