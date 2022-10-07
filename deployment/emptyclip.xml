@@ -16,7 +16,8 @@
 	</description>
 	<categories>
 		<category>Game</category>
-		<category>Arcade</category>
+		<category>ArcadeGame</category>
+		<category>Shooter</category>
 		<category>RolePlaying</category>
 	</categories>
 	<content_rating type="oars-1.1" />
