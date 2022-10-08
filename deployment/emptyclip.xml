@@ -6,12 +6,12 @@
 	<description>
 		<p>Blast your way through ten levels and boss fights in this top-down shooter action RPG.</p>
 		<ul>
-			<li>Utilize over 15 different weapons, including melee, pistols, shotguns, rifles, rocket launchers, crossbows, and miniguns.</li>
-			<li>Fight thousands of zombies, spiders, bats, skeletons, demons, aliens and more.</li>
-			<li>Discover rare items and secrets that spread across dungeons, woods, caves, cities, desert, hell, and alien worlds.</li>
-			<li>Customize your character with skill points and over 20 different equipment mods.</li>
-			<li>Each campaign completion increases in difficulty and rewards.</li>
-			<li>Complete eight different achievements for an even greater challenge.</li>
+			<li>Utilize over 15 different weapons, including melee, pistols, shotguns, rifles, rocket launchers, crossbows, and miniguns</li>
+			<li>Fight thousands of zombies, spiders, bats, skeletons, demons, aliens and more</li>
+			<li>Discover rare items and secrets that sprawl across dungeons, woods, caves, cities, desert, hell, and alien worlds</li>
+			<li>Customize your character with skill points and over 20 different equipment mods</li>
+			<li>Play through the campaign multiple times for an increase in difficulty and rewards</li>
+			<li>Complete eight achievements for an even greater challenge</li>
 		</ul>
 	</description>
 	<categories>
@@ -26,43 +26,43 @@
 	<project_license>GPL-3.0-only</project_license>
 	<screenshots>
 		<screenshot type="default">
-			<caption>Title screen</caption>
+			<caption>01 - Title screen</caption>
 			<image type="source" width="1920" height="1080">https://empty-clip.gitlab.io/jpg/s_01.jpg</image>
 		</screenshot>
 		<screenshot type="default">
-			<caption>Zombies guarding a key</caption>
+			<caption>02 - Zombies guarding a key</caption>
 			<image type="source" width="1920" height="1080">https://empty-clip.gitlab.io/jpg/s_02.jpg</image>
 		</screenshot>
 		<screenshot type="default">
-			<caption>Inspecting a rare item</caption>
+			<caption>03 - Inspecting a rare item</caption>
 			<image type="source" width="1920" height="1080">https://empty-clip.gitlab.io/jpg/s_03.jpg</image>
 		</screenshot>
 		<screenshot type="default">
-			<caption>A chilling boss fight</caption>
+			<caption>04 - A chilling boss fight</caption>
 			<image type="source" width="1920" height="1080">https://empty-clip.gitlab.io/jpg/s_04.jpg</image>
 		</screenshot>
 		<screenshot type="default">
-			<caption>Firing a crossbow into a swarm of skeletons</caption>
+			<caption>05 - Firing a crossbow into a swarm of skeletons</caption>
 			<image type="source" width="1920" height="1080">https://empty-clip.gitlab.io/jpg/s_05.jpg</image>
 		</screenshot>
 		<screenshot type="default">
-			<caption>A challenging battle</caption>
+			<caption>06 - A challenging battle</caption>
 			<image type="source" width="1920" height="1080">https://empty-clip.gitlab.io/jpg/s_06.jpg</image>
 		</screenshot>
 		<screenshot type="default">
-			<caption>An occupied apartment</caption>
+			<caption>07 - An occupied apartment</caption>
 			<image type="source" width="1920" height="1080">https://empty-clip.gitlab.io/jpg/s_07.jpg</image>
 		</screenshot>
 		<screenshot type="default">
-			<caption>Obliterating zombies with a rocket</caption>
+			<caption>08 - Obliterating zombies with a rocket</caption>
 			<image type="source" width="1920" height="1080">https://empty-clip.gitlab.io/jpg/s_08.jpg</image>
 		</screenshot>
 		<screenshot type="default">
-			<caption>Blasting a demon</caption>
+			<caption>09 - Blasting a demon</caption>
 			<image type="source" width="1920" height="1080">https://empty-clip.gitlab.io/jpg/s_09.jpg</image>
 		</screenshot>
 		<screenshot type="default">
-			<caption>Dodging fireballs in Hell</caption>
+			<caption>10 - Dodging fireballs in Hell</caption>
 			<image type="source" width="1920" height="1080">https://empty-clip.gitlab.io/jpg/s_10.jpg</image>
 		</screenshot>
 	</screenshots>
