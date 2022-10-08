@@ -893,7 +893,7 @@ void _PlayState::Render(double BlendFactor) {
 	ae::Graphics.SetDepthTest(false);
 	ae::Graphics.SetDepthMask(false);
 
-	// Show accuracy in degrees
+	// Draw more info
 	if(ae::Input.ModKeyDown(KMOD_ALT) || ae::Actions.State[Action::GAME_MOREINFO].Value > 0.0f) {
 
 		// Draw item level/quality
@@ -903,6 +903,10 @@ void _PlayState::Render(double BlendFactor) {
 		for(auto Iterator : Map->ObjectManager->RenderList[_ObjectManager::RENDER_ITEMS]) {
 			_Item *Item = (_Item *)Iterator;
 			if(!Item->CanLevel())
+				continue;
+
+			// Skip item being dragged
+			if(Item == HUD->CursorItem)
 				continue;
 
 			Camera->ConvertWorldToScreen(Iterator->Position, TextPosition);
@@ -930,9 +934,12 @@ void _PlayState::Render(double BlendFactor) {
 			}
 		}
 
-		Buffer << ae::Round1(Player->CurrentAccuracy);
-		ae::Assets.Fonts["hud_tiny"]->DrawText(Buffer.str(), ae::Input.GetMouse() + glm::ivec2(glm::vec2(7, 7) * ae::_Element::GetUIScale()), ae::LEFT_BASELINE);
-		Buffer.str("");
+		// Show accuracy in degrees
+		if(!HUD->InventoryOpen) {
+			Buffer << ae::Round1(Player->CurrentAccuracy);
+			ae::Assets.Fonts["hud_tiny"]->DrawText(Buffer.str(), ae::Input.GetMouse() + glm::ivec2(glm::vec2(7, 7) * ae::_Element::GetUIScale()), ae::LEFT_BASELINE);
+			Buffer.str("");
+		}
 	}
 
 	// Draw damage text numbers

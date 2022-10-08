@@ -799,7 +799,7 @@ void _HUD::DrawHUDWeapon(const _Item *Item, ae::_Element *Element, ae::_Element 
 		DrawUniqueHighlight(Element->Bounds.GetCenter(), Item);
 	}
 
-	// Draw extra information
+	// Draw more info
 	if(ae::Input.ModKeyDown(KMOD_ALT) || ae::Actions.State[Action::GAME_MOREINFO].Value > 0.0f) {
 		glm::vec4 Color;
 		Item->GetQualityColor(Color);
@@ -976,7 +976,7 @@ void _HUD::DrawInventory() {
 		}
 	}
 
-	// Draw extra information
+	// Draw more info
 	if(ae::Input.ModKeyDown(KMOD_ALT) || ae::Actions.State[Action::GAME_MOREINFO].Value > 0.0f) {
 		Elements[ELEMENT_INVENTORY_OVERLAY]->SetActive(true);
 		Elements[ELEMENT_INVENTORY_OVERLAY]->Render();
