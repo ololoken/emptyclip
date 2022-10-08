@@ -1666,6 +1666,9 @@ void _EditorState::ProcessIcons(int Index, int Type) {
 		case ICON_MONSTER:
 			ExecuteSwitchMode(EDITMODE_MONSTERS);
 		break;
+		case ICON_PROP:
+			ExecuteSwitchMode(EDITMODE_PROPS);
+		break;
 		case ICON_NONE:
 			ExecuteDeselect();
 		break;

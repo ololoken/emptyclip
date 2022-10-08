@@ -440,7 +440,7 @@ bool _Map::Save(const std::string &String) {
 	File << "Hs " << Size.x << ' ' << Size.y << '\n';
 	File << "Hn " << Name << '\n';
 	File << "Ha " << BaseAmbientLight.r << ' ' << BaseAmbientLight.g << ' ' << BaseAmbientLight.b << '\n';
-	File << "Hc " << AmbientClock << '\n';
+	File << "Hc " << BaseAmbientClock << '\n';
 	File << "Hb " << SimpleAI << '\n';
 
 	// Objects

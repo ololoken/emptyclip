@@ -505,51 +505,51 @@
 			<element id="label_button_editor_mons" font="editor_tiny" text="Mons" offset_y="12" alignment_y="3" scaled="false"/>
 			<element id="label_button_editor_mons_key" font="editor_tiny" text="4" offset_y="26" alignment_y="3" scaled="false"/>
 		</element>
-		<element id="button_editor_mode_prop" style="style_editor_button_purple" hover_style="style_editor_button_selected" offset_x="502" size_x="32" size_y="32" alignment_x="0" alignment_y="0" clickable="true" scaled="false" index="12">
+		<element id="button_editor_mode_prop" style="style_editor_button_purple" hover_style="style_editor_button_selected" offset_x="502" size_x="32" size_y="32" alignment_x="0" alignment_y="0" clickable="true" scaled="false" index="13">
 			<element id="label_button_editor_prop" font="editor_tiny" text="Props" offset_y="12" alignment_y="3" scaled="false"/>
 			<element id="label_button_editor_prop_key" font="editor_tiny" text="5" offset_y="26" alignment_y="3" scaled="false"/>
 		</element>
-		<element id="button_editor_none" style="style_editor_button_green" hover_style="style_editor_button_selected" offset_y="34" size_x="32" size_y="32" alignment_x="0" alignment_y="0" clickable="true" scaled="false" index="13">
+		<element id="button_editor_none" style="style_editor_button_green" hover_style="style_editor_button_selected" offset_y="34" size_x="32" size_y="32" alignment_x="0" alignment_y="0" clickable="true" scaled="false" index="14">
 			<element id="label_button_editor_none" font="editor_tiny" text="None" offset_y="12" alignment_y="3" scaled="false"/>
 			<element id="label_button_editor_none_key" font="editor_tiny" text="~" offset_y="26" alignment_y="3" scaled="false"/>
 		</element>
-		<element id="button_editor_del" style="style_editor_button_green" hover_style="style_editor_button_selected" offset_x="34" offset_y="34" size_x="32" size_y="32" alignment_x="0" alignment_y="0" clickable="true" scaled="false" index="14">
+		<element id="button_editor_del" style="style_editor_button_green" hover_style="style_editor_button_selected" offset_x="34" offset_y="34" size_x="32" size_y="32" alignment_x="0" alignment_y="0" clickable="true" scaled="false" index="15">
 			<element id="label_button_editor_del" font="editor_tiny" text="Del" offset_y="12" alignment_y="3" scaled="false"/>
 			<element id="label_button_editor_del_key" font="editor_tiny" text="D" offset_y="26" alignment_y="3" scaled="false"/>
 		</element>
-		<element id="button_editor_split" style="style_editor_button_green" hover_style="style_editor_button_selected" offset_x="68" offset_y="34" size_x="32" size_y="32" alignment_x="0" alignment_y="0" scaled="false" index="15">
+		<element id="button_editor_split" style="style_editor_button_green" hover_style="style_editor_button_selected" offset_x="68" offset_y="34" size_x="32" size_y="32" alignment_x="0" alignment_y="0" scaled="false" index="16">
 			<element id="label_button_editor_split" font="editor_tiny" text="Split" offset_y="12" alignment_y="3" scaled="false"/>
 			<element id="label_button_editor_split_key" font="editor_tiny" text="X" offset_y="26" alignment_y="3" scaled="false"/>
 		</element>
-		<element id="button_editor_copy" style="style_editor_button_green" hover_style="style_editor_button_selected" offset_x="102" offset_y="34" size_x="32" size_y="32" alignment_x="0" alignment_y="0" clickable="true" scaled="false" index="16">
+		<element id="button_editor_copy" style="style_editor_button_green" hover_style="style_editor_button_selected" offset_x="102" offset_y="34" size_x="32" size_y="32" alignment_x="0" alignment_y="0" clickable="true" scaled="false" index="17">
 			<element id="label_button_editor_copy" font="editor_tiny" text="Copy" offset_y="12" alignment_y="3" scaled="false"/>
 			<element id="label_button_editor_copy_key" font="editor_tiny" text="C" offset_y="26" alignment_y="3" scaled="false"/>
 		</element>
-		<element id="button_editor_paste" style="style_editor_button_green" offset_x="136" offset_y="34" size_x="32" size_y="32" alignment_x="0" alignment_y="0" scaled="false" index="17">
+		<element id="button_editor_paste" style="style_editor_button_green" offset_x="136" offset_y="34" size_x="32" size_y="32" alignment_x="0" alignment_y="0" scaled="false" index="18">
 			<element id="label_button_editor_paste" font="editor_tiny" text="Paste" offset_y="12" alignment_y="3" scaled="false"/>
 			<element id="label_button_editor_paste_key" font="editor_tiny" text="V" offset_y="26" alignment_y="3" scaled="false"/>
 		</element>
-		<element id="button_editor_show" style="style_editor_button_green" hover_style="style_editor_button_selected" offset_x="170" offset_y="34" size_x="32" size_y="32" alignment_x="0" alignment_y="0" clickable="true" scaled="false" index="18">
+		<element id="button_editor_show" style="style_editor_button_green" hover_style="style_editor_button_selected" offset_x="170" offset_y="34" size_x="32" size_y="32" alignment_x="0" alignment_y="0" clickable="true" scaled="false" index="19">
 			<element id="label_button_editor_show" font="editor_tiny" text="Show" offset_y="12" alignment_y="3" scaled="false"/>
 			<element id="label_button_editor_show_key" font="editor_tiny" text="B" offset_y="26" alignment_y="3" scaled="false"/>
 		</element>
-		<element id="button_editor_grid" style="style_editor_button_green" hover_style="style_editor_button_selected" offset_x="204" offset_y="34" size_x="32" size_y="32" alignment_x="0" alignment_y="0" clickable="true" scaled="false" index="19">
+		<element id="button_editor_grid" style="style_editor_button_green" hover_style="style_editor_button_selected" offset_x="204" offset_y="34" size_x="32" size_y="32" alignment_x="0" alignment_y="0" clickable="true" scaled="false" index="20">
 			<element id="label_button_editor_grid" font="editor_tiny" text="Grid" offset_y="12" alignment_y="3" scaled="false"/>
 			<element id="label_button_editor_grid_key" font="editor_tiny" text="G" offset_y="26" alignment_y="3" scaled="false"/>
 		</element>
-		<element id="button_editor_new" style="style_editor_button_red" hover_style="style_editor_button_selected" offset_y="68" size_x="32" size_y="32" alignment_x="0" alignment_y="0" clickable="true" scaled="false" index="20">
+		<element id="button_editor_new" style="style_editor_button_red" hover_style="style_editor_button_selected" offset_y="68" size_x="32" size_y="32" alignment_x="0" alignment_y="0" clickable="true" scaled="false" index="21">
 			<element id="label_button_editor_new" font="editor_tiny" text="New" offset_y="12" alignment_y="3" scaled="false"/>
 			<element id="label_button_editor_new_key" font="editor_tiny" text="Ctrl N" offset_y="26" alignment_y="3" scaled="false"/>
 		</element>
-		<element id="button_editor_load" style="style_editor_button_red" hover_style="style_editor_button_selected" offset_x="34" offset_y="68" size_x="32" size_y="32" alignment_x="0" alignment_y="0" clickable="true" scaled="false" index="21">
+		<element id="button_editor_load" style="style_editor_button_red" hover_style="style_editor_button_selected" offset_x="34" offset_y="68" size_x="32" size_y="32" alignment_x="0" alignment_y="0" clickable="true" scaled="false" index="22">
 			<element id="label_button_editor_load" font="editor_tiny" text="Load" offset_y="12" alignment_y="3" scaled="false"/>
 			<element id="label_button_editor_load_key" font="editor_tiny" text="L" offset_y="26" alignment_y="3" scaled="false"/>
 		</element>
-		<element id="button_editor_save" style="style_editor_button_red" hover_style="style_editor_button_selected" offset_x="68" offset_y="68" size_x="32" size_y="32" alignment_x="0" alignment_y="0" clickable="true" scaled="false" index="22">
+		<element id="button_editor_save" style="style_editor_button_red" hover_style="style_editor_button_selected" offset_x="68" offset_y="68" size_x="32" size_y="32" alignment_x="0" alignment_y="0" clickable="true" scaled="false" index="23">
 			<element id="label_button_editor_save" font="editor_tiny" text="Save" offset_y="12" alignment_y="3" scaled="false"/>
 			<element id="label_button_editor_save_key" font="editor_tiny" text="S" offset_y="26" alignment_y="3" scaled="false"/>
 		</element>
-		<element id="button_editor_test" style="style_editor_button_red" hover_style="style_editor_button_selected" offset_x="102" offset_y="68" size_x="32" size_y="32" alignment_x="0" alignment_y="0" clickable="true" scaled="false" index="23">
+		<element id="button_editor_test" style="style_editor_button_red" hover_style="style_editor_button_selected" offset_x="102" offset_y="68" size_x="32" size_y="32" alignment_x="0" alignment_y="0" clickable="true" scaled="false" index="24">
 			<element id="label_button_editor_test" font="editor_tiny" text="Test" offset_y="12" alignment_y="3" scaled="false"/>
 			<element id="label_button_editor_test_key" font="editor_tiny" text="T" offset_y="26" alignment_y="3" scaled="false"/>
 		</element>
