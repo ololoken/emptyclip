@@ -1060,7 +1060,6 @@ void _PlayState::ResolveAttack(_Entity *Attacker, int GridType) {
 	// For each bullet that the weapon fires
 	bool PlayedHitWallSound = false;
 	_Entity *FirstHit = nullptr;
-	std::unordered_map<_Object *, int> DecalObjects;
 	std::vector<_Hit> Hits;
 	Hits.reserve(Attacker->Penetration[Attacker->AttackRequestType]);
 	int AttackCount = RoundsShot * Attacker->AttackCount[Attacker->AttackRequestType];
@@ -1166,11 +1165,8 @@ void _PlayState::ResolveAttack(_Entity *Attacker, int GridType) {
 						// Add force
 						HitEntity->ApplyForce(PushDirection, Attacker->Force[Attacker->AttackRequestType]);
 
-						// Generate bullet effects once for each hit object
-						if(DecalObjects.find(Hit.Object) == DecalObjects.end()) {
-							GenerateHitEffects(Attacker, HIT_OBJECT, Hit, !HitEntity->Health);
-							DecalObjects[Hit.Object] = 1;
-						}
+						// Generate hit particles
+						GenerateHitEffects(Attacker, HIT_OBJECT, Hit, !HitEntity->Health);
 					} break;
 				}
 			}
