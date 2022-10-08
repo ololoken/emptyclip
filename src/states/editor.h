@@ -193,6 +193,7 @@ class _EditorState : public ae::_State {
 		ae::_Element *GetBrushFromTexture(size_t PaletteType, const ae::_Texture *Texture);
 		void GetNewBlockSize(glm::ivec2 &Start, glm::ivec2 &End, int Direction, bool Expand);
 
+		void ExecuteToggleAmbientClock();
 		void ExecuteWalkable();
 		void ExecuteRotate();
 		void ExecuteMirror();

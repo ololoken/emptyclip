@@ -449,6 +449,9 @@ bool _EditorState::HandleKey(const ae::_KeyEvent &KeyEvent) {
 			case SDL_SCANCODE_SPACE:
 				ExecuteToggleTile();
 			break;
+			case SDL_SCANCODE_O:
+				ExecuteToggleAmbientClock();
+			break;
 			case SDL_SCANCODE_P:
 				if(IsShiftDown) {
 					ExecuteShowInput(EDITINPUT_PARTICLEID);
@@ -1073,6 +1076,15 @@ void _EditorState::Render(double BlendFactor) {
 
 	// Draw map level
 	Buffer << "Level " << Map->Level;
+	MainFont->DrawText(Buffer.str(), DrawPosition);
+	Buffer.str("");
+	DrawPosition += DrawSpacing;
+
+	// Draw map level
+	if(Map->BaseAmbientClock)
+		Buffer << "Outside";
+	else
+		Buffer << "Inside";
 	MainFont->DrawText(Buffer.str(), DrawPosition);
 	Buffer.str("");
 
@@ -2683,4 +2695,9 @@ void _EditorState::GetNewBlockSize(glm::ivec2 &Start, glm::ivec2 &End, int Direc
 			break;
 		}
 	}
+}
+
+// Change map's ambient clock setting
+void _EditorState::ExecuteToggleAmbientClock() {
+	Map->BaseAmbientClock = !Map->BaseAmbientClock;
 }
