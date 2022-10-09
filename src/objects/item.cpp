@@ -256,7 +256,7 @@ void _Item::DrawTooltip(const _Player *Player, size_t CompareSlot, int Inventory
 			}
 
 			// Fire rate
-			if(Attributes.at("fire_period").Double) {
+			if(Attributes.at("fire_period").Double > 0.0) {
 				TextColor = COLOR_WHITE;
 				if(EquippedItem) {
 					if(Attributes.at("fire_period").Double < EquippedItem->Attributes.at("fire_period").Double)
@@ -350,7 +350,7 @@ void _Item::DrawTooltip(const _Player *Player, size_t CompareSlot, int Inventory
 			}
 
 			// Reload speed
-			if(Attributes.at("reload_period").Double > 1) {
+			if(Attributes.at("reload_period").Double > 0.0) {
 				TextColor = COLOR_WHITE;
 				if(EquippedItem) {
 					if(Attributes.at("reload_period").Double < EquippedItem->Attributes.at("reload_period").Double)
