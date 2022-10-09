@@ -1644,7 +1644,7 @@ void _PlayState::UpdateEvents(double FrameTime) {
 
 						// Chance for special monster
 						int SpecialType = 0;
-						if(Player->Progression && ae::GetRandomInt(1, 100) <= Stats.Progressions[Player->Progression].SpecialChance)
+						if(!Event->IsBossSpawn && Player->Progression && ae::GetRandomInt(1, 100) <= Stats.Progressions[Player->Progression].SpecialChance)
 							SpecialType = ae::GetRandomInt((size_t)1, Stats.Specials.size() - 1);
 
 						// Spawn monsters

@@ -251,6 +251,8 @@ _Map::_Map(const std::string &Filename, double Clock, int Progression) : _Map() 
 						std::getline(File, Event->MonsterID, '\n');
 						if(Stats.Objects.find(Event->MonsterID) == Stats.Objects.end())
 							throw std::runtime_error(std::string(__func__) + " unknown monster '" + Event->MonsterID + "'");
+
+						Event->IsBossSpawn = (Event->MonsterID.find("boss_") == 0);
 					} break;
 					// Particle ID
 					case 'P': {
