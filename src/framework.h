@@ -18,6 +18,7 @@
 #pragma once
 
 // Libraries
+#include <ae/log.h>
 #include <cstdint>
 
 // Forward Declarations
@@ -55,6 +56,7 @@ class _Framework {
 		ae::_Console *Console{nullptr};
 
 		// State
+		ae::_LogFile Log;
 		bool Done{false};
 		bool IgnoreNextInputEvent{false};
 

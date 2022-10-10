@@ -32,6 +32,7 @@
 #include <ae/util.h>
 #include <ae/audio.h>
 #include <ae/texture.h>
+#include <version.h>
 #include <gameassets.h>
 #include <achievements.h>
 #include <menu.h>
@@ -96,6 +97,11 @@ void _Framework::Init(int ArgumentCount, char **Arguments) {
 		}
 	}
 
+	// Open log file
+	Log.Open((Config.ConfigPath + "client.log").c_str(), false);
+	Log.PrependDate = true;
+	Log << "Empty Clip " << GAME_VERSION << "-" << BUILD_VERSION << std::endl;
+
 	// Set random seed
 	ae::RandomGenerator.seed(SDL_GetPerformanceCounter());
 
@@ -126,6 +132,7 @@ void _Framework::Init(int ArgumentCount, char **Arguments) {
 	ae::Graphics.CircleVertices = 64;
 	ae::Graphics.Init(WindowSettings);
 	ae::Graphics.SetCullFace(false);
+	Log << "SDL_GetCurrentVideoDriver=" << SDL_GetCurrentVideoDriver() << std::endl;
 	LoadAssets();
 	Stats.Init();
 	Menu.Init();
@@ -179,6 +186,7 @@ void _Framework::Close() {
 
 	ae::Audio.Close();
 	ae::Graphics.Close();
+	Log.Close();
 	SDL_Quit();
 }
 
