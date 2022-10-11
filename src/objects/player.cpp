@@ -774,17 +774,10 @@ int _Player::AddItem(_Item *Item, int &AmountAdded) {
 			int AmountToMax = AmmoMax[Item->Template.AmmoID] - Ammo[Item->Template.AmmoID];
 
 			// Check for unique ammo
-			if(Item->IsUnique()) {
+			if(Item->IsUnique())
 				AmountAdded = AmountToMax;
-			}
-			else {
-
-				// Add pickup bonus
-				int PickupAmount = Item->Attributes["amount"].Int;
-				if(Item->Template.Attributes.at("pickup_bonus").Int)
-					PickupAmount = std::round(Item->Attributes["amount"].Int * PickupModifier);
-				AmountAdded = std::min(AmountToMax, PickupAmount);
-			}
+			else
+				AmountAdded = std::min(AmountToMax, GetPickupAmount(Item));
 
 			Ammo[Item->Template.AmmoID] += AmountAdded;
 
@@ -1298,6 +1291,14 @@ void _Player::ConsumeInventory(int Index, bool Delete) {
 			delete Inventory[Index];
 		Inventory[Index] = nullptr;
 	}
+}
+
+// Get amount of ammo picked up
+int _Player::GetPickupAmount(const _Item *Item) const {
+	if(Item->Template.Attributes.at("pickup_bonus").Int)
+		return std::round(Item->Attributes.at("amount").Int * PickupModifier);
+
+	return Item->Attributes.at("amount").Int;
 }
 
 // Reset after death

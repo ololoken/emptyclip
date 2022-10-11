@@ -415,7 +415,7 @@ void _Item::DrawTooltip(const _Player *Player, size_t CompareSlot, int Inventory
 			if(IsUnique())
 				Buffer << "Restores all " << Template.Name;
 			else
-				Buffer << "+" << std::round(Attributes["amount"].Int * Player->PickupModifier);
+				Buffer << "+" << Player->GetPickupAmount(this);
 			AttributeFont->DrawText(Buffer.str(), glm::ivec2(DrawPosition), ae::CENTER_BASELINE);
 		} break;
 		case _Object::MEDKIT: {

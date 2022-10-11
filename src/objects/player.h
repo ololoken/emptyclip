@@ -95,6 +95,7 @@ class _Player : public _Entity {
 		int FindItem(int Index);
 		int FindItem(const std::string &ID);
 		void ConsumeInventory(int Index, bool Delete=true);
+		int GetPickupAmount(const _Item *Item) const;
 		int ReduceAmmo(int Amount) override;
 		bool WeaponHasAmmo(int AttackType) const override;
 		int GetWeaponAmmo() const override;
