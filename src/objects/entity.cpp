@@ -242,7 +242,8 @@ void _Entity::UpdateAnimation(double FrameTime, bool PlaySound) {
 		break;
 		case ACTION_MELEE:
 			if(Animation->IsStopped()) {
-				Animation->Play(WalkingAnimation);
+				if(AIType)
+					Animation->Play(WalkingAnimation);
 				Animation->Stop();
 				SetAnimationPlaybackSpeedFactor();
 				Action = ACTION_IDLE;
