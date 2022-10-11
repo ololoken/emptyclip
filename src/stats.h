@@ -97,6 +97,13 @@ struct _Achievement {
 	std::string Text;
 };
 
+struct _Ammo {
+	std::string ID;
+	std::string Name;
+	std::string IconID;
+	int Max;
+};
+
 // Object template
 struct _ObjectTemplate {
 
@@ -137,6 +144,7 @@ class _Stats {
 		void LoadLevels();
 		void LoadSkills();
 		void LoadAmmo();
+		void LoadAmmoTypes();
 		void LoadWeapons();
 		void LoadArmor();
 		void LoadKeys();
@@ -176,6 +184,7 @@ class _Stats {
 		std::unordered_map<std::string, std::string> TransformedText;
 		std::unordered_map<std::string, _ObjectTemplate> Objects;
 		std::unordered_map<std::string, _ItemDrop> ItemDrops;
+		std::unordered_map<std::string, _Ammo> Ammo;
 		std::vector<_Progression> Progressions;
 		std::vector<_Special> Specials;
 		std::vector<_Unique *> Uniques;

@@ -632,7 +632,7 @@ void _HUD::Render(bool FullMap) {
 		if(Player->Ammo.find(AmmoType) == Player->Ammo.end())
 			continue;
 
-		_ObjectTemplate &Ammo = Stats.Objects.at(AmmoType);
+		_Ammo &Ammo = Stats.Ammo.at(AmmoType);
 		const ae::_Texture *Texture = ae::Assets.Textures[Ammo.IconID];
 		if(!Texture)
 			continue;

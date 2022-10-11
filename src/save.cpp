@@ -397,7 +397,9 @@ void _Save::LoadAmmo(_Player *Player, ae::_Buffer &Buffer) {
 	// Read data
 	for(int i = 0; i < AmmoTypeCount; i++) {
 		std::string ID = Buffer.ReadString();
-		Player->Ammo[ID] = Buffer.Read<int>();
+		int Count = Buffer.Read<int>();
+		if(Stats.Ammo.find(ID) != Stats.Ammo.end())
+			Player->Ammo[ID] = Count;
 	}
 }
 

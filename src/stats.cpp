@@ -40,6 +40,7 @@ void _Stats::Init() {
 	LoadText();
 	LoadLevels();
 	LoadSkills();
+	LoadAmmoTypes();
 	LoadAmmo();
 	LoadArmor();
 	LoadKeys();
@@ -83,6 +84,8 @@ void _Stats::Close() {
 	Uniques.clear();
 	UniquesByQuality.clear();
 	Achievements.clear();
+	Ammo.clear();
+	AmmoNames.clear();
 }
 
 // Load strings
@@ -161,7 +164,7 @@ void _Stats::LoadSkills() {
 	Database->CloseQuery();
 }
 
-// Load ammo stats
+// Load ammo pickups
 void _Stats::LoadAmmo() {
 
 	// Run query
@@ -173,15 +176,39 @@ void _Stats::LoadAmmo() {
 		Template.ID = Database->GetString("id");
 		Template.Name = Database->GetString("name");
 		Template.IconID = Database->GetString("icon_id");
+		Template.AmmoID = Database->GetString("type_id");
 		Template.Attributes["amount"].Int = Database->GetInt<int>("amount");
-		Template.Attributes["amount_max"].Int = Database->GetInt<int>("max");
 
 		// Check for loaded textures
 		if(!ae::Assets.Textures[Template.IconID])
 			throw std::runtime_error(std::string(__func__) + " unknown texture '" + Template.IconID + "'");
 
 		Objects.insert(std::make_pair(Template.ID, Template));
-		AmmoNames.push_back(Template.ID);
+	}
+
+	Database->CloseQuery();
+}
+
+// Load types of ammo
+void _Stats::LoadAmmoTypes() {
+
+	// Run query
+	Database->PrepareQuery("SELECT * FROM ammotypes");
+
+	// Get data
+	while(Database->FetchRow()) {
+		_Ammo AmmoType;
+		AmmoType.ID = Database->GetString("id");
+		AmmoType.Name = Database->GetString("name");
+		AmmoType.IconID = Database->GetString("icon_id");
+		AmmoType.Max = Database->GetInt<int>("max");
+
+		// Check for loaded textures
+		if(!ae::Assets.Textures[AmmoType.IconID])
+			throw std::runtime_error(std::string(__func__) + " unknown texture '" + AmmoType.IconID + "'");
+
+		Ammo.insert(std::make_pair(AmmoType.ID, AmmoType));
+		AmmoNames.push_back(AmmoType.ID);
 	}
 
 	Database->CloseQuery();
@@ -253,7 +280,7 @@ void _Stats::LoadWeapons() {
 			throw std::runtime_error(std::string(__func__) + " unknown projectile '" + Template.ProjectileID + "'");
 
 		// Check for ammo
-		if(Template.AmmoID != "" && Objects.find(Template.AmmoID) == Objects.end())
+		if(Template.AmmoID != "" && Ammo.find(Template.AmmoID) == Ammo.end())
 			throw std::runtime_error(std::string(__func__) + " unknown ammo '" + Template.AmmoID + "'");
 
 		// Check for attack sound

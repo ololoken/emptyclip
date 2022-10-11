@@ -388,7 +388,7 @@ void _Player::RecalculateStats() {
 	// Handle max ammo
 	AmmoMax.clear();
 	for(const auto &AmmoType : Stats.AmmoNames) {
-		AmmoMax[AmmoType] = Stats.Objects.at(AmmoType).Attributes["amount_max"].Int * Attributes["max_ammo"].Mult() + 0.5f;
+		AmmoMax[AmmoType] = Stats.Ammo.at(AmmoType).Max * Attributes["max_ammo"].Mult() + 0.5f;
 		if(Ammo.find(AmmoType) != Ammo.end())
 			Ammo[AmmoType] = std::min(Ammo[AmmoType], AmmoMax[AmmoType]);
 	}
@@ -767,10 +767,10 @@ int _Player::AddItem(_Item *Item, int &AmountAdded) {
 			}
 		} break;
 		case _Object::AMMO: {
-			if(Ammo[Item->ID] == AmmoMax[Item->ID])
+			if(Ammo[Item->Template.AmmoID] == AmmoMax[Item->Template.AmmoID])
 				return 2;
 
-			int AmountToMax = AmmoMax[Item->ID] - Ammo[Item->ID];
+			int AmountToMax = AmmoMax[Item->Template.AmmoID] - Ammo[Item->Template.AmmoID];
 
 			// Check for unique ammo
 			if(Item->IsUnique()) {
@@ -783,7 +783,7 @@ int _Player::AddItem(_Item *Item, int &AmountAdded) {
 				AmountAdded = std::min(AmountToMax, PickupAmount);
 			}
 
-			Ammo[Item->ID] += AmountAdded;
+			Ammo[Item->Template.AmmoID] += AmountAdded;
 
 			return 2;
 		}

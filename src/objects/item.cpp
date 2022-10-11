@@ -370,7 +370,7 @@ void _Item::DrawTooltip(const _Player *Player, size_t CompareSlot, int Inventory
 			// Ammo type
 			if(!Template.AmmoID.empty()) {
 				DrawPosition.y += Spacing.y;
-				Buffer << Stats.Objects.at(Template.AmmoID).Name;
+				Buffer << Stats.Ammo.at(Template.AmmoID).Name;
 				AttributeFont->DrawText("Ammo Type", glm::ivec2(DrawPosition - DrawOffset), ae::RIGHT_BASELINE);
 				AttributeFont->DrawText(Buffer.str(), glm::ivec2(DrawPosition + DrawOffset));
 				Buffer.str("");
