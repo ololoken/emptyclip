@@ -248,21 +248,22 @@ void _Player::RecalculateStats() {
 		WeaponDamage[i] = 100;
 
 	std::unordered_map<std::string, _Value> WeaponAttributes[WEAPONATTACK_COUNT];
-	const _ObjectTemplate *WeaponTemplate[WEAPONATTACK_COUNT]{nullptr};
-	for(int i = 0; i < WEAPONATTACK_COUNT; i++)
+	for(int i = 0; i < WEAPONATTACK_COUNT; i++) {
 		Projectiles[i] = nullptr;
+		Weapons[i] = nullptr;
+	}
 
 	// Set default melee to fists
 	Stats.WeaponFists->Level = Level;
 	Stats.WeaponFists->RecalculateStats();
 	WeaponAttributes[WEAPONATTACK_MELEE] = Stats.WeaponFists->Attributes;
-	WeaponTemplate[WEAPONATTACK_MELEE] = &Stats.WeaponFists->Template;
+	Weapons[WEAPONATTACK_MELEE] = &Stats.WeaponFists->Template;
 
 	// See if the player is using a weapon
 	if(HasMainHand()) {
 		WeaponAttributes[WEAPONATTACK_MAIN] = GetMainHand()->Attributes;
-		WeaponTemplate[WEAPONATTACK_MAIN] = &GetMainHand()->Template;
-		MainWeaponType = WeaponTemplate[WEAPONATTACK_MAIN]->Attributes.at("weapon_type").Int;
+		Weapons[WEAPONATTACK_MAIN] = &GetMainHand()->Template;
+		MainWeaponType = Weapons[WEAPONATTACK_MAIN]->Attributes.at("weapon_type").Int;
 		if(!GetMainHand()->Template.ProjectileID.empty()) {
 			Projectiles[WEAPONATTACK_MAIN] = &Stats.Objects.at(GetMainHand()->Template.ProjectileID);
 			ProjectileSpeed[WEAPONATTACK_MAIN] = GetMainHand()->Template.Attributes.at("projectile_speed").Float;
@@ -276,7 +277,7 @@ void _Player::RecalculateStats() {
 	// Get stats of melee weapon
 	if(HasMelee()) {
 		WeaponAttributes[WEAPONATTACK_MELEE] = GetMelee()->Attributes;
-		WeaponTemplate[WEAPONATTACK_MELEE] = &GetMelee()->Template;
+		Weapons[WEAPONATTACK_MELEE] = &GetMelee()->Template;
 		MeleeTexture = ae::Assets.Textures[GetMelee()->Template.MeleeID];
 		if(!GetMelee()->Template.ProjectileID.empty()) {
 			Projectiles[WEAPONATTACK_MELEE] = &Stats.Objects.at(GetMelee()->Template.ProjectileID);
@@ -365,14 +366,14 @@ void _Player::RecalculateStats() {
 		else
 			BurstPeriod[i] = AttackPeriod[i];
 		ExplosionSize[i] = WeaponAttributes[i]["explosion_size"].Float;
-		if(WeaponTemplate[i]) {
-			AttackWidth[i] = WeaponTemplate[i]->Attributes.at("melee_width").Float;
-			MeleeScale[i].x = WeaponTemplate[i]->Attributes.at("scale_x").Float;
-			MeleeScale[i].y = WeaponTemplate[i]->Attributes.at("scale_y").Float;
-			MeleeOffset[i] = WeaponTemplate[i]->Attributes.at("melee_offset").Float;
-			MeleeSwitch[i] = WeaponTemplate[i]->Attributes.at("melee_switch").Int;
-			Push[i] = WeaponTemplate[i]->Attributes.at("push").Float;
-			Force[i] = WeaponTemplate[i]->Attributes.at("force").Float;
+		if(Weapons[i]) {
+			AttackWidth[i] = Weapons[i]->Attributes.at("melee_width").Float;
+			MeleeScale[i].x = Weapons[i]->Attributes.at("scale_x").Float;
+			MeleeScale[i].y = Weapons[i]->Attributes.at("scale_y").Float;
+			MeleeOffset[i] = Weapons[i]->Attributes.at("melee_offset").Float;
+			MeleeSwitch[i] = Weapons[i]->Attributes.at("melee_switch").Int;
+			Push[i] = Weapons[i]->Attributes.at("push").Float;
+			Force[i] = Weapons[i]->Attributes.at("force").Float;
 		}
 	}
 	ReloadDelay = AttackPeriod[WEAPONATTACK_MAIN] / Stats.GetSkillBonusMultiplier(Skills[SKILL_DEXTERITY], SKILL_DEXTERITY);
@@ -779,7 +780,9 @@ int _Player::AddItem(_Item *Item, int &AmountAdded) {
 			else {
 
 				// Add pickup bonus
-				int PickupAmount = std::round(Item->Attributes["amount"].Int * PickupModifier);
+				int PickupAmount = Item->Attributes["amount"].Int;
+				if(Item->Template.Attributes.at("pickup_bonus").Int)
+					PickupAmount = std::round(Item->Attributes["amount"].Int * PickupModifier);
 				AmountAdded = std::min(AmountToMax, PickupAmount);
 			}
 

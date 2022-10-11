@@ -143,6 +143,17 @@ bool _Object::IsUnique() const {
 	return Quality > ITEM_QUALITY_RANGE;
 }
 
+// Create ammo pick up item
+void _Object::CreateAmmoPickup(float SpawnPositionZ) {
+	if(!ProjectileWeaponTemplate || ProjectileWeaponTemplate->PickupID.empty())
+		return;
+
+	_Item *AmmoItem = Stats.CreateItem(ProjectileWeaponTemplate->PickupID, 1, 0, 1, Position, false, 0);
+	AmmoItem->Rotation = Rotation;
+	AmmoItem->PositionZ = SpawnPositionZ;
+	Map->AddObject(AmmoItem, GRID_ITEM);
+}
+
 // Get render bounds of object
 void _Object::GetRenderBounds(glm::vec4 &Bounds) {
 	Bounds[0] = Position.x - Scale * 0.5f;
@@ -297,6 +308,7 @@ void _Object::CheckProjectileCollisions() {
 		WallHit.Normal = glm::normalize(HitPosition - Position);
 		PlayState.GenerateHitEffects(OwnerEntity, HIT_WALL, WallHit, true);
 	*/
+		CreateAmmoPickup(PositionZ);
 		Active = false;
 	}
 	else {
@@ -306,6 +318,7 @@ void _Object::CheckProjectileCollisions() {
 		for(const auto &Hit : Hits) {
 			if(Hit.Object->Type == PROP) {
 				Active = false;
+				CreateAmmoPickup(PositionZ);
 				break;
 			}
 
@@ -334,6 +347,7 @@ void _Object::CheckProjectileCollisions() {
 			Depth--;
 			if(Depth <= 0) {
 				Active = false;
+				CreateAmmoPickup(ITEM_Z);
 				break;
 			}
 		}

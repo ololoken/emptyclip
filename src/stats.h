@@ -115,6 +115,7 @@ struct _ObjectTemplate {
 	std::string IconID;
 	std::string MeleeID;
 	std::string AmmoID;
+	std::string PickupID;
 	std::string ProjectileID;
 	std::string AnimationID;
 	std::string SoundGroupID;

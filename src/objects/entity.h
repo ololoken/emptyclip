@@ -146,6 +146,7 @@ class _Entity : public _Object {
 		int BurstRounds[WEAPONATTACK_COUNT]{0};
 		double BurstPeriod[WEAPONATTACK_COUNT]{0.0};
 		const _ObjectTemplate *Projectiles[WEAPONATTACK_COUNT]{nullptr};
+		const _ObjectTemplate *Weapons[WEAPONATTACK_COUNT]{nullptr};
 		float ProjectileSpeed[WEAPONATTACK_COUNT]{0.0f};
 		float ExplosionSize[WEAPONATTACK_COUNT]{0.0f};
 		float MeleeOffset[WEAPONATTACK_COUNT]{0.0f};

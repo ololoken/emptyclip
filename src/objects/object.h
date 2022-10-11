@@ -139,6 +139,7 @@ class _Object {
 		void SetMaxMods(float QualityFactor, bool RandomStats);
 		bool IsUnique() const;
 
+		void CreateAmmoPickup(float SpawnPositionZ);
 		void CheckProjectileCollisions();
 		void ApplyDamage(const _Hit &Hit);
 		void ApplyForce(const glm::vec2 &ForceDirection, float Amount, bool LimitForce=false);
@@ -158,6 +159,7 @@ class _Object {
 
 		// Projectiles
 		std::unordered_map<_Object *, int> HitObjects;
+		const _ObjectTemplate *ProjectileWeaponTemplate{nullptr};
 		float ProjectilePenetrationDamage{0.0f};
 		float ProjectileExplosionSize{0.0f};
 		float ProjectileForce{0.0f};

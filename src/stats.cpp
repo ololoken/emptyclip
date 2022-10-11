@@ -178,6 +178,7 @@ void _Stats::LoadAmmo() {
 		Template.IconID = Database->GetString("icon_id");
 		Template.AmmoID = Database->GetString("type_id");
 		Template.Attributes["amount"].Int = Database->GetInt<int>("amount");
+		Template.Attributes["pickup_bonus"].Int = Database->GetInt<int>("pickup_bonus");
 
 		// Check for loaded textures
 		if(!ae::Assets.Textures[Template.IconID])
@@ -223,7 +224,6 @@ void _Stats::LoadWeapons() {
 	// Get data
 	while(Database->FetchRow()) {
 		_ObjectTemplate Template(_Object::WEAPON);
-		std::string WeaponParticlesID;
 		Template.ID = Database->GetString("id");
 		Template.Name = Database->GetString("name");
 		Template.IconID = Database->GetString("icon_id");
@@ -231,7 +231,8 @@ void _Stats::LoadWeapons() {
 		Template.SoundGroupID = Database->GetString("soundgroup_id");
 		Template.ProjectileID = Database->GetString("projectile_id");
 		Template.AmmoID = Database->GetString("ammo_id");
-		WeaponParticlesID = Database->GetString("particlegroup_id");
+		Template.PickupID = Database->GetString("pickup_id");
+		std::string WeaponParticlesID = Database->GetString("particlegroup_id");
 
 		Template.Attributes["weapon_type"].Int = Database->GetInt<int>("weapon_type");
 		Template.Attributes["damage"].Float = Database->GetReal("damage");
@@ -278,6 +279,10 @@ void _Stats::LoadWeapons() {
 		// Check for projectile
 		if(Template.ProjectileID != "" && Objects.find(Template.ProjectileID) == Objects.end())
 			throw std::runtime_error(std::string(__func__) + " unknown projectile '" + Template.ProjectileID + "'");
+
+		// Check for pickup item
+		if(Template.PickupID != "" && Objects.find(Template.PickupID) == Objects.end())
+			throw std::runtime_error(std::string(__func__) + " unknown pickup_id '" + Template.PickupID + "'");
 
 		// Check for ammo
 		if(Template.AmmoID != "" && Ammo.find(Template.AmmoID) == Ammo.end())
