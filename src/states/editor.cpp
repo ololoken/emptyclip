@@ -2397,13 +2397,20 @@ void _EditorState::ExecuteSelectPalette(ae::_Element *Button, int ClickType) {
 						SetEventProperties(5, 1, 1, "");
 					break;
 					case EVENT_DOOR:
-					case EVENT_SOUND:
+						SavedText[EDITINPUT_SOUNDID] = "event_door.ogg";
+						SetEventProperties(0, 1, 1, "");
+					break;
 					case EVENT_WALLSWITCH:
+						SavedText[EDITINPUT_SOUNDID] = "event_switch.ogg";
+						SetEventProperties(0, 1, 1, "");
+					break;
+					case EVENT_SOUND:
 					case EVENT_FLOORSWITCH:
 					case EVENT_ENABLE:
 						SetEventProperties(0, 1, 1, "");
 					break;
 					case EVENT_TELEPORT:
+						SavedText[EDITINPUT_SOUNDID] = "event_teleport.ogg";
 						SetEventProperties(0, 0, 1, "smoke0");
 					break;
 					case EVENT_LIGHT:

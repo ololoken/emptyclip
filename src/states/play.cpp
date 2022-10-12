@@ -1607,6 +1607,10 @@ void _PlayState::CheckEvents(const _Entity *Entity) {
 						Event->Active = false;
 				}
 
+				// Play sound
+				if(!Event->SoundID.empty())
+					ae::Audio.PlaySound(ae::Assets.Sounds[Event->SoundID]);
+
 				if(Event->Tiles.size() > 0) {
 					glm::vec2 NewPosition(Event->Tiles[0].Coord.x + 0.5f, Event->Tiles[0].Coord.y + 0.5f);
 					Particles->Create(_ParticleSpawn(GameAssets.GetParticleTemplate(Event->ParticleID), glm::vec2(0), NewPosition, OBJECT_Z, 0));
