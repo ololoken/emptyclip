@@ -442,7 +442,7 @@ void _HUD::Update(double FrameTime, float Radius, double Clock) {
 
 	// Update clock
 	std::ostringstream Buffer;
-	if(ae::Input.ModKeyDown(KMOD_ALT) || ae::Actions.State[Action::GAME_MOREINFO].Value > 0.0f) {
+	if(PlayState.ShowMoreInfo()) {
 		std::time_t CurrentTime = std::time(nullptr);
 		Buffer << std::put_time(std::localtime(&CurrentTime), "%X");
 	}
@@ -507,7 +507,7 @@ void _HUD::Update(double FrameTime, float Radius, double Clock) {
 void _HUD::Render(bool FullMap) {
 
 	// Set labels
-	if(ae::Input.ModKeyDown(KMOD_ALT) || ae::Actions.State[Action::GAME_MOREINFO].Value > 0.0f) {
+	if(PlayState.ShowMoreInfo()) {
 		ae::Assets.Elements["label_hud_offhand_switch_key"]->Text = "";
 		ae::Assets.Elements["label_hud_melee_key"]->Text = "";
 	}
@@ -800,7 +800,7 @@ void _HUD::DrawHUDWeapon(const _Item *Item, ae::_Element *Element, ae::_Element 
 	}
 
 	// Draw more info
-	if(ae::Input.ModKeyDown(KMOD_ALT) || ae::Actions.State[Action::GAME_MOREINFO].Value > 0.0f) {
+	if(PlayState.ShowMoreInfo()) {
 		glm::vec4 Color;
 		Item->GetQualityColor(Color);
 		std::ostringstream Buffer;
@@ -838,13 +838,13 @@ void _HUD::DrawCharacterScreen() {
 
 	// Offense
 	if(Player->HasMainHand()) {
-		if(ae::Input.ModKeyDown(KMOD_ALT) || ae::Actions.State[Action::GAME_MOREINFO].Value > 0.0f)
+		if(PlayState.ShowMoreInfo())
 			Buffer << ae::Round2((Player->MinDamage[WEAPONATTACK_MAIN] + Player->MaxDamage[WEAPONATTACK_MAIN]) * 0.5f) << " avg";
 		else
 			Buffer << Player->MinDamage[WEAPONATTACK_MAIN] << " - " << Player->MaxDamage[WEAPONATTACK_MAIN];
 		DrawAttribute("Damage", Buffer, DrawPosition);
 
-		if(ae::Input.ModKeyDown(KMOD_ALT) || ae::Actions.State[Action::GAME_MOREINFO].Value > 0.0f)
+		if(PlayState.ShowMoreInfo())
 			Buffer << ae::Round2((Player->MinAccuracyNormal + Player->MaxAccuracyNormal) * 0.5f) << " avg";
 		else
 			Buffer << ae::Round2(Player->MinAccuracyNormal) << " - " << ae::Round2(Player->MaxAccuracyNormal);
@@ -865,7 +865,7 @@ void _HUD::DrawCharacterScreen() {
 
 	DrawPosition.y += 10 * ae::_Element::GetUIScale();
 
-	if(ae::Input.ModKeyDown(KMOD_ALT) || ae::Actions.State[Action::GAME_MOREINFO].Value > 0.0f)
+	if(PlayState.ShowMoreInfo())
 		Buffer << ae::Round2((Player->MinDamage[WEAPONATTACK_MELEE] + Player->MaxDamage[WEAPONATTACK_MELEE]) * 0.5f) << " avg";
 	else
 		Buffer << Player->MinDamage[WEAPONATTACK_MELEE] << " - " << Player->MaxDamage[WEAPONATTACK_MELEE];
@@ -977,7 +977,7 @@ void _HUD::DrawInventory() {
 	}
 
 	// Draw more info
-	if(ae::Input.ModKeyDown(KMOD_ALT) || ae::Actions.State[Action::GAME_MOREINFO].Value > 0.0f) {
+	if(PlayState.ShowMoreInfo()) {
 		Elements[ELEMENT_INVENTORY_OVERLAY]->SetActive(true);
 		Elements[ELEMENT_INVENTORY_OVERLAY]->Render();
 		for(size_t i = INVENTORY_MAINHAND; i < INVENTORY_BAGEND; i++) {

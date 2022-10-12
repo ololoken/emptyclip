@@ -894,7 +894,7 @@ void _PlayState::Render(double BlendFactor) {
 	ae::Graphics.SetDepthMask(false);
 
 	// Draw more info
-	if(ae::Input.ModKeyDown(KMOD_ALT) || ae::Actions.State[Action::GAME_MOREINFO].Value > 0.0f) {
+	if(ShowMoreInfo()) {
 
 		// Draw item level/quality
 		glm::vec2 TextPosition;
@@ -1347,6 +1347,11 @@ int _PlayState::PickupObject(_Item *Item, bool UseOnFull) {
 		HUD->ShowTextMessage("INVENTORY FULL", HUD_INVENTORYFULLTIME);
 
 	return AmountAdded;
+}
+
+// Determine if more info should be shown
+bool _PlayState::ShowMoreInfo() {
+	return ae::Input.ModKeyDown(KMOD_ALT) || ae::Actions.State[Action::GAME_MOREINFO].Value > 0.0f;
 }
 
 // Processes the use key to open doors, hit switches, and pickup items
