@@ -129,7 +129,7 @@ class _HUD {
 		// Inventory
 		_Item *CursorItem{nullptr};
 		_Item *CursorOverItem{nullptr};
-		bool CursorOverWorld{false};
+		bool CursorUseWorldPosition{false};
 		bool InventoryOpen{false};
 
 		// Stats

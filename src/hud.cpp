@@ -190,7 +190,7 @@ void _HUD::SetInventoryOpen(bool Value) {
 		DragStart = nullptr;
 		CursorItem = nullptr;
 		CursorOverItem = nullptr;
-		CursorOverWorld = false;
+		CursorUseWorldPosition = false;
 	}
 
 	Menu.ShowDefaultCursor(InventoryOpen);
@@ -465,7 +465,7 @@ void _HUD::Update(double FrameTime, float Radius, double Clock) {
 		HitElement = Elements[ELEMENT_INVENTORY]->HitElement;
 		if(HitElement && HitElement->Index >= 0) {
 			CursorOverItem = Player->Inventory[HitElement->Index];
-			CursorOverWorld = false;
+			CursorUseWorldPosition = false;
 			CursorInventorySlot = HitElement->Index;
 		}
 
@@ -705,7 +705,7 @@ void _HUD::Render(bool FullMap) {
 
 		// Draw cursor over item
 		glm::vec2 CursorOverPosition;
-		if(CursorOverWorld)
+		if(CursorUseWorldPosition)
 			Camera->ConvertWorldToScreen(CursorOverItem->Position, CursorOverPosition);
 		else
 			CursorOverPosition = ae::Input.GetMouse();

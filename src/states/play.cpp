@@ -488,7 +488,7 @@ void _PlayState::Update(double FrameTime) {
 	if(IsPaused()) {
 		Menu.ShowDefaultCursor(true);
 		HUD->CursorOverItem = nullptr;
-		HUD->CursorOverWorld = false;
+		HUD->CursorUseWorldPosition = false;
 
 		return;
 	}
@@ -648,7 +648,7 @@ void _PlayState::Update(double FrameTime) {
 
 	// Get item at cursor
 	PreviousCursorItem = CursorItem;
-	CursorItem = (_Item *)(Map->GetCloseObject(WorldCursor, 0.05f, GRID_ITEM));
+	CursorItem = Map->GetCloseItem(WorldCursor, 0.05f, ShowMoreInfo());
 	if(CursorItem && CursorItem == PreviousCursorItem)
 		CursorItemTimer += FrameTime;
 	else
@@ -662,11 +662,11 @@ void _PlayState::Update(double FrameTime) {
 		ClosestItemTimer = 0.0;
 
 	// Show item tooltip when standing over item
-	if(!HUD->InventoryOpen && !Player->Aiming && ClosestItem && ClosestItem == LastClosestItem && ClosestItem->Type != _Object::AMMO) {
+	if(!HUD->InventoryOpen && !Player->Aiming && ClosestItem && ClosestItem == LastClosestItem && !ClosestItem->IsAutoPickup()) {
 		ClosestItemTimer += FrameTime;
 		if(!HUD->CursorOverItem && ClosestItemTimer >= HUD_STANDOVER_TIME) {
-			HUD->CursorOverItem = (_Item *)ClosestItem;
-			HUD->CursorOverWorld = true;
+			HUD->CursorOverItem = ClosestItem;
+			HUD->CursorUseWorldPosition = true;
 		}
 	}
 	else
@@ -675,9 +675,9 @@ void _PlayState::Update(double FrameTime) {
 	LastClosestItem = ClosestItem;
 
 	// Set cursor item
-	if(!ae::Graphics.Element->HitElement && CursorItem && (!HUD->CursorOverItem || ClosestItem == HUD->CursorOverItem) && (HUD->InventoryOpen || CursorItemTimer > HUD_CURSOR_ITEM_WAIT || ClosestItemTimer >= HUD_STANDOVER_TIME)) {
+	if(!ae::Graphics.Element->HitElement && CursorItem && !(ShowMoreInfo() && CursorItem->IsHideable()) && (!HUD->CursorOverItem || ClosestItem == HUD->CursorOverItem) && (HUD->InventoryOpen || CursorItemTimer > HUD_CURSOR_ITEM_WAIT || ClosestItemTimer >= HUD_STANDOVER_TIME)) {
 		HUD->CursorOverItem = CursorItem;
-		HUD->CursorOverWorld = false;
+		HUD->CursorUseWorldPosition = false;
 	}
 
 	ae::Audio.SetPosition(glm::vec3(Player->Position.x, 10, Player->Position.y));
@@ -1191,11 +1191,14 @@ void _PlayState::ResolveAttack(_Entity *Attacker, int GridType) {
 
 // Handle pickup
 void _PlayState::HandlePickup() {
-	ClosestItem = nullptr;
 
 	// Get nearby items
 	std::unordered_map<_Object *, int> NearbyItems;
-	Map->GetCloseObjects(Player->Position, Player->Radius, GRID_ITEM, NearbyItems, &ClosestItem);
+	_Object *ClosestObject = nullptr;
+	Map->GetCloseObjects(Player->Position, Player->Radius, GRID_ITEM, NearbyItems, &ClosestObject);
+
+	// Save closest item pointer
+	ClosestItem = (_Item *)ClosestObject;
 	for(auto &Iterator : NearbyItems) {
 		_Item *NearbyItem = (_Item *)Iterator.first;
 		if(!NearbyItem->Visible)
@@ -1292,7 +1295,7 @@ void _PlayState::EndLevel() {
 
 // Places an item into the player's inventory and return amount added
 int _PlayState::PickupObject(_Item *Item, bool UseOnFull) {
-	if(!Item || !Item->Visible)
+	if(!Item || !Item->Visible || (UseOnFull && Item->IsHideable() && ShowMoreInfo()))
 		return 0;
 
 	// Attempt to add item

@@ -122,8 +122,8 @@ class _PlayState : public ae::_State {
 		std::unordered_map<_Item *, int> IgnoreItems;
 		_Item *CursorItem{nullptr};
 		_Item *PreviousCursorItem{nullptr};
-		_Object *ClosestItem{nullptr};
-		_Object *LastClosestItem{nullptr};
+		_Item *ClosestItem{nullptr};
+		_Item *LastClosestItem{nullptr};
 		double ClosestItemTimer{0.0};
 		std::map<std::string, int> WeaponsUsed;
 

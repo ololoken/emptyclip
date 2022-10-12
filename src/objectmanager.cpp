@@ -17,6 +17,8 @@
 *******************************************************************************/
 #include <objectmanager.h>
 #include <objects/object.h>
+#include <objects/item.h>
+#include <states/play.h>
 #include <ae/camera.h>
 #include <ae/assets.h>
 #include <ae/program.h>
@@ -104,8 +106,13 @@ void _ObjectManager::Update(double FrameTime, _Map *Map) {
 
 			// Add to render list
 			if(Map->Camera->IsAABBInView(Bounds)) {
-				if(Object->Template.IsItem())
-					RenderList[RENDER_ITEMS].push_back(Object);
+				if(Object->Template.IsItem()) {
+					_Item *Item = (_Item *)Object;
+
+					// Hide pickups when more info is shown
+					if(!(Item->IsHideable() && PlayState.ShowMoreInfo()))
+						RenderList[RENDER_ITEMS].push_back(Object);
+				}
 				else if(Object->Template.Type == _Object::PROP)
 					RenderList[RENDER_PROP].push_back(Object);
 				else if(Object->Template.Type == _Object::PROJECTILE) {

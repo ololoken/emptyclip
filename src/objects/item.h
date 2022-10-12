@@ -92,6 +92,7 @@ class _Item : public _Object {
 		bool CanLevel() const { return Type == _Object::WEAPON || Type == _Object::ARMOR || Type == _Object::MOD; }
 		bool CanUnique() const { return Type == _Object::WEAPON || Type == _Object::ARMOR || Type == _Object::MOD || Type == _Object::AMMO || Type == _Object::MEDKIT; }
 		bool IsAutoPickup() const { return Type == _Object::AMMO || Type == _Object::KEY || Type == _Object::MEDKIT; }
+		bool IsHideable() const { return Type == _Object::AMMO || Type == _Object::MEDKIT; }
 
 		void SetAmmo(int Value);
 		bool IsMelee() const;

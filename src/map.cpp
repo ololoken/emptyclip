@@ -742,8 +742,8 @@ bool _Map::CheckAABBCollision(const glm::vec2 &Position, float Radius, const flo
 	return Touching;
 }
 
-// Get the first object that collides with a circle
-_Object *_Map::GetCloseObject(const glm::vec2 &Position, float Radius, int GridType) const {
+// Get the first visible item that collides with a circle
+_Item *_Map::GetCloseItem(const glm::vec2 &Position, float Radius, bool SkipHideable) const {
 
 	// Get the object's bounding rectangle
 	_TileBounds TileBounds;
@@ -752,13 +752,15 @@ _Object *_Map::GetCloseObject(const glm::vec2 &Position, float Radius, int GridT
 	// Iterate through tiles covered by the bounds
 	for(int i = TileBounds.Start.x; i <= TileBounds.End.x; i++) {
 		for(int j = TileBounds.Start.y; j <= TileBounds.End.y; j++) {
-			for(auto Iterator : Data[i][j].Objects[GridType]) {
-				_Object *Object = Iterator.first;
+			for(auto Iterator : Data[i][j].Objects[GRID_ITEM]) {
+				_Item *Item = (_Item *)Iterator.first;
+				if(SkipHideable && Item->IsHideable())
+					continue;
 
 				// Check circle intersection
-				float RadiiSum = Object->Radius + Radius;
-				if(glm::distance2(Object->Position, Position) < RadiiSum * RadiiSum)
-					return Object;
+				float RadiiSum = Item->Radius + Radius;
+				if(glm::distance2(Item->Position, Position) < RadiiSum * RadiiSum)
+					return Item;
 			}
 		}
 	}
