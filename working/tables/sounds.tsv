@@ -22,8 +22,10 @@ equip_gun0.ogg	0.4	1
 equip_melee0.ogg	0.25	1
 event_close.ogg	1	3
 event_crash0.ogg	1	1
+event_open.ogg	1	3
 event_platform0.ogg	0.8	3
 event_rumble0.ogg	1	1
+event_shrub.ogg	0.65	1
 game_click0.ogg	0.4	1
 game_flashlight0.ogg	1	1
 game_lava0.ogg	1	3

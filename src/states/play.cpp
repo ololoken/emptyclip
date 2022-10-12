@@ -1409,6 +1409,10 @@ bool _PlayState::ActivateEvent() {
 		// Change map
 		Map->ChangeMapState(Event);
 
+		// Play sound
+		if(!Event->SoundID.empty())
+			ae::Audio.PlaySound(ae::Assets.Sounds[Event->SoundID]);
+
 		// Decrement level
 		if(Event->Level > 0) {
 			Event->Decrement();
@@ -1686,8 +1690,10 @@ void _PlayState::UpdateEvents(double FrameTime) {
 			} break;
 			case EVENT_SOUND: {
 				const std::vector<_EventTile> &Tiles = Event->Tiles;
-				if(Tiles.size())
-					ae::Audio.PlaySound(ae::Assets.Sounds[Event->ItemID], ae::_SoundSettings(glm::vec3(Tiles.front().Coord.x, 0, Tiles.front().Coord.y), 1.0f, AUDIO_REFERENCE_DISTANCE, AUDIO_MAX_DISTANCE, AUDIO_ROLL_OFF));
+				if(Tiles.size()) {
+					for(size_t i = 0; i < Tiles.size(); i++)
+						ae::Audio.PlaySound(ae::Assets.Sounds[Event->ItemID], ae::_SoundSettings(glm::vec3(Tiles[i].Coord.x, 0, Tiles[i].Coord.y), 1.0f, AUDIO_REFERENCE_DISTANCE, AUDIO_MAX_DISTANCE, AUDIO_ROLL_OFF));
+				}
 				else
 					ae::Audio.PlaySound(ae::Assets.Sounds[Event->ItemID]);
 				Decrement = true;
