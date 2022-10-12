@@ -1,7 +1,7 @@
 id	name	animation_id	mesh_id	color_id	projectile_id	particlegroup_id	soundgroup_id	itemdrop_id	drop_count	health	health_level	ai_type	ai_attacks	view_range	xp	xp_level	freepathing	move_speed	move_speed_level	radius	scale	accuracy	attack_range	damage	damage_level	damage_spread	attack_period	weapon_type	attack_movespeed	poison	projectile_speed	mass	force
-crate_ammo0	Ammo Crate I	crate_ammo0	meshes/box.mesh			crate	crate	crate_ammo0	5	25	25	0	0	0	10	5	0	0	0	0.48	1	0	0	0	0	0	0	0	0	0	0	0	0
-crate_ammo1	Ammo Crate II	crate_ammo1	meshes/box.mesh			crate	crate	crate_ammo1	5	25	25	0	0	0	10	5	0	0	0	0.48	1	0	0	0	0	0	0	0	0	0	0	0	0
-crate_ammo2	Ammo Crate III	crate_ammo2	meshes/box.mesh			crate	crate	crate_ammo2	5	25	25	0	0	0	10	5	0	0	0	0.48	1	0	0	0	0	0	0	0	0	0	0	0	0
+crate_ammo0	Ammo Crate I	crate_ammo0	meshes/box.mesh			crate	crate	crate_ammo0	3	25	25	0	0	0	10	5	0	0	0	0.48	1	0	0	0	0	0	0	0	0	0	0	0	0
+crate_ammo1	Ammo Crate II	crate_ammo1	meshes/box.mesh			crate	crate	crate_ammo1	3	25	25	0	0	0	10	5	0	0	0	0.48	1	0	0	0	0	0	0	0	0	0	0	0	0
+crate_ammo2	Ammo Crate III	crate_ammo2	meshes/box.mesh			crate	crate	crate_ammo2	3	25	25	0	0	0	10	5	0	0	0	0.48	1	0	0	0	0	0	0	0	0	0	0	0	0
 crate_health0	Health Crate	crate_health0	meshes/box.mesh			crate	crate	crate_health0	2	25	25	0	0	0	10	5	0	0	0	0.48	1	0	0	0	0	0	0	0	0	0	0	0	0
 crate_gun0	Gun Crate I	crate_gun0	meshes/box.mesh			crate	crate	crate_gun0	1	25	25	0	0	0	50	25	0	0	0	0.48	1	0	0	0	0	0	0	0	0	0	0	0	0
 crate_gun1	Gun Crate II	crate_gun1	meshes/box.mesh			crate	crate	crate_gun1	1	25	25	0	0	0	50	25	0	0	0	0.48	1	0	0	0	0	0	0	0	0	0	0	0	0

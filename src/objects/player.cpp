@@ -727,8 +727,8 @@ int _Player::SpentSkillPoints() const {
 	return Sum;
 }
 
-// Adds an item to the player's possession, returns 0 on full, return 1 on remove, return 2 on delete
-int _Player::AddItem(_Item *Item, int &AmountAdded) {
+// Adds an item to the player's possession
+int _Player::AddItem(_Item *Item, int &AmountAdded, bool UseOnFull) {
 
 	switch(Item->Type) {
 		case _Object::WEAPON: {
@@ -737,7 +737,7 @@ int _Player::AddItem(_Item *Item, int &AmountAdded) {
 					Inventory[INVENTORY_MELEE] = Item;
 					RecalculateStats();
 					ResetWeaponAnimation();
-					return 1;
+					return ADD_REMOVE;
 				}
 				else
 					return AddInventory(Item);
@@ -747,11 +747,11 @@ int _Player::AddItem(_Item *Item, int &AmountAdded) {
 					Inventory[INVENTORY_MAINHAND] = Item;
 					RecalculateStats();
 					ResetWeaponAnimation();
-					return 1;
+					return ADD_REMOVE;
 				}
 				else if(!HasOffHand() && Config.AutoEquip) {
 					Inventory[INVENTORY_OFFHAND] = Item;
-					return 1;
+					return ADD_REMOVE;
 				}
 				else
 					return AddInventory(Item);
@@ -761,7 +761,7 @@ int _Player::AddItem(_Item *Item, int &AmountAdded) {
 			if(!HasArmor() && Config.AutoEquip) {
 				Inventory[INVENTORY_ARMOR] = Item;
 				RecalculateStats();
-				return 1;
+				return ADD_REMOVE;
 			}
 			else {
 				return AddInventory(Item);
@@ -769,7 +769,7 @@ int _Player::AddItem(_Item *Item, int &AmountAdded) {
 		} break;
 		case _Object::AMMO: {
 			if(Ammo[Item->Template.AmmoID] == AmmoMax[Item->Template.AmmoID])
-				return 2;
+				return (UseOnFull ? ADD_DELETE : ADD_QUIETFULL);
 
 			int AmountToMax = AmmoMax[Item->Template.AmmoID] - Ammo[Item->Template.AmmoID];
 
@@ -781,11 +781,11 @@ int _Player::AddItem(_Item *Item, int &AmountAdded) {
 
 			Ammo[Item->Template.AmmoID] += AmountAdded;
 
-			return 2;
+			return ADD_DELETE;
 		}
 		case _Object::MEDKIT: {
 			if(Health == MaxHealth)
-				return 2;
+				return (UseOnFull ? ADD_DELETE : ADD_QUIETFULL);
 
 			int AmountToMax = MaxHealth - Health;
 			int HealAmount = Item->IsUnique() ? AmountToMax : (int)(GAME_MEDKIT_HEALTH_PERCENT * HealModifier) * 0.01f * MaxHealth;
@@ -794,19 +794,19 @@ int _Player::AddItem(_Item *Item, int &AmountAdded) {
 
 			AmountAdded = std::min(AmountToMax, HealAmount);
 
-			return 2;
+			return ADD_DELETE;
 		} break;
 		case _Object::KEY: {
 			Keys[Item->ID] = 1;
 			AmountAdded = 1;
-			return 2;
+			return ADD_DELETE;
 		}
 		default:
 			return AddInventory(Item);
 		break;
 	}
 
-	return 0;
+	return ADD_FULL;
 }
 
 // Drop an item from the player's inventory
@@ -971,18 +971,15 @@ int _Player::CombineItems(_Item *FromItem, _Item *ToItem) {
 }
 
 // Add an item to the inventory
-// return 0 on inventory full
-// return 1 on added item
-// return 2 on added item and combined
 int _Player::AddInventory(_Item *Item) {
 	if(!Item)
-		return 0;
+		return ADD_FULL;
 
 	// Search for an existing item or empty slot
 	int EmptySlot = -1;
 	for(int i = INVENTORY_BAGSTART; i < INVENTORY_BAGEND; i++) {
 		if(CombineItems(Item, Inventory[i]) == 2)
-			return 2;
+			return ADD_DELETE;
 
 		if(Inventory[i] == nullptr && EmptySlot == -1)
 			EmptySlot = i;
@@ -991,10 +988,10 @@ int _Player::AddInventory(_Item *Item) {
 	// Add item to empty slot
 	if(EmptySlot != -1) {
 		Inventory[EmptySlot] = Item;
-		return 1;
+		return ADD_REMOVE;
 	}
 
-	return 0;
+	return ADD_FULL;
 }
 
 // Add a mod to a weapon

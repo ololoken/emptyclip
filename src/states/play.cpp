@@ -1203,7 +1203,7 @@ void _PlayState::HandlePickup() {
 
 		// Automatically pickup ammo/health
 		if(NearbyItem->IsAutoPickup()) {
-			if(!PickupObject(NearbyItem)) {
+			if(!PickupObject(NearbyItem, Player->UseRequested)) {
 				IgnoreItems[NearbyItem] = 1;
 				continue;
 			}
@@ -1290,14 +1290,14 @@ void _PlayState::EndLevel() {
 	Framework.ChangeState(&NullState);
 }
 
-// Places an item into the player's inventory
-int _PlayState::PickupObject(_Item *Item) {
+// Places an item into the player's inventory and return amount added
+int _PlayState::PickupObject(_Item *Item, bool UseOnFull) {
 	if(!Item || !Item->Visible)
 		return 0;
 
 	// Attempt to add item
 	int AmountAdded = 0;
-	int AddResult = Player->AddItem(Item, AmountAdded);
+	int AddResult = Player->AddItem(Item, AmountAdded, UseOnFull);
 	if(AddResult) {
 		if(Item == ClosestItem)
 			ClosestItem = nullptr;
@@ -1330,12 +1330,13 @@ int _PlayState::PickupObject(_Item *Item) {
 		}
 
 		// Remove item from map
-		Map->RemoveObjectFromGrid(Item, GRID_ITEM);
+		if(AddResult != ADD_QUIETFULL)
+			Map->RemoveObjectFromGrid(Item, GRID_ITEM);
 
 		// Handle deletion
-		if(AddResult == 1)
+		if(AddResult == ADD_REMOVE)
 			Map->ObjectManager->RemoveObject(Item);
-		else if(AddResult == 2) {
+		else if(AddResult == ADD_DELETE) {
 			Item->Active = false;
 			CursorItemTimer = 0;
 		}
@@ -1354,7 +1355,7 @@ void _PlayState::UseObject(_Item *Item) {
 		return;
 
 	// Pick up an item if available
-	PickupObject(Item);
+	PickupObject(Item, true);
 }
 
 // Open door or handle switches, return true on success

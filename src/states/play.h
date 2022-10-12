@@ -68,7 +68,7 @@ class _PlayState : public ae::_State {
 		void GenerateExplosion(const _ParticleTemplate *ParticleTemplate, const glm::vec2 &Position, const glm::vec2 &Scale);
 		void GenerateProjectileEffects(const _ParticleTemplate *ParticleTemplate, const glm::vec2 &Position);
 		void CreateItemDrop(const _Entity *Entity, float DropRate);
-		int PickupObject(_Item *Item);
+		int PickupObject(_Item *Item, bool UseOnFull);
 
 		// Parameters
 		std::string Level;

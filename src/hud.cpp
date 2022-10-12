@@ -263,7 +263,7 @@ void _HUD::MouseEvent(const ae::_MouseEvent &MouseEvent) {
 							CursorItem->Visible = false;
 						}
 						else
-							PlayState.PickupObject(CursorOverItem);
+							PlayState.PickupObject(CursorOverItem, true);
 					}
 				}
 			}
@@ -394,7 +394,7 @@ void _HUD::MouseEvent(const ae::_MouseEvent &MouseEvent) {
 							Slot = INVENTORY_ARMOR;
 						break;
 						default:
-							PlayState.PickupObject(CursorOverItem);
+							PlayState.PickupObject(CursorOverItem, true);
 						break;
 					}
 

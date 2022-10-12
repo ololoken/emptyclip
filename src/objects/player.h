@@ -46,6 +46,13 @@ enum InventoryTypes {
 	INVENTORY_SIZE = INVENTORY_BAGEND,
 };
 
+enum AddResultTypes {
+	ADD_FULL,
+	ADD_QUIETFULL,
+	ADD_REMOVE,
+	ADD_DELETE,
+};
+
 // Classes
 class _Player : public _Entity {
 
@@ -83,7 +90,7 @@ class _Player : public _Entity {
 		void Respawn();
 		void WarpPosition(const glm::vec2 &NewPosition);
 
-		int AddItem(_Item *Item, int &AmountAdded);
+		int AddItem(_Item *Item, int &AmountAdded, bool UseOnFull);
 		void DropItem(int Slot, const glm::vec2 &DropPosition=glm::vec2(-1.0f));
 		void SortInventory();
 		void SwapInventory(int SwapFrom, int SwapTo);
