@@ -652,7 +652,7 @@ void _PlayState::Update(double FrameTime) {
 
 	// Get item at cursor
 	PreviousCursorItem = CursorItem;
-	CursorItem = Map->GetCloseItem(WorldCursor, 0.05f, ShowMoreInfo());
+	CursorItem = Map->GetClosestItem(WorldCursor, ShowMoreInfo());
 	if(CursorItem && CursorItem == PreviousCursorItem)
 		CursorItemTimer += FrameTime;
 	else
