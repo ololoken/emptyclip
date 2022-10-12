@@ -916,15 +916,18 @@ void _PlayState::Render(double BlendFactor) {
 				Buffer << "+" << Item->Attributes.at("bonus").Int;
 				if(Item->Template.Attributes.at("percent_sign").Int)
 					Buffer << "%";
-				ae::Assets.Fonts["hud_tiny"]->DrawText(Buffer.str(), glm::ivec2(TextPosition + glm::vec2(0, 6) * ae::_Element::GetUIScale()), ae::CENTER_BASELINE, COLOR_WHITE);
+				ae::Assets.Fonts["hud_tiny"]->DrawText(Buffer.str(), glm::ivec2(TextPosition + glm::vec2(0, 6) * ae::_Element::GetUIScale()), ae::CENTER_BASELINE, COLOR_FAINT_WHITE);
 				Buffer.str("");
 			}
 			else {
+
+				// Get colors
 				Item->GetQualityColor(Color);
+				Color.a = 0.7f;
 
 				// Draw item level
 				Buffer << Item->Level;
-				ae::Assets.Fonts["hud_tiny"]->DrawText(Buffer.str(), glm::ivec2(TextPosition + glm::vec2(0, -2) * ae::_Element::GetUIScale()), ae::CENTER_BASELINE, COLOR_GOLD);
+				ae::Assets.Fonts["hud_tiny"]->DrawText(Buffer.str(), glm::ivec2(TextPosition + glm::vec2(0, -2) * ae::_Element::GetUIScale()), ae::CENTER_BASELINE, COLOR_FAINT_GOLD);
 				Buffer.str("");
 
 				// Draw item quality
