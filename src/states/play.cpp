@@ -543,6 +543,10 @@ void _PlayState::Update(double FrameTime) {
 			// Aim
 			Player->SetAiming(ae::Actions.State[Action::GAME_AIM].Value > 0.0f && !Player->Reloading && !Player->SwitchingWeapons);
 			Player->SetSprinting(ae::Actions.State[Action::GAME_SPRINT].Value > 0.0f);
+
+			// Don't show tooltips while firing
+			if(Player->AttackRequested)
+				CursorItemTimer = 0.0;
 		}
 
 		Player->UseRequested = ae::Actions.State[Action::GAME_USE].Value;
@@ -652,7 +656,7 @@ void _PlayState::Update(double FrameTime) {
 	if(CursorItem && CursorItem == PreviousCursorItem)
 		CursorItemTimer += FrameTime;
 	else
-		CursorItemTimer = 0;
+		CursorItemTimer = 0.0;
 
 	// Update the HUD
 	HUD->Update(FrameTime, Player->GetCrosshairRadius(WorldCursor), Player->Clock);
