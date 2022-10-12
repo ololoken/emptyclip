@@ -38,6 +38,7 @@ struct _ParticleTemplate;
 struct _EventTile;
 struct _Hit;
 namespace ae {
+	class _AudioSource;
 	class _Framebuffer;
 	class _Camera;
 }
@@ -138,6 +139,9 @@ class _PlayState : public ae::_State {
 		ae::_Camera *Camera{nullptr};
 		glm::vec2 PreviousWorldCursor{0.0f};
 		glm::vec2 WorldCursor{0.0f};
+
+		// Sounds
+		const ae::_AudioSource *LockedSound{nullptr};
 };
 
 extern _PlayState PlayState;

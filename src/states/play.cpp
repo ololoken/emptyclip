@@ -146,6 +146,7 @@ void _PlayState::Init() {
 	Timer = 0;
 	PreviousTouchingEndEvent = nullptr;
 	TouchingEndEvent = nullptr;
+	LockedSound = nullptr;
 }
 
 // Close map
@@ -1398,6 +1399,9 @@ bool _PlayState::ActivateEvent() {
 		if(!Event->ItemID.empty()) {
 			if(Player->Keys.find(Event->ItemID) == Player->Keys.end()) {
 				HUD->ShowMessageBox("You need the " + Stats.Objects.at(Event->ItemID).Name, HUD_KEY_MESSAGETIME, UI_MESSAGE_SMALL_SIZE);
+				if(!LockedSound || (LockedSound && !LockedSound->IsPlaying()))
+					LockedSound = ae::Audio.PlaySound(ae::Assets.Sounds["game_locked.ogg"]);
+				Player->UseTimer = 0.0;
 				return Success;
 			}
 
