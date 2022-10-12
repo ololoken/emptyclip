@@ -105,12 +105,15 @@ void _ObjectManager::Update(double FrameTime, _Map *Map) {
 			}
 
 			// Add to render list
+			bool DrawLight = true;
 			if(Map->Camera->IsAABBInView(Bounds)) {
 				if(Object->Template.IsItem()) {
 					_Item *Item = (_Item *)Object;
 
 					// Hide pickups when more info is shown
-					if(!(Item->IsHideable() && PlayState.ShowMoreInfo()))
+					if(Item->IsHideable() && PlayState.ShowMoreInfo())
+						DrawLight = false;
+					else
 						RenderList[RENDER_ITEMS].push_back(Object);
 				}
 				else if(Object->Template.Type == _Object::PROP)
@@ -121,7 +124,7 @@ void _ObjectManager::Update(double FrameTime, _Map *Map) {
 			}
 
 			// Get light bounds
-			if(Object->LightTexture) {
+			if(Object->LightTexture && DrawLight) {
 				Object->GetLightBounds(Bounds);
 				if(Map->Camera->IsAABBInView(Bounds))
 					RenderList[RENDER_LIGHTS].push_back(Object);
