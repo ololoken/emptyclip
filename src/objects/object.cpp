@@ -299,7 +299,7 @@ void _Object::CheckProjectileCollisions() {
 
 	// Check wall hits
 	glm::vec2 HitPosition;
-	if(Map->ResolveTileCollisions(Position, Radius, _Tile::BULLET, HitPosition)) {
+	if(Map->ResolveTileCollisions(Position, Radius, _Tile::BULLET, Bounces, HitPosition, Velocity)) {
 	/*
 		_Hit &Hit = Map->CollisionHits.front();
 		_Entity *OwnerEntity = (_Entity *)Owner;
@@ -308,9 +308,14 @@ void _Object::CheckProjectileCollisions() {
 		WallHit.Normal = glm::normalize(HitPosition - Position);
 		PlayState.GenerateHitEffects(OwnerEntity, HIT_WALL, WallHit, true);
 	*/
-		CreateAmmoPickup(PositionZ);
-		Active = false;
 		Position = HitPosition;
+
+		if(!Bounces) {
+			CreateAmmoPickup(PositionZ);
+			Active = false;
+		}
+		else
+			Bounces--;
 	}
 	else {
 

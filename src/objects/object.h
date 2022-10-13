@@ -167,6 +167,7 @@ class _Object {
 		int ProjectileMaxDamage{0};
 		int ProjectileCritChance{0};
 		int ProjectileCritDamage{0};
+		int Bounces{0};
 		int Depth{0};
 
 		// Character

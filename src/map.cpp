@@ -609,7 +609,8 @@ void _Map::RemoveObjectFromGrid(_Object *Object, int Type) {
 }
 
 // Check collision with tiles and resolve
-bool _Map::ResolveTileCollisions(const glm::vec2 &TargetPosition, float Radius, int CollisionFlag, glm::vec2 &NewPosition) {
+bool _Map::ResolveTileCollisions(const glm::vec2 &TargetPosition, float Radius, int CollisionFlag, int &Bounces, glm::vec2 &NewPosition, glm::vec2 &Velocity) {
+	CollisionHits.clear();
 
 	NewPosition = TargetPosition;
 	float Left = NewPosition.x - Radius;
@@ -636,36 +637,99 @@ bool _Map::ResolveTileCollisions(const glm::vec2 &TargetPosition, float Radius, 
 		Touching = true;
 	}
 
+	// Stop bouncing when touching map edge
+	if(Touching)
+		Bounces = 0;
+
 	// Check tiles
 	int LeftTile = (int)Left;
 	int RightTile = (int)Right;
 	int TopTile = (int)Top;
 	int BottomTile = (int)Bottom;
 	bool AxisAlignedPush = false;
-	CollisionHits.clear();
+
+	// Determine if multiple AABBs being tested can be combined into one larger AABB
+	int LastCollisionCoord[2] = { -1, -1 };
+	bool Changed[2] = { false, false };
+	float LargerAABB[4];
 	for(int i = LeftTile; i <= RightTile; i++) {
 		for(int j = TopTile; j <= BottomTile; j++) {
 			if(!(Data[i][j].Collision & CollisionFlag))
 				continue;
 
-			float AABB[4] = { (float)i, (float)j, i + 1.0f, j + 1.0f };
-			_Hit Hit;
-			Hit.AxisAlignedPush = false;
-			if(CheckAABBCollision(NewPosition, Radius, AABB, true, Hit)) {
-				Touching = true;
-				CollisionHits.push_back(Hit);
+			if(LastCollisionCoord[0] == -1) {
+				LastCollisionCoord[0] = i;
+				LargerAABB[0] = i;
+				LargerAABB[2] = i + 1.0f;
+			}
+			else if(LastCollisionCoord[0] != i) {
+				Changed[0] = true;
+				LargerAABB[2] = i + 1.0f;
+			}
 
-				// Flag at least one axis aligned push
-				if(Hit.AxisAlignedPush)
-					AxisAlignedPush = true;
+			if(LastCollisionCoord[1] == -1) {
+				LastCollisionCoord[1] = j;
+				LargerAABB[1] = j;
+				LargerAABB[3] = j + 1.0f;
+			}
+			else if(LastCollisionCoord[1] != j) {
+				Changed[1] = true;
+				LargerAABB[3] = j + 1.0f;
+			}
+		}
+	}
+
+	// Use larger AABB if only one axis has changed
+	if(Changed[0] ^ Changed[1]) {
+		_Hit Hit;
+		Hit.AxisAlignedPush = false;
+		if(CheckAABBCollision(NewPosition, Radius, LargerAABB, true, Hit)) {
+			Touching = true;
+			CollisionHits.push_back(Hit);
+		}
+	}
+	else {
+		for(int i = LeftTile; i <= RightTile; i++) {
+			for(int j = TopTile; j <= BottomTile; j++) {
+				if(!(Data[i][j].Collision & CollisionFlag))
+					continue;
+
+				float AABB[4] = { (float)i, (float)j, i + 1.0f, j + 1.0f };
+				_Hit Hit;
+				Hit.AxisAlignedPush = false;
+				if(CheckAABBCollision(NewPosition, Radius, AABB, true, Hit)) {
+					Touching = true;
+					CollisionHits.push_back(Hit);
+
+					// Flag at least one axis aligned push
+					if(Hit.AxisAlignedPush)
+						AxisAlignedPush = true;
+				}
 			}
 		}
 	}
 
 	// Resolve collision
 	for(const auto &Hit : CollisionHits) {
-		if(!(AxisAlignedPush && Hit.Push.x != 0 && Hit.Push.y != 0))
-			NewPosition += Hit.Push;
+
+		// Skip diagonal pushes if at least one axis aligned push exists
+		if(AxisAlignedPush && Hit.Push.x != 0.0f && Hit.Push.y != 0.0f)
+			continue;
+
+		// Update position
+		NewPosition += Hit.Push;
+
+		// Handle bouncing
+		if(!Bounces)
+			continue;
+
+		// Get dot product of velocity and normal
+		float VelocityDotNormal = glm::dot(Velocity, Hit.Normal);
+		if(VelocityDotNormal > 0)
+			continue;
+
+		// Reflect velocity vector
+		Velocity -= 2.0f * VelocityDotNormal * Hit.Normal;
 	}
 
 	return Touching;
