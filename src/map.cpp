@@ -641,9 +641,8 @@ bool _Map::ResolveTileCollisions(const glm::vec2 &TargetPosition, float Radius, 
 	int RightTile = (int)Right;
 	int TopTile = (int)Top;
 	int BottomTile = (int)Bottom;
-
-	CollisionHits.clear();
 	bool AxisAlignedPush = false;
+	CollisionHits.clear();
 	for(int i = LeftTile; i <= RightTile; i++) {
 		for(int j = TopTile; j <= BottomTile; j++) {
 			if(!(Data[i][j].Collision & CollisionFlag))
@@ -665,9 +664,8 @@ bool _Map::ResolveTileCollisions(const glm::vec2 &TargetPosition, float Radius, 
 
 	// Resolve collision
 	for(const auto &Hit : CollisionHits) {
-		if(!(AxisAlignedPush && Hit.Push.x != 0 && Hit.Push.y != 0)) {
+		if(!(AxisAlignedPush && Hit.Push.x != 0 && Hit.Push.y != 0))
 			NewPosition += Hit.Push;
-		}
 	}
 
 	return Touching;
@@ -709,29 +707,43 @@ bool _Map::CheckAABBCollision(const glm::vec2 &Position, float Radius, const flo
 		if(ClampCount == 0) {
 			glm::vec2 Center((AABB[0] + AABB[2]) * 0.5f, (AABB[1] + AABB[3]) * 0.5f);
 
-			// Push left or right
-			if(Position.x <= Center.x)
-				Hit.Push.x = AABB[0] - Position.x - Radius;
-			else if(Position.x > Center.x)
-				Hit.Push.x = AABB[2] - Position.x + Radius;
-
-			// Push up or down
-			if(Position.y <= Center.y)
-				Hit.Push.y = AABB[1] - Position.y - Radius;
-			else if(Position.y > Center.y)
-				Hit.Push.y = AABB[3] - Position.y + Radius;
+			// Push in the direction that is furthest from the center
+			if((std::abs(Center.x - Position.x) > std::abs(Center.y - Position.y))) {
+				if(Position.x <= Center.x) {
+					Hit.Push.x = AABB[0] - Position.x - Radius;
+					Hit.Normal.x = -1.0f;
+				}
+				else if(Position.x > Center.x) {
+					Hit.Push.x = AABB[2] - Position.x + Radius;
+					Hit.Normal.x = 1.0f;
+				}
+				Hit.Normal.y = 0.0f;
+			}
+			else {
+				if(Position.y <= Center.y) {
+					Hit.Push.y = AABB[1] - Position.y - Radius;
+					Hit.Normal.y = -1.0f;
+				}
+				else if(Position.y > Center.y) {
+					Hit.Push.y = AABB[3] - Position.y + Radius;
+					Hit.Normal.y = 1.0f;
+				}
+				Hit.Normal.x = 0.0f;
+			}
 		}
 		else {
 
-			// Get push direction
+			// Get vector to closest point on AABB
 			Hit.Push = Position - Hit.ClosestPoint;
 
-			// Get push amount
-			float Amount = Radius - glm::length(Hit.Push);
+			// Get penetration
+			float Penetration = Radius - glm::length(Hit.Push);
 
-			// Scale push vector
-			Hit.Push = glm::normalize(Hit.Push);
-			Hit.Push *= Amount;
+			// Normalize
+			Hit.Normal = Hit.Push = glm::normalize(Hit.Push);
+
+			// Scale push by penetration
+			Hit.Push *= Penetration;
 
 			// Flag axis aligned pushes
 			if(ClampCount == 1)

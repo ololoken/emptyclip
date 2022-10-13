@@ -310,6 +310,7 @@ void _Object::CheckProjectileCollisions() {
 	*/
 		CreateAmmoPickup(PositionZ);
 		Active = false;
+		Position = HitPosition;
 	}
 	else {
 
