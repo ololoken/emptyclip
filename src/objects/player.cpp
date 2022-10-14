@@ -319,12 +319,11 @@ void _Player::RecalculateStats() {
 	SelfHealPeriod = PLAYER_HEAL_PERIOD / Stats.GetSkillBonusMultiplier(Skills[SKILL_CUNNING], SKILL_CUNNING, 1);
 
 	// Add armor bonuses
-	DamageBlock += Stats.GetSkill(Skills[SKILL_FORTITUDE], SKILL_FORTITUDE);
 	DamageResist += Stats.GetSkill(Skills[SKILL_FORTITUDE], SKILL_FORTITUDE, 1);
 	Attributes["max_ammo"].Int = 100 + Stats.GetSkill(Skills[SKILL_ENDURANCE], SKILL_ENDURANCE, 1);
 	if(GetArmor()) {
 		Mass += GetArmor()->Template.Attributes.at("mass").Float;
-		DamageBlock += GetArmor()->Attributes.at("damage_block").Int;
+		DamageBlock += std::round(GetArmor()->Attributes.at("damage_block").Int * Stats.GetSkillBonusMultiplier(Skills[SKILL_FORTITUDE], SKILL_FORTITUDE));
 		DamageResist += GetArmor()->Attributes.at("damage_resist").Int;
 		BaseMoveSpeed += GetArmor()->Attributes.at("move_speed").Int;
 		Attributes["max_ammo"].Int += GetArmor()->Attributes.at("max_ammo").Int;

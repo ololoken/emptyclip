@@ -57,6 +57,23 @@ static std::vector<_MinimapLegend> MinimapLegends = {
 	{ "Doors/Switches", HUD_MINIMAP_DOOR_COLOR },
 };
 
+struct _SkillText {
+	std::string Main;
+	std::string Alt;
+};
+
+static _SkillText SkillText[SKILL_COUNT] = {
+	{ "Melee Damage", "Gun Handling" },
+	{ "Reload Speed", "Weapon Switch Speed" },
+	{ "Armor Damage Block", "Damage Resist" },
+	{ "Max Health", "Heal Bonus" },
+	{ "Attack Speed","Fire Rate" },
+	{ "Move Speed", "Self Heal Speed" },
+	{ "Max Stamina", "Max Ammo" },
+	{ "Gun Accuracy", "Critical Hit Damage" },
+	{ "Drop Rate", "Ammo Pickup Bonus" },
+};
+
 // Initialize
 _HUD::_HUD(const ae::_Camera *Camera, _Player *Player) : Camera(Camera), Player(Player) {
 
@@ -1077,7 +1094,13 @@ void _HUD::DrawItemLevel(const _Item *Item, const glm::vec2 &Position) {
 // Draw the skill popup window
 void _HUD::UpdateSkillTooltip(int Skill, const glm::vec2 &Position) {
 	CursorSkill = Skill;
+	int Level = Player->Skills[Skill];
 
+	// Update size
+	Elements[ELEMENT_SKILLINFO]->BaseSize.y = Level >= Stats.GetSkillLevels() ?  230 : 320;
+	Elements[ELEMENT_SKILLINFO]->CalculateBounds(true);
+
+	// Get window position
 	glm::vec2 DrawPosition(Position);
 	DrawPosition -= Elements[ELEMENT_SKILLINFO]->Size + glm::vec2(15) * ae::_Element::GetUIScale();
 	DrawPosition.y = std::max(DrawPosition.y, 10 * ae::_Element::GetUIScale());
@@ -1086,89 +1109,37 @@ void _HUD::UpdateSkillTooltip(int Skill, const glm::vec2 &Position) {
 	Elements[ELEMENT_SKILLINFO]->Offset = DrawPosition;
 	Elements[ELEMENT_SKILLINFO]->CalculateBounds(false);
 
-	// Get skill description
+	// Set skill description
 	std::ostringstream Buffer;
 	std::ostringstream BufferNext;
 	Buffer << std::setprecision(5);
 	BufferNext << std::setprecision(5);
-	int Level = Player->Skills[Skill];
-	Elements[LABEL_SKILLTEXTALT]->Text = "";
-	switch(Skill) {
-		case SKILL_STRENGTH:
-			Elements[LABEL_SKILLTEXT]->Text = "Increases Melee Damage";
-			Elements[LABEL_SKILLTEXTALT]->Text = "Increases Gun Handling";
-			Buffer << "+" << Stats.GetSkill(Level, Skill) << "%";
-			BufferNext << "+" << Stats.GetSkill(Stats.GetValidSkillLevel(Level+1), Skill) << "%";
-		break;
-		case SKILL_DEXTERITY:
-			Elements[LABEL_SKILLTEXT]->Text = "Increases Reload Speed";
-			Elements[LABEL_SKILLTEXTALT]->Text = "Increases Weapon Switch Speed";
-			Buffer << "+" << Stats.GetSkill(Level, Skill) << "%";
-			BufferNext << "+" << Stats.GetSkill(Stats.GetValidSkillLevel(Level+1), Skill) << "%";
-		break;
-		case SKILL_FORTITUDE:
-			Elements[LABEL_SKILLTEXT]->Text = "Increases Damage Block";
-			Elements[LABEL_SKILLTEXTALT]->Text = "Increases Damage Resist";
-			Buffer << "+" << Stats.GetSkill(Level, Skill) << " Damage Block / +" << Stats.GetSkill(Level, Skill, 1) << "% Damage Resist";
-			BufferNext << "+" << Stats.GetSkill(Stats.GetValidSkillLevel(Level+1), Skill) << " Damage Block / +" << Stats.GetSkill(Stats.GetValidSkillLevel(Level+1), Skill, 1) << "% Damage Resist";
-		break;
-		case SKILL_VITALITY: {
-			Elements[LABEL_SKILLTEXT]->Text = "Increases Max Health";
-			Elements[LABEL_SKILLTEXTALT]->Text = "Increases Heal Bonus";
-			Buffer << "+" << Stats.GetSkill(Level, Skill) << "% Max Health / +" << Stats.GetSkill(Level, Skill, 1) << "% Heal Bonus";
-			BufferNext << "+" << Stats.GetSkill(Stats.GetValidSkillLevel(Level+1), Skill) << "% Max Health / +" << Stats.GetSkill(Stats.GetValidSkillLevel(Level+1), Skill, 1) << "% Heal Bonus";
-		} break;
-		case SKILL_AGILITY:
-			Elements[LABEL_SKILLTEXT]->Text = "Increases Attack Speed";
-			Elements[LABEL_SKILLTEXTALT]->Text = "Increases Fire Rate";
-			Buffer << "+" << Stats.GetSkill(Level, Skill) << "%";
-			BufferNext << "+" << Stats.GetSkill(Stats.GetValidSkillLevel(Level+1), Skill) << "%";
-		break;
-		case SKILL_CUNNING:
-			Elements[LABEL_SKILLTEXT]->Text = "Increases Move Speed";
-			Elements[LABEL_SKILLTEXTALT]->Text = "Increases Self Heal Speed";
-			Buffer << "+" << Stats.GetSkill(Level, Skill) << "% Move Speed / +" << Stats.GetSkill(Level, Skill, 1) << "% Heal Speed";
-			BufferNext << "+" << Stats.GetSkill(Stats.GetValidSkillLevel(Level+1), Skill) << "% Move Speed / +" << Stats.GetSkill(Stats.GetValidSkillLevel(Level+1), Skill, 1) << "% Heal Speed";
-		break;
-		case SKILL_ENDURANCE:
-			Elements[LABEL_SKILLTEXT]->Text = "Increases Max Stamina";
-			Elements[LABEL_SKILLTEXTALT]->Text = "Increases Max Ammo";
-			Buffer << "+" << Stats.GetSkill(Level, Skill) << "% Max Stamina / +" << Stats.GetSkill(Level, Skill, 1) << "% Max Ammo";
-			BufferNext << "+" << Stats.GetSkill(Stats.GetValidSkillLevel(Level+1), Skill) << "% Max Stamina / +" << Stats.GetSkill(Stats.GetValidSkillLevel(Level+1), Skill, 1) << "% Max Ammo";
-		break;
-		case SKILL_PERCEPTION:
-			Elements[LABEL_SKILLTEXT]->Text = "Increases Gun Accuracy";
-			Elements[LABEL_SKILLTEXTALT]->Text = "Increases Critical Hit Damage";
-			Buffer << "+" << Stats.GetSkill(Level, Skill) << "% Gun Accuracy / +" << Stats.GetSkill(Level, Skill, 1) << "% Critical Hit Damage";
-			BufferNext << "+" << Stats.GetSkill(Stats.GetValidSkillLevel(Level+1), Skill) << "% Gun Accuracy / +" << Stats.GetSkill(Stats.GetValidSkillLevel(Level+1), Skill, 1) << "% Critical Hit Damage";
-		break;
-		case SKILL_LUCK: {
-			Elements[LABEL_SKILLTEXT]->Text = "Increases Drop Rate";
-			Elements[LABEL_SKILLTEXTALT]->Text = "Increases Ammo Pickup Bonus";
-			Buffer << "+" << Stats.GetSkill(Level, Skill) << "% Drop Rate / +" << Stats.GetSkill(Level, Skill, 1) << "% Ammo";
-			BufferNext << "+" << Stats.GetSkill(Stats.GetValidSkillLevel(Level+1), Skill) << "% Drop Rate / +" << Stats.GetSkill(Stats.GetValidSkillLevel(Level+1), Skill, 1) << "% Ammo";
-		} break;
-	}
+	Elements[LABEL_SKILLTEXT]->Text = "Increases " + SkillText[Skill].Main;
+	Elements[LABEL_SKILLTEXTALT]->Text = "Increases " + SkillText[Skill].Alt;
+	Buffer << "+" << Stats.GetSkill(Level, Skill) << "% " << SkillText[Skill].Main << "\\n+" << Stats.GetSkill(Level, Skill, 1) << "% " << SkillText[Skill].Alt;
+	BufferNext << "+" << Stats.GetSkill(Stats.GetValidSkillLevel(Level+1), Skill) << "% " << SkillText[Skill].Main << "\\n+" << Stats.GetSkill(Stats.GetValidSkillLevel(Level+1), Skill, 1) << "% " << SkillText[Skill].Alt;
 
-	// Wrap text
+	// Format text
 	Elements[LABEL_SKILL_LEVEL]->Text = Buffer.str();
-	if(Player->Skills[Skill]+1 > Stats.GetSkillLevels())
+	Elements[LABEL_SKILL_LEVEL]->SetWrap(Elements[ELEMENT_SKILLINFO]->Size.x);
+	if(Level + 1 > Stats.GetSkillLevels())
 		BufferNext.str("");
 	Elements[LABEL_SKILL_LEVEL_NEXT]->Text = BufferNext.str();
+	Elements[LABEL_SKILL_LEVEL_NEXT]->SetWrap(Elements[ELEMENT_SKILLINFO]->Size.x);
 
-	// Max skill level
+	// Handle skill caps
 	ae::Assets.Elements["label_hud_skill_more"]->Text = "";
 	ae::Assets.Elements["label_hud_skill_max"]->Text = "";
 	ae::Assets.Elements["label_hud_skill_next"]->Text = "Next Level";
-	if(Player->Skills[Skill] >= Stats.GetSkillLevels()) {
+	if(Level >= Stats.GetSkillLevels()) {
 		ae::Assets.Elements["label_hud_skill_next"]->Text = "";
 		ae::Assets.Elements["label_hud_skill_max"]->Text = "Max Level";
 	}
 	else {
 		int LevelRequired = 0;
-		if(Player->Level <= GAME_PLAYERLEVEL_SOFTCAP && Player->Skills[Skill] >= GAME_SKILL_SOFTCAP)
+		if(Player->Level <= GAME_PLAYERLEVEL_SOFTCAP && Level >= GAME_SKILL_SOFTCAP)
 			LevelRequired = GAME_PLAYERLEVEL_SOFTCAP + 1;
-		else if(Player->Skills[Skill] >= Stats.GetMaxSkillLevel(Player->Level))
+		else if(Level >= Stats.GetMaxSkillLevel(Player->Level))
 			LevelRequired = Player->Level + 1;
 
 		if(LevelRequired)

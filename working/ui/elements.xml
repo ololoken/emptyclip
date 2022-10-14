@@ -442,15 +442,15 @@
 			<element id="label_hud_skill_remaining_value" font="hud_small" text="0" offset_x="-22" offset_y="16" alignment_x="2" alignment_y="3"/>
 		</element>
 	</element>
-	<element id="element_skill_info" style="style_hud_skills" size_x="520" size_y="250" alignment_x="0" alignment_y="0">
-		<element id="label_hud_skill_text" font="hud_medium" offset_x="20" offset_y="38" alignment_x="0" alignment_y="3"/>
-		<element id="label_hud_skill_textalt" font="hud_medium" offset_x="20" offset_y="70" alignment_x="0" alignment_y="3"/>
-		<element id="label_hud_skill_current" font="hud_small" text="Current Level" offset_x="20" offset_y="110" alignment_x="0" alignment_y="3"/>
-		<element id="label_hud_skill_level" font="hud_small" offset_x="30" offset_y="134" alignment_x="0" alignment_y="3"/>
-		<element id="label_hud_skill_next" font="hud_small" text="Next Level" offset_x="20" offset_y="164" alignment_x="0" alignment_y="3"/>
-		<element id="label_hud_skill_level_next" font="hud_small" offset_x="30" offset_y="188" alignment_x="0" alignment_y="3"/>
-		<element id="label_hud_skill_max" color="red" font="hud_medium" offset_x="20" offset_y="200" alignment_x="0" alignment_y="3"/>
-		<element id="label_hud_skill_more" color="red" font="hud_medium" offset_x="20" offset_y="230" alignment_x="0" alignment_y="3"/>
+	<element id="element_skill_info" style="style_hud_skills" size_x="450" size_y="320" alignment_x="0" alignment_y="0">
+		<element id="label_hud_skill_text" font="hud_medium" offset_x="25" offset_y="48" alignment_x="0" alignment_y="3" format="true"/>
+		<element id="label_hud_skill_textalt" font="hud_medium" offset_x="25" offset_y="76" alignment_x="0" alignment_y="3"/>
+		<element id="label_hud_skill_current" font="hud_small" text="Current Level" offset_x="25" offset_y="114" alignment_x="0" alignment_y="3"/>
+		<element id="label_hud_skill_level" font="hud_small" offset_x="35" offset_y="144" alignment_x="0" alignment_y="3" format="true"/>
+		<element id="label_hud_skill_next" font="hud_small" text="Next Level" offset_x="25" offset_y="198" alignment_x="0" alignment_y="3"/>
+		<element id="label_hud_skill_level_next" font="hud_small" offset_x="35" offset_y="228" alignment_x="0" alignment_y="3" format="true"/>
+		<element id="label_hud_skill_max" color="red" font="hud_medium" offset_x="25" offset_y="204" alignment_x="0" alignment_y="3"/>
+		<element id="label_hud_skill_more" color="red" font="hud_medium" offset_x="25" offset_y="294" alignment_x="0" alignment_y="3"/>
 	</element>
 	<element id="element_editor_command" offset_x="16" size_x="700" size_y="147" alignment_x="0" alignment_y="2" scaled="false">
 		<element id="button_editor_layer_base" style="style_editor_button_brown" hover_style="style_editor_button_selected" size_x="32" size_y="32" alignment_x="0" alignment_y="0" clickable="true" scaled="false" index="0">
