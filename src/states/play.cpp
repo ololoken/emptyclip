@@ -375,8 +375,11 @@ bool _PlayState::HandleCommand(ae::_Console *Console) {
 				Console->AddMessage("usage: " + Console->Command + " [+-][amount]");
 		}
 		else if(Console->Command == "god") {
-			GodMode = !GodMode;
-			Console->AddMessage("god = " + std::to_string(GodMode));
+			if(!Player)
+				return true;
+
+			Player->GodMode = !Player->GodMode;
+			Console->AddMessage("god = " + std::to_string(Player->GodMode));
 		}
 		else if(Console->Command == "health") {
 			if(!Player)
@@ -562,7 +565,7 @@ void _PlayState::Update(double FrameTime) {
 	if(Player->PositionChanged)
 		IgnoreItems.clear();
 
-	if(GodMode)
+	if(Player->GodMode)
 		Player->Stamina = Player->MaxStamina;
 
 	// Handle gun flashes
@@ -842,7 +845,7 @@ void _PlayState::Render(double BlendFactor) {
 		HUD->DrawCrosshair(CursorDrawPosition);
 
 	// Debug
-	if(GodMode && DevMode && DebugMode) {
+	if(Player->GodMode && DevMode && DebugMode) {
 		ae::Graphics.SetDepthTest(false);
 
 		// Draw monster target positions
@@ -1048,7 +1051,7 @@ void _PlayState::ResolveAttack(_Entity *Attacker, int GridType) {
 		RoundsShot = Attacker->GetWeaponAmmo();
 
 	// Reduce ammo
-	if(!GodMode)
+	if(!Attacker->GodMode)
 		Attacker->ReduceAmmo(RoundsShot);
 
 	// Weapon type specific code
@@ -1092,7 +1095,12 @@ void _PlayState::ResolveAttack(_Entity *Attacker, int GridType) {
 			// Create projectile
 			_Object *Projectile = Stats.CreateProjectile(*Attacker->Projectiles[Attacker->AttackRequestType], Attacker->Position);
 			Projectile->ProjectileWeaponTemplate = Attacker->Weapons[Attacker->AttackRequestType];
-			Projectile->GridCheckType = (Attacker->Type == _Object::PLAYER) ? GRID_MONSTER : GRID_PLAYER;
+			Projectile->GridTypes.reserve(2);
+			if(Attacker->Type == _Object::PLAYER)
+				Projectile->GridTypes.push_back(GRID_MONSTER);
+			else
+				Projectile->GridTypes.push_back(GRID_PLAYER);
+
 			Projectile->Map = Map;
 			Projectile->Owner = Attacker;
 			Projectile->Rotation = Attacker->GenerateShotDirection();
@@ -1163,7 +1171,7 @@ void _PlayState::ResolveAttack(_Entity *Attacker, int GridType) {
 						bool Crit = false;
 						int Damage = Attacker->GenerateDamage(Attacker->AttackRequestType, PenetrationDamage, Steady, Crit);
 						Damage = HitEntity->ReduceDamage(Damage);
-						if(GodMode && HitPlayer)
+						if(HitEntity->GodMode)
 							Damage = 0;
 
 						// Generate damage particles
@@ -1635,8 +1643,7 @@ void _PlayState::CheckEvents(const _Entity *Entity) {
 			} break;
 			case EVENT_LAVA: {
 				ae::Audio.PlaySound(ae::Assets.Sounds["game_lava0.ogg"]);
-				if(!GodMode)
-					Player->UpdateHealth(-GAME_LAVA_DAMAGE * (Event->Level + Player->Progression));
+				Player->UpdateHealth(-GAME_LAVA_DAMAGE * (Event->Level + Player->Progression));
 				Particles->Create(_ParticleSpawn(GameAssets.GetParticleTemplate(Event->ParticleID), glm::vec2(0), Player->Position, OBJECT_Z, 0));
 				Player->LavaTouches++;
 			} break;

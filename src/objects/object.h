@@ -117,6 +117,7 @@ class _Object {
 		virtual void RenderLights(double BlendFactor);
 		virtual void Serialize(ae::_Buffer &Buffer) {}
 		bool IsDying() const { return Action == ACTION_DYING || Action == ACTION_STARTDEATH; }
+		virtual bool IsInvulnerable() const { return false; }
 		bool CanFreePath() const { return FreePathing || FreePathingTimer > 0.0; }
 
 		virtual const _ParticleTemplate *GetParticle(int ParticleType) const { return nullptr; }
@@ -169,6 +170,7 @@ class _Object {
 		int ProjectileCritDamage{0};
 		int Bounces{0};
 		int Depth{0};
+		bool Bounced{false};
 
 		// Character
 		ActionType Action{ACTION_IDLE};
@@ -186,10 +188,10 @@ class _Object {
 		glm::vec2 Direction{0.0f, 1.0f};
 		glm::vec2 LastDirection{0.0f};
 		glm::vec2 Velocity{0.0f};
+		std::vector<int> GridTypes;
 		double FreePathingTimer{0.0};
 		float Radius{0.25f};
 		float Mass{0.0f};
-		int GridCheckType{0};
 		bool Circle{true};
 		bool FreePathing{false};
 

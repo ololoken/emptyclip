@@ -72,7 +72,7 @@ void _Monster::Update(double FrameTime) {
 	UpdateAnimation(FrameTime);
 
 	// Move the monster
-	if(IsDying() || !AIType || Player->IsInvulnerable() || Player->IsDying()) {
+	if(IsDying() || !AIType || Player->InvulnerableTimer > 0.0 || Player->IsDying()) {
 		MoveState = MOVE_NONE;
 		PositionChanged = false;
 

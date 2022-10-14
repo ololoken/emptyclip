@@ -306,13 +306,25 @@ void _Object::CheckProjectileCollisions() {
 			CreateAmmoPickup(PositionZ);
 			Active = false;
 		}
-		else
+		else {
+
+			// Set new direction
+			FacePosition(Position + Velocity);
+
+			// Reset hit objects
+			HitObjects.clear();
+
+			// Update counter and add self hits
 			Bounces--;
+			Bounced = true;
+			if(OwnerEntity->Type == _Object::PLAYER)
+				GridTypes.push_back(GRID_PLAYER);
+		}
 	}
 	else {
 
 		// Check object hits
-		std::vector<_Hit> &Hits = Map->CheckCollisionsInGrid(Position, Radius, GridCheckType);
+		std::vector<_Hit> &Hits = Map->CheckCollisionsInGrid(Position, Radius, GridTypes);
 		for(const auto &Hit : Hits) {
 			if(Hit.Object->Type == PROP) {
 				Active = false;
@@ -368,18 +380,9 @@ void _Object::CheckProjectileCollisions() {
 
 		// Check hits
 		float ExplosionRadius = ProjectileExplosionSize * 0.5f;
-		std::vector<_Hit> &Hits = Map->CheckCollisionsInGrid(Position, ExplosionRadius, GridCheckType);
-
-		// Check self hit
-		if(OwnerEntity->Type == _Object::PLAYER && !OwnerEntity->IsInvulnerable() && !PlayState.GodMode) {
-			float DistanceSquared;
-			if(OwnerEntity->IsTouchingCircle(Position, ExplosionRadius, DistanceSquared)) {
-				_Hit Hit;
-				Hit.Object = OwnerEntity;
-				Hit.Position = OwnerEntity->Position;
-				Hits.push_back(Hit);
-			}
-		}
+		if(!Bounced && OwnerEntity->Type == _Object::PLAYER)
+			GridTypes.push_back(GRID_PLAYER);
+		std::vector<_Hit> &Hits = Map->CheckCollisionsInGrid(Position, ExplosionRadius, GridTypes);
 
 		// Apply damage
 		for(const auto &Hit : Hits) {
@@ -425,8 +428,10 @@ void _Object::ApplyDamage(const _Hit &Hit) {
 	HitEntity->OnHit(OwnerEntity, Hit);
 
 	// Particles
-	PlayState.GenerateHitEffects(OwnerEntity, HIT_OBJECT, Hit, !HitEntity->Health);
-	PlayState.GenerateDamageText(Hit.Position, Damage, Crit, HitEntity->Type == PLAYER);
+	if(!HitEntity->IsInvulnerable()) {
+		PlayState.GenerateHitEffects(OwnerEntity, HIT_OBJECT, Hit, !HitEntity->Health);
+		PlayState.GenerateDamageText(Hit.Position, Damage, Crit, HitEntity->Type == PLAYER);
+	}
 }
 
 // Apply force to object and cap velocity

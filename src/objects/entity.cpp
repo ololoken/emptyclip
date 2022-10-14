@@ -563,6 +563,9 @@ void _Entity::OnAttack(_Entity *Victim, const _Hit &Hit) {
 
 // Called when an entity is hit
 void _Entity::OnHit(_Entity *Attacker, const _Hit &Hit) {
+	if(IsInvulnerable())
+		return;
+
 	ae::Audio.PlaySound(GetSound(SOUND_TAKEDAMAGE, -1), ae::_SoundSettings(glm::vec3(Hit.Position.x, 0.0f, Hit.Position.y), 1.0f, AUDIO_REFERENCE_DISTANCE, AUDIO_MAX_DISTANCE, AUDIO_ROLL_OFF));
 	CurrentAccuracy = std::min(CurrentAccuracy + Recoil, MaxAccuracy[WEAPONATTACK_MAIN]);
 	PoisonTimer = std::max(PoisonTimer, (double)Attacker->PoisonPower);

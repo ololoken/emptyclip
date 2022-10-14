@@ -878,7 +878,7 @@ void _Map::GetCloseObjects(const glm::vec2 &Position, float Radius, int GridType
 }
 
 // Check for collisions in a grid
-std::vector<_Hit> &_Map::CheckCollisionsInGrid(const glm::vec2 &Position, float Radius, int GridType) {
+std::vector<_Hit> &_Map::CheckCollisionsInGrid(const glm::vec2 &Position, float Radius, const std::vector<int> &GridTypes) {
 
 	// Get the object's bounding rectangle
 	_TileBounds TileBounds;
@@ -888,12 +888,14 @@ std::vector<_Hit> &_Map::CheckCollisionsInGrid(const glm::vec2 &Position, float 
 	ObjectMap.clear();
 	for(int i = TileBounds.Start.x; i <= TileBounds.End.x; i++) {
 		for(int j = TileBounds.Start.y; j <= TileBounds.End.y; j++) {
-			for(auto &Iterator : Data[i][j].Objects[GridType]) {
-				_Object *Object = Iterator.first;
-				if(Object->IsDying())
-					continue;
+			for(const auto &GridType : GridTypes) {
+				for(auto &Iterator : Data[i][j].Objects[GridType]) {
+					_Object *Object = Iterator.first;
+					if(Object->IsDying())
+						continue;
 
-				ObjectMap[Object] = 1;
+					ObjectMap[Object] = 1;
+				}
 			}
 		}
 	}

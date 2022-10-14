@@ -1408,6 +1408,9 @@ void _Player::UpdateColor() {
 
 // Called when the player gets hit
 void _Player::OnHit(_Entity *Attacker, const _Hit &Hit) {
+	if(IsInvulnerable())
+		return;
+
 	_Entity::OnHit(Attacker, Hit);
 	SelfHealTimer = SelfHealPeriod;
 }
