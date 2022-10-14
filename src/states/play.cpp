@@ -1106,6 +1106,7 @@ void _PlayState::ResolveAttack(_Entity *Attacker, int GridType) {
 			Projectile->ProjectilePenetrationDamage = Attacker->PenetrationDamage[Attacker->AttackRequestType];
 			Projectile->ProjectileExplosionSize = Attacker->ExplosionSize[Attacker->AttackRequestType];
 			Projectile->ProjectileForce = Attacker->Force[Attacker->AttackRequestType];
+			Projectile->Bounces = Attacker->StartingBounces[Attacker->AttackRequestType];
 			if(Steady)
 				Projectile->ProjectileCritChance *= PLAYER_STEADY_CRIT_FACTOR;
 

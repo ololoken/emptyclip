@@ -542,6 +542,7 @@ void _Item::RecalculateStats() {
 			Attributes["move_recoil"].Float = Template.Attributes.at("move_recoil").Float * GetBonusMultiplier(MOD_HANDLING, true);
 			Attributes["penetration"].Int = std::max(1, (int)std::round(Template.Attributes.at("penetration").Int * QualityFactor) + Bonus[MOD_PENETRATION]);
 			Attributes["penetration_damage"].Float = std::clamp(Template.Attributes.at("penetration_damage").Float * QualityFactor, 0.0f, 1.0f);
+			Attributes["bounces"].Int = Bonus[MOD_BOUNCE];
 			Attributes["crit_chance"].Int = std::clamp((int)(Template.Attributes.at("crit_chance").Int * QualityFactor) + Bonus[MOD_CRITCHANCE], 0, 100);
 			Attributes["rounds"].Int = std::round((Template.Attributes.at("rounds").Int + Bonus[MOD_MAXROUNDSPLUS]) * GetBonusMultiplier(MOD_MAXROUNDS));
 			if(Bonus[MOD_FULLAUTO])
@@ -654,6 +655,10 @@ bool _Item::ModCompatible(_Item *Mod) {
 						return false;
 				}
 			}
+
+			// Bounce only affects projectile weapons
+			if(ModType == MOD_BOUNCE && Template.ProjectileID.empty())
+				return false;
 
 			// Check max
 			if(Mod->Template.Attributes.at("max").Int && Bonus[ModType])
@@ -823,6 +828,9 @@ std::string _Item::ModTypeToString(int ModType) {
 		break;
 		case MOD_BURST:
 			return "Burst Fire";
+		break;
+		case MOD_BOUNCE:
+			return "Projectile Bounce";
 		break;
 	}
 

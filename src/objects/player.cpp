@@ -356,6 +356,7 @@ void _Player::RecalculateStats() {
 		ShootPeriod[i] = WeaponAttributes[i]["shoot_period"].Double / Stats.GetSkillBonusMultiplier(Skills[SKILL_STRENGTH], SKILL_STRENGTH, 1);
 		Penetration[i] = WeaponAttributes[i]["penetration"].Int;
 		PenetrationDamage[i] = WeaponAttributes[i]["penetration_damage"].Float;
+		StartingBounces[i] = WeaponAttributes[i]["bounces"].Int;
 		AttackCount[i] = WeaponAttributes[i]["attack_count"].Int;
 		FireAllRounds[i] = WeaponAttributes[i]["fire_allrounds"].Int;
 		CritChance[i] = WeaponAttributes[i]["crit_chance"].Int;

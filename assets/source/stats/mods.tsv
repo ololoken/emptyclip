@@ -23,3 +23,4 @@ mod_fullauto	Full Automatic Mod	textures/items/mod_fullauto.png	21	3	0	1	0	1	0
 mod_maxhealth	Max Health Mod	textures/items/mod_maxhealth.png	22	4	0	0	1	9.5	0.5
 mod_maxstamina	Max Stamina Mod	textures/items/mod_maxstamina.png	23	4	0	0	1	9.5	0.5
 mod_burst	Burst Fire Mod	textures/items/mod_burst.png	24	3	0	1	0	3	0
+mod_bounce	Bounce Mod	textures/items/mod_bounce.png	25	3	0	0	0	0.5	0.1
