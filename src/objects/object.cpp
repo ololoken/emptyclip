@@ -300,14 +300,6 @@ void _Object::CheckProjectileCollisions() {
 	// Check wall hits
 	glm::vec2 HitPosition;
 	if(Map->ResolveTileCollisions(Position, Radius, _Tile::BULLET, Bounces, HitPosition, Velocity)) {
-	/*
-		_Hit &Hit = Map->CollisionHits.front();
-		_Entity *OwnerEntity = (_Entity *)Owner;
-		_Hit WallHit;
-		WallHit.Position = Hit.ClosestPoint;
-		WallHit.Normal = glm::normalize(HitPosition - Position);
-		PlayState.GenerateHitEffects(OwnerEntity, HIT_WALL, WallHit, true);
-	*/
 		Position = HitPosition;
 
 		if(!Bounces) {
