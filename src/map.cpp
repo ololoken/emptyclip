@@ -649,32 +649,34 @@ bool _Map::ResolveTileCollisions(const glm::vec2 &TargetPosition, float Radius, 
 	bool AxisAlignedPush = false;
 
 	// Determine if multiple AABBs being tested can be combined into one larger AABB
-	int LastCollisionCoord[2] = { -1, -1 };
 	bool Changed[2] = { false, false };
 	float LargerAABB[4];
-	for(int i = LeftTile; i <= RightTile; i++) {
-		for(int j = TopTile; j <= BottomTile; j++) {
-			if(!(Data[i][j].Collision & CollisionFlag))
-				continue;
+	if(LeftTile != RightTile || TopTile != BottomTile) {
+		int LastCollisionCoord[2] = { -1, -1 };
+		for(int i = LeftTile; i <= RightTile; i++) {
+			for(int j = TopTile; j <= BottomTile; j++) {
+				if(!(Data[i][j].Collision & CollisionFlag))
+					continue;
 
-			if(LastCollisionCoord[0] == -1) {
-				LastCollisionCoord[0] = i;
-				LargerAABB[0] = i;
-				LargerAABB[2] = i + 1.0f;
-			}
-			else if(LastCollisionCoord[0] != i) {
-				Changed[0] = true;
-				LargerAABB[2] = i + 1.0f;
-			}
+				if(LastCollisionCoord[0] == -1) {
+					LastCollisionCoord[0] = i;
+					LargerAABB[0] = i;
+					LargerAABB[2] = i + 1.0f;
+				}
+				else if(LastCollisionCoord[0] != i) {
+					Changed[0] = true;
+					LargerAABB[2] = i + 1.0f;
+				}
 
-			if(LastCollisionCoord[1] == -1) {
-				LastCollisionCoord[1] = j;
-				LargerAABB[1] = j;
-				LargerAABB[3] = j + 1.0f;
-			}
-			else if(LastCollisionCoord[1] != j) {
-				Changed[1] = true;
-				LargerAABB[3] = j + 1.0f;
+				if(LastCollisionCoord[1] == -1) {
+					LastCollisionCoord[1] = j;
+					LargerAABB[1] = j;
+					LargerAABB[3] = j + 1.0f;
+				}
+				else if(LastCollisionCoord[1] != j) {
+					Changed[1] = true;
+					LargerAABB[3] = j + 1.0f;
+				}
 			}
 		}
 	}
