@@ -513,13 +513,6 @@ void _Map::InitializeTiles() {
 	for(int i = 0; i < Size.x; i++)
 		Data[i] = new _Tile[(size_t)Size.y];
 
-	// Clear out array
-	for(int i = 0; i < Size.x; i++) {
-		for(int j = 0; j < Size.y; j++) {
-			Data[i][j] = _Tile();
-		}
-	}
-
 	// Loop through floor layers and fill out walkable field
 	for(int l = 0; l < MAPLAYER_FLAT; l++) {
 		for(size_t k = 0; k < Blocks[l].size(); k++) {
