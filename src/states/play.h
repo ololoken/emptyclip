@@ -116,8 +116,8 @@ class _PlayState : public ae::_State {
 		_Event *TouchingEndEvent{nullptr};
 
 		// Objects
-		std::list<_Entity *> Monsters;
-		std::list<_Event *> ActiveEvents;
+		std::vector<_Entity *> Monsters;
+		std::vector<_Event *> ActiveEvents;
 		std::vector<_ObjectSpawn> QueuedObjectSpawns;
 		int ActiveAI{0};
 

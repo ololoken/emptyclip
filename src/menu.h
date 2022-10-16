@@ -163,7 +163,7 @@ class _Menu {
 		int SelectedColor{0};
 
 		// Achievements
-		std::list<_Message> AchievementMessages;
+		std::vector<_Message> AchievementMessages;
 };
 
 extern _Menu Menu;

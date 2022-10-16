@@ -108,6 +108,7 @@ void _PlayState::Init() {
 	Player->WarpPosition(Map->GetStartingPositionByCheckpoint(Player->CheckpointIndex));
 
 	// Spawn objects
+	Monsters.reserve(Map->Monsters);
 	for(const auto &ObjectSpawn : Map->ObjectSpawns)
 		SpawnObject(ObjectSpawn, false, Map->GetAddedLevel());
 
