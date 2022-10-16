@@ -589,6 +589,9 @@ void _PlayState::Update(double FrameTime) {
 	Map->Update(FrameTime, Player->Clock);
 	Map->ObjectManager->RenderList[_ObjectManager::RENDER_PLAYER].push_back(Player);
 
+	// Create item drops
+	ProcessQueuedObjectSpawns();
+
 	// Update monsters
 	UpdateMonsters(FrameTime);
 
@@ -1485,7 +1488,7 @@ void _PlayState::CreateItemDrop(const _Entity *Entity, float DropRate) {
 					ObjectSpawn.Position = Player->Position;
 
 				ObjectSpawn.Level = Monster->Level;
-				SpawnObject(&ObjectSpawn, true);
+				QueuedObjectSpawns.push_back(ObjectSpawn);
 			}
 		}
 	}
@@ -1765,7 +1768,7 @@ void _PlayState::DeleteMonsters() {
 }
 
 // Spawn an object in the map
-void _PlayState::SpawnObject(_ObjectSpawn *ObjectSpawn, bool GenerateStats, int AddedLevel) {
+void _PlayState::SpawnObject(const _ObjectSpawn *ObjectSpawn, bool GenerateStats, int AddedLevel) {
 	if(ObjectSpawn->Type == _Object::MONSTER) {
 		_Monster *Monster = Stats.CreateMonster(ObjectSpawn->ID, ObjectSpawn->Level + Map->GetAddedLevel(), Map->Progression, ObjectSpawn->Position);
 		Monster->Player = Player;
@@ -1780,6 +1783,14 @@ void _PlayState::SpawnObject(_ObjectSpawn *ObjectSpawn, bool GenerateStats, int 
 		Map->AddObject(Stats.CreateProp(ObjectSpawn->ID, ObjectSpawn->Position, ObjectSpawn->Rotation, ObjectSpawn->Scale), GRID_MONSTER);
 	else
 		Map->AddObject(Stats.CreateItem(ObjectSpawn->ID, ObjectSpawn->Level + AddedLevel, 0, 1, ObjectSpawn->Position, GenerateStats, Player->Progression), GRID_ITEM);
+}
+
+// Spawn all objects in the queue
+void _PlayState::ProcessQueuedObjectSpawns() {
+	for(const auto &ObjectSpawn : QueuedObjectSpawns)
+		SpawnObject(&ObjectSpawn, true);
+
+	QueuedObjectSpawns.clear();
 }
 
 // Adds a monster to the monster list and collision grid

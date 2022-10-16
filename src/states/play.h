@@ -22,6 +22,7 @@
 #include <unordered_map>
 #include <map>
 #include <list>
+#include <vector>
 
 // Forward Declarations
 class _HUD;
@@ -101,7 +102,8 @@ class _PlayState : public ae::_State {
 		void PlayerDied();
 		void EndLevel();
 
-		void SpawnObject(_ObjectSpawn *ObjectSpawn, bool GenerateStats=false, int AddedLevel=0);
+		void SpawnObject(const _ObjectSpawn *ObjectSpawn, bool GenerateStats=false, int AddedLevel=0);
+		void ProcessQueuedObjectSpawns();
 		void UseObject(_Item *Item);
 
 		// Game
@@ -116,6 +118,7 @@ class _PlayState : public ae::_State {
 		// Objects
 		std::list<_Entity *> Monsters;
 		std::list<_Event *> ActiveEvents;
+		std::vector<_ObjectSpawn> QueuedObjectSpawns;
 		int ActiveAI{0};
 
 		// HUD

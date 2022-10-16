@@ -18,7 +18,6 @@
 #pragma once
 
 // Libraries
-#include <list>
 #include <vector>
 
 // Forward Declarations
@@ -53,7 +52,7 @@ class _ObjectManager {
 		void RemoveObject(_Object *Object);
 		void ClearObjects();
 
-		std::list<_Object *> Objects;
+		std::vector<_Object *> Objects;
 		std::vector<_Object *> RenderList[RENDER_COUNT];
 
 	private:
