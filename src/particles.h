@@ -18,7 +18,6 @@
 #pragma once
 
 // Libraries
-#include <list>
 #include <vector>
 #include <string>
 #include <glm/vec2.hpp>
@@ -75,7 +74,7 @@ class _Particles {
 		void Clear();
 
 		// Objects
-		std::list<_Particle *> Particles;
+		std::vector<_Particle *> Particles;
 		const ae::_Camera *Camera{nullptr};
 		_Map *Map{nullptr};
 
@@ -83,6 +82,5 @@ class _Particles {
 
 		// Rendering
 		std::vector<_Particle *> RenderList[COUNT];
-
 
 };
