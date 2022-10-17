@@ -361,14 +361,11 @@ void _Stats::LoadKeys() {
 		Template.ID = Database->GetString("id");
 		Template.Name = Database->GetString("name");
 		Template.IconID = Database->GetString("icon_id");
-		std::string DoorColorID = Database->GetString("doorcolor_id");
+		Template.DoorColorType = Database->GetInt<int>("doorcolor_type");
 
 		// Check for loaded textures
 		if(!ae::Assets.Textures[Template.IconID])
 			throw std::runtime_error(std::string(__func__) + " unknown texture '" + Template.IconID + "'");
-
-		// Set color
-		SetColor(Template.DoorColor, DoorColorID);
 
 		Objects.insert(std::make_pair(Template.ID, Template));
 	}

@@ -127,7 +127,7 @@ struct _ObjectTemplate {
 	const ae::_Texture *LightTexture{nullptr};
 	glm::vec4 Color{1.0f};
 	glm::vec4 LightColor{1.0f};
-	glm::vec4 DoorColor{1.0f};
+	int DoorColorType{0};
 	int Type{0};
 
 	std::unordered_map<std::string, _Value> Attributes;

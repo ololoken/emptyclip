@@ -604,13 +604,12 @@ void _PlayState::Update(double FrameTime) {
 	Particles->Update(FrameTime);
 
 	// Add player to minimap
-	_MinimapLayer MinimapLayer;
-	MinimapLayer.Color = HUD_MINIMAP_PLAYER_COLOR;
-	MinimapLayer.Bounds = glm::vec4(
+	_MinimapIcon MinimapIcon;
+	MinimapIcon.Bounds = glm::vec4(
 		Player->Position.x - Player->Scale * 0.25f, Player->Position.y - Player->Scale * 0.25f,
 		Player->Position.x + Player->Scale * 0.25f, Player->Position.y + Player->Scale * 0.25f
 	);
-	Map->MinimapLayers.push_back(MinimapLayer);
+	Map->MinimapIcons[_Map::MINIMAP_PLAYER].push_back(MinimapIcon);
 
 	// Update events
 	UpdateEvents(FrameTime);
@@ -744,6 +743,8 @@ void _PlayState::Render(double BlendFactor) {
 	ae::Assets.Programs["pos_uv"]->SetUniformMat4("view_projection_transform", Camera->Transform);
 	ae::Graphics.SetProgram(ae::Assets.Programs["text"]);
 	ae::Assets.Programs["text"]->SetUniformMat4("view_projection_transform", Camera->Transform);
+	ae::Graphics.SetProgram(ae::Assets.Programs["minimap"]);
+	ae::Assets.Programs["minimap"]->SetUniformMat4("view_projection_transform", ae::Graphics.Ortho);
 
 	// Update minimap
 	if(ae::Actions.State[Action::GAME_MAP].Value > 0.0f) {
@@ -1520,10 +1521,12 @@ void _PlayState::UpdateMonsters(double FrameTime) {
 
 			// Add to minimap
 			if((Monster->ShowOnMinimap() || HasBossKey) && Monster->Health > 0 && Map->CheckMinimapBounds(Bounds)) {
-				_MinimapLayer MinimapLayer;
-				MinimapLayer.Bounds = Bounds;
-				MinimapLayer.Color = Monster->IsCrate() ? HUD_MINIMAP_CRATE_COLOR : HUD_MINIMAP_ENEMY_COLOR;
-				Map->MinimapLayers.push_back(MinimapLayer);
+				_MinimapIcon MinimapIcon;
+				MinimapIcon.Bounds = Bounds;
+				if(Monster->IsCrate())
+					Map->MinimapIcons[_Map::MINIMAP_CRATE].push_back(MinimapIcon);
+				else
+					Map->MinimapIcons[_Map::MINIMAP_MONSTER].push_back(MinimapIcon);
 			}
 
 			// Attack

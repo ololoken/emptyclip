@@ -65,43 +65,41 @@ void _ObjectManager::Update(double FrameTime, _Map *Map) {
 
 			// Add to minimap
 			if(Map->CheckMinimapBounds(Bounds)) {
-				_MinimapLayer MinimapLayer;
+				_MinimapIcon MinimapIcon;
 
 				// Get bounds
 				float Size = Object->IsUnique() ? Object->Radius * 2.0f : Object->Radius;
-				MinimapLayer.Bounds = glm::vec4(
+				MinimapIcon.Bounds = glm::vec4(
 					Object->Position.x - Size, Object->Position.y - Size,
 					Object->Position.x + Size, Object->Position.y + Size
 				);
 
 				// Get color
-				MinimapLayer.Color = COLOR_WHITE;
 				switch(Object->Type) {
 					case _Object::WEAPON:
 					case _Object::ARMOR:
 					case _Object::MOD:
 						if(Object->IsUnique())
-							MinimapLayer.Color = COLOR_GOLD;
+							Map->MinimapIcons[_Map::MINIMAP_UNIQUE].push_back(MinimapIcon);
 						else
-							MinimapLayer.Color = HUD_MINIMAP_EQUIPMENT_COLOR;
+							Map->MinimapIcons[_Map::MINIMAP_EQUIPMENT].push_back(MinimapIcon);
 					break;
 					case _Object::KEY:
-						MinimapLayer.Color = HUD_MINIMAP_KEY_COLOR;
+						Map->MinimapIcons[_Map::MINIMAP_KEY].push_back(MinimapIcon);
 					break;
 					case _Object::AMMO:
-						MinimapLayer.Color = HUD_MINIMAP_AMMO_COLOR;
+						Map->MinimapIcons[_Map::MINIMAP_AMMO].push_back(MinimapIcon);
 					break;
 					case _Object::MEDKIT:
-						MinimapLayer.Color = HUD_MINIMAP_MEDKIT_COLOR;
+						Map->MinimapIcons[_Map::MINIMAP_MEDKIT].push_back(MinimapIcon);
 					break;
 					case _Object::PROP:
-						MinimapLayer.Color = HUD_MINIMAP_WALL_COLOR;
+						Map->MinimapIcons[_Map::MINIMAP_WALL].push_back(MinimapIcon);
 					break;
 					case _Object::PROJECTILE:
-						MinimapLayer.Color = HUD_MINIMAP_PROJECTILE_COLOR;
+						Map->MinimapIcons[_Map::MINIMAP_PROJECTILE].push_back(MinimapIcon);
 					break;
 				}
-				Map->MinimapLayers.push_back(MinimapLayer);
 			}
 
 			// Add to render list

@@ -165,10 +165,9 @@ struct _ObjectSpawn {
 	bool Deleted{false};
 };
 
-// Holds minimap layer data
-struct _MinimapLayer {
+// Holds minimap icon data
+struct _MinimapIcon {
 	ae::_Bounds Bounds;
-	glm::vec4 Color;
 };
 
 // Classes
@@ -177,6 +176,26 @@ class _Map {
 	friend class _PlayState;
 
 	public:
+
+		enum MinimapIconType {
+			MINIMAP_WALL,
+			MINIMAP_DOOR,
+			MINIMAP_DOOR_RED,
+			MINIMAP_DOOR_GREEN,
+			MINIMAP_DOOR_BLUE,
+			MINIMAP_DOOR_BOSS,
+			MINIMAP_DOOR_OPEN,
+			MINIMAP_AMMO,
+			MINIMAP_MEDKIT,
+			MINIMAP_EQUIPMENT,
+			MINIMAP_UNIQUE,
+			MINIMAP_KEY,
+			MINIMAP_CRATE,
+			MINIMAP_MONSTER,
+			MINIMAP_PROJECTILE,
+			MINIMAP_PLAYER,
+			MINIMAP_COUNT
+		};
 
 		_Map();
 		_Map(const std::string &Filename, double Clock=0.0, int Progression=0);
@@ -251,7 +270,7 @@ class _Map {
 		void RemoveObject(_Object *Object, int GridType);
 
 		bool CheckMinimapBounds(const glm::vec4 &Bounds);
-		void AddMinimapLayers();
+		void AddMinimapIcons();
 
 		int GetAddedLevel() const;
 		static glm::vec2 GenerateRandomPointInCircle(float Radius);
@@ -281,8 +300,10 @@ class _Map {
 		std::vector<_Hit> CollisionHits;
 
 		// Minimap
-		std::vector<_MinimapLayer> MinimapLayers;
+		std::vector<_MinimapIcon> MinimapIcons[MINIMAP_COUNT];
 		glm::vec2 MinimapCaptureSize{0.0f};
+		uint32_t MinimapVBO{0};
+		float *MinimapVertices{nullptr};
 
 		// Lights
 		glm::vec4 AmbientLight;

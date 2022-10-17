@@ -46,6 +46,9 @@ inline bool CompareHitDistance(_Hit &First, _Hit &Second) {
 	return First.DistanceSquared < Second.DistanceSquared;
 }
 
+// Minimap vertex buffer size
+const int MINIMAP_MAX_VERTICES = 100000*12;
+
 // Colors of each time cycle
 static const std::vector<glm::vec4> DayCycles = {
 	{ 0.0625f, 0.0625f, 0.375f,  1 },
@@ -72,6 +75,26 @@ static const std::vector<glm::vec4> HighlightColors = {
 	COLOR_RED,
 	COLOR_GREEN,
 	COLOR_BLUE,
+};
+
+// Minimap icon colors
+static const glm::vec4 MinimapColors[_Map::MINIMAP_COUNT] = {
+	HUD_MINIMAP_WALL_COLOR,
+	HUD_MINIMAP_DOOR_COLOR,
+	HUD_MINIMAP_DOOR_REDCOLOR,
+	HUD_MINIMAP_DOOR_GREENCOLOR,
+	HUD_MINIMAP_DOOR_BLUECOLOR,
+	HUD_MINIMAP_DOOR_BOSSCOLOR,
+	HUD_MINIMAP_TOGGLED_COLOR,
+	HUD_MINIMAP_AMMO_COLOR,
+	HUD_MINIMAP_MEDKIT_COLOR,
+	HUD_MINIMAP_EQUIPMENT_COLOR,
+	HUD_MINIMAP_UNIQUE_COLOR,
+	HUD_MINIMAP_KEY_COLOR,
+	HUD_MINIMAP_CRATE_COLOR,
+	HUD_MINIMAP_ENEMY_COLOR,
+	HUD_MINIMAP_PROJECTILE_COLOR,
+	HUD_MINIMAP_PLAYER_COLOR,
 };
 
 // Initialize
@@ -396,6 +419,11 @@ _Map::_Map(const std::string &Filename, double Clock, int Progression) : _Map() 
 	if(BaseAmbientClock)
 		GetClockLight(Clock, AmbientLight);
 
+
+	// Set up minimap
+	MinimapVertices = new float[MINIMAP_MAX_VERTICES];
+	MinimapVBO = ae::Graphics.CreateVBO(nullptr, MINIMAP_MAX_VERTICES * sizeof(float), GL_DYNAMIC_DRAW);
+
 	File.close();
 }
 
@@ -420,6 +448,9 @@ _Map::~_Map() {
 			delete[] Data[i];
 		delete[] Data;
 	}
+
+	delete[] MinimapVertices;
+	ae::Graphics.DeleteVBO(MinimapVBO);
 }
 
 // Saves the level to a file
@@ -1769,19 +1800,58 @@ void _Map::DrawMinimap(bool FullMap, ae::_Bounds &MinimapBounds) {
 	ae::Graphics.SetScissor(MinimapBounds);
 	ae::Graphics.DrawRectangle(MinimapBounds, true);
 
-	// Draw layers
+	// Set up minimap rendering
+	ae::Graphics.SetProgram(ae::Assets.Programs["minimap"]);
+	ae::Graphics.SetVertexBufferID(MinimapVBO);
+	ae::Graphics.SetAttribLevel(1);
+	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 2, nullptr);
+
+	// Draw icons for each type
 	glm::vec2 CameraPosition(Camera->GetPosition());
 	ae::_Bounds CaptureBounds(CameraPosition - MinimapCaptureSize, CameraPosition + MinimapCaptureSize);
 	glm::vec2 VisionSize = CaptureBounds.End - CaptureBounds.Start;
-	for(const auto &MinimapLayer : MinimapLayers) {
-		glm::vec2 Start = MinimapBounds.Start + ((MinimapLayer.Bounds.Start - CaptureBounds.Start) / VisionSize) * DrawSize;
-		glm::vec2 End = MinimapBounds.Start + ((MinimapLayer.Bounds.End - CaptureBounds.Start) / VisionSize) * DrawSize;
+	for(int i = 0; i < MINIMAP_COUNT; i++) {
+		if(MinimapIcons[i].empty())
+			continue;
 
-		ae::Graphics.SetColor(MinimapLayer.Color);
-		ae::Graphics.DrawRectangle(Start, End, true);
+		// Set color for icons
+		ae::Graphics.SetColor(MinimapColors[i]);
+
+		// Build vertex buffer for icons
+		int VertexIndex = 0;
+		for(const auto &MinimapIcon : MinimapIcons[i]) {
+			if(VertexIndex + 12 > MINIMAP_MAX_VERTICES)
+				break;
+
+			// Get bounds
+			glm::vec2 Start = MinimapBounds.Start + ((MinimapIcon.Bounds.Start - CaptureBounds.Start) / VisionSize) * DrawSize;
+			glm::vec2 End = MinimapBounds.Start + ((MinimapIcon.Bounds.End - CaptureBounds.Start) / VisionSize) * DrawSize;
+
+			// First triangle of quad
+			MinimapVertices[VertexIndex++] = Start.x;
+			MinimapVertices[VertexIndex++] = Start.y;
+			MinimapVertices[VertexIndex++] = Start.x;
+			MinimapVertices[VertexIndex++] = End.y;
+			MinimapVertices[VertexIndex++] = End.x;
+			MinimapVertices[VertexIndex++] = End.y;
+
+			// Second triangle of quad
+			MinimapVertices[VertexIndex++] = End.x;
+			MinimapVertices[VertexIndex++] = End.y;
+			MinimapVertices[VertexIndex++] = End.x;
+			MinimapVertices[VertexIndex++] = Start.y;
+			MinimapVertices[VertexIndex++] = Start.x;
+			MinimapVertices[VertexIndex++] = Start.y;
+		}
+
+		// Draw buffer
+		glBufferSubData(GL_ARRAY_BUFFER, 0, VertexIndex * sizeof(float), MinimapVertices);
+		glDrawArrays(GL_TRIANGLES, 0, VertexIndex >> 1);
 	}
 
+	// Reset state
 	ae::Graphics.DisableScissorTest();
+	ae::Graphics.ResetState();
 }
 
 // Draws rectangles around all the blocks
@@ -2172,8 +2242,10 @@ void _Map::Update(double FrameTime, double Clock) {
 	UpdateAmbientLight(FrameTime, Clock);
 
 	// Add blocks and events to minimap
-	MinimapLayers.clear();
-	AddMinimapLayers();
+	for(int i = 0; i < MINIMAP_COUNT; i++)
+		MinimapIcons[i].clear();
+
+	AddMinimapIcons();
 
 	// Update objects
 	ObjectManager->Update(FrameTime, this);
@@ -2203,7 +2275,7 @@ bool _Map::CheckMinimapBounds(const glm::vec4 &Bounds) {
 }
 
 // Add objects to the minimap
-void _Map::AddMinimapLayers() {
+void _Map::AddMinimapIcons() {
 
 	// Add walls
 	for(int Layer = MAPLAYER_FLAT; Layer <= MAPLAYER_WALL; Layer++) {
@@ -2222,10 +2294,9 @@ void _Map::AddMinimapLayers() {
 			if(!Block->Texture)
 				continue;
 
-			_MinimapLayer MinimapLayer;
-			MinimapLayer.Bounds = Bounds;
-			MinimapLayer.Color = HUD_MINIMAP_WALL_COLOR;
-			MinimapLayers.push_back(MinimapLayer);
+			_MinimapIcon MinimapIcon;
+			MinimapIcon.Bounds = Bounds;
+			MinimapIcons[MINIMAP_WALL].push_back(MinimapIcon);
 		}
 	}
 
@@ -2251,16 +2322,14 @@ void _Map::AddMinimapLayers() {
 			continue;
 
 		// Add to minimap
-		_MinimapLayer MinimapLayer;
-		MinimapLayer.Bounds = Bounds;
+		_MinimapIcon MinimapIcon;
+		MinimapIcon.Bounds = Bounds;
 		if(Event->Switched)
-			MinimapLayer.Color = HUD_MINIMAP_TOGGLED_COLOR;
+			MinimapIcons[MINIMAP_DOOR_OPEN].push_back(MinimapIcon);
 		else if(Event->ItemID.empty())
-			MinimapLayer.Color = HUD_MINIMAP_DOOR_COLOR;
+			MinimapIcons[MINIMAP_DOOR].push_back(MinimapIcon);
 		else
-			MinimapLayer.Color = Stats.Objects.at(Event->ItemID).DoorColor;
-
-		MinimapLayers.push_back(MinimapLayer);
+			MinimapIcons[MINIMAP_DOOR + Stats.Objects.at(Event->ItemID).DoorColorType].push_back(MinimapIcon);
 	}
 }
 
