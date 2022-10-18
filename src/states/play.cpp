@@ -693,7 +693,7 @@ void _PlayState::Update(double FrameTime) {
 
 // Render the state
 void _PlayState::Render(double BlendFactor) {
-	if(IsPaused())
+	if(IsPaused() || Player->IsDead())
 		BlendFactor = 0;
 
 	// Set up programs
