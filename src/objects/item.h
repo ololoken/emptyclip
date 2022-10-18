@@ -80,7 +80,7 @@ class _Item : public _Object {
 		void RecalculateStats();
 		void Serialize(ae::_Buffer &Buffer) override;
 		void DrawTooltip(const _Player *Player, size_t CompareSlot, int InventorySlot, glm::vec2 DrawPosition);
-		void Render(double BlendFactor) override;
+		void Render(double BlendFactor) const override;
 
 		bool AddMod(_Item *Mod);
 		bool ModCompatible(_Item *Mod);

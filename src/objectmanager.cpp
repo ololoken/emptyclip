@@ -44,8 +44,8 @@ void _ObjectManager::Update(double FrameTime, _Map *Map) {
 		RenderList[i].clear();
 
 	// Update objects
-	for(auto Iterator = Objects.begin(); Iterator != Objects.end(); ) {
-		_Object *Object = *Iterator;
+	for(size_t i = Objects.size() - 1; i < Objects.size(); i--) {
+		_Object *Object = Objects[i];
 
 		// Update the object
 		Object->Update(FrameTime);
@@ -55,7 +55,7 @@ void _ObjectManager::Update(double FrameTime, _Map *Map) {
 
 			// Delete object
 			delete Object;
-			Iterator = Objects.erase(Iterator);
+			Objects.erase(Objects.begin() + i);
 		}
 		else {
 
@@ -127,16 +127,14 @@ void _ObjectManager::Update(double FrameTime, _Map *Map) {
 				if(Map->Camera->IsAABBInView(Bounds))
 					RenderList[RENDER_LIGHTS].push_back(Object);
 			}
-
-			++Iterator;
 		}
 	}
 }
 
 // Render objects
 int _ObjectManager::Render(int Type, double BlendFactor) {
-	for(auto Iterator : RenderList[Type])
-		Iterator->Render(BlendFactor);
+	for(auto Iterator = RenderList[Type].rbegin(); Iterator != RenderList[Type].rend(); ++Iterator)
+		(*Iterator)->Render(BlendFactor);
 
 	return (int)RenderList[Type].size();
 }

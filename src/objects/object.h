@@ -113,7 +113,7 @@ class _Object {
 		virtual ~_Object() {}
 
 		virtual void Update(double FrameTime);
-		virtual void Render(double BlendFactor);
+		virtual void Render(double BlendFactor) const;
 		virtual void RenderLights(double BlendFactor);
 		virtual void Serialize(ae::_Buffer &Buffer) {}
 		bool IsDying() const { return Action == ACTION_DYING || Action == ACTION_STARTDEATH; }
@@ -127,7 +127,7 @@ class _Object {
 		void GetLightBounds(glm::vec4 &Bounds);
 		void FacePosition(const glm::vec2 &Target);
 		void SetPosition(const glm::vec2 &NewPosition);
-		void GetDrawPosition(glm::vec2 &DrawPosition, double BlendFactor) { DrawPosition = Position * (float)BlendFactor + LastPosition * (float)(1.0 - BlendFactor); }
+		void GetDrawPosition(glm::vec2 &DrawPosition, double BlendFactor) const { DrawPosition = Position * (float)BlendFactor + LastPosition * (float)(1.0 - BlendFactor); }
 		glm::vec2 GetDirectionVector(float RotationOffset = 0.0f) const;
 		float RayIntersection(const glm::vec2 &Origin, const glm::vec2 &Direction) const;
 		bool IsTouchingCircle(const glm::vec2 &CircleCenter, float CircleRadius, float &DistanceSquared) const;

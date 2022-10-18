@@ -40,7 +40,7 @@ class _Entity : public _Object {
 		~_Entity() override;
 
 		virtual void Update(double FrameTime) override;
-		virtual void Render(double BlendFactor) override;
+		virtual void Render(double BlendFactor) const override;
 		virtual void RecalculateStats() {}
 
 		void Move(double FrameTime);

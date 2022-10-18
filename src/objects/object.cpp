@@ -54,7 +54,7 @@ void _Object::Update(double FrameTime) {
 }
 
 // Render object
-void _Object::Render(double BlendFactor) {
+void _Object::Render(double BlendFactor) const {
 	if(!Texture)
 		return;
 

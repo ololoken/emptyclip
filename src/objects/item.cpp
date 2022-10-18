@@ -490,7 +490,7 @@ void _Item::DrawTooltip(const _Player *Player, size_t CompareSlot, int Inventory
 }
 
 // Draws the object
-void _Item::Render(double BlendFactor) {
+void _Item::Render(double BlendFactor) const {
 	if(!Visible)
 		return;
 

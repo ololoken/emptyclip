@@ -533,7 +533,7 @@ void _Player::UpdateAnimation(double FrameTime, bool PlaySound) {
 }
 
 // Draws the player
-void _Player::Render(double BlendFactor) {
+void _Player::Render(double BlendFactor) const {
 	glm::vec2 DrawPosition;
 	GetDrawPosition(DrawPosition, BlendFactor);
 

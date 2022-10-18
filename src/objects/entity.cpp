@@ -472,7 +472,7 @@ void _Entity::Move(double FrameTime) {
 }
 
 // Draws the object
-void _Entity::Render(double BlendFactor) {
+void _Entity::Render(double BlendFactor) const {
 	if(IsCrate()) {
 		_Object::Render(BlendFactor);
 	}

@@ -103,7 +103,6 @@ class _PlayState : public ae::_State {
 		void EndLevel();
 
 		void SpawnObject(const _ObjectSpawn *ObjectSpawn, bool GenerateStats=false, int AddedLevel=0);
-		void ProcessQueuedObjectSpawns();
 		void UseObject(_Item *Item);
 
 		// Game
@@ -118,7 +117,6 @@ class _PlayState : public ae::_State {
 		// Objects
 		std::vector<_Entity *> Monsters;
 		std::vector<_Event *> ActiveEvents;
-		std::vector<_ObjectSpawn> QueuedObjectSpawns;
 		int ActiveAI{0};
 
 		// HUD

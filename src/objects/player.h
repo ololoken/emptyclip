@@ -70,7 +70,7 @@ class _Player : public _Entity {
 		bool IsMelee() const;
 		const char *GetWeaponID(int AttackType);
 
-		void Render(double BlendFactor) override;
+		void Render(double BlendFactor) const override;
 		void Render2D(const glm::ivec2 &DrawPosition);
 
 		void Update(double FrameTime) override;
