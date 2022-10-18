@@ -633,7 +633,7 @@ void _Map::RemoveObjectFromGrid(_Object *Object, int Type) {
 }
 
 // Check collision with tiles and resolve
-bool _Map::ResolveTileCollisions(const glm::vec2 &TargetPosition, float Radius, int CollisionFlag, int &Bounces, glm::vec2 &NewPosition, glm::vec2 &Velocity) {
+bool _Map::ResolveTileCollisions(const glm::vec2 &TargetPosition, float Radius, int CollisionFlag, bool PushOut, int &Bounces, glm::vec2 &NewPosition, glm::vec2 &Velocity) {
 	CollisionHits.clear();
 
 	NewPosition = TargetPosition;
@@ -743,11 +743,18 @@ bool _Map::ResolveTileCollisions(const glm::vec2 &TargetPosition, float Radius, 
 			continue;
 
 		// Update position
-		NewPosition += Hit.Push;
+		if(PushOut)
+			NewPosition += Hit.Push;
 
 		// Handle bouncing
-		if(!Bounces)
+		if(!Bounces) {
+
+			// Set object position to closest point on AABB
+			if(!PushOut)
+				NewPosition = Hit.ClosestPoint;
+
 			continue;
+		}
 
 		// Get dot product of velocity and normal
 		float VelocityDotNormal = glm::dot(Velocity, Hit.Normal);

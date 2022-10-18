@@ -299,7 +299,7 @@ void _Object::CheckProjectileCollisions() {
 
 	// Check wall hits
 	glm::vec2 HitPosition;
-	if(Map->ResolveTileCollisions(Position, Radius, _Tile::BULLET, Bounces, HitPosition, Velocity)) {
+	if(Map->ResolveTileCollisions(Position, Radius, _Tile::BULLET, false, Bounces, HitPosition, Velocity)) {
 		Position = HitPosition;
 
 		if(!Bounces) {

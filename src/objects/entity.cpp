@@ -443,7 +443,7 @@ void _Entity::Move(double FrameTime) {
 
 	// Check collisions with walls and map boundaries
 	if(!CanFreePath())
-		Map->ResolveTileCollisions(NewPosition, Radius, _Tile::ENTITY, Bounces, NewPosition, Velocity);
+		Map->ResolveTileCollisions(NewPosition, Radius, _Tile::ENTITY, true, Bounces, NewPosition, Velocity);
 
 	// Determine if the object has moved
 	if(Position != NewPosition) {

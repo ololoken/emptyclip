@@ -206,7 +206,7 @@ class _Map {
 
 		void Update(double FrameTime, double Clock);
 
-		bool ResolveTileCollisions(const glm::vec2 &TargetPosition, float Radius, int CollisionFlag, int &Bounces, glm::vec2 &NewPosition, glm::vec2 &Velocity);
+		bool ResolveTileCollisions(const glm::vec2 &TargetPosition, float Radius, int CollisionFlag, bool PushOut, int &Bounces, glm::vec2 &NewPosition, glm::vec2 &Velocity);
 		std::vector<_Hit> &CheckCollisionsInGrid(const glm::vec2 &Position, float Radius, const std::vector<int> &GridTypes);
 		std::vector<_Hit> &ResolveCollisionsInGrid(const glm::vec2 &Position, float Radius, const _Object *SkipObject, bool &AxisAlignedPush, float PushFactor=1.0f);
 		_Item *GetClosestItem(const glm::vec2 &Position, bool SkipHideable) const;
