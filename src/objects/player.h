@@ -66,6 +66,7 @@ class _Player : public _Entity {
 		void Reset(bool Recalculate=false);
 		void ResetAchievementTracking();
 
+		bool IsDead() const { return Action == ACTION_DYING && !Active; }
 		bool IsMelee() const;
 		const char *GetWeaponID(int AttackType);
 

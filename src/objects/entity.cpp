@@ -509,7 +509,7 @@ void _Entity::RenderRadius(const glm::vec2 &DrawPosition) {
 
 // Update current health
 void _Entity::UpdateHealth(int Adjust) {
-	if(IsInvulnerable())
+	if(IsInvulnerable() || IsDying())
 		return;
 
 	// Check taking damage

@@ -1300,6 +1300,7 @@ int _Player::GetPickupAmount(const _Item *Item) const {
 
 // Reset after death
 void _Player::Respawn() {
+	Active = true;
 	Health = MaxHealth;
 	Action = ACTION_IDLE;
 	Animation->Play(0);

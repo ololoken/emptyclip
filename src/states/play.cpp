@@ -490,7 +490,7 @@ void _PlayState::Update(double FrameTime) {
 	Menu.Update(FrameTime);
 
 	// Handle pause
-	if(IsPaused()) {
+	if(IsPaused() || Player->IsDead()) {
 		Menu.ShowDefaultCursor(true);
 		HUD->CursorOverItem = nullptr;
 		HUD->CursorUseWorldPosition = false;
@@ -1258,7 +1258,7 @@ void _PlayState::PlayerDied() {
 // End level
 void _PlayState::EndLevel() {
 	Level = TouchingEndEvent->ItemID;
-	bool GotOneHundredPercent = HUD->Kills[0] == HUD->Kills[1] && HUD->Crates[0] == HUD->Crates[1] && HUD->Secrets[0] == HUD->Secrets[1];
+	bool GotOneHundredPercent = HUD->Kills[0] >= HUD->Kills[1] && HUD->Crates[0] >= HUD->Crates[1] && HUD->Secrets[0] >= HUD->Secrets[1];
 	if(!GotOneHundredPercent)
 		Player->Stat100Percent = false;
 

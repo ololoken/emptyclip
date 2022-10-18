@@ -70,7 +70,6 @@ class _Entity : public _Object {
 		int GenerateDamage(int AttackType, float DamageModifier, bool Steady, bool &Crit);
 		int ReduceDamage(int Damage);
 		virtual bool IsSteady() const { return false; }
-		bool IsDead() const { return Action == ACTION_DYING && !Active; }
 		bool IsInvulnerable() const override { return InvulnerableTimer > 0.0 || GodMode; }
 		virtual const char *GetWeaponID(int AttackType) { return nullptr; }
 
