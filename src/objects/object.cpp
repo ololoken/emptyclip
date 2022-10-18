@@ -328,6 +328,14 @@ void _Object::CheckProjectileCollisions() {
 		for(const auto &Hit : Hits) {
 			if(Hit.Object->Type == PROP) {
 				Active = false;
+
+				// Set ammo pickup to closest point on circle
+				if(Hit.Object->Circle && !ProjectileWeaponTemplate->PickupID.empty()) {
+					glm::vec2 HitVector = Position - Hit.Object->Position;
+					if(HitVector.x != 0.0f && HitVector.y != 0.0f)
+						Position = Hit.Object->Position + glm::normalize(HitVector) * Hit.Object->Radius;
+				}
+
 				CreateAmmoPickup(PositionZ);
 				break;
 			}
