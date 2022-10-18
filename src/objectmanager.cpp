@@ -44,90 +44,101 @@ void _ObjectManager::Update(double FrameTime, _Map *Map) {
 		RenderList[i].clear();
 
 	// Update objects
-	for(size_t i = Objects.size() - 1; i < Objects.size(); i--) {
+	bool Delete = false;
+	size_t ObjectCount = Objects.size();
+	for(size_t i = 0; i < ObjectCount; i++) {
 		_Object *Object = Objects[i];
 
 		// Update the object
 		Object->Update(FrameTime);
 
-		// Delete old objects
+		// Flag deleted objects
 		if(!Object->Active) {
-
-			// Delete object
-			delete Object;
-			Objects.erase(Objects.begin() + i);
+			Delete = true;
+			continue;
 		}
-		else {
 
-			// Get object bounds
-			glm::vec4 Bounds;
-			Object->GetRenderBounds(Bounds);
+		// Get object bounds
+		glm::vec4 Bounds;
+		Object->GetRenderBounds(Bounds);
 
-			// Add to minimap
-			if(Map->CheckMinimapBounds(Bounds)) {
-				_MinimapIcon MinimapIcon;
+		// Add to minimap
+		if(Map->CheckMinimapBounds(Bounds)) {
+			_MinimapIcon MinimapIcon;
 
-				// Get bounds
-				float Size = Object->IsUnique() ? Object->Radius * 2.0f : Object->Radius;
-				MinimapIcon.Bounds = glm::vec4(
-					Object->Position.x - Size, Object->Position.y - Size,
-					Object->Position.x + Size, Object->Position.y + Size
-				);
+			// Get bounds
+			float Size = Object->IsUnique() ? Object->Radius * 2.0f : Object->Radius;
+			MinimapIcon.Bounds = glm::vec4(
+				Object->Position.x - Size, Object->Position.y - Size,
+				Object->Position.x + Size, Object->Position.y + Size
+			);
 
-				// Get color
-				switch(Object->Type) {
-					case _Object::WEAPON:
-					case _Object::ARMOR:
-					case _Object::MOD:
-						if(Object->IsUnique())
-							Map->MinimapIcons[_Map::MINIMAP_UNIQUE].push_back(MinimapIcon);
-						else
-							Map->MinimapIcons[_Map::MINIMAP_EQUIPMENT].push_back(MinimapIcon);
-					break;
-					case _Object::KEY:
-						Map->MinimapIcons[_Map::MINIMAP_KEY].push_back(MinimapIcon);
-					break;
-					case _Object::AMMO:
-						Map->MinimapIcons[_Map::MINIMAP_AMMO].push_back(MinimapIcon);
-					break;
-					case _Object::MEDKIT:
-						Map->MinimapIcons[_Map::MINIMAP_MEDKIT].push_back(MinimapIcon);
-					break;
-					case _Object::PROP:
-						Map->MinimapIcons[_Map::MINIMAP_WALL].push_back(MinimapIcon);
-					break;
-					case _Object::PROJECTILE:
-						Map->MinimapIcons[_Map::MINIMAP_PROJECTILE].push_back(MinimapIcon);
-					break;
-				}
-			}
-
-			// Add to render list
-			bool DrawLight = true;
-			if(Map->Camera->IsAABBInView(Bounds)) {
-				if(Object->Template.IsItem()) {
-					_Item *Item = (_Item *)Object;
-
-					// Hide pickups when more info is shown
-					if(Item->IsHideable() && PlayState.ShowMoreInfo())
-						DrawLight = false;
+			// Get color
+			switch(Object->Type) {
+				case _Object::WEAPON:
+				case _Object::ARMOR:
+				case _Object::MOD:
+					if(Object->IsUnique())
+						Map->MinimapIcons[_Map::MINIMAP_UNIQUE].push_back(MinimapIcon);
 					else
-						RenderList[RENDER_ITEMS].push_back(Object);
-				}
-				else if(Object->Template.Type == _Object::PROP)
-					RenderList[RENDER_PROP].push_back(Object);
-				else if(Object->Template.Type == _Object::PROJECTILE) {
-					RenderList[RENDER_PROJECTILES].push_back(Object);
-				}
-			}
-
-			// Get light bounds
-			if(Object->LightTexture && DrawLight) {
-				Object->GetLightBounds(Bounds);
-				if(Map->Camera->IsAABBInView(Bounds))
-					RenderList[RENDER_LIGHTS].push_back(Object);
+						Map->MinimapIcons[_Map::MINIMAP_EQUIPMENT].push_back(MinimapIcon);
+				break;
+				case _Object::KEY:
+					Map->MinimapIcons[_Map::MINIMAP_KEY].push_back(MinimapIcon);
+				break;
+				case _Object::AMMO:
+					Map->MinimapIcons[_Map::MINIMAP_AMMO].push_back(MinimapIcon);
+				break;
+				case _Object::MEDKIT:
+					Map->MinimapIcons[_Map::MINIMAP_MEDKIT].push_back(MinimapIcon);
+				break;
+				case _Object::PROP:
+					Map->MinimapIcons[_Map::MINIMAP_WALL].push_back(MinimapIcon);
+				break;
+				case _Object::PROJECTILE:
+					Map->MinimapIcons[_Map::MINIMAP_PROJECTILE].push_back(MinimapIcon);
+				break;
 			}
 		}
+
+		// Add to render list
+		bool DrawLight = true;
+		if(Map->Camera->IsAABBInView(Bounds)) {
+			if(Object->Template.IsItem()) {
+				_Item *Item = (_Item *)Object;
+
+				// Hide pickups when more info is shown
+				if(Item->IsHideable() && PlayState.ShowMoreInfo())
+					DrawLight = false;
+				else
+					RenderList[RENDER_ITEMS].push_back(Object);
+			}
+			else if(Object->Template.Type == _Object::PROP)
+				RenderList[RENDER_PROP].push_back(Object);
+			else if(Object->Template.Type == _Object::PROJECTILE) {
+				RenderList[RENDER_PROJECTILES].push_back(Object);
+			}
+		}
+
+		// Get light bounds
+		if(Object->LightTexture && DrawLight) {
+			Object->GetLightBounds(Bounds);
+			if(Map->Camera->IsAABBInView(Bounds))
+				RenderList[RENDER_LIGHTS].push_back(Object);
+		}
+	}
+
+	if(!Delete)
+		return;
+
+	// Clean up deleted objects
+	for(size_t i = Objects.size() - 1; i < Objects.size(); i--) {
+		if(Objects[i]->Active)
+			continue;
+
+		// Delete object
+		delete Objects[i];
+		Objects.erase(Objects.begin() + (int)i);
 	}
 }
 

@@ -218,7 +218,7 @@ void _HUD::MoveWorldItem(const glm::vec2 &DropPosition) {
 	if(DragStart || !CursorItem)
 		return;
 
-	// Get world position
+	// Remove item from old position
 	Player->Map->RemoveObject(CursorItem, GRID_ITEM);
 
 	// Default to mouse position
@@ -230,7 +230,7 @@ void _HUD::MoveWorldItem(const glm::vec2 &DropPosition) {
 	// Check drop position
 	Player->Map->GetDropPosition(Player, PLAYER_REACH_DISTANCE, CursorItem->Position);
 
-	// Move item
+	// Place item in new position
 	Player->Map->AddObject(CursorItem, GRID_ITEM);
 
 	// Reset state
