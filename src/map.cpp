@@ -536,7 +536,7 @@ bool _Map::Save(const std::string &String) {
 	return true;
 }
 
-// Create tile data
+// Create tile data and set collision flags
 void _Map::InitializeTiles() {
 
 	// Allocate memory
@@ -544,7 +544,7 @@ void _Map::InitializeTiles() {
 	for(int i = 0; i < Size.x; i++)
 		Data[i] = new _Tile[(size_t)Size.y];
 
-	// Loop through floor layers and fill out walkable field
+	// Floor layers
 	for(int l = 0; l < MAPLAYER_FLAT; l++) {
 		for(size_t k = 0; k < Blocks[l].size(); k++) {
 			for(int i = Blocks[l][k].Start.x; i <= Blocks[l][k].End.x; i++) {
@@ -561,14 +561,20 @@ void _Map::InitializeTiles() {
 		}
 	}
 
-	// Loop through walls
+	// Walls
 	for(size_t k = 0; k < Blocks[MAPLAYER_WALL].size(); k++) {
 		for(int i = Blocks[MAPLAYER_WALL][k].Start.x; i <= Blocks[MAPLAYER_WALL][k].End.x; i++) {
 			for(int j = Blocks[MAPLAYER_WALL][k].Start.y; j <= Blocks[MAPLAYER_WALL][k].End.y; j++) {
 				if(Blocks[MAPLAYER_WALL][k].Walkable)
 					Data[i][j].Collision &= ~(_Tile::ENTITY | _Tile::BULLET | _Tile::VISION);
-				else
-					Data[i][j].Collision |= _Tile::ENTITY | _Tile::BULLET | _Tile::VISION;
+				else {
+
+					// Allow bullets to pass floating walls
+					if(Blocks[MAPLAYER_WALL][k].MinZ > 0.0f)
+						Data[i][j].Collision |= _Tile::ENTITY | _Tile::VISION;
+					else
+						Data[i][j].Collision |= _Tile::ENTITY | _Tile::BULLET | _Tile::VISION;
+				}
 
 				// Walls override floor change masks
 				Data[i][j].CollisionChangeMask = _Tile::ENTITY | _Tile::BULLET | _Tile::VISION;
