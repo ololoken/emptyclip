@@ -23,18 +23,37 @@
 #include <ae/assets.h>
 #include <ae/program.h>
 #include <ae/graphics.h>
+#include <ae/texture.h>
 #include <map.h>
 #include <stats.h>
 #include <constants.h>
 
+const int RENDER_VBO_VERTICES_PER_DRAW = 24;
+const int RENDER_VBO_SIZE = 100000 * RENDER_VBO_VERTICES_PER_DRAW;
+
 // Constructor
 _ObjectManager::_ObjectManager() {
+	RenderVBO = ae::Graphics.CreateVBO(nullptr, RENDER_VBO_SIZE * sizeof(float), GL_DYNAMIC_DRAW);
+	RenderVertices = new float[RENDER_VBO_SIZE];
+
 	for(int i = 0; i < RENDER_COUNT; i++)
 		RenderList[i].reserve(5000);
+
+	for(int i = 0; i < OBJECT_MAX_RENDERLIST; i++) {
+		ItemRenderList[i].Objects.reserve(2000);
+		ItemRenderList[i].PositionZ = ITEM_Z;
+	}
+
+	for(const auto &Template : Stats.Objects) {
+		if(Template.second.RenderListType != -1)
+			ItemRenderList[Template.second.RenderListType].Texture = ae::Assets.Textures.at(Template.second.IconID);
+	}
 }
 
 // Destructor
 _ObjectManager::~_ObjectManager() {
+	ae::Graphics.DeleteVBO(RenderVBO);
+	delete[] RenderVertices;
 	ClearObjects();
 }
 
@@ -42,6 +61,9 @@ _ObjectManager::~_ObjectManager() {
 void _ObjectManager::Update(double FrameTime, _Map *Map) {
 	for(int i = 0; i < RENDER_COUNT; i++)
 		RenderList[i].clear();
+
+	for(int i = 0; i < OBJECT_MAX_RENDERLIST; i++)
+		ItemRenderList[i].Objects.clear();
 
 	// Update objects
 	bool Delete = false;
@@ -110,8 +132,12 @@ void _ObjectManager::Update(double FrameTime, _Map *Map) {
 				// Hide pickups when more info is shown
 				if(Item->IsHideable() && PlayState.ShowMoreInfo())
 					DrawLight = false;
-				else
-					RenderList[RENDER_ITEMS].push_back(Object);
+				else {
+					if(Item->Template.RenderListType != -1)
+						ItemRenderList[Item->Template.RenderListType].Objects.push_back(Object);
+					else
+						RenderList[RENDER_ITEMS].push_back(Object);
+				}
 			}
 			else if(Object->Template.Type == _Object::PROP)
 				RenderList[RENDER_PROP].push_back(Object);
@@ -144,10 +170,85 @@ void _ObjectManager::Update(double FrameTime, _Map *Map) {
 
 // Render objects
 int _ObjectManager::Render(int Type, double BlendFactor) {
-	for(auto Iterator = RenderList[Type].rbegin(); Iterator != RenderList[Type].rend(); ++Iterator)
-		(*Iterator)->Render(BlendFactor);
+	for(const auto &Object : RenderList[Type])
+		Object->Render(BlendFactor);
 
 	return (int)RenderList[Type].size();
+}
+
+// Render items
+int _ObjectManager::RenderItems(double BlendFactor) {
+	int RenderCount = 0;
+
+	// Set up program
+	ae::Graphics.SetProgram(ae::Assets.Programs["item"]);
+	ae::Graphics.SetColor(glm::vec4(1.0f));
+	ae::Graphics.SetVertexBufferID(RenderVBO);
+	ae::Graphics.SetAttribLevel(2);
+	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 4, nullptr);
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 4, (GLvoid *)(sizeof(float) * 2));
+
+	// Iterate through each render list type
+	for(int i = 0; i < OBJECT_MAX_RENDERLIST; i++) {
+		if(ItemRenderList[i].Objects.empty())
+			continue;
+
+		// Set up program
+		ae::Assets.Programs["item"]->SetUniformFloat("pos_z", ItemRenderList[i].PositionZ);
+		ae::Graphics.SetTextureID(ItemRenderList[i].Texture->ID);
+
+		// Build vertex buffer
+		int VertexIndex = 0;
+		for(const auto &Object : ItemRenderList[i].Objects) {
+			if(VertexIndex + RENDER_VBO_VERTICES_PER_DRAW > RENDER_VBO_SIZE)
+				break;
+
+			// Get blended draw position
+			glm::vec2 DrawPosition;
+			Object->GetDrawPosition(DrawPosition, BlendFactor);
+
+			// Get bounds
+			glm::vec2 Start = DrawPosition - ItemRenderList[i].Scale;
+			glm::vec2 End = DrawPosition + ItemRenderList[i].Scale;
+
+			// First triangle of quad
+			RenderVertices[VertexIndex++] = Start.x;
+			RenderVertices[VertexIndex++] = Start.y;
+			RenderVertices[VertexIndex++] = 0.0f;
+			RenderVertices[VertexIndex++] = 0.0f;
+			RenderVertices[VertexIndex++] = Start.x;
+			RenderVertices[VertexIndex++] = End.y;
+			RenderVertices[VertexIndex++] = 0.0f;
+			RenderVertices[VertexIndex++] = 1.0f;
+			RenderVertices[VertexIndex++] = End.x;
+			RenderVertices[VertexIndex++] = End.y;
+			RenderVertices[VertexIndex++] = 1.0f;
+			RenderVertices[VertexIndex++] = 1.0f;
+
+			// Second triangle of quad
+			RenderVertices[VertexIndex++] = End.x;
+			RenderVertices[VertexIndex++] = End.y;
+			RenderVertices[VertexIndex++] = 1.0f;
+			RenderVertices[VertexIndex++] = 1.0f;
+			RenderVertices[VertexIndex++] = End.x;
+			RenderVertices[VertexIndex++] = Start.y;
+			RenderVertices[VertexIndex++] = 1.0f;
+			RenderVertices[VertexIndex++] = 0.0f;
+			RenderVertices[VertexIndex++] = Start.x;
+			RenderVertices[VertexIndex++] = Start.y;
+			RenderVertices[VertexIndex++] = 0.0f;
+			RenderVertices[VertexIndex++] = 0.0f;
+		}
+
+		// Draw buffer
+		glBufferSubData(GL_ARRAY_BUFFER, 0, VertexIndex * sizeof(float), RenderVertices);
+		glDrawArrays(GL_TRIANGLES, 0, VertexIndex >> 2);
+
+		// Update total
+		RenderCount += (int)ItemRenderList[i].Objects.size();
+	}
+
+	return RenderCount;
 }
 
 // Render object lights
@@ -169,6 +270,9 @@ void _ObjectManager::ClearObjects() {
 
 	for(int i = 0; i < RENDER_COUNT; i++)
 		RenderList[i].clear();
+
+	for(int i = 0; i < OBJECT_MAX_RENDERLIST; i++)
+		ItemRenderList[i].Objects.clear();
 }
 
 // Adds an object to the manager

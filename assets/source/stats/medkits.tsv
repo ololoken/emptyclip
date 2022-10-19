@@ -1,2 +1,2 @@
-id	name	icon_id
-medkit	Medkit	textures/items/medkit.png
+id	name	icon_id	renderlist
+medkit	Medkit	textures/items/medkit.png	0

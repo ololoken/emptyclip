@@ -129,6 +129,7 @@ struct _ObjectTemplate {
 	glm::vec4 LightColor{1.0f};
 	int DoorColorType{0};
 	int Type{0};
+	int RenderListType{-1};
 
 	std::unordered_map<std::string, _Value> Attributes;
 };

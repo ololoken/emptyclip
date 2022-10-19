@@ -135,6 +135,7 @@ const  float        ITEM_HIGHLIGHT_SCALE                 =  1.3f;
 const  float        OBJECT_Z                             =  0.3f;
 const  int          OBJECT_MAX_LEVEL                     =  1000;
 const  float        OBJECT_MAX_SPEED                     =  15.0f;
+const  int          OBJECT_MAX_RENDERLIST                =  9;
 //     AI
 const  double       AI_REACTION_TIME_MIN                 =  GAME_TIMESTEP;
 const  double       AI_REACTION_TIME_MAX                 =  0.3;

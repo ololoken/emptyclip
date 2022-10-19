@@ -177,6 +177,7 @@ void _Stats::LoadAmmo() {
 		Template.Name = Database->GetString("name");
 		Template.IconID = Database->GetString("icon_id");
 		Template.AmmoID = Database->GetString("type_id");
+		Template.RenderListType = Database->GetInt<int>("renderlist");
 		Template.Attributes["amount"].Int = Database->GetInt<int>("amount");
 		Template.Attributes["pickup_bonus"].Int = Database->GetInt<int>("pickup_bonus");
 
@@ -385,6 +386,7 @@ void _Stats::LoadMedkits() {
 		Template.ID = Database->GetString("id");
 		Template.Name = Database->GetString("name");
 		Template.IconID = Database->GetString("icon_id");
+		Template.RenderListType = Database->GetInt<int>("renderlist");
 
 		// Check for loaded textures
 		if(!ae::Assets.Textures[Template.IconID])

@@ -699,6 +699,7 @@ void _PlayState::Render(double BlendFactor) {
 	// Set up programs
 	ae::_Program *MapProgram = ae::Assets.Programs["map"];
 	ae::_Program *MapNormProgram = ae::Assets.Programs["map_norm"];
+	ae::_Program *ItemProgram = ae::Assets.Programs["item"];
 
 	// Get player light
 	glm::vec4 PlayerLightColor;
@@ -724,6 +725,11 @@ void _PlayState::Render(double BlendFactor) {
 	MapNormProgram->Lights[0].Position = LightPosition;
 	MapNormProgram->Lights[0].Attenuation = LightAttenuantion;
 	MapNormProgram->AmbientLight = Map->AmbientLight;
+	ItemProgram->LightCount = 1;
+	ItemProgram->Lights[0].Color = PlayerLightColor;
+	ItemProgram->Lights[0].Position = LightPosition;
+	ItemProgram->Lights[0].Attenuation = LightAttenuantion;
+	ItemProgram->AmbientLight = Map->AmbientLight;
 
 	// Setup the viewing matrix
 	ae::Graphics.Setup3D();
@@ -734,6 +740,8 @@ void _PlayState::Render(double BlendFactor) {
 	MapProgram->SetUniformMat4("view_projection_transform", Camera->Transform);
 	ae::Graphics.SetProgram(MapNormProgram);
 	MapNormProgram->SetUniformMat4("view_projection_transform", Camera->Transform);
+	ae::Graphics.SetProgram(ItemProgram);
+	ItemProgram->SetUniformMat4("view_projection_transform", Camera->Transform);
 	ae::Graphics.SetProgram(ae::Assets.Programs["pos"]);
 	ae::Assets.Programs["pos"]->SetUniformMat4("view_projection_transform", Camera->Transform);
 	ae::Graphics.SetProgram(ae::Assets.Programs["pos_uv"]);
@@ -775,11 +783,16 @@ void _PlayState::Render(double BlendFactor) {
 		ae::Graphics.SetActiveTexture(1);
 		Framebuffer->BindTexture();
 		ae::Graphics.SetActiveTexture(0);
+		ItemProgram->Use();
+		ae::Graphics.SetActiveTexture(1);
+		Framebuffer->BindTexture();
+		ae::Graphics.SetActiveTexture(0);
 	}
 
 	int BlockRenderCount = 0;
 	int ParticleRenderCount = 0;
 	int PropRenderCount = 0;
+	int ItemRenderCount = 0;
 
 	// Draw the floor
 	BlockRenderCount += Map->RenderFloors();
@@ -797,12 +810,17 @@ void _PlayState::Render(double BlendFactor) {
 	BlockRenderCount += Map->RenderWalls(true);
 	PropRenderCount += Map->RenderProps();
 
+	// Draw items
+	ae::Graphics.SetProgram(ItemProgram);
+	ae::Graphics.SetDepthMask(false);
+	ae::Graphics.SetDepthTest(true);
+	ItemRenderCount += Map->ObjectManager->RenderItems(BlendFactor);
+	ae::Graphics.ResetState();
+
 	// Draw objects
 	ae::Graphics.SetProgram(MapProgram);
 	MapProgram->ResetTransform(MapProgram->TextureTransformID);
-	ae::Graphics.SetDepthMask(false);
-	ae::Graphics.SetDepthTest(true);
-	Map->ObjectManager->Render(_ObjectManager::RENDER_ITEMS, BlendFactor);
+	ItemRenderCount += Map->ObjectManager->Render(_ObjectManager::RENDER_ITEMS, BlendFactor);
 	Map->ObjectManager->Render(_ObjectManager::RENDER_PROJECTILES, BlendFactor);
 	Map->ObjectManager->Render(_ObjectManager::RENDER_PLAYER, BlendFactor);
 	Map->ObjectManager->Render(_ObjectManager::RENDER_MONSTER, BlendFactor);
@@ -981,7 +999,7 @@ void _PlayState::Render(double BlendFactor) {
 		Buffer.str("");
 
 		DrawPosition.y += Spacing.y;
-		Buffer << Map->ObjectManager->RenderList[_ObjectManager::RENDER_ITEMS].size() << " items rendered";
+		Buffer << ItemRenderCount << " items rendered";
 		ae::Assets.Fonts["hud_tiny"]->DrawText(Buffer.str(), DrawPosition);
 		Buffer.str("");
 

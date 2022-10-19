@@ -7,3 +7,4 @@ ortho_pos_uv	shaders/ortho_pos_uv.vert	shaders/ortho_pos_uv.frag	2	0
 map	shaders/pos_uv_up.vert	shaders/map.frag	2	10
 map_norm	shaders/pos_uv_norm.vert	shaders/map.frag	3	10
 minimap	shaders/minimap.vert	shaders/pos.frag	1	0
+item	shaders/item.vert	shaders/map.frag	2	10

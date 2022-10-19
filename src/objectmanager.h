@@ -18,11 +18,15 @@
 #pragma once
 
 // Libraries
+#include <constants.h>
 #include <vector>
 
 // Forward Declarations
 class _Object;
 class _Map;
+namespace ae {
+	class _Texture;
+}
 
 // Manages all the objects for a map
 class _ObjectManager {
@@ -39,12 +43,20 @@ class _ObjectManager {
 			RENDER_COUNT
 		};
 
+		struct _RenderList {
+			std::vector<_Object *> Objects;
+			glm::vec2 Scale{0.25f};
+			const ae::_Texture *Texture{nullptr};
+			float PositionZ{0.0f};
+		};
+
 		_ObjectManager();
 		~_ObjectManager();
 
 		// Updates
 		void Update(double FrameTime, _Map *Map);
 		int Render(int Type, double BlendFactor);
+		int RenderItems(double BlendFactor);
 		int RenderLights(int Type, double BlendFactor);
 
 		// Management
@@ -52,8 +64,14 @@ class _ObjectManager {
 		void RemoveObject(_Object *Object);
 		void ClearObjects();
 
+		// Objects
 		std::vector<_Object *> Objects;
 		std::vector<_Object *> RenderList[RENDER_COUNT];
+		_RenderList ItemRenderList[OBJECT_MAX_RENDERLIST];
+
+		// VBO
+		uint32_t RenderVBO{0};
+		float *RenderVertices{nullptr};
 
 	private:
 
