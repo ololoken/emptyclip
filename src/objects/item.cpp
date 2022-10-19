@@ -41,6 +41,7 @@ static const float ATTRIBUTE_SPACING = 26;
 _Item::_Item(const _ObjectTemplate &ItemTemplate) :
 	_Object(ItemTemplate) {
 
+	Radius = ITEM_RADIUS;
 	PositionZ = ITEM_Z;
 }
 

@@ -116,9 +116,17 @@ class _Object {
 		virtual void Render(double BlendFactor) const;
 		virtual void RenderLights(double BlendFactor);
 		virtual void Serialize(ae::_Buffer &Buffer) {}
+
 		bool IsDying() const { return Action == ACTION_DYING || Action == ACTION_STARTDEATH; }
 		virtual bool IsInvulnerable() const { return false; }
 		bool CanFreePath() const { return FreePathing || FreePathingTimer > 0.0; }
+		bool CanStack() const { return false; }
+		bool CanMove() const { return Type == _Object::WEAPON || Type == _Object::ARMOR || Type == _Object::MOD; }
+		bool CanEquip() const { return Type == _Object::WEAPON || Type == _Object::ARMOR; }
+		bool CanLevel() const { return Type == _Object::WEAPON || Type == _Object::ARMOR || Type == _Object::MOD; }
+		bool CanUnique() const { return Type == _Object::WEAPON || Type == _Object::ARMOR || Type == _Object::MOD || Type == _Object::AMMO || Type == _Object::MEDKIT; }
+		bool IsAutoPickup() const { return Type == _Object::AMMO || Type == _Object::KEY || Type == _Object::MEDKIT; }
+		bool IsHideable() const { return Type == _Object::AMMO || Type == _Object::MEDKIT; }
 
 		virtual const _ParticleTemplate *GetParticle(int ParticleType) const { return nullptr; }
 		const ae::_Sound *GetSound(int SoundType) const;

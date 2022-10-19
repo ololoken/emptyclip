@@ -87,13 +87,6 @@ class _Item : public _Object {
 		float GetBonusMultiplier(int ModType, bool Inverse=false) const;
 
 		int UpdateCount(int Amount) { Count += Amount; return Count; }
-		bool CanStack() const { return false; }
-		bool CanMove() const { return Type == _Object::WEAPON || Type == _Object::ARMOR || Type == _Object::MOD; }
-		bool CanEquip() const { return Type == _Object::WEAPON || Type == _Object::ARMOR; }
-		bool CanLevel() const { return Type == _Object::WEAPON || Type == _Object::ARMOR || Type == _Object::MOD; }
-		bool CanUnique() const { return Type == _Object::WEAPON || Type == _Object::ARMOR || Type == _Object::MOD || Type == _Object::AMMO || Type == _Object::MEDKIT; }
-		bool IsAutoPickup() const { return Type == _Object::AMMO || Type == _Object::KEY || Type == _Object::MEDKIT; }
-		bool IsHideable() const { return Type == _Object::AMMO || Type == _Object::MEDKIT; }
 
 		void SetAmmo(int Value);
 		bool IsMelee() const;

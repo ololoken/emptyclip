@@ -851,6 +851,68 @@ bool _Map::CheckAABBCollision(const glm::vec2 &Position, float Radius, const flo
 	return Touching;
 }
 
+// Check random spots for a empty location in the world
+glm::vec2 _Map::FindSuitableItemPosition(const glm::vec2 &Position, int ItemType, float Radius, int Attempts) {
+	if(ItemType == _Object::AMMO || ItemType == _Object::MEDKIT)
+		return Position + GenerateRandomPointInCircle(ITEM_PLACEMENT_RADIUS);
+
+	glm::vec2 CheckPosition;
+	for(int i = 0; i < Attempts; i++) {
+
+		// Get random position in a circle
+		CheckPosition = Position + GenerateRandomPointInCircle(ITEM_PLACEMENT_RADIUS);
+
+		// Get bounding rectangle
+		_TileBounds TileBounds;
+		GetTileBounds(CheckPosition, Radius, TileBounds);
+
+		// Iterate through tiles covered by the bounds
+		bool Hit = false;
+		ObjectMap.clear();
+		for(int i = TileBounds.Start.x; i <= TileBounds.End.x; i++) {
+			for(int j = TileBounds.Start.y; j <= TileBounds.End.y; j++) {
+				if(!Data[i][j].CanWalk()) {
+					Hit = true;
+					break;
+				}
+
+				// Check items in grid
+				for(auto Iterator : Data[i][j].Objects[GRID_ITEM]) {
+					_Object *Object = Iterator.first;
+					if(Object->IsHideable())
+						continue;
+
+					if(ObjectMap.find(Object) != ObjectMap.end())
+						continue;
+
+					// Check distance
+					float RadiiSum = Object->Radius + Radius;
+					float DistanceSquared = glm::distance2(Object->Position, CheckPosition);
+					if(DistanceSquared >= RadiiSum * RadiiSum)
+						continue;
+
+					ObjectMap[Object] = 1;
+					Hit = true;
+					break;
+				}
+			}
+
+			if(Hit)
+				break;
+		}
+
+		// Found empty location
+		if(!Hit)
+			return CheckPosition;
+
+		// Reduce check radius
+		if(i % 5 == 4)
+			Radius *= ITEM_PLACEMENT_RADIUS_REDUCTION;
+	}
+
+	return CheckPosition;
+}
+
 // Get the closest visible item
 _Item *_Map::GetClosestItem(const glm::vec2 &Position, bool SkipHideable) const {
 
