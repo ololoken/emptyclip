@@ -426,8 +426,8 @@ void _Entity::Move(double FrameTime) {
 	// Get a list of entities that the object is colliding with
 	glm::vec2 NewPosition = Position + MoveDirection + Velocity;
 	bool AxisAlignedPush = false;
-	if(!IsInvulnerable() && !CanFreePath() && !IsDying()) {
-		std::vector<_Hit> &Hits = Map->ResolveCollisionsInGrid(NewPosition, Radius, this, AxisAlignedPush, Type == PLAYER ? PLAYER_PUSH_FACTOR : ENTITY_PUSH_FACTOR);
+	if(!CanFreePath() && !IsDying()) {
+		std::vector<_Hit> &Hits = Map->ResolveCollisionsInGrid(NewPosition, Radius, this, IsInvulnerable(), Type == PLAYER ? PLAYER_PUSH_FACTOR : ENTITY_PUSH_FACTOR, AxisAlignedPush);
 
 		// Resolve pushes
 		for(auto Hit : Hits) {

@@ -1021,7 +1021,7 @@ std::vector<_Hit> &_Map::CheckCollisionsInGrid(const glm::vec2 &Position, float 
 }
 
 // Returns a list of entities that an object is colliding with
-std::vector<_Hit> &_Map::ResolveCollisionsInGrid(const glm::vec2 &Position, float Radius, const _Object *SkipObject, bool &AxisAlignedPush, float PushFactor) {
+std::vector<_Hit> &_Map::ResolveCollisionsInGrid(const glm::vec2 &Position, float Radius, const _Object *SkipObject, bool SkipMonsters, float PushFactor, bool &AxisAlignedPush) {
 
 	// Get the object's bounding rectangle
 	_TileBounds TileBounds;
@@ -1035,6 +1035,9 @@ std::vector<_Hit> &_Map::ResolveCollisionsInGrid(const glm::vec2 &Position, floa
 				for(auto &Iterator : Data[i][j].Objects[k]) {
 					_Object *Object = Iterator.first;
 					if(Object == SkipObject || Object->IsDying() || Object->CanFreePath())
+						continue;
+
+					if(SkipMonsters && Object->AIType)
 						continue;
 
 					ObjectMap[Object] = 1;
