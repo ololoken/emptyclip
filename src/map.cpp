@@ -858,8 +858,8 @@ _Item *_Map::GetClosestItem(const glm::vec2 &Position, bool SkipHideable) const 
 	glm::ivec2 Coord = GetValidCoord(Position);
 
 	// Search items in grid
-	_Item *ClosestItem = nullptr;
-	float ClosestDistanceSquared = HUGE_VAL;
+	_Item *ClosestItem[2] = { nullptr, nullptr };
+	double ClosestDistanceSquared[2] = { HUGE_VAL, HUGE_VAL };
 	for(auto Iterator : Data[Coord.x][Coord.y].Objects[GRID_ITEM]) {
 		_Item *Item = (_Item *)Iterator.first;
 		if(SkipHideable && Item->IsHideable())
@@ -867,13 +867,22 @@ _Item *_Map::GetClosestItem(const glm::vec2 &Position, bool SkipHideable) const 
 
 		// Check circle intersection
 		float DistanceSquared = glm::distance2(Item->Position, Position);
-		if(DistanceSquared < ClosestDistanceSquared && DistanceSquared < Item->Radius * Item->Radius) {
-			ClosestItem = Item;
-			ClosestDistanceSquared = DistanceSquared;
-		}
+		if(DistanceSquared >= Item->Radius * Item->Radius)
+			continue;
+
+		// Skip further items
+		if(DistanceSquared >= ClosestDistanceSquared[Item->IsHideable()])
+			continue;
+
+		ClosestItem[Item->IsHideable()] = Item;
+		ClosestDistanceSquared[Item->IsHideable()] = DistanceSquared;
 	}
 
-	return ClosestItem;
+	// Prioritize gear over pickups
+	if(ClosestItem[0])
+		return ClosestItem[0];
+
+	return ClosestItem[1];
 }
 
 // Return objects that are touching a circle
