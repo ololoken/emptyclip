@@ -57,7 +57,6 @@ _Entity::~_Entity() {
 void _Entity::Update(double FrameTime) {
 	LastPosition = Position;
 	LastDirection = Direction;
-	UpdateRecoil(FrameTime);
 
 	// Update timers
 	if(FreePathingTimer > 0.0) {

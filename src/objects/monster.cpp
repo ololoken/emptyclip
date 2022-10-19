@@ -62,6 +62,7 @@ _Monster::_Monster(const _ObjectTemplate &MonsterTemplate) :
 void _Monster::RecalculateStats() {
 	StopThresholdSquared = ENTITY_STOP_THRESHOLD * MoveSpeed;
 	StopThresholdSquared *= StopThresholdSquared;
+	CurrentAccuracy = MinAccuracy;
 }
 
 // Update

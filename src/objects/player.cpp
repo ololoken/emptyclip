@@ -451,13 +451,13 @@ void _Player::Update(double FrameTime) {
 
 	// Update states
 	UpdateAnimation(FrameTime);
+	UpdateRecoil(FrameTime);
 	UpdateReloading();
 	UpdateWeaponSwitch();
 
 	// Stop trigger down audio
-	if(TriggerDownAudio && (!AttackRequested || !WeaponHasAmmo(WEAPONATTACK_MAIN) || IsDying() || SwitchingWeapons || Reloading)) {
+	if(TriggerDownAudio && (!AttackRequested || !WeaponHasAmmo(WEAPONATTACK_MAIN) || IsDying() || SwitchingWeapons || Reloading))
 		StopAudio();
-	}
 
 	// Make an attack
 	if(AttackRequested && StartAttack()) {
