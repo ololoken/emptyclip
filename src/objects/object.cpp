@@ -302,8 +302,9 @@ void _Object::CheckProjectileCollisions() {
 	if(Map->ResolveTileCollisions(Position, Radius, _Tile::BULLET, false, Bounces, HitPosition, Velocity)) {
 		Position = HitPosition;
 
-		if(!Bounces) {
-			CreateAmmoPickup(PositionZ);
+		if(Bounces <= 0) {
+			if(Bounces == 0)
+				CreateAmmoPickup(PositionZ);
 			Active = false;
 		}
 		else {

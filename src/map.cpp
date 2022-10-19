@@ -669,7 +669,7 @@ bool _Map::ResolveTileCollisions(const glm::vec2 &TargetPosition, float Radius, 
 
 	// Stop bouncing when touching map edge
 	if(Touching)
-		Bounces = 0;
+		Bounces = -1;
 
 	// Check tiles
 	int LeftTile = (int)Left;
@@ -753,7 +753,7 @@ bool _Map::ResolveTileCollisions(const glm::vec2 &TargetPosition, float Radius, 
 			NewPosition += Hit.Push;
 
 		// Handle bouncing
-		if(!Bounces) {
+		if(Bounces <= 0) {
 
 			// Set object position to closest point on AABB
 			if(!PushOut)
