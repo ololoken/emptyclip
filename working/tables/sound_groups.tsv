@@ -3,7 +3,6 @@ player	player_swing0.ogg						player_punch0.ogg	player_hit0.ogg		player_move0.og
 knife	knife_fire0.ogg						knife_hit0.ogg			
 spear	spear_fire0.ogg						knife_hit0.ogg			
 pistol	pistol_fire0.ogg			pistol_ricochet0.ogg	pistol_empty0.ogg	pistol_reload0.ogg				
-pistol_heavy	pistol_fire1.ogg			pistol_ricochet0.ogg	pistol_empty0.ogg	pistol_reload0.ogg				
 plasma	plasma_fire0.ogg				pistol_empty0.ogg	pistol_reload0.ogg				
 revolver	revolver_fire0.ogg			pistol_ricochet0.ogg	pistol_empty0.ogg	revolver_reload0.ogg				
 shotgun	shotgun_fire0.ogg			pistol_ricochet0.ogg	pistol_empty0.ogg	shotgun_reload0.ogg				
