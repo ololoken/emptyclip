@@ -43,7 +43,6 @@ monster_hit0.ogg	1	5
 monster_punch0.ogg	0.3	5
 pistol_empty0.ogg	0.7	1
 pistol_fire0.ogg	0.5	5
-pistol_fire1.ogg	0.5	5
 pistol_reload0.ogg	1	1
 pistol_ricochet0.ogg	0.2	1
 plasma_fire0.ogg	0.7	5
@@ -58,12 +57,12 @@ rifle_fire0.ogg	0.7	3
 rocket_explode0.ogg	0.7	3
 rocketlauncher_fire0.ogg	0.7	3
 rocketlauncher_reload0.ogg	1	1
-shotgun_fire0.ogg	0.7	3
+shotgun_fire0.ogg	0.6	3
 shotgun_reload0.ogg	0.7	1
 skeleton_die0.ogg	0.7	3
 skeleton_move0.ogg	0.7	5
-smg_fire0.ogg	0.7	5
-sniper_fire0.ogg	0.45	2
+smg_fire0.ogg	0.6	5
+sniper_fire0.ogg	1	2
 spear_fire0.ogg	0.7	3
 spider_attack0.ogg	0.7	5
 wisp_attack0.ogg	0.7	5
