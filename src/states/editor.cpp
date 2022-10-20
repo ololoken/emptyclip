@@ -1422,7 +1422,7 @@ void _EditorState::DrawBrush() {
 			if(EventSelected()) {
 				ae::_Element *Button = PaletteElement[EDITMODE_EVENTS]->Children[SelectedEvent->Type];
 				IconTexture = Button->Style->Texture;
-				IconID = Button->ID;
+				IconID = std::to_string(SelectedEventIndex);
 				IconText = Button->Style->Name;
 
 				ItemID = SelectedEvent->ItemID;
@@ -1482,8 +1482,6 @@ void _EditorState::DrawBrush() {
 			TextPosition.y += TextSpacingY;
 			MainFont->DrawText("Sound:", glm::ivec2(TextPosition), ae::RIGHT_BASELINE);
 			MainFont->DrawText(SoundID, glm::ivec2(TextPosition + ValueOffset));
-
-			IconID = "";
 		} break;
 		default: {
 
