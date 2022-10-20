@@ -533,7 +533,7 @@ void _Item::RecalculateStats() {
 			float MinAccuracyMultiplier = 1.0f / (QualityFactor * std::max(0, (100 + Bonus[MOD_ACCURACY] + Bonus[MOD_SPREAD])) * 0.01f);
 
 			SetAttributeRange("damage", GetBonusMultiplier(MOD_DAMAGE));
-			Attributes["accuracy_min"].Float = std::min(360.0f, Template.Attributes.at("accuracy_min").Float * MinAccuracyMultiplier);
+			Attributes["accuracy_min"].Float = Template.Attributes.at("accuracy_min").Float * MinAccuracyMultiplier;
 			Attributes["accuracy_max"].Float = std::max(Template.Attributes.at("accuracy_max").Float, Attributes["accuracy_min"].Float);
 			Attributes["fire_period"].Double = Template.Attributes.at("fire_period").Double * GetBonusMultiplier(MOD_ATTACKSPEED, true);
 			Attributes["shoot_period"].Double = Template.Attributes.at("shoot_period").Double * GetBonusMultiplier(MOD_HANDLING, true);

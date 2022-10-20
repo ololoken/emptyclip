@@ -299,8 +299,8 @@ void _Player::RecalculateStats() {
 	if(MainWeaponType != WEAPON_MELEE) {
 		float StrengthSkillMultiplier = Stats.GetSkillBonusMultiplier(Skills[SKILL_STRENGTH], SKILL_STRENGTH);
 		float AccuracySkillMultiplier = 1.0f / Stats.GetSkillBonusMultiplier(Skills[SKILL_PERCEPTION], SKILL_PERCEPTION);
-		CurrentAccuracyNormal = MinAccuracyNormal = WeaponAttributes[WEAPONATTACK_MAIN].at("accuracy_min").Float * AccuracySkillMultiplier;
-		MaxAccuracyNormal = WeaponAttributes[WEAPONATTACK_MAIN].at("accuracy_max").Float * AccuracySkillMultiplier;
+		CurrentAccuracyNormal = MinAccuracyNormal = std::min(360.0f, WeaponAttributes[WEAPONATTACK_MAIN].at("accuracy_min").Float * AccuracySkillMultiplier);
+		MaxAccuracyNormal = std::min(360.0f, WeaponAttributes[WEAPONATTACK_MAIN].at("accuracy_max").Float * AccuracySkillMultiplier);
 		Recoil = WeaponAttributes[WEAPONATTACK_MAIN]["recoil"].Float / StrengthSkillMultiplier;
 		AccuracyRegen = WeaponAttributes[WEAPONATTACK_MAIN]["accuracy_regen"].Float * StrengthSkillMultiplier;
 		MoveRecoil = WeaponAttributes[WEAPONATTACK_MAIN]["move_recoil"].Float / StrengthSkillMultiplier;
