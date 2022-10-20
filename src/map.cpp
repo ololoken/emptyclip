@@ -120,7 +120,7 @@ _Map::_Map(const std::string &Filename, double Clock, int Progression) : _Map() 
 
 	// Used when resizing maps
 	glm::ivec2 Offset(0, 0);
-	bool Adjust = (Offset.x != 0 && Offset.y != 0);
+	bool Adjust = (Offset.x != 0 || Offset.y != 0);
 
 	// Load file
 	gzifstream File(("maps/" + this->Filename).c_str(), std::ios::in);
