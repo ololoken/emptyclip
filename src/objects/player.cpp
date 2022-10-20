@@ -1019,8 +1019,8 @@ float _Player::GetCrosshairRadius(const glm::vec2 &Cursor) {
 	float Accuracy = CurrentAccuracy;
 	if(Accuracy < 0.0f)
 		Accuracy = 0.0f;
-	else if(Accuracy > PLAYER_MAXACCURACY)
-		Accuracy = PLAYER_MAXACCURACY;
+	else if(Accuracy > 180.0f)
+		return -1.0f;
 
 	// Get distance to cursor
 	float Distance = glm::length(Cursor - Position);

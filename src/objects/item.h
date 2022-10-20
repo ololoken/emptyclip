@@ -55,6 +55,7 @@ enum ModType {
 	MOD_MAXSTAMINA,
 	MOD_BURST,
 	MOD_BOUNCE,
+	MOD_SPREAD,
 	MOD_COUNT
 };
 
@@ -82,7 +83,7 @@ class _Item : public _Object {
 		void DrawTooltip(const _Player *Player, size_t CompareSlot, int InventorySlot, glm::vec2 DrawPosition);
 		void Render(double BlendFactor) const override;
 
-		bool AddMod(_Item *Mod);
+		bool AddMod(_Item *Mod, bool Recalculate=true);
 		bool ModCompatible(_Item *Mod);
 		float GetBonusMultiplier(int ModType, bool Inverse=false) const;
 

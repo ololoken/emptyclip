@@ -107,7 +107,6 @@ const  float        PLAYER_STAMINAREGEN                  =  0.1f;
 const  float        PLAYER_SPRINTSTAMINA                 =  0.333333f;
 const  float        PLAYER_TIREDTHRESHOLD                =  0.3f;
 const  float        PLAYER_ZOOMSCALE                     =  15.0f;
-const  float        PLAYER_MAXACCURACY                   =  170.0f;
 const  double       PLAYER_WEAPONSWITCHPERIOD            =  0.5;
 const  double       PLAYER_USEPERIOD                     =  0.2;
 const  glm::vec4    PLAYER_LIGHT                         =  glm::vec4(0.5f,0.5f,0.5f,1.0f);

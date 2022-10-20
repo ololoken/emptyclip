@@ -405,7 +405,8 @@ void _Item::DrawTooltip(const _Player *Player, size_t CompareSlot, int Inventory
 				}
 				else {
 					std::string Percent = Template.Attributes.at("percent_sign").Int ? "%" : "";
-					Buffer << "+" << Attributes.at("bonus").Int << Percent;
+					std::string Positive = Template.Attributes.at("negative").Int ? "" : "+";
+					Buffer << Positive << Attributes.at("bonus").Int << Percent;
 					AttributeFont->DrawText(ModTypeToString(Template.Attributes.at("mod_type").Int), glm::ivec2(DrawPosition - DrawOffset), ae::RIGHT_BASELINE);
 					AttributeFont->DrawText(Buffer.str(), glm::ivec2(DrawPosition + DrawOffset), ae::LEFT_BASELINE, TextColor);
 				}
@@ -469,11 +470,10 @@ void _Item::DrawTooltip(const _Player *Player, size_t CompareSlot, int Inventory
 			Buffer << Bonus[i] << " Round ";
 		}
 		else if(ModTemplate.Attributes.at("mod_type").Int != MOD_FULLAUTO) {
-			std::string Percent = " ";
-			if(ModTemplate.Attributes.at("percent_sign").Int)
-				Percent = "% ";
+			std::string Percent = ModTemplate.Attributes.at("percent_sign").Int ? "% " : " ";
+			std::string Positive = ModTemplate.Attributes.at("negative").Int ? "" : "+";
 
-			Buffer << "+" << Bonus[i] << Percent;
+			Buffer << Positive << Bonus[i] << Percent;
 		}
 
 		// Set label
@@ -530,9 +530,11 @@ void _Item::RecalculateStats() {
 	float QualityFactor = 1.0f + Quality * 0.01f;
 	switch(Type) {
 		case _Object::WEAPON: {
+			float MinAccuracyMultiplier = 1.0f / (QualityFactor * std::max(0, (100 + Bonus[MOD_ACCURACY] + Bonus[MOD_SPREAD])) * 0.01f);
+
 			SetAttributeRange("damage", GetBonusMultiplier(MOD_DAMAGE));
-			Attributes["accuracy_min"].Float = Template.Attributes.at("accuracy_min").Float * GetBonusMultiplier(MOD_ACCURACY, true);
-			Attributes["accuracy_max"].Float = Template.Attributes.at("accuracy_max").Float;
+			Attributes["accuracy_min"].Float = std::min(360.0f, Template.Attributes.at("accuracy_min").Float * MinAccuracyMultiplier);
+			Attributes["accuracy_max"].Float = std::max(Template.Attributes.at("accuracy_max").Float, Attributes["accuracy_min"].Float);
 			Attributes["fire_period"].Double = Template.Attributes.at("fire_period").Double * GetBonusMultiplier(MOD_ATTACKSPEED, true);
 			Attributes["shoot_period"].Double = Template.Attributes.at("shoot_period").Double * GetBonusMultiplier(MOD_HANDLING, true);
 			Attributes["attack_count"].Int = Template.Attributes.at("attack_count").Int;
@@ -584,12 +586,14 @@ void _Item::RecalculateStats() {
 }
 
 // Add mod to item
-bool _Item::AddMod(_Item *Mod) {
+bool _Item::AddMod(_Item *Mod, bool Recalculate) {
 	if(!ModCompatible(Mod))
 		return false;
 
 	Mods.push_back(Mod);
-	RecalculateStats();
+
+	if(Recalculate)
+		RecalculateStats();
 
 	return true;
 }
@@ -626,7 +630,7 @@ bool _Item::ModCompatible(_Item *Mod) {
 				return false;
 
 			// Accuracy only affects guns
-			if(ModType == MOD_ACCURACY && IsMelee())
+			if((ModType == MOD_ACCURACY || ModType == MOD_SPREAD) && IsMelee())
 				return false;
 
 			// Explosion only affects explosive weapons
@@ -673,7 +677,7 @@ bool _Item::ModCompatible(_Item *Mod) {
 
 // Get bonus multiplier from mod type and quality
 float _Item::GetBonusMultiplier(int ModType, bool Inverse) const {
-	float Factor = ((100 + Quality) * 0.01f) * ((100 + Bonus[ModType]) * 0.01f);
+	float Factor = (100 + Quality) * 0.01f * (100 + Bonus[ModType]) * 0.01f;
 	return Inverse ? 1.0f / Factor : Factor;
 }
 
@@ -832,6 +836,9 @@ std::string _Item::ModTypeToString(int ModType) {
 		break;
 		case MOD_BOUNCE:
 			return "Projectile Bounce";
+		break;
+		case MOD_SPREAD:
+			return "Minimum Accuracy";
 		break;
 	}
 

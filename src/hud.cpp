@@ -470,9 +470,10 @@ void _HUD::Update(double FrameTime, float Radius, double Clock) {
 	Buffer.str("");
 
 	// Update crosshair
-	CrosshairScale += (Radius - CrosshairScale) / HUD_CROSSHAIRDIVISOR;
-	if(CrosshairScale < HUD_MINCROSSHAIRSCALE)
-		CrosshairScale = HUD_MINCROSSHAIRSCALE;
+	if(Radius < 0.0f)
+		CrosshairScale = 0.0f;
+	else
+		CrosshairScale = std::max(HUD_MINCROSSHAIRSCALE, CrosshairScale + (Radius - CrosshairScale) / HUD_CROSSHAIRDIVISOR);
 
 	// Update inventory
 	if(InventoryOpen) {
@@ -758,7 +759,7 @@ void _HUD::Render(bool FullMap) {
 
 // Draws the crosshair
 void _HUD::DrawCrosshair(const glm::vec2 &Position) {
-	if(InventoryOpen)
+	if(InventoryOpen || CrosshairScale <= 0.0f)
 		return;
 
 	ae::Graphics.SetDepthTest(false);

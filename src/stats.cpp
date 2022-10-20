@@ -417,6 +417,7 @@ void _Stats::LoadMods() {
 		Template.Attributes["bonus"].Float = Database->GetReal("bonus");
 		Template.Attributes["bonus_level"].Float = Database->GetReal("bonus_level");
 		Template.Attributes["percent_sign"].Int = Database->GetInt<int>("percent_sign");
+		Template.Attributes["negative"].Int = Database->GetInt<int>("negative");
 		Template.Attributes["max"].Int = Database->GetInt<int>("max");
 
 		// Check for loaded textures
@@ -825,6 +826,8 @@ _Item *_Stats::CreateItem(const std::string &ID, int Level, int Quality, int Cou
 		case _Object::MOD:
 			Item->SetAttributeLevel("bonus", QualityFactor);
 			Item->Attributes.at("bonus").Int = std::max(Item->Attributes.at("bonus").Int, 1);
+			if(Template.Attributes.at("negative").Int)
+				Item->Attributes.at("bonus").Int = -Item->Attributes.at("bonus").Int;
 		break;
 		default:
 			Item->Attributes = Template.Attributes;

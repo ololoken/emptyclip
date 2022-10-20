@@ -383,9 +383,11 @@ void _Save::LoadMods(ae::_Buffer &Buffer, _Item *Item) {
 		int Level = Buffer.Read<int>();
 		int Quality = Buffer.Read<int>();
 		_Item *Mod = Stats.CreateItem(ID, Level, Quality, 0, glm::vec2(0, 0), false);
-		if(!Item->AddMod(Mod))
+		if(!Item->AddMod(Mod, false))
 			delete Mod;
 	}
+
+	Item->RecalculateStats();
 }
 
 // Load ammo
