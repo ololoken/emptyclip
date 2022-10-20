@@ -378,7 +378,8 @@ void _Object::CheckProjectileCollisions() {
 
 	// Hit
 	if(!Active) {
-		ae::Audio.PlaySound(GetSound(SOUND_EXPLODE), ae::_SoundSettings(glm::vec3(Position.x, 0.0f, Position.y), 1.0f, AUDIO_REFERENCE_DISTANCE, AUDIO_MAX_DISTANCE, AUDIO_ROLL_OFF));
+		if(Bounces != -1)
+			ae::Audio.PlaySound(GetSound(SOUND_EXPLODE), ae::_SoundSettings(glm::vec3(Position.x, 0.0f, Position.y), 1.0f, AUDIO_REFERENCE_DISTANCE, AUDIO_MAX_DISTANCE, AUDIO_ROLL_OFF));
 
 		// Explode
 		if(ProjectileExplosionSize == 0.0f)
