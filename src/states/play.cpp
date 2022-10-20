@@ -459,16 +459,17 @@ bool _PlayState::HandleCommand(ae::_Console *Console) {
 
 // Window size updates
 void _PlayState::HandleWindow(uint8_t Event) {
-	if(Event == SDL_WINDOWEVENT_SIZE_CHANGED) {
-		if(Camera)
-			Camera->CalculateFrustum(ae::Graphics.AspectRatio);
+	if(Event != SDL_WINDOWEVENT_SIZE_CHANGED)
+		return;
 
-		Menu.HandleResize();
+	if(Camera)
+		Camera->CalculateFrustum(ae::Graphics.AspectRatio);
 
-		if(Framebuffer) {
-			Framebuffer->Resize(ae::Graphics.CurrentSize);
-			ae::Graphics.ResetState();
-		}
+	Menu.HandleResize();
+
+	if(Framebuffer) {
+		Framebuffer->Resize(ae::Graphics.CurrentSize);
+		ae::Graphics.ResetState();
 	}
 }
 

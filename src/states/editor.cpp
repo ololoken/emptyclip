@@ -731,10 +731,13 @@ void _EditorState::HandleMouseWheel(int Direction) {
 
 // Window size updates
 void _EditorState::HandleWindow(uint8_t Event) {
-	if(Event == SDL_WINDOWEVENT_SIZE_CHANGED) {
-		if(Camera)
-			Camera->CalculateFrustum(ae::Graphics.AspectRatio);
-	}
+	if(Event != SDL_WINDOWEVENT_SIZE_CHANGED)
+		return;
+
+	if(Camera)
+		Camera->CalculateFrustum(ae::Graphics.AspectRatio);
+
+	Menu.HandleResize();
 }
 
 // Handle quit events
