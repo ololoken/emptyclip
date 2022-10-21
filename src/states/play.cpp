@@ -938,12 +938,16 @@ void _PlayState::Render(double BlendFactor) {
 				continue;
 
 			Camera->ConvertWorldToScreen(Iterator->Position, TextPosition);
+
+			// Show bonus value
 			if(Item->Type == _Object::MOD) {
 
-				// Show bonus value
-				Buffer << "+" << Item->Attributes.at("bonus").Int;
+				if(!Item->Template.Attributes.at("negative").Int)
+					Buffer << "+";
+				Buffer << Item->Attributes.at("bonus").Int;
 				if(Item->Template.Attributes.at("percent_sign").Int)
 					Buffer << "%";
+
 				ae::Assets.Fonts["hud_tiny"]->DrawText(Buffer.str(), glm::ivec2(TextPosition + glm::vec2(0, 6) * ae::_Element::GetUIScale()), ae::CENTER_BASELINE, COLOR_FAINT_WHITE);
 				Buffer.str("");
 			}
