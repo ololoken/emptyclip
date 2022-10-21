@@ -579,10 +579,8 @@ void _PlayState::Update(double FrameTime) {
 		CheckEvents(Player);
 
 	// Activate events
-	if(Player->UseRequested && Player->CanUse()) {
-		if(ActivateEvent())
-			Player->UseRequested = false;
-	}
+	if(Player->ApplyUse())
+		ActivateEvent();
 
 	// Handle auto and manually picking up items
 	HandlePickup();
@@ -689,6 +687,7 @@ void _PlayState::Update(double FrameTime) {
 		HUD->CursorUseWorldPosition = false;
 	}
 
+	Player->UseRequested = false;
 	ae::Audio.SetPosition(glm::vec3(Player->Position.x, 10, Player->Position.y));
 }
 
@@ -1244,13 +1243,13 @@ void _PlayState::HandlePickup() {
 
 		// Automatically pickup ammo/health
 		if(NearbyItem->IsAutoPickup()) {
-			if(!PickupObject(NearbyItem, Player->UseRequested)) {
+			if(!PickupObject(NearbyItem, Player->ApplyUse())) {
 				IgnoreItems[NearbyItem] = 1;
 				continue;
 			}
 		}
 		// Manually pickup up an item
-		else if(Player->UseRequested)
+		else if(Player->ApplyUse())
 			UseObject(NearbyItem);
 	}
 }
@@ -1332,13 +1331,13 @@ void _PlayState::EndLevel() {
 }
 
 // Places an item into the player's inventory and return amount added
-int _PlayState::PickupObject(_Item *Item, bool UseOnFull) {
-	if(!Item || !Item->Visible || (UseOnFull && Item->IsHideable() && ShowMoreInfo()))
+int _PlayState::PickupObject(_Item *Item, bool Manual) {
+	if(!Item || !Item->Visible || (Manual && Item->IsHideable() && ShowMoreInfo()))
 		return 0;
 
 	// Attempt to add item
 	int AmountAdded = 0;
-	int AddResult = Player->AddItem(Item, AmountAdded, UseOnFull);
+	int AddResult = Player->AddItem(Item, AmountAdded, Manual);
 	if(AddResult) {
 		if(Item == ClosestItem)
 			ClosestItem = nullptr;
@@ -1375,14 +1374,17 @@ int _PlayState::PickupObject(_Item *Item, bool UseOnFull) {
 			Map->RemoveObjectFromGrid(Item, GRID_ITEM);
 
 		// Handle deletion
-		if(AddResult == ADD_REMOVE)
+		if(AddResult == ADD_REMOVE) {
 			Map->ObjectManager->RemoveObject(Item);
+		}
 		else if(AddResult == ADD_DELETE) {
 			Item->Active = false;
 			CursorItemTimer = 0;
 		}
 
-		Player->UseTimer = 0.0;
+		// Reset use timer
+		if(Manual && !Item->IsAutoPickup())
+			Player->UseTimer = 0.0;
 	}
 	else
 		HUD->ShowTextMessage("INVENTORY FULL", HUD_INVENTORYFULLTIME);
@@ -1405,8 +1407,7 @@ void _PlayState::UseObject(_Item *Item) {
 }
 
 // Open door or handle switches, return true on success
-bool _PlayState::ActivateEvent() {
-	bool Success = false;
+void _PlayState::ActivateEvent() {
 
 	// Open a door if possible
 	glm::ivec2 Position;
@@ -1431,8 +1432,9 @@ bool _PlayState::ActivateEvent() {
 				HUD->ShowMessageBox("You need the " + Stats.Objects.at(Event->ItemID).Name, HUD_KEY_MESSAGETIME, UI_MESSAGE_SMALL_SIZE);
 				if(!LockedSound || (LockedSound && !LockedSound->IsPlaying()))
 					LockedSound = ae::Audio.PlaySound(ae::Assets.Sounds["game_locked.ogg"]);
+
 				Player->UseTimer = 0.0;
-				return Success;
+				return;
 			}
 
 			std::string KeyName = Stats.Objects.at(Event->ItemID).Name;
@@ -1459,11 +1461,7 @@ bool _PlayState::ActivateEvent() {
 
 		// Reset player's use timer
 		Player->UseTimer = 0.0;
-
-		Success = true;
 	}
-
-	return Success;
 }
 
 // Creates a random item from an entity

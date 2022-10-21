@@ -70,7 +70,7 @@ class _PlayState : public ae::_State {
 		void GenerateExplosion(const _ParticleTemplate *ParticleTemplate, const glm::vec2 &Position, const glm::vec2 &Scale);
 		void GenerateProjectileEffects(const _ParticleTemplate *ParticleTemplate, const glm::vec2 &Position);
 		void CreateItemDrop(const _Entity *Entity, float DropRate);
-		int PickupObject(_Item *Item, bool UseOnFull);
+		int PickupObject(_Item *Item, bool Manual);
 		bool ShowMoreInfo();
 
 		// Parameters
@@ -94,7 +94,7 @@ class _PlayState : public ae::_State {
 		void DeleteMonsters();
 		void UpdateMonsters(double FrameTime);
 
-		bool ActivateEvent();
+		void ActivateEvent();
 		void CheckEvents(const _Entity *Entity);
 		void UpdateEvents(double FrameTime);
 		void ResolveAttack(_Entity *Attacker, int GridType);

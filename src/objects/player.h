@@ -123,6 +123,7 @@ class _Player : public _Entity {
 		bool CanSwitchWeapons() const { return !SwitchingWeapons && !Reloading && !IsMeleeAttacking() && !IsDying(); }
 		bool CanReload() const;
 		bool IsSteady() const override { return HasMainHand() && CurrentAccuracy <= MinAccuracy; }
+		bool ApplyUse() const { return UseRequested && CanUse(); }
 		void RequestAttack(int RequestType);
 
 		void SetColorID(const std::string &ColorID) { this->ColorID = ColorID; UpdateColor(); }
