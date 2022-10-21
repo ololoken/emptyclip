@@ -1,6 +1,6 @@
 name	color_id	damage_resist	damage	attack_speed	move_speed	freepathing	xp
 None		0	1	1	1	0	1.5
-Tough	dark	50	1	1	1	0	1.5
+Tough	dark	75	1	1	1	0	1.5
 Angry	red	0	1.5	1.5	1	0	1.5
 Nimble	green	0	1	1	2	0	1.5
-Ghostly	ghost	0	1	1	1	1	1.5
+Ghostly	ghost	0	2	1	0.5	1	1.5
