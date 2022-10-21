@@ -1499,11 +1499,16 @@ void _PlayState::CreateItemDrop(const _Entity *Entity, float DropRate) {
 			_ObjectSpawn ObjectSpawn;
 			Stats.GetRandomDrop(Monster->ItemDrop, &ObjectSpawn);
 			if(ObjectSpawn.Type) {
-				ObjectSpawn.Position = Map->FindSuitableItemPosition(Monster->Position, ObjectSpawn.Type, ITEM_RADIUS, ITEM_PLACEMENT_ATTEMPTS);
 
 				// Spawn object on player if item can't be reached
-				if(!Map->CheckCollisionFlag(Map->GetValidCoord(ObjectSpawn.Position), _Tile::ENTITY) || IsBoss)
+				if(!Map->CheckCollisionFlag(Map->GetValidCoord(Monster->Position), _Tile::ENTITY) || IsBoss)
 					ObjectSpawn.Position = Player->Position;
+				else
+					ObjectSpawn.Position = Monster->Position;
+
+				// Adjust position
+				if(!IsBoss)
+					ObjectSpawn.Position = Map->FindSuitableItemPosition(ObjectSpawn.Position, ObjectSpawn.Type, ITEM_RADIUS, ITEM_PLACEMENT_ATTEMPTS);
 
 				ObjectSpawn.Level = Monster->Level;
 				SpawnObject(&ObjectSpawn, true);
