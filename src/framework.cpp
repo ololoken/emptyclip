@@ -122,6 +122,7 @@ void _Framework::Init(int ArgumentCount, char **Arguments) {
 	// Get window settings
 	ae::_WindowSettings WindowSettings;
 	WindowSettings.WindowTitle = GAME_WINDOWTITLE;
+	WindowSettings.IconPath = "ui/icon.png";
 	WindowSettings.Fullscreen = Fullscreen;
 	WindowSettings.Vsync = Config.Vsync;
 	WindowSettings.Size = Config.WindowSize;
