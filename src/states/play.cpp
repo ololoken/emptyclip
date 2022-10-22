@@ -1742,6 +1742,7 @@ void _PlayState::UpdateEvents(double FrameTime) {
 				}
 				else
 					ae::Audio.PlaySound(ae::Assets.Sounds[Event->ItemID]);
+
 				Decrement = true;
 			} break;
 			case EVENT_FLOORSWITCH:
@@ -1765,12 +1766,13 @@ void _PlayState::UpdateEvents(double FrameTime) {
 			break;
 		}
 
-		// Play sound
-		if(!Event->SoundID.empty())
-			ae::Audio.PlaySound(ae::Assets.Sounds[Event->SoundID]);
-
 		// Decrease the event level
 		if(Decrement) {
+
+			// Play sound
+			if(!Event->SoundID.empty())
+				ae::Audio.PlaySound(ae::Assets.Sounds[Event->SoundID]);
+
 			Event->StartTimer();
 			if(Event->Level != -1)
 				Event->Decrement();
