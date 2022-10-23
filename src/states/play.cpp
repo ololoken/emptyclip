@@ -941,6 +941,8 @@ void _PlayState::Render(double BlendFactor) {
 
 			// Show bonus value
 			if(Item->Type == _Object::MOD) {
+				if(Item->Template.Attributes.at("mod_type").Int == MOD_FULLAUTO)
+					continue;
 
 				if(!Item->Template.Attributes.at("negative").Int)
 					Buffer << "+";
