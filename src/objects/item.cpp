@@ -548,8 +548,13 @@ void _Item::RecalculateStats() {
 			Attributes["bounces"].Int = Bonus[MOD_BOUNCE];
 			Attributes["crit_chance"].Int = std::clamp((int)(Template.Attributes.at("crit_chance").Int * QualityFactor) + Bonus[MOD_CRITCHANCE], 0, 100);
 			Attributes["rounds"].Int = std::round((Template.Attributes.at("rounds").Int + Bonus[MOD_MAXROUNDSPLUS]) * GetBonusMultiplier(MOD_MAXROUNDS));
-			if(Bonus[MOD_FULLAUTO])
+			if(Bonus[MOD_FULLAUTO]) {
 				Attributes["fire_rate"].Int = 1;
+				if(Template.Attributes.at("burst_rounds").Int) {
+					Attributes["burst_rounds"].Int = 0;
+					Attributes["fire_period"].Double = Attributes["fire_period"].Double / MOD_FULLAUTO_FIREPERIOD_FACTOR;
+				}
+			}
 
 			if(Bonus[MOD_BURST]) {
 				Attributes["burst_rounds"].Int = Bonus[MOD_BURST];
@@ -640,7 +645,7 @@ bool _Item::ModCompatible(_Item *Mod) {
 
 			// Full auto only affects semiauto weapons
 			if(ModType == MOD_FULLAUTO) {
-				if(IsMelee() || Template.Attributes.at("fire_rate").Int || Template.Attributes.at("fire_allrounds").Int || Template.Attributes.at("burst_rounds").Int)
+				if(IsMelee() || Template.Attributes.at("fire_rate").Int || Template.Attributes.at("fire_allrounds").Int)
 					return false;
 
 				// Check for burst mod
