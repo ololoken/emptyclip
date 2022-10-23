@@ -397,7 +397,7 @@ void _Item::DrawTooltip(const _Player *Player, size_t CompareSlot, int Inventory
 			if(InventorySlot == -1 && PlayState.HUD->InventoryOpen)
 				HelpTextList.push_back("Right-click to pick up");
 
-			if(Template.Attributes.at("mod_type").Int != MOD_FULLAUTO) {
+			if(Template.Attributes.at("mod_type").Int != MOD_FULLAUTO && Template.Attributes.at("mod_type").Int != MOD_SEMIAUTO) {
 				DrawPosition.y += Spacing.y;
 				if(Template.Attributes.at("mod_type").Int == MOD_BURST) {
 					Buffer << Attributes.at("bonus").Int << " Round Burst Fire";
@@ -548,11 +548,19 @@ void _Item::RecalculateStats() {
 			Attributes["bounces"].Int = Bonus[MOD_BOUNCE];
 			Attributes["crit_chance"].Int = std::clamp((int)(Template.Attributes.at("crit_chance").Int * QualityFactor) + Bonus[MOD_CRITCHANCE], 0, 100);
 			Attributes["rounds"].Int = std::round((Template.Attributes.at("rounds").Int + Bonus[MOD_MAXROUNDSPLUS]) * GetBonusMultiplier(MOD_MAXROUNDS));
+			if(Bonus[MOD_SEMIAUTO]) {
+				Attributes["fire_rate"].Int = 0;
+				if(Template.Attributes.at("burst_rounds").Int) {
+					Attributes["burst_rounds"].Int = 0;
+					Attributes["fire_period"].Double = Attributes["fire_period"].Double / Template.Attributes.at("burst_rounds").Int;
+				}
+			}
+
 			if(Bonus[MOD_FULLAUTO]) {
 				Attributes["fire_rate"].Int = 1;
 				if(Template.Attributes.at("burst_rounds").Int) {
 					Attributes["burst_rounds"].Int = 0;
-					Attributes["fire_period"].Double = Attributes["fire_period"].Double / MOD_FULLAUTO_FIREPERIOD_FACTOR;
+					Attributes["fire_period"].Double = Attributes["fire_period"].Double / Template.Attributes.at("burst_rounds").Int;
 				}
 			}
 
@@ -643,14 +651,26 @@ bool _Item::ModCompatible(_Item *Mod) {
 			if(ModType == MOD_EXPLOSION && Template.Attributes.at("explosion_size").Float == 0.0f)
 				return false;
 
+			// Semi only affects burst/full automatic
+			if(ModType == MOD_SEMIAUTO) {
+				if(IsMelee() || (Template.Attributes.at("fire_rate").Int == 0 && !Template.Attributes.at("burst_rounds").Int))
+					return false;
+
+				// Check for other mods
+				for(const auto &Mod : Mods) {
+					if(Mod->Type == _Object::MOD && (Mod->Template.Attributes.at("mod_type").Int == MOD_BURST || Mod->Template.Attributes.at("mod_type").Int == MOD_FULLAUTO))
+						return false;
+				}
+			}
+
 			// Full auto only affects semiauto weapons
 			if(ModType == MOD_FULLAUTO) {
 				if(IsMelee() || Template.Attributes.at("fire_rate").Int || Template.Attributes.at("fire_allrounds").Int)
 					return false;
 
-				// Check for burst mod
+				// Check for other mods
 				for(const auto &Mod : Mods) {
-					if(Mod->Type == _Object::MOD && Mod->Template.Attributes.at("mod_type").Int == MOD_BURST)
+					if(Mod->Type == _Object::MOD && (Mod->Template.Attributes.at("mod_type").Int == MOD_BURST || Mod->Template.Attributes.at("mod_type").Int == MOD_SEMIAUTO))
 						return false;
 				}
 			}
@@ -660,9 +680,9 @@ bool _Item::ModCompatible(_Item *Mod) {
 				if(IsMelee() || Template.Attributes.at("burst_rounds").Int || Template.Attributes.at("fire_allrounds").Int)
 					return false;
 
-				// Check for full auto mod
+				// Check for other mods
 				for(const auto &Mod : Mods) {
-					if(Mod->Type == _Object::MOD && Mod->Template.Attributes.at("mod_type").Int == MOD_FULLAUTO)
+					if(Mod->Type == _Object::MOD && (Mod->Template.Attributes.at("mod_type").Int == MOD_FULLAUTO || Mod->Template.Attributes.at("mod_type").Int == MOD_SEMIAUTO))
 						return false;
 				}
 			}
@@ -829,7 +849,7 @@ std::string _Item::ModTypeToString(int ModType) {
 			return "Critical Hit Chance";
 		break;
 		case MOD_FULLAUTO:
-			return "Full Automatic";
+			return "Full-Automatic";
 		break;
 		case MOD_MAXHEALTH:
 			return "Max Health";
@@ -845,6 +865,9 @@ std::string _Item::ModTypeToString(int ModType) {
 		break;
 		case MOD_SPREAD:
 			return "Minimum Accuracy";
+		break;
+		case MOD_SEMIAUTO:
+			return "Semi-Automatic";
 		break;
 	}
 

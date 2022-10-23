@@ -56,6 +56,7 @@ enum ModType {
 	MOD_BURST,
 	MOD_BOUNCE,
 	MOD_SPREAD,
+	MOD_SEMIAUTO,
 	MOD_COUNT
 };
 
