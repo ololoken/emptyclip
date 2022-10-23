@@ -1703,8 +1703,8 @@ void _PlayState::UpdateEvents(double FrameTime) {
 			case EVENT_SPAWN: {
 				const std::vector<_EventTile> &Tiles = Event->Tiles;
 				for(size_t i = 0; i < Tiles.size(); i++) {
-					Position.x = Tiles[i].Coord.x + 0.5f;
-					Position.y = Tiles[i].Coord.y + 0.5f;
+					Position.x = Tiles[i].Coord.x + 0.5f + ae::GetRandomReal(-0.25, 0.25);
+					Position.y = Tiles[i].Coord.y + 0.5f + ae::GetRandomReal(-0.25, 0.25);
 
 					// Spawn monster
 					if(Event->MonsterID.size()) {
