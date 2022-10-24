@@ -160,6 +160,7 @@ class _Player : public _Entity {
 
 		// Saves
 		std::string SavePath;
+		bool TestSave{false};
 
 		// Animation
 		ae::_Animation *LegAnimation;

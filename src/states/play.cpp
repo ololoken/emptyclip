@@ -79,8 +79,11 @@ void _PlayState::Init() {
 			// Create new test save
 			Player->RecalculateStats();
 			Player->Health = Player->MaxHealth;
+			Player->TestSave = true;
 			Save.SavePlayer(Player);
 		}
+
+		Player->TestSave = true;
 	}
 
 	// Bad player
@@ -169,6 +172,13 @@ void _PlayState::Close() {
 	delete Map;
 	delete HUD;
 	delete Framebuffer;
+
+	Particles = nullptr;
+	Camera = nullptr;
+	Map = nullptr;
+	HUD = nullptr;
+	Camera = nullptr;
+	Framebuffer = nullptr;
 }
 
 // Action handler

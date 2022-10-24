@@ -53,6 +53,7 @@ enum SaveChunkTypes {
 	CHUNK_STAT_100PERCENT,
 	CHUNK_STAT_FISTSONLY,
 	CHUNK_STAT_LONEWOLF,
+	CHUNK_TEST,
 };
 
 // Write a chunk to a stream
@@ -146,6 +147,12 @@ void _Save::LoadSaves() {
 			delete Players[SlotIndex];
 			Players[SlotIndex] = nullptr;
 		}
+
+		// Remove test saves
+		if(Players[SlotIndex]->TestSave) {
+			delete Players[SlotIndex];
+			Players[SlotIndex] = nullptr;
+		}
 	}
 }
 
@@ -180,6 +187,9 @@ void _Save::LoadPlayer(_Player *Player) {
 					throw std::runtime_error("Save version mismatch");
 				}
 			} break;
+			case CHUNK_TEST:
+				File.read((char *)&Player->TestSave, sizeof(Player->TestSave));
+			break;
 			case CHUNK_PLAYERNAME: {
 				char Buffer[1024];
 				File.read(Buffer, Size);
@@ -299,6 +309,7 @@ void _Save::SavePlayer(_Player *Player) {
 		throw std::runtime_error("Cannot create save file: " + Player->SavePath);
 
 	WriteChunk(File, CHUNK_SAVEVERSION, (const char *)&PLAYER_SAVEVERSION, sizeof(PLAYER_SAVEVERSION));
+	WriteChunk(File, CHUNK_TEST, (char *)&Player->TestSave, sizeof(Player->TestSave));
 	WriteChunk(File, CHUNK_PLAYERNAME, Player->Name.c_str(), (int)Player->Name.length());
 	WriteChunk(File, CHUNK_COLOR, Player->ColorID.c_str(), (int)Player->ColorID.length());
 	if(Player->Map) {
@@ -310,11 +321,11 @@ void _Save::SavePlayer(_Player *Player) {
 	WriteChunk(File, CHUNK_GOLD, (char *)&Player->Gold, sizeof(Player->Gold));
 	WriteChunk(File, CHUNK_HEALTH, (char *)&Player->Health, sizeof(Player->Health));
 	WriteChunk(File, CHUNK_PLAYTIME, (char *)&Player->PlayTime, sizeof(Player->PlayTime));
-	WriteChunk(File, CHUNK_PROGRESSIONTIME, (char *)&Player->ProgressionTime, sizeof(Player->ProgressionTime));
 	WriteChunk(File, CHUNK_CLOCK, (char *)&Player->Clock, sizeof(Player->Clock));
 	WriteChunk(File, CHUNK_KILLS, (char *)&Player->TotalKills, sizeof(Player->TotalKills));
 	WriteChunk(File, CHUNK_DEATHS, (char *)&Player->TotalDeaths, sizeof(Player->TotalDeaths));
 	WriteChunk(File, CHUNK_SKILLS, (char *)&Player->Skills, sizeof(Player->Skills));
+	WriteChunk(File, CHUNK_PROGRESSIONTIME, (char *)&Player->ProgressionTime, sizeof(Player->ProgressionTime));
 	WriteChunk(File, CHUNK_PROGRESSIONKILLS, (char *)&Player->ProgressionKills, sizeof(Player->ProgressionKills));
 	WriteChunk(File, CHUNK_PROGRESSIONCRATES, (char *)&Player->ProgressionCrates, sizeof(Player->ProgressionCrates));
 	WriteChunk(File, CHUNK_PROGRESSIONSECRETS, (char *)&Player->ProgressionSecrets, sizeof(Player->ProgressionSecrets));
