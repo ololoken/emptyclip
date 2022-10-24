@@ -45,43 +45,6 @@ sudo ninja install
 cd build/release
 cat install_manifest.txt | xargs sudo rm
 
------ COMMAND-LINE ARGUMENTS -----
-
-Parameters with <> denote required values
-Parameters with [] denote optional values
-
-Test a level
--level <map file>
-
-Run game fullscreen
--fullscreen
-
-Run game in a window
--window
-
-Disable audio
--noaudio
-
-Start the mapeditor
--editor [level]
-
------ HOW TO PLAY -----
-
-Press ESDF to walk around
-Press Left-click to shoot your gun
-Hold Right-click to enter aim mode
-Press Mouse Button 4 to attack with your melee weapon
-Hold A to sprint
-Press Spacebar to pick up items, open doors, or activate switches
-Press R to reload your gun
-Press W to switch weapons
-Press V to toggle your flashlight
-Press C to open your inventory or see character stats
-Hold Tab to view the map
-Press Middle Mouse Button to drop an item on the inventory screen
-Hold Alt to show more information on the inventory screen
-Press Escape to open the game menu or quit the game in test mode
-Press F1 to open the game menu
-Press F2 to show technical stats
-
-Save data is in %APPDATA%/emptyclip for Windows and ~/.local/share/emptyclip for Linux.
+-- Save data --
+Windows: %APPDATA%/emptyclip
+  Linux: ~/.local/share/emptyclip

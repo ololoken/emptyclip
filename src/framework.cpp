@@ -54,8 +54,6 @@ void _Framework::Init(int ArgumentCount, char **Arguments) {
 	#if defined ENABLE_ACHIEVEMENTS && ENABLE_ACHIEVEMENTS == 0
 		Achievements.Enabled = false;
 	#endif
-	bool AudioEnabled = Config.AudioEnabled;
-	bool Fullscreen = Config.Fullscreen;
 
 	// Process arguments
 	std::string Token;
@@ -64,13 +62,7 @@ void _Framework::Init(int ArgumentCount, char **Arguments) {
 		Token = std::string(Arguments[i]);
 		TokensRemaining = ArgumentCount - i - 1;
 
-		if(Token == "-fullscreen") {
-			Fullscreen = true;
-		}
-		else if(Token == "-window") {
-			Fullscreen = false;
-		}
-		else if(Token == "-editor") {
+		if(Token == "-editor") {
 			#ifdef ENABLE_EDITOR
 				State = &EditorState;
 				if(TokensRemaining && Arguments[i+1][0] != '-')
@@ -86,9 +78,6 @@ void _Framework::Init(int ArgumentCount, char **Arguments) {
 			PlayState.TestMode = true;
 
 			State = &PlayState;
-		}
-		else if(Token == "-noaudio") {
-			AudioEnabled = false;
 		}
 		else if(Token == "-dev") {
 			#ifndef NDEBUG
@@ -113,7 +102,7 @@ void _Framework::Init(int ArgumentCount, char **Arguments) {
 		throw std::runtime_error(std::string(__func__) + " failed to initialize SDL");
 
 	// Initialize audio
-	ae::Audio.Init(AudioEnabled, false);
+	ae::Audio.Init(Config.AudioEnabled, false);
 	ae::Audio.SetMaxDistance(AUDIO_MAX_DISTANCE);
 	ae::Audio.SetDirection(glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 	ae::Audio.SetSoundVolume(Config.SoundVolume);
@@ -123,7 +112,7 @@ void _Framework::Init(int ArgumentCount, char **Arguments) {
 	ae::_WindowSettings WindowSettings;
 	WindowSettings.WindowTitle = GAME_WINDOWTITLE;
 	WindowSettings.IconPath = "ui/icon.png";
-	WindowSettings.Fullscreen = Fullscreen;
+	WindowSettings.Fullscreen = Config.Fullscreen;
 	WindowSettings.Vsync = Config.Vsync;
 	WindowSettings.Size = Config.WindowSize;
 	WindowSettings.MSAA = Config.MSAA;
