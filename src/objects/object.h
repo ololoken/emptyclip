@@ -145,7 +145,7 @@ class _Object {
 		void SetAttributeLevel(const std::string &AttributeName, float Multiplier);
 		float GetAttributeLevel(const std::string &AttributeName, float Multiplier, int MaxLevel=0);
 		void GetAttributeRange(const std::string &AttributeName, float Multiplier, int &Min, int &Max);
-		void SetMaxMods(float QualityFactor, bool RandomStats);
+		void SetMaxMods(bool RandomStats);
 		bool IsUnique() const;
 
 		void CreateAmmoPickup(float SpawnPositionZ);

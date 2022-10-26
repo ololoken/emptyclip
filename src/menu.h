@@ -18,7 +18,8 @@
 #pragma once
 
 // Libraries
-#include <save.h>
+#include <constants.h>
+#include <vector>
 #include <string>
 #include <list>
 
@@ -143,7 +144,7 @@ class _Menu {
 		ae::_Element *Background{nullptr};
 		ae::_Element *CurrentLayout{nullptr};
 		ae::_Element *InputLabels[LABEL_COUNT]{nullptr};
-		ae::_Element *SaveSlots[_Save::SLOT_COUNT]{nullptr};
+		ae::_Element *SaveSlots[SAVE_SLOTS]{nullptr};
 		ae::_Element *ColorButtons[4]{nullptr};
 
 		// Double click

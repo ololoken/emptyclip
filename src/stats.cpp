@@ -250,17 +250,17 @@ void _Stats::LoadWeapons() {
 		Template.Attributes["fire_period"].Double = Database->GetReal("fire_period");
 		Template.Attributes["fire_allrounds"].Int = Database->GetInt<int>("fire_allrounds");
 		Template.Attributes["shoot_period"].Double = Database->GetReal("shoot_period");
-		Template.Attributes["burst_rounds"].Int = Database->GetInt<int>("burst_rounds");
+		Template.Attributes["burst_rounds"].Float = Database->GetReal("burst_rounds");
 		Template.Attributes["burst_period"].Double = Database->GetReal("burst_period");
-		Template.Attributes["reload_amount"].Int = Database->GetInt<int>("reload_amount");
+		Template.Attributes["reload_amount"].Float = Database->GetReal("reload_amount");
 		Template.Attributes["reload_period"].Double = Database->GetReal("reload_period");
 		Template.Attributes["mods"].Float = Database->GetReal("mods");
 		Template.Attributes["mods_level"].Float = Database->GetReal("mods_level");
-		Template.Attributes["attack_count"].Int = Database->GetInt<int>("attack_count");
-		Template.Attributes["rounds"].Int = Database->GetInt<int>("rounds");
-		Template.Attributes["penetration"].Int = Database->GetInt<int>("penetration");
+		Template.Attributes["attack_count"].Float = Database->GetReal("attack_count");
+		Template.Attributes["rounds"].Float = Database->GetReal("rounds");
+		Template.Attributes["penetration"].Float = Database->GetReal("penetration");
 		Template.Attributes["penetration_damage"].Float = Database->GetReal("penetration_damage");
-		Template.Attributes["crit_chance"].Int = Database->GetInt<int>("crit_chance");
+		Template.Attributes["crit_chance"].Float = Database->GetReal("crit_chance");
 		Template.Attributes["attack_movespeed"].Float = Database->GetReal("attack_movespeed");
 		Template.Attributes["melee_width"].Float = Database->GetReal("melee_width");
 		Template.Attributes["melee_offset"].Float = Database->GetReal("melee_offset");
@@ -691,7 +691,7 @@ void _Stats::LoadSpecials() {
 	while(Database->FetchRow()) {
 		_Special Special;
 		Special.Name = Database->GetString("name");
-		Special.DamageResist = Database->GetInt<int>("damage_resist");
+		Special.DamageResist = Database->GetReal("damage_resist");
 		Special.DamageFactor = Database->GetReal("damage");
 		Special.AttackSpeedFactor = Database->GetReal("attack_speed");
 		Special.MoveSpeedFactor = Database->GetReal("move_speed");
@@ -718,6 +718,7 @@ void _Stats::LoadUniques() {
 		Unique->Chance = std::max(1, Database->GetInt<int>("chance"));
 		Unique->Quality = Database->GetInt<int>("quality");
 		Unique->Progression = Database->GetInt<int>("progression");
+		Unique->Mods = Database->GetInt<int>("mods");
 		Unique->Texture = ae::Assets.Textures["textures/lights/circle.png"];
 		SetColor(Unique->Color, Database->GetString("color_id"));
 
@@ -776,6 +777,7 @@ _Item *_Stats::CreateItem(const std::string &ID, int Level, int Quality, int Cou
 	Item->Count = Count;
 	Item->SetPosition(Position);
 	Item->Texture = ae::Assets.Textures[Template.IconID];
+	Item->Attributes["base_mods"].Float = 0;
 
 	// Generate random quality
 	if(RandomStats && Item->CanUnique()) {
@@ -799,6 +801,7 @@ _Item *_Stats::CreateItem(const std::string &ID, int Level, int Quality, int Cou
 			Item->Name = Item->Name + " Bundle";
 		}
 		else {
+			Item->Attributes["base_mods"].Float = Unique->Mods;
 			Item->LightColor = Unique->Color;
 			Item->Name = Unique->Name + " " + Item->Name;
 		}
@@ -813,21 +816,20 @@ _Item *_Stats::CreateItem(const std::string &ID, int Level, int Quality, int Cou
 			Item->Attributes["zoom_scale"].Float = Template.Attributes["zoom_scale"].Float;
 			Item->Attributes["range"].Float = Template.Attributes["range"].Float;
 			Item->Attributes["fire_rate"].Int = Template.Attributes["fire_rate"].Int;
-			Item->Attributes["burst_rounds"].Int = Template.Attributes["burst_rounds"].Int;
+			Item->Attributes["burst_rounds"].Float = Template.Attributes["burst_rounds"].Float;
 			Item->Attributes["burst_period"].Double = Template.Attributes["burst_period"].Double;
 			Item->Attributes["attack_movespeed"].Float = Template.Attributes["attack_movespeed"].Float;
 			Item->Attributes["fire_allrounds"].Int = Template.Attributes["fire_allrounds"].Int;
 			Item->Attributes["shoot_period"].Double = Template.Attributes["shoot_period"].Double;
-			Item->SetMaxMods(QualityFactor, RandomStats);
+			Item->SetMaxMods(RandomStats);
 		} break;
 		case _Object::ARMOR:
-			Item->SetMaxMods(QualityFactor, RandomStats);
+			Item->SetMaxMods(RandomStats);
 		break;
 		case _Object::MOD:
 			Item->SetAttributeLevel("bonus", QualityFactor);
-			Item->Attributes.at("bonus").Int = std::max(Item->Attributes.at("bonus").Int, 1);
 			if(Template.Attributes.at("negative").Int)
-				Item->Attributes.at("bonus").Int = -Item->Attributes.at("bonus").Int;
+				Item->Attributes.at("bonus").Float = -Item->Attributes.at("bonus").Float;
 		break;
 		default:
 			Item->Attributes = Template.Attributes;
@@ -837,7 +839,7 @@ _Item *_Stats::CreateItem(const std::string &ID, int Level, int Quality, int Cou
 	Item->RecalculateStats();
 
 	if(Template.Type == _Object::WEAPON)
-		Item->Attributes["ammo"].Int = Item->Attributes.at("rounds").Int;
+		Item->Attributes["ammo"].Int = std::round(Item->Attributes.at("rounds").Float);
 
 	return Item;
 }

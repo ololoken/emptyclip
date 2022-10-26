@@ -627,7 +627,7 @@ void _HUD::Render(bool FullMap) {
 	// Reload indicator
 	if(Player->Reloading)
 		DrawIndicator("Reloading", Player->GetReloadPercent(), ae::Assets.Textures["textures/hud/indicator_reload.png"]);
-	else if(!Player->WeaponHasAmmo(WEAPONATTACK_MAIN) && !Player->SwitchingWeapons && Player->GetMainHand() && Player->GetMainHand()->Attributes.at("rounds").Int > 0) {
+	else if(!Player->WeaponHasAmmo(WEAPONATTACK_MAIN) && !Player->SwitchingWeapons && Player->GetMainHand() && Player->GetMainHand()->Attributes.at("rounds").Float > 0.0f) {
 		if(Player->HasAmmoForMain())
 			DrawIndicator("Hit " + ae::Actions.GetInputNameForAction(Action::GAME_RELOAD) + " to Reload");
 		else
@@ -790,7 +790,7 @@ void _HUD::DrawHUDWeapon(const _Item *Item, ae::_Element *Element, ae::_Element 
 
 	Image->Texture = Item->Texture;
 	Image->Color = Item->Color;
-	int Rounds = Item->Attributes.at("rounds").Int;
+	int Rounds = std::round(Item->Attributes.at("rounds").Float);
 	if(Rounds) {
 
 		// Set font size
@@ -1054,7 +1054,7 @@ void _HUD::DrawItemValue(const _Item *Item, const glm::vec2 &Position) {
 		case _Object::MOD:
 			if(!Item->Template.Attributes.at("negative").Int)
 				Buffer << "+";
-			Buffer << Item->Attributes.at("bonus").Int;
+			Buffer << ae::Round2(Item->Attributes.at("bonus").Float);
 			if(Item->Template.Attributes.at("percent_sign").Int)
 				Buffer << "%";
 		break;
@@ -1062,7 +1062,7 @@ void _HUD::DrawItemValue(const _Item *Item, const glm::vec2 &Position) {
 			Buffer << ae::Round1(Item->GetAverageDamage());
 		break;
 		case _Object::ARMOR:
-			Buffer << Item->Attributes.at("damage_block").Int;
+			Buffer << Item->Attributes.at("damage_resist").Float << "%";
 		break;
 		default:
 			return;

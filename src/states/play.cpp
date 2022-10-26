@@ -37,6 +37,7 @@
 #include <ae/framebuffer.h>
 #include <achievements.h>
 #include <objectmanager.h>
+#include <save.h>
 #include <framework.h>
 #include <menu.h>
 #include <constants.h>
@@ -956,7 +957,7 @@ void _PlayState::Render(double BlendFactor) {
 
 				if(!Item->Template.Attributes.at("negative").Int)
 					Buffer << "+";
-				Buffer << Item->Attributes.at("bonus").Int;
+				Buffer << ae::Round2(Item->Attributes.at("bonus").Float);
 				if(Item->Template.Attributes.at("percent_sign").Int)
 					Buffer << "%";
 

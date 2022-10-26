@@ -42,7 +42,7 @@ inline bool CompareItemStats(_Item *First, _Item *Second, bool CompareMods) {
 	if(First->ID == Second->ID) {
 		if(First->Level == Second->Level) {
 			if(CompareMods && First->Quality == Second->Quality)
-				return First->Attributes.at("max_mods").Int > Second->Attributes.at("max_mods").Int;
+				return First->Attributes.at("max_mods").Float > Second->Attributes.at("max_mods").Float;
 
 			return First->Quality > Second->Quality;
 		}
@@ -65,10 +65,10 @@ inline bool CompareItem(_Item *First, _Item *Second) {
 		else if(First->Type == _Object::MOD) {
 			if(First->Template.Attributes.at("object_type").Int == Second->Template.Attributes.at("object_type").Int) {
 				if(First->Template.Attributes.at("mod_type").Int == Second->Template.Attributes.at("mod_type").Int) {
-					if(First->Attributes.at("bonus").Int == Second->Attributes.at("bonus").Int)
+					if(First->Attributes.at("bonus").Float == Second->Attributes.at("bonus").Float)
 						return First->Quality > Second->Quality;
 
-					return First->Attributes.at("bonus").Int > Second->Attributes.at("bonus").Int;
+					return First->Attributes.at("bonus").Float > Second->Attributes.at("bonus").Float;
 				}
 
 				return First->Template.Attributes.at("mod_type").Int < Second->Template.Attributes.at("mod_type").Int;
@@ -242,10 +242,10 @@ void _Player::RecalculateStats() {
 	DamageResist = 0;
 	SelfHealPercent = PLAYER_HEAL_PERCENT;
 	BaseMoveSpeed = 100.0f;
-	int HealthBonus = 100;
-	int WeaponDamage[WEAPON_COUNT];
+	float HealthBonus = 100.0f;
+	float WeaponDamage[WEAPON_COUNT];
 	for(int i = 0; i < WEAPON_COUNT; i++)
-		WeaponDamage[i] = 100;
+		WeaponDamage[i] = 100.0f;
 
 	std::unordered_map<std::string, _Value> WeaponAttributes[WEAPONATTACK_COUNT];
 	for(int i = 0; i < WEAPONATTACK_COUNT; i++) {
@@ -320,20 +320,20 @@ void _Player::RecalculateStats() {
 
 	// Add armor bonuses
 	DamageResist += Stats.GetSkill(Skills[SKILL_FORTITUDE], SKILL_FORTITUDE, 1);
-	Attributes["max_ammo"].Int = 100 + Stats.GetSkill(Skills[SKILL_ENDURANCE], SKILL_ENDURANCE, 1);
+	Attributes["max_ammo"].Float = 100.0f + Stats.GetSkill(Skills[SKILL_ENDURANCE], SKILL_ENDURANCE, 1);
 	if(GetArmor()) {
 		Mass += GetArmor()->Template.Attributes.at("mass").Float;
-		DamageBlock += std::round(GetArmor()->Attributes.at("damage_block").Int * Stats.GetSkillBonusMultiplier(Skills[SKILL_FORTITUDE], SKILL_FORTITUDE));
-		DamageResist += GetArmor()->Attributes.at("damage_resist").Int;
-		BaseMoveSpeed += GetArmor()->Attributes.at("move_speed").Int;
-		Attributes["max_ammo"].Int += GetArmor()->Attributes.at("max_ammo").Int;
-		MaxStamina += GetArmor()->Attributes.at("max_stamina").Int * 0.01f;
-		HealthBonus += GetArmor()->Attributes.at("max_health").Int;
-		WeaponDamage[WEAPON_MELEE] += GetArmor()->Attributes.at("melee_damage").Int;
-		WeaponDamage[WEAPON_PISTOL] += GetArmor()->Attributes.at("pistol_damage").Int;
-		WeaponDamage[WEAPON_SHOTGUN] += GetArmor()->Attributes.at("shotgun_damage").Int;
-		WeaponDamage[WEAPON_RIFLE] += GetArmor()->Attributes.at("rifle_damage").Int;
-		WeaponDamage[WEAPON_HEAVY] += GetArmor()->Attributes.at("heavy_damage").Int;
+		DamageBlock += std::round(GetArmor()->Attributes.at("damage_block").Float);
+		DamageResist += GetArmor()->Attributes.at("damage_resist").Float;
+		BaseMoveSpeed += GetArmor()->Attributes.at("move_speed").Float;
+		Attributes["max_ammo"].Float += GetArmor()->Attributes.at("max_ammo").Float;
+		MaxStamina += GetArmor()->Attributes.at("max_stamina").Float * 0.01f;
+		HealthBonus += GetArmor()->Attributes.at("max_health").Float;
+		WeaponDamage[WEAPON_MELEE] += GetArmor()->Attributes.at("melee_damage").Float;
+		WeaponDamage[WEAPON_PISTOL] += GetArmor()->Attributes.at("pistol_damage").Float;
+		WeaponDamage[WEAPON_SHOTGUN] += GetArmor()->Attributes.at("shotgun_damage").Float;
+		WeaponDamage[WEAPON_RIFLE] += GetArmor()->Attributes.at("rifle_damage").Float;
+		WeaponDamage[WEAPON_HEAVY] += GetArmor()->Attributes.at("heavy_damage").Float;
 	}
 
 	// Set attack stats
@@ -353,14 +353,14 @@ void _Player::RecalculateStats() {
 		MaxDamage[i] = std::round(WeaponAttributes[i]["max_damage"].Int * WeaponDamageModifier);
 		AttackMoveSpeed[i] = WeaponAttributes[i]["attack_movespeed"].Float;
 		ShootPeriod[i] = WeaponAttributes[i]["shoot_period"].Double / Stats.GetSkillBonusMultiplier(Skills[SKILL_STRENGTH], SKILL_STRENGTH, 1);
-		Penetration[i] = WeaponAttributes[i]["penetration"].Int;
+		Penetration[i] = std::round(WeaponAttributes[i]["penetration"].Float);
 		PenetrationDamage[i] = WeaponAttributes[i]["penetration_damage"].Float;
-		StartingBounces[i] = WeaponAttributes[i]["bounces"].Int;
-		AttackCount[i] = WeaponAttributes[i]["attack_count"].Int;
+		StartingBounces[i] = std::round(WeaponAttributes[i]["bounces"].Float);
+		AttackCount[i] = std::round(WeaponAttributes[i]["attack_count"].Float);
 		FireAllRounds[i] = WeaponAttributes[i]["fire_allrounds"].Int;
-		CritChance[i] = WeaponAttributes[i]["crit_chance"].Int;
+		CritChance[i] = std::round(WeaponAttributes[i]["crit_chance"].Float);
 		CritDamage[i] = PLAYER_CRIT_DAMAGE + Stats.GetSkill(Skills[SKILL_PERCEPTION], SKILL_PERCEPTION, 1);
-		BurstRounds[i] = WeaponAttributes[i]["burst_rounds"].Int;
+		BurstRounds[i] = std::round(WeaponAttributes[i]["burst_rounds"].Float);
 		if(BurstRounds[i])
 			BurstPeriod[i] = std::max(WeaponAttributes[i]["burst_period"].Double / Stats.GetSkillBonusMultiplier(Skills[SKILL_AGILITY], SKILL_AGILITY), WEAPON_MINFIREPERIOD);
 		else
@@ -389,7 +389,7 @@ void _Player::RecalculateStats() {
 	// Handle max ammo
 	AmmoMax.clear();
 	for(const auto &AmmoType : Stats.AmmoNames) {
-		AmmoMax[AmmoType] = Stats.Ammo.at(AmmoType).Max * Attributes["max_ammo"].Mult() + 0.5f;
+		AmmoMax[AmmoType] = Stats.Ammo.at(AmmoType).Max * Attributes.at("max_ammo").Float * 0.01f + 0.5f;
 		if(Ammo.find(AmmoType) != Ammo.end())
 			Ammo[AmmoType] = std::min(Ammo[AmmoType], AmmoMax[AmmoType]);
 	}
@@ -1167,13 +1167,13 @@ void _Player::UpdateReloading() {
 
 	// Get amounts
 	const std::string &AmmoType = Stats.Objects.at(GetMainHand()->ID).AmmoID;
-	int AmountNeeded = GetMainHand()->Attributes["rounds"].Int - GetMainHand()->Attributes["ammo"].Int;
+	int AmountNeeded = std::round(GetMainHand()->Attributes["rounds"].Float) - GetMainHand()->Attributes["ammo"].Int;
 	int AmmoLoadAmount = std::min(Ammo[AmmoType], AmountNeeded);
 
 	// Handle different reload amounts
 	bool ReloadAgain = false;
-	if(GetMainHand()->Attributes["reload_amount"].Int) {
-		AmmoLoadAmount = std::min(GetMainHand()->Attributes["reload_amount"].Int, AmmoLoadAmount);
+	if(GetMainHand()->Attributes["reload_amount"].Float) {
+		AmmoLoadAmount = std::min(std::max(1, (int)std::round(GetMainHand()->Attributes["reload_amount"].Float)), AmmoLoadAmount);
 		ReloadAgain = true;
 	}
 
@@ -1442,7 +1442,7 @@ int _Player::GetInventoryMaxStack() const {
 }
 
 bool _Player::CanReload() const {
-	return HasMainHand() && AttackTimer[WEAPONATTACK_MAIN] >= ReloadDelay && !Reloading && !SwitchingWeapons && !IsMeleeAttacking() && GetMainHand()->Attributes.at("ammo").Int != GetMainHand()->Attributes.at("rounds").Int && HasAmmoForMain();
+	return HasMainHand() && AttackTimer[WEAPONATTACK_MAIN] >= ReloadDelay && !Reloading && !SwitchingWeapons && !IsMeleeAttacking() && GetMainHand()->Attributes.at("ammo").Int != std::round(GetMainHand()->Attributes.at("rounds").Float) && HasAmmoForMain();
 }
 
 bool _Player::IsMelee() const {

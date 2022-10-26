@@ -67,7 +67,7 @@ _Save Save;
 
 // Constructor
 _Save::_Save() {
-	Players.insert(Players.begin(), SLOT_COUNT, nullptr);
+	Players.insert(Players.begin(), SAVE_SLOTS, nullptr);
 }
 
 // Destructor
@@ -78,7 +78,7 @@ _Save::~_Save() {
 
 // Get a save path for a slot
 std::string _Save::GetConfigPath(size_t Slot) {
-	if(Slot >= SLOT_COUNT)
+	if(Slot >= SAVE_SLOTS)
 		return "";
 
 	std::ostringstream Buffer;
@@ -88,7 +88,7 @@ std::string _Save::GetConfigPath(size_t Slot) {
 
 // Create new player
 void _Save::CreateNewPlayer(size_t Slot, const std::string &Name, const std::string &ColorID) {
-	if(Slot >= SLOT_COUNT)
+	if(Slot >= SAVE_SLOTS)
 		return;
 
 	Players[Slot] = new _Player(Stats.Objects.at("player"));
@@ -104,7 +104,7 @@ void _Save::CreateNewPlayer(size_t Slot, const std::string &Name, const std::str
 
 // Deletes a player
 void _Save::DeletePlayer(size_t Slot) {
-	if(Slot >= SLOT_COUNT)
+	if(Slot >= SAVE_SLOTS)
 		return;
 
 	// Build save name
@@ -134,7 +134,7 @@ void _Save::LoadSaves() {
 
 		std::string SlotIndexString = Files.Nodes[i].substr(0, ExtensionPosition);
 		size_t SlotIndex = atoi(SlotIndexString.c_str()) - 1;
-		if(SlotIndex > SLOT_9)
+		if(SlotIndex >= SAVE_SLOTS)
 			continue;
 
 		try {
@@ -180,7 +180,7 @@ void _Save::LoadPlayer(_Player *Player) {
 			case CHUNK_SAVEVERSION: {
 				int SaveVersion;
 				File.read((char *)&SaveVersion, sizeof(SaveVersion));
-				if(SaveVersion != PLAYER_SAVEVERSION) {
+				if(SaveVersion != SAVE_VERSION) {
 					std::string OldVersionPath = Player->SavePath + "." + std::to_string(SaveVersion);
 					std::remove(OldVersionPath.c_str());
 					std::rename(Player->SavePath.c_str(), OldVersionPath.c_str());
@@ -308,7 +308,7 @@ void _Save::SavePlayer(_Player *Player) {
 	if(!File.is_open())
 		throw std::runtime_error("Cannot create save file: " + Player->SavePath);
 
-	WriteChunk(File, CHUNK_SAVEVERSION, (const char *)&PLAYER_SAVEVERSION, sizeof(PLAYER_SAVEVERSION));
+	WriteChunk(File, CHUNK_SAVEVERSION, (const char *)&SAVE_VERSION, sizeof(SAVE_VERSION));
 	WriteChunk(File, CHUNK_TEST, (char *)&Player->TestSave, sizeof(Player->TestSave));
 	WriteChunk(File, CHUNK_PLAYERNAME, Player->Name.c_str(), (int)Player->Name.length());
 	WriteChunk(File, CHUNK_COLOR, Player->ColorID.c_str(), (int)Player->ColorID.length());
@@ -368,7 +368,7 @@ void _Save::LoadItems(_Player *Player, ae::_Buffer &Buffer) {
 
 		// Read mods
 		if(Type == _Object::WEAPON || Type == _Object::ARMOR) {
-			Item->Attributes["max_mods"].Int = Buffer.Read<int>();
+			Item->Attributes["max_mods"].Float = Buffer.Read<float>();
 			LoadMods(Buffer, Item);
 			Item->RecalculateStats();
 		}
@@ -397,8 +397,6 @@ void _Save::LoadMods(ae::_Buffer &Buffer, _Item *Item) {
 		if(!Item->AddMod(Mod, false))
 			delete Mod;
 	}
-
-	Item->RecalculateStats();
 }
 
 // Load ammo

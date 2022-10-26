@@ -35,7 +35,7 @@ mod_accuracy	0	0	0	0	0	0	0	0	0	0	1	0	0	0	1	1	1	0	0
 mod_attackspeed	0	0	0	0	0	0	0	0	0	0	1	0	0	0	1	1	1	0	0
 mod_reloadspeed	0	0	0	0	0	0	0	0	0	0	1	0	0	0	1	1	1	0	0
 mod_handling	0	0	0	0	0	0	0	0	0	0	1	0	0	0	1	1	1	0	0
-mod_damageblock	0	0	0	0	0	0	0	0	0	0	0	1	0	0	1	1	1	0	0
+mod_damageresist	0	0	0	0	0	0	0	0	0	0	0	1	0	0	1	1	1	1	0
 mod_maxstamina	0	0	0	0	0	0	0	0	0	0	0	1	0	0	1	0	0	1	0
 mod_maxammo	0	0	0	0	0	0	0	0	0	0	0	1	0	0	0	1	0	1	0
 mod_maxhealth	0	0	0	0	0	0	0	0	0	0	0	1	0	0	0	0	1	1	0

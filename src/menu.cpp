@@ -32,6 +32,7 @@
 #include <ae/console.h>
 #include <actiontype.h>
 #include <achievements.h>
+#include <save.h>
 #include <hud.h>
 #include <stats.h>
 #include <constants.h>
@@ -181,7 +182,7 @@ void _Menu::InitSinglePlayer() {
 
 	Save.LoadSaves();
 	RefreshSaveSlots();
-	for(int i = 0; i <= _Save::SLOT_9; i++)
+	for(int i = 0; i < SAVE_SLOTS; i++)
 		SaveSlots[i]->Checked = false;
 
 	SelectedColor = 0;
@@ -507,7 +508,7 @@ bool _Menu::HandleKey(const ae::_KeyEvent &KeyEvent) {
 						InitTitle();
 					else if(KeyEvent.Scancode == SDL_SCANCODE_RETURN) {
 						if(SelectedSlot == -1) {
-							for(int i = 0; i < _Save::SLOT_COUNT; i++) {
+							for(int i = 0; i < SAVE_SLOTS; i++) {
 								if(Save.GetPlayer(i)) {
 									SelectedSlot = i;
 									break;
@@ -865,7 +866,7 @@ void _Menu::Update(double FrameTime) {
 	// Update states
 	switch(State) {
 		case STATE_SINGLEPLAYER: {
-			for(int i = 0; i <= _Save::SLOT_9; i++) {
+			for(int i = 0; i < SAVE_SLOTS; i++) {
 				_Player *Player = Save.GetPlayer(i);
 				if(Player) {
 					Player->PositionChanged = true;
@@ -921,7 +922,7 @@ void _Menu::Render() {
 			ae::Assets.Elements["element_menu_singleplayer"]->Render();
 
 			ae::Graphics.SetVBO(ae::VBO_QUAD);
-			for(int i = 0; i <= _Save::SLOT_9; i++) {
+			for(int i = 0; i < SAVE_SLOTS; i++) {
 				_Player *Player = Save.GetPlayer(i);
 				if(Player)
 					Player->Render2D(SaveSlots[i]->Bounds.GetCenter());
@@ -1076,7 +1077,7 @@ void _Menu::RefreshSaveSlots() {
 	CurrentLayout->SetClickable(true);
 
 	// Load save slots
-	for(int i = 0; i <= _Save::SLOT_9; i++) {
+	for(int i = 0; i < SAVE_SLOTS; i++) {
 		std::ostringstream Buffer;
 		Buffer << "label_menu_singleplayer_slot" << i << "_text";
 		ae::_Element *SlotLabel = ae::Assets.Elements[Buffer.str()];

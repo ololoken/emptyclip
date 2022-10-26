@@ -52,6 +52,9 @@ const  int          GAME_MAX_PROGRESSION_SPAWN           =  10;
 const  double       GAME_DEFAULT_CLOCK                   =  720.0;
 const  int          GAME_LAVA_DAMAGE                     =  100;
 const  float        GAME_TILE_SIZE                       =  64.0f;
+//     Save
+const  int          SAVE_SLOTS                           =  10;
+const  int          SAVE_VERSION                         =  6;
 //     Camera
 const  float        CAMERA_DISTANCE                      =  6.5f;
 const  float        CAMERA_DISTANCE_AIMED                =  CAMERA_DISTANCE;
@@ -81,7 +84,6 @@ const  double       ENTITY_MAX_FIRESOUND_PERIOD          =  0.03;
 const  float        ENTITY_FRICTION_FACTOR               =  0.003f;
 const  float        ENTITY_VELOCITY_THRESHOLD            =  0.00001f;
 //     Player
-const  int          PLAYER_SAVEVERSION                   =  5;
 const  float        PLAYER_RADIUS                        =  0.35f;
 const  double       PLAYER_HEAL_STARTTIME                =  5.0;
 const  double       PLAYER_HEAL_PERIOD                   =  1.0;
@@ -125,8 +127,8 @@ const  int          INVENTORY_MAX_STACK                  =  99;
 const  float        ITEM_SCALE                           =  0.5f;
 const  float        ITEM_Z                               =  0.01f;
 const  int          ITEM_QUALITY_RANGE                   =  15;
-const  int          ITEM_MIN_MOVESPEED                   =  -90;
-const  int          ITEM_MAX_MOVESPEED                   =  100;
+const  float        ITEM_MIN_MOVESPEED                   =  -90.0f;
+const  float        ITEM_MAX_MOVESPEED                   =  100.0f;
 const  int          ITEM_PLACEMENT_ATTEMPTS              =  30;
 const  float        ITEM_PLACEMENT_RADIUS                =  0.5f;
 const  float        ITEM_PLACEMENT_RADIUS_REDUCTION      =  0.9f;

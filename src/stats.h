@@ -78,7 +78,7 @@ struct _Special {
 	float AttackSpeedFactor{1.0f};
 	float MoveSpeedFactor{1.0f};
 	float ExperienceModifier{1.0f};
-	int DamageResist{0};
+	float DamageResist{0.0f};
 	int FreePathing{0};
 };
 
@@ -89,6 +89,7 @@ struct _Unique {
 	int Chance;
 	int Quality;
 	int Progression;
+	int Mods;
 };
 
 struct _Achievement {

@@ -102,9 +102,9 @@ void _Object::SetAttributeRange(const std::string &AttributeName, float Multipli
 	GetAttributeRange(AttributeName, Multiplier, Attributes["min_" + AttributeName].Int, Attributes["max_" + AttributeName].Int);
 }
 
-// Set an attribute given a level and multiplier
+// Set a floating point attribute given a level and multiplier
 void _Object::SetAttributeLevel(const std::string &AttributeName, float Multiplier) {
-	Attributes[AttributeName].Int = std::round(GetAttributeLevel(AttributeName, Multiplier));
+	Attributes[AttributeName].Float = GetAttributeLevel(AttributeName, Multiplier);
 }
 
 // Get an attribute value given a level and multiplier
@@ -128,14 +128,17 @@ void _Object::GetAttributeRange(const std::string &AttributeName, float Multipli
 }
 
 // Set the max number of mods based on level and quality
-void _Object::SetMaxMods(float QualityFactor, bool RandomStats) {
-	int LevelMods = std::round(Template.Attributes.at("mods").Float + Template.Attributes.at("mods_level").Float * (Level - 1));
-	Attributes["max_mods"].Int = std::max(1, (int)std::round(QualityFactor * LevelMods));
-	if(RandomStats) {
-		Attributes["max_mods"].Int += ae::GetRandomInt(0, 1);
-		if(IsUnique())
-			Attributes["max_mods"].Int++;
-	}
+void _Object::SetMaxMods(bool RandomStats) {
+
+	// Set base mod count
+	Attributes["max_mods"].Float = Attributes["base_mods"].Float;
+
+	// Add mod count from item level
+	Attributes["max_mods"].Float += Template.Attributes.at("mods").Float + Template.Attributes.at("mods_level").Float * (Level - 1);
+
+	// Chance for extra mod
+	if(RandomStats)
+		Attributes["max_mods"].Float += ae::GetRandomInt(0, 1);
 }
 
 // Check if item is unique

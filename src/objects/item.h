@@ -30,33 +30,33 @@ namespace ae {
 // Mod types
 enum ModType {
 	MOD_NONE,
-	MOD_MAXROUNDS,
 	MOD_DAMAGE,
 	MOD_ACCURACY,
+	MOD_HANDLING,
 	MOD_ATTACKSPEED,
 	MOD_RELOADSPEED,
-	MOD_RELOADAMOUNT,
-	MOD_PENETRATION,
-	MOD_HANDLING,
+	MOD_MAXROUNDS,
 	MOD_DAMAGEBLOCK,
 	MOD_DAMAGERESIST,
-	MOD_MAXAMMO,
 	MOD_MOVESPEED,
-	MOD_MAXROUNDSPLUS,
-	MOD_EXPLOSION,
+	MOD_MAXSTAMINA,
+	MOD_MAXAMMO,
+	MOD_MAXHEALTH,
 	MOD_MELEEDAMAGE,
 	MOD_PISTOLDAMAGE,
 	MOD_SHOTGUNDAMAGE,
 	MOD_RIFLEDAMAGE,
 	MOD_HEAVYDAMAGE,
-	MOD_CRITCHANCE,
-	MOD_FULLAUTO,
-	MOD_MAXHEALTH,
-	MOD_MAXSTAMINA,
-	MOD_BURST,
+	MOD_PENETRATION,
 	MOD_BOUNCE,
+	MOD_RELOADAMOUNT,
+	MOD_MAXROUNDSPLUS,
+	MOD_CRITCHANCE,
 	MOD_SPREAD,
+	MOD_EXPLOSION,
 	MOD_SEMIAUTO,
+	MOD_BURST,
+	MOD_FULLAUTO,
 	MOD_COUNT
 };
 
@@ -102,11 +102,11 @@ class _Item : public _Object {
 		int Count{1};
 
 		std::vector<_Item *> Mods;
-		int Bonus[MOD_COUNT]{0};
+		float Bonus[MOD_COUNT]{0.0f};
 		const _Unique *Unique{nullptr};
 
 	private:
 
-		void DrawAttribute(const ae::_Font *Font, const std::string &Attribute, const std::string &Label, glm::vec2 &DrawPosition, const _Item *EquippedItem, bool Plus, bool Percent) const;
+		void DrawAttribute(const ae::_Font *Font, bool Float, const std::string &Attribute, const std::string &Label, glm::vec2 &DrawPosition, const _Item *EquippedItem, bool Plus, bool Percent) const;
 
 };
