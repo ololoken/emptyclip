@@ -168,6 +168,8 @@ void _Player::Reset(bool Recalculate) {
 	DropRate = 100;
 	PickupModifier = 1.0f;
 	HealModifier = 1.0f;
+	ExperienceModifier = 1.0f;
+	ExtraMods = 0.0f;
 	MapID = GAME_FIRSTLEVEL;
 	CheckpointIndex = 0;
 	Active = true;
@@ -239,7 +241,8 @@ void _Player::RecalculateStats() {
 	// Reset base stats
 	Mass = 1.0f;
 	DamageBlock = 0;
-	DamageResist = 0;
+	SelfDamageResist = 0.0f;
+	DamageResist = 0.0f;
 	SelfHealPercent = PLAYER_HEAL_PERCENT;
 	BaseMoveSpeed = 100.0f;
 	float HealthBonus = 100.0f;
@@ -319,7 +322,8 @@ void _Player::RecalculateStats() {
 	SelfHealPeriod = PLAYER_HEAL_PERIOD / Stats.GetSkillBonusMultiplier(Skills[SKILL_CUNNING], SKILL_CUNNING, 1);
 
 	// Add armor bonuses
-	DamageResist += Stats.GetSkill(Skills[SKILL_FORTITUDE], SKILL_FORTITUDE, 1);
+	DamageResist += Stats.GetSkill(Skills[SKILL_FORTITUDE], SKILL_FORTITUDE, 0);
+	SelfDamageResist += Stats.GetSkill(Skills[SKILL_FORTITUDE], SKILL_FORTITUDE, 1);
 	Attributes["max_ammo"].Float = 100.0f + Stats.GetSkill(Skills[SKILL_ENDURANCE], SKILL_ENDURANCE, 1);
 	if(GetArmor()) {
 		Mass += GetArmor()->Template.Attributes.at("mass").Float;
@@ -394,9 +398,11 @@ void _Player::RecalculateStats() {
 			Ammo[AmmoType] = std::min(Ammo[AmmoType], AmmoMax[AmmoType]);
 	}
 
-	// Drop Rate
+	// Skills
 	DropRate = 100 + Skills[SKILL_LUCK];
 	PickupModifier = Stats.GetSkillBonusMultiplier(Skills[SKILL_LUCK], SKILL_LUCK, 1);
+	ExperienceModifier = Stats.GetSkillBonusMultiplier(Skills[SKILL_INTELLIGENCE], SKILL_INTELLIGENCE, 0);
+	ExtraMods = Stats.GetSkill(Skills[SKILL_INTELLIGENCE], SKILL_INTELLIGENCE, 1);
 }
 
 // Update the player
@@ -667,7 +673,7 @@ void _Player::AdjustLegDirection(float Destination) {
 
 // Updates the player's experience, leveling up if needed
 void _Player::UpdateExperience(int64_t ExperienceGained) {
-	Experience = std::clamp(Experience + ExperienceGained, (int64_t)0, Stats.Levels.back().Experience);
+	Experience = std::clamp(Experience + (int64_t)std::round(ExperienceGained * ExperienceModifier), (int64_t)0, Stats.Levels.back().Experience);
 
 	int OldLevel = Level;
 	CalculateExperienceStats();

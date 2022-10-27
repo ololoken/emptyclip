@@ -65,12 +65,13 @@ struct _SkillText {
 static _SkillText SkillText[SKILL_COUNT] = {
 	{ "Melee Damage", "Gun Handling" },
 	{ "Reload Speed", "Weapon Switch Speed" },
-	{ "Armor Damage Block", "Damage Resist" },
+	{ "Damage Resist", "Self Damage Resist" },
 	{ "Max Health", "Heal Bonus" },
 	{ "Attack Speed","Fire Rate" },
 	{ "Move Speed", "Self Heal Speed" },
 	{ "Max Stamina", "Max Ammo" },
 	{ "Gun Accuracy", "Critical Hit Damage" },
+	{ "Experience Gain", "Gear Mod Capacity" },
 	{ "Drop Rate", "Ammo Pickup Bonus" },
 };
 
@@ -154,6 +155,7 @@ _HUD::_HUD(const ae::_Camera *Camera, _Player *Player) : Camera(Camera), Player(
 	Elements[LABEL_SKILL6] = ae::Assets.Elements["label_hud_skill6_value"];
 	Elements[LABEL_SKILL7] = ae::Assets.Elements["label_hud_skill7_value"];
 	Elements[LABEL_SKILL8] = ae::Assets.Elements["label_hud_skill8_value"];
+	Elements[LABEL_SKILL9] = ae::Assets.Elements["label_hud_skill9_value"];
 	Elements[ELEMENT_INVENTORY]->SetActive(false);
 	Elements[ELEMENT_SKILLS]->SetActive(false);
 
@@ -852,7 +854,7 @@ void _HUD::DrawCharacterScreen() {
 	Elements[ELEMENT_SKILLS]->Render();
 
 	// Draw stats
-	glm::vec2 DrawPosition(ae::Graphics.CurrentSize.x - 160 * ae::_Element::GetUIScale(), 390 * ae::_Element::GetUIScale());
+	glm::vec2 DrawPosition(ae::Graphics.CurrentSize.x - 160 * ae::_Element::GetUIScale(), 420 * ae::_Element::GetUIScale());
 
 	// Offense
 	if(Player->HasMainHand()) {
@@ -907,8 +909,11 @@ void _HUD::DrawCharacterScreen() {
 	Buffer << std::round(Player->SelfHealPercent) << "%";
 	DrawAttribute("Self Heal Percent", Buffer, DrawPosition);
 
-	Buffer << Player->DamageBlock;
-	DrawAttribute("Damage Block", Buffer, DrawPosition);
+	//Buffer << Player->DamageBlock;
+	//DrawAttribute("Damage Block", Buffer, DrawPosition);
+
+	Buffer << Player->SelfDamageResist << "%";
+	DrawAttribute("Self Damage Resist", Buffer, DrawPosition);
 
 	Buffer << Player->DamageResist << "%";
 	DrawAttribute("Damage Resist", Buffer, DrawPosition);
@@ -1119,8 +1124,12 @@ void _HUD::UpdateSkillTooltip(int Skill, const glm::vec2 &Position) {
 	BufferNext << std::setprecision(5);
 	Elements[LABEL_SKILLTEXT]->Text = "Increases " + SkillText[Skill].Main;
 	Elements[LABEL_SKILLTEXTALT]->Text = "Increases " + SkillText[Skill].Alt;
-	Buffer << "+" << Stats.GetSkill(Level, Skill) << "% " << SkillText[Skill].Main << "\\n+" << Stats.GetSkill(Level, Skill, 1) << "% " << SkillText[Skill].Alt;
-	BufferNext << "+" << Stats.GetSkill(Stats.GetValidSkillLevel(Level+1), Skill) << "% " << SkillText[Skill].Main << "\\n+" << Stats.GetSkill(Stats.GetValidSkillLevel(Level+1), Skill, 1) << "% " << SkillText[Skill].Alt;
+	std::string Percent[2] = { "% ", "% "};
+	if(Skill == SKILL_INTELLIGENCE)
+		Percent[1] = " ";
+
+	Buffer << "+" << Stats.GetSkill(Level, Skill) << Percent[0] << SkillText[Skill].Main << "\\n+" << Stats.GetSkill(Level, Skill, 1) << Percent[1] << SkillText[Skill].Alt;
+	BufferNext << "+" << Stats.GetSkill(Stats.GetValidSkillLevel(Level+1), Skill) << Percent[0] << SkillText[Skill].Main << "\\n+" << Stats.GetSkill(Stats.GetValidSkillLevel(Level+1), Skill, 1) << Percent[1] << SkillText[Skill].Alt;
 
 	// Format text
 	Elements[LABEL_SKILL_LEVEL]->Text = Buffer.str();

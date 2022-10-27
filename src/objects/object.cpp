@@ -127,20 +127,6 @@ void _Object::GetAttributeRange(const std::string &AttributeName, float Multipli
 	Max = Value + ValueRange;
 }
 
-// Set the max number of mods based on level and quality
-void _Object::SetMaxMods(bool RandomStats) {
-
-	// Set base mod count
-	Attributes["max_mods"].Float = Attributes["base_mods"].Float;
-
-	// Add mod count from item level
-	Attributes["max_mods"].Float += Template.Attributes.at("mods").Float + Template.Attributes.at("mods_level").Float * (Level - 1);
-
-	// Chance for extra mod
-	if(RandomStats)
-		Attributes["max_mods"].Float += ae::GetRandomInt(0, 1);
-}
-
 // Check if item is unique
 bool _Object::IsUnique() const {
 	return Quality > ITEM_QUALITY_RANGE;
@@ -433,7 +419,7 @@ void _Object::ApplyDamage(const _Hit &Hit) {
 	}
 
 	// Apply damage
-	Damage = HitEntity->ReduceDamage(Damage);
+	Damage = HitEntity->ReduceDamage(Damage, HitEntity == OwnerEntity);
 	HitEntity->UpdateHealth(-Damage);
 
 	// Callbacks

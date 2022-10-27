@@ -123,6 +123,7 @@ class _Object {
 		bool CanStack() const { return false; }
 		bool CanMove() const { return Type == _Object::WEAPON || Type == _Object::ARMOR || Type == _Object::MOD; }
 		bool CanEquip() const { return Type == _Object::WEAPON || Type == _Object::ARMOR; }
+		bool CanMod() const { return Type == _Object::WEAPON || Type == _Object::ARMOR; }
 		bool CanLevel() const { return Type == _Object::WEAPON || Type == _Object::ARMOR || Type == _Object::MOD; }
 		bool CanUnique() const { return Type == _Object::WEAPON || Type == _Object::ARMOR || Type == _Object::MOD || Type == _Object::AMMO || Type == _Object::MEDKIT; }
 		bool IsAutoPickup() const { return Type == _Object::AMMO || Type == _Object::KEY || Type == _Object::MEDKIT; }
@@ -145,7 +146,6 @@ class _Object {
 		void SetAttributeLevel(const std::string &AttributeName, float Multiplier);
 		float GetAttributeLevel(const std::string &AttributeName, float Multiplier, int MaxLevel=0);
 		void GetAttributeRange(const std::string &AttributeName, float Multiplier, int &Min, int &Max);
-		void SetMaxMods(bool RandomStats);
 		bool IsUnique() const;
 
 		void CreateAmmoPickup(float SpawnPositionZ);
@@ -161,6 +161,7 @@ class _Object {
 		_Object *Owner{nullptr};
 		std::string Name;
 		std::string ID;
+		float ExtraMods{0.0f};
 		int Type{NONE};
 		int Quality{0};
 		int Level{1};

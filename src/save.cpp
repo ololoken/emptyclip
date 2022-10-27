@@ -368,15 +368,18 @@ void _Save::LoadItems(_Player *Player, ae::_Buffer &Buffer) {
 
 		// Read mods
 		if(Type == _Object::WEAPON || Type == _Object::ARMOR) {
-			Item->Attributes["max_mods"].Float = Buffer.Read<float>();
+			float ExtraMods = Buffer.Read<float>();
+			Item->ExtraMods = ExtraMods;
+			Item->SetMaxMods();
+
+			// Load mods
 			LoadMods(Buffer, Item);
 			Item->RecalculateStats();
 		}
 
 		// Read ammo
-		if(Type == _Object::WEAPON) {
+		if(Type == _Object::WEAPON)
 			Item->SetAmmo(Buffer.Read<int>());
-		}
 
 		Player->Inventory[Slot] = Item;
 	}

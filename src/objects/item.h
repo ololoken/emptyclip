@@ -85,8 +85,10 @@ class _Item : public _Object {
 		void Render(double BlendFactor) const override;
 
 		bool AddMod(_Item *Mod, bool Recalculate=true);
-		bool ModCompatible(_Item *Mod);
+		bool ModCompatible(_Item *Mod, bool CheckCount=true);
 		float GetBonusMultiplier(int ModType, bool Inverse=false) const;
+		void SetMaxMods();
+		float GetMaxMods(bool Round) const;
 
 		int UpdateCount(int Amount) { Count += Amount; return Count; }
 

@@ -952,7 +952,7 @@ void _PlayState::Render(double BlendFactor) {
 
 			// Show bonus value
 			if(Item->Type == _Object::MOD) {
-				if(Item->Template.Attributes.at("mod_type").Int == MOD_FULLAUTO)
+				if(Item->Template.Attributes.at("mod_type").Int == MOD_FULLAUTO || Item->Template.Attributes.at("mod_type").Int == MOD_SEMIAUTO)
 					continue;
 
 				if(!Item->Template.Attributes.at("negative").Int)
@@ -1207,7 +1207,7 @@ void _PlayState::ResolveAttack(_Entity *Attacker, int GridType) {
 						// Generate damage
 						bool Crit = false;
 						int Damage = Attacker->GenerateDamage(Attacker->AttackRequestType, PenetrationDamage, Steady, Crit);
-						Damage = HitEntity->ReduceDamage(Damage);
+						Damage = HitEntity->ReduceDamage(Damage, false);
 						if(HitEntity->GodMode)
 							Damage = 0;
 

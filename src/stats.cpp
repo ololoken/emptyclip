@@ -158,6 +158,8 @@ void _Stats::LoadSkills() {
 		Skill.Data[SKILL_PERCEPTION][1] = Database->GetReal("perception1");
 		Skill.Data[SKILL_LUCK][0] = Database->GetReal("luck0");
 		Skill.Data[SKILL_LUCK][1] = Database->GetReal("luck1");
+		Skill.Data[SKILL_INTELLIGENCE][0] = Database->GetReal("intelligence0");
+		Skill.Data[SKILL_INTELLIGENCE][1] = Database->GetReal("intelligence1");
 		Skills.push_back(Skill);
 	}
 
@@ -777,10 +779,10 @@ _Item *_Stats::CreateItem(const std::string &ID, int Level, int Quality, int Cou
 	Item->Count = Count;
 	Item->SetPosition(Position);
 	Item->Texture = ae::Assets.Textures[Template.IconID];
-	Item->Attributes["base_mods"].Float = 0;
 
 	// Generate random quality
 	if(RandomStats && Item->CanUnique()) {
+		Item->ExtraMods = ae::GetRandomReal(0.0, 1.5);
 		Item->Quality = ae::GetRandomInt(-ITEM_QUALITY_RANGE, ITEM_QUALITY_RANGE);
 		if(Item->Quality == ITEM_QUALITY_RANGE) {
 			for(const auto &Unique : Stats.Uniques) {
@@ -801,7 +803,6 @@ _Item *_Stats::CreateItem(const std::string &ID, int Level, int Quality, int Cou
 			Item->Name = Item->Name + " Bundle";
 		}
 		else {
-			Item->Attributes["base_mods"].Float = Unique->Mods;
 			Item->LightColor = Unique->Color;
 			Item->Name = Unique->Name + " " + Item->Name;
 		}
@@ -821,11 +822,7 @@ _Item *_Stats::CreateItem(const std::string &ID, int Level, int Quality, int Cou
 			Item->Attributes["attack_movespeed"].Float = Template.Attributes["attack_movespeed"].Float;
 			Item->Attributes["fire_allrounds"].Int = Template.Attributes["fire_allrounds"].Int;
 			Item->Attributes["shoot_period"].Double = Template.Attributes["shoot_period"].Double;
-			Item->SetMaxMods(RandomStats);
 		} break;
-		case _Object::ARMOR:
-			Item->SetMaxMods(RandomStats);
-		break;
 		case _Object::MOD:
 			Item->SetAttributeLevel("bonus", QualityFactor);
 			if(Template.Attributes.at("negative").Int)
@@ -840,6 +837,8 @@ _Item *_Stats::CreateItem(const std::string &ID, int Level, int Quality, int Cou
 
 	if(Template.Type == _Object::WEAPON)
 		Item->Attributes["ammo"].Int = std::round(Item->Attributes.at("rounds").Float);
+
+	Item->SetMaxMods();
 
 	return Item;
 }

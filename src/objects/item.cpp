@@ -453,7 +453,7 @@ void _Item::DrawTooltip(const _Player *Player, size_t CompareSlot, int Inventory
 		HelpTextList.push_back("Ctrl+click to drop");
 
 	// Mods
-	if(Attributes.find("max_mods") != Attributes.end() && std::round(Attributes.at("max_mods").Float) >= 1.0f) {
+	if(CanMod()) {
 		TextColor = COLOR_WHITE;
 		if(EquippedItem) {
 			if(Attributes.at("max_mods").Float > EquippedItem->Attributes.at("max_mods").Float)
@@ -463,10 +463,7 @@ void _Item::DrawTooltip(const _Player *Player, size_t CompareSlot, int Inventory
 		}
 
 		DrawPosition.y += Spacing.y;
-		if(PlayState.ShowMoreInfo())
-			Buffer << Mods.size() << "/" << Attributes.at("max_mods").Float;
-		else
-			Buffer << Mods.size() << "/" << std::round(Attributes.at("max_mods").Float);
+		Buffer << Mods.size() << "/" << ae::Round2(GetMaxMods(!PlayState.ShowMoreInfo()));
 		AttributeFont->DrawText("Mods", glm::ivec2(DrawPosition - DrawOffset), ae::RIGHT_BASELINE);
 		AttributeFont->DrawText(Buffer.str(), glm::ivec2(DrawPosition + DrawOffset), ae::LEFT_BASELINE, TextColor);
 		Buffer.str("");
@@ -527,7 +524,7 @@ void _Item::Serialize(ae::_Buffer &Buffer) {
 
 	// Write mods
 	if(Type == _Object::WEAPON || Type == _Object::ARMOR) {
-		Buffer.Write(Attributes.at("max_mods").Float);
+		Buffer.Write<float>(ExtraMods);
 		Buffer.Write<int>(Mods.size());
 		for(size_t i = 0; i < Mods.size(); i++)
 			Mods[i]->Serialize(Buffer);
@@ -622,7 +619,7 @@ void _Item::RecalculateStats() {
 
 // Add mod to item
 bool _Item::AddMod(_Item *Mod, bool Recalculate) {
-	if(!ModCompatible(Mod))
+	if(!ModCompatible(Mod, Recalculate))
 		return false;
 
 	Mods.push_back(Mod);
@@ -634,14 +631,17 @@ bool _Item::AddMod(_Item *Mod, bool Recalculate) {
 }
 
 // Determine if an item is compatible with a mod
-bool _Item::ModCompatible(_Item *Mod) {
+bool _Item::ModCompatible(_Item *Mod, bool CheckCount) {
+	if(!CanMod())
+		return false;
+
 	if(Mod->Type != _Object::MOD)
 		return false;
 
 	if(Mod->Template.Attributes.at("object_type").Int != Type)
 		return false;
 
-	if((int)Mods.size() >= std::round(Attributes.at("max_mods").Float))
+	if(CheckCount && (int)Mods.size() >= GetMaxMods(true))
 		return false;
 
 	switch(Type) {
@@ -726,6 +726,33 @@ bool _Item::ModCompatible(_Item *Mod) {
 float _Item::GetBonusMultiplier(int ModType, bool Inverse) const {
 	float Factor = (100 + Quality) * 0.01f * (100.0f + Bonus[ModType]) * 0.01f;
 	return Inverse ? 1.0f / Factor : Factor;
+}
+
+// Set mod capacity
+void _Item::SetMaxMods() {
+	if(!CanMod())
+		return;
+
+	// Set mod count from level
+	Attributes["max_mods"].Float = Template.Attributes.at("mods").Float + Template.Attributes.at("mods_level").Float * (Level - 1);
+
+	// Add random extra mod count
+	Attributes["max_mods"].Float += ExtraMods;
+
+	// Add mods from unique modifier
+	if(IsUnique() && Stats.UniquesByQuality.find(Quality) != Stats.UniquesByQuality.end()) {
+		_Unique *Unique = Stats.UniquesByQuality[Quality];
+		Attributes["max_mods"].Float += Unique->Mods;
+	}
+}
+
+// Return the number of mods an item can hold
+float _Item::GetMaxMods(bool Round) const {
+	float Value = Attributes.at("max_mods").Float;
+	if(PlayState.Player)
+		Value += PlayState.Player->ExtraMods;
+
+	return Round ? std::round(Value) : Value;
 }
 
 // Get average damage from range

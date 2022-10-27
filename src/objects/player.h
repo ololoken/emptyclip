@@ -211,6 +211,7 @@ class _Player : public _Entity {
 		float SelfHealPercent;
 		float HealModifier;
 		float PickupModifier;
+		float ExperienceModifier;
 
 		// Attacking
 		float CurrentAccuracyNormal;

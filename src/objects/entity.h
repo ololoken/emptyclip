@@ -68,7 +68,7 @@ class _Entity : public _Object {
 		virtual void OnHit(_Entity *Attacker, const _Hit &Hit);
 		virtual void UpdateSpeed(float Factor);
 		int GenerateDamage(int AttackType, float DamageModifier, bool Steady, bool &Crit);
-		int ReduceDamage(int Damage);
+		int ReduceDamage(int Damage, bool SelfDamage);
 		virtual bool IsSteady() const { return false; }
 		bool IsInvulnerable() const override { return InvulnerableTimer > 0.0 || GodMode; }
 		virtual const char *GetWeaponID(int AttackType) { return nullptr; }
@@ -107,6 +107,7 @@ class _Entity : public _Object {
 		int Health{0};
 		int MaxHealth{0};
 		int DamageBlock{0};
+		float SelfDamageResist{0.0f};
 		float DamageResist{0.0f};
 
 		// States
@@ -120,7 +121,7 @@ class _Entity : public _Object {
 		double PoisonTimer{0.0};
 		bool GodMode{false};
 
-		// Attacking attributes
+		// Combat attributes
 		float CurrentAccuracy{0.0f};
 		float MinAccuracy{0.0f};
 		float MaxAccuracy[WEAPONATTACK_COUNT]{0.0f, 0.0f};
