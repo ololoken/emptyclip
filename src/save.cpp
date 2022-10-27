@@ -149,7 +149,7 @@ void _Save::LoadSaves() {
 		}
 
 		// Remove test saves
-		if(Players[SlotIndex]->TestSave) {
+		if(Players[SlotIndex] && Players[SlotIndex]->TestSave) {
 			delete Players[SlotIndex];
 			Players[SlotIndex] = nullptr;
 		}
