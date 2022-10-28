@@ -11,14 +11,14 @@ tutorial_keys	Keys are kept until the end of the level.\n\nHold [c red]{game_spr
 tutorial_crate	Attack the crate to open it.
 tutorial_swap	Press [c red]{game_weaponswitch}[c white] to switch weapons.
 tutorial_map	Hold [c red]{game_map}[c white] to view the map.\n\nYellow icons are keys.
-tutorial_reach	While your inventory is open, [c red]Left-click[c white] and [c red]drag[c white] the item to move it into your inventory.
+tutorial_reach	While your inventory is open, [c red]left-click[c white] and [c red]drag[c white] the item to move it into your inventory.
 tutorial_flashlight	Press [c red]{game_flashlight}[c white] to turn your flashlight on.
 tutorial_boss	Kill the boss to get the final key!
 tutorial_handling	Increasing your gun handling stat reduces the recoil of your guns.
 tutorial_skills	Skill points can be spent to increase various attributes when you level up. Try increasing [c red]Fortitude[c white] if you are having problems staying alive.
 tutorial_alt	Holding [c red]Alt[c white] will show additional information on the inventory screen.
 tutorial_mod	Mods can be used to enhance your gear.\n\nOpen your inventory and try adding a mod to one of your weapons or armor.
-tutorial_quality	The [c red]level[c white] of an item determines the amount of damage or number of mods it can hold.\n\nItem [c red]quality[c white] is random and affects all of its stats.
+tutorial_quality	The [c red]level[c white] of an item determines its damage or mod capacity.\n\nItem [c red]quality[c white] is random and affects all of its stats.
 tutorial_bolt	The Bolt-Action Rifle can be used to pick off enemies from a distance. Try holding [c red]{game_aim}[c white] to pan the camera around.
 tutorial_sorting	You can sort your inventory by pressing\n[c red]{game_sortinventory}[c white] or by clicking the sort icon.\n\nItems are sorted by type, level, then quality.
 tutorial_crossbow	Like the Sawed-off Shotgun, the [c red]Crossbow[c white] shoots all of its loaded ammunition when fired.\n\nTry increasing its bolt capacity with mods.

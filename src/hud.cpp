@@ -906,22 +906,22 @@ void _HUD::DrawCharacterScreen() {
 	DrawPosition.y += 10 * ae::_Element::GetUIScale();
 
 	// Defense
-	Buffer << std::round(Player->SelfHealPercent) << "%";
+	Buffer << ae::Round2(Player->SelfHealPercent) << "%";
 	DrawAttribute("Self Heal Percent", Buffer, DrawPosition);
 
 	//Buffer << Player->DamageBlock;
 	//DrawAttribute("Damage Block", Buffer, DrawPosition);
 
-	Buffer << Player->SelfDamageResist << "%";
+	Buffer << ae::Round2(Player->SelfDamageResist) << "%";
 	DrawAttribute("Self Damage Resist", Buffer, DrawPosition);
 
-	Buffer << Player->DamageResist << "%";
+	Buffer << ae::Round2(Player->DamageResist) << "%";
 	DrawAttribute("Damage Resist", Buffer, DrawPosition);
 
-	Buffer << Player->BaseMoveSpeed << "%";
+	Buffer << ae::Round2(Player->BaseMoveSpeed) << "%";
 	DrawAttribute("Move Speed", Buffer, DrawPosition);
 
-	Buffer << int(100 * Player->MaxStamina + 0.5f) << "%";
+	Buffer << ae::Round2(100.0f * Player->MaxStamina) << "%";
 	DrawAttribute("Stamina", Buffer, DrawPosition);
 
 	DrawPosition.y += 10 * ae::_Element::GetUIScale();
@@ -929,6 +929,12 @@ void _HUD::DrawCharacterScreen() {
 	// Misc
 	Buffer << Player->DropRate << "%";
 	DrawAttribute("Drop Rate", Buffer, DrawPosition);
+
+	Buffer << ae::Round2(100.0f * Player->ExperienceModifier) << "%";
+	DrawAttribute("Experience Gain", Buffer, DrawPosition);
+
+	Buffer << "+" << ae::Round3(Player->ExtraMods);
+	DrawAttribute("Gear Mod Capacity", Buffer, DrawPosition);
 
 	if(Player->LavaTouches > 0) {
 		Buffer << Player->LavaTouches;
