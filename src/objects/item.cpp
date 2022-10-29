@@ -802,6 +802,17 @@ std::string _Item::GetConsumableSuffix(bool Percent) const {
 	return "";
 }
 
+// Build consumble particle text string
+std::string _Item::GetConsumableParticleText(float Amount) const {
+
+	if(Template.Attributes.at("health").Float)
+		return "+" + std::to_string((int)(Amount)) + " HP";
+	else if(Template.Attributes.at("stamina").Float)
+		return "+Stamina";
+
+	return "";
+}
+
 // Get type as string
 std::string _Item::GetTypeAsString() const {
 

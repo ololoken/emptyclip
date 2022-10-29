@@ -818,6 +818,7 @@ int _Player::AddItem(_Item *Item, int &AmountAdded, bool UseOnFull) {
 			// Update stats
 			switch(UpdateType) {
 				case 1:
+					UpdateAmount = std::round(UpdateAmount);
 					UpdateHealth(UpdateAmount);
 					AmountAdded = std::min(AmountToMax, UpdateAmount);
 				break;

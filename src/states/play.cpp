@@ -1363,23 +1363,23 @@ int _PlayState::PickupObject(_Item *Item, bool Manual) {
 		if(Item->IsAutoPickup() && AmountAdded) {
 
 			// Initialize
-			glm::vec2 ParticlePosition(Player->Position.x, Player->Position.y - 0.5);
-			std::string ParticleText = "+";
+			std::string ParticleText;
 			glm::vec4 ParticleColor = COLOR_WHITE;
 			switch(Item->Type) {
 				case _Object::AMMO:
-					ParticleText += std::to_string(AmountAdded);
+					ParticleText = "+" + std::to_string(AmountAdded);
 				break;
 				case _Object::CONSUMABLE:
-					ParticleText += std::to_string(AmountAdded) + Item->GetConsumableSuffix(false);
+					ParticleText = Item->GetConsumableParticleText(AmountAdded);
 					ParticleColor = COLOR_GREEN;
 				break;
 				case _Object::KEY:
-					ParticleText += Item->Name;
+					ParticleText = "+" + Item->Name;
 				break;
 			}
 
 			// Add particle
+			glm::vec2 ParticlePosition(Player->Position.x, Player->Position.y - 0.5);
 			_Particle *Particle = new _Particle(_ParticleSpawn(GameAssets.GetParticleTemplate("text0"), glm::vec2(0), ParticlePosition, OBJECT_Z, 0));
 			Particle->Text = ParticleText;
 			Particle->Color = ParticleColor;
