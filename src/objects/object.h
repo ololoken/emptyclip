@@ -103,7 +103,7 @@ class _Object {
 			MOD,
 			KEY,
 			AMMO,
-			MEDKIT,
+			CONSUMABLE,
 			PROP,
 			PROJECTILE,
 			COUNT
@@ -125,9 +125,9 @@ class _Object {
 		bool CanEquip() const { return Type == _Object::WEAPON || Type == _Object::ARMOR; }
 		bool CanMod() const { return Type == _Object::WEAPON || Type == _Object::ARMOR; }
 		bool CanLevel() const { return Type == _Object::WEAPON || Type == _Object::ARMOR || Type == _Object::MOD; }
-		bool CanUnique() const { return Type == _Object::WEAPON || Type == _Object::ARMOR || Type == _Object::MOD || Type == _Object::AMMO || Type == _Object::MEDKIT; }
-		bool IsAutoPickup() const { return Type == _Object::AMMO || Type == _Object::KEY || Type == _Object::MEDKIT; }
-		bool IsHideable() const { return Type == _Object::AMMO || Type == _Object::MEDKIT; }
+		bool CanUnique() const { return Type == _Object::WEAPON || Type == _Object::ARMOR || Type == _Object::MOD || Type == _Object::AMMO || Type == _Object::CONSUMABLE; }
+		bool IsAutoPickup() const { return Type == _Object::AMMO || Type == _Object::KEY || Type == _Object::CONSUMABLE; }
+		bool IsHideable() const { return Type == _Object::AMMO || Type == _Object::CONSUMABLE; }
 
 		virtual const _ParticleTemplate *GetParticle(int ParticleType) const { return nullptr; }
 		const ae::_Sound *GetSound(int SoundType) const;

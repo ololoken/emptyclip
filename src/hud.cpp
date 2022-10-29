@@ -51,7 +51,7 @@ static std::vector<_MinimapLegend> MinimapLegends = {
 	{ "Keys", HUD_MINIMAP_KEY_COLOR},
 	{ "Equipment",  HUD_MINIMAP_EQUIPMENT_COLOR },
 	{ "Ammo", HUD_MINIMAP_AMMO_COLOR},
-	{ "Medkits", HUD_MINIMAP_MEDKIT_COLOR },
+	{ "Consumables", HUD_MINIMAP_CONSUMABLE_COLOR },
 	{ "Crates", HUD_MINIMAP_CRATE_COLOR },
 	{ "Enemies", HUD_MINIMAP_ENEMY_COLOR },
 	{ "Doors/Switches", HUD_MINIMAP_DOOR_COLOR },

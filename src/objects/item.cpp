@@ -110,7 +110,7 @@ void _Item::DrawTooltip(const _Player *Player, size_t CompareSlot, int Inventory
 	}
 	else if(Type == _Object::ARMOR)
 		Size.y = 380 * ae::_Element::GetUIScale();
-	else if(Type == _Object::MEDKIT)
+	else if(Type == _Object::CONSUMABLE)
 		Size.y = 180 * ae::_Element::GetUIScale();
 	else if(Type == _Object::MOD) {
 		Size.x = 480 * ae::_Element::GetUIScale();
@@ -170,7 +170,7 @@ void _Item::DrawTooltip(const _Player *Player, size_t CompareSlot, int Inventory
 	SmallFont->DrawText(GetTypeAsString(), glm::ivec2(DrawPosition), ae::CENTER_BASELINE);
 
 	// Draw Level
-	if(Type != _Object::KEY && Type != _Object::AMMO && Type != _Object::MEDKIT && Type != _Object::MOD) {
+	if(Type != _Object::KEY && Type != _Object::AMMO && Type != _Object::CONSUMABLE && Type != _Object::MOD) {
 		DrawPosition.y += SmallSpacing.y;
 		Buffer << "Level " << Level;
 		SmallFont->DrawText(Buffer.str(), glm::ivec2(DrawPosition), ae::CENTER_BASELINE);
@@ -437,13 +437,17 @@ void _Item::DrawTooltip(const _Player *Player, size_t CompareSlot, int Inventory
 				Buffer << "+" << Player->GetPickupAmount(this);
 			AttributeFont->DrawText(Buffer.str(), glm::ivec2(DrawPosition), ae::CENTER_BASELINE);
 		} break;
-		case _Object::MEDKIT: {
+		case _Object::CONSUMABLE: {
 			HelpTextList.push_back("Used when picked up");
 			DrawPosition.y += Spacing.y;
+
+			float Value = GetConsumableValue(Player);
 			if(IsUnique())
-				Buffer << "+100% HP";
+				Buffer << "+100";
 			else
-				Buffer << "+" << (int)(GAME_MEDKIT_HEALTH_PERCENT * Player->HealModifier) << "% HP";
+				Buffer << "+" << ae::Round2(Value);
+
+			Buffer << GetConsumableSuffix(true);
 			AttributeFont->DrawText(Buffer.str(), glm::ivec2(DrawPosition), ae::CENTER_BASELINE, COLOR_GREEN);
 		} break;
 	}
@@ -775,6 +779,29 @@ void _Item::GetQualityColor(glm::vec4 &ReturnColor) const {
 		ReturnColor = COLOR_WHITE;
 }
 
+// Get consumable value based on attributes
+float _Item::GetConsumableValue(const _Player *Player) const {
+
+	if(Template.Attributes.at("health").Float)
+		return Template.Attributes.at("health").Float * Player->HealModifier;
+	else if(Template.Attributes.at("stamina").Float)
+		return Template.Attributes.at("stamina").Float;
+
+	return 0;
+}
+
+// Get suffix for consumable description
+std::string _Item::GetConsumableSuffix(bool Percent) const {
+
+	std::string Prefix = Percent ? "%" : "";
+	if(Template.Attributes.at("health").Float)
+		return Prefix + " HP";
+	else if(Template.Attributes.at("stamina").Float)
+		return "% Stamina";
+
+	return "";
+}
+
 // Get type as string
 std::string _Item::GetTypeAsString() const {
 
@@ -820,8 +847,8 @@ std::string _Item::GetTypeAsString() const {
 			return "Ammo";
 		case _Object::KEY:
 			return "Key";
-		case _Object::MEDKIT:
-			return "Healing Item";
+		case _Object::CONSUMABLE:
+			return "Consumable";
 	}
 
 	return "";

@@ -44,7 +44,7 @@ void _Stats::Init() {
 	LoadAmmo();
 	LoadArmor();
 	LoadKeys();
-	LoadMedkits();
+	LoadConsumables();
 	LoadMods();
 	LoadProjectiles();
 	LoadWeapons();
@@ -376,19 +376,21 @@ void _Stats::LoadKeys() {
 	Database->CloseQuery();
 }
 
-// Load medkit stats
-void _Stats::LoadMedkits() {
+// Load consumable stats
+void _Stats::LoadConsumables() {
 
 	// Run query
-	Database->PrepareQuery("SELECT * FROM medkits");
+	Database->PrepareQuery("SELECT * FROM consumables");
 
 	// Get data
 	while(Database->FetchRow()) {
-		_ObjectTemplate Template(_Object::MEDKIT);
+		_ObjectTemplate Template(_Object::CONSUMABLE);
 		Template.ID = Database->GetString("id");
 		Template.Name = Database->GetString("name");
 		Template.IconID = Database->GetString("icon_id");
 		Template.RenderListType = Database->GetInt<int>("renderlist");
+		Template.Attributes["health"].Float = Database->GetReal("health");
+		Template.Attributes["stamina"].Float = Database->GetReal("stamina");
 
 		// Check for loaded textures
 		if(!ae::Assets.Textures[Template.IconID])
@@ -1031,5 +1033,5 @@ void _Stats::SetColor(glm::vec4 &Color, const std::string &ColorID) {
 
 // Determine if template is an item
 bool _ObjectTemplate::IsItem() const {
-	return Type >= _Object::WEAPON && Type <= _Object::MEDKIT;
+	return Type >= _Object::WEAPON && Type <= _Object::CONSUMABLE;
 }

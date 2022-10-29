@@ -98,6 +98,9 @@ class _Item : public _Object {
 		float GetAverageAccuracy() const;
 		void GetQualityColor(glm::vec4 &ReturnColor) const;
 
+		float GetConsumableValue(const _Player *Player) const;
+		std::string GetConsumableSuffix(bool Percent) const;
+
 		virtual std::string GetTypeAsString() const override;
 		std::string ModTypeToString(int ModType);
 

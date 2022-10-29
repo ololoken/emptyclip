@@ -1370,8 +1370,8 @@ int _PlayState::PickupObject(_Item *Item, bool Manual) {
 				case _Object::AMMO:
 					ParticleText += std::to_string(AmountAdded);
 				break;
-				case _Object::MEDKIT:
-					ParticleText += std::to_string(AmountAdded) + "HP";
+				case _Object::CONSUMABLE:
+					ParticleText += std::to_string(AmountAdded) + Item->GetConsumableSuffix(false);
 					ParticleColor = COLOR_GREEN;
 				break;
 				case _Object::KEY:

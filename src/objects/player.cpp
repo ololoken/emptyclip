@@ -789,16 +789,43 @@ int _Player::AddItem(_Item *Item, int &AmountAdded, bool UseOnFull) {
 
 			return ADD_DELETE;
 		}
-		case _Object::MEDKIT: {
-			if(Health == MaxHealth)
+		case _Object::CONSUMABLE: {
+			float CurrentValue = 0;
+			float MaxValue = 0;
+			int UpdateType = 0;
+			if(Item->Template.Attributes.at("health").Float) {
+				CurrentValue = Health;
+				MaxValue = MaxHealth;
+				UpdateType = 1;
+			}
+			else if(Item->Template.Attributes.at("stamina").Float) {
+				CurrentValue = Stamina;
+				MaxValue = MaxStamina;
+				UpdateType = 2;
+			}
+
+			if(!UpdateType)
+				throw std::runtime_error(std::string(__func__) + " bad consumable UpdateType");
+
+			// Already full
+			if(CurrentValue == MaxValue)
 				return (UseOnFull ? ADD_DELETE : ADD_QUIETFULL);
 
-			int AmountToMax = MaxHealth - Health;
-			int HealAmount = Item->IsUnique() ? AmountToMax : (int)(GAME_MEDKIT_HEALTH_PERCENT * HealModifier) * 0.01f * MaxHealth;
+			// Get update amounts
+			float AmountToMax = MaxValue - CurrentValue;
+			float UpdateAmount = Item->IsUnique() ? AmountToMax : Item->GetConsumableValue(this) * 0.01f * MaxValue;
 
-			UpdateHealth(HealAmount);
-
-			AmountAdded = std::min(AmountToMax, HealAmount);
+			// Update stats
+			switch(UpdateType) {
+				case 1:
+					UpdateHealth(UpdateAmount);
+					AmountAdded = std::min(AmountToMax, UpdateAmount);
+				break;
+				case 2:
+					Stamina = std::clamp(Stamina + UpdateAmount, 0.0f, MaxStamina);
+					AmountAdded = std::round(100 * std::min(AmountToMax, UpdateAmount));
+				break;
+			}
 
 			return ADD_DELETE;
 		} break;

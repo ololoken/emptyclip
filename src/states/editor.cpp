@@ -1042,7 +1042,7 @@ void _EditorState::Render(double BlendFactor) {
 	// Draw object levels
 	if(Camera->GetPosition().z <= EDITOR_LEVEL_Z) {
 		for(const auto &Object : Map->ObjectSpawns) {
-			if(Object->Type == _Object::AMMO || Object->Type == _Object::MEDKIT ||  Object->Type == _Object::PROP || Object->Type == _Object::KEY)
+			if(Object->Type == _Object::AMMO || Object->Type == _Object::CONSUMABLE ||  Object->Type == _Object::PROP || Object->Type == _Object::KEY)
 				continue;
 
 			if(Object->Type == _Object::MONSTER && EditMode != EDITMODE_MONSTERS)
@@ -1590,7 +1590,7 @@ void _EditorState::DrawObject(float OffsetX, float OffsetY, const _ObjectSpawn *
 		case _Object::MOD:
 		case _Object::ARMOR:
 		case _Object::WEAPON:
-		case _Object::MEDKIT: {
+		case _Object::CONSUMABLE: {
 			_ObjectTemplate &Item = Stats.Objects.at(ObjectSpawn->ID);
 			Texture = ae::Assets.Textures[Item.IconID];
 			Color = Item.Color;

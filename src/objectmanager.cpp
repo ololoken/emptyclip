@@ -111,8 +111,8 @@ void _ObjectManager::Update(double FrameTime, _Map *Map) {
 				case _Object::AMMO:
 					Map->MinimapIcons[_Map::MINIMAP_AMMO].push_back(MinimapIcon);
 				break;
-				case _Object::MEDKIT:
-					Map->MinimapIcons[_Map::MINIMAP_MEDKIT].push_back(MinimapIcon);
+				case _Object::CONSUMABLE:
+					Map->MinimapIcons[_Map::MINIMAP_CONSUMABLE].push_back(MinimapIcon);
 				break;
 				case _Object::PROP:
 					Map->MinimapIcons[_Map::MINIMAP_WALL].push_back(MinimapIcon);

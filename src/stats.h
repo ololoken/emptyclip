@@ -151,7 +151,7 @@ class _Stats {
 		void LoadWeapons();
 		void LoadArmor();
 		void LoadKeys();
-		void LoadMedkits();
+		void LoadConsumables();
 		void LoadMods();
 		void LoadItemDrops();
 		void LoadMonsters();

@@ -87,7 +87,7 @@ static const glm::vec4 MinimapColors[_Map::MINIMAP_COUNT] = {
 	HUD_MINIMAP_DOOR_BOSSCOLOR,
 	HUD_MINIMAP_TOGGLED_COLOR,
 	HUD_MINIMAP_AMMO_COLOR,
-	HUD_MINIMAP_MEDKIT_COLOR,
+	HUD_MINIMAP_CONSUMABLE_COLOR,
 	HUD_MINIMAP_EQUIPMENT_COLOR,
 	HUD_MINIMAP_UNIQUE_COLOR,
 	HUD_MINIMAP_KEY_COLOR,
@@ -859,7 +859,7 @@ bool _Map::CheckAABBCollision(const glm::vec2 &Position, float Radius, const flo
 
 // Check random spots for a empty location in the world
 glm::vec2 _Map::FindSuitableItemPosition(const glm::vec2 &Position, int ItemType, float Radius, int Attempts) {
-	if(ItemType == _Object::AMMO || ItemType == _Object::MEDKIT)
+	if(ItemType == _Object::AMMO || ItemType == _Object::CONSUMABLE)
 		return Position + GenerateRandomPointInCircle(ITEM_PLACEMENT_RADIUS);
 
 	glm::vec2 CheckPosition;
