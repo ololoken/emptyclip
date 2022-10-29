@@ -1065,7 +1065,7 @@ float _Player::GetCrosshairRadius(const glm::vec2 &Cursor) {
 // Checks if the player's weapon has ammo
 bool _Player::WeaponHasAmmo(int AttackType) const {
 	if(AttackType == WEAPONATTACK_MAIN) {
-		if(!HasMainHand() || Stats.Objects.at(GetMainHand()->ID).AmmoID.empty())
+		if(!HasMainHand() || GetMainHand()->Template.AmmoID.empty())
 			return true;
 
 		return GetMainHand()->Attributes.at("ammo").Int > 0;
@@ -1090,7 +1090,7 @@ bool _Player::HasAmmoForMain() const {
 	if(!HasMainHand())
 		return false;
 
-	const std::string &AmmoType = Stats.Objects.at(GetMainHand()->ID).AmmoID;
+	const std::string &AmmoType = GetMainHand()->Template.AmmoID;
 	if(Ammo.find(AmmoType) == Ammo.end())
 		return false;
 
@@ -1200,7 +1200,7 @@ void _Player::UpdateReloading() {
 		return;
 
 	// Get amounts
-	const std::string &AmmoType = Stats.Objects.at(GetMainHand()->ID).AmmoID;
+	const std::string &AmmoType = GetMainHand()->Template.AmmoID;
 	int AmountNeeded = std::round(GetMainHand()->Attributes["rounds"].Float) - GetMainHand()->Attributes["ammo"].Int;
 	int AmmoLoadAmount = std::min(Ammo[AmmoType], AmountNeeded);
 
@@ -1417,7 +1417,7 @@ const _ParticleTemplate *_Player::GetParticle(int ParticleType) const {
 	}
 
 	if(HasMainHand()) {
-		const auto &Template = Stats.Objects.at(GetMainHand()->ID).ParticleGroup->ParticleTemplates[ParticleType];
+		const auto &Template = GetMainHand()->Template.ParticleGroup->ParticleTemplates[ParticleType];
 		if(Template.empty())
 			return nullptr;
 

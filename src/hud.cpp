@@ -792,24 +792,31 @@ void _HUD::DrawHUDWeapon(const _Item *Item, ae::_Element *Element, ae::_Element 
 
 	Image->Texture = Item->Texture;
 	Image->Color = Item->Color;
-	int Rounds = std::round(Item->Attributes.at("rounds").Float);
-	if(Rounds) {
+	int Rounds = -1;
+	if(PlayState.ShowMoreInfo())
+		Rounds = std::round(Item->Attributes.at("rounds").Float);
+	else if(Item->Template.AmmoID.size())
+		Rounds = Player->Ammo.at(Item->Template.AmmoID);
 
-		// Set font size
-		if(Rounds > 9999)
-			Label->Font = ae::Assets.Fonts["hud_tiny"];
-		else if(Rounds > 999)
-			Label->Font = ae::Assets.Fonts["hud_small"];
+	if(Label) {
+		if(Rounds != -1) {
+
+			// Set font size
+			if(Rounds > 9999)
+				Label->Font = ae::Assets.Fonts["hud_tiny"];
+			else if(Rounds > 999)
+				Label->Font = ae::Assets.Fonts["hud_small"];
+			else
+				Label->Font = ae::Assets.Fonts["hud_medium"];
+
+			std::ostringstream Buffer;
+			Buffer << Item->Attributes.at("ammo").Int << "/" << Rounds;
+			if(Label)
+				Label->Text = Buffer.str();
+		}
 		else
-			Label->Font = ae::Assets.Fonts["hud_medium"];
-
-		std::ostringstream Buffer;
-		Buffer << Item->Attributes.at("ammo").Int << "/" << Rounds;
-		if(Label)
-			Label->Text = Buffer.str();
+			Label->Text = "";
 	}
-	else if(Label)
-		Label->Text = "";
 
 	Element->Render();
 
