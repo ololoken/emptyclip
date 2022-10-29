@@ -10,6 +10,7 @@ ammo_plasma	0	0	1	0	0	0	0	0	0	0	0	0	0	0	0	6	0	15	0
 ammo_rockets	0	0	1	0	0	0	0	0	0	0	0	0	0	0	0	0	5	15	0
 ammo_bolts	0	0	1	0	0	0	0	0	0	0	0	0	0	0	0	6	15	6	0
 consume_medkit	0	0	0	1	0	0	0	0	0	0	0	0	0	0	25	25	25	25	0
+consume_adrenaline	0	0	0	0	0	0	0	0	0	0	0	0	0	0	10	10	10	10	0
 weapon_knife	0	0	0	0	0	0	0	0	1	0	0	0	0	0	1	1	0	0	0
 weapon_spear	0	0	0	0	0	0	0	0	1	0	0	0	0	0	1	1	1	0	0
 weapon_pistol	0	0	0	0	1	0	0	0	0	0	0	0	0	0	1	1	0	0	0
