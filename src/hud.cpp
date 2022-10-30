@@ -795,8 +795,12 @@ void _HUD::DrawHUDWeapon(const _Item *Item, ae::_Element *Element, ae::_Element 
 	int Rounds = -1;
 	if(PlayState.ShowMoreInfo())
 		Rounds = std::round(Item->Attributes.at("rounds").Float);
-	else if(Item->Template.AmmoID.size())
-		Rounds = Player->Ammo.at(Item->Template.AmmoID);
+	else if(Item->Template.AmmoID.size()) {
+		if(Player->Ammo.find(Item->Template.AmmoID) != Player->Ammo.end())
+			Rounds = Player->Ammo.at(Item->Template.AmmoID);
+		else
+			Rounds = 0;
+	}
 
 	if(Label) {
 		if(Rounds != -1) {
