@@ -83,4 +83,5 @@ class _Event {
 		int SpawnMultiplier{1};
 		bool Switched{false};
 		bool IsBossSpawn{false};
+		bool IsMonsterSpawn{false};
 };

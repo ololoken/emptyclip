@@ -276,6 +276,7 @@ _Map::_Map(const std::string &Filename, double Clock, int Progression) : _Map() 
 							throw std::runtime_error(std::string(__func__) + " unknown monster '" + Event->MonsterID + "'");
 
 						Event->IsBossSpawn = (Event->MonsterID.find("boss_") == 0);
+						Event->IsMonsterSpawn = (Event->MonsterID.find("monster_") == 0);
 					} break;
 					// Particle ID
 					case 'P': {
