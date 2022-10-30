@@ -114,7 +114,7 @@ void _Item::DrawTooltip(const _Player *Player, size_t CompareSlot, int Inventory
 		Size.y = 180 * ae::_Element::GetUIScale();
 	else if(Type == _Object::MOD) {
 		Size.x = 480 * ae::_Element::GetUIScale();
-		Size.y = 240 * ae::_Element::GetUIScale();
+		Size.y = 250 * ae::_Element::GetUIScale();
 	}
 
 	// Increase size for each unique mod
@@ -411,22 +411,32 @@ void _Item::DrawTooltip(const _Player *Player, size_t CompareSlot, int Inventory
 			if(InventorySlot == -1 && PlayState.HUD->InventoryOpen)
 				HelpTextList.push_back("Right-click to pick up");
 
-			if(Template.Attributes.at("mod_type").Int != MOD_FULLAUTO && Template.Attributes.at("mod_type").Int != MOD_SEMIAUTO) {
+			if(Template.Attributes.at("mod_type").Int == MOD_BURST) {
 				DrawPosition.y += Spacing.y;
-				if(Template.Attributes.at("mod_type").Int == MOD_BURST) {
-					if(PlayState.ShowMoreInfo())
-						Buffer << Attributes.at("bonus").Float << " Round Burst Fire";
-					else
-						Buffer << std::round(Attributes.at("bonus").Float) << " Round Burst Fire";
-					AttributeFont->DrawText(Buffer.str(), glm::ivec2(DrawPosition), ae::CENTER_BASELINE, TextColor);
-				}
-				else {
-					std::string Percent = Template.Attributes.at("percent_sign").Int ? "%" : "";
-					std::string Positive = Template.Attributes.at("negative").Int ? "" : "+";
-					Buffer << Positive << ae::Round2(Attributes.at("bonus").Float) << Percent;
-					AttributeFont->DrawText(ModTypeToString(Template.Attributes.at("mod_type").Int), glm::ivec2(DrawPosition - DrawOffset), ae::RIGHT_BASELINE);
-					AttributeFont->DrawText(Buffer.str(), glm::ivec2(DrawPosition + DrawOffset), ae::LEFT_BASELINE, TextColor);
-				}
+				Buffer << "+";
+				if(PlayState.ShowMoreInfo())
+					Buffer << Attributes.at("bonus").Float;
+				else
+					Buffer << std::round(Attributes.at("bonus").Float);
+				Buffer << " Round Burst Fire";
+				AttributeFont->DrawText(Buffer.str(), glm::ivec2(DrawPosition), ae::CENTER_BASELINE, TextColor);
+			}
+			else if(Template.Attributes.at("mod_type").Int != MOD_FULLAUTO && Template.Attributes.at("mod_type").Int != MOD_SEMIAUTO) {
+				DrawPosition.y += Spacing.y;
+				std::string Percent = Template.Attributes.at("percent_sign").Int ? "%" : "";
+				std::string Positive = Template.Attributes.at("negative").Int ? "" : "+";
+				Buffer << Positive << ae::Round2(Attributes.at("bonus").Float) << Percent;
+				AttributeFont->DrawText(ModTypeToString(Template.Attributes.at("mod_type").Int), glm::ivec2(DrawPosition - DrawOffset), ae::RIGHT_BASELINE);
+				AttributeFont->DrawText(Buffer.str(), glm::ivec2(DrawPosition + DrawOffset), ae::LEFT_BASELINE, TextColor);
+			}
+			Buffer.str("");
+
+			if(Attributes.at("bonus_2nd").Float) {
+				DrawPosition.y += Spacing.y;
+				Buffer << "+" << ae::Round2(Attributes.at("bonus_2nd").Float) << "%";
+				AttributeFont->DrawText(ModTypeToString(Template.Attributes.at("mod_type_2nd").Int), glm::ivec2(DrawPosition - DrawOffset), ae::RIGHT_BASELINE);
+				AttributeFont->DrawText(Buffer.str(), glm::ivec2(DrawPosition + DrawOffset), ae::LEFT_BASELINE, TextColor);
+				Buffer.str("");
 			}
 		} break;
 		case _Object::AMMO: {
@@ -547,6 +557,10 @@ void _Item::RecalculateStats() {
 	// Sum bonuses
 	for(size_t i = 0; i < Mods.size(); i++)
 		Bonus[Mods[i]->Template.Attributes.at("mod_type").Int] += Mods[i]->Attributes.at("bonus").Float;
+
+	// Sum secondary bonuses
+	for(size_t i = 0; i < Mods.size(); i++)
+		Bonus[Mods[i]->Template.Attributes.at("mod_type_2nd").Int] += Mods[i]->Attributes.at("bonus_2nd").Float;
 
 	float QualityFactor = 1.0f + Quality * 0.01f;
 	switch(Type) {

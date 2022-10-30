@@ -416,6 +416,7 @@ void _Stats::LoadMods() {
 		Template.Name = Database->GetString("name");
 		Template.IconID = Database->GetString("icon_id");
 		Template.Attributes["mod_type"].Int = Database->GetInt<int>("mod_type");
+		Template.Attributes["mod_type_2nd"].Int = Database->GetInt<int>("mod_type_2nd");
 		Template.Attributes["object_type"].Int = Database->GetInt<int>("object_type");
 		Template.Attributes["weapon_type"].Int = Database->GetInt<int>("weapon_type");
 		Template.Attributes["bonus"].Float = Database->GetReal("bonus");
@@ -827,6 +828,7 @@ _Item *_Stats::CreateItem(const std::string &ID, int Level, int Quality, int Cou
 		} break;
 		case _Object::MOD:
 			Item->SetAttributeLevel("bonus", QualityFactor);
+			Item->Attributes["bonus_2nd"].Float = Template.Attributes.at("mod_type_2nd").Int ? MOD_SECONDARY_BONUS * QualityFactor : 0.0f;
 			if(Template.Attributes.at("negative").Int)
 				Item->Attributes.at("bonus").Float = -Item->Attributes.at("bonus").Float;
 		break;
