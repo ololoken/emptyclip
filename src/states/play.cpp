@@ -633,6 +633,7 @@ void _PlayState::Update(double FrameTime) {
 			Buffer << " YOU HAVE UNSPENT SKILL POINTS!";
 
 		HUD->ShowTextMessage(Buffer.str(), 5.0);
+		Save.SavePlayer(Player);
 	}
 
 	// Show end message
@@ -1375,6 +1376,7 @@ int _PlayState::PickupObject(_Item *Item, bool Manual) {
 				break;
 				case _Object::KEY:
 					ParticleText = "+" + Item->Name;
+					Save.SavePlayer(Player);
 				break;
 			}
 
