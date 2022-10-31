@@ -1722,7 +1722,7 @@ void _PlayState::UpdateEvents(double FrameTime) {
 					Position.y = Tiles[i].Coord.y + 0.5f;
 
 					// Randomize offset
-					if(Event->IsMonsterSpawn) {
+					if(Event->IsMonsterSpawn && Event->SpawnMultiplier) {
 						Position.x += ae::GetRandomReal(-0.25, 0.25);
 						Position.y += ae::GetRandomReal(-0.25, 0.25);
 					}
