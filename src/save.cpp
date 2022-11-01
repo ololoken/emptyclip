@@ -191,18 +191,27 @@ void _Save::LoadPlayer(_Player *Player) {
 				File.read((char *)&Player->TestSave, sizeof(Player->TestSave));
 			break;
 			case CHUNK_PLAYERNAME: {
+				if(Size >= 1024)
+					throw std::runtime_error("Bad chunk size!");
+
 				char Buffer[1024];
 				File.read(Buffer, Size);
 				Buffer[Size] = 0;
 				Player->Name = Buffer;
 			} break;
 			case CHUNK_COLOR: {
+				if(Size >= 1024)
+					throw std::runtime_error("Bad chunk size!");
+
 				char Buffer[1024];
 				File.read(Buffer, Size);
 				Buffer[Size] = 0;
 				Player->ColorID = Buffer;
 			} break;
 			case CHUNK_MAP: {
+				if(Size >= 1024)
+					throw std::runtime_error("Bad chunk size!");
+
 				char Buffer[1024];
 				File.read(Buffer, Size);
 				Buffer[Size] = 0;
