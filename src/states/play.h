@@ -104,6 +104,7 @@ class _PlayState : public ae::_State {
 
 		void SpawnObject(const _ObjectSpawn *ObjectSpawn, bool GenerateStats=false, int AddedLevel=0);
 		void UseObject(_Item *Item);
+		bool SetCursorOverItem();
 
 		// Game
 		double Timer{0.0};

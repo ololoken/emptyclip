@@ -694,7 +694,7 @@ void _PlayState::Update(double FrameTime) {
 	LastClosestItem = ClosestItem;
 
 	// Set cursor item
-	if(!ae::Graphics.Element->HitElement && CursorItem && !(ShowMoreInfo() && CursorItem->IsHideable()) && (!HUD->CursorOverItem || ClosestItem == HUD->CursorOverItem) && (HUD->InventoryOpen || CursorItemTimer > HUD_CURSOR_ITEM_WAIT || ClosestItemTimer >= HUD_STANDOVER_TIME)) {
+	if(SetCursorOverItem()) {
 		HUD->CursorOverItem = CursorItem;
 		HUD->CursorUseWorldPosition = false;
 	}
@@ -1423,6 +1423,27 @@ void _PlayState::UseObject(_Item *Item) {
 
 	// Pick up an item if available
 	PickupObject(Item, true);
+}
+
+// Determine if CursorOverItem should be set to CursorItem
+bool _PlayState::SetCursorOverItem() {
+
+	if(!CursorItem)
+		return false;
+
+	if(ae::Graphics.Element->HitElement)
+		return false;
+
+	if(ShowMoreInfo() && CursorItem->IsHideable())
+		return false;
+
+	if(HUD->CursorOverItem && ClosestItem != HUD->CursorOverItem)
+		return false;
+
+	if(ShowMoreInfo() || HUD->InventoryOpen || CursorItemTimer > HUD_CURSOR_ITEM_WAIT || ClosestItemTimer >= HUD_STANDOVER_TIME)
+		return true;
+
+	return false;
 }
 
 // Open door or handle switches, return true on success
