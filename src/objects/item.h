@@ -60,6 +60,13 @@ enum ModType {
 	MOD_COUNT
 };
 
+// Usable types
+enum UsableType {
+	USABLE_NONE,
+	USABLE_HAMMER,
+	USABLE_COUNT,
+};
+
 // Types of weapons
 enum WeaponType {
 	WEAPON_NONE,
@@ -85,6 +92,7 @@ class _Item : public _Object {
 		void Render(double BlendFactor) const override;
 
 		bool AddMod(_Item *Mod, bool Recalculate=true);
+		bool ItemCompatible(_Item *Item, bool CheckCount=true);
 		bool ModCompatible(_Item *Mod, bool CheckCount=true);
 		float GetBonusMultiplier(int ModType, bool Inverse=false) const;
 		void SetMaxMods();

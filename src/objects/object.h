@@ -104,6 +104,7 @@ class _Object {
 			KEY,
 			AMMO,
 			CONSUMABLE,
+			USABLE,
 			PROP,
 			PROJECTILE,
 			COUNT
@@ -121,7 +122,7 @@ class _Object {
 		virtual bool IsInvulnerable() const { return false; }
 		bool CanFreePath() const { return FreePathing || FreePathingTimer > 0.0; }
 		bool CanStack() const { return false; }
-		bool CanMove() const { return Type == _Object::WEAPON || Type == _Object::ARMOR || Type == _Object::MOD; }
+		bool CanMove() const { return Type == _Object::WEAPON || Type == _Object::ARMOR || Type == _Object::MOD || Type == _Object::USABLE; }
 		bool CanEquip() const { return Type == _Object::WEAPON || Type == _Object::ARMOR; }
 		bool CanMod() const { return Type == _Object::WEAPON || Type == _Object::ARMOR; }
 		bool CanLevel() const { return Type == _Object::WEAPON || Type == _Object::ARMOR || Type == _Object::MOD; }
@@ -203,6 +204,7 @@ class _Object {
 		float Mass{0.0f};
 		bool Circle{true};
 		bool FreePathing{false};
+		bool Moveable{true};
 
 		// Graphics
 		const ae::_Texture *Texture{nullptr};

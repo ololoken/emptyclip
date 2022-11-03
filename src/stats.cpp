@@ -45,6 +45,7 @@ void _Stats::Init() {
 	LoadArmor();
 	LoadKeys();
 	LoadConsumables();
+	LoadUsables();
 	LoadMods();
 	LoadProjectiles();
 	LoadWeapons();
@@ -391,6 +392,32 @@ void _Stats::LoadConsumables() {
 		Template.RenderListType = Database->GetInt<int>("renderlist");
 		Template.Attributes["health"].Float = Database->GetReal("health");
 		Template.Attributes["stamina"].Float = Database->GetReal("stamina");
+
+		// Check for loaded textures
+		if(!ae::Assets.Textures[Template.IconID])
+			throw std::runtime_error(std::string(__func__) + " unknown texture '" + Template.IconID + "'");
+
+		Objects.insert(std::make_pair(Template.ID, Template));
+	}
+
+	Database->CloseQuery();
+}
+
+// Load usable items
+void _Stats::LoadUsables() {
+
+	// Run query
+	Database->PrepareQuery("SELECT * FROM usables");
+
+	// Get data
+	while(Database->FetchRow()) {
+		_ObjectTemplate Template(_Object::USABLE);
+		Template.ID = Database->GetString("id");
+		Template.Name = Database->GetString("name");
+		Template.IconID = Database->GetString("icon_id");
+		Template.RenderListType = Database->GetInt<int>("renderlist");
+		Template.Attributes["usable_type"].Int = Database->GetInt<int>("type");
+		Template.Attributes["moveable"].Int = Database->GetInt<int>("moveable");
 
 		// Check for loaded textures
 		if(!ae::Assets.Textures[Template.IconID])
@@ -780,6 +807,7 @@ _Item *_Stats::CreateItem(const std::string &ID, int Level, int Quality, int Cou
 	Item->Level = Level;
 	Item->Quality = Quality;
 	Item->Count = Count;
+	Item->Moveable = true;
 	Item->SetPosition(Position);
 	Item->Texture = ae::Assets.Textures[Template.IconID];
 
@@ -831,6 +859,9 @@ _Item *_Stats::CreateItem(const std::string &ID, int Level, int Quality, int Cou
 			Item->Attributes["bonus_2nd"].Float = Template.Attributes.at("mod_type_2nd").Int ? MOD_SECONDARY_BONUS * QualityFactor : 0.0f;
 			if(Template.Attributes.at("negative").Int)
 				Item->Attributes.at("bonus").Float = -Item->Attributes.at("bonus").Float;
+		break;
+		case _Object::USABLE:
+			Item->Moveable = Template.Attributes.at("moveable").Int;
 		break;
 		default:
 			Item->Attributes = Template.Attributes;
@@ -1035,5 +1066,5 @@ void _Stats::SetColor(glm::vec4 &Color, const std::string &ColorID) {
 
 // Determine if template is an item
 bool _ObjectTemplate::IsItem() const {
-	return Type >= _Object::WEAPON && Type <= _Object::CONSUMABLE;
+	return Type >= _Object::WEAPON && Type <= _Object::USABLE;
 }

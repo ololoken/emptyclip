@@ -1350,7 +1350,7 @@ void _PlayState::EndLevel() {
 
 // Places an item into the player's inventory and return amount added
 int _PlayState::PickupObject(_Item *Item, bool Manual) {
-	if(!Item || !Item->Visible || (Manual && Item->IsHideable() && ShowMoreInfo()))
+	if(!Item || !Item->Visible || !Item->Moveable || (Manual && Item->IsHideable() && ShowMoreInfo()))
 		return 0;
 
 	// Attempt to add item

@@ -220,20 +220,24 @@ void _HUD::MoveWorldItem(const glm::vec2 &DropPosition) {
 	if(DragStart || !CursorItem)
 		return;
 
-	// Remove item from old position
-	Player->Map->RemoveObject(CursorItem, GRID_ITEM);
+	// Update position
+	if(CursorItem->Moveable) {
 
-	// Default to mouse position
-	if(DropPosition.x < 0.0f)
-		Camera->ConvertScreenToWorld(ae::Input.GetMouse(), CursorItem->Position);
-	else
-		CursorItem->Position = DropPosition;
+		// Remove item from old position
+		Player->Map->RemoveObjectFromGrid(CursorItem, GRID_ITEM);
 
-	// Check drop position
-	Player->Map->GetDropPosition(Player, PLAYER_REACH_DISTANCE, CursorItem->Position);
+		// Get new position
+		if(DropPosition.x < 0.0f)
+			Camera->ConvertScreenToWorld(ae::Input.GetMouse(), CursorItem->Position);
+		else
+			CursorItem->Position = DropPosition;
 
-	// Place item in new position
-	Player->Map->AddObject(CursorItem, GRID_ITEM);
+		// Check drop position
+		Player->Map->GetDropPosition(Player, PLAYER_REACH_DISTANCE, CursorItem->Position);
+
+		// Place item in new position
+		Player->Map->AddObjectToGrid(CursorItem, GRID_ITEM);
+	}
 
 	// Reset state
 	CursorItem->LastPosition = CursorItem->Position;
@@ -324,11 +328,32 @@ void _HUD::MouseEvent(const ae::_MouseEvent &MouseEvent) {
 								// Drag onto existing item
 								_Item *ExistingItem = Player->Inventory[HitElement->Index];
 								if(ExistingItem) {
-									if(ExistingItem->AddMod(CursorItem)) {
+									if(CursorItem->Type == _Object::USABLE) {
+										if(CursorItem->Template.Attributes.at("usable_type").Int == USABLE_HAMMER && ExistingItem->ItemCompatible(CursorItem, false)) {
+
+											// Destroy hammer
+											CursorItem->Active = false;
+											Player->Map->RemoveObjectFromGrid(CursorItem, GRID_ITEM);
+
+											// Drop mods
+											for(auto &Mod : ExistingItem->Mods) {
+												Mod->Visible = true;
+												Mod->SetPosition(Player->Map->FindSuitableItemPosition(Player->Position, Mod->Type, ITEM_RADIUS, ITEM_PLACEMENT_ATTEMPTS));
+												Player->Map->AddObject(Mod, GRID_ITEM);
+											}
+											ExistingItem->Mods.clear();
+
+											// Destroy item
+											delete ExistingItem;
+											Player->Inventory[HitElement->Index] = nullptr;
+											CursorOverItem = nullptr;
+										}
+									}
+									else if(ExistingItem->AddMod(CursorItem)) {
 										CursorItem->Visible = false;
 										Player->Map->RemoveObject(CursorItem, GRID_ITEM);
 									}
-									else if(CursorItem->Type == _Object::MOD && ExistingItem->CanEquip() && !ExistingItem->ModCompatible(CursorItem)) {
+									else if(CursorItem->Type == _Object::MOD && ExistingItem->CanEquip() && !ExistingItem->ItemCompatible(CursorItem)) {
 										MoveWorldItem(Player->Position);
 									}
 									else {
@@ -337,7 +362,7 @@ void _HUD::MouseEvent(const ae::_MouseEvent &MouseEvent) {
 									}
 								}
 								// Drag onto empty slot
-								else if(CanEquip || _Player::IsBagIndex(HitElement->Index)) {
+								else if(CursorItem->Moveable && (CanEquip || _Player::IsBagIndex(HitElement->Index))) {
 									SetAndRemove = true;
 								}
 
@@ -998,7 +1023,7 @@ void _HUD::DrawInventory() {
 	}
 
 	// Draw overlay for compatible mod types
-	if(CursorItem && CursorItem->Type == _Item::MOD) {
+	if(CursorItem && (CursorItem->Type == _Item::MOD || CursorItem->Type == _Item::USABLE)) {
 		ae::Graphics.SetProgram(ae::Assets.Programs["ortho_pos"]);
 		for(size_t i = INVENTORY_MAINHAND; i < INVENTORY_BAGEND; i++) {
 			_Item *Item = Player->Inventory[i];
@@ -1006,7 +1031,7 @@ void _HUD::DrawInventory() {
 				continue;
 
 			// Set overlay color
-			if(Item->ModCompatible(CursorItem))
+			if(Item->ItemCompatible(CursorItem))
 				ae::Graphics.SetColor(glm::vec4(0.0f, 1.0f, 0.0f, 0.2f));
 			else
 				ae::Graphics.SetColor(glm::vec4(1.0f, 0.0f, 0.0f, 0.2f));

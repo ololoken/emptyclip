@@ -152,6 +152,7 @@ class _Stats {
 		void LoadArmor();
 		void LoadKeys();
 		void LoadConsumables();
+		void LoadUsables();
 		void LoadMods();
 		void LoadItemDrops();
 		void LoadMonsters();

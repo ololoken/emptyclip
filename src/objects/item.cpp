@@ -112,6 +112,10 @@ void _Item::DrawTooltip(const _Player *Player, size_t CompareSlot, int Inventory
 		Size.y = 380 * ae::_Element::GetUIScale();
 	else if(Type == _Object::CONSUMABLE)
 		Size.y = 180 * ae::_Element::GetUIScale();
+	else if(Type == _Object::USABLE) {
+		Size.x = 480 * ae::_Element::GetUIScale();
+		Size.y = 220 * ae::_Element::GetUIScale();
+	}
 	else if(Type == _Object::MOD) {
 		Size.x = 480 * ae::_Element::GetUIScale();
 		Size.y = 250 * ae::_Element::GetUIScale();
@@ -170,7 +174,7 @@ void _Item::DrawTooltip(const _Player *Player, size_t CompareSlot, int Inventory
 	SmallFont->DrawText(GetTypeAsString(), glm::ivec2(DrawPosition), ae::CENTER_BASELINE);
 
 	// Draw Level
-	if(Type != _Object::KEY && Type != _Object::AMMO && Type != _Object::CONSUMABLE && Type != _Object::MOD) {
+	if(Type != _Object::KEY && Type != _Object::AMMO && Type != _Object::CONSUMABLE && Type != _Object::MOD && Type != _Object::USABLE) {
 		DrawPosition.y += SmallSpacing.y;
 		Buffer << "Level " << Level;
 		SmallFont->DrawText(Buffer.str(), glm::ivec2(DrawPosition), ae::CENTER_BASELINE);
@@ -460,6 +464,17 @@ void _Item::DrawTooltip(const _Player *Player, size_t CompareSlot, int Inventory
 			Buffer << GetConsumableSuffix(true);
 			AttributeFont->DrawText(Buffer.str(), glm::ivec2(DrawPosition), ae::CENTER_BASELINE, COLOR_GREEN);
 		} break;
+		case _Object::USABLE: {
+			DrawPosition.y += Spacing.y;
+
+			switch(Template.Attributes.at("usable_type").Int) {
+				case USABLE_HAMMER:
+					Buffer << "Destroys an item and releases its mods";
+					AttributeFont->DrawText(Buffer.str(), glm::ivec2(DrawPosition), ae::CENTER_BASELINE);
+					HelpTextList.push_back("Drag onto an item");
+				break;
+			}
+		} break;
 	}
 
 	// Add help text
@@ -519,6 +534,9 @@ void _Item::DrawTooltip(const _Player *Player, size_t CompareSlot, int Inventory
 		SmallFont->DrawText(Text, glm::ivec2(DrawPosition), ae::CENTER_BASELINE, COLOR_GRAY);
 		DrawPosition.y += HelpSpacing.y;
 	}
+
+	if(!Moveable)
+		SmallFont->DrawText("Cannot be moved or picked up", glm::ivec2(DrawPosition), ae::CENTER_BASELINE, COLOR_RED);
 }
 
 // Draws the object
@@ -646,6 +664,25 @@ bool _Item::AddMod(_Item *Mod, bool Recalculate) {
 		RecalculateStats();
 
 	return true;
+}
+
+// Determine if an item is compatible with another item
+bool _Item::ItemCompatible(_Item *Item, bool CheckCount) {
+	switch(Item->Type) {
+		case _Object::MOD:
+			return ModCompatible(Item, CheckCount);
+		break;
+		case _Object::USABLE:
+			switch(Item->Template.Attributes.at("usable_type").Int) {
+				case USABLE_HAMMER:
+					if(CanMod())
+						return true;
+				break;
+			}
+		break;
+	}
+
+	return false;
 }
 
 // Determine if an item is compatible with a mod
@@ -874,6 +911,8 @@ std::string _Item::GetTypeAsString() const {
 			return "Key";
 		case _Object::CONSUMABLE:
 			return "Consumable";
+		case _Object::USABLE:
+			return "Usable Item";
 	}
 
 	return "";

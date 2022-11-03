@@ -1590,7 +1590,8 @@ void _EditorState::DrawObject(float OffsetX, float OffsetY, const _ObjectSpawn *
 		case _Object::MOD:
 		case _Object::ARMOR:
 		case _Object::WEAPON:
-		case _Object::CONSUMABLE: {
+		case _Object::CONSUMABLE:
+		case _Object::USABLE: {
 			_ObjectTemplate &Item = Stats.Objects.at(ObjectSpawn->ID);
 			Texture = ae::Assets.Textures[Item.IconID];
 			Color = Item.Color;
