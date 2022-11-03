@@ -198,8 +198,6 @@ _Map::_Map(const std::string &Filename, double Clock, int Progression) : _Map() 
 					case 'i': {
 						File.ignore(1);
 						std::getline(File, ObjectSpawn->ID, '\n');
-						if(Stats.Objects.find(ObjectSpawn->ID) == Stats.Objects.end())
-							throw std::runtime_error(std::string(__func__) + " Unknown object '" + ObjectSpawn->ID + "'");
 
 						ObjectSpawn->Type = Stats.Objects.at(ObjectSpawn->ID).Type;
 					} break;
@@ -272,8 +270,6 @@ _Map::_Map(const std::string &Filename, double Clock, int Progression) : _Map() 
 					case 'M': {
 						File.ignore(1);
 						std::getline(File, Event->MonsterID, '\n');
-						if(Stats.Objects.find(Event->MonsterID) == Stats.Objects.end())
-							throw std::runtime_error(std::string(__func__) + " unknown monster '" + Event->MonsterID + "'");
 
 						Event->IsBossSpawn = (Event->MonsterID.find("boss_") == 0);
 						Event->IsMonsterSpawn = (Event->MonsterID.find("monster_") == 0);
@@ -289,8 +285,6 @@ _Map::_Map(const std::string &Filename, double Clock, int Progression) : _Map() 
 					case 'S': {
 						File.ignore(1);
 						std::getline(File, Event->SoundID, '\n');
-						if(ae::Assets.Sounds.find(Event->SoundID) == ae::Assets.Sounds.end())
-							throw std::runtime_error(std::string(__func__) + " unknown sound '" + Event->SoundID + "'");
 					} break;
 				}
 			} break;

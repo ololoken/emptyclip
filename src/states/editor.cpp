@@ -1855,16 +1855,20 @@ void _EditorState::UpdateEventID(int Type, const std::string &ID) {
 
 	switch(Type) {
 		case EDITINPUT_ITEMID:
-			SelectedEvent->ItemID = ID;
+			if(Stats.Objects.find(ID) != Stats.Objects.end())
+				SelectedEvent->ItemID = ID;
 		break;
 		case EDITINPUT_MONSTERID:
-			SelectedEvent->MonsterID = ID;
+			if(Stats.Objects.find(ID) != Stats.Objects.end())
+				SelectedEvent->MonsterID = ID;
 		break;
 		case EDITINPUT_PARTICLEID:
-			SelectedEvent->ParticleID = ID;
+			if(GameAssets.Particles.find(ID) != GameAssets.Particles.end())
+				SelectedEvent->ParticleID = ID;
 		break;
 		case EDITINPUT_SOUNDID:
-			SelectedEvent->SoundID = ID;
+			if(ae::Assets.Sounds.find(ID) != ae::Assets.Sounds.end())
+				SelectedEvent->SoundID = ID;
 		break;
 	}
 
