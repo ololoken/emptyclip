@@ -53,7 +53,8 @@ const  int          GAME_LAVA_DAMAGE                     =  100;
 const  float        GAME_TILE_SIZE                       =  64.0f;
 //     Save
 const  int          SAVE_SLOTS                           =  10;
-const  int          SAVE_VERSION                         =  6;
+const  int          SAVE_VERSION                         =  7;
+const  int          SAVE_VERSION_NEW                     =  7;
 //     Camera
 const  float        CAMERA_DISTANCE                      =  6.5f;
 const  float        CAMERA_DISTANCE_AIMED                =  CAMERA_DISTANCE;

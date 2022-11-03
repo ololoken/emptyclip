@@ -28,32 +28,57 @@
 
 enum SaveChunkTypes {
 	CHUNK_SAVEVERSION,
+	CHUNK_TEST,
 	CHUNK_PLAYERNAME,
 	CHUNK_COLOR,
+	CHUNK_CLOCK,
 	CHUNK_MAP,
-	CHUNK_PROGRESSION,
 	CHUNK_CHECKPOINT,
+	CHUNK_PROGRESSION,
+	CHUNK_HARDCORE,
 	CHUNK_EXPERIENCE,
-	CHUNK_GOLD,
 	CHUNK_HEALTH,
-	CHUNK_PLAYTIME,
-	CHUNK_KILLS,
 	CHUNK_SKILLS,
 	CHUNK_ITEMS,
 	CHUNK_AMMO,
 	CHUNK_KEYS,
-	CHUNK_DEATHS,
-	CHUNK_PROGRESSIONTIME,
-	CHUNK_CLOCK,
-	CHUNK_PROGRESSIONKILLS,
-	CHUNK_PROGRESSIONCRATES,
-	CHUNK_PROGRESSIONSECRETS,
-	CHUNK_PROGRESSIONDEATHS,
-	CHUNK_LAVA_TOUCHES,
-	CHUNK_STAT_100PERCENT,
-	CHUNK_STAT_FISTSONLY,
-	CHUNK_STAT_LONEWOLF,
-	CHUNK_TEST,
+	CHUNK_UNUSED0,
+	CHUNK_UNUSED1,
+	CHUNK_UNUSED2,
+	CHUNK_UNUSED3,
+	CHUNK_UNUSED4,
+	CHUNK_UNUSED5,
+	CHUNK_UNUSED6,
+	CHUNK_UNUSED7,
+	CHUNK_UNUSED8,
+	CHUNK_UNUSED9,
+	CHUNK_STAT_PLAYTIME,
+	CHUNK_STAT_KILLS,
+	CHUNK_STAT_DEATHS,
+	CHUNK_STAT_LAVATOUCHES,
+	CHUNK_PROGRESSION_TIME,
+	CHUNK_PROGRESSION_KILLS,
+	CHUNK_PROGRESSION_CRATES,
+	CHUNK_PROGRESSION_SECRETS,
+	CHUNK_PROGRESSION_DEATHS,
+	CHUNK_PROGRESSION_UNUSED0,
+	CHUNK_PROGRESSION_UNUSED1,
+	CHUNK_PROGRESSION_UNUSED2,
+	CHUNK_PROGRESSION_UNUSED3,
+	CHUNK_PROGRESSION_UNUSED4,
+	CHUNK_ACHIEVEMENT_100PERCENT,
+	CHUNK_ACHIEVEMENT_FISTSONLY,
+	CHUNK_ACHIEVEMENT_LONEWOLF,
+	CHUNK_ACHIEVEMENT_UNUSED0,
+	CHUNK_ACHIEVEMENT_UNUSED1,
+	CHUNK_ACHIEVEMENT_UNUSED2,
+	CHUNK_ACHIEVEMENT_UNUSED3,
+	CHUNK_ACHIEVEMENT_UNUSED4,
+	CHUNK_ACHIEVEMENT_UNUSED5,
+	CHUNK_ACHIEVEMENT_UNUSED6,
+	CHUNK_ACHIEVEMENT_UNUSED7,
+	CHUNK_ACHIEVEMENT_UNUSED8,
+	CHUNK_ACHIEVEMENT_UNUSED9,
 };
 
 // Write a chunk to a stream
@@ -223,9 +248,6 @@ void _Save::LoadPlayer(_Player *Player) {
 			case CHUNK_PROGRESSION:
 				File.read((char *)&Player->Progression, sizeof(Player->Progression));
 			break;
-			case CHUNK_GOLD:
-				File.read((char *)&Player->Gold, sizeof(Player->Gold));
-			break;
 			case CHUNK_EXPERIENCE:
 				File.read((char *)&Player->Experience, sizeof(Player->Experience));
 			break;
@@ -234,46 +256,50 @@ void _Save::LoadPlayer(_Player *Player) {
 				if(Player->Health <= 0)
 					Player->Health = 1;
 			break;
-			case CHUNK_PLAYTIME:
+			case CHUNK_STAT_PLAYTIME:
 				File.read((char *)&Player->PlayTime, sizeof(Player->PlayTime));
 			break;
-			case CHUNK_PROGRESSIONTIME:
+			case CHUNK_PROGRESSION_TIME:
 				File.read((char *)&Player->ProgressionTime, sizeof(Player->ProgressionTime));
 			break;
-			case CHUNK_PROGRESSIONKILLS:
+			case CHUNK_PROGRESSION_KILLS:
 				File.read((char *)&Player->ProgressionKills, sizeof(Player->ProgressionKills));
 			break;
-			case CHUNK_PROGRESSIONCRATES:
+			case CHUNK_PROGRESSION_CRATES:
 				File.read((char *)&Player->ProgressionCrates, sizeof(Player->ProgressionCrates));
 			break;
-			case CHUNK_PROGRESSIONSECRETS:
+			case CHUNK_PROGRESSION_SECRETS:
 				File.read((char *)&Player->ProgressionSecrets, sizeof(Player->ProgressionSecrets));
 			break;
-			case CHUNK_PROGRESSIONDEATHS:
+			case CHUNK_PROGRESSION_DEATHS:
 				File.read((char *)&Player->ProgressionDeaths, sizeof(Player->ProgressionDeaths));
 			break;
-			case CHUNK_KILLS:
+			case CHUNK_STAT_KILLS:
 				File.read((char *)&Player->TotalKills, sizeof(Player->TotalKills));
 			break;
-			case CHUNK_DEATHS:
+			case CHUNK_STAT_DEATHS:
 				File.read((char *)&Player->TotalDeaths, sizeof(Player->TotalDeaths));
 			break;
-			case CHUNK_SKILLS:
-				File.read((char *)&Player->Skills, sizeof(Player->Skills));
-			break;
+			case CHUNK_SKILLS: {
+				int SkillCount;
+				File.read((char *)&SkillCount, sizeof(SkillCount));
+				SkillCount = std::min(SkillCount, (int)SKILL_COUNT);
+				for(int i = 0; i < SkillCount; i++)
+					File.read((char *)&Player->Skills[i], sizeof(Player->Skills[i]));
+			} break;
 			case CHUNK_CLOCK:
 				File.read((char *)&Player->Clock, sizeof(Player->Clock));
 			break;
-			case CHUNK_LAVA_TOUCHES:
+			case CHUNK_STAT_LAVATOUCHES:
 				File.read((char *)&Player->LavaTouches, sizeof(Player->LavaTouches));
 			break;
-			case CHUNK_STAT_100PERCENT:
+			case CHUNK_ACHIEVEMENT_100PERCENT:
 				File.read((char *)&Player->Stat100Percent, sizeof(Player->Stat100Percent));
 			break;
-			case CHUNK_STAT_FISTSONLY:
+			case CHUNK_ACHIEVEMENT_FISTSONLY:
 				File.read((char *)&Player->StatFistsOnly, sizeof(Player->StatFistsOnly));
 			break;
-			case CHUNK_STAT_LONEWOLF:
+			case CHUNK_ACHIEVEMENT_LONEWOLF:
 				File.read((char *)&Player->StatLoneWolf, sizeof(Player->StatLoneWolf));
 			break;
 			case CHUNK_ITEMS: {
@@ -317,36 +343,36 @@ void _Save::SavePlayer(_Player *Player) {
 	if(!File.is_open())
 		throw std::runtime_error("Cannot create save file: " + Player->SavePath);
 
-	WriteChunk(File, CHUNK_SAVEVERSION, (const char *)&SAVE_VERSION, sizeof(SAVE_VERSION));
+	WriteChunk(File, CHUNK_SAVEVERSION, (const char *)&SAVE_VERSION_NEW, sizeof(SAVE_VERSION_NEW));
 	WriteChunk(File, CHUNK_TEST, (char *)&Player->TestSave, sizeof(Player->TestSave));
 	WriteChunk(File, CHUNK_PLAYERNAME, Player->Name.c_str(), (int)Player->Name.length());
 	WriteChunk(File, CHUNK_COLOR, Player->ColorID.c_str(), (int)Player->ColorID.length());
+	WriteChunk(File, CHUNK_CLOCK, (char *)&Player->Clock, sizeof(Player->Clock));
 	if(Player->Map) {
 		WriteChunk(File, CHUNK_MAP, Player->MapID.c_str(), (int)Player->MapID.length());
 		WriteChunk(File, CHUNK_CHECKPOINT, (char *)&Player->CheckpointIndex, sizeof(Player->CheckpointIndex));
 	}
+	WriteChunk(File, CHUNK_MAP, Player->MapID.c_str(), (int)Player->MapID.length());
 	WriteChunk(File, CHUNK_PROGRESSION, (char *)&Player->Progression, sizeof(Player->Progression));
 	WriteChunk(File, CHUNK_EXPERIENCE, (char *)&Player->Experience, sizeof(Player->Experience));
-	WriteChunk(File, CHUNK_GOLD, (char *)&Player->Gold, sizeof(Player->Gold));
 	WriteChunk(File, CHUNK_HEALTH, (char *)&Player->Health, sizeof(Player->Health));
-	WriteChunk(File, CHUNK_PLAYTIME, (char *)&Player->PlayTime, sizeof(Player->PlayTime));
-	WriteChunk(File, CHUNK_CLOCK, (char *)&Player->Clock, sizeof(Player->Clock));
-	WriteChunk(File, CHUNK_KILLS, (char *)&Player->TotalKills, sizeof(Player->TotalKills));
-	WriteChunk(File, CHUNK_DEATHS, (char *)&Player->TotalDeaths, sizeof(Player->TotalDeaths));
-	WriteChunk(File, CHUNK_SKILLS, (char *)&Player->Skills, sizeof(Player->Skills));
-	WriteChunk(File, CHUNK_PROGRESSIONTIME, (char *)&Player->ProgressionTime, sizeof(Player->ProgressionTime));
-	WriteChunk(File, CHUNK_PROGRESSIONKILLS, (char *)&Player->ProgressionKills, sizeof(Player->ProgressionKills));
-	WriteChunk(File, CHUNK_PROGRESSIONCRATES, (char *)&Player->ProgressionCrates, sizeof(Player->ProgressionCrates));
-	WriteChunk(File, CHUNK_PROGRESSIONSECRETS, (char *)&Player->ProgressionSecrets, sizeof(Player->ProgressionSecrets));
-	WriteChunk(File, CHUNK_PROGRESSIONDEATHS, (char *)&Player->ProgressionDeaths, sizeof(Player->ProgressionDeaths));
-	WriteChunk(File, CHUNK_LAVA_TOUCHES, (char *)&Player->LavaTouches, sizeof(Player->LavaTouches));
-	WriteChunk(File, CHUNK_STAT_100PERCENT, (char *)&Player->Stat100Percent, sizeof(Player->Stat100Percent));
-	WriteChunk(File, CHUNK_STAT_FISTSONLY, (char *)&Player->StatFistsOnly, sizeof(Player->StatFistsOnly));
-	WriteChunk(File, CHUNK_STAT_LONEWOLF, (char *)&Player->StatLoneWolf, sizeof(Player->StatLoneWolf));
+	WriteChunk(File, CHUNK_STAT_PLAYTIME, (char *)&Player->PlayTime, sizeof(Player->PlayTime));
+	WriteChunk(File, CHUNK_STAT_KILLS, (char *)&Player->TotalKills, sizeof(Player->TotalKills));
+	WriteChunk(File, CHUNK_STAT_DEATHS, (char *)&Player->TotalDeaths, sizeof(Player->TotalDeaths));
+	WriteChunk(File, CHUNK_STAT_LAVATOUCHES, (char *)&Player->LavaTouches, sizeof(Player->LavaTouches));
+	WriteChunk(File, CHUNK_PROGRESSION_TIME, (char *)&Player->ProgressionTime, sizeof(Player->ProgressionTime));
+	WriteChunk(File, CHUNK_PROGRESSION_KILLS, (char *)&Player->ProgressionKills, sizeof(Player->ProgressionKills));
+	WriteChunk(File, CHUNK_PROGRESSION_CRATES, (char *)&Player->ProgressionCrates, sizeof(Player->ProgressionCrates));
+	WriteChunk(File, CHUNK_PROGRESSION_SECRETS, (char *)&Player->ProgressionSecrets, sizeof(Player->ProgressionSecrets));
+	WriteChunk(File, CHUNK_PROGRESSION_DEATHS, (char *)&Player->ProgressionDeaths, sizeof(Player->ProgressionDeaths));
+	WriteChunk(File, CHUNK_ACHIEVEMENT_100PERCENT, (char *)&Player->Stat100Percent, sizeof(Player->Stat100Percent));
+	WriteChunk(File, CHUNK_ACHIEVEMENT_FISTSONLY, (char *)&Player->StatFistsOnly, sizeof(Player->StatFistsOnly));
+	WriteChunk(File, CHUNK_ACHIEVEMENT_LONEWOLF, (char *)&Player->StatLoneWolf, sizeof(Player->StatLoneWolf));
 
 	SaveItems(Player, File);
 	SaveAmmo(Player, File);
 	SaveKeys(Player, File);
+	SaveSkills(Player, File);
 
 	File.close();
 
@@ -505,4 +531,16 @@ void _Save::SaveKeys(_Player *Player, std::ofstream &File) {
 
 	// Write chunk
 	WriteChunk(File, CHUNK_KEYS, &Buffer[0], Buffer.GetCurrentSize());
+}
+
+// Save skills
+void _Save::SaveSkills(_Player *Player, std::ofstream &File) {
+	ae::_Buffer Buffer;
+
+	Buffer.Write<int>(SKILL_COUNT);
+	for(int i = 0; i < SKILL_COUNT; i++)
+		Buffer.Write<int>(Player->Skills[i]);
+
+	// Write chunk
+	WriteChunk(File, CHUNK_SKILLS, &Buffer[0], Buffer.GetCurrentSize());
 }

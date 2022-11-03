@@ -55,6 +55,7 @@ class _Save {
 		void SaveItems(_Player *Player, std::ofstream &File);
 		void SaveAmmo(_Player *Player, std::ofstream &File);
 		void SaveKeys(_Player *Player, std::ofstream &File);
+		void SaveSkills(_Player *Player, std::ofstream &File);
 
 		// Players
 		std::vector<_Player *> Players;

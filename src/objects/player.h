@@ -195,7 +195,6 @@ class _Player : public _Entity {
 		bool Stat100Percent;
 		bool StatLoneWolf;
 		bool StatFistsOnly;
-		int64_t Gold;
 		int64_t Experience;
 		int64_t ExperienceNextLevel;
 		int64_t ExperienceNeeded;

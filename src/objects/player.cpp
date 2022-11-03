@@ -159,7 +159,6 @@ void _Player::Reset(bool Recalculate) {
 	ColorID = "white";
 	Color = glm::vec4(1.0f);
 	Level = 1;
-	Gold = 0;
 	Experience = 0;
 	ExperienceNeeded = 0;
 	ExperienceNextLevel = 0;
