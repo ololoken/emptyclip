@@ -359,7 +359,7 @@ void _HUD::MouseEvent(const ae::_MouseEvent &MouseEvent) {
 									else if(CursorItem->Type == _Object::MOD && ExistingItem->CanEquip() && !ExistingItem->ItemCompatible(CursorItem)) {
 										MoveWorldItem(Player->Position);
 									}
-									else {
+									else if(CanEquip || _Player::IsBagIndex(HitElement->Index)) {
 										Player->DropItem(HitElement->Index);
 										SetAndRemove = true;
 									}
