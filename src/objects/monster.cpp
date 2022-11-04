@@ -222,7 +222,8 @@ void _Monster::OnHit(_Entity *Attacker, const _Hit &Hit) {
 		return;
 
 	Goal = GOAL_PURSUE;
-	SetTarget(Attacker->Position, Attacker->Radius);
+	if(Attacker)
+		SetTarget(Attacker->Position, Attacker->Radius);
 }
 
 // Called when the player dies

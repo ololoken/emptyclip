@@ -27,6 +27,7 @@
 #include <ae/audio.h>
 #include <stats.h>
 #include <hud.h>
+#include <objectmanager.h>
 #include <menu.h>
 #include <map.h>
 #include <constants.h>
@@ -51,6 +52,10 @@ _Entity::~_Entity() {
 
 	if(PlayState.HUD && PlayState.HUD->LastEntityHit == this)
 		PlayState.HUD->LastEntityHit = nullptr;
+
+	for(auto &Object : Map->ObjectManager->Objects)
+		if(Object->Owner == this)
+			Object->Owner = nullptr;
 }
 
 // Update entity
@@ -577,7 +582,8 @@ void _Entity::OnHit(_Entity *Attacker, const _Hit &Hit) {
 
 	ae::Audio.PlaySound(GetSound(SOUND_TAKEDAMAGE, -1), ae::_SoundSettings(glm::vec3(Hit.Position.x, 0.0f, Hit.Position.y), 1.0f, AUDIO_REFERENCE_DISTANCE, AUDIO_MAX_DISTANCE, AUDIO_ROLL_OFF));
 	CurrentAccuracy = std::min(CurrentAccuracy + Recoil, MaxAccuracy[WEAPONATTACK_MAIN]);
-	PoisonTimer = std::max(PoisonTimer, (double)Attacker->PoisonPower);
+	if(Attacker)
+		PoisonTimer = std::max(PoisonTimer, (double)Attacker->PoisonPower);
 	LastHitTimer = 0.0;
 }
 

@@ -428,7 +428,8 @@ void _Object::ApplyDamage(const _Hit &Hit) {
 
 	// Particles
 	if(!HitEntity->IsInvulnerable()) {
-		PlayState.GenerateHitEffects(OwnerEntity, HIT_OBJECT, Hit, !HitEntity->Health);
+		float ParticleRotation = OwnerEntity ? OwnerEntity->Rotation : Rotation;
+		PlayState.GenerateHitEffects(OwnerEntity, HIT_OBJECT, Hit, ParticleRotation, !HitEntity->Health);
 		PlayState.GenerateDamageText(Hit.Position, Damage, Crit, HitEntity->Type == PLAYER);
 	}
 }

@@ -1100,7 +1100,7 @@ void _PlayState::ResolveAttack(_Entity *Attacker, int GridType) {
 	// Play fire sound and generate fire/smoke particles
 	if(WeaponType != WEAPON_MELEE) {
 		_Hit Hit(HIT_NONE);
-		GenerateHitEffects(Attacker, -1, Hit, false);
+		GenerateHitEffects(Attacker, -1, Hit, Attacker->Rotation, false);
 		if(Attacker->FireSoundTimer == 0.0) {
 			if(Attacker->Type == _Object::PLAYER)
 				ae::Audio.PlaySound(Attacker->GetSound(SOUND_FIRE, WEAPONATTACK_MAIN));
@@ -1229,7 +1229,7 @@ void _PlayState::ResolveAttack(_Entity *Attacker, int GridType) {
 						HitEntity->ApplyForce(PushDirection, Attacker->Force[Attacker->AttackRequestType]);
 
 						// Generate hit particles
-						GenerateHitEffects(Attacker, HIT_OBJECT, Hit, !HitEntity->Health);
+						GenerateHitEffects(Attacker, HIT_OBJECT, Hit, Attacker->Rotation, !HitEntity->Health);
 					} break;
 				}
 			}
@@ -1878,22 +1878,22 @@ void _PlayState::RemoveMonster(_Monster *Monster) {
 }
 
 // Generate particles depending on hit type
-void _PlayState::GenerateHitEffects(_Entity *Attacker, const int Type, const _Hit &Hit, bool Death, bool CreateWallDecal) {
-	if(Type == -1) {
-		glm::vec2 ParticlePosition = Attacker->Position + glm::rotate(Attacker->WeaponOffset[Attacker->MainWeaponType], glm::radians(Attacker->Rotation));
-		Particles->Create(_ParticleSpawn(Attacker->GetParticle(PARTICLE_FIRE), glm::vec2(0), ParticlePosition, OBJECT_Z, Attacker->Rotation));
+void _PlayState::GenerateHitEffects(_Entity *Attacker, const int Type, const _Hit &Hit, bool Death, float Rotation, bool CreateWallDecal) {
+	if(Attacker && Type == -1) {
+		glm::vec2 ParticlePosition = Attacker->Position + glm::rotate(Attacker->WeaponOffset[Attacker->MainWeaponType], glm::radians(Rotation));
+		Particles->Create(_ParticleSpawn(Attacker->GetParticle(PARTICLE_FIRE), glm::vec2(0), ParticlePosition, OBJECT_Z, Rotation));
 		Particles->Create(_ParticleSpawn(Attacker->GetParticle(PARTICLE_SMOKE), glm::vec2(0), ParticlePosition, OBJECT_Z, 0));
 	}
-	else if(Type == HIT_WALL) {
-		Particles->Create(_ParticleSpawn(Attacker->GetParticle(PARTICLE_RICOCHET), Hit.Normal, Hit.Position, OBJECT_Z, Attacker->Rotation));
+	else if(Attacker && Type == HIT_WALL) {
+		Particles->Create(_ParticleSpawn(Attacker->GetParticle(PARTICLE_RICOCHET), Hit.Normal, Hit.Position, OBJECT_Z, Rotation));
 		if(CreateWallDecal && Config.WallDecals)
-			Particles->Create(_ParticleSpawn(Attacker->GetParticle(PARTICLE_BULLETHOLE), Hit.Normal, Hit.Position, OBJECT_Z, Attacker->Rotation));
+			Particles->Create(_ParticleSpawn(Attacker->GetParticle(PARTICLE_BULLETHOLE), Hit.Normal, Hit.Position, OBJECT_Z, Rotation));
 	}
 	else if(Type == HIT_OBJECT) {
 		glm::vec2 ParticlePosition = _Map::GenerateRandomPointInCircle(0.2f) + Hit.Object->Position;
-		Particles->Create(_ParticleSpawn(Hit.Object->GetParticle(PARTICLE_HIT), Hit.Normal, Hit.Position, OBJECT_Z, Attacker->Rotation));
+		Particles->Create(_ParticleSpawn(Hit.Object->GetParticle(PARTICLE_HIT), Hit.Normal, Hit.Position, OBJECT_Z, Rotation));
 		if(Death && Config.FloorDecals)
-			Particles->Create(_ParticleSpawn(Hit.Object->GetParticle(PARTICLE_FLOORDECAL), Hit.Normal, ParticlePosition, ITEM_Z, Attacker->Rotation));
+			Particles->Create(_ParticleSpawn(Hit.Object->GetParticle(PARTICLE_FLOORDECAL), Hit.Normal, ParticlePosition, ITEM_Z, Rotation));
 	}
 }
 
