@@ -942,7 +942,7 @@ void _PlayState::Render(double BlendFactor) {
 		glm::vec4 Color;
 		for(auto Iterator : Map->ObjectManager->RenderList[_ObjectManager::RENDER_ITEMS]) {
 			_Item *Item = (_Item *)Iterator;
-			if(!Item->CanLevel())
+			if(!Item->CanShowMoreInfo())
 				continue;
 
 			// Skip item being dragged
@@ -952,34 +952,49 @@ void _PlayState::Render(double BlendFactor) {
 			Camera->ConvertWorldToScreen(Iterator->Position, TextPosition);
 
 			// Show bonus value
-			if(Item->Type == _Object::MOD) {
-				if(Item->Template.Attributes.at("mod_type").Int == MOD_FULLAUTO || Item->Template.Attributes.at("mod_type").Int == MOD_SEMIAUTO)
-					continue;
+			switch(Item->Type) {
+				case _Object::MOD: {
+					if(Item->Template.Attributes.at("mod_type").Int == MOD_FULLAUTO || Item->Template.Attributes.at("mod_type").Int == MOD_SEMIAUTO)
+						continue;
 
-				if(!Item->Template.Attributes.at("negative").Int)
-					Buffer << "+";
-				Buffer << ae::Round2(Item->Attributes.at("bonus").Float);
-				if(Item->Template.Attributes.at("percent_sign").Int)
-					Buffer << "%";
+					if(!Item->Template.Attributes.at("negative").Int)
+						Buffer << "+";
+					Buffer << ae::Round2(Item->Attributes.at("bonus").Float);
+					if(Item->Template.Attributes.at("percent_sign").Int)
+						Buffer << "%";
 
-				ae::Assets.Fonts["hud_tiny"]->DrawText(Buffer.str(), glm::ivec2(TextPosition + glm::vec2(0, -14) * ae::_Element::GetUIScale()), ae::CENTER_BASELINE, COLOR_FAINT_WHITE);
-				Buffer.str("");
-			}
-			else {
+					ae::Assets.Fonts["hud_tiny"]->DrawText(Buffer.str(), glm::ivec2(TextPosition + glm::vec2(0, -14) * ae::_Element::GetUIScale()), ae::CENTER_BASELINE, COLOR_FAINT_WHITE);
+					Buffer.str("");
+				} break;
+				case _Object::USABLE: {
+					switch(Item->Template.Attributes.at("usable_type").Int) {
+						case USABLE_HAMMER:
+							Buffer << Item->GetHammerQualityReduction() << "%";
+						break;
+						case USABLE_WHETSTONE:
+							Buffer << Item->GetWhetstoneQuality() << "%";
+						break;
+					}
 
-				// Get colors
-				Item->GetQualityColor(Color);
-				Color.a = 0.7f;
+					ae::Assets.Fonts["hud_tiny"]->DrawText(Buffer.str(), glm::ivec2(TextPosition + glm::vec2(0, -14) * ae::_Element::GetUIScale()), ae::CENTER_BASELINE, COLOR_FAINT_WHITE);
+					Buffer.str("");
+				} break;
+				default: {
 
-				// Draw item level
-				Buffer << Item->Level;
-				ae::Assets.Fonts["hud_tiny"]->DrawText(Buffer.str(), glm::ivec2(TextPosition + glm::vec2(0, -20) * ae::_Element::GetUIScale()), ae::CENTER_BASELINE, COLOR_FAINT_GOLD);
-				Buffer.str("");
+					// Get colors
+					Item->GetQualityColor(Color);
+					Color.a = 0.7f;
 
-				// Draw item quality
-				Buffer << Item->Quality << "%";
-				ae::Assets.Fonts["hud_tiny"]->DrawText(Buffer.str(), glm::ivec2(TextPosition + glm::vec2(0, 32) * ae::_Element::GetUIScale()), ae::CENTER_BASELINE, Color);
-				Buffer.str("");
+					// Draw item level
+					Buffer << Item->Level;
+					ae::Assets.Fonts["hud_tiny"]->DrawText(Buffer.str(), glm::ivec2(TextPosition + glm::vec2(0, -20) * ae::_Element::GetUIScale()), ae::CENTER_BASELINE, COLOR_FAINT_GOLD);
+					Buffer.str("");
+
+					// Draw item quality
+					Buffer << Item->Quality << "%";
+					ae::Assets.Fonts["hud_tiny"]->DrawText(Buffer.str(), glm::ivec2(TextPosition + glm::vec2(0, 32) * ae::_Element::GetUIScale()), ae::CENTER_BASELINE, Color);
+					Buffer.str("");
+				} break;
 			}
 		}
 

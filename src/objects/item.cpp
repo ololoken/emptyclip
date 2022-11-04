@@ -165,9 +165,8 @@ void _Item::DrawTooltip(const _Player *Player, size_t CompareSlot, int Inventory
 	DrawPosition.x += Size.x/2;
 	std::string DrawName = Name;
 	glm::vec4 DrawColor = glm::vec4(1.0f);
-	if(IsUnique()) {
+	if(Unique)
 		DrawColor = LightColor;
-	}
 	LargeFont->DrawText(DrawName, glm::ivec2(DrawPosition), ae::CENTER_BASELINE, DrawColor);
 
 	// Draw type
@@ -446,7 +445,7 @@ void _Item::DrawTooltip(const _Player *Player, size_t CompareSlot, int Inventory
 		} break;
 		case _Object::AMMO: {
 			DrawPosition.y += Spacing.y;
-			if(IsUnique())
+			if(Unique)
 				Buffer << "Restores all " << Template.Name;
 			else
 				Buffer << "+" << Player->GetPickupAmount(this);
@@ -457,7 +456,7 @@ void _Item::DrawTooltip(const _Player *Player, size_t CompareSlot, int Inventory
 			DrawPosition.y += Spacing.y;
 
 			float Value = GetConsumableValue(Player);
-			if(IsUnique())
+			if(Unique)
 				Buffer << "+100";
 			else
 				Buffer << "+" << ae::Round2(Value);
@@ -579,12 +578,9 @@ void _Item::Serialize(ae::_Buffer &Buffer) {
 // Recalulate stats for item
 void _Item::RecalculateStats() {
 
-	// Recalculate max mods
-	SetMaxMods();
-
 	// Set unique stats
-	if(IsUnique()) {
-		const _Unique *Unique = Stats.GetUnique(Quality);
+	if(Quality > ITEM_QUALITY_RANGE) {
+		Unique = Stats.GetUnique(Quality);
 		LightTexture = Unique->Texture;
 		if(IsAutoPickup()) {
 			LightColor = COLOR_GOLD;
@@ -595,6 +591,11 @@ void _Item::RecalculateStats() {
 			Name = Unique->Name + " " + Template.Name;
 		}
 	}
+	else
+		Unique = nullptr;
+
+	// Recalculate max mods
+	SetMaxMods();
 
 	for(int i = 0; i < MOD_COUNT; i++)
 		Bonus[i] = 0.0f;
@@ -690,8 +691,10 @@ void _Item::RecalculateStats() {
 			RecalculateModBonus();
 		break;
 		case _Object::USABLE:
-			LightTexture = ae::Assets.Textures["textures/lights/circle.png"];
-			LightColor = Template.LightColor;
+			if(!Unique && Template.Attributes.at("light").Int) {
+				LightColor = Template.LightColor;
+				LightTexture = ae::Assets.Textures["textures/lights/circle.png"];
+			}
 			Moveable = Template.Attributes.at("moveable").Int;
 		break;
 	}
@@ -869,10 +872,8 @@ void _Item::SetMaxMods() {
 	Attributes["max_mods"].Float += ExtraMods;
 
 	// Add mods from unique modifier
-	if(IsUnique()) {
-		const _Unique *Unique = Stats.GetUnique(Quality);
+	if(Unique)
 		Attributes["max_mods"].Float += Unique->Mods;
-	}
 }
 
 // Return the number of mods an item can hold
@@ -906,7 +907,7 @@ void _Item::GetQualityColor(glm::vec4 &ReturnColor) const {
 
 // Get reduction amount from hammer quality
 int _Item::GetHammerQualityReduction() const {
-	if(IsUnique())
+	if(Unique)
 		return Template.Attributes.at("max").Float;
 
 	int Range = Template.Attributes.at("range").Float;
@@ -915,8 +916,8 @@ int _Item::GetHammerQualityReduction() const {
 
 // Get whetstone quality value
 int _Item::GetWhetstoneQuality() const {
-	if(IsUnique())
-		return Template.Attributes.at("max").Float;
+	if(Unique)
+		return Unique->WhetstoneValue;
 
 	return std::max(1, (int)std::round(Template.Attributes.at("range").Float * (Quality + ITEM_QUALITY_RANGE) / (float)(ITEM_QUALITY_RANGE * 2)));
 }

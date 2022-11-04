@@ -77,7 +77,7 @@ void _Object::RenderLights(double BlendFactor) {
 	GetDrawPosition(DrawPosition, BlendFactor);
 
 	ae::Graphics.SetColor(LightColor);
-	if(IsUnique() || Type == _Object::USABLE) {
+	if(Unique) {
 		if(this == PlayState.HUD->CursorItem)
 			return;
 
@@ -133,11 +133,6 @@ void _Object::GetAttributeRange(const std::string &AttributeName, float Multipli
 	int ValueRange = std::round(Value * Template.Attributes.at(AttributeName + "_spread").Float);
 	Min = Value - ValueRange;
 	Max = Value + ValueRange;
-}
-
-// Check if item is unique
-bool _Object::IsUnique() const {
-	return Quality > ITEM_QUALITY_RANGE;
 }
 
 // Create ammo pick up item

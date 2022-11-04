@@ -30,6 +30,7 @@ class _Map;
 struct _ObjectTemplate;
 struct _ParticleTemplate;
 struct _Hit;
+struct _Unique;
 namespace ae {
 	class _Buffer;
 	class _Texture;
@@ -126,7 +127,7 @@ class _Object {
 		bool CanEquip() const { return Type == _Object::WEAPON || Type == _Object::ARMOR; }
 		bool CanMod() const { return Type == _Object::WEAPON || Type == _Object::ARMOR; }
 		bool CanIncreaseQuality() const;
-		bool CanLevel() const { return Type == _Object::WEAPON || Type == _Object::ARMOR || Type == _Object::MOD; }
+		bool CanShowMoreInfo() const { return Type == _Object::WEAPON || Type == _Object::ARMOR || Type == _Object::MOD || Type == _Object::USABLE; }
 		bool CanUnique() const { return Type == _Object::WEAPON || Type == _Object::ARMOR || Type == _Object::MOD || Type == _Object::AMMO || Type == _Object::CONSUMABLE || Type == _Object::USABLE; }
 		bool IsAutoPickup() const { return Type == _Object::AMMO || Type == _Object::KEY || Type == _Object::CONSUMABLE; }
 		bool IsHideable() const { return Type == _Object::AMMO || Type == _Object::CONSUMABLE; }
@@ -148,7 +149,6 @@ class _Object {
 		void SetAttributeLevel(const std::string &AttributeName, float Multiplier);
 		float GetAttributeLevel(const std::string &AttributeName, float Multiplier, int MaxLevel=0);
 		void GetAttributeRange(const std::string &AttributeName, float Multiplier, int &Min, int &Max);
-		bool IsUnique() const;
 
 		void CreateAmmoPickup(float SpawnPositionZ);
 		void CheckProjectileCollisions();
@@ -161,6 +161,7 @@ class _Object {
 		// Attributes
 		std::unordered_map<std::string, _Value> Attributes;
 		_Object *Owner{nullptr};
+		const _Unique *Unique{nullptr};
 		std::string Name;
 		std::string ID;
 		float ExtraMods{0.0f};

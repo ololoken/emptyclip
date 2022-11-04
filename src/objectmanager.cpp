@@ -89,7 +89,7 @@ void _ObjectManager::Update(double FrameTime, _Map *Map) {
 			_MinimapIcon MinimapIcon;
 
 			// Get bounds
-			float Size = Object->IsUnique() ? Object->Radius * 2.0f : Object->Radius;
+			float Size = Object->Unique ? Object->Radius * 2.0f : Object->Radius;
 			MinimapIcon.Bounds = glm::vec4(
 				Object->Position.x - Size, Object->Position.y - Size,
 				Object->Position.x + Size, Object->Position.y + Size
@@ -100,7 +100,7 @@ void _ObjectManager::Update(double FrameTime, _Map *Map) {
 				case _Object::WEAPON:
 				case _Object::ARMOR:
 				case _Object::MOD:
-					if(Object->IsUnique())
+					if(Object->Unique)
 						Map->MinimapIcons[_Map::MINIMAP_UNIQUE].push_back(MinimapIcon);
 					else
 						Map->MinimapIcons[_Map::MINIMAP_EQUIPMENT].push_back(MinimapIcon);

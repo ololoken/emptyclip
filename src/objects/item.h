@@ -22,7 +22,6 @@
 
 // Forward Declarations
 class _Player;
-struct _Unique;
 namespace ae {
 	class _Font;
 }
@@ -122,7 +121,6 @@ class _Item : public _Object {
 
 		std::vector<_Item *> Mods;
 		float Bonus[MOD_COUNT]{0.0f};
-		const _Unique *Unique{nullptr};
 
 	private:
 

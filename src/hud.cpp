@@ -357,8 +357,8 @@ void _HUD::MouseEvent(const ae::_MouseEvent &MouseEvent) {
 												} break;
 												case USABLE_WHETSTONE: {
 													if(ExistingItem->ApplyUsable(CursorItem)) {
-														CursorItem->Visible = false;
-														Player->Map->RemoveObject(CursorItem, GRID_ITEM);
+														CursorItem->Active = false;
+														Player->Map->RemoveObjectFromGrid(CursorItem, GRID_ITEM);
 													}
 												} break;
 											}
@@ -865,7 +865,7 @@ void _HUD::DrawHUDWeapon(const _Item *Item, ae::_Element *Element, ae::_Element 
 	Element->Render();
 
 	// Highlight unique items
-	if(Item->IsUnique()) {
+	if(Item->Unique) {
 		ae::Graphics.SetProgram(ae::Assets.Programs["ortho_pos_uv"]);
 		DrawUniqueHighlight(Element->Bounds.GetCenter(), Item);
 	}
@@ -1034,7 +1034,7 @@ void _HUD::DrawInventory() {
 		const _Item *Item = Player->Inventory[i];
 
 		// Draw icon
-		DrawInventoryItem(Button->Bounds.GetCenter(), Item, Item->IsUnique());
+		DrawInventoryItem(Button->Bounds.GetCenter(), Item, Item->Unique);
 	}
 
 	// Draw overlay for compatible mod types
@@ -1076,7 +1076,7 @@ void _HUD::DrawInventory() {
 	if(CursorItem) {
 		glm::vec2 Position(ae::Input.GetMouse() - ClickOffset);
 		ae::Graphics.SetProgram(ae::Assets.Programs["ortho_pos_uv"]);
-		DrawInventoryItem(Position, CursorItem, CursorItem->IsUnique());
+		DrawInventoryItem(Position, CursorItem, CursorItem->Unique);
 	}
 }
 

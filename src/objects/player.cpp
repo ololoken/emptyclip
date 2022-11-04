@@ -785,7 +785,7 @@ int _Player::AddItem(_Item *Item, int &AmountAdded, bool UseOnFull) {
 			int AmountToMax = AmmoMax[Item->Template.AmmoID] - Ammo[Item->Template.AmmoID];
 
 			// Check for unique ammo
-			if(Item->IsUnique())
+			if(Item->Unique)
 				AmountAdded = AmountToMax;
 			else
 				AmountAdded = std::min(AmountToMax, GetPickupAmount(Item));
@@ -818,7 +818,7 @@ int _Player::AddItem(_Item *Item, int &AmountAdded, bool UseOnFull) {
 
 			// Get update amounts
 			float AmountToMax = MaxValue - CurrentValue;
-			float UpdateAmount = Item->IsUnique() ? AmountToMax : Item->GetConsumableValue(this) * 0.01f * MaxValue;
+			float UpdateAmount = Item->Unique ? AmountToMax : Item->GetConsumableValue(this) * 0.01f * MaxValue;
 
 			// Update stats
 			switch(UpdateType) {
@@ -1065,7 +1065,7 @@ bool _Player::ApplyUsable(int FromIndex, int ToIndex) {
 		return false;
 
 	if(Item->ApplyUsable(Inventory[FromIndex])) {
-		ConsumeInventory(FromIndex, false);
+		ConsumeInventory(FromIndex, true);
 		RecalculateStats();
 		return true;
 	}

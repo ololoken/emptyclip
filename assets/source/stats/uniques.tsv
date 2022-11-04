@@ -1,7 +1,7 @@
-name	color_id	chance	quality	progression	mods
-Shiny	light_blue	3	25	0	1
-Rare	light_green	5	50	1	2
-Legendary	gold	10	75	2	3
-Angelic	silver	20	100	4	4
-Demonic	red	40	125	6	5
-Arcane	purple	80	150	10	6
+name	color_id	chance	quality	progression	mods	whetstone
+Shiny	light_blue	3	25	0	1	15
+Rare	light_green	5	50	1	2	20
+Legendary	gold	10	75	2	3	25
+Angelic	silver	20	100	4	4	30
+Demonic	red	40	125	6	5	40
+Arcane	purple	80	150	10	6	50

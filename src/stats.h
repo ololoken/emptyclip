@@ -90,6 +90,7 @@ struct _Unique {
 	int Quality;
 	int Progression;
 	int Mods;
+	int WhetstoneValue;
 };
 
 struct _Achievement {
