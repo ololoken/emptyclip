@@ -83,6 +83,7 @@ class _PlayState : public ae::_State {
 
 		// Objects
 		_HUD *HUD{nullptr};
+		_Map *Map{nullptr};
 		_Player *Player{nullptr};
 
 	protected:
@@ -111,7 +112,6 @@ class _PlayState : public ae::_State {
 		double CursorItemTimer{0.0};
 
 		// Map
-		_Map *Map{nullptr};
 		_Event *PreviousTouchingEndEvent{nullptr};
 		_Event *TouchingEndEvent{nullptr};
 

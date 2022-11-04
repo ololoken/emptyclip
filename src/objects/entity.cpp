@@ -53,8 +53,8 @@ _Entity::~_Entity() {
 	if(PlayState.HUD && PlayState.HUD->LastEntityHit == this)
 		PlayState.HUD->LastEntityHit = nullptr;
 
-	if(Map && Map->ObjectManager) {
-		for(auto &Object : Map->ObjectManager->Objects)
+	if(PlayState.Map && PlayState.Map->ObjectManager) {
+		for(auto &Object : PlayState.Map->ObjectManager->Objects)
 			if(Object->Owner == this)
 				Object->Owner = nullptr;
 	}

@@ -1401,12 +1401,12 @@ void _Map::CheckBulletCollisions(_Object *Attacker, const glm::vec2 &Direction, 
 }
 
 // Clip ray against walls
-void _Map::GetDropPosition(_Object *Player, float MaxDistance, glm::vec2 &WorldPosition) const {
+void _Map::GetDropPosition(_Object *Player, float MaxDistance, glm::vec2 &WorldPosition) {
 
 	// Check wall collisions
 	glm::vec2 Direction = WorldPosition - Player->Position;
 	std::vector<_Hit> Hits;
-	Player->Map->CheckBulletCollisions(Player, Direction, Hits, -1, false, 0, _Tile::ENTITY);
+	CheckBulletCollisions(Player, Direction, Hits, -1, false, 0, _Tile::ENTITY);
 
 	// Clip drop position
 	if(Hits.size()) {

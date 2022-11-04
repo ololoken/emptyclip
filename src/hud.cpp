@@ -224,7 +224,7 @@ void _HUD::MoveWorldItem(const glm::vec2 &DropPosition) {
 	if(CursorItem->Moveable) {
 
 		// Remove item from old position
-		Player->Map->RemoveObjectFromGrid(CursorItem, GRID_ITEM);
+		PlayState.Map->RemoveObjectFromGrid(CursorItem, GRID_ITEM);
 
 		// Get new position
 		if(DropPosition.x < 0.0f)
@@ -233,10 +233,10 @@ void _HUD::MoveWorldItem(const glm::vec2 &DropPosition) {
 			CursorItem->Position = DropPosition;
 
 		// Check drop position
-		Player->Map->GetDropPosition(Player, PLAYER_REACH_DISTANCE, CursorItem->Position);
+		PlayState.Map->GetDropPosition(Player, PLAYER_REACH_DISTANCE, CursorItem->Position);
 
 		// Place item in new position
-		Player->Map->AddObjectToGrid(CursorItem, GRID_ITEM);
+		PlayState.Map->AddObjectToGrid(CursorItem, GRID_ITEM);
 	}
 
 	// Reset state
@@ -306,7 +306,7 @@ void _HUD::MouseEvent(const ae::_MouseEvent &MouseEvent) {
 							// Get world position
 							glm::vec2 WorldPosition;
 							Camera->ConvertScreenToWorld(ae::Input.GetMouse(), WorldPosition);
-							Player->Map->GetDropPosition(Player, PLAYER_REACH_DISTANCE, WorldPosition);
+							PlayState.Map->GetDropPosition(Player, PLAYER_REACH_DISTANCE, WorldPosition);
 
 							// Drop item
 							Player->DropItem(DragStart->Index, WorldPosition);
@@ -335,7 +335,7 @@ void _HUD::MouseEvent(const ae::_MouseEvent &MouseEvent) {
 
 													// Destroy hammer
 													CursorItem->Active = false;
-													Player->Map->RemoveObjectFromGrid(CursorItem, GRID_ITEM);
+													PlayState.Map->RemoveObjectFromGrid(CursorItem, GRID_ITEM);
 
 													// Drop mods
 													int QualityReduction = CursorItem->GetHammerQualityReduction();
@@ -343,8 +343,8 @@ void _HUD::MouseEvent(const ae::_MouseEvent &MouseEvent) {
 														Mod->Visible = true;
 														Mod->Quality = std::max(ITEM_QUALITY_MIN, Mod->Quality - QualityReduction);
 														Mod->RecalculateModBonus();
-														Mod->SetPosition(Player->Map->FindSuitableItemPosition(Player->Position, Mod->Type, ITEM_RADIUS, ITEM_PLACEMENT_ATTEMPTS));
-														Player->Map->AddObject(Mod, GRID_ITEM);
+														Mod->SetPosition(PlayState.Map->FindSuitableItemPosition(Player->Position, Mod->Type, ITEM_RADIUS, ITEM_PLACEMENT_ATTEMPTS));
+														PlayState.Map->AddObject(Mod, GRID_ITEM);
 													}
 													ExistingItem->Mods.clear();
 
@@ -358,7 +358,7 @@ void _HUD::MouseEvent(const ae::_MouseEvent &MouseEvent) {
 												case USABLE_WHETSTONE: {
 													if(ExistingItem->ApplyUsable(CursorItem)) {
 														CursorItem->Active = false;
-														Player->Map->RemoveObjectFromGrid(CursorItem, GRID_ITEM);
+														PlayState.Map->RemoveObjectFromGrid(CursorItem, GRID_ITEM);
 													}
 												} break;
 											}
@@ -366,7 +366,7 @@ void _HUD::MouseEvent(const ae::_MouseEvent &MouseEvent) {
 									}
 									else if(ExistingItem->AddMod(CursorItem)) {
 										CursorItem->Visible = false;
-										Player->Map->RemoveObject(CursorItem, GRID_ITEM);
+										PlayState.Map->RemoveObject(CursorItem, GRID_ITEM);
 									}
 									else if(CursorItem->Type == _Object::MOD && ExistingItem->CanEquip() && !ExistingItem->ItemCompatible(CursorItem)) {
 										MoveWorldItem(Player->Position);
@@ -385,7 +385,7 @@ void _HUD::MouseEvent(const ae::_MouseEvent &MouseEvent) {
 								if(SetAndRemove) {
 									CursorItem->Visible = false;
 									Player->Inventory[HitElement->Index] = CursorItem;
-									Player->Map->RemoveObject(CursorItem, GRID_ITEM);
+									PlayState.Map->RemoveObject(CursorItem, GRID_ITEM);
 									Player->PlayEquipSound(HitElement->Index);
 								}
 
@@ -461,7 +461,7 @@ void _HUD::MouseEvent(const ae::_MouseEvent &MouseEvent) {
 					if(Slot != -1) {
 						Player->DropItem(Slot);
 						Player->Inventory[Slot] = CursorOverItem;
-						Player->Map->RemoveObject(CursorOverItem, GRID_ITEM);
+						PlayState.Map->RemoveObject(CursorOverItem, GRID_ITEM);
 						Player->RecalculateStats();
 						Player->PlayEquipSound(Slot);
 					}
@@ -719,9 +719,9 @@ void _HUD::Render(bool FullMap) {
 	}
 
 	// Draw mini map
-	if(Player->Map && !FullMap && !InventoryOpen) {
+	if(PlayState.Map && !FullMap && !InventoryOpen) {
 		ae::_Bounds MinimapBounds;
-		Player->Map->DrawMinimap(FullMap, MinimapBounds);
+		PlayState.Map->DrawMinimap(FullMap, MinimapBounds);
 	}
 
 	// Draw inventory and character screen
@@ -774,9 +774,9 @@ void _HUD::Render(bool FullMap) {
 	}
 
 	// Draw full map
-	if(Player->Map && FullMap) {
+	if(PlayState.Map && FullMap) {
 		ae::_Bounds MinimapBounds;
-		Player->Map->DrawMinimap(FullMap, MinimapBounds);
+		PlayState.Map->DrawMinimap(FullMap, MinimapBounds);
 
 		// Draw legen
 		glm::vec2 DrawPosition(MinimapBounds.Start);
