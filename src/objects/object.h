@@ -126,7 +126,7 @@ class _Object {
 		bool CanEquip() const { return Type == _Object::WEAPON || Type == _Object::ARMOR; }
 		bool CanMod() const { return Type == _Object::WEAPON || Type == _Object::ARMOR; }
 		bool CanLevel() const { return Type == _Object::WEAPON || Type == _Object::ARMOR || Type == _Object::MOD; }
-		bool CanUnique() const { return Type == _Object::WEAPON || Type == _Object::ARMOR || Type == _Object::MOD || Type == _Object::AMMO || Type == _Object::CONSUMABLE; }
+		bool CanUnique() const { return Type == _Object::WEAPON || Type == _Object::ARMOR || Type == _Object::MOD || Type == _Object::AMMO || Type == _Object::CONSUMABLE || Type == _Object::USABLE; }
 		bool IsAutoPickup() const { return Type == _Object::AMMO || Type == _Object::KEY || Type == _Object::CONSUMABLE; }
 		bool IsHideable() const { return Type == _Object::AMMO || Type == _Object::CONSUMABLE; }
 
