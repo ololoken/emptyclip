@@ -1115,7 +1115,7 @@ void _PlayState::ResolveAttack(_Entity *Attacker, int GridType) {
 	// Play fire sound and generate fire/smoke particles
 	if(WeaponType != WEAPON_MELEE) {
 		_Hit Hit(HIT_NONE);
-		GenerateHitEffects(Attacker, -1, Hit, Attacker->Rotation, false);
+		GenerateHitEffects(Attacker, -1, Hit, false, Attacker->Rotation);
 		if(Attacker->FireSoundTimer == 0.0) {
 			if(Attacker->Type == _Object::PLAYER)
 				ae::Audio.PlaySound(Attacker->GetSound(SOUND_FIRE, WEAPONATTACK_MAIN));
@@ -1210,7 +1210,7 @@ void _PlayState::ResolveAttack(_Entity *Attacker, int GridType) {
 						}
 
 						bool CreateWallDecal = (Hit.Object && Hit.Object->Type == _Object::PROP) ? false : true;
-						GenerateHitEffects(Attacker, HIT_WALL, Hit, false, CreateWallDecal);
+						GenerateHitEffects(Attacker, HIT_WALL, Hit, false, Attacker->Rotation, CreateWallDecal);
 					} break;
 					case HIT_OBJECT: {
 						_Entity *HitEntity = (_Entity *)Hit.Object;
@@ -1244,7 +1244,7 @@ void _PlayState::ResolveAttack(_Entity *Attacker, int GridType) {
 						HitEntity->ApplyForce(PushDirection, Attacker->Force[Attacker->AttackRequestType]);
 
 						// Generate hit particles
-						GenerateHitEffects(Attacker, HIT_OBJECT, Hit, Attacker->Rotation, !HitEntity->Health);
+						GenerateHitEffects(Attacker, HIT_OBJECT, Hit, !HitEntity->Health, Attacker->Rotation);
 					} break;
 				}
 			}
