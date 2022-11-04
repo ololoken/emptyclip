@@ -127,6 +127,7 @@ const  int          INVENTORY_MAX_STACK                  =  99;
 const  float        ITEM_SCALE                           =  0.5f;
 const  float        ITEM_Z                               =  0.01f;
 const  int          ITEM_QUALITY_MIN                     =  -100;
+const  int          ITEM_QUALITY_MAX                     =  1000;
 const  int          ITEM_QUALITY_RANGE                   =  15;
 const  float        ITEM_MIN_MOVESPEED                   =  -90.0f;
 const  float        ITEM_MAX_MOVESPEED                   =  100.0f;
@@ -137,7 +138,6 @@ const  float        ITEM_RADIUS                          =  0.25f;
 const  glm::vec4    ITEM_QUALITY_GOOD_COLOR              =  glm::vec4(1.0f,0.2f,0.2f,1.0f);
 const  glm::vec4    ITEM_QUALITY_BAD_COLOR               =  glm::vec4(0.2f,1.0f,0.2f,1.0f);
 const  float        ITEM_HIGHLIGHT_SCALE                 =  1.3f;
-const  int          ITEM_HAMMER_REDUCTION_RANGE          =  10;
 //     Mods
 const  double       MOD_BURST_FIREPERIOD_FACTOR          =  2.0;
 const  float        MOD_SECONDARY_BONUS                  =  25.0f;

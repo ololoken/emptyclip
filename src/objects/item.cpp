@@ -20,6 +20,7 @@
 #include <ae/buffer.h>
 #include <ae/texture.h>
 #include <ae/graphics.h>
+#include <ae/audio.h>
 #include <ae/font.h>
 #include <ae/assets.h>
 #include <ae/input.h>
@@ -466,6 +467,7 @@ void _Item::DrawTooltip(const _Player *Player, size_t CompareSlot, int Inventory
 		} break;
 		case _Object::USABLE: {
 			DrawPosition.y += Spacing.y;
+			HelpTextList.push_back("Drag onto item");
 
 			switch(Template.Attributes.at("usable_type").Int) {
 				case USABLE_HAMMER:
@@ -473,7 +475,12 @@ void _Item::DrawTooltip(const _Player *Player, size_t CompareSlot, int Inventory
 					DrawPosition.y += Spacing.y;
 					Buffer << "Reduces quality of mods by [c green]" << GetHammerQualityReduction() << "%";
 					AttributeFont->DrawTextFormatted(Buffer.str(), glm::ivec2(DrawPosition), ae::CENTER_BASELINE);
-					HelpTextList.push_back("Drag onto an item");
+				break;
+				case USABLE_WHETSTONE:
+					Buffer << "Increase quality of an item by [c green]" << GetWhetstoneQuality() << "%";
+					AttributeFont->DrawTextFormatted(Buffer.str(), glm::ivec2(DrawPosition), ae::CENTER_BASELINE);
+					if(InventorySlot == -1 && PlayState.HUD->InventoryOpen)
+						HelpTextList.push_back("Right-click to pick up");
 				break;
 			}
 		} break;
@@ -571,6 +578,24 @@ void _Item::Serialize(ae::_Buffer &Buffer) {
 
 // Recalulate stats for item
 void _Item::RecalculateStats() {
+
+	// Recalculate max mods
+	SetMaxMods();
+
+	// Set unique stats
+	if(IsUnique()) {
+		const _Unique *Unique = Stats.GetUnique(Quality);
+		LightTexture = Unique->Texture;
+		if(IsAutoPickup()) {
+			LightColor = COLOR_GOLD;
+			Name = Template.Name + " Bundle";
+		}
+		else {
+			LightColor = Unique->Color;
+			Name = Unique->Name + " " + Template.Name;
+		}
+	}
+
 	for(int i = 0; i < MOD_COUNT; i++)
 		Bonus[i] = 0.0f;
 
@@ -586,6 +611,15 @@ void _Item::RecalculateStats() {
 	switch(Type) {
 		case _Object::WEAPON: {
 			float MinAccuracyMultiplier = 1.0f / (QualityFactor * std::max(0.0f, (100.0f + Bonus[MOD_ACCURACY] + Bonus[MOD_SPREAD])) * 0.01f);
+
+			Attributes["zoom_scale"].Float = Template.Attributes.at("zoom_scale").Float;
+			Attributes["range"].Float = Template.Attributes.at("range").Float;
+			Attributes["fire_rate"].Int = Template.Attributes.at("fire_rate").Int;
+			Attributes["burst_rounds"].Float = Template.Attributes.at("burst_rounds").Float;
+			Attributes["burst_period"].Double = Template.Attributes.at("burst_period").Double;
+			Attributes["attack_movespeed"].Float = Template.Attributes.at("attack_movespeed").Float;
+			Attributes["fire_allrounds"].Int = Template.Attributes.at("fire_allrounds").Int;
+			Attributes["shoot_period"].Double = Template.Attributes.at("shoot_period").Double;
 
 			SetAttributeRange("damage", GetBonusMultiplier(MOD_DAMAGE));
 			Attributes["accuracy_min"].Float = Template.Attributes.at("accuracy_min").Float * MinAccuracyMultiplier;
@@ -652,6 +686,14 @@ void _Item::RecalculateStats() {
 			Attributes["rifle_damage"].Float = Bonus[MOD_RIFLEDAMAGE];
 			Attributes["heavy_damage"].Float = Bonus[MOD_HEAVYDAMAGE];
 		break;
+		case _Object::MOD:
+			RecalculateModBonus();
+		break;
+		case _Object::USABLE:
+			LightTexture = ae::Assets.Textures["textures/lights/circle.png"];
+			LightColor = Template.LightColor;
+			Moveable = Template.Attributes.at("moveable").Int;
+		break;
 	}
 }
 
@@ -678,6 +720,22 @@ bool _Item::AddMod(_Item *Mod, bool Recalculate) {
 	return true;
 }
 
+// Apply usable to item
+bool _Item::ApplyUsable(_Item *Usable) {
+	if(!ItemCompatible(Usable))
+		return false;
+
+	switch(Usable->Template.Attributes.at("usable_type").Int) {
+		case USABLE_WHETSTONE: {
+			Quality = std::clamp(Quality + Usable->GetWhetstoneQuality(), ITEM_QUALITY_MIN, ITEM_QUALITY_MAX);
+			ae::Audio.PlaySound(ae::Assets.Sounds["game_whetstone.ogg"]);
+		} break;
+	}
+	RecalculateStats();
+
+	return true;
+}
+
 // Determine if an item is compatible with another item
 bool _Item::ItemCompatible(_Item *Item, bool CheckCount) {
 	switch(Item->Type) {
@@ -688,6 +746,10 @@ bool _Item::ItemCompatible(_Item *Item, bool CheckCount) {
 			switch(Item->Template.Attributes.at("usable_type").Int) {
 				case USABLE_HAMMER:
 					if(CanMod())
+						return true;
+				break;
+				case USABLE_WHETSTONE:
+					if(CanIncreaseQuality())
 						return true;
 				break;
 			}
@@ -845,9 +907,18 @@ void _Item::GetQualityColor(glm::vec4 &ReturnColor) const {
 // Get reduction amount from hammer quality
 int _Item::GetHammerQualityReduction() const {
 	if(IsUnique())
-		return 0;
+		return Template.Attributes.at("max").Float;
 
-	return ITEM_HAMMER_REDUCTION_RANGE - std::round((ITEM_HAMMER_REDUCTION_RANGE - 1) * (Quality + ITEM_QUALITY_RANGE) / (float)(ITEM_QUALITY_RANGE * 2));
+	int Range = Template.Attributes.at("range").Float;
+	return Range - std::round((Range - 1) * (Quality + ITEM_QUALITY_RANGE) / (float)(ITEM_QUALITY_RANGE * 2));
+}
+
+// Get whetstone quality value
+int _Item::GetWhetstoneQuality() const {
+	if(IsUnique())
+		return Template.Attributes.at("max").Float;
+
+	return std::max(1, (int)std::round(Template.Attributes.at("range").Float * (Quality + ITEM_QUALITY_RANGE) / (float)(ITEM_QUALITY_RANGE * 2)));
 }
 
 // Get consumable value based on attributes

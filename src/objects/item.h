@@ -64,6 +64,7 @@ enum ModType {
 enum UsableType {
 	USABLE_NONE,
 	USABLE_HAMMER,
+	USABLE_WHETSTONE,
 	USABLE_COUNT,
 };
 
@@ -93,6 +94,7 @@ class _Item : public _Object {
 		void Render(double BlendFactor) const override;
 
 		bool AddMod(_Item *Mod, bool Recalculate=true);
+		bool ApplyUsable(_Item *Usable);
 		bool ItemCompatible(_Item *Item, bool CheckCount=true);
 		bool ModCompatible(_Item *Mod, bool CheckCount=true);
 		float GetBonusMultiplier(int ModType, bool Inverse=false) const;
@@ -107,6 +109,7 @@ class _Item : public _Object {
 		float GetAverageAccuracy() const;
 		void GetQualityColor(glm::vec4 &ReturnColor) const;
 		int GetHammerQualityReduction() const;
+		int GetWhetstoneQuality() const;
 
 		float GetConsumableValue(const _Player *Player) const;
 		std::string GetConsumableSuffix(bool Percent) const;

@@ -76,6 +76,12 @@ inline bool CompareItem(_Item *First, _Item *Second) {
 
 			return First->Template.Attributes.at("object_type").Int < Second->Template.Attributes.at("object_type").Int;
 		}
+		else if(First->Type == _Object::USABLE) {
+			if(First->Template.Attributes.at("usable_type").Int == Second->Template.Attributes.at("usable_type").Int)
+				return First->Quality > Second->Quality;
+
+			return First->Template.Attributes.at("usable_type").Int < Second->Template.Attributes.at("usable_type").Int;
+		}
 
 		return CompareItemStats(First, Second, true);
 	}
@@ -937,8 +943,12 @@ void _Player::SwapInventory(int SlotFrom, int SlotTo) {
 	if(AddMod(SlotFrom, SlotTo))
 		return;
 
-	// Prevent swap with equipment and mods
-	if(Inventory[SlotFrom] && Inventory[SlotFrom]->Type == _Item::MOD && Inventory[SlotTo] && Inventory[SlotTo]->CanEquip())
+	// Try usable
+	if(ApplyUsable(SlotFrom, SlotTo))
+		return;
+
+	// Prevent swap with equipment and non-equipment
+	if(Inventory[SlotFrom] && !Inventory[SlotFrom]->CanEquip() && Inventory[SlotTo] && Inventory[SlotTo]->CanEquip())
 		return;
 
 	// Check for simple swap
@@ -1037,6 +1047,24 @@ bool _Player::AddMod(int FromIndex, int ToIndex) {
 		return false;
 
 	if(Item->AddMod(Inventory[FromIndex])) {
+		ConsumeInventory(FromIndex, false);
+		RecalculateStats();
+		return true;
+	}
+
+	return false;
+}
+
+// Apply usable item to another
+bool _Player::ApplyUsable(int FromIndex, int ToIndex) {
+	if(!HasInventory(FromIndex) || Inventory[FromIndex]->Type != _Object::USABLE)
+		return false;
+
+	_Item *Item = Inventory[ToIndex];
+	if(!Item)
+		return false;
+
+	if(Item->ApplyUsable(Inventory[FromIndex])) {
 		ConsumeInventory(FromIndex, false);
 		RecalculateStats();
 		return true;
@@ -1326,9 +1354,9 @@ void _Player::ConsumeInventory(int Index, bool Delete) {
 // Get amount of ammo picked up
 int _Player::GetPickupAmount(const _Item *Item) const {
 	if(Item->Template.Attributes.at("pickup_bonus").Int)
-		return std::round(Item->Attributes.at("amount").Int * PickupModifier);
+		return std::round(Item->Template.Attributes.at("amount").Int * PickupModifier);
 
-	return Item->Attributes.at("amount").Int;
+	return Item->Template.Attributes.at("amount").Int;
 }
 
 // Reset after death

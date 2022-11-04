@@ -416,6 +416,8 @@ void _Stats::LoadUsables() {
 		Template.IconID = Database->GetString("icon_id");
 		Template.RenderListType = Database->GetInt<int>("renderlist");
 		Template.Attributes["usable_type"].Int = Database->GetInt<int>("type");
+		Template.Attributes["range"].Float = Database->GetReal("range");
+		Template.Attributes["max"].Float = Database->GetReal("max");
 		Template.Attributes["moveable"].Int = Database->GetInt<int>("moveable");
 		SetColor(Template.LightColor, Database->GetString("color_id"));
 
@@ -806,7 +808,6 @@ _Item *_Stats::CreateItem(const std::string &ID, int Level, int Quality, int Cou
 	Item->Level = Level;
 	Item->Quality = Quality;
 	Item->Count = Count;
-	Item->Moveable = true;
 	Item->SetPosition(Position);
 	Item->Texture = ae::Assets.Textures[Template.IconID];
 
@@ -824,54 +825,12 @@ _Item *_Stats::CreateItem(const std::string &ID, int Level, int Quality, int Cou
 		}
 	}
 
-	// Set unique stats
-	if(Item->IsUnique()) {
-		const _Unique *Unique = GetUnique(Item->Quality);
-		Item->LightTexture = Unique->Texture;
-		if(Item->IsAutoPickup()) {
-			Item->LightColor = COLOR_GOLD;
-			Item->Name = Item->Name + " Bundle";
-		}
-		else {
-			Item->LightColor = Unique->Color;
-			Item->Name = Unique->Name + " " + Item->Name;
-		}
-	}
-
-	// Get quality factor
-	float QualityFactor = 1.0f + Item->Quality * 0.01f;
-
-	// Set attributes based off type and item level
-	switch(Template.Type) {
-		case _Object::WEAPON: {
-			Item->Attributes["zoom_scale"].Float = Template.Attributes["zoom_scale"].Float;
-			Item->Attributes["range"].Float = Template.Attributes["range"].Float;
-			Item->Attributes["fire_rate"].Int = Template.Attributes["fire_rate"].Int;
-			Item->Attributes["burst_rounds"].Float = Template.Attributes["burst_rounds"].Float;
-			Item->Attributes["burst_period"].Double = Template.Attributes["burst_period"].Double;
-			Item->Attributes["attack_movespeed"].Float = Template.Attributes["attack_movespeed"].Float;
-			Item->Attributes["fire_allrounds"].Int = Template.Attributes["fire_allrounds"].Int;
-			Item->Attributes["shoot_period"].Double = Template.Attributes["shoot_period"].Double;
-		} break;
-		case _Object::MOD:
-			Item->RecalculateModBonus();
-		break;
-		case _Object::USABLE:
-			Item->LightTexture = ae::Assets.Textures["textures/lights/circle.png"];
-			Item->LightColor = Template.LightColor;
-			Item->Moveable = Template.Attributes.at("moveable").Int;
-		break;
-		default:
-			Item->Attributes = Template.Attributes;
-		break;
-	}
-
+	// Update item stats
 	Item->RecalculateStats();
 
+	// Set ammo on weapons
 	if(Template.Type == _Object::WEAPON)
 		Item->Attributes["ammo"].Int = std::round(Item->Attributes.at("rounds").Float);
-
-	Item->SetMaxMods();
 
 	return Item;
 }

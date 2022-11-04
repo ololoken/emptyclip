@@ -329,29 +329,39 @@ void _HUD::MouseEvent(const ae::_MouseEvent &MouseEvent) {
 								_Item *ExistingItem = Player->Inventory[HitElement->Index];
 								if(ExistingItem) {
 									if(CursorItem->Type == _Object::USABLE) {
-										if(CursorItem->Template.Attributes.at("usable_type").Int == USABLE_HAMMER && ExistingItem->ItemCompatible(CursorItem, false)) {
+										if(ExistingItem->ItemCompatible(CursorItem, false)) {
+											switch(CursorItem->Template.Attributes.at("usable_type").Int) {
+												case USABLE_HAMMER: {
 
-											// Destroy hammer
-											CursorItem->Active = false;
-											Player->Map->RemoveObjectFromGrid(CursorItem, GRID_ITEM);
+													// Destroy hammer
+													CursorItem->Active = false;
+													Player->Map->RemoveObjectFromGrid(CursorItem, GRID_ITEM);
 
-											// Drop mods
-											int QualityReduction = CursorItem->GetHammerQualityReduction();
-											for(auto &Mod : ExistingItem->Mods) {
-												Mod->Visible = true;
-												Mod->Quality = std::max(ITEM_QUALITY_MIN, Mod->Quality - QualityReduction);
-												Mod->RecalculateModBonus();
-												Mod->SetPosition(Player->Map->FindSuitableItemPosition(Player->Position, Mod->Type, ITEM_RADIUS, ITEM_PLACEMENT_ATTEMPTS));
-												Player->Map->AddObject(Mod, GRID_ITEM);
+													// Drop mods
+													int QualityReduction = CursorItem->GetHammerQualityReduction();
+													for(auto &Mod : ExistingItem->Mods) {
+														Mod->Visible = true;
+														Mod->Quality = std::max(ITEM_QUALITY_MIN, Mod->Quality - QualityReduction);
+														Mod->RecalculateModBonus();
+														Mod->SetPosition(Player->Map->FindSuitableItemPosition(Player->Position, Mod->Type, ITEM_RADIUS, ITEM_PLACEMENT_ATTEMPTS));
+														Player->Map->AddObject(Mod, GRID_ITEM);
+													}
+													ExistingItem->Mods.clear();
+
+													// Destroy item
+													delete ExistingItem;
+													Player->Inventory[HitElement->Index] = nullptr;
+													CursorOverItem = nullptr;
+
+													ae::Audio.PlaySound(ae::Assets.Sounds["game_hammer.ogg"]);
+												} break;
+												case USABLE_WHETSTONE: {
+													if(ExistingItem->ApplyUsable(CursorItem)) {
+														CursorItem->Visible = false;
+														Player->Map->RemoveObject(CursorItem, GRID_ITEM);
+													}
+												} break;
 											}
-											ExistingItem->Mods.clear();
-
-											// Destroy item
-											delete ExistingItem;
-											Player->Inventory[HitElement->Index] = nullptr;
-											CursorOverItem = nullptr;
-
-											ae::Audio.PlaySound(ae::Assets.Sounds["game_hammer.ogg"]);
 										}
 									}
 									else if(ExistingItem->AddMod(CursorItem)) {

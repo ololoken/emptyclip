@@ -99,6 +99,7 @@ class _Player : public _Entity {
 		int AddInventory(_Item *Item);
 		int CombineItems(_Item *FromItem, _Item *ToItem);
 		bool AddMod(int FromIndex, int ToIndex);
+		bool ApplyUsable(int FromIndex, int ToIndex);
 		bool UseItem(int Index, bool Event);
 		int FindItem(int Index);
 		int FindItem(const std::string &ID);

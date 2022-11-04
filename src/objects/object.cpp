@@ -88,6 +88,14 @@ void _Object::RenderLights(double BlendFactor) {
 		ae::Graphics.DrawSprite(glm::vec3(DrawPosition, PositionZ), LightTexture, 0, LightScale);
 }
 
+// Determine if quality can be increased
+bool _Object::CanIncreaseQuality() const {
+	if(Quality >= ITEM_QUALITY_MAX)
+		return false;
+
+	return Type == _Object::WEAPON || Type == _Object::ARMOR || Type == _Object::MOD;
+}
+
 // Get sound for a sound type
 const ae::_Sound *_Object::GetSound(int SoundType) const {
 	const auto &SoundIDs = Template.SoundID[SoundType];
