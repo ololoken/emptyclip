@@ -350,6 +350,8 @@ void _HUD::MouseEvent(const ae::_MouseEvent &MouseEvent) {
 											delete ExistingItem;
 											Player->Inventory[HitElement->Index] = nullptr;
 											CursorOverItem = nullptr;
+
+											ae::Audio.PlaySound(ae::Assets.Sounds["game_hammer.ogg"]);
 										}
 									}
 									else if(ExistingItem->AddMod(CursorItem)) {
