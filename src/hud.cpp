@@ -1148,7 +1148,7 @@ void _HUD::DrawItemQuality(const _Item *Item, const glm::vec2 &Position) {
 
 // Draw item level
 void _HUD::DrawItemLevel(const _Item *Item, const glm::vec2 &Position) {
-	if(!Item)
+	if(!Item || !Item->CanLevel())
 		return;
 
 	std::ostringstream Buffer;
