@@ -83,7 +83,6 @@ void _Stats::Close() {
 	Progressions.clear();
 	Specials.clear();
 	Uniques.clear();
-	UniquesByQuality.clear();
 	Achievements.clear();
 	Ammo.clear();
 	AmmoNames.clear();
@@ -755,7 +754,6 @@ void _Stats::LoadUniques() {
 		SetColor(Unique->Color, Database->GetString("color_id"));
 
 		Uniques.push_back(Unique);
-		UniquesByQuality[Unique->Quality] = Unique;
 	}
 
 	Database->CloseQuery();
@@ -826,8 +824,8 @@ _Item *_Stats::CreateItem(const std::string &ID, int Level, int Quality, int Cou
 	}
 
 	// Set unique stats
-	if(Item->IsUnique() && UniquesByQuality.find(Item->Quality) != UniquesByQuality.end()) {
-		_Unique *Unique = UniquesByQuality[Item->Quality];
+	if(Item->IsUnique()) {
+		const _Unique *Unique = GetUnique(Item->Quality);
 		Item->LightTexture = Unique->Texture;
 		if(Item->IsAutoPickup()) {
 			Item->LightColor = COLOR_GOLD;
@@ -1045,6 +1043,24 @@ void _Stats::GetRandomDrop(const _ItemDrop *ItemDrop, _ObjectSpawn *ObjectSpawn)
 			return;
 		}
 	}
+}
+
+// Find a unique stat given a quality
+const _Unique *_Stats::GetUnique(int Quality) const {
+	if(Uniques.empty())
+		return nullptr;
+
+	// Handle edge case
+	if(Quality <= ITEM_QUALITY_RANGE)
+		return nullptr;
+
+	// Search list
+	for(auto Iterator = Uniques.rbegin(); Iterator != Uniques.rend(); ++Iterator) {
+		if(Quality >= (*Iterator)->Quality)
+			return *Iterator;
+	}
+
+	return Uniques.front();
 }
 
 // Set optional color from id

@@ -795,8 +795,8 @@ void _Item::SetMaxMods() {
 	Attributes["max_mods"].Float += ExtraMods;
 
 	// Add mods from unique modifier
-	if(IsUnique() && Stats.UniquesByQuality.find(Quality) != Stats.UniquesByQuality.end()) {
-		_Unique *Unique = Stats.UniquesByQuality[Quality];
+	if(IsUnique()) {
+		const _Unique *Unique = Stats.GetUnique(Quality);
 		Attributes["max_mods"].Float += Unique->Mods;
 	}
 }

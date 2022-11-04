@@ -183,6 +183,8 @@ class _Stats {
 
 		void GetRandomDrop(const _ItemDrop *ItemDrop, _ObjectSpawn *ObjectSpawn);
 
+		const _Unique *GetUnique(int Quality) const;
+
 		ae::_Database *Database;
 
 		std::unordered_map<std::string, std::string> TransformedText;
@@ -195,7 +197,6 @@ class _Stats {
 		std::vector<_Level> Levels;
 		std::vector<_Achievement> Achievements;
 
-		std::unordered_map<int, _Unique *> UniquesByQuality;
 		std::vector<std::string> AmmoNames;
 		std::vector<std::string> ModNames;
 		std::vector<_Skill> Skills;
