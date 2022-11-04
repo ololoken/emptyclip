@@ -126,6 +126,7 @@ const  int          INVENTORY_MAX_STACK                  =  99;
 //     Items
 const  float        ITEM_SCALE                           =  0.5f;
 const  float        ITEM_Z                               =  0.01f;
+const  int          ITEM_QUALITY_MIN                     =  -100;
 const  int          ITEM_QUALITY_RANGE                   =  15;
 const  float        ITEM_MIN_MOVESPEED                   =  -90.0f;
 const  float        ITEM_MAX_MOVESPEED                   =  100.0f;
@@ -136,6 +137,7 @@ const  float        ITEM_RADIUS                          =  0.25f;
 const  glm::vec4    ITEM_QUALITY_GOOD_COLOR              =  glm::vec4(1.0f,0.2f,0.2f,1.0f);
 const  glm::vec4    ITEM_QUALITY_BAD_COLOR               =  glm::vec4(0.2f,1.0f,0.2f,1.0f);
 const  float        ITEM_HIGHLIGHT_SCALE                 =  1.3f;
+const  int          ITEM_HAMMER_REDUCTION_RANGE          =  10;
 //     Mods
 const  double       MOD_BURST_FIREPERIOD_FACTOR          =  2.0;
 const  float        MOD_SECONDARY_BONUS                  =  25.0f;
@@ -210,6 +212,7 @@ const  glm::vec4    HUD_MINIMAP_UNIQUE_COLOR             =  glm::vec4(0.76f,0.73
 const  glm::vec4    HUD_MINIMAP_KEY_COLOR                =  glm::vec4(1.0f,1.0f,0.0f,1.0f);
 const  glm::vec4    HUD_MINIMAP_AMMO_COLOR               =  glm::vec4(0.0f,1.0f,1.0f,1.0f);
 const  glm::vec4    HUD_MINIMAP_CONSUMABLE_COLOR         =  glm::vec4(1.0f,1.0f,1.0f,1.0f);
+const  glm::vec4    HUD_MINIMAP_USABLE_COLOR             =  glm::vec4(1.0f,1.0f,1.0f,1.0f);
 const  glm::vec4    HUD_MINIMAP_CRATE_COLOR              =  glm::vec4(1.0f,0.0f,1.0f,1.0f);
 const  glm::vec4    HUD_MINIMAP_WALL_COLOR               =  glm::vec4(0.40f,0.36f,0.29f,0.4f);
 const  glm::vec4    HUD_MINIMAP_PROJECTILE_COLOR         =  glm::vec4(0.5f,0.5f,0.5f,1.0f);

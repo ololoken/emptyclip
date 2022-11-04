@@ -469,8 +469,10 @@ void _Item::DrawTooltip(const _Player *Player, size_t CompareSlot, int Inventory
 
 			switch(Template.Attributes.at("usable_type").Int) {
 				case USABLE_HAMMER:
-					Buffer << "Destroys an item and releases its mods";
-					AttributeFont->DrawText(Buffer.str(), glm::ivec2(DrawPosition), ae::CENTER_BASELINE);
+					AttributeFont->DrawText("Destroys an item and releases its mods", glm::ivec2(DrawPosition), ae::CENTER_BASELINE);
+					DrawPosition.y += Spacing.y;
+					Buffer << "Reduces quality of mods by [c green]" << GetHammerQualityReduction() << "%";
+					AttributeFont->DrawTextFormatted(Buffer.str(), glm::ivec2(DrawPosition), ae::CENTER_BASELINE);
 					HelpTextList.push_back("Drag onto an item");
 				break;
 			}
@@ -653,6 +655,16 @@ void _Item::RecalculateStats() {
 	}
 }
 
+// Update mod value from quality
+void _Item::RecalculateModBonus() {
+	float QualityFactor = 1.0f + Quality * 0.01f;
+
+	SetAttributeLevel("bonus", QualityFactor);
+	Attributes["bonus_2nd"].Float = Template.Attributes.at("mod_type_2nd").Int ? MOD_SECONDARY_BONUS * QualityFactor : 0.0f;
+	if(Template.Attributes.at("negative").Int)
+		Attributes.at("bonus").Float = -Attributes.at("bonus").Float;
+}
+
 // Add mod to item
 bool _Item::AddMod(_Item *Mod, bool Recalculate) {
 	if(!ModCompatible(Mod, Recalculate))
@@ -828,6 +840,14 @@ void _Item::GetQualityColor(glm::vec4 &ReturnColor) const {
 		ReturnColor = ITEM_QUALITY_BAD_COLOR;
 	else
 		ReturnColor = COLOR_WHITE;
+}
+
+// Get reduction amount from hammer quality
+int _Item::GetHammerQualityReduction() const {
+	if(IsUnique())
+		return 0;
+
+	return ITEM_HAMMER_REDUCTION_RANGE - std::round((ITEM_HAMMER_REDUCTION_RANGE - 1) * (Quality + ITEM_QUALITY_RANGE) / (float)(ITEM_QUALITY_RANGE * 2));
 }
 
 // Get consumable value based on attributes

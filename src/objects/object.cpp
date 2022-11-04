@@ -77,7 +77,7 @@ void _Object::RenderLights(double BlendFactor) {
 	GetDrawPosition(DrawPosition, BlendFactor);
 
 	ae::Graphics.SetColor(LightColor);
-	if(IsUnique()) {
+	if(IsUnique() || Type == _Object::USABLE) {
 		if(this == PlayState.HUD->CursorItem)
 			return;
 

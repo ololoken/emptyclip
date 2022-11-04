@@ -336,8 +336,11 @@ void _HUD::MouseEvent(const ae::_MouseEvent &MouseEvent) {
 											Player->Map->RemoveObjectFromGrid(CursorItem, GRID_ITEM);
 
 											// Drop mods
+											int QualityReduction = CursorItem->GetHammerQualityReduction();
 											for(auto &Mod : ExistingItem->Mods) {
 												Mod->Visible = true;
+												Mod->Quality = std::max(ITEM_QUALITY_MIN, Mod->Quality - QualityReduction);
+												Mod->RecalculateModBonus();
 												Mod->SetPosition(Player->Map->FindSuitableItemPosition(Player->Position, Mod->Type, ITEM_RADIUS, ITEM_PLACEMENT_ATTEMPTS));
 												Player->Map->AddObject(Mod, GRID_ITEM);
 											}

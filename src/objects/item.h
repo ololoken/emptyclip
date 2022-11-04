@@ -87,6 +87,7 @@ class _Item : public _Object {
 		~_Item() override;
 
 		void RecalculateStats();
+		void RecalculateModBonus();
 		void Serialize(ae::_Buffer &Buffer) override;
 		void DrawTooltip(const _Player *Player, size_t CompareSlot, int InventorySlot, glm::vec2 DrawPosition);
 		void Render(double BlendFactor) const override;
@@ -105,6 +106,7 @@ class _Item : public _Object {
 		float GetAverageDamage() const;
 		float GetAverageAccuracy() const;
 		void GetQualityColor(glm::vec4 &ReturnColor) const;
+		int GetHammerQualityReduction() const;
 
 		float GetConsumableValue(const _Player *Player) const;
 		std::string GetConsumableSuffix(bool Percent) const;

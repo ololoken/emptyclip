@@ -417,6 +417,7 @@ void _Stats::LoadUsables() {
 		Template.RenderListType = Database->GetInt<int>("renderlist");
 		Template.Attributes["usable_type"].Int = Database->GetInt<int>("type");
 		Template.Attributes["moveable"].Int = Database->GetInt<int>("moveable");
+		SetColor(Template.LightColor, Database->GetString("color_id"));
 
 		// Check for loaded textures
 		if(!ae::Assets.Textures[Template.IconID])
@@ -853,12 +854,11 @@ _Item *_Stats::CreateItem(const std::string &ID, int Level, int Quality, int Cou
 			Item->Attributes["shoot_period"].Double = Template.Attributes["shoot_period"].Double;
 		} break;
 		case _Object::MOD:
-			Item->SetAttributeLevel("bonus", QualityFactor);
-			Item->Attributes["bonus_2nd"].Float = Template.Attributes.at("mod_type_2nd").Int ? MOD_SECONDARY_BONUS * QualityFactor : 0.0f;
-			if(Template.Attributes.at("negative").Int)
-				Item->Attributes.at("bonus").Float = -Item->Attributes.at("bonus").Float;
+			Item->RecalculateModBonus();
 		break;
 		case _Object::USABLE:
+			Item->LightTexture = ae::Assets.Textures["textures/lights/circle.png"];
+			Item->LightColor = Template.LightColor;
 			Item->Moveable = Template.Attributes.at("moveable").Int;
 		break;
 		default:
