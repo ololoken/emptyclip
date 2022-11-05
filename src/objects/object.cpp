@@ -426,7 +426,8 @@ void _Object::ApplyDamage(const _Hit &Hit) {
 	HitEntity->UpdateHealth(-Damage);
 
 	// Callbacks
-	//OwnerEntity->OnAttack(HitEntity, Hit);
+	if(OwnerEntity)
+		OwnerEntity->OnAttack(HitEntity, Hit);
 	HitEntity->OnHit(OwnerEntity, Hit);
 
 	// Particles

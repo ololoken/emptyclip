@@ -352,7 +352,7 @@ void _Save::SavePlayer(_Player *Player) {
 		throw std::runtime_error("Cannot create save file: " + Player->SavePath);
 
 	int Health = Player->Health;
-	if(Player->InCombat())
+	if(!Player->TestSave && Player->InCombat())
 		Health = 0;
 
 	WriteChunk(File, CHUNK_SAVEVERSION, (const char *)&SAVE_VERSION_NEW, sizeof(SAVE_VERSION_NEW));
