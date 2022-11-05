@@ -73,14 +73,14 @@ void _Object::RenderLights(double BlendFactor) {
 	if(!LightTexture)
 		return;
 
+	if(this == PlayState.HUD->CursorItem)
+		return;
+
 	glm::vec2 DrawPosition;
 	GetDrawPosition(DrawPosition, BlendFactor);
 
 	ae::Graphics.SetColor(LightColor);
 	if(Unique) {
-		if(this == PlayState.HUD->CursorItem)
-			return;
-
 		for(int i = 0; i < 10; i++)
 			ae::Graphics.DrawSprite(glm::vec3(DrawPosition, PositionZ + i * 0.1f), LightTexture, 0, LightScale);
 	}
