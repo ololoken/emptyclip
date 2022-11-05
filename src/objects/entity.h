@@ -117,7 +117,7 @@ class _Entity : public _Object {
 		int ShootingTwohandAnimation{ANIMATION_ATTACK};
 		int DyingAnimation{ANIMATION_DIE};
 		double InvulnerableTimer{0.0};
-		double LastHitTimer{0.0};
+		double CombatTimer{0.0};
 		double PoisonTimer{0.0};
 		bool GodMode{false};
 

@@ -51,6 +51,7 @@ const  int          GAME_MAX_PROGRESSION_SPAWN           =  10;
 const  double       GAME_DEFAULT_CLOCK                   =  720.0;
 const  int          GAME_LAVA_DAMAGE                     =  100;
 const  float        GAME_TILE_SIZE                       =  64.0f;
+const  double       GAME_COMBAT_TIMER                    =  5.0;
 //     Save
 const  int          SAVE_SLOTS                           =  10;
 const  int          SAVE_VERSION                         =  7;

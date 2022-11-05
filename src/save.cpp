@@ -112,7 +112,7 @@ std::string _Save::GetConfigPath(size_t Slot) {
 }
 
 // Create new player
-void _Save::CreateNewPlayer(size_t Slot, const std::string &Name, const std::string &ColorID) {
+void _Save::CreateNewPlayer(size_t Slot, const std::string &Name, const std::string &ColorID, bool Hardcore) {
 	if(Slot >= SAVE_SLOTS)
 		return;
 
@@ -123,6 +123,7 @@ void _Save::CreateNewPlayer(size_t Slot, const std::string &Name, const std::str
 	Players[Slot]->Health = Players[Slot]->MaxHealth * PLAYER_STARTING_HEALTH_FACTOR;
 	Players[Slot]->ResetAchievementTracking();
 	Players[Slot]->SetColorID(ColorID);
+	Players[Slot]->Hardcore = Hardcore;
 
 	SavePlayer(Players[Slot]);
 }
@@ -248,13 +249,14 @@ void _Save::LoadPlayer(_Player *Player) {
 			case CHUNK_PROGRESSION:
 				File.read((char *)&Player->Progression, sizeof(Player->Progression));
 			break;
+			case CHUNK_HARDCORE:
+				File.read((char *)&Player->Hardcore, sizeof(Player->Hardcore));
+			break;
 			case CHUNK_EXPERIENCE:
 				File.read((char *)&Player->Experience, sizeof(Player->Experience));
 			break;
 			case CHUNK_HEALTH:
 				File.read((char *)&Player->Health, sizeof(Player->Health));
-				if(Player->Health <= 0)
-					Player->Health = 1;
 			break;
 			case CHUNK_STAT_PLAYTIME:
 				File.read((char *)&Player->PlayTime, sizeof(Player->PlayTime));
@@ -331,7 +333,13 @@ void _Save::LoadPlayer(_Player *Player) {
 	Player->UpdateColor();
 	Player->RecalculateStats();
 	Player->ResetWeaponAnimation();
-	Player->UpdateHealth(0);
+
+	// Handle exiting during combat
+	Player->Health = std::min(Player->Health, Player->MaxHealth);
+	if(!Player->TestSave && !Player->Hardcore && Player->Health <= 0) {
+		Player->ApplyDeathPenalty();
+		Player->Health = 1;
+	}
 }
 
 // Saves information to a file
@@ -342,6 +350,10 @@ void _Save::SavePlayer(_Player *Player) {
 	std::ofstream File(SavePath.c_str(), std::ios::out | std::ios::binary);
 	if(!File.is_open())
 		throw std::runtime_error("Cannot create save file: " + Player->SavePath);
+
+	int Health = Player->Health;
+	if(Player->InCombat())
+		Health = 0;
 
 	WriteChunk(File, CHUNK_SAVEVERSION, (const char *)&SAVE_VERSION_NEW, sizeof(SAVE_VERSION_NEW));
 	WriteChunk(File, CHUNK_TEST, (char *)&Player->TestSave, sizeof(Player->TestSave));
@@ -354,8 +366,9 @@ void _Save::SavePlayer(_Player *Player) {
 	}
 	WriteChunk(File, CHUNK_MAP, Player->MapID.c_str(), (int)Player->MapID.length());
 	WriteChunk(File, CHUNK_PROGRESSION, (char *)&Player->Progression, sizeof(Player->Progression));
+	WriteChunk(File, CHUNK_HARDCORE, (char *)&Player->Hardcore, sizeof(Player->Hardcore));
 	WriteChunk(File, CHUNK_EXPERIENCE, (char *)&Player->Experience, sizeof(Player->Experience));
-	WriteChunk(File, CHUNK_HEALTH, (char *)&Player->Health, sizeof(Player->Health));
+	WriteChunk(File, CHUNK_HEALTH, (char *)&Health, sizeof(Health));
 	WriteChunk(File, CHUNK_STAT_PLAYTIME, (char *)&Player->PlayTime, sizeof(Player->PlayTime));
 	WriteChunk(File, CHUNK_STAT_KILLS, (char *)&Player->TotalKills, sizeof(Player->TotalKills));
 	WriteChunk(File, CHUNK_STAT_DEATHS, (char *)&Player->TotalDeaths, sizeof(Player->TotalDeaths));

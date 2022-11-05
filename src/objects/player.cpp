@@ -194,8 +194,8 @@ void _Player::Reset(bool Recalculate) {
 	MoveState = MOVE_NONE;
 	WeaponSwitchTimer = 0.0;
 	ReloadTimer = 0.0;
-	SelfHealTimer = 0.0;
-	LastHitTimer = 0.0;
+	SelfHealTimer = PLAYER_HEAL_STARTTIME;
+	CombatTimer = GAME_COMBAT_TIMER;
 	UseTimer = 0.0;
 	WeaponSwitchFrom = -1;
 	WeaponSwitchTo = -1;
@@ -421,8 +421,8 @@ void _Player::Update(double FrameTime) {
 	WeaponSwitchTimer += FrameTime;
 	ReloadTimer += FrameTime;
 	UseTimer += FrameTime;
-	LastHitTimer += FrameTime;
-	if(LastHitTimer >= PLAYER_HEAL_STARTTIME && Health < MaxHealth * PLAYER_HEAL_THRESHOLD) {
+	CombatTimer += FrameTime;
+	if(CombatTimer >= PLAYER_HEAL_STARTTIME && Health < MaxHealth * PLAYER_HEAL_THRESHOLD) {
 		SelfHealTimer -= FrameTime;
 		if(SelfHealTimer <= 0) {
 			SelfHealTimer += SelfHealPeriod;
@@ -1361,6 +1361,9 @@ int _Player::GetPickupAmount(const _Item *Item) const {
 
 // Reset after death
 void _Player::Respawn() {
+	if(Hardcore)
+		return;
+
 	Active = true;
 	Health = MaxHealth;
 	Action = ACTION_IDLE;

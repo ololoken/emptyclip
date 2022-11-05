@@ -36,7 +36,7 @@ class _Save {
 		_Save();
 		~_Save();
 
-		void CreateNewPlayer(size_t Slot, const std::string &Name, const std::string &ColorID);
+		void CreateNewPlayer(size_t Slot, const std::string &Name, const std::string &ColorID, bool Hardcore);
 		void DeletePlayer(size_t Slot);
 		void LoadSaves();
 		void LoadPlayer(_Player *Player);

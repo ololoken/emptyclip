@@ -96,6 +96,7 @@ _HUD::_HUD(const ae::_Camera *Camera, _Player *Player) : Camera(Camera), Player(
 	Elements[ELEMENT_PLAYERINFO] = ae::Assets.Elements["element_hud_player_info"];
 	Elements[LABEL_PLAYERNAME] = ae::Assets.Elements["label_hud_player_name"];
 	Elements[LABEL_PLAYERLEVEL] = ae::Assets.Elements["label_hud_player_level"];
+	Elements[LABEL_PLAYERHARDCORE] = ae::Assets.Elements["label_hud_player_hardcore"];
 	Elements[LABEL_PLAYERHEALTH] = ae::Assets.Elements["label_hud_player_health"];
 	Elements[ELEMENT_PLAYERINFO]->SetActive(true);
 
@@ -104,6 +105,8 @@ _HUD::_HUD(const ae::_Camera *Camera, _Player *Player) : Camera(Camera), Player(
 	Elements[LABEL_LEVELCRATES] = ae::Assets.Elements["label_hud_level_crates"];
 	Elements[LABEL_LEVELSECRETS] = ae::Assets.Elements["label_hud_level_secrets"];
 	Elements[LABEL_LEVELTIME] = ae::Assets.Elements["label_hud_level_time"];
+	Elements[ELEMENT_LEVELINFO]->BaseOffset.y = 80 + Player->Hardcore * 30;
+	Elements[ELEMENT_LEVELINFO]->CalculateBounds();
 	Elements[ELEMENT_LEVELINFO]->SetActive(true);
 
 	Elements[ELEMENT_CLOCK] = ae::Assets.Elements["element_hud_clock"];
@@ -650,6 +653,7 @@ void _HUD::Render(bool FullMap) {
 	Buffer << "Level " << Player->Level;
 	Elements[LABEL_PLAYERLEVEL]->Text = Buffer.str();
 	Buffer.str("");
+	Elements[LABEL_PLAYERHARDCORE]->Text = Player->Hardcore ? "Hardcore" : "";
 	Elements[ELEMENT_PLAYERINFO]->Render();
 
 	Buffer << Kills[0] << "/" << Kills[1];
@@ -1254,15 +1258,26 @@ void _HUD::GetClockAsString(std::ostringstream &Buffer, double Clock, bool Clock
 
 // Draw death message
 void _HUD::DrawDeathScreen() {
+	std::ostringstream Buffer;
+
 	glm::vec2 DrawPosition = glm::vec2(ae::Graphics.CurrentSize) * 0.5f;
 	DrawPosition.y += -200 * ae::_Element::GetUIScale();
 	ae::Assets.Fonts["hud_large"]->DrawText("You Died!", DrawPosition , ae::CENTER_MIDDLE);
 
 	DrawPosition.y += 100 * ae::_Element::GetUIScale();
-	ae::Assets.Fonts["menu_buttons"]->DrawTextFormatted("You lost [c red]" + std::to_string((int)(GAME_EXPERIENCE_LOST * 100 + 0.5f)) + "%[c white] experience", DrawPosition, ae::CENTER_MIDDLE);
+	if(!Player->Hardcore) {
+		Buffer << "You lost [c red]" << std::to_string((int)(GAME_EXPERIENCE_LOST * 100 + 0.5f)) << "%[c white] experience";
+		ae::Assets.Fonts["menu_buttons"]->DrawTextFormatted(Buffer.str(), DrawPosition, ae::CENTER_MIDDLE);
+		Buffer.str("");
+	}
 
 	DrawPosition.y += 100 * ae::_Element::GetUIScale();
-	ae::Assets.Fonts["hud_medium"]->DrawText(std::string("Press [") + ae::Actions.GetInputNameForAction(Action::GAME_USE) + "] to respawn", DrawPosition, ae::CENTER_MIDDLE);
+	if(Player->Hardcore)
+		Buffer << "Press [Escape] to quit";
+	else
+		Buffer << "Press [" << ae::Actions.GetInputNameForAction(Action::GAME_USE) << "] to respawn";
+	ae::Assets.Fonts["hud_medium"]->DrawText(Buffer.str(), DrawPosition, ae::CENTER_MIDDLE);
+	Buffer.str("");
 }
 
 // Show hud message

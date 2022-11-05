@@ -84,11 +84,11 @@ class _Menu {
 		};
 
 		enum ColorType {
-			COLOR_BLACK,
-			COLOR_RED,
-			COLOR_GREEN,
-			COLOR_BLUE,
-			COLOR_COUNT,
+			PLAYER_COLOR_BLACK,
+			PLAYER_COLOR_RED,
+			PLAYER_COLOR_GREEN,
+			PLAYER_COLOR_BLUE,
+			PLAYER_COLOR_COUNT,
 		};
 
 		void Init();

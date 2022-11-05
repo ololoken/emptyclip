@@ -124,6 +124,7 @@ class _Player : public _Entity {
 		bool CanSwitchWeapons() const { return !SwitchingWeapons && !Reloading && !IsMeleeAttacking() && !IsDying(); }
 		bool CanReload() const;
 		bool IsSteady() const override { return HasMainHand() && CurrentAccuracy <= MinAccuracy; }
+		bool InCombat() const { return CombatTimer < GAME_COMBAT_TIMER; }
 		bool ApplyUse() const { return UseRequested && CanUse(); }
 		void RequestAttack(int RequestType);
 
@@ -193,6 +194,7 @@ class _Player : public _Entity {
 		int ProgressionCrates;
 		int ProgressionSecrets;
 		int LavaTouches;
+		bool Hardcore{false};
 		bool Stat100Percent;
 		bool StatLoneWolf;
 		bool StatFistsOnly;

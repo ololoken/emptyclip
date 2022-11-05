@@ -138,6 +138,7 @@ void _Menu::Init() {
 		Text->Font = ae::Assets.Fonts["hud_small"];
 		Text->BaseSize = Size - glm::vec2(40, 20);
 		Text->Wrap = true;
+		Text->Format = true;
 		Title->Children.push_back(Text);
 
 		AchievementContainer->Children.push_back(Button);
@@ -184,6 +185,9 @@ void _Menu::InitSinglePlayer() {
 	RefreshSaveSlots();
 	for(int i = 0; i < SAVE_SLOTS; i++)
 		SaveSlots[i]->Checked = false;
+
+	ae::Assets.Elements["button_menu_singleplayer_play"]->SetEnabled(true);
+	ae::Assets.Elements["button_menu_singleplayer_delete"]->SetEnabled(false);
 
 	SelectedColor = 0;
 	SelectedSlot = -1;
@@ -241,6 +245,8 @@ void _Menu::InitControls() {
 void _Menu::InitInGame() {
 	ChangeLayout("element_menu_ingame");
 
+	ae::Assets.Elements["label_menu_ingame_exitwarning"]->SetActive(PlayState.Player && PlayState.Player->InCombat());
+
 	ShowDefaultCursor(true);
 	Background = nullptr;
 
@@ -291,7 +297,7 @@ void _Menu::InitAchievements() {
 				Failed = true;
 			else if(Child->ID == "smoked" && PlayState.Player->LavaTouches)
 				Failed = true;
-			else if(Child->ID == "bleedrun" && (PlayState.Player->Progression || PlayState.Player->TotalDeaths || PlayState.Player->PlayTime >= ACHIEVEMENTS_BLEEDRUN_TIME))
+			else if(Child->ID == "bleedrun" && (PlayState.Player->Progression || PlayState.Player->TotalDeaths || !PlayState.Player->Hardcore || PlayState.Player->PlayTime >= ACHIEVEMENTS_BLEEDRUN_TIME))
 				Failed = true;
 
 			if(Failed)
@@ -315,7 +321,7 @@ void _Menu::InitNewPlayer() {
 	Name->ResetCursor();
 
 	// Deselect previous elements
-	for(int i = 0; i < COLOR_COUNT; i++) {
+	for(int i = 0; i < PLAYER_COLOR_COUNT; i++) {
 		std::ostringstream Buffer;
 		Buffer << PlayerColorButtonPrefix << i;
 
@@ -323,6 +329,9 @@ void _Menu::InitNewPlayer() {
 		ColorButtons[i]->Checked = false;
 		ColorButtons[i]->Index = i;
 	}
+
+	ae::_Element *Check = ae::Assets.Elements["label_menu_new_hardcore_check"];
+	Check->Text = "";
 
 	SelectedColor = 0;
 	ColorButtons[SelectedColor]->Checked = true;
@@ -332,8 +341,12 @@ void _Menu::InitNewPlayer() {
 
 // Play the game
 void _Menu::LaunchGame() {
-	Save.LoadPlayer(Save.GetPlayer(SelectedSlot));
-	PlayState.Player = Save.GetPlayer(SelectedSlot);
+	_Player *Player = Save.GetPlayer(SelectedSlot);
+	if(Player->Hardcore && Player->Health <= 0)
+		return;
+
+	Save.LoadPlayer(Player);
+	PlayState.Player = Player;
 	PlayState.Level = "";
 	PlayState.TestMode = false;
 	PlayState.FromEditor = false;
@@ -660,9 +673,13 @@ void _Menu::HandleMouseButton(const ae::_MouseEvent &MouseEvent) {
 								SaveSlots[SelectedSlot]->Checked = false;
 
 							// Set up create player screen
-							if(!Save.GetPlayer(Clicked->Index)) {
-								InitNewPlayer();
+							_Player *Player = Save.GetPlayer(Clicked->Index);
+							if(Player) {
+								ae::Assets.Elements["button_menu_singleplayer_play"]->SetEnabled(!(Player->Hardcore && Player->Health <= 0));
+								ae::Assets.Elements["button_menu_singleplayer_delete"]->SetEnabled(true);
 							}
+							else
+								InitNewPlayer();
 
 							SelectedSlot = Clicked->Index;
 							SaveSlots[SelectedSlot]->Checked = true;
@@ -678,6 +695,10 @@ void _Menu::HandleMouseButton(const ae::_MouseEvent &MouseEvent) {
 
 							SelectedColor = Clicked->Index;
 							ColorButtons[SelectedColor]->Checked = true;
+						}
+						else if(Clicked->ID == "button_menu_new_hardcore") {
+							ae::_Element *Check = ae::Assets.Elements["label_menu_new_hardcore_check"];
+							Check->Text = Check->Text == "" ? "X" : "";
 						}
 						else if(Clicked->ID == "button_menu_new_create") {
 							CreatePlayer();
@@ -1083,6 +1104,10 @@ void _Menu::RefreshSaveSlots() {
 		ae::_Element *SlotLabel = ae::Assets.Elements[Buffer.str()];
 		Buffer.str("");
 
+		Buffer << "label_menu_singleplayer_slot" << i << "_hardcore";
+		ae::_Element *SlotHardcore = ae::Assets.Elements[Buffer.str()];
+		Buffer.str("");
+
 		_Player *Player = Save.GetPlayer(i);
 		if(Player) {
 			Player->UpdateSpeed(1.0f);
@@ -1091,9 +1116,12 @@ void _Menu::RefreshSaveSlots() {
 			SlotLabel->Text = Player->Name;
 			if(Player->Progression)
 				SlotLabel->Text += " ([c gold]" + std::to_string(Player->Progression) + "[c white])";
+			SlotHardcore->Text = Player->Hardcore ? (Player->Health == 0 ? "Dead" : "Hardcore") : "";
 		}
-		else
+		else {
 			SlotLabel->Text = "Empty Slot";
+			SlotHardcore->Text = "";
+		}
 
 		Buffer << PlayerButtonPrefix << i;
 		SaveSlots[i] = ae::Assets.Elements[Buffer.str()];
@@ -1129,11 +1157,17 @@ void _Menu::CreatePlayer() {
 	CurrentLayout = ae::Assets.Elements["element_menu_singleplayer"];
 	SinglePlayerState = SINGLEPLAYER_NONE;
 
-	if(SelectedSlot != -1) {
-		Save.CreateNewPlayer(SelectedSlot, ae::Assets.Elements["textbox_menu_new_name_input"]->Text, COLORS[SelectedColor]);
-		RefreshSaveSlots();
-		ae::FocusedElement = nullptr;
-	}
+	if(SelectedSlot == -1)
+		return;
+
+	ae::_Element *Check = ae::Assets.Elements["label_menu_new_hardcore_check"];
+
+	Save.CreateNewPlayer(SelectedSlot, ae::Assets.Elements["textbox_menu_new_name_input"]->Text, COLORS[SelectedColor], Check->Text != "");
+	ae::Assets.Elements["button_menu_singleplayer_play"]->SetEnabled(true);
+	ae::Assets.Elements["button_menu_singleplayer_delete"]->SetEnabled(true);
+
+	RefreshSaveSlots();
+	ae::FocusedElement = nullptr;
 }
 
 // Clear action on keybinding page

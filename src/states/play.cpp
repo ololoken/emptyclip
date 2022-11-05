@@ -295,8 +295,13 @@ bool _PlayState::HandleKey(const ae::_KeyEvent &KeyEvent) {
 		switch(KeyEvent.Scancode) {
 			case SDL_SCANCODE_ESCAPE:
 				if(Player->IsDead()) {
-					Player->Respawn();
-					Save.SavePlayer(Player);
+					if(Player->Hardcore) {
+						Framework.ChangeState(&NullState);
+					}
+					else {
+						Player->Respawn();
+						Save.SavePlayer(Player);
+					}
 				}
 				else if(!Player->IsDying()) {
 					if(HUD->InventoryOpen) {
@@ -315,9 +320,11 @@ bool _PlayState::HandleKey(const ae::_KeyEvent &KeyEvent) {
 				}
 			break;
 			case SDL_SCANCODE_F1:
-				HUD->SetInventoryOpen(false);
-				Save.SavePlayer(Player);
-				Menu.InitInGame();
+				if(!Player->IsDying()) {
+					HUD->SetInventoryOpen(false);
+					Save.SavePlayer(Player);
+					Menu.InitInGame();
+				}
 			break;
 		}
 	}
@@ -1022,7 +1029,7 @@ void _PlayState::Render(double BlendFactor) {
 
 	// Debug mode
 	if(DebugMode) {
-		glm::vec2 DrawPosition = glm::vec2(10, 200) * ae::_Element::GetUIScale();
+		glm::vec2 DrawPosition = glm::vec2(10, 230) * ae::_Element::GetUIScale();
 		glm::vec2 Spacing(0, 16 * ae::_Element::GetUIScale());
 		std::ostringstream Buffer;
 		Buffer << ae::Graphics.FramesPerSecond << " FPS";
@@ -1331,7 +1338,7 @@ void _PlayState::EndLevel() {
 			if(Player->StatLoneWolf)
 				Menu.UnlockAchievement("lonewolf");
 
-			if(Player->TotalDeaths == 0 && Player->PlayTime < ACHIEVEMENTS_BLEEDRUN_TIME)
+			if(Player->TotalDeaths == 0 && Player->Hardcore && Player->PlayTime < ACHIEVEMENTS_BLEEDRUN_TIME)
 				Menu.UnlockAchievement("bleedrun");
 		}
 
@@ -1360,6 +1367,7 @@ void _PlayState::EndLevel() {
 		Menu.SetScoreStats(false, Player->LevelTime, HUD->Kills, HUD->Crates, HUD->Secrets, 0, GotOneHundredPercent);
 	}
 
+	Player->CombatTimer = GAME_COMBAT_TIMER;
 	Player->LevelTime = 0.0;
 	Player->CheckpointIndex = TouchingEndEvent->Level;
 	Player->MapID = Level;
