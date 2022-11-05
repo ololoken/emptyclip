@@ -292,14 +292,19 @@ void _Object::CheckProjectileCollisions() {
 	// Check wall hits
 	glm::vec2 HitPosition;
 	if(Map->ResolveTileCollisions(Position, Radius, _Tile::BULLET, false, Bounces, HitPosition, Velocity)) {
-		Position = HitPosition;
-
 		if(Bounces <= 0) {
-			if(Bounces == 0)
-				CreateAmmoPickup(PositionZ);
+
+			// Put projectile on wall
+			if(ProjectileExplosionSize == 0.0f)
+				Position = HitPosition;
+
+			// Create ammo pick up
+			CreateAmmoPickup(PositionZ);
+
 			Active = false;
 		}
 		else {
+			Position = HitPosition;
 
 			// Set new direction
 			FacePosition(Position + Velocity);
@@ -309,7 +314,6 @@ void _Object::CheckProjectileCollisions() {
 
 			// Update counter and add self hits
 			Bounces--;
-			Bounced = true;
 			if(OwnerEntity->Type == _Object::PLAYER)
 				GridTypes.push_back(GRID_PLAYER);
 		}
@@ -382,7 +386,7 @@ void _Object::CheckProjectileCollisions() {
 
 		// Check hits
 		float ExplosionRadius = ProjectileExplosionSize * 0.5f;
-		if(!Bounced && OwnerEntity->Type == _Object::PLAYER)
+		if(OwnerEntity->Type == _Object::PLAYER)
 			GridTypes.push_back(GRID_PLAYER);
 		std::vector<_Hit> &Hits = Map->CheckCollisionsInGrid(Position, ExplosionRadius, GridTypes);
 
