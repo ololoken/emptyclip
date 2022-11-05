@@ -297,6 +297,8 @@ void _Menu::InitAchievements() {
 				Failed = true;
 			else if(Child->ID == "smoked" && PlayState.Player->LavaTouches)
 				Failed = true;
+			else if(Child->ID == "p10" && !PlayState.Player->Hardcore)
+				Failed = true;
 			else if(Child->ID == "bleedrun" && (PlayState.Player->Progression || PlayState.Player->TotalDeaths || !PlayState.Player->Hardcore || PlayState.Player->PlayTime >= ACHIEVEMENTS_BLEEDRUN_TIME))
 				Failed = true;
 

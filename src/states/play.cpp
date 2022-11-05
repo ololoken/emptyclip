@@ -1356,7 +1356,7 @@ void _PlayState::EndLevel() {
 		if(Player->Stat100Percent)
 			Menu.UnlockAchievement("all");
 
-		if(Player->Progression >= 10)
+		if(Player->Progression >= 10 && Player->Hardcore)
 			Menu.UnlockAchievement("p10");
 
 		if(Player->LavaTouches == 0)
