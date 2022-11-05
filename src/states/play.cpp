@@ -156,6 +156,13 @@ void _PlayState::Init() {
 
 // Close map
 void _PlayState::Close() {
+
+	// Player has already been penalized
+	if(!Player->Hardcore && Player->IsDead()) {
+		Player->Health = 1;
+		Player->CombatTimer = GAME_COMBAT_TIMER;
+	}
+
 	Save.SavePlayer(Player);
 
 	DeleteMonsters();
@@ -414,8 +421,12 @@ bool _PlayState::HandleCommand(ae::_Console *Console) {
 					Adjust = true;
 
 				int64_t Change = ae::ToNumber<int64_t>(Parameters[0]);
-				Player->Health = std::max((int64_t)0, Adjust ? Player->Health + Change : Change);
-				Player->UpdateHealth(0);
+
+				if(Adjust)
+					Player->UpdateHealth(Change);
+				else
+					Player->Health = std::max((int64_t)1, Change);
+
 				Player->RecalculateStats();
 			}
 			else
