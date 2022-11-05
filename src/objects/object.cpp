@@ -89,8 +89,8 @@ void _Object::RenderLights(double BlendFactor) {
 }
 
 // Determine if quality can be increased
-bool _Object::CanIncreaseQuality() const {
-	if(Quality >= ITEM_QUALITY_MAX)
+bool _Object::CanIncreaseQuality(bool CheckQuality) const {
+	if(CheckQuality && Quality >= ITEM_QUALITY_MAX)
 		return false;
 
 	return Type == _Object::WEAPON || Type == _Object::ARMOR || Type == _Object::MOD;

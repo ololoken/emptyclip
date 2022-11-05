@@ -1042,8 +1042,18 @@ void _HUD::DrawInventory() {
 		ae::Graphics.SetProgram(ae::Assets.Programs["ortho_pos"]);
 		for(size_t i = INVENTORY_MAINHAND; i < INVENTORY_BAGEND; i++) {
 			_Item *Item = Player->Inventory[i];
-			if(!Item || !Item->CanEquip())
+			if(!Item || Item == CursorItem)
 				continue;
+
+			if(CursorItem->Type == _Object::MOD && !Item->CanMod())
+				continue;
+
+			if(CursorItem->Type == _Object::USABLE) {
+				if(CursorItem->Template.Attributes.at("usable_type").Int == USABLE_HAMMER && !Item->CanMod())
+					continue;
+				else if(CursorItem->Template.Attributes.at("usable_type").Int == USABLE_WHETSTONE && !Item->CanIncreaseQuality(false))
+					continue;
+			}
 
 			// Set overlay color
 			if(Item->ItemCompatible(CursorItem))

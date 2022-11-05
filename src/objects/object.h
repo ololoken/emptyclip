@@ -126,7 +126,7 @@ class _Object {
 		bool CanMove() const { return Type == _Object::WEAPON || Type == _Object::ARMOR || Type == _Object::MOD || Type == _Object::USABLE; }
 		bool CanEquip() const { return Type == _Object::WEAPON || Type == _Object::ARMOR; }
 		bool CanMod() const { return Type == _Object::WEAPON || Type == _Object::ARMOR; }
-		bool CanIncreaseQuality() const;
+		bool CanIncreaseQuality(bool CheckQuality) const;
 		bool CanLevel() const { return Type == _Object::WEAPON || Type == _Object::ARMOR; }
 		bool CanShowMoreInfo() const { return Type == _Object::WEAPON || Type == _Object::ARMOR || Type == _Object::MOD || Type == _Object::USABLE; }
 		bool CanUnique() const { return Type == _Object::WEAPON || Type == _Object::ARMOR || Type == _Object::MOD || Type == _Object::AMMO || Type == _Object::CONSUMABLE || Type == _Object::USABLE; }

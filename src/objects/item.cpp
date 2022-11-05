@@ -752,7 +752,7 @@ bool _Item::ItemCompatible(_Item *Item, bool CheckCount) {
 						return true;
 				break;
 				case USABLE_WHETSTONE:
-					if(CanIncreaseQuality())
+					if(CanIncreaseQuality(true))
 						return true;
 				break;
 			}
