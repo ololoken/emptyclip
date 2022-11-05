@@ -183,7 +183,6 @@ class _Object {
 		int ProjectileCritDamage{0};
 		int Bounces{0};
 		int Depth{0};
-		bool Bounced{false};
 
 		// Character
 		ActionType Action{ACTION_IDLE};
