@@ -225,13 +225,17 @@ bool _PlayState::HandleAction(int InputType, size_t Action, int Value) {
 					if(!Player->HasMainHand())
 						AttackType = WEAPONATTACK_MELEE;
 
-					// Can reload
+					// Cancel reload
 					if(Player->Reloading && Player->WeaponHasAmmo(AttackType))
 						Player->CancelReloading();
 
-					// Play sound
-					if(Player->CanAttack(AttackType) && !Player->WeaponHasAmmo(AttackType))
-						ae::Audio.PlaySound(Player->GetSound(SOUND_EMPTY, AttackType));
+					// Check ammo
+					if(Player->CanAttack(AttackType) && !Player->WeaponHasAmmo(AttackType)) {
+						if(Player->CanReload())
+							Player->StartReloading();
+						else
+							ae::Audio.PlaySound(Player->GetSound(SOUND_EMPTY, AttackType));
+					}
 
 					if(Player->CheckAttackTimer(AttackType) && Player->FireRateType[AttackType] == FIRERATE_SEMI && (!Player->BurstRounds[AttackType] || (Player->BurstRounds[AttackType] && Player->BurstRoundsShot == 0))) {
 						Player->BurstRoundsShot = 0;
