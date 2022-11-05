@@ -1124,11 +1124,16 @@ void _HUD::DrawItemValue(const _Item *Item, const glm::vec2 &Position) {
 	std::ostringstream Buffer;
 	switch(Item->Type) {
 		case _Object::MOD:
-			if(!Item->Template.Attributes.at("negative").Int)
-				Buffer << "+";
-			Buffer << ae::Round2(Item->Attributes.at("bonus").Float);
-			if(Item->Template.Attributes.at("percent_sign").Int)
-				Buffer << "%";
+			if(Item->IsSpecialMod()) {
+				Buffer << "+" << ae::Round2(Item->Attributes.at("bonus_2nd").Float) << "%";
+			}
+			else {
+				if(!Item->Template.Attributes.at("negative").Int)
+					Buffer << "+";
+				Buffer << ae::Round2(Item->Attributes.at("bonus").Float);
+				if(Item->Template.Attributes.at("percent_sign").Int)
+					Buffer << "%";
+			}
 		break;
 		case _Object::WEAPON:
 			Buffer << ae::Round1(Item->GetAverageDamage());

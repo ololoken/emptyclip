@@ -64,14 +64,14 @@ inline bool CompareItem(_Item *First, _Item *Second) {
 		}
 		else if(First->Type == _Object::MOD) {
 			if(First->Template.Attributes.at("object_type").Int == Second->Template.Attributes.at("object_type").Int) {
-				if(First->Template.Attributes.at("mod_type").Int == Second->Template.Attributes.at("mod_type").Int) {
+				if(First->GetModType() == Second->GetModType()) {
 					if(First->Attributes.at("bonus").Float == Second->Attributes.at("bonus").Float)
 						return First->Quality > Second->Quality;
 
 					return First->Attributes.at("bonus").Float > Second->Attributes.at("bonus").Float;
 				}
 
-				return First->Template.Attributes.at("mod_type").Int < Second->Template.Attributes.at("mod_type").Int;
+				return First->GetModType() < Second->GetModType();
 			}
 
 			return First->Template.Attributes.at("object_type").Int < Second->Template.Attributes.at("object_type").Int;

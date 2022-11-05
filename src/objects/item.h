@@ -99,6 +99,8 @@ class _Item : public _Object {
 		float GetBonusMultiplier(int ModType, bool Inverse=false) const;
 		void SetMaxMods();
 		float GetMaxMods(bool Round) const;
+		int GetModType() const;
+		bool IsSpecialMod() const;
 
 		int UpdateCount(int Amount) { Count += Amount; return Count; }
 

@@ -415,7 +415,7 @@ void _Item::DrawTooltip(const _Player *Player, size_t CompareSlot, int Inventory
 			if(InventorySlot == -1 && PlayState.HUD->InventoryOpen)
 				HelpTextList.push_back("Right-click to pick up");
 
-			if(Template.Attributes.at("mod_type").Int == MOD_BURST) {
+			if(GetModType() == MOD_BURST) {
 				DrawPosition.y += Spacing.y;
 				Buffer << "+";
 				if(PlayState.ShowMoreInfo())
@@ -425,12 +425,12 @@ void _Item::DrawTooltip(const _Player *Player, size_t CompareSlot, int Inventory
 				Buffer << " Round Burst Fire";
 				AttributeFont->DrawText(Buffer.str(), glm::ivec2(DrawPosition), ae::CENTER_BASELINE, TextColor);
 			}
-			else if(Template.Attributes.at("mod_type").Int != MOD_FULLAUTO && Template.Attributes.at("mod_type").Int != MOD_SEMIAUTO) {
+			else if(!IsSpecialMod()) {
 				DrawPosition.y += Spacing.y;
 				std::string Percent = Template.Attributes.at("percent_sign").Int ? "%" : "";
 				std::string Positive = Template.Attributes.at("negative").Int ? "" : "+";
 				Buffer << Positive << ae::Round2(Attributes.at("bonus").Float) << Percent;
-				AttributeFont->DrawText(ModTypeToString(Template.Attributes.at("mod_type").Int), glm::ivec2(DrawPosition - DrawOffset), ae::RIGHT_BASELINE);
+				AttributeFont->DrawText(ModTypeToString(GetModType()), glm::ivec2(DrawPosition - DrawOffset), ae::RIGHT_BASELINE);
 				AttributeFont->DrawText(Buffer.str(), glm::ivec2(DrawPosition + DrawOffset), ae::LEFT_BASELINE, TextColor);
 			}
 			Buffer.str("");
@@ -476,7 +476,7 @@ void _Item::DrawTooltip(const _Player *Player, size_t CompareSlot, int Inventory
 					AttributeFont->DrawTextFormatted(Buffer.str(), glm::ivec2(DrawPosition), ae::CENTER_BASELINE);
 				break;
 				case USABLE_WHETSTONE:
-					Buffer << "Increase quality of an item by [c green]" << GetWhetstoneQuality() << "%";
+					Buffer << "Increases quality of an item by [c green]" << GetWhetstoneQuality() << "%";
 					AttributeFont->DrawTextFormatted(Buffer.str(), glm::ivec2(DrawPosition), ae::CENTER_BASELINE);
 					if(InventorySlot == -1 && PlayState.HUD->InventoryOpen)
 						HelpTextList.push_back("Right-click to pick up");
@@ -602,7 +602,7 @@ void _Item::RecalculateStats() {
 
 	// Sum bonuses
 	for(size_t i = 0; i < Mods.size(); i++)
-		Bonus[Mods[i]->Template.Attributes.at("mod_type").Int] += Mods[i]->Attributes.at("bonus").Float;
+		Bonus[Mods[i]->GetModType()] += Mods[i]->Attributes.at("bonus").Float;
 
 	// Sum secondary bonuses
 	for(size_t i = 0; i < Mods.size(); i++)
@@ -784,7 +784,7 @@ bool _Item::ModCompatible(_Item *Mod, bool CheckCount) {
 				return false;
 
 			// Check for ammo
-			int ModType = Mod->Template.Attributes.at("mod_type").Int;
+			int ModType = Mod->GetModType();
 			if(Template.Attributes.at("rounds").Float == 0.0f && (ModType == MOD_MAXROUNDS || ModType == MOD_MAXROUNDSPLUS || ModType == MOD_RELOADSPEED || ModType == MOD_RELOADAMOUNT || ModType == MOD_HANDLING))
 				return false;
 
@@ -810,8 +810,8 @@ bool _Item::ModCompatible(_Item *Mod, bool CheckCount) {
 					return false;
 
 				// Check for other mods
-				for(const auto &Mod : Mods) {
-					if(Mod->Type == _Object::MOD && (Mod->Template.Attributes.at("mod_type").Int == MOD_BURST || Mod->Template.Attributes.at("mod_type").Int == MOD_FULLAUTO))
+				for(const auto &OtherMod : Mods) {
+					if(OtherMod->Type == _Object::MOD && OtherMod->IsSpecialMod())
 						return false;
 				}
 			}
@@ -822,8 +822,8 @@ bool _Item::ModCompatible(_Item *Mod, bool CheckCount) {
 					return false;
 
 				// Check for other mods
-				for(const auto &Mod : Mods) {
-					if(Mod->Type == _Object::MOD && (Mod->Template.Attributes.at("mod_type").Int == MOD_BURST || Mod->Template.Attributes.at("mod_type").Int == MOD_SEMIAUTO))
+				for(const auto &OtherMod : Mods) {
+					if(OtherMod->Type == _Object::MOD && OtherMod->IsSpecialMod())
 						return false;
 				}
 			}
@@ -834,8 +834,8 @@ bool _Item::ModCompatible(_Item *Mod, bool CheckCount) {
 					return false;
 
 				// Check for other mods
-				for(const auto &Mod : Mods) {
-					if(Mod->Type == _Object::MOD && (Mod->Template.Attributes.at("mod_type").Int == MOD_FULLAUTO || Mod->Template.Attributes.at("mod_type").Int == MOD_SEMIAUTO))
+				for(const auto &OtherMod : Mods) {
+					if(OtherMod->Type == _Object::MOD && OtherMod->IsSpecialMod())
 						return false;
 				}
 			}
@@ -883,6 +883,20 @@ float _Item::GetMaxMods(bool Round) const {
 		Value += PlayState.Player->ExtraMods;
 
 	return Round ? std::round(Value) : Value;
+}
+
+// Return type of mod, otherwise 0
+int _Item::GetModType() const {
+	if(Type != _Object::MOD)
+		return 0;
+
+	return Template.Attributes.at("mod_type").Int;
+}
+
+// Return true if mod is considered special
+bool _Item::IsSpecialMod() const {
+	int ModType = GetModType();
+	return ModType == MOD_SEMIAUTO || ModType == MOD_BURST || ModType == MOD_FULLAUTO;
 }
 
 // Get average damage from range
