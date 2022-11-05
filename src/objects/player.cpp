@@ -404,7 +404,7 @@ void _Player::RecalculateStats() {
 	}
 
 	// Skills
-	DropRate = 100 + Skills[SKILL_LUCK];
+	DropRate = 100 + Stats.GetSkill(Skills[SKILL_LUCK], SKILL_LUCK, 0);
 	PickupModifier = Stats.GetSkillBonusMultiplier(Skills[SKILL_LUCK], SKILL_LUCK, 1);
 	ExperienceModifier = Stats.GetSkillBonusMultiplier(Skills[SKILL_INTELLIGENCE], SKILL_INTELLIGENCE, 0);
 	ExtraMods = Stats.GetSkill(Skills[SKILL_INTELLIGENCE], SKILL_INTELLIGENCE, 1);
