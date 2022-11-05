@@ -1380,6 +1380,7 @@ void _Player::Respawn() {
 	Map->TargetAmbientLight = Map->BaseAmbientLight;
 
 	InvulnerableTimer = GAME_INVULNERABLE_TIME;
+	CombatTimer = GAME_COMBAT_TIMER;
 }
 
 // Change player position and update grid
