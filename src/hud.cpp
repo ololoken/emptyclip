@@ -657,6 +657,11 @@ void _HUD::Render(bool FullMap) {
 	Elements[LABEL_PLAYERHARDCORE]->Text = Player->Hardcore ? "Hardcore" : "";
 	Elements[ELEMENT_PLAYERINFO]->Render();
 
+	// Draw stats
+	Elements[LABEL_LEVELKILLS]->Color = Kills[0] >= Kills[1] ? COLOR_GREEN : COLOR_WHITE;
+	Elements[LABEL_LEVELCRATES]->Color = Crates[0] >= Crates[1] ? COLOR_GREEN : COLOR_WHITE;
+	Elements[LABEL_LEVELSECRETS]->Color = Secrets[0] >= Secrets[1] ? COLOR_GREEN : COLOR_WHITE;
+
 	Buffer << Kills[0] << "/" << Kills[1];
 	Elements[LABEL_LEVELKILLS]->Text = Buffer.str();
 	Buffer.str("");
