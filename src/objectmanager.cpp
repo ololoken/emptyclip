@@ -133,7 +133,7 @@ void _ObjectManager::Update(double FrameTime, _Map *Map) {
 				_Item *Item = (_Item *)Object;
 
 				// Hide pickups when more info is shown
-				if(Item->IsHideable() && PlayState.ShowMoreInfo())
+				if(Item->CanHide() && PlayState.ShowMoreInfo())
 					DrawLight = false;
 				else {
 					if(Item->Template.RenderListType != -1)

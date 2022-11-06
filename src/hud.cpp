@@ -342,10 +342,10 @@ void _HUD::MouseEvent(const ae::_MouseEvent &MouseEvent) {
 													PlayState.Map->RemoveObjectFromGrid(CursorItem, GRID_ITEM);
 
 													// Drop mods
-													int QualityReduction = CursorItem->GetHammerQualityReduction();
+													int QualityChange = CursorItem->GetHammerQualityChange();
 													for(auto &Mod : ExistingItem->Mods) {
 														Mod->Visible = true;
-														Mod->Quality = std::clamp(Mod->Quality - QualityReduction, ITEM_QUALITY_MIN, ITEM_QUALITY_MAX);
+														Mod->Quality = std::clamp(Mod->Quality + QualityChange, ITEM_QUALITY_MIN, ITEM_QUALITY_MAX);
 														Mod->RecalculateModBonus();
 														Mod->SetPosition(PlayState.Map->FindSuitableItemPosition(Player->Position, Mod->Type, ITEM_RADIUS, ITEM_PLACEMENT_ATTEMPTS));
 														PlayState.Map->AddObject(Mod, GRID_ITEM);

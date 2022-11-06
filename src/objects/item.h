@@ -109,7 +109,7 @@ class _Item : public _Object {
 		float GetAverageDamage() const;
 		float GetAverageAccuracy() const;
 		void GetQualityColor(glm::vec4 &ReturnColor) const;
-		int GetHammerQualityReduction() const;
+		int GetHammerQualityChange() const;
 		int GetWhetstoneQuality() const;
 
 		float GetConsumableValue(const _Player *Player) const;

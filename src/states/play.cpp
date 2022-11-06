@@ -703,7 +703,7 @@ void _PlayState::Update(double FrameTime) {
 		ClosestItemTimer = 0.0;
 
 	// Show item tooltip when standing over item
-	if(!HUD->InventoryOpen && !Player->Aiming && ClosestItem && ClosestItem == LastClosestItem && !ClosestItem->IsAutoPickup()) {
+	if(!HUD->InventoryOpen && !Player->Aiming && ClosestItem && ClosestItem == LastClosestItem && !ClosestItem->CanAutoPickup()) {
 		ClosestItemTimer += FrameTime;
 		if(!HUD->CursorOverItem && ClosestItemTimer >= HUD_STANDOVER_TIME) {
 			HUD->CursorOverItem = ClosestItem;
@@ -995,7 +995,7 @@ void _PlayState::Render(double BlendFactor) {
 				case _Object::USABLE: {
 					switch(Item->Template.Attributes.at("usable_type").Int) {
 						case USABLE_HAMMER:
-							Buffer << Item->GetHammerQualityReduction() << "%";
+							Buffer << Item->GetHammerQualityChange() << "%";
 						break;
 						case USABLE_WHETSTONE:
 							Buffer << Item->GetWhetstoneQuality() << "%";
@@ -1301,7 +1301,7 @@ void _PlayState::HandlePickup() {
 			continue;
 
 		// Automatically pickup ammo/health
-		if(NearbyItem->IsAutoPickup()) {
+		if(NearbyItem->CanAutoPickup()) {
 			if(!PickupObject(NearbyItem, Player->ApplyUse())) {
 				IgnoreItems[NearbyItem] = 1;
 				continue;
@@ -1392,7 +1392,7 @@ void _PlayState::EndLevel() {
 
 // Places an item into the player's inventory and return amount added
 int _PlayState::PickupObject(_Item *Item, bool Manual) {
-	if(!Item || !Item->Visible || !Item->Moveable || (Manual && Item->IsHideable() && ShowMoreInfo()))
+	if(!Item || !Item->Visible || !Item->Moveable || (Manual && Item->CanHide() && ShowMoreInfo()))
 		return 0;
 
 	// Attempt to add item
@@ -1403,7 +1403,7 @@ int _PlayState::PickupObject(_Item *Item, bool Manual) {
 			ClosestItem = nullptr;
 
 		// Set up particles
-		if(Item->IsAutoPickup() && AmountAdded) {
+		if(Item->CanAutoPickup() && AmountAdded) {
 
 			// Initialize
 			std::string ParticleText;
@@ -1444,7 +1444,7 @@ int _PlayState::PickupObject(_Item *Item, bool Manual) {
 		}
 
 		// Reset use timer
-		if(Manual && !Item->IsAutoPickup())
+		if(Manual && !Item->CanAutoPickup())
 			Player->UseTimer = 0.0;
 	}
 	else
@@ -1476,7 +1476,7 @@ bool _PlayState::SetCursorOverItem() {
 	if(ae::Graphics.Element->HitElement)
 		return false;
 
-	if(ShowMoreInfo() && CursorItem->IsHideable())
+	if(ShowMoreInfo() && CursorItem->CanHide())
 		return false;
 
 	if(HUD->CursorOverItem && ClosestItem != HUD->CursorOverItem)

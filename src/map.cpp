@@ -881,7 +881,7 @@ glm::vec2 _Map::FindSuitableItemPosition(const glm::vec2 &Position, int ItemType
 				// Check items in grid
 				for(auto Iterator : Data[i][j].Objects[GRID_ITEM]) {
 					_Object *Object = Iterator.first;
-					if(Object->IsHideable())
+					if(Object->CanHide())
 						continue;
 
 					if(ObjectMap.find(Object) != ObjectMap.end())
@@ -926,7 +926,7 @@ _Item *_Map::GetClosestItem(const glm::vec2 &Position, bool SkipHideable) const 
 	double ClosestDistanceSquared[2] = { HUGE_VAL, HUGE_VAL };
 	for(auto Iterator : Data[Coord.x][Coord.y].Objects[GRID_ITEM]) {
 		_Item *Item = (_Item *)Iterator.first;
-		if(SkipHideable && Item->IsHideable())
+		if(SkipHideable && Item->CanHide())
 			continue;
 
 		// Check circle intersection
@@ -935,11 +935,11 @@ _Item *_Map::GetClosestItem(const glm::vec2 &Position, bool SkipHideable) const 
 			continue;
 
 		// Skip further items
-		if(DistanceSquared >= ClosestDistanceSquared[Item->IsHideable()])
+		if(DistanceSquared >= ClosestDistanceSquared[Item->CanHide()])
 			continue;
 
-		ClosestItem[Item->IsHideable()] = Item;
-		ClosestDistanceSquared[Item->IsHideable()] = DistanceSquared;
+		ClosestItem[Item->CanHide()] = Item;
+		ClosestDistanceSquared[Item->CanHide()] = DistanceSquared;
 	}
 
 	// Prioritize gear over pickups

@@ -115,7 +115,7 @@ void _Item::DrawTooltip(const _Player *Player, size_t CompareSlot, int Inventory
 		Size.y = 180 * ae::_Element::GetUIScale();
 	else if(Type == _Object::USABLE) {
 		Size.x = 480 * ae::_Element::GetUIScale();
-		Size.y = 220 * ae::_Element::GetUIScale();
+		Size.y = 240 * ae::_Element::GetUIScale();
 	}
 	else if(Type == _Object::MOD) {
 		Size.x = 480 * ae::_Element::GetUIScale();
@@ -174,7 +174,7 @@ void _Item::DrawTooltip(const _Player *Player, size_t CompareSlot, int Inventory
 	SmallFont->DrawText(GetTypeAsString(), glm::ivec2(DrawPosition), ae::CENTER_BASELINE);
 
 	// Draw Level
-	if(Type != _Object::KEY && Type != _Object::AMMO && Type != _Object::CONSUMABLE && Type != _Object::MOD && Type != _Object::USABLE) {
+	if(CanLevel()) {
 		DrawPosition.y += SmallSpacing.y;
 		Buffer << "Level " << Level;
 		SmallFont->DrawText(Buffer.str(), glm::ivec2(DrawPosition), ae::CENTER_BASELINE);
@@ -183,7 +183,7 @@ void _Item::DrawTooltip(const _Player *Player, size_t CompareSlot, int Inventory
 
 	// Quality
 	glm::vec4 TextColor = COLOR_WHITE;
-	if(Type == _Object::WEAPON || Type == _Object::ARMOR || Type == _Object::MOD) {
+	if(CanQuality()) {
 		DrawPosition.y += SmallSpacing.y;
 		Buffer << "Quality " << Quality << "%";
 		SmallFont->DrawText(Buffer.str(), glm::ivec2(DrawPosition), ae::CENTER_BASELINE, DrawColor);
@@ -472,9 +472,9 @@ void _Item::DrawTooltip(const _Player *Player, size_t CompareSlot, int Inventory
 				case USABLE_HAMMER: {
 					AttributeFont->DrawText("Destroys an item and releases its mods", glm::ivec2(DrawPosition), ae::CENTER_BASELINE);
 					DrawPosition.y += Spacing.y;
-					int Change = GetHammerQualityReduction();
+					int Change = GetHammerQualityChange();
 					if(Change != 0) {
-						Buffer << (Change < 0 ? "Increases" : "Reduces");
+						Buffer << (Change > 0 ? "Increases" : "Reduces");
 						Buffer << " quality of mods by [c green]" << std::abs(Change) << "%";
 						AttributeFont->DrawTextFormatted(Buffer.str(), glm::ivec2(DrawPosition), ae::CENTER_BASELINE);
 					}
@@ -586,7 +586,7 @@ void _Item::RecalculateStats() {
 	if(Quality > ITEM_QUALITY_RANGE) {
 		Unique = Stats.GetUnique(Quality);
 		LightTexture = Unique->Texture;
-		if(IsAutoPickup()) {
+		if(CanAutoPickup()) {
 			LightColor = COLOR_GOLD;
 			Name = Template.Name + " Bundle";
 		}
@@ -923,13 +923,13 @@ void _Item::GetQualityColor(glm::vec4 &ReturnColor) const {
 		ReturnColor = COLOR_WHITE;
 }
 
-// Get reduction amount from hammer quality
-int _Item::GetHammerQualityReduction() const {
+// Get change amount from hammer quality
+int _Item::GetHammerQualityChange() const {
 	if(Unique)
 		return Unique->HammerValue;
 
 	int Range = Template.Attributes.at("range").Float;
-	return Range - std::round((Range - 1) * (Quality + ITEM_QUALITY_RANGE) / (float)(ITEM_QUALITY_RANGE * 2));
+	return std::round((Range - 1) * (Quality + ITEM_QUALITY_RANGE) / (float)(ITEM_QUALITY_RANGE * 2)) - Range;
 }
 
 // Get whetstone quality value
