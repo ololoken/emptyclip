@@ -744,43 +744,71 @@ void _HUD::Render(bool FullMap) {
 	if(CursorOverItem && CursorItem != CursorOverItem) {
 		size_t CompareSlot = (size_t)-1;
 
-		// Compare with equipment
-		if(CursorInventorySlot == -1 || CursorInventorySlot >= INVENTORY_BAGSTART) {
-			if(CursorOverItem->Type == _Object::WEAPON) {
-				if(CursorOverItem->IsMelee()) {
-					if(Player->GetMelee()) {
-						Player->GetMelee()->DrawTooltip(Player, size_t(-1), -1, glm::ivec2(-100, ae::Graphics.CurrentSize.y/2));
-						CompareSlot = INVENTORY_MELEE;
-					}
-				}
-				else {
-					_Item *CompareWeapon = Player->GetMainHand();
-					CompareSlot = INVENTORY_MAINHAND;
+		// Disable searching for single slot items when ctrl is held
+		bool Search = true;
+		if(ae::Input.ModKeyDown(KMOD_CTRL) && (CursorOverItem->Type == _Object::ARMOR || CursorOverItem->IsMelee()))
+			Search = false;
 
-					// Compare with offhand weapon as long as it's a different type than main hand
-					if(Player->GetOffHand() && Player->GetOffHand()->Template.ID == CursorOverItem->Template.ID && (!CompareWeapon || (CompareWeapon && CompareWeapon->Template.ID != CursorOverItem->Template.ID))) {
-						CompareWeapon = Player->GetOffHand();
-						CompareSlot = INVENTORY_OFFHAND;
-					}
+		// Search for similar item when item is on the ground
+		if(CursorInventorySlot == -1 && Search) {
+			for(size_t i = 0; i < INVENTORY_BAGEND; i++) {
+				const _Item *Item = Player->Inventory[i];
+				if(!Item || !Item->CanEquip())
+					continue;
 
-					if(CompareWeapon)
-						CompareWeapon->DrawTooltip(Player, size_t(-1), -1, glm::ivec2(-100, ae::Graphics.CurrentSize.y/2));
+				if(Item->Template.ID == CursorOverItem->Template.ID) {
+					CompareSlot = i;
+					break;
 				}
-			}
-			else if(CursorOverItem->Type == _Object::ARMOR && Player->GetArmor()) {
-				Player->GetArmor()->DrawTooltip(Player, size_t(-1), -1, glm::ivec2(-100, ae::Graphics.CurrentSize.y/2));
-				CompareSlot = INVENTORY_ARMOR;
 			}
 		}
 
-		// Draw cursor over item
+		// Couldn't find similar type, compare with equipped gear
+		if(CompareSlot == (size_t)-1) {
+			switch(CursorOverItem->Type) {
+				case _Object::WEAPON:
+					if(CursorOverItem->IsMelee()) {
+						if(Player->GetMelee())
+							CompareSlot = INVENTORY_MELEE;
+					}
+					else {
+						if(ae::Input.ModKeyDown(KMOD_CTRL)) {
+							if(Player->GetOffHand())
+								CompareSlot = INVENTORY_OFFHAND;
+							else if(Player->GetMainHand())
+								CompareSlot = INVENTORY_MAINHAND;
+						}
+						else {
+							if(Player->GetMainHand())
+								CompareSlot = INVENTORY_MAINHAND;
+							else if(Player->GetOffHand())
+								CompareSlot = INVENTORY_OFFHAND;
+						}
+					}
+				break;
+				case _Object::ARMOR:
+					if(Player->GetArmor())
+						CompareSlot = INVENTORY_ARMOR;
+				break;
+			}
+		}
+
+		// Draw comparison tooltip
+		if(CompareSlot != (size_t)-1 && CompareSlot != (size_t)CursorInventorySlot) {
+			const _Item *Item = Player->Inventory[CompareSlot];
+			Item->DrawTooltip(Player, glm::ivec2(-100, ae::Graphics.CurrentSize.y/2), size_t(-1), -1, false);
+		}
+
+		// Get position of tooltip
 		glm::vec2 CursorOverPosition;
 		if(CursorUseWorldPosition)
 			Camera->ConvertWorldToScreen(CursorOverItem->Position, CursorOverPosition);
 		else
 			CursorOverPosition = ae::Input.GetMouse();
 
-		CursorOverItem->DrawTooltip(Player, CompareSlot, CursorInventorySlot, CursorOverPosition);
+		// Draw cursor over item
+		bool ShowEquipHelp = CursorInventorySlot >= INVENTORY_BAGSTART || (CursorInventorySlot == -1 && PlayState.HUD->InventoryOpen);
+		CursorOverItem->DrawTooltip(Player, CursorOverPosition, CompareSlot, CursorInventorySlot, ShowEquipHelp);
 	}
 
 	// Draw full map

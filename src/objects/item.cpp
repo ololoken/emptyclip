@@ -89,7 +89,7 @@ void _Item::DrawAttribute(const ae::_Font *Font, bool Float, const std::string &
 }
 
 // Draw the item popup window
-void _Item::DrawTooltip(const _Player *Player, size_t CompareSlot, int InventorySlot, glm::vec2 DrawPosition) {
+void _Item::DrawTooltip(const _Player *Player, glm::vec2 DrawPosition, size_t CompareSlot, int InventorySlot, bool ShowEquipHelp) const {
 	std::ostringstream Buffer;
 
 	glm::vec2 Size = glm::vec2(460, 150) * ae::_Element::GetUIScale();
@@ -103,10 +103,10 @@ void _Item::DrawTooltip(const _Player *Player, size_t CompareSlot, int Inventory
 
 	// Set size based on type
 	if(Type == _Object::WEAPON) {
-		Size.y = 506 * ae::_Element::GetUIScale();
-		if(Attributes["reload_amount"].Float > 0.0f)
+		Size.y = 526 * ae::_Element::GetUIScale();
+		if(Attributes.at("reload_amount").Float > 0.0f)
 			Size.y += Spacing.y;
-		if(Attributes["attack_count"].Float > 1.0f)
+		if(Attributes.at("attack_count").Float > 1.0f)
 			Size.y += Spacing.y;
 	}
 	else if(Type == _Object::ARMOR)
@@ -198,13 +198,13 @@ void _Item::DrawTooltip(const _Player *Player, size_t CompareSlot, int Inventory
 	if(Player->IsEquipmentIndex(InventorySlot))
 		HelpTextList.push_back("Right-click to unequip");
 
-	bool ShowEquipHelp = InventorySlot >= INVENTORY_BAGSTART || (InventorySlot == -1 && PlayState.HUD->InventoryOpen);
-
 	// Show attributes
 	switch(Type) {
 		case _Object::WEAPON: {
-			if(ShowEquipHelp)
+			if(ShowEquipHelp) {
 				HelpTextList.push_back("Right-click to equip");
+				HelpTextList.push_back("Ctrl+Right-click to equip off-hand");
+			}
 
 			// Damage
 			TextColor = COLOR_WHITE;
@@ -1029,7 +1029,7 @@ std::string _Item::GetTypeAsString() const {
 }
 
 // Convert a mod type to string
-std::string _Item::ModTypeToString(int ModType) {
+std::string _Item::ModTypeToString(int ModType) const {
 
 	switch(ModType) {
 		case MOD_MAXROUNDS:

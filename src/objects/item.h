@@ -89,7 +89,7 @@ class _Item : public _Object {
 		void RecalculateStats();
 		void RecalculateModBonus();
 		void Serialize(ae::_Buffer &Buffer) override;
-		void DrawTooltip(const _Player *Player, size_t CompareSlot, int InventorySlot, glm::vec2 DrawPosition);
+		void DrawTooltip(const _Player *Player, glm::vec2 DrawPosition, size_t CompareSlot, int InventorySlot, bool ShowEquipHelp) const;
 		void Render(double BlendFactor) const override;
 
 		bool AddMod(_Item *Mod, bool Recalculate=true);
@@ -117,7 +117,7 @@ class _Item : public _Object {
 		std::string GetConsumableParticleText(float Amount) const;
 
 		virtual std::string GetTypeAsString() const override;
-		std::string ModTypeToString(int ModType);
+		std::string ModTypeToString(int ModType) const;
 
 		int Count{1};
 
