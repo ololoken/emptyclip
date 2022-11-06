@@ -1151,6 +1151,10 @@ void _HUD::DrawItemValue(const _Item *Item, const glm::vec2 &Position) {
 		case _Object::ARMOR:
 			Buffer << Item->Attributes.at("damage_resist").Float << "%";
 		break;
+		case _Object::USABLE:
+			if(Item->Template.Attributes.at("usable_type").Int == USABLE_WHETSTONE)
+				Buffer << Item->GetWhetstoneQuality() << "%";
+		break;
 		default:
 			return;
 		break;
