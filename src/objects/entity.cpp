@@ -152,6 +152,11 @@ int _Entity::ReduceDamage(int Value, bool SelfDamage) {
 	return Value;
 }
 
+// Check for invulnerable
+bool _Entity::IsInvulnerable() const {
+	return InvulnerableTimer > 0.0 || (PlayState.GodMode && Type == _Object::PLAYER);
+}
+
 // Return sound for a sound type
 const ae::_Sound *_Entity::GetSound(int SoundType, int AttackType) const {
 	if(Sounds[SoundType].empty())

@@ -70,7 +70,7 @@ class _Entity : public _Object {
 		int GenerateDamage(int AttackType, float DamageModifier, bool Steady, bool &Crit);
 		int ReduceDamage(int Damage, bool SelfDamage);
 		virtual bool IsSteady() const { return false; }
-		bool IsInvulnerable() const override { return InvulnerableTimer > 0.0 || GodMode; }
+		bool IsInvulnerable() const override;
 		virtual const char *GetWeaponID(int AttackType) { return nullptr; }
 
 		float GetHealthPercentage() const { return (float)Health / MaxHealth; }
@@ -119,7 +119,6 @@ class _Entity : public _Object {
 		double InvulnerableTimer{0.0};
 		double CombatTimer{0.0};
 		double PoisonTimer{0.0};
-		bool GodMode{false};
 
 		// Combat attributes
 		float CurrentAccuracy{0.0f};

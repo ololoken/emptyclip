@@ -79,6 +79,7 @@ class _PlayState : public ae::_State {
 		bool FromEditor{false};
 		bool DebugMode{false};
 		bool DevMode{false};
+		bool GodMode{false};
 		int CheckpointIndex{0};
 
 		// Objects

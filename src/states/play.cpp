@@ -408,8 +408,8 @@ bool _PlayState::HandleCommand(ae::_Console *Console) {
 			if(!Player)
 				return true;
 
-			Player->GodMode = !Player->GodMode;
-			Console->AddMessage("god = " + std::to_string(Player->GodMode));
+			GodMode = !GodMode;
+			Console->AddMessage("god = " + std::to_string(GodMode));
 		}
 		else if(Console->Command == "health") {
 			if(!Player)
@@ -600,7 +600,7 @@ void _PlayState::Update(double FrameTime) {
 	if(Player->PositionChanged)
 		IgnoreItems.clear();
 
-	if(Player->GodMode)
+	if(GodMode)
 		Player->Stamina = Player->MaxStamina;
 
 	// Handle gun flashes
@@ -899,7 +899,7 @@ void _PlayState::Render(double BlendFactor) {
 		HUD->DrawCrosshair(CursorDrawPosition);
 
 	// Debug
-	if(Player->GodMode && DevMode && DebugMode) {
+	if(GodMode && DevMode && DebugMode) {
 		ae::Graphics.SetDepthTest(false);
 
 		// Draw monster target positions
@@ -1130,7 +1130,7 @@ void _PlayState::ResolveAttack(_Entity *Attacker, int GridType) {
 		RoundsShot = Attacker->GetWeaponAmmo();
 
 	// Reduce ammo
-	if(!Attacker->GodMode)
+	if(!GodMode)
 		Attacker->ReduceAmmo(RoundsShot);
 
 	// Weapon type specific code
@@ -1250,7 +1250,7 @@ void _PlayState::ResolveAttack(_Entity *Attacker, int GridType) {
 						bool Crit = false;
 						int Damage = Attacker->GenerateDamage(Attacker->AttackRequestType, PenetrationDamage, Steady, Crit);
 						Damage = HitEntity->ReduceDamage(Damage, false);
-						if(HitEntity->GodMode)
+						if(GodMode && HitPlayer)
 							Damage = 0;
 
 						// Generate damage particles
