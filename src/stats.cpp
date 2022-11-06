@@ -418,7 +418,6 @@ void _Stats::LoadUsables() {
 		Template.Attributes["light"].Int = Database->GetInt<int>("light");
 		Template.Attributes["usable_type"].Int = Database->GetInt<int>("type");
 		Template.Attributes["range"].Float = Database->GetReal("range");
-		Template.Attributes["max"].Float = Database->GetReal("max");
 		Template.Attributes["moveable"].Int = Database->GetInt<int>("moveable");
 		SetColor(Template.LightColor, Database->GetString("color_id"));
 
@@ -754,6 +753,7 @@ void _Stats::LoadUniques() {
 		Unique->Quality = Database->GetInt<int>("quality");
 		Unique->Progression = Database->GetInt<int>("progression");
 		Unique->Mods = Database->GetInt<int>("mods");
+		Unique->HammerValue = Database->GetInt<int>("hammer");
 		Unique->WhetstoneValue = Database->GetInt<int>("whetstone");
 		Unique->Texture = ae::Assets.Textures["textures/lights/circle.png"];
 		SetColor(Unique->Color, Database->GetString("color_id"));

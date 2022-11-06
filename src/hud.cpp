@@ -38,6 +38,7 @@
 #include <gameassets.h>
 #include <sstream>
 #include <iomanip>
+#include <algorithm>
 #include <SDL_mouse.h>
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtx/norm.hpp>
@@ -344,7 +345,7 @@ void _HUD::MouseEvent(const ae::_MouseEvent &MouseEvent) {
 													int QualityReduction = CursorItem->GetHammerQualityReduction();
 													for(auto &Mod : ExistingItem->Mods) {
 														Mod->Visible = true;
-														Mod->Quality = std::max(ITEM_QUALITY_MIN, Mod->Quality - QualityReduction);
+														Mod->Quality = std::clamp(Mod->Quality - QualityReduction, ITEM_QUALITY_MIN, ITEM_QUALITY_MAX);
 														Mod->RecalculateModBonus();
 														Mod->SetPosition(PlayState.Map->FindSuitableItemPosition(Player->Position, Mod->Type, ITEM_RADIUS, ITEM_PLACEMENT_ATTEMPTS));
 														PlayState.Map->AddObject(Mod, GRID_ITEM);

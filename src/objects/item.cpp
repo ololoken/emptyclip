@@ -469,12 +469,16 @@ void _Item::DrawTooltip(const _Player *Player, size_t CompareSlot, int Inventory
 			HelpTextList.push_back("Drag onto item");
 
 			switch(Template.Attributes.at("usable_type").Int) {
-				case USABLE_HAMMER:
+				case USABLE_HAMMER: {
 					AttributeFont->DrawText("Destroys an item and releases its mods", glm::ivec2(DrawPosition), ae::CENTER_BASELINE);
 					DrawPosition.y += Spacing.y;
-					Buffer << "Reduces quality of mods by [c green]" << GetHammerQualityReduction() << "%";
-					AttributeFont->DrawTextFormatted(Buffer.str(), glm::ivec2(DrawPosition), ae::CENTER_BASELINE);
-				break;
+					int Change = GetHammerQualityReduction();
+					if(Change != 0) {
+						Buffer << (Change < 0 ? "Increases" : "Reduces");
+						Buffer << " quality of mods by [c green]" << std::abs(Change) << "%";
+						AttributeFont->DrawTextFormatted(Buffer.str(), glm::ivec2(DrawPosition), ae::CENTER_BASELINE);
+					}
+				} break;
 				case USABLE_WHETSTONE:
 					Buffer << "Increases quality of an item by [c green]" << GetWhetstoneQuality() << "%";
 					AttributeFont->DrawTextFormatted(Buffer.str(), glm::ivec2(DrawPosition), ae::CENTER_BASELINE);
@@ -922,7 +926,7 @@ void _Item::GetQualityColor(glm::vec4 &ReturnColor) const {
 // Get reduction amount from hammer quality
 int _Item::GetHammerQualityReduction() const {
 	if(Unique)
-		return Template.Attributes.at("max").Float;
+		return Unique->HammerValue;
 
 	int Range = Template.Attributes.at("range").Float;
 	return Range - std::round((Range - 1) * (Quality + ITEM_QUALITY_RANGE) / (float)(ITEM_QUALITY_RANGE * 2));
