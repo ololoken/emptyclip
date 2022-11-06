@@ -20,11 +20,18 @@
 // Libraries
 #include <string>
 #include <unordered_map>
+#include <ctime>
 
 // Classes
 class _Achievements {
 
 	public:
+
+		struct _Stat {
+			std::string Version;
+			int Value{0};
+			std::time_t Time{0};
+		};
 
 		void Load();
 		void Save();
@@ -32,7 +39,7 @@ class _Achievements {
 		bool Enabled{true};
 		std::string Path;
 
-		std::unordered_map<std::string, int> Stats;
+		std::unordered_map<std::string, _Stat> Stats;
 };
 
 extern _Achievements Achievements;

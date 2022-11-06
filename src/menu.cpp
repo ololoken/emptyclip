@@ -1033,7 +1033,9 @@ void _Menu::UnlockAchievement(const std::string &ID) {
 		AchievementMessages.push_back(Message);
 
 		// Save stats
-		Achievements.Stats[ID] = 1;
+		Achievements.Stats[ID].Version = BUILD_VERSION;
+		Achievements.Stats[ID].Time = std::time(nullptr);
+		Achievements.Stats[ID].Value = 1;
 		Achievements.Save();
 
 		return;

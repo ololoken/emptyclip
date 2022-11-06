@@ -116,7 +116,7 @@ const  glm::vec4    PLAYER_LIGHT                         =  glm::vec4(0.5f,0.5f,
 const  float        PLAYER_MELEE_OFFSET                  =  0.15f;
 const  glm::vec2    PLAYER_FLASHLIGHT_SIZE               =  glm::vec2(5,10);
 //     Achievements
-const  int          ACHIEVEMENTS_VERSION                 =  1;
+const  int          ACHIEVEMENTS_VERSION                 =  2;
 const  int          ACHIEVEMENTS_LINE_EM_UP_HITS         =  30;
 const  int          ACHIEVEMENTS_BLEEDRUN_TIME           =  2*60*60;
 const  double       ACHIEVEMENTS_MESSAGE_TIMEOUT         =  5.0;

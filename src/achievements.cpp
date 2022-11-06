@@ -25,7 +25,10 @@ static const char *FILENAME = "stats.db";
 
 enum AchievementChunkTypes {
 	CHUNK_VERSION,
-	CHUNK_STATS,
+	CHUNK_STAT_ID,
+	CHUNK_STAT_VERSION,
+	CHUNK_STAT_TIME,
+	CHUNK_STAT_VALUE,
 };
 
 // Write a chunk to a stream
@@ -42,6 +45,8 @@ void _Achievements::Load() {
 	if(!Enabled)
 		return;
 
+	Stats.clear();
+
 	std::string Path = Config.ConfigPath + FILENAME;
 
 	// Open file
@@ -50,6 +55,7 @@ void _Achievements::Load() {
 		throw std::runtime_error("Cannot load file: " + Path);
 
 	// Read file
+	std::string CurrentID = "";
 	while(!File.eof() && File.peek() != EOF) {
 
 		// Get chunk type
@@ -66,22 +72,37 @@ void _Achievements::Load() {
 				int Version;
 				File.read((char *)&Version, sizeof(Version));
 				if(Version != ACHIEVEMENTS_VERSION) {
+					std::string OldVersionPath = Path + "." + std::to_string(Version);
+					std::remove(OldVersionPath.c_str());
+					std::rename(Path.c_str(), OldVersionPath.c_str());
+					throw std::runtime_error("Achievements version mismatch");
 				}
 			} break;
-			case CHUNK_STATS: {
-				Stats.clear();
-
-				// Load buffer
-				ae::_Buffer Buffer(Size);
+			case CHUNK_STAT_ID: {
+				ae::_Buffer Buffer((size_t)Size);
 				File.read(&Buffer[0], Size);
-
-				// Load stats
-				int Count = Buffer.Read<int>();
-				for(int i = 0; i < Count; i++) {
-					const char *ID = Buffer.ReadString();
-					int Value = Buffer.Read<int>();
-					Stats[ID] = Value;
-				}
+				CurrentID = Buffer.ReadString();
+			} break;
+			case CHUNK_STAT_VERSION: {
+				ae::_Buffer Buffer((size_t)Size);
+				File.read(&Buffer[0], Size);
+				std::string BuildVersion = Buffer.ReadString();
+				if(CurrentID.size())
+					Stats[CurrentID].Version = BuildVersion;
+			} break;
+			case CHUNK_STAT_TIME: {
+				ae::_Buffer Buffer((size_t)Size);
+				File.read(&Buffer[0], Size);
+				int64_t Time = Buffer.Read<int64_t>();
+				if(CurrentID.size())
+					Stats[CurrentID].Time = Time;
+			} break;
+			case CHUNK_STAT_VALUE: {
+				ae::_Buffer Buffer((size_t)Size);
+				File.read(&Buffer[0], Size);
+				int Value = Buffer.Read<int>();
+				if(CurrentID.size())
+					Stats[CurrentID].Value = Value;
 			} break;
 			default:
 				File.ignore(Size);
@@ -106,16 +127,29 @@ void _Achievements::Save() {
 	// Write header
 	WriteChunk(File, CHUNK_VERSION, (const char *)&ACHIEVEMENTS_VERSION, sizeof(ACHIEVEMENTS_VERSION));
 
-	// Build stats buffer
-	ae::_Buffer Buffer;
-	Buffer.Write<int>(Stats.size());
-	for(const auto &Stat : Stats) {
-		Buffer.WriteString(Stat.first.c_str());
-		Buffer.Write<int>(Stat.second);
-	}
-
 	// Write stats
-	WriteChunk(File, CHUNK_STATS, &Buffer[0], Buffer.GetCurrentSize());
+	for(const auto &Stat : Stats) {
+		{
+			ae::_Buffer Buffer;
+			Buffer.WriteString(Stat.first.c_str());
+			WriteChunk(File, CHUNK_STAT_ID, &Buffer[0], (int)Buffer.GetCurrentSize());
+		}
+		{
+			ae::_Buffer Buffer;
+			Buffer.WriteString(Stat.second.Version.c_str());
+			WriteChunk(File, CHUNK_STAT_VERSION, &Buffer[0], (int)Buffer.GetCurrentSize());
+		}
+		{
+			ae::_Buffer Buffer;
+			Buffer.Write<int64_t>(Stat.second.Time);
+			WriteChunk(File, CHUNK_STAT_TIME, &Buffer[0], (int)Buffer.GetCurrentSize());
+		}
+		{
+			ae::_Buffer Buffer;
+			Buffer.Write<int>(Stat.second.Value);
+			WriteChunk(File, CHUNK_STAT_VALUE, &Buffer[0], (int)Buffer.GetCurrentSize());
+		}
+	}
 
 	File.close();
 
