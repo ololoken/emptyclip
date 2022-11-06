@@ -604,6 +604,15 @@ void _Map::InitializeTiles() {
 			}
 		}
 	}
+
+	// Set tiles beneath crates unwalkable until broken
+	for(const auto &ObjectSpawn : ObjectSpawns) {
+		if(ObjectSpawn->ID.find("crate_") != 0)
+			continue;
+
+		glm::ivec2 Coord = GetValidCoord(ObjectSpawn->Position);
+		Data[Coord.x][Coord.y].Collision |= _Tile::ENTITY;
+	}
 }
 
 // Adds an object to the collision grid

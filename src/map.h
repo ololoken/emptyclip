@@ -264,6 +264,7 @@ class _Map {
 		void GetAdjacentTile(const glm::vec2 &Position, float Direction, glm::ivec2 &Coord) const;
 		glm::ivec2 GetValidCoord(const glm::ivec2 &Coord) const;
 		bool CheckCollisionFlag(const glm::ivec2 &Position, int Flag) const;
+		void UpdateCollisionFlag(const glm::ivec2 &Position, int Flag) const;
 		void GetTileBounds(const glm::vec2 &Position, float Radius, _TileBounds &TileBounds) const;
 		_Block *GetBlock(int Layer, const size_t Index);
 		glm::vec2 GetValidPosition(const glm::vec2 &Position) const;
@@ -338,6 +339,11 @@ inline glm::ivec2 _Map::GetValidCoord(const glm::ivec2 &Coord) const {
 // Check collision flag on a tile
 inline bool _Map::CheckCollisionFlag(const glm::ivec2 &Position, int Flag) const {
 	return !(Data[Position.x][Position.y].Collision & Flag);
+}
+
+// Update collision flag on a tile
+inline void _Map::UpdateCollisionFlag(const glm::ivec2 &Position, int Flag) const {
+	Data[Position.x][Position.y].Collision &= Flag;
 }
 
 // Returns a bounding rectangle

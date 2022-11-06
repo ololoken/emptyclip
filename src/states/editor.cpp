@@ -642,7 +642,7 @@ void _EditorState::HandleMouseButton(const ae::_MouseEvent &MouseEvent) {
 				if(IsMoving) {
 					IsMoving = false;
 					for(auto Iterator : SelectedObjects)
-						Iterator->Position = GetMoveDeltaPosition(Iterator->Position);
+						Iterator->Position = GetMoveDeltaPosition(Iterator->Position, IsShiftDown || Iterator->ID.find("crate_") == 0);
 
 					// Reset move position
 					for(const auto &Index : SelectedBlocks) {
@@ -959,7 +959,7 @@ void _EditorState::Render(double BlendFactor) {
 	ae::Graphics.SetProgram(ae::Assets.Programs["pos"]);
 	ae::Graphics.SetColor(COLOR_WHITE);
 	for(auto Iterator : SelectedObjects) {
-		glm::vec2 Position = GetMoveDeltaPosition(Iterator->Position);
+		glm::vec2 Position = GetMoveDeltaPosition(Iterator->Position, IsShiftDown || Iterator->ID.find("crate_") == 0);
 		ae::Graphics.DrawCircle(glm::vec3(Position, ITEM_Z + 0.05f), EDITOR_OBJECTRADIUS);
 	}
 
@@ -1793,8 +1793,15 @@ void _EditorState::ProcessEventIcons(int Index, int Type) {
 
 // Adds an object to the list
 void _EditorState::SpawnObject(const glm::vec2 &Position, float Rotation, float Scale, int Type, const std::string &ID, int Level, bool Align) {
+
+	// Always align crates
+	if(ID.find("crate_") == 0)
+		Align = true;
+
+	// Get position
 	glm::vec2 SpawnPosition = Align ? AlignToGrid(Position) : Position;
 
+	// Add object
 	_ObjectSpawn *ObjectSpawn = new _ObjectSpawn(ID, SpawnPosition, Type, Level);
 	ObjectSpawn->Rotation = Rotation;
 	ObjectSpawn->Scale = Scale;
@@ -2627,9 +2634,9 @@ void _EditorState::UpdateSelectionBounds() {
 }
 
 // Get tentative position
-glm::vec2 _EditorState::GetMoveDeltaPosition(const glm::vec2 &Position) {
+glm::vec2 _EditorState::GetMoveDeltaPosition(const glm::vec2 &Position, bool Align) {
 	glm::vec2 NewPosition;
-	if(IsShiftDown)
+	if(Align)
 		NewPosition = AlignToGrid(GetValidObjectPosition(Position + MoveDelta));
 	else
 		NewPosition = GetValidObjectPosition(Position + MoveDelta);

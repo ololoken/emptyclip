@@ -189,7 +189,7 @@ class _EditorState : public ae::_State {
 		bool ObjectInSelectedList(_ObjectSpawn *Object);
 		glm::vec2 AlignToGrid(const glm::vec2 &Position) const { return glm::vec2((int)Position.x + 0.5f, (int)Position.y + 0.5f); }
 
-		glm::vec2 GetMoveDeltaPosition(const glm::vec2 &Position);
+		glm::vec2 GetMoveDeltaPosition(const glm::vec2 &Position, bool Align);
 		ae::_Element *GetBrushFromTexture(size_t PaletteType, const ae::_Texture *Texture);
 		void GetNewBlockSize(glm::ivec2 &Start, glm::ivec2 &End, int Direction, bool Expand);
 

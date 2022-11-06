@@ -557,6 +557,10 @@ void _Entity::UpdateHealth(int Adjust) {
 			// Update stats
 			if(IsCrate()) {
 				PlayState.HUD->Crates[0]++;
+
+				// Make tile walkable
+				glm::ivec2 Coord = PlayState.Map->GetValidCoord(Position);
+				PlayState.Map->UpdateCollisionFlag(Coord, ~_Tile::ENTITY);
 			}
 			else {
 				PlayState.HUD->Kills[0]++;
