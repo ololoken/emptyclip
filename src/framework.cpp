@@ -122,7 +122,11 @@ void _Framework::Init(int ArgumentCount, char **Arguments) {
 	ae::Graphics.CircleVertices = 64;
 	ae::Graphics.Init(WindowSettings);
 	ae::Graphics.SetCullFace(false);
+
+	// Log
 	Log << "SDL_GetCurrentVideoDriver=" << SDL_GetCurrentVideoDriver() << std::endl;
+	Log << "SDL_GetDesktopDisplayMode=" << ae::Graphics.FullscreenSize.x << "x" << ae::Graphics.FullscreenSize.y << std::endl;
+
 	LoadAssets();
 	Stats.Init();
 	Menu.Init();
