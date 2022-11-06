@@ -155,6 +155,7 @@ void _Framework::Init(int ArgumentCount, char **Arguments) {
 		Console->CommandList.push_back("health");
 		Console->CommandList.push_back("keys");
 		Console->CommandList.push_back("progression");
+		Console->CommandList.push_back("quality");
 		Console->CommandList.push_back("reset");
 	}
 

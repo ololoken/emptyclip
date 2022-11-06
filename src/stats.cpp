@@ -23,6 +23,7 @@
 #include <ae/animation.h>
 #include <ae/database.h>
 #include <ae/actions.h>
+#include <states/play.h>
 #include <actiontype.h>
 #include <gameassets.h>
 #include <constants.h>
@@ -816,7 +817,7 @@ _Item *_Stats::CreateItem(const std::string &ID, int Level, int Quality, int Cou
 	// Generate random quality
 	if(RandomStats && Item->CanUnique()) {
 		Item->ExtraMods = ae::GetRandomReal(0.0, 1.5);
-		Item->Quality = ae::GetRandomInt(-ITEM_QUALITY_RANGE, ITEM_QUALITY_RANGE);
+		Item->Quality = PlayState.DefaultQuality == 0 ? ae::GetRandomInt(-ITEM_QUALITY_RANGE, ITEM_QUALITY_RANGE) : PlayState.DefaultQuality;
 		if(Item->Quality == ITEM_QUALITY_RANGE) {
 			for(const auto &Unique : Stats.Uniques) {
 				if(Progression >= Unique->Progression && ae::GetRandomInt(1, Unique->Chance) == 1) {

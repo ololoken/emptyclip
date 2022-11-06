@@ -80,6 +80,7 @@ class _PlayState : public ae::_State {
 		bool DebugMode{false};
 		bool DevMode{false};
 		bool GodMode{false};
+		int DefaultQuality{0};
 		int CheckpointIndex{0};
 
 		// Objects

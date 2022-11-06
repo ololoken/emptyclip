@@ -459,6 +459,14 @@ bool _PlayState::HandleCommand(ae::_Console *Console) {
 			else
 				Console->AddMessage("usage: " + Console->Command + " [level]");
 		}
+		else if(Console->Command == "quality") {
+			if(Parameters.size() == 1)
+				DefaultQuality = ae::ToNumber<int>(Parameters[0]);
+			else
+				Console->AddMessage("quality = " + std::to_string(DefaultQuality));
+
+			return true;
+		}
 		else if(Console->Command == "reset") {
 			if(!Player)
 				return true;
