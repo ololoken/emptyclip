@@ -257,7 +257,7 @@
 		<element id="button_menu_ingame_achievements" sound="game_click0.ogg" style="style_menu_button" hover_style="style_menu_button_hover" disabled_style="style_menu_button_disabled" offset_y="56" size_x="280" size_y="66" alignment_y="0" clickable="true">
 			<element id="label_menu_ingame_achievements" font="menu_buttons" text="Achievements" offset_y="44" alignment_y="3"/>
 		</element>
-		<element id="button_menu_ingame_mainmenu" sound="game_click0.ogg" style="style_menu_button" hover_style="style_menu_button_hover" offset_y="168" size_x="280" size_y="66" alignment_y="0" clickable="true">
+		<element id="button_menu_ingame_mainmenu" sound="game_click0.ogg" style="style_menu_button" hover_style="style_menu_button_hover" disabled_style="style_menu_button_disabled" offset_y="168" size_x="280" size_y="66" alignment_y="0" clickable="true">
 			<element id="label_menu_ingame_mainmenu_text" font="menu_buttons" text="Main Menu" offset_y="44" alignment_y="3"/>
 		</element>
 	</element>

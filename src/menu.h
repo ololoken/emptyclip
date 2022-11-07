@@ -139,6 +139,7 @@ class _Menu {
 
 		// States
 		StateType State{STATE_NONE};
+		double WarnTimer{0.0};
 
 		// UI
 		ae::_Element *Background{nullptr};

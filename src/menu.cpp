@@ -245,7 +245,13 @@ void _Menu::InitControls() {
 void _Menu::InitInGame() {
 	ChangeLayout("element_menu_ingame");
 
-	ae::Assets.Elements["label_menu_ingame_exitwarning"]->SetActive(PlayState.Player && PlayState.Player->InCombat());
+	bool Warn = PlayState.Player && PlayState.Player->InCombat();
+	ae::Assets.Elements["label_menu_ingame_exitwarning"]->SetActive(Warn);
+	ae::Assets.Elements["label_menu_ingame_mainmenu_text"]->Text = "Main Menu";
+	if(Warn && !PlayState.TestMode) {
+		ae::Assets.Elements["button_menu_ingame_mainmenu"]->SetEnabled(false);
+		WarnTimer = MENU_WARN_TIME;
+	}
 
 	ShowDefaultCursor(true);
 	Background = nullptr;
@@ -902,6 +908,20 @@ void _Menu::Update(double FrameTime) {
 			UpdateVolume();
 			UpdateMSAA();
 			UpdateAnisotropy();
+		break;
+		case STATE_INGAME:
+			if(WarnTimer > 0.0) {
+				std::ostringstream Buffer;
+				Buffer << "Main Menu " << std::ceil(WarnTimer);
+				ae::Assets.Elements["label_menu_ingame_mainmenu_text"]->Text = Buffer.str();
+
+				WarnTimer -= FrameTime;
+				if(WarnTimer <= 0) {
+					WarnTimer = 0.0;
+					ae::Assets.Elements["label_menu_ingame_mainmenu_text"]->Text = "Main Menu";
+					ae::Assets.Elements["button_menu_ingame_mainmenu"]->SetEnabled(true);
+				}
+			}
 		break;
 		default:
 		break;
