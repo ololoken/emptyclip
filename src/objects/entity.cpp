@@ -551,9 +551,6 @@ void _Entity::UpdateHealth(int Adjust) {
 
 		if(Type == MONSTER) {
 
-			// Handle item drops
-			PlayState.CreateItemDrop(this, PlayState.Player->DropRate * 0.01f);
-
 			// Update stats
 			if(IsCrate()) {
 				PlayState.HUD->Crates[0]++;
@@ -568,6 +565,9 @@ void _Entity::UpdateHealth(int Adjust) {
 				if(PlayState.Player->TotalKills >= 1e6)
 					Menu.UnlockAchievement("1e6kills");
 			}
+
+			// Handle item drops
+			PlayState.CreateItemDrop(this, PlayState.Player->DropRate * 0.01f);
 
 			PlayState.Player->UpdateExperience(ExperienceGiven);
 		}
