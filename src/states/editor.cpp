@@ -287,7 +287,6 @@ bool _EditorState::HandleKey(const ae::_KeyEvent &KeyEvent) {
 
 						if(LoadMap(InputText, false))
 							SavedText[EDITINPUT_SAVE] = InputText;
-
 					} break;
 					case EDITINPUT_SAVE:
 						if(InputText.empty() || !Map->Save(InputText))
@@ -1863,19 +1862,19 @@ void _EditorState::UpdateEventID(int Type, const std::string &ID) {
 
 	switch(Type) {
 		case EDITINPUT_ITEMID:
-			if(Stats.Objects.find(ID) != Stats.Objects.end())
+			if(ID.empty() || Stats.Objects.find(ID) != Stats.Objects.end())
 				SelectedEvent->ItemID = ID;
 		break;
 		case EDITINPUT_MONSTERID:
-			if(Stats.Objects.find(ID) != Stats.Objects.end())
+			if(ID.empty() || Stats.Objects.find(ID) != Stats.Objects.end())
 				SelectedEvent->MonsterID = ID;
 		break;
 		case EDITINPUT_PARTICLEID:
-			if(GameAssets.Particles.find(ID) != GameAssets.Particles.end())
+			if(ID.empty() || GameAssets.Particles.find(ID) != GameAssets.Particles.end())
 				SelectedEvent->ParticleID = ID;
 		break;
 		case EDITINPUT_SOUNDID:
-			if(ae::Assets.Sounds.find(ID) != ae::Assets.Sounds.end())
+			if(ID.empty() || ae::Assets.Sounds.find(ID) != ae::Assets.Sounds.end())
 				SelectedEvent->SoundID = ID;
 		break;
 	}
