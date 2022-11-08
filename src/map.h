@@ -222,7 +222,6 @@ class _Map {
 		void RemoveObjectFromGrid(_Object *Object, int Type);
 
 		void ChangeMapState(const _Event *Event);
-		bool CanChangeMapState(const _Event *Event);
 		void ToggleEventActive(size_t Index);
 		void SwapBlockTextures(int Layer, int Index);
 		bool HasEvents(const glm::ivec2 &Position) const;

@@ -2009,22 +2009,6 @@ void _Map::ChangeMapState(const _Event *Event) {
 	}
 }
 
-// Determines if the map state can be changed
-bool _Map::CanChangeMapState(const _Event *Event) {
-
-	// Check for the proper event
-	const std::vector<_EventTile> &Tiles = Event->Tiles;
-
-	// Check for objects in the wall
-	for(size_t i = 0; i < Tiles.size(); i++) {
-		_Tile *Tile = &Data[Tiles[i].Coord.x][Tiles[i].Coord.y];
-		if(Tile->CanWalk() && (Tile->Objects[GRID_PLAYER].size() > 0 || Tile->Objects[GRID_MONSTER].size() > 0))
-			return false;
-	}
-
-	return true;
-}
-
 // Swaps a block's texture with its alternate texture
 void _Map::SwapBlockTextures(int Layer, int Index) {
 	if(Index == -1)

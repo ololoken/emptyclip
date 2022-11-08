@@ -1509,9 +1509,6 @@ void _PlayState::ActivateEvent() {
 		if(!Event->Active)
 			continue;
 
-		if(!Map->CanChangeMapState(Event))
-			continue;
-
 		// Check for doors or switches
 		if(Event->Type != EVENT_DOOR && Event->Type != EVENT_WALLSWITCH)
 			continue;
@@ -1838,10 +1835,8 @@ void _PlayState::UpdateEvents(double FrameTime) {
 				Decrement = true;
 			} break;
 			case EVENT_FLOORSWITCH:
-				if(Map->CanChangeMapState(Event)) {
-					Map->ChangeMapState(Event);
-					Decrement = true;
-				}
+				Map->ChangeMapState(Event);
+				Decrement = true;
 			break;
 			case EVENT_ENABLE: {
 				const std::vector<_EventTile> &Tiles = Event->Tiles;
