@@ -749,9 +749,10 @@ void _HUD::Render(bool FullMap) {
 		if(ae::Input.ModKeyDown(KMOD_CTRL) && (CursorOverItem->Type == _Object::ARMOR || CursorOverItem->IsMelee()))
 			Search = false;
 
-		// Search for similar item when item is on the ground
-		if(CursorInventorySlot == -1 && Search) {
-			for(size_t i = 0; i < INVENTORY_BAGEND; i++) {
+		// Search for similar item
+		size_t SearchEnd = CursorInventorySlot == -1 ? INVENTORY_BAGEND : INVENTORY_BAGSTART;
+		if(Search) {
+			for(size_t i = 0; i < SearchEnd; i++) {
 				const _Item *Item = Player->Inventory[i];
 				if(!Item || !Item->CanEquip())
 					continue;
