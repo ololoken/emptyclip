@@ -1300,17 +1300,35 @@ void _HUD::DrawDeathScreen() {
 	std::ostringstream Buffer;
 
 	glm::vec2 DrawPosition = glm::vec2(ae::Graphics.CurrentSize) * 0.5f;
-	DrawPosition.y += -200 * ae::_Element::GetUIScale();
+	DrawPosition.y = 300 * ae::_Element::GetUIScale();
 	ae::Assets.Fonts["hud_large"]->DrawText("You Died!", DrawPosition , ae::CENTER_MIDDLE);
 
-	DrawPosition.y += 100 * ae::_Element::GetUIScale();
 	if(!Player->Hardcore) {
+		glm::vec2 DrawPosition = glm::vec2(ae::Graphics.CurrentSize) * 0.5f;
 		Buffer << "You lost [c red]" << std::to_string((int)(GAME_EXPERIENCE_LOST * 100 + 0.5f)) << "%[c white] experience";
 		ae::Assets.Fonts["menu_buttons"]->DrawTextFormatted(Buffer.str(), DrawPosition, ae::CENTER_MIDDLE);
 		Buffer.str("");
 	}
 
-	DrawPosition.y += 100 * ae::_Element::GetUIScale();
+	// Show stats
+	if(Player->Hardcore) {
+		glm::vec2 Spacing = glm::vec2(16, 0) * ae::_Element::GetUIScale();
+		DrawPosition.y = 500 * ae::_Element::GetUIScale();
+
+		Buffer << Player->TotalKills;
+		ae::Assets.Fonts["hud_medium"]->DrawText("Total Kills", DrawPosition + -Spacing, ae::RIGHT_BASELINE);
+		ae::Assets.Fonts["hud_medium"]->DrawText(Buffer.str(), DrawPosition + Spacing, ae::LEFT_BASELINE);
+		Buffer.str("");
+
+		DrawPosition.y += 80 * ae::_Element::GetUIScale();
+
+		FormatTimeHMS(Buffer, Player->PlayTime);
+		ae::Assets.Fonts["hud_medium"]->DrawText("Total Play Time", DrawPosition + -Spacing, ae::RIGHT_BASELINE);
+		ae::Assets.Fonts["hud_medium"]->DrawText(Buffer.str(), DrawPosition + Spacing, ae::LEFT_BASELINE);
+		Buffer.str("");
+	}
+
+	DrawPosition.y = 800 * ae::_Element::GetUIScale();
 	if(Player->Hardcore)
 		Buffer << "Press [Escape] to quit";
 	else
