@@ -1292,7 +1292,6 @@ void _Player::SetAiming(bool State) {
 	if(Aiming != State) {
 		Aiming = State;
 		ResetAccuracy(false);
-		UpdateSpeed(1.0f);
 	}
 
 	// Disable sprint
@@ -1309,7 +1308,6 @@ void _Player::SetSprinting(bool State) {
 	if(Sprinting != State) {
 		Sprinting = State;
 		ResetAccuracy(false);
-		UpdateSpeed(1.0f);
 	}
 
 	if(Sprinting)
