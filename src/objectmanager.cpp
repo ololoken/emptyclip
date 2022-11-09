@@ -67,6 +67,7 @@ void _ObjectManager::Update(double FrameTime, _Map *Map) {
 
 	// Update objects
 	bool Delete = false;
+	bool ReduceMinimap = PlayState.ShowMoreInfo();
 	size_t ObjectCount = Objects.size();
 	for(size_t i = 0; i < ObjectCount; i++) {
 		_Object *Object = Objects[i];
@@ -109,10 +110,12 @@ void _ObjectManager::Update(double FrameTime, _Map *Map) {
 					Map->MinimapIcons[_Map::MINIMAP_KEY].push_back(MinimapIcon);
 				break;
 				case _Object::AMMO:
-					Map->MinimapIcons[_Map::MINIMAP_AMMO].push_back(MinimapIcon);
+					if(!ReduceMinimap)
+						Map->MinimapIcons[_Map::MINIMAP_AMMO].push_back(MinimapIcon);
 				break;
 				case _Object::CONSUMABLE:
-					Map->MinimapIcons[_Map::MINIMAP_CONSUMABLE].push_back(MinimapIcon);
+					if(!ReduceMinimap)
+						Map->MinimapIcons[_Map::MINIMAP_CONSUMABLE].push_back(MinimapIcon);
 				break;
 				case _Object::USABLE:
 					Map->MinimapIcons[_Map::MINIMAP_UNIQUE].push_back(MinimapIcon);
