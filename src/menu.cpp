@@ -252,6 +252,10 @@ void _Menu::InitInGame() {
 		ae::Assets.Elements["button_menu_ingame_mainmenu"]->SetEnabled(false);
 		WarnTimer = MENU_WARN_TIME;
 	}
+	else {
+		ae::Assets.Elements["button_menu_ingame_mainmenu"]->SetEnabled(true);
+		WarnTimer = 0.0;
+	}
 
 	ShowDefaultCursor(true);
 	Background = nullptr;
