@@ -170,6 +170,7 @@ class _Object {
 		int Type{NONE};
 		int Quality{0};
 		int Level{1};
+		int FilterType{-1};
 		bool Active{true};
 
 		// Projectiles
@@ -221,5 +222,6 @@ class _Object {
 		float Scale{1.0f};
 		float PositionZ{0.0f};
 		bool Visible{true};
+		bool Filtered{false};
 
 };

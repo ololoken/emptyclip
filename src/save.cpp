@@ -42,7 +42,7 @@ enum SaveChunkTypes {
 	CHUNK_ITEMS,
 	CHUNK_AMMO,
 	CHUNK_KEYS,
-	CHUNK_UNUSED0,
+	CHUNK_FILTERS,
 	CHUNK_UNUSED1,
 	CHUNK_UNUSED2,
 	CHUNK_UNUSED3,
@@ -319,6 +319,13 @@ void _Save::LoadPlayer(_Player *Player) {
 				File.read(&Buffer[0], Size);
 				LoadKeys(Player, Buffer);
 			} break;
+			case CHUNK_FILTERS: {
+				int FilterCount;
+				File.read((char *)&FilterCount, sizeof(FilterCount));
+				FilterCount = std::min(FilterCount, (int)FILTER_COUNT);
+				for(int i = 0; i < FilterCount; i++)
+					File.read((char *)&Player->Filters[i], sizeof(Player->Filters[i]));
+			} break;
 			default:
 				File.ignore(Size);
 			break;
@@ -386,6 +393,7 @@ void _Save::SavePlayer(_Player *Player) {
 	SaveAmmo(Player, File);
 	SaveKeys(Player, File);
 	SaveSkills(Player, File);
+	SaveFilters(Player, File);
 
 	File.close();
 
@@ -556,4 +564,16 @@ void _Save::SaveSkills(_Player *Player, std::ofstream &File) {
 
 	// Write chunk
 	WriteChunk(File, CHUNK_SKILLS, &Buffer[0], Buffer.GetCurrentSize());
+}
+
+// Save loot filter settings
+void _Save::SaveFilters(_Player *Player, std::ofstream &File) {
+	ae::_Buffer Buffer;
+
+	Buffer.Write<int>(FILTER_COUNT);
+	for(int i = 0; i < FILTER_COUNT; i++)
+		Buffer.Write<int>(Player->Filters[i]);
+
+	// Write chunk
+	WriteChunk(File, CHUNK_FILTERS, &Buffer[0], Buffer.GetCurrentSize());
 }

@@ -938,6 +938,9 @@ _Item *_Map::GetClosestItem(const glm::vec2 &Position, bool SkipHideable) const 
 		if(SkipHideable && Item->CanHide())
 			continue;
 
+		if(Item->Filtered)
+			continue;
+
 		// Check circle intersection
 		float DistanceSquared = glm::distance2(Item->Position, Position);
 		if(DistanceSquared >= Item->Radius * Item->Radius)

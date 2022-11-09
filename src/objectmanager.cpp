@@ -81,12 +81,15 @@ void _ObjectManager::Update(double FrameTime, _Map *Map) {
 			continue;
 		}
 
+		// Set filtered state
+		Object->Filtered = (Object->FilterType >= 0 && Object->Quality < PlayState.GetFilterLevel(Object->FilterType)) ? true : false;
+
 		// Get object bounds
 		glm::vec4 Bounds;
 		Object->GetRenderBounds(Bounds);
 
 		// Add to minimap
-		if(Map->CheckMinimapBounds(Bounds)) {
+		if(!Object->Filtered && Map->CheckMinimapBounds(Bounds)) {
 			_MinimapIcon MinimapIcon;
 
 			// Get bounds

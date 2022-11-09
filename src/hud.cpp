@@ -1389,5 +1389,5 @@ void _HUD::FormatTimeHMS(std::ostringstream &Buffer, int64_t Time) {
 
 // Determine if an item can be grabbed in the world
 bool _HUD::CanGrabItem(const _Item *Item) {
-	return !CursorItem && Item && glm::distance2(Player->Position, Item->Position) <= PLAYER_REACH_DISTANCE_SQUARED;
+	return !CursorItem && Item && !Item->Filtered && glm::distance2(Player->Position, Item->Position) <= PLAYER_REACH_DISTANCE_SQUARED;
 }

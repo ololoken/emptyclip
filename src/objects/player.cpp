@@ -209,6 +209,9 @@ void _Player::Reset(bool Recalculate) {
 	for(int i = 0; i < SKILL_COUNT; i++)
 		Skills[i] = 0;
 
+	for(int i = 0; i < FILTER_COUNT; i++)
+		Filters[i] = 0;
+
 	DeleteItems();
 	Ammo.clear();
 	Keys.clear();

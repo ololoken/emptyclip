@@ -49,6 +49,13 @@ class _PlayState : public ae::_State {
 
 	public:
 
+		enum QualityFilterTypes {
+			FILTERQUALITY_ALL,
+			FILTERQUALITY_ZERO,
+			FILTERQUALITY_FIFTEEN,
+			FILTERQUALITY_COUNT,
+		};
+
 		// Setup
 		void Init() override;
 		void Close() override;
@@ -72,6 +79,7 @@ class _PlayState : public ae::_State {
 		void CreateItemDrop(const _Entity *Entity, float DropRate);
 		int PickupObject(_Item *Item, bool Manual);
 		bool ShowMoreInfo();
+		int GetFilterLevel(int Type) const;
 
 		// Parameters
 		std::string Level;
@@ -108,6 +116,7 @@ class _PlayState : public ae::_State {
 		void SpawnObject(const _ObjectSpawn *ObjectSpawn, bool GenerateStats=false, int AddedLevel=0);
 		void UseObject(_Item *Item);
 		bool SetCursorOverItem();
+		void ChangeFilterLevel(int Type);
 
 		// Game
 		double Timer{0.0};
@@ -129,7 +138,6 @@ class _PlayState : public ae::_State {
 		_Item *ClosestItem{nullptr};
 		_Item *LastClosestItem{nullptr};
 		double ClosestItemTimer{0.0};
-		std::map<std::string, int> WeaponsUsed;
 
 		// Graphics
 		ae::_Framebuffer *Framebuffer{nullptr};

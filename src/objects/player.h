@@ -173,6 +173,9 @@ class _Player : public _Entity {
 		bool Aiming;
 		bool Sprinting;
 
+		// UI
+		int Filters[FILTER_COUNT];
+
 		// Inventory
 		_Item *Inventory[INVENTORY_SIZE];
 		std::unordered_map<std::string, int> Ammo;

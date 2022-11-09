@@ -44,6 +44,11 @@ _Item::_Item(const _ObjectTemplate &ItemTemplate) :
 
 	Radius = ITEM_RADIUS;
 	PositionZ = ITEM_Z;
+
+	if(CanEquip())
+		FilterType = 0;
+	else if(Type == _Object::MOD)
+		FilterType = 1;
 }
 
 // Destructor
@@ -556,7 +561,10 @@ void _Item::Render(double BlendFactor) const {
 	if(!Visible)
 		return;
 
-	ae::Graphics.SetColor(Color);
+	glm::vec4 RenderColor = Color;
+	RenderColor.a = Filtered ? ITEM_FILTERED_ALPHA : 1.0f;
+
+	ae::Graphics.SetColor(RenderColor);
 	ae::Graphics.DrawSprite(glm::vec3(Position, PositionZ), Texture, Rotation, glm::vec2(ITEM_SCALE));
 }
 

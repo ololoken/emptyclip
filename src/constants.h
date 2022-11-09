@@ -139,6 +139,7 @@ const  float        ITEM_RADIUS                          =  0.25f;
 const  glm::vec4    ITEM_QUALITY_GOOD_COLOR              =  glm::vec4(1.0f,0.2f,0.2f,1.0f);
 const  glm::vec4    ITEM_QUALITY_BAD_COLOR               =  glm::vec4(0.2f,1.0f,0.2f,1.0f);
 const  float        ITEM_HIGHLIGHT_SCALE                 =  1.3f;
+const  float        ITEM_FILTERED_ALPHA                  =  0.1f;
 //     Mods
 const  double       MOD_BURST_FIREPERIOD_FACTOR          =  2.0;
 const  float        MOD_SECONDARY_BONUS                  =  25.0f;
@@ -146,7 +147,7 @@ const  float        MOD_SECONDARY_BONUS                  =  25.0f;
 const  float        OBJECT_Z                             =  0.3f;
 const  int          OBJECT_MAX_LEVEL                     =  1000;
 const  float        OBJECT_MAX_SPEED                     =  15.0f;
-const  int          OBJECT_MAX_RENDERLIST                =  12;
+const  int          OBJECT_MAX_RENDERLIST                =  10;
 //     AI
 const  double       AI_REACTION_TIME_MIN                 =  GAME_TIMESTEP;
 const  double       AI_REACTION_TIME_MAX                 =  0.3;

@@ -79,6 +79,19 @@ enum SkillTypes {
 	SKILL_COUNT,
 };
 
+// Filter types
+enum FilterTypes {
+	FILTER_GEAR,
+	FILTER_MODS,
+	FILTER_AMMO,
+	FILTER_UNUSED0,
+	FILTER_UNUSED1,
+	FILTER_UNUSED2,
+	FILTER_UNUSED3,
+	FILTER_UNUSED4,
+	FILTER_COUNT,
+};
+
 // Particle
 struct _ParticleTemplate {
 	glm::vec2 StartDirection;

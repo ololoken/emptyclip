@@ -9,7 +9,7 @@ Empty Clip 2.0.0 -
 - Inventory is bigger and can now hold equipment
 - Added equipment slot for melee weapons and separate hotkey for melee attacks (Mouse button 4 by default)
 - Added melee animations
-- Reworked skill system to have nine attributes that affect various player stats
+- Reworked skill system to have 10 attributes that affect various player stats
 - Rewrote and optimized AI code
 - Aiming (Hold right-click) now lowers recoil and increases accuracy regen
 - Added minimap and hotkey for full map view (Tab by default)
@@ -18,7 +18,7 @@ Empty Clip 2.0.0 -
 - Items in the world can be picked up or moved with the mouse while the inventory is open
 - Equipment can now be equipped by right-clicking the item in the inventory or world
 - Weapons, armor, and mods now have levels and a random quality rating
-- Items now have six tiers of rarity, with some only available in later progressions
+- Items now have multiple tiers of rarity, with most only available in later progressions
 - Items can now be dropped with ctrl+click or middle mouse button
 - Redesigned item tooltips and added a comparison window for equipped items
 - Added inventory sort button and hotkey (Z by default)
@@ -35,9 +35,13 @@ Empty Clip 2.0.0 -
 - Added bullet penetration for certain weapons
 - Added projectile weapons and explosions
 - Players now respawn at their last checkpoint with invulnerability for three seconds
+- Added loot filter hotkeys for gear, mods, and ammo (1, 2, and 3 by default)
 - Added an end of level screen
+- Added hardcore mode
 - Added eight achievements
 - Added damage number particles
+- Added a whetstone usable item for increasing item quality
+- Added a hammer usable item for destroying gear to release mods
 - Improved and optimized bullet hole decals
 - The game now pauses while menu is open
 - Fullscreen can be toggled with alt-enter

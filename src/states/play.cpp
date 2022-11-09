@@ -57,6 +57,12 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtx/norm.hpp>
 
+const static int FilterLevels[_PlayState::FILTERQUALITY_COUNT] = {
+	ITEM_QUALITY_MIN,
+	0,
+	ITEM_QUALITY_RANGE,
+};
+
 _PlayState PlayState;
 
 // Load level and set up objects
@@ -274,6 +280,12 @@ bool _PlayState::HandleAction(int InputType, size_t Action, int Value) {
 			case Action::GAME_USE:
 				if(TouchingEndEvent)
 					EndLevel();
+			break;
+			case Action::GAME_FILTER_GEAR:
+				ChangeFilterLevel(0);
+			break;
+			case Action::GAME_FILTER_MODS:
+				ChangeFilterLevel(1);
 			break;
 		}
 	}
@@ -711,7 +723,7 @@ void _PlayState::Update(double FrameTime) {
 		ClosestItemTimer = 0.0;
 
 	// Show item tooltip when standing over item
-	if(!HUD->InventoryOpen && !Player->Aiming && ClosestItem && ClosestItem == LastClosestItem && !ClosestItem->CanAutoPickup()) {
+	if(!HUD->InventoryOpen && !Player->Aiming && ClosestItem && ClosestItem == LastClosestItem && !ClosestItem->CanAutoPickup() && !ClosestItem->Filtered) {
 		ClosestItemTimer += FrameTime;
 		if(!HUD->CursorOverItem && ClosestItemTimer >= HUD_STANDOVER_TIME) {
 			HUD->CursorOverItem = ClosestItem;
@@ -977,6 +989,10 @@ void _PlayState::Render(double BlendFactor) {
 
 			// Skip item being dragged
 			if(Item == HUD->CursorItem)
+				continue;
+
+			// Skip filtered items
+			if(Item->Filtered)
 				continue;
 
 			Camera->ConvertWorldToScreen(Iterator->Position, TextPosition);
@@ -1305,7 +1321,7 @@ void _PlayState::HandlePickup() {
 	ClosestItem = (_Item *)ClosestObject;
 	for(auto &Iterator : NearbyItems) {
 		_Item *NearbyItem = (_Item *)Iterator.first;
-		if(!NearbyItem->Visible)
+		if(!NearbyItem->Visible || NearbyItem->Filtered)
 			continue;
 
 		// Automatically pickup ammo/health
@@ -1466,6 +1482,11 @@ bool _PlayState::ShowMoreInfo() {
 	return ae::Input.ModKeyDown(KMOD_ALT) || ae::Actions.State[Action::GAME_MOREINFO].Value > 0.0f;
 }
 
+// Get filter level for a filter type
+int _PlayState::GetFilterLevel(int Type) const {
+	return FilterLevels[Player->Filters[Type]];
+}
+
 // Processes the use key to open doors, hit switches, and pickup items
 void _PlayState::UseObject(_Item *Item) {
 	if(!Player->CanPickup())
@@ -1494,6 +1515,31 @@ bool _PlayState::SetCursorOverItem() {
 		return true;
 
 	return false;
+}
+
+// Change filter level for a type
+void _PlayState::ChangeFilterLevel(int Type) {
+
+	Player->Filters[Type] += ae::Input.ModKeyDown(KMOD_SHIFT) ? -1 : 1;
+	if(Player->Filters[Type] >= FILTERQUALITY_COUNT)
+		Player->Filters[Type] = 0;
+	else if(Player->Filters[Type] < 0)
+		Player->Filters[Type] = FILTERQUALITY_COUNT - 1;
+
+	std::string Message = (Type == 0) ? "GEAR" : "MODS";
+	switch(Player->Filters[Type]) {
+		case FILTERQUALITY_ALL:
+			Message = "SHOWING ALL " + Message;
+		break;
+		case FILTERQUALITY_ZERO:
+			Message = "SHOWING ZERO QUALITY " + Message;
+		break;
+		case FILTERQUALITY_FIFTEEN:
+			Message = "SHOWING UNIQUE QUALITY " + Message;
+		break;
+	}
+
+	HUD->ShowTextMessage(Message, 1.5, true);
 }
 
 // Open door or handle switches, return true on success
