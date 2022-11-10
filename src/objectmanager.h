@@ -48,6 +48,7 @@ class _ObjectManager {
 			glm::vec2 Scale{0.25f};
 			const ae::_Texture *Texture{nullptr};
 			float PositionZ{0.0f};
+			int AmmoTypeID{-1};
 		};
 
 		_ObjectManager();

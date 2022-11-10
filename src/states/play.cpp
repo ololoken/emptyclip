@@ -319,10 +319,10 @@ bool _PlayState::HandleAction(int InputType, size_t Action, int Value) {
 					EndLevel();
 			break;
 			case Action::GAME_FILTERGEAR:
-				ChangeFilterLevel(0);
+				ChangeFilterLevel(FILTER_GEAR);
 			break;
 			case Action::GAME_FILTERMODS:
-				ChangeFilterLevel(1);
+				ChangeFilterLevel(FILTER_MODS);
 			break;
 			case Action::MISC_MENU:
 				HUD->SetInventoryOpen(false);
@@ -424,6 +424,7 @@ bool _PlayState::HandleCommand(ae::_Console *Console) {
 			for(const auto &Ammo : Stats.AmmoNames)
 				Player->Ammo[Ammo] = Player->AmmoMax[Ammo];
 
+			Player->UpdateAmmoNeeded();
 			Console->AddMessage("ammo replenished");
 		}
 		else if(Console->Command == "clock") {

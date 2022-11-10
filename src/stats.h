@@ -105,6 +105,7 @@ struct _Ammo {
 	std::string Name;
 	std::string IconID;
 	int Max;
+	int Type;
 };
 
 // Object template
@@ -133,6 +134,7 @@ struct _ObjectTemplate {
 	int DoorColorType{0};
 	int Type{0};
 	int RenderListType{-1};
+	int AmmoTypeID{-1};
 
 	std::unordered_map<std::string, _Value> Attributes;
 };

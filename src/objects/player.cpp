@@ -118,6 +118,11 @@ _Player::_Player(const _ObjectTemplate &PlayerTemplate) :
 	for(int i = 0; i < INVENTORY_SIZE; i++)
 		Inventory[i] = nullptr;
 
+	// Initialize ammo needed array
+	AmmoNeeded.reserve(Stats.AmmoNames.size());
+	for(size_t i = 0; i < Stats.AmmoNames.size(); i++)
+		AmmoNeeded.push_back(false);
+
 	// Set animation
 	Animation->Reels = ae::Assets.Animations["player"];
 	Animation->CalculateTextureCoords();
@@ -407,6 +412,7 @@ void _Player::RecalculateStats() {
 		if(Ammo.find(AmmoType) != Ammo.end())
 			Ammo[AmmoType] = std::min(Ammo[AmmoType], AmmoMax[AmmoType]);
 	}
+	UpdateAmmoNeeded();
 
 	// Skills
 	DropRate = 100 + Stats.GetSkill(Skills[SKILL_LUCK], SKILL_LUCK, 0);
@@ -796,6 +802,7 @@ int _Player::AddItem(_Item *Item, int &AmountAdded, bool UseOnFull) {
 				AmountAdded = std::min(AmountToMax, GetPickupAmount(Item));
 
 			Ammo[Item->Template.AmmoID] += AmountAdded;
+			UpdateAmmoNeeded();
 
 			return ADD_DELETE;
 		}
@@ -1117,6 +1124,18 @@ int _Player::GetWeaponAmmo() const {
 	return GetMainHand()->Attributes.at("ammo").Int;
 }
 
+// Update ammo needed by the player
+void _Player::UpdateAmmoNeeded() {
+
+	for(size_t i = 0; i < Stats.AmmoNames.size(); i++) {
+		const auto Iterator = Ammo.find(Stats.AmmoNames[i]);
+		if(Iterator == Ammo.end())
+			AmmoNeeded[i] = true;
+		else
+			AmmoNeeded[i] = Iterator->second < AmmoMax.at(Stats.AmmoNames[i]);
+	}
+}
+
 // Checks if the player has ammo for the main weapon
 bool _Player::HasAmmoForMain() const {
 	if(!HasMainHand())
@@ -1134,6 +1153,8 @@ int _Player::ReduceAmmo(int Amount) {
 	if(HasMainHand() && AttackRequestType == WEAPONATTACK_MAIN) {
 		Amount = std::min(GetMainHand()->Attributes["ammo"].Int, Amount);
 		GetMainHand()->Attributes["ammo"].Int = std::max(GetMainHand()->Attributes["ammo"].Int - Amount, 0);
+
+		UpdateAmmoNeeded();
 	}
 
 	return Amount;
@@ -1246,6 +1267,7 @@ void _Player::UpdateReloading() {
 	// Update ammo
 	GetMainHand()->Attributes["ammo"].Int += AmmoLoadAmount;
 	Ammo[AmmoType] -= AmmoLoadAmount;
+	UpdateAmmoNeeded();
 
 	// Reset player
 	ResetAccuracy(false);

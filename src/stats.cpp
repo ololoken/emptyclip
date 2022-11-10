@@ -183,6 +183,7 @@ void _Stats::LoadAmmo() {
 		Template.RenderListType = Database->GetInt<int>("renderlist");
 		Template.Attributes["amount"].Int = Database->GetInt<int>("amount");
 		Template.Attributes["pickup_bonus"].Int = Database->GetInt<int>("pickup_bonus");
+		Template.AmmoTypeID = Stats.Ammo.at(Template.AmmoID).Type;
 
 		// Check for loaded textures
 		if(!ae::Assets.Textures[Template.IconID])
@@ -201,8 +202,10 @@ void _Stats::LoadAmmoTypes() {
 	Database->PrepareQuery("SELECT * FROM ammotypes");
 
 	// Get data
+	int Type = 0;
 	while(Database->FetchRow()) {
 		_Ammo AmmoType;
+		AmmoType.Type = Type++;
 		AmmoType.ID = Database->GetString("id");
 		AmmoType.Name = Database->GetString("name");
 		AmmoType.IconID = Database->GetString("icon_id");

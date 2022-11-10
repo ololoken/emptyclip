@@ -18,6 +18,7 @@
 #include <objectmanager.h>
 #include <objects/object.h>
 #include <objects/item.h>
+#include <objects/player.h>
 #include <states/play.h>
 #include <ae/camera.h>
 #include <ae/assets.h>
@@ -45,8 +46,12 @@ _ObjectManager::_ObjectManager() {
 	}
 
 	for(const auto &Template : Stats.Objects) {
-		if(Template.second.RenderListType != -1)
-			ItemRenderList[Template.second.RenderListType].Texture = ae::Assets.Textures.at(Template.second.IconID);
+		if(Template.second.RenderListType == -1)
+			continue;
+
+		_RenderList &RenderList = ItemRenderList[Template.second.RenderListType];
+		RenderList.Texture = ae::Assets.Textures.at(Template.second.IconID);
+		RenderList.AmmoTypeID = Template.second.AmmoTypeID;
 	}
 }
 
@@ -82,7 +87,10 @@ void _ObjectManager::Update(double FrameTime, _Map *Map) {
 		}
 
 		// Set filtered state
-		Object->Filtered = (Object->FilterType >= 0 && Object->Quality < PlayState.GetFilterLevel(Object->FilterType)) ? true : false;
+		if(Object->Type == _Object::AMMO)
+			Object->Filtered = !PlayState.Player->AmmoNeeded[Object->Template.AmmoTypeID];
+		else
+			Object->Filtered = (Object->FilterType >= 0 && Object->Quality < PlayState.GetFilterLevel(Object->FilterType)) ? true : false;
 
 		// Get object bounds
 		glm::vec4 Bounds;
@@ -113,7 +121,7 @@ void _ObjectManager::Update(double FrameTime, _Map *Map) {
 					Map->MinimapIcons[_Map::MINIMAP_KEY].push_back(MinimapIcon);
 				break;
 				case _Object::AMMO:
-					if(!ReduceMinimap)
+					if(!ReduceMinimap && !Object->Filtered)
 						Map->MinimapIcons[_Map::MINIMAP_AMMO].push_back(MinimapIcon);
 				break;
 				case _Object::CONSUMABLE:
@@ -191,7 +199,6 @@ int _ObjectManager::RenderItems(double BlendFactor) {
 
 	// Set up program
 	ae::Graphics.SetProgram(ae::Assets.Programs["item"]);
-	ae::Graphics.SetColor(glm::vec4(1.0f));
 	ae::Graphics.SetVertexBufferID(RenderVBO);
 	ae::Graphics.SetAttribLevel(2);
 	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 4, nullptr);
@@ -203,6 +210,11 @@ int _ObjectManager::RenderItems(double BlendFactor) {
 			continue;
 
 		// Set up program
+		glm::vec4 RenderColor(1.0f);
+		if(ItemRenderList[i].AmmoTypeID != -1 && !PlayState.Player->AmmoNeeded[(size_t)ItemRenderList[i].AmmoTypeID])
+			RenderColor.a = ITEM_FILTERED_ALPHA;
+
+		ae::Graphics.SetColor(RenderColor);
 		ae::Assets.Programs["item"]->SetUniformFloat("pos_z", ItemRenderList[i].PositionZ);
 		ae::Graphics.SetTextureID(ItemRenderList[i].Texture->ID);
 

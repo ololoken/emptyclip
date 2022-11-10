@@ -108,6 +108,7 @@ class _Player : public _Entity {
 		int ReduceAmmo(int Amount) override;
 		bool WeaponHasAmmo(int AttackType) const override;
 		int GetWeaponAmmo() const override;
+		void UpdateAmmoNeeded();
 		bool HasAmmoForMain() const;
 		bool HasMainHand() const { return GetMainHand() != nullptr; }
 		bool HasOffHand() const { return GetOffHand() != nullptr; }
@@ -181,6 +182,7 @@ class _Player : public _Entity {
 		_Item *Inventory[INVENTORY_SIZE];
 		std::unordered_map<std::string, int> Ammo;
 		std::unordered_map<std::string, int> AmmoMax;
+		std::vector<bool> AmmoNeeded;
 		std::map<std::string, int> Keys;
 		bool UseRequested;
 		int WeaponSwitchFrom;
