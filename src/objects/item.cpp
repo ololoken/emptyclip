@@ -1141,5 +1141,5 @@ void _Item::SetAmmo(int Value) {
 
 // Return true if weapon is melee
 bool _Item::IsMelee() const {
-	return Template.Attributes.at("weapon_type").Int == WEAPON_MELEE;
+	return Type == _Object::WEAPON && Template.Attributes.at("weapon_type").Int == WEAPON_MELEE;
 }
