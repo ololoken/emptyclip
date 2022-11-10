@@ -1559,8 +1559,6 @@ int _PlayState::GetFilterLevel(int Type) const {
 		case FILTER_MODS:
 			return FilterLevelsMods[Player->Filters[Type]];
 		break;
-		case FILTER_AMMO:
-		break;
 	}
 
 	return ITEM_QUALITY_MIN;
@@ -1590,8 +1588,6 @@ void _PlayState::ChangeFilterLevel(int FilterType) {
 			case FILTER_MODS:
 				Max = FILTERTYPE_MODS_COUNT;
 			break;
-			case FILTER_AMMO:
-			break;
 		}
 
 		// Update filter
@@ -1616,8 +1612,6 @@ void _PlayState::ChangeFilterLevel(int FilterType) {
 		case FILTER_MODS:
 			ae::Assets.Elements["label_hud_filters_mods"]->Text = FilterTextMods[Player->Filters[FilterType]];
 			Message = std::string("MOD QUALITY FILTER: ") + FilterTextMods[Player->Filters[FilterType]];
-		break;
-		case FILTER_AMMO:
 		break;
 	}
 
