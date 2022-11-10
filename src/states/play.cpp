@@ -318,10 +318,10 @@ bool _PlayState::HandleAction(int InputType, size_t Action, int Value) {
 				if(TouchingEndEvent)
 					EndLevel();
 			break;
-			case Action::GAME_FILTER_GEAR:
+			case Action::GAME_FILTERGEAR:
 				ChangeFilterLevel(0);
 			break;
-			case Action::GAME_FILTER_MODS:
+			case Action::GAME_FILTERMODS:
 				ChangeFilterLevel(1);
 			break;
 		}

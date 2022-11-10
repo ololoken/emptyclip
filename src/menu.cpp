@@ -68,6 +68,8 @@ static const int KeyBindings[] = {
 	Action::GAME_INVENTORY,
 	Action::GAME_SORTINVENTORY,
 	Action::GAME_MOREINFO,
+	Action::GAME_FILTERGEAR,
+	Action::GAME_FILTERMODS,
 };
 
 static const std::string KEYLABELS[] = {
@@ -87,6 +89,8 @@ static const std::string KEYLABELS[] = {
 	"label_menu_controls_config_inventory",
 	"label_menu_controls_config_sortinventory",
 	"label_menu_controls_config_moreinfo",
+	"label_menu_controls_config_filtergear",
+	"label_menu_controls_config_filtermods",
 };
 
 static const char *COLORS[] = {
