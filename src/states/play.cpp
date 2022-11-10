@@ -1569,25 +1569,42 @@ int _PlayState::GetFilterLevel(int Type) const {
 // Change filter level for a filter type
 void _PlayState::ChangeFilterLevel(int FilterType) {
 
-	// Get max
-	int Max = 0;
-	switch(FilterType) {
-		case FILTER_GEAR:
-			Max = FILTERTYPE_GEAR_COUNT;
-		break;
-		case FILTER_MODS:
-			Max = FILTERTYPE_MODS_COUNT;
-		break;
-		case FILTER_AMMO:
-		break;
+	// Toggle between all and saved filter
+	if(ae::Input.ModKeyDown(KMOD_CTRL)) {
+		if(Player->Filters[FilterType] == 0 && Player->LastFilters[FilterType] != -1) {
+			Player->Filters[FilterType] = Player->LastFilters[FilterType];
+		}
+		else {
+			Player->LastFilters[FilterType] = Player->Filters[FilterType];
+			Player->Filters[FilterType] = 0;
+		}
 	}
+	else {
 
-	// Update filter setting
-	Player->Filters[FilterType] += ae::Input.ModKeyDown(KMOD_SHIFT) ? -1 : 1;
-	if(Player->Filters[FilterType] >= Max)
-		Player->Filters[FilterType] = 0;
-	else if(Player->Filters[FilterType] < 0)
-		Player->Filters[FilterType] = Max - 1;
+		// Get max
+		int Max = 0;
+		switch(FilterType) {
+			case FILTER_GEAR:
+				Max = FILTERTYPE_GEAR_COUNT;
+			break;
+			case FILTER_MODS:
+				Max = FILTERTYPE_MODS_COUNT;
+			break;
+			case FILTER_AMMO:
+			break;
+		}
+
+		// Update filter
+		Player->Filters[FilterType] += ae::Input.ModKeyDown(KMOD_SHIFT) ? -1 : 1;
+		if(Player->Filters[FilterType] >= Max)
+			Player->Filters[FilterType] = 0;
+		else if(Player->Filters[FilterType] < 0)
+			Player->Filters[FilterType] = Max - 1;
+
+		// Disable toggle when set to all
+		if(Player->Filters[FilterType] == 0)
+			Player->LastFilters[FilterType] = -1;
+	}
 
 	// Update HUD
 	std::string Message;

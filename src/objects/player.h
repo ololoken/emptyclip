@@ -175,6 +175,7 @@ class _Player : public _Entity {
 
 		// UI
 		int Filters[FILTER_COUNT];
+		int LastFilters[FILTER_COUNT];
 
 		// Inventory
 		_Item *Inventory[INVENTORY_SIZE];
