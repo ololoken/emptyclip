@@ -144,6 +144,7 @@ _HUD::_HUD(const ae::_Camera *Camera, _Player *Player) : Camera(Camera), Player(
 	ae::Assets.Elements["element_hud_mainhand"]->SetActive(true);
 	ae::Assets.Elements["element_hud_offhand"]->SetActive(true);
 	ae::Assets.Elements["element_hud_melee"]->SetActive(true);
+	ae::Assets.Elements["element_hud_filters"]->SetActive(true);
 
 	Elements[ELEMENT_INVENTORY] = ae::Assets.Elements["element_inventory"];
 	Elements[ELEMENT_INVENTORY_BUTTONS] = ae::Assets.Elements["element_inventory_buttons"];
@@ -727,6 +728,9 @@ void _HUD::Render(bool FullMap) {
 
 		DrawPosition -= KeySpacing;
 	}
+
+	// Draw filter settings
+	ae::Assets.Elements["element_hud_filters"]->Render();
 
 	// Draw mini map
 	if(PlayState.Map && !FullMap && !InventoryOpen) {

@@ -367,6 +367,20 @@
 	<element id="element_hud_messagebox" style="style_menu_window" offset_y="-150" alignment_y="2">
 		<element id="label_hud_messagebox_text" font="hud_medium" format="true"/>
 	</element>
+	<element id="element_hud_filters" size_x="192" size_y="64" alignment_x="2" alignment_y="2">
+		<element id="element_hud_filters_gear" offset_x="0" size_x="64" size_y="64" alignment_x="0">
+			<element id="image_hud_filters_gear" texture="textures/hud/filter_gear.png" size_x="64" size_y="64"/>
+			<element id="label_hud_filters_gear" font="hud_char" color="gray" text="ALL" offset_y="40" alignment_x="1" alignment_y="3"/>
+		</element>
+		<element id="element_hud_filters_mods" offset_x="64" size_x="64" size_y="64" alignment_x="0">
+			<element id="image_hud_filters_mods" texture="textures/hud/filter_mods.png" size_x="64" size_y="64"/>
+			<element id="label_hud_filters_mods" font="hud_char" color="gray" text="ALL" offset_y="40" alignment_x="1" alignment_y="3"/>
+		</element>
+		<element id="element_hud_filters_ammo" offset_x="128" size_x="64" size_y="64" alignment_x="0">
+			<element id="image_hud_filters_ammo" texture="textures/hud/filter_ammo.png" size_x="64" size_y="64"/>
+			<element id="label_hud_filters_ammo" font="hud_char" color="gray" text="ALL" offset_y="40" alignment_x="1" alignment_y="3"/>
+		</element>
+	</element>
 	<element id="element_inventory" offset_x="-450" size_x="580" size_y="400" clickable="true">
 		<element id="element_inventory_equipment" size_x="260" size_y="100%" alignment_x="0" alignment_y="0">
 			<element id="element_inventory_bg" style="style_hud_inventory_bg" size_x="260" size_y="400" alignment_x="0" alignment_y="0"/>

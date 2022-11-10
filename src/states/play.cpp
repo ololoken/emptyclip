@@ -57,10 +57,43 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtx/norm.hpp>
 
-const static int FilterLevels[_PlayState::FILTERQUALITY_COUNT] = {
+const static int FILTERTYPE_GEAR_COUNT = 3;
+const static int FILTERTYPE_MODS_COUNT = 7;
+
+// Filter levels for gear
+const static int FilterLevelsGear[FILTERTYPE_GEAR_COUNT] = {
 	ITEM_QUALITY_MIN,
 	0,
 	ITEM_QUALITY_RANGE,
+};
+
+// Filter levels for mods
+const static int FilterLevelsMods[FILTERTYPE_MODS_COUNT] = {
+	ITEM_QUALITY_MIN,
+	-10,
+	-5,
+	0,
+	5,
+	10,
+	ITEM_QUALITY_RANGE,
+};
+
+// Filter text for gear
+const static char *FilterTextGear[FILTERTYPE_GEAR_COUNT] = {
+	"ALL",
+	"0+",
+	"15+",
+};
+
+// Filter text for gear
+const static char *FilterTextMods[FILTERTYPE_MODS_COUNT] = {
+	"ALL",
+	"-10+",
+	"-5+",
+	"0+",
+	"5+",
+	"10+",
+	"15+",
 };
 
 _PlayState PlayState;
@@ -96,6 +129,10 @@ void _PlayState::Init() {
 	// Bad player
 	if(!Player)
 		throw std::runtime_error("Player is nullptr");
+
+	// Set up labels
+	ae::Assets.Elements["label_hud_filters_gear"]->Text = FilterTextGear[Player->Filters[FILTER_GEAR]];
+	ae::Assets.Elements["label_hud_filters_mods"]->Text = FilterTextMods[Player->Filters[FILTER_MODS]];
 
 	// Set checkpoint from editor
 	if(FromEditor)
@@ -1482,11 +1519,6 @@ bool _PlayState::ShowMoreInfo() {
 	return ae::Input.ModKeyDown(KMOD_ALT) || ae::Actions.State[Action::GAME_MOREINFO].Value > 0.0f;
 }
 
-// Get filter level for a filter type
-int _PlayState::GetFilterLevel(int Type) const {
-	return FilterLevels[Player->Filters[Type]];
-}
-
 // Processes the use key to open doors, hit switches, and pickup items
 void _PlayState::UseObject(_Item *Item) {
 	if(!Player->CanPickup())
@@ -1517,29 +1549,62 @@ bool _PlayState::SetCursorOverItem() {
 	return false;
 }
 
-// Change filter level for a type
-void _PlayState::ChangeFilterLevel(int Type) {
+// Get filter level for a filter type
+int _PlayState::GetFilterLevel(int Type) const {
 
-	Player->Filters[Type] += ae::Input.ModKeyDown(KMOD_SHIFT) ? -1 : 1;
-	if(Player->Filters[Type] >= FILTERQUALITY_COUNT)
-		Player->Filters[Type] = 0;
-	else if(Player->Filters[Type] < 0)
-		Player->Filters[Type] = FILTERQUALITY_COUNT - 1;
-
-	std::string Message = (Type == 0) ? "GEAR" : "MODS";
-	switch(Player->Filters[Type]) {
-		case FILTERQUALITY_ALL:
-			Message = "SHOWING ALL " + Message;
+	switch(Type) {
+		case FILTER_GEAR:
+			return FilterLevelsGear[Player->Filters[Type]];
 		break;
-		case FILTERQUALITY_ZERO:
-			Message = "SHOWING ZERO QUALITY " + Message;
+		case FILTER_MODS:
+			return FilterLevelsMods[Player->Filters[Type]];
 		break;
-		case FILTERQUALITY_FIFTEEN:
-			Message = "SHOWING UNIQUE QUALITY " + Message;
+		case FILTER_AMMO:
 		break;
 	}
 
-	HUD->ShowTextMessage(Message, 1.5, true);
+	return ITEM_QUALITY_MIN;
+}
+
+// Change filter level for a filter type
+void _PlayState::ChangeFilterLevel(int FilterType) {
+
+	// Get max
+	int Max = 0;
+	switch(FilterType) {
+		case FILTER_GEAR:
+			Max = FILTERTYPE_GEAR_COUNT;
+		break;
+		case FILTER_MODS:
+			Max = FILTERTYPE_MODS_COUNT;
+		break;
+		case FILTER_AMMO:
+		break;
+	}
+
+	// Update filter setting
+	Player->Filters[FilterType] += ae::Input.ModKeyDown(KMOD_SHIFT) ? -1 : 1;
+	if(Player->Filters[FilterType] >= Max)
+		Player->Filters[FilterType] = 0;
+	else if(Player->Filters[FilterType] < 0)
+		Player->Filters[FilterType] = Max - 1;
+
+	// Update HUD
+	std::string Message;
+	switch(FilterType) {
+		case FILTER_GEAR:
+			ae::Assets.Elements["label_hud_filters_gear"]->Text = FilterTextGear[Player->Filters[FilterType]];
+			Message = std::string("GEAR QUALITY FILTER: ") + FilterTextGear[Player->Filters[FilterType]];
+		break;
+		case FILTER_MODS:
+			ae::Assets.Elements["label_hud_filters_mods"]->Text = FilterTextMods[Player->Filters[FilterType]];
+			Message = std::string("MOD QUALITY FILTER: ") + FilterTextMods[Player->Filters[FilterType]];
+		break;
+		case FILTER_AMMO:
+		break;
+	}
+
+	HUD->ShowTextMessage(Message, 1, true);
 }
 
 // Open door or handle switches, return true on success
