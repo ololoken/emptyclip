@@ -324,6 +324,11 @@ bool _PlayState::HandleAction(int InputType, size_t Action, int Value) {
 			case Action::GAME_FILTERMODS:
 				ChangeFilterLevel(1);
 			break;
+			case Action::MISC_MENU:
+				HUD->SetInventoryOpen(false);
+				Save.SavePlayer(Player);
+				Menu.InitInGame();
+			break;
 		}
 	}
 	else {
@@ -373,13 +378,6 @@ bool _PlayState::HandleKey(const ae::_KeyEvent &KeyEvent) {
 						Save.SavePlayer(Player);
 						Menu.InitInGame();
 					}
-				}
-			break;
-			case SDL_SCANCODE_F1:
-				if(!Player->IsDying()) {
-					HUD->SetInventoryOpen(false);
-					Save.SavePlayer(Player);
-					Menu.InitInGame();
 				}
 			break;
 		}

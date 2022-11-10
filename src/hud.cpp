@@ -580,6 +580,8 @@ void _HUD::Render(bool FullMap) {
 		ae::Assets.Elements["label_hud_offhand_switch_key"]->Text = ae::Actions.GetInputNameForAction(Action::GAME_WEAPONSWITCH);
 		ae::Assets.Elements["label_hud_melee_key"]->Text = ae::Actions.GetInputNameForAction(Action::GAME_MELEE);
 	}
+	ae::Assets.Elements["label_hud_filters_gear_key"]->Text = ae::Actions.GetInputNameForAction(Action::GAME_FILTERGEAR);
+	ae::Assets.Elements["label_hud_filters_mods_key"]->Text = ae::Actions.GetInputNameForAction(Action::GAME_FILTERMODS);
 
 	// Message
 	if(MessageTimer > 0.0) {

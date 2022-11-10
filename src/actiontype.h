@@ -40,6 +40,7 @@ namespace Action {
 		GAME_FILTERGEAR,
 		GAME_FILTERMODS,
 		MISC_CONSOLE,
+		MISC_MENU,
 		MISC_DEBUG,
 		COUNT,
 	};

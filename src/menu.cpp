@@ -70,6 +70,9 @@ static const int KeyBindings[] = {
 	Action::GAME_MOREINFO,
 	Action::GAME_FILTERGEAR,
 	Action::GAME_FILTERMODS,
+	Action::MISC_CONSOLE,
+	Action::MISC_MENU,
+	Action::MISC_DEBUG,
 };
 
 static const std::string KEYLABELS[] = {
@@ -578,6 +581,7 @@ bool _Menu::HandleKey(const ae::_KeyEvent &KeyEvent) {
 			else {
 				if(KeyEvent.Pressed) {
 					RemapInput(ae::_Input::KEYBOARD, KeyEvent.Scancode);
+
 					if(CurrentAction == Action::GAME_UP || CurrentAction == Action::GAME_DOWN || CurrentAction == Action::GAME_LEFT || CurrentAction == Action::GAME_RIGHT) {
 						int Up = ae::Actions.GetInputForAction(ae::_Input::KEYBOARD, Action::GAME_UP, 0);
 						int Down = ae::Actions.GetInputForAction(ae::_Input::KEYBOARD, Action::GAME_DOWN, 0);
@@ -586,6 +590,7 @@ bool _Menu::HandleKey(const ae::_KeyEvent &KeyEvent) {
 						if(Up == SDL_SCANCODE_W && Down == SDL_SCANCODE_S && Left == SDL_SCANCODE_A && Right == SDL_SCANCODE_D)
 							ae::Audio.PlaySound(ae::Assets.Sounds["player_hit0.ogg"]);
 					}
+
 					return false;
 				}
 			}

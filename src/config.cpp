@@ -49,9 +49,10 @@ void _Config::Init(const std::string &ConfigFile) {
 	ae::Actions.State[Action::GAME_INVENTORY].Name = "game_inventory";
 	ae::Actions.State[Action::GAME_SORTINVENTORY].Name = "game_sortinventory";
 	ae::Actions.State[Action::GAME_MOREINFO].Name = "game_moreinfo";
-	ae::Actions.State[Action::GAME_FILTERGEAR].Name = "game_filter_gear";
-	ae::Actions.State[Action::GAME_FILTERMODS].Name = "game_filter_mods";
+	ae::Actions.State[Action::GAME_FILTERGEAR].Name = "game_filtergear";
+	ae::Actions.State[Action::GAME_FILTERMODS].Name = "game_filtermods";
 	ae::Actions.State[Action::MISC_CONSOLE].Name = "misc_console";
+	ae::Actions.State[Action::MISC_MENU].Name = "misc_menu";
 	ae::Actions.State[Action::MISC_DEBUG].Name = "misc_debug";
 
 	// Create config path
@@ -135,6 +136,7 @@ void _Config::LoadDefaultInputBindings(bool IfNone) {
 
 	// Misc
 	ae::Actions.AddInputMap(0, ae::_Input::KEYBOARD, SDL_SCANCODE_GRAVE, Action::MISC_CONSOLE, 1.0f, -1.0f, IfNone);
+	ae::Actions.AddInputMap(0, ae::_Input::KEYBOARD, SDL_SCANCODE_F1, Action::MISC_MENU, 1.0f, -1.0f, IfNone);
 	ae::Actions.AddInputMap(0, ae::_Input::KEYBOARD, SDL_SCANCODE_F2, Action::MISC_DEBUG, 1.0f, -1.0f, IfNone);
 }
 
