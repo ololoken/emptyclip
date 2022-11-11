@@ -66,6 +66,7 @@ struct _Progression {
 	int Level;
 	int Spawn;
 	int SpecialChance;
+	int MaxQuality;
 	float Health;
 	float Damage;
 	float Experience;

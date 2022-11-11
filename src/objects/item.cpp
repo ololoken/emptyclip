@@ -487,6 +487,11 @@ void _Item::DrawTooltip(const _Player *Player, glm::vec2 DrawPosition, size_t Co
 				case USABLE_WHETSTONE:
 					Buffer << "Increases quality of an item by [c green]" << GetWhetstoneQuality() << "%";
 					AttributeFont->DrawTextFormatted(Buffer.str(), glm::ivec2(DrawPosition), ae::CENTER_BASELINE);
+					Buffer.str("");
+
+					DrawPosition.y += Spacing.y;
+					Buffer << "Max quality: [c green]" << Stats.Progressions[Player->Progression].MaxQuality << "%";
+					AttributeFont->DrawTextFormatted(Buffer.str(), glm::ivec2(DrawPosition), ae::CENTER_BASELINE);
 					if(InventorySlot == -1 && PlayState.HUD->InventoryOpen)
 						HelpTextList.push_back("Right-click to pick up");
 				break;
@@ -742,7 +747,7 @@ bool _Item::ApplyUsable(_Item *Usable) {
 
 	switch(Usable->Template.Attributes.at("usable_type").Int) {
 		case USABLE_WHETSTONE: {
-			Quality = std::clamp(Quality + Usable->GetWhetstoneQuality(), ITEM_QUALITY_MIN, ITEM_QUALITY_MAX);
+			Quality = std::clamp(Quality + Usable->GetWhetstoneQuality(), ITEM_QUALITY_MIN, Stats.Progressions[PlayState.Player->Progression].MaxQuality);
 			ae::Audio.PlaySound(ae::Assets.Sounds["game_whetstone.ogg"]);
 		} break;
 	}

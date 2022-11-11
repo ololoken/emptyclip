@@ -712,6 +712,7 @@ void _Stats::LoadProgression() {
 		Progression.Health = Database->GetReal("health");
 		Progression.Damage = Database->GetReal("damage");
 		Progression.Experience = Database->GetReal("experience");
+		Progression.MaxQuality = Database->GetInt<int>("max_quality");
 
 		Progressions.push_back(Progression);
 	}

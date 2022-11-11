@@ -17,6 +17,7 @@
 *******************************************************************************/
 #include <objects/object.h>
 #include <objects/entity.h>
+#include <objects/player.h>
 #include <states/play.h>
 #include <ae/random.h>
 #include <ae/graphics.h>
@@ -93,7 +94,7 @@ void _Object::RenderLights(double BlendFactor) {
 
 // Determine if quality can be increased
 bool _Object::CanIncreaseQuality(bool CheckQuality) const {
-	if(CheckQuality && Quality >= ITEM_QUALITY_MAX)
+	if(CheckQuality && Quality >= Stats.Progressions[PlayState.Player->Progression].MaxQuality)
 		return false;
 
 	return Type == _Object::WEAPON || Type == _Object::ARMOR || Type == _Object::MOD;

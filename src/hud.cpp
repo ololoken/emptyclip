@@ -346,7 +346,7 @@ void _HUD::MouseEvent(const ae::_MouseEvent &MouseEvent) {
 													int QualityChange = CursorItem->GetHammerQualityChange();
 													for(auto &Mod : ExistingItem->Mods) {
 														Mod->Visible = true;
-														Mod->Quality = std::clamp(Mod->Quality + QualityChange, ITEM_QUALITY_MIN, ITEM_QUALITY_MAX);
+														Mod->Quality = std::clamp(Mod->Quality + QualityChange, ITEM_QUALITY_MIN, Stats.Progressions[Player->Progression].MaxQuality);
 														Mod->RecalculateModBonus();
 														Mod->SetPosition(PlayState.Map->FindSuitableItemPosition(Player->Position, Mod->Type, ITEM_RADIUS, ITEM_PLACEMENT_ATTEMPTS));
 														PlayState.Map->AddObject(Mod, GRID_ITEM);
