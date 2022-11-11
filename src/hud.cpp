@@ -891,9 +891,10 @@ void _HUD::DrawHUDWeapon(const _Item *Item, ae::_Element *Element, ae::_Element 
 		if(Rounds != -1) {
 
 			// Set font size
-			if(Rounds > 9999)
+			int LargestAmount = std::max(Item->Attributes.at("ammo").Int, Rounds);
+			if(LargestAmount > 9999)
 				Label->Font = ae::Assets.Fonts["hud_tiny"];
-			else if(Rounds > 999)
+			else if(LargestAmount > 999)
 				Label->Font = ae::Assets.Fonts["hud_small"];
 			else
 				Label->Font = ae::Assets.Fonts["hud_medium"];
