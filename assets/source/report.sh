@@ -8,6 +8,12 @@ type gawk >/dev/null 2>&1 || {
 	exit 1
 }
 
+# get parameters
+progression=${1:-1}
+
+# get progression parameters
+read -r health_mult damage_mult xp_mult < <(awk -v progression="$progression" 'BEGIN{FS=OFS="\t"}$1==progression{print $5, $6, $7}' stats/progression.tsv)
+
 echo -e "*** WEAPONS ***\n"
 
 # weapon report
@@ -50,32 +56,36 @@ NR > 1 {
 echo -e "\n*** MONSTERS ***\n"
 
 # monster report
-gawk '
+gawk -v progression="$progression" -v health_mult="$health_mult" -v damage_mult="$damage_mult" -v xp_mult="$xp_mult" '
 function min(x, y) { return x < y ? x : y }
 function max(x, y) { return x > y ? x : y }
 function round(value) { return int(value * 100) / 100 }
 
 BEGIN {
 	FS = OFS = "\t"
+	level = 1 + progression * 10
+	calc_level = level - 1
 }
 NR == 1 {
 	for(i = 1; i <= NF; i++)
 		fields[$i] = i
 
-	print "id", "xph1", "xph10", "h1", "h10", "d1", "d10", "dps1", "dps10"
+	print "id", "xp1", "xp" level, "xph1", "xph" level, "h1", "h" level, "d1", "d" level, "dps1", "dps" level
 }
 NR > 1 && $fields["id"] ~ /^monster|boss/ {
 
 	h1 = $fields["health"]
-	h10 = h1 + ($fields["health_level"] - 1) * 10
-	xph1 = $fields["xp"] / h1
-	xph10 = ($fields["xp"] + ($fields["xp_level"] - 1) * 10) / h10
+	h10 = (h1 + $fields["health_level"] * calc_level) * health_mult
+	xp1 = $fields["xp"]
+	xp10 = ($fields["xp"] + $fields["xp_level"] * calc_level) * xp_mult
+	xph1 = xp1 / h1
+	xph10 = xp10 / h10
 	damage1 = $fields["damage"]
-	damage10 = damage1 + ($fields["damage_level"] - 1) * 10
+	damage10 = (damage1 + $fields["damage_level"] * calc_level) * damage_mult
 	attack_period = $fields["attack_period"]
 	dps1 = damage1 / attack_period
 	dps10 = damage10 / attack_period
 
-	print $fields["id"], round(xph1), round(xph10), h1, h10, damage1, damage10, round(dps1), round(dps10)
+	print $fields["id"], round(xp1), round(xp10), round(xph1), round(xph10), h1, h10, damage1, damage10, round(dps1), round(dps10)
 }
 ' stats/monsters.tsv | column -t -s $'\t'
