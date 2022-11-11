@@ -195,6 +195,7 @@ class _Stats {
 		std::unordered_map<std::string, _ObjectTemplate> Objects;
 		std::unordered_map<std::string, _ItemDrop> ItemDrops;
 		std::unordered_map<std::string, _Ammo> Ammo;
+		std::unordered_map<std::string, std::string> Text;
 		std::vector<_Progression> Progressions;
 		std::vector<_Special> Specials;
 		std::vector<_Unique *> Uniques;
@@ -211,8 +212,6 @@ class _Stats {
 
 		void SetColor(glm::vec4 &Color, const std::string &ColorID);
 		_ParticleGroup BlankWeaponParticle;
-
-		std::unordered_map<std::string, std::string> Text;
 };
 
 extern _Stats Stats;
