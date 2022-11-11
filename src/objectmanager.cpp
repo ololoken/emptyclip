@@ -87,8 +87,9 @@ void _ObjectManager::Update(double FrameTime, _Map *Map) {
 		}
 
 		// Set filtered state
-		if(Object->Type == _Object::AMMO)
-			Object->Filtered = !PlayState.Player->AmmoNeeded[Object->Template.AmmoTypeID];
+		if(Object->Type == _Object::AMMO) {
+			Object->Filtered = Object->Filterable && !PlayState.Player->AmmoNeeded[Object->Template.AmmoTypeID];
+		}
 		else
 			Object->Filtered = (Object->FilterType >= 0 && Object->Quality < PlayState.GetFilterLevel(Object->FilterType)) ? true : false;
 
