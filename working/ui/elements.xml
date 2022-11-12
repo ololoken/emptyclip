@@ -276,22 +276,41 @@
 		<element id="label_menu_controls_accept_text_action" font="hud_medium" offset_y="75" alignment_y="3"/>
 	</element>
 	<element id="element_menu_score" size_x="512" size_y="984">
-		<element id="label_menu_score_title" font="hud_large" text="Level Completed!" offset_y="-350"/>
+		<element id="label_menu_score_title" font="hud_large" text="Level Completed!" offset_y="-400"/>
+		<element id="label_menu_score_completion" font="menu_buttons" text="100% Completion!" offset_y="-300"/>
+		<element id="label_menu_score_level_stats" font="menu_buttons" text="Level Stats" offset_y="-220"/>
 		<element id="element_menu_score_time" offset_y="-150">
-			<element id="label_menu_score_time" font="menu_buttons" text="Time" offset_x="-10" alignment_x="2" alignment_y="3"/>
-			<element id="label_menu_score_time_value" font="menu_buttons" offset_x="10" alignment_x="0" alignment_y="3"/>
+			<element id="label_menu_score_time" font="hud_medium" text="Time" offset_x="-10" alignment_x="2" alignment_y="3"/>
+			<element id="label_menu_score_time_value" font="hud_medium" offset_x="10" alignment_x="0" alignment_y="3"/>
 		</element>
-		<element id="element_menu_score_kills" offset_y="-75">
-			<element id="label_menu_score_kills" font="menu_buttons" text="Kills" offset_x="-10" alignment_x="2" alignment_y="3"/>
-			<element id="label_menu_score_kills_value" font="menu_buttons" offset_x="10" alignment_x="0" alignment_y="3"/>
+		<element id="element_menu_score_kills" offset_y="-110">
+			<element id="label_menu_score_kills" font="hud_medium" text="Kills" offset_x="-10" alignment_x="2" alignment_y="3"/>
+			<element id="label_menu_score_kills_value" font="hud_medium" offset_x="10" alignment_x="0" alignment_y="3"/>
 		</element>
-		<element id="element_menu_score_crates">
-			<element id="label_menu_score_crates" font="menu_buttons" text="Crates" offset_x="-10" alignment_x="2" alignment_y="3"/>
-			<element id="label_menu_score_crates_value" font="menu_buttons" offset_x="10" alignment_x="0" alignment_y="3"/>
+		<element id="element_menu_score_crates" offset_y="-70">
+			<element id="label_menu_score_crates" font="hud_medium" text="Crates" offset_x="-10" alignment_x="2" alignment_y="3"/>
+			<element id="label_menu_score_crates_value" font="hud_medium" offset_x="10" alignment_x="0" alignment_y="3"/>
 		</element>
-		<element id="element_menu_score_secrets" offset_y="75">
-			<element id="label_menu_score_secrets" font="menu_buttons" text="Secrets" offset_x="-10" alignment_x="2" alignment_y="3"/>
-			<element id="label_menu_score_secrets_value" font="menu_buttons" offset_x="10" alignment_x="0" alignment_y="3"/>
+		<element id="element_menu_score_secrets" offset_y="-30">
+			<element id="label_menu_score_secrets" font="hud_medium" text="Secrets" offset_x="-10" alignment_x="2" alignment_y="3"/>
+			<element id="label_menu_score_secrets_value" font="hud_medium" offset_x="10" alignment_x="0" alignment_y="3"/>
+		</element>
+		<element id="label_menu_score_progression_stats" font="menu_buttons" text="Campaign Stats" offset_y="40"/>
+		<element id="element_menu_score_progression_time" offset_y="110">
+			<element id="label_menu_score_progression_time" font="hud_medium" text="Time" offset_x="-10" alignment_x="2" alignment_y="3"/>
+			<element id="label_menu_score_progression_time_value" font="hud_medium" offset_x="10" alignment_x="0" alignment_y="3"/>
+		</element>
+		<element id="element_menu_score_progression_kills" offset_y="150">
+			<element id="label_menu_score_progression_kills" font="hud_medium" text="Kills" offset_x="-10" alignment_x="2" alignment_y="3"/>
+			<element id="label_menu_score_progression_kills_value" font="hud_medium" offset_x="10" alignment_x="0" alignment_y="3"/>
+		</element>
+		<element id="element_menu_score_progression_crates" offset_y="190">
+			<element id="label_menu_score_progression_crates" font="hud_medium" text="Crates" offset_x="-10" alignment_x="2" alignment_y="3"/>
+			<element id="label_menu_score_progression_crates_value" font="hud_medium" offset_x="10" alignment_x="0" alignment_y="3"/>
+		</element>
+		<element id="element_menu_score_progression_secrets" offset_y="230">
+			<element id="label_menu_score_progression_secrets" font="hud_medium" text="Secrets" offset_x="-10" alignment_x="2" alignment_y="3"/>
+			<element id="label_menu_score_progression_secrets_value" font="hud_medium" offset_x="10" alignment_x="0" alignment_y="3"/>
 		</element>
 		<element id="button_menu_score_continue" sound="game_click0.ogg" style="style_menu_button" hover_style="style_menu_button_hover" offset_x="-120" offset_y="400" size_x="200" size_y="66" clickable="true">
 			<element id="label_menu_score_continue" font="menu_buttons" text="Continue" offset_y="44" alignment_y="3"/>
@@ -299,7 +318,6 @@
 		<element id="button_menu_score_mainmenu" sound="game_click0.ogg" style="style_menu_button" hover_style="style_menu_button_hover" offset_x="120" offset_y="400" size_x="200" size_y="66" clickable="true">
 			<element id="label_menu_score_mainmenu" font="menu_buttons" text="Main Menu" offset_y="44" alignment_y="3"/>
 		</element>
-		<element id="label_menu_score_completion" font="menu_buttons" text="100% Completion!" offset_y="210"/>
 	</element>
 	<element id="element_menu_achievements" size_x="512" size_y="984">
 		<element id="label_menu_achievements_title" font="hud_large" text="Achievements" offset_y="-350"/>

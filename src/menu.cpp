@@ -1076,7 +1076,7 @@ void _Menu::UnlockAchievement(const std::string &ID) {
 }
 
 // Update score screen label values
-void _Menu::SetScoreStats(bool EndOfGame, double LevelTime, int *Kills, int *Crates, int *Secrets, int Progression, bool GotOneHundredPercent) {
+void _Menu::SetScoreStats(const _HUD *HUD, const _Player *Player, bool EndOfGame, int Progression, bool GotOneHundredPercent) {
 	std::ostringstream Buffer;
 
 	// Set title
@@ -1095,25 +1095,32 @@ void _Menu::SetScoreStats(bool EndOfGame, double LevelTime, int *Kills, int *Cra
 		ae::Assets.Elements["button_menu_score_continue"]->CalculateBounds();
 	}
 
-	// Set time
+	// Set level time
 	char TimeBuffer[256];
-	_HUD::FormatTime(TimeBuffer, LevelTime);
+	_HUD::FormatTime(TimeBuffer, Player->LevelTime);
 	ae::Assets.Elements["label_menu_score_time_value"]->Text = TimeBuffer;
 
-	// Set kills
-	Buffer << Kills[0] << "/" << Kills[1];
+	// Set level kills
+	Buffer << HUD->Kills[0] << "/" << HUD->Kills[1];
 	ae::Assets.Elements["label_menu_score_kills_value"]->Text = Buffer.str();
 	Buffer.str("");
 
-	// Set crates
-	Buffer << Crates[0] << "/" << Crates[1];
+	// Set level crates
+	Buffer << HUD->Crates[0] << "/" << HUD->Crates[1];
 	ae::Assets.Elements["label_menu_score_crates_value"]->Text = Buffer.str();
 	Buffer.str("");
 
-	// Set secrets
-	Buffer << Secrets[0] << "/" << Secrets[1];
+	// Set level secrets
+	Buffer << HUD->Secrets[0] << "/" << HUD->Secrets[1];
 	ae::Assets.Elements["label_menu_score_secrets_value"]->Text = Buffer.str();
 	Buffer.str("");
+
+	// Set progression stats
+	_HUD::FormatTime(TimeBuffer, Player->ProgressionTime);
+	ae::Assets.Elements["label_menu_score_progression_time_value"]->Text = TimeBuffer;
+	ae::Assets.Elements["label_menu_score_progression_kills_value"]->Text = std::to_string(Player->ProgressionKills);
+	ae::Assets.Elements["label_menu_score_progression_crates_value"]->Text = std::to_string(Player->ProgressionCrates);
+	ae::Assets.Elements["label_menu_score_progression_secrets_value"]->Text = std::to_string(Player->ProgressionSecrets);
 
 	// Set completion text
 	ae::Assets.Elements["label_menu_score_completion"]->Color.a = GotOneHundredPercent ? 1.0f : 0.0f;

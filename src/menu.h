@@ -24,6 +24,8 @@
 #include <list>
 
 // Forward Declarations
+class _HUD;
+class _Player;
 namespace ae {
 	class _Element;
 	struct _MouseEvent;
@@ -116,7 +118,7 @@ class _Menu {
 		void DrawMessages();
 
 		void UnlockAchievement(const std::string &ID);
-		void SetScoreStats(bool EndOfGame, double LevelTime, int *Kills, int *Crates, int *Secrets, int Progression, bool GotOneHundredPercent);
+		void SetScoreStats(const _HUD *HUD, const _Player *Player, bool EndOfGame, int Progression, bool GotOneHundredPercent);
 
 		const StateType &GetState() const { return State; }
 

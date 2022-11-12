@@ -1396,9 +1396,14 @@ void _PlayState::EndLevel() {
 	if(!GotOneHundredPercent)
 		Player->Stat100Percent = false;
 
+	// Update progression stats
+	Player->ProgressionKills += HUD->Kills[0];
+	Player->ProgressionCrates += HUD->Crates[0];
+	Player->ProgressionSecrets += HUD->Secrets[0];
+
 	// End of the game
 	if(Level.empty()) {
-		Menu.SetScoreStats(true, Player->LevelTime, HUD->Kills, HUD->Crates, HUD->Secrets, Player->Progression + 1, GotOneHundredPercent);
+		Menu.SetScoreStats(HUD, Player, true, Player->Progression + 1, GotOneHundredPercent);
 		Level = GAME_FIRSTLEVEL;
 
 		// Check achievements
@@ -1432,10 +1437,7 @@ void _PlayState::EndLevel() {
 		Player->ResetAchievementTracking();
 	}
 	else {
-		Player->ProgressionKills += HUD->Kills[0];
-		Player->ProgressionCrates += HUD->Crates[0];
-		Player->ProgressionSecrets += HUD->Secrets[0];
-		Menu.SetScoreStats(false, Player->LevelTime, HUD->Kills, HUD->Crates, HUD->Secrets, 0, GotOneHundredPercent);
+		Menu.SetScoreStats(HUD, Player, false, 0, GotOneHundredPercent);
 	}
 
 	Player->CombatTimer = GAME_COMBAT_TIMER;
