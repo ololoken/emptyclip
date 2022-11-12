@@ -396,6 +396,9 @@ void _Stats::LoadConsumables() {
 		Template.Attributes["health"].Float = Database->GetReal("health");
 		Template.Attributes["stamina"].Float = Database->GetReal("stamina");
 
+		Template.GiveHealth = Template.Attributes["health"].Float > 0;
+		Template.GiveStamina = Template.Attributes["stamina"].Float > 0;
+
 		// Check for loaded textures
 		if(!ae::Assets.Textures[Template.IconID])
 			throw std::runtime_error(std::string(__func__) + " unknown texture '" + Template.IconID + "'");

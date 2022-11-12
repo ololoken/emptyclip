@@ -49,6 +49,8 @@ class _ObjectManager {
 			const ae::_Texture *Texture{nullptr};
 			float PositionZ{0.0f};
 			int AmmoTypeID{-1};
+			bool Health{false};
+			bool Stamina{false};
 		};
 
 		_ObjectManager();

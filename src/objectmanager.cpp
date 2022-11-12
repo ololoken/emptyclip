@@ -52,6 +52,8 @@ _ObjectManager::_ObjectManager() {
 		_RenderList &RenderList = ItemRenderList[Template.second.RenderListType];
 		RenderList.Texture = ae::Assets.Textures.at(Template.second.IconID);
 		RenderList.AmmoTypeID = Template.second.AmmoTypeID;
+		RenderList.Health = Template.second.GiveHealth;
+		RenderList.Stamina = Template.second.GiveStamina;
 	}
 }
 
@@ -87,10 +89,22 @@ void _ObjectManager::Update(double FrameTime, _Map *Map) {
 		}
 
 		// Set filtered state
-		if(Object->Type == _Object::AMMO)
-			Object->Filtered = Object->Filterable && !PlayState.Player->AmmoNeeded[Object->Template.AmmoTypeID];
-		else
-			Object->Filtered = (Object->FilterType >= 0 && Object->Quality < PlayState.GetFilterLevel(Object->FilterType)) ? true : false;
+		switch(Object->Type) {
+			case _Object::AMMO:
+				Object->Filtered = Object->Filterable && !PlayState.Player->AmmoNeeded[Object->Template.AmmoTypeID];
+			break;
+			case _Object::CONSUMABLE:
+				if(Object->Template.GiveHealth && PlayState.Player->Health == PlayState.Player->MaxHealth)
+					Object->Filtered = true;
+				else if(Object->Template.GiveStamina && PlayState.Player->Stamina == PlayState.Player->MaxStamina)
+					Object->Filtered = true;
+				else
+					Object->Filtered = false;
+			break;
+			default:
+				Object->Filtered = (Object->FilterType >= 0 && Object->Quality < PlayState.GetFilterLevel(Object->FilterType)) ? true : false;
+			break;
+		}
 
 		// Get object bounds
 		glm::vec4 Bounds;
@@ -212,6 +226,10 @@ int _ObjectManager::RenderItems(double BlendFactor) {
 		// Set up program
 		glm::vec4 RenderColor(1.0f);
 		if(ItemRenderList[i].AmmoTypeID != -1 && !PlayState.Player->AmmoNeeded[(size_t)ItemRenderList[i].AmmoTypeID])
+			RenderColor.a = ITEM_FILTERED_ALPHA;
+		else if(ItemRenderList[i].Health && PlayState.Player->Health == PlayState.Player->MaxHealth)
+			RenderColor.a = ITEM_FILTERED_ALPHA;
+		else if(ItemRenderList[i].Stamina && PlayState.Player->Stamina == PlayState.Player->MaxStamina)
 			RenderColor.a = ITEM_FILTERED_ALPHA;
 
 		ae::Graphics.SetColor(RenderColor);
