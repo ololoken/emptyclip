@@ -304,7 +304,8 @@ void _Object::CheckProjectileCollisions() {
 				Position = HitPosition;
 
 			// Create ammo pick up
-			CreateAmmoPickup(PositionZ);
+			if(Bounces != -1)
+				CreateAmmoPickup(PositionZ);
 
 			Active = false;
 		}
