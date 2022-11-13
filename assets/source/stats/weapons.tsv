@@ -11,7 +11,7 @@ weapon_assaultrifle	Assault Rifle	textures/items/weapon_assaultrifle.png		rifle	
 weapon_tacticalrifle	Tactical Rifle	textures/items/weapon_tacticalrifle.png		rifle	gun		rifle		4	18	9	0.1	5	4	30	5	10	3	0	0	0.4	0	0.15	3	0.07	0	2.2	0.5	0.2	1	20	1	0.8	8	0.5	0	0	0	0	0	0	0	1	0	0.02
 weapon_plasmarifle	Plasma Rifle	textures/items/weapon_plasmarifle.png		plasma	plasma	plasma	plasma		4	24	12	0.2	5	7	18	7	10	3	0	1	0.13	0	0.2	0	0	0	2.75	0.5	0.2	1	40	1	0.85	7	0.3	0	0	0	0	0	30	0	1	0	0.03
 weapon_carbine	Carbine	textures/items/weapon_carbine.png		carbine	gun		magnum		4	40	20	0.2	2.5	3	17	7	15	3	0	0	0.5	0	0.35	0	0	1	0.55	0.5	0.2	1	8	1	0.85	15	0.6	0	0	0	0	0	0	0	1	0	0.05
-weapon_smg	Submachine Gun	textures/items/weapon_smg.png		smg	gun		pistol		4	12	6	0.1	4	6	14	10	10	5	0	1	0.08	0	0.15	0	0	0	2	0.5	0.2	1	32	1	0.8	5	0.7	0	0	0	0	0	0	0	0	0	0.01
+weapon_smg	Submachine Gun	textures/items/weapon_smg.png		smg	gun		pistol		4	12	6	0.1	4	6	14	10	10	5	0	1	0.08	0	0.15	0	0	0	2	0.5	0.2	1	32	1	0.8	5	0.7	0	0	0	0	0	0	0	1	0	0.01
 weapon_minigun	Minigun	textures/items/weapon_minigun.png		minigun	gun_big		heavy		5	14	7	0.5	20	14	26	5	15	5	0	1	0.1	0	0.2	0	0	0	5	0.5	0.2	1	100	1	0.85	5	0.1	0	0	0	0	0	0	0	1	0.02	0.035
 weapon_rocketlauncher	Rocket Launcher	textures/items/weapon_rocketlauncher.png		rocketlauncher	rocketlauncher	rocket	rocket		5	150	75	0.2	2	3	40	15	100	20	0	0	1	0	0.4	0	0	1	5	0.5	0.2	1	1	1	0.85	10	0.5	0	0	0	0	0	30	7.5	1	0.08	0.1
 weapon_crossbow	Crossbow	textures/items/weapon_crossbow.png		crossbow		bolt	bolt	ammo_bolt	5	40	20	0.2	1.8	3	27	15	50	10	0	0	1	1	0.2	0	0	0	1.6	0.5	0.2	1	1	5	0.85	15	0.5	0	0	0	0	0	30	0	0	0.02	0.03
