@@ -104,9 +104,6 @@ void _PlayState::Init() {
 	ae::Graphics.Element->SetActive(false);
 	ae::Graphics.Element->Active = true;
 
-	CursorItem = nullptr;
-	PreviousCursorItem = nullptr;
-
 	// Check for player
 	if(TestMode) {
 		Player = new _Player(Stats.Objects.at("player"));
@@ -191,10 +188,13 @@ void _PlayState::Init() {
 		Framework.Console->AddMessage("TotalExperience=" + std::to_string(Map->TotalExperience));
 
 	ActiveAI = 0;
-	Timer = 0;
+	Timer = 0.0;
+	SaveTimer = 0.0;
 	PreviousTouchingEndEvent = nullptr;
 	TouchingEndEvent = nullptr;
 	LockedSound = nullptr;
+	CursorItem = nullptr;
+	PreviousCursorItem = nullptr;
 }
 
 // Close map
@@ -576,6 +576,7 @@ void _PlayState::Update(double FrameTime) {
 	int OldSkillPointsRemaining = Player->SkillPointsRemaining;
 	int OldLevel = Player->Level;
 	Timer += FrameTime;
+	SaveTimer += FrameTime;
 	FlashTimer = std::max(0.0, FlashTimer - FrameTime);
 	Menu.Update(FrameTime);
 
@@ -673,6 +674,7 @@ void _PlayState::Update(double FrameTime) {
 
 	// Handle auto and manually picking up items
 	HandlePickup();
+	Player->UseRequested = false;
 
 	// Update objects
 	Map->Update(FrameTime, Player->Clock);
@@ -777,8 +779,14 @@ void _PlayState::Update(double FrameTime) {
 		HUD->CursorUseWorldPosition = false;
 	}
 
-	Player->UseRequested = false;
-	ae::Audio.SetPosition(glm::vec3(Player->Position.x, 10, Player->Position.y));
+	// Update audio
+	ae::Audio.SetPosition(glm::vec3(Player->Position.x, AUDIO_POSITION_Z, Player->Position.y));
+
+	// Autosave
+	if(SaveTimer >= SAVE_TIME) {
+		SaveTimer = 0.0;
+		Save.SavePlayer(Player);
+	}
 }
 
 // Render the state

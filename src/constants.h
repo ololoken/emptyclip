@@ -56,6 +56,7 @@ const  double       GAME_COMBAT_TIMER                    =  5.0;
 const  int          SAVE_SLOTS                           =  10;
 const  int          SAVE_VERSION                         =  7;
 const  int          SAVE_VERSION_NEW                     =  7;
+const  double       SAVE_TIME                            =  60.0;
 //     Camera
 const  float        CAMERA_DISTANCE                      =  6.5f;
 const  float        CAMERA_DISTANCE_AIMED                =  CAMERA_DISTANCE;
@@ -71,6 +72,7 @@ const  double       WEAPON_MINFIREPERIOD                 =  GAME_TIMESTEP;
 const  float        AUDIO_REFERENCE_DISTANCE             =  10.0f;
 const  float        AUDIO_MAX_DISTANCE                   =  500.0f;
 const  float        AUDIO_ROLL_OFF                       =  5.0f;
+const  float        AUDIO_POSITION_Z                     =  10.0f;
 //     Entities
 const  float        ENTITY_PUSH_FACTOR                   =  0.4f;
 const  float        ENTITY_MOVESOUNDDELAYFACTOR          =  0.02625f;

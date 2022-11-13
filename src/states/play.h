@@ -121,6 +121,7 @@ class _PlayState : public ae::_State {
 		// Game
 		double Timer{0.0};
 		double CursorItemTimer{0.0};
+		double SaveTimer{0.0};
 
 		// Map
 		_Event *PreviousTouchingEndEvent{nullptr};
