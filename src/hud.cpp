@@ -48,6 +48,11 @@ struct _MinimapLegend {
 	glm::vec4 Color;
 };
 
+struct _SkillText {
+	std::string Main;
+	std::string Alt;
+};
+
 static std::vector<_MinimapLegend> MinimapLegends = {
 	{ "Keys", HUD_MINIMAP_KEY_COLOR},
 	{ "Equipment",  HUD_MINIMAP_EQUIPMENT_COLOR },
@@ -56,11 +61,6 @@ static std::vector<_MinimapLegend> MinimapLegends = {
 	{ "Crates", HUD_MINIMAP_CRATE_COLOR },
 	{ "Enemies", HUD_MINIMAP_ENEMY_COLOR },
 	{ "Doors/Switches", HUD_MINIMAP_DOOR_COLOR },
-};
-
-struct _SkillText {
-	std::string Main;
-	std::string Alt;
 };
 
 static _SkillText SkillText[SKILL_COUNT] = {
@@ -175,81 +175,6 @@ _HUD::_HUD(const ae::_Camera *Camera, _Player *Player) : Camera(Camera), Player(
 	Elements[ELEMENT_MESSAGE]->SetActive(true);
 }
 
-// Shut down
-_HUD::~_HUD() {
-}
-
-// Set up max stats for the level
-void _HUD::SetStats(int MaxKills, int MaxCrates, int MaxSecrets) {
-	Kills[0] = 0;
-	Kills[1] = MaxKills;
-	Crates[0] = 0;
-	Crates[1] = MaxCrates;
-	Secrets[0] = 0;
-	Secrets[1] = MaxSecrets;
-}
-
-// Sets the last entity hit object
-void _HUD::SetLastEntityHit(_Entity *Entity) {
-	LastEntityHit = Entity;
-	LastEntityHitTimer = 0;
-}
-
-// Set inventory state
-void _HUD::SetInventoryOpen(bool Value) {
-	if(InventoryOpen == Value)
-		return;
-
-	InventoryOpen = Value;
-	Elements[ELEMENT_INVENTORY]->SetActive(InventoryOpen);
-	Elements[ELEMENT_SKILLS]->SetActive(InventoryOpen);
-
-	// Reset state
-	if(!InventoryOpen) {
-
-		// Was dragging an item
-		if(CursorItem)
-			MoveWorldItem();
-
-		DragStart = nullptr;
-		CursorItem = nullptr;
-		CursorOverItem = nullptr;
-		CursorUseWorldPosition = false;
-	}
-
-	Menu.ShowDefaultCursor(InventoryOpen);
-}
-
-// Move item in the world to another location
-void _HUD::MoveWorldItem(const glm::vec2 &DropPosition) {
-	if(DragStart || !CursorItem)
-		return;
-
-	// Update position
-	if(CursorItem->Moveable) {
-
-		// Remove item from old position
-		PlayState.Map->RemoveObjectFromGrid(CursorItem, GRID_ITEM);
-
-		// Get new position
-		if(DropPosition.x < 0.0f)
-			Camera->ConvertScreenToWorld(ae::Input.GetMouse(), CursorItem->Position);
-		else
-			CursorItem->Position = DropPosition;
-
-		// Check drop position
-		PlayState.Map->GetDropPosition(Player, PLAYER_REACH_DISTANCE, CursorItem->Position);
-
-		// Place item in new position
-		PlayState.Map->AddObjectToGrid(CursorItem, GRID_ITEM);
-	}
-
-	// Reset state
-	CursorItem->LastPosition = CursorItem->Position;
-	CursorItem->Visible = true;
-	CursorItem = nullptr;
-}
-
 // Handle mouse events
 void _HUD::MouseEvent(const ae::_MouseEvent &MouseEvent) {
 	if(!InventoryOpen)
@@ -334,39 +259,9 @@ void _HUD::MouseEvent(const ae::_MouseEvent &MouseEvent) {
 								_Item *ExistingItem = Player->Inventory[HitElement->Index];
 								if(ExistingItem) {
 									if(CursorItem->Type == _Object::USABLE) {
-										if(ExistingItem->ItemCompatible(CursorItem, false)) {
-											switch(CursorItem->Template.Attributes.at("usable_type").Int) {
-												case USABLE_HAMMER: {
-
-													// Destroy hammer
-													CursorItem->Active = false;
-													PlayState.Map->RemoveObjectFromGrid(CursorItem, GRID_ITEM);
-
-													// Drop mods
-													int QualityChange = CursorItem->GetHammerQualityChange();
-													for(auto &Mod : ExistingItem->Mods) {
-														Mod->Visible = true;
-														Mod->Quality = std::clamp(Mod->Quality + QualityChange, ITEM_QUALITY_MIN, Stats.Progressions[Player->Progression].MaxQuality);
-														Mod->RecalculateModBonus();
-														Mod->SetPosition(PlayState.Map->FindSuitableItemPosition(Player->Position, Mod->Type, ITEM_RADIUS, ITEM_PLACEMENT_ATTEMPTS));
-														PlayState.Map->AddObject(Mod, GRID_ITEM);
-													}
-													ExistingItem->Mods.clear();
-
-													// Destroy item
-													delete ExistingItem;
-													Player->Inventory[HitElement->Index] = nullptr;
-													CursorOverItem = nullptr;
-
-													ae::Audio.PlaySound(ae::Assets.Sounds["game_hammer.ogg"]);
-												} break;
-												case USABLE_WHETSTONE: {
-													if(ExistingItem->ApplyUsable(CursorItem)) {
-														CursorItem->Active = false;
-														PlayState.Map->RemoveObjectFromGrid(CursorItem, GRID_ITEM);
-													}
-												} break;
-											}
+										if(ApplyUsableItem(ExistingItem)) {
+											delete ExistingItem;
+											Player->Inventory[HitElement->Index] = nullptr;
 										}
 									}
 									else if(ExistingItem->AddMod(CursorItem)) {
@@ -1281,27 +1176,6 @@ void _HUD::UpdateSkillTooltip(int Skill, const glm::vec2 &Position) {
 	}
 }
 
-// Format day night clock
-void _HUD::GetClockAsString(std::ostringstream &Buffer, double Clock, bool Clock24Hour) const {
-	int Hours = (int)(Clock / 60.0);
-	int Minutes = (int)std::fmod(Clock, 60.0);
-	if(!Clock24Hour) {
-		if(Hours == 0)
-			Hours = 12;
-		else if(Hours > 12)
-			Hours -= 12;
-
-		Buffer << Hours << ":" << std::setfill('0') << std::setw(2) << Minutes;
-		if(Clock < MAP_DAY_LENGTH / 2)
-			Buffer << " AM";
-		else
-			Buffer << " PM";
-	}
-	else {
-		Buffer << std::setfill('0') << std::setw(2) << Hours << ":" << std::setfill('0') << std::setw(2) << Minutes;
-	}
-}
-
 // Draw death message
 void _HUD::DrawDeathScreen() {
 	std::ostringstream Buffer;
@@ -1392,6 +1266,139 @@ void _HUD::FormatTimeHMS(std::ostringstream &Buffer, int64_t Time) {
 		Buffer << Time / 60 << "m";
 	else
 		Buffer << Time / 3600 << "h" << (Time / 60 % 60) << "m";
+}
+
+// Format day night clock
+void _HUD::GetClockAsString(std::ostringstream &Buffer, double Clock, bool Clock24Hour) const {
+	int Hours = (int)(Clock / 60.0);
+	int Minutes = (int)std::fmod(Clock, 60.0);
+	if(!Clock24Hour) {
+		if(Hours == 0)
+			Hours = 12;
+		else if(Hours > 12)
+			Hours -= 12;
+
+		Buffer << Hours << ":" << std::setfill('0') << std::setw(2) << Minutes;
+		if(Clock < MAP_DAY_LENGTH / 2)
+			Buffer << " AM";
+		else
+			Buffer << " PM";
+	}
+	else {
+		Buffer << std::setfill('0') << std::setw(2) << Hours << ":" << std::setfill('0') << std::setw(2) << Minutes;
+	}
+}
+
+// Set up max stats for the level
+void _HUD::SetStats(int MaxKills, int MaxCrates, int MaxSecrets) {
+	Kills[0] = 0;
+	Kills[1] = MaxKills;
+	Crates[0] = 0;
+	Crates[1] = MaxCrates;
+	Secrets[0] = 0;
+	Secrets[1] = MaxSecrets;
+}
+
+// Sets the last entity hit object
+void _HUD::SetLastEntityHit(_Entity *Entity) {
+	LastEntityHit = Entity;
+	LastEntityHitTimer = 0;
+}
+
+// Set inventory state
+void _HUD::SetInventoryOpen(bool Value) {
+	if(InventoryOpen == Value)
+		return;
+
+	InventoryOpen = Value;
+	Elements[ELEMENT_INVENTORY]->SetActive(InventoryOpen);
+	Elements[ELEMENT_SKILLS]->SetActive(InventoryOpen);
+
+	// Reset state
+	if(!InventoryOpen) {
+
+		// Was dragging an item
+		if(CursorItem)
+			MoveWorldItem();
+
+		DragStart = nullptr;
+		CursorItem = nullptr;
+		CursorOverItem = nullptr;
+		CursorUseWorldPosition = false;
+	}
+
+	Menu.ShowDefaultCursor(InventoryOpen);
+}
+
+// Move item in the world to another location
+void _HUD::MoveWorldItem(const glm::vec2 &DropPosition) {
+	if(DragStart || !CursorItem)
+		return;
+
+	// Update position
+	if(CursorItem->Moveable) {
+
+		// Remove item from old position
+		PlayState.Map->RemoveObjectFromGrid(CursorItem, GRID_ITEM);
+
+		// Get new position
+		if(DropPosition.x < 0.0f)
+			Camera->ConvertScreenToWorld(ae::Input.GetMouse(), CursorItem->Position);
+		else
+			CursorItem->Position = DropPosition;
+
+		// Check drop position
+		PlayState.Map->GetDropPosition(Player, PLAYER_REACH_DISTANCE, CursorItem->Position);
+
+		// Place item in new position
+		PlayState.Map->AddObjectToGrid(CursorItem, GRID_ITEM);
+	}
+
+	// Reset state
+	CursorItem->LastPosition = CursorItem->Position;
+	CursorItem->Visible = true;
+	CursorItem = nullptr;
+}
+
+// Apply usable item to another item, return true to delete existing item
+bool _HUD::ApplyUsableItem(_Item *ExistingItem) {
+	if(!ExistingItem->ItemCompatible(CursorItem, false))
+		return false;
+
+	// Check type
+	switch(CursorItem->Template.Attributes.at("usable_type").Int) {
+		case USABLE_HAMMER: {
+
+			// Destroy hammer
+			CursorItem->Active = false;
+			CursorOverItem = nullptr;
+			PlayState.Map->RemoveObjectFromGrid(CursorItem, GRID_ITEM);
+
+			// Drop mods
+			int QualityChange = CursorItem->GetHammerQualityChange();
+			for(auto &Mod : ExistingItem->Mods) {
+				Mod->Visible = true;
+				Mod->Quality = std::clamp(Mod->Quality + QualityChange, ITEM_QUALITY_MIN, Stats.Progressions[(size_t)Player->Progression].MaxQuality);
+				Mod->RecalculateModBonus();
+				Mod->SetPosition(PlayState.Map->FindSuitableItemPosition(Player->Position, Mod->Type, ITEM_RADIUS, ITEM_PLACEMENT_ATTEMPTS));
+				PlayState.Map->AddObject(Mod, GRID_ITEM);
+			}
+			ExistingItem->Mods.clear();
+
+			ae::Audio.PlaySound(ae::Assets.Sounds["game_hammer.ogg"]);
+
+			// Destroy item
+			return true;
+		} break;
+		case USABLE_WHETSTONE: {
+			if(ExistingItem->ApplyUsable(CursorItem)) {
+				CursorItem->Active = false;
+				PlayState.Map->RemoveObjectFromGrid(CursorItem, GRID_ITEM);
+			}
+		} break;
+	}
+
+	return false;
 }
 
 // Determine if an item can be grabbed in the world

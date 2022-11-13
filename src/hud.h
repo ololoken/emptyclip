@@ -99,7 +99,7 @@ class _HUD {
 		};
 
 		_HUD(const ae::_Camera *Camera, _Player *Player);
-		~_HUD();
+		~_HUD() { }
 
 		void SetStats(int MaxKills, int MaxCrates, int MaxSecrets);
 		void SetLastEntityHit(_Entity *Entity);
@@ -152,6 +152,7 @@ class _HUD {
 		void UpdateSkillTooltip(int Skill, const glm::vec2 &DrawPosition);
 		void GetClockAsString(std::ostringstream &Buffer, double Clock, bool Clock24Hour) const;
 		bool CanGrabItem(const _Item *Item);
+		bool ApplyUsableItem(_Item *ExistingItem);
 
 		// State
 		_Player *Player{nullptr};
