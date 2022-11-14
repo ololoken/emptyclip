@@ -714,6 +714,7 @@ void _Stats::LoadProgression() {
 		Progression.SpecialChance = Database->GetInt<int>("special_chance");
 		Progression.Health = Database->GetReal("health");
 		Progression.Damage = Database->GetReal("damage");
+		Progression.AttackSpeed = Database->GetReal("attack_speed");
 		Progression.Experience = Database->GetReal("experience");
 		Progression.MaxQuality = Database->GetInt<int>("max_quality");
 
@@ -882,7 +883,7 @@ _Monster *_Stats::CreateMonster(const std::string &ID, int Level, int Progressio
 	Monster->PoisonPower = Template.Attributes.at("poison").Float;
 	for(int i = 0; i < WEAPONATTACK_COUNT; i++) {
 		Monster->GetAttributeRange("damage", Stats.Progressions[Progression].Damage, Monster->MinDamage[i], Monster->MaxDamage[i]);
-		Monster->AttackTimer[i] = Monster->AttackPeriod[i] = Template.Attributes.at("attack_period").Double;
+		Monster->AttackTimer[i] = Monster->AttackPeriod[i] = Template.Attributes.at("attack_period").Double / Stats.Progressions[Progression].AttackSpeed;
 		Monster->ShootPeriod[i] = AI_SHOOT_PERIOD;
 		Monster->MaxAccuracy[i] = Template.Attributes.at("accuracy").Int;
 		Monster->AttackRange[i] = Template.Attributes.at("attack_range").Float;

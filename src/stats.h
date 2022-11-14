@@ -69,6 +69,7 @@ struct _Progression {
 	int MaxQuality;
 	float Health;
 	float Damage;
+	float AttackSpeed;
 	float Experience;
 };
 
