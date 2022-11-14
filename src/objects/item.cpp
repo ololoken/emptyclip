@@ -283,7 +283,7 @@ void _Item::DrawTooltip(const _Player *Player, glm::vec2 DrawPosition, const _It
 				}
 
 				DrawPosition.y += Spacing.y;
-				Buffer << ae::Round2(1 / Attributes.at("fire_period").Double) << "/s";
+				Buffer << ae::Round2(1 / std::max(WEAPON_MINFIREPERIOD, Attributes.at("fire_period").Double)) << "/s";
 				std::string AttackCountText;
 				if(IsMelee())
 					AttackCountText = "Attack Speed";
