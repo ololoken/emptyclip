@@ -22,6 +22,7 @@
 
 // Forward Declarations
 class _Player;
+struct _Slot;
 namespace ae {
 	class _Font;
 }
@@ -89,13 +90,13 @@ class _Item : public _Object {
 		void RecalculateStats();
 		void RecalculateModBonus();
 		void Serialize(ae::_Buffer &Buffer) override;
-		void DrawTooltip(const _Player *Player, glm::vec2 DrawPosition, size_t CompareSlot, int InventorySlot, bool ShowEquipHelp) const;
+		void DrawTooltip(const _Player *Player, glm::vec2 DrawPosition, const _Item *EquippedItem, const _Slot &Slot, bool ShowEquipHelp) const;
 		void Render(double BlendFactor) const override;
 
 		bool AddMod(_Item *Mod, bool Recalculate=true);
 		bool ApplyUsable(_Item *Usable);
-		bool ItemCompatible(_Item *Item, bool CheckCount=true);
-		bool ModCompatible(_Item *Mod, bool CheckCount=true);
+		bool ItemCompatible(_Item *Item, bool CheckCount=true) const;
+		bool ModCompatible(_Item *Mod, bool CheckCount=true) const;
 		float GetBonusMultiplier(int ModType, bool Inverse=false) const;
 		void SetMaxMods();
 		float GetMaxMods(bool Round) const;

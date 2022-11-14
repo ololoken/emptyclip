@@ -88,6 +88,7 @@ const  float        ENTITY_FRICTION_FACTOR               =  0.003f;
 const  float        ENTITY_VELOCITY_THRESHOLD            =  0.00001f;
 //     Player
 const  float        PLAYER_RADIUS                        =  0.35f;
+const  float        PLAYER_MASS                          =  1.0f;
 const  double       PLAYER_HEAL_STARTTIME                =  5.0;
 const  double       PLAYER_HEAL_PERIOD                   =  1.0;
 const  float        PLAYER_HEAL_THRESHOLD                =  0.75;
@@ -126,6 +127,8 @@ const  double       ACHIEVEMENTS_MESSAGE_FADETIME        =  1.0;
 //     Inventory
 const  int          INVENTORY_BAGSIZE                    =  20;
 const  int          INVENTORY_MAX_STACK                  =  99;
+const  int          INVENTORY_MAX_OUTFITS                =  4;
+const  int          INVENTORY_MAX_BACKPACKS              =  4;
 //     Items
 const  float        ITEM_SCALE                           =  0.5f;
 const  float        ITEM_Z                               =  0.01f;

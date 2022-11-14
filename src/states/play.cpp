@@ -22,6 +22,7 @@
 #include <objects/player.h>
 #include <objects/monster.h>
 #include <objects/particle.h>
+#include <objects/inventory.h>
 #include <ae/actions.h>
 #include <ae/camera.h>
 #include <ae/graphics.h>
@@ -114,6 +115,7 @@ void _PlayState::Init() {
 		catch(std::invalid_argument &Error) {
 
 			// Create new test save
+			Player->Name = "test";
 			Player->RecalculateStats();
 			Player->Health = Player->MaxHealth;
 			Player->TestSave = true;
@@ -152,7 +154,7 @@ void _PlayState::Init() {
 	Player->WarpPosition(Map->GetStartingPositionByCheckpoint(Player->CheckpointIndex));
 
 	// Spawn objects
-	Monsters.reserve(Map->Monsters);
+	Monsters.reserve((size_t)Map->Monsters);
 	for(const auto &ObjectSpawn : Map->ObjectSpawns)
 		SpawnObject(ObjectSpawn, false, Map->GetAddedLevel());
 
@@ -272,7 +274,7 @@ bool _PlayState::HandleAction(int InputType, size_t Action, int Value) {
 
 					// Use melee weapon if player has no main hand
 					int AttackType = WEAPONATTACK_MAIN;
-					if(!Player->HasMainHand())
+					if(!Player->GetMainHand())
 						AttackType = WEAPONATTACK_MELEE;
 
 					// Cancel reload
@@ -308,7 +310,7 @@ bool _PlayState::HandleAction(int InputType, size_t Action, int Value) {
 			break;
 			case Action::GAME_WEAPONSWITCH:
 				if(!HUD->IsDragging())
-					Player->StartWeaponSwitch(INVENTORY_MAINHAND, INVENTORY_OFFHAND);
+					Player->StartWeaponSwitch(_Slot(&Player->GetActiveOutfitBag(), EquipmentType::MAINHAND), _Slot(&Player->GetActiveOutfitBag(), EquipmentType::OFFHAND));
 			break;
 			case Action::GAME_FLASHLIGHT:
 				Player->Flashlight = !Player->Flashlight;
@@ -468,12 +470,12 @@ bool _PlayState::HandleCommand(ae::_Console *Console) {
 				if(Parameters[0][0] == '+' || Parameters[0][0] == '-')
 					Adjust = true;
 
-				int64_t Change = ae::ToNumber<int64_t>(Parameters[0]);
+				int Change = ae::ToNumber<int>(Parameters[0]);
 
 				if(Adjust)
 					Player->UpdateHealth(Change);
 				else
-					Player->Health = std::max((int64_t)1, Change);
+					Player->Health = std::max(1, Change);
 
 				Player->RecalculateStats();
 			}
@@ -533,8 +535,7 @@ bool _PlayState::HandleCommand(ae::_Console *Console) {
 				}
 			}
 			else {
-				Player->Reset(true);
-				Console->AddMessage("player reset");
+				Console->AddMessage("usage: reset [skills|keys]");
 			}
 		}
 		else
@@ -625,7 +626,7 @@ void _PlayState::Update(double FrameTime) {
 
 			// Use melee weapon if player has no main hand
 			int AttackType = WEAPONATTACK_MAIN;
-			if(!Player->HasMainHand())
+			if(!Player->GetMainHand())
 				AttackType = WEAPONATTACK_MELEE;
 
 			// Check holding down fire button to attack
@@ -661,7 +662,7 @@ void _PlayState::Update(double FrameTime) {
 		Player->Stamina = Player->MaxStamina;
 
 	// Handle gun flashes
-	if(Player->Action == ACTION_STARTSHOOT && Player->HasMainHand() && Player->GetMainHand()->Template.Attributes.at("flash").Int)
+	if(Player->Action == ACTION_STARTSHOOT && Player->GetMainHand() && Player->GetMainHand()->Template.Attributes.at("flash").Int)
 		FlashTimer = LIGHT_FLASH_TIME;
 
 	// Check for events
@@ -1226,7 +1227,7 @@ void _PlayState::ResolveAttack(_Entity *Attacker, int GridType) {
 	bool PlayedHitWallSound = false;
 	_Entity *FirstHit = nullptr;
 	std::vector<_Hit> Hits;
-	Hits.reserve(Attacker->Penetration[Attacker->AttackRequestType]);
+	Hits.reserve((size_t)Attacker->Penetration[Attacker->AttackRequestType]);
 	int AttackCount = RoundsShot * Attacker->AttackCount[Attacker->AttackRequestType];
 	for(int i = 0; i < AttackCount; i++) {
 		Hits.clear();
@@ -1930,9 +1931,9 @@ void _PlayState::UpdateEvents(double FrameTime) {
 					if(Event->MonsterID.size()) {
 
 						// Chance for special monster
-						int SpecialType = 0;
-						if(!Event->IsBossSpawn && Player->Progression && ae::GetRandomInt(1, 100) <= Stats.Progressions[Player->Progression].SpecialChance)
-							SpecialType = ae::GetRandomInt((size_t)1, Stats.Specials.size() - 1);
+						size_t SpecialType = 0;
+						if(!Event->IsBossSpawn && Player->Progression && ae::GetRandomInt(1, 100) <= Stats.Progressions[(size_t)Player->Progression].SpecialChance)
+							SpecialType = (size_t)ae::GetRandomInt(1, (int)(Stats.Specials.size() - 1));
 
 						// Spawn monsters
 						for(int j = 0; j < Event->SpawnMultiplier; j++) {
@@ -1945,7 +1946,7 @@ void _PlayState::UpdateEvents(double FrameTime) {
 
 					// Spawn item
 					if(Event->ItemID.size())
-						Map->AddObject(Stats.CreateItem(Event->ItemID, Event->SpawnLevel + Map->GetAddedLevel(), 0, Event->Level, Position, true, Player->Progression), GRID_ITEM);
+						Map->AddObject(Stats.CreateItem(Event->ItemID, Event->SpawnLevel + Map->GetAddedLevel(), 0, Position, true, Player->Progression), GRID_ITEM);
 
 					// Spawn particles
 					if(Event->ParticleID.size())
@@ -1972,7 +1973,7 @@ void _PlayState::UpdateEvents(double FrameTime) {
 			case EVENT_ENABLE: {
 				const std::vector<_EventTile> &Tiles = Event->Tiles;
 				for(size_t i = 0; i < Tiles.size(); i++)
-					Map->ToggleEventActive(Tiles[i].BlockID);
+					Map->ToggleEventActive((size_t)Tiles[i].BlockID);
 
 				Decrement = true;
 			} break;
@@ -2029,7 +2030,7 @@ void _PlayState::SpawnObject(const _ObjectSpawn *ObjectSpawn, bool GenerateStats
 	else if(ObjectSpawn->Type == _Object::PROP)
 		Map->AddObject(Stats.CreateProp(ObjectSpawn->ID, ObjectSpawn->Position, ObjectSpawn->Rotation, ObjectSpawn->Scale), GRID_MONSTER);
 	else
-		Map->AddObject(Stats.CreateItem(ObjectSpawn->ID, ObjectSpawn->Level + AddedLevel, 0, 1, ObjectSpawn->Position, GenerateStats, Player->Progression), GRID_ITEM);
+		Map->AddObject(Stats.CreateItem(ObjectSpawn->ID, ObjectSpawn->Level + AddedLevel, 0, ObjectSpawn->Position, GenerateStats, Player->Progression), GRID_ITEM);
 }
 
 // Adds a monster to the monster list and collision grid

@@ -364,7 +364,6 @@ void _Menu::LaunchGame() {
 	if(Player->Hardcore && Player->Health <= 0)
 		return;
 
-	Save.LoadPlayer(Player);
 	PlayState.Player = Player;
 	PlayState.Level = "";
 	PlayState.TestMode = false;

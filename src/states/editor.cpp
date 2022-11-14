@@ -388,7 +388,7 @@ bool _EditorState::HandleKey(const ae::_KeyEvent &KeyEvent) {
 				ExecuteSwitchMode(EDITMODE_PROPS);
 			break;
 			case SDL_SCANCODE_GRAVE:
-			    ExecuteDeselect();
+				ExecuteDeselect();
 			break;
 			case SDL_SCANCODE_D:
 				ExecuteDelete();
@@ -1534,7 +1534,7 @@ void _EditorState::DrawBrush() {
 	}
 
 	if(IconTexture) {
-		 ae::_Program *Program = ae::Assets.Programs["ortho_pos_uv"];
+		ae::_Program *Program = ae::Assets.Programs["ortho_pos_uv"];
 		ae::Graphics.SetProgram(Program);
 		ae::Graphics.SetColor(IconColor);
 		Program->ResetTransform(Program->TextureTransformID);

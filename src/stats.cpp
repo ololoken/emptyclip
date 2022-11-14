@@ -63,7 +63,7 @@ void _Stats::Init() {
 	_ObjectTemplate PlayerTemplate(_Object::PLAYER);
 	Objects.insert(std::make_pair("player", PlayerTemplate));
 
-	WeaponFists = Stats.CreateItem("weapon_fists", 1, 0, 1, glm::vec2(0), false);
+	WeaponFists = Stats.CreateItem("weapon_fists", 1, 0, glm::vec2(0), false);
 }
 
 // Shutdown
@@ -809,7 +809,7 @@ void _Stats::CreateTransformedText() {
 }
 
 // Create item
-_Item *_Stats::CreateItem(const std::string &ID, int Level, int Quality, int Count, const glm::vec2 &Position, bool RandomStats, int Progression) {
+_Item *_Stats::CreateItem(const std::string &ID, int Level, int Quality, const glm::vec2 &Position, bool RandomStats, int Progression) {
 	_ObjectTemplate &Template = Objects.at(ID);
 
 	// Create item
@@ -817,7 +817,6 @@ _Item *_Stats::CreateItem(const std::string &ID, int Level, int Quality, int Cou
 	Item->ID = ID;
 	Item->Level = Level;
 	Item->Quality = Quality;
-	Item->Count = Count;
 	Item->SetPosition(Position);
 	Item->Texture = ae::Assets.Textures[Template.IconID];
 

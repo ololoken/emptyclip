@@ -36,9 +36,9 @@ class _Framework {
 	public:
 
 		enum StateType {
-		    INIT,
-		    UPDATE,
-		    CLOSE
+			INIT,
+			UPDATE,
+			CLOSE
 		};
 
 		// Setup

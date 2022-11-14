@@ -94,7 +94,7 @@ void _Item::DrawAttribute(const ae::_Font *Font, bool Float, const std::string &
 }
 
 // Draw the item popup window
-void _Item::DrawTooltip(const _Player *Player, glm::vec2 DrawPosition, size_t CompareSlot, int InventorySlot, bool ShowEquipHelp) const {
+void _Item::DrawTooltip(const _Player *Player, glm::vec2 DrawPosition, const _Item *EquippedItem, const _Slot &Slot, bool ShowEquipHelp) const {
 	std::ostringstream Buffer;
 
 	glm::vec2 Size = glm::vec2(460, 150) * ae::_Element::GetUIScale();
@@ -149,12 +149,9 @@ void _Item::DrawTooltip(const _Player *Player, glm::vec2 DrawPosition, size_t Co
 	DrawPosition.x += WindowOffsetX;
 	DrawPosition.y -= Size.y/2;
 
-	// Get current equipment
-	_Item *EquippedItem = nullptr;
-	if(CompareSlot < INVENTORY_SIZE) {
-		EquippedItem = Player->Inventory[CompareSlot];
+	// Move comparison window
+	if(EquippedItem)
 		MinX = Size.x;
-	}
 
 	// Clamp position of window
 	DrawPosition.x = std::clamp(DrawPosition.x, MinX, ae::Graphics.CurrentSize.x - Size.x);
@@ -200,7 +197,7 @@ void _Item::DrawTooltip(const _Player *Player, glm::vec2 DrawPosition, size_t Co
 
 	// Add help text
 	std::vector<std::string> HelpTextList;
-	if(Player->IsEquipmentIndex(InventorySlot))
+	if(Slot.Bag && Slot.IsEquipmentSlot())
 		HelpTextList.push_back("Right-click to unequip");
 
 	// Show attributes
@@ -417,7 +414,7 @@ void _Item::DrawTooltip(const _Player *Player, glm::vec2 DrawPosition, size_t Co
 			else if(Template.Attributes.at("object_type").Int == _Object::ARMOR)
 				HelpTextList.push_back("Drag onto armor");
 
-			if(InventorySlot == -1 && PlayState.HUD->InventoryOpen)
+			if(!Slot.Bag && PlayState.HUD->InventoryOpen)
 				HelpTextList.push_back("Right-click to pick up");
 
 			if(GetModType() == MOD_BURST) {
@@ -492,7 +489,7 @@ void _Item::DrawTooltip(const _Player *Player, glm::vec2 DrawPosition, size_t Co
 					DrawPosition.y += Spacing.y;
 					Buffer << "Max quality: [c green]" << Stats.Progressions[Player->Progression].MaxQuality << "%";
 					AttributeFont->DrawTextFormatted(Buffer.str(), glm::ivec2(DrawPosition), ae::CENTER_BASELINE);
-					if(InventorySlot == -1 && PlayState.HUD->InventoryOpen)
+					if(!Slot.Bag && PlayState.HUD->InventoryOpen)
 						HelpTextList.push_back("Right-click to pick up");
 				break;
 			}
@@ -500,7 +497,7 @@ void _Item::DrawTooltip(const _Player *Player, glm::vec2 DrawPosition, size_t Co
 	}
 
 	// Add help text
-	if(InventorySlot >= 0)
+	if(Slot.IsValidIndex())
 		HelpTextList.push_back("Ctrl+click to drop");
 
 	// Mods
@@ -576,13 +573,13 @@ void _Item::Render(double BlendFactor) const {
 // Serialize for saving
 void _Item::Serialize(ae::_Buffer &Buffer) {
 	Buffer.WriteString(ID.c_str());
-	Buffer.Write<int>(Level);
-	Buffer.Write<int>(Quality);
+	Buffer.Write<int32_t>(Level);
+	Buffer.Write<int32_t>(Quality);
 
 	// Write mods
 	if(Type == _Object::WEAPON || Type == _Object::ARMOR) {
 		Buffer.Write<float>(ExtraMods);
-		Buffer.Write<int>(Mods.size());
+		Buffer.Write<int32_t>(Mods.size());
 		for(size_t i = 0; i < Mods.size(); i++)
 			Mods[i]->Serialize(Buffer);
 	}
@@ -757,7 +754,7 @@ bool _Item::ApplyUsable(_Item *Usable) {
 }
 
 // Determine if an item is compatible with another item
-bool _Item::ItemCompatible(_Item *Item, bool CheckCount) {
+bool _Item::ItemCompatible(_Item *Item, bool CheckCount) const {
 	switch(Item->Type) {
 		case _Object::MOD:
 			return ModCompatible(Item, CheckCount);
@@ -780,7 +777,7 @@ bool _Item::ItemCompatible(_Item *Item, bool CheckCount) {
 }
 
 // Determine if an item is compatible with a mod
-bool _Item::ModCompatible(_Item *Mod, bool CheckCount) {
+bool _Item::ModCompatible(_Item *Mod, bool CheckCount) const {
 	if(!CanMod())
 		return false;
 

@@ -17,6 +17,7 @@
 *******************************************************************************/
 #include <objects/player.h>
 #include <objects/monster.h>
+#include <objects/inventory.h>
 #include <ae/texture.h>
 #include <ae/graphics.h>
 #include <ae/assets.h>
@@ -93,6 +94,14 @@ inline bool CompareItem(_Item *First, _Item *Second) {
 _Player::_Player(const _ObjectTemplate &PlayerTemplate) :
 	_Entity(PlayerTemplate) {
 
+	// Set object properties
+	Radius = PLAYER_RADIUS;
+	Mass = PLAYER_MASS;
+
+	// Set animation
+	Animation->Reels = ae::Assets.Animations["player"];
+	Animation->CalculateTextureCoords();
+
 	// Set up animations
 	LegAnimation = new ae::_Animation(nullptr);
 	LegAnimation->Reels.push_back(ae::Assets.Reels["player_legs"]);
@@ -115,123 +124,46 @@ _Player::_Player(const _ObjectTemplate &PlayerTemplate) :
 		AttackTimer[i] = 100.0;
 
 	// Inventory
+	Inventory = new _Inventory();
 	for(int i = 0; i < INVENTORY_SIZE; i++)
-		Inventory[i] = nullptr;
+		InventoryOld[i] = nullptr;
+
+	// Skills
+	for(int i = 0; i < SKILL_COUNT; i++)
+		Skills[i] = 0;
+
+	// Filters
+	for(int i = 0; i < FILTER_COUNT; i++) {
+		Filters[i] = 0;
+		LastFilters[i] = 0;
+	}
 
 	// Initialize ammo needed array
 	AmmoNeeded.reserve(Stats.AmmoNames.size());
 	for(size_t i = 0; i < Stats.AmmoNames.size(); i++)
 		AmmoNeeded.push_back(false);
 
-	// Set animation
-	Animation->Reels = ae::Assets.Animations["player"];
-	Animation->CalculateTextureCoords();
-
 	// Set sounds
 	_SoundGroup &SoundGroup = GameAssets.SoundGroups.at("player");
 	for(int i = 0; i < SOUND_COUNT; i++)
 		Sounds[i] = SoundGroup.SoundID[i];
-}
 
-// Destructor
-_Player::~_Player() {
-	delete LegAnimation;
-
-	DeleteItems();
-}
-
-// Deletes the item objects
-void _Player::DeleteItems() {
-	for(int i = 0; i < INVENTORY_SIZE; i++) {
-		delete Inventory[i];
-		Inventory[i] = nullptr;
-	}
-}
-
-// Resets the player state
-void _Player::Reset(bool Recalculate) {
-	TotalKills = 0;
-	TotalDeaths = 0;
-	Progression = 0;
-	ProgressionKills = 0;
-	ProgressionCrates = 0;
-	ProgressionSecrets = 0;
-	ProgressionDeaths = 0;
-	ProgressionTime = 0;
-	LavaTouches = 0;
-	Stat100Percent = false;
-	StatLoneWolf = false;
-	StatFistsOnly = false;
-	PlayTime = 0;
-	Clock = GAME_DEFAULT_CLOCK;
-	LevelTime = 0;
-	Radius = PLAYER_RADIUS;
-	Name = "test";
-	ColorID = "white";
-	Color = glm::vec4(1.0f);
-	Level = 1;
-	Experience = 0;
-	ExperienceNeeded = 0;
-	ExperienceNextLevel = 0;
-	ExperienceLost = 0;
-	SkillPointsRemaining = 0;
-	DropRate = 100;
-	PickupModifier = 1.0f;
-	HealModifier = 1.0f;
-	ExperienceModifier = 1.0f;
-	ExtraMods = 0.0f;
-	MapID = GAME_FIRSTLEVEL;
-	CheckpointIndex = 0;
-	Active = true;
-	Action = ACTION_IDLE;
-	Reloading = false;
-	ReloadSound = nullptr;
-	SwitchingWeapons = false;
-	Aiming = false;
-	Sprinting = false;
-	AttackRequested = false;
-	UseRequested = false;
-	MeleeTexture = nullptr;
-	UsePeriod = PLAYER_USEPERIOD;
-	ZoomScale = PLAYER_ZOOMSCALE;
-	LegDirection = 0.0f;
-	MoveSpeed = 0.0f;
-	MoveState = MOVE_NONE;
-	WeaponSwitchTimer = 0.0;
-	ReloadTimer = 0.0;
-	SelfHealTimer = PLAYER_HEAL_STARTTIME;
-	CombatTimer = GAME_COMBAT_TIMER;
-	UseTimer = 0.0;
-	WeaponSwitchFrom = -1;
-	WeaponSwitchTo = -1;
-	Stamina = 100.0f;
-	InvulnerableTimer = 0.0;
-	PoisonTimer = 0.0f;
-	Flashlight = false;
-	LastGoodCoord = glm::vec2(0.0f);
-	Mass = 1.0f;
-	StopAudio();
-	for(int i = 0; i < SKILL_COUNT; i++)
-		Skills[i] = 0;
-
-	for(int i = 0; i < FILTER_COUNT; i++) {
-		Filters[i] = 0;
-		LastFilters[i] = 0;
-	}
-
-	DeleteItems();
-	Ammo.clear();
-	Keys.clear();
-
-	if(Recalculate)
-		RecalculateStats();
+	// Set up stats
+	RecalculateStats();
 	ResetWeaponAnimation();
 
+	// Set animation state
 	Animation->Play(0);
 	Animation->Stop();
 	LegAnimation->Stop();
 
 	Health = MaxHealth;
+}
+
+// Destructor
+_Player::~_Player() {
+	delete Inventory;
+	delete LegAnimation;
 }
 
 // Reset flags associated with achievements
@@ -278,7 +210,7 @@ void _Player::RecalculateStats() {
 	Weapons[WEAPONATTACK_MELEE] = &Stats.WeaponFists->Template;
 
 	// See if the player is using a weapon
-	if(HasMainHand()) {
+	if(GetMainHand()) {
 		WeaponAttributes[WEAPONATTACK_MAIN] = GetMainHand()->Attributes;
 		Weapons[WEAPONATTACK_MAIN] = &GetMainHand()->Template;
 		MainWeaponType = Weapons[WEAPONATTACK_MAIN]->Attributes.at("weapon_type").Int;
@@ -293,7 +225,7 @@ void _Player::RecalculateStats() {
 		MainWeaponType = WEAPON_MELEE;
 
 	// Get stats of melee weapon
-	if(HasMelee()) {
+	if(GetMelee()) {
 		WeaponAttributes[WEAPONATTACK_MELEE] = GetMelee()->Attributes;
 		Weapons[WEAPONATTACK_MELEE] = &GetMelee()->Template;
 		MeleeTexture = ae::Assets.Textures[GetMelee()->Template.MeleeID];
@@ -467,7 +399,7 @@ void _Player::Update(double FrameTime) {
 		Stamina += MaxStamina * PLAYER_STAMINAREGEN * FrameTime;
 
 	if(Stamina > MaxStamina)
-	   Stamina = MaxStamina;
+		Stamina = MaxStamina;
 	if(Tired && Stamina > PLAYER_TIREDTHRESHOLD)
 		Tired = false;
 
@@ -755,8 +687,8 @@ int _Player::AddItem(_Item *Item, int &AmountAdded, bool UseOnFull) {
 	switch(Item->Type) {
 		case _Object::WEAPON: {
 			if(Item->IsMelee()) {
-				if(!HasMelee() && Config.AutoEquip) {
-					Inventory[INVENTORY_MELEE] = Item;
+				if(!GetMelee() && Config.AutoEquip) {
+					GetActiveOutfitBag().Slots[EquipmentType::MELEE] = Item;
 					RecalculateStats();
 					ResetWeaponAnimation();
 					return ADD_REMOVE;
@@ -765,14 +697,14 @@ int _Player::AddItem(_Item *Item, int &AmountAdded, bool UseOnFull) {
 					return AddInventory(Item);
 			}
 			else {
-				if(!HasMainHand() && Config.AutoEquip) {
-					Inventory[INVENTORY_MAINHAND] = Item;
+				if(!GetMainHand() && Config.AutoEquip) {
+					GetActiveOutfitBag().Slots[EquipmentType::MAINHAND] = Item;
 					RecalculateStats();
 					ResetWeaponAnimation();
 					return ADD_REMOVE;
 				}
-				else if(!HasOffHand() && Config.AutoEquip) {
-					Inventory[INVENTORY_OFFHAND] = Item;
+				else if(!GetOffHand() && Config.AutoEquip) {
+					GetActiveOutfitBag().Slots[EquipmentType::OFFHAND] = Item;
 					return ADD_REMOVE;
 				}
 				else
@@ -780,8 +712,8 @@ int _Player::AddItem(_Item *Item, int &AmountAdded, bool UseOnFull) {
 			}
 		} break;
 		case _Object::ARMOR: {
-			if(!HasArmor() && Config.AutoEquip) {
-				Inventory[INVENTORY_ARMOR] = Item;
+			if(!GetArmor() && Config.AutoEquip) {
+				GetActiveOutfitBag().Slots[EquipmentType::ARMOR] = Item;
 				RecalculateStats();
 				return ADD_REMOVE;
 			}
@@ -861,21 +793,21 @@ int _Player::AddItem(_Item *Item, int &AmountAdded, bool UseOnFull) {
 }
 
 // Drop an item from the player's inventory
-void _Player::DropItem(int Slot, const glm::vec2 &DropPosition) {
-	if(!CanDropItem() || Slot < 0 || Slot >= INVENTORY_SIZE)
+void _Player::DropItem(const _Slot &Slot, const glm::vec2 &DropPosition) {
+	if(!CanDropItems() || !Slot.IsValidIndex())
 		return;
 
 	// Get item
-	_Item *Item = Inventory[Slot];
+	_Item *Item = Slot.GetItem();
 	if(!Item)
 		return;
 
 	// Remove item from inventory
-	Inventory[Slot] = nullptr;
+	Slot.RemoveItem();
 
 	// Check if the item was equipped
-	if(Slot < INVENTORY_BAGSTART) {
-		PlayEquipSound(Slot);
+	if(Slot.IsEquipmentSlot()) {
+		PlayEquipSound(Slot.Index);
 
 		RecalculateStats();
 		ResetWeaponAnimation();
@@ -896,41 +828,42 @@ void _Player::SortInventory() {
 	ae::Audio.PlaySound(ae::Assets.Sounds["game_click0.ogg"]);
 
 	// Add items to sortable array
-	std::vector<_Item *> Bag;
-	Bag.reserve(INVENTORY_BAGSIZE);
-	for(int i = INVENTORY_BAGSTART; i < INVENTORY_BAGEND; i++) {
-		if(!Inventory[i])
+	_Bag &Bag = GetActiveBackpackBag();
+	std::vector<_Item *> SortBag;
+	SortBag.reserve(Bag.Slots.size());
+	for(size_t i = 0; i < Bag.Slots.size(); i++) {
+		if(!Bag.Slots[i])
 			continue;
 
-		Bag.push_back(Inventory[i]);
-		Inventory[i] = nullptr;
+		SortBag.push_back(Bag.Slots[i]);
+		Bag.Slots[i] = nullptr;
 	}
 
 	// Sort
-	std::sort(Bag.begin(), Bag.end(), CompareItem);
+	std::sort(SortBag.begin(), SortBag.end(), CompareItem);
 
 	// Add items back in
-	for(size_t i = 0; i < Bag.size(); i++)
-		Inventory[INVENTORY_BAGSTART + i] = Bag[i];
+	for(size_t i = 0; i < SortBag.size(); i++)
+		Bag.Slots[i] = SortBag[i];
 }
 
-// Equip an item
-bool _Player::CanEquipItem(_Item *Item, int Slot) {
+// Determine if an item can be equipped in a slot
+bool _Player::CanEquipItem(const _Item *Item, size_t Slot) const {
 	if(!Item)
 		return true;
 
 	switch(Slot) {
-		case INVENTORY_ARMOR: {
+		case EquipmentType::ARMOR: {
 			if(Item->Type != _Object::ARMOR)
 				return false;
 
 			return true;
 		} break;
-		case INVENTORY_MAINHAND:
-		case INVENTORY_OFFHAND:
-		case INVENTORY_MELEE: {
+		case EquipmentType::MAINHAND:
+		case EquipmentType::OFFHAND:
+		case EquipmentType::MELEE: {
 			if(Item->Type == _Object::WEAPON) {
-				if(Slot == INVENTORY_MELEE) {
+				if(Slot == EquipmentType::MELEE) {
 					if(Item->IsMelee())
 						return true;
 				}
@@ -944,8 +877,10 @@ bool _Player::CanEquipItem(_Item *Item, int Slot) {
 }
 
 // Swap inventory
-void _Player::SwapInventory(int SlotFrom, int SlotTo) {
-	if(!IsValidInventory(SlotFrom) || !IsValidInventory(SlotTo))
+void _Player::SwapInventory(const _Slot &SlotFrom, const _Slot &SlotTo) {
+	_Item *ItemFrom = SlotFrom.GetItem();
+	_Item *ItemTo = SlotTo.GetItem();
+	if(!ItemFrom)
 		return;
 
 	if(SlotFrom == SlotTo)
@@ -960,43 +895,43 @@ void _Player::SwapInventory(int SlotFrom, int SlotTo) {
 		return;
 
 	// Prevent swap with equipment and non-equipment
-	if(Inventory[SlotFrom] && !Inventory[SlotFrom]->CanEquip() && Inventory[SlotTo] && Inventory[SlotTo]->CanEquip())
+	if(ItemFrom && !ItemFrom->CanEquip() && ItemTo && ItemTo->CanEquip())
 		return;
 
 	// Check for simple swap
 	bool CanSwap = false;
-	if(IsBagIndex(SlotFrom) && IsBagIndex(SlotTo)) {
+	if(!SlotFrom.IsEquipmentSlot() && !SlotTo.IsEquipmentSlot()) {
 		CanSwap = true;
 	}
 	// Equipment swap
-	else if((IsEquipmentIndex(SlotFrom) && IsBagIndex(SlotTo)) || (IsEquipmentIndex(SlotTo) && IsBagIndex(SlotFrom)) || (IsEquipmentIndex(SlotTo) && IsEquipmentIndex(SlotFrom))) {
-		if(IsEquipmentIndex(SlotTo))
-			CanSwap = CanEquipItem(Inventory[SlotFrom], SlotTo);
+	else if((SlotFrom.IsEquipmentSlot() && !SlotTo.IsEquipmentSlot()) || (SlotTo.IsEquipmentSlot() && !SlotFrom.IsEquipmentSlot()) || (SlotFrom.IsEquipmentSlot() && SlotTo.IsEquipmentSlot())) {
+		if(SlotTo.IsEquipmentSlot())
+			CanSwap = CanEquipItem(ItemFrom, SlotTo.Index);
 		else
-			CanSwap = CanEquipItem(Inventory[SlotTo], SlotFrom);
+			CanSwap = CanEquipItem(ItemTo, SlotFrom.Index);
 	}
 
 	if(!CanSwap)
 		return;
 
-	if(SlotTo == INVENTORY_MAINHAND || SlotFrom == INVENTORY_MAINHAND || (IsHandIndex(SlotFrom) && IsHandIndex(SlotTo)) ) {
+	if((SlotTo.IsEquipmentSlot() && SlotTo.Index == EquipmentType::MAINHAND) || (SlotFrom.IsEquipmentSlot() && SlotFrom.Index == EquipmentType::MAINHAND) || (SlotFrom.IsEquipmentSlot() && SlotTo.IsEquipmentSlot() && SlotFrom.IsHandIndex() && SlotTo.IsHandIndex()) ) {
 		StartWeaponSwitch(SlotFrom, SlotTo);
 	}
 	else {
 
 		// Try to combine items
-		int CombineResult = CombineItems(Inventory[SlotFrom], Inventory[SlotTo]);
+		int CombineResult = CombineItems(ItemFrom, ItemTo);
 		if(CombineResult == 0) {
-			if(!PlayEquipSound(SlotFrom))
-				PlayEquipSound(SlotTo);
+			if(!PlayEquipSound(SlotFrom.Index))
+				PlayEquipSound(SlotTo.Index);
 
-			_Item *Temp = Inventory[SlotFrom];
-			Inventory[SlotFrom] = Inventory[SlotTo];
-			Inventory[SlotTo] = Temp;
+			// Swap
+			SlotFrom.SetItem(ItemTo);
+			SlotTo.SetItem(ItemFrom);
 		}
 		else if(CombineResult == 2) {
-			delete Inventory[SlotFrom];
-			Inventory[SlotFrom] = nullptr;
+			delete ItemFrom;
+			SlotFrom.RemoveItem();
 		}
 	}
 
@@ -1031,18 +966,19 @@ int _Player::AddInventory(_Item *Item) {
 		return ADD_FULL;
 
 	// Search for an existing item or empty slot
-	int EmptySlot = -1;
-	for(int i = INVENTORY_BAGSTART; i < INVENTORY_BAGEND; i++) {
-		if(CombineItems(Item, Inventory[i]) == 2)
+	size_t EmptySlot = (size_t)-1;
+	_Bag &Bag = GetActiveBackpackBag();
+	for(size_t i = 0; i < Bag.Slots.size(); i++) {
+		if(CombineItems(Item, Bag.Slots[i]) == 2)
 			return ADD_DELETE;
 
-		if(Inventory[i] == nullptr && EmptySlot == -1)
+		if(Bag.Slots[i] == nullptr && EmptySlot == (size_t)-1)
 			EmptySlot = i;
 	}
 
 	// Add item to empty slot
-	if(EmptySlot != -1) {
-		Inventory[EmptySlot] = Item;
+	if(EmptySlot != (size_t)-1) {
+		Bag.Slots[EmptySlot] = Item;
 		return ADD_REMOVE;
 	}
 
@@ -1050,16 +986,17 @@ int _Player::AddInventory(_Item *Item) {
 }
 
 // Add a mod to a weapon
-bool _Player::AddMod(int FromIndex, int ToIndex) {
-	if(!HasInventory(FromIndex) || Inventory[FromIndex]->Type != _Object::MOD)
+bool _Player::AddMod(const _Slot &SlotFrom, const _Slot &SlotTo) {
+	_Item *ItemFrom = SlotFrom.GetItem();
+	_Item *ItemTo = SlotTo.GetItem();
+	if(!ItemFrom || !ItemTo)
 		return false;
 
-	_Item *Item = Inventory[ToIndex];
-	if(!Item)
+	if(ItemFrom->Type != _Object::MOD)
 		return false;
 
-	if(Item->AddMod(Inventory[FromIndex])) {
-		ConsumeInventory(FromIndex, false);
+	if(ItemTo->AddMod(ItemFrom)) {
+		ConsumeInventory(SlotFrom, false);
 		RecalculateStats();
 		return true;
 	}
@@ -1068,16 +1005,17 @@ bool _Player::AddMod(int FromIndex, int ToIndex) {
 }
 
 // Apply usable item to another
-bool _Player::ApplyUsable(int FromIndex, int ToIndex) {
-	if(!HasInventory(FromIndex) || Inventory[FromIndex]->Type != _Object::USABLE)
+bool _Player::ApplyUsable(const _Slot &SlotFrom, const _Slot &SlotTo) {
+	_Item *ItemFrom = SlotFrom.GetItem();
+	_Item *ItemTo = SlotTo.GetItem();
+	if(!ItemFrom || !ItemTo)
 		return false;
 
-	_Item *Item = Inventory[ToIndex];
-	if(!Item)
+	if(ItemFrom->Type != _Object::USABLE)
 		return false;
 
-	if(Item->ApplyUsable(Inventory[FromIndex])) {
-		ConsumeInventory(FromIndex, true);
+	if(ItemTo->ApplyUsable(ItemFrom)) {
+		ConsumeInventory(SlotFrom, true);
 		RecalculateStats();
 		return true;
 	}
@@ -1104,7 +1042,7 @@ float _Player::GetCrosshairRadius(const glm::vec2 &Cursor) {
 // Checks if the player's weapon has ammo
 bool _Player::WeaponHasAmmo(int AttackType) const {
 	if(AttackType == WEAPONATTACK_MAIN) {
-		if(!HasMainHand() || GetMainHand()->Template.AmmoID.empty())
+		if(!GetMainHand() || GetMainHand()->Template.AmmoID.empty())
 			return true;
 
 		return GetMainHand()->Attributes.at("ammo").Int > 0;
@@ -1118,10 +1056,20 @@ bool _Player::WeaponHasAmmo(int AttackType) const {
 
 // Get number of rounds in main weapon
 int _Player::GetWeaponAmmo() const {
-	if(!HasMainHand())
+	if(!GetMainHand())
 		return 0;
 
 	return GetMainHand()->Attributes.at("ammo").Int;
+}
+
+// Return active outfit bag
+_Bag &_Player::GetActiveOutfitBag() const {
+	return Inventory->Containers[(size_t)BagType::OUTFIT][(size_t)ActiveOutfit];
+}
+
+// Return active backpack bag
+_Bag &_Player::GetActiveBackpackBag() const {
+	return Inventory->Containers[(size_t)BagType::BACKPACK][0];
 }
 
 // Update ammo needed by the player
@@ -1138,7 +1086,7 @@ void _Player::UpdateAmmoNeeded() {
 
 // Checks if the player has ammo for the main weapon
 bool _Player::HasAmmoForMain() const {
-	if(!HasMainHand())
+	if(!GetMainHand())
 		return false;
 
 	const std::string &AmmoType = GetMainHand()->Template.AmmoID;
@@ -1150,7 +1098,7 @@ bool _Player::HasAmmoForMain() const {
 
 // Reduces the player's mainhand weapon ammo and returns the amount reduced
 int _Player::ReduceAmmo(int Amount) {
-	if(HasMainHand() && AttackRequestType == WEAPONATTACK_MAIN) {
+	if(GetMainHand() && AttackRequestType == WEAPONATTACK_MAIN) {
 		Amount = std::min(GetMainHand()->Attributes["ammo"].Int, Amount);
 		GetMainHand()->Attributes["ammo"].Int = std::max(GetMainHand()->Attributes["ammo"].Int - Amount, 0);
 
@@ -1158,37 +1106,6 @@ int _Player::ReduceAmmo(int Amount) {
 	}
 
 	return Amount;
-}
-
-// Uses an item from the player's inventory, return true if a key was used
-bool _Player::UseItem(int Index, bool Event) {
-	if(Index < INVENTORY_BAGSTART || Index >= INVENTORY_BAGEND)
-		return false;
-
-	if(!HasInventory(Index))
-		return false;
-
-	return false;
-}
-
-// Searches for an item by type and returns the index
-int _Player::FindItem(int ItemType) {
-	for(int i = INVENTORY_BAGSTART; i < INVENTORY_BAGEND; i++) {
-		if(HasInventory(i) && Inventory[i]->Type == ItemType)
-			return i;
-	}
-
-	return -1;
-}
-
-// Searchs the inventory for a certain item
-int _Player::FindItem(const std::string &ItemID) {
-	for(int i = INVENTORY_BAGSTART; i < INVENTORY_BAGEND; i++) {
-		if(HasInventory(i) && Inventory[i]->ID == ItemID)
-			return i;
-	}
-
-	return -1;
 }
 
 // Begins the reloading process
@@ -1221,14 +1138,14 @@ void _Player::CancelReloading() {
 }
 
 // Begins the weapon switch process
-void _Player::StartWeaponSwitch(int SlotFrom, int SlotTo) {
+void _Player::StartWeaponSwitch(const _Slot &SlotFrom, const _Slot &SlotTo) {
 
 	// Test conditions
 	if(!CanSwitchWeapons())
 		return;
 
 	// Test for empty hands
-	if(IsHandIndex(SlotFrom) && IsHandIndex(SlotTo) && !GetMainHand() && !GetOffHand())
+	if(SlotFrom.IsHandIndex() && SlotTo.IsHandIndex() && !GetMainHand() && !GetOffHand())
 		return;
 
 	// Start timer
@@ -1285,11 +1202,13 @@ void _Player::UpdateWeaponSwitch() {
 
 	// Check weapon type
 	if(!CanSwitchWeapons())
-	   return;
+		return;
 
-	_Item *Temp = Inventory[WeaponSwitchFrom];
-	Inventory[WeaponSwitchFrom] = Inventory[WeaponSwitchTo];
-	Inventory[WeaponSwitchTo] = Temp;
+	_Item *ItemFrom = WeaponSwitchFrom.GetItem();
+	_Item *ItemTo = WeaponSwitchTo.GetItem();
+
+	WeaponSwitchFrom.SetItem(ItemTo);
+	WeaponSwitchTo.SetItem(ItemFrom);
 
 	RecalculateStats();
 	ResetWeaponAnimation();
@@ -1362,17 +1281,17 @@ void _Player::ResetAccuracy(bool CompleteReset) {
 }
 
 // Consume an item from the inventory
-void _Player::ConsumeInventory(int Index, bool Delete) {
-	if(Inventory[Index] == nullptr)
+void _Player::ConsumeInventory(const _Slot &Slot, bool Delete) {
+	_Item *Item = Slot.GetItem();
+	if(!Item)
 		return;
 
-	if(Index < INVENTORY_BAGSTART || Index >= INVENTORY_BAGEND)
-		return;
-
-	if(Inventory[Index]->UpdateCount(-1) <= 0) {
+	// Delete item
+	if(Item->UpdateCount(-1) <= 0) {
 		if(Delete)
-			delete Inventory[Index];
-		Inventory[Index] = nullptr;
+			delete Item;
+
+		Slot.RemoveItem();
 	}
 }
 
@@ -1454,9 +1373,9 @@ void _Player::ApplyDeathPenalty() {
 
 // Returns a sound index
 const ae::_Sound *_Player::GetSound(int SoundType, int AttackType) const {
-	if(AttackType == WEAPONATTACK_MAIN && HasMainHand())
+	if(AttackType == WEAPONATTACK_MAIN && GetMainHand())
 		return GetMainHand()->GetSound(SoundType);
-	else if(AttackType == WEAPONATTACK_MELEE && HasMelee())
+	else if(AttackType == WEAPONATTACK_MELEE && GetMelee())
 		return GetMelee()->GetSound(SoundType);
 
 	return _Entity::GetSound(SoundType, AttackType);
@@ -1472,7 +1391,7 @@ const _ParticleTemplate *_Player::GetParticle(int ParticleType) const {
 		return Template[ae::GetRandomInt((size_t)0, Template.size()-1)];
 	}
 
-	if(HasMainHand()) {
+	if(GetMainHand()) {
 		const auto &Template = GetMainHand()->Template.ParticleGroup->ParticleTemplates[ParticleType];
 		if(Template.empty())
 			return nullptr;
@@ -1481,6 +1400,26 @@ const _ParticleTemplate *_Player::GetParticle(int ParticleType) const {
 	}
 
 	return nullptr;
+}
+
+// Get current main hand weapon
+_Item *_Player::GetMainHand() const {
+	return GetActiveOutfitBag().Slots[EquipmentType::MAINHAND];
+}
+
+// Get current offhand weapon
+_Item *_Player::GetOffHand() const {
+	return GetActiveOutfitBag().Slots[EquipmentType::OFFHAND];
+}
+
+// Get current melee weapon
+_Item *_Player::GetMelee() const {
+	return GetActiveOutfitBag().Slots[EquipmentType::MELEE];
+}
+
+// Get current armor
+_Item *_Player::GetArmor() const {
+	return GetActiveOutfitBag().Slots[EquipmentType::ARMOR];
 }
 
 // Set attack requested
@@ -1506,20 +1445,20 @@ void _Player::OnHit(_Entity *Attacker, const _Hit &Hit) {
 }
 
 // Play equip sounds
-bool _Player::PlayEquipSound(int Slot) const {
+bool _Player::PlayEquipSound(size_t Slot) const {
 
 	switch(Slot) {
-		case INVENTORY_ARMOR:
-			ae::Audio.PlaySound(ae::Assets.Sounds["equip_armor0.ogg"]);
-			return true;
-		break;
-		case INVENTORY_MAINHAND:
-		case INVENTORY_OFFHAND:
+		case EquipmentType::MAINHAND:
+		case EquipmentType::OFFHAND:
 			ae::Audio.PlaySound(ae::Assets.Sounds["equip_gun0.ogg"]);
 			return true;
 		break;
-		case INVENTORY_MELEE:
+		case EquipmentType::MELEE:
 			ae::Audio.PlaySound(ae::Assets.Sounds["equip_melee0.ogg"]);
+			return true;
+		break;
+		case EquipmentType::ARMOR:
+			ae::Audio.PlaySound(ae::Assets.Sounds["equip_armor0.ogg"]);
 			return true;
 		break;
 	}
@@ -1532,7 +1471,7 @@ int _Player::GetInventoryMaxStack() const {
 }
 
 bool _Player::CanReload() const {
-	return HasMainHand() && AttackTimer[WEAPONATTACK_MAIN] >= ReloadDelay && !Reloading && !SwitchingWeapons && !IsMeleeAttacking() && GetMainHand()->Attributes.at("ammo").Int != std::round(GetMainHand()->Attributes.at("rounds").Float) && HasAmmoForMain();
+	return GetMainHand() && AttackTimer[WEAPONATTACK_MAIN] >= ReloadDelay && !Reloading && !SwitchingWeapons && !IsMeleeAttacking() && GetMainHand()->Attributes.at("ammo").Int != std::round(GetMainHand()->Attributes.at("rounds").Float) && HasAmmoForMain();
 }
 
 bool _Player::IsMelee() const {

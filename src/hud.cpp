@@ -18,6 +18,7 @@
 #include <hud.h>
 #include <objects/entity.h>
 #include <objects/player.h>
+#include <objects/inventory.h>
 #include <objects/item.h>
 #include <ae/input.h>
 #include <ae/actions.h>
@@ -147,7 +148,8 @@ _HUD::_HUD(const ae::_Camera *Camera, _Player *Player) : Camera(Camera), Player(
 	ae::Assets.Elements["element_hud_filters"]->SetActive(true);
 
 	Elements[ELEMENT_INVENTORY] = ae::Assets.Elements["element_inventory"];
-	Elements[ELEMENT_INVENTORY_BUTTONS] = ae::Assets.Elements["element_inventory_buttons"];
+	Elements[ELEMENT_INVENTORY_OUTFIT] = ae::Assets.Elements["element_inventory_outfit"];
+	Elements[ELEMENT_INVENTORY_BACKPACK] = ae::Assets.Elements["element_inventory_backpack"];
 	Elements[ELEMENT_INVENTORY_OVERLAY] = ae::Assets.Elements["element_inventory_overlay"];
 	Elements[ELEMENT_SKILLS] = ae::Assets.Elements["element_skills"];
 	Elements[LABEL_SKILL_REMAINING] = ae::Assets.Elements["label_hud_skill_remaining_value"];
@@ -190,21 +192,25 @@ void _HUD::MouseEvent(const ae::_MouseEvent &MouseEvent) {
 
 	// Get hit element
 	ae::_Element *HitElement = Elements[ELEMENT_INVENTORY]->HitElement;
+	_Slot HitSlot;
+	GetHitSlot(HitElement, HitSlot);
+
+	// Check click type
 	switch(MouseEvent.Button) {
 		case SDL_BUTTON_LEFT:
 
 			// Start dragging an item
 			if(MouseEvent.Pressed) {
-				if(Player->CanDragItem()) {
+				if(Player->CanDragItems()) {
 
 					// Drag from inventory
-					if(HitElement && HitElement->Index >= 0) {
+					if(HitSlot.Bag) {
 						if(ae::Input.ModKeyDown(KMOD_CTRL)) {
-							Player->DropItem(HitElement->Index);
+							Player->DropItem(HitSlot);
 						}
 						else {
-							DragStart = HitElement;
-							CursorItem = Player->Inventory[DragStart->Index];
+							DragSlot = HitSlot;
+							CursorItem = DragSlot.GetItem();
 							ClickOffset = glm::vec2(MouseEvent.Position) - HitElement->Bounds.GetCenter();
 						}
 					}
@@ -228,10 +234,10 @@ void _HUD::MouseEvent(const ae::_MouseEvent &MouseEvent) {
 					CursorItem->Visible = true;
 
 					// From inventory
-					if(DragStart) {
+					if(DragSlot.Bag) {
 
 						// Drop in world
-						if(!HitElement) {
+						if(!HitSlot.Bag) {
 
 							// Get world position
 							glm::vec2 WorldPosition;
@@ -239,58 +245,54 @@ void _HUD::MouseEvent(const ae::_MouseEvent &MouseEvent) {
 							PlayState.Map->GetDropPosition(Player, PLAYER_REACH_DISTANCE, WorldPosition);
 
 							// Drop item
-							Player->DropItem(DragStart->Index, WorldPosition);
+							Player->DropItem(DragSlot, WorldPosition);
 						}
 						// Move item to another slot
-						else if(HitElement->Index >= 0)
-							Player->SwapInventory(DragStart->Index, HitElement->Index);
+						else
+							Player->SwapInventory(DragSlot, HitSlot);
 					}
 					// From world
 					else {
-						if(HitElement) {
+						if(HitSlot.Bag) {
 							Player->UseTimer = 0.0;
 
 							// Drag onto inventory
-							if(HitElement->Index >= 0) {
-								bool CanEquip = _Player::IsEquipmentIndex(HitElement->Index) && Player->CanEquipItem(CursorItem, HitElement->Index);
-								bool SetAndRemove = false;
+							bool CanEquip = HitSlot.IsEquipmentSlot() && Player->CanEquipItem(CursorItem, HitSlot.Index);
+							bool SetAndRemove = false;
 
-								// Drag onto existing item
-								_Item *ExistingItem = Player->Inventory[HitElement->Index];
-								if(ExistingItem) {
-									if(CursorItem->Type == _Object::USABLE) {
-										if(ApplyUsableItem(ExistingItem)) {
-											delete ExistingItem;
-											Player->Inventory[HitElement->Index] = nullptr;
-										}
-									}
-									else if(ExistingItem->AddMod(CursorItem)) {
-										CursorItem->Visible = false;
-										PlayState.Map->RemoveObject(CursorItem, GRID_ITEM);
-									}
-									else if(CursorItem->Type == _Object::MOD && ExistingItem->CanEquip() && !ExistingItem->ItemCompatible(CursorItem)) {
-										MoveWorldItem(Player->Position);
-									}
-									else if(CanEquip || _Player::IsBagIndex(HitElement->Index)) {
-										Player->DropItem(HitElement->Index);
-										SetAndRemove = true;
-									}
+							// Drag onto existing item
+							_Item *ExistingItem = HitSlot.GetItem();
+							if(ExistingItem) {
+								if(CursorItem->Type == _Object::USABLE) {
+									if(ApplyUsableItem(ExistingItem))
+										HitSlot.DeleteItem();
 								}
-								// Drag onto empty slot
-								else if(CursorItem->Moveable && (CanEquip || _Player::IsBagIndex(HitElement->Index))) {
+								else if(ExistingItem->AddMod(CursorItem)) {
+									CursorItem->Visible = false;
+									PlayState.Map->RemoveObject(CursorItem, GRID_ITEM);
+								}
+								else if(CursorItem->Type == _Object::MOD && ExistingItem->CanEquip() && !ExistingItem->ItemCompatible(CursorItem)) {
+									MoveWorldItem(Player->Position);
+								}
+								else if(CanEquip || !HitSlot.IsEquipmentSlot()) {
+									Player->DropItem(HitSlot);
 									SetAndRemove = true;
 								}
-
-								// Add item to inventory and remove from world
-								if(SetAndRemove) {
-									CursorItem->Visible = false;
-									Player->Inventory[HitElement->Index] = CursorItem;
-									PlayState.Map->RemoveObject(CursorItem, GRID_ITEM);
-									Player->PlayEquipSound(HitElement->Index);
-								}
-
-								Player->RecalculateStats();
 							}
+							// Drag onto empty slot
+							else if(CursorItem->Moveable && (CanEquip || !HitSlot.IsEquipmentSlot())) {
+								SetAndRemove = true;
+							}
+
+							// Add item to inventory and remove from world
+							if(SetAndRemove) {
+								CursorItem->Visible = false;
+								HitSlot.SetItem(CursorItem);
+								PlayState.Map->RemoveObject(CursorItem, GRID_ITEM);
+								Player->PlayEquipSound(HitSlot.Index);
+							}
+
+							Player->RecalculateStats();
 						}
 						// Drop to another world location
 						else
@@ -300,57 +302,53 @@ void _HUD::MouseEvent(const ae::_MouseEvent &MouseEvent) {
 					CursorItem = nullptr;
 				}
 
-				DragStart = nullptr;
+				DragSlot.Reset();
 			}
 		break;
 		case SDL_BUTTON_RIGHT:
-			if(MouseEvent.Pressed && Player->CanEquipItem() && !CursorItem) {
+			if(MouseEvent.Pressed && Player->CanEquipItems() && !CursorItem) {
 
-				// Equip from inventory
-				if(HitElement && HitElement->Index >= 0) {
-					_Item *Item = Player->Inventory[HitElement->Index];
-					if(Item) {
+				// Equip from backpack
+				if(HitSlot.IsValidIndex() && HitSlot.GetItem()) {
 
-						// Equip item
-						if(_Player::IsBagIndex(HitElement->Index)) {
-							switch(Item->Type) {
-								case _Object::WEAPON: {
-									if(Item->IsMelee())
-										Player->SwapInventory(HitElement->Index, INVENTORY_MELEE);
-									else
-										Player->SwapInventory(HitElement->Index, ae::Input.ModKeyDown(KMOD_CTRL) ? INVENTORY_OFFHAND : INVENTORY_MAINHAND);
-								} break;
-								case _Object::ARMOR:
-									Player->SwapInventory(HitElement->Index, INVENTORY_ARMOR);
-								break;
-							}
+					// Unequip item
+					if(HitSlot.Bag->Equipment) {
+						if(Player->AddInventory(HitSlot.GetItem())) {
+							Player->PlayEquipSound(HitSlot.Index);
+							HitSlot.RemoveItem();
+
+							Player->RecalculateStats();
 						}
-						// Unequip item
-						else if(_Player::IsEquipmentIndex(HitElement->Index)) {
-							if(Player->AddInventory(Item)) {
-								Player->PlayEquipSound(HitElement->Index);
-
-								Player->Inventory[HitElement->Index] = nullptr;
-								Player->RecalculateStats();
-							}
+					}
+					// Equip item from backpack
+					else {
+						switch(HitSlot.GetItem()->Type) {
+							case _Object::WEAPON: {
+								if(HitSlot.GetItem()->IsMelee())
+									Player->SwapInventory(HitSlot, _Slot(&Player->GetActiveOutfitBag(), EquipmentType::MELEE));
+								else
+									Player->SwapInventory(HitSlot, _Slot(&Player->GetActiveOutfitBag(), ae::Input.ModKeyDown(KMOD_CTRL) ? EquipmentType::OFFHAND : EquipmentType::MAINHAND));
+							} break;
+							case _Object::ARMOR:
+								Player->SwapInventory(HitSlot, _Slot(&Player->GetActiveOutfitBag(), EquipmentType::ARMOR));
+							break;
 						}
 					}
 
-					if(!Player->HasInventory(HitElement->Index))
-						CursorOverItem = nullptr;
+					CursorOverItem = HitSlot.GetItem();
 				}
 				// Equip from world
 				else if(CanGrabItem(CursorOverItem)) {
-					int Slot = -1;
+					size_t SlotIndex = (size_t)-1;
 					switch(CursorOverItem->Type) {
 						case _Object::WEAPON: {
 							if(CursorOverItem->IsMelee())
-								Slot = INVENTORY_MELEE;
+								SlotIndex = EquipmentType::MELEE;
 							else
-								Slot = ae::Input.ModKeyDown(KMOD_CTRL) ? INVENTORY_OFFHAND : INVENTORY_MAINHAND;
+								SlotIndex = ae::Input.ModKeyDown(KMOD_CTRL) ? EquipmentType::OFFHAND : EquipmentType::MAINHAND;
 						} break;
 						case _Object::ARMOR:
-							Slot = INVENTORY_ARMOR;
+							SlotIndex = EquipmentType::ARMOR;
 						break;
 						default:
 							PlayState.PickupObject(CursorOverItem, true);
@@ -358,21 +356,21 @@ void _HUD::MouseEvent(const ae::_MouseEvent &MouseEvent) {
 					}
 
 					// Equip item
-					if(Slot != -1) {
-						Player->DropItem(Slot);
-						Player->Inventory[Slot] = CursorOverItem;
+					if(SlotIndex != (size_t)-1) {
+						Player->DropItem(_Slot(&Player->GetActiveOutfitBag(), SlotIndex));
+						Player->GetActiveOutfitBag().Slots[SlotIndex] = CursorOverItem;
 						PlayState.Map->RemoveObject(CursorOverItem, GRID_ITEM);
 						Player->RecalculateStats();
-						Player->PlayEquipSound(Slot);
+						Player->PlayEquipSound(SlotIndex);
 					}
 				}
 			}
 		break;
 		case SDL_BUTTON_MIDDLE:
 			if(MouseEvent.Pressed) {
-				if(HitElement && HitElement->Index >= 0 && Player->Inventory[HitElement->Index] != CursorItem) {
-					Player->DropItem(HitElement->Index);
-				}
+				_Item *DropItem = HitSlot.GetItem();
+				if(DropItem && DropItem != CursorItem)
+					Player->DropItem(HitSlot);
 			}
 		break;
 	}
@@ -396,7 +394,8 @@ void _HUD::MouseEvent(const ae::_MouseEvent &MouseEvent) {
 void _HUD::Update(double FrameTime, float Radius, double Clock) {
 	LastEntityHitTimer += FrameTime;
 	CursorOverItem = nullptr;
-	CursorInventorySlot = -1;
+	CursorSlot.Bag = nullptr;
+	CursorSlot.Index = (size_t)-1;
 	CursorSkill = -1;
 
 	// Update clock
@@ -421,15 +420,14 @@ void _HUD::Update(double FrameTime, float Radius, double Clock) {
 	if(InventoryOpen) {
 		Menu.ShowDefaultCursor(true);
 
-		ae::_Element *HitElement;
-		HitElement = Elements[ELEMENT_INVENTORY]->HitElement;
-		if(HitElement && HitElement->Index >= 0) {
-			CursorOverItem = Player->Inventory[HitElement->Index];
+		// Get cursor item
+		GetHitSlot(Elements[ELEMENT_INVENTORY]->HitElement, CursorSlot);
+		if(CursorSlot.Bag && CursorSlot.GetItem()) {
+			CursorOverItem = CursorSlot.GetItem();
 			CursorUseWorldPosition = false;
-			CursorInventorySlot = HitElement->Index;
 		}
 
-		HitElement = Elements[ELEMENT_SKILLS]->HitElement;
+		ae::_Element *HitElement = Elements[ELEMENT_SKILLS]->HitElement;
 		if(HitElement && HitElement->Index >= 0)
 			UpdateSkillTooltip(HitElement->Index, ae::Input.GetMouse());
 
@@ -643,7 +641,6 @@ void _HUD::Render(bool FullMap) {
 
 	// Draw item tooltip
 	if(CursorOverItem && CursorItem != CursorOverItem) {
-		size_t CompareSlot = (size_t)-1;
 
 		// Disable searching for single slot items when ctrl is held
 		bool Search = true;
@@ -651,54 +648,80 @@ void _HUD::Render(bool FullMap) {
 			Search = false;
 
 		// Search for similar item
-		size_t SearchEnd = CursorInventorySlot == -1 ? INVENTORY_BAGEND : INVENTORY_BAGSTART;
+		_Slot CompareSlot;
 		if(Search) {
-			for(size_t i = 0; i < SearchEnd; i++) {
-				const _Item *Item = Player->Inventory[i];
-				if(!Item || !Item->CanEquip())
-					continue;
+			bool SkipBackpack = CursorSlot.Bag;
+			for(size_t ContainerIndex = 0; ContainerIndex < Player->Inventory->Containers.size(); ContainerIndex++) {
+				_Container &Container = Player->Inventory->Containers[ContainerIndex];
+				for(size_t BagIndex = 0; BagIndex < Container.size(); BagIndex++) {
+					_Bag &Bag = Container[BagIndex];
+					if(!Bag.Equipment && SkipBackpack)
+						continue;
 
-				if(Item->Template.ID == CursorOverItem->Template.ID) {
-					CompareSlot = i;
-					break;
+					for(size_t i = 0; i < Bag.Slots.size(); i++) {
+						const _Item *Item = Bag.Slots[i];
+						if(!Item || !Item->CanEquip())
+							continue;
+
+						if(Item->Template.ID == CursorOverItem->Template.ID) {
+							CompareSlot.Index = i;
+							CompareSlot.Bag = &Bag;
+							ContainerIndex = Player->Inventory->Containers.size();
+							BagIndex = Container.size();
+							break;
+						}
+					}
 				}
 			}
 		}
 
 		// Couldn't find similar type, compare with equipped gear
-		if(CompareSlot == (size_t)-1) {
+		if(!CompareSlot.Bag) {
 			switch(CursorOverItem->Type) {
 				case _Object::WEAPON:
 					if(CursorOverItem->IsMelee()) {
-						if(Player->GetMelee())
-							CompareSlot = INVENTORY_MELEE;
+						if(Player->GetMelee()) {
+							CompareSlot.Bag = &Player->GetActiveOutfitBag();
+							CompareSlot.Index = EquipmentType::MELEE;
+						}
 					}
 					else {
 						if(ae::Input.ModKeyDown(KMOD_CTRL)) {
-							if(Player->GetOffHand())
-								CompareSlot = INVENTORY_OFFHAND;
-							else if(Player->GetMainHand())
-								CompareSlot = INVENTORY_MAINHAND;
+							if(Player->GetOffHand()) {
+								CompareSlot.Bag = &Player->GetActiveOutfitBag();
+								CompareSlot.Index = EquipmentType::OFFHAND;
+							}
+							else if(Player->GetMainHand()) {
+								CompareSlot.Bag = &Player->GetActiveOutfitBag();
+								CompareSlot.Index = EquipmentType::MAINHAND;
+							}
 						}
 						else {
-							if(Player->GetMainHand())
-								CompareSlot = INVENTORY_MAINHAND;
-							else if(Player->GetOffHand())
-								CompareSlot = INVENTORY_OFFHAND;
+							if(Player->GetMainHand()) {
+								CompareSlot.Bag = &Player->GetActiveOutfitBag();
+								CompareSlot.Index = EquipmentType::MAINHAND;
+							}
+							else if(Player->GetOffHand()) {
+								CompareSlot.Bag = &Player->GetActiveOutfitBag();
+								CompareSlot.Index = EquipmentType::OFFHAND;
+							}
 						}
 					}
 				break;
 				case _Object::ARMOR:
-					if(Player->GetArmor())
-						CompareSlot = INVENTORY_ARMOR;
+					if(Player->GetArmor()) {
+						CompareSlot.Bag = &Player->GetActiveOutfitBag();
+						CompareSlot.Index = EquipmentType::ARMOR;
+					}
 				break;
 			}
 		}
 
 		// Draw comparison tooltip
-		if(CompareSlot != (size_t)-1 && CompareSlot != (size_t)CursorInventorySlot) {
-			const _Item *Item = Player->Inventory[CompareSlot];
-			Item->DrawTooltip(Player, glm::ivec2(-100, ae::Graphics.CurrentSize.y/2), size_t(-1), -1, false);
+		const _Item *EquippedItem = nullptr;
+		if(CompareSlot.Bag && CompareSlot != CursorSlot) {
+			EquippedItem = CompareSlot.GetItem();
+			EquippedItem->DrawTooltip(Player, glm::ivec2(-100, ae::Graphics.CurrentSize.y/2), nullptr, _Slot(), false);
 		}
 
 		// Get position of tooltip
@@ -709,8 +732,8 @@ void _HUD::Render(bool FullMap) {
 			CursorOverPosition = ae::Input.GetMouse();
 
 		// Draw cursor over item
-		bool ShowEquipHelp = CursorInventorySlot >= INVENTORY_BAGSTART || (CursorInventorySlot == -1 && PlayState.HUD->InventoryOpen);
-		CursorOverItem->DrawTooltip(Player, CursorOverPosition, CompareSlot, CursorInventorySlot, ShowEquipHelp);
+		bool ShowEquipHelp = (CursorSlot.Bag && !CursorSlot.IsEquipmentSlot()) || (CursorSlot.Index == (size_t)-1 && PlayState.HUD->InventoryOpen);
+		CursorOverItem->DrawTooltip(Player, CursorOverPosition, EquippedItem, CursorSlot, ShowEquipHelp);
 	}
 
 	// Draw full map
@@ -849,7 +872,7 @@ void _HUD::DrawCharacterScreen() {
 	glm::vec2 DrawPosition(ae::Graphics.CurrentSize.x - 160 * ae::_Element::GetUIScale(), 420 * ae::_Element::GetUIScale());
 
 	// Offense
-	if(Player->HasMainHand()) {
+	if(Player->GetMainHand()) {
 		if(PlayState.ShowMoreInfo())
 			Buffer << ae::Round2((Player->MinDamage[WEAPONATTACK_MAIN] + Player->MaxDamage[WEAPONATTACK_MAIN]) * 0.5f) << " avg";
 		else
@@ -960,66 +983,28 @@ void _HUD::DrawCharacterScreen() {
 // Draw inventory
 void _HUD::DrawInventory() {
 
-	// Draw the inventory background
+	// Draw inventory background
 	Elements[ELEMENT_INVENTORY_OVERLAY]->SetActive(false);
 	Elements[ELEMENT_INVENTORY]->Render();
 
 	// Draw inventory
 	ae::Graphics.SetProgram(ae::Assets.Programs["ortho_pos_uv"]);
-	for(size_t i = INVENTORY_MAINHAND; i < INVENTORY_BAGEND; i++) {
-		bool DrawIcon = (!Player->HasInventory((int)i) || Player->Inventory[i] == CursorItem) ? false : true;
-		if(!DrawIcon)
-			continue;
+	DrawBag(Player->GetActiveOutfitBag(), Elements[ELEMENT_INVENTORY_OUTFIT]);
+	DrawBag(Player->GetActiveBackpackBag(), Elements[ELEMENT_INVENTORY_BACKPACK]);
 
-		ae::_Element *Button = Elements[ELEMENT_INVENTORY_BUTTONS]->Children[i];
-		const _Item *Item = Player->Inventory[i];
-
-		// Draw icon
-		DrawInventoryItem(Button->Bounds.GetCenter(), Item, Item->Unique);
-	}
-
-	// Draw overlay for compatible mod types
+	// Draw highlights for compatible mod/usable types
 	if(CursorItem && (CursorItem->Type == _Item::MOD || CursorItem->Type == _Item::USABLE)) {
 		ae::Graphics.SetProgram(ae::Assets.Programs["ortho_pos"]);
-		for(size_t i = INVENTORY_MAINHAND; i < INVENTORY_BAGEND; i++) {
-			_Item *Item = Player->Inventory[i];
-			if(!Item || Item == CursorItem)
-				continue;
-
-			if(CursorItem->Type == _Object::MOD && !Item->CanMod())
-				continue;
-
-			if(CursorItem->Type == _Object::USABLE) {
-				if(CursorItem->Template.Attributes.at("usable_type").Int == USABLE_HAMMER && !Item->CanMod())
-					continue;
-				else if(CursorItem->Template.Attributes.at("usable_type").Int == USABLE_WHETSTONE && !Item->CanIncreaseQuality(false))
-					continue;
-			}
-
-			// Set overlay color
-			if(Item->ItemCompatible(CursorItem))
-				ae::Graphics.SetColor(glm::vec4(0.0f, 1.0f, 0.0f, 0.2f));
-			else
-				ae::Graphics.SetColor(glm::vec4(1.0f, 0.0f, 0.0f, 0.2f));
-
-			ae::_Element *Button = Elements[ELEMENT_INVENTORY_BUTTONS]->Children[i];
-			ae::Graphics.DrawRectangle(glm::ivec2(Button->Bounds.Start), glm::ivec2(Button->Bounds.End), true);
-		}
+		DrawBagHighlights(Player->GetActiveOutfitBag(), Elements[ELEMENT_INVENTORY_OUTFIT]);
+		DrawBagHighlights(Player->GetActiveBackpackBag(), Elements[ELEMENT_INVENTORY_BACKPACK]);
 	}
 
 	// Draw more info
 	if(PlayState.ShowMoreInfo()) {
 		Elements[ELEMENT_INVENTORY_OVERLAY]->SetActive(true);
 		Elements[ELEMENT_INVENTORY_OVERLAY]->Render();
-		for(size_t i = INVENTORY_MAINHAND; i < INVENTORY_BAGEND; i++) {
-			if(Player->Inventory[i] == CursorItem)
-				continue;
-
-			ae::_Element *Button = Elements[ELEMENT_INVENTORY_BUTTONS]->Children[i];
-			DrawItemLevel(Player->Inventory[i], Button->Bounds.Start);
-			DrawItemQuality(Player->Inventory[i], Button->Bounds.Start);
-			DrawItemValue(Player->Inventory[i], Button->Bounds.Start);
-		}
+		DrawBagInfo(Player->GetActiveOutfitBag(), Elements[ELEMENT_INVENTORY_OUTFIT]);
+		DrawBagInfo(Player->GetActiveBackpackBag(), Elements[ELEMENT_INVENTORY_BACKPACK]);
 		Elements[ELEMENT_INVENTORY_OVERLAY]->SetActive(false);
 	}
 
@@ -1028,6 +1013,65 @@ void _HUD::DrawInventory() {
 		glm::vec2 Position(ae::Input.GetMouse() - ClickOffset);
 		ae::Graphics.SetProgram(ae::Assets.Programs["ortho_pos_uv"]);
 		DrawInventoryItem(Position, CursorItem, CursorItem->Unique);
+	}
+}
+
+// Draw a single inventory bag
+void _HUD::DrawBag(const _Bag &Bag, ae::_Element *Element) {
+	for(size_t i = 0; i < Bag.Slots.size(); i++) {
+		const _Item *Item = Bag.Slots[i];
+		if(!Item)
+			continue;
+
+		if(Item == CursorItem)
+			continue;
+
+		ae::_Element *Button = Element->Children[i];
+
+		// Draw icon
+		DrawInventoryItem(Button->Bounds.GetCenter(), Item, Item->Unique);
+	}
+}
+
+// Draw item highlights when dragging a mod/usable
+void _HUD::DrawBagHighlights(const _Bag &Bag, ae::_Element *Element) {
+	for(size_t i = 0; i < Bag.Slots.size(); i++) {
+		const _Item *Item = Bag.Slots[i];
+		if(!Item || Item == CursorItem)
+			continue;
+
+		if(CursorItem->Type == _Object::MOD && !Item->CanMod())
+			continue;
+
+		if(CursorItem->Type == _Object::USABLE) {
+			if(CursorItem->Template.Attributes.at("usable_type").Int == USABLE_HAMMER && !Item->CanMod())
+				continue;
+			else if(CursorItem->Template.Attributes.at("usable_type").Int == USABLE_WHETSTONE && !Item->CanIncreaseQuality(false))
+				continue;
+		}
+
+		// Set overlay color
+		if(Item->ItemCompatible(CursorItem))
+			ae::Graphics.SetColor(glm::vec4(0.0f, 1.0f, 0.0f, 0.2f));
+		else
+			ae::Graphics.SetColor(glm::vec4(1.0f, 0.0f, 0.0f, 0.2f));
+
+		ae::_Element *Button = Element->Children[i];
+		ae::Graphics.DrawRectangle(glm::ivec2(Button->Bounds.Start), glm::ivec2(Button->Bounds.End), true);
+	}
+}
+
+// Draw extra item info
+void _HUD::DrawBagInfo(const _Bag &Bag, ae::_Element *Element) {
+	for(size_t i = 0; i < Bag.Slots.size(); i++) {
+		const _Item *Item = Bag.Slots[i];
+		if(Item == CursorItem)
+			continue;
+
+		ae::_Element *Button = Element->Children[i];
+		DrawItemLevel(Item, Button->Bounds.Start);
+		DrawItemQuality(Item, Button->Bounds.Start);
+		DrawItemValue(Item, Button->Bounds.Start);
 	}
 }
 
@@ -1321,7 +1365,7 @@ void _HUD::SetInventoryOpen(bool Value) {
 		if(CursorItem)
 			MoveWorldItem();
 
-		DragStart = nullptr;
+		DragSlot.Reset();
 		CursorItem = nullptr;
 		CursorOverItem = nullptr;
 		CursorUseWorldPosition = false;
@@ -1332,7 +1376,7 @@ void _HUD::SetInventoryOpen(bool Value) {
 
 // Move item in the world to another location
 void _HUD::MoveWorldItem(const glm::vec2 &DropPosition) {
-	if(DragStart || !CursorItem)
+	if(DragSlot.Bag || !CursorItem)
 		return;
 
 	// Update position
@@ -1399,6 +1443,19 @@ bool _HUD::ApplyUsableItem(_Item *ExistingItem) {
 	}
 
 	return false;
+}
+
+// Populate hit slot from hit element
+void _HUD::GetHitSlot(ae::_Element *Element, _Slot &Slot) {
+	if(!Element || !Element->Parent)
+		return;
+
+	if(Element->Parent->ID == "element_inventory_outfit")
+		Slot.Bag = &Player->GetActiveOutfitBag();
+	else if(Element->Parent->ID == "element_inventory_backpack")
+		Slot.Bag = &Player->GetActiveBackpackBag();
+
+	Slot.Index = (size_t)Element->Index;
 }
 
 // Determine if an item can be grabbed in the world

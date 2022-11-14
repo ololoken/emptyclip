@@ -144,7 +144,7 @@ void _Object::CreateAmmoPickup(float SpawnPositionZ) {
 	if(!ProjectileWeaponTemplate || ProjectileWeaponTemplate->PickupID.empty())
 		return;
 
-	_Item *AmmoItem = Stats.CreateItem(ProjectileWeaponTemplate->PickupID, 1, 0, 1, Position, false, 0);
+	_Item *AmmoItem = Stats.CreateItem(ProjectileWeaponTemplate->PickupID, 1, 0, Position, false, 0);
 	AmmoItem->Filterable = false;
 	AmmoItem->Rotation = Rotation;
 	AmmoItem->PositionZ = SpawnPositionZ;
@@ -212,7 +212,7 @@ float _Object::RayIntersection(const glm::vec2 &Origin, const glm::vec2 &Directi
 		// Find intersect time
 		float Time = -B - std::sqrt(Discriminant);
 		if(Time < 0.0f)
-		   Time = 0.0f;
+			Time = 0.0f;
 
 		return Time;
 

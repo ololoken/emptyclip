@@ -20,6 +20,7 @@
 // Libraries
 #include <objects/item.h>
 #include <objects/templates.h>
+#include <constants.h>
 #include <list>
 
 // Forward Declarations
@@ -117,7 +118,7 @@ class _Entity : public _Object {
 		int ShootingTwohandAnimation{ANIMATION_ATTACK};
 		int DyingAnimation{ANIMATION_DIE};
 		double InvulnerableTimer{0.0};
-		double CombatTimer{0.0};
+		double CombatTimer{GAME_COMBAT_TIMER};
 		double PoisonTimer{0.0};
 
 		// Combat attributes

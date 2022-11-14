@@ -2346,9 +2346,9 @@ void _Map::RemoveObject(_Object *Object, int GridType) {
 bool _Map::CheckMinimapBounds(const glm::vec4 &Bounds) {
 
 	if(Bounds[2] < Camera->GetPosition().x - MinimapCaptureSize.x || Bounds[0] > Camera->GetPosition().x + MinimapCaptureSize.x)
-	   return false;
+		return false;
 	if(Bounds[3] < Camera->GetPosition().y - MinimapCaptureSize.y || Bounds[1] > Camera->GetPosition().y + MinimapCaptureSize.y)
-	   return false;
+		return false;
 
 	return true;
 }

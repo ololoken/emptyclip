@@ -18,8 +18,9 @@
 #pragma once
 
 // Libraries
-#include <string>
+#include <objects/inventory.h>
 #include <ae/ui.h>
+#include <string>
 #include <glm/vec2.hpp>
 
 // Forward Declarations
@@ -27,6 +28,7 @@ class _Entity;
 class _Player;
 class _Item;
 class _Weapon;
+struct _Bag;
 namespace ae {
 	class _Camera;
 	struct _MouseEvent;
@@ -53,7 +55,8 @@ class _HUD {
 			ELEMENT_INDICATOR,
 			ELEMENT_EXPERIENCE,
 			ELEMENT_INVENTORY,
-			ELEMENT_INVENTORY_BUTTONS,
+			ELEMENT_INVENTORY_OUTFIT,
+			ELEMENT_INVENTORY_BACKPACK,
 			ELEMENT_INVENTORY_OVERLAY,
 			ELEMENT_SKILLS,
 			ELEMENT_MESSAGE,
@@ -147,22 +150,26 @@ class _HUD {
 		void DrawItemQuality(const _Item *Item, const glm::vec2 &Position);
 		void DrawItemLevel(const _Item *Item, const glm::vec2 &Position);
 		void DrawAttribute(const std::string &Label, std::ostringstream &Buffer, glm::vec2 &DrawPosition) const;
+		void DrawBag(const _Bag &Bag, ae::_Element *Element);
+		void DrawBagHighlights(const _Bag &Bag, ae::_Element *Element);
+		void DrawBagInfo(const _Bag &Bag, ae::_Element *Element);
 		void DrawInventoryItem(const glm::vec2 &Position, const _Item *Item, bool Unique);
 		void DrawUniqueHighlight(const glm::vec2 &Position, const _Item *Item);
 		void UpdateSkillTooltip(int Skill, const glm::vec2 &DrawPosition);
 		void GetClockAsString(std::ostringstream &Buffer, double Clock, bool Clock24Hour) const;
-		bool CanGrabItem(const _Item *Item);
 		bool ApplyUsableItem(_Item *ExistingItem);
+		void GetHitSlot(ae::_Element *Element, _Slot &Slot);
+		bool CanGrabItem(const _Item *Item);
 
 		// State
 		_Player *Player{nullptr};
 
 		// UI
 		ae::_Element *Elements[ELEMENT_COUNT]{nullptr};
-		ae::_Element *DragStart{nullptr};
+		_Slot DragSlot;
+		_Slot CursorSlot;
 		glm::ivec2 ClickOffset{0};
 		int CursorSkill{-1};
-		int CursorInventorySlot{-1};
 
 		// Displays
 		double LastEntityHitTimer{0.0};

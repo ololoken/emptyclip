@@ -19,12 +19,15 @@
 
 // Libraries
 #include <objects/entity.h>
-#include <constants.h>
+#include <objects/inventory.h>
 #include <map>
 
 // Forward Declarations
 class _Item;
 class _Weapon;
+class _Inventory;
+struct _Bag;
+struct _Slot;
 
 // Enumerations
 enum PlayerAnimationTypes {
@@ -63,12 +66,11 @@ class _Player : public _Entity {
 		_Player(const _ObjectTemplate &PlayerTemplate);
 		~_Player() override;
 
-		void Reset(bool Recalculate=false);
 		void ResetAchievementTracking();
 
 		bool IsDead() const { return Action == ACTION_DYING && !Active; }
 		bool IsMelee() const;
-		const char *GetWeaponID(int AttackType);
+		const char *GetWeaponID(int AttackType) override;
 
 		void Render(double BlendFactor) const override;
 		void Render2D(const glm::ivec2 &DrawPosition);
@@ -84,7 +86,7 @@ class _Player : public _Entity {
 
 		void StartReloading();
 		void CancelReloading();
-		void StartWeaponSwitch(int SlotFrom, int SlotTo);
+		void StartWeaponSwitch(const _Slot &SlotFrom, const _Slot &SlotTo);
 		int SpentSkillPoints() const;
 		void ResetAccuracy(bool CompleteReset);
 		void RecalculateStats() override;
@@ -92,39 +94,33 @@ class _Player : public _Entity {
 		void WarpPosition(const glm::vec2 &NewPosition);
 
 		int AddItem(_Item *Item, int &AmountAdded, bool UseOnFull);
-		void DropItem(int Slot, const glm::vec2 &DropPosition=glm::vec2(-1.0f));
+		void DropItem(const _Slot &Slot, const glm::vec2 &DropPosition=glm::vec2(-1.0f));
 		void SortInventory();
-		void SwapInventory(int SwapFrom, int SwapTo);
-		bool CanEquipItem(_Item *Item, int Slot);
+		void SwapInventory(const _Slot &SwapFrom, const _Slot &SwapTo);
+		bool CanEquipItem(const _Item *Item, size_t Slot) const;
 		int AddInventory(_Item *Item);
 		int CombineItems(_Item *FromItem, _Item *ToItem);
-		bool AddMod(int FromIndex, int ToIndex);
-		bool ApplyUsable(int FromIndex, int ToIndex);
-		bool UseItem(int Index, bool Event);
-		int FindItem(int Index);
-		int FindItem(const std::string &ID);
-		void ConsumeInventory(int Index, bool Delete=true);
+		bool AddMod(const _Slot &SlotFrom, const _Slot &SlotTo);
+		bool ApplyUsable(const _Slot &SlotFrom, const _Slot &SlotTo);
+		void ConsumeInventory(const _Slot &Slot, bool Delete=true);
 		int GetPickupAmount(const _Item *Item) const;
 		int ReduceAmmo(int Amount) override;
 		bool WeaponHasAmmo(int AttackType) const override;
 		int GetWeaponAmmo() const override;
+		_Bag &GetActiveOutfitBag() const;
+		_Bag &GetActiveBackpackBag() const;
 		void UpdateAmmoNeeded();
 		bool HasAmmoForMain() const;
-		bool HasMainHand() const { return GetMainHand() != nullptr; }
-		bool HasOffHand() const { return GetOffHand() != nullptr; }
-		bool HasMelee() const { return GetMelee() != nullptr; }
-		bool HasArmor() const { return GetArmor() != nullptr; }
-		bool HasInventory(int Index) const { return Index >= 0 && Inventory[Index] != nullptr; }
 
 		bool CanAttack(int AttackType) const override { return !IsMeleeAttacking() && !Reloading && !SwitchingWeapons && !IsDying(); }
 		bool CanPickup() const { return !IsDying() && CanUse(); }
 		bool CanUse() const { return UseTimer > UsePeriod; }
-		bool CanDropItem() const { return !Reloading && !SwitchingWeapons; }
-		bool CanDragItem() const { return !Reloading && !SwitchingWeapons; }
-		bool CanEquipItem() const { return !Reloading && !SwitchingWeapons; }
+		bool CanDropItems() const { return !Reloading && !SwitchingWeapons; }
+		bool CanDragItems() const { return !Reloading && !SwitchingWeapons; }
+		bool CanEquipItems() const { return !Reloading && !SwitchingWeapons; }
 		bool CanSwitchWeapons() const { return !SwitchingWeapons && !Reloading && !IsMeleeAttacking() && !IsDying(); }
 		bool CanReload() const;
-		bool IsSteady() const override { return HasMainHand() && CurrentAccuracy <= MinAccuracy; }
+		bool IsSteady() const override { return GetMainHand() && CurrentAccuracy <= MinAccuracy; }
 		bool InCombat() const { return CombatTimer < GAME_COMBAT_TIMER; }
 		bool ApplyUse() const { return UseRequested && CanUse(); }
 		void RequestAttack(int RequestType);
@@ -137,29 +133,24 @@ class _Player : public _Entity {
 		double GetWeaponSwitchPercent() const { return std::min(1.0, WeaponSwitchTimer / WeaponSwitchPeriod); }
 		float GetCrosshairRadius(const glm::vec2 &Cursor);
 		const _ParticleTemplate *GetParticle(int ParticleType) const override;
-		_Item *GetMainHand() const { return Inventory[INVENTORY_MAINHAND]; }
-		_Item *GetOffHand() const { return Inventory[INVENTORY_OFFHAND]; }
-		_Item *GetMelee() const { return Inventory[INVENTORY_MELEE]; }
-		_Item *GetArmor() const  { return Inventory[INVENTORY_ARMOR]; }
+		_Item *GetMainHand() const;
+		_Item *GetOffHand() const;
+		_Item *GetMelee() const;
+		_Item *GetArmor() const;
 		int GetInventoryMaxStack() const;
 		const ae::_Sound *GetSound(int SoundType, int AttackType) const override;
 
 		void AdjustLegDirection(float Destination);
 		void SetLegAnimationPlayMode(int Mode) override;
 		void OnHit(_Entity *Attacker, const _Hit &Hit) override;
-		bool PlayEquipSound(int Slot) const;
-
-		static bool IsBagIndex(int Index) { return Index >= INVENTORY_BAGSTART && Index < INVENTORY_BAGEND; }
-		static bool IsEquipmentIndex(int Index) { return Index >= 0 && Index < INVENTORY_BAGSTART; }
-		static bool IsHandIndex(int Index) { return Index == INVENTORY_MAINHAND || Index == INVENTORY_OFFHAND; }
-		static bool IsValidInventory(int Index) { return Index >= 0 && Index < INVENTORY_BAGEND; }
+		bool PlayEquipSound(size_t Slot) const;
 
 		// Map
-		std::string MapID;
-		glm::ivec2 LastGoodCoord;
-		int CheckpointIndex;
-		int Progression;
-		double Clock;
+		std::string MapID{GAME_FIRSTLEVEL};
+		glm::ivec2 LastGoodCoord{0};
+		int CheckpointIndex{0};
+		int Progression{0};
+		double Clock{GAME_DEFAULT_CLOCK};
 
 		// Saves
 		std::string SavePath;
@@ -167,77 +158,79 @@ class _Player : public _Entity {
 
 		// Animation
 		ae::_Animation *LegAnimation;
-		const ae::_Texture *MeleeTexture;
+		const ae::_Texture *MeleeTexture{nullptr};
 		glm::vec2 MeleeScale[WEAPONATTACK_COUNT];
-		std::string ColorID;
-		float LegDirection;
-		bool Aiming;
-		bool Sprinting;
+		std::string ColorID{"white"};
+		float LegDirection{0.0f};
+		bool Aiming{false};
+		bool Sprinting{false};
 
 		// UI
 		int Filters[FILTER_COUNT];
 		int LastFilters[FILTER_COUNT];
 
 		// Inventory
-		_Item *Inventory[INVENTORY_SIZE];
+		_Inventory *Inventory;
+		_Item *InventoryOld[INVENTORY_SIZE];
 		std::unordered_map<std::string, int> Ammo;
 		std::unordered_map<std::string, int> AmmoMax;
 		std::vector<bool> AmmoNeeded;
 		std::map<std::string, int> Keys;
-		bool UseRequested;
-		int WeaponSwitchFrom;
-		int WeaponSwitchTo;
-		bool Flashlight;
+		bool UseRequested{false};
+		_Slot WeaponSwitchFrom;
+		_Slot WeaponSwitchTo;
+		bool Flashlight{false};
+		int ActiveOutfit{0};
 
 		// Character information
-		double LevelTime;
-		double ProgressionTime;
-		double PlayTime;
-		int TotalDeaths;
-		int TotalKills;
-		int ProgressionKills;
-		int ProgressionDeaths;
-		int ProgressionCrates;
-		int ProgressionSecrets;
-		int LavaTouches;
+		double LevelTime{0.0};
+		double ProgressionTime{0.0};
+		double PlayTime{0.0};
+		int TotalDeaths{0};
+		int TotalKills{0};
+		int ProgressionKills{0};
+		int ProgressionDeaths{0};
+		int ProgressionCrates{0};
+		int ProgressionSecrets{0};
+		int LavaTouches{0};
 		bool Hardcore{false};
-		bool Stat100Percent;
-		bool StatLoneWolf;
-		bool StatFistsOnly;
-		int64_t Experience;
-		int64_t ExperienceNextLevel;
-		int64_t ExperienceNeeded;
-		int64_t ExperienceLost;
+		bool Stat100Percent{false};
+		bool StatLoneWolf{false};
+		bool StatFistsOnly{false};
+		int64_t Experience{0};
+		int64_t ExperienceNextLevel{0};
+		int64_t ExperienceNeeded{0};
+		int64_t ExperienceLost{0};
 
 		// Skills
 		int Skills[SKILL_COUNT];
-		int SkillPointsRemaining;
-		int DropRate;
+		int SkillPointsRemaining{0};
+		int DropRate{100};
 		double SelfHealStartTime;
 		double SelfHealPeriod;
-		double SelfHealTimer;
+		double SelfHealTimer{PLAYER_HEAL_STARTTIME};
 		float SelfHealPercent;
-		float HealModifier;
-		float PickupModifier;
-		float ExperienceModifier;
+		float HealModifier{1.0f};
+		float PickupModifier{1.0f};
+		float ExperienceModifier{1.0f};
 
 		// Attacking
 		float CurrentAccuracyNormal;
 		float MinAccuracyNormal;
 		float MaxAccuracyNormal;
-		float ZoomScale;
-		double WeaponSwitchTimer;
-		double ReloadTimer;
-		double UseTimer;
+		float ZoomScale{PLAYER_ZOOMSCALE};
+		double WeaponSwitchTimer{0.0};
+		double ReloadTimer{0.0};
+		double UseTimer{0.0};
 		double WeaponSwitchPeriod;
 		double ReloadPeriod;
-		double UsePeriod;
+		double UsePeriod{PLAYER_USEPERIOD};
 		int FireRateType[WEAPONATTACK_COUNT];
-		bool Reloading;
-		bool SwitchingWeapons;
+		bool Reloading{false};
+		bool SwitchingWeapons{false};
 
 		// Sounds
-		const ae::_AudioSource *ReloadSound;
+		const ae::_AudioSource *ReloadSound{nullptr};
 
 	private:
 
@@ -248,7 +241,5 @@ class _Player : public _Entity {
 
 		void ApplyDeathPenalty() override;
 		void ResetWeaponAnimation();
-
-		void DeleteItems();
 
 };
