@@ -207,6 +207,10 @@
 				<element id="label_menu_controls_filtergear" font="hud_small" text="Filter Gear" offset_x="-160" offset_y="32" alignment_y="3"/>
 				<element id="label_menu_controls_config_filtergear" font="hud_small" offset_y="32" alignment_y="3"/>
 			</element>
+			<element id="button_menu_controls_input_switchoutfit" style="style_menu_box" hover_style="style_menu_hover" offset_x="-125" offset_y="540" size_x="140" size_y="50" alignment_y="0" clickable="true">
+				<element id="label_menu_controls_switchoutfit" font="hud_small" text="Switch Outfit" offset_x="-160" offset_y="32" alignment_y="3"/>
+				<element id="label_menu_controls_config_switchoutfit" font="hud_small" offset_y="32" alignment_y="3"/>
+			</element>
 			<element id="button_menu_controls_input_fire" style="style_menu_box" hover_style="style_menu_hover" offset_x="225" offset_y="0" size_x="140" size_y="50" alignment_y="0" clickable="true">
 				<element id="label_menu_controls_fire" font="hud_small" text="Fire" offset_x="-160" offset_y="32" alignment_y="3"/>
 				<element id="label_menu_controls_config_fire" font="hud_small" offset_y="32" alignment_y="3"/>
@@ -408,6 +412,14 @@
 		</element>
 	</element>
 	<element id="element_inventory" offset_x="-450" size_x="580" size_y="400" clickable="true">
+		<element id="element_inventory_tabs" style="style_hud_inventory_bg_dark" offset_x="0" offset_y="-48" size_x="96" size_y="48" alignment_x="0" alignment_y="0">
+			<element id="button_inventory_tabs_outfit0" hover_style="style_hud_inventory_bg" size_x="48" size_y="48" alignment_x="0" alignment_y="0" clickable="true" index="0">
+				<element id="image_inventory_tabs_outfit0" size_x="32" size_y="32"/>
+			</element>
+			<element id="button_inventory_tabs_outfit1" hover_style="style_hud_inventory_bg" offset_x="48" size_x="48" size_y="48" alignment_x="0" alignment_y="0" clickable="true" index="1">
+				<element id="image_inventory_tabs_outfit1" size_x="32" size_y="32"/>
+			</element>
+		</element>
 		<element id="element_inventory_equipment" size_x="260" size_y="100%" alignment_x="0" alignment_y="0">
 			<element id="element_inventory_bg" style="style_hud_inventory_bg" size_x="260" size_y="400" alignment_x="0" alignment_y="0"/>
 			<element id="element_inventory_body" style="style_hud_inventory_body" size_x="151" size_y="377"/>

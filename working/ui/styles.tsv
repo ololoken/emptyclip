@@ -16,6 +16,7 @@ style_editor_button_purple			ortho_pos_uv	textures/editor/button.png	purple_dark
 style_editor_button_cyan			ortho_pos_uv	textures/editor/button.png	cyan_dark	0
 style_editor_button_brown			ortho_pos_uv	textures/editor/button.png	brown	0
 style_hud_inventory_bg	inventory_bg		ortho_pos			1
+style_hud_inventory_bg_dark	inventory_bg_dark		ortho_pos			1
 style_hud_inventory_body			ortho_pos_uv	textures/hud/body.png	inventory_body	1
 style_hud_inventory			ortho_pos_uv	textures/hud/inventory_slot.png	inventory_slot	1
 style_hud_inventory_armor			ortho_pos_uv	textures/hud/inventory_armor.png	inventory_equipment	1

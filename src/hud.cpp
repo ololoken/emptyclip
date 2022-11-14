@@ -148,6 +148,7 @@ _HUD::_HUD(const ae::_Camera *Camera, _Player *Player) : Camera(Camera), Player(
 	ae::Assets.Elements["element_hud_filters"]->SetActive(true);
 
 	Elements[ELEMENT_INVENTORY] = ae::Assets.Elements["element_inventory"];
+	Elements[ELEMENT_INVENTORY_TABS] = ae::Assets.Elements["element_inventory_tabs"];
 	Elements[ELEMENT_INVENTORY_OUTFIT] = ae::Assets.Elements["element_inventory_outfit"];
 	Elements[ELEMENT_INVENTORY_BACKPACK] = ae::Assets.Elements["element_inventory_backpack"];
 	Elements[ELEMENT_INVENTORY_OVERLAY] = ae::Assets.Elements["element_inventory_overlay"];
@@ -187,8 +188,14 @@ void _HUD::MouseEvent(const ae::_MouseEvent &MouseEvent) {
 
 	// Handle button clicks
 	ae::_Element *Clicked = Elements[ELEMENT_INVENTORY]->GetClickedElement();
-	if(Clicked && Clicked->ID == "button_inventory_sort")
-		Player->SortInventory();
+	if(Clicked) {
+		if(Clicked->ID == "button_inventory_sort")
+			Player->SortInventory();
+		else if(Clicked->Parent && Clicked->Parent->ID == "element_inventory_tabs") {
+			if(Clicked->Index >= 0 && Clicked->Index < 10)
+				Player->StartOutfitSwitch(Clicked->Index);
+		}
+	}
 
 	// Get hit element
 	ae::_Element *HitElement = Elements[ELEMENT_INVENTORY]->HitElement;
@@ -239,13 +246,19 @@ void _HUD::MouseEvent(const ae::_MouseEvent &MouseEvent) {
 						// Drop in world
 						if(!HitSlot.Bag) {
 
-							// Get world position
-							glm::vec2 WorldPosition;
-							Camera->ConvertScreenToWorld(ae::Input.GetMouse(), WorldPosition);
-							PlayState.Map->GetDropPosition(Player, PLAYER_REACH_DISTANCE, WorldPosition);
+							// Dragged item to inventory tab
+							if(HitElement->Parent && HitElement->Parent->ID == "element_inventory_tabs") {
+							}
+							else {
 
-							// Drop item
-							Player->DropItem(DragSlot, WorldPosition);
+								// Get world position
+								glm::vec2 WorldPosition;
+								Camera->ConvertScreenToWorld(ae::Input.GetMouse(), WorldPosition);
+								PlayState.Map->GetDropPosition(Player, PLAYER_REACH_DISTANCE, WorldPosition);
+
+								// Drop item
+								Player->DropItem(DragSlot, WorldPosition);
+							}
 						}
 						// Move item to another slot
 						else
@@ -427,10 +440,22 @@ void _HUD::Update(double FrameTime, float Radius, double Clock) {
 			CursorUseWorldPosition = false;
 		}
 
+		// Set outfit tab checked state
+		_Container &OutfitContainer = Player->Inventory->Containers[(size_t)BagType::OUTFIT];
+		for(auto &Element : Elements[ELEMENT_INVENTORY_TABS]->Children) {
+			size_t Index = (size_t)Element->Index;
+			Element->Checked = (Index == Player->ActiveOutfit);
+			Element->Children.front()->Texture = nullptr;
+			if(Index < OutfitContainer.size() && OutfitContainer[Index].Slots[EquipmentType::ARMOR])
+				Element->Children.front()->Texture = OutfitContainer[Index].Slots[EquipmentType::ARMOR]->Texture;
+		}
+
+		// Update skill tooltip
 		ae::_Element *HitElement = Elements[ELEMENT_SKILLS]->HitElement;
 		if(HitElement && HitElement->Index >= 0)
 			UpdateSkillTooltip(HitElement->Index, ae::Input.GetMouse());
 
+		// Set skill button states
 		for(int i = 0; i < SKILL_COUNT; i++) {
 			ae::_Element *SkillButton = ae::Assets.Elements["button_skills_plus" + std::to_string(i)];
 			if(!SkillButton)
@@ -586,6 +611,8 @@ void _HUD::Render(bool FullMap) {
 	// Weapon switch indicator
 	if(Player->SwitchingWeapons)
 		DrawIndicator("Switching Weapons", Player->GetWeaponSwitchPercent(), ae::Assets.Textures["textures/hud/indicator_weaponswitch.png"]);
+	else if(Player->SwitchingOutfits)
+		DrawIndicator("Switching Outfits", Player->GetOutfitSwitchPercent(), ae::Assets.Textures["textures/hud/indicator_outfitswitch.png"]);
 
 	// Draw weapons
 	DrawHUDWeapon(Player->GetMainHand(), ae::Assets.Elements["element_hud_mainhand"], ae::Assets.Elements["image_hud_mainhand_icon"], ae::Assets.Elements["label_hud_mainhand_ammo"]);
@@ -1161,7 +1188,7 @@ void _HUD::DrawItemLevel(const _Item *Item, const glm::vec2 &Position) {
 	Fonts[FONT_TINY]->DrawText(Buffer.str(), glm::ivec2(Position + glm::vec2(4, 18) * ae::_Element::GetUIScale()), ae::LEFT_BASELINE, COLOR_GOLD);
 }
 
-// Draw the skill popup window
+// Update skill tooltip information
 void _HUD::UpdateSkillTooltip(int Skill, const glm::vec2 &Position) {
 	CursorSkill = Skill;
 	int Level = Player->Skills[Skill];

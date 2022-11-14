@@ -35,6 +35,7 @@ Empty Clip 2.0.0 -
 - Added bullet penetration for certain weapons
 - Added projectile weapons and explosions
 - Players now respawn at their last checkpoint with invulnerability for three seconds
+- Added outfit switching (Q by default)
 - Added loot filter hotkeys for gear and mods (1 and 2 by default)
 - Added an end of level screen
 - Added hardcore mode

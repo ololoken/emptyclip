@@ -80,6 +80,7 @@ class _Player : public _Entity {
 		void UpdateExperience(int64_t ExperienceGained) override;
 		void UpdateReloading();
 		void UpdateWeaponSwitch();
+		void UpdateOutfitSwitch();
 		void UpdateSpeed(float Factor) override;
 		void UpdateKillCount(int Value) override { TotalKills += Value; }
 		void UpdateSkill(int Index, int Value);
@@ -87,6 +88,7 @@ class _Player : public _Entity {
 		void StartReloading();
 		void CancelReloading();
 		void StartWeaponSwitch(const _Slot &SlotFrom, const _Slot &SlotTo);
+		void StartOutfitSwitch(size_t Outfit);
 		int SpentSkillPoints() const;
 		void ResetAccuracy(bool CompleteReset);
 		void RecalculateStats() override;
@@ -112,13 +114,14 @@ class _Player : public _Entity {
 		void UpdateAmmoNeeded();
 		bool HasAmmoForMain() const;
 
-		bool CanAttack(int AttackType) const override { return !IsMeleeAttacking() && !Reloading && !SwitchingWeapons && !IsDying(); }
+		bool CanAttack(int AttackType) const override { return !IsMeleeAttacking() && !Reloading && !SwitchingWeapons && !SwitchingOutfits && !IsDying(); }
 		bool CanPickup() const { return !IsDying() && CanUse(); }
 		bool CanUse() const { return UseTimer > UsePeriod; }
-		bool CanDropItems() const { return !Reloading && !SwitchingWeapons; }
-		bool CanDragItems() const { return !Reloading && !SwitchingWeapons; }
-		bool CanEquipItems() const { return !Reloading && !SwitchingWeapons; }
-		bool CanSwitchWeapons() const { return !SwitchingWeapons && !Reloading && !IsMeleeAttacking() && !IsDying(); }
+		bool CanDropItems() const { return !Reloading && !SwitchingWeapons && !SwitchingOutfits; }
+		bool CanDragItems() const { return !Reloading && !SwitchingWeapons && !SwitchingOutfits; }
+		bool CanEquipItems() const { return !Reloading && !SwitchingWeapons && !SwitchingOutfits; }
+		bool CanSwitchWeapons() const { return !SwitchingOutfits && !SwitchingWeapons && !Reloading && !IsMeleeAttacking() && !IsDying(); }
+		bool CanSwitchOutfits() const { return !SwitchingOutfits && !SwitchingWeapons && !Reloading && !IsMeleeAttacking() && !IsDying(); }
 		bool CanReload() const;
 		bool IsSteady() const override { return GetMainHand() && CurrentAccuracy <= MinAccuracy; }
 		bool InCombat() const { return CombatTimer < GAME_COMBAT_TIMER; }
@@ -131,6 +134,7 @@ class _Player : public _Entity {
 
 		double GetReloadPercent() const { return std::min(1.0, ReloadTimer / ReloadPeriod); }
 		double GetWeaponSwitchPercent() const { return std::min(1.0, WeaponSwitchTimer / WeaponSwitchPeriod); }
+		double GetOutfitSwitchPercent() const { return std::min(1.0, OutfitSwitchTimer / OutfitSwitchPeriod); }
 		float GetCrosshairRadius(const glm::vec2 &Cursor);
 		const _ParticleTemplate *GetParticle(int ParticleType) const override;
 		_Item *GetMainHand() const;
@@ -179,8 +183,9 @@ class _Player : public _Entity {
 		bool UseRequested{false};
 		_Slot WeaponSwitchFrom;
 		_Slot WeaponSwitchTo;
+		size_t OutfitSwitchTo{0};
 		bool Flashlight{false};
-		int ActiveOutfit{0};
+		size_t ActiveOutfit{0};
 
 		// Character information
 		double LevelTime{0.0};
@@ -220,14 +225,17 @@ class _Player : public _Entity {
 		float MaxAccuracyNormal;
 		float ZoomScale{PLAYER_ZOOMSCALE};
 		double WeaponSwitchTimer{0.0};
+		double OutfitSwitchTimer{0.0};
 		double ReloadTimer{0.0};
 		double UseTimer{0.0};
 		double WeaponSwitchPeriod;
+		double OutfitSwitchPeriod;
 		double ReloadPeriod;
 		double UsePeriod{PLAYER_USEPERIOD};
 		int FireRateType[WEAPONATTACK_COUNT];
 		bool Reloading{false};
 		bool SwitchingWeapons{false};
+		bool SwitchingOutfits{false};
 
 		// Sounds
 		const ae::_AudioSource *ReloadSound{nullptr};

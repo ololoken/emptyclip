@@ -32,7 +32,7 @@ _Inventory::_Inventory() {
 	Containers.resize((size_t)BagType::COUNT);
 	Containers[(size_t)BagType::OUTFIT].reserve(INVENTORY_MAX_OUTFITS);
 	Containers[(size_t)BagType::BACKPACK].reserve(INVENTORY_MAX_BACKPACKS);
-	Containers[(size_t)BagType::OUTFIT].resize(1);
+	Containers[(size_t)BagType::OUTFIT].resize(2);
 	Containers[(size_t)BagType::BACKPACK].resize(1);
 	Containers[(size_t)BagType::OUTFIT].front().Equipment = true;
 
@@ -77,6 +77,17 @@ void _Inventory::Unserialize(ae::_Buffer &Buffer) {
 		UnserializeContainer(Buffer, Container, BagSizes[i], i == (int)BagType::OUTFIT);
 		Containers.push_back(Container);
 	}
+
+	// Default to two outfits
+	if(Containers[(size_t)BagType::OUTFIT].size() == 1)
+		AddBag(BagType::OUTFIT);
+}
+
+// Add a bag
+void _Inventory::AddBag(BagType Type) {
+	_Bag Bag;
+	Bag.Slots.resize(BagSizes[(size_t)Type]);
+	Containers[(size_t)Type].push_back(Bag);
 }
 
 // Serialize a bag

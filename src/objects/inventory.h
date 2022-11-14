@@ -88,6 +88,8 @@ class _Inventory  {
 		void Serialize(ae::_Buffer &Buffer);
 		void Unserialize(ae::_Buffer &Buffer);
 
+		void AddBag(BagType Type);
+
 		std::vector<_Container> Containers;
 
 	private:

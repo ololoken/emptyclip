@@ -70,6 +70,7 @@ static const int KeyBindings[] = {
 	Action::GAME_MOREINFO,
 	Action::GAME_FILTERGEAR,
 	Action::GAME_FILTERMODS,
+	Action::GAME_SWITCHOUTFIT,
 	Action::MISC_CONSOLE,
 	Action::MISC_MENU,
 	Action::MISC_DEBUG,
@@ -94,6 +95,7 @@ static const std::string KEYLABELS[] = {
 	"label_menu_controls_config_moreinfo",
 	"label_menu_controls_config_filtergear",
 	"label_menu_controls_config_filtermods",
+	"label_menu_controls_config_switchoutfit",
 };
 
 static const char *COLORS[] = {

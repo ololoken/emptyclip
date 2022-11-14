@@ -263,6 +263,7 @@ void _Player::RecalculateStats() {
 	BaseMoveSpeed += Stats.GetSkill(Skills[SKILL_CUNNING], SKILL_CUNNING);
 	MaxStamina = Stats.GetSkillBonusMultiplier(Skills[SKILL_ENDURANCE], SKILL_ENDURANCE);
 	WeaponSwitchPeriod = PLAYER_WEAPONSWITCHPERIOD / Stats.GetSkillBonusMultiplier(Skills[SKILL_DEXTERITY], SKILL_DEXTERITY);
+	OutfitSwitchPeriod = PLAYER_OUTFITSWITCHPERIOD / Stats.GetSkillBonusMultiplier(Skills[SKILL_DEXTERITY], SKILL_DEXTERITY);
 	HealthBonus += Stats.GetSkill(Skills[SKILL_VITALITY], SKILL_VITALITY);
 	HealModifier = Stats.GetSkillBonusMultiplier(Skills[SKILL_VITALITY], SKILL_VITALITY, 1);
 	SelfHealStartTime = PLAYER_HEAL_STARTTIME / Stats.GetSkillBonusMultiplier(Skills[SKILL_CUNNING], SKILL_CUNNING, 1);
@@ -362,6 +363,7 @@ void _Player::Update(double FrameTime) {
 	ProgressionTime += FrameTime;
 	LevelTime += FrameTime;
 	WeaponSwitchTimer += FrameTime;
+	OutfitSwitchTimer += FrameTime;
 	ReloadTimer += FrameTime;
 	UseTimer += FrameTime;
 	CombatTimer += FrameTime;
@@ -408,9 +410,10 @@ void _Player::Update(double FrameTime) {
 	UpdateRecoil(FrameTime);
 	UpdateReloading();
 	UpdateWeaponSwitch();
+	UpdateOutfitSwitch();
 
 	// Stop trigger down audio
-	if(TriggerDownAudio && (!AttackRequested || !WeaponHasAmmo(WEAPONATTACK_MAIN) || IsDying() || SwitchingWeapons || Reloading))
+	if(TriggerDownAudio && (!AttackRequested || !WeaponHasAmmo(WEAPONATTACK_MAIN) || IsDying() || SwitchingWeapons || SwitchingOutfits || Reloading))
 		StopAudio();
 
 	// Make an attack
@@ -1151,10 +1154,29 @@ void _Player::StartWeaponSwitch(const _Slot &SlotFrom, const _Slot &SlotTo) {
 	// Start timer
 	WeaponSwitchFrom = SlotFrom;
 	WeaponSwitchTo = SlotTo;
-	WeaponSwitchTimer = 0;
+	WeaponSwitchTimer = 0.0;
 	SwitchingWeapons = true;
 
 	ae::Audio.PlaySound(ae::Assets.Sounds["equip_gun0.ogg"]);
+}
+
+// Start outfit switch process
+void _Player::StartOutfitSwitch(size_t Outfit) {
+
+	// Check index
+	if(Outfit >= Inventory->Containers[(size_t)BagType::OUTFIT].size())
+		return;
+
+	// Test conditions
+	if(!CanSwitchOutfits())
+		return;
+
+	// Start timer
+	OutfitSwitchTo = Outfit;
+	OutfitSwitchTimer = 0.0;
+	SwitchingOutfits = true;
+
+	ae::Audio.PlaySound(ae::Assets.Sounds["equip_armor0.ogg"]);
 }
 
 // Reloads the weapon when the timer goes off
@@ -1193,7 +1215,7 @@ void _Player::UpdateReloading() {
 		StartReloading();
 }
 
-// Switches weapons when the timer goes off
+// Switches weapons when timer expires
 void _Player::UpdateWeaponSwitch() {
 	if(!SwitchingWeapons || WeaponSwitchTimer <= WeaponSwitchPeriod)
 		return;
@@ -1210,6 +1232,22 @@ void _Player::UpdateWeaponSwitch() {
 	WeaponSwitchFrom.SetItem(ItemTo);
 	WeaponSwitchTo.SetItem(ItemFrom);
 
+	RecalculateStats();
+	ResetWeaponAnimation();
+}
+
+// Switch outfits when timer expires
+void _Player::UpdateOutfitSwitch() {
+	if(!SwitchingOutfits || OutfitSwitchTimer <= OutfitSwitchPeriod)
+		return;
+
+	SwitchingOutfits = false;
+
+	// Test condition
+	if(!CanSwitchOutfits())
+		return;
+
+	ActiveOutfit = OutfitSwitchTo;
 	RecalculateStats();
 	ResetWeaponAnimation();
 }
@@ -1364,6 +1402,7 @@ void _Player::ResetWeaponAnimation() {
 void _Player::ApplyDeathPenalty() {
 	Reloading = false;
 	SwitchingWeapons = false;
+	SwitchingOutfits = false;
 	TotalDeaths++;
 	ProgressionDeaths++;
 
@@ -1471,7 +1510,7 @@ int _Player::GetInventoryMaxStack() const {
 }
 
 bool _Player::CanReload() const {
-	return GetMainHand() && AttackTimer[WEAPONATTACK_MAIN] >= ReloadDelay && !Reloading && !SwitchingWeapons && !IsMeleeAttacking() && GetMainHand()->Attributes.at("ammo").Int != std::round(GetMainHand()->Attributes.at("rounds").Float) && HasAmmoForMain();
+	return GetMainHand() && AttackTimer[WEAPONATTACK_MAIN] >= ReloadDelay && !Reloading && !SwitchingWeapons && !SwitchingOutfits && !IsMeleeAttacking() && GetMainHand()->Attributes.at("ammo").Int != std::round(GetMainHand()->Attributes.at("rounds").Float) && HasAmmoForMain();
 }
 
 bool _Player::IsMelee() const {

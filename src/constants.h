@@ -114,6 +114,7 @@ const  float        PLAYER_SPRINTSTAMINA                 =  0.25f;
 const  float        PLAYER_TIREDTHRESHOLD                =  0.3f;
 const  float        PLAYER_ZOOMSCALE                     =  15.0f;
 const  double       PLAYER_WEAPONSWITCHPERIOD            =  0.5;
+const  double       PLAYER_OUTFITSWITCHPERIOD            =  1.0;
 const  double       PLAYER_USEPERIOD                     =  0.2;
 const  glm::vec4    PLAYER_LIGHT                         =  glm::vec4(0.5f,0.5f,0.5f,1.0f);
 const  float        PLAYER_MELEE_OFFSET                  =  0.15f;

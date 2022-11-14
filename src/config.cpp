@@ -51,6 +51,7 @@ void _Config::Init(const std::string &ConfigFile) {
 	ae::Actions.State[Action::GAME_MOREINFO].Name = "game_moreinfo";
 	ae::Actions.State[Action::GAME_FILTERGEAR].Name = "game_filtergear";
 	ae::Actions.State[Action::GAME_FILTERMODS].Name = "game_filtermods";
+	ae::Actions.State[Action::GAME_SWITCHOUTFIT].Name = "game_switchoutfit";
 	ae::Actions.State[Action::MISC_CONSOLE].Name = "misc_console";
 	ae::Actions.State[Action::MISC_MENU].Name = "misc_menu";
 	ae::Actions.State[Action::MISC_DEBUG].Name = "misc_debug";
@@ -133,6 +134,7 @@ void _Config::LoadDefaultInputBindings(bool IfNone) {
 	ae::Actions.AddInputMap(0, ae::_Input::KEYBOARD, SDL_SCANCODE_V, Action::GAME_FLASHLIGHT, 1.0f, -1.0f, IfNone);
 	ae::Actions.AddInputMap(0, ae::_Input::KEYBOARD, SDL_SCANCODE_1, Action::GAME_FILTERGEAR, 1.0f, -1.0f, IfNone);
 	ae::Actions.AddInputMap(0, ae::_Input::KEYBOARD, SDL_SCANCODE_2, Action::GAME_FILTERMODS, 1.0f, -1.0f, IfNone);
+	ae::Actions.AddInputMap(0, ae::_Input::KEYBOARD, SDL_SCANCODE_Q, Action::GAME_SWITCHOUTFIT, 1.0f, -1.0f, IfNone);
 
 	// Misc
 	ae::Actions.AddInputMap(0, ae::_Input::KEYBOARD, SDL_SCANCODE_GRAVE, Action::MISC_CONSOLE, 1.0f, -1.0f, IfNone);

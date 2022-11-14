@@ -312,6 +312,10 @@ bool _PlayState::HandleAction(int InputType, size_t Action, int Value) {
 				if(!HUD->IsDragging())
 					Player->StartWeaponSwitch(_Slot(&Player->GetActiveOutfitBag(), EquipmentType::MAINHAND), _Slot(&Player->GetActiveOutfitBag(), EquipmentType::OFFHAND));
 			break;
+			case Action::GAME_SWITCHOUTFIT:
+				if(!HUD->IsDragging())
+					Player->StartOutfitSwitch(!Player->ActiveOutfit);
+			break;
 			case Action::GAME_FLASHLIGHT:
 				Player->Flashlight = !Player->Flashlight;
 				ae::Audio.PlaySound(ae::Assets.Sounds["game_flashlight0.ogg"]);
@@ -638,7 +642,7 @@ void _PlayState::Update(double FrameTime) {
 				Player->RequestAttack(WEAPONATTACK_MELEE);
 
 			// Aim
-			Player->SetAiming(ae::Actions.State[Action::GAME_AIM].Value > 0.0f && !Player->Reloading && !Player->SwitchingWeapons);
+			Player->SetAiming(ae::Actions.State[Action::GAME_AIM].Value > 0.0f && !Player->Reloading && !Player->SwitchingWeapons && !Player->SwitchingOutfits);
 			Player->SetSprinting(ae::Actions.State[Action::GAME_SPRINT].Value > 0.0f);
 
 			// Don't show tooltips while firing

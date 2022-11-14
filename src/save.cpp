@@ -45,7 +45,7 @@ enum SaveChunkTypes {
 	CHUNK_KEYS,
 	CHUNK_FILTERS,
 	CHUNK_INVENTORY,
-	CHUNK_UNUSED2,
+	CHUNK_OUTFIT,
 	CHUNK_UNUSED3,
 	CHUNK_UNUSED4,
 	CHUNK_UNUSED5,
@@ -330,6 +330,9 @@ void _Save::LoadPlayer(_Player *Player) {
 				File.read(&Buffer[0], Size);
 				LoadInventory(Player, Buffer);
 			} break;
+			case CHUNK_OUTFIT:
+				File.read((char *)&Player->ActiveOutfit, sizeof(Player->ActiveOutfit));
+			break;
 			default:
 				File.ignore(Size);
 			break;
@@ -380,6 +383,7 @@ void _Save::SavePlayer(_Player *Player) {
 	WriteChunk(File, CHUNK_HARDCORE, (char *)&Player->Hardcore, sizeof(Player->Hardcore));
 	WriteChunk(File, CHUNK_EXPERIENCE, (char *)&Player->Experience, sizeof(Player->Experience));
 	WriteChunk(File, CHUNK_HEALTH, (char *)&Health, sizeof(Health));
+	WriteChunk(File, CHUNK_OUTFIT, (char *)&Player->ActiveOutfit, sizeof(Player->ActiveOutfit));
 	WriteChunk(File, CHUNK_STAT_PLAYTIME, (char *)&Player->PlayTime, sizeof(Player->PlayTime));
 	WriteChunk(File, CHUNK_STAT_KILLS, (char *)&Player->TotalKills, sizeof(Player->TotalKills));
 	WriteChunk(File, CHUNK_STAT_DEATHS, (char *)&Player->TotalDeaths, sizeof(Player->TotalDeaths));
