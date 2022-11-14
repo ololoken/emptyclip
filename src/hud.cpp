@@ -66,7 +66,7 @@ static std::vector<_MinimapLegend> MinimapLegends = {
 
 static _SkillText SkillText[SKILL_COUNT] = {
 	{ "Melee Damage", "Gun Handling" },
-	{ "Reload Speed", "Weapon Switch Speed" },
+	{ "Reload Speed", "Switch Speed" },
 	{ "Damage Resist", "Self Damage Resist" },
 	{ "Max Health", "Heal Bonus" },
 	{ "Attack Speed","Fire Rate" },
