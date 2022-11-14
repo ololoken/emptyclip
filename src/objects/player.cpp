@@ -881,6 +881,9 @@ bool _Player::CanEquipItem(const _Item *Item, size_t Slot) const {
 
 // Swap inventory
 void _Player::SwapInventory(const _Slot &SlotFrom, const _Slot &SlotTo) {
+	if(!SlotFrom.IsValidIndex() || !SlotTo.IsValidIndex())
+		return;
+
 	_Item *ItemFrom = SlotFrom.GetItem();
 	_Item *ItemTo = SlotTo.GetItem();
 	if(!ItemFrom)
@@ -990,6 +993,9 @@ int _Player::AddInventory(_Item *Item) {
 
 // Add a mod to a weapon
 bool _Player::AddMod(const _Slot &SlotFrom, const _Slot &SlotTo) {
+	if(!SlotFrom.IsValidIndex() || !SlotTo.IsValidIndex())
+		return false;
+
 	_Item *ItemFrom = SlotFrom.GetItem();
 	_Item *ItemTo = SlotTo.GetItem();
 	if(!ItemFrom || !ItemTo)
@@ -1009,6 +1015,9 @@ bool _Player::AddMod(const _Slot &SlotFrom, const _Slot &SlotTo) {
 
 // Apply usable item to another
 bool _Player::ApplyUsable(const _Slot &SlotFrom, const _Slot &SlotTo) {
+	if(!SlotFrom.IsValidIndex() || !SlotTo.IsValidIndex())
+		return false;
+
 	_Item *ItemFrom = SlotFrom.GetItem();
 	_Item *ItemTo = SlotTo.GetItem();
 	if(!ItemFrom || !ItemTo)
@@ -1226,6 +1235,9 @@ void _Player::UpdateWeaponSwitch() {
 	if(!CanSwitchWeapons())
 		return;
 
+	if(!WeaponSwitchFrom.IsValidIndex() || !WeaponSwitchTo.IsValidIndex())
+		return;
+
 	_Item *ItemFrom = WeaponSwitchFrom.GetItem();
 	_Item *ItemTo = WeaponSwitchTo.GetItem();
 
@@ -1320,6 +1332,9 @@ void _Player::ResetAccuracy(bool CompleteReset) {
 
 // Consume an item from the inventory
 void _Player::ConsumeInventory(const _Slot &Slot, bool Delete) {
+	if(!Slot.IsValidIndex())
+		return;
+
 	_Item *Item = Slot.GetItem();
 	if(!Item)
 		return;

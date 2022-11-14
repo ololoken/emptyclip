@@ -211,7 +211,7 @@ void _HUD::MouseEvent(const ae::_MouseEvent &MouseEvent) {
 				if(Player->CanDragItems()) {
 
 					// Drag from inventory
-					if(HitSlot.Bag) {
+					if(HitSlot.IsValidIndex()) {
 						if(ae::Input.ModKeyDown(KMOD_CTRL)) {
 							Player->DropItem(HitSlot);
 						}
@@ -247,7 +247,7 @@ void _HUD::MouseEvent(const ae::_MouseEvent &MouseEvent) {
 						if(!HitSlot.Bag) {
 
 							// Dragged item to inventory tab
-							if(HitElement->Parent && HitElement->Parent->ID == "element_inventory_tabs") {
+							if(HitElement && HitElement->Parent && HitElement->Parent->ID == "element_inventory_tabs") {
 							}
 							else {
 
@@ -266,7 +266,7 @@ void _HUD::MouseEvent(const ae::_MouseEvent &MouseEvent) {
 					}
 					// From world
 					else {
-						if(HitSlot.Bag) {
+						if(HitSlot.IsValidIndex()) {
 							Player->UseTimer = 0.0;
 
 							// Drag onto inventory
@@ -381,9 +381,11 @@ void _HUD::MouseEvent(const ae::_MouseEvent &MouseEvent) {
 		break;
 		case SDL_BUTTON_MIDDLE:
 			if(MouseEvent.Pressed) {
-				_Item *DropItem = HitSlot.GetItem();
-				if(DropItem && DropItem != CursorItem)
-					Player->DropItem(HitSlot);
+				if(HitSlot.IsValidIndex()) {
+					_Item *DropItem = HitSlot.GetItem();
+					if(DropItem && DropItem != CursorItem)
+						Player->DropItem(HitSlot);
+				}
 			}
 		break;
 	}
@@ -435,7 +437,7 @@ void _HUD::Update(double FrameTime, float Radius, double Clock) {
 
 		// Get cursor item
 		GetHitSlot(Elements[ELEMENT_INVENTORY]->HitElement, CursorSlot);
-		if(CursorSlot.Bag && CursorSlot.GetItem()) {
+		if(CursorSlot.IsValidIndex() && CursorSlot.GetItem()) {
 			CursorOverItem = CursorSlot.GetItem();
 			CursorUseWorldPosition = false;
 		}
@@ -747,7 +749,7 @@ void _HUD::Render(bool FullMap) {
 
 		// Draw comparison tooltip
 		const _Item *EquippedItem = nullptr;
-		if(CompareSlot.Bag && CompareSlot != CursorSlot) {
+		if(CompareSlot.IsValidIndex() && CompareSlot != CursorSlot) {
 			EquippedItem = CompareSlot.GetItem();
 			EquippedItem->DrawTooltip(Player, glm::ivec2(-100, ae::Graphics.CurrentSize.y/2), nullptr, _Slot(), false);
 		}
