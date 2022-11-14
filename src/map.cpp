@@ -1179,8 +1179,8 @@ void _Map::CheckMeleeCollisions(_Entity *Attacker, int GridType, int Penetration
 						continue;
 				*/
 
-					// Check for walls
-					if(!IsVisible(Attacker->Position, Object->Position, _Tile::BULLET))
+					// Check for walls only if the object is not inside one
+					if(CheckCollisionFlag(GetValidCoord(Object->Position), _Tile::ENTITY) && !IsVisible(Attacker->Position, Object->Position, _Tile::BULLET))
 						continue;
 				}
 
