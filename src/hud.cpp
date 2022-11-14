@@ -475,6 +475,7 @@ void _HUD::Render(bool FullMap) {
 	}
 	ae::Assets.Elements["label_hud_filters_gear_key"]->Text = ae::Actions.GetInputNameForAction(Action::GAME_FILTERGEAR);
 	ae::Assets.Elements["label_hud_filters_mods_key"]->Text = ae::Actions.GetInputNameForAction(Action::GAME_FILTERMODS);
+	ae::Assets.Elements["label_inventory_sort_key"]->Text = ae::Actions.GetInputNameForAction(Action::GAME_SORTINVENTORY);
 
 	// Message
 	if(MessageTimer > 0.0) {
