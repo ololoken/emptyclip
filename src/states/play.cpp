@@ -580,6 +580,7 @@ void _PlayState::Update(double FrameTime) {
 
 	int OldSkillPointsRemaining = Player->SkillPointsRemaining;
 	int OldLevel = Player->Level;
+	ActiveProjectiles = 0;
 	Timer += FrameTime;
 	SaveTimer += FrameTime;
 	FlashTimer = std::max(0.0, FlashTimer - FrameTime);
@@ -1142,6 +1143,11 @@ void _PlayState::Render(double BlendFactor) {
 
 		DrawPosition.y += Spacing.y;
 		Buffer << ParticleRenderCount << " decals rendered";
+		ae::Assets.Fonts["hud_tiny"]->DrawText(Buffer.str(), DrawPosition);
+		Buffer.str("");
+
+		DrawPosition.y += Spacing.y;
+		Buffer << ActiveProjectiles << " active projectiles";
 		ae::Assets.Fonts["hud_tiny"]->DrawText(Buffer.str(), DrawPosition);
 		Buffer.str("");
 

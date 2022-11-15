@@ -44,6 +44,7 @@ _Object::_Object(const _ObjectTemplate &ObjectTemplate) :
 void _Object::Update(double FrameTime) {
 	switch(Type) {
 		case PROJECTILE: {
+			PlayState.ActiveProjectiles++;
 			LastPosition = Position;
 			Position += Velocity * (float)FrameTime;
 			Rotation += RotationSpeed;

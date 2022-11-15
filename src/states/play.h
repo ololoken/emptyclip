@@ -95,6 +95,7 @@ class _PlayState : public ae::_State {
 		_HUD *HUD{nullptr};
 		_Map *Map{nullptr};
 		_Player *Player{nullptr};
+		int ActiveProjectiles{0};
 
 	protected:
 
