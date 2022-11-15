@@ -161,6 +161,7 @@ class _HUD {
 		bool ApplyUsableItem(_Item *ExistingItem);
 		void GetHitSlot(ae::_Element *Element, _Slot &Slot);
 		bool CanGrabItem(const _Item *Item);
+		size_t GetBackpackTabIndex(const ae::_Element *Element);
 
 		// State
 		_Player *Player{nullptr};

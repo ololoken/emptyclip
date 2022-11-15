@@ -245,12 +245,27 @@ void _HUD::MouseEvent(const ae::_MouseEvent &MouseEvent) {
 					// From inventory
 					if(DragSlot.Bag) {
 
-						// Drop in world
+						// No bag was hit
 						if(!HitSlot.Bag) {
 
 							// Dragged item to inventory tab
-							if(HitElement && HitElement->Parent && HitElement->Parent->ID == "element_inventory_tabs") {
+							size_t BagIndex = GetBackpackTabIndex(HitElement);
+							if(BagIndex != (size_t)-1) {
+								int AddResult = Player->AddItemToBackpack(CursorItem, BagIndex, true);
+								switch(AddResult) {
+									case ADD_REMOVE:
+										DragSlot.RemoveItem();
+									break;
+									case ADD_DELETE:
+										DragSlot.RemoveItem();
+										CursorItem->Active = false;
+									break;
+									case ADD_FULL:
+										ShowTextMessage(HUD_BACKPACKFULLMESSAGE, HUD_INVENTORYFULLTIME);
+									break;
+								}
 							}
+							// Dragged outside window
 							else {
 
 								// Get world position
@@ -309,9 +324,27 @@ void _HUD::MouseEvent(const ae::_MouseEvent &MouseEvent) {
 
 							Player->RecalculateStats();
 						}
-						// Drop to another world location
-						else
-							MoveWorldItem();
+						else {
+							size_t BagIndex = GetBackpackTabIndex(HitElement);
+							if(BagIndex != (size_t)-1) {
+								int AddResult = Player->AddItemToBackpack(CursorItem, BagIndex, true);
+								switch(AddResult) {
+									case ADD_REMOVE:
+										PlayState.Map->RemoveObject(CursorItem, GRID_ITEM);
+									break;
+									case ADD_DELETE:
+										PlayState.Map->RemoveObject(CursorItem, GRID_ITEM);
+										CursorItem->Active = false;
+									break;
+									case ADD_FULL:
+										ShowTextMessage(HUD_BACKPACKFULLMESSAGE, HUD_INVENTORYFULLTIME);
+									break;
+								}
+							}
+							// Drop to another world location
+							else
+								MoveWorldItem();
+						}
 					}
 
 					CursorItem = nullptr;
@@ -328,12 +361,14 @@ void _HUD::MouseEvent(const ae::_MouseEvent &MouseEvent) {
 
 					// Unequip item
 					if(HitSlot.Bag->Equipment) {
-						if(Player->AddInventory(HitSlot.GetItem())) {
+						if(Player->AddItemToBackpack(HitSlot.GetItem(), Player->ActiveBackpack)) {
 							Player->PlayEquipSound(HitSlot.Index);
 							HitSlot.RemoveItem();
 
 							Player->RecalculateStats();
 						}
+						else
+							ShowTextMessage(HUD_INVENTORYFULLMESSAGE, HUD_INVENTORYFULLTIME);
 					}
 					// Equip item from backpack
 					else {
@@ -1514,4 +1549,12 @@ void _HUD::GetHitSlot(ae::_Element *Element, _Slot &Slot) {
 // Determine if an item can be grabbed in the world
 bool _HUD::CanGrabItem(const _Item *Item) {
 	return !CursorItem && Item && !Item->Filtered && glm::distance2(Player->Position, Item->Position) <= PLAYER_REACH_DISTANCE_SQUARED;
+}
+
+// Get a backpack index from a tab element
+size_t _HUD::GetBackpackTabIndex(const ae::_Element *Element) {
+	if(!Element || !Element->Parent || Element->Parent->ID != "element_inventory_tabs" || Element->Index < HUD_BACKPACK_INDEX)
+		return -1;
+
+	return (size_t)(Element->Index - HUD_BACKPACK_INDEX);
 }

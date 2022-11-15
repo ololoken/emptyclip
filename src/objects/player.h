@@ -90,7 +90,7 @@ class _Player : public _Entity {
 		void SortInventory();
 		void SwapInventory(const _Slot &SwapFrom, const _Slot &SwapTo);
 		bool CanEquipItem(const _Item *Item, size_t Slot) const;
-		int AddInventory(_Item *Item);
+		int AddItemToBackpack(_Item *Item, size_t StartingBagIndex, bool OneBagOnly=false);
 		int CombineItems(_Item *FromItem, _Item *ToItem);
 		bool AddMod(const _Slot &SlotFrom, const _Slot &SlotTo);
 		bool ApplyUsable(const _Slot &SlotFrom, const _Slot &SlotTo);

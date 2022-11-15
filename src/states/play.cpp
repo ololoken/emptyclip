@@ -1529,7 +1529,7 @@ int _PlayState::PickupObject(_Item *Item, bool Manual) {
 			Player->UseTimer = 0.0;
 	}
 	else
-		HUD->ShowTextMessage("INVENTORY FULL", HUD_INVENTORYFULLTIME);
+		HUD->ShowTextMessage(HUD_INVENTORYFULLMESSAGE, HUD_INVENTORYFULLTIME);
 
 	return AmountAdded;
 }

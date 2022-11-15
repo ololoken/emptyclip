@@ -694,8 +694,6 @@ int _Player::AddItem(_Item *Item, int &AmountAdded, bool UseOnFull) {
 					ResetWeaponAnimation();
 					return ADD_REMOVE;
 				}
-				else
-					return AddInventory(Item);
 			}
 			else {
 				if(!GetMainHand() && Config.AutoEquip) {
@@ -708,8 +706,6 @@ int _Player::AddItem(_Item *Item, int &AmountAdded, bool UseOnFull) {
 					GetActiveOutfitBag().Slots[EquipmentType::OFFHAND] = Item;
 					return ADD_REMOVE;
 				}
-				else
-					return AddInventory(Item);
 			}
 		} break;
 		case _Object::ARMOR: {
@@ -717,9 +713,6 @@ int _Player::AddItem(_Item *Item, int &AmountAdded, bool UseOnFull) {
 				GetActiveOutfitBag().Slots[EquipmentType::ARMOR] = Item;
 				RecalculateStats();
 				return ADD_REMOVE;
-			}
-			else {
-				return AddInventory(Item);
 			}
 		} break;
 		case _Object::AMMO: {
@@ -786,11 +779,10 @@ int _Player::AddItem(_Item *Item, int &AmountAdded, bool UseOnFull) {
 			return ADD_DELETE;
 		}
 		default:
-			return AddInventory(Item);
 		break;
 	}
 
-	return ADD_FULL;
+	return AddItemToBackpack(Item, ActiveBackpack);
 }
 
 // Drop an item from the player's inventory
@@ -964,26 +956,43 @@ int _Player::CombineItems(_Item *FromItem, _Item *ToItem) {
 	return 0;
 }
 
-// Add an item to the inventory
-int _Player::AddInventory(_Item *Item) {
+// Add an item to an empty backpack slot
+int _Player::AddItemToBackpack(_Item *Item, size_t StartingBagIndex, bool OneBagOnly) {
 	if(!Item)
 		return ADD_FULL;
 
-	// Search for an existing item or empty slot
+	_Container &Container = Inventory->Containers[(size_t)BagType::BACKPACK];
+	size_t BagIndex = StartingBagIndex;
+	if(BagIndex >= Container.size())
+		BagIndex = 0;
+
 	size_t EmptySlot = (size_t)-1;
-	_Bag &Bag = GetActiveBackpackBag();
-	for(size_t i = 0; i < Bag.Slots.size(); i++) {
-		if(CombineItems(Item, Bag.Slots[i]) == 2)
-			return ADD_DELETE;
+	for(size_t i = 0; i < Container.size(); i++) {
 
-		if(Bag.Slots[i] == nullptr && EmptySlot == (size_t)-1)
-			EmptySlot = i;
-	}
+		// Search for an existing item or empty slot
+		_Bag &Bag = Container[BagIndex];
+		for(size_t j = 0; j < Bag.Slots.size(); j++) {
+			if(CombineItems(Item, Bag.Slots[j]) == 2)
+				return ADD_DELETE;
 
-	// Add item to empty slot
-	if(EmptySlot != (size_t)-1) {
-		Bag.Slots[EmptySlot] = Item;
-		return ADD_REMOVE;
+			if(Bag.Slots[j] == nullptr && EmptySlot == (size_t)-1)
+				EmptySlot = j;
+		}
+
+		// Add item to empty slot
+		if(EmptySlot != (size_t)-1) {
+			Bag.Slots[EmptySlot] = Item;
+			return ADD_REMOVE;
+		}
+
+		// Stop searching after one
+		if(OneBagOnly)
+			return ADD_FULL;
+
+		// Wrap around
+		BagIndex++;
+		if(BagIndex >= Container.size())
+			BagIndex = 0;
 	}
 
 	return ADD_FULL;
