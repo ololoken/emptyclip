@@ -758,13 +758,14 @@ bool _Map::ResolveTileCollisions(const glm::vec2 &TargetPosition, float Radius, 
 			NewPosition += Hit.Push;
 
 		// Handle bouncing
+		float VelocityScale = 2.0f;
 		if(Bounces <= 0) {
 
 			// Set object position to closest point on AABB
 			if(!PushOut)
 				NewPosition = Hit.ClosestPoint;
 
-			continue;
+			VelocityScale = 1.0f;
 		}
 
 		// Get dot product of velocity and normal
@@ -772,8 +773,8 @@ bool _Map::ResolveTileCollisions(const glm::vec2 &TargetPosition, float Radius, 
 		if(VelocityDotNormal > 0)
 			continue;
 
-		// Reflect velocity vector
-		Velocity -= 2.0f * VelocityDotNormal * Hit.Normal;
+		// Reflect or clip velocity vector
+		Velocity -= VelocityScale * VelocityDotNormal * Hit.Normal;
 	}
 
 	return Touching;
