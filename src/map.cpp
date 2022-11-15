@@ -395,8 +395,8 @@ _Map::_Map(const std::string &Filename, double Clock, int Progression) : _Map() 
 
 						// Count experience (doesn't account for special types)
 						if(PlayState.DevMode) {
-							int Experience = Template.Attributes.at("xp").Float + Template.Attributes.at("xp_level").Float * (GetAddedLevel() + Event->SpawnLevel - 1);
-							int Multiplier = Template.Attributes.at("ai_type").Int ? SpawnMultiplier : 1;
+							int64_t Experience = Template.Attributes.at("xp").Float + Template.Attributes.at("xp_level").Float * (GetAddedLevel() + Event->SpawnLevel - 1);
+							int64_t Multiplier = Template.Attributes.at("ai_type").Int ? SpawnMultiplier : 1;
 							TotalExperience += Experience * TileCount * Event->Level * Multiplier * Stats.Progressions[Progression].Experience;
 						}
 					}

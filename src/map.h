@@ -289,7 +289,7 @@ class _Map {
 		int Monsters{0};
 		int Crates{0};
 		int Secrets{0};
-		int TotalExperience{0};
+		int64_t TotalExperience{0};
 		bool BaseAmbientClock{false};
 		bool AmbientClock{false};
 		bool SimpleAI{false};
