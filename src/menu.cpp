@@ -582,16 +582,6 @@ bool _Menu::HandleKey(const ae::_KeyEvent &KeyEvent) {
 			else {
 				if(KeyEvent.Pressed) {
 					RemapInput(ae::_Input::KEYBOARD, KeyEvent.Scancode);
-
-					if(CurrentAction == Action::GAME_UP || CurrentAction == Action::GAME_DOWN || CurrentAction == Action::GAME_LEFT || CurrentAction == Action::GAME_RIGHT) {
-						int Up = ae::Actions.GetInputForAction(ae::_Input::KEYBOARD, Action::GAME_UP, 0);
-						int Down = ae::Actions.GetInputForAction(ae::_Input::KEYBOARD, Action::GAME_DOWN, 0);
-						int Left = ae::Actions.GetInputForAction(ae::_Input::KEYBOARD, Action::GAME_LEFT, 0);
-						int Right = ae::Actions.GetInputForAction(ae::_Input::KEYBOARD, Action::GAME_RIGHT, 0);
-						if(Up == SDL_SCANCODE_W && Down == SDL_SCANCODE_S && Left == SDL_SCANCODE_A && Right == SDL_SCANCODE_D)
-							ae::Audio.PlaySound(ae::Assets.Sounds["player_hit0.ogg"]);
-					}
-
 					return false;
 				}
 			}
