@@ -193,6 +193,7 @@ const  glm::vec2    UI_MESSAGE_SIZE                      =  glm::vec2(550,200);
 const  glm::vec2    UI_MESSAGE_SMALL_SIZE                =  glm::vec2(425,125);
 const  double       UI_LEVELNAME_TIME                    =  4;
 //     HUD
+const  int          HUD_BACKPACK_INDEX                   =  10;
 const  double       HUD_ENTITYHEALTHDISPLAYPERIOD        =  5.0;
 const  float        HUD_PLAYER_HEALTH_WARNING            =  0.5f;
 const  float        HUD_PLAYER_HEALTH_FADE               =  0.4f;

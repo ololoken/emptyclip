@@ -718,6 +718,7 @@ void _Stats::LoadProgression() {
 		Progression.AttackSpeed = Database->GetReal("attack_speed");
 		Progression.Experience = Database->GetReal("experience");
 		Progression.MaxQuality = Database->GetInt<int>("max_quality");
+		Progression.Backpacks = Database->GetInt<int>("backpacks");
 
 		Progressions.push_back(Progression);
 	}

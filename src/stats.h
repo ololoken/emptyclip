@@ -67,6 +67,7 @@ struct _Progression {
 	int Spawn;
 	int SpecialChance;
 	int MaxQuality;
+	int Backpacks;
 	float Health;
 	float Damage;
 	float AttackSpeed;

@@ -90,6 +90,15 @@ void _Inventory::AddBag(BagType Type) {
 	Containers[(size_t)Type].push_back(Bag);
 }
 
+// Get count of items in a bag
+int _Inventory::GetItemCount(BagType Type, size_t BagIndex) {
+	_Container &Container = Containers[(size_t)Type];
+	if(BagIndex >= Container.size())
+		return 0;
+
+	return Container[BagIndex].GetItemCount();
+}
+
 // Serialize a bag
 void _Inventory::SerializeContainer(ae::_Buffer &Buffer, const _Container &Container) const {
 

@@ -192,8 +192,10 @@ void _HUD::MouseEvent(const ae::_MouseEvent &MouseEvent) {
 		if(Clicked->ID == "button_inventory_sort")
 			Player->SortInventory();
 		else if(Clicked->Parent && Clicked->Parent->ID == "element_inventory_tabs") {
-			if(Clicked->Index >= 0 && Clicked->Index < 10)
-				Player->StartOutfitSwitch(Clicked->Index);
+			if(Clicked->Index >= 0 && Clicked->Index < HUD_BACKPACK_INDEX)
+				Player->StartOutfitSwitch((size_t)Clicked->Index);
+			else if(Clicked->Index - HUD_BACKPACK_INDEX < (int)Player->Inventory->Containers[(size_t)BagType::BACKPACK].size())
+				Player->ActiveBackpack = (uint64_t)(Clicked->Index - HUD_BACKPACK_INDEX);
 		}
 	}
 
@@ -446,10 +448,33 @@ void _HUD::Update(double FrameTime, float Radius, double Clock) {
 		_Container &OutfitContainer = Player->Inventory->Containers[(size_t)BagType::OUTFIT];
 		for(auto &Element : Elements[ELEMENT_INVENTORY_TABS]->Children) {
 			size_t Index = (size_t)Element->Index;
-			Element->Checked = (Index == Player->ActiveOutfit);
+
+			// Set outfit tab state
+			Element->Clickable = true;
 			Element->Children.front()->Texture = nullptr;
-			if(Index < OutfitContainer.size() && OutfitContainer[Index].Slots[EquipmentType::ARMOR])
-				Element->Children.front()->Texture = OutfitContainer[Index].Slots[EquipmentType::ARMOR]->Texture;
+			Element->Children.front()->Color = COLOR_WHITE;
+			Element->Children.back()->Text = "";
+			if(Index < HUD_BACKPACK_INDEX) {
+				Element->Checked = (Index == Player->ActiveOutfit);
+				if(!Element->Checked)
+					Element->Children.back()->Text = ae::Actions.GetInputNameForAction(Action::GAME_SWITCHOUTFIT);
+				if(Index < OutfitContainer.size() && OutfitContainer[Index].Slots[EquipmentType::ARMOR])
+					Element->Children.front()->Texture = OutfitContainer[Index].Slots[EquipmentType::ARMOR]->Texture;
+			}
+			// Set backpack tab state
+			else {
+				size_t BagIndex = Index - HUD_BACKPACK_INDEX;
+				Element->Checked = BagIndex == Player->ActiveBackpack;
+				if(BagIndex >= Player->Inventory->Containers[(size_t)BagType::BACKPACK].size()) {
+					Element->Clickable = false;
+					Element->Children.front()->Color = COLOR_GRAY;
+					Element->Children.front()->Texture = ae::Assets.Textures["textures/hud/locked.png"];
+				}
+				else {
+					Element->Children.front()->Texture = ae::Assets.Textures["textures/hud/backpack.png"];
+					Element->Children.back()->Text = std::to_string(Player->Inventory->GetItemCount(BagType::BACKPACK, BagIndex));
+				}
+			}
 		}
 
 		// Update skill tooltip

@@ -412,12 +412,34 @@
 		</element>
 	</element>
 	<element id="element_inventory" offset_x="-450" size_x="580" size_y="400" clickable="true">
-		<element id="element_inventory_tabs" style="style_hud_inventory_bg_dark" offset_x="0" offset_y="-48" size_x="96" size_y="48" alignment_x="0" alignment_y="0">
-			<element id="button_inventory_tabs_outfit0" hover_style="style_hud_inventory_bg" size_x="48" size_y="48" alignment_x="0" alignment_y="0" clickable="true" index="0">
-				<element id="image_inventory_tabs_outfit0" size_x="32" size_y="32"/>
+		<element id="element_inventory_tabs" style="style_hud_inventory_bg_darker" offset_x="0" offset_y="-64" size_x="580" size_y="64" alignment_x="0" alignment_y="0">
+			<element id="button_inventory_tabs_outfit0" style="style_hud_inventory_bg_dark" hover_style="style_hud_inventory_bg" size_x="64" size_y="64" alignment_x="0" alignment_y="0" clickable="true" index="0">
+				<element id="image_inventory_tabs_outfit0" size_x="48" size_y="48"/>
+				<element id="label_inventory_tabs_outfit0" font="hud_char" color="gray" offset_x="-6" offset_y="56" alignment_x="2" alignment_y="3"/>
 			</element>
-			<element id="button_inventory_tabs_outfit1" hover_style="style_hud_inventory_bg" offset_x="48" size_x="48" size_y="48" alignment_x="0" alignment_y="0" clickable="true" index="1">
-				<element id="image_inventory_tabs_outfit1" size_x="32" size_y="32"/>
+			<element id="button_inventory_tabs_outfit1" style="style_hud_inventory_bg_dark" hover_style="style_hud_inventory_bg" offset_x="64" size_x="64" size_y="64" alignment_x="0" clickable="true" index="1">
+				<element id="image_inventory_tabs_outfit1" size_x="48" size_y="48"/>
+				<element id="label_inventory_tabs_outfit1" font="hud_char" color="gray" offset_x="-6" offset_y="56" alignment_x="2" alignment_y="3"/>
+			</element>
+			<element id="button_inventory_tabs_backpack0" style="style_hud_inventory_bg_dark" hover_style="style_hud_inventory_bg" offset_x="260" size_x="64" size_y="64" alignment_x="0" clickable="true" index="10">
+				<element id="image_inventory_tabs_backpack0" size_x="48" size_y="48"/>
+				<element id="label_inventory_tabs_backpack0" font="hud_tiny" color="gray" offset_x="-6" offset_y="56" alignment_x="2" alignment_y="3"/>
+			</element>
+			<element id="button_inventory_tabs_backpack1" style="style_hud_inventory_bg_dark" hover_style="style_hud_inventory_bg" offset_x="324" size_x="64" size_y="64" alignment_x="0" clickable="true" index="11">
+				<element id="image_inventory_tabs_backpack1" size_x="48" size_y="48"/>
+				<element id="label_inventory_tabs_backpack1" font="hud_tiny" color="gray" offset_x="-6" offset_y="56" alignment_x="2" alignment_y="3"/>
+			</element>
+			<element id="button_inventory_tabs_backpack2" style="style_hud_inventory_bg_dark" hover_style="style_hud_inventory_bg" offset_x="388" size_x="64" size_y="64" alignment_x="0" clickable="true" index="12">
+				<element id="image_inventory_tabs_backpack2" size_x="48" size_y="48"/>
+				<element id="label_inventory_tabs_backpack2" font="hud_tiny" color="gray" offset_x="-6" offset_y="56" alignment_x="2" alignment_y="3"/>
+			</element>
+			<element id="button_inventory_tabs_backpack3" style="style_hud_inventory_bg_dark" hover_style="style_hud_inventory_bg" offset_x="452" size_x="64" size_y="64" alignment_x="0" clickable="true" index="13">
+				<element id="image_inventory_tabs_backpack3" size_x="48" size_y="48"/>
+				<element id="label_inventory_tabs_backpack3" font="hud_tiny" color="gray" offset_x="-6" offset_y="56" alignment_x="2" alignment_y="3"/>
+			</element>
+			<element id="button_inventory_tabs_backpack4" style="style_hud_inventory_bg_dark" hover_style="style_hud_inventory_bg" offset_x="516" size_x="64" size_y="64" alignment_x="0" clickable="true" index="14">
+				<element id="image_inventory_tabs_backpack4" size_x="48" size_y="48"/>
+				<element id="label_inventory_tabs_backpack4" font="hud_tiny" color="gray" offset_x="-6" offset_y="56" alignment_x="2" alignment_y="3"/>
 			</element>
 		</element>
 		<element id="element_inventory_equipment" size_x="260" size_y="100%" alignment_x="0" alignment_y="0">

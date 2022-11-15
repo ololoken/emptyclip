@@ -40,6 +40,7 @@ menu_red_border	0.5	0.05	0.05	1
 menu_darkred_bg	0.1	0.05	0.05	1
 inventory_bg	0.13	0.1	0.1	1
 inventory_bg_dark	0.067	0.051	0.051	1
+inventory_bg_darker	0.02	0.012	0.012	1
 inventory_body	1	1	1	0.3
 inventory_slot	0.75	0.65	0.65	1
 inventory_equipment	0.75	0.65	0.65	0.8

@@ -1079,7 +1079,7 @@ _Bag &_Player::GetActiveOutfitBag() const {
 
 // Return active backpack bag
 _Bag &_Player::GetActiveBackpackBag() const {
-	return Inventory->Containers[(size_t)BagType::BACKPACK][0];
+	return Inventory->Containers[(size_t)BagType::BACKPACK][(size_t)ActiveBackpack];
 }
 
 // Update ammo needed by the player

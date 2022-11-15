@@ -174,7 +174,8 @@ class _Player : public _Entity {
 		_Slot WeaponSwitchTo;
 		size_t OutfitSwitchTo{0};
 		bool Flashlight{false};
-		size_t ActiveOutfit{0};
+		uint64_t ActiveOutfit{0};
+		uint64_t ActiveBackpack{0};
 
 		// Character information
 		double LevelTime{0.0};

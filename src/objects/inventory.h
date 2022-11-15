@@ -89,6 +89,7 @@ class _Inventory  {
 		void Unserialize(ae::_Buffer &Buffer);
 
 		void AddBag(BagType Type);
+		int GetItemCount(BagType Type, size_t BagIndex);
 
 		std::vector<_Container> Containers;
 

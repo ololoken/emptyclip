@@ -44,8 +44,8 @@ enum SaveChunkTypes {
 	CHUNK_AMMO,
 	CHUNK_KEYS,
 	CHUNK_FILTERS,
-	CHUNK_OUTFIT,
-	CHUNK_UNUSED2,
+	CHUNK_ACTIVE_OUTFIT,
+	CHUNK_ACTIVE_BACKPACK,
 	CHUNK_UNUSED3,
 	CHUNK_UNUSED4,
 	CHUNK_UNUSED5,
@@ -159,7 +159,7 @@ void _Save::LoadSaves() {
 			continue;
 
 		std::string SlotIndexString = Files.Nodes[i].substr(0, ExtensionPosition);
-		size_t SlotIndex = atoi(SlotIndexString.c_str()) - 1;
+		size_t SlotIndex = (size_t)(atoi(SlotIndexString.c_str()) - 1);
 		if(SlotIndex >= SAVE_SLOTS)
 			continue;
 
@@ -304,12 +304,12 @@ void _Save::LoadPlayer(_Player *Player) {
 				File.read((char *)&Player->StatLoneWolf, sizeof(Player->StatLoneWolf));
 			break;
 			case CHUNK_AMMO: {
-				ae::_Buffer Buffer(Size);
+				ae::_Buffer Buffer((size_t)Size);
 				File.read(&Buffer[0], Size);
 				LoadAmmo(Player, Buffer);
 			} break;
 			case CHUNK_KEYS: {
-				ae::_Buffer Buffer(Size);
+				ae::_Buffer Buffer((size_t)Size);
 				File.read(&Buffer[0], Size);
 				LoadKeys(Player, Buffer);
 			} break;
@@ -321,12 +321,15 @@ void _Save::LoadPlayer(_Player *Player) {
 					File.read((char *)&Player->Filters[i], sizeof(Player->Filters[i]));
 			} break;
 			case CHUNK_INVENTORY: {
-				ae::_Buffer Buffer(Size);
+				ae::_Buffer Buffer((size_t)Size);
 				File.read(&Buffer[0], Size);
 				LoadInventory(Player, Buffer);
 			} break;
-			case CHUNK_OUTFIT:
+			case CHUNK_ACTIVE_OUTFIT:
 				File.read((char *)&Player->ActiveOutfit, sizeof(Player->ActiveOutfit));
+			break;
+			case CHUNK_ACTIVE_BACKPACK:
+				File.read((char *)&Player->ActiveBackpack, sizeof(Player->ActiveBackpack));
 			break;
 			default:
 				File.ignore(Size);
@@ -336,6 +339,12 @@ void _Save::LoadPlayer(_Player *Player) {
 
 	File.close();
 
+	// Set backpack size
+	int Missing = Stats.Progressions[(size_t)Player->Progression].Backpacks - (int)Player->Inventory->Containers[(size_t)BagType::BACKPACK].size();
+	for(int i = 0; i < Missing; i++)
+		Player->Inventory->AddBag(BagType::BACKPACK);
+
+	Player->ActiveBackpack = std::min(Player->ActiveBackpack, Player->Inventory->Containers[(size_t)BagType::BACKPACK].size() - 1);
 	Player->CheckpointIndex = 0;
 	Player->CalculateExperienceStats();
 	Player->CalculateSkillsRemaining();
@@ -378,7 +387,8 @@ void _Save::SavePlayer(_Player *Player) {
 	WriteChunk(File, CHUNK_HARDCORE, (char *)&Player->Hardcore, sizeof(Player->Hardcore));
 	WriteChunk(File, CHUNK_EXPERIENCE, (char *)&Player->Experience, sizeof(Player->Experience));
 	WriteChunk(File, CHUNK_HEALTH, (char *)&Health, sizeof(Health));
-	WriteChunk(File, CHUNK_OUTFIT, (char *)&Player->ActiveOutfit, sizeof(Player->ActiveOutfit));
+	WriteChunk(File, CHUNK_ACTIVE_OUTFIT, (char *)&Player->ActiveOutfit, sizeof(Player->ActiveOutfit));
+	WriteChunk(File, CHUNK_ACTIVE_BACKPACK, (char *)&Player->ActiveBackpack, sizeof(Player->ActiveBackpack));
 	WriteChunk(File, CHUNK_STAT_PLAYTIME, (char *)&Player->PlayTime, sizeof(Player->PlayTime));
 	WriteChunk(File, CHUNK_STAT_KILLS, (char *)&Player->TotalKills, sizeof(Player->TotalKills));
 	WriteChunk(File, CHUNK_STAT_DEATHS, (char *)&Player->TotalDeaths, sizeof(Player->TotalDeaths));
@@ -442,7 +452,7 @@ void _Save::LoadKeys(_Player *Player, ae::_Buffer &Buffer) {
 void _Save::SaveInventory(_Player *Player, std::ofstream &File) {
 	ae::_Buffer Buffer;
 	Player->Inventory->Serialize(Buffer);
-	WriteChunk(File, CHUNK_INVENTORY, &Buffer[0], Buffer.GetCurrentSize());
+	WriteChunk(File, CHUNK_INVENTORY, &Buffer[0], (int)Buffer.GetCurrentSize());
 }
 
 // Save ammo to a stream
@@ -459,7 +469,7 @@ void _Save::SaveAmmo(_Player *Player, std::ofstream &File) {
 	}
 
 	// Write chunk
-	WriteChunk(File, CHUNK_AMMO, &Buffer[0], Buffer.GetCurrentSize());
+	WriteChunk(File, CHUNK_AMMO, &Buffer[0], (int)Buffer.GetCurrentSize());
 }
 
 // Save keys
