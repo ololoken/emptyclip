@@ -1160,7 +1160,7 @@ void _Menu::RefreshSaveSlots() {
 			Player->Animation->Play(0);
 			SlotLabel->Text = Player->Name;
 			if(Player->Progression > 1)
-				SlotLabel->Text += " ([c gold]" + std::to_string(Player->Progression) + "[c white])";
+				SlotLabel->Text += "  [c gold]P" + std::to_string(Player->Progression) + "[c white]";
 			SlotHardcore->Text = Player->Hardcore ? (Player->Health == 0 ? "Dead" : "Hardcore") : "";
 		}
 		else {
