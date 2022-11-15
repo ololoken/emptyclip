@@ -502,7 +502,7 @@ bool _PlayState::HandleCommand(ae::_Console *Console) {
 				return true;
 
 			if(Parameters.size() == 1) {
-				Player->Progression = std::clamp(ae::ToNumber<int>(Parameters[0]), 0, GAME_MAX_PROGRESSION);
+				Player->Progression = std::clamp(ae::ToNumber<int>(Parameters[0]), 1, GAME_MAX_PROGRESSION);
 				Player->ProgressionTime = 0;
 				Player->ProgressionKills = 0;
 				Player->ProgressionCrates = 0;
@@ -1426,7 +1426,7 @@ void _PlayState::EndLevel() {
 		Level = GAME_FIRSTLEVEL;
 
 		// Check achievements
-		if(Player->Progression == 0) {
+		if(Player->Progression == 1) {
 			if(Player->StatFistsOnly)
 				Menu.UnlockAchievement("fists");
 
@@ -1842,7 +1842,7 @@ void _PlayState::CheckEvents(const _Entity *Entity) {
 
 				// Check for tutorial messages
 				bool IsTutorial = Event->ItemID.find("tutorial_") == 0;
-				if(!IsTutorial || (Config.Tutorial && !Player->Progression)) {
+				if(!IsTutorial || (Config.Tutorial && Player->Progression == 1)) {
 					if(IsTutorial)
 						ae::Audio.PlaySound(ae::Assets.Sounds["game_message0.ogg"]);
 					HUD->ShowMessageBox(Stats.TransformedText[Event->ItemID], Event->ActivationPeriod, UI_MESSAGE_SIZE);
@@ -1898,7 +1898,7 @@ void _PlayState::CheckEvents(const _Entity *Entity) {
 			} break;
 			case EVENT_LAVA: {
 				ae::Audio.PlaySound(ae::Assets.Sounds["game_lava0.ogg"]);
-				Player->UpdateHealth(-GAME_LAVA_DAMAGE * (Event->Level + Player->Progression));
+				Player->UpdateHealth(-GAME_LAVA_DAMAGE * (Event->Level + (Player->Progression - 1)));
 				Particles->Create(_ParticleSpawn(GameAssets.GetParticleTemplate(Event->ParticleID), glm::vec2(0), Player->Position, OBJECT_Z, 0));
 				Player->LavaTouches++;
 			} break;
@@ -1942,7 +1942,7 @@ void _PlayState::UpdateEvents(double FrameTime) {
 
 						// Chance for special monster
 						size_t SpecialType = 0;
-						if(!Event->IsBossSpawn && Player->Progression && ae::GetRandomInt(1, 100) <= Stats.Progressions[(size_t)Player->Progression].SpecialChance)
+						if(!Event->IsBossSpawn && Player->Progression > 1 && ae::GetRandomInt(1, 100) <= Stats.Progressions[(size_t)Player->Progression].SpecialChance)
 							SpecialType = (size_t)ae::GetRandomInt(1, (int)(Stats.Specials.size() - 1));
 
 						// Spawn monsters

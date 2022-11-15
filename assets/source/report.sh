@@ -9,7 +9,7 @@ type gawk >/dev/null 2>&1 || {
 }
 
 # get parameters
-progression=${1:-1}
+progression=${1:-2}
 
 # get progression parameters
 read -r health_mult damage_mult xp_mult < <(awk -v progression="$progression" 'BEGIN{FS=OFS="\t"}$1==progression{print $5, $6, $7}' stats/progression.tsv)
@@ -34,7 +34,7 @@ NR == 1 {
 NR > 1 {
 	fire_period = $fields["fire_period"]
 	fire_freq = 1 / fire_period
-	attack_count = $fields["attack_count"] 
+	attack_count = $fields["attack_count"]
 	rounds = max(1, $fields["rounds"])
 	if($fields["fire_allrounds"])
 		attack_count *= rounds
@@ -63,7 +63,7 @@ function round(value) { return int(value * 100) / 100 }
 
 BEGIN {
 	FS = OFS = "\t"
-	level = 1 + progression * 10
+	level = 1 + (progression - 1) * 10
 	calc_level = level - 1
 }
 NR == 1 {

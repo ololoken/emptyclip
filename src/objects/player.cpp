@@ -125,8 +125,6 @@ _Player::_Player(const _ObjectTemplate &PlayerTemplate) :
 
 	// Inventory
 	Inventory = new _Inventory();
-	for(int i = 0; i < INVENTORY_SIZE; i++)
-		InventoryOld[i] = nullptr;
 
 	// Skills
 	for(int i = 0; i < SKILL_COUNT; i++)
@@ -170,7 +168,7 @@ _Player::~_Player() {
 void _Player::ResetAchievementTracking() {
 	LavaTouches = 0;
 	Stat100Percent = true;
-	if(Progression == 0) {
+	if(Progression == 1) {
 		StatLoneWolf = true;
 		StatFistsOnly = true;
 	}
@@ -333,7 +331,7 @@ void _Player::RecalculateStats() {
 
 	// Set final stats
 	MaxHealth = std::round(Stats.GetLevelHealth(Level) * HealthBonus * 0.01f);
-	Health = std::clamp(Health, 0, MaxHealth);
+	Health = std::clamp(Health, (int64_t)0, MaxHealth);
 	MoveSpeed = BaseMoveSpeed * 0.01f * PLAYER_MOVESPEED;
 	DamageResist = std::min(DamageResist, ENTITY_MAX_DAMAGE_RESIST);
 	SelfHealPercent *= HealModifier;
@@ -742,8 +740,8 @@ int _Player::AddItem(_Item *Item, int &AmountAdded, bool UseOnFull) {
 			return ADD_DELETE;
 		}
 		case _Object::CONSUMABLE: {
-			float CurrentValue = 0;
-			float MaxValue = 0;
+			double CurrentValue = 0;
+			double MaxValue = 0;
 			int UpdateType = 0;
 			if(Item->Template.Attributes.at("health").Float) {
 				CurrentValue = Health;
@@ -764,8 +762,8 @@ int _Player::AddItem(_Item *Item, int &AmountAdded, bool UseOnFull) {
 				return (UseOnFull ? ADD_DELETE : ADD_QUIETFULL);
 
 			// Get update amounts
-			float AmountToMax = MaxValue - CurrentValue;
-			float UpdateAmount = Item->Unique ? AmountToMax : Item->GetConsumableValue(this) * 0.01f * MaxValue;
+			double AmountToMax = MaxValue - CurrentValue;
+			double UpdateAmount = Item->Unique ? AmountToMax : Item->GetConsumableValue(this) * 0.01 * MaxValue;
 
 			// Update stats
 			switch(UpdateType) {
@@ -775,7 +773,7 @@ int _Player::AddItem(_Item *Item, int &AmountAdded, bool UseOnFull) {
 					AmountAdded = std::min(AmountToMax, UpdateAmount);
 				break;
 				case 2:
-					Stamina = std::clamp(Stamina + UpdateAmount, 0.0f, MaxStamina);
+					Stamina = std::clamp((double)Stamina + UpdateAmount, 0.0, (double)MaxStamina);
 					AmountAdded = std::round(100 * std::min(AmountToMax, UpdateAmount));
 				break;
 			}

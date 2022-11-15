@@ -701,6 +701,7 @@ void _Stats::LoadProjectiles() {
 // Load progression stats
 void _Stats::LoadProgression() {
 	Progressions.reserve(GAME_MAX_PROGRESSION + 1);
+	Progressions.push_back(_Progression());
 
 	// Run query
 	Database->PrepareQuery("SELECT * FROM progression");

@@ -995,15 +995,13 @@ void _HUD::DrawCharacterScreen() {
 	FormatTimeHMS(Buffer, Player->PlayTime);
 	DrawAttribute("Total Play Time", Buffer, DrawPosition);
 
-	if(Player->Progression) {
-		DrawPosition.y += 10 * ae::_Element::GetUIScale();
+	DrawPosition.y += 10 * ae::_Element::GetUIScale();
 
-		Buffer << Player->Progression;
-		DrawAttribute("Progression", Buffer, DrawPosition);
+	Buffer << Player->Progression;
+	DrawAttribute("Progression", Buffer, DrawPosition);
 
-		FormatTimeHMS(Buffer, Player->ProgressionTime);
-		DrawAttribute("Progression Time", Buffer, DrawPosition);
-	}
+	FormatTimeHMS(Buffer, Player->ProgressionTime);
+	DrawAttribute("Progression Time", Buffer, DrawPosition);
 
 	// Draw cursor skill
 	if(CursorSkill != -1)

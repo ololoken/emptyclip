@@ -527,7 +527,7 @@ void _Entity::RenderRadius(const glm::vec2 &DrawPosition) {
 }
 
 // Update current health
-void _Entity::UpdateHealth(int Adjust) {
+void _Entity::UpdateHealth(int64_t Adjust) {
 	if(IsInvulnerable() || IsDying())
 		return;
 
@@ -541,7 +541,7 @@ void _Entity::UpdateHealth(int Adjust) {
 	}
 
 	// Update health
-	Health = std::clamp(Health + Adjust, 0, MaxHealth);
+	Health = std::clamp(Health + Adjust, (int64_t)0, MaxHealth);
 
 	// Check dying
 	if(Health == 0 && !IsDying()) {

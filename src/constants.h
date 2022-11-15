@@ -47,15 +47,14 @@ const  int          GAME_MAX_SKILL_PERLEVEL              =  3;
 const  double       GAME_EXPERIENCE_LOST                 =  0.1;
 const  double       GAME_INVULNERABLE_TIME               =  3.0;
 const  int          GAME_MAX_PROGRESSION                 =  1000;
-const  int          GAME_MAX_PROGRESSION_SPAWN           =  10;
 const  double       GAME_DEFAULT_CLOCK                   =  720.0;
 const  int          GAME_LAVA_DAMAGE                     =  100;
 const  float        GAME_TILE_SIZE                       =  64.0f;
 const  double       GAME_COMBAT_TIMER                    =  5.0;
 //     Save
 const  int          SAVE_SLOTS                           =  10;
-const  int          SAVE_VERSION                         =  7;
-const  int          SAVE_VERSION_NEW                     =  7;
+const  int          SAVE_VERSION                         =  8;
+const  int          SAVE_VERSION_NEW                     =  8;
 const  double       SAVE_TIME                            =  60.0;
 //     Camera
 const  float        CAMERA_DISTANCE                      =  6.5f;

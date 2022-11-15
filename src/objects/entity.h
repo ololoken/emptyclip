@@ -64,7 +64,7 @@ class _Entity : public _Object {
 		virtual void UpdateKillCount(int Value) {}
 		virtual void UpdateAnimation(double FrameTime, bool PlaySound=true);
 
-		void UpdateHealth(int Adjust);
+		void UpdateHealth(int64_t Adjust);
 		virtual void OnAttack(_Entity *Victim, const _Hit &Hit);
 		virtual void OnHit(_Entity *Attacker, const _Hit &Hit);
 		virtual void UpdateSpeed(float Factor);
@@ -105,8 +105,8 @@ class _Entity : public _Object {
 		bool PositionChanged{false};
 
 		// Stats
-		int Health{0};
-		int MaxHealth{0};
+		int64_t Health{0};
+		int64_t MaxHealth{0};
 		int DamageBlock{0};
 		float SelfDamageResist{0.0f};
 		float DamageResist{0.0f};

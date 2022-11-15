@@ -40,12 +40,12 @@ enum SaveChunkTypes {
 	CHUNK_EXPERIENCE,
 	CHUNK_HEALTH,
 	CHUNK_SKILLS,
-	CHUNK_ITEMSOLD,
+	CHUNK_INVENTORY,
 	CHUNK_AMMO,
 	CHUNK_KEYS,
 	CHUNK_FILTERS,
-	CHUNK_INVENTORY,
 	CHUNK_OUTFIT,
+	CHUNK_UNUSED2,
 	CHUNK_UNUSED3,
 	CHUNK_UNUSED4,
 	CHUNK_UNUSED5,
@@ -303,11 +303,6 @@ void _Save::LoadPlayer(_Player *Player) {
 			case CHUNK_ACHIEVEMENT_LONEWOLF:
 				File.read((char *)&Player->StatLoneWolf, sizeof(Player->StatLoneWolf));
 			break;
-			case CHUNK_ITEMSOLD: {
-				ae::_Buffer Buffer(Size);
-				File.read(&Buffer[0], Size);
-				LoadItemsOld(Player, Buffer);
-			} break;
 			case CHUNK_AMMO: {
 				ae::_Buffer Buffer(Size);
 				File.read(&Buffer[0], Size);
@@ -365,7 +360,7 @@ void _Save::SavePlayer(_Player *Player) {
 	if(!File.is_open())
 		throw std::runtime_error("Cannot create save file: " + Player->SavePath);
 
-	int Health = Player->Health;
+	int64_t Health = Player->Health;
 	if(!Player->TestSave && Player->InCombat())
 		Health = 0;
 
@@ -410,74 +405,9 @@ void _Save::SavePlayer(_Player *Player) {
 	std::rename(SavePath.c_str(), Player->SavePath.c_str());
 }
 
-// Loads items from a stream
-void _Save::LoadItemsOld(_Player *Player, ae::_Buffer &Buffer) {
-
-	// Get inventory size
-	int ItemCount = Buffer.Read<int>();
-	if(ItemCount > INVENTORY_SIZE)
-		throw std::runtime_error("Too many items");
-
-	// Get items
-	for(int i = 0; i < ItemCount; i++) {
-		int Slot = Buffer.Read<int>();
-		Buffer.Read<int>();
-		Buffer.Read<int>();
-		std::string ID = Buffer.ReadString();
-		int Level = Buffer.Read<int>();
-		int Quality = Buffer.Read<int>();
-
-		// Create item
-		_Item *Item = Stats.CreateItem(ID, Level, Quality, glm::vec2(0, 0), false);
-		Item->Count = 1;
-
-		// Read mods
-		if(Item->Type == _Object::WEAPON || Item->Type == _Object::ARMOR) {
-			float ExtraMods = Buffer.Read<float>();
-			Item->ExtraMods = ExtraMods;
-			Item->SetMaxMods();
-
-			// Load mods
-			LoadModsOld(Buffer, Item);
-			Item->RecalculateStats();
-		}
-
-		// Read ammo
-		if(Item->Type == _Object::WEAPON)
-			Item->SetAmmo(Buffer.Read<int>());
-
-		Player->InventoryOld[Slot] = Item;
-	}
-
-	// TEMP
-	Player->Inventory->Containers[(size_t)BagType::OUTFIT][0].Slots[EquipmentType::MAINHAND] = Player->InventoryOld[0];
-	Player->Inventory->Containers[(size_t)BagType::OUTFIT][0].Slots[EquipmentType::OFFHAND] = Player->InventoryOld[1];
-	Player->Inventory->Containers[(size_t)BagType::OUTFIT][0].Slots[EquipmentType::ARMOR] = Player->InventoryOld[3];
-	Player->Inventory->Containers[(size_t)BagType::OUTFIT][0].Slots[EquipmentType::MELEE] = Player->InventoryOld[2];
-	for(int i = INVENTORY_BAGSTART; i < INVENTORY_BAGEND; i++)
-		Player->Inventory->Containers[(size_t)BagType::BACKPACK][0].Slots[i - INVENTORY_BAGSTART] = Player->InventoryOld[i];
-}
-
 // Load inventory
 void _Save::LoadInventory(_Player *Player, ae::_Buffer &Buffer) {
 	Player->Inventory->Unserialize(Buffer);
-}
-
-// Load mods from a stream
-void _Save::LoadModsOld(ae::_Buffer &Buffer, _Item *Item) {
-
-	// Get size header
-	int Mods = Buffer.Read<int>();
-
-	// Read data
-	for(int i = 0; i < Mods; i++) {
-		std::string ID = Buffer.ReadString();
-		int Level = Buffer.Read<int32_t>();
-		int Quality = Buffer.Read<int32_t>();
-		_Item *Mod = Stats.CreateItem(ID, Level, Quality, glm::vec2(0, 0), false);
-		if(!Item->AddMod(Mod, false))
-			delete Mod;
-	}
 }
 
 // Load ammo

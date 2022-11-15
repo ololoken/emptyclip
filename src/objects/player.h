@@ -39,16 +39,6 @@ enum PlayerAnimationTypes {
 	PLAYER_ANIMATIONDYING
 };
 
-enum InventoryTypes {
-	INVENTORY_MAINHAND,
-	INVENTORY_OFFHAND,
-	INVENTORY_MELEE,
-	INVENTORY_ARMOR,
-	INVENTORY_BAGSTART,
-	INVENTORY_BAGEND = INVENTORY_BAGSTART + INVENTORY_BAGSIZE,
-	INVENTORY_SIZE = INVENTORY_BAGEND,
-};
-
 enum AddResultTypes {
 	ADD_FULL,
 	ADD_QUIETFULL,
@@ -153,7 +143,7 @@ class _Player : public _Entity {
 		std::string MapID{GAME_FIRSTLEVEL};
 		glm::ivec2 LastGoodCoord{0};
 		int CheckpointIndex{0};
-		int Progression{0};
+		int Progression{1};
 		double Clock{GAME_DEFAULT_CLOCK};
 
 		// Saves
@@ -175,7 +165,6 @@ class _Player : public _Entity {
 
 		// Inventory
 		_Inventory *Inventory;
-		_Item *InventoryOld[INVENTORY_SIZE];
 		std::unordered_map<std::string, int> Ammo;
 		std::unordered_map<std::string, int> AmmoMax;
 		std::vector<bool> AmmoNeeded;
@@ -192,8 +181,8 @@ class _Player : public _Entity {
 		double ProgressionTime{0.0};
 		double PlayTime{0.0};
 		int TotalDeaths{0};
-		int TotalKills{0};
-		int ProgressionKills{0};
+		int64_t TotalKills{0};
+		int64_t ProgressionKills{0};
 		int ProgressionDeaths{0};
 		int ProgressionCrates{0};
 		int ProgressionSecrets{0};

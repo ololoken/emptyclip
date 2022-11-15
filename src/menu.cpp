@@ -318,7 +318,7 @@ void _Menu::InitAchievements() {
 				Failed = true;
 			else if(Child->ID == "p10" && !PlayState.Player->Hardcore)
 				Failed = true;
-			else if(Child->ID == "bleedrun" && (PlayState.Player->Progression || PlayState.Player->TotalDeaths || !PlayState.Player->Hardcore || PlayState.Player->PlayTime >= ACHIEVEMENTS_BLEEDRUN_TIME))
+			else if(Child->ID == "bleedrun" && (PlayState.Player->Progression > 1 || PlayState.Player->TotalDeaths || !PlayState.Player->Hardcore || PlayState.Player->PlayTime >= ACHIEVEMENTS_BLEEDRUN_TIME))
 				Failed = true;
 
 			if(Failed)
@@ -1159,7 +1159,7 @@ void _Menu::RefreshSaveSlots() {
 			Player->SetLegAnimationPlayMode(ae::_Animation::PLAYING);
 			Player->Animation->Play(0);
 			SlotLabel->Text = Player->Name;
-			if(Player->Progression)
+			if(Player->Progression > 1)
 				SlotLabel->Text += " ([c gold]" + std::to_string(Player->Progression) + "[c white])";
 			SlotHardcore->Text = Player->Hardcore ? (Player->Health == 0 ? "Dead" : "Hardcore") : "";
 		}

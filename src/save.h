@@ -48,9 +48,7 @@ class _Save {
 
 		std::string GetConfigPath(size_t Slot);
 
-		void LoadItemsOld(_Player *Player, ae::_Buffer &Buffer);
 		void LoadInventory(_Player *Player, ae::_Buffer &Buffer);
-		void LoadModsOld(ae::_Buffer &Buffer, _Item *Item);
 		void LoadAmmo(_Player *Player, ae::_Buffer &Buffer);
 		void LoadKeys(_Player *Player, ae::_Buffer &Buffer);
 
