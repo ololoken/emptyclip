@@ -295,14 +295,16 @@ bool _Object::IsTouchingCircle(const glm::vec2 &CircleCenter, float CircleRadius
 void _Object::CheckProjectileCollisions() {
 	_Entity *OwnerEntity = (_Entity *)Owner;
 
+	// Push object out if it doesn't create ammo pickups
+	bool PushOut = ProjectileWeaponTemplate->PickupID.empty() || Bounces;
+
 	// Check wall hits
 	glm::vec2 HitPosition;
-	if(Map->ResolveTileCollisions(Position, Radius, _Tile::BULLET, false, Bounces, HitPosition, Velocity)) {
+	if(Map->ResolveTileCollisions(Position, Radius, _Tile::BULLET, PushOut, Bounces, HitPosition, Velocity)) {
 		if(Bounces <= 0) {
 
-			// Put projectile on wall
-			if(ProjectileExplosionSize == 0.0f)
-				Position = HitPosition;
+			// Update position
+			Position = HitPosition;
 
 			// Create ammo pick up
 			if(Bounces != -1)
