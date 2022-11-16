@@ -1104,6 +1104,13 @@ void _Player::UpdateAmmoNeeded() {
 	}
 }
 
+// Add missing backpack bags based on progression
+void _Player::AddMissingBackpacks() {
+	int Missing = Stats.Progressions[(size_t)Progression].Backpacks - (int)Inventory->Containers[(size_t)BagType::BACKPACK].size();
+	for(int i = 0; i < Missing; i++)
+		Inventory->AddBag(BagType::BACKPACK);
+}
+
 // Checks if the player has ammo for the main weapon
 bool _Player::HasAmmoForMain() const {
 	if(!GetMainHand())

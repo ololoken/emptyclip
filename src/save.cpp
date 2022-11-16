@@ -339,11 +339,8 @@ void _Save::LoadPlayer(_Player *Player) {
 
 	File.close();
 
-	// Set backpack size
-	int Missing = Stats.Progressions[(size_t)Player->Progression].Backpacks - (int)Player->Inventory->Containers[(size_t)BagType::BACKPACK].size();
-	for(int i = 0; i < Missing; i++)
-		Player->Inventory->AddBag(BagType::BACKPACK);
-
+	// Initialize
+	Player->AddMissingBackpacks();
 	Player->ActiveBackpack = std::min(Player->ActiveBackpack, Player->Inventory->Containers[(size_t)BagType::BACKPACK].size() - 1);
 	Player->CheckpointIndex = 0;
 	Player->CalculateExperienceStats();

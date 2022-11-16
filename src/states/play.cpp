@@ -1454,6 +1454,7 @@ void _PlayState::EndLevel() {
 		Player->ProgressionSecrets = 0;
 		Player->ProgressionDeaths = 0;
 		Player->ResetAchievementTracking();
+		Player->AddMissingBackpacks();
 	}
 	else {
 		Menu.SetScoreStats(HUD, Player, false, 0, GotOneHundredPercent);

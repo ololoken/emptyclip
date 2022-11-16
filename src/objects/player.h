@@ -102,6 +102,7 @@ class _Player : public _Entity {
 		_Bag &GetActiveOutfitBag() const;
 		_Bag &GetActiveBackpackBag() const;
 		void UpdateAmmoNeeded();
+		void AddMissingBackpacks();
 		bool HasAmmoForMain() const;
 
 		bool CanAttack(int AttackType) const override { return !IsMeleeAttacking() && !Reloading && !SwitchingWeapons && !SwitchingOutfits && !IsDying(); }
