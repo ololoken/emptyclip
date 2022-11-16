@@ -492,11 +492,11 @@ void _HUD::Update(double FrameTime, float Radius, double Clock) {
 
 			// Set outfit tab state
 			Element->Clickable = true;
-			Element->Children.front()->Texture = nullptr;
 			Element->Children.front()->Color = COLOR_WHITE;
 			Element->Children.back()->Text = "";
 			if(Index < HUD_BACKPACK_INDEX) {
 				Element->Checked = (Index == Player->ActiveOutfit);
+				Element->Children.front()->Texture = ae::Assets.Textures["textures/hud/outfit.png"];
 				if(!Element->Checked)
 					Element->Children.back()->Text = ae::Actions.GetInputNameForAction(Action::GAME_SWITCHOUTFIT);
 				if(Index < OutfitContainer.size() && OutfitContainer[Index].Slots[EquipmentType::ARMOR])

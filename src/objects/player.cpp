@@ -1186,6 +1186,8 @@ void _Player::StartWeaponSwitch(const _Slot &SlotFrom, const _Slot &SlotTo) {
 
 // Start outfit switch process
 void _Player::StartOutfitSwitch(size_t Outfit) {
+	if(Outfit == ActiveOutfit)
+		return;
 
 	// Check index
 	if(Outfit >= Inventory->Containers[(size_t)BagType::OUTFIT].size())
