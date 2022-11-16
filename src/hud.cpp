@@ -189,8 +189,10 @@ void _HUD::MouseEvent(const ae::_MouseEvent &MouseEvent) {
 	// Handle button clicks
 	ae::_Element *Clicked = Elements[ELEMENT_INVENTORY]->GetClickedElement();
 	if(Clicked) {
-		if(Clicked->ID == "button_inventory_sort")
-			Player->SortInventory();
+		if(Clicked->ID == "button_inventory_sort") {
+			if(!CursorItem)
+				Player->SortInventory();
+		}
 		else if(Clicked->Parent && Clicked->Parent->ID == "element_inventory_tabs") {
 			if(Clicked->Index >= 0 && Clicked->Index < HUD_BACKPACK_INDEX)
 				Player->StartOutfitSwitch((size_t)Clicked->Index);

@@ -266,7 +266,7 @@ bool _PlayState::HandleAction(int InputType, size_t Action, int Value) {
 				Player->SetSprinting(false);
 			break;
 			case Action::GAME_SORTINVENTORY:
-				if(HUD->InventoryOpen)
+				if(HUD->InventoryOpen && !HUD->CursorItem)
 					Player->SortInventory();
 			break;
 			case Action::GAME_FIRE:
@@ -305,15 +305,15 @@ bool _PlayState::HandleAction(int InputType, size_t Action, int Value) {
 				}
 			break;
 			case Action::GAME_RELOAD:
-				if(!HUD->IsDragging())
+				if(!HUD->CursorItem)
 					Player->StartReloading();
 			break;
 			case Action::GAME_WEAPONSWITCH:
-				if(!HUD->IsDragging())
+				if(!HUD->CursorItem)
 					Player->StartWeaponSwitch(_Slot(&Player->GetActiveOutfitBag(), EquipmentType::MAINHAND), _Slot(&Player->GetActiveOutfitBag(), EquipmentType::OFFHAND));
 			break;
 			case Action::GAME_SWITCHOUTFIT:
-				if(!HUD->IsDragging())
+				if(!HUD->CursorItem)
 					Player->StartOutfitSwitch(!Player->ActiveOutfit);
 			break;
 			case Action::GAME_FLASHLIGHT:
