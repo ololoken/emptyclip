@@ -412,7 +412,7 @@
 		</element>
 	</element>
 	<element id="element_inventory" offset_x="-450" size_x="580" size_y="400" clickable="true">
-		<element id="element_inventory_tabs" style="style_hud_inventory_bg_darker" offset_x="0" offset_y="-64" size_x="580" size_y="64" alignment_x="0" alignment_y="0">
+		<element id="element_inventory_tabs" style="style_hud_inventory_bg_darker" offset_x="0" offset_y="-64" size_x="580" size_y="64" alignment_x="0" alignment_y="0" clickable="true">
 			<element id="button_inventory_tabs_outfit0" style="style_hud_inventory_bg_dark" hover_style="style_hud_inventory_bg" size_x="64" size_y="64" alignment_x="0" alignment_y="0" clickable="true" index="0">
 				<element id="image_inventory_tabs_outfit0" size_x="48" size_y="48"/>
 				<element id="label_inventory_tabs_outfit0" font="hud_char" color="gray" offset_x="-6" offset_y="56" alignment_x="2" alignment_y="3"/>

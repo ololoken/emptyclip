@@ -266,7 +266,7 @@ void _HUD::MouseEvent(const ae::_MouseEvent &MouseEvent) {
 								}
 							}
 							// Dragged outside window
-							else {
+							else if(!HitElement) {
 
 								// Get world position
 								glm::vec2 WorldPosition;
@@ -283,6 +283,8 @@ void _HUD::MouseEvent(const ae::_MouseEvent &MouseEvent) {
 					}
 					// From world
 					else {
+
+						// Drag directly into inventory
 						if(HitSlot.IsValidIndex()) {
 							Player->UseTimer = 0.0;
 
@@ -325,6 +327,8 @@ void _HUD::MouseEvent(const ae::_MouseEvent &MouseEvent) {
 							Player->RecalculateStats();
 						}
 						else {
+
+							// Drag onto inventory tab
 							size_t BagIndex = GetBackpackTabIndex(HitElement);
 							if(BagIndex != (size_t)-1) {
 								int AddResult = Player->AddItemToBackpack(CursorItem, BagIndex, true);
@@ -343,7 +347,7 @@ void _HUD::MouseEvent(const ae::_MouseEvent &MouseEvent) {
 							}
 							// Drop to another world location
 							else
-								MoveWorldItem();
+								MoveWorldItem(HitElement ? Player->Position : glm::vec2(-1.0f));
 						}
 					}
 
