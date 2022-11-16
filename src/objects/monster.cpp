@@ -213,8 +213,8 @@ void _Monster::OnAttack(_Entity *Victim, const _Hit &Hit) {
 }
 
 // Called when the monster gets hit
-void _Monster::OnHit(_Entity *Attacker, const _Hit &Hit) {
-	_Entity::OnHit(Attacker, Hit);
+void _Monster::OnHit(_Entity *Attacker, const _Hit &Hit, bool PlaySound) {
+	_Entity::OnHit(Attacker, Hit, PlaySound);
 
 	if(IsCrate())
 		return;

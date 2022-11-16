@@ -365,6 +365,7 @@ void _Player::Update(double FrameTime) {
 	ReloadTimer += FrameTime;
 	UseTimer += FrameTime;
 	CombatTimer += FrameTime;
+	TakeDamageSoundTimer -= FrameTime;
 	if(CombatTimer >= PLAYER_HEAL_STARTTIME && Health < MaxHealth * PLAYER_HEAL_THRESHOLD) {
 		SelfHealTimer -= FrameTime;
 		if(SelfHealTimer <= 0) {
@@ -1497,11 +1498,17 @@ void _Player::UpdateColor() {
 }
 
 // Called when the player gets hit
-void _Player::OnHit(_Entity *Attacker, const _Hit &Hit) {
+void _Player::OnHit(_Entity *Attacker, const _Hit &Hit, bool PlaySound) {
 	if(IsInvulnerable())
 		return;
 
-	_Entity::OnHit(Attacker, Hit);
+	PlaySound = false;
+	if(TakeDamageSoundTimer <= 0.0) {
+		PlaySound = true;
+		TakeDamageSoundTimer = PLAYER_TAKEDAMAGE_SOUND_COOLDOWN * ae::GetRandomReal(1.0, 1.5);
+	}
+
+	_Entity::OnHit(Attacker, Hit, PlaySound);
 	SelfHealTimer = SelfHealPeriod;
 }
 

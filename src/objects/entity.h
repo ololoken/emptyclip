@@ -66,7 +66,7 @@ class _Entity : public _Object {
 
 		void UpdateHealth(int64_t Adjust);
 		virtual void OnAttack(_Entity *Victim, const _Hit &Hit);
-		virtual void OnHit(_Entity *Attacker, const _Hit &Hit);
+		virtual void OnHit(_Entity *Attacker, const _Hit &Hit, bool PlaySound=true);
 		virtual void UpdateSpeed(float Factor);
 		int GenerateDamage(int AttackType, float DamageModifier, bool Steady, bool &Crit);
 		int ReduceDamage(int Damage, bool SelfDamage);

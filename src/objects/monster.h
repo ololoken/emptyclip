@@ -42,7 +42,7 @@ class _Monster : public _Entity {
 
 		void Update(double FrameTime) override;
 		void OnAttack(_Entity *Victim, const _Hit &Hit) override;
-		void OnHit(_Entity *Attacker, const _Hit &Hit) override;
+		void OnHit(_Entity *Attacker, const _Hit &Hit, bool PlaySound=true) override;
 		void OnPlayerDeath();
 		bool PlayerIsAttackable() const { return PlayerDistanceSquared <= AttackRangeSquared && (PlayerShootable || PlayerVisible); }
 		bool ShowOnMinimap() const { return Action != ACTION_IDLE || MoveState || PlayerIsAttackable() || IsCrate(); }
