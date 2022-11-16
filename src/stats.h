@@ -175,7 +175,7 @@ class _Stats {
 		void CreateTransformedText();
 
 		_Item *CreateItem(const std::string &ID, int Level, int Quality, const glm::vec2 &Position, bool RandomStats, int Progression=0);
-		_Monster *CreateMonster(const std::string &ID, int Level, int Progression, const glm::vec2 &Position, size_t SpecialType=0);
+		_Monster *CreateMonster(const std::string &ID, int Level, size_t Progression, const glm::vec2 &Position, size_t SpecialType=0);
 		_Object *CreateProp(const std::string &ID, const glm::vec2 &Position, float Rotation, float Scale) const;
 		_Object *CreateProjectile(const _ObjectTemplate &Template, const glm::vec2 &Position) const;
 

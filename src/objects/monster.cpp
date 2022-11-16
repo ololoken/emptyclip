@@ -33,12 +33,6 @@ _Monster::_Monster(const _ObjectTemplate &MonsterTemplate) :
 	// Set stats
 	MainWeaponType = Template.Attributes.at("weapon_type").Int;
 
-	// Cache distances
-	AttackRangeSquared = Template.Attributes.at("attack_range").Float;
-	AttackRangeSquared *= AttackRangeSquared;
-	ViewRangeSquared = Template.Attributes.at("view_range").Float;
-	ViewRangeSquared *= ViewRangeSquared;
-
 	// Set weapon offsets
 	WeaponOffset[0] = glm::vec2(0, 0);
 	for(int i = 1; i < WEAPON_COUNT; i++)
@@ -60,6 +54,10 @@ _Monster::_Monster(const _ObjectTemplate &MonsterTemplate) :
 
 // Set up stats used by the monster
 void _Monster::RecalculateStats() {
+	ViewRangeSquared = Template.Attributes.at("view_range").Float;
+	ViewRangeSquared *= ViewRangeSquared;
+	AttackRangeSquared = AttackRange[0];
+	AttackRangeSquared *= AttackRangeSquared;
 	StopThresholdSquared = ENTITY_STOP_THRESHOLD * MoveSpeed;
 	StopThresholdSquared *= StopThresholdSquared;
 	CurrentAccuracy = MinAccuracy;

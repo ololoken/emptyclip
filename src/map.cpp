@@ -415,7 +415,6 @@ _Map::_Map(const std::string &Filename, double Clock, int Progression) : _Map() 
 	if(BaseAmbientClock)
 		GetClockLight(Clock, AmbientLight);
 
-
 	// Set up minimap
 	MinimapVertices = new float[MINIMAP_MAX_VERTICES];
 	MinimapVBO = ae::Graphics.CreateVBO(nullptr, MINIMAP_MAX_VERTICES * sizeof(float), GL_DYNAMIC_DRAW);

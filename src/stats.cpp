@@ -569,6 +569,7 @@ void _Stats::LoadMonsters() {
 		Template.Attributes["scale"].Float = Database->GetReal("scale");
 		Template.Attributes["accuracy"].Int = Database->GetInt<int>("accuracy");
 		Template.Attributes["attack_range"].Float = Database->GetReal("attack_range");
+		Template.Attributes["projectile_range"].Float = Database->GetReal("projectile_range");
 		Template.Attributes["damage"].Float = Database->GetReal("damage");
 		Template.Attributes["damage_level"].Float = Database->GetReal("damage_level");
 		Template.Attributes["damage_spread"].Float = Database->GetReal("damage_spread");
@@ -577,6 +578,7 @@ void _Stats::LoadMonsters() {
 		Template.Attributes["attack_movespeed"].Float = Database->GetReal("attack_movespeed");
 		Template.Attributes["poison"].Float = Database->GetReal("poison");
 		Template.Attributes["projectile_speed"].Float = Database->GetReal("projectile_speed");
+		Template.Attributes["projectile_chance"].Int = Database->GetInt<int>("projectile_chance");
 		Template.Attributes["mass"].Float = Database->GetReal("mass");
 		Template.Attributes["force"].Float = Database->GetReal("force");
 
@@ -848,7 +850,7 @@ _Item *_Stats::CreateItem(const std::string &ID, int Level, int Quality, const g
 }
 
 // Create monster
-_Monster *_Stats::CreateMonster(const std::string &ID, int Level, int Progression, const glm::vec2 &Position, size_t SpecialType) {
+_Monster *_Stats::CreateMonster(const std::string &ID, int Level, size_t Progression, const glm::vec2 &Position, size_t SpecialType) {
 	const _ObjectTemplate &Template = Objects.at(ID);
 
 	// Create object
@@ -857,13 +859,8 @@ _Monster *_Stats::CreateMonster(const std::string &ID, int Level, int Progressio
 	Monster->SetPosition(Position);
 	if(!Template.MeshID.empty())
 		Monster->Mesh = ae::Assets.Meshes.at(Template.MeshID);
-	if(!Template.ProjectileID.empty()) {
-		Monster->Projectiles[WEAPONATTACK_MAIN] = &Stats.Objects.at(Template.ProjectileID);
-		Monster->ProjectileSpeed[WEAPONATTACK_MAIN] = Template.Attributes.at("projectile_speed").Float;
-		Monster->ExplosionSize[WEAPONATTACK_MAIN] = 0.0f;
-	}
 	Monster->Animation->Reels = ae::Assets.Animations[Template.AnimationID];
-	Monster->Animation->Frame = Monster->Animation->Reels[Monster->WalkingAnimation]->DefaultFrame;
+	Monster->Animation->Frame = Monster->Animation->Reels[(size_t)Monster->WalkingAnimation]->DefaultFrame;
 	Monster->Animation->CalculateTextureCoords();
 	Monster->Level = Level;
 	Monster->Mass = Template.Attributes.at("mass").Float;
@@ -895,6 +892,14 @@ _Monster *_Stats::CreateMonster(const std::string &ID, int Level, int Progressio
 	if(Monster->IsCrate()) {
 		Monster->Texture = Monster->Animation->Reels[0]->Texture;
 		Monster->PositionZ = 0.0f;
+	}
+
+	// Set up projectiles
+	if(!Template.ProjectileID.empty() && ae::GetRandomInt(1, 100) <= Template.Attributes.at("projectile_chance").Int) {
+		Monster->Projectiles[WEAPONATTACK_MAIN] = &Stats.Objects.at(Template.ProjectileID);
+		Monster->ProjectileSpeed[WEAPONATTACK_MAIN] = Template.Attributes.at("projectile_speed").Float;
+		Monster->ExplosionSize[WEAPONATTACK_MAIN] = 0.0f;
+		Monster->AttackRange[0] = Template.Attributes.at("projectile_range").Float;
 	}
 
 	// Create special monster variation
