@@ -97,6 +97,7 @@ class _Inventory  {
 		int GetItemCount(BagType Type, size_t BagIndex);
 		void UpdateTypeCount();
 		const char *GetBackpackIcon(size_t BagIndex);
+		size_t GetSuitableBackpackBag(const _Item *Item, size_t StartIndex);
 
 		std::vector<_Container> Containers;
 

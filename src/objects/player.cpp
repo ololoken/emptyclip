@@ -786,16 +786,10 @@ int _Player::AddItem(_Item *Item, int &AmountAdded, bool UseOnFull) {
 	// Update bag stats
 	Inventory->UpdateTypeCount();
 
-	// Find suitable bag for item based on type
-	_Container &Container = Inventory->Containers[(size_t)BagType::BACKPACK];
-	size_t BagIndex = ActiveBackpack;
-	for(size_t i = 0; i < Container.size(); i++) {
-		if(Container[i].HighestType == Item->GetIconType()) {
-			BagIndex = i;
-			break;
-		}
-	}
+	// Find bag
+	size_t BagIndex = Inventory->GetSuitableBackpackBag(Item, ActiveBackpack);
 
+	// Add item
 	return AddItemToBackpack(Item, BagIndex);
 }
 

@@ -394,7 +394,7 @@ bool _PlayState::HandleKey(const ae::_KeyEvent &KeyEvent) {
 
 // Mouse handler
 void _PlayState::HandleMouseButton(const ae::_MouseEvent &MouseEvent) {
-	HUD->MouseEvent(MouseEvent);
+	HUD->HandleMouseButton(MouseEvent);
 
 	if(IsPaused())
 		Menu.HandleMouseButton(MouseEvent);

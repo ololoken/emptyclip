@@ -163,6 +163,23 @@ const char *_Inventory::GetBackpackIcon(size_t BagIndex) {
 	return "textures/hud/backpack.png";
 }
 
+// Find suitable bag for item based on type
+size_t _Inventory::GetSuitableBackpackBag(const _Item *Item, size_t StartIndex) {
+	if(!Item)
+		return StartIndex;
+
+	_Container &Container = Containers[(size_t)BagType::BACKPACK];
+	size_t BagIndex = StartIndex;
+	for(size_t i = 0; i < Container.size(); i++) {
+		if(Container[i].HighestType == Item->GetIconType()) {
+			BagIndex = i;
+			break;
+		}
+	}
+
+	return BagIndex;
+}
+
 // Serialize a bag
 void _Inventory::SerializeContainer(ae::_Buffer &Buffer, const _Container &Container) const {
 

@@ -178,8 +178,8 @@ _HUD::_HUD(const ae::_Camera *Camera, _Player *Player) : Camera(Camera), Player(
 	Elements[ELEMENT_MESSAGE]->SetActive(true);
 }
 
-// Handle mouse events
-void _HUD::MouseEvent(const ae::_MouseEvent &MouseEvent) {
+// Handle mouse buttons
+void _HUD::HandleMouseButton(const ae::_MouseEvent &MouseEvent) {
 	if(!InventoryOpen)
 		return;
 
@@ -210,30 +210,55 @@ void _HUD::MouseEvent(const ae::_MouseEvent &MouseEvent) {
 	switch(MouseEvent.Button) {
 		case SDL_BUTTON_LEFT:
 
-			// Start dragging an item
+			// Mouse press
 			if(MouseEvent.Pressed) {
 				if(Player->CanDragItems()) {
 
-					// Drag from inventory
-					if(HitSlot.IsValidIndex()) {
-						if(ae::Input.ModKeyDown(KMOD_CTRL)) {
-							Player->DropItem(HitSlot);
-						}
-						else {
-							DragSlot = HitSlot;
-							CursorItem = DragSlot.GetItem();
-							ClickOffset = glm::vec2(MouseEvent.Position) - HitElement->Bounds.GetCenter();
+					// Reorganize item
+					if(ae::Input.ModKeyDown(KMOD_SHIFT)) {
+
+						// Find better bag
+						if(HitSlot.IsValidIndex()) {
+							_Item *Item = HitSlot.GetItem();
+							size_t BagIndex = Player->Inventory->GetSuitableBackpackBag(Item, Player->ActiveBackpack);
+							if(BagIndex != Player->ActiveBackpack) {
+								int AddResult = Player->AddItemToBackpack(Item, BagIndex, true);
+								switch(AddResult) {
+									case ADD_REMOVE:
+										HitSlot.RemoveItem();
+									break;
+									case ADD_DELETE:
+										HitSlot.RemoveItem();
+										Item->Active = false;
+									break;
+								}
+							}
 						}
 					}
-					// Drag from world
-					else if(CanGrabItem(CursorOverItem)) {
-						if(CursorOverItem->CanMove()) {
-							ClickOffset = glm::vec2(0.0f);
-							CursorItem = CursorOverItem;
-							CursorItem->Visible = false;
+					// Start dragging an item
+					else {
+
+						// Drag from inventory
+						if(HitSlot.IsValidIndex()) {
+							if(ae::Input.ModKeyDown(KMOD_CTRL)) {
+								Player->DropItem(HitSlot);
+							}
+							else {
+								DragSlot = HitSlot;
+								CursorItem = DragSlot.GetItem();
+								ClickOffset = glm::vec2(MouseEvent.Position) - HitElement->Bounds.GetCenter();
+							}
 						}
-						else
-							PlayState.PickupObject(CursorOverItem, true);
+						// Drag from world
+						else if(CanGrabItem(CursorOverItem)) {
+							if(CursorOverItem->CanMove()) {
+								ClickOffset = glm::vec2(0.0f);
+								CursorItem = CursorOverItem;
+								CursorItem->Visible = false;
+							}
+							else
+								PlayState.PickupObject(CursorOverItem, true);
+						}
 					}
 				}
 			}

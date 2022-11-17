@@ -110,7 +110,7 @@ class _HUD {
 		void SetInventoryOpen(bool Value);
 		void MoveWorldItem(const glm::vec2 &DropPosition=glm::vec2(-1.0f));
 
-		void MouseEvent(const ae::_MouseEvent &MouseEvent);
+		void HandleMouseButton(const ae::_MouseEvent &MouseEvent);
 		void Update(double FrameTime, float Radius, double Clock);
 
 		void Render(bool FullMap);
