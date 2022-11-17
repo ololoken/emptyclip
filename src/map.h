@@ -284,7 +284,7 @@ class _Map {
 		glm::vec4 BaseAmbientLight{0.5f, 0.5f, 0.5f, 1.0f};
 		glm::ivec2 Size{0, 0};
 		int MapType{MAPTYPE_CAMPAIGN};
-		int Progression{0};
+		size_t Progression{0};
 		int Level{1};
 		int Monsters{0};
 		int Crates{0};

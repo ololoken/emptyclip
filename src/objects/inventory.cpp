@@ -99,6 +99,31 @@ int _Inventory::GetItemCount(BagType Type, size_t BagIndex) {
 	return Container[BagIndex].GetItemCount();
 }
 
+// Update the type counts for each bag
+void _Inventory::UpdateTypeCount() {
+	_Container &Container = Containers[(size_t)BagType::BACKPACK];
+	for(auto &Bag : Container) {
+
+		// Reset bag count
+		std::fill(Bag.TypeCount.begin(), Bag.TypeCount.end(), 0);
+
+		// Keep track of highest count
+		Bag.HighestType = BAGICON_DEFAULT;
+		int HighestCount = INVENTORY_ICONTYPE_THRESHOLD - 1;
+		for(const auto &Item : Bag.Slots) {
+			if(!Item)
+				continue;
+
+			size_t IconType = (size_t)Item->GetIconType();
+			Bag.TypeCount[IconType]++;
+			if(Bag.TypeCount[IconType] > HighestCount) {
+				HighestCount = Bag.TypeCount[IconType];
+				Bag.HighestType = IconType;
+			}
+		}
+	}
+}
+
 // Determine the best icon to represent a backpack bag
 const char *_Inventory::GetBackpackIcon(size_t BagIndex) {
 
@@ -107,28 +132,8 @@ const char *_Inventory::GetBackpackIcon(size_t BagIndex) {
 	if(Container.size() <= 1)
 		return "textures/hud/backpack.png";
 
-	// Reset bag state
-	_Bag &Bag = Container[BagIndex];
-	std::fill(Bag.TypeCount.begin(), Bag.TypeCount.end(), 0);
-
-	// Count types
-	size_t HighestType = BAGICON_DEFAULT;
-	int HighestCount = INVENTORY_ICONTYPE_THRESHOLD - 1;
-	for(const auto &Item : Bag.Slots) {
-		if(!Item)
-			continue;
-
-		size_t IconType = (size_t)Item->GetIconType();
-		Bag.TypeCount[IconType]++;
-
-		if(Bag.TypeCount[IconType] > HighestCount) {
-			HighestCount = Bag.TypeCount[IconType];
-			HighestType = IconType;
-		}
-	}
-
 	// Return icon
-	switch(HighestType) {
+	switch(Container[BagIndex].HighestType) {
 		case BAGICON_DEFAULT:
 			return "textures/hud/backpack.png";
 		break;

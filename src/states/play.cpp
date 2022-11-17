@@ -656,7 +656,7 @@ void _PlayState::Update(double FrameTime) {
 	else
 		HUD->SetInventoryOpen(false);
 
-	int PlayerHealth = Player->Health;
+	int64_t PlayerHealth = Player->Health;
 
 	// Update player
 	Player->Update(FrameTime);

@@ -783,7 +783,20 @@ int _Player::AddItem(_Item *Item, int &AmountAdded, bool UseOnFull) {
 		break;
 	}
 
-	return AddItemToBackpack(Item, ActiveBackpack);
+	// Update bag stats
+	Inventory->UpdateTypeCount();
+
+	// Find suitable bag for item based on type
+	_Container &Container = Inventory->Containers[(size_t)BagType::BACKPACK];
+	size_t BagIndex = ActiveBackpack;
+	for(size_t i = 0; i < Container.size(); i++) {
+		if(Container[i].HighestType == Item->GetIconType()) {
+			BagIndex = i;
+			break;
+		}
+	}
+
+	return AddItemToBackpack(Item, BagIndex);
 }
 
 // Drop an item from the player's inventory

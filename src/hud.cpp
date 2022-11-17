@@ -485,6 +485,9 @@ void _HUD::Update(double FrameTime, float Radius, double Clock) {
 			CursorUseWorldPosition = false;
 		}
 
+		// Update type counts for each bag
+		Player->Inventory->UpdateTypeCount();
+
 		// Set outfit tab checked state
 		_Container &OutfitContainer = Player->Inventory->Containers[(size_t)BagType::OUTFIT];
 		for(auto &Element : Elements[ELEMENT_INVENTORY_TABS]->Children) {
