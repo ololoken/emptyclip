@@ -1412,6 +1412,9 @@ void _PlayState::PlayerDied() {
 
 // End level
 void _PlayState::EndLevel() {
+	ae::Audio.StopSounds();
+	Player->CancelReloading();
+
 	Level = TouchingEndEvent->ItemID;
 	bool GotOneHundredPercent = HUD->Kills[0] >= HUD->Kills[1] && HUD->Crates[0] >= HUD->Crates[1] && HUD->Secrets[0] >= HUD->Secrets[1];
 	if(!GotOneHundredPercent)

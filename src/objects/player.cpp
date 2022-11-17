@@ -360,12 +360,15 @@ void _Player::Update(double FrameTime) {
 	PlayTime += FrameTime;
 	ProgressionTime += FrameTime;
 	LevelTime += FrameTime;
-	WeaponSwitchTimer += FrameTime;
-	OutfitSwitchTimer += FrameTime;
-	ReloadTimer += FrameTime;
 	UseTimer += FrameTime;
 	CombatTimer += FrameTime;
 	TakeDamageSoundTimer -= FrameTime;
+	if(SwitchingOutfits)
+		OutfitSwitchTimer += FrameTime;
+	if(Reloading)
+		ReloadTimer += FrameTime;
+	if(SwitchingWeapons)
+		WeaponSwitchTimer += FrameTime;
 	if(CombatTimer >= PLAYER_HEAL_STARTTIME && Health < MaxHealth * PLAYER_HEAL_THRESHOLD) {
 		SelfHealTimer -= FrameTime;
 		if(SelfHealTimer <= 0) {
@@ -1156,7 +1159,7 @@ void _Player::StartReloading() {
 	ReloadSound = ae::Audio.PlaySound(GetSound(SOUND_RELOAD, WEAPONATTACK_MAIN));
 
 	// Start timer
-	ReloadTimer = 0;
+	ReloadTimer = 0.0;
 	Reloading = true;
 }
 
