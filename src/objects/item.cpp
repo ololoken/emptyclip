@@ -487,7 +487,7 @@ void _Item::DrawTooltip(const _Player *Player, glm::vec2 DrawPosition, const _It
 					Buffer.str("");
 
 					DrawPosition.y += Spacing.y;
-					Buffer << "Max quality: [c green]" << Stats.Progressions[Player->Progression].MaxQuality << "%";
+					Buffer << "Max quality for Progression [c green]" << Player->Progression << "[c white] is [c green]" << Stats.Progressions[Player->Progression].MaxQuality << "%";
 					AttributeFont->DrawTextFormatted(Buffer.str(), glm::ivec2(DrawPosition), ae::CENTER_BASELINE);
 					if(!Slot.Bag && PlayState.HUD->InventoryOpen)
 						HelpTextList.push_back("Right-click to pick up");
