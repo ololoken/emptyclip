@@ -636,22 +636,22 @@ void _Item::RecalculateStats() {
 			Attributes["fire_allrounds"].Int = Template.Attributes.at("fire_allrounds").Int;
 			Attributes["shoot_period"].Double = Template.Attributes.at("shoot_period").Double;
 
-			SetAttributeRange("damage", GetBonusMultiplier(MOD_DAMAGE));
+			SetAttributeRange("damage", GetQualityBonusMultiplier(MOD_DAMAGE));
 			Attributes["accuracy_min"].Float = Template.Attributes.at("accuracy_min").Float * MinAccuracyMultiplier;
 			Attributes["accuracy_max"].Float = std::max(Template.Attributes.at("accuracy_max").Float, Attributes["accuracy_min"].Float);
-			Attributes["fire_period"].Double = Template.Attributes.at("fire_period").Double * GetBonusMultiplier(MOD_ATTACKSPEED, true);
-			Attributes["shoot_period"].Double = Template.Attributes.at("shoot_period").Double * GetBonusMultiplier(MOD_HANDLING, true);
+			Attributes["fire_period"].Double = Template.Attributes.at("fire_period").Double * GetQualityBonusMultiplier(MOD_ATTACKSPEED, true);
+			Attributes["shoot_period"].Double = Template.Attributes.at("shoot_period").Double * GetQualityBonusMultiplier(MOD_HANDLING, true);
 			Attributes["attack_count"].Float = Template.Attributes.at("attack_count").Float;
-			Attributes["reload_period"].Double = Template.Attributes.at("reload_period").Double * GetBonusMultiplier(MOD_RELOADSPEED, true);
+			Attributes["reload_period"].Double = Template.Attributes.at("reload_period").Double * GetQualityBonusMultiplier(MOD_RELOADSPEED, true);
 			Attributes["reload_amount"].Float = Template.Attributes.at("reload_amount").Float * QualityFactor + Bonus[MOD_RELOADAMOUNT];
-			Attributes["recoil"].Float = Template.Attributes.at("recoil").Float * GetBonusMultiplier(MOD_HANDLING, true);
-			Attributes["accuracy_regen"].Float = Template.Attributes.at("accuracy_regen").Float * GetBonusMultiplier(MOD_HANDLING);
-			Attributes["move_recoil"].Float = Template.Attributes.at("move_recoil").Float * GetBonusMultiplier(MOD_HANDLING, true);
+			Attributes["recoil"].Float = Template.Attributes.at("recoil").Float * GetQualityBonusMultiplier(MOD_HANDLING, true);
+			Attributes["accuracy_regen"].Float = Template.Attributes.at("accuracy_regen").Float * GetQualityBonusMultiplier(MOD_HANDLING);
+			Attributes["move_recoil"].Float = Template.Attributes.at("move_recoil").Float * GetQualityBonusMultiplier(MOD_HANDLING, true);
 			Attributes["penetration"].Float = Template.Attributes.at("penetration").Float * QualityFactor + Bonus[MOD_PENETRATION];
 			Attributes["penetration_damage"].Float = std::clamp(Template.Attributes.at("penetration_damage").Float * QualityFactor, 0.0f, 1.0f);
 			Attributes["bounces"].Float = Bonus[MOD_BOUNCE];
 			Attributes["crit_chance"].Float = std::clamp(Template.Attributes.at("crit_chance").Float * QualityFactor + Bonus[MOD_CRITCHANCE], 0.0f, 100.0f);
-			Attributes["rounds"].Float = (Template.Attributes.at("rounds").Float + Bonus[MOD_MAXROUNDSPLUS]) * GetBonusMultiplier(MOD_MAXROUNDS);
+			Attributes["rounds"].Float = (Template.Attributes.at("rounds").Float + Bonus[MOD_MAXROUNDSPLUS]) * GetQualityBonusMultiplier(MOD_MAXROUNDS);
 
 			if(Bonus[MOD_SEMIAUTO]) {
 				Attributes["fire_rate"].Int = 0;
@@ -869,8 +869,14 @@ bool _Item::ModCompatible(_Item *Mod, bool CheckCount) const {
 }
 
 // Get bonus multiplier from mod type and quality
-float _Item::GetBonusMultiplier(int ModType, bool Inverse) const {
+float _Item::GetQualityBonusMultiplier(int ModType, bool Inverse) const {
 	float Factor = (100 + Quality) * 0.01f * (100.0f + Bonus[ModType]) * 0.01f;
+	return Inverse ? 1.0f / Factor : Factor;
+}
+
+// Get bonus multiplier from mod type
+float _Item::GetBonusMultiplier(int ModType, bool Inverse) const {
+	float Factor = (100.0f + Bonus[ModType]) * 0.01f;
 	return Inverse ? 1.0f / Factor : Factor;
 }
 

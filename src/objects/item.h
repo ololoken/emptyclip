@@ -119,6 +119,7 @@ class _Item : public _Object {
 		bool ApplyUsable(_Item *Usable);
 		bool ItemCompatible(_Item *Item, bool CheckCount=true) const;
 		bool ModCompatible(_Item *Mod, bool CheckCount=true) const;
+		float GetQualityBonusMultiplier(int ModType, bool Inverse=false) const;
 		float GetBonusMultiplier(int ModType, bool Inverse=false) const;
 		void SetMaxMods();
 		float GetMaxMods(bool Round) const;
