@@ -44,9 +44,11 @@ enum class BagType : size_t {
 
 // Bags contain multiple slots
 struct _Bag {
+	_Bag();
 	int GetItemCount() const;
 
 	std::vector<_Item *> Slots;
+	std::vector<int> TypeCount;
 	bool Equipment{false};
 };
 
@@ -89,7 +91,9 @@ class _Inventory  {
 		void Unserialize(ae::_Buffer &Buffer);
 
 		void AddBag(BagType Type);
+
 		int GetItemCount(BagType Type, size_t BagIndex);
+		const char *GetBackpackIcon(size_t BagIndex);
 
 		std::vector<_Container> Containers;
 

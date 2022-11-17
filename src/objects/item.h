@@ -60,6 +60,15 @@ enum ModType {
 	MOD_COUNT
 };
 
+// Mod class types
+enum ModClassType {
+	MODCLASS_NONE,
+	MODCLASS_WEAPON,
+	MODCLASS_ARMOR,
+	MODCLASS_SPECIAL,
+	MODCLASS_CHANGE,
+};
+
 // Usable types
 enum UsableType {
 	USABLE_NONE,
@@ -77,6 +86,19 @@ enum WeaponType {
 	WEAPON_RIFLE,
 	WEAPON_HEAVY,
 	WEAPON_COUNT
+};
+
+// Types of bag icons
+enum BagIconType {
+	BAGICON_DEFAULT,
+	BAGICON_GEAR_WEAPON,
+	BAGICON_GEAR_ARMOR,
+	BAGICON_MOD_WEAPON,
+	BAGICON_MOD_ARMOR,
+	BAGICON_MOD_SPECIAL,
+	BAGICON_MOD_CHANGE,
+	BAGICON_USABLE,
+	BAGICON_COUNT,
 };
 
 // Classes
@@ -101,7 +123,8 @@ class _Item : public _Object {
 		void SetMaxMods();
 		float GetMaxMods(bool Round) const;
 		int GetModType() const;
-		bool IsSpecialMod() const;
+		bool IsChangeMod() const;
+		int GetIconType() const;
 
 		int UpdateCount(int Amount) { Count += Amount; return Count; }
 

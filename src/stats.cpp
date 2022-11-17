@@ -451,6 +451,7 @@ void _Stats::LoadMods() {
 		Template.ID = Database->GetString("id");
 		Template.Name = Database->GetString("name");
 		Template.IconID = Database->GetString("icon_id");
+		Template.Attributes["class"].Int = Database->GetInt<int>("class");
 		Template.Attributes["mod_type"].Int = Database->GetInt<int>("mod_type");
 		Template.Attributes["mod_type_2nd"].Int = Database->GetInt<int>("mod_type_2nd");
 		Template.Attributes["object_type"].Int = Database->GetInt<int>("object_type");

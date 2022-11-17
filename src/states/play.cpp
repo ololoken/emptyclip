@@ -1050,7 +1050,7 @@ void _PlayState::Render(double BlendFactor) {
 			// Show bonus value
 			switch(Item->Type) {
 				case _Object::MOD: {
-					if(Item->IsSpecialMod()) {
+					if(Item->IsChangeMod()) {
 						Buffer << "+" << ae::Round2(Item->Attributes.at("bonus_2nd").Float) << "%";
 						ae::Assets.Fonts["hud_tiny"]->DrawText(Buffer.str(), glm::ivec2(TextPosition + glm::vec2(0, -14) * ae::_Element::GetUIScale()), ae::CENTER_BASELINE, COLOR_FAINT_WHITE);
 						Buffer.str("");

@@ -427,7 +427,7 @@ void _Item::DrawTooltip(const _Player *Player, glm::vec2 DrawPosition, const _It
 				Buffer << " Round Burst Fire";
 				AttributeFont->DrawText(Buffer.str(), glm::ivec2(DrawPosition), ae::CENTER_BASELINE, TextColor);
 			}
-			else if(!IsSpecialMod()) {
+			else if(!IsChangeMod()) {
 				DrawPosition.y += Spacing.y;
 				std::string Percent = Template.Attributes.at("percent_sign").Int ? "%" : "";
 				std::string Positive = Template.Attributes.at("negative").Int ? "" : "+";
@@ -825,7 +825,7 @@ bool _Item::ModCompatible(_Item *Mod, bool CheckCount) const {
 
 				// Check for other mods
 				for(const auto &OtherMod : Mods) {
-					if(OtherMod->Type == _Object::MOD && OtherMod->IsSpecialMod())
+					if(OtherMod->Type == _Object::MOD && OtherMod->IsChangeMod())
 						return false;
 				}
 			}
@@ -837,7 +837,7 @@ bool _Item::ModCompatible(_Item *Mod, bool CheckCount) const {
 
 				// Check for other mods
 				for(const auto &OtherMod : Mods) {
-					if(OtherMod->Type == _Object::MOD && OtherMod->IsSpecialMod())
+					if(OtherMod->Type == _Object::MOD && OtherMod->IsChangeMod())
 						return false;
 				}
 			}
@@ -849,7 +849,7 @@ bool _Item::ModCompatible(_Item *Mod, bool CheckCount) const {
 
 				// Check for other mods
 				for(const auto &OtherMod : Mods) {
-					if(OtherMod->Type == _Object::MOD && OtherMod->IsSpecialMod())
+					if(OtherMod->Type == _Object::MOD && OtherMod->IsChangeMod())
 						return false;
 				}
 			}
@@ -907,10 +907,46 @@ int _Item::GetModType() const {
 	return Template.Attributes.at("mod_type").Int;
 }
 
-// Return true if mod is considered special
-bool _Item::IsSpecialMod() const {
-	int ModType = GetModType();
-	return ModType == MOD_SEMIAUTO || ModType == MOD_BURST || ModType == MOD_FULLAUTO;
+// Return true if mod is considered 'change' type
+bool _Item::IsChangeMod() const {
+	if(Type != _Object::MOD)
+		return MODCLASS_NONE;
+
+	return Template.Attributes.at("class").Int == MODCLASS_CHANGE;
+}
+
+// Determine the bag icon for an item
+int _Item::GetIconType() const {
+
+	switch(Type) {
+		case _Object::WEAPON:
+			return BAGICON_GEAR_WEAPON;
+		break;
+		case _Object::ARMOR:
+			return BAGICON_GEAR_ARMOR;
+		break;
+		case _Object::MOD:
+			switch(Template.Attributes.at("class").Int) {
+				case MODCLASS_WEAPON:
+					return BAGICON_MOD_WEAPON;
+				break;
+				case MODCLASS_ARMOR:
+					return BAGICON_MOD_ARMOR;
+				break;
+				case MODCLASS_SPECIAL:
+					return BAGICON_MOD_SPECIAL;
+				break;
+				case MODCLASS_CHANGE:
+					return BAGICON_MOD_CHANGE;
+				break;
+			}
+		break;
+		case _Object::USABLE:
+			return BAGICON_USABLE;
+		break;
+	}
+
+	return BAGICON_DEFAULT;
 }
 
 // Get average damage from range

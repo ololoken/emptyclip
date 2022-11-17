@@ -512,7 +512,7 @@ void _HUD::Update(double FrameTime, float Radius, double Clock) {
 					Element->Children.front()->Texture = ae::Assets.Textures["textures/hud/locked.png"];
 				}
 				else {
-					Element->Children.front()->Texture = ae::Assets.Textures["textures/hud/backpack.png"];
+					Element->Children.front()->Texture = ae::Assets.Textures[Player->Inventory->GetBackpackIcon(BagIndex)];
 					Element->Children.back()->Text = std::to_string(Player->Inventory->GetItemCount(BagType::BACKPACK, BagIndex));
 				}
 			}
@@ -1203,7 +1203,7 @@ void _HUD::DrawItemValue(const _Item *Item, const glm::vec2 &Position) {
 	std::ostringstream Buffer;
 	switch(Item->Type) {
 		case _Object::MOD:
-			if(Item->IsSpecialMod()) {
+			if(Item->IsChangeMod()) {
 				Buffer << "+" << ae::Round2(Item->Attributes.at("bonus_2nd").Float) << "%";
 			}
 			else {

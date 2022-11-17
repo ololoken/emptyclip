@@ -99,6 +99,65 @@ int _Inventory::GetItemCount(BagType Type, size_t BagIndex) {
 	return Container[BagIndex].GetItemCount();
 }
 
+// Determine the best icon to represent a backpack bag
+const char *_Inventory::GetBackpackIcon(size_t BagIndex) {
+
+	// Only change icon when more than one bag is present
+	_Container &Container = Containers[(size_t)BagType::BACKPACK];
+	if(Container.size() <= 1)
+		return "textures/hud/backpack.png";
+
+	// Reset bag state
+	_Bag &Bag = Container[BagIndex];
+	std::fill(Bag.TypeCount.begin(), Bag.TypeCount.end(), 0);
+
+	// Count types
+	size_t HighestType = BAGICON_DEFAULT;
+	int HighestCount = INVENTORY_ICONTYPE_THRESHOLD - 1;
+	for(const auto &Item : Bag.Slots) {
+		if(!Item)
+			continue;
+
+		size_t IconType = (size_t)Item->GetIconType();
+		Bag.TypeCount[IconType]++;
+
+		if(Bag.TypeCount[IconType] > HighestCount) {
+			HighestCount = Bag.TypeCount[IconType];
+			HighestType = IconType;
+		}
+	}
+
+	// Return icon
+	switch(HighestType) {
+		case BAGICON_DEFAULT:
+			return "textures/hud/backpack.png";
+		break;
+		case BAGICON_GEAR_WEAPON:
+			return "textures/hud/tab_gear_weapon.png";
+		break;
+		case BAGICON_GEAR_ARMOR:
+			return "textures/hud/tab_gear_armor.png";
+		break;
+		case BAGICON_MOD_WEAPON:
+			return "textures/hud/tab_mod_weapon.png";
+		break;
+		case BAGICON_MOD_ARMOR:
+			return "textures/hud/tab_mod_armor.png";
+		break;
+		case BAGICON_MOD_SPECIAL:
+			return "textures/hud/tab_mod_special.png";
+		break;
+		case BAGICON_MOD_CHANGE:
+			return "textures/hud/tab_mod_change.png";
+		break;
+		case BAGICON_USABLE:
+			return "textures/hud/tab_usable_whetstone.png";
+		break;
+	}
+
+	return "textures/hud/backpack.png";
+}
+
 // Serialize a bag
 void _Inventory::SerializeContainer(ae::_Buffer &Buffer, const _Container &Container) const {
 
@@ -201,6 +260,10 @@ _Item *_Inventory::UnserializeItem(ae::_Buffer &Buffer) {
 	_Item *Item = Stats.CreateItem(ID, Level, Quality, glm::vec2(0), false);
 
 	return Item;
+}
+
+// Bag constructor
+_Bag::_Bag() : TypeCount(BAGICON_COUNT) {
 }
 
 // Get count of items in bag
