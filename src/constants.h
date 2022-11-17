@@ -48,7 +48,6 @@ const  double       GAME_EXPERIENCE_LOST                 =  0.1;
 const  double       GAME_INVULNERABLE_TIME               =  3.0;
 const  int          GAME_MAX_PROGRESSION                 =  1000;
 const  double       GAME_DEFAULT_CLOCK                   =  720.0;
-const  int          GAME_LAVA_DAMAGE                     =  100;
 const  float        GAME_TILE_SIZE                       =  64.0f;
 const  double       GAME_COMBAT_TIMER                    =  5.0;
 //     Save

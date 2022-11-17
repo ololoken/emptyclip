@@ -1899,7 +1899,9 @@ void _PlayState::CheckEvents(const _Entity *Entity) {
 			} break;
 			case EVENT_LAVA: {
 				ae::Audio.PlaySound(ae::Assets.Sounds["game_lava0.ogg"]);
-				Player->UpdateHealth(-GAME_LAVA_DAMAGE * (Event->Level + (Player->Progression - 1)));
+				int Damage = Stats.Progressions[(size_t)Player->Progression].LavaDamage;
+				Player->UpdateHealth(-Damage);
+				GenerateDamageText(Player->Position, Damage, false, true);
 				Particles->Create(_ParticleSpawn(GameAssets.GetParticleTemplate(Event->ParticleID), glm::vec2(0), Player->Position, OBJECT_Z, 0));
 				Player->LavaTouches++;
 			} break;
