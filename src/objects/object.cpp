@@ -296,7 +296,7 @@ void _Object::CheckProjectileCollisions() {
 	_Entity *OwnerEntity = (_Entity *)Owner;
 
 	// Push object out if it doesn't create ammo pickups
-	bool PushOut = ProjectileWeaponTemplate->PickupID.empty() || Bounces;
+	bool PushOut = (ProjectileWeaponTemplate && ProjectileWeaponTemplate->PickupID.empty()) || Bounces;
 
 	// Check wall hits
 	glm::vec2 HitPosition;
