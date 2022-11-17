@@ -1029,7 +1029,7 @@ const _Unique *_Stats::GetUnique(int Quality) const {
 		return nullptr;
 
 	// Handle edge case
-	if(Quality <= ITEM_QUALITY_RANGE)
+	if(Quality < Uniques.front()->Quality)
 		return nullptr;
 
 	// Search list

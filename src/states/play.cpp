@@ -58,14 +58,15 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtx/norm.hpp>
 
-const static int FILTERTYPE_GEAR_COUNT = 3;
+const static int FILTERTYPE_GEAR_COUNT = 4;
 const static int FILTERTYPE_MODS_COUNT = 7;
 
 // Filter levels for gear
 const static int FilterLevelsGear[FILTERTYPE_GEAR_COUNT] = {
 	ITEM_QUALITY_MIN,
 	0,
-	ITEM_QUALITY_RANGE,
+	10,
+	25,
 };
 
 // Filter levels for mods
@@ -83,7 +84,8 @@ const static int FilterLevelsMods[FILTERTYPE_MODS_COUNT] = {
 const static char *FilterTextGear[FILTERTYPE_GEAR_COUNT] = {
 	"ALL",
 	"0+",
-	"15+",
+	"10+",
+	"25+",
 };
 
 // Filter text for gear

@@ -593,8 +593,8 @@ void _Item::Serialize(ae::_Buffer &Buffer) {
 void _Item::RecalculateStats() {
 
 	// Set unique stats
-	if(Quality > ITEM_QUALITY_RANGE) {
-		Unique = Stats.GetUnique(Quality);
+	Unique = Stats.GetUnique(Quality);
+	if(Unique) {
 		LightTexture = Unique->Texture;
 		if(CanAutoPickup()) {
 			LightColor = COLOR_GOLD;
@@ -605,8 +605,6 @@ void _Item::RecalculateStats() {
 			Name = Unique->Name + " " + Template.Name;
 		}
 	}
-	else
-		Unique = nullptr;
 
 	// Recalculate max mods
 	SetMaxMods();
