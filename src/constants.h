@@ -129,7 +129,7 @@ const  int          INVENTORY_BAGSIZE                    =  20;
 const  int          INVENTORY_MAX_STACK                  =  99;
 const  int          INVENTORY_MAX_OUTFITS                =  4;
 const  int          INVENTORY_MAX_BACKPACKS              =  4;
-const  int          INVENTORY_ICONTYPE_THRESHOLD         =  3;
+const  int          INVENTORY_ICONTYPE_THRESHOLD         =  1;
 //     Items
 const  float        ITEM_SCALE                           =  0.5f;
 const  float        ITEM_Z                               =  0.01f;

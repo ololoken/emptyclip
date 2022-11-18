@@ -220,7 +220,7 @@ void _HUD::HandleMouseButton(const ae::_MouseEvent &MouseEvent) {
 						// Find better bag
 						if(HitSlot.IsValidIndex()) {
 							_Item *Item = HitSlot.GetItem();
-							size_t BagIndex = Player->Inventory->FindSuitableBackpackBag(Item, Player->ActiveBackpack);
+							size_t BagIndex = Player->Inventory->FindSuitableBackpackBag(Item, Player->ActiveBackpack + 1);
 							if(BagIndex != Player->ActiveBackpack) {
 								int AddResult = Player->AddItemToBackpack(Item, BagIndex, true);
 								switch(AddResult) {

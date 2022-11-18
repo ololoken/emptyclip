@@ -171,13 +171,16 @@ size_t _Inventory::FindSuitableBackpackBag(const _Item *Item, size_t StartIndex)
 	_Container &Container = Containers[(size_t)BagType::BACKPACK];
 	size_t BagIndex = StartIndex;
 	for(size_t i = 0; i < Container.size(); i++) {
-		if(Container[i].HighestType == Item->GetIconType()) {
-			BagIndex = i;
-			break;
-		}
+		if(BagIndex >= Container.size())
+			BagIndex = 0;
+
+		if(Container[BagIndex].HighestType == Item->GetIconType())
+			return BagIndex;
+
+		BagIndex++;
 	}
 
-	return BagIndex;
+	return StartIndex;
 }
 
 // Search bags for similar gear item
