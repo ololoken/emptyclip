@@ -52,6 +52,7 @@ class _Monster : public _Entity {
 		// AI
 		const _Player *Player{nullptr};
 		const _ItemDrop *ItemDrop{nullptr};
+		int AIAttacks{0};
 
 	private:
 

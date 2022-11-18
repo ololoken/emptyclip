@@ -741,12 +741,13 @@ void _Stats::LoadSpecials() {
 	while(Database->FetchRow()) {
 		_Special Special;
 		Special.Name = Database->GetString("name");
+		Special.ExperienceModifier = Database->GetReal("xp");
 		Special.DamageResist = Database->GetReal("damage_resist");
 		Special.DamageFactor = Database->GetReal("damage");
 		Special.AttackSpeedFactor = Database->GetReal("attack_speed");
 		Special.MoveSpeedFactor = Database->GetReal("move_speed");
+		Special.AIAttacks = Database->GetReal("ai_attacks");
 		Special.FreePathing = Database->GetInt<int>("freepathing");
-		Special.ExperienceModifier = Database->GetReal("xp");
 		SetColor(Special.Color, Database->GetString("color_id"));
 
 		Specials.push_back(Special);
@@ -884,6 +885,7 @@ _Monster *_Stats::CreateMonster(const std::string &ID, int Level, size_t Progres
 	Monster->ExperienceGiven = Monster->GetAttributeLevel("xp", Stats.Progressions[Progression].Experience);
 	Monster->MinAccuracy = Template.Attributes.at("accuracy").Int;
 	Monster->PoisonPower = Template.Attributes.at("poison").Float;
+	Monster->AIAttacks = Template.Attributes.at("ai_attacks").Int;
 	for(int i = 0; i < WEAPONATTACK_COUNT; i++) {
 		Monster->GetAttributeRange("damage", Stats.Progressions[Progression].Damage, Monster->MinDamage[i], Monster->MaxDamage[i]);
 		Monster->AttackTimer[i] = Monster->AttackPeriod[i] = Template.Attributes.at("attack_period").Double / Stats.Progressions[Progression].AttackSpeed;
@@ -922,6 +924,7 @@ _Monster *_Stats::CreateMonster(const std::string &ID, int Level, size_t Progres
 		Monster->Color = Special->Color;
 		Monster->MoveSpeed *= Special->MoveSpeedFactor;
 		Monster->DamageResist += Special->DamageResist;
+		Monster->AIAttacks = std::round(Monster->AIAttacks * Special->AIAttacks);
 		Monster->ExperienceGiven *= Special->ExperienceModifier;
 	}
 

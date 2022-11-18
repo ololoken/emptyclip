@@ -198,7 +198,7 @@ void _Monster::OnAttack(_Entity *Victim, const _Hit &Hit) {
 	_Entity::OnAttack(Victim, Hit);
 
 	AttacksMade++;
-	if(AIType == AI_HITANDRUN && AttacksMade >= Template.Attributes.at("ai_attacks").Int) {
+	if(AIType == AI_HITANDRUN && AttacksMade >= AIAttacks) {
 		AttacksMade = 0;
 		Goal = GOAL_RETREAT;
 		ReturnPosition = Position;

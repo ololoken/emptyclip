@@ -84,6 +84,7 @@ struct _Special {
 	float MoveSpeedFactor{1.0f};
 	float ExperienceModifier{1.0f};
 	float DamageResist{0.0f};
+	float AIAttacks{1.0f};
 	int FreePathing{0};
 };
 
