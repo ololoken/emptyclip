@@ -164,7 +164,7 @@ const char *_Inventory::GetBackpackIcon(size_t BagIndex) {
 }
 
 // Find suitable bag for item based on type
-size_t _Inventory::GetSuitableBackpackBag(const _Item *Item, size_t StartIndex) {
+size_t _Inventory::FindSuitableBackpackBag(const _Item *Item, size_t StartIndex) {
 	if(!Item)
 		return StartIndex;
 
@@ -178,6 +178,27 @@ size_t _Inventory::GetSuitableBackpackBag(const _Item *Item, size_t StartIndex) 
 	}
 
 	return BagIndex;
+}
+
+// Search bags for similar gear item
+void _Inventory::FindSimiliarGearItem(const _Item *GearItem, bool SkipBackpack, _Slot &Slot) {
+	for(size_t ContainerIndex = 0; ContainerIndex < Containers.size(); ContainerIndex++) {
+		_Container &Container = Containers[ContainerIndex];
+		for(size_t BagIndex = 0; BagIndex < Container.size(); BagIndex++) {
+			_Bag &Bag = Container[BagIndex];
+
+			// Skip backpack if item is inside backpack
+			if(!Bag.Equipment && SkipBackpack)
+				continue;
+
+			// Check bag
+			Slot.Index = Bag.FindSimiliarGearItem(GearItem);
+			if(Slot.Index != (size_t)-1) {
+				Slot.Bag = &Bag;
+				return;
+			}
+		}
+	}
 }
 
 // Serialize a bag
@@ -297,6 +318,22 @@ int _Bag::GetItemCount() const {
 	}
 
 	return Count;
+}
+
+// Find similiar gear item and return the slot index
+size_t _Bag::FindSimiliarGearItem(const _Item *GearItem) {
+
+	// Search slots
+	for(size_t i = 0; i < Slots.size(); i++) {
+		const _Item *Item = Slots[i];
+		if(!Item || !Item->CanEquip())
+			continue;
+
+		if(Item->Template.ID == GearItem->Template.ID)
+			return i;
+	}
+
+	return (size_t)-1;
 }
 
 // Delete slot item

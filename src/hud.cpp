@@ -220,7 +220,7 @@ void _HUD::HandleMouseButton(const ae::_MouseEvent &MouseEvent) {
 						// Find better bag
 						if(HitSlot.IsValidIndex()) {
 							_Item *Item = HitSlot.GetItem();
-							size_t BagIndex = Player->Inventory->GetSuitableBackpackBag(Item, Player->ActiveBackpack);
+							size_t BagIndex = Player->Inventory->FindSuitableBackpackBag(Item, Player->ActiveBackpack);
 							if(BagIndex != Player->ActiveBackpack) {
 								int AddResult = Player->AddItemToBackpack(Item, BagIndex, true);
 								switch(AddResult) {
@@ -766,37 +766,22 @@ void _HUD::Render(bool FullMap) {
 	// Draw item tooltip
 	if(CursorOverItem && CursorItem != CursorOverItem) {
 
-		// Disable searching for single slot items when ctrl is held
+		// Holding ctrl forces a search for armor/melee
 		bool Search = true;
-		if(ae::Input.ModKeyDown(KMOD_CTRL) && (CursorOverItem->Type == _Object::ARMOR || CursorOverItem->IsMelee()))
-			Search = false;
+		if(CursorSlot.Bag && (CursorOverItem->Type == _Object::ARMOR || CursorOverItem->IsMelee()))
+			Search = ae::Input.ModKeyDown(KMOD_CTRL);
 
 		// Search for similar item
 		_Slot CompareSlot;
 		if(Search) {
-			bool SkipBackpack = CursorSlot.Bag;
-			for(size_t ContainerIndex = 0; ContainerIndex < Player->Inventory->Containers.size(); ContainerIndex++) {
-				_Container &Container = Player->Inventory->Containers[ContainerIndex];
-				for(size_t BagIndex = 0; BagIndex < Container.size(); BagIndex++) {
-					_Bag &Bag = Container[BagIndex];
-					if(!Bag.Equipment && SkipBackpack)
-						continue;
 
-					for(size_t i = 0; i < Bag.Slots.size(); i++) {
-						const _Item *Item = Bag.Slots[i];
-						if(!Item || !Item->CanEquip())
-							continue;
-
-						if(Item->Template.ID == CursorOverItem->Template.ID) {
-							CompareSlot.Index = i;
-							CompareSlot.Bag = &Bag;
-							ContainerIndex = Player->Inventory->Containers.size();
-							BagIndex = Container.size();
-							break;
-						}
-					}
-				}
-			}
+			// Check active outfit first
+			_Bag &OutfitBag = Player->GetActiveOutfitBag();
+			CompareSlot.Index = OutfitBag.FindSimiliarGearItem(CursorOverItem);
+			if(CompareSlot.Index != (size_t)-1)
+				CompareSlot.Bag = &OutfitBag;
+			else
+				Player->Inventory->FindSimiliarGearItem(CursorOverItem, CursorSlot.Bag, CompareSlot);
 		}
 
 		// Couldn't find similar type, compare with equipped gear

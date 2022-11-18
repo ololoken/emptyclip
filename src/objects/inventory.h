@@ -46,7 +46,9 @@ enum class BagType : size_t {
 struct _Bag {
 
 	_Bag();
+
 	int GetItemCount() const;
+	size_t FindSimiliarGearItem(const _Item *GearItem);
 
 	std::vector<_Item *> Slots;
 	std::vector<int> TypeCount;
@@ -97,7 +99,8 @@ class _Inventory  {
 		int GetItemCount(BagType Type, size_t BagIndex);
 		void UpdateTypeCount();
 		const char *GetBackpackIcon(size_t BagIndex);
-		size_t GetSuitableBackpackBag(const _Item *Item, size_t StartIndex);
+		size_t FindSuitableBackpackBag(const _Item *Item, size_t StartIndex);
+		void FindSimiliarGearItem(const _Item *GearItem, bool SkipBackpack, _Slot &Slot);
 
 		std::vector<_Container> Containers;
 
