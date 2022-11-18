@@ -1,5 +1,5 @@
 id	fire	explode	triggerdown	ricochet	empty	reload	hit	take_damage	death	move
-player	player_swing0.ogg						player_punch0.ogg	player_hit0.ogg,player_hit1.ogg		player_move0.ogg
+player	player_swing0.ogg						player_punch0.ogg	player_hit0.ogg,player_hit1.ogg,player_hit2.ogg		player_move0.ogg
 knife	knife_fire0.ogg						knife_hit0.ogg			
 spear	spear_fire0.ogg						knife_hit0.ogg			
 pistol	pistol_fire0.ogg			pistol_ricochet0.ogg	pistol_empty0.ogg	pistol_reload0.ogg				
