@@ -53,6 +53,7 @@ struct _Bag {
 	std::vector<_Item *> Slots;
 	std::vector<int> TypeCount;
 	int HighestType{0};
+	bool Full{false};
 	bool Equipment{false};
 };
 

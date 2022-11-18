@@ -109,10 +109,13 @@ void _Inventory::UpdateTypeCount() {
 
 		// Keep track of highest count
 		Bag.HighestType = BAGICON_DEFAULT;
+		Bag.Full = true;
 		int HighestCount = INVENTORY_ICONTYPE_THRESHOLD - 1;
 		for(const auto &Item : Bag.Slots) {
-			if(!Item)
+			if(!Item) {
+				Bag.Full = false;
 				continue;
+			}
 
 			size_t IconType = (size_t)Item->GetIconType();
 			Bag.TypeCount[IconType]++;
@@ -168,19 +171,42 @@ size_t _Inventory::FindSuitableBackpackBag(const _Item *Item, size_t StartIndex)
 	if(!Item)
 		return StartIndex;
 
-	_Container &Container = Containers[(size_t)BagType::BACKPACK];
 	size_t BagIndex = StartIndex;
-	for(size_t i = 0; i < Container.size(); i++) {
-		if(BagIndex >= Container.size())
-			BagIndex = 0;
+	size_t BestIndex = StartIndex;
+	size_t DefaultIndex = StartIndex;
+	size_t FirstEmptyIndex = StartIndex;
 
-		if(Container[BagIndex].HighestType == Item->GetIconType())
-			return BagIndex;
+	_Container &Container = Containers[(size_t)BagType::BACKPACK];
+	for(size_t i = 0; i < Container.size(); i++) {
+		_Bag &Bag = Container[BagIndex];
+		if(!Bag.Full) {
+
+			// Keep track of first empty bag
+			if(FirstEmptyIndex == StartIndex)
+				FirstEmptyIndex = BagIndex;
+
+			// Keep track of matching bag type
+			if(BestIndex == StartIndex && Bag.HighestType == Item->GetIconType())
+				BestIndex = BagIndex;
+			// Keep track of first default bag
+			else if(DefaultIndex == StartIndex && Bag.HighestType == BAGICON_DEFAULT)
+				DefaultIndex = BagIndex;
+		}
 
 		BagIndex++;
+		if(BagIndex >= Container.size())
+			BagIndex = 0;
 	}
 
-	return StartIndex;
+	// Didn't find a better bag, use empty bag if available
+	if(BestIndex == StartIndex) {
+		if(DefaultIndex == StartIndex)
+			return FirstEmptyIndex;
+		else
+			return DefaultIndex;
+	}
+
+	return BestIndex;
 }
 
 // Search bags for similar gear item

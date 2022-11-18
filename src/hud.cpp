@@ -218,9 +218,9 @@ void _HUD::HandleMouseButton(const ae::_MouseEvent &MouseEvent) {
 					if(ae::Input.ModKeyDown(KMOD_SHIFT)) {
 
 						// Find better bag
-						if(HitSlot.IsValidIndex()) {
+						if(HitSlot.IsValidIndex() && HitSlot.GetItem()) {
 							_Item *Item = HitSlot.GetItem();
-							size_t BagIndex = Player->Inventory->FindSuitableBackpackBag(Item, Player->ActiveBackpack + 1);
+							size_t BagIndex = Player->Inventory->FindSuitableBackpackBag(Item, Player->ActiveBackpack);
 							if(BagIndex != Player->ActiveBackpack) {
 								int AddResult = Player->AddItemToBackpack(Item, BagIndex, true);
 								switch(AddResult) {
@@ -277,7 +277,7 @@ void _HUD::HandleMouseButton(const ae::_MouseEvent &MouseEvent) {
 
 							// Dragged item to inventory tab
 							size_t BagIndex = GetBackpackTabIndex(HitElement);
-							if(BagIndex != (size_t)-1) {
+							if(BagIndex != (size_t)-1 && BagIndex != Player->ActiveBackpack) {
 								int AddResult = Player->AddItemToBackpack(CursorItem, BagIndex, true);
 								switch(AddResult) {
 									case ADD_REMOVE:
