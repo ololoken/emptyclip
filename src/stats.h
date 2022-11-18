@@ -67,6 +67,7 @@ struct _Progression {
 	int Spawn;
 	int SpecialChance;
 	int MaxQuality;
+	int MaxLevel;
 	int Backpacks;
 	int LavaDamage;
 	float Health;
@@ -96,6 +97,7 @@ struct _Unique {
 	int Mods;
 	int HammerValue;
 	int WhetstoneValue;
+	int WrenchValue;
 };
 
 struct _Achievement {

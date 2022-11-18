@@ -95,10 +95,18 @@ void _Object::RenderLights(double BlendFactor) {
 
 // Determine if quality can be increased
 bool _Object::CanIncreaseQuality(bool CheckQuality) const {
-	if(CheckQuality && Quality >= Stats.Progressions[PlayState.Player->Progression].MaxQuality)
+	if(CheckQuality && Quality >= Stats.Progressions[(size_t)PlayState.Player->Progression].MaxQuality)
 		return false;
 
 	return Type == _Object::WEAPON || Type == _Object::ARMOR || Type == _Object::MOD;
+}
+
+// Determine if level can be increased
+bool _Object::CanIncreaseLevel(bool CheckLevel) const {
+	if(CheckLevel && Level >= Stats.Progressions[(size_t)PlayState.Player->Progression].MaxLevel)
+		return false;
+
+	return Type == _Object::WEAPON || Type == _Object::ARMOR;
 }
 
 // Get sound for a sound type

@@ -721,6 +721,7 @@ void _Stats::LoadProgression() {
 		Progression.AttackSpeed = Database->GetReal("attack_speed");
 		Progression.Experience = Database->GetReal("experience");
 		Progression.MaxQuality = Database->GetInt<int>("max_quality");
+		Progression.MaxLevel = Database->GetInt<int>("max_level");
 		Progression.Backpacks = Database->GetInt<int>("backpacks");
 		Progression.LavaDamage = Database->GetInt<int>("lava");
 
@@ -770,6 +771,7 @@ void _Stats::LoadUniques() {
 		Unique->Mods = Database->GetInt<int>("mods");
 		Unique->HammerValue = Database->GetInt<int>("hammer");
 		Unique->WhetstoneValue = Database->GetInt<int>("whetstone");
+		Unique->WrenchValue = Database->GetInt<int>("wrench");
 		Unique->Texture = ae::Assets.Textures["textures/lights/circle.png"];
 		SetColor(Unique->Color, Database->GetString("color_id"));
 

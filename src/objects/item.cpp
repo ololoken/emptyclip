@@ -487,7 +487,18 @@ void _Item::DrawTooltip(const _Player *Player, glm::vec2 DrawPosition, const _It
 					Buffer.str("");
 
 					DrawPosition.y += Spacing.y;
-					Buffer << "Max quality for Progression [c green]" << Player->Progression << "[c white] is [c green]" << Stats.Progressions[Player->Progression].MaxQuality << "%";
+					Buffer << "Max quality for Progression [c green]" << Player->Progression << "[c white] is [c green]" << Stats.Progressions[(size_t)Player->Progression].MaxQuality << "%";
+					AttributeFont->DrawTextFormatted(Buffer.str(), glm::ivec2(DrawPosition), ae::CENTER_BASELINE);
+					if(!Slot.Bag && PlayState.HUD->InventoryOpen)
+						HelpTextList.push_back("Right-click to pick up");
+				break;
+				case USABLE_WRENCH:
+					Buffer << "Increases level of an item by [c green]" << GetWrenchLevel();
+					AttributeFont->DrawTextFormatted(Buffer.str(), glm::ivec2(DrawPosition), ae::CENTER_BASELINE);
+					Buffer.str("");
+
+					DrawPosition.y += Spacing.y;
+					Buffer << "Max level for Progression [c green]" << Player->Progression << "[c white] is [c green]" << Stats.Progressions[(size_t)Player->Progression].MaxLevel;
 					AttributeFont->DrawTextFormatted(Buffer.str(), glm::ivec2(DrawPosition), ae::CENTER_BASELINE);
 					if(!Slot.Bag && PlayState.HUD->InventoryOpen)
 						HelpTextList.push_back("Right-click to pick up");
@@ -745,6 +756,10 @@ bool _Item::ApplyUsable(_Item *Usable) {
 			Quality = std::clamp(Quality + Usable->GetWhetstoneQuality(), ITEM_QUALITY_MIN, Stats.Progressions[PlayState.Player->Progression].MaxQuality);
 			ae::Audio.PlaySound(ae::Assets.Sounds["game_whetstone.ogg"]);
 		} break;
+		case USABLE_WRENCH: {
+			Level = std::clamp(Level + Usable->GetWrenchLevel(), 1, Stats.Progressions[PlayState.Player->Progression].MaxLevel);
+			ae::Audio.PlaySound(ae::Assets.Sounds["game_wrench.ogg"]);
+		} break;
 	}
 	RecalculateStats();
 
@@ -765,6 +780,10 @@ bool _Item::ItemCompatible(_Item *Item, bool CheckCount) const {
 				break;
 				case USABLE_WHETSTONE:
 					if(CanIncreaseQuality(true))
+						return true;
+				break;
+				case USABLE_WRENCH:
+					if(CanIncreaseLevel(true))
 						return true;
 				break;
 			}
@@ -988,6 +1007,14 @@ int _Item::GetWhetstoneQuality() const {
 		return Unique->WhetstoneValue;
 
 	return std::max(1, (int)std::round(Template.Attributes.at("range").Float * (Quality + ITEM_QUALITY_RANGE) / (float)(ITEM_QUALITY_RANGE * 2)));
+}
+
+// Get wrench value
+int _Item::GetWrenchLevel() const {
+	if(Unique)
+		return Unique->WrenchValue;
+
+	return 1;
 }
 
 // Get consumable value based on attributes

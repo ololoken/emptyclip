@@ -1155,6 +1155,8 @@ void _HUD::DrawBagHighlights(const _Bag &Bag, ae::_Element *Element) {
 				continue;
 			else if(CursorItem->Template.Attributes.at("usable_type").Int == USABLE_WHETSTONE && !Item->CanIncreaseQuality(false))
 				continue;
+			else if(CursorItem->Template.Attributes.at("usable_type").Int == USABLE_WRENCH && !Item->CanIncreaseLevel(false))
+				continue;
 		}
 
 		// Set overlay color
@@ -1236,6 +1238,8 @@ void _HUD::DrawItemValue(const _Item *Item, const glm::vec2 &Position) {
 		case _Object::USABLE:
 			if(Item->Template.Attributes.at("usable_type").Int == USABLE_WHETSTONE)
 				Buffer << Item->GetWhetstoneQuality() << "%";
+			else if(Item->Template.Attributes.at("usable_type").Int == USABLE_WRENCH)
+				Buffer << "+" << Item->GetWrenchLevel();
 		break;
 		default:
 			return;
@@ -1541,12 +1545,13 @@ bool _HUD::ApplyUsableItem(_Item *ExistingItem) {
 			// Destroy item
 			return true;
 		} break;
-		case USABLE_WHETSTONE: {
+		case USABLE_WHETSTONE:
+		case USABLE_WRENCH:
 			if(ExistingItem->ApplyUsable(CursorItem)) {
 				CursorItem->Active = false;
 				PlayState.Map->RemoveObjectFromGrid(CursorItem, GRID_ITEM);
 			}
-		} break;
+		break;
 	}
 
 	return false;

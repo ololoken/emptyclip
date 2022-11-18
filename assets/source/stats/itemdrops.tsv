@@ -12,7 +12,8 @@ ammo_bolts	0	1	1	0	0	0	0	0	0	0	0	0	0	0	0	0	60	150	60	0
 consume_medkit	0	0	0	1	0	0	0	0	0	0	0	0	0	0	0	250	250	250	250	0
 consume_adrenaline	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	100	100	100	100	0
 usable_hammer	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1	0	1	2	4	0
-usable_whetstone	0	0	0	0	0	0	0	0	0	0	0	0	0	0	9	1	2	4	8	0
+usable_whetstone	0	0	0	0	0	0	0	0	0	0	0	0	0	0	8	1	2	4	8	0
+usable_wrench	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1	0	0	1	2	0
 weapon_knife	0	0	0	0	0	0	0	0	1	0	0	0	0	0	0	10	10	0	0	0
 weapon_spear	0	0	0	0	0	0	0	0	1	0	0	0	0	0	0	10	10	10	0	0
 weapon_pistol	0	0	0	0	1	0	0	0	0	0	0	0	0	0	0	10	10	0	0	0

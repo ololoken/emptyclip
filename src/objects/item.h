@@ -74,6 +74,7 @@ enum UsableType {
 	USABLE_NONE,
 	USABLE_HAMMER,
 	USABLE_WHETSTONE,
+	USABLE_WRENCH,
 	USABLE_COUNT,
 };
 
@@ -136,6 +137,7 @@ class _Item : public _Object {
 		void GetQualityColor(glm::vec4 &ReturnColor) const;
 		int GetHammerQualityChange() const;
 		int GetWhetstoneQuality() const;
+		int GetWrenchLevel() const;
 
 		float GetConsumableValue(const _Player *Player) const;
 		std::string GetConsumableSuffix(bool Percent) const;

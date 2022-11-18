@@ -1076,6 +1076,9 @@ void _PlayState::Render(double BlendFactor) {
 						case USABLE_WHETSTONE:
 							Buffer << Item->GetWhetstoneQuality() << "%";
 						break;
+						case USABLE_WRENCH:
+							Buffer << "+" << Item->GetWrenchLevel();
+						break;
 					}
 
 					ae::Assets.Fonts["hud_tiny"]->DrawText(Buffer.str(), glm::ivec2(TextPosition + glm::vec2(0, -14) * ae::_Element::GetUIScale()), ae::CENTER_BASELINE, COLOR_FAINT_WHITE);
