@@ -53,7 +53,7 @@ _Monster::_Monster(const _ObjectTemplate &MonsterTemplate) :
 }
 
 // Set up stats used by the monster
-void _Monster::RecalculateStats() {
+void _Monster::RecalculateStats(bool SoftReset) {
 	ViewRangeSquared = Template.Attributes.at("view_range").Float;
 	ViewRangeSquared *= ViewRangeSquared;
 	AttackRangeSquared = AttackRange[0];

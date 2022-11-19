@@ -179,7 +179,7 @@ void _Player::ResetAchievementTracking() {
 }
 
 // Calculates the player's stats from weapons and skills
-void _Player::RecalculateStats() {
+void _Player::RecalculateStats(bool SoftReset) {
 	CalculateExperienceStats();
 	CalculateSkillsRemaining();
 
@@ -255,7 +255,7 @@ void _Player::RecalculateStats() {
 	}
 
 	// Set accuracy
-	ResetAccuracy(true);
+	ResetAccuracy(!SoftReset);
 
 	// Set skill stats
 	BaseMoveSpeed += Stats.GetSkill(Skills[SKILL_CUNNING], SKILL_CUNNING);
@@ -633,8 +633,7 @@ void _Player::UpdateExperience(int64_t ExperienceGained) {
 
 	// Check for new level
 	if(Level > OldLevel) {
-		CalculateSkillsRemaining();
-		RecalculateStats();
+		RecalculateStats(true);
 		if(Health)
 			Health = MaxHealth;
 		ae::Audio.PlaySound(ae::Assets.Sounds["game_levelup0.ogg"]);

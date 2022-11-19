@@ -81,7 +81,7 @@ class _Player : public _Entity {
 		void StartOutfitSwitch(size_t Outfit);
 		int SpentSkillPoints() const;
 		void ResetAccuracy(bool CompleteReset);
-		void RecalculateStats() override;
+		void RecalculateStats(bool SoftReset=false) override;
 		void Respawn();
 		void WarpPosition(const glm::vec2 &NewPosition);
 

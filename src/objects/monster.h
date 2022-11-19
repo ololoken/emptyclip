@@ -38,7 +38,7 @@ class _Monster : public _Entity {
 		};
 
 		_Monster(const _ObjectTemplate &MonsterTemplate);
-		void RecalculateStats() override;
+		void RecalculateStats(bool SoftReset=false) override;
 
 		void Update(double FrameTime) override;
 		void OnAttack(_Entity *Victim, const _Hit &Hit) override;
