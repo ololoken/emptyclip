@@ -32,7 +32,6 @@ enum EquipmentType : size_t {
 	OFFHAND,
 	MELEE,
 	ARMOR,
-	RELIC,
 	COUNT,
 };
 

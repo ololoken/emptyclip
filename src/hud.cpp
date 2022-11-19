@@ -1159,7 +1159,7 @@ void _HUD::DrawBagHighlights(const _Bag &Bag, ae::_Element *Element) {
 void _HUD::DrawBagModCounts(const _Bag &Bag, ae::_Element *Element) {
 	for(size_t i = 0; i < Bag.Slots.size(); i++) {
 		const _Item *Item = Bag.Slots[i];
-		if(Item == CursorItem)
+		if(!Item || Item == CursorItem)
 			continue;
 
 		ae::_Element *Button = Element->Children[i];
@@ -1171,7 +1171,7 @@ void _HUD::DrawBagModCounts(const _Bag &Bag, ae::_Element *Element) {
 void _HUD::DrawBagInfo(const _Bag &Bag, ae::_Element *Element) {
 	for(size_t i = 0; i < Bag.Slots.size(); i++) {
 		const _Item *Item = Bag.Slots[i];
-		if(Item == CursorItem)
+		if(!Item || Item == CursorItem)
 			continue;
 
 		ae::_Element *Button = Element->Children[i];
