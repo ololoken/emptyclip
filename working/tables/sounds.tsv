@@ -50,7 +50,7 @@ pistol_reload0.ogg	1	1
 pistol_ricochet0.ogg	0.2	1
 plasma_fire0.ogg	0.7	5
 player_die0.ogg	0.7	1
-player_hit0.ogg	0.7	1
+player_hit0.ogg	0.65	1
 player_hit1.ogg	0.7	1
 player_hit2.ogg	0.7	1
 player_move0.ogg	0.05	1
