@@ -810,8 +810,6 @@ void _HUD::Render(bool FullMap) {
 			// Set left item comparison
 			if(CompareSlot.IsValidIndex() && HoverItem != CompareSlot.GetItem())
 				LeftItem = CompareSlot.GetItem();
-
-			//ShowEquipHelp = (CursorSlot.Bag && !CursorSlot.IsEquipmentSlot()) || (CursorSlot.Index == (size_t)-1 && InventoryOpen);
 		}
 
 		// Draw left hand comparison tooltip
@@ -834,13 +832,12 @@ void _HUD::Render(bool FullMap) {
 		ae::_Bounds MinimapBounds;
 		PlayState.Map->DrawMinimap(FullMap, MinimapBounds);
 
-		// Draw legen
+		// Draw legend
 		glm::vec2 DrawPosition(MinimapBounds.Start);
 		glm::vec2 LegendHalfSize = glm::vec2(8, 8) * ae::_Element::GetUIScale();
 		glm::vec2 LegendOffset = glm::vec2(-14, -8) * ae::_Element::GetUIScale();
 		DrawPosition.y -= 10 * ae::_Element::GetUIScale();
 		DrawPosition.x -= LegendOffset.x - LegendHalfSize.x - 4 * ae::_Element::GetUIScale();
-
 		for(const auto &Legend : MinimapLegends) {
 			ae::_TextBounds TextBounds;
 			ae::Assets.Fonts["hud_small"]->GetStringDimensions(Legend.Label, TextBounds);
@@ -1590,7 +1587,7 @@ bool _HUD::CanGrabItem(const _Item *Item) {
 // Get a backpack index from a tab element
 size_t _HUD::GetBackpackTabIndex(const ae::_Element *Element) {
 	if(!Element || !Element->Parent || Element->Parent->ID != "element_inventory_tabs" || Element->Index < HUD_BACKPACK_INDEX)
-		return -1;
+		return (size_t)-1;
 
 	return (size_t)(Element->Index - HUD_BACKPACK_INDEX);
 }
