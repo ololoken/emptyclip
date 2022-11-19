@@ -1098,6 +1098,10 @@ void _HUD::DrawInventory() {
 		DrawBagInfo(Player->GetActiveBackpackBag(), Elements[ELEMENT_INVENTORY_BACKPACK]);
 		Elements[ELEMENT_INVENTORY_OVERLAY]->SetActive(false);
 	}
+	else {
+		DrawBagModCounts(Player->GetActiveOutfitBag(), Elements[ELEMENT_INVENTORY_OUTFIT]);
+		DrawBagModCounts(Player->GetActiveBackpackBag(), Elements[ELEMENT_INVENTORY_BACKPACK]);
+	}
 
 	// Draw cursor item
 	if(CursorItem) {
@@ -1151,6 +1155,18 @@ void _HUD::DrawBagHighlights(const _Bag &Bag, ae::_Element *Element) {
 
 		ae::_Element *Button = Element->Children[i];
 		ae::Graphics.DrawRectangle(glm::ivec2(Button->Bounds.Start), glm::ivec2(Button->Bounds.End), true);
+	}
+}
+
+// Draw mod counts
+void _HUD::DrawBagModCounts(const _Bag &Bag, ae::_Element *Element) {
+	for(size_t i = 0; i < Bag.Slots.size(); i++) {
+		const _Item *Item = Bag.Slots[i];
+		if(Item == CursorItem)
+			continue;
+
+		ae::_Element *Button = Element->Children[i];
+		DrawItemModCounts(Item, Button->Bounds.Start);
 	}
 }
 
@@ -1242,7 +1258,9 @@ void _HUD::DrawItemQuality(const _Item *Item, const glm::vec2 &Position) {
 	Buffer << Item->Quality << "%";
 	glm::vec4 DrawColor;
 	Item->GetQualityColor(DrawColor);
-	Fonts[FONT_TINY]->DrawText(Buffer.str(), glm::ivec2(Position + glm::vec2(74, 18) * ae::_Element::GetUIScale()), ae::RIGHT_BASELINE, DrawColor);
+
+	float PositionY = (Item->CanMod()) ? 46 : 18;
+	Fonts[FONT_TINY]->DrawText(Buffer.str(), glm::ivec2(Position + glm::vec2(74, PositionY) * ae::_Element::GetUIScale()), ae::RIGHT_BASELINE, DrawColor);
 }
 
 // Draw item level
@@ -1252,7 +1270,17 @@ void _HUD::DrawItemLevel(const _Item *Item, const glm::vec2 &Position) {
 
 	std::ostringstream Buffer;
 	Buffer << Item->Level;
-	Fonts[FONT_TINY]->DrawText(Buffer.str(), glm::ivec2(Position + glm::vec2(4, 18) * ae::_Element::GetUIScale()), ae::LEFT_BASELINE, COLOR_GOLD);
+	Fonts[FONT_TINY]->DrawText(Buffer.str(), glm::ivec2(Position + glm::vec2(74, 18) * ae::_Element::GetUIScale()), ae::RIGHT_BASELINE, COLOR_GOLD);
+}
+
+// Draw item mod counts
+void _HUD::DrawItemModCounts(const _Item *Item, const glm::vec2 &Position) {
+	if(!Item || !Item->CanMod())
+		return;
+
+	std::ostringstream Buffer;
+	Buffer << Item->Mods.size() << "/" << Item->GetMaxMods(true);
+	Fonts[FONT_TINY]->DrawText(Buffer.str(), glm::ivec2(Position + glm::vec2(74, 74) * ae::_Element::GetUIScale()), ae::RIGHT_BASELINE, COLOR_WHITE);
 }
 
 // Update skill tooltip information

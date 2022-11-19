@@ -149,9 +149,11 @@ class _HUD {
 		void DrawItemValue(const _Item *Item, const glm::vec2 &Position);
 		void DrawItemQuality(const _Item *Item, const glm::vec2 &Position);
 		void DrawItemLevel(const _Item *Item, const glm::vec2 &Position);
+		void DrawItemModCounts(const _Item *Item, const glm::vec2 &Position);
 		void DrawAttribute(const std::string &Label, std::ostringstream &Buffer, glm::vec2 &DrawPosition) const;
 		void DrawBag(const _Bag &Bag, ae::_Element *Element);
 		void DrawBagHighlights(const _Bag &Bag, ae::_Element *Element);
+		void DrawBagModCounts(const _Bag &Bag, ae::_Element *Element);
 		void DrawBagInfo(const _Bag &Bag, ae::_Element *Element);
 		void DrawInventoryItem(const glm::vec2 &Position, const _Item *Item, bool Unique);
 		void DrawUniqueHighlight(const glm::vec2 &Position, const _Item *Item);
