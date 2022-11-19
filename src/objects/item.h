@@ -113,7 +113,7 @@ class _Item : public _Object {
 		void RecalculateStats();
 		void RecalculateModBonus();
 		void Serialize(ae::_Buffer &Buffer) override;
-		void DrawTooltip(const _Player *Player, glm::vec2 DrawPosition, const _Item *EquippedItem, const _Slot &Slot, bool ShowEquipHelp) const;
+		void DrawTooltip(const _Player *Player, glm::vec2 DrawPosition, const _Item *EquippedItem, const _Slot &Slot, bool ShowHelp, bool ShowEquipHelp) const;
 		void Render(double BlendFactor) const override;
 
 		bool AddMod(_Item *Mod, bool Recalculate=true);

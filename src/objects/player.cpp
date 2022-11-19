@@ -1102,6 +1102,48 @@ _Bag &_Player::GetActiveBackpackBag() const {
 	return Inventory->Containers[(size_t)BagType::BACKPACK][(size_t)ActiveBackpack];
 }
 
+// Find a similar equipped item and return its slot
+void _Player::GetEquippedCompareSlot(const _Item *Item, bool Offhand, _Slot &Slot) {
+	switch(Item->Type) {
+		case _Object::WEAPON:
+			if(Item->IsMelee()) {
+				if(GetMelee()) {
+					Slot.Bag = &GetActiveOutfitBag();
+					Slot.Index = EquipmentType::MELEE;
+				}
+			}
+			else {
+				if(Offhand) {
+					if(GetOffHand()) {
+						Slot.Bag = &GetActiveOutfitBag();
+						Slot.Index = EquipmentType::OFFHAND;
+					}
+					else if(GetMainHand()) {
+						Slot.Bag = &GetActiveOutfitBag();
+						Slot.Index = EquipmentType::MAINHAND;
+					}
+				}
+				else {
+					if(GetMainHand()) {
+						Slot.Bag = &GetActiveOutfitBag();
+						Slot.Index = EquipmentType::MAINHAND;
+					}
+					else if(GetOffHand()) {
+						Slot.Bag = &GetActiveOutfitBag();
+						Slot.Index = EquipmentType::OFFHAND;
+					}
+				}
+			}
+		break;
+		case _Object::ARMOR:
+			if(GetArmor()) {
+				Slot.Bag = &GetActiveOutfitBag();
+				Slot.Index = EquipmentType::ARMOR;
+			}
+		break;
+	}
+}
+
 // Update ammo needed by the player
 void _Player::UpdateAmmoNeeded() {
 

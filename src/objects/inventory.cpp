@@ -172,9 +172,9 @@ size_t _Inventory::FindSuitableBackpackBag(const _Item *Item, size_t StartIndex)
 		return StartIndex;
 
 	size_t BagIndex = StartIndex;
-	size_t BestIndex = StartIndex;
-	size_t DefaultIndex = StartIndex;
-	size_t FirstEmptyIndex = StartIndex;
+	size_t BestIndex = (size_t)-1;
+	size_t DefaultIndex = (size_t)-1;
+	size_t FirstEmptyIndex = (size_t)-1;
 
 	_Container &Container = Containers[(size_t)BagType::BACKPACK];
 	for(size_t i = 0; i < Container.size(); i++) {
@@ -182,14 +182,14 @@ size_t _Inventory::FindSuitableBackpackBag(const _Item *Item, size_t StartIndex)
 		if(!Bag.Full) {
 
 			// Keep track of first empty bag
-			if(FirstEmptyIndex == StartIndex)
+			if(FirstEmptyIndex == (size_t)-1)
 				FirstEmptyIndex = BagIndex;
 
 			// Keep track of matching bag type
-			if(BestIndex == StartIndex && Bag.HighestType == Item->GetIconType())
+			if(BestIndex == (size_t)-1 && Bag.HighestType == Item->GetIconType())
 				BestIndex = BagIndex;
 			// Keep track of first default bag
-			else if(DefaultIndex == StartIndex && Bag.HighestType == BAGICON_DEFAULT)
+			else if(DefaultIndex == (size_t)-1 && Bag.HighestType == BAGICON_DEFAULT)
 				DefaultIndex = BagIndex;
 		}
 
@@ -199,9 +199,13 @@ size_t _Inventory::FindSuitableBackpackBag(const _Item *Item, size_t StartIndex)
 	}
 
 	// Didn't find a better bag, use empty bag if available
-	if(BestIndex == StartIndex) {
-		if(DefaultIndex == StartIndex)
-			return FirstEmptyIndex;
+	if(BestIndex == (size_t)-1) {
+		if(DefaultIndex == (size_t)-1) {
+			if(FirstEmptyIndex == (size_t)-1)
+				return StartIndex;
+			else
+				return FirstEmptyIndex;
+		}
 		else
 			return DefaultIndex;
 	}
@@ -210,7 +214,7 @@ size_t _Inventory::FindSuitableBackpackBag(const _Item *Item, size_t StartIndex)
 }
 
 // Search bags for similar gear item
-void _Inventory::FindSimiliarGearItem(const _Item *GearItem, bool SkipBackpack, _Slot &Slot) {
+void _Inventory::FindSimilarGearItem(const _Item *GearItem, bool SkipBackpack, _Slot &Slot) {
 	for(size_t ContainerIndex = 0; ContainerIndex < Containers.size(); ContainerIndex++) {
 		_Container &Container = Containers[ContainerIndex];
 		for(size_t BagIndex = 0; BagIndex < Container.size(); BagIndex++) {
@@ -221,7 +225,7 @@ void _Inventory::FindSimiliarGearItem(const _Item *GearItem, bool SkipBackpack, 
 				continue;
 
 			// Check bag
-			Slot.Index = Bag.FindSimiliarGearItem(GearItem);
+			Slot.Index = Bag.FindSimilarGearItem(GearItem);
 			if(Slot.Index != (size_t)-1) {
 				Slot.Bag = &Bag;
 				return;
@@ -349,8 +353,8 @@ int _Bag::GetItemCount() const {
 	return Count;
 }
 
-// Find similiar gear item and return the slot index
-size_t _Bag::FindSimiliarGearItem(const _Item *GearItem) {
+// Find similar gear item and return the slot index
+size_t _Bag::FindSimilarGearItem(const _Item *GearItem) {
 
 	// Search slots
 	for(size_t i = 0; i < Slots.size(); i++) {

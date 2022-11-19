@@ -94,7 +94,7 @@ void _Item::DrawAttribute(const ae::_Font *Font, bool Float, const std::string &
 }
 
 // Draw the item popup window
-void _Item::DrawTooltip(const _Player *Player, glm::vec2 DrawPosition, const _Item *EquippedItem, const _Slot &Slot, bool ShowEquipHelp) const {
+void _Item::DrawTooltip(const _Player *Player, glm::vec2 DrawPosition, const _Item *EquippedItem, const _Slot &Slot, bool ShowHelp, bool ShowEquipHelp) const {
 	std::ostringstream Buffer;
 
 	glm::vec2 Size = glm::vec2(460, 150) * ae::_Element::GetUIScale();
@@ -197,13 +197,13 @@ void _Item::DrawTooltip(const _Player *Player, glm::vec2 DrawPosition, const _It
 
 	// Add help text
 	std::vector<std::string> HelpTextList;
-	if(Slot.Bag && Slot.IsEquipmentSlot())
+	if(ShowHelp && Slot.Bag && Slot.IsEquipmentSlot())
 		HelpTextList.push_back("Right-click to unequip");
 
 	// Show attributes
 	switch(Type) {
 		case _Object::WEAPON: {
-			if(ShowEquipHelp) {
+			if(ShowHelp && ShowEquipHelp) {
 				HelpTextList.push_back("Right-click to equip");
 				HelpTextList.push_back("Ctrl+Right-click to equip off-hand");
 			}
@@ -398,7 +398,7 @@ void _Item::DrawTooltip(const _Player *Player, glm::vec2 DrawPosition, const _It
 			}
 		} break;
 		case _Object::ARMOR: {
-			if(ShowEquipHelp)
+			if(ShowHelp && ShowEquipHelp)
 				HelpTextList.push_back("Right-click to equip");
 
 			DrawAttribute(AttributeFont, true, "damage_block", "Damage Block", DrawPosition, EquippedItem, false, false);
@@ -409,13 +409,15 @@ void _Item::DrawTooltip(const _Player *Player, glm::vec2 DrawPosition, const _It
 			DrawAttribute(AttributeFont, true, "max_health", "Max Health", DrawPosition, EquippedItem, true, true);
 		} break;
 		case _Object::MOD: {
-			if(Template.Attributes.at("object_type").Int == _Object::WEAPON)
-				HelpTextList.push_back("Drag onto weapon");
-			else if(Template.Attributes.at("object_type").Int == _Object::ARMOR)
-				HelpTextList.push_back("Drag onto armor");
+			if(ShowHelp) {
+				if(Template.Attributes.at("object_type").Int == _Object::WEAPON)
+					HelpTextList.push_back("Drag onto weapon");
+				else if(Template.Attributes.at("object_type").Int == _Object::ARMOR)
+					HelpTextList.push_back("Drag onto armor");
 
-			if(!Slot.Bag && PlayState.HUD->InventoryOpen)
-				HelpTextList.push_back("Right-click to pick up");
+				if(!Slot.Bag && PlayState.HUD->InventoryOpen)
+					HelpTextList.push_back("Right-click to pick up");
+			}
 
 			if(GetModType() == MOD_BURST) {
 				DrawPosition.y += Spacing.y;
@@ -454,7 +456,9 @@ void _Item::DrawTooltip(const _Player *Player, glm::vec2 DrawPosition, const _It
 			AttributeFont->DrawText(Buffer.str(), glm::ivec2(DrawPosition), ae::CENTER_BASELINE);
 		} break;
 		case _Object::CONSUMABLE: {
-			HelpTextList.push_back("Used when picked up");
+			if(ShowHelp)
+				HelpTextList.push_back("Used when picked up");
+
 			DrawPosition.y += Spacing.y;
 
 			float Value = GetConsumableValue(Player);
@@ -467,8 +471,10 @@ void _Item::DrawTooltip(const _Player *Player, glm::vec2 DrawPosition, const _It
 			AttributeFont->DrawText(Buffer.str(), glm::ivec2(DrawPosition), ae::CENTER_BASELINE, COLOR_GREEN);
 		} break;
 		case _Object::USABLE: {
+			if(ShowHelp)
+				HelpTextList.push_back("Drag onto item");
+
 			DrawPosition.y += Spacing.y;
-			HelpTextList.push_back("Drag onto item");
 
 			switch(Template.Attributes.at("usable_type").Int) {
 				case USABLE_HAMMER: {
@@ -489,7 +495,7 @@ void _Item::DrawTooltip(const _Player *Player, glm::vec2 DrawPosition, const _It
 					DrawPosition.y += Spacing.y;
 					Buffer << "Max quality for Progression [c green]" << Player->Progression << "[c white] is [c green]" << Stats.Progressions[(size_t)Player->Progression].MaxQuality << "%";
 					AttributeFont->DrawTextFormatted(Buffer.str(), glm::ivec2(DrawPosition), ae::CENTER_BASELINE);
-					if(!Slot.Bag && PlayState.HUD->InventoryOpen)
+					if(ShowHelp && !Slot.Bag && PlayState.HUD->InventoryOpen)
 						HelpTextList.push_back("Right-click to pick up");
 				break;
 				case USABLE_WRENCH:
@@ -500,7 +506,7 @@ void _Item::DrawTooltip(const _Player *Player, glm::vec2 DrawPosition, const _It
 					DrawPosition.y += Spacing.y;
 					Buffer << "Max level for Progression [c green]" << Player->Progression << "[c white] is [c green]" << Stats.Progressions[(size_t)Player->Progression].MaxLevel;
 					AttributeFont->DrawTextFormatted(Buffer.str(), glm::ivec2(DrawPosition), ae::CENTER_BASELINE);
-					if(!Slot.Bag && PlayState.HUD->InventoryOpen)
+					if(ShowHelp && !Slot.Bag && PlayState.HUD->InventoryOpen)
 						HelpTextList.push_back("Right-click to pick up");
 				break;
 			}
@@ -508,7 +514,7 @@ void _Item::DrawTooltip(const _Player *Player, glm::vec2 DrawPosition, const _It
 	}
 
 	// Add help text
-	if(Slot.IsValidIndex())
+	if(ShowHelp && Slot.IsValidIndex())
 		HelpTextList.push_back("Ctrl+click to drop");
 
 	// Mods

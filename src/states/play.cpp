@@ -591,7 +591,7 @@ void _PlayState::Update(double FrameTime) {
 	// Handle pause
 	if(IsPaused() || Player->IsDead()) {
 		Menu.ShowDefaultCursor(true);
-		HUD->CursorOverItem = nullptr;
+		HUD->HoverItem = nullptr;
 		HUD->CursorUseWorldPosition = false;
 
 		return;
@@ -771,8 +771,8 @@ void _PlayState::Update(double FrameTime) {
 	// Show item tooltip when standing over item
 	if(!HUD->InventoryOpen && !Player->Aiming && ClosestItem && ClosestItem == LastClosestItem && !ClosestItem->CanAutoPickup() && !ClosestItem->Filtered) {
 		ClosestItemTimer += FrameTime;
-		if(!HUD->CursorOverItem && ClosestItemTimer >= HUD_STANDOVER_TIME) {
-			HUD->CursorOverItem = ClosestItem;
+		if(!HUD->HoverItem && ClosestItemTimer >= HUD_STANDOVER_TIME) {
+			HUD->HoverItem = ClosestItem;
 			HUD->CursorUseWorldPosition = true;
 		}
 	}
@@ -782,8 +782,8 @@ void _PlayState::Update(double FrameTime) {
 	LastClosestItem = ClosestItem;
 
 	// Set cursor item
-	if(SetCursorOverItem()) {
-		HUD->CursorOverItem = CursorItem;
+	if(SetHoverItem()) {
+		HUD->HoverItem = CursorItem;
 		HUD->CursorUseWorldPosition = false;
 	}
 
@@ -1557,8 +1557,8 @@ void _PlayState::UseObject(_Item *Item) {
 	PickupObject(Item, true);
 }
 
-// Determine if CursorOverItem should be set to CursorItem
-bool _PlayState::SetCursorOverItem() {
+// Determine if HoverItem should be set to CursorItem
+bool _PlayState::SetHoverItem() {
 
 	if(!CursorItem)
 		return false;
@@ -1569,7 +1569,7 @@ bool _PlayState::SetCursorOverItem() {
 	if(ShowMoreInfo() && CursorItem->CanHide())
 		return false;
 
-	if(HUD->CursorOverItem && ClosestItem != HUD->CursorOverItem)
+	if(HUD->HoverItem && ClosestItem != HUD->HoverItem)
 		return false;
 
 	if(ShowMoreInfo() || HUD->InventoryOpen || CursorItemTimer > HUD_CURSOR_ITEM_WAIT || ClosestItemTimer >= HUD_STANDOVER_TIME)

@@ -133,7 +133,7 @@ class _HUD {
 
 		// Inventory
 		_Item *CursorItem{nullptr};
-		_Item *CursorOverItem{nullptr};
+		_Item *HoverItem{nullptr};
 		bool CursorUseWorldPosition{false};
 		bool InventoryOpen{false};
 

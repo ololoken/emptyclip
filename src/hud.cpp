@@ -250,14 +250,14 @@ void _HUD::HandleMouseButton(const ae::_MouseEvent &MouseEvent) {
 							}
 						}
 						// Drag from world
-						else if(CanGrabItem(CursorOverItem)) {
-							if(CursorOverItem->CanMove()) {
+						else if(CanGrabItem(HoverItem)) {
+							if(HoverItem->CanMove()) {
 								ClickOffset = glm::vec2(0.0f);
-								CursorItem = CursorOverItem;
+								CursorItem = HoverItem;
 								CursorItem->Visible = false;
 							}
 							else
-								PlayState.PickupObject(CursorOverItem, true);
+								PlayState.PickupObject(HoverItem, true);
 						}
 					}
 				}
@@ -416,14 +416,14 @@ void _HUD::HandleMouseButton(const ae::_MouseEvent &MouseEvent) {
 						}
 					}
 
-					CursorOverItem = HitSlot.GetItem();
+					HoverItem = HitSlot.GetItem();
 				}
 				// Equip from world
-				else if(CanGrabItem(CursorOverItem)) {
+				else if(CanGrabItem(HoverItem)) {
 					size_t SlotIndex = (size_t)-1;
-					switch(CursorOverItem->Type) {
+					switch(HoverItem->Type) {
 						case _Object::WEAPON: {
-							if(CursorOverItem->IsMelee())
+							if(HoverItem->IsMelee())
 								SlotIndex = EquipmentType::MELEE;
 							else
 								SlotIndex = ae::Input.ModKeyDown(KMOD_CTRL) ? EquipmentType::OFFHAND : EquipmentType::MAINHAND;
@@ -432,15 +432,15 @@ void _HUD::HandleMouseButton(const ae::_MouseEvent &MouseEvent) {
 							SlotIndex = EquipmentType::ARMOR;
 						break;
 						default:
-							PlayState.PickupObject(CursorOverItem, true);
+							PlayState.PickupObject(HoverItem, true);
 						break;
 					}
 
 					// Equip item
 					if(SlotIndex != (size_t)-1) {
 						Player->DropItem(_Slot(&Player->GetActiveOutfitBag(), SlotIndex));
-						Player->GetActiveOutfitBag().Slots[SlotIndex] = CursorOverItem;
-						PlayState.Map->RemoveObject(CursorOverItem, GRID_ITEM);
+						Player->GetActiveOutfitBag().Slots[SlotIndex] = HoverItem;
+						PlayState.Map->RemoveObject(HoverItem, GRID_ITEM);
 						Player->RecalculateStats();
 						Player->PlayEquipSound(SlotIndex);
 					}
@@ -476,7 +476,7 @@ void _HUD::HandleMouseButton(const ae::_MouseEvent &MouseEvent) {
 // Update phase
 void _HUD::Update(double FrameTime, float Radius, double Clock) {
 	LastEntityHitTimer += FrameTime;
-	CursorOverItem = nullptr;
+	HoverItem = nullptr;
 	CursorSlot.Bag = nullptr;
 	CursorSlot.Index = (size_t)-1;
 	CursorSkill = -1;
@@ -506,7 +506,7 @@ void _HUD::Update(double FrameTime, float Radius, double Clock) {
 		// Get cursor item
 		GetHitSlot(Elements[ELEMENT_INVENTORY]->HitElement, CursorSlot);
 		if(CursorSlot.IsValidIndex() && CursorSlot.GetItem()) {
-			CursorOverItem = CursorSlot.GetItem();
+			HoverItem = CursorSlot.GetItem();
 			CursorUseWorldPosition = false;
 		}
 
@@ -763,86 +763,70 @@ void _HUD::Render(bool FullMap) {
 		DrawInventory();
 	}
 
-	// Draw item tooltip
-	if(CursorOverItem && CursorItem != CursorOverItem) {
-
-		// Holding ctrl forces a search for armor/melee
-		bool Search = true;
-		if(CursorSlot.Bag && (CursorOverItem->Type == _Object::ARMOR || CursorOverItem->IsMelee()))
-			Search = ae::Input.ModKeyDown(KMOD_CTRL);
-
-		// Search for similar item
+	// Draw item tooltips
+	if(HoverItem && CursorItem != HoverItem) {
 		_Slot CompareSlot;
-		if(Search) {
+		const _Item *LeftItem = nullptr;
+		const _Item *RightItem = HoverItem;
+		bool ShowHelp = true;
 
-			// Check active outfit first
-			_Bag &OutfitBag = Player->GetActiveOutfitBag();
-			CompareSlot.Index = OutfitBag.FindSimiliarGearItem(CursorOverItem);
-			if(CompareSlot.Index != (size_t)-1)
-				CompareSlot.Bag = &OutfitBag;
-			else
-				Player->Inventory->FindSimiliarGearItem(CursorOverItem, CursorSlot.Bag, CompareSlot);
-		}
+		// Show equip help if item is on ground or in backpack
+		bool ShowEquipHelp = (CursorSlot.Bag && !CursorSlot.IsEquipmentSlot()) || (!CursorSlot.IsValidIndex() && InventoryOpen);
 
-		// Couldn't find similar type, compare with equipped gear
-		if(!CompareSlot.Bag) {
-			switch(CursorOverItem->Type) {
-				case _Object::WEAPON:
-					if(CursorOverItem->IsMelee()) {
-						if(Player->GetMelee()) {
-							CompareSlot.Bag = &Player->GetActiveOutfitBag();
-							CompareSlot.Index = EquipmentType::MELEE;
-						}
-					}
-					else {
-						if(ae::Input.ModKeyDown(KMOD_CTRL)) {
-							if(Player->GetOffHand()) {
-								CompareSlot.Bag = &Player->GetActiveOutfitBag();
-								CompareSlot.Index = EquipmentType::OFFHAND;
-							}
-							else if(Player->GetMainHand()) {
-								CompareSlot.Bag = &Player->GetActiveOutfitBag();
-								CompareSlot.Index = EquipmentType::MAINHAND;
-							}
-						}
-						else {
-							if(Player->GetMainHand()) {
-								CompareSlot.Bag = &Player->GetActiveOutfitBag();
-								CompareSlot.Index = EquipmentType::MAINHAND;
-							}
-							else if(Player->GetOffHand()) {
-								CompareSlot.Bag = &Player->GetActiveOutfitBag();
-								CompareSlot.Index = EquipmentType::OFFHAND;
-							}
-						}
-					}
-				break;
-				case _Object::ARMOR:
-					if(Player->GetArmor()) {
-						CompareSlot.Bag = &Player->GetActiveOutfitBag();
-						CompareSlot.Index = EquipmentType::ARMOR;
-					}
-				break;
+		// Search inventory if it's closed or the item is on the ground
+		bool SearchOtherBags = !InventoryOpen || !CursorSlot.IsValidIndex();
+
+		// Compare cursor item with hover item
+		if(CursorItem) {
+			ShowHelp = false;
+			if(HoverItem && CursorItem->Type == HoverItem->Type) {
+				LeftItem = HoverItem;
+				RightItem = CursorItem;
 			}
 		}
+		else {
 
-		// Draw comparison tooltip
-		const _Item *EquippedItem = nullptr;
-		if(CompareSlot.IsValidIndex() && CompareSlot != CursorSlot) {
-			EquippedItem = CompareSlot.GetItem();
-			EquippedItem->DrawTooltip(Player, glm::ivec2(-100, ae::Graphics.CurrentSize.y/2), nullptr, _Slot(), false);
+			// Holding ctrl forces a search for armor/melee
+			bool Search = true;
+			if(CursorSlot.Bag && (RightItem->Type == _Object::ARMOR || RightItem->IsMelee()))
+				Search = ae::Input.ModKeyDown(KMOD_CTRL);
+
+			// Search for similar item
+			if(Search) {
+
+				// Check active outfit first
+				_Bag &OutfitBag = Player->GetActiveOutfitBag();
+				CompareSlot.Index = OutfitBag.FindSimilarGearItem(RightItem);
+				if(CompareSlot.Index != (size_t)-1)
+					CompareSlot.Bag = &OutfitBag;
+				else if(SearchOtherBags)
+					Player->Inventory->FindSimilarGearItem(RightItem, CursorSlot.Bag, CompareSlot);
+			}
+
+			// Couldn't find similar type, compare with equipped gear
+			if(!CompareSlot.Bag)
+				Player->GetEquippedCompareSlot(RightItem, ae::Input.ModKeyDown(KMOD_CTRL), CompareSlot);
+
+			// Set left item comparison
+			if(CompareSlot.IsValidIndex() && HoverItem != CompareSlot.GetItem())
+				LeftItem = CompareSlot.GetItem();
+
+			//ShowEquipHelp = (CursorSlot.Bag && !CursorSlot.IsEquipmentSlot()) || (CursorSlot.Index == (size_t)-1 && InventoryOpen);
 		}
 
-		// Get position of tooltip
-		glm::vec2 CursorOverPosition;
-		if(CursorUseWorldPosition)
-			Camera->ConvertWorldToScreen(CursorOverItem->Position, CursorOverPosition);
-		else
-			CursorOverPosition = ae::Input.GetMouse();
+		// Draw left hand comparison tooltip
+		if(LeftItem)
+			LeftItem->DrawTooltip(Player, glm::ivec2(-100, ae::Graphics.CurrentSize.y/2), nullptr, _Slot(), ShowHelp, false);
 
-		// Draw cursor over item
-		bool ShowEquipHelp = (CursorSlot.Bag && !CursorSlot.IsEquipmentSlot()) || (CursorSlot.Index == (size_t)-1 && PlayState.HUD->InventoryOpen);
-		CursorOverItem->DrawTooltip(Player, CursorOverPosition, EquippedItem, CursorSlot, ShowEquipHelp);
+		// Get position of tooltip
+		glm::vec2 HoverPosition;
+		if(CursorUseWorldPosition)
+			Camera->ConvertWorldToScreen(RightItem->Position, HoverPosition);
+		else
+			HoverPosition = ae::Input.GetMouse();
+
+		// Draw right hand tooltip
+		RightItem->DrawTooltip(Player, HoverPosition, LeftItem, CursorSlot, ShowHelp, ShowEquipHelp);
 	}
 
 	// Draw full map
@@ -1478,7 +1462,7 @@ void _HUD::SetInventoryOpen(bool Value) {
 
 		DragSlot.Reset();
 		CursorItem = nullptr;
-		CursorOverItem = nullptr;
+		HoverItem = nullptr;
 		CursorUseWorldPosition = false;
 	}
 
@@ -1526,7 +1510,7 @@ bool _HUD::ApplyUsableItem(_Item *ExistingItem) {
 
 			// Destroy hammer
 			CursorItem->Active = false;
-			CursorOverItem = nullptr;
+			HoverItem = nullptr;
 			PlayState.Map->RemoveObjectFromGrid(CursorItem, GRID_ITEM);
 
 			// Drop mods

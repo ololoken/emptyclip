@@ -101,6 +101,7 @@ class _Player : public _Entity {
 		int GetWeaponAmmo() const override;
 		_Bag &GetActiveOutfitBag() const;
 		_Bag &GetActiveBackpackBag() const;
+		void GetEquippedCompareSlot(const _Item *Item, bool Offhand, _Slot &Slot);
 		void UpdateAmmoNeeded();
 		void AddMissingBackpacks();
 		bool HasAmmoForMain() const;
