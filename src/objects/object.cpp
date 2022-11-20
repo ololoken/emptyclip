@@ -154,7 +154,7 @@ void _Object::CreateAmmoPickup(float SpawnPositionZ) {
 		return;
 
 	_Item *AmmoItem = Stats.CreateItem(ProjectileWeaponTemplate->PickupID, 1, 0, Position, false, 0);
-	AmmoItem->Filterable = false;
+	AmmoItem->AmmoPickup = true;
 	AmmoItem->Rotation = Rotation;
 	AmmoItem->PositionZ = SpawnPositionZ;
 	Map->AddObject(AmmoItem, GRID_ITEM);

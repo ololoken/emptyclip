@@ -91,7 +91,7 @@ void _ObjectManager::Update(double FrameTime, _Map *Map) {
 		// Set filtered state
 		switch(Object->Type) {
 			case _Object::AMMO:
-				Object->Filtered = Object->Filterable && !PlayState.Player->AmmoNeeded[Object->Template.AmmoTypeID];
+				Object->Filtered = !PlayState.Player->AmmoNeeded[(size_t)Object->Template.AmmoTypeID];
 			break;
 			case _Object::CONSUMABLE:
 				if(Object->Template.GiveHealth && PlayState.Player->Health == PlayState.Player->MaxHealth)

@@ -223,7 +223,7 @@ class _Object {
 		float Scale{1.0f};
 		float PositionZ{0.0f};
 		bool Visible{true};
-		bool Filterable{true};
+		bool AmmoPickup{false};
 		bool Filtered{false};
 
 };

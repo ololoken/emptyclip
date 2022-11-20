@@ -581,7 +581,7 @@ void _Item::Render(double BlendFactor) const {
 		return;
 
 	glm::vec4 RenderColor = Color;
-	RenderColor.a = Filtered ? ITEM_FILTERED_ALPHA : 1.0f;
+	RenderColor.a = (Filtered && !AmmoPickup) ? ITEM_FILTERED_ALPHA : 1.0f;
 
 	ae::Graphics.SetColor(RenderColor);
 	ae::Graphics.DrawSprite(glm::vec3(Position, PositionZ), Texture, Rotation, glm::vec2(ITEM_SCALE));
