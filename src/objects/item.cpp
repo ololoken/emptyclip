@@ -197,7 +197,7 @@ void _Item::DrawTooltip(const _Player *Player, glm::vec2 DrawPosition, const _It
 
 	// Add help text
 	std::vector<std::string> HelpTextList;
-	if(ShowHelp && Slot.Bag && Slot.IsEquipmentSlot())
+	if(ShowHelp && Slot.Bag && Slot.IsGearSlot())
 		HelpTextList.push_back("Right-click to unequip");
 
 	// Show attributes

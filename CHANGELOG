@@ -6,8 +6,8 @@ Empty Clip 2.0.0 -
 - Reworked all game content and added new weapons, armor, monsters, mods, skills and gameplay mechanics
 - Reworked campaign mode to have eight new levels for a total of ten
 - The game now gets harder with every campaign completion
-- Inventory is bigger and can now hold equipment
-- Added equipment slot for melee weapons and separate hotkey for melee attacks (Mouse button 4 by default)
+- Inventory is bigger and can now hold gear
+- Added gear slot for melee weapons and separate hotkey for melee attacks (Mouse button 4 by default)
 - Added melee animations
 - Reworked skill system to have 10 attributes that affect various player stats
 - Rewrote and optimized AI code
@@ -16,7 +16,7 @@ Empty Clip 2.0.0 -
 - Added sprinting and a stamina bar (Hold A by default)
 - Added a flashlight (V by default)
 - Items in the world can be picked up or moved with the mouse while the inventory is open
-- Equipment can now be equipped by right-clicking the item in the inventory or world
+- Gear can now be equipped by right-clicking the item in the inventory or world
 - Weapons, armor, and mods now have levels and a random quality rating
 - Items now have multiple tiers of rarity, with most only available in later progressions
 - Items can now be dropped with ctrl+click or middle mouse button

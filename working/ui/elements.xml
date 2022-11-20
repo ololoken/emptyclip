@@ -442,7 +442,7 @@
 				<element id="label_inventory_tabs_backpack4" font="hud_tiny" color="gray" offset_x="-6" offset_y="56" alignment_x="2" alignment_y="3"/>
 			</element>
 		</element>
-		<element id="element_inventory_equipment" size_x="260" size_y="100%" alignment_x="0" alignment_y="0">
+		<element id="element_inventory_gear" size_x="260" size_y="100%" alignment_x="0" alignment_y="0">
 			<element id="element_inventory_bg" style="style_hud_inventory_bg" size_x="260" size_y="400" alignment_x="0" alignment_y="0"/>
 			<element id="element_inventory_body" style="style_hud_inventory_body" size_x="151" size_y="377"/>
 			<element id="button_inventory_sort" texture="textures/hud/sort.png" hover_style="style_hud_sort_hover" offset_x="-10" offset_y="10" size_x="32" size_y="32" alignment_x="2" alignment_y="0" clickable="true">

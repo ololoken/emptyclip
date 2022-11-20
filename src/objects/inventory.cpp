@@ -23,7 +23,7 @@
 
 // Number of slots for each bag
 const size_t BagSizes[(size_t)BagType::COUNT] = {
-	EquipmentType::COUNT,
+	GearType::COUNT,
 	INVENTORY_BAGSIZE,
 };
 
@@ -34,7 +34,7 @@ _Inventory::_Inventory() {
 	Containers[(size_t)BagType::BACKPACK].reserve(INVENTORY_MAX_BACKPACKS);
 	Containers[(size_t)BagType::OUTFIT].resize(2);
 	Containers[(size_t)BagType::BACKPACK].resize(1);
-	Containers[(size_t)BagType::OUTFIT].front().Equipment = true;
+	Containers[(size_t)BagType::OUTFIT].front().Gear = true;
 
 	for(size_t i = 0; i < Containers.size(); i++) {
 		for(auto &Bag : Containers[i])
@@ -221,7 +221,7 @@ void _Inventory::FindSimilarGearItem(const _Item *GearItem, bool SkipBackpack, _
 			_Bag &Bag = Container[BagIndex];
 
 			// Skip backpack if item is inside backpack
-			if(!Bag.Equipment && SkipBackpack)
+			if(!Bag.Gear && SkipBackpack)
 				continue;
 
 			// Check bag
@@ -268,7 +268,7 @@ void _Inventory::SerializeContainer(ae::_Buffer &Buffer, const _Container &Conta
 }
 
 // Unserialize bag from buffer
-void _Inventory::UnserializeContainer(ae::_Buffer &Buffer, _Container &Container, size_t BagSize, bool Equipment) {
+void _Inventory::UnserializeContainer(ae::_Buffer &Buffer, _Container &Container, size_t BagSize, bool Gear) {
 
 	// Get bag count
 	int BagCount = Buffer.Read<int32_t>();
@@ -277,7 +277,7 @@ void _Inventory::UnserializeContainer(ae::_Buffer &Buffer, _Container &Container
 	// Read each bag
 	for(int i = 0; i < BagCount; i++) {
 		_Bag Bag;
-		Bag.Equipment = Equipment;
+		Bag.Gear = Gear;
 		Bag.Slots.resize(BagSize, nullptr);
 
 		// Read item count

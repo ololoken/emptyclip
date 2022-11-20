@@ -56,7 +56,7 @@ struct _SkillText {
 
 static std::vector<_MinimapLegend> MinimapLegends = {
 	{ "Keys", HUD_MINIMAP_KEY_COLOR},
-	{ "Equipment",  HUD_MINIMAP_EQUIPMENT_COLOR },
+	{ "Gear",  HUD_MINIMAP_GEAR_COLOR },
 	{ "Ammo", HUD_MINIMAP_AMMO_COLOR},
 	{ "Consumables", HUD_MINIMAP_CONSUMABLE_COLOR },
 	{ "Crates", HUD_MINIMAP_CRATE_COLOR },
@@ -316,7 +316,7 @@ void _HUD::HandleMouseButton(const ae::_MouseEvent &MouseEvent) {
 							Player->UseTimer = 0.0;
 
 							// Drag onto inventory
-							bool CanEquip = HitSlot.IsEquipmentSlot() && Player->CanEquipItem(CursorItem, HitSlot.Index);
+							bool CanEquip = HitSlot.IsGearSlot() && Player->CanEquipItem(CursorItem, HitSlot.Index);
 							bool SetAndRemove = false;
 
 							// Drag onto existing item
@@ -333,13 +333,13 @@ void _HUD::HandleMouseButton(const ae::_MouseEvent &MouseEvent) {
 								else if(CursorItem->Type == _Object::MOD && ExistingItem->CanEquip() && !ExistingItem->ItemCompatible(CursorItem)) {
 									MoveWorldItem(Player->Position);
 								}
-								else if(CanEquip || !HitSlot.IsEquipmentSlot()) {
+								else if(CanEquip || !HitSlot.IsGearSlot()) {
 									Player->DropItem(HitSlot);
 									SetAndRemove = true;
 								}
 							}
 							// Drag onto empty slot
-							else if(CursorItem->Moveable && (CanEquip || !HitSlot.IsEquipmentSlot())) {
+							else if(CursorItem->Moveable && (CanEquip || !HitSlot.IsGearSlot())) {
 								SetAndRemove = true;
 							}
 
@@ -391,7 +391,7 @@ void _HUD::HandleMouseButton(const ae::_MouseEvent &MouseEvent) {
 				if(HitSlot.IsValidIndex() && HitSlot.GetItem()) {
 
 					// Unequip item
-					if(HitSlot.Bag->Equipment) {
+					if(HitSlot.Bag->Gear) {
 						if(Player->AddItemToBackpack(HitSlot.GetItem(), Player->ActiveBackpack)) {
 							Player->PlayEquipSound(HitSlot.Index);
 							HitSlot.RemoveItem();
@@ -406,12 +406,12 @@ void _HUD::HandleMouseButton(const ae::_MouseEvent &MouseEvent) {
 						switch(HitSlot.GetItem()->Type) {
 							case _Object::WEAPON: {
 								if(HitSlot.GetItem()->IsMelee())
-									Player->SwapInventory(HitSlot, _Slot(&Player->GetActiveOutfitBag(), EquipmentType::MELEE));
+									Player->SwapInventory(HitSlot, _Slot(&Player->GetActiveOutfitBag(), GearType::MELEE));
 								else
-									Player->SwapInventory(HitSlot, _Slot(&Player->GetActiveOutfitBag(), ae::Input.ModKeyDown(KMOD_CTRL) ? EquipmentType::OFFHAND : EquipmentType::MAINHAND));
+									Player->SwapInventory(HitSlot, _Slot(&Player->GetActiveOutfitBag(), ae::Input.ModKeyDown(KMOD_CTRL) ? GearType::OFFHAND : GearType::MAINHAND));
 							} break;
 							case _Object::ARMOR:
-								Player->SwapInventory(HitSlot, _Slot(&Player->GetActiveOutfitBag(), EquipmentType::ARMOR));
+								Player->SwapInventory(HitSlot, _Slot(&Player->GetActiveOutfitBag(), GearType::ARMOR));
 							break;
 						}
 					}
@@ -424,12 +424,12 @@ void _HUD::HandleMouseButton(const ae::_MouseEvent &MouseEvent) {
 					switch(HoverItem->Type) {
 						case _Object::WEAPON: {
 							if(HoverItem->IsMelee())
-								SlotIndex = EquipmentType::MELEE;
+								SlotIndex = GearType::MELEE;
 							else
-								SlotIndex = ae::Input.ModKeyDown(KMOD_CTRL) ? EquipmentType::OFFHAND : EquipmentType::MAINHAND;
+								SlotIndex = ae::Input.ModKeyDown(KMOD_CTRL) ? GearType::OFFHAND : GearType::MAINHAND;
 						} break;
 						case _Object::ARMOR:
-							SlotIndex = EquipmentType::ARMOR;
+							SlotIndex = GearType::ARMOR;
 						break;
 						default:
 							PlayState.PickupObject(HoverItem, true);
@@ -527,8 +527,8 @@ void _HUD::Update(double FrameTime, float Radius, double Clock) {
 				Element->Children.front()->Texture = ae::Assets.Textures["textures/hud/outfit.png"];
 				if(!Element->Checked)
 					Element->Children.back()->Text = ae::Actions.GetInputNameForAction(Action::GAME_SWITCHOUTFIT);
-				if(Index < OutfitContainer.size() && OutfitContainer[Index].Slots[EquipmentType::ARMOR])
-					Element->Children.front()->Texture = OutfitContainer[Index].Slots[EquipmentType::ARMOR]->Texture;
+				if(Index < OutfitContainer.size() && OutfitContainer[Index].Slots[GearType::ARMOR])
+					Element->Children.front()->Texture = OutfitContainer[Index].Slots[GearType::ARMOR]->Texture;
 			}
 			// Set backpack tab state
 			else {
@@ -771,7 +771,7 @@ void _HUD::Render(bool FullMap) {
 		bool ShowHelp = true;
 
 		// Show equip help if item is on ground or in backpack
-		bool ShowEquipHelp = (CursorSlot.Bag && !CursorSlot.IsEquipmentSlot()) || (!CursorSlot.IsValidIndex() && InventoryOpen);
+		bool ShowEquipHelp = (CursorSlot.Bag && !CursorSlot.IsGearSlot()) || (!CursorSlot.IsValidIndex() && InventoryOpen);
 
 		// Search inventory if it's closed or the item is on the ground
 		bool SearchOtherBags = !InventoryOpen || !CursorSlot.IsValidIndex();

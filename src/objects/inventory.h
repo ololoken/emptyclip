@@ -27,7 +27,7 @@ namespace ae {
 	class _Buffer;
 }
 
-enum EquipmentType : size_t {
+enum GearType : size_t {
 	MAINHAND,
 	OFFHAND,
 	MELEE,
@@ -53,7 +53,7 @@ struct _Bag {
 	std::vector<int> TypeCount;
 	int HighestType{0};
 	bool Full{false};
-	bool Equipment{false};
+	bool Gear{false};
 };
 
 // Contains bag and index
@@ -68,8 +68,8 @@ struct _Slot {
 	void Reset() { Bag = nullptr; Index = (size_t)-1; }
 
 	bool IsValidIndex() const { return Bag && Index < Bag->Slots.size(); }
-	bool IsHandIndex() const { return Index == EquipmentType::MAINHAND || Index == EquipmentType::OFFHAND; }
-	bool IsEquipmentSlot() const { return Bag->Equipment; }
+	bool IsHandIndex() const { return Index == GearType::MAINHAND || Index == GearType::OFFHAND; }
+	bool IsGearSlot() const { return Bag->Gear; }
 
 	_Item *GetItem() const { return Bag->Slots[Index]; }
 	void SetItem(_Item *Item) const { Bag->Slots[Index] = Item; }
@@ -107,7 +107,7 @@ class _Inventory  {
 	private:
 
 		void SerializeContainer(ae::_Buffer &Buffer, const _Container &Container) const;
-		void UnserializeContainer(ae::_Buffer &Buffer, _Container &Container, size_t BagSize, bool Equipment);
+		void UnserializeContainer(ae::_Buffer &Buffer, _Container &Container, size_t BagSize, bool Gear);
 		_Item *UnserializeItem(ae::_Buffer &Buffer);
 
 };

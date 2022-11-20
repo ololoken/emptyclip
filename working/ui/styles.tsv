@@ -20,9 +20,9 @@ style_hud_inventory_bg_dark	inventory_bg_dark		ortho_pos			1
 style_hud_inventory_bg_darker	inventory_bg_darker		ortho_pos			1
 style_hud_inventory_body			ortho_pos_uv	textures/hud/body.png	inventory_body	1
 style_hud_inventory			ortho_pos_uv	textures/hud/inventory_slot.png	inventory_slot	1
-style_hud_inventory_armor			ortho_pos_uv	textures/hud/inventory_armor.png	inventory_equipment	1
-style_hud_inventory_gun			ortho_pos_uv	textures/hud/inventory_gun.png	inventory_equipment	1
-style_hud_inventory_melee			ortho_pos_uv	textures/hud/inventory_melee.png	inventory_equipment	1
+style_hud_inventory_armor			ortho_pos_uv	textures/hud/inventory_armor.png	inventory_gear	1
+style_hud_inventory_gun			ortho_pos_uv	textures/hud/inventory_gun.png	inventory_gear	1
+style_hud_inventory_melee			ortho_pos_uv	textures/hud/inventory_melee.png	inventory_gear	1
 style_hud_inventory_overlay	inventory_overlay		ortho_pos			1
 style_hud_skills	tooltip_bg		ortho_pos			1
 style_hud_plus			ortho_pos_uv	textures/hud/plus.png		1

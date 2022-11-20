@@ -44,7 +44,7 @@ inventory_bg_dark	0.067	0.051	0.051	1
 inventory_bg_darker	0.02	0.012	0.012	1
 inventory_body	1	1	1	0.3
 inventory_slot	0.75	0.65	0.65	1
-inventory_equipment	0.75	0.65	0.65	0.8
+inventory_gear	0.75	0.65	0.65	0.8
 inventory_sort_hover	1	1	1	0.05
 inventory_overlay	0	0	0	0.6
 tooltip_bg	0	0	0	0.8

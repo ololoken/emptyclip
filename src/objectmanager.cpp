@@ -129,7 +129,7 @@ void _ObjectManager::Update(double FrameTime, _Map *Map) {
 					if(Object->Unique)
 						Map->MinimapIcons[_Map::MINIMAP_UNIQUE].push_back(MinimapIcon);
 					else
-						Map->MinimapIcons[_Map::MINIMAP_EQUIPMENT].push_back(MinimapIcon);
+						Map->MinimapIcons[_Map::MINIMAP_GEAR].push_back(MinimapIcon);
 				break;
 				case _Object::KEY:
 					Map->MinimapIcons[_Map::MINIMAP_KEY].push_back(MinimapIcon);

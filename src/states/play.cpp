@@ -312,7 +312,7 @@ bool _PlayState::HandleAction(int InputType, size_t Action, int Value) {
 			break;
 			case Action::GAME_WEAPONSWITCH:
 				if(!HUD->CursorItem)
-					Player->StartWeaponSwitch(_Slot(&Player->GetActiveOutfitBag(), EquipmentType::MAINHAND), _Slot(&Player->GetActiveOutfitBag(), EquipmentType::OFFHAND));
+					Player->StartWeaponSwitch(_Slot(&Player->GetActiveOutfitBag(), GearType::MAINHAND), _Slot(&Player->GetActiveOutfitBag(), GearType::OFFHAND));
 			break;
 			case Action::GAME_SWITCHOUTFIT:
 				if(!HUD->CursorItem)

@@ -692,7 +692,7 @@ int _Player::AddItem(_Item *Item, int &AmountAdded, bool UseOnFull) {
 		case _Object::WEAPON: {
 			if(Item->IsMelee()) {
 				if(!GetMelee() && Config.AutoEquip) {
-					GetActiveOutfitBag().Slots[EquipmentType::MELEE] = Item;
+					GetActiveOutfitBag().Slots[GearType::MELEE] = Item;
 					RecalculateStats();
 					ResetWeaponAnimation();
 					return ADD_REMOVE;
@@ -700,20 +700,20 @@ int _Player::AddItem(_Item *Item, int &AmountAdded, bool UseOnFull) {
 			}
 			else {
 				if(!GetMainHand() && Config.AutoEquip) {
-					GetActiveOutfitBag().Slots[EquipmentType::MAINHAND] = Item;
+					GetActiveOutfitBag().Slots[GearType::MAINHAND] = Item;
 					RecalculateStats();
 					ResetWeaponAnimation();
 					return ADD_REMOVE;
 				}
 				else if(!GetOffHand() && Config.AutoEquip) {
-					GetActiveOutfitBag().Slots[EquipmentType::OFFHAND] = Item;
+					GetActiveOutfitBag().Slots[GearType::OFFHAND] = Item;
 					return ADD_REMOVE;
 				}
 			}
 		} break;
 		case _Object::ARMOR: {
 			if(!GetArmor() && Config.AutoEquip) {
-				GetActiveOutfitBag().Slots[EquipmentType::ARMOR] = Item;
+				GetActiveOutfitBag().Slots[GearType::ARMOR] = Item;
 				RecalculateStats();
 				return ADD_REMOVE;
 			}
@@ -809,7 +809,7 @@ void _Player::DropItem(const _Slot &Slot, const glm::vec2 &DropPosition) {
 	Slot.RemoveItem();
 
 	// Check if the item was equipped
-	if(Slot.IsEquipmentSlot()) {
+	if(Slot.IsGearSlot()) {
 		PlayEquipSound(Slot.Index);
 
 		RecalculateStats();
@@ -859,17 +859,17 @@ bool _Player::CanEquipItem(const _Item *Item, size_t Slot) const {
 		return true;
 
 	switch(Slot) {
-		case EquipmentType::ARMOR: {
+		case GearType::ARMOR: {
 			if(Item->Type != _Object::ARMOR)
 				return false;
 
 			return true;
 		} break;
-		case EquipmentType::MAINHAND:
-		case EquipmentType::OFFHAND:
-		case EquipmentType::MELEE: {
+		case GearType::MAINHAND:
+		case GearType::OFFHAND:
+		case GearType::MELEE: {
 			if(Item->Type == _Object::WEAPON) {
-				if(Slot == EquipmentType::MELEE) {
+				if(Slot == GearType::MELEE) {
 					if(Item->IsMelee())
 						return true;
 				}
@@ -903,18 +903,18 @@ void _Player::SwapInventory(const _Slot &SlotFrom, const _Slot &SlotTo) {
 	if(ApplyUsable(SlotFrom, SlotTo))
 		return;
 
-	// Prevent swap with equipment and non-equipment
+	// Prevent swap with gear and non-gear
 	if(ItemFrom && !ItemFrom->CanEquip() && ItemTo && ItemTo->CanEquip())
 		return;
 
 	// Check for simple swap
 	bool CanSwap = false;
-	if(!SlotFrom.IsEquipmentSlot() && !SlotTo.IsEquipmentSlot()) {
+	if(!SlotFrom.IsGearSlot() && !SlotTo.IsGearSlot()) {
 		CanSwap = true;
 	}
-	// Equipment swap
-	else if((SlotFrom.IsEquipmentSlot() && !SlotTo.IsEquipmentSlot()) || (SlotTo.IsEquipmentSlot() && !SlotFrom.IsEquipmentSlot()) || (SlotFrom.IsEquipmentSlot() && SlotTo.IsEquipmentSlot())) {
-		if(SlotTo.IsEquipmentSlot())
+	// Gear swap
+	else if((SlotFrom.IsGearSlot() && !SlotTo.IsGearSlot()) || (SlotTo.IsGearSlot() && !SlotFrom.IsGearSlot()) || (SlotFrom.IsGearSlot() && SlotTo.IsGearSlot())) {
+		if(SlotTo.IsGearSlot())
 			CanSwap = CanEquipItem(ItemFrom, SlotTo.Index);
 		else
 			CanSwap = CanEquipItem(ItemTo, SlotFrom.Index);
@@ -923,7 +923,7 @@ void _Player::SwapInventory(const _Slot &SlotFrom, const _Slot &SlotTo) {
 	if(!CanSwap)
 		return;
 
-	if((SlotTo.IsEquipmentSlot() && SlotTo.Index == EquipmentType::MAINHAND) || (SlotFrom.IsEquipmentSlot() && SlotFrom.Index == EquipmentType::MAINHAND) || (SlotFrom.IsEquipmentSlot() && SlotTo.IsEquipmentSlot() && SlotFrom.IsHandIndex() && SlotTo.IsHandIndex()) ) {
+	if((SlotTo.IsGearSlot() && SlotTo.Index == GearType::MAINHAND) || (SlotFrom.IsGearSlot() && SlotFrom.Index == GearType::MAINHAND) || (SlotFrom.IsGearSlot() && SlotTo.IsGearSlot() && SlotFrom.IsHandIndex() && SlotTo.IsHandIndex()) ) {
 		StartWeaponSwitch(SlotFrom, SlotTo);
 	}
 	else {
@@ -1111,28 +1111,28 @@ void _Player::GetEquippedCompareSlot(const _Item *Item, bool Offhand, _Slot &Slo
 			if(Item->IsMelee()) {
 				if(GetMelee()) {
 					Slot.Bag = &GetActiveOutfitBag();
-					Slot.Index = EquipmentType::MELEE;
+					Slot.Index = GearType::MELEE;
 				}
 			}
 			else {
 				if(Offhand) {
 					if(GetOffHand()) {
 						Slot.Bag = &GetActiveOutfitBag();
-						Slot.Index = EquipmentType::OFFHAND;
+						Slot.Index = GearType::OFFHAND;
 					}
 					else if(GetMainHand()) {
 						Slot.Bag = &GetActiveOutfitBag();
-						Slot.Index = EquipmentType::MAINHAND;
+						Slot.Index = GearType::MAINHAND;
 					}
 				}
 				else {
 					if(GetMainHand()) {
 						Slot.Bag = &GetActiveOutfitBag();
-						Slot.Index = EquipmentType::MAINHAND;
+						Slot.Index = GearType::MAINHAND;
 					}
 					else if(GetOffHand()) {
 						Slot.Bag = &GetActiveOutfitBag();
-						Slot.Index = EquipmentType::OFFHAND;
+						Slot.Index = GearType::OFFHAND;
 					}
 				}
 			}
@@ -1140,7 +1140,7 @@ void _Player::GetEquippedCompareSlot(const _Item *Item, bool Offhand, _Slot &Slo
 		case _Object::ARMOR:
 			if(GetArmor()) {
 				Slot.Bag = &GetActiveOutfitBag();
-				Slot.Index = EquipmentType::ARMOR;
+				Slot.Index = GearType::ARMOR;
 			}
 		break;
 	}
@@ -1529,22 +1529,22 @@ const _ParticleTemplate *_Player::GetParticle(int ParticleType) const {
 
 // Get current main hand weapon
 _Item *_Player::GetMainHand() const {
-	return GetActiveOutfitBag().Slots[EquipmentType::MAINHAND];
+	return GetActiveOutfitBag().Slots[GearType::MAINHAND];
 }
 
 // Get current offhand weapon
 _Item *_Player::GetOffHand() const {
-	return GetActiveOutfitBag().Slots[EquipmentType::OFFHAND];
+	return GetActiveOutfitBag().Slots[GearType::OFFHAND];
 }
 
 // Get current melee weapon
 _Item *_Player::GetMelee() const {
-	return GetActiveOutfitBag().Slots[EquipmentType::MELEE];
+	return GetActiveOutfitBag().Slots[GearType::MELEE];
 }
 
 // Get current armor
 _Item *_Player::GetArmor() const {
-	return GetActiveOutfitBag().Slots[EquipmentType::ARMOR];
+	return GetActiveOutfitBag().Slots[GearType::ARMOR];
 }
 
 // Set attack requested
@@ -1579,16 +1579,16 @@ void _Player::OnHit(_Entity *Attacker, const _Hit &Hit, bool PlaySound) {
 bool _Player::PlayEquipSound(size_t Slot) const {
 
 	switch(Slot) {
-		case EquipmentType::MAINHAND:
-		case EquipmentType::OFFHAND:
+		case GearType::MAINHAND:
+		case GearType::OFFHAND:
 			ae::Audio.PlaySound(ae::Assets.Sounds["equip_gun0.ogg"]);
 			return true;
 		break;
-		case EquipmentType::MELEE:
+		case GearType::MELEE:
 			ae::Audio.PlaySound(ae::Assets.Sounds["equip_melee0.ogg"]);
 			return true;
 		break;
-		case EquipmentType::ARMOR:
+		case GearType::ARMOR:
 			ae::Audio.PlaySound(ae::Assets.Sounds["equip_armor0.ogg"]);
 			return true;
 		break;
