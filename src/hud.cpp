@@ -697,7 +697,7 @@ void _HUD::Render(bool FullMap) {
 	// Reload indicator
 	if(Player->Reloading)
 		DrawIndicator("Reloading", Player->GetReloadPercent(), ae::Assets.Textures["textures/hud/indicator_reload.png"]);
-	else if(!Player->WeaponHasAmmo(WEAPONATTACK_MAIN) && !Player->SwitchingWeapons && Player->GetMainHand() && Player->GetMainHand()->Attributes.at("rounds").Float > 0.0f) {
+	else if(!Player->WeaponHasAmmo(WEAPONATTACK_MAIN) && !Player->SwitchingWeapons && !Player->SwitchingOutfits && Player->GetMainHand() && Player->GetMainHand()->Attributes.at("rounds").Float > 0.0f) {
 		if(Player->HasAmmoForMain())
 			DrawIndicator("Hit " + ae::Actions.GetInputNameForAction(Action::GAME_RELOAD) + " to Reload");
 		else
