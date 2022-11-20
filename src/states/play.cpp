@@ -243,6 +243,7 @@ bool _PlayState::HandleAction(int InputType, size_t Action, int Value) {
 
 	// Handle console toggling
 	if(Action == Action::MISC_CONSOLE) {
+		ae::Actions.ResetState();
 		Framework.Console->Toggle();
 		Framework.IgnoreNextInputEvent = true;
 	}
