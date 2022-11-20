@@ -645,7 +645,7 @@ void _PlayState::Update(double FrameTime) {
 				Player->RequestAttack(WEAPONATTACK_MELEE);
 
 			// Aim
-			Player->SetAiming(ae::Actions.State[Action::GAME_AIM].Value > 0.0f && !Player->Reloading && !Player->SwitchingWeapons && !Player->SwitchingOutfits);
+			Player->SetAiming(ae::Actions.State[Action::GAME_AIM].Value > 0.0f && !Player->Reloading && !Player->IsSwitching());
 			Player->SetSprinting(ae::Actions.State[Action::GAME_SPRINT].Value > 0.0f);
 
 			// Don't show tooltips while firing

@@ -106,17 +106,18 @@ class _Player : public _Entity {
 		void AddMissingBackpacks();
 		bool HasAmmoForMain() const;
 
-		bool CanAttack(int AttackType) const override { return !IsMeleeAttacking() && !Reloading && !SwitchingWeapons && !SwitchingOutfits && !IsDying(); }
+		bool CanAttack(int AttackType) const override { return !IsMeleeAttacking() && !Reloading && !IsSwitching() && !IsDying(); }
 		bool CanPickup() const { return !IsDying() && CanUse(); }
 		bool CanUse() const { return UseTimer > UsePeriod; }
-		bool CanDropItems() const { return !Reloading && !SwitchingWeapons && !SwitchingOutfits; }
-		bool CanDragItems() const { return !Reloading && !SwitchingWeapons && !SwitchingOutfits; }
-		bool CanEquipItems() const { return !Reloading && !SwitchingWeapons && !SwitchingOutfits; }
-		bool CanSort() const { return !Reloading && !SwitchingWeapons && !SwitchingOutfits; }
-		bool CanSwitchWeapons() const { return !SwitchingOutfits && !SwitchingWeapons && !Reloading && !IsMeleeAttacking() && !IsDying(); }
-		bool CanSwitchOutfits() const { return !SwitchingOutfits && !SwitchingWeapons && !Reloading && !IsMeleeAttacking() && !IsDying(); }
+		bool CanDropItems() const { return !Reloading && !IsSwitching(); }
+		bool CanDragItems() const { return !Reloading && !IsSwitching(); }
+		bool CanEquipItems() const { return !Reloading && !IsSwitching(); }
+		bool CanSort() const { return !Reloading && !IsSwitching(); }
+		bool CanSwitchWeapons() const { return !IsSwitching() && !Reloading && !IsMeleeAttacking() && !IsDying(); }
+		bool CanSwitchOutfits() const { return !IsSwitching() && !Reloading && !IsMeleeAttacking() && !IsDying(); }
 		bool CanReload() const;
 		bool IsSteady() const override { return GetMainHand() && CurrentAccuracy <= MinAccuracy; }
+		bool IsSwitching() const { return SwitchingWeapons || SwitchingOutfits; }
 		bool InCombat() const { return CombatTimer < GAME_COMBAT_TIMER; }
 		bool ApplyUse() const { return UseRequested && CanUse(); }
 		void RequestAttack(int RequestType);

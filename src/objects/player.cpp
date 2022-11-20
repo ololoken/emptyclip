@@ -415,7 +415,7 @@ void _Player::Update(double FrameTime) {
 	UpdateOutfitSwitch();
 
 	// Stop trigger down audio
-	if(TriggerDownAudio && (!AttackRequested || !WeaponHasAmmo(WEAPONATTACK_MAIN) || IsDying() || SwitchingWeapons || SwitchingOutfits || Reloading))
+	if(TriggerDownAudio && (!AttackRequested || !WeaponHasAmmo(WEAPONATTACK_MAIN) || IsDying() || IsSwitching() || Reloading))
 		StopAudio();
 
 	// Make an attack
@@ -1602,7 +1602,7 @@ int _Player::GetInventoryMaxStack() const {
 }
 
 bool _Player::CanReload() const {
-	return GetMainHand() && AttackTimer[WEAPONATTACK_MAIN] >= ReloadDelay && !Reloading && !SwitchingWeapons && !SwitchingOutfits && !IsMeleeAttacking() && GetMainHand()->Attributes.at("ammo").Int != std::round(GetMainHand()->Attributes.at("rounds").Float) && HasAmmoForMain();
+	return GetMainHand() && AttackTimer[WEAPONATTACK_MAIN] >= ReloadDelay && !Reloading && !IsSwitching() && !IsMeleeAttacking() && GetMainHand()->Attributes.at("ammo").Int != std::round(GetMainHand()->Attributes.at("rounds").Float) && HasAmmoForMain();
 }
 
 bool _Player::IsMelee() const {
