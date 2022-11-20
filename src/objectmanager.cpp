@@ -125,11 +125,10 @@ void _ObjectManager::Update(double FrameTime, _Map *Map) {
 			switch(Object->Type) {
 				case _Object::WEAPON:
 				case _Object::ARMOR:
+					Map->MinimapIcons[Object->Unique ? _Map::MINIMAP_UNIQUE : _Map::MINIMAP_GEAR].push_back(MinimapIcon);
+				break;
 				case _Object::MOD:
-					if(Object->Unique)
-						Map->MinimapIcons[_Map::MINIMAP_UNIQUE].push_back(MinimapIcon);
-					else
-						Map->MinimapIcons[_Map::MINIMAP_GEAR].push_back(MinimapIcon);
+					Map->MinimapIcons[Object->Unique ? _Map::MINIMAP_UNIQUE : _Map::MINIMAP_MOD].push_back(MinimapIcon);
 				break;
 				case _Object::KEY:
 					Map->MinimapIcons[_Map::MINIMAP_KEY].push_back(MinimapIcon);

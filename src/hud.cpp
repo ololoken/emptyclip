@@ -57,6 +57,7 @@ struct _SkillText {
 static std::vector<_MinimapLegend> MinimapLegends = {
 	{ "Keys", HUD_MINIMAP_KEY_COLOR},
 	{ "Gear",  HUD_MINIMAP_GEAR_COLOR },
+	{ "Mod",  HUD_MINIMAP_MOD_COLOR },
 	{ "Ammo", HUD_MINIMAP_AMMO_COLOR},
 	{ "Consumables", HUD_MINIMAP_CONSUMABLE_COLOR },
 	{ "Crates", HUD_MINIMAP_CRATE_COLOR },
