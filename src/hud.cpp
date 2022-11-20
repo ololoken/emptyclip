@@ -804,6 +804,14 @@ void _HUD::Render(bool FullMap) {
 					Player->Inventory->FindSimilarGearItem(RightItem, CursorSlot.Bag, CompareSlot);
 			}
 
+			// Hold control to compare with other equipped weapon
+			if(ae::Input.ModKeyDown(KMOD_CTRL) && CompareSlot.IsValidIndex() && CompareSlot.Bag->Gear && Player->GetMainHand() && Player->GetOffHand()) {
+				if(CompareSlot.Index == GearType::MAINHAND)
+					CompareSlot.Index = GearType::OFFHAND;
+				else if(CompareSlot.Index == GearType::OFFHAND)
+					CompareSlot.Index = GearType::MAINHAND;
+			}
+
 			// Couldn't find similar type, compare with equipped gear
 			if(!CompareSlot.Bag)
 				Player->GetEquippedCompareSlot(RightItem, ae::Input.ModKeyDown(KMOD_CTRL), CompareSlot);
