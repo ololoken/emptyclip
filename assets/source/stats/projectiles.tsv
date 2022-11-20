@@ -7,3 +7,4 @@ fireball	textures/projectiles/fireball.png		fireball_smoke0	textures/lights/circ
 fireball_large	textures/projectiles/fireball.png		fireball_smoke1	textures/lights/circle.png	fireball	2	0.5	1	0
 bone	textures/projectiles/bone.png					0	0.25	0.5	7
 bone_large	textures/projectiles/bone.png					0	0.5	1	5
+rock	textures/projectiles/rock.png					0	0.3	1	2
