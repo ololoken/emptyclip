@@ -828,6 +828,9 @@ void _Player::DropItem(const _Slot &Slot, const glm::vec2 &DropPosition) {
 
 // Sort inventory
 void _Player::SortInventory() {
+	if(!CanSort())
+		return;
+
 	ae::Audio.PlaySound(ae::Assets.Sounds["game_click0.ogg"]);
 
 	// Add items to sortable array

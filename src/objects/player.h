@@ -112,6 +112,7 @@ class _Player : public _Entity {
 		bool CanDropItems() const { return !Reloading && !SwitchingWeapons && !SwitchingOutfits; }
 		bool CanDragItems() const { return !Reloading && !SwitchingWeapons && !SwitchingOutfits; }
 		bool CanEquipItems() const { return !Reloading && !SwitchingWeapons && !SwitchingOutfits; }
+		bool CanSort() const { return !Reloading && !SwitchingWeapons && !SwitchingOutfits; }
 		bool CanSwitchWeapons() const { return !SwitchingOutfits && !SwitchingWeapons && !Reloading && !IsMeleeAttacking() && !IsDying(); }
 		bool CanSwitchOutfits() const { return !SwitchingOutfits && !SwitchingWeapons && !Reloading && !IsMeleeAttacking() && !IsDying(); }
 		bool CanReload() const;
