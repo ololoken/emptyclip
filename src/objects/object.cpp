@@ -308,6 +308,7 @@ void _Object::CheckProjectileCollisions() {
 
 	// Check wall hits
 	glm::vec2 HitPosition;
+	bool HitWall = false;
 	if(Map->ResolveTileCollisions(Position, Radius, _Tile::BULLET, PushOut, Bounces, HitPosition, Velocity)) {
 		if(Bounces <= 0) {
 
@@ -334,6 +335,8 @@ void _Object::CheckProjectileCollisions() {
 			if(OwnerEntity->Type == _Object::PLAYER)
 				GridTypes.push_back(GRID_PLAYER);
 		}
+
+		HitWall = true;
 	}
 	else {
 
@@ -391,8 +394,11 @@ void _Object::CheckProjectileCollisions() {
 
 	// Hit
 	if(!Active) {
-		if(Bounces != -1)
+		if(Bounces != -1) {
 			ae::Audio.PlaySound(GetSound(SOUND_EXPLODE), ae::_SoundSettings(glm::vec3(Position.x, 0.0f, Position.y), 1.0f, AUDIO_REFERENCE_DISTANCE, AUDIO_MAX_DISTANCE, AUDIO_ROLL_OFF));
+			if(!HitWall)
+				ae::Audio.PlaySound(GetSound(SOUND_PROJECTILEHIT), ae::_SoundSettings(glm::vec3(Position.x, 0.0f, Position.y), 1.0f, AUDIO_REFERENCE_DISTANCE, AUDIO_MAX_DISTANCE, AUDIO_ROLL_OFF));
+		}
 
 		// Explode
 		if(ProjectileExplosionSize == 0.0f)

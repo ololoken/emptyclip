@@ -1,32 +1,32 @@
-id	fire	explode	triggerdown	ricochet	empty	reload	hit	take_damage	death	move
-player	player_swing0.ogg						player_punch0.ogg	player_hit0.ogg,player_hit1.ogg,player_hit2.ogg		player_move0.ogg
-knife	knife_fire0.ogg						knife_hit0.ogg			
-spear	spear_fire0.ogg						knife_hit0.ogg			
-pistol	pistol_fire0.ogg			pistol_ricochet0.ogg	pistol_empty0.ogg	pistol_reload0.ogg				
-plasma	plasma_fire0.ogg				pistol_empty0.ogg	pistol_reload0.ogg				
-revolver	revolver_fire0.ogg			pistol_ricochet0.ogg	pistol_empty0.ogg	revolver_reload0.ogg				
-shotgun	shotgun_fire0.ogg			pistol_ricochet0.ogg	pistol_empty0.ogg	shotgun_reload0.ogg				
-boltrifle	boltrifle_fire0.ogg			pistol_ricochet0.ogg	pistol_empty0.ogg	shotgun_reload0.ogg				
-rifle	rifle_fire0.ogg			pistol_ricochet0.ogg	pistol_empty0.ogg	pistol_reload0.ogg				
-carbine	carbine_fire0.ogg			pistol_ricochet0.ogg	pistol_empty0.ogg	shotgun_reload0.ogg				
-sniper	sniper_fire0.ogg			pistol_ricochet0.ogg	pistol_empty0.ogg	pistol_reload0.ogg				
-minigun	rifle_fire1.ogg			pistol_ricochet0.ogg	pistol_empty0.ogg	pistol_reload0.ogg				
-rocketlauncher	rocketlauncher_fire0.ogg	rocket_explode0.ogg				rocketlauncher_reload0.ogg				
-crossbow	crossbow_fire0.ogg	bolt_hit0.ogg				crossbow_reload0.ogg				
-smg	smg_fire0.ogg			pistol_ricochet0.ogg	pistol_empty0.ogg	pistol_reload0.ogg				
-zombie	zombie_attack0.ogg								zombie_die0.ogg	zombie_move0.ogg
-dog	dog_attack0.ogg,dog_attack1.ogg								dog_die0.ogg,dog_die1.ogg	dog_move0.ogg
-bat	bat_attack0.ogg,bat_attack1.ogg									
-spider							spider_attack0.ogg			
-skeleton	player_swing0.ogg						player_punch0.ogg		skeleton_die0.ogg	skeleton_move0.ogg
-beast	player_swing0.ogg						monster_punch0.ogg	monster_hit0.ogg	monster_hit0.ogg	beast_move0.ogg
-fighter	player_swing0.ogg						player_punch0.ogg		zombie_die0.ogg	player_move0.ogg
-gunner	rifle_fire0.ogg			pistol_ricochet0.ogg					zombie_die0.ogg	player_move0.ogg
-wisp	wisp_attack0.ogg								wisp_die0.ogg	
-demon	demon_attack0.ogg								demon_die0.ogg	
-alien	plasma_fire0.ogg								demon_die0.ogg	player_move0.ogg
-bot	player_swing0.ogg						player_punch0.ogg	bot_hit0.ogg	bot_die0.ogg	bot_move0.ogg
-crate									crate_die0.ogg	
-bone		player_punch0.ogg								
-wrench		bot_hit0.ogg								
-rock		monster_punch0.ogg								
+id	fire	explode	triggerdown	ricochet	empty	reload	hit	projectile_hit	take_damage	death	move
+player	player_swing0.ogg						player_punch0.ogg		player_hit0.ogg,player_hit1.ogg,player_hit2.ogg		player_move0.ogg
+knife	knife_fire0.ogg						knife_hit0.ogg				
+spear	spear_fire0.ogg						knife_hit0.ogg				
+pistol	pistol_fire0.ogg			pistol_ricochet0.ogg	pistol_empty0.ogg	pistol_reload0.ogg					
+plasma	plasma_fire0.ogg				pistol_empty0.ogg	pistol_reload0.ogg					
+revolver	revolver_fire0.ogg			pistol_ricochet0.ogg	pistol_empty0.ogg	revolver_reload0.ogg					
+shotgun	shotgun_fire0.ogg			pistol_ricochet0.ogg	pistol_empty0.ogg	shotgun_reload0.ogg					
+boltrifle	boltrifle_fire0.ogg			pistol_ricochet0.ogg	pistol_empty0.ogg	shotgun_reload0.ogg					
+rifle	rifle_fire0.ogg			pistol_ricochet0.ogg	pistol_empty0.ogg	pistol_reload0.ogg					
+carbine	carbine_fire0.ogg			pistol_ricochet0.ogg	pistol_empty0.ogg	shotgun_reload0.ogg					
+sniper	sniper_fire0.ogg			pistol_ricochet0.ogg	pistol_empty0.ogg	pistol_reload0.ogg					
+minigun	rifle_fire1.ogg			pistol_ricochet0.ogg	pistol_empty0.ogg	pistol_reload0.ogg					
+rocketlauncher	rocketlauncher_fire0.ogg	rocket_explode0.ogg				rocketlauncher_reload0.ogg					
+crossbow	crossbow_fire0.ogg	bolt_hit0.ogg				crossbow_reload0.ogg					
+smg	smg_fire0.ogg			pistol_ricochet0.ogg	pistol_empty0.ogg	pistol_reload0.ogg					
+zombie	zombie_attack0.ogg									zombie_die0.ogg	zombie_move0.ogg
+dog	dog_attack0.ogg,dog_attack1.ogg									dog_die0.ogg,dog_die1.ogg	dog_move0.ogg
+bat	bat_attack0.ogg,bat_attack1.ogg										
+spider							spider_attack0.ogg				
+skeleton	player_swing0.ogg						player_punch0.ogg			skeleton_die0.ogg	skeleton_move0.ogg
+beast	player_swing0.ogg						monster_punch0.ogg		monster_hit0.ogg	monster_hit0.ogg	beast_move0.ogg
+fighter	player_swing0.ogg						player_punch0.ogg			zombie_die0.ogg	player_move0.ogg
+gunner	rifle_fire0.ogg			pistol_ricochet0.ogg						zombie_die0.ogg	player_move0.ogg
+wisp	wisp_attack0.ogg									wisp_die0.ogg	
+demon	demon_attack0.ogg									demon_die0.ogg	
+alien	plasma_fire0.ogg									demon_die0.ogg	player_move0.ogg
+bot	player_swing0.ogg						player_punch0.ogg		bot_hit0.ogg	bot_die0.ogg	bot_move0.ogg
+crate										crate_die0.ogg	
+bone								player_punch0.ogg			
+wrench								bot_hit0.ogg			
+rock		rock_explode0.ogg									
