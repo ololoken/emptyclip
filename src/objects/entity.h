@@ -112,11 +112,11 @@ class _Entity : public _Object {
 		float DamageResist{0.0f};
 
 		// States
-		int WalkingAnimation{ANIMATION_MOVE};
-		int MeleeAnimation{ANIMATION_ATTACK};
-		int ShootingOnehandAnimation{ANIMATION_ATTACK};
-		int ShootingTwohandAnimation{ANIMATION_ATTACK};
-		int DyingAnimation{ANIMATION_DIE};
+		size_t WalkingAnimation{ANIMATION_MOVE};
+		size_t MeleeAnimation{ANIMATION_ATTACK};
+		size_t ShootingOnehandAnimation{ANIMATION_ATTACK};
+		size_t ShootingTwohandAnimation{ANIMATION_ATTACK};
+		size_t DyingAnimation{ANIMATION_DIE};
 		double InvulnerableTimer{0.0};
 		double CombatTimer{GAME_COMBAT_TIMER};
 		double PoisonTimer{0.0};
