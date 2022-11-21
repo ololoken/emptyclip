@@ -69,7 +69,10 @@ inline bool CompareItem(_Item *First, _Item *Second) {
 					if(First->Attributes.at("bonus").Float == Second->Attributes.at("bonus").Float)
 						return First->Quality > Second->Quality;
 
-					return First->Attributes.at("bonus").Float > Second->Attributes.at("bonus").Float;
+					if(First->Template.Attributes.at("negative").Int)
+						return First->Attributes.at("bonus").Float < Second->Attributes.at("bonus").Float;
+					else
+						return First->Attributes.at("bonus").Float > Second->Attributes.at("bonus").Float;
 				}
 
 				return First->GetModType() < Second->GetModType();
