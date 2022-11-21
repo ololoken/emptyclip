@@ -584,7 +584,8 @@ void _Entity::OnAttack(_Entity *Victim, const _Hit &Hit) {
 	if(!Victim->IsCrate())
 		CombatTimer = 0.0;
 
-	ae::Audio.PlaySound(GetSound(SOUND_HIT, AttackRequestType), ae::_SoundSettings(glm::vec3(Hit.Position.x, 0.0f, Hit.Position.y), 1.0f, AUDIO_REFERENCE_DISTANCE, AUDIO_MAX_DISTANCE, AUDIO_ROLL_OFF));
+	if(!Projectiles[WEAPONATTACK_MAIN])
+		ae::Audio.PlaySound(GetSound(SOUND_HIT, AttackRequestType), ae::_SoundSettings(glm::vec3(Hit.Position.x, 0.0f, Hit.Position.y), 1.0f, AUDIO_REFERENCE_DISTANCE, AUDIO_MAX_DISTANCE, AUDIO_ROLL_OFF));
 }
 
 // Called when an entity is hit

@@ -5,6 +5,7 @@ rocket	textures/projectiles/rocket.png	rocketlauncher	rocket_smoke0	textures/lig
 bolt	textures/projectiles/bolt.png	crossbow				0	0.25	0.5	0
 fireball	textures/projectiles/fireball.png		fireball_smoke0	textures/lights/circle.png	fireball	1	0.25	0.5	0
 fireball_large	textures/projectiles/fireball.png		fireball_smoke1	textures/lights/circle.png	fireball	2	0.5	1	0
-bone	textures/projectiles/bone.png					0	0.25	0.5	7
-bone_large	textures/projectiles/bone.png					0	0.5	1	5
-rock	textures/projectiles/rock.png					0	0.3	1	2
+bone	textures/projectiles/bone.png	bone				0	0.25	0.5	7
+bone_large	textures/projectiles/bone.png	bone				0	0.5	1	5
+rock	textures/projectiles/rock.png	rock				0	0.3	1	2
+wrench	textures/items/usable_wrench.png	wrench				0	0.25	0.5	7
