@@ -1862,13 +1862,19 @@ void _EditorState::UpdateEventID(int Type, const std::string &ID) {
 
 	switch(Type) {
 		case EDITINPUT_ITEMID:
-			if(SelectedEvent->Type == EVENT_TEXT) {
-				if(ID.empty() || Stats.Text.find(ID) != Stats.Text.end())
-					SelectedEvent->ItemID = ID;
-			}
-			else {
-				if(ID.empty() || Stats.Objects.find(ID) != Stats.Objects.end())
-					SelectedEvent->ItemID = ID;
+			switch(SelectedEvent->Type) {
+				case EVENT_TEXT:
+					if(ID.empty() || Stats.Text.find(ID) != Stats.Text.end())
+						SelectedEvent->ItemID = ID;
+				break;
+				case EVENT_LIGHT:
+					if(ID.empty() || ae::Assets.Colors.find(ID) != ae::Assets.Colors.end())
+						SelectedEvent->ItemID = ID;
+				break;
+				default:
+					if(ID.empty() || Stats.Objects.find(ID) != Stats.Objects.end())
+						SelectedEvent->ItemID = ID;
+				break;
 			}
 		break;
 		case EDITINPUT_MONSTERID:
