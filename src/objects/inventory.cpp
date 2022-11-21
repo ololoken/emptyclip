@@ -117,7 +117,7 @@ void _Inventory::UpdateTypeCount() {
 				continue;
 			}
 
-			size_t IconType = (size_t)Item->GetIconType();
+			size_t IconType = Item->GetIconType();
 			Bag.TypeCount[IconType]++;
 			if(Bag.TypeCount[IconType] > HighestCount) {
 				HighestCount = Bag.TypeCount[IconType];

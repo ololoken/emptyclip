@@ -35,7 +35,7 @@ enum ModType {
 	MOD_HANDLING,
 	MOD_ATTACKSPEED,
 	MOD_RELOADSPEED,
-	MOD_MAXROUNDS,
+	MOD_MAXROUNDSPLUS,
 	MOD_DAMAGEBLOCK,
 	MOD_DAMAGERESIST,
 	MOD_MOVESPEED,
@@ -50,7 +50,7 @@ enum ModType {
 	MOD_PENETRATION,
 	MOD_BOUNCE,
 	MOD_RELOADAMOUNT,
-	MOD_MAXROUNDSPLUS,
+	MOD_MAXROUNDS,
 	MOD_CRITCHANCE,
 	MOD_SPREAD,
 	MOD_EXPLOSION,
@@ -126,7 +126,7 @@ class _Item : public _Object {
 		float GetMaxMods(bool Round) const;
 		int GetModType() const;
 		bool IsChangeMod() const;
-		int GetIconType() const;
+		size_t GetIconType() const;
 
 		int UpdateCount(int Amount) { Count += Amount; return Count; }
 

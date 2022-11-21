@@ -4,7 +4,7 @@ mod_accuracy	Accuracy Mod	textures/items/mod_accuracy.png	1	2	0	3	0	0	1	0	20	0
 mod_handling	Handling Mod	textures/items/mod_handling.png	1	3	0	3	0	0	1	0	20	0
 mod_attackspeed	Attack Speed Mod	textures/items/mod_attackspeed.png	1	4	0	3	0	0	1	0	20	0
 mod_reloadspeed	Reload Speed Mod	textures/items/mod_reloadspeed.png	1	5	0	3	0	0	1	0	20	0
-mod_maxrounds	Max Rounds Mod	textures/items/mod_maxrounds.png	1	6	0	3	0	0	1	0	20	0
+mod_maxroundsplus	Max Rounds Mod	textures/items/mod_maxroundsplus.png	1	6	0	3	0	0	0	0	1	0
 mod_damageblock	Damage Block Mod	textures/items/mod_damageblock.png	2	7	0	4	0	0	0	0	0	0
 mod_damageresist	Damage Resist Mod	textures/items/mod_damageresist.png	2	8	0	4	0	0	1	0	5	0
 mod_movespeed	Move Speed Mod	textures/items/mod_movespeed.png	2	9	0	4	0	0	1	0	5	0
@@ -19,7 +19,7 @@ mod_heavydamage	Heavy Damage Mod	textures/items/mod_heavydamage.png	2	17	0	4	5	0
 mod_penetration	Penetration Mod	textures/items/mod_penetration.png	3	18	0	3	0	0	0	0	1	0
 mod_bounce	Bounce Mod	textures/items/mod_bounce.png	3	19	0	3	0	0	0	0	1	0
 mod_reloadamount	Reload Amount Mod	textures/items/mod_reloadamount.png	3	20	0	3	0	0	0	0	1	0
-mod_maxroundsplus	Max Rounds Mod	textures/items/mod_maxroundsplus.png	3	21	0	3	0	0	0	0	1	0
+mod_maxrounds	Max Rounds Mod	textures/items/mod_maxrounds.png	3	21	0	3	0	0	1	0	20	0
 mod_critchance	Critical Hit Chance Mod	textures/items/mod_critchance.png	3	22	0	3	0	0	1	0	5	0
 mod_spread	Spread Mod	textures/items/mod_spread.png	3	23	0	3	0	0	1	1	20	0
 mod_explosion	Explosion Size Mod	textures/items/mod_explosion.png	3	24	0	3	0	0	1	0	20	0

@@ -666,7 +666,7 @@ void _Item::RecalculateStats() {
 			Attributes["penetration_damage"].Float = std::clamp(Template.Attributes.at("penetration_damage").Float * QualityFactor, 0.0f, 1.0f);
 			Attributes["bounces"].Float = Bonus[MOD_BOUNCE];
 			Attributes["crit_chance"].Float = std::clamp(Template.Attributes.at("crit_chance").Float * QualityFactor + Bonus[MOD_CRITCHANCE], 0.0f, 100.0f);
-			Attributes["rounds"].Float = (Template.Attributes.at("rounds").Float + Bonus[MOD_MAXROUNDSPLUS]) * GetQualityBonusMultiplier(MOD_MAXROUNDS);
+			Attributes["rounds"].Float = Template.Attributes.at("rounds").Float * GetQualityBonusMultiplier(MOD_MAXROUNDS) + Bonus[MOD_MAXROUNDSPLUS];
 
 			if(Bonus[MOD_SEMIAUTO]) {
 				Attributes["fire_rate"].Int = 0;
@@ -825,6 +825,10 @@ bool _Item::ModCompatible(_Item *Mod, bool CheckCount) const {
 			if(Template.Attributes.at("rounds").Float == 0.0f && (ModType == MOD_MAXROUNDS || ModType == MOD_MAXROUNDSPLUS || ModType == MOD_RELOADSPEED || ModType == MOD_RELOADAMOUNT || ModType == MOD_HANDLING))
 				return false;
 
+			// Max rounds doesn't affect "fire all rounds" weapons
+			if(ModType == MOD_MAXROUNDS && Template.Attributes.at("fire_allrounds").Int)
+				return false;
+
 			// Reload amount only affects manual reload weapons
 			if(ModType == MOD_RELOADAMOUNT && !Template.Attributes.at("reload_amount").Float)
 				return false;
@@ -945,7 +949,7 @@ bool _Item::IsChangeMod() const {
 }
 
 // Determine the bag icon for an item
-int _Item::GetIconType() const {
+size_t _Item::GetIconType() const {
 
 	switch(Type) {
 		case _Object::WEAPON:
@@ -1157,7 +1161,7 @@ std::string _Item::ModTypeToString(int ModType) const {
 			return "Move Speed";
 		break;
 		case MOD_MAXROUNDSPLUS:
-			return "Max Base Rounds";
+			return "Max Rounds";
 		break;
 		case MOD_EXPLOSION:
 			return "Explosion Size";
