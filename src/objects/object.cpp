@@ -49,7 +49,7 @@ void _Object::Update(double FrameTime) {
 			Position += Velocity * (float)FrameTime;
 			Rotation += RotationSpeed;
 			if(Template.ParticleTemplate)
-				PlayState.GenerateProjectileEffects(Template.ParticleTemplate, Position);
+				PlayState.GenerateProjectileEffects(Template.ParticleTemplate, Position, Color);
 			CheckProjectileCollisions();
 		} break;
 	}

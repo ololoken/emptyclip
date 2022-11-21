@@ -153,6 +153,8 @@ const  float        OBJECT_Z                             =  0.3f;
 const  int          OBJECT_MAX_LEVEL                     =  1000;
 const  float        OBJECT_MAX_SPEED                     =  15.0f;
 const  int          OBJECT_MAX_RENDERLIST                =  10;
+//     Projectiles
+const  float        PROJECTILE_MIN_ALPHA                 =  0.35f;
 //     AI
 const  double       AI_REACTION_TIME_MIN                 =  GAME_TIMESTEP;
 const  double       AI_REACTION_TIME_MAX                 =  0.3;

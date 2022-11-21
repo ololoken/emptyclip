@@ -1274,6 +1274,9 @@ void _PlayState::ResolveAttack(_Entity *Attacker, int GridType) {
 			Projectile->ProjectileExplosionSize = Attacker->ExplosionSize[Attacker->AttackRequestType];
 			Projectile->ProjectileForce = Attacker->Force[Attacker->AttackRequestType];
 			Projectile->Bounces = Attacker->StartingBounces[Attacker->AttackRequestType];
+			Projectile->Color = Attacker->Color;
+			if(!Projectile->LightTexture)
+				Projectile->Color.a = std::max(PROJECTILE_MIN_ALPHA, Projectile->Color.a);
 			if(Attacker->AttackWasSteady)
 				Projectile->ProjectileCritChance *= PLAYER_STEADY_CRIT_FACTOR;
 
@@ -1297,7 +1300,7 @@ void _PlayState::ResolveAttack(_Entity *Attacker, int GridType) {
 				// Generate tracer particle
 				_ParticleTemplate *Template = &GameAssets.Particles["tracer0"];
 				glm::vec2 ParticleStart = Attacker->Position + glm::rotate(glm::vec2(0, -Template->Size.y * 0.5f) + Attacker->WeaponOffset[Attacker->MainWeaponType], glm::radians(ShotDirection));
-				_Particle *Tracer = new _Particle(_ParticleSpawn(Template, glm::vec2(0), ParticleStart, OBJECT_Z, ShotDirection));
+				_Particle *Tracer = new _Particle(_ParticleSpawn(Template, COLOR_WHITE, glm::vec2(0), ParticleStart, OBJECT_Z, ShotDirection));
 				float Distance = glm::length(Hits.front().Position - Attacker->Position) - Template->Size.y;
 				Tracer->Lifetime = Distance * Template->VelocityScale.y * GAME_FPS;
 				Particles->Add(Tracer);
@@ -1510,7 +1513,7 @@ int _PlayState::PickupObject(_Item *Item, bool Manual) {
 
 			// Add particle
 			glm::vec2 ParticlePosition(Player->Position.x, Player->Position.y - 0.5);
-			_Particle *Particle = new _Particle(_ParticleSpawn(GameAssets.GetParticleTemplate("text0"), glm::vec2(0), ParticlePosition, OBJECT_Z, 0));
+			_Particle *Particle = new _Particle(_ParticleSpawn(GameAssets.GetParticleTemplate("text0"), COLOR_WHITE, glm::vec2(0), ParticlePosition, OBJECT_Z, 0));
 			Particle->Text = ParticleText;
 			Particle->Color = ParticleColor;
 			Particles->Add(Particle);
@@ -1882,7 +1885,7 @@ void _PlayState::CheckEvents(const _Entity *Entity) {
 
 				if(Event->Tiles.size() > 0) {
 					glm::vec2 NewPosition(Event->Tiles[0].Coord.x + 0.5f, Event->Tiles[0].Coord.y + 0.5f);
-					Particles->Create(_ParticleSpawn(GameAssets.GetParticleTemplate(Event->ParticleID), glm::vec2(0), NewPosition, OBJECT_Z, 0));
+					Particles->Create(_ParticleSpawn(GameAssets.GetParticleTemplate(Event->ParticleID), COLOR_WHITE, glm::vec2(0), NewPosition, OBJECT_Z, 0));
 					Player->WarpPosition(NewPosition);
 				}
 			} break;
@@ -1906,7 +1909,7 @@ void _PlayState::CheckEvents(const _Entity *Entity) {
 				int Damage = Stats.Progressions[(size_t)Player->Progression].LavaDamage;
 				Player->UpdateHealth(-Damage);
 				GenerateDamageText(Player->Position, Damage, false, true);
-				Particles->Create(_ParticleSpawn(GameAssets.GetParticleTemplate(Event->ParticleID), glm::vec2(0), Player->Position, OBJECT_Z, 0));
+				Particles->Create(_ParticleSpawn(GameAssets.GetParticleTemplate(Event->ParticleID), COLOR_WHITE, glm::vec2(0), Player->Position, OBJECT_Z, 0));
 				Player->LavaTouches++;
 			} break;
 			default:
@@ -1967,7 +1970,7 @@ void _PlayState::UpdateEvents(double FrameTime) {
 
 					// Spawn particles
 					if(Event->ParticleID.size())
-						Particles->Create(_ParticleSpawn(GameAssets.GetParticleTemplate(Event->ParticleID), glm::vec2(0), Position, OBJECT_Z, 0));
+						Particles->Create(_ParticleSpawn(GameAssets.GetParticleTemplate(Event->ParticleID), COLOR_WHITE, glm::vec2(0), Position, OBJECT_Z, 0));
 				}
 
 				Decrement = true;
@@ -2075,19 +2078,19 @@ void _PlayState::RemoveMonster(_Monster *Monster) {
 void _PlayState::GenerateHitEffects(_Entity *Attacker, const int Type, const _Hit &Hit, bool Death, float Rotation, bool CreateWallDecal) {
 	if(Attacker && Type == -1) {
 		glm::vec2 ParticlePosition = Attacker->Position + glm::rotate(Attacker->WeaponOffset[Attacker->MainWeaponType], glm::radians(Rotation));
-		Particles->Create(_ParticleSpawn(Attacker->GetParticle(PARTICLE_FIRE), glm::vec2(0), ParticlePosition, OBJECT_Z, Rotation));
-		Particles->Create(_ParticleSpawn(Attacker->GetParticle(PARTICLE_SMOKE), glm::vec2(0), ParticlePosition, OBJECT_Z, 0));
+		Particles->Create(_ParticleSpawn(Attacker->GetParticle(PARTICLE_FIRE), COLOR_WHITE, glm::vec2(0), ParticlePosition, OBJECT_Z, Rotation));
+		Particles->Create(_ParticleSpawn(Attacker->GetParticle(PARTICLE_SMOKE), COLOR_WHITE, glm::vec2(0), ParticlePosition, OBJECT_Z, 0));
 	}
 	else if(Attacker && Type == HIT_WALL) {
-		Particles->Create(_ParticleSpawn(Attacker->GetParticle(PARTICLE_RICOCHET), Hit.Normal, Hit.Position, OBJECT_Z, Rotation));
+		Particles->Create(_ParticleSpawn(Attacker->GetParticle(PARTICLE_RICOCHET), COLOR_WHITE, Hit.Normal, Hit.Position, OBJECT_Z, Rotation));
 		if(CreateWallDecal && Config.WallDecals)
-			Particles->Create(_ParticleSpawn(Attacker->GetParticle(PARTICLE_BULLETHOLE), Hit.Normal, Hit.Position, OBJECT_Z, Rotation));
+			Particles->Create(_ParticleSpawn(Attacker->GetParticle(PARTICLE_BULLETHOLE), COLOR_WHITE, Hit.Normal, Hit.Position, OBJECT_Z, Rotation));
 	}
 	else if(Type == HIT_OBJECT) {
 		glm::vec2 ParticlePosition = _Map::GenerateRandomPointInCircle(0.2f) + Hit.Object->Position;
-		Particles->Create(_ParticleSpawn(Hit.Object->GetParticle(PARTICLE_HIT), Hit.Normal, Hit.Position, OBJECT_Z, Rotation));
+		Particles->Create(_ParticleSpawn(Hit.Object->GetParticle(PARTICLE_HIT), COLOR_WHITE, Hit.Normal, Hit.Position, OBJECT_Z, Rotation));
 		if(Death && Config.FloorDecals)
-			Particles->Create(_ParticleSpawn(Hit.Object->GetParticle(PARTICLE_FLOORDECAL), Hit.Normal, ParticlePosition, ITEM_Z, Rotation));
+			Particles->Create(_ParticleSpawn(Hit.Object->GetParticle(PARTICLE_FLOORDECAL), COLOR_WHITE, Hit.Normal, ParticlePosition, ITEM_Z, Rotation));
 	}
 }
 
@@ -2096,7 +2099,7 @@ void _PlayState::GenerateDamageText(glm::vec2 Position, int Value, bool Crit, bo
 	Position += _Map::GenerateRandomPointInCircle(0.2f);
 
 	// Create particle
-	_Particle *DamageParticle = new _Particle(_ParticleSpawn(GameAssets.GetParticleTemplate("text0"), glm::vec2(0), Position, OBJECT_Z, 0));
+	_Particle *DamageParticle = new _Particle(_ParticleSpawn(GameAssets.GetParticleTemplate("text0"), COLOR_WHITE, glm::vec2(0), Position, OBJECT_Z, 0));
 	DamageParticle->Text = std::to_string(Value);
 
 	// Set color
@@ -2110,7 +2113,7 @@ void _PlayState::GenerateDamageText(glm::vec2 Position, int Value, bool Crit, bo
 
 // Generate explosion particles
 void _PlayState::GenerateExplosion(const _ParticleTemplate *ParticleTemplate, const glm::vec2 &Position, const glm::vec2 &Scale) {
-	if(!Particles->Create(_ParticleSpawn(ParticleTemplate, glm::vec2(0), Position, OBJECT_Z, 0)))
+	if(!Particles->Create(_ParticleSpawn(ParticleTemplate, COLOR_WHITE, glm::vec2(0), Position, OBJECT_Z, 0)))
 		return;
 
 	// Set scale
@@ -2119,8 +2122,8 @@ void _PlayState::GenerateExplosion(const _ParticleTemplate *ParticleTemplate, co
 }
 
 // Generate projectile particle effects
-void _PlayState::GenerateProjectileEffects(const _ParticleTemplate *ParticleTemplate, const glm::vec2 &Position) {
-	Particles->Create(_ParticleSpawn(ParticleTemplate, glm::vec2(0), Position, OBJECT_Z, 0));
+void _PlayState::GenerateProjectileEffects(const _ParticleTemplate *ParticleTemplate, const glm::vec2 &Position, const glm::vec4 &Color) {
+	Particles->Create(_ParticleSpawn(ParticleTemplate, Color, glm::vec2(0), Position, OBJECT_Z, 0));
 }
 
 // Determine if game is paused

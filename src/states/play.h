@@ -75,7 +75,7 @@ class _PlayState : public ae::_State {
 		void GenerateHitEffects(_Entity *Attacker, const int Type, const _Hit &Hit, bool Death, float Rotation, bool CreateWallDecal=true);
 		void GenerateDamageText(glm::vec2 Position, int Value, bool Crit, bool HitPlayer);
 		void GenerateExplosion(const _ParticleTemplate *ParticleTemplate, const glm::vec2 &Position, const glm::vec2 &Scale);
-		void GenerateProjectileEffects(const _ParticleTemplate *ParticleTemplate, const glm::vec2 &Position);
+		void GenerateProjectileEffects(const _ParticleTemplate *ParticleTemplate, const glm::vec2 &Position, const glm::vec4 &Color);
 		void CreateItemDrop(const _Entity *Entity, float DropRate);
 		int PickupObject(_Item *Item, bool Manual);
 		bool ShowMoreInfo();

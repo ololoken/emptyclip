@@ -21,6 +21,7 @@
 #include <vector>
 #include <string>
 #include <glm/vec2.hpp>
+#include <glm/vec4.hpp>
 
 // Forward Declarations
 namespace ae {
@@ -31,8 +32,9 @@ class _Particle;
 struct _ParticleTemplate;
 
 struct _ParticleSpawn {
-	_ParticleSpawn(const _ParticleTemplate *Template, const glm::vec2 &Normal, const glm::vec2 &Position, float PositionZ, float RotationAdjust) :
+	_ParticleSpawn(const _ParticleTemplate *Template, const glm::vec4 &Color, const glm::vec2 &Normal, const glm::vec2 &Position, float PositionZ, float RotationAdjust) :
 		Template(Template),
+		Color(Color),
 		Normal(Normal),
 		Position(Position),
 		PositionZ(PositionZ),
@@ -40,6 +42,7 @@ struct _ParticleSpawn {
 
 	const _ParticleTemplate *Template;
 	std::string Text;
+	glm::vec4 Color;
 	glm::vec2 Normal;
 	glm::vec2 Position;
 	float PositionZ;

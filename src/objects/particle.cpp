@@ -32,7 +32,7 @@ _Particle::_Particle(const _ParticleSpawn &Spawn) :
 	Texture(Spawn.Template->Texture),
 	Font(Spawn.Template->Font),
 	Text(Spawn.Text),
-	Color(Spawn.Template->Color),
+	Color(Spawn.Template->Color * Spawn.Color),
 	AlphaSpeed(Spawn.Template->AlphaSpeed),
 	PositionZ(Spawn.PositionZ),
 	ScaleAspect(Spawn.Template->ScaleAspect) {
