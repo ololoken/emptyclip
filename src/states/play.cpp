@@ -1274,7 +1274,8 @@ void _PlayState::ResolveAttack(_Entity *Attacker, int GridType) {
 			Projectile->ProjectileExplosionSize = Attacker->ExplosionSize[Attacker->AttackRequestType];
 			Projectile->ProjectileForce = Attacker->Force[Attacker->AttackRequestType];
 			Projectile->Bounces = Attacker->StartingBounces[Attacker->AttackRequestType];
-			Projectile->Color = Attacker->Color;
+			if(Attacker->Type != _Object::PLAYER)
+				Projectile->Color = Attacker->Color;
 			if(!Projectile->LightTexture)
 				Projectile->Color.a = std::max(PROJECTILE_MIN_ALPHA, Projectile->Color.a);
 			if(Attacker->AttackWasSteady)
