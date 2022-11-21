@@ -167,7 +167,7 @@ const char *_Inventory::GetBackpackIcon(size_t BagIndex) {
 }
 
 // Find suitable bag for item based on type
-size_t _Inventory::FindSuitableBackpackBag(const _Item *Item, size_t StartIndex) {
+size_t _Inventory::FindSuitableBackpackBag(const _Item *Item, size_t StartIndex, bool SkipStartIndex) {
 	if(!Item)
 		return StartIndex;
 
@@ -179,7 +179,9 @@ size_t _Inventory::FindSuitableBackpackBag(const _Item *Item, size_t StartIndex)
 	_Container &Container = Containers[(size_t)BagType::BACKPACK];
 	for(size_t i = 0; i < Container.size(); i++) {
 		_Bag &Bag = Container[BagIndex];
-		if(!Bag.Full) {
+
+		// Skip full bags or starting index if necessary
+		if(!Bag.Full && (!SkipStartIndex || (SkipStartIndex && BagIndex != StartIndex))) {
 
 			// Keep track of first empty bag
 			if(FirstEmptyIndex == (size_t)-1)

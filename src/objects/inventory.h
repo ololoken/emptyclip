@@ -99,7 +99,7 @@ class _Inventory  {
 		int GetItemCount(BagType Type, size_t BagIndex);
 		void UpdateTypeCount();
 		const char *GetBackpackIcon(size_t BagIndex);
-		size_t FindSuitableBackpackBag(const _Item *Item, size_t StartIndex);
+		size_t FindSuitableBackpackBag(const _Item *Item, size_t StartIndex, bool SkipStartIndex=false);
 		void FindSimilarGearItem(const _Item *GearItem, bool SkipBackpack, _Slot &Slot);
 
 		std::vector<_Container> Containers;
