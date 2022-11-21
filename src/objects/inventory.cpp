@@ -167,8 +167,12 @@ const char *_Inventory::GetBackpackIcon(size_t BagIndex) {
 }
 
 // Find suitable bag for item based on type
-size_t _Inventory::FindSuitableBackpackBag(const _Item *Item, size_t StartIndex, bool SkipStartIndex) {
+size_t _Inventory::FindSuitableBackpackBag(const _Item *Item, size_t StartIndex, bool SkipStartIndex, bool PreferStartIndex) {
 	if(!Item)
+		return StartIndex;
+
+	_Container &Container = Containers[(size_t)BagType::BACKPACK];
+	if(PreferStartIndex && !Container[StartIndex].Full)
 		return StartIndex;
 
 	size_t BagIndex = StartIndex;
@@ -176,7 +180,6 @@ size_t _Inventory::FindSuitableBackpackBag(const _Item *Item, size_t StartIndex,
 	size_t DefaultIndex = (size_t)-1;
 	size_t FirstEmptyIndex = (size_t)-1;
 
-	_Container &Container = Containers[(size_t)BagType::BACKPACK];
 	for(size_t i = 0; i < Container.size(); i++) {
 		_Bag &Bag = Container[BagIndex];
 
@@ -365,6 +368,16 @@ size_t _Bag::FindSimilarGearItem(const _Item *GearItem) {
 			continue;
 
 		if(Item->Template.ID == GearItem->Template.ID)
+			return i;
+	}
+
+	return (size_t)-1;
+}
+
+// Find an empty slot in the bag
+size_t _Bag::FindEmptySlot() {
+	for(size_t i = 0; i < Slots.size(); i++) {
+		if(!Slots[i])
 			return i;
 	}
 

@@ -48,6 +48,7 @@ struct _Bag {
 
 	int GetItemCount() const;
 	size_t FindSimilarGearItem(const _Item *GearItem);
+	size_t FindEmptySlot();
 
 	std::vector<_Item *> Slots;
 	std::vector<int> TypeCount;
@@ -99,7 +100,7 @@ class _Inventory  {
 		int GetItemCount(BagType Type, size_t BagIndex);
 		void UpdateTypeCount();
 		const char *GetBackpackIcon(size_t BagIndex);
-		size_t FindSuitableBackpackBag(const _Item *Item, size_t StartIndex, bool SkipStartIndex=false);
+		size_t FindSuitableBackpackBag(const _Item *Item, size_t StartIndex, bool SkipStartIndex, bool PreferStartIndex);
 		void FindSimilarGearItem(const _Item *GearItem, bool SkipBackpack, _Slot &Slot);
 
 		std::vector<_Container> Containers;

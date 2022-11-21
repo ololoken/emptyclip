@@ -221,7 +221,7 @@ void _HUD::HandleMouseButton(const ae::_MouseEvent &MouseEvent) {
 						// Find better bag
 						if(HitSlot.IsValidIndex() && HitSlot.GetItem()) {
 							_Item *Item = HitSlot.GetItem();
-							size_t BagIndex = Player->Inventory->FindSuitableBackpackBag(Item, Player->ActiveBackpack, true);
+							size_t BagIndex = Player->Inventory->FindSuitableBackpackBag(Item, Player->ActiveBackpack, true, true);
 							if(BagIndex != Player->ActiveBackpack) {
 								int AddResult = Player->AddItemToBackpack(Item, BagIndex, true);
 								switch(AddResult) {
@@ -393,23 +393,37 @@ void _HUD::HandleMouseButton(const ae::_MouseEvent &MouseEvent) {
 
 					// Unequip item
 					if(HitSlot.Bag->Gear) {
-						if(Player->AddItemToBackpack(HitSlot.GetItem(), Player->ActiveBackpack)) {
-							Player->PlayEquipSound(HitSlot.Index);
-							HitSlot.RemoveItem();
 
-							Player->RecalculateStats();
-						}
+						// Find bag
+						size_t BagIndex = Player->Inventory->FindSuitableBackpackBag(HitSlot.GetItem(), Player->ActiveBackpack, false, true);
+
+						// Find empty slot
+						_Slot EmptySlot;
+						EmptySlot.Bag = &Player->Inventory->Containers[(size_t)BagType::BACKPACK][BagIndex];
+						EmptySlot.Index = EmptySlot.Bag->FindEmptySlot();
+						if(EmptySlot.IsValidIndex())
+							Player->SwapInventory(HitSlot, EmptySlot);
 						else
-							ShowTextMessage(HUD_INVENTORYFULLMESSAGE, HUD_INVENTORYFULLTIME);
+							ShowTextMessage(HUD_BACKPACKFULLMESSAGE, HUD_INVENTORYFULLTIME);
 					}
 					// Equip item from backpack
 					else {
 						switch(HitSlot.GetItem()->Type) {
 							case _Object::WEAPON: {
-								if(HitSlot.GetItem()->IsMelee())
+								if(HitSlot.GetItem()->IsMelee()) {
 									Player->SwapInventory(HitSlot, _Slot(&Player->GetActiveOutfitBag(), GearType::MELEE));
-								else
-									Player->SwapInventory(HitSlot, _Slot(&Player->GetActiveOutfitBag(), ae::Input.ModKeyDown(KMOD_CTRL) ? GearType::OFFHAND : GearType::MAINHAND));
+								}
+								else {
+									_Slot EquipSlot;
+									EquipSlot.Bag = &Player->GetActiveOutfitBag();
+									if(!Player->GetMainHand())
+										EquipSlot.Index = GearType::MAINHAND;
+									else if(!Player->GetOffHand())
+										EquipSlot.Index = GearType::OFFHAND;
+									else
+										EquipSlot.Index = ae::Input.ModKeyDown(KMOD_CTRL) ? GearType::OFFHAND : GearType::MAINHAND;
+									Player->SwapInventory(HitSlot, EquipSlot);
+								}
 							} break;
 							case _Object::ARMOR:
 								Player->SwapInventory(HitSlot, _Slot(&Player->GetActiveOutfitBag(), GearType::ARMOR));
@@ -780,7 +794,7 @@ void _HUD::Render(bool FullMap) {
 		// Compare cursor item with hover item
 		if(CursorItem) {
 			ShowHelp = false;
-			if(HoverItem && CursorItem->Type == HoverItem->Type) {
+			if(HoverItem && CursorItem->IsComparable(HoverItem)) {
 				LeftItem = HoverItem;
 				RightItem = CursorItem;
 			}

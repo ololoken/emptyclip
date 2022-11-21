@@ -948,6 +948,17 @@ bool _Item::IsChangeMod() const {
 	return Template.Attributes.at("class").Int == MODCLASS_CHANGE;
 }
 
+// Determine if the item can be compared with another item
+bool _Item::IsComparable(const _Item *CompareItem) const {
+	if(Type != CompareItem->Type)
+		return false;
+
+	if((IsMelee() && !CompareItem->IsMelee()) || (CompareItem->IsMelee() && !IsMelee()))
+		return false;
+
+	return true;
+}
+
 // Determine the bag icon for an item
 size_t _Item::GetIconType() const {
 

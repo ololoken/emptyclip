@@ -126,6 +126,7 @@ class _Item : public _Object {
 		float GetMaxMods(bool Round) const;
 		int GetModType() const;
 		bool IsChangeMod() const;
+		bool IsComparable(const _Item *CompareItem) const;
 		size_t GetIconType() const;
 
 		int UpdateCount(int Amount) { Count += Amount; return Count; }
