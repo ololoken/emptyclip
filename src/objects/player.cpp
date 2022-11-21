@@ -324,7 +324,7 @@ void _Player::RecalculateStats(bool SoftReset) {
 			MeleeScale[i].x = Weapons[i]->Attributes.at("scale_x").Float;
 			MeleeScale[i].y = Weapons[i]->Attributes.at("scale_y").Float;
 			MeleeOffset[i] = Weapons[i]->Attributes.at("melee_offset").Float;
-			MeleeSwitch[i] = Weapons[i]->Attributes.at("melee_switch").Int;
+			MeleeSwitchOffset[i] = Weapons[i]->Attributes.at("melee_switch").Int;
 			Push[i] = Weapons[i]->Attributes.at("push").Float;
 			Force[i] = Weapons[i]->Attributes.at("force").Float;
 		}
@@ -1554,8 +1554,12 @@ _Item *_Player::GetArmor() const {
 void _Player::RequestAttack(int RequestType) {
 	AttackRequested = true;
 	AttackRequestType = RequestType;
-	if(MeleeSwitch[RequestType])
+	if(MeleeSwitchOffset[RequestType])
 		MeleeOffset[RequestType] = -MeleeOffset[RequestType];
+
+	AttackWasSteady = false;
+	if(RequestType == WEAPONATTACK_MAIN)
+		AttackWasSteady = IsSteady();
 }
 
 // Sets the color string and color of the player

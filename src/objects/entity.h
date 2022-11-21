@@ -154,13 +154,14 @@ class _Entity : public _Object {
 		float Push[WEAPONATTACK_COUNT]{0.0f};
 		float Force[WEAPONATTACK_COUNT]{0.0f};
 		int StartingBounces[WEAPONATTACK_COUNT]{0};
-		bool MeleeSwitch[WEAPONATTACK_COUNT]{false};
+		bool MeleeSwitchOffset[WEAPONATTACK_COUNT]{false};
 		float PoisonPower{0.0f};
 		int MainWeaponType{0};
 		int AttackRequestType{0};
 		int BurstRoundsShot{0};
 		bool AttackRequested{false};
 		bool AttackMade{false};
+		bool AttackWasSteady{false};
 
 		// Monsters
 		int64_t ExperienceGiven{0};

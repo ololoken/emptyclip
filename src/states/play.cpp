@@ -1248,11 +1248,6 @@ void _PlayState::ResolveAttack(_Entity *Attacker, int GridType) {
 	for(int i = 0; i < AttackCount; i++) {
 		Hits.clear();
 
-		// Check if gun was at min accuracy
-		bool Steady = false;
-		if(Attacker->AttackRequestType == WEAPONATTACK_MAIN && Attacker->IsSteady())
-			Steady = true;
-
 		// Check for projectile weapons
 		if(Attacker->Projectiles[Attacker->AttackRequestType]) {
 
@@ -1279,7 +1274,7 @@ void _PlayState::ResolveAttack(_Entity *Attacker, int GridType) {
 			Projectile->ProjectileExplosionSize = Attacker->ExplosionSize[Attacker->AttackRequestType];
 			Projectile->ProjectileForce = Attacker->Force[Attacker->AttackRequestType];
 			Projectile->Bounces = Attacker->StartingBounces[Attacker->AttackRequestType];
-			if(Steady)
+			if(Attacker->AttackWasSteady)
 				Projectile->ProjectileCritChance *= PLAYER_STEADY_CRIT_FACTOR;
 
 			Map->ObjectManager->AddObject(Projectile);
@@ -1333,7 +1328,7 @@ void _PlayState::ResolveAttack(_Entity *Attacker, int GridType) {
 
 						// Generate damage
 						bool Crit = false;
-						int Damage = Attacker->GenerateDamage(Attacker->AttackRequestType, PenetrationDamage, Steady, Crit);
+						int Damage = Attacker->GenerateDamage(Attacker->AttackRequestType, PenetrationDamage, Attacker->AttackWasSteady, Crit);
 						Damage = HitEntity->ReduceDamage(Damage, false);
 						if(GodMode && HitPlayer)
 							Damage = 0;
