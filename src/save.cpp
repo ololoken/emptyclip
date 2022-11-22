@@ -348,6 +348,7 @@ void _Save::LoadPlayer(_Player *Player) {
 	Player->UpdateColor();
 	Player->RecalculateStats();
 	Player->ResetWeaponAnimation();
+	Player->Stamina = Player->MaxStamina;
 
 	// Handle exiting during combat
 	Player->Health = std::min(Player->Health, Player->MaxHealth);

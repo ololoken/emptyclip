@@ -335,6 +335,7 @@ void _Player::RecalculateStats(bool SoftReset) {
 	// Set final stats
 	MaxHealth = std::round(Stats.GetLevelHealth(Level) * HealthBonus * 0.01f);
 	Health = std::clamp(Health, (int64_t)0, MaxHealth);
+	Stamina = std::clamp(Stamina, 0.0f, MaxStamina);
 	MoveSpeed = BaseMoveSpeed * 0.01f * PLAYER_MOVESPEED;
 	DamageResist = std::min(DamageResist, ENTITY_MAX_DAMAGE_RESIST);
 	SelfHealPercent *= HealModifier;
