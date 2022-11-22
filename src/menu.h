@@ -139,7 +139,7 @@ class _Menu {
 		void RefreshSaveSlots();
 		void SinglePlayerCancel();
 		void CreatePlayer();
-		void ClearAction(int Action, int Type);
+		void ClearAction(size_t Action, int Type);
 		void RemapInput(int InputType, int Input);
 
 		// States

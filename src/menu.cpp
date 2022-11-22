@@ -305,7 +305,7 @@ void _Menu::InitAchievements() {
 		Child->SetEnabled(Achievements.Stats.find(Child->ID) != Achievements.Stats.end());
 
 		// Check for failed achievements
-		Child->Children[0]->Text = Stats.Achievements[Child->Index].Name;
+		Child->Children[0]->Text = Stats.Achievements[(size_t)Child->Index].Name;
 		if(!Child->Enabled && PlayState.Player) {
 			bool Failed = false;
 			if(Child->ID == "all" && !PlayState.Player->Stat100Percent)
@@ -362,7 +362,7 @@ void _Menu::InitNewPlayer() {
 
 // Play the game
 void _Menu::LaunchGame() {
-	_Player *Player = Save.GetPlayer(SelectedSlot);
+	_Player *Player = Save.GetPlayer((size_t)SelectedSlot);
 	if(Player->Hardcore && Player->Health <= 0)
 		return;
 
@@ -468,7 +468,7 @@ void _Menu::UpdateMSAA() {
 
 	// Update value
 	if(MSAAButton->PressedElement) {
-		int Index = std::clamp((int)(MSAAValues.size() * MSAAButton->GetOffsetPercent().x), 0, (int)MSAAValues.size() - 1);
+		size_t Index = std::clamp((size_t)(MSAAValues.size() * MSAAButton->GetOffsetPercent().x), (size_t)0, MSAAValues.size() - 1);
 
 		Config.MSAA = MSAAValues[Index];
 
@@ -493,7 +493,7 @@ void _Menu::UpdateAnisotropy() {
 
 	// Update value
 	if(AnisotropyButton->PressedElement) {
-		int Index = std::clamp((int)(AnisotropyValues.size() * AnisotropyButton->GetOffsetPercent().x), 0, (int)AnisotropyValues.size() - 1);
+		size_t Index = std::clamp((size_t)(AnisotropyValues.size() * AnisotropyButton->GetOffsetPercent().x), (size_t)0, AnisotropyValues.size() - 1);
 
 		Config.Anisotropy = AnisotropyValues[Index];
 		if(LastAnisotropy != Config.Anisotropy) {
@@ -542,14 +542,14 @@ bool _Menu::HandleKey(const ae::_KeyEvent &KeyEvent) {
 					else if(KeyEvent.Scancode == SDL_SCANCODE_RETURN) {
 						if(SelectedSlot == -1) {
 							for(int i = 0; i < SAVE_SLOTS; i++) {
-								if(Save.GetPlayer(i)) {
+								if(Save.GetPlayer((size_t)i)) {
 									SelectedSlot = i;
 									break;
 								}
 							}
 						}
 
-						if(SelectedSlot >= 0 && Save.GetPlayer(SelectedSlot))
+						if(SelectedSlot >= 0 && Save.GetPlayer((size_t)SelectedSlot))
 							LaunchGame();
 					}
 				}
@@ -671,7 +671,7 @@ void _Menu::HandleMouseButton(const ae::_MouseEvent &MouseEvent) {
 							}
 						}
 						else if(Clicked->ID == "button_menu_singleplayer_play") {
-							if(SelectedSlot != -1 && Save.GetPlayer(SelectedSlot)) {
+							if(SelectedSlot != -1 && Save.GetPlayer((size_t)SelectedSlot)) {
 								LaunchGame();
 							}
 						}
@@ -685,7 +685,7 @@ void _Menu::HandleMouseButton(const ae::_MouseEvent &MouseEvent) {
 								SaveSlots[SelectedSlot]->Checked = false;
 
 							// Set up create player screen
-							_Player *Player = Save.GetPlayer(Clicked->Index);
+							_Player *Player = Save.GetPlayer((size_t)Clicked->Index);
 							if(Player) {
 								ae::Assets.Elements["button_menu_singleplayer_play"]->SetEnabled(!(Player->Hardcore && Player->Health <= 0));
 								ae::Assets.Elements["button_menu_singleplayer_delete"]->SetEnabled(true);
@@ -722,7 +722,7 @@ void _Menu::HandleMouseButton(const ae::_MouseEvent &MouseEvent) {
 					case SINGLEPLAYER_DELETE:
 						if(Clicked->ID == "button_confirm_ok") {
 							if(SelectedSlot != -1) {
-								Save.DeletePlayer(SelectedSlot);
+								Save.DeletePlayer((size_t)SelectedSlot);
 								InitSinglePlayer();
 							}
 						}
@@ -899,7 +899,7 @@ void _Menu::Update(double FrameTime) {
 	// Update states
 	switch(State) {
 		case STATE_SINGLEPLAYER: {
-			for(int i = 0; i < SAVE_SLOTS; i++) {
+			for(size_t i = 0; i < SAVE_SLOTS; i++) {
 				_Player *Player = Save.GetPlayer(i);
 				if(Player) {
 					Player->PositionChanged = true;
@@ -969,7 +969,7 @@ void _Menu::Render() {
 			ae::Assets.Elements["element_menu_singleplayer"]->Render();
 
 			ae::Graphics.SetVBO(ae::VBO_QUAD);
-			for(int i = 0; i < SAVE_SLOTS; i++) {
+			for(size_t i = 0; i < SAVE_SLOTS; i++) {
 				_Player *Player = Save.GetPlayer(i);
 				if(Player)
 					Player->Render2D(SaveSlots[i]->Bounds.GetCenter());
@@ -1133,7 +1133,7 @@ void _Menu::RefreshSaveSlots() {
 	CurrentLayout->SetClickable(true);
 
 	// Load save slots
-	for(int i = 0; i < SAVE_SLOTS; i++) {
+	for(size_t i = 0; i < SAVE_SLOTS; i++) {
 		std::ostringstream Buffer;
 		Buffer << "label_menu_singleplayer_slot" << i << "_text";
 		ae::_Element *SlotLabel = ae::Assets.Elements[Buffer.str()];
@@ -1160,7 +1160,7 @@ void _Menu::RefreshSaveSlots() {
 
 		Buffer << PlayerButtonPrefix << i;
 		SaveSlots[i] = ae::Assets.Elements[Buffer.str()];
-		SaveSlots[i]->Index = i;
+		SaveSlots[i]->Index = (int)i;
 	}
 }
 
@@ -1169,7 +1169,7 @@ void _Menu::RefreshInputLabels() {
 	for(size_t i = 0; i < LABEL_COUNT; i++) {
 		InputLabels[i] = ae::Assets.Elements[KEYLABELS[i]];
 		InputLabels[i]->Text = ae::Actions.GetInputNameForAction(i);
-		InputLabels[i]->Parent->Index = i;
+		InputLabels[i]->Parent->Index = (int)i;
 	}
 }
 
@@ -1197,7 +1197,7 @@ void _Menu::CreatePlayer() {
 
 	ae::_Element *Check = ae::Assets.Elements["label_menu_new_hardcore_check"];
 
-	Save.CreateNewPlayer(SelectedSlot, ae::Assets.Elements["textbox_menu_new_name_input"]->Text, COLORS[SelectedColor], Check->Text != "");
+	Save.CreateNewPlayer((size_t)SelectedSlot, ae::Assets.Elements["textbox_menu_new_name_input"]->Text, COLORS[SelectedColor], Check->Text != "");
 	ae::Assets.Elements["button_menu_singleplayer_play"]->SetEnabled(true);
 	ae::Assets.Elements["button_menu_singleplayer_delete"]->SetEnabled(true);
 
@@ -1206,7 +1206,7 @@ void _Menu::CreatePlayer() {
 }
 
 // Clear action on keybinding page
-void _Menu::ClearAction(int Action, int Type) {
+void _Menu::ClearAction(size_t Action, int Type) {
 	for(int i = 0; i < ae::_Input::INPUT_COUNT; i++) {
 		if(ae::Actions.GetInputForAction(i, Action, Type) != -1)
 			ae::Actions.ClearMappingsForAction(i, Action, Type);
@@ -1223,13 +1223,13 @@ void _Menu::RemapInput(int InputType, int Input) {
 
 	// Remove duplicate keys/buttons
 	for(const auto &Action : KeyBindings)
-		ae::Actions.ClearMappingForInputAction(InputType, Input, Action);
+		ae::Actions.ClearMappingForInputAction(InputType, Input, (size_t)Action);
 
 	// Clear out existing action
-	ClearAction(CurrentAction, 0);
+	ClearAction((size_t)CurrentAction, 0);
 
 	// Add new binding
-	ae::Actions.AddInputMap(0, InputType, Input, CurrentAction, 1.0f, -1.0f, false);
+	ae::Actions.AddInputMap(0, InputType, Input, (size_t)CurrentAction, 1.0f, -1.0f, false);
 
 	// Update menu labels
 	RefreshInputLabels();

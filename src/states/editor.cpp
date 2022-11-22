@@ -144,7 +144,7 @@ void _EditorState::Init() {
 	MinZ = SavedMinZ;
 	MaxZ = SavedMaxZ;
 	if(SavedBrushIndex != -1)
-		Brush[EDITMODE_BLOCKS] = PaletteElement[EDITMODE_BLOCKS]->Children[SavedBrushIndex];
+		Brush[EDITMODE_BLOCKS] = PaletteElement[EDITMODE_BLOCKS]->Children[(size_t)SavedBrushIndex];
 	ae::Assets.Elements["button_editor_show"]->Checked = HighlightBlocks;
 }
 
@@ -557,7 +557,7 @@ void _EditorState::HandleMouseButton(const ae::_MouseEvent &MouseEvent) {
 							default: {
 								ae::_Element *Button = Brush[EditMode];
 								if(Button)
-									SpawnObject(Map->GetValidPosition(WorldCursor), Rotation, 1.0f, (intptr_t)Button->UserData, Button->ID, ObjectLevel, IsShiftDown);
+									SpawnObject(Map->GetValidPosition(WorldCursor), Rotation, 1.0f, (int)(intptr_t)Button->UserData, Button->ID, ObjectLevel, IsShiftDown);
 							} break;
 						}
 					}
@@ -1272,7 +1272,7 @@ void _EditorState::LoadPaletteButtons(std::vector<_Brush> &Icons, int Type) {
 		Button->Style = Style;
 		Button->HoverStyle = ae::Assets.Styles["style_editor_button_selected"];
 		Button->UserData = (void *)(intptr_t)Icons[i].ObjectType;
-		Button->Index = i;
+		Button->Index = (int)i;
 		Button->Scaled = false;
 
 		PaletteElement[Type]->Children.push_back(Button);
@@ -1422,7 +1422,7 @@ void _EditorState::DrawBrush() {
 			int Level;
 			int SpawnLevel;
 			if(EventSelected()) {
-				ae::_Element *Button = PaletteElement[EDITMODE_EVENTS]->Children[SelectedEvent->Type];
+				ae::_Element *Button = PaletteElement[EDITMODE_EVENTS]->Children[(size_t)SelectedEvent->Type];
 				IconTexture = Button->Style->Texture;
 				IconID = std::to_string(SelectedEventIndex);
 				IconText = Button->Style->Name;
@@ -1555,12 +1555,12 @@ void _EditorState::DrawEventTiles(_Event *Event, const glm::vec4 &Color) {
 			continue;
 
 		if(SelectedEvent->Type == EVENT_ENABLE) {
-			const _Event *Event = Map->Events[Tiles[i].BlockID];
+			const _Event *Event = Map->Events[(size_t)Tiles[i].BlockID];
 			ae::Graphics.SetColor(COLOR_YELLOW);
 			ae::Graphics.DrawRectangle3D(glm::vec2(Event->Start.x, Event->Start.y), glm::vec2(Event->End.x + 1.0f, Event->End.y + 1.0f), false);
 		}
 		else {
-			_Block *Block = Map->GetBlock(Tiles[i].Layer, Tiles[i].BlockID);
+			_Block *Block = Map->GetBlock(Tiles[i].Layer, (size_t)Tiles[i].BlockID);
 			ae::Graphics.SetColor(COLOR_GREEN);
 			ae::Graphics.DrawRectangle3D(glm::vec2(Block->Start.x, Block->Start.y), glm::vec2(Block->End.x + 1.0f, Block->End.y + 1.0f), false);
 		}
@@ -1848,7 +1848,7 @@ void _EditorState::AddEvent(int Type) {
 	Event->ParticleID = SavedText[EDITINPUT_PARTICLEID];
 	Event->SoundID = SavedText[EDITINPUT_SOUNDID];
 	if(AddTile) {
-		int BlockIndex = Map->GetSelectedBlock(TileLayer, Start);
+		int BlockIndex = (int)Map->GetSelectedBlock(TileLayer, Start);
 		Event->AddTile(_EventTile(Start, TileLayer, BlockIndex));
 	}
 
@@ -2003,7 +2003,7 @@ void _EditorState::ExecuteToggleTile() {
 			case EVENT_WALLSWITCH:
 			case EVENT_FLOORSWITCH: {
 				_Block *Block;
-				int BlockIndex = Map->GetSelectedBlock(EditLayer, WorldCursorIndex, &Block);
+				int BlockIndex = (int)Map->GetSelectedBlock(EditLayer, WorldCursorIndex, &Block);
 				SelectedEvent->AddTile(_EventTile(WorldCursorIndex, EditLayer, BlockIndex));
 			} break;
 			case EVENT_ENABLE: {
@@ -2351,9 +2351,9 @@ void _EditorState::ExecuteUpdateSelectedPalette(int Change) {
 	if(CurrentIndex >= (int)Children.size())
 		CurrentIndex = 0;
 	else if(CurrentIndex < 0)
-		CurrentIndex = Children.size() - 1;
+		CurrentIndex = (int)Children.size() - 1;
 
-	ExecuteSelectPalette(Children[CurrentIndex], 0);
+	ExecuteSelectPalette(Children[(size_t)CurrentIndex], 0);
 }
 
 // Executes the select palette command
@@ -2527,7 +2527,7 @@ void _EditorState::ExecuteUpdateLayer(int Layer, bool Move) {
 		for(const auto &Index : SelectedBlocks) {
 
 			// Change layers and add to new selection
-			size_t NewIndex = Map->ChangeLayer(EditLayer, Layer, Index);
+			size_t NewIndex = Map->ChangeLayer(EditLayer, Layer, (int)Index);
 			NewSelection.push_back(NewIndex);
 
 			// Change block properties

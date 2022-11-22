@@ -236,7 +236,7 @@ int _ObjectManager::RenderItems(double BlendFactor) {
 		ae::Graphics.SetTextureID(ItemRenderList[i].Texture->ID);
 
 		// Build vertex buffer
-		int VertexIndex = 0;
+		size_t VertexIndex = 0;
 		for(const auto &Object : ItemRenderList[i].Objects) {
 			if(VertexIndex + RENDER_VBO_VERTICES_PER_DRAW > RENDER_VBO_SIZE)
 				break;
@@ -279,8 +279,8 @@ int _ObjectManager::RenderItems(double BlendFactor) {
 		}
 
 		// Draw buffer
-		glBufferSubData(GL_ARRAY_BUFFER, 0, VertexIndex * sizeof(float), RenderVertices);
-		glDrawArrays(GL_TRIANGLES, 0, VertexIndex >> 2);
+		glBufferSubData(GL_ARRAY_BUFFER, 0, (GLsizeiptr)(VertexIndex * sizeof(float)), RenderVertices);
+		glDrawArrays(GL_TRIANGLES, 0, (GLsizei)(VertexIndex >> 2));
 
 		// Update total
 		RenderCount += (int)ItemRenderList[i].Objects.size();

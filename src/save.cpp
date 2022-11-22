@@ -488,7 +488,7 @@ void _Save::SaveKeys(_Player *Player, std::ofstream &File) {
 	}
 
 	// Write chunk
-	WriteChunk(File, CHUNK_KEYS, &Buffer[0], Buffer.GetCurrentSize());
+	WriteChunk(File, CHUNK_KEYS, &Buffer[0], (int)Buffer.GetCurrentSize());
 }
 
 // Save skills
@@ -500,7 +500,7 @@ void _Save::SaveSkills(_Player *Player, std::ofstream &File) {
 		Buffer.Write<int>(Player->Skills[i]);
 
 	// Write chunk
-	WriteChunk(File, CHUNK_SKILLS, &Buffer[0], Buffer.GetCurrentSize());
+	WriteChunk(File, CHUNK_SKILLS, &Buffer[0], (int)Buffer.GetCurrentSize());
 }
 
 // Save loot filter settings
@@ -512,5 +512,5 @@ void _Save::SaveFilters(_Player *Player, std::ofstream &File) {
 		Buffer.Write<int>(Player->Filters[i]);
 
 	// Write chunk
-	WriteChunk(File, CHUNK_FILTERS, &Buffer[0], Buffer.GetCurrentSize());
+	WriteChunk(File, CHUNK_FILTERS, &Buffer[0], (int)Buffer.GetCurrentSize());
 }

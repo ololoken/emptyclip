@@ -806,7 +806,7 @@ void _Stats::CreateTransformedText() {
 	TransformedText.clear();
 	for(const auto &String : Text) {
 		TransformedText[String.first] = String.second;
-		for(int i = 0; i < Action::COUNT; i++) {
+		for(size_t i = 0; i < Action::COUNT; i++) {
 			std::string Search = "{" + ae::Actions.State[i].Name + "}";
 			size_t Position = TransformedText[String.first].find(Search);
 			if(Position == std::string::npos)

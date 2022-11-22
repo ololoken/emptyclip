@@ -47,7 +47,7 @@ inline bool CompareHitDistance(_Hit &First, _Hit &Second) {
 }
 
 // Minimap vertex buffer size
-const int MINIMAP_MAX_VERTICES = 100000*12;
+const size_t MINIMAP_MAX_VERTICES = 100000*12;
 
 // Colors of each time cycle
 static const std::vector<glm::vec4> DayCycles = {
@@ -112,7 +112,7 @@ _Map::_Map() :
 }
 
 // Initialize
-_Map::_Map(const std::string &Filename, double Clock, int Progression) : _Map() {
+_Map::_Map(const std::string &Filename, double Clock, size_t Progression) : _Map() {
 	if(Filename.empty())
 		throw std::runtime_error(std::string(__func__) + " empty file name");
 
@@ -1833,7 +1833,7 @@ int _Map::GetSelectedEvent(const glm::ivec2 &Index, int Type, _Event **ReturnEve
 
 		if(Index.x >= Event->Start.x && Index.y >= Event->Start.y && Index.x <= Event->End.x && Index.y <= Event->End.y) {
 			*ReturnEvent = Event;
-			return Events.size() - 1 - (Iterator - Events.rbegin());
+			return (int)Events.size() - 1 - (int)(Iterator - Events.rbegin());
 		}
 	}
 
@@ -1914,7 +1914,7 @@ void _Map::DrawMinimap(bool FullMap, ae::_Bounds &MinimapBounds) {
 		ae::Graphics.SetColor(MinimapColors[i]);
 
 		// Build vertex buffer for icons
-		int VertexIndex = 0;
+		size_t VertexIndex = 0;
 		for(const auto &MinimapIcon : MinimapIcons[i]) {
 			if(VertexIndex + 12 > MINIMAP_MAX_VERTICES)
 				break;
@@ -1941,8 +1941,8 @@ void _Map::DrawMinimap(bool FullMap, ae::_Bounds &MinimapBounds) {
 		}
 
 		// Draw buffer
-		glBufferSubData(GL_ARRAY_BUFFER, 0, VertexIndex * sizeof(float), MinimapVertices);
-		glDrawArrays(GL_TRIANGLES, 0, VertexIndex >> 1);
+		glBufferSubData(GL_ARRAY_BUFFER, 0, (GLsizeiptr)(VertexIndex * sizeof(float)), MinimapVertices);
+		glDrawArrays(GL_TRIANGLES, 0, (GLsizei)(VertexIndex >> 1));
 	}
 
 	// Reset state

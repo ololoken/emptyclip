@@ -200,7 +200,7 @@ class _Map {
 		};
 
 		_Map();
-		_Map(const std::string &Filename, double Clock=0.0, int Progression=0);
+		_Map(const std::string &Filename, double Clock=0.0, size_t Progression=0);
 		~_Map();
 
 		void InitializeTiles();
