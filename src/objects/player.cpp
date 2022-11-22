@@ -672,7 +672,7 @@ void _Player::CalculateExperienceStats() {
 
 	int64_t ExperienceThisLevel = Experience - LevelStat.Experience;
 	ExperienceNeeded = (Level == Stats.GetMaxLevel()) ? 0 : LevelStat.NextLevel - ExperienceThisLevel;
-	ExperienceLost = std::min(ExperienceThisLevel, (int64_t)(LevelStat.NextLevel * GAME_EXPERIENCE_LOST));
+	ExperienceLost = std::min(ExperienceThisLevel, (int64_t)(LevelStat.NextLevel * Stats.Progressions[(size_t)Progression].ExperienceLost * 0.01));
 }
 
 // Calculates the number of skills points remaining

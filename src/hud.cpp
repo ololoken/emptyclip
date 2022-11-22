@@ -1373,7 +1373,7 @@ void _HUD::DrawDeathScreen() {
 
 	if(!Player->Hardcore) {
 		glm::vec2 DrawPosition = glm::vec2(ae::Graphics.CurrentSize) * 0.5f;
-		Buffer << "You lost [c red]" << std::to_string((int)(GAME_EXPERIENCE_LOST * 100 + 0.5f)) << "%[c white] experience";
+		Buffer << "You lost [c red]" << Stats.Progressions[(size_t)Player->Progression].ExperienceLost << "%[c white] experience";
 		ae::Assets.Fonts["menu_buttons"]->DrawTextFormatted(Buffer.str(), DrawPosition, ae::CENTER_MIDDLE);
 		Buffer.str("");
 	}

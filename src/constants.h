@@ -44,7 +44,6 @@ const  std::string  GAME_FIRSTLEVEL                      =  "c01.map";
 const  int          GAME_PLAYERLEVEL_SOFTCAP             =  201;
 const  int          GAME_SKILL_SOFTCAP                   =  100;
 const  int          GAME_MAX_SKILL_PERLEVEL              =  3;
-const  double       GAME_EXPERIENCE_LOST                 =  0.1;
 const  double       GAME_INVULNERABLE_TIME               =  3.0;
 const  int          GAME_MAX_PROGRESSION                 =  1000;
 const  double       GAME_DEFAULT_CLOCK                   =  720.0;

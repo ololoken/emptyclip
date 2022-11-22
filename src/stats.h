@@ -62,6 +62,11 @@ struct _ItemDrop {
 };
 
 struct _Progression {
+	double Experience;
+	double ExperienceLost;
+	double Health;
+	double Damage;
+	double AttackSpeed;
 	int Progression;
 	int Level;
 	int Spawn;
@@ -70,10 +75,6 @@ struct _Progression {
 	int MaxLevel;
 	int Backpacks;
 	int LavaDamage;
-	float Health;
-	float Damage;
-	float AttackSpeed;
-	float Experience;
 };
 
 struct _Special {
