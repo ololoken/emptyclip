@@ -47,7 +47,9 @@ class _ObjectManager {
 			std::vector<_Object *> Objects;
 			glm::vec2 Scale{0.25f};
 			const ae::_Texture *Texture{nullptr};
+			double FadeTime{0.0};
 			float PositionZ{0.0f};
+			float Alpha{1.0f};
 			int AmmoTypeID{-1};
 			bool Health{false};
 			bool Stamina{false};
@@ -77,5 +79,7 @@ class _ObjectManager {
 		float *RenderVertices{nullptr};
 
 	private:
+
+		bool IsRenderListFiltered(size_t RenderListIndex);
 
 };

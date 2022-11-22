@@ -69,8 +69,27 @@ void _ObjectManager::Update(double FrameTime, _Map *Map) {
 	for(int i = 0; i < RENDER_COUNT; i++)
 		RenderList[i].clear();
 
-	for(int i = 0; i < OBJECT_MAX_RENDERLIST; i++)
+	for(size_t i = 0; i < OBJECT_MAX_RENDERLIST; i++) {
 		ItemRenderList[i].Objects.clear();
+
+		// Update timer
+		ItemRenderList[i].Alpha = 1.0f;
+		if(!IsRenderListFiltered(i))
+			ItemRenderList[i].FadeTime = ITEM_FILTERED_FADETIME;
+
+		if(ItemRenderList[i].FadeTime > 0.0) {
+			ItemRenderList[i].FadeTime -= FrameTime;
+			if(ItemRenderList[i].FadeTime < 0)
+				ItemRenderList[i].FadeTime = 0.0;
+
+			if(ItemRenderList[i].FadeTime < ITEM_FILTERED_FADESTART) {
+				float Percent = 1.0f - (ITEM_FILTERED_FADESTART - ItemRenderList[i].FadeTime) / ITEM_FILTERED_FADESTART;
+				ItemRenderList[i].Alpha = Percent * (1.0f - ITEM_FILTERED_ALPHA) + ITEM_FILTERED_ALPHA;
+			}
+		}
+		else
+			ItemRenderList[i].Alpha = ITEM_FILTERED_ALPHA;
+	}
 
 	// Update objects
 	bool Delete = false;
@@ -218,19 +237,12 @@ int _ObjectManager::RenderItems(double BlendFactor) {
 	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 4, (GLvoid *)(sizeof(float) * 2));
 
 	// Iterate through each render list type
-	for(int i = 0; i < OBJECT_MAX_RENDERLIST; i++) {
+	for(size_t i = 0; i < OBJECT_MAX_RENDERLIST; i++) {
 		if(ItemRenderList[i].Objects.empty())
 			continue;
 
 		// Set up program
-		glm::vec4 RenderColor(1.0f);
-		if(ItemRenderList[i].AmmoTypeID != -1 && !PlayState.Player->AmmoNeeded[(size_t)ItemRenderList[i].AmmoTypeID])
-			RenderColor.a = ITEM_FILTERED_ALPHA;
-		else if(ItemRenderList[i].Health && PlayState.Player->Health == PlayState.Player->MaxHealth)
-			RenderColor.a = ITEM_FILTERED_ALPHA;
-		else if(ItemRenderList[i].Stamina && PlayState.Player->Stamina == PlayState.Player->MaxStamina)
-			RenderColor.a = ITEM_FILTERED_ALPHA;
-
+		glm::vec4 RenderColor(1.0f, 1.0f, 1.0f, ItemRenderList[i].Alpha);
 		ae::Graphics.SetColor(RenderColor);
 		ae::Assets.Programs["item"]->SetUniformFloat("pos_z", ItemRenderList[i].PositionZ);
 		ae::Graphics.SetTextureID(ItemRenderList[i].Texture->ID);
@@ -311,6 +323,18 @@ void _ObjectManager::ClearObjects() {
 
 	for(int i = 0; i < OBJECT_MAX_RENDERLIST; i++)
 		ItemRenderList[i].Objects.clear();
+}
+
+// Determine if a render list is automatically filtered based on player stats
+bool _ObjectManager::IsRenderListFiltered(size_t RenderListIndex) {
+	if(ItemRenderList[RenderListIndex].AmmoTypeID != -1 && !PlayState.Player->AmmoNeeded[(size_t)ItemRenderList[RenderListIndex].AmmoTypeID])
+		return true;
+	else if(ItemRenderList[RenderListIndex].Health && PlayState.Player->Health == PlayState.Player->MaxHealth)
+		return true;
+	else if(ItemRenderList[RenderListIndex].Stamina && PlayState.Player->Stamina == PlayState.Player->MaxStamina)
+		return true;
+
+	return false;
 }
 
 // Adds an object to the manager
