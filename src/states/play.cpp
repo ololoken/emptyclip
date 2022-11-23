@@ -442,8 +442,10 @@ bool _PlayState::HandleCommand(ae::_Console *Console) {
 
 			if(Parameters.size() == 1)
 				Player->Clock = std::clamp(ae::ToNumber<double>(Parameters[0]), 0.0, MAP_DAY_LENGTH);
-			else
+			else {
+				Console->AddMessage("usage: " + Console->Command + " [value]");
 				Console->AddMessage("clock = " + std::to_string(Player->Clock));
+			}
 		}
 		else if(Console->Command == "experience") {
 			if(!Player)
@@ -513,14 +515,18 @@ bool _PlayState::HandleCommand(ae::_Console *Console) {
 				Player->ProgressionDeaths = 0;
 				Player->RecalculateStats();
 			}
-			else
-				Console->AddMessage("usage: " + Console->Command + " [level]");
+			else {
+				Console->AddMessage("usage: " + Console->Command + " [value]");
+				Console->AddMessage("progression = " + std::to_string(Player->Progression));
+			}
 		}
 		else if(Console->Command == "quality") {
 			if(Parameters.size() == 1)
 				DefaultQuality = ae::ToNumber<int>(Parameters[0]);
-			else
+			else {
+				Console->AddMessage("usage: " + Console->Command + " [value]");
 				Console->AddMessage("quality = " + std::to_string(DefaultQuality));
+			}
 
 			return true;
 		}

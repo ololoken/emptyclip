@@ -336,8 +336,8 @@ void _Framework::HandleCommand(ae::_Console *Console) {
 			Config.Save();
 		}
 		else {
-			Console->AddMessage("maxfps = " + std::to_string(Config.MaxFPS));
 			Console->AddMessage("usage: maxfps [value]");
+			Console->AddMessage("maxfps = " + std::to_string(Config.MaxFPS));
 		}
 	}
 	else if(Console->Command == "volume") {
@@ -346,8 +346,10 @@ void _Framework::HandleCommand(ae::_Console *Console) {
 			ae::Audio.SetSoundVolume(Config.SoundVolume);
 			Config.Save();
 		}
-		else
+		else {
 			Console->AddMessage("usage: volume [value]");
+			Console->AddMessage("volume = " + std::to_string(Config.SoundVolume));
+		}
 	}
 	else if(Console->Command == "vsync") {
 		if(Parameters.size() == 1) {
@@ -356,8 +358,8 @@ void _Framework::HandleCommand(ae::_Console *Console) {
 			Config.Save();
 		}
 		else {
-			Console->AddMessage("vsync = " + std::to_string(ae::Graphics.GetVsync()));
 			Console->AddMessage("usage: vsync [value]");
+			Console->AddMessage("vsync = " + std::to_string(ae::Graphics.GetVsync()));
 		}
 	}
 	else {
