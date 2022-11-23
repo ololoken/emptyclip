@@ -254,22 +254,29 @@ void _Menu::InitControls() {
 void _Menu::InitInGame() {
 	ChangeLayout("element_menu_ingame");
 
-	bool Warn = PlayState.Player && PlayState.Player->InCombat();
-	ae::Assets.Elements["label_menu_ingame_exitwarning"]->SetActive(Warn);
 	ae::Assets.Elements["label_menu_ingame_mainmenu_text"]->Text = "Main Menu";
-	if(Warn && !PlayState.TestMode) {
-		ae::Assets.Elements["button_menu_ingame_mainmenu"]->SetEnabled(false);
+	ShowDefaultCursor(true);
+
+	State = STATE_INGAME;
+}
+
+// Init exit menu
+void _Menu::InitExit() {
+	ChangeLayout("element_menu_exit");
+
+	bool Warn = PlayState.Player && PlayState.Player->InCombat();
+	ae::Assets.Elements["label_menu_exit_exitwarning"]->SetActive(Warn);
+	ae::Assets.Elements["label_menu_exit_yes_text"]->Text = "Exit";
+	if(Warn) {
+		ae::Assets.Elements["button_menu_exit_yes"]->SetEnabled(false);
 		WarnTimer = MENU_WARN_TIME;
 	}
 	else {
-		ae::Assets.Elements["button_menu_ingame_mainmenu"]->SetEnabled(true);
+		ae::Assets.Elements["button_menu_exit_yes"]->SetEnabled(true);
 		WarnTimer = 0.0;
 	}
 
-	ShowDefaultCursor(true);
-	Background = nullptr;
-
-	State = STATE_INGAME;
+	State = STATE_EXIT;
 }
 
 // Return to play
@@ -598,6 +605,10 @@ bool _Menu::HandleKey(const ae::_KeyEvent &KeyEvent) {
 			if(KeyEvent.Pressed && KeyEvent.Scancode == SDL_SCANCODE_ESCAPE)
 				InitPlay();
 		} break;
+		case STATE_EXIT: {
+			if(KeyEvent.Pressed && KeyEvent.Scancode == SDL_SCANCODE_ESCAPE)
+				InitInGame();
+		} break;
 		case STATE_SCORE: {
 			if(KeyEvent.Pressed && KeyEvent.Scancode == SDL_SCANCODE_ESCAPE) {
 				InitPlay();
@@ -826,7 +837,18 @@ void _Menu::HandleMouseButton(const ae::_MouseEvent &MouseEvent) {
 					InitAchievements();
 				}
 				else if(Clicked->ID == "button_menu_ingame_mainmenu") {
+					if(PlayState.TestMode)
+						Framework.ChangeState(&NullState);
+					else
+						InitExit();
+				}
+			} break;
+			case STATE_EXIT: {
+				if(Clicked->ID == "button_menu_exit_yes") {
 					Framework.ChangeState(&NullState);
+				}
+				else if(Clicked->ID == "button_menu_exit_no") {
+					InitInGame();
 				}
 			} break;
 			case STATE_SCORE: {
@@ -913,17 +935,17 @@ void _Menu::Update(double FrameTime) {
 			UpdateMSAA();
 			UpdateAnisotropy();
 		break;
-		case STATE_INGAME:
+		case STATE_EXIT:
 			if(WarnTimer > 0.0) {
 				std::ostringstream Buffer;
-				Buffer << "Main Menu " << std::ceil(WarnTimer);
-				ae::Assets.Elements["label_menu_ingame_mainmenu_text"]->Text = Buffer.str();
+				Buffer << "Suicide and Exit " << std::ceil(WarnTimer);
+				ae::Assets.Elements["label_menu_exit_yes_text"]->Text = Buffer.str();
 
 				WarnTimer -= FrameTime;
 				if(WarnTimer <= 0) {
 					WarnTimer = 0.0;
-					ae::Assets.Elements["label_menu_ingame_mainmenu_text"]->Text = "Main Menu";
-					ae::Assets.Elements["button_menu_ingame_mainmenu"]->SetEnabled(true);
+					ae::Assets.Elements["label_menu_exit_yes_text"]->Text = "Suicide and Exit";
+					ae::Assets.Elements["button_menu_exit_yes"]->SetEnabled(true);
 				}
 			}
 		break;
@@ -982,6 +1004,10 @@ void _Menu::Render() {
 			}
 		} break;
 		case STATE_INGAME: {
+			if(CurrentLayout)
+				CurrentLayout->Render();
+		} break;
+		case STATE_EXIT: {
 			if(CurrentLayout)
 				CurrentLayout->Render();
 		} break;

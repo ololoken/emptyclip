@@ -261,18 +261,27 @@
 		</element>
 	</element>
 	<element id="element_menu_ingame" size_x="512">
-		<element id="label_menu_ingame_exitwarning" color="red" font="menu_buttons" text="Exiting during combat will result in death" offset_y="-230" alignment_y="3"/>
-		<element id="button_menu_ingame_resume" sound="game_click0.ogg" style="style_menu_button" hover_style="style_menu_button_hover" offset_y="-168" size_x="280" size_y="66" alignment_y="0" clickable="true">
+		<element id="button_menu_ingame_resume" sound="game_click0.ogg" style="style_menu_button" hover_style="style_menu_button_hover" offset_y="-168" size_x="300" size_y="66" clickable="true">
 			<element id="label_menu_ingame_resume_text" font="menu_buttons" text="Resume" offset_y="44" alignment_y="3"/>
 		</element>
-		<element id="button_menu_ingame_options" sound="game_click0.ogg" style="style_menu_button" hover_style="style_menu_button_hover" offset_y="-56" size_x="280" size_y="66" alignment_y="0" clickable="true">
+		<element id="button_menu_ingame_options" sound="game_click0.ogg" style="style_menu_button" hover_style="style_menu_button_hover" offset_y="-56" size_x="300" size_y="66" clickable="true">
 			<element id="label_menu_ingame_options_text" font="menu_buttons" text="Options" offset_y="44" alignment_y="3"/>
 		</element>
-		<element id="button_menu_ingame_achievements" sound="game_click0.ogg" style="style_menu_button" hover_style="style_menu_button_hover" disabled_style="style_menu_button_disabled" offset_y="56" size_x="280" size_y="66" alignment_y="0" clickable="true">
+		<element id="button_menu_ingame_achievements" sound="game_click0.ogg" style="style_menu_button" hover_style="style_menu_button_hover" disabled_style="style_menu_button_disabled" offset_y="56" size_x="300" size_y="66" clickable="true">
 			<element id="label_menu_ingame_achievements" font="menu_buttons" text="Achievements" offset_y="44" alignment_y="3"/>
 		</element>
-		<element id="button_menu_ingame_mainmenu" sound="game_click0.ogg" style="style_menu_button" hover_style="style_menu_button_hover" disabled_style="style_menu_button_disabled" offset_y="168" size_x="280" size_y="66" alignment_y="0" clickable="true">
+		<element id="button_menu_ingame_mainmenu" sound="game_click0.ogg" style="style_menu_button" hover_style="style_menu_button_hover" offset_y="168" size_x="300" size_y="66" clickable="true">
 			<element id="label_menu_ingame_mainmenu_text" font="menu_buttons" text="Main Menu" offset_y="44" alignment_y="3"/>
+		</element>
+	</element>
+	<element id="element_menu_exit" size_x="512">
+		<element id="label_menu_exit_exitwarning" color="red" font="menu_buttons" text="Exiting during combat will result in death" offset_y="-270" alignment_y="3"/>
+		<element id="label_menu_exit_title" font="menu_buttons" text="Are you sure you want to exit?" offset_y="-160" alignment_y="3"/>
+		<element id="button_menu_exit_yes" sound="game_click0.ogg" style="style_menu_button" hover_style="style_menu_button_hover" disabled_style="style_menu_button_disabled" offset_y="-56" size_x="300" size_y="66" clickable="true">
+			<element id="label_menu_exit_yes_text" font="menu_buttons" text="Exit" offset_y="44" alignment_y="3"/>
+		</element>
+		<element id="button_menu_exit_no" sound="game_click0.ogg" style="style_menu_button" hover_style="style_menu_button_hover" offset_y="56" size_x="300" size_y="66" clickable="true">
+			<element id="label_menu_exit_no_text" font="menu_buttons" text="Cancel" offset_y="44" alignment_y="3"/>
 		</element>
 	</element>
 	<element id="element_menu_popup" style="style_menu_window" size_x="340" size_y="100">

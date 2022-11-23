@@ -50,6 +50,7 @@ class _Menu {
 			STATE_OPTIONS,
 			STATE_CONTROLS,
 			STATE_INGAME,
+			STATE_EXIT,
 			STATE_SCORE,
 			STATE_ACHIEVEMENTS,
 		};
@@ -102,6 +103,7 @@ class _Menu {
 		void InitOptions();
 		void InitControls();
 		void InitInGame();
+		void InitExit();
 		void InitPlay();
 		void InitScore();
 		void InitAchievements();
