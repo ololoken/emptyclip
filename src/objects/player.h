@@ -112,9 +112,8 @@ class _Player : public _Entity {
 		bool CanDropItems() const { return !Reloading && !IsSwitching(); }
 		bool CanDragItems() const { return !Reloading && !IsSwitching(); }
 		bool CanEquipItems() const { return !Reloading && !IsSwitching(); }
-		bool CanSort() const { return !Reloading && !IsSwitching(); }
-		bool CanSwitchWeapons() const { return !IsSwitching() && !Reloading && !IsMeleeAttacking() && !IsDying(); }
-		bool CanSwitchOutfits() const { return !IsSwitching() && !Reloading && !IsMeleeAttacking() && !IsDying(); }
+		bool CanSwitchWeapons() const { return !IsSwitching() && !IsMeleeAttacking() && !IsDying(); }
+		bool CanSwitchOutfits() const { return !IsSwitching() && !IsMeleeAttacking() && !IsDying(); }
 		bool CanReload() const;
 		bool IsSteady() const override { return GetMainHand() && CurrentAccuracy <= MinAccuracy; }
 		bool IsSwitching() const { return SwitchingWeapons || SwitchingOutfits; }

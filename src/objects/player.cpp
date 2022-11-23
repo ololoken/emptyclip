@@ -832,9 +832,6 @@ void _Player::DropItem(const _Slot &Slot, const glm::vec2 &DropPosition) {
 
 // Sort inventory
 void _Player::SortInventory() {
-	if(!CanSort())
-		return;
-
 	ae::Audio.PlaySound(ae::Assets.Sounds["game_click0.ogg"]);
 
 	// Add items to sortable array
@@ -1233,6 +1230,8 @@ void _Player::StartWeaponSwitch(const _Slot &SlotFrom, const _Slot &SlotTo) {
 	if(SlotFrom.IsHandIndex() && SlotTo.IsHandIndex() && !GetMainHand() && !GetOffHand())
 		return;
 
+	CancelReloading();
+
 	// Start timer
 	WeaponSwitchFrom = SlotFrom;
 	WeaponSwitchTo = SlotTo;
@@ -1254,6 +1253,8 @@ void _Player::StartOutfitSwitch(size_t Outfit) {
 	// Test conditions
 	if(!CanSwitchOutfits())
 		return;
+
+	CancelReloading();
 
 	// Start timer
 	OutfitSwitchTo = Outfit;
