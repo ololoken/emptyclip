@@ -18,6 +18,7 @@
 #include <objects/player.h>
 #include <objects/monster.h>
 #include <objects/inventory.h>
+#include <states/play.h>
 #include <ae/texture.h>
 #include <ae/graphics.h>
 #include <ae/assets.h>
@@ -27,6 +28,7 @@
 #include <ae/ui.h>
 #include <ae/random.h>
 #include <config.h>
+#include <hud.h>
 #include <framework.h>
 #include <gameassets.h>
 #include <stats.h>
@@ -1573,6 +1575,9 @@ void _Player::UpdateColor() {
 void _Player::OnHit(_Entity *Attacker, const _Hit &Hit, bool PlaySound) {
 	if(IsInvulnerable())
 		return;
+
+	if(!PlayState.HUD->LastHitMaxHealth)
+		PlayState.HUD->SetLastHit(Attacker);
 
 	PlaySound = false;
 	if(TakeDamageSoundTimer <= 0.0) {

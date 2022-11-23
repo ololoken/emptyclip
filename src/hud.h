@@ -106,7 +106,7 @@ class _HUD {
 		~_HUD() { }
 
 		void SetStats(int MaxKills, int MaxCrates, int MaxSecrets);
-		void SetLastEntityHit(_Entity *Entity);
+		void SetLastHit(_Entity *Entity);
 		void SetInventoryOpen(bool Value);
 		void MoveWorldItem(const glm::vec2 &DropPosition=glm::vec2(-1.0f));
 
@@ -129,7 +129,9 @@ class _HUD {
 
 		// Objects
 		const ae::_Camera *Camera{nullptr};
-		_Entity *LastEntityHit{nullptr};
+		std::string LastHitName;
+		int64_t LastHitHealth{0};
+		int64_t LastHitMaxHealth{0};
 
 		// Inventory
 		_Item *CursorItem{nullptr};
@@ -175,7 +177,6 @@ class _HUD {
 		int CursorSkill{-1};
 
 		// Displays
-		double LastEntityHitTimer{0.0};
 		float CrosshairScale{0.0f};
 
 		// Messages

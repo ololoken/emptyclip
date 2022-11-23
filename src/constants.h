@@ -83,6 +83,7 @@ const  double       ENTITY_FREEPATHING_TIMER_INCREMENT   =  0.1;
 const  double       ENTITY_MAX_FIRESOUND_PERIOD          =  0.03;
 const  float        ENTITY_FRICTION_FACTOR               =  0.003f;
 const  float        ENTITY_VELOCITY_THRESHOLD            =  0.00001f;
+const  double       ENTITY_CRATE_COMBATTIME              =  1.0;
 //     Player
 const  float        PLAYER_RADIUS                        =  0.35f;
 const  float        PLAYER_MASS                          =  1.0f;
@@ -198,7 +199,6 @@ const  glm::vec2    UI_MESSAGE_SMALL_SIZE                =  glm::vec2(425,125);
 const  double       UI_LEVELNAME_TIME                    =  4;
 //     HUD
 const  int          HUD_BACKPACK_INDEX                   =  10;
-const  double       HUD_ENTITYHEALTHDISPLAYPERIOD        =  5.0;
 const  float        HUD_PLAYER_HEALTH_WARNING            =  0.5f;
 const  float        HUD_PLAYER_HEALTH_FADE               =  0.4f;
 const  float        HUD_PLAYER_HEALTH_PULSE_AMOUNT       =  0.025f;

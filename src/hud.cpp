@@ -490,7 +490,6 @@ void _HUD::HandleMouseButton(const ae::_MouseEvent &MouseEvent) {
 
 // Update phase
 void _HUD::Update(double FrameTime, float Radius, double Clock) {
-	LastEntityHitTimer += FrameTime;
 	HoverItem = nullptr;
 	CursorSlot.Bag = nullptr;
 	CursorSlot.Index = (size_t)-1;
@@ -581,8 +580,8 @@ void _HUD::Update(double FrameTime, float Radius, double Clock) {
 		Menu.ShowDefaultCursor(false);
 
 	// Update health display
-	if(LastEntityHit != nullptr && (LastEntityHitTimer > HUD_ENTITYHEALTHDISPLAYPERIOD))
-		LastEntityHit = nullptr;
+	if(LastHitMaxHealth && !Player->InCombat())
+		LastHitMaxHealth = 0;
 
 	MessageTimer -= FrameTime;
 	if(MessageTimer < 0.0)
@@ -643,11 +642,11 @@ void _HUD::Render(bool FullMap) {
 
 	// Draw enemy health
 	std::ostringstream Buffer;
-	if(LastEntityHit != nullptr) {
-		Buffer << LastEntityHit->Health << "/" << LastEntityHit->MaxHealth;
+	if(LastHitMaxHealth) {
+		Buffer << LastHitHealth << "/" << LastHitMaxHealth;
 		Elements[LABEL_ENEMYHEALTH]->Text = Buffer.str();
-		Elements[LABEL_ENEMYNAME]->Text = LastEntityHit->Name;
-		Elements[IMAGE_ENEMYHEALTH]->SetWidth(Elements[ELEMENT_ENEMYINFO]->Size.x * LastEntityHit->GetHealthPercentage());
+		Elements[LABEL_ENEMYNAME]->Text = LastHitName;
+		Elements[IMAGE_ENEMYHEALTH]->SetWidth(Elements[ELEMENT_ENEMYINFO]->Size.x * ((float)LastHitHealth / LastHitMaxHealth));
 		Elements[ELEMENT_ENEMYINFO]->Render();
 		Buffer.str("");
 	}
@@ -1486,10 +1485,14 @@ void _HUD::SetStats(int MaxKills, int MaxCrates, int MaxSecrets) {
 	Secrets[1] = MaxSecrets;
 }
 
-// Sets the last entity hit object
-void _HUD::SetLastEntityHit(_Entity *Entity) {
-	LastEntityHit = Entity;
-	LastEntityHitTimer = 0;
+// Sets the last hit monster display
+void _HUD::SetLastHit(_Entity *Entity) {
+	if(!Entity)
+		return;
+
+	LastHitName = Entity->Name;
+	LastHitHealth = Entity->Health;
+	LastHitMaxHealth = Entity->MaxHealth;
 }
 
 // Set inventory state

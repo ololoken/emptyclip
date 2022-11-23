@@ -50,9 +50,6 @@ _Entity::~_Entity() {
 
 	StopAudio();
 
-	if(PlayState.HUD && PlayState.HUD->LastEntityHit == this)
-		PlayState.HUD->LastEntityHit = nullptr;
-
 	if(PlayState.Map && PlayState.Map->ObjectManager) {
 		for(auto &Object : PlayState.Map->ObjectManager->Objects)
 			if(Object->Owner == this)
@@ -531,15 +528,6 @@ void _Entity::UpdateHealth(int64_t Adjust) {
 	if(IsInvulnerable() || IsDying())
 		return;
 
-	// Check taking damage
-	if(Adjust < 0) {
-		CombatTimer = 0.0;
-
-		// Set HUD last hit object
-		if(Type == MONSTER)
-			PlayState.HUD->SetLastEntityHit(this);
-	}
-
 	// Update health
 	Health = std::clamp(Health + Adjust, (int64_t)0, MaxHealth);
 
@@ -577,13 +565,20 @@ void _Entity::UpdateHealth(int64_t Adjust) {
 
 		Action = ACTION_STARTDEATH;
 	}
+
+	// Check taking damage
+	if(Adjust < 0) {
+		CombatTimer = 0.0;
+
+		// Set HUD last hit object
+		if(Type == MONSTER)
+			PlayState.HUD->SetLastHit(this);
+	}
 }
 
 // Called when an entity lands a hit
 void _Entity::OnAttack(_Entity *Victim, const _Hit &Hit) {
-	if(!Victim->IsCrate())
-		CombatTimer = 0.0;
-
+	CombatTimer = Victim->IsCrate() ? std::min(CombatTimer, GAME_COMBAT_TIMER - ENTITY_CRATE_COMBATTIME) : 0.0;
 	if(!Projectiles[WEAPONATTACK_MAIN])
 		ae::Audio.PlaySound(GetSound(SOUND_HIT, AttackRequestType), ae::_SoundSettings(glm::vec3(Hit.Position.x, 0.0f, Hit.Position.y), 1.0f, AUDIO_REFERENCE_DISTANCE, AUDIO_MAX_DISTANCE, AUDIO_ROLL_OFF));
 }

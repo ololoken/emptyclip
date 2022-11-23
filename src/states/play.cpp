@@ -1369,7 +1369,7 @@ void _PlayState::ResolveAttack(_Entity *Attacker, int GridType) {
 
 	// Update HUD
 	if(FirstHit)
-		HUD->SetLastEntityHit(FirstHit);
+		HUD->SetLastHit(FirstHit);
 
 	// Update accuracy
 	Attacker->ApplyRecoil();
