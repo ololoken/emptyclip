@@ -1440,8 +1440,8 @@ void _Map::GetDropPosition(_Object *Player, float MaxDistance, glm::vec2 &WorldP
 bool _Map::IsVisible(const glm::vec2 &Start, const glm::vec2 &End, int CheckFlag) const {
 
 	// Find starting and ending tiles
-	glm::ivec2 StartTile = GetValidCoord(glm::ivec2(Start));
-	glm::ivec2 EndTile = GetValidCoord(glm::ivec2(End));
+	glm::ivec2 StartTile = GetValidCoord(Start);
+	glm::ivec2 EndTile = GetValidCoord(End);
 
 	// Check degenerate cases
 	if(!CheckCollisionFlag(StartTile, CheckFlag) || !CheckCollisionFlag(EndTile, CheckFlag))
@@ -1964,10 +1964,8 @@ void _Map::HighlightBlocks(int Layer) {
 }
 
 // Add particle to grid
-void _Map::AddParticle(_Particle *Particle) {
-	glm::ivec2 Coord = GetValidCoord(glm::ivec2(Particle->Position.x, Particle->Position.y));
+void _Map::AddParticle(_Particle *Particle, const glm::ivec2 &Coord) {
 	Data[Coord.x][Coord.y].Particles.push_back(Particle);
-
 	Particles.push_back(Particle);
 }
 

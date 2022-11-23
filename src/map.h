@@ -242,7 +242,7 @@ class _Map {
 
 		void AddBlock(int Layer, _Block Block) { Blocks[Layer].push_back(Block); }
 		void AddEvent(_Event *Event) { Events.push_back(Event); }
-		void AddParticle(_Particle *Particle);
+		void AddParticle(_Particle *Particle, const glm::ivec2 &Coord);
 		void GetSelectedObject(const glm::vec2 &Position, float RadiusSquared, _ObjectSpawn **Object, size_t *Index);
 		void GetSelectedObjects(const glm::vec2 &Start, const glm::vec2 &End, std::vector<_ObjectSpawn *> *SelectedObjects, int Type);
 		void GetSelectedBlocks(const glm::vec2 &Start, const glm::vec2 &End, int Layer, std::vector<size_t> &SelectedBlocks, glm::ivec4 &SelectionBounds);

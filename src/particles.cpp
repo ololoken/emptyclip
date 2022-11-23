@@ -95,9 +95,24 @@ bool _Particles::Create(const _ParticleSpawn &Spawn) {
 			return false;
 
 		// Create particles and add to grid
-		for(int i = 0; i < Spawn.Template->Count; i++) {
-			_Particle *Particle = new _Particle(Spawn);
-			Map->AddParticle(Particle);
+		if(Spawn.Template->Type == FLOOR_DECALS) {
+
+			// Check floor first
+			glm::ivec2 Coord = Map->GetValidCoord(Spawn.Position);
+			if(!Map->CheckCollisionFlag(Coord, _Tile::ENTITY))
+				return false;
+
+			for(int i = 0; i < Spawn.Template->Count; i++) {
+				_Particle *Particle = new _Particle(Spawn);
+				Map->AddParticle(Particle, Coord);
+			}
+		}
+		else {
+			for(int i = 0; i < Spawn.Template->Count; i++) {
+				_Particle *Particle = new _Particle(Spawn);
+				glm::ivec2 Coord = Map->GetValidCoord(Particle->Position);
+				Map->AddParticle(Particle, Coord);
+			}
 		}
 
 		return true;
