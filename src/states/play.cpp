@@ -147,7 +147,7 @@ void _PlayState::Init() {
 	Framebuffer = new ae::_Framebuffer(ae::Graphics.CurrentSize);
 
 	// Load level
-	Map = new _Map(Level, Player->Clock, Player->Progression);
+	Map = new _Map(Level, Player->Clock, (size_t)Player->Progression);
 	Map->InitializeTiles();
 	Player->Map = Map;
 	Player->MapID = Map->Filename;

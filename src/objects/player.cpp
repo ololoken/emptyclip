@@ -795,7 +795,7 @@ int _Player::AddItem(_Item *Item, int &AmountAdded, bool UseOnFull) {
 	Inventory->UpdateTypeCount();
 
 	// Find bag
-	size_t BagIndex = Inventory->FindSuitableBackpackBag(Item, ActiveBackpack, false, false);
+	size_t BagIndex = Inventory->FindSuitableBackpackBag(Item, ActiveBackpack, false, PlayState.HUD->InventoryOpen);
 
 	// Add item
 	return AddItemToBackpack(Item, BagIndex);
