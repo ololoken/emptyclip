@@ -883,7 +883,8 @@ void _Menu::SetFullscreen(bool Fullscreen) {
 		return;
 
 	Config.Fullscreen = Fullscreen;
-	Config.Save();
+	if(!Framework.BenchMode)
+		Config.Save();
 
 	if(Framework.Console)
 		Framework.Console->UpdateSize();
