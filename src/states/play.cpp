@@ -77,7 +77,7 @@ const static int FilterLevelsMods[FILTERTYPE_MODS_COUNT] = {
 	0,
 	5,
 	10,
-	ITEM_QUALITY_RANGE,
+	25,
 };
 
 // Filter text for gear
@@ -96,7 +96,7 @@ const static char *FilterTextMods[FILTERTYPE_MODS_COUNT] = {
 	"0+",
 	"5+",
 	"10+",
-	"15+",
+	"25+",
 };
 
 _PlayState PlayState;
@@ -891,11 +891,11 @@ void _PlayState::Render(double BlendFactor) {
 
 	// Update minimap
 	if(ae::Actions.State[Action::GAME_MAP].Value > 0.0f) {
-		Map->MinimapCaptureSize = HUD_MINIMAP_FULL_CAPTURE_SIZE;
+		Map->MinimapCaptureSize = MINIMAP_FULL_CAPTURE_SIZE;
 		Map->MinimapCaptureSize.x *= ae::Graphics.AspectRatio;
 	}
 	else
-		Map->MinimapCaptureSize = HUD_MINIMAP_CAPTURE_SIZE;
+		Map->MinimapCaptureSize = MINIMAP_CAPTURE_SIZE;
 
 	// Add lights
 	Framebuffer->Clear();

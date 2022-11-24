@@ -55,14 +55,14 @@ struct _SkillText {
 };
 
 static std::vector<_MinimapLegend> MinimapLegends = {
-	{ "Keys", HUD_MINIMAP_KEY_COLOR},
-	{ "Gear",  HUD_MINIMAP_GEAR_COLOR },
-	{ "Mod",  HUD_MINIMAP_MOD_COLOR },
-	{ "Ammo", HUD_MINIMAP_AMMO_COLOR},
-	{ "Consumables", HUD_MINIMAP_CONSUMABLE_COLOR },
-	{ "Crates", HUD_MINIMAP_CRATE_COLOR },
-	{ "Enemies", HUD_MINIMAP_ENEMY_COLOR },
-	{ "Doors/Switches", HUD_MINIMAP_DOOR_COLOR },
+	{ "Keys", MINIMAP_KEY_COLOR},
+	{ "Gear",  MINIMAP_GEAR_COLOR },
+	{ "Mod",  MINIMAP_MOD_COLOR },
+	{ "Ammo", MINIMAP_AMMO_COLOR},
+	{ "Consumables", MINIMAP_CONSUMABLE_COLOR },
+	{ "Crates", MINIMAP_CRATE_COLOR },
+	{ "Enemies", MINIMAP_ENEMY_COLOR },
+	{ "Doors/Switches", MINIMAP_DOOR_COLOR },
 };
 
 static _SkillText SkillText[SKILL_COUNT] = {
@@ -1225,7 +1225,7 @@ void _HUD::DrawInventoryItem(const glm::vec2 &Position, const _Item *Item, bool 
 // Draw unique item's highlight
 void _HUD::DrawUniqueHighlight(const glm::vec2 &Position, const _Item *Item) {
 	glm::vec4 HighlightColor = Item->LightColor;
-	HighlightColor.a = 0.25f;
+	HighlightColor.a = ITEM_HIGHLIGHT_ALPHA;
 	ae::Graphics.DrawScaledImage(Position, ae::Assets.Textures["textures/lights/circle.png"], UI_INVENTORY_ITEM_SIZE * ITEM_HIGHLIGHT_SCALE, HighlightColor);
 }
 

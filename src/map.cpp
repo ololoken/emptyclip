@@ -79,31 +79,31 @@ static const std::vector<glm::vec4> HighlightColors = {
 
 // Minimap icon colors
 static const glm::vec4 MinimapColors[_Map::MINIMAP_COUNT] = {
-	HUD_MINIMAP_WALL_COLOR,
-	HUD_MINIMAP_DOOR_COLOR,
-	HUD_MINIMAP_DOOR_REDCOLOR,
-	HUD_MINIMAP_DOOR_GREENCOLOR,
-	HUD_MINIMAP_DOOR_BLUECOLOR,
-	HUD_MINIMAP_DOOR_BOSSCOLOR,
-	HUD_MINIMAP_TOGGLED_COLOR,
-	HUD_MINIMAP_AMMO_COLOR,
-	HUD_MINIMAP_CONSUMABLE_COLOR,
-	HUD_MINIMAP_GEAR_COLOR,
-	HUD_MINIMAP_MOD_COLOR,
-	HUD_MINIMAP_UNIQUE_COLOR,
-	HUD_MINIMAP_USABLE_COLOR,
-	HUD_MINIMAP_KEY_COLOR,
-	HUD_MINIMAP_CRATE_COLOR,
-	HUD_MINIMAP_ENEMY_COLOR,
-	HUD_MINIMAP_PROJECTILE_COLOR,
-	HUD_MINIMAP_PLAYER_COLOR,
+	MINIMAP_WALL_COLOR,
+	MINIMAP_DOOR_COLOR,
+	MINIMAP_DOOR_REDCOLOR,
+	MINIMAP_DOOR_GREENCOLOR,
+	MINIMAP_DOOR_BLUECOLOR,
+	MINIMAP_DOOR_BOSSCOLOR,
+	MINIMAP_TOGGLED_COLOR,
+	MINIMAP_AMMO_COLOR,
+	MINIMAP_CONSUMABLE_COLOR,
+	MINIMAP_GEAR_COLOR,
+	MINIMAP_MOD_COLOR,
+	MINIMAP_UNIQUE_COLOR,
+	MINIMAP_USABLE_COLOR,
+	MINIMAP_KEY_COLOR,
+	MINIMAP_CRATE_COLOR,
+	MINIMAP_ENEMY_COLOR,
+	MINIMAP_PROJECTILE_COLOR,
+	MINIMAP_PLAYER_COLOR,
 };
 
 // Initialize
 _Map::_Map() :
 	Size{MAP_WIDTH, MAP_HEIGHT},
 	ObjectManager(new _ObjectManager()),
-	MinimapCaptureSize(HUD_MINIMAP_CAPTURE_SIZE),
+	MinimapCaptureSize(MINIMAP_CAPTURE_SIZE),
 	AmbientLight(BaseAmbientLight),
 	TargetAmbientLight(BaseAmbientLight) {
 
@@ -1873,7 +1873,7 @@ void _Map::RenderGrid(int Mode) {
 void _Map::DrawMinimap(bool FullMap, ae::_Bounds &MinimapBounds) {
 
 	// Get bounds of minimap window
-	glm::vec2 DrawSize = FullMap ? glm::vec2(ae::Graphics.CurrentSize.y, ae::Graphics.CurrentSize.y) * 0.75f : HUD_MINIMAP_SIZE * ae::_Element::GetUIScale();
+	glm::vec2 DrawSize = FullMap ? glm::vec2(ae::Graphics.CurrentSize.y, ae::Graphics.CurrentSize.y) * 0.75f : MINIMAP_SIZE * ae::_Element::GetUIScale();
 	if(FullMap) {
 		DrawSize.x *= ae::Graphics.AspectRatio;
 		MinimapBounds = ae::_Bounds(
@@ -1882,7 +1882,7 @@ void _Map::DrawMinimap(bool FullMap, ae::_Bounds &MinimapBounds) {
 		);
 	}
 	else {
-		glm::vec2 Padding = HUD_MINIMAP_PADDING * ae::_Element::GetUIScale();
+		glm::vec2 Padding = MINIMAP_PADDING * ae::_Element::GetUIScale();
 		MinimapBounds = ae::_Bounds(
 			glm::ivec2(ae::Graphics.CurrentSize.x - DrawSize.x - Padding.x, Padding.y),
 			glm::ivec2(ae::Graphics.CurrentSize.x - Padding.x, Padding.y + DrawSize.y)
@@ -1891,58 +1891,95 @@ void _Map::DrawMinimap(bool FullMap, ae::_Bounds &MinimapBounds) {
 
 	// Draw minimap background
 	ae::Graphics.SetProgram(ae::Assets.Programs["ortho_pos"]);
-	ae::Graphics.SetColor(HUD_MINIMAP_BACKGROUND_COLOR);
+	ae::Graphics.SetColor(MINIMAP_BACKGROUND_COLOR);
 	ae::Graphics.EnableScissorTest();
 	ae::Graphics.SetScissor(MinimapBounds);
 	ae::Graphics.DrawRectangle(MinimapBounds, true);
 
-	// Set up minimap rendering
-	ae::Graphics.SetProgram(ae::Assets.Programs["minimap"]);
-	ae::Graphics.SetVertexBufferID(MinimapVBO);
-	ae::Graphics.SetAttribLevel(1);
-	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 2, nullptr);
-
-	// Draw icons for each type
+	// Get minimap screen bounds
 	glm::vec2 CameraPosition(Camera->GetPosition());
 	ae::_Bounds CaptureBounds(CameraPosition - MinimapCaptureSize, CameraPosition + MinimapCaptureSize);
 	glm::vec2 VisionSize = CaptureBounds.End - CaptureBounds.Start;
-	for(int i = 0; i < MINIMAP_COUNT; i++) {
-		if(MinimapIcons[i].empty())
-			continue;
+	if(PlayState.ShowMoreInfo()) {
+		ae::Graphics.SetProgram(ae::Assets.Programs["ortho_pos_uv"]);
 
-		// Set color for icons
-		ae::Graphics.SetColor(MinimapColors[i]);
+		// Draw icons for each type
+		glm::vec2 ImageSize(MINIMAP_IMAGE_SIZE, MINIMAP_IMAGE_SIZE);
+		for(int i = 0; i < MINIMAP_COUNT; i++) {
+			if(MinimapIcons[i].empty())
+				continue;
 
-		// Build vertex buffer for icons
-		size_t VertexIndex = 0;
-		for(const auto &MinimapIcon : MinimapIcons[i]) {
-			if(VertexIndex + 12 > MINIMAP_MAX_VERTICES)
-				break;
+			// Draw icons
+			for(const auto &MinimapIcon : MinimapIcons[i]) {
+				if(!MinimapIcon.Object)
+					continue;
 
-			// Get bounds
-			glm::vec2 Start = MinimapBounds.Start + ((MinimapIcon.Bounds.Start - CaptureBounds.Start) / VisionSize) * DrawSize;
-			glm::vec2 End = MinimapBounds.Start + ((MinimapIcon.Bounds.End - CaptureBounds.Start) / VisionSize) * DrawSize;
+				// Get bounds
+				ae::_Bounds Bounds(MinimapIcon.Position - ImageSize, MinimapIcon.Position + ImageSize);
+				glm::vec2 Start = MinimapBounds.Start + ((Bounds.Start - CaptureBounds.Start) / VisionSize) * DrawSize;
+				glm::vec2 End = MinimapBounds.Start + ((Bounds.End - CaptureBounds.Start) / VisionSize) * DrawSize;
 
-			// First triangle of quad
-			MinimapVertices[VertexIndex++] = Start.x;
-			MinimapVertices[VertexIndex++] = Start.y;
-			MinimapVertices[VertexIndex++] = Start.x;
-			MinimapVertices[VertexIndex++] = End.y;
-			MinimapVertices[VertexIndex++] = End.x;
-			MinimapVertices[VertexIndex++] = End.y;
+				// Draw icon
+				ae::Graphics.SetColor(COLOR_WHITE);
+				ae::Graphics.DrawImage(ae::_Bounds(Start, End), MinimapIcon.Object->Texture);
 
-			// Second triangle of quad
-			MinimapVertices[VertexIndex++] = End.x;
-			MinimapVertices[VertexIndex++] = End.y;
-			MinimapVertices[VertexIndex++] = End.x;
-			MinimapVertices[VertexIndex++] = Start.y;
-			MinimapVertices[VertexIndex++] = Start.x;
-			MinimapVertices[VertexIndex++] = Start.y;
+				// Draw highlight
+				if(MinimapIcon.Object->Unique) {
+					glm::vec4 HighlightColor = MinimapIcon.Object->LightColor;
+					HighlightColor.a = ITEM_HIGHLIGHT_ALPHA;
+					ae::Graphics.SetColor(HighlightColor);
+					ae::Graphics.DrawImage(ae::_Bounds(Start, End), ae::Assets.Textures["textures/lights/circle.png"]);
+				}
+			}
 		}
+	}
+	else {
 
-		// Draw buffer
-		glBufferSubData(GL_ARRAY_BUFFER, 0, (GLsizeiptr)(VertexIndex * sizeof(float)), MinimapVertices);
-		glDrawArrays(GL_TRIANGLES, 0, (GLsizei)(VertexIndex >> 1));
+		// Set up minimap rendering
+		ae::Graphics.SetProgram(ae::Assets.Programs["minimap"]);
+		ae::Graphics.SetVertexBufferID(MinimapVBO);
+		ae::Graphics.SetAttribLevel(1);
+		glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 2, nullptr);
+
+		// Draw colors for each type
+		for(int i = 0; i < MINIMAP_COUNT; i++) {
+			if(MinimapIcons[i].empty())
+				continue;
+
+			// Set color for icons
+			ae::Graphics.SetColor(MinimapColors[i]);
+
+			// Build vertex buffer for icons
+			size_t VertexIndex = 0;
+			for(const auto &MinimapIcon : MinimapIcons[i]) {
+				if(VertexIndex + 12 > MINIMAP_MAX_VERTICES)
+					break;
+
+				// Get bounds
+				glm::vec2 Start = MinimapBounds.Start + ((MinimapIcon.Bounds.Start - CaptureBounds.Start) / VisionSize) * DrawSize;
+				glm::vec2 End = MinimapBounds.Start + ((MinimapIcon.Bounds.End - CaptureBounds.Start) / VisionSize) * DrawSize;
+
+				// First triangle of quad
+				MinimapVertices[VertexIndex++] = Start.x;
+				MinimapVertices[VertexIndex++] = Start.y;
+				MinimapVertices[VertexIndex++] = Start.x;
+				MinimapVertices[VertexIndex++] = End.y;
+				MinimapVertices[VertexIndex++] = End.x;
+				MinimapVertices[VertexIndex++] = End.y;
+
+				// Second triangle of quad
+				MinimapVertices[VertexIndex++] = End.x;
+				MinimapVertices[VertexIndex++] = End.y;
+				MinimapVertices[VertexIndex++] = End.x;
+				MinimapVertices[VertexIndex++] = Start.y;
+				MinimapVertices[VertexIndex++] = Start.x;
+				MinimapVertices[VertexIndex++] = Start.y;
+			}
+
+			// Draw buffer
+			glBufferSubData(GL_ARRAY_BUFFER, 0, (GLsizeiptr)(VertexIndex * sizeof(float)), MinimapVertices);
+			glDrawArrays(GL_TRIANGLES, 0, (GLsizei)(VertexIndex >> 1));
+		}
 	}
 
 	// Reset state

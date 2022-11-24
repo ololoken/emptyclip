@@ -144,12 +144,18 @@ void _ObjectManager::Update(double FrameTime, _Map *Map) {
 			switch(Object->Type) {
 				case _Object::WEAPON:
 				case _Object::ARMOR:
+					MinimapIcon.Object = Object;
+					MinimapIcon.Position = Object->Position;
 					Map->MinimapIcons[Object->Unique ? _Map::MINIMAP_UNIQUE : _Map::MINIMAP_GEAR].push_back(MinimapIcon);
 				break;
 				case _Object::MOD:
+					MinimapIcon.Object = Object;
+					MinimapIcon.Position = Object->Position;
 					Map->MinimapIcons[Object->Unique ? _Map::MINIMAP_UNIQUE : _Map::MINIMAP_MOD].push_back(MinimapIcon);
 				break;
 				case _Object::KEY:
+					MinimapIcon.Object = Object;
+					MinimapIcon.Position = Object->Position;
 					Map->MinimapIcons[_Map::MINIMAP_KEY].push_back(MinimapIcon);
 				break;
 				case _Object::AMMO:
@@ -161,6 +167,8 @@ void _ObjectManager::Update(double FrameTime, _Map *Map) {
 						Map->MinimapIcons[_Map::MINIMAP_CONSUMABLE].push_back(MinimapIcon);
 				break;
 				case _Object::USABLE:
+					MinimapIcon.Object = Object;
+					MinimapIcon.Position = Object->Position;
 					Map->MinimapIcons[_Map::MINIMAP_UNIQUE].push_back(MinimapIcon);
 				break;
 				case _Object::PROP:

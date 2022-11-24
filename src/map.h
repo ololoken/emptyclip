@@ -168,6 +168,8 @@ struct _ObjectSpawn {
 // Holds minimap icon data
 struct _MinimapIcon {
 	ae::_Bounds Bounds;
+	glm::vec2 Position;
+	const _Object *Object{nullptr};
 };
 
 // Classes
