@@ -854,6 +854,15 @@ void _HUD::Render(bool FullMap) {
 		ae::_Bounds MinimapBounds;
 		PlayState.Map->DrawMinimap(FullMap, MinimapBounds);
 
+		// Draw icon hint
+		if(ae::Actions.HasInputForAction(Action::GAME_MOREINFO)) {
+			ae::Assets.Fonts["hud_tiny"]->DrawTextFormatted(
+				"[c gray]Hold [c white]" + ae::Actions.GetInputNameForAction(Action::GAME_MOREINFO) + "[c gray] to show icons",
+				glm::vec2(MinimapBounds.Start.x, MinimapBounds.End.y + 18 * ae::_Element::GetUIScale()),
+				ae::LEFT_BASELINE
+			);
+		}
+
 		// Draw legend
 		glm::vec2 DrawPosition(MinimapBounds.Start);
 		glm::vec2 LegendHalfSize = glm::vec2(8, 8) * ae::_Element::GetUIScale();
