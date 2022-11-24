@@ -73,11 +73,19 @@ void _Framework::Init(int ArgumentCount, char **Arguments) {
 			State = &ConvertState;
 			ConvertState.SetParam1(Arguments[++i]);
 		}
+		else if(Token == "-bench" && TokensRemaining > 0) {
+			State = &PlayState;
+			BenchMode = true;
+			PlayState.Level = Arguments[++i];
+			PlayState.GodMode = true;
+			PlayState.TestMode = true;
+			Config.Vsync = 0;
+			Config.MaxFPS = 0.0;
+		}
 		else if(Token == "-level" && TokensRemaining > 0) {
+			State = &PlayState;
 			PlayState.Level = Arguments[++i];
 			PlayState.TestMode = true;
-
-			State = &PlayState;
 		}
 		else if(Token == "-dev") {
 			#ifndef NDEBUG
@@ -92,7 +100,7 @@ void _Framework::Init(int ArgumentCount, char **Arguments) {
 	Log << "Empty Clip " << GAME_VERSION << "-" << BUILD_VERSION << std::endl;
 
 	// Set random seed
-	ae::RandomGenerator.seed(SDL_GetPerformanceCounter());
+	ae::RandomGenerator.seed(BenchMode ? 0 : SDL_GetPerformanceCounter());
 
 	// Create frame limiter
 	FrameLimit = new ae::_FrameLimit(Config.MaxFPS);
@@ -196,6 +204,7 @@ void _Framework::Update() {
 
 	// Get frame time
 	double FrameTime = (SDL_GetPerformanceCounter() - Timer) / (double)SDL_GetPerformanceFrequency();
+	ElapsedTime += FrameTime;
 	Timer = SDL_GetPerformanceCounter();
 
 	// Get events from SDL
@@ -269,26 +278,37 @@ void _Framework::Update() {
 				Done = true;
 		} break;
 		case UPDATE: {
-			TimeStepAccumulator += std::min(FrameTime, GAME_MAX_FRAMETIME);
-			while(TimeStepAccumulator >= TimeStep) {
+			if(BenchMode) {
 				State->Update(TimeStep);
-				if(Console) {
-					Console->Update(TimeStep);
-					if(!Console->Command.empty()) {
-						bool Handled = State->HandleCommand(Console);
-						if(!Handled)
-							HandleCommand(Console);
-						Console->Command = "";
+				State->Render(0.0f);
+				Frames++;
+				if(ElapsedTime >= BENCH_TIME)
+					Done = true;
+			}
+			else {
+				TimeStepAccumulator += std::min(FrameTime, GAME_MAX_FRAMETIME);
+				while(TimeStepAccumulator >= TimeStep && !Done) {
+					State->Update(TimeStep);
+					if(Console) {
+						Console->Update(TimeStep);
+						if(!Console->Command.empty()) {
+							bool Handled = State->HandleCommand(Console);
+							if(!Handled)
+								HandleCommand(Console);
+							Console->Command = "";
+						}
 					}
+
+					TimeStepAccumulator -= TimeStep;
 				}
 
-				TimeStepAccumulator -= TimeStep;
-			}
+				double BlendFactor = TimeStepAccumulator / TimeStep;
+				State->Render(BlendFactor);
+				if(Console)
+					Console->Render(BlendFactor);
 
-			double BlendFactor = TimeStepAccumulator / TimeStep;
-			State->Render(BlendFactor);
-			if(Console)
-				Console->Render(BlendFactor);
+				Frames++;
+			}
 		} break;
 		case CLOSE: {
 			if(State)

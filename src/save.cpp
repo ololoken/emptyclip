@@ -360,6 +360,8 @@ void _Save::LoadPlayer(_Player *Player) {
 
 // Saves information to a file
 void _Save::SavePlayer(_Player *Player) {
+	if(Player->SavePath.empty())
+		return;
 
 	// Open file
 	std::string SavePath = Config.ConfigPath + "_temp.save";

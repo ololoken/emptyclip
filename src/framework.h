@@ -57,8 +57,11 @@ class _Framework {
 
 		// State
 		ae::_LogFile Log;
+		double ElapsedTime{0.0};
 		bool Done{false};
 		bool IgnoreNextInputEvent{false};
+		bool BenchMode{false};
+		int Frames{0};
 
 	private:
 

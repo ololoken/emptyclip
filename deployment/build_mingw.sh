@@ -61,6 +61,7 @@ build() {
 	cp "${projectdir}"/{README,CHANGELOG} "${archive_base}"/
 	#echo "${project}.exe -editor" > "${archive_base}"/run_editor.bat
 	echo "${project}.exe -level bench" > "${archive_base}"/run_bench.bat
+	echo "${project}.exe -bench b01" > "${archive_base}"/run_b01.bat
 	#chmod +x "${archive_base}"/*.bat
 
 	# zip

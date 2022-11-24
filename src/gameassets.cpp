@@ -61,21 +61,22 @@ void _GameAssets::LoadSounds(const std::string &Path) {
 		std::string ID;
 		std::getline(File, ID, '\t');
 
-		// Load sound
-		ae::_Sound *Sound = ae::Assets.Sounds[ID];
-		if(!Sound)
-			throw std::runtime_error(std::string(__func__) + " unknown sound_id '" + ID + "'");
-
 		// Read parameters
 		float Volume;
 		int Limit;
 		File >> Volume >> Limit;
 		File.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
-		Sound->Volume = Volume;
-		Sound->Limit = Limit;
+		// Load sound
+		ae::_Sound *Sound = ae::Assets.Sounds[ID];
+		if(Sound) {
+			Sound->Volume = Volume;
+			Sound->Limit = Limit;
 
-		ae::Audio.LoadChannel(Sound);
+			ae::Audio.LoadChannel(Sound);
+		}
+		else if(ae::Audio.IsEnabled())
+			throw std::runtime_error(std::string(__func__) + " unknown sound_id '" + ID + "'");
 	}
 
 	File.close();

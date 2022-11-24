@@ -110,18 +110,25 @@ void _PlayState::Init() {
 	// Check for player
 	if(TestMode) {
 		Player = new _Player(Stats.Objects.at("player"));
-		Player->SavePath = Config.ConfigPath + "test.save";
-		try {
-			Save.LoadPlayer(Player);
-		}
-		catch(std::invalid_argument &Error) {
-
-			// Create new test save
+		if(Framework.BenchMode) {
 			Player->Name = "test";
 			Player->RecalculateStats();
 			Player->Health = Player->MaxHealth;
-			Player->TestSave = true;
-			Save.SavePlayer(Player);
+		}
+		else {
+			Player->SavePath = Config.ConfigPath + "test.save";
+			try {
+				Save.LoadPlayer(Player);
+			}
+			catch(std::invalid_argument &Error) {
+
+				// Create new test save
+				Player->Name = "test";
+				Player->RecalculateStats();
+				Player->Health = Player->MaxHealth;
+				Player->TestSave = true;
+				Save.SavePlayer(Player);
+			}
 		}
 
 		Player->TestSave = true;
@@ -203,6 +210,8 @@ void _PlayState::Init() {
 
 // Close map
 void _PlayState::Close() {
+	if(Framework.BenchMode)
+		Framework.Log << "ElapsedTime=" << Framework.ElapsedTime << " Frames=" << Framework.Frames << " PlayerPosition=" << Player->Position.x << "," << Player->Position.y << std::endl;
 
 	// Player has already been penalized
 	if(!Player->Hardcore && Player->IsDead()) {
@@ -350,6 +359,13 @@ bool _PlayState::HandleAction(int InputType, size_t Action, int Value) {
 
 // Key handler
 bool _PlayState::HandleKey(const ae::_KeyEvent &KeyEvent) {
+	if(Framework.BenchMode) {
+		if(KeyEvent.Pressed && KeyEvent.Scancode == SDL_SCANCODE_ESCAPE)
+			Framework.Done = true;
+
+		return false;
+	}
+
 	bool Handled = ae::Graphics.Element->HandleKey(KeyEvent);
 
 	bool SendAction = true;
@@ -397,6 +413,9 @@ bool _PlayState::HandleKey(const ae::_KeyEvent &KeyEvent) {
 
 // Mouse handler
 void _PlayState::HandleMouseButton(const ae::_MouseEvent &MouseEvent) {
+	if(Framework.BenchMode)
+		return;
+
 	HUD->HandleMouseButton(MouseEvent);
 
 	if(IsPaused())
@@ -609,7 +628,7 @@ void _PlayState::Update(double FrameTime) {
 	Camera->ConvertScreenToWorld(ae::Input.GetMouse(), WorldCursor);
 
 	// Handle input
-	if(!Player->IsDying() && ae::FocusedElement == nullptr) {
+	if(!Player->IsDying() && ae::FocusedElement == nullptr && !Framework.BenchMode) {
 
 		// Turn character to face the world cursor
 		if(Player->Action != ACTION_MELEE)
@@ -664,6 +683,12 @@ void _PlayState::Update(double FrameTime) {
 	}
 	else
 		HUD->SetInventoryOpen(false);
+
+	// Walk right during bench mode
+	if(Framework.BenchMode) {
+		Player->FacePosition(glm::vec2(1000.0f, 0.0f));
+		Player->MoveState = MOVE_RIGHT;
+	}
 
 	int64_t PlayerHealth = Player->Health;
 
@@ -1125,7 +1150,7 @@ void _PlayState::Render(double BlendFactor) {
 	HUD->Render(ae::FocusedElement == nullptr && ae::Actions.State[Action::GAME_MAP].Value > 0.0f);
 
 	// Debug mode
-	if(DebugMode) {
+	if(DebugMode || Framework.BenchMode) {
 		glm::vec2 DrawPosition = glm::vec2(10, 230) * ae::_Element::GetUIScale();
 		glm::vec2 Spacing(0, 16 * ae::_Element::GetUIScale());
 		std::ostringstream Buffer;

@@ -54,6 +54,8 @@ const  int          SAVE_SLOTS                           =  10;
 const  int          SAVE_VERSION                         =  8;
 const  int          SAVE_VERSION_NEW                     =  8;
 const  double       SAVE_TIME                            =  60.0;
+//     Benchmark
+const  double       BENCH_TIME                           =  10.0;
 //     Camera
 const  float        CAMERA_DISTANCE                      =  6.5f;
 const  float        CAMERA_DISTANCE_AIMED                =  CAMERA_DISTANCE;
