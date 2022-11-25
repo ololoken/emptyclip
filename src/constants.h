@@ -145,6 +145,7 @@ const  float        ITEM_PLACEMENT_RADIUS_REDUCTION      =  0.9f;
 const  float        ITEM_RADIUS                          =  0.25f;
 const  glm::vec4    ITEM_QUALITY_GOOD_COLOR              =  glm::vec4(1.0f,0.2f,0.2f,1.0f);
 const  glm::vec4    ITEM_QUALITY_BAD_COLOR               =  glm::vec4(0.2f,1.0f,0.2f,1.0f);
+const  int          ITEM_UNIQUE_LIGHTS                   =  10;
 const  float        ITEM_HIGHLIGHT_SCALE                 =  1.3f;
 const  float        ITEM_HIGHLIGHT_ALPHA                 =  0.25f;
 const  float        ITEM_FILTERED_ALPHA                  =  0.1f;

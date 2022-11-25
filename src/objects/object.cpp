@@ -72,22 +72,19 @@ void _Object::Render(double BlendFactor) const {
 }
 
 // Render lights
-void _Object::RenderLights(double BlendFactor) {
+void _Object::RenderLights(double BlendFactor, float Alpha) {
 	if(!LightTexture)
 		return;
 
 	if(this == PlayState.HUD->CursorItem)
 		return;
 
-	if(Filtered)
-		return;
-
 	glm::vec2 DrawPosition;
 	GetDrawPosition(DrawPosition, BlendFactor);
 
-	ae::Graphics.SetColor(LightColor);
+	ae::Graphics.SetColor(glm::vec4(LightColor.r, LightColor.g, LightColor.b, LightColor.a * Alpha));
 	if(Unique) {
-		for(int i = 0; i < 10; i++)
+		for(int i = 0; i < ITEM_UNIQUE_LIGHTS; i++)
 			ae::Graphics.DrawSprite(glm::vec3(DrawPosition, PositionZ + i * 0.1f), LightTexture, 0, LightScale);
 	}
 	else

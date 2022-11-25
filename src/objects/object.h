@@ -116,7 +116,7 @@ class _Object {
 
 		virtual void Update(double FrameTime);
 		virtual void Render(double BlendFactor) const;
-		virtual void RenderLights(double BlendFactor);
+		virtual void RenderLights(double BlendFactor, float Alpha);
 		virtual void Serialize(ae::_Buffer &Buffer) {}
 
 		bool IsDying() const { return Action == ACTION_DYING || Action == ACTION_STARTDEATH; }

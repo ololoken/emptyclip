@@ -307,7 +307,7 @@ int _ObjectManager::RenderItems(double BlendFactor) {
 // Render object lights
 int _ObjectManager::RenderLights(int Type, double BlendFactor) {
 	for(auto Iterator : RenderList[Type])
-		Iterator->RenderLights(BlendFactor);
+		Iterator->RenderLights(BlendFactor, (Iterator->Template.RenderListType != -1) ? ItemRenderList[Iterator->Template.RenderListType].Alpha : 1.0f);
 
 	return (int)RenderList[Type].size();
 }
