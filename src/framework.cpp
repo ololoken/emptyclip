@@ -63,7 +63,7 @@ void _Framework::Init(int ArgumentCount, char **Arguments) {
 		TokensRemaining = ArgumentCount - i - 1;
 
 		if(Token == "-editor") {
-			#ifdef ENABLE_EDITOR
+			#if defined ENABLE_EDITOR && ENABLE_EDITOR == 1
 				State = &EditorState;
 				if(TokensRemaining && Arguments[i+1][0] != '-')
 					EditorState.SetMapFilename(Arguments[++i]);

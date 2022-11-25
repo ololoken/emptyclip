@@ -20,9 +20,9 @@ if(WIN32)
 	set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,-subsystem,windows")
 endif()
 
-# enable editor
-if("$ENV{ENABLE_EDITOR}")
-	add_definitions("-DENABLE_EDITOR")
+# editor
+if(DEFINED ENV{ENABLE_EDITOR})
+	add_definitions("-DENABLE_EDITOR=$ENV{ENABLE_EDITOR}")
 endif()
 
 # achievements

@@ -157,8 +157,13 @@ void _Menu::Init() {
 			Column = 0;
 		}
 	}
-
 	AchievementContainer->CalculateBounds();
+
+	// Disable buttons
+	if(!Achievements.Enabled) {
+		ae::Assets.Elements["button_menu_title_achievements"]->SetEnabled(false);
+		ae::Assets.Elements["button_menu_ingame_achievements"]->SetEnabled(false);
+	}
 }
 
 // Init title screen
@@ -172,11 +177,6 @@ void _Menu::InitTitle() {
 
 	ae::Assets.Elements["label_game_version"]->Text = std::string("pre") + GAME_VERSION + BuildVersion;
 	ae::Assets.Elements["label_game_version"]->SetActive(true);
-
-	if(!Achievements.Enabled) {
-		ae::Assets.Elements["button_menu_title_achievements"]->SetEnabled(false);
-		ae::Assets.Elements["button_menu_ingame_achievements"]->SetEnabled(false);
-	}
 
 	Background = ae::Assets.Elements["image_menu_bg"];
 	HandleResize();
