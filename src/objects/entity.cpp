@@ -475,6 +475,7 @@ void _Entity::Move(double FrameTime) {
 			TileChanged = true;
 
 		Position = NewPosition;
+		UpdateBounds();
 
 		Map->AddObjectToGrid(this, GridType);
 

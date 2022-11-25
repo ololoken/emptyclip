@@ -51,6 +51,7 @@ void _Object::Update(double FrameTime) {
 			if(Template.ParticleTemplate)
 				PlayState.GenerateProjectileEffects(Template.ParticleTemplate, Position, Color);
 			CheckProjectileCollisions();
+			UpdateBounds();
 		} break;
 	}
 }
@@ -118,6 +119,21 @@ const ae::_Sound *_Object::GetSound(int SoundType) const {
 	return SoundIDs[ae::GetRandomInt((size_t)0, SoundIDs.size()-1)];
 }
 
+// Update object's bounds
+void _Object::UpdateBounds() {
+	Bounds[0] = Position.x - Scale * 0.5f;
+	Bounds[1] = Position.y - Scale * 0.5f;
+	Bounds[2] = Position.x + Scale * 0.5f;
+	Bounds[3] = Position.y + Scale * 0.5f;
+
+	if(LightTexture) {
+		LightBounds[0] = Position.x - LightScale[0] * 0.5f;
+		LightBounds[1] = Position.y - LightScale[1] * 0.5f;
+		LightBounds[2] = Position.x + LightScale[0] * 0.5f;
+		LightBounds[3] = Position.y + LightScale[1] * 0.5f;
+	}
+}
+
 // Set two range attributes given a level, spread and multiplier
 void _Object::SetAttributeRange(const std::string &AttributeName, float Multiplier) {
 	GetAttributeRange(AttributeName, Multiplier, Attributes["min_" + AttributeName].Int, Attributes["max_" + AttributeName].Int);
@@ -160,22 +176,6 @@ void _Object::CreateAmmoPickup(float SpawnPositionZ) {
 	Map->AddObject(AmmoItem, GRID_ITEM);
 }
 
-// Get render bounds of object
-void _Object::GetRenderBounds(glm::vec4 &Bounds) {
-	Bounds[0] = Position.x - Scale * 0.5f;
-	Bounds[1] = Position.y - Scale * 0.5f;
-	Bounds[2] = Position.x + Scale * 0.5f;
-	Bounds[3] = Position.y + Scale * 0.5f;
-}
-
-// Get bounds of object's light
-void _Object::GetLightBounds(glm::vec4 &Bounds) {
-	Bounds[0] = Position.x - LightScale[0] * 0.5f;
-	Bounds[1] = Position.y - LightScale[1] * 0.5f;
-	Bounds[2] = Position.x + LightScale[0] * 0.5f;
-	Bounds[3] = Position.y + LightScale[1] * 0.5f;
-}
-
 // Calculates the angle from a slope
 void _Object::FacePosition(const glm::vec2 &Target) {
 	Direction = Target - Position;
@@ -192,6 +192,7 @@ void _Object::FacePosition(const glm::vec2 &Target) {
 // Force position of object
 void _Object::SetPosition(const glm::vec2 &NewPosition) {
 	LastPosition = Position = NewPosition;
+	UpdateBounds();
 }
 
 // Get direction of object as a unit vector

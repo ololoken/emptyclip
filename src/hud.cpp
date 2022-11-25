@@ -1554,7 +1554,7 @@ void _HUD::MoveWorldItem(const glm::vec2 &DropPosition) {
 	}
 
 	// Reset state
-	CursorItem->LastPosition = CursorItem->Position;
+	CursorItem->SetPosition(CursorItem->Position);
 	CursorItem->Visible = true;
 	CursorItem = nullptr;
 }

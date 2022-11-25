@@ -828,7 +828,6 @@ _Item *_Stats::CreateItem(const std::string &ID, int Level, int Quality, const g
 	Item->ID = ID;
 	Item->Level = Level;
 	Item->Quality = Quality;
-	Item->SetPosition(Position);
 	Item->Texture = ae::Assets.Textures[Template.IconID];
 
 	// Generate random quality
@@ -851,6 +850,8 @@ _Item *_Stats::CreateItem(const std::string &ID, int Level, int Quality, const g
 	// Set ammo on weapons
 	if(Template.Type == _Object::WEAPON)
 		Item->Attributes["ammo"].Int = std::round(Item->Attributes.at("rounds").Float);
+
+	Item->SetPosition(Position);
 
 	return Item;
 }

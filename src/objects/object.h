@@ -138,8 +138,7 @@ class _Object {
 		virtual const _ParticleTemplate *GetParticle(int ParticleType) const { return nullptr; }
 		const ae::_Sound *GetSound(int SoundType) const;
 
-		void GetRenderBounds(glm::vec4 &Bounds);
-		void GetLightBounds(glm::vec4 &Bounds);
+		void UpdateBounds();
 		void FacePosition(const glm::vec2 &Target);
 		void SetPosition(const glm::vec2 &NewPosition);
 		void GetDrawPosition(glm::vec2 &DrawPosition, double BlendFactor) const { DrawPosition = Position * (float)BlendFactor + LastPosition * (float)(1.0 - BlendFactor); }
@@ -215,8 +214,10 @@ class _Object {
 		const ae::_Texture *Texture{nullptr};
 		const ae::_Texture *LightTexture{nullptr};
 		const ae::_Mesh *Mesh{nullptr};
+		glm::vec4 Bounds{0.0f};
 		glm::vec4 Color{1.0f};
 		glm::vec4 LightColor{1.0f};
+		glm::vec4 LightBounds{0.0f};
 		glm::vec2 LightScale{1.0f};
 		float Rotation{0.0f};
 		float RotationSpeed{0.0f};

@@ -1803,14 +1803,10 @@ void _PlayState::UpdateMonsters(double FrameTime) {
 			if(Monster->MoveState)
 				ActiveAI++;
 
-			// Get bounds
-			glm::vec4 Bounds;
-			Monster->GetRenderBounds(Bounds);
-
 			// Add to minimap
-			if((Monster->ShowOnMinimap() || HasBossKey) && Monster->Health > 0 && Map->CheckMinimapBounds(Bounds)) {
+			if((Monster->ShowOnMinimap() || HasBossKey) && Monster->Health > 0 && Map->CheckMinimapBounds(Monster->Bounds)) {
 				_MinimapIcon MinimapIcon;
-				MinimapIcon.Bounds = Bounds;
+				MinimapIcon.Bounds = Monster->Bounds;
 				if(Monster->IsCrate())
 					Map->MinimapIcons[_Map::MINIMAP_CRATE].push_back(MinimapIcon);
 				else
@@ -1824,7 +1820,7 @@ void _PlayState::UpdateMonsters(double FrameTime) {
 			}
 
 			// Add to render list
-			if(Camera->IsAABBInView(Bounds)) {
+			if(Camera->IsAABBInView(Monster->Bounds)) {
 				int RenderListType = Monster->IsCrate() ? _ObjectManager::RENDER_PROP : _ObjectManager::RENDER_MONSTER;
 				Map->ObjectManager->RenderList[RenderListType].push_back(Monster);
 			}

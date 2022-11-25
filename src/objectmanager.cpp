@@ -125,12 +125,8 @@ void _ObjectManager::Update(double FrameTime, _Map *Map) {
 			break;
 		}
 
-		// Get object bounds
-		glm::vec4 Bounds;
-		Object->GetRenderBounds(Bounds);
-
 		// Add to minimap
-		if(!Object->Filtered && Map->CheckMinimapBounds(Bounds)) {
+		if(!Object->Filtered && Map->CheckMinimapBounds(Object->Bounds)) {
 			_MinimapIcon MinimapIcon;
 
 			// Get bounds
@@ -182,7 +178,7 @@ void _ObjectManager::Update(double FrameTime, _Map *Map) {
 
 		// Add to render list
 		bool DrawLight = true;
-		if(Map->Camera->IsAABBInView(Bounds)) {
+		if(Map->Camera->IsAABBInView(Object->Bounds)) {
 			if(Object->Template.IsItem()) {
 				_Item *Item = (_Item *)Object;
 
@@ -205,8 +201,7 @@ void _ObjectManager::Update(double FrameTime, _Map *Map) {
 
 		// Get light bounds
 		if(Object->LightTexture && DrawLight) {
-			Object->GetLightBounds(Bounds);
-			if(Map->Camera->IsAABBInView(Bounds))
+			if(Map->Camera->IsAABBInView(Object->LightBounds))
 				RenderList[RENDER_LIGHTS].push_back(Object);
 		}
 	}
