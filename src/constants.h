@@ -240,7 +240,7 @@ const  glm::vec4    MINIMAP_DOOR_COLOR                   =  glm::vec4(0.28f,0.28
 const  glm::vec4    MINIMAP_DOOR_REDCOLOR                =  glm::vec4(1.0f,0.0f,0.0f,1.0f);
 const  glm::vec4    MINIMAP_DOOR_GREENCOLOR              =  glm::vec4(0.0f,1.0f,0.0f,1.0f);
 const  glm::vec4    MINIMAP_DOOR_BLUECOLOR               =  glm::vec4(0.0f,0.0f,1.0f,1.0f);
-const  glm::vec4    MINIMAP_DOOR_BOSSCOLOR               =  glm::vec4(0.0f,0.0f,0.0f,1.0f);
+const  glm::vec4    MINIMAP_DOOR_BOSSCOLOR               =  glm::vec4(1.0f,1.0f,0.0f,1.0f);
 const  glm::vec4    MINIMAP_TOGGLED_COLOR                =  glm::vec4(0.035f,0.035f,0.035f,1.0f);
 const  float        MINIMAP_IMAGE_SIZE                   =  1.0f;
 //     Light
