@@ -60,7 +60,6 @@ class _Player : public _Entity {
 
 		bool IsDead() const { return Action == ACTION_DYING && !Active; }
 		bool IsMelee() const;
-		const char *GetWeaponID(int AttackType) override;
 
 		void Render(double BlendFactor) const override;
 		void Render2D(const glm::ivec2 &DrawPosition);
@@ -136,6 +135,8 @@ class _Player : public _Entity {
 		_Item *GetArmor() const;
 		int GetInventoryMaxStack() const;
 		const ae::_Sound *GetSound(int SoundType, int AttackType) const override;
+		const char *GetWeaponID(int AttackType) override;
+		void GetDamageText(std::ostringstream &Buffer, int AttackType, bool Average, double Multiplier);
 
 		void AdjustLegDirection(float Destination);
 		void SetLegAnimationPlayMode(int Mode) override;

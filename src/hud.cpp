@@ -977,6 +977,7 @@ void _HUD::DrawCharacterScreen() {
 
 	// Set skill labels
 	std::ostringstream Buffer;
+	Buffer << std::setprecision(5);
 	Buffer << Player->SkillPointsRemaining;
 	Elements[LABEL_SKILL_REMAINING]->Text = Buffer.str();
 	Buffer.str("");
@@ -993,10 +994,7 @@ void _HUD::DrawCharacterScreen() {
 
 	// Offense
 	if(Player->GetMainHand()) {
-		if(PlayState.ShowMoreInfo())
-			Buffer << ae::Round2((Player->MinDamage[WEAPONATTACK_MAIN] + Player->MaxDamage[WEAPONATTACK_MAIN]) * 0.5f) << " avg";
-		else
-			Buffer << Player->MinDamage[WEAPONATTACK_MAIN] << " - " << Player->MaxDamage[WEAPONATTACK_MAIN];
+		Player->GetDamageText(Buffer, WEAPONATTACK_MAIN, PlayState.ShowMoreInfo(), 1.0);
 		DrawAttribute("Damage", Buffer, DrawPosition);
 
 		if(PlayState.ShowMoreInfo())
@@ -1014,16 +1012,13 @@ void _HUD::DrawCharacterScreen() {
 		Buffer << Player->CritChance[WEAPONATTACK_MAIN] << "%";
 		DrawAttribute("Critical Hit Chance", Buffer, DrawPosition);
 
-		Buffer << Player->CritDamage[WEAPONATTACK_MAIN] << "%";
+		Player->GetDamageText(Buffer, WEAPONATTACK_MAIN, PlayState.ShowMoreInfo(), Player->CritDamage[WEAPONATTACK_MAIN] * 0.01);
 		DrawAttribute("Critical Hit Damage", Buffer, DrawPosition);
 	}
 
 	DrawPosition.y += 10 * ae::_Element::GetUIScale();
 
-	if(PlayState.ShowMoreInfo())
-		Buffer << ae::Round2((Player->MinDamage[WEAPONATTACK_MELEE] + Player->MaxDamage[WEAPONATTACK_MELEE]) * 0.5f) << " avg";
-	else
-		Buffer << Player->MinDamage[WEAPONATTACK_MELEE] << " - " << Player->MaxDamage[WEAPONATTACK_MELEE];
+	Player->GetDamageText(Buffer, WEAPONATTACK_MELEE, PlayState.ShowMoreInfo(), 1.0);
 	DrawAttribute("Melee Damage", Buffer, DrawPosition);
 
 	Buffer << ae::Round1(Player->AttackRange[WEAPONATTACK_MELEE]);
@@ -1035,7 +1030,7 @@ void _HUD::DrawCharacterScreen() {
 	Buffer << Player->CritChance[WEAPONATTACK_MELEE] << "%";
 	DrawAttribute("Melee Crit Chance", Buffer, DrawPosition);
 
-	Buffer << Player->CritDamage[WEAPONATTACK_MELEE] << "%";
+	Player->GetDamageText(Buffer, WEAPONATTACK_MELEE, PlayState.ShowMoreInfo(), Player->CritDamage[WEAPONATTACK_MELEE] * 0.01);
 	DrawAttribute("Melee Crit Damage", Buffer, DrawPosition);
 
 	DrawPosition.y += 10 * ae::_Element::GetUIScale();
@@ -1219,8 +1214,9 @@ void _HUD::DrawBagInfo(const _Bag &Bag, ae::_Element *Element) {
 // Draw character stat on character screen
 void _HUD::DrawAttribute(const std::string &Label, std::ostringstream &Buffer, glm::vec2 &DrawPosition) const {
 	glm::vec2 DrawOffset(10 * ae::_Element::GetUIScale(), 0);
+	const char *FontID = Buffer.str().length() > 15 ? "hud_tiny" : "hud_char";
 	ae::Assets.Fonts["hud_char"]->DrawText(Label, glm::ivec2(DrawPosition), ae::RIGHT_BASELINE);
-	ae::Assets.Fonts["hud_char"]->DrawText(Buffer.str(), glm::ivec2(DrawPosition + DrawOffset), ae::LEFT_BASELINE);
+	ae::Assets.Fonts[FontID]->DrawText(Buffer.str(), glm::ivec2(DrawPosition + DrawOffset), ae::LEFT_BASELINE);
 	Buffer.str("");
 
 	DrawPosition.y += 20 * ae::_Element::GetUIScale();

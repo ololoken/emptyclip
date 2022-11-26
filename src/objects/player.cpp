@@ -27,12 +27,14 @@
 #include <ae/audio.h>
 #include <ae/ui.h>
 #include <ae/random.h>
+#include <ae/util.h>
 #include <config.h>
 #include <hud.h>
 #include <framework.h>
 #include <gameassets.h>
 #include <stats.h>
 #include <map.h>
+#include <iomanip>
 #include <stdexcept>
 #include <algorithm>
 #include <glm/geometric.hpp>
@@ -1639,6 +1641,14 @@ const char *_Player::GetWeaponID(int AttackType) {
 		return GetMelee()->Template.ID.c_str();
 
 	return "weapon_fists";
+}
+
+// Fill buffer with damage text string
+void _Player::GetDamageText(std::ostringstream &Buffer, int AttackType, bool Average, double Multiplier) {
+	if(Average)
+		Buffer << ae::Round2((MinDamage[AttackType] + MaxDamage[AttackType]) * 0.5 * Multiplier) << " avg";
+	else
+		Buffer << (int64_t)(MinDamage[AttackType] * Multiplier) << " - " << (int64_t)(MaxDamage[AttackType] * Multiplier);
 }
 
 void _Player::SetLegAnimationPlayMode(int Mode) {
