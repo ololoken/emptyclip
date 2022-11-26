@@ -278,7 +278,7 @@ void _HUD::HandleMouseButton(const ae::_MouseEvent &MouseEvent) {
 
 							// Dragged item to inventory tab
 							size_t BagIndex = GetBackpackTabIndex(HitElement);
-							if(BagIndex != (size_t)-1 && BagIndex != Player->ActiveBackpack) {
+							if(BagIndex != (size_t)-1 && &Player->Inventory->Containers[(size_t)BagType::BACKPACK][BagIndex] != DragSlot.Bag) {
 								int AddResult = Player->AddItemToBackpack(CursorItem, BagIndex, true);
 								switch(AddResult) {
 									case ADD_REMOVE:
