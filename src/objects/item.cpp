@@ -488,7 +488,7 @@ void _Item::DrawTooltip(const _Player *Player, glm::vec2 DrawPosition, const _It
 					}
 				} break;
 				case USABLE_WHETSTONE:
-					Buffer << "Increases quality of an item by [c green]" << GetWhetstoneQuality() << "%";
+					Buffer << "Increases the quality of an item by [c green]" << GetWhetstoneQuality() << "%";
 					AttributeFont->DrawTextFormatted(Buffer.str(), glm::ivec2(DrawPosition), ae::CENTER_BASELINE);
 					Buffer.str("");
 
@@ -499,7 +499,7 @@ void _Item::DrawTooltip(const _Player *Player, glm::vec2 DrawPosition, const _It
 						HelpTextList.push_back("Right-click to pick up");
 				break;
 				case USABLE_WRENCH:
-					Buffer << "Increases level of an item by [c green]" << GetWrenchLevel();
+					Buffer << "Increases the level of an item by [c green]" << GetWrenchLevel();
 					AttributeFont->DrawTextFormatted(Buffer.str(), glm::ivec2(DrawPosition), ae::CENTER_BASELINE);
 					Buffer.str("");
 
@@ -509,6 +509,12 @@ void _Item::DrawTooltip(const _Player *Player, glm::vec2 DrawPosition, const _It
 					if(ShowHelp && !Slot.Bag && PlayState.HUD->InventoryOpen)
 						HelpTextList.push_back("Right-click to pick up");
 				break;
+				case USABLE_DYNAMITE: {
+					AttributeFont->DrawText("Dismantles a unique item into upgrade parts", glm::ivec2(DrawPosition), ae::CENTER_BASELINE);
+					DrawPosition.y += Spacing.y;
+					Buffer << "Creates an upgrade for every [c green]" << GetDynamiteQuality() << "%[c white] quality";
+					AttributeFont->DrawTextFormatted(Buffer.str(), glm::ivec2(DrawPosition), ae::CENTER_BASELINE);
+				} break;
 			}
 		} break;
 	}
@@ -539,7 +545,7 @@ void _Item::DrawTooltip(const _Player *Player, glm::vec2 DrawPosition, const _It
 	if(HasOneBonus)
 		DrawPosition.y += Spacing.y * 0.5f;
 
-	for(int i = 1; i < MOD_COUNT; i++) {
+	for(size_t i = 1; i < MOD_COUNT; i++) {
 		if(!Bonus[i])
 			continue;
 
@@ -559,7 +565,7 @@ void _Item::DrawTooltip(const _Player *Player, glm::vec2 DrawPosition, const _It
 		}
 
 		// Set label
-		Buffer << ModTypeToString(i);
+		Buffer << ModTypeToString((int)i);
 		SmallFont->DrawText(Buffer.str(), glm::ivec2(DrawPosition), ae::CENTER_BASELINE, TextColor);
 		Buffer.str("");
 	}
@@ -596,7 +602,7 @@ void _Item::Serialize(ae::_Buffer &Buffer) {
 	// Write mods
 	if(Type == _Object::WEAPON || Type == _Object::ARMOR) {
 		Buffer.Write<float>(ExtraMods);
-		Buffer.Write<int32_t>(Mods.size());
+		Buffer.Write<int32_t>((int32_t)Mods.size());
 		for(size_t i = 0; i < Mods.size(); i++)
 			Mods[i]->Serialize(Buffer);
 	}
@@ -763,11 +769,11 @@ bool _Item::ApplyUsable(_Item *Usable) {
 
 	switch(Usable->Template.Attributes.at("usable_type").Int) {
 		case USABLE_WHETSTONE: {
-			Quality = std::clamp(Quality + Usable->GetWhetstoneQuality(), ITEM_QUALITY_MIN, Stats.Progressions[PlayState.Player->Progression].MaxQuality);
+			Quality = std::clamp(Quality + Usable->GetWhetstoneQuality(), ITEM_QUALITY_MIN, Stats.Progressions[(size_t)PlayState.Player->Progression].MaxQuality);
 			ae::Audio.PlaySound(ae::Assets.Sounds["game_whetstone.ogg"]);
 		} break;
 		case USABLE_WRENCH: {
-			Level = std::clamp(Level + Usable->GetWrenchLevel(), 1, Stats.Progressions[PlayState.Player->Progression].MaxLevel);
+			Level = std::clamp(Level + Usable->GetWrenchLevel(), 1, Stats.Progressions[(size_t)PlayState.Player->Progression].MaxLevel);
 			ae::Audio.PlaySound(ae::Assets.Sounds["game_wrench.ogg"]);
 		} break;
 	}
@@ -794,6 +800,10 @@ bool _Item::ItemCompatible(_Item *Item, bool CheckCount) const {
 				break;
 				case USABLE_WRENCH:
 					if(CanIncreaseLevel(true))
+						return true;
+				break;
+				case USABLE_DYNAMITE:
+					if(CanEquip() && Quality >= ITEM_DYNAMITE_VALUE)
 						return true;
 				break;
 			}
@@ -1042,6 +1052,14 @@ int _Item::GetWrenchLevel() const {
 	return 1;
 }
 
+// Get dynamite quality value
+int _Item::GetDynamiteQuality() const {
+	if(Unique)
+		return Unique->DynamiteValue;
+
+	return ITEM_DYNAMITE_VALUE;
+}
+
 // Get consumable value based on attributes
 float _Item::GetConsumableValue(const _Player *Player) const {
 
@@ -1123,8 +1141,20 @@ std::string _Item::GetTypeAsString() const {
 			return "Key";
 		case _Object::CONSUMABLE:
 			return "Consumable";
-		case _Object::USABLE:
-			return "Usable Item";
+		case _Object::USABLE: {
+			std::string TypeString;
+			switch(Template.Attributes.at("usable_type").Int) {
+				case USABLE_WHETSTONE:
+				case USABLE_WRENCH:
+					TypeString = "Upgrade";
+				break;
+				default:
+					TypeString = "Usable";
+				break;
+			}
+
+			return TypeString + " Item";
+		}
 	}
 
 	return "";

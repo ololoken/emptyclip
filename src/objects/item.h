@@ -75,6 +75,7 @@ enum UsableType {
 	USABLE_HAMMER,
 	USABLE_WHETSTONE,
 	USABLE_WRENCH,
+	USABLE_DYNAMITE,
 	USABLE_COUNT,
 };
 
@@ -139,6 +140,7 @@ class _Item : public _Object {
 		int GetHammerQualityChange() const;
 		int GetWhetstoneQuality() const;
 		int GetWrenchLevel() const;
+		int GetDynamiteQuality() const;
 
 		float GetConsumableValue(const _Player *Player) const;
 		std::string GetConsumableSuffix(bool Percent) const;

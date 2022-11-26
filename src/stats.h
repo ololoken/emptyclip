@@ -100,6 +100,7 @@ struct _Unique {
 	int HammerValue;
 	int WhetstoneValue;
 	int WrenchValue;
+	int DynamiteValue;
 };
 
 struct _Achievement {

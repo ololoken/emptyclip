@@ -774,6 +774,7 @@ void _Stats::LoadUniques() {
 		Unique->HammerValue = Database->GetInt<int>("hammer");
 		Unique->WhetstoneValue = Database->GetInt<int>("whetstone");
 		Unique->WrenchValue = Database->GetInt<int>("wrench");
+		Unique->DynamiteValue = Database->GetInt<int>("dynamite");
 		Unique->Texture = ae::Assets.Textures["textures/lights/circle.png"];
 		SetColor(Unique->Color, Database->GetString("color_id"));
 

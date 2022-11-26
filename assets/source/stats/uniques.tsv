@@ -1,10 +1,10 @@
-name	color_id	chance	quality	progression	mods	hammer	whetstone	wrench
-Shiny	light_blue	3	25	1	1	0	15	2
-Rare	light_green	5	50	2	2	1	20	3
-Legendary	gold	10	75	3	3	2	25	4
-Mythical	purple	20	100	4	4	3	30	5
-Arcane	cyan	40	150	6	5	4	35	6
-Angelic	silver	80	200	8	6	5	45	7
-Demonic	red	160	250	10	7	6	50	8
-Divine	platinum	300	300	12	8	7	60	9
-Celestial	pink	1000	1000	39	20	20	100	10
+name	color_id	chance	quality	progression	mods	hammer	whetstone	wrench	dynamite
+Shiny	light_blue	3	25	1	1	0	15	2	22
+Rare	light_green	5	50	2	2	1	20	3	20
+Legendary	gold	10	75	3	3	2	25	4	18
+Mythical	purple	20	100	4	4	3	30	5	16
+Arcane	cyan	40	150	6	5	4	35	6	14
+Angelic	silver	80	200	8	6	5	45	7	12
+Demonic	red	160	250	10	7	6	50	8	10
+Divine	platinum	300	300	12	8	7	60	9	8
+Celestial	pink	1000	1000	39	20	20	100	10	5

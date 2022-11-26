@@ -151,6 +151,7 @@ const  float        ITEM_HIGHLIGHT_ALPHA                 =  0.25f;
 const  float        ITEM_FILTERED_ALPHA                  =  0.1f;
 const  double       ITEM_FILTERED_FADETIME               =  2.0;
 const  double       ITEM_FILTERED_FADESTART              =  0.5;
+const  int          ITEM_DYNAMITE_VALUE                  =  25;
 //     Mods
 const  double       MOD_BURST_FIREPERIOD_FACTOR          =  2.0;
 const  float        MOD_SECONDARY_BONUS                  =  25.0f;

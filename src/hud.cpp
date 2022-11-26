@@ -1173,6 +1173,8 @@ void _HUD::DrawBagHighlights(const _Bag &Bag, ae::_Element *Element) {
 				continue;
 			else if(CursorItem->Template.Attributes.at("usable_type").Int == USABLE_WRENCH && !Item->CanIncreaseLevel(false))
 				continue;
+			else if(CursorItem->Template.Attributes.at("usable_type").Int == USABLE_DYNAMITE && !Item->CanEquip())
+				continue;
 		}
 
 		// Set overlay color
@@ -1564,27 +1566,49 @@ bool _HUD::ApplyUsableItem(_Item *ExistingItem) {
 	if(!ExistingItem->ItemCompatible(CursorItem, false))
 		return false;
 
-	// Check type
-	switch(CursorItem->Template.Attributes.at("usable_type").Int) {
-		case USABLE_HAMMER: {
+	int UsableType = CursorItem->Template.Attributes.at("usable_type").Int;
 
-			// Destroy hammer
+	// Check type
+	switch(UsableType) {
+		case USABLE_HAMMER:
+		case USABLE_DYNAMITE: {
+
+			// Destroy usable item
 			CursorItem->Active = false;
 			HoverItem = nullptr;
 			PlayState.Map->RemoveObjectFromGrid(CursorItem, GRID_ITEM);
 
-			// Drop mods
-			int QualityChange = CursorItem->GetHammerQualityChange();
-			for(auto &Mod : ExistingItem->Mods) {
-				Mod->Visible = true;
-				Mod->Quality = std::clamp(Mod->Quality + QualityChange, ITEM_QUALITY_MIN, Stats.Progressions[(size_t)Player->Progression].MaxQuality);
-				Mod->RecalculateStats();
-				Mod->SetPosition(PlayState.Map->FindSuitableItemPosition(Player->Position, Mod->Type, ITEM_RADIUS, ITEM_PLACEMENT_ATTEMPTS));
-				PlayState.Map->AddObject(Mod, GRID_ITEM);
-			}
-			ExistingItem->Mods.clear();
+			if(UsableType == USABLE_HAMMER) {
 
-			ae::Audio.PlaySound(ae::Assets.Sounds["game_hammer.ogg"]);
+				// Drop mods
+				int QualityChange = CursorItem->GetHammerQualityChange();
+				for(auto &Mod : ExistingItem->Mods) {
+					Mod->Visible = true;
+					Mod->Quality = std::clamp(Mod->Quality + QualityChange, ITEM_QUALITY_MIN, Stats.Progressions[(size_t)Player->Progression].MaxQuality);
+					Mod->RecalculateStats();
+					Mod->SetPosition(PlayState.Map->FindSuitableItemPosition(Player->Position, Mod->Type, ITEM_RADIUS, ITEM_PLACEMENT_ATTEMPTS));
+					PlayState.Map->AddObject(Mod, GRID_ITEM);
+				}
+				ExistingItem->Mods.clear();
+
+				ae::Audio.PlaySound(ae::Assets.Sounds["game_hammer.ogg"]);
+			}
+			else if(UsableType == USABLE_DYNAMITE) {
+				int Rolls = ExistingItem->Quality / CursorItem->GetDynamiteQuality();
+
+				// Roll for drop
+				for(int i = 0; i < Rolls; i++) {
+					_ObjectSpawn ObjectSpawn;
+					Stats.GetRandomDrop(&Stats.ItemDrops.at("dynamite"), &ObjectSpawn);
+					if(!ObjectSpawn.Type)
+						continue;
+
+					ObjectSpawn.Position = PlayState.Map->FindSuitableItemPosition(Player->Position, ObjectSpawn.Type, ITEM_RADIUS, ITEM_PLACEMENT_ATTEMPTS);
+					PlayState.SpawnObject(&ObjectSpawn, true);
+				}
+
+				ae::Audio.PlaySound(ae::Assets.Sounds["game_dynamite.ogg"]);
+			}
 
 			// Destroy item
 			return true;
