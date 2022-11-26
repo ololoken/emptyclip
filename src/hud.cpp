@@ -1279,7 +1279,7 @@ void _HUD::DrawItemValue(const _Item *Item, const glm::vec2 &Position) {
 
 // Draw item quality
 void _HUD::DrawItemQuality(const _Item *Item, const glm::vec2 &Position) {
-	if(!Item)
+	if(!Item || Item->Type == _Object::USABLE)
 		return;
 
 	std::ostringstream Buffer;
