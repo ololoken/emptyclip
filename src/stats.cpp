@@ -157,10 +157,10 @@ void _Stats::LoadSkills() {
 		Skill.Data[SKILL_ENDURANCE][1] = Database->GetReal("endurance1");
 		Skill.Data[SKILL_PERCEPTION][0] = Database->GetReal("perception0");
 		Skill.Data[SKILL_PERCEPTION][1] = Database->GetReal("perception1");
-		Skill.Data[SKILL_LUCK][0] = Database->GetReal("luck0");
-		Skill.Data[SKILL_LUCK][1] = Database->GetReal("luck1");
 		Skill.Data[SKILL_INTELLIGENCE][0] = Database->GetReal("intelligence0");
 		Skill.Data[SKILL_INTELLIGENCE][1] = Database->GetReal("intelligence1");
+		Skill.Data[SKILL_LUCK][0] = Database->GetReal("luck0");
+		Skill.Data[SKILL_LUCK][1] = Database->GetReal("luck1");
 		Skills.push_back(Skill);
 	}
 
