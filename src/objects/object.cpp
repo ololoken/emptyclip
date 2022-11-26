@@ -79,6 +79,9 @@ void _Object::RenderLights(double BlendFactor, float Alpha) {
 	if(this == PlayState.HUD->CursorItem)
 		return;
 
+	if(Alpha <= ITEM_FILTERED_ALPHA)
+		return;
+
 	glm::vec2 DrawPosition;
 	GetDrawPosition(DrawPosition, BlendFactor);
 
