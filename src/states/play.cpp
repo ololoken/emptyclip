@@ -325,8 +325,7 @@ bool _PlayState::HandleAction(int InputType, size_t Action, int Value) {
 					Player->StartWeaponSwitch(_Slot(&Player->GetActiveOutfitBag(), GearType::MAINHAND), _Slot(&Player->GetActiveOutfitBag(), GearType::OFFHAND));
 			break;
 			case Action::GAME_SWITCHOUTFIT:
-				if(!HUD->CursorItem)
-					Player->StartOutfitSwitch(!Player->ActiveOutfit);
+				Player->StartOutfitSwitch(!Player->ActiveOutfit);
 			break;
 			case Action::GAME_FLASHLIGHT:
 				Player->Flashlight = !Player->Flashlight;

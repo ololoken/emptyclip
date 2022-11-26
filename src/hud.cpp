@@ -305,7 +305,7 @@ void _HUD::HandleMouseButton(const ae::_MouseEvent &MouseEvent) {
 							}
 						}
 						// Move item to another slot
-						else
+						else if(!Player->IsSwitching())
 							Player->SwapInventory(DragSlot, HitSlot);
 					}
 					// From world
