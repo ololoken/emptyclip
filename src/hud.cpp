@@ -1578,7 +1578,7 @@ bool _HUD::ApplyUsableItem(_Item *ExistingItem) {
 			for(auto &Mod : ExistingItem->Mods) {
 				Mod->Visible = true;
 				Mod->Quality = std::clamp(Mod->Quality + QualityChange, ITEM_QUALITY_MIN, Stats.Progressions[(size_t)Player->Progression].MaxQuality);
-				Mod->RecalculateModBonus();
+				Mod->RecalculateStats();
 				Mod->SetPosition(PlayState.Map->FindSuitableItemPosition(Player->Position, Mod->Type, ITEM_RADIUS, ITEM_PLACEMENT_ATTEMPTS));
 				PlayState.Map->AddObject(Mod, GRID_ITEM);
 			}

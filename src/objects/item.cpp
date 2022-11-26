@@ -622,6 +622,10 @@ void _Item::RecalculateStats() {
 			Name = Unique->Name + " " + Template.Name;
 		}
 	}
+	else {
+		LightTexture = nullptr;
+		Name = Template.Name;
+	}
 
 	// Recalculate max mods
 	SetMaxMods();
