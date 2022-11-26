@@ -89,7 +89,7 @@ const  double       ENTITY_CRATE_COMBATTIME              =  1.0;
 //     Player
 const  float        PLAYER_RADIUS                        =  0.35f;
 const  float        PLAYER_MASS                          =  1.0f;
-const  double       PLAYER_HEAL_STARTTIME                =  5.0;
+const  double       PLAYER_HEAL_DELAY                    =  5.0;
 const  double       PLAYER_HEAL_PERIOD                   =  1.0;
 const  float        PLAYER_HEAL_THRESHOLD                =  0.75;
 const  float        PLAYER_HEAL_PERCENT                  =  2.0f;

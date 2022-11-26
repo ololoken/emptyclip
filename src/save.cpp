@@ -349,6 +349,7 @@ void _Save::LoadPlayer(_Player *Player) {
 	Player->RecalculateStats();
 	Player->ResetWeaponAnimation();
 	Player->Stamina = Player->MaxStamina;
+	Player->SelfHealTimer = Player->SelfHealDelay;
 
 	// Handle exiting during combat
 	Player->Health = std::min(Player->Health, Player->MaxHealth);

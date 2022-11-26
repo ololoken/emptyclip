@@ -204,9 +204,9 @@ class _Player : public _Entity {
 		int Skills[SKILL_COUNT];
 		int SkillPointsRemaining{0};
 		int DropRate{100};
-		double SelfHealStartTime;
+		double SelfHealDelay;
 		double SelfHealPeriod;
-		double SelfHealTimer{PLAYER_HEAL_STARTTIME};
+		double SelfHealTimer{PLAYER_HEAL_DELAY};
 		float SelfHealPercent;
 		float HealModifier{1.0f};
 		float PickupModifier{1.0f};

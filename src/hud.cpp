@@ -50,8 +50,7 @@ struct _MinimapLegend {
 };
 
 struct _SkillText {
-	std::string Main;
-	std::string Alt;
+	std::string Text[2];
 };
 
 static std::vector<_MinimapLegend> MinimapLegends = {
@@ -70,8 +69,8 @@ static _SkillText SkillText[SKILL_COUNT] = {
 	{ "Reload Speed", "Switch Speed" },
 	{ "Damage Resist", "Self Damage Resist" },
 	{ "Max Health", "Heal Bonus" },
-	{ "Attack Speed","Fire Rate" },
-	{ "Move Speed", "Self Heal Speed" },
+	{ "Attack/Fire Rate","Self Heal Speed" },
+	{ "Move Speed", "Self Heal Delay" },
 	{ "Max Stamina", "Max Ammo" },
 	{ "Gun Accuracy", "Critical Hit Damage" },
 	{ "Experience Gain", "Gear Mod Capacity" },
@@ -1042,6 +1041,9 @@ void _HUD::DrawCharacterScreen() {
 	DrawPosition.y += 10 * ae::_Element::GetUIScale();
 
 	// Defense
+	Buffer << ae::Round2(Player->SelfHealDelay) << "s";
+	DrawAttribute("Self Heal Delay", Buffer, DrawPosition);
+
 	Buffer << ae::Round2(Player->SelfHealPercent) << "%";
 	DrawAttribute("Self Heal Percent", Buffer, DrawPosition);
 
@@ -1331,26 +1333,36 @@ void _HUD::UpdateSkillTooltip(int Skill, const glm::vec2 &Position) {
 	Elements[ELEMENT_SKILLINFO]->Offset = DrawPosition;
 	Elements[ELEMENT_SKILLINFO]->CalculateBounds(false);
 
+	// Set text
+	bool Positive[2];
+	std::string Prefix[2];
+	std::string Plus[2];
+	std::ostringstream Buffer[2];
+	for(int i = 0; i < 2; i++) {
+		Positive[i] = Stats.GetSkill(1, Skill, i) > 0.0f;
+		Prefix[i] = Positive[i] ? "Increases " : "Decreases ";
+		Plus[i] = Positive[i] ? "+" : "";
+		Buffer[i] << std::setprecision(5);
+		Elements[LABEL_SKILLTEXT + i]->Text = Prefix[i] + SkillText[Skill].Text[i];
+	}
+
 	// Set skill description
-	std::ostringstream Buffer;
-	std::ostringstream BufferNext;
-	Buffer << std::setprecision(5);
-	BufferNext << std::setprecision(5);
-	Elements[LABEL_SKILLTEXT]->Text = "Increases " + SkillText[Skill].Main;
-	Elements[LABEL_SKILLTEXTALT]->Text = "Increases " + SkillText[Skill].Alt;
 	std::string Percent[2] = { "% ", "% "};
 	if(Skill == SKILL_INTELLIGENCE)
 		Percent[1] = " ";
-
-	Buffer << "+" << Stats.GetSkill(Level, Skill) << Percent[0] << SkillText[Skill].Main << "\\n+" << Stats.GetSkill(Level, Skill, 1) << Percent[1] << SkillText[Skill].Alt;
-	BufferNext << "+" << Stats.GetSkill(Stats.GetValidSkillLevel(Level+1), Skill) << Percent[0] << SkillText[Skill].Main << "\\n+" << Stats.GetSkill(Stats.GetValidSkillLevel(Level+1), Skill, 1) << Percent[1] << SkillText[Skill].Alt;
+	Buffer[0]
+		<< Plus[0] << Stats.GetSkill(Level, Skill, 0) << Percent[0] << SkillText[Skill].Text[0] << "\\n"
+		<< Plus[1] << Stats.GetSkill(Level, Skill, 1) << Percent[1] << SkillText[Skill].Text[1];
+	Buffer[1]
+		<< Plus[0] << Stats.GetSkill(Stats.GetValidSkillLevel(Level+1), Skill, 0) << Percent[0] << SkillText[Skill].Text[0] << "\\n"
+		<< Plus[1] << Stats.GetSkill(Stats.GetValidSkillLevel(Level+1), Skill, 1) << Percent[1] << SkillText[Skill].Text[1];
 
 	// Format text
-	Elements[LABEL_SKILL_LEVEL]->Text = Buffer.str();
+	Elements[LABEL_SKILL_LEVEL]->Text = Buffer[0].str();
 	Elements[LABEL_SKILL_LEVEL]->SetWrap(Elements[ELEMENT_SKILLINFO]->Size.x);
 	if(Level + 1 > Stats.GetSkillLevels())
-		BufferNext.str("");
-	Elements[LABEL_SKILL_LEVEL_NEXT]->Text = BufferNext.str();
+		Buffer[1].str("");
+	Elements[LABEL_SKILL_LEVEL_NEXT]->Text = Buffer[1].str();
 	Elements[LABEL_SKILL_LEVEL_NEXT]->SetWrap(Elements[ELEMENT_SKILLINFO]->Size.x);
 
 	// Handle skill caps

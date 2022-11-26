@@ -269,8 +269,8 @@ void _Player::RecalculateStats(bool SoftReset) {
 	OutfitSwitchPeriod = PLAYER_OUTFITSWITCHPERIOD / Stats.GetSkillBonusMultiplier(Skills[SKILL_DEXTERITY], SKILL_DEXTERITY);
 	HealthBonus += Stats.GetSkill(Skills[SKILL_VITALITY], SKILL_VITALITY);
 	HealModifier = Stats.GetSkillBonusMultiplier(Skills[SKILL_VITALITY], SKILL_VITALITY, 1);
-	SelfHealStartTime = PLAYER_HEAL_STARTTIME / Stats.GetSkillBonusMultiplier(Skills[SKILL_CUNNING], SKILL_CUNNING, 1);
-	SelfHealPeriod = PLAYER_HEAL_PERIOD / Stats.GetSkillBonusMultiplier(Skills[SKILL_CUNNING], SKILL_CUNNING, 1);
+	SelfHealDelay = PLAYER_HEAL_DELAY * Stats.GetSkillBonusMultiplier(Skills[SKILL_CUNNING], SKILL_CUNNING, 1);
+	SelfHealPeriod = PLAYER_HEAL_PERIOD / Stats.GetSkillBonusMultiplier(Skills[SKILL_AGILITY], SKILL_AGILITY, 1);
 
 	// Add armor bonuses
 	DamageResist += Stats.GetSkill(Skills[SKILL_FORTITUDE], SKILL_FORTITUDE, 0);
@@ -375,7 +375,8 @@ void _Player::Update(double FrameTime) {
 		ReloadTimer += FrameTime;
 	if(SwitchingWeapons)
 		WeaponSwitchTimer += FrameTime;
-	if(CombatTimer >= PLAYER_HEAL_STARTTIME && Health < MaxHealth * PLAYER_HEAL_THRESHOLD) {
+
+	if(CombatTimer >= SelfHealDelay && Health < MaxHealth * PLAYER_HEAL_THRESHOLD) {
 		SelfHealTimer -= FrameTime;
 		if(SelfHealTimer <= 0) {
 			SelfHealTimer += SelfHealPeriod;
@@ -1589,7 +1590,7 @@ void _Player::OnHit(_Entity *Attacker, const _Hit &Hit, bool PlaySound) {
 	}
 
 	_Entity::OnHit(Attacker, Hit, PlaySound);
-	SelfHealTimer = SelfHealPeriod;
+	SelfHealTimer = 0.0;
 }
 
 // Play equip sounds
