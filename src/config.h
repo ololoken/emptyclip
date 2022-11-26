@@ -53,8 +53,9 @@ class _Config {
 		bool WeaponFlashes;
 		bool WallDecals;
 		bool FloorDecals;
-		bool AutoEquip;
 		bool Tutorial;
+		bool AutoEquip;
+		bool AutoOrganize;
 
 		// Audio
 		int AudioEnabled;

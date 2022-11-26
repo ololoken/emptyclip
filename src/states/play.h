@@ -115,7 +115,6 @@ class _PlayState : public ae::_State {
 		void EndLevel();
 
 		void SpawnObject(const _ObjectSpawn *ObjectSpawn, bool GenerateStats=false, int AddedLevel=0);
-		void UseObject(_Item *Item);
 		bool SetHoverItem();
 		void ChangeFilterLevel(int FilterType);
 

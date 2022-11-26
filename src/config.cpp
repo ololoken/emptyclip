@@ -96,8 +96,9 @@ void _Config::SetDefaults(bool FromOptionsScreen) {
 	WeaponFlashes = true;
 	WallDecals = true;
 	FloorDecals = true;
-	AutoEquip = true;
 	Tutorial = true;
+	AutoEquip = true;
+	AutoOrganize = true;
 
 	SoundVolume = 1.0f;
 	MusicVolume = 1.0f;
@@ -195,8 +196,9 @@ void _Config::Load() {
 	GetValue("weapon_flashes", WeaponFlashes);
 	GetValue("wall_decals", WallDecals);
 	GetValue("floor_decals", FloorDecals);
-	GetValue("autoequip", AutoEquip);
 	GetValue("tutorial", Tutorial);
+	GetValue("autoequip", AutoEquip);
+	GetValue("autoorganize", AutoOrganize);
 	GetValue("sound_volume", SoundVolume);
 	GetValue("music_volume", MusicVolume);
 
@@ -249,8 +251,9 @@ void _Config::Save() {
 	File << "weapon_flashes=" << WeaponFlashes << std::endl;
 	File << "wall_decals=" << WallDecals << std::endl;
 	File << "floor_decals=" << FloorDecals << std::endl;
-	File << "autoequip=" << AutoEquip << std::endl;
 	File << "tutorial=" << Tutorial << std::endl;
+	File << "autoequip=" << AutoEquip << std::endl;
+	File << "autoorganize=" << AutoOrganize << std::endl;
 	File << "sound_volume=" << SoundVolume << std::endl;
 	File << "music_volume=" << MusicVolume << std::endl;
 

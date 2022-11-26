@@ -128,29 +128,34 @@
 				<element id="label_menu_options_anisotropy_value" font="hud_medium" text="0" offset_x="224" offset_y="30" alignment_x="0" alignment_y="3"/>
 			</element>
 		</element>
-		<element id="label_menu_options_gunflashes" font="menu_buttons" text="Gun Flashes" offset_x="-345" offset_y="480" alignment_x="2" alignment_y="3">
-			<element id="button_menu_options_gunflashes" style="style_menu_textbox" hover_style="style_menu_button_hover" offset_x="35" offset_y="-10" size_x="44" size_y="44" alignment_x="0" clickable="true">
+		<element id="label_menu_options_gunflashes" font="menu_buttons" text="Gun Flashes" offset_x="-500" offset_y="515" alignment_x="2" alignment_y="3">
+			<element id="button_menu_options_gunflashes" style="style_menu_textbox" hover_style="style_menu_button_hover" offset_x="25" offset_y="-10" size_x="44" size_y="44" alignment_x="0" clickable="true">
 				<element id="label_menu_options_gunflashes_check" font="hud_medium" text="X"/>
 			</element>
 		</element>
-		<element id="label_menu_options_walldecals" font="menu_buttons" text="Wall Decals" offset_x="-345" offset_y="550" alignment_x="2" alignment_y="3">
-			<element id="button_menu_options_walldecals" style="style_menu_textbox" hover_style="style_menu_button_hover" offset_x="35" offset_y="-10" size_x="44" size_y="44" alignment_x="0" clickable="true">
+		<element id="label_menu_options_walldecals" font="menu_buttons" text="Wall Decals" offset_x="-500" offset_y="585" alignment_x="2" alignment_y="3">
+			<element id="button_menu_options_walldecals" style="style_menu_textbox" hover_style="style_menu_button_hover" offset_x="25" offset_y="-10" size_x="44" size_y="44" alignment_x="0" clickable="true">
 				<element id="label_menu_options_walldecals_check" font="hud_medium" text="X"/>
 			</element>
 		</element>
-		<element id="label_menu_options_floordecals" font="menu_buttons" text="Floor Decals" offset_x="-345" offset_y="620" alignment_x="2" alignment_y="3">
-			<element id="button_menu_options_floordecals" style="style_menu_textbox" hover_style="style_menu_button_hover" offset_x="35" offset_y="-10" size_x="44" size_y="44" alignment_x="0" clickable="true">
+		<element id="label_menu_options_floordecals" font="menu_buttons" text="Floor Decals" offset_x="-500" offset_y="655" alignment_x="2" alignment_y="3">
+			<element id="button_menu_options_floordecals" style="style_menu_textbox" hover_style="style_menu_button_hover" offset_x="25" offset_y="-10" size_x="44" size_y="44" alignment_x="0" clickable="true">
 				<element id="label_menu_options_floordecals_check" font="hud_medium" text="X"/>
 			</element>
 		</element>
-		<element id="label_menu_options_autoequip" font="menu_buttons" text="Auto-Equip Items" offset_x="-345" offset_y="690" alignment_x="2" alignment_y="3">
-			<element id="button_menu_options_autoequip" style="style_menu_textbox" hover_style="style_menu_button_hover" offset_x="35" offset_y="-10" size_x="44" size_y="44" alignment_x="0" clickable="true">
+		<element id="label_menu_options_tutorial" font="menu_buttons" text="Show Tutorials" offset_x="-80" offset_y="515" alignment_x="2" alignment_y="3">
+			<element id="button_menu_options_tutorial" style="style_menu_textbox" hover_style="style_menu_button_hover" offset_x="25" offset_y="-10" size_x="44" size_y="44" alignment_x="0" clickable="true">
+				<element id="label_menu_options_tutorial_check" font="hud_medium" text="X"/>
+			</element>
+		</element>
+		<element id="label_menu_options_autoequip" font="menu_buttons" text="Auto-Equip Gear" offset_x="-80" offset_y="585" alignment_x="2" alignment_y="3">
+			<element id="button_menu_options_autoequip" style="style_menu_textbox" hover_style="style_menu_button_hover" offset_x="25" offset_y="-10" size_x="44" size_y="44" alignment_x="0" clickable="true">
 				<element id="label_menu_options_autoequip_check" font="hud_medium" text="X"/>
 			</element>
 		</element>
-		<element id="label_menu_options_tutorial" font="menu_buttons" text="Show Tutorials" offset_x="-345" offset_y="760" alignment_x="2" alignment_y="3">
-			<element id="button_menu_options_tutorial" style="style_menu_textbox" hover_style="style_menu_button_hover" offset_x="35" offset_y="-10" size_x="44" size_y="44" alignment_x="0" clickable="true">
-				<element id="label_menu_options_tutorial_check" font="hud_medium" text="X"/>
+		<element id="label_menu_options_autoorganize" font="menu_buttons" text="Auto-Organize Items" offset_x="-80" offset_y="655" alignment_x="2" alignment_y="3">
+			<element id="button_menu_options_autoorganize" style="style_menu_textbox" hover_style="style_menu_button_hover" offset_x="25" offset_y="-10" size_x="44" size_y="44" alignment_x="0" clickable="true">
+				<element id="label_menu_options_autoorganize_check" font="hud_medium" text="X"/>
 			</element>
 		</element>
 		<element id="element_menu_options_buttons" offset_y="400">

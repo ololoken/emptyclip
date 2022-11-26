@@ -1423,8 +1423,8 @@ void _PlayState::HandlePickup() {
 			}
 		}
 		// Manually pickup up an item
-		else if(Player->ApplyUse())
-			UseObject(NearbyItem);
+		else if(Player->ApplyUse() && Player->CanPickup())
+			PickupObject(NearbyItem, true);
 	}
 }
 
@@ -1511,7 +1511,7 @@ void _PlayState::EndLevel() {
 	Framework.ChangeState(&NullState);
 }
 
-// Places an item into the player's inventory and return amount added
+// Places an item into the player's inventory and returns the amount added
 int _PlayState::PickupObject(_Item *Item, bool Manual) {
 	if(!Item || !Item->Visible || !Item->Moveable || (Manual && Item->CanHide() && ShowMoreInfo()))
 		return 0;
@@ -1577,15 +1577,6 @@ int _PlayState::PickupObject(_Item *Item, bool Manual) {
 // Determine if more info should be shown
 bool _PlayState::ShowMoreInfo() {
 	return ae::Input.ModKeyDown(KMOD_ALT) || ae::Actions.State[Action::GAME_MOREINFO].Value > 0.0f;
-}
-
-// Processes the use key to open doors, hit switches, and pickup items
-void _PlayState::UseObject(_Item *Item) {
-	if(!Player->CanPickup())
-		return;
-
-	// Pick up an item if available
-	PickupObject(Item, true);
 }
 
 // Determine if HoverItem should be set to CursorItem
