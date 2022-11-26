@@ -863,7 +863,6 @@ _Monster *_Stats::CreateMonster(const std::string &ID, int Level, size_t Progres
 	// Create object
 	_Monster *Monster = new _Monster(Template);
 	Monster->SpawnPosition = Position;
-	Monster->SetPosition(Position);
 	if(!Template.MeshID.empty())
 		Monster->Mesh = ae::Assets.Meshes.at(Template.MeshID);
 	Monster->Animation->Reels = ae::Assets.Animations[Template.AnimationID];
@@ -932,6 +931,7 @@ _Monster *_Stats::CreateMonster(const std::string &ID, int Level, size_t Progres
 	}
 
 	Monster->DamageResist = std::min(Monster->DamageResist, ENTITY_MAX_DAMAGE_RESIST);
+	Monster->SetPosition(Position);
 	Monster->RecalculateStats();
 
 	return Monster;

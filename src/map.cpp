@@ -1870,7 +1870,7 @@ void _Map::RenderGrid(int Mode) {
 }
 
 // Draw the mini map
-void _Map::DrawMinimap(bool FullMap, ae::_Bounds &MinimapBounds) {
+void _Map::DrawMinimap(ae::_Bounds &MinimapBounds, bool FullMap, bool DrawIcons) {
 
 	// Get bounds of minimap window
 	glm::vec2 DrawSize = FullMap ? glm::vec2(ae::Graphics.CurrentSize.y, ae::Graphics.CurrentSize.y) * 0.75f : MINIMAP_SIZE * ae::_Element::GetUIScale();
@@ -1900,7 +1900,59 @@ void _Map::DrawMinimap(bool FullMap, ae::_Bounds &MinimapBounds) {
 	glm::vec2 CameraPosition(Camera->GetPosition());
 	ae::_Bounds CaptureBounds(CameraPosition - MinimapCaptureSize, CameraPosition + MinimapCaptureSize);
 	glm::vec2 VisionSize = CaptureBounds.End - CaptureBounds.Start;
-	if(PlayState.ShowMoreInfo()) {
+
+	// Set up minimap rendering
+	ae::Graphics.SetProgram(ae::Assets.Programs["minimap"]);
+	ae::Graphics.SetVertexBufferID(MinimapVBO);
+	ae::Graphics.SetAttribLevel(1);
+	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 2, nullptr);
+
+	// Draw colors for each type
+	for(int i = 0; i < MINIMAP_COUNT; i++) {
+		if(MinimapIcons[i].empty())
+			continue;
+
+		// Skip certain types when drawing icons
+		if(DrawIcons && (i == MINIMAP_GEAR || i == MINIMAP_MOD || i == MINIMAP_UNIQUE || i == MINIMAP_USABLE || i == MINIMAP_KEY))
+			continue;
+
+		// Set color for icons
+		ae::Graphics.SetColor(MinimapColors[i]);
+
+		// Build vertex buffer for icons
+		size_t VertexIndex = 0;
+		for(const auto &MinimapIcon : MinimapIcons[i]) {
+			if(VertexIndex + 12 > MINIMAP_MAX_VERTICES)
+				break;
+
+			// Get bounds
+			glm::vec2 Start = MinimapBounds.Start + ((MinimapIcon.Bounds.Start - CaptureBounds.Start) / VisionSize) * DrawSize;
+			glm::vec2 End = MinimapBounds.Start + ((MinimapIcon.Bounds.End - CaptureBounds.Start) / VisionSize) * DrawSize;
+
+			// First triangle of quad
+			MinimapVertices[VertexIndex++] = Start.x;
+			MinimapVertices[VertexIndex++] = Start.y;
+			MinimapVertices[VertexIndex++] = Start.x;
+			MinimapVertices[VertexIndex++] = End.y;
+			MinimapVertices[VertexIndex++] = End.x;
+			MinimapVertices[VertexIndex++] = End.y;
+
+			// Second triangle of quad
+			MinimapVertices[VertexIndex++] = End.x;
+			MinimapVertices[VertexIndex++] = End.y;
+			MinimapVertices[VertexIndex++] = End.x;
+			MinimapVertices[VertexIndex++] = Start.y;
+			MinimapVertices[VertexIndex++] = Start.x;
+			MinimapVertices[VertexIndex++] = Start.y;
+		}
+
+		// Draw buffer
+		glBufferSubData(GL_ARRAY_BUFFER, 0, (GLsizeiptr)(VertexIndex * sizeof(float)), MinimapVertices);
+		glDrawArrays(GL_TRIANGLES, 0, (GLsizei)(VertexIndex >> 1));
+	}
+
+	if(DrawIcons) {
+		ae::Graphics.ResetState();
 		ae::Graphics.SetProgram(ae::Assets.Programs["ortho_pos_uv"]);
 
 		// Draw icons for each type
@@ -1931,54 +1983,6 @@ void _Map::DrawMinimap(bool FullMap, ae::_Bounds &MinimapBounds) {
 					ae::Graphics.DrawImage(ae::_Bounds(Start, End), ae::Assets.Textures["textures/lights/circle.png"]);
 				}
 			}
-		}
-	}
-	else {
-
-		// Set up minimap rendering
-		ae::Graphics.SetProgram(ae::Assets.Programs["minimap"]);
-		ae::Graphics.SetVertexBufferID(MinimapVBO);
-		ae::Graphics.SetAttribLevel(1);
-		glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 2, nullptr);
-
-		// Draw colors for each type
-		for(int i = 0; i < MINIMAP_COUNT; i++) {
-			if(MinimapIcons[i].empty())
-				continue;
-
-			// Set color for icons
-			ae::Graphics.SetColor(MinimapColors[i]);
-
-			// Build vertex buffer for icons
-			size_t VertexIndex = 0;
-			for(const auto &MinimapIcon : MinimapIcons[i]) {
-				if(VertexIndex + 12 > MINIMAP_MAX_VERTICES)
-					break;
-
-				// Get bounds
-				glm::vec2 Start = MinimapBounds.Start + ((MinimapIcon.Bounds.Start - CaptureBounds.Start) / VisionSize) * DrawSize;
-				glm::vec2 End = MinimapBounds.Start + ((MinimapIcon.Bounds.End - CaptureBounds.Start) / VisionSize) * DrawSize;
-
-				// First triangle of quad
-				MinimapVertices[VertexIndex++] = Start.x;
-				MinimapVertices[VertexIndex++] = Start.y;
-				MinimapVertices[VertexIndex++] = Start.x;
-				MinimapVertices[VertexIndex++] = End.y;
-				MinimapVertices[VertexIndex++] = End.x;
-				MinimapVertices[VertexIndex++] = End.y;
-
-				// Second triangle of quad
-				MinimapVertices[VertexIndex++] = End.x;
-				MinimapVertices[VertexIndex++] = End.y;
-				MinimapVertices[VertexIndex++] = End.x;
-				MinimapVertices[VertexIndex++] = Start.y;
-				MinimapVertices[VertexIndex++] = Start.x;
-				MinimapVertices[VertexIndex++] = Start.y;
-			}
-
-			// Draw buffer
-			glBufferSubData(GL_ARRAY_BUFFER, 0, (GLsizeiptr)(VertexIndex * sizeof(float)), MinimapVertices);
-			glDrawArrays(GL_TRIANGLES, 0, (GLsizei)(VertexIndex >> 1));
 		}
 	}
 
