@@ -1908,6 +1908,7 @@ void _Map::DrawMinimap(ae::_Bounds &MinimapBounds, bool FullMap, bool DrawIcons)
 	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 2, nullptr);
 
 	// Draw colors for each type
+	float Alpha = DrawIcons ? MINIMAP_ICON_FADE : 1.0f;
 	for(int i = 0; i < MINIMAP_COUNT; i++) {
 		if(MinimapIcons[i].empty())
 			continue;
@@ -1917,7 +1918,7 @@ void _Map::DrawMinimap(ae::_Bounds &MinimapBounds, bool FullMap, bool DrawIcons)
 			continue;
 
 		// Set color for icons
-		ae::Graphics.SetColor(MinimapColors[i]);
+		ae::Graphics.SetColor(glm::vec4(MinimapColors[i].r, MinimapColors[i].g, MinimapColors[i].b, MinimapColors[i].a * Alpha));
 
 		// Build vertex buffer for icons
 		size_t VertexIndex = 0;

@@ -244,6 +244,7 @@ const  glm::vec4    MINIMAP_DOOR_BLUECOLOR               =  glm::vec4(0.0f,0.0f,
 const  glm::vec4    MINIMAP_DOOR_BOSSCOLOR               =  glm::vec4(1.0f,1.0f,0.0f,1.0f);
 const  glm::vec4    MINIMAP_TOGGLED_COLOR                =  glm::vec4(0.035f,0.035f,0.035f,1.0f);
 const  float        MINIMAP_IMAGE_SIZE                   =  1.0f;
+const  float        MINIMAP_ICON_FADE                    =  0.25f;
 //     Light
 const  glm::vec3    LIGHT_ATTENUATION                    =  glm::vec3(1.0f,0.2f,0.1f);
 const  glm::vec3    LIGHT_FLASH_ATTENUATION              =  glm::vec3(1.0f,0.1f,0.05f);
