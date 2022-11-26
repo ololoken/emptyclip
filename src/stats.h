@@ -80,11 +80,11 @@ struct _Progression {
 struct _Special {
 	std::string Name;
 	glm::vec4 Color{1.0f};
+	float ExperienceModifier{1.0f};
+	float Health{0.0f};
 	float DamageFactor{1.0f};
 	float AttackSpeedFactor{1.0f};
 	float MoveSpeedFactor{1.0f};
-	float ExperienceModifier{1.0f};
-	float DamageResist{0.0f};
 	float AIAttacks{1.0f};
 	int FreePathing{0};
 };

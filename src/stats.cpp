@@ -743,7 +743,7 @@ void _Stats::LoadSpecials() {
 		_Special Special;
 		Special.Name = Database->GetString("name");
 		Special.ExperienceModifier = Database->GetReal("xp");
-		Special.DamageResist = Database->GetReal("damage_resist");
+		Special.Health = Database->GetReal("health");
 		Special.DamageFactor = Database->GetReal("damage");
 		Special.AttackSpeedFactor = Database->GetReal("attack_speed");
 		Special.MoveSpeedFactor = Database->GetReal("move_speed");
@@ -925,7 +925,8 @@ _Monster *_Stats::CreateMonster(const std::string &ID, int Level, size_t Progres
 		Monster->Name = Special->Name + " " + Monster->Name;
 		Monster->Color = Special->Color;
 		Monster->MoveSpeed *= Special->MoveSpeedFactor;
-		Monster->DamageResist += Special->DamageResist;
+		Monster->MaxHealth *= Special->Health;
+		Monster->Health = Monster->MaxHealth;
 		Monster->AIAttacks = std::round(Monster->AIAttacks * Special->AIAttacks);
 		Monster->ExperienceGiven *= Special->ExperienceModifier;
 	}
