@@ -952,6 +952,7 @@ _Object *_Stats::CreateProp(const std::string &ID, const glm::vec2 &Position, fl
 		Prop->Circle = false;
 	Prop->Rotation = Rotation;
 	Prop->Scale = Template.Attributes.at("scale").Float * Scale;
+	Prop->UpdateBounds();
 
 	return Prop;
 }
