@@ -747,15 +747,17 @@ int _Player::AddItem(_Item *Item, int &AmountAdded, bool UseOnFull) {
 		case _Object::CONSUMABLE: {
 			double CurrentValue = 0;
 			double MaxValue = 0;
+			double MaxUseValue = 0;
 			int UpdateType = 0;
 			if(Item->Template.Attributes.at("health").Float) {
 				CurrentValue = Health;
-				MaxValue = MaxHealth;
+				MaxUseValue = MaxValue = MaxHealth;
 				UpdateType = 1;
 			}
 			else if(Item->Template.Attributes.at("stamina").Float) {
 				CurrentValue = Stamina;
 				MaxValue = MaxStamina;
+				MaxUseValue = MaxStamina * ITEM_ADRENALINE_USE_THRESHOLD;
 				UpdateType = 2;
 			}
 
@@ -763,7 +765,7 @@ int _Player::AddItem(_Item *Item, int &AmountAdded, bool UseOnFull) {
 				throw std::runtime_error(std::string(__func__) + " bad consumable UpdateType");
 
 			// Already full
-			if(CurrentValue == MaxValue)
+			if(CurrentValue >= MaxUseValue)
 				return (UseOnFull ? ADD_DELETE : ADD_QUIETFULL);
 
 			// Get update amounts

@@ -152,6 +152,7 @@ const  float        ITEM_FILTERED_ALPHA                  =  0.1f;
 const  double       ITEM_FILTERED_FADETIME               =  2.0;
 const  double       ITEM_FILTERED_FADESTART              =  0.5;
 const  int          ITEM_DYNAMITE_VALUE                  =  25;
+const  double       ITEM_ADRENALINE_USE_THRESHOLD        =  0.95;
 //     Mods
 const  double       MOD_BURST_FIREPERIOD_FACTOR          =  2.0;
 const  float        MOD_SECONDARY_BONUS                  =  25.0f;
