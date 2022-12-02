@@ -103,6 +103,8 @@ void _Config::SetDefaults(bool FromOptionsScreen) {
 	SoundVolume = 1.0f;
 	MusicVolume = 1.0f;
 
+	Locale = "";
+
 	if(!FromOptionsScreen)
 		LoadDefaultInputBindings(false);
 }
@@ -201,6 +203,7 @@ void _Config::Load() {
 	GetValue("autoorganize", AutoOrganize);
 	GetValue("sound_volume", SoundVolume);
 	GetValue("music_volume", MusicVolume);
+	GetValue("locale", Locale);
 
 	// Clear bindings
 	for(int i = 0; i < ae::_Input::INPUT_COUNT; i++)
@@ -256,6 +259,7 @@ void _Config::Save() {
 	File << "autoorganize=" << AutoOrganize << std::endl;
 	File << "sound_volume=" << SoundVolume << std::endl;
 	File << "music_volume=" << MusicVolume << std::endl;
+	File << "locale=" << Locale << std::endl;
 
 	// Write out input map
 	ae::Actions.Serialize(File, ae::_Input::KEYBOARD);

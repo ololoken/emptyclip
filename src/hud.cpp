@@ -641,6 +641,7 @@ void _HUD::Render(bool FullMap) {
 
 	// Draw enemy health
 	std::ostringstream Buffer;
+	Buffer.imbue(std::locale(Config.Locale));
 	if(LastHitMaxHealth) {
 		Buffer << LastHitHealth << "/" << LastHitMaxHealth;
 		Elements[LABEL_ENEMYHEALTH]->Text = Buffer.str();
@@ -938,6 +939,7 @@ void _HUD::DrawHUDWeapon(const _Item *Item, ae::_Element *Element, ae::_Element 
 				Label->Font = ae::Assets.Fonts["hud_medium"];
 
 			std::ostringstream Buffer;
+			Buffer.imbue(std::locale(Config.Locale));
 			Buffer << Item->Attributes.at("ammo").Int << "/" << Rounds;
 			if(Label)
 				Label->Text = Buffer.str();
@@ -977,6 +979,7 @@ void _HUD::DrawCharacterScreen() {
 
 	// Set skill labels
 	std::ostringstream Buffer;
+	Buffer.imbue(std::locale(Config.Locale));
 	Buffer << std::setprecision(5);
 	Buffer << Player->SkillPointsRemaining;
 	Elements[LABEL_SKILL_REMAINING]->Text = Buffer.str();
@@ -990,7 +993,7 @@ void _HUD::DrawCharacterScreen() {
 	Elements[ELEMENT_SKILLS]->Render();
 
 	// Draw stats
-	glm::vec2 DrawPosition(ae::Graphics.CurrentSize.x - 160 * ae::_Element::GetUIScale(), 420 * ae::_Element::GetUIScale());
+	glm::vec2 DrawPosition(ae::Graphics.CurrentSize.x - 190 * ae::_Element::GetUIScale(), 420 * ae::_Element::GetUIScale());
 
 	// Offense
 	if(Player->GetMainHand()) {

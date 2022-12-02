@@ -29,6 +29,7 @@
 #include <ae/random.h>
 #include <states/play.h>
 #include <hud.h>
+#include <config.h>
 #include <actiontype.h>
 #include <constants.h>
 #include <stats.h>
@@ -75,6 +76,7 @@ void _Item::DrawAttribute(const ae::_Font *Font, bool Float, const std::string &
 
 	// Get text
 	std::ostringstream Buffer;
+	Buffer.imbue(std::locale(Config.Locale));
 	if(Plus && Value > 0.0f)
 		Buffer << "+";
 
@@ -96,6 +98,7 @@ void _Item::DrawAttribute(const ae::_Font *Font, bool Float, const std::string &
 // Draw the item popup window
 void _Item::DrawTooltip(const _Player *Player, glm::vec2 DrawPosition, const _Item *EquippedItem, const _Slot &Slot, bool ShowHelp, bool ShowEquipHelp) const {
 	std::ostringstream Buffer;
+	Buffer.imbue(std::locale(Config.Locale));
 
 	glm::vec2 Size = glm::vec2(460, 150) * ae::_Element::GetUIScale();
 	glm::vec2 Spacing = glm::vec2(0, ATTRIBUTE_SPACING) * ae::_Element::GetUIScale();
@@ -217,12 +220,15 @@ void _Item::DrawTooltip(const _Player *Player, glm::vec2 DrawPosition, const _It
 					TextColor = COLOR_RED;
 			}
 			DrawPosition.y += Spacing.y;
+
+			double AverageDamage = GetAverageDamage();
 			if(PlayState.ShowMoreInfo())
-				Buffer << ae::Round1(GetAverageDamage()) << " avg";
+				Buffer << ae::Round1(AverageDamage) << " avg";
 			else
 				Buffer << Attributes.at("min_damage").Int << " - " << Attributes.at("max_damage").Int;
-			AttributeFont->DrawText("Damage", glm::ivec2(DrawPosition - DrawOffset), ae::RIGHT_BASELINE);
-			AttributeFont->DrawText(Buffer.str(), glm::ivec2(DrawPosition + DrawOffset), ae::LEFT_BASELINE, TextColor);
+			const ae::_Font *Font = (AverageDamage >= 1e6) ? SmallFont : AttributeFont;
+			Font->DrawText("Damage", glm::ivec2(DrawPosition - DrawOffset), ae::RIGHT_BASELINE);
+			Font->DrawText(Buffer.str(), glm::ivec2(DrawPosition + DrawOffset), ae::LEFT_BASELINE, TextColor);
 			Buffer.str("");
 
 			// Clip size
@@ -1084,14 +1090,11 @@ std::string _Item::GetConsumableSuffix(bool Percent) const {
 }
 
 // Build consumble particle text string
-std::string _Item::GetConsumableParticleText(float Amount) const {
-
+void _Item::GetConsumableParticleText(std::ostringstream &Buffer, float Amount) const {
 	if(Template.Attributes.at("health").Float)
-		return "+" + std::to_string((int)(Amount)) + " HP";
+		Buffer << "+" << (int)(Amount) <<  " HP";
 	else if(Template.Attributes.at("stamina").Float)
-		return "+Stamina";
-
-	return "";
+		Buffer << "+Stamina";
 }
 
 // Get type as string

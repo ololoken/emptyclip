@@ -144,7 +144,7 @@ class _Item : public _Object {
 
 		float GetConsumableValue(const _Player *Player) const;
 		std::string GetConsumableSuffix(bool Percent) const;
-		std::string GetConsumableParticleText(float Amount) const;
+		void GetConsumableParticleText(std::ostringstream &Buffer, float Amount) const;
 
 		virtual std::string GetTypeAsString() const override;
 		std::string ModTypeToString(int ModType) const;

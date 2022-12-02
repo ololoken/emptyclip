@@ -62,6 +62,9 @@ class _Config {
 		float SoundVolume;
 		float MusicVolume;
 
+		// Misc
+		std::string Locale;
+
 	private:
 
 		template <typename Type>

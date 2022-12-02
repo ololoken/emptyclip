@@ -1526,18 +1526,19 @@ int _PlayState::PickupObject(_Item *Item, bool Manual) {
 		if(Item->CanAutoPickup() && AmountAdded) {
 
 			// Initialize
-			std::string ParticleText;
+			std::ostringstream Buffer;
+			Buffer.imbue(std::locale(Config.Locale));
 			glm::vec4 ParticleColor = COLOR_WHITE;
 			switch(Item->Type) {
 				case _Object::AMMO:
-					ParticleText = "+" + std::to_string(AmountAdded);
+					Buffer << "+" << AmountAdded;
 				break;
 				case _Object::CONSUMABLE:
-					ParticleText = Item->GetConsumableParticleText(AmountAdded);
+					Item->GetConsumableParticleText(Buffer, AmountAdded);
 					ParticleColor = COLOR_GREEN;
 				break;
 				case _Object::KEY:
-					ParticleText = "+" + Item->Name;
+					Buffer << "+" << Item->Name;
 					Save.SavePlayer(Player);
 				break;
 			}
@@ -1545,7 +1546,7 @@ int _PlayState::PickupObject(_Item *Item, bool Manual) {
 			// Add particle
 			glm::vec2 ParticlePosition(Player->Position.x, Player->Position.y - 0.5);
 			_Particle *Particle = new _Particle(_ParticleSpawn(GameAssets.GetParticleTemplate("text0"), COLOR_WHITE, glm::vec2(0), ParticlePosition, OBJECT_Z, 0));
-			Particle->Text = ParticleText;
+			Particle->Text = Buffer.str();
 			Particle->Color = ParticleColor;
 			Particles->Add(Particle);
 		}
@@ -2116,9 +2117,14 @@ void _PlayState::GenerateHitEffects(_Entity *Attacker, const int Type, const _Hi
 void _PlayState::GenerateDamageText(glm::vec2 Position, int Value, bool Crit, bool HitPlayer) {
 	Position += _Map::GenerateRandomPointInCircle(0.2f);
 
+	// Get text
+	std::ostringstream Buffer;
+	Buffer.imbue(std::locale(Config.Locale));
+	Buffer << Value;
+
 	// Create particle
 	_Particle *DamageParticle = new _Particle(_ParticleSpawn(GameAssets.GetParticleTemplate("text0"), COLOR_WHITE, glm::vec2(0), Position, OBJECT_Z, 0));
-	DamageParticle->Text = std::to_string(Value);
+	DamageParticle->Text = Buffer.str();
 
 	// Set color
 	if(HitPlayer)
