@@ -1870,7 +1870,7 @@ void _Map::RenderGrid(int Mode) {
 }
 
 // Draw the mini map
-void _Map::DrawMinimap(ae::_Bounds &MinimapBounds, bool FullMap, bool DrawIcons) {
+void _Map::DrawMinimap(ae::_Bounds &MinimapBounds, const _Item *HighlightItem, bool FullMap, bool DrawIcons) {
 
 	// Get bounds of minimap window
 	glm::vec2 DrawSize = FullMap ? glm::vec2(ae::Graphics.CurrentSize.y, ae::Graphics.CurrentSize.y) * 0.75f : MINIMAP_SIZE * ae::_Element::GetUIScale();
@@ -1972,8 +1972,13 @@ void _Map::DrawMinimap(ae::_Bounds &MinimapBounds, bool FullMap, bool DrawIcons)
 				glm::vec2 Start = MinimapBounds.Start + ((Bounds.Start - CaptureBounds.Start) / VisionSize) * DrawSize;
 				glm::vec2 End = MinimapBounds.Start + ((Bounds.End - CaptureBounds.Start) / VisionSize) * DrawSize;
 
+				// Set color
+				if(HighlightItem && HighlightItem->Texture != MinimapIcon.Object->Texture)
+					ae::Graphics.SetColor(glm::vec4(MINIMAP_ICON_HIDE_FADE, MINIMAP_ICON_HIDE_FADE, MINIMAP_ICON_HIDE_FADE, 1.0f));
+				else
+					ae::Graphics.SetColor(COLOR_WHITE);
+
 				// Draw icon
-				ae::Graphics.SetColor(COLOR_WHITE);
 				ae::Graphics.DrawImage(ae::_Bounds(Start, End), MinimapIcon.Object->Texture);
 
 				// Draw highlight
