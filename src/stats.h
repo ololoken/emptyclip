@@ -86,6 +86,7 @@ struct _Special {
 	float AttackSpeedFactor{1.0f};
 	float MoveSpeedFactor{1.0f};
 	float AIAttacks{1.0f};
+	float ProjectileSpeed{1.0f};
 	int FreePathing{0};
 };
 

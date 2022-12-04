@@ -747,6 +747,7 @@ void _Stats::LoadSpecials() {
 		Special.DamageFactor = Database->GetReal("damage");
 		Special.AttackSpeedFactor = Database->GetReal("attack_speed");
 		Special.MoveSpeedFactor = Database->GetReal("move_speed");
+		Special.ProjectileSpeed = Database->GetReal("projectile_speed");
 		Special.AIAttacks = Database->GetReal("ai_attacks");
 		Special.FreePathing = Database->GetInt<int>("freepathing");
 		SetColor(Special.Color, Database->GetString("color_id"));
@@ -917,6 +918,7 @@ _Monster *_Stats::CreateMonster(const std::string &ID, int Level, size_t Progres
 			Monster->MinDamage[i] = std::round(Monster->MinDamage[i] * Special->DamageFactor);
 			Monster->MaxDamage[i] = std::round(Monster->MaxDamage[i] * Special->DamageFactor);
 			Monster->AttackPeriod[i] /= Special->AttackSpeedFactor;
+			Monster->ProjectileSpeed[i] *= Special->ProjectileSpeed;
 		}
 		if(Special->FreePathing) {
 			Monster->FreePathing = true;
