@@ -113,6 +113,7 @@ struct _Achievement {
 struct _Ammo {
 	std::string ID;
 	std::string Name;
+	std::string ExcessID;
 	std::string IconID;
 	int Max;
 	int Type;

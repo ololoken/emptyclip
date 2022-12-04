@@ -74,7 +74,7 @@ static _SkillText SkillText[SKILL_COUNT] = {
 	{ "Max Stamina", "Max Ammo" },
 	{ "Gun Accuracy", "Critical Hit Damage" },
 	{ "Experience Gain", "Gear Mod Capacity" },
-	{ "Drop Rate", "Ammo Pickup Bonus" },
+	{ "Drop Rate", "Ammo Drop Amount" },
 };
 
 // Initialize

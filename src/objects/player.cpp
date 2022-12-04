@@ -344,18 +344,12 @@ void _Player::RecalculateStats(bool SoftReset) {
 	DamageResist = std::min(DamageResist, ENTITY_MAX_DAMAGE_RESIST);
 	SelfHealPercent *= HealModifier;
 
-	// Handle max ammo
-	AmmoMax.clear();
-	for(const auto &AmmoType : Stats.AmmoNames) {
-		AmmoMax[AmmoType] = Stats.Ammo.at(AmmoType).Max * Attributes.at("max_ammo").Float * 0.01f + 0.5f;
-		if(Ammo.find(AmmoType) != Ammo.end())
-			Ammo[AmmoType] = std::min(Ammo[AmmoType], AmmoMax[AmmoType]);
-	}
+	UpdateMaxAmmo();
 	UpdateAmmoNeeded();
 
 	// Skills
 	DropRate = 100 + Stats.GetSkill(Skills[SKILL_LUCK], SKILL_LUCK, 0);
-	PickupModifier = Stats.GetSkillBonusMultiplier(Skills[SKILL_LUCK], SKILL_LUCK, 1);
+	AmmoAmountModifier = Stats.GetSkillBonusMultiplier(Skills[SKILL_LUCK], SKILL_LUCK, 1);
 	ExperienceModifier = Stats.GetSkillBonusMultiplier(Skills[SKILL_INTELLIGENCE], SKILL_INTELLIGENCE, 0);
 	ExtraMods = Stats.GetSkill(Skills[SKILL_INTELLIGENCE], SKILL_INTELLIGENCE, 1);
 }
@@ -737,7 +731,7 @@ int _Player::AddItem(_Item *Item, int &AmountAdded, bool UseOnFull) {
 			if(Item->Unique)
 				AmountAdded = AmountToMax;
 			else
-				AmountAdded = std::min(AmountToMax, GetPickupAmount(Item));
+				AmountAdded = std::min(AmountToMax, Item->Attributes.at("amount").Int);
 
 			Ammo[Item->Template.AmmoID] += AmountAdded;
 			UpdateAmmoNeeded();
@@ -1170,6 +1164,45 @@ void _Player::UpdateAmmoNeeded() {
 	}
 }
 
+// Update max ammo for player
+void _Player::UpdateMaxAmmo() {
+
+	// Update max ammo
+	AmmoMax.clear();
+	std::unordered_map<std::string, int> Excess;
+	for(const auto &AmmoType : Stats.AmmoNames) {
+
+		// Set max
+		AmmoMax[AmmoType] = Stats.Ammo.at(AmmoType).Max * Attributes.at("max_ammo").Float * 0.01f + 0.5f;
+		if(Ammo.find(AmmoType) == Ammo.end())
+			continue;
+
+		// Save excess amount
+		Excess[AmmoType] = Ammo[AmmoType] - AmmoMax[AmmoType];
+
+		// Cap existing amount
+		Ammo[AmmoType] = std::min(Ammo[AmmoType], AmmoMax[AmmoType]);
+	}
+
+	// Drop excess ammo
+	for(const auto &AmmoType : Excess) {
+		if(AmmoType.second <= 0)
+			continue;
+
+		// Get ammo stat
+		_Ammo &Ammo = Stats.Ammo.at(AmmoType.first);
+
+		// Create pickup
+		_ObjectSpawn ObjectSpawn;
+		ObjectSpawn.Type = _Object::AMMO;
+		ObjectSpawn.ID = Ammo.ExcessID;
+		ObjectSpawn.Position = PlayState.Map->FindSuitableItemPosition(Position, ObjectSpawn.Type, ITEM_RADIUS, ITEM_PLACEMENT_ATTEMPTS);
+		_Item *Item = Stats.CreateItem(ObjectSpawn.ID, 1, 0, ObjectSpawn.Position, false, Progression);
+		Item->Attributes["amount"].Int = AmmoType.second;
+		Map->AddObject(Item, GRID_ITEM);
+	}
+}
+
 // Add missing backpack bags based on progression
 void _Player::AddMissingBackpacks() {
 	int Missing = Stats.Progressions[(size_t)Progression].Backpacks - (int)Inventory->Containers[(size_t)BagType::BACKPACK].size();
@@ -1433,14 +1466,6 @@ void _Player::ConsumeInventory(const _Slot &Slot, bool Delete) {
 
 		Slot.RemoveItem();
 	}
-}
-
-// Get amount of ammo picked up
-int _Player::GetPickupAmount(const _Item *Item) const {
-	if(Item->Template.Attributes.at("pickup_bonus").Int)
-		return std::round(Item->Template.Attributes.at("amount").Int * PickupModifier);
-
-	return Item->Template.Attributes.at("amount").Int;
 }
 
 // Reset after death

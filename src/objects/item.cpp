@@ -458,7 +458,7 @@ void _Item::DrawTooltip(const _Player *Player, glm::vec2 DrawPosition, const _It
 			if(Unique)
 				Buffer << "Restores all " << Template.Name;
 			else
-				Buffer << "+" << Player->GetPickupAmount(this);
+				Buffer << "+" << Attributes.at("amount").Int;
 			AttributeFont->DrawText(Buffer.str(), glm::ivec2(DrawPosition), ae::CENTER_BASELINE);
 		} break;
 		case _Object::CONSUMABLE: {

@@ -1,10 +1,10 @@
-id	name	type_id	icon_id	amount	pickup_bonus	renderlist
-ammo_pistol	Pistol Ammo	pistol	textures/items/ammo_pistol.png	15	1	0
-ammo_magnum	Magnum Ammo	magnum	textures/items/ammo_magnum.png	8	1	1
-ammo_shells	Shotgun Shells	shell	textures/items/ammo_shells.png	10	1	2
-ammo_rifle	Rifle Ammo	rifle	textures/items/ammo_rifle.png	20	1	3
-ammo_heavy	Heavy Ammo	heavy	textures/items/ammo_heavy.png	30	1	4
-ammo_plasma	Plasma Cells	plasma	textures/items/ammo_plasma.png	25	1	5
-ammo_rockets	Rockets	rocket	textures/items/ammo_rockets.png	2	1	6
-ammo_bolts	Bolts	bolt	textures/items/ammo_bolts.png	5	1	7
-ammo_bolt	Bolt	bolt	textures/projectiles/bolt.png	1	0	-1
+id	name	type_id	icon_id	amount	renderlist
+ammo_pistol	Pistol Ammo	pistol	textures/items/ammo_pistol.png	15	0
+ammo_magnum	Magnum Ammo	magnum	textures/items/ammo_magnum.png	8	1
+ammo_shells	Shotgun Shells	shell	textures/items/ammo_shells.png	10	2
+ammo_rifle	Rifle Ammo	rifle	textures/items/ammo_rifle.png	20	3
+ammo_heavy	Heavy Ammo	heavy	textures/items/ammo_heavy.png	30	4
+ammo_plasma	Plasma Cells	plasma	textures/items/ammo_plasma.png	25	5
+ammo_rockets	Rockets	rocket	textures/items/ammo_rockets.png	2	6
+ammo_bolts	Bolts	bolt	textures/items/ammo_bolts.png	5	7
+ammo_bolt	Bolt	bolt	textures/projectiles/bolt.png	1	-1

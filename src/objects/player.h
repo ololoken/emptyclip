@@ -94,7 +94,6 @@ class _Player : public _Entity {
 		bool AddMod(const _Slot &SlotFrom, const _Slot &SlotTo);
 		bool ApplyUsable(const _Slot &SlotFrom, const _Slot &SlotTo);
 		void ConsumeInventory(const _Slot &Slot, bool Delete=true);
-		int GetPickupAmount(const _Item *Item) const;
 		int ReduceAmmo(int Amount) override;
 		bool WeaponHasAmmo(int AttackType) const override;
 		int GetWeaponAmmo() const override;
@@ -102,6 +101,7 @@ class _Player : public _Entity {
 		_Bag &GetActiveBackpackBag() const;
 		void GetEquippedCompareSlot(const _Item *Item, bool Offhand, _Slot &Slot);
 		void UpdateAmmoNeeded();
+		void UpdateMaxAmmo();
 		void AddMissingBackpacks();
 		bool HasAmmoForMain() const;
 
@@ -210,7 +210,7 @@ class _Player : public _Entity {
 		double SelfHealTimer{PLAYER_HEAL_DELAY};
 		float SelfHealPercent;
 		float HealModifier{1.0f};
-		float PickupModifier{1.0f};
+		float AmmoAmountModifier{1.0f};
 		float ExperienceModifier{1.0f};
 
 		// Attacking

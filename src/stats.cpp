@@ -18,6 +18,7 @@
 #include <stats.h>
 #include <objects/object.h>
 #include <objects/monster.h>
+#include <objects/player.h>
 #include <ae/random.h>
 #include <ae/assets.h>
 #include <ae/animation.h>
@@ -182,7 +183,6 @@ void _Stats::LoadAmmo() {
 		Template.AmmoID = Database->GetString("type_id");
 		Template.RenderListType = Database->GetInt<int>("renderlist");
 		Template.Attributes["amount"].Int = Database->GetInt<int>("amount");
-		Template.Attributes["pickup_bonus"].Int = Database->GetInt<int>("pickup_bonus");
 		Template.AmmoTypeID = Stats.Ammo.at(Template.AmmoID).Type;
 
 		// Check for loaded textures
@@ -208,6 +208,7 @@ void _Stats::LoadAmmoTypes() {
 		AmmoType.Type = Type++;
 		AmmoType.ID = Database->GetString("id");
 		AmmoType.Name = Database->GetString("name");
+		AmmoType.ExcessID = Database->GetString("excess_id");
 		AmmoType.IconID = Database->GetString("icon_id");
 		AmmoType.Max = Database->GetInt<int>("max");
 
@@ -844,6 +845,12 @@ _Item *_Stats::CreateItem(const std::string &ID, int Level, int Quality, const g
 				}
 			}
 		}
+	}
+
+	// Set ammo amount
+	if(Item->Type == _Object::AMMO) {
+		int AmmoAmount = Item->Template.Attributes.at("amount").Int;
+		Item->Attributes["amount"].Int = RandomStats ? std::round(AmmoAmount * PlayState.Player->AmmoAmountModifier) : AmmoAmount;
 	}
 
 	// Update item stats

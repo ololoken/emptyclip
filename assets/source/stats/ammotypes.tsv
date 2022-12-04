@@ -1,9 +1,9 @@
-id	name	icon_id	max
-pistol	Pistol Ammo	textures/items/ammo_pistol.png	75
-magnum	Magnum Ammo	textures/items/ammo_magnum.png	40
-shell	Shotgun Shells	textures/items/ammo_shells.png	50
-rifle	Rifle Ammo	textures/items/ammo_rifle.png	100
-heavy	Heavy Ammo	textures/items/ammo_heavy.png	150
-plasma	Plasma Cells	textures/items/ammo_plasma.png	125
-rocket	Rockets	textures/items/ammo_rockets.png	10
-bolt	Bolts	textures/items/ammo_bolts.png	25
+id	name	excess_id	icon_id	max
+pistol	Pistol Ammo	ammo_pistol	textures/items/ammo_pistol.png	75
+magnum	Magnum Ammo	ammo_magnum	textures/items/ammo_magnum.png	40
+shell	Shotgun Shells	ammo_shells	textures/items/ammo_shells.png	50
+rifle	Rifle Ammo	ammo_rifle	textures/items/ammo_rifle.png	100
+heavy	Heavy Ammo	ammo_heavy	textures/items/ammo_heavy.png	150
+plasma	Plasma Cells	ammo_plasma	textures/items/ammo_plasma.png	125
+rocket	Rockets	ammo_rockets	textures/items/ammo_rockets.png	10
+bolt	Bolts	ammo_bolts	textures/items/ammo_bolts.png	25
