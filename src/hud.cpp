@@ -327,6 +327,7 @@ void _HUD::HandleMouseButton(const ae::_MouseEvent &MouseEvent) {
 										HitSlot.DeleteItem();
 								}
 								else if(ExistingItem->AddMod(CursorItem)) {
+									ae::Audio.PlaySound(ae::Assets.Sounds["game_mod.ogg"]);
 									CursorItem->Visible = false;
 									PlayState.Map->RemoveObject(CursorItem, GRID_ITEM);
 								}

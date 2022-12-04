@@ -1036,6 +1036,7 @@ bool _Player::AddMod(const _Slot &SlotFrom, const _Slot &SlotTo) {
 		return false;
 
 	if(ItemTo->AddMod(ItemFrom)) {
+		ae::Audio.PlaySound(ae::Assets.Sounds["game_mod.ogg"]);
 		ConsumeInventory(SlotFrom, false);
 		RecalculateStats();
 		return true;
