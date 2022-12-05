@@ -83,6 +83,8 @@ add_executable(${CMAKE_PROJECT_NAME} ${SRC_ALL})
 set(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/working/)
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
 	set_target_properties(${CMAKE_PROJECT_NAME} PROPERTIES OUTPUT_NAME ${CMAKE_PROJECT_NAME}_debug)
+elseif(CMAKE_BUILD_TYPE STREQUAL "RelWithDebInfo")
+	set_target_properties(${CMAKE_PROJECT_NAME} PROPERTIES OUTPUT_NAME ${CMAKE_PROJECT_NAME}_reldeb)
 endif()
 
 # build data packs
