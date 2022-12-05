@@ -1142,6 +1142,7 @@ void _Menu::SetScoreStats(const _HUD *HUD, const _Player *Player, bool EndOfGame
 	_HUD::FormatTime(TimeBuffer, Player->ProgressionTime);
 	ae::Assets.Elements["label_menu_score_progression_time_value"]->Text = TimeBuffer;
 	ae::Assets.Elements["label_menu_score_progression_kills_value"]->Text = std::to_string(Player->ProgressionKills);
+	ae::Assets.Elements["label_menu_score_progression_deaths_value"]->Text = std::to_string(Player->ProgressionDeaths);
 	ae::Assets.Elements["label_menu_score_progression_crates_value"]->Text = std::to_string(Player->ProgressionCrates);
 	ae::Assets.Elements["label_menu_score_progression_secrets_value"]->Text = std::to_string(Player->ProgressionSecrets);
 
