@@ -142,6 +142,7 @@ _Player::_Player(const _ObjectTemplate &PlayerTemplate) :
 		Filters[i] = 0;
 		LastFilters[i] = 0;
 	}
+	BuildFilterValues();
 
 	// Initialize ammo needed array
 	AmmoNeeded.reserve(Stats.AmmoNames.size());
@@ -182,6 +183,28 @@ void _Player::ResetAchievementTracking() {
 	else {
 		StatLoneWolf = false;
 		StatFistsOnly = false;
+	}
+}
+
+// Build filter values based on progression
+void _Player::BuildFilterValues() {
+
+	FilterValues[FILTER_GEAR].clear();
+	FilterValues[FILTER_GEAR].push_back(ITEM_QUALITY_MIN);
+	FilterValues[FILTER_GEAR].push_back(0);
+	FilterValues[FILTER_GEAR].push_back(10);
+
+	FilterValues[FILTER_MODS].clear();
+	FilterValues[FILTER_MODS].push_back(ITEM_QUALITY_MIN);
+	FilterValues[FILTER_MODS].push_back(-10);
+	FilterValues[FILTER_MODS].push_back(-5);
+	FilterValues[FILTER_MODS].push_back(0);
+	FilterValues[FILTER_MODS].push_back(5);
+	FilterValues[FILTER_MODS].push_back(10);
+
+	for(int i = 0; i < Progression; i++) {
+		FilterValues[FILTER_GEAR].push_back(i * ITEM_QUALITY_FILTER_PROGRESSION + ITEM_QUALITY_FILTER_PROGRESSION);
+		FilterValues[FILTER_MODS].push_back(i * ITEM_QUALITY_FILTER_PROGRESSION + ITEM_QUALITY_FILTER_PROGRESSION);
 	}
 }
 
@@ -1677,6 +1700,14 @@ void _Player::GetDamageText(std::ostringstream &Buffer, int AttackType, bool Ave
 		Buffer << ae::Round2((MinDamage[AttackType] + MaxDamage[AttackType]) * 0.5 * Multiplier) << " avg";
 	else
 		Buffer << (int64_t)(MinDamage[AttackType] * Multiplier) << " - " << (int64_t)(MaxDamage[AttackType] * Multiplier);
+}
+
+// Return the current filter value for a type
+int _Player::GetFilterValue(int FilterMode) {
+	if(Filters[FilterMode] >= (int)FilterValues[FilterMode].size())
+		Filters[FilterMode] = 0;
+
+	return FilterValues[FilterMode][(size_t)Filters[FilterMode]];
 }
 
 void _Player::SetLegAnimationPlayMode(int Mode) {

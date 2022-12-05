@@ -121,7 +121,7 @@ void _ObjectManager::Update(double FrameTime, _Map *Map) {
 					Object->Filtered = false;
 			break;
 			default:
-				Object->Filtered = (Object->FilterType >= 0 && Object->Quality < PlayState.GetFilterLevel(Object->FilterType)) ? true : false;
+				Object->Filtered = (Object->FilterType >= 0 && Object->Quality < PlayState.Player->GetFilterValue(Object->FilterType)) ? true : false;
 			break;
 		}
 
@@ -183,13 +183,16 @@ void _ObjectManager::Update(double FrameTime, _Map *Map) {
 				_Item *Item = (_Item *)Object;
 
 				// Hide pickups when more info is shown
-				if(Item->CanHide() && PlayState.ShowMoreInfo())
+				if(Item->CanHide() && PlayState.ShowMoreInfo()) {
 					DrawLight = false;
+				}
 				else {
-					if(Item->Template.RenderListType != -1)
-						ItemRenderList[Item->Template.RenderListType].Objects.push_back(Object);
-					else
+					if(Item->Template.RenderListType == -1) {
 						RenderList[RENDER_ITEMS].push_back(Object);
+						DrawLight = !Object->Filtered;
+					}
+					else
+						ItemRenderList[Item->Template.RenderListType].Objects.push_back(Object);
 				}
 			}
 			else if(Object->Template.Type == _Object::PROP)

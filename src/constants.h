@@ -137,6 +137,7 @@ const  float        ITEM_SCALE                           =  0.5f;
 const  float        ITEM_Z                               =  0.01f;
 const  int          ITEM_QUALITY_MIN                     =  -100;
 const  int          ITEM_QUALITY_RANGE                   =  15;
+const  int          ITEM_QUALITY_FILTER_PROGRESSION      =  25;
 const  float        ITEM_MIN_MOVESPEED                   =  -90.0f;
 const  float        ITEM_MAX_MOVESPEED                   =  100.0f;
 const  int          ITEM_PLACEMENT_ATTEMPTS              =  30;

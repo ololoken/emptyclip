@@ -42,6 +42,7 @@ namespace ae {
 	class _AudioSource;
 	class _Framebuffer;
 	class _Camera;
+	class _Element;
 }
 
 // Play state
@@ -80,7 +81,6 @@ class _PlayState : public ae::_State {
 		void SpawnObject(const _ObjectSpawn *ObjectSpawn, bool GenerateStats=false, int AddedLevel=0);
 		int PickupObject(_Item *Item, bool Manual);
 		bool ShowMoreInfo();
-		int GetFilterLevel(int Type) const;
 
 		// Parameters
 		std::string Level;
@@ -116,6 +116,7 @@ class _PlayState : public ae::_State {
 		void EndLevel();
 
 		bool SetHoverItem();
+		void SetFilterTextValue(ae::_Element *Element, int Value);
 		void ChangeFilterLevel(int FilterType);
 
 		// Game

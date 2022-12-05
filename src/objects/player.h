@@ -57,6 +57,7 @@ class _Player : public _Entity {
 		~_Player() override;
 
 		void ResetAchievementTracking();
+		void BuildFilterValues();
 
 		bool IsDead() const { return Action == ACTION_DYING && !Active; }
 		bool IsMelee() const;
@@ -137,6 +138,7 @@ class _Player : public _Entity {
 		const ae::_Sound *GetSound(int SoundType, int AttackType) const override;
 		const char *GetWeaponID(int AttackType) override;
 		void GetDamageText(std::ostringstream &Buffer, int AttackType, bool Average, double Multiplier);
+		int GetFilterValue(int FilterMode);
 
 		void AdjustLegDirection(float Destination);
 		void SetLegAnimationPlayMode(int Mode) override;
@@ -166,6 +168,7 @@ class _Player : public _Entity {
 		// UI
 		int Filters[FILTER_COUNT];
 		int LastFilters[FILTER_COUNT];
+		std::vector<int> FilterValues[FILTER_COUNT];
 
 		// Inventory
 		_Inventory *Inventory;

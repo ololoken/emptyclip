@@ -316,9 +316,12 @@ void _Save::LoadPlayer(_Player *Player) {
 			case CHUNK_FILTERS: {
 				int FilterCount;
 				File.read((char *)&FilterCount, sizeof(FilterCount));
-				FilterCount = std::min(FilterCount, (int)FILTER_COUNT);
-				for(int i = 0; i < FilterCount; i++)
-					File.read((char *)&Player->Filters[i], sizeof(Player->Filters[i]));
+				for(int i = 0; i < FilterCount; i++) {
+					int FilterValue;
+					File.read((char *)&FilterValue, sizeof(FilterValue));
+					if(i < FILTER_COUNT)
+						Player->Filters[i] = FilterValue;
+				}
 			} break;
 			case CHUNK_INVENTORY: {
 				ae::_Buffer Buffer((size_t)Size);
@@ -350,6 +353,7 @@ void _Save::LoadPlayer(_Player *Player) {
 	Player->ResetWeaponAnimation();
 	Player->Stamina = Player->MaxStamina;
 	Player->SelfHealTimer = Player->SelfHealDelay;
+	Player->BuildFilterValues();
 
 	// Handle exiting during combat
 	Player->Health = std::min(Player->Health, Player->MaxHealth);

@@ -58,47 +58,6 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtx/norm.hpp>
 
-const static int FILTERTYPE_GEAR_COUNT = 4;
-const static int FILTERTYPE_MODS_COUNT = 7;
-
-// Filter levels for gear
-const static int FilterLevelsGear[FILTERTYPE_GEAR_COUNT] = {
-	ITEM_QUALITY_MIN,
-	0,
-	10,
-	25,
-};
-
-// Filter levels for mods
-const static int FilterLevelsMods[FILTERTYPE_MODS_COUNT] = {
-	ITEM_QUALITY_MIN,
-	-10,
-	-5,
-	0,
-	5,
-	10,
-	25,
-};
-
-// Filter text for gear
-const static char *FilterTextGear[FILTERTYPE_GEAR_COUNT] = {
-	"ALL",
-	"0+",
-	"10+",
-	"25+",
-};
-
-// Filter text for gear
-const static char *FilterTextMods[FILTERTYPE_MODS_COUNT] = {
-	"ALL",
-	"-10+",
-	"-5+",
-	"0+",
-	"5+",
-	"10+",
-	"25+",
-};
-
 _PlayState PlayState;
 
 // Load level and set up objects
@@ -139,8 +98,8 @@ void _PlayState::Init() {
 		throw std::runtime_error("Player is nullptr");
 
 	// Set up labels
-	ae::Assets.Elements["label_hud_filters_gear"]->Text = FilterTextGear[Player->Filters[FILTER_GEAR]];
-	ae::Assets.Elements["label_hud_filters_mods"]->Text = FilterTextMods[Player->Filters[FILTER_MODS]];
+	SetFilterTextValue(ae::Assets.Elements["label_hud_filters_gear"], Player->GetFilterValue(FILTER_GEAR));
+	SetFilterTextValue(ae::Assets.Elements["label_hud_filters_mods"], Player->GetFilterValue(FILTER_MODS));
 
 	// Set checkpoint from editor
 	if(FromEditor)
@@ -532,6 +491,7 @@ bool _PlayState::HandleCommand(ae::_Console *Console) {
 				Player->ProgressionSecrets = 0;
 				Player->ProgressionDeaths = 0;
 				Player->RecalculateStats();
+				Player->BuildFilterValues();
 			}
 			else {
 				Console->AddMessage("usage: " + Console->Command + " [value]");
@@ -1493,6 +1453,7 @@ void _PlayState::EndLevel() {
 		Player->ProgressionDeaths = 0;
 		Player->ResetAchievementTracking();
 		Player->AddMissingBackpacks();
+		Player->BuildFilterValues();
 	}
 	else {
 		Menu.SetScoreStats(HUD, Player, false, 0, GotOneHundredPercent);
@@ -1600,19 +1561,15 @@ bool _PlayState::SetHoverItem() {
 	return false;
 }
 
-// Get filter level for a filter type
-int _PlayState::GetFilterLevel(int Type) const {
+// Update filter icon text
+void _PlayState::SetFilterTextValue(ae::_Element *Element, int Value) {
+	if(Value == ITEM_QUALITY_MIN)
+		Element->Text = "ALL";
+	else
+		Element->Text = std::to_string(Value) + "+";
 
-	switch(Type) {
-		case FILTER_GEAR:
-			return FilterLevelsGear[Player->Filters[Type]];
-		break;
-		case FILTER_MODS:
-			return FilterLevelsMods[Player->Filters[Type]];
-		break;
-	}
-
-	return ITEM_QUALITY_MIN;
+	// Set font size
+	Element->Font = (Value >= 100) ? ae::Assets.Fonts["hud_tiny"] : ae::Assets.Fonts["hud_char"];
 }
 
 // Change filter level for a filter type
@@ -1631,15 +1588,7 @@ void _PlayState::ChangeFilterLevel(int FilterType) {
 	else {
 
 		// Get max
-		int Max = 0;
-		switch(FilterType) {
-			case FILTER_GEAR:
-				Max = FILTERTYPE_GEAR_COUNT;
-			break;
-			case FILTER_MODS:
-				Max = FILTERTYPE_MODS_COUNT;
-			break;
-		}
+		int Max = (int)Player->FilterValues[FilterType].size();
 
 		// Update filter
 		Player->Filters[FilterType] += ae::Input.ModKeyDown(KMOD_SHIFT) ? -1 : 1;
@@ -1657,12 +1606,12 @@ void _PlayState::ChangeFilterLevel(int FilterType) {
 	std::string Message;
 	switch(FilterType) {
 		case FILTER_GEAR:
-			ae::Assets.Elements["label_hud_filters_gear"]->Text = FilterTextGear[Player->Filters[FilterType]];
-			Message = std::string("GEAR QUALITY FILTER: ") + FilterTextGear[Player->Filters[FilterType]];
+			SetFilterTextValue(ae::Assets.Elements["label_hud_filters_gear"], Player->GetFilterValue(FilterType));
+			Message = std::string("GEAR QUALITY FILTER: ") + ae::Assets.Elements["label_hud_filters_gear"]->Text;
 		break;
 		case FILTER_MODS:
-			ae::Assets.Elements["label_hud_filters_mods"]->Text = FilterTextMods[Player->Filters[FilterType]];
-			Message = std::string("MOD QUALITY FILTER: ") + FilterTextMods[Player->Filters[FilterType]];
+			SetFilterTextValue(ae::Assets.Elements["label_hud_filters_mods"], Player->GetFilterValue(FilterType));
+			Message = std::string("MOD QUALITY FILTER: ") + ae::Assets.Elements["label_hud_filters_mods"]->Text;
 		break;
 	}
 
