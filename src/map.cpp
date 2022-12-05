@@ -1891,7 +1891,7 @@ void _Map::DrawMinimap(ae::_Bounds &MinimapBounds, const _Item *HighlightItem, b
 
 	// Draw minimap background
 	ae::Graphics.SetProgram(ae::Assets.Programs["ortho_pos"]);
-	ae::Graphics.SetColor(MINIMAP_BACKGROUND_COLOR);
+	ae::Graphics.SetColor(DrawIcons ? MINIMAP_BACKGROUND_COLOR_ICONS : MINIMAP_BACKGROUND_COLOR);
 	ae::Graphics.EnableScissorTest();
 	ae::Graphics.SetScissor(MinimapBounds);
 	ae::Graphics.DrawRectangle(MinimapBounds, true);
@@ -1967,18 +1967,16 @@ void _Map::DrawMinimap(ae::_Bounds &MinimapBounds, const _Item *HighlightItem, b
 				if(!MinimapIcon.Object)
 					continue;
 
+				if(HighlightItem && HighlightItem->Texture != MinimapIcon.Object->Texture)
+					continue;
+
 				// Get bounds
 				ae::_Bounds Bounds(MinimapIcon.Position - ImageSize, MinimapIcon.Position + ImageSize);
 				glm::vec2 Start = MinimapBounds.Start + ((Bounds.Start - CaptureBounds.Start) / VisionSize) * DrawSize;
 				glm::vec2 End = MinimapBounds.Start + ((Bounds.End - CaptureBounds.Start) / VisionSize) * DrawSize;
 
-				// Set color
-				if(HighlightItem && HighlightItem->Texture != MinimapIcon.Object->Texture)
-					ae::Graphics.SetColor(glm::vec4(MINIMAP_ICON_HIDE_FADE, MINIMAP_ICON_HIDE_FADE, MINIMAP_ICON_HIDE_FADE, 1.0f));
-				else
-					ae::Graphics.SetColor(COLOR_WHITE);
-
 				// Draw icon
+				ae::Graphics.SetColor(COLOR_WHITE);
 				ae::Graphics.DrawImage(ae::_Bounds(Start, End), MinimapIcon.Object->Texture);
 
 				// Draw highlight

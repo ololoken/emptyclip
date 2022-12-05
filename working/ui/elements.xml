@@ -322,17 +322,17 @@
 			<element id="label_menu_score_progression_kills" font="hud_medium" text="Kills" offset_x="-10" alignment_x="2" alignment_y="3"/>
 			<element id="label_menu_score_progression_kills_value" font="hud_medium" offset_x="10" alignment_x="0" alignment_y="3"/>
 		</element>
-		<element id="element_menu_score_progression_deaths" offset_y="190">
-			<element id="label_menu_score_progression_deaths" font="hud_medium" text="Deaths" offset_x="-10" alignment_x="2" alignment_y="3"/>
-			<element id="label_menu_score_progression_deaths_value" font="hud_medium" offset_x="10" alignment_x="0" alignment_y="3"/>
-		</element>
-		<element id="element_menu_score_progression_crates" offset_y="230">
+		<element id="element_menu_score_progression_crates" offset_y="190">
 			<element id="label_menu_score_progression_crates" font="hud_medium" text="Crates" offset_x="-10" alignment_x="2" alignment_y="3"/>
 			<element id="label_menu_score_progression_crates_value" font="hud_medium" offset_x="10" alignment_x="0" alignment_y="3"/>
 		</element>
-		<element id="element_menu_score_progression_secrets" offset_y="270">
+		<element id="element_menu_score_progression_secrets" offset_y="230">
 			<element id="label_menu_score_progression_secrets" font="hud_medium" text="Secrets" offset_x="-10" alignment_x="2" alignment_y="3"/>
 			<element id="label_menu_score_progression_secrets_value" font="hud_medium" offset_x="10" alignment_x="0" alignment_y="3"/>
+		</element>
+		<element id="element_menu_score_progression_deaths" offset_y="270">
+			<element id="label_menu_score_progression_deaths" font="hud_medium" text="Deaths" offset_x="-10" alignment_x="2" alignment_y="3"/>
+			<element id="label_menu_score_progression_deaths_value" font="hud_medium" offset_x="10" alignment_x="0" alignment_y="3"/>
 		</element>
 		<element id="button_menu_score_continue" sound="game_click0.ogg" style="style_menu_button" hover_style="style_menu_button_hover" offset_x="-120" offset_y="400" size_x="200" size_y="66" clickable="true">
 			<element id="label_menu_score_continue" font="menu_buttons" text="Continue" offset_y="44" alignment_y="3"/>

@@ -227,7 +227,8 @@ const  glm::vec2    MINIMAP_CAPTURE_SIZE                 =  glm::vec2(20.0f,20.0
 const  glm::vec2    MINIMAP_FULL_CAPTURE_SIZE            =  glm::vec2(50.0f,50.0f);
 const  glm::vec2    MINIMAP_SIZE                         =  glm::vec2(200,200);
 const  glm::vec2    MINIMAP_PADDING                      =  glm::vec2(10,10);
-const  glm::vec4    MINIMAP_BACKGROUND_COLOR             =  glm::vec4(0.0f, 0.0f,0.0f, 0.8f);
+const  glm::vec4    MINIMAP_BACKGROUND_COLOR             =  glm::vec4(0.0f,0.0f,0.0f,0.8f);
+const  glm::vec4    MINIMAP_BACKGROUND_COLOR_ICONS       =  glm::vec4(0.0f,0.0f,0.0f,1.0f);
 const  glm::vec4    MINIMAP_ENEMY_COLOR                  =  glm::vec4(1.0f,0.0f,0.0f,1.0f);
 const  glm::vec4    MINIMAP_PLAYER_COLOR                 =  glm::vec4(0.3f,0.3f,0.3f,1.0f);
 const  glm::vec4    MINIMAP_GEAR_COLOR                   =  glm::vec4(0.0f,1.0f,0.0f,1.0f);
@@ -248,7 +249,6 @@ const  glm::vec4    MINIMAP_DOOR_BOSSCOLOR               =  glm::vec4(1.0f,1.0f,
 const  glm::vec4    MINIMAP_TOGGLED_COLOR                =  glm::vec4(0.035f,0.035f,0.035f,1.0f);
 const  float        MINIMAP_IMAGE_SIZE                   =  1.0f;
 const  float        MINIMAP_ICON_FADE                    =  0.25f;
-const  float        MINIMAP_ICON_HIDE_FADE               =  0.15f;
 //     Light
 const  glm::vec3    LIGHT_ATTENUATION                    =  glm::vec3(1.0f,0.2f,0.1f);
 const  glm::vec3    LIGHT_FLASH_ATTENUATION              =  glm::vec3(1.0f,0.1f,0.05f);
