@@ -606,6 +606,8 @@ void _Stats::LoadMonsters() {
 		if(Template.MeshID != "" && ae::Assets.Meshes.find(Template.MeshID) == ae::Assets.Meshes.end())
 			throw std::runtime_error(std::string(__func__) + " unknown mesh_id '" + Template.MeshID + "' for '" + Template.ID + "'");
 
+		Template.IsBoss = (Template.ID.find("boss_") == 0);
+
 		Objects.insert(std::make_pair(Template.ID, Template));
 	}
 
@@ -879,7 +881,7 @@ _Monster *_Stats::CreateMonster(const std::string &ID, int Level, size_t Progres
 	Monster->Animation->CalculateTextureCoords();
 	Monster->Level = Level;
 	Monster->Mass = Template.Attributes.at("mass").Float;
-	if(Template.ItemDropID != "")
+	if(Template.ItemDropID.size())
 		Monster->ItemDrop = &ItemDrops[Template.ItemDropID];
 
 	// Set stats

@@ -168,6 +168,7 @@ const  float        PROJECTILE_MIN_ALPHA                 =  0.35f;
 const  double       AI_REACTION_TIME_MIN                 =  GAME_TIMESTEP;
 const  double       AI_REACTION_TIME_MAX                 =  0.3;
 const  double       AI_RETURN_TIME                       =  10.0;
+const  double       AI_RETURN_TIME_BOSS                  =  3.0;
 const  double       AI_RETREAT_TIME                      =  4.0;
 const  float        AI_RETREAT_DISTANCE                  =  20.0f;
 const  double       AI_SHOOT_PERIOD                      =  0.5;

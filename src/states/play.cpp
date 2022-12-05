@@ -1683,8 +1683,6 @@ void _PlayState::CreateItemDrop(const _Entity *Entity, float DropRate) {
 	if(!Monster->ItemDrop)
 		return;
 
-	bool IsBoss = Monster->Template.ItemDropID == "boss";
-
 	// Roll for items
 	for(int i = 0; i < Monster->Template.Attributes.at("drop_count").Int; i++) {
 		int Rolls = (int)DropRate;
@@ -1696,7 +1694,7 @@ void _PlayState::CreateItemDrop(const _Entity *Entity, float DropRate) {
 			Rolls++;
 
 		// Bosses only drop one item
-		if(IsBoss)
+		if(Monster->Template.IsBoss)
 			Rolls = 1;
 
 		// Roll for each item
@@ -1708,13 +1706,13 @@ void _PlayState::CreateItemDrop(const _Entity *Entity, float DropRate) {
 			if(ObjectSpawn.Type) {
 
 				// Spawn object on player if item can't be reached
-				if(!Map->CheckCollisionFlag(Map->GetValidCoord(Monster->Position), _Tile::ENTITY) || IsBoss)
+				if(!Map->CheckCollisionFlag(Map->GetValidCoord(Monster->Position), _Tile::ENTITY) || Monster->Template.IsBoss)
 					ObjectSpawn.Position = Player->Position;
 				else
 					ObjectSpawn.Position = Monster->Position;
 
 				// Adjust position
-				if(!IsBoss)
+				if(!Monster->Template.IsBoss)
 					ObjectSpawn.Position = Map->FindSuitableItemPosition(ObjectSpawn.Position, ObjectSpawn.Type, ITEM_RADIUS, ITEM_PLACEMENT_ATTEMPTS);
 
 				ObjectSpawn.Level = Monster->Level;

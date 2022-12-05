@@ -148,6 +148,7 @@ struct _ObjectTemplate {
 	int AmmoTypeID{-1};
 	bool GiveHealth{false};
 	bool GiveStamina{false};
+	bool IsBoss{false};
 
 	std::unordered_map<std::string, _Value> Attributes;
 };

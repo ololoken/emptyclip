@@ -134,8 +134,8 @@ void _Monster::Update(double FrameTime) {
 	// Set return position if monster can't see player anymore
 	if(AIType != AI_SIMPLE) {
 		if(PlayerVisible != LastPlayerVisible && !PlayerVisible && Goal == GOAL_PURSUE) {
-			ReturnPosition = Position;
-			ReturnTimer = AI_RETURN_TIME;
+			ReturnPosition = SpawnPosition;
+			ReturnTimer = Template.IsBoss ? AI_RETURN_TIME_BOSS : AI_RETURN_TIME;
 		}
 		LastPlayerVisible = PlayerVisible;
 
