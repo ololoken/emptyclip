@@ -39,6 +39,14 @@
 
 static const float ATTRIBUTE_SPACING = 26;
 
+// Function for sorting mods
+inline bool CompareMod(_Item *First, _Item *Second) {
+	if(First->Template.Attributes.at("mod_type").Int == Second->Template.Attributes.at("mod_type").Int)
+		return First->Quality > Second->Quality;
+
+	return First->Template.Attributes.at("mod_type").Int < Second->Template.Attributes.at("mod_type").Int;
+}
+
 // Constructor
 _Item::_Item(const _ObjectTemplate &ItemTemplate) :
 	_Object(ItemTemplate) {
@@ -130,21 +138,48 @@ void _Item::DrawTooltip(const _Player *Player, glm::vec2 DrawPosition, const _It
 		Size.y = 250 * ae::_Element::GetUIScale();
 	}
 
-	// Increase size for each unique mod
-	bool HasOneBonus = false;
-	for(int i = 1; i < MOD_COUNT; i++) {
-		if(Bonus[i]) {
-			Size.y += SmallSpacing.y;
-			HasOneBonus = true;
-		}
-	}
-	if(HasOneBonus)
-		Size.y += Spacing.y;
-
 	// Get title width
 	ae::_TextBounds TextBounds;
 	LargeFont->GetStringDimensions(Name, TextBounds);
 	Size.x = std::max(Size.x, (float)TextBounds.Width) + 20 * ae::_Element::GetUIScale();
+
+	// Calculate mod icon sizes
+	glm::vec2 ModIconSize;
+	glm::vec2 ModIconSpacing;
+	float ModIconsHeight = 0.0f;
+	int ModColumns = 0;
+	if(CanMod()) {
+		if(Mods.size() > 532)
+			ModIconSize = glm::vec2(8, 8);
+		else if(Mods.size() > 345)
+			ModIconSize = glm::vec2(16, 16);
+		else if(Mods.size() > 228)
+			ModIconSize = glm::vec2(20, 20);
+		else if(Mods.size() > 126)
+			ModIconSize = glm::vec2(24, 24);
+		else
+			ModIconSize = glm::vec2(32, 32);
+
+		ModIconSpacing = ModIconSize * ae::_Element::GetUIScale();
+		ModColumns = std::ceil((Size.x - ModIconSpacing.x * 1.5f) / ModIconSpacing.x);
+		int Rows = std::ceil((float)Mods.size() / ModColumns);
+		ModIconsHeight = std::max(0, Rows - 3) * ModIconSpacing.y;
+	}
+
+	// Calculate mod text sizes
+	float ModTextHeight = 0.0f;
+	bool HasOneBonus = false;
+	for(int i = 1; i < MOD_COUNT; i++) {
+		if(Bonus[i]) {
+			ModTextHeight += SmallSpacing.y;
+			HasOneBonus = true;
+		}
+	}
+	if(HasOneBonus)
+		ModTextHeight += Spacing.y;
+
+	// Increase window height by tallest mod section
+	Size.y += std::max(ModIconsHeight, ModTextHeight);
 
 	// Offset position
 	float WindowOffsetX = 20 * ae::_Element::GetUIScale();
@@ -546,34 +581,71 @@ void _Item::DrawTooltip(const _Player *Player, glm::vec2 DrawPosition, const _It
 		Buffer.str("");
 	}
 
-	// Mod bonuses
-	TextColor = glm::vec4(0.85f, 0.85f, 0.85f, 1.0f);
 	if(HasOneBonus)
 		DrawPosition.y += Spacing.y * 0.5f;
 
-	for(size_t i = 1; i < MOD_COUNT; i++) {
-		if(!Bonus[i])
-			continue;
+	// Show mod icons
+	if(PlayState.ShowMoreInfo()) {
 
-		_ObjectTemplate &ModTemplate = Stats.Objects.at(Stats.ModNames[i]);
+		// Set up ui parameters
+		glm::vec2 IconStart = DrawPosition + glm::vec2(-Size.x * 0.5f + ModIconSpacing.x, ModIconSpacing.y * 0.75f);
+		glm::vec2 IconOffset(0.0f);
 
-		DrawPosition.y += SmallSpacing.y;
+		// Draw icons
+		int Column = 0;
+		for(const auto &Mod : Mods) {
+			glm::vec2 IconPosition = IconStart + IconOffset;
+			ae::Graphics.SetProgram(ae::Assets.Programs["ortho_pos_uv"]);
+			ae::Graphics.DrawScaledImage(IconPosition, Mod->Texture, ModIconSize, Mod->Color);
 
-		// Set bonus
-		if(ModTemplate.Attributes.at("mod_type").Int == MOD_BURST) {
-			Buffer << Bonus[i] << " Round ";
+			// Draw highlight
+			if(Mod->Unique) {
+				glm::vec4 HighlightColor(Mod->LightColor.r, Mod->LightColor.g, Mod->LightColor.b, ITEM_HIGHLIGHT_ALPHA);
+				ae::Graphics.DrawScaledImage(IconPosition, ae::Assets.Textures["textures/lights/circle.png"], ModIconSize * ITEM_HIGHLIGHT_SCALE, HighlightColor);
+			}
+
+			// Update position
+			Column++;
+			IconOffset.x += ModIconSpacing.x;
+			if(Column >= ModColumns) {
+				Column = 0;
+				IconOffset.x = 0.0f;
+				IconOffset.y += ModIconSpacing.y;
+			}
 		}
-		else if(ModTemplate.Attributes.at("mod_type").Int != MOD_FULLAUTO) {
-			std::string Percent = ModTemplate.Attributes.at("percent_sign").Int ? "% " : " ";
-			std::string Positive = ModTemplate.Attributes.at("negative").Int ? "" : "+";
 
-			Buffer << Positive << ae::Round2(Bonus[i]) << Percent;
+		// Hide rest of text
+		if(Mods.size())
+			return;
+	}
+	// Mod bonuses
+	else {
+		TextColor = glm::vec4(0.85f, 0.85f, 0.85f, 1.0f);
+		for(size_t i = 1; i < MOD_COUNT; i++) {
+			if(!Bonus[i])
+				continue;
+
+			_ObjectTemplate &ModTemplate = Stats.Objects.at(Stats.ModNames[i]);
+
+			DrawPosition.y += SmallSpacing.y;
+
+			// Set bonus
+			int ModType = ModTemplate.Attributes.at("mod_type").Int;
+			if(ModType == MOD_BURST) {
+				Buffer << Bonus[i] << " Round ";
+			}
+			else if(ModType != MOD_FULLAUTO) {
+				std::string Percent = ModTemplate.Attributes.at("percent_sign").Int ? "% " : " ";
+				std::string Positive = ModTemplate.Attributes.at("negative").Int ? "" : "+";
+
+				Buffer << Positive << ae::Round2(Bonus[i]) << Percent;
+			}
+
+			// Set label
+			Buffer << ModTypeToString((int)i);
+			SmallFont->DrawText(Buffer.str(), glm::ivec2(DrawPosition), ae::CENTER_BASELINE, TextColor);
+			Buffer.str("");
 		}
-
-		// Set label
-		Buffer << ModTypeToString((int)i);
-		SmallFont->DrawText(Buffer.str(), glm::ivec2(DrawPosition), ae::CENTER_BASELINE, TextColor);
-		Buffer.str("");
 	}
 
 	// Draw ui hints
@@ -641,6 +713,9 @@ void _Item::RecalculateStats() {
 
 	// Recalculate max mods
 	SetMaxMods();
+
+	// Sort mods
+	std::sort(Mods.begin(), Mods.end(), CompareMod);
 
 	for(int i = 0; i < MOD_COUNT; i++)
 		Bonus[i] = 0.0f;
