@@ -1369,9 +1369,11 @@ void _HUD::UpdateSkillTooltip(int Skill, const glm::vec2 &Position) {
 	ae::Assets.Elements["label_hud_skill_more"]->Text = "";
 	ae::Assets.Elements["label_hud_skill_max"]->Text = "";
 	ae::Assets.Elements["label_hud_skill_next"]->Text = "Next Level";
+	ae::Assets.Elements["label_hud_skill_help"]->SetActive(Player->SkillPointsRemaining);
 	if(Level >= Stats.GetSkillLevels()) {
 		ae::Assets.Elements["label_hud_skill_next"]->Text = "";
 		ae::Assets.Elements["label_hud_skill_max"]->Text = "Max Level";
+		ae::Assets.Elements["label_hud_skill_help"]->SetActive(false);
 	}
 	else {
 		int LevelRequired = 0;
@@ -1380,8 +1382,10 @@ void _HUD::UpdateSkillTooltip(int Skill, const glm::vec2 &Position) {
 		else if(Level >= Stats.GetMaxSkillLevel(Player->Level))
 			LevelRequired = Player->Level + 1;
 
-		if(LevelRequired)
+		if(LevelRequired) {
 			ae::Assets.Elements["label_hud_skill_more"]->Text = "Player Level " + std::to_string(LevelRequired) + " Required";
+			ae::Assets.Elements["label_hud_skill_help"]->SetActive(false);
+		}
 	}
 }
 
