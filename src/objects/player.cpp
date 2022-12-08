@@ -956,8 +956,12 @@ void _Player::SwapInventory(const _Slot &SlotFrom, const _Slot &SlotTo) {
 		// Try to combine items
 		int CombineResult = CombineItems(ItemFrom, ItemTo);
 		if(CombineResult == 0) {
-			if(!PlayEquipSound(SlotFrom.Index))
+
+			// Play equip sound
+			if(SlotTo.IsGearSlot())
 				PlayEquipSound(SlotTo.Index);
+			else if(SlotFrom.IsGearSlot())
+				PlayEquipSound(SlotFrom.Index);
 
 			// Swap
 			SlotFrom.SetItem(ItemTo);
