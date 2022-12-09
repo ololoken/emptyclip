@@ -169,7 +169,7 @@ void _Object::CreateAmmoPickup(float SpawnPositionZ) {
 	if(!ProjectileWeaponTemplate || ProjectileWeaponTemplate->PickupID.empty())
 		return;
 
-	_Item *AmmoItem = Stats.CreateItem(ProjectileWeaponTemplate->PickupID, 1, 0, Position, false, 0);
+	_Item *AmmoItem = Stats.CreateItem(ProjectileWeaponTemplate->PickupID, Position, 1, 0, false, 0, 0);
 	AmmoItem->AmmoPickup = true;
 	AmmoItem->Rotation = Rotation;
 	AmmoItem->PositionZ = SpawnPositionZ;

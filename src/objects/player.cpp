@@ -371,7 +371,8 @@ void _Player::RecalculateStats(bool SoftReset) {
 	UpdateAmmoNeeded();
 
 	// Skills
-	DropRate = 100 + Stats.GetSkill(Skills[SKILL_LUCK], SKILL_LUCK, 0);
+	DropRate = 100;
+	RarityChance = Stats.GetSkill(Skills[SKILL_LUCK], SKILL_LUCK, 0);
 	AmmoAmountModifier = Stats.GetSkillBonusMultiplier(Skills[SKILL_LUCK], SKILL_LUCK, 1);
 	ExperienceModifier = Stats.GetSkillBonusMultiplier(Skills[SKILL_INTELLIGENCE], SKILL_INTELLIGENCE, 0);
 	ExtraMods = Stats.GetSkill(Skills[SKILL_INTELLIGENCE], SKILL_INTELLIGENCE, 1);
@@ -1224,7 +1225,7 @@ void _Player::UpdateMaxAmmo() {
 		ObjectSpawn.Type = _Object::AMMO;
 		ObjectSpawn.ID = Ammo.ExcessID;
 		ObjectSpawn.Position = PlayState.Map->FindSuitableItemPosition(Position, ObjectSpawn.Type, ITEM_RADIUS, ITEM_PLACEMENT_ATTEMPTS);
-		_Item *Item = Stats.CreateItem(ObjectSpawn.ID, 1, 0, ObjectSpawn.Position, false, Progression);
+		_Item *Item = Stats.CreateItem(ObjectSpawn.ID, ObjectSpawn.Position, 1, 0, false, 0, Progression);
 		Item->Attributes["amount"].Int = AmmoType.second;
 		Map->AddObject(Item, GRID_ITEM);
 	}

@@ -208,6 +208,7 @@ class _Player : public _Entity {
 		int Skills[SKILL_COUNT];
 		int SkillPointsRemaining{0};
 		int DropRate{100};
+		int RarityChance{100};
 		double SelfHealDelay;
 		double SelfHealPeriod;
 		double SelfHealTimer{PLAYER_HEAL_DELAY};

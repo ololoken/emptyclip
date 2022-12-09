@@ -64,7 +64,7 @@ void _Stats::Init() {
 	_ObjectTemplate PlayerTemplate(_Object::PLAYER);
 	Objects.insert(std::make_pair("player", PlayerTemplate));
 
-	WeaponFists = Stats.CreateItem("weapon_fists", 1, 0, glm::vec2(0), false);
+	WeaponFists = Stats.CreateItem("weapon_fists", glm::vec2(0), 1, 0, false, 0, 0);
 }
 
 // Shutdown
@@ -825,7 +825,7 @@ void _Stats::CreateTransformedText() {
 }
 
 // Create item
-_Item *_Stats::CreateItem(const std::string &ID, int Level, int Quality, const glm::vec2 &Position, bool RandomStats, int Progression) {
+_Item *_Stats::CreateItem(const std::string &ID, const glm::vec2 &Position, int Level, int Quality, bool RandomStats, int RarityChance, int Progression) {
 	_ObjectTemplate &Template = Objects.at(ID);
 
 	// Create item
@@ -838,15 +838,20 @@ _Item *_Stats::CreateItem(const std::string &ID, int Level, int Quality, const g
 	// Generate random quality
 	if(RandomStats && Item->CanUnique()) {
 		Item->ExtraMods = ae::GetRandomReal(0.0, 1.5);
-		Item->Quality = PlayState.DefaultQuality == 0 ? ae::GetRandomInt(-ITEM_QUALITY_RANGE, ITEM_QUALITY_RANGE) : PlayState.DefaultQuality;
-		if(Item->Quality == ITEM_QUALITY_RANGE) {
-			for(const auto &Unique : Stats.Uniques) {
-				if(Progression >= Unique->Progression && ae::GetRandomInt(1, Unique->Chance) == 1) {
-					Item->Quality = Unique->Quality;
-					break;
+		if(PlayState.DefaultQuality == 0) {
+			int Roll = ae::GetRandomInt(0, ITEM_QUALITY_RANGE * 200 + 99) + RarityChance;
+			Item->Quality = Roll / 100 - ITEM_QUALITY_RANGE;
+			if(Item->Quality >= ITEM_QUALITY_RANGE) {
+				for(const auto &Unique : Stats.Uniques) {
+					if(Progression >= Unique->Progression && ae::GetRandomInt(1, Unique->Chance) == 1) {
+						Item->Quality = Unique->Quality;
+						break;
+					}
 				}
 			}
 		}
+		else
+			Item->Quality = PlayState.DefaultQuality;
 	}
 
 	// Set ammo amount

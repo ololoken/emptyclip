@@ -338,7 +338,7 @@ _Item *_Inventory::UnserializeItem(ae::_Buffer &Buffer) {
 	int Quality = Buffer.Read<int32_t>();
 
 	// Create item
-	_Item *Item = Stats.CreateItem(ID, Level, Quality, glm::vec2(0), false);
+	_Item *Item = Stats.CreateItem(ID, glm::vec2(0), Level, Quality, false, 0, 0);
 
 	return Item;
 }

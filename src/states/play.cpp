@@ -1932,7 +1932,7 @@ void _PlayState::UpdateEvents(double FrameTime) {
 
 					// Spawn item
 					if(Event->ItemID.size())
-						Map->AddObject(Stats.CreateItem(Event->ItemID, Event->SpawnLevel + Map->GetAddedLevel(), 0, Position, true, Player->Progression), GRID_ITEM);
+						Map->AddObject(Stats.CreateItem(Event->ItemID, Position, Event->SpawnLevel + Map->GetAddedLevel(), 0, true, Player->RarityChance, Player->Progression), GRID_ITEM);
 
 					// Spawn particles
 					if(Event->ParticleID.size())
@@ -2016,7 +2016,7 @@ void _PlayState::SpawnObject(const _ObjectSpawn *ObjectSpawn, bool GenerateStats
 	else if(ObjectSpawn->Type == _Object::PROP)
 		Map->AddObject(Stats.CreateProp(ObjectSpawn->ID, ObjectSpawn->Position, ObjectSpawn->Rotation, ObjectSpawn->Scale), GRID_MONSTER);
 	else
-		Map->AddObject(Stats.CreateItem(ObjectSpawn->ID, ObjectSpawn->Level + AddedLevel, 0, ObjectSpawn->Position, GenerateStats, Player->Progression), GRID_ITEM);
+		Map->AddObject(Stats.CreateItem(ObjectSpawn->ID, ObjectSpawn->Position, ObjectSpawn->Level + AddedLevel, 0, GenerateStats, Player->RarityChance, Player->Progression), GRID_ITEM);
 }
 
 // Adds a monster to the monster list and collision grid
