@@ -1923,7 +1923,7 @@ void _PlayState::UpdateEvents(double FrameTime) {
 
 						// Spawn monsters
 						for(int j = 0; j < Event->SpawnMultiplier; j++) {
-							_Monster *Monster = Stats.CreateMonster(Event->MonsterID, Event->SpawnLevel + Map->GetAddedLevel(), Map->Progression, Position, SpecialType);
+							_Monster *Monster = Stats.CreateMonster(Event->MonsterID, Position, Event->SpawnLevel + Map->GetAddedLevel(), Map->Progression, SpecialType);
 							Monster->Player = Player;
 							Monster->FreePathingTimer = ENTITY_FREEPATHING_TIMER_INCREMENT * j;
 							AddMonster(Monster);
@@ -2004,7 +2004,7 @@ void _PlayState::DeleteMonsters() {
 // Spawn an object in the map
 void _PlayState::SpawnObject(const _ObjectSpawn *ObjectSpawn, bool GenerateStats, int AddedLevel) {
 	if(ObjectSpawn->Type == _Object::MONSTER) {
-		_Monster *Monster = Stats.CreateMonster(ObjectSpawn->ID, ObjectSpawn->Level + Map->GetAddedLevel(), Map->Progression, ObjectSpawn->Position);
+		_Monster *Monster = Stats.CreateMonster(ObjectSpawn->ID, ObjectSpawn->Position, ObjectSpawn->Level + Map->GetAddedLevel(), Map->Progression, 0);
 		Monster->Player = Player;
 		AddMonster(Monster);
 		Map->TotalExperience += Monster->ExperienceGiven;

@@ -873,7 +873,7 @@ _Item *_Stats::CreateItem(const std::string &ID, const glm::vec2 &Position, int 
 }
 
 // Create monster
-_Monster *_Stats::CreateMonster(const std::string &ID, int Level, size_t Progression, const glm::vec2 &Position, size_t SpecialType) {
+_Monster *_Stats::CreateMonster(const std::string &ID, const glm::vec2 &Position, int Level, size_t Progression, size_t SpecialType) {
 	const _ObjectTemplate &Template = Objects.at(ID);
 
 	// Create object
