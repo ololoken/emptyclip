@@ -1929,7 +1929,7 @@ void _PlayState::UpdateEvents(double FrameTime) {
 
 						// Spawn monsters
 						for(int j = 0; j < Event->SpawnMultiplier; j++) {
-							_Monster *Monster = Stats.CreateMonster(Event->MonsterID, Position, Event->SpawnLevel + Map->GetAddedLevel(), Map->Progression, SpecialType, true, Player->RarityChance);
+							_Monster *Monster = Stats.CreateMonster(Event->MonsterID, Position, Event->SpawnLevel + Map->GetAddedLevel(), Map->Progression, SpecialType, !Event->IsBossSpawn, Player->RarityChance);
 							Monster->Player = Player;
 							Monster->FreePathingTimer = ENTITY_FREEPATHING_TIMER_INCREMENT * j;
 							AddMonster(Monster);
