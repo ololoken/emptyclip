@@ -42,6 +42,7 @@ class _Entity : public _Object {
 
 		virtual void Update(double FrameTime) override;
 		virtual void Render(double BlendFactor) const override;
+		virtual void RenderLights(double BlendFactor, float Alpha) override;
 		virtual void RecalculateStats(bool SoftReset=false) {}
 
 		void Move(double FrameTime);

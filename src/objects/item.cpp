@@ -1114,7 +1114,7 @@ int _Item::GetHammerQualityChange() const {
 		return Unique->HammerValue;
 
 	int Range = Template.Attributes.at("range").Float;
-	return std::round((Range - 1) * (Quality + ITEM_QUALITY_RANGE) / (float)(ITEM_QUALITY_RANGE * 2)) - Range;
+	return std::round((Range - 1) * (Quality + GAME_QUALITY_RANGE) / (float)(GAME_QUALITY_RANGE * 2)) - Range;
 }
 
 // Get whetstone quality value
@@ -1122,7 +1122,7 @@ int _Item::GetWhetstoneQuality() const {
 	if(Unique)
 		return Unique->WhetstoneValue;
 
-	return std::max(1, (int)std::round(Template.Attributes.at("range").Float * (Quality + ITEM_QUALITY_RANGE) / (float)(ITEM_QUALITY_RANGE * 2)));
+	return std::max(1, (int)std::round(Template.Attributes.at("range").Float * (Quality + GAME_QUALITY_RANGE) / (float)(GAME_QUALITY_RANGE * 2)));
 }
 
 // Get wrench value

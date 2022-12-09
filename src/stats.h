@@ -94,9 +94,10 @@ struct _Unique {
 	std::string Name;
 	const ae::_Texture *Texture;
 	glm::vec4 Color;
+	size_t Progression;
 	int Chance;
 	int Quality;
-	int Progression;
+	int Rolls;
 	int Mods;
 	int HammerValue;
 	int WhetstoneValue;
@@ -184,7 +185,7 @@ class _Stats {
 		void CreateTransformedText();
 
 		_Item *CreateItem(const std::string &ID, const glm::vec2 &Position, int Level, int Quality, bool RandomStats, int RarityChance, int Progression);
-		_Monster *CreateMonster(const std::string &ID, const glm::vec2 &Position, int Level, size_t Progression, size_t SpecialType);
+		_Monster *CreateMonster(const std::string &ID, const glm::vec2 &Position, int Level, size_t Progression, size_t SpecialType, bool GenerateQuality, int RarityChance);
 		_Object *CreateProp(const std::string &ID, const glm::vec2 &Position, float Rotation, float Scale) const;
 		_Object *CreateProjectile(const _ObjectTemplate &Template, const glm::vec2 &Position) const;
 
@@ -200,6 +201,7 @@ class _Stats {
 		float GetSkillBonusMultiplier(int Level, int Type, int Index=0) const { return (100.0f + Skills[(size_t)Level].Data[Type][Index]) * 0.01f; }
 
 		void GetRandomDrop(const _ItemDrop *ItemDrop, _ObjectSpawn *ObjectSpawn);
+		int GetRandomQuality(size_t Progression, int RarityChance);
 
 		const _Unique *GetUnique(int Quality) const;
 
@@ -225,6 +227,7 @@ class _Stats {
 	private:
 
 		void SetColor(glm::vec4 &Color, const std::string &ColorID);
+
 		_ParticleGroup BlankWeaponParticle;
 };
 

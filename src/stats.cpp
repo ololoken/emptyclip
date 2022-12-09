@@ -773,7 +773,8 @@ void _Stats::LoadUniques() {
 		Unique->Name = Database->GetString("name");
 		Unique->Chance = std::max(1, Database->GetInt<int>("chance"));
 		Unique->Quality = Database->GetInt<int>("quality");
-		Unique->Progression = Database->GetInt<int>("progression");
+		Unique->Progression = Database->GetInt<size_t>("progression");
+		Unique->Rolls = Database->GetInt<int>("rolls");
 		Unique->Mods = Database->GetInt<int>("mods");
 		Unique->HammerValue = Database->GetInt<int>("hammer");
 		Unique->WhetstoneValue = Database->GetInt<int>("whetstone");
@@ -835,23 +836,10 @@ _Item *_Stats::CreateItem(const std::string &ID, const glm::vec2 &Position, int 
 	Item->Quality = Quality;
 	Item->Texture = ae::Assets.Textures[Template.IconID];
 
-	// Generate random quality
+	// Generate stats
 	if(RandomStats && Item->CanUnique()) {
 		Item->ExtraMods = ae::GetRandomReal(0.0, 1.5);
-		if(PlayState.DefaultQuality == 0) {
-			int Roll = ae::GetRandomInt(0, ITEM_QUALITY_RANGE * 200 + 99) + RarityChance;
-			Item->Quality = Roll / 100 - ITEM_QUALITY_RANGE;
-			if(Item->Quality >= ITEM_QUALITY_RANGE) {
-				for(const auto &Unique : Stats.Uniques) {
-					if(Progression >= Unique->Progression && ae::GetRandomInt(1, Unique->Chance) == 1) {
-						Item->Quality = Unique->Quality;
-						break;
-					}
-				}
-			}
-		}
-		else
-			Item->Quality = PlayState.DefaultQuality;
+		Item->Quality = GetRandomQuality(Progression, RarityChance);
 	}
 
 	// Set ammo amount
@@ -873,11 +861,25 @@ _Item *_Stats::CreateItem(const std::string &ID, const glm::vec2 &Position, int 
 }
 
 // Create monster
-_Monster *_Stats::CreateMonster(const std::string &ID, const glm::vec2 &Position, int Level, size_t Progression, size_t SpecialType) {
+_Monster *_Stats::CreateMonster(const std::string &ID, const glm::vec2 &Position, int Level, size_t Progression, size_t SpecialType, bool GenerateQuality, int RarityChance) {
 	const _ObjectTemplate &Template = Objects.at(ID);
 
 	// Create object
 	_Monster *Monster = new _Monster(Template);
+
+	// Get quality
+	if(GenerateQuality) {
+		Monster->Quality = GetRandomQuality(Progression, RarityChance);
+		Monster->Unique = Stats.GetUnique(Monster->Quality);
+		if(Monster->Unique) {
+			Monster->LightTexture = Monster->Unique->Texture;
+			Monster->LightColor = Monster->Unique->Color;
+		}
+	}
+
+	double QualityFactor = (100 + Monster->Quality) * 0.01;
+
+	// Set up
 	Monster->SpawnPosition = Position;
 	if(!Template.MeshID.empty())
 		Monster->Mesh = ae::Assets.Meshes.at(Template.MeshID);
@@ -885,7 +887,7 @@ _Monster *_Stats::CreateMonster(const std::string &ID, const glm::vec2 &Position
 	Monster->Animation->Frame = Monster->Animation->Reels[(size_t)Monster->WalkingAnimation]->DefaultFrame;
 	Monster->Animation->CalculateTextureCoords();
 	Monster->Level = Level;
-	Monster->Mass = Template.Attributes.at("mass").Float;
+	Monster->Mass = Template.Attributes.at("mass").Float * QualityFactor;
 	if(Template.ItemDropID.size())
 		Monster->ItemDrop = &ItemDrops[Template.ItemDropID];
 
@@ -895,22 +897,22 @@ _Monster *_Stats::CreateMonster(const std::string &ID, const glm::vec2 &Position
 	Monster->AccuracyRegen = 0;
 	Monster->DamageBlock = 0;
 	Monster->DamageResist = 0;
-	Monster->MoveSpeed = Monster->GetAttributeLevel("move_speed", 1.0f, ENTITY_MAX_MOVESPEED_LEVEL);
+	Monster->MoveSpeed = Monster->GetAttributeLevel("move_speed", 1.0f, ENTITY_MAX_MOVESPEED_LEVEL) * QualityFactor;
 	Monster->Radius = Template.Attributes.at("radius").Float;
-	Monster->Scale = Template.Attributes.at("scale").Float;
-	Monster->Health = Monster->MaxHealth = Monster->GetAttributeLevel("health", Stats.Progressions[Progression].Health);
-	Monster->ExperienceGiven = Monster->GetAttributeLevel("xp", Stats.Progressions[Progression].Experience);
-	Monster->MinAccuracy = Template.Attributes.at("accuracy").Int;
+	Monster->Scale = Template.Attributes.at("scale").Float * QualityFactor;
+	Monster->Health = Monster->MaxHealth = Monster->GetAttributeLevel("health", Stats.Progressions[Progression].Health) * QualityFactor;
+	Monster->ExperienceGiven = Monster->GetAttributeLevel("xp", Stats.Progressions[Progression].Experience) * QualityFactor;
+	Monster->MinAccuracy = Template.Attributes.at("accuracy").Int / QualityFactor;
 	Monster->PoisonPower = Template.Attributes.at("poison").Float;
-	Monster->AIAttacks = Template.Attributes.at("ai_attacks").Int;
+	Monster->AIAttacks = Template.Attributes.at("ai_attacks").Int * QualityFactor;
 	for(int i = 0; i < WEAPONATTACK_COUNT; i++) {
-		Monster->GetAttributeRange("damage", Stats.Progressions[Progression].Damage, Monster->MinDamage[i], Monster->MaxDamage[i]);
-		Monster->AttackTimer[i] = Monster->AttackPeriod[i] = Template.Attributes.at("attack_period").Double / Stats.Progressions[Progression].AttackSpeed;
-		Monster->ShootPeriod[i] = AI_SHOOT_PERIOD;
-		Monster->MaxAccuracy[i] = Template.Attributes.at("accuracy").Int;
-		Monster->AttackRange[i] = Template.Attributes.at("attack_range").Float;
-		Monster->AttackMoveSpeed[i] = Template.Attributes.at("attack_movespeed").Float;
-		Monster->Force[i] = Template.Attributes.at("force").Float;
+		Monster->GetAttributeRange("damage", Stats.Progressions[Progression].Damage * QualityFactor, Monster->MinDamage[i], Monster->MaxDamage[i]);
+		Monster->AttackTimer[i] = Monster->AttackPeriod[i] = Template.Attributes.at("attack_period").Double / (Stats.Progressions[Progression].AttackSpeed * QualityFactor);
+		Monster->ShootPeriod[i] = AI_SHOOT_PERIOD / QualityFactor;
+		Monster->MaxAccuracy[i] = Template.Attributes.at("accuracy").Int / QualityFactor;
+		Monster->AttackRange[i] = Template.Attributes.at("attack_range").Float * QualityFactor;
+		Monster->AttackMoveSpeed[i] = Template.Attributes.at("attack_movespeed").Float * QualityFactor;
+		Monster->Force[i] = Template.Attributes.at("force").Float * QualityFactor;
 	}
 	if(Monster->IsCrate()) {
 		Monster->Texture = Monster->Animation->Reels[0]->Texture;
@@ -920,9 +922,9 @@ _Monster *_Stats::CreateMonster(const std::string &ID, const glm::vec2 &Position
 	// Set up projectiles
 	if(!Template.ProjectileID.empty() && ae::GetRandomInt(1, 100) <= Template.Attributes.at("projectile_chance").Int) {
 		Monster->Projectiles[WEAPONATTACK_MAIN] = &Stats.Objects.at(Template.ProjectileID);
-		Monster->ProjectileSpeed[WEAPONATTACK_MAIN] = Template.Attributes.at("projectile_speed").Float;
+		Monster->ProjectileSpeed[WEAPONATTACK_MAIN] = Template.Attributes.at("projectile_speed").Float * QualityFactor;
 		Monster->ExplosionSize[WEAPONATTACK_MAIN] = 0.0f;
-		Monster->AttackRange[0] = Template.Attributes.at("projectile_range").Float;
+		Monster->AttackRange[0] = Template.Attributes.at("projectile_range").Float * QualityFactor;
 	}
 
 	// Create special monster variation
@@ -945,6 +947,11 @@ _Monster *_Stats::CreateMonster(const std::string &ID, const glm::vec2 &Position
 		Monster->Health = Monster->MaxHealth;
 		Monster->AIAttacks = std::round(Monster->AIAttacks * Special->AIAttacks);
 		Monster->ExperienceGiven *= Special->ExperienceModifier;
+	}
+
+	if(Monster->Unique) {
+		Monster->LightScale = glm::vec2(Monster->Scale);
+		Monster->Name = Monster->Unique->Name + " " + Monster->Name;
 	}
 
 	Monster->DamageResist = std::min(Monster->DamageResist, ENTITY_MAX_DAMAGE_RESIST);
@@ -1047,6 +1054,28 @@ void _Stats::GetRandomDrop(const _ItemDrop *ItemDrop, _ObjectSpawn *ObjectSpawn)
 			return;
 		}
 	}
+}
+
+// Get a random quality
+int _Stats::GetRandomQuality(size_t Progression, int RarityChance) {
+	if(PlayState.DefaultQuality != 0)
+		return PlayState.DefaultQuality;
+
+	// Get roll and shift range by rarity chance
+	int Roll = ae::GetRandomInt(0, GAME_QUALITY_RANGE * 200 + 99) + RarityChance;
+
+	// Convert to quality
+	int Quality = Roll / 100 - GAME_QUALITY_RANGE;
+	if(Quality < GAME_QUALITY_RANGE)
+		return Quality;
+
+	// Roll for higher quality
+	for(const auto &Unique : Stats.Uniques) {
+		if(Progression >= Unique->Progression && ae::GetRandomInt(1, Unique->Chance) == 1)
+			return Unique->Quality;
+	}
+
+	return Quality;
 }
 
 // Find a unique stat given a quality

@@ -1696,6 +1696,8 @@ void _PlayState::CreateItemDrop(const _Entity *Entity, float DropRate) {
 		// Bosses only drop one item
 		if(Monster->Template.IsBoss)
 			Rolls = 1;
+		else if(Monster->Unique)
+			Rolls = Monster->Unique->Rolls;
 
 		// Roll for each item
 		for(int j = 0; j < Rolls; j++) {
@@ -1703,21 +1705,21 @@ void _PlayState::CreateItemDrop(const _Entity *Entity, float DropRate) {
 			// Roll for drop
 			_ObjectSpawn ObjectSpawn;
 			Stats.GetRandomDrop(Monster->ItemDrop, &ObjectSpawn);
-			if(ObjectSpawn.Type) {
+			if(!ObjectSpawn.Type)
+				continue;
 
-				// Spawn object on player if item can't be reached
-				if(!Map->CheckCollisionFlag(Map->GetValidCoord(Monster->Position), _Tile::ENTITY) || Monster->Template.IsBoss)
-					ObjectSpawn.Position = Player->Position;
-				else
-					ObjectSpawn.Position = Monster->Position;
+			// Spawn object on player if item can't be reached
+			if(!Map->CheckCollisionFlag(Map->GetValidCoord(Monster->Position), _Tile::ENTITY) || Monster->Template.IsBoss)
+				ObjectSpawn.Position = Player->Position;
+			else
+				ObjectSpawn.Position = Monster->Position;
 
-				// Adjust position
-				if(!Monster->Template.IsBoss)
-					ObjectSpawn.Position = Map->FindSuitableItemPosition(ObjectSpawn.Position, ObjectSpawn.Type, ITEM_RADIUS, ITEM_PLACEMENT_ATTEMPTS);
+			// Adjust position
+			if(!Monster->Template.IsBoss)
+				ObjectSpawn.Position = Map->FindSuitableItemPosition(ObjectSpawn.Position, ObjectSpawn.Type, ITEM_RADIUS, ITEM_PLACEMENT_ATTEMPTS);
 
-				ObjectSpawn.Level = Monster->Level;
-				SpawnObject(&ObjectSpawn, true);
-			}
+			ObjectSpawn.Level = Monster->Level;
+			SpawnObject(&ObjectSpawn, true);
 		}
 	}
 }
@@ -1762,6 +1764,10 @@ void _PlayState::UpdateMonsters(double FrameTime) {
 				int RenderListType = Monster->IsCrate() ? _ObjectManager::RENDER_PROP : _ObjectManager::RENDER_MONSTER;
 				Map->ObjectManager->RenderList[RenderListType].push_back(Monster);
 			}
+
+			// Check light bounds
+			if(Monster->LightTexture && Camera->IsAABBInView(Monster->LightBounds))
+				Map->ObjectManager->RenderList[_ObjectManager::RENDER_LIGHTS].push_back(Monster);
 
 			++MonsterIterator;
 		}
@@ -1923,7 +1929,7 @@ void _PlayState::UpdateEvents(double FrameTime) {
 
 						// Spawn monsters
 						for(int j = 0; j < Event->SpawnMultiplier; j++) {
-							_Monster *Monster = Stats.CreateMonster(Event->MonsterID, Position, Event->SpawnLevel + Map->GetAddedLevel(), Map->Progression, SpecialType);
+							_Monster *Monster = Stats.CreateMonster(Event->MonsterID, Position, Event->SpawnLevel + Map->GetAddedLevel(), Map->Progression, SpecialType, true, Player->RarityChance);
 							Monster->Player = Player;
 							Monster->FreePathingTimer = ENTITY_FREEPATHING_TIMER_INCREMENT * j;
 							AddMonster(Monster);
@@ -2004,7 +2010,7 @@ void _PlayState::DeleteMonsters() {
 // Spawn an object in the map
 void _PlayState::SpawnObject(const _ObjectSpawn *ObjectSpawn, bool GenerateStats, int AddedLevel) {
 	if(ObjectSpawn->Type == _Object::MONSTER) {
-		_Monster *Monster = Stats.CreateMonster(ObjectSpawn->ID, ObjectSpawn->Position, ObjectSpawn->Level + Map->GetAddedLevel(), Map->Progression, 0);
+		_Monster *Monster = Stats.CreateMonster(ObjectSpawn->ID, ObjectSpawn->Position, ObjectSpawn->Level + Map->GetAddedLevel(), Map->Progression, 0, GenerateStats, Player->RarityChance);
 		Monster->Player = Player;
 		AddMonster(Monster);
 		Map->TotalExperience += Monster->ExperienceGiven;

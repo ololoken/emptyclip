@@ -510,6 +510,23 @@ void _Entity::Render(double BlendFactor) const {
 	}
 }
 
+// Render light
+void _Entity::RenderLights(double BlendFactor, float Alpha) {
+	if(!LightTexture)
+		return;
+
+	glm::vec2 DrawPosition;
+	GetDrawPosition(DrawPosition, BlendFactor);
+
+	ae::Graphics.SetColor(glm::vec4(LightColor.r, LightColor.g, LightColor.b, LightColor.a * Alpha));
+	if(Unique) {
+		for(int i = 0; i < ITEM_UNIQUE_LIGHTS; i++)
+			ae::Graphics.DrawSprite(glm::vec3(DrawPosition, PositionZ + i * 0.1f), LightTexture, 0, LightScale);
+	}
+	//else
+	//	ae::Graphics.DrawSprite(glm::vec3(DrawPosition, PositionZ), LightTexture, 0, LightScale);
+}
+
 // Render entity's radius
 void _Entity::RenderRadius(const glm::vec2 &DrawPosition) {
 	ae::Graphics.SetProgram(ae::Assets.Programs["pos"]);

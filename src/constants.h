@@ -49,6 +49,7 @@ const  int          GAME_MAX_PROGRESSION                 =  1000;
 const  double       GAME_DEFAULT_CLOCK                   =  720.0;
 const  float        GAME_TILE_SIZE                       =  64.0f;
 const  double       GAME_COMBAT_TIMER                    =  5.0;
+const  int          GAME_QUALITY_RANGE                   =  15;
 //     Save
 const  int          SAVE_SLOTS                           =  10;
 const  int          SAVE_VERSION                         =  8;
@@ -136,7 +137,6 @@ const  int          INVENTORY_ICONTYPE_THRESHOLD         =  1;
 const  float        ITEM_SCALE                           =  0.5f;
 const  float        ITEM_Z                               =  0.01f;
 const  int          ITEM_QUALITY_MIN                     =  -100;
-const  int          ITEM_QUALITY_RANGE                   =  15;
 const  int          ITEM_QUALITY_FILTER_PROGRESSION      =  25;
 const  float        ITEM_MIN_MOVESPEED                   =  -90.0f;
 const  float        ITEM_MAX_MOVESPEED                   =  100.0f;
