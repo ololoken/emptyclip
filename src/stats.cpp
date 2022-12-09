@@ -868,11 +868,11 @@ _Monster *_Stats::CreateMonster(const std::string &ID, const glm::vec2 &Position
 	_Monster *Monster = new _Monster(Template);
 
 	// Get quality
-	if(GenerateQuality) {
+	if(GenerateQuality || Monster->IsCrate()) {
 		Monster->Quality = GetRandomQuality(Progression, RarityChance);
 		Monster->Unique = Stats.GetUnique(Monster->Quality);
 		if(Monster->Unique) {
-			Monster->LightTexture = Monster->Unique->Texture;
+			Monster->LightTexture = Monster->IsCrate() ? ae::Assets.Textures["textures/lights/box.png"] : Monster->Unique->Texture;
 			Monster->LightColor = Monster->Unique->Color;
 		}
 	}
@@ -899,11 +899,13 @@ _Monster *_Stats::CreateMonster(const std::string &ID, const glm::vec2 &Position
 	Monster->DamageResist = 0;
 	Monster->MoveSpeed = Monster->GetAttributeLevel("move_speed", 1.0f, ENTITY_MAX_MOVESPEED_LEVEL) * QualityFactor;
 	Monster->Radius = Template.Attributes.at("radius").Float;
-	Monster->Scale = Template.Attributes.at("scale").Float * QualityFactor;
+	Monster->Scale = Template.Attributes.at("scale").Float;
+	if(!Monster->IsCrate())
+		Monster->Scale *= QualityFactor;
 	Monster->Health = Monster->MaxHealth = Monster->GetAttributeLevel("health", Stats.Progressions[Progression].Health) * QualityFactor;
 	Monster->ExperienceGiven = Monster->GetAttributeLevel("xp", Stats.Progressions[Progression].Experience) * QualityFactor;
 	Monster->MinAccuracy = Template.Attributes.at("accuracy").Int / QualityFactor;
-	Monster->PoisonPower = Template.Attributes.at("poison").Float;
+	Monster->PoisonPower = Template.Attributes.at("poison").Float * QualityFactor;
 	Monster->AIAttacks = Template.Attributes.at("ai_attacks").Int * QualityFactor;
 	for(int i = 0; i < WEAPONATTACK_COUNT; i++) {
 		Monster->GetAttributeRange("damage", Stats.Progressions[Progression].Damage * QualityFactor, Monster->MinDamage[i], Monster->MaxDamage[i]);
@@ -951,6 +953,8 @@ _Monster *_Stats::CreateMonster(const std::string &ID, const glm::vec2 &Position
 
 	if(Monster->Unique) {
 		Monster->LightScale = glm::vec2(Monster->Scale);
+		if(Monster->IsCrate())
+			Monster->LightScale *= LIGHT_CRATE_SCALE;
 		Monster->Name = Monster->Unique->Name + " " + Monster->Name;
 	}
 

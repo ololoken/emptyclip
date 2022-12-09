@@ -255,3 +255,4 @@ const  glm::vec3    LIGHT_FLASH_ATTENUATION              =  glm::vec3(1.0f,0.1f,
 const  double       LIGHT_FLASH_TIME                     =  GAME_TIMESTEP*2;
 const  glm::vec4    LIGHT_FLASH_COLOR                    =  glm::vec4(4.0f,4.0f,4.0f,1.0f);
 const  float        LIGHT_CHANGE_SPEED                   =  2.0f;
+const  float        LIGHT_CRATE_SCALE                    =  1.2f;
