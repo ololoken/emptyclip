@@ -1175,7 +1175,7 @@ void _HUD::DrawBagHighlights(const _Bag &Bag, ae::_Element *Element) {
 				continue;
 			else if(CursorItem->Template.Attributes.at("usable_type").Int == USABLE_WRENCH && !Item->CanIncreaseLevel(false))
 				continue;
-			else if(CursorItem->Template.Attributes.at("usable_type").Int == USABLE_DYNAMITE && !Item->CanEquip())
+			else if(CursorItem->Template.Attributes.at("usable_type").Int == USABLE_DYNAMITE && !Item->CanDynamite())
 				continue;
 		}
 

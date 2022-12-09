@@ -884,7 +884,7 @@ bool _Item::ItemCompatible(_Item *Item, bool CheckCount) const {
 						return true;
 				break;
 				case USABLE_DYNAMITE:
-					if(CanEquip() && Quality >= ITEM_DYNAMITE_VALUE)
+					if(CanDynamite() && Quality >= ITEM_DYNAMITE_VALUE)
 						return true;
 				break;
 			}
