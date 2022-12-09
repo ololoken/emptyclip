@@ -130,6 +130,7 @@ class _HUD {
 		// Objects
 		const ae::_Camera *Camera{nullptr};
 		std::string LastHitName;
+		const ae::_Font *LastHitFont{nullptr};
 		int64_t LastHitHealth{0};
 		int64_t LastHitMaxHealth{0};
 
