@@ -1141,6 +1141,16 @@ int _Item::GetDynamiteQuality() const {
 	return ITEM_DYNAMITE_VALUE;
 }
 
+// Get total quality of item for dynamite use
+int _Item::GetTotalQuality() const {
+
+	int TotalQuality = Quality;
+	for(const auto &Mod : Mods)
+		TotalQuality += (Mod->Quality >= ITEM_DYNAMITE_VALUE) ? Mod->Quality : 0;
+
+	return TotalQuality;
+}
+
 // Get consumable value based on attributes
 float _Item::GetConsumableValue(const _Player *Player) const {
 

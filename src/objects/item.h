@@ -141,6 +141,7 @@ class _Item : public _Object {
 		int GetWhetstoneQuality() const;
 		int GetWrenchLevel() const;
 		int GetDynamiteQuality() const;
+		int GetTotalQuality() const;
 
 		float GetConsumableValue(const _Player *Player) const;
 		std::string GetConsumableSuffix(bool Percent) const;

@@ -1612,7 +1612,7 @@ bool _HUD::ApplyUsableItem(_Item *ExistingItem) {
 				ae::Audio.PlaySound(ae::Assets.Sounds["game_hammer.ogg"]);
 			}
 			else if(UsableType == USABLE_DYNAMITE) {
-				int Rolls = ExistingItem->Quality / CursorItem->GetDynamiteQuality();
+				int Rolls = ExistingItem->GetTotalQuality() / CursorItem->GetDynamiteQuality();
 
 				// Roll for drop
 				for(int i = 0; i < Rolls; i++) {
