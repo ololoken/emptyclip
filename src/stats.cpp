@@ -719,6 +719,7 @@ void _Stats::LoadProgression() {
 		Progression.Level = Database->GetInt<int>("level");
 		Progression.Spawn = Database->GetInt<int>("spawn");
 		Progression.SpecialChance = Database->GetInt<int>("special_chance");
+		Progression.UniqueDifficulty = Database->GetReal("unique_difficulty");
 		Progression.Health = Database->GetReal("health");
 		Progression.Damage = Database->GetReal("damage");
 		Progression.AttackSpeed = Database->GetReal("attack_speed");
@@ -868,12 +869,14 @@ _Monster *_Stats::CreateMonster(const std::string &ID, const glm::vec2 &Position
 	_Monster *Monster = new _Monster(Template);
 
 	// Get quality
+	double Difficulty = 1.0;
 	if(GenerateQuality || Monster->IsCrate()) {
 		Monster->Quality = GetRandomQuality(Progression, RarityChance);
 		Monster->Unique = Stats.GetUnique(Monster->Quality);
 		if(Monster->Unique) {
 			Monster->LightTexture = Monster->IsCrate() ? ae::Assets.Textures["textures/lights/box.png"] : Monster->Unique->Texture;
 			Monster->LightColor = Monster->Unique->Color;
+			Difficulty = Stats.Progressions[Progression].UniqueDifficulty;
 		}
 	}
 
@@ -902,8 +905,8 @@ _Monster *_Stats::CreateMonster(const std::string &ID, const glm::vec2 &Position
 	Monster->Scale = Template.Attributes.at("scale").Float;
 	if(!Monster->IsCrate())
 		Monster->Scale *= QualityFactor;
-	Monster->Health = Monster->MaxHealth = Monster->GetAttributeLevel("health", Stats.Progressions[Progression].Health) * QualityFactor;
-	Monster->ExperienceGiven = Monster->GetAttributeLevel("xp", Stats.Progressions[Progression].Experience) * QualityFactor;
+	Monster->Health = Monster->MaxHealth = Monster->GetAttributeLevel("health", Stats.Progressions[Progression].Health) * QualityFactor * Difficulty;
+	Monster->ExperienceGiven = Monster->GetAttributeLevel("xp", Stats.Progressions[Progression].Experience) * QualityFactor * Difficulty;
 	Monster->MinAccuracy = Template.Attributes.at("accuracy").Int / QualityFactor;
 	Monster->PoisonPower = Template.Attributes.at("poison").Float * QualityFactor;
 	Monster->AIAttacks = Template.Attributes.at("ai_attacks").Int * QualityFactor;
@@ -912,7 +915,7 @@ _Monster *_Stats::CreateMonster(const std::string &ID, const glm::vec2 &Position
 		Monster->AttackTimer[i] = Monster->AttackPeriod[i] = Template.Attributes.at("attack_period").Double / (Stats.Progressions[Progression].AttackSpeed * QualityFactor);
 		Monster->ShootPeriod[i] = AI_SHOOT_PERIOD / QualityFactor;
 		Monster->MaxAccuracy[i] = Template.Attributes.at("accuracy").Int / QualityFactor;
-		Monster->AttackRange[i] = Template.Attributes.at("attack_range").Float * QualityFactor;
+		Monster->AttackRange[i] = std::max((double)Template.Attributes.at("attack_range").Float, Template.Attributes.at("attack_range").Float * QualityFactor);
 		Monster->AttackMoveSpeed[i] = Template.Attributes.at("attack_movespeed").Float * QualityFactor;
 		Monster->Force[i] = Template.Attributes.at("force").Float * QualityFactor;
 	}
