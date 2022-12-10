@@ -132,6 +132,8 @@ void _Item::DrawTooltip(const _Player *Player, glm::vec2 DrawPosition, const _It
 	else if(Type == _Object::USABLE) {
 		Size.x = 480 * ae::_Element::GetUIScale();
 		Size.y = 240 * ae::_Element::GetUIScale();
+		if(Template.Attributes.at("usable_type").Int == USABLE_DYNAMITE)
+			Size.y += Spacing.y;
 	}
 	else if(Type == _Object::MOD) {
 		Size.x = 480 * ae::_Element::GetUIScale();
@@ -495,6 +497,7 @@ void _Item::DrawTooltip(const _Player *Player, glm::vec2 DrawPosition, const _It
 			else
 				Buffer << "+" << Attributes.at("amount").Int;
 			AttributeFont->DrawText(Buffer.str(), glm::ivec2(DrawPosition), ae::CENTER_BASELINE);
+			Buffer.str("");
 		} break;
 		case _Object::CONSUMABLE: {
 			if(ShowHelp)
@@ -510,6 +513,7 @@ void _Item::DrawTooltip(const _Player *Player, glm::vec2 DrawPosition, const _It
 
 			Buffer << GetConsumableSuffix(true);
 			AttributeFont->DrawText(Buffer.str(), glm::ivec2(DrawPosition), ae::CENTER_BASELINE, COLOR_GREEN);
+			Buffer.str("");
 		} break;
 		case _Object::USABLE: {
 			if(ShowHelp)
@@ -526,6 +530,7 @@ void _Item::DrawTooltip(const _Player *Player, glm::vec2 DrawPosition, const _It
 						Buffer << (Change > 0 ? "Increases" : "Reduces");
 						Buffer << " quality of mods by [c green]" << std::abs(Change) << "%";
 						AttributeFont->DrawTextFormatted(Buffer.str(), glm::ivec2(DrawPosition), ae::CENTER_BASELINE);
+						Buffer.str("");
 					}
 				} break;
 				case USABLE_WHETSTONE:
@@ -536,6 +541,7 @@ void _Item::DrawTooltip(const _Player *Player, glm::vec2 DrawPosition, const _It
 					DrawPosition.y += Spacing.y;
 					Buffer << "Max quality for Progression [c green]" << Player->Progression << "[c white] is [c green]" << Stats.Progressions[(size_t)Player->Progression].MaxQuality << "%";
 					AttributeFont->DrawTextFormatted(Buffer.str(), glm::ivec2(DrawPosition), ae::CENTER_BASELINE);
+					Buffer.str("");
 					if(ShowHelp && !Slot.Bag && PlayState.HUD->InventoryOpen)
 						HelpTextList.push_back("Right-click to pick up");
 				break;
@@ -547,6 +553,7 @@ void _Item::DrawTooltip(const _Player *Player, glm::vec2 DrawPosition, const _It
 					DrawPosition.y += Spacing.y;
 					Buffer << "Max level for Progression [c green]" << Player->Progression << "[c white] is [c green]" << Stats.Progressions[(size_t)Player->Progression].MaxLevel;
 					AttributeFont->DrawTextFormatted(Buffer.str(), glm::ivec2(DrawPosition), ae::CENTER_BASELINE);
+					Buffer.str("");
 					if(ShowHelp && !Slot.Bag && PlayState.HUD->InventoryOpen)
 						HelpTextList.push_back("Right-click to pick up");
 				break;
@@ -555,6 +562,12 @@ void _Item::DrawTooltip(const _Player *Player, glm::vec2 DrawPosition, const _It
 					DrawPosition.y += Spacing.y;
 					Buffer << "Creates an upgrade for every [c green]" << GetDynamiteQuality() << "%[c white] quality";
 					AttributeFont->DrawTextFormatted(Buffer.str(), glm::ivec2(DrawPosition), ae::CENTER_BASELINE);
+					Buffer.str("");
+
+					DrawPosition.y += Spacing.y;
+					Buffer << "Unique mods inside gear contribute " << std::round(ITEM_DYNAMITE_MOD_FACTOR * 100) << "% of their quality";
+					SmallFont->DrawText(Buffer.str(), glm::ivec2(DrawPosition), ae::CENTER_BASELINE, COLOR_GRAY);
+					Buffer.str("");
 				} break;
 			}
 		} break;
@@ -1146,7 +1159,7 @@ int _Item::GetTotalQuality() const {
 
 	int TotalQuality = Quality;
 	for(const auto &Mod : Mods)
-		TotalQuality += (Mod->Quality >= ITEM_DYNAMITE_VALUE) ? Mod->Quality : 0;
+		TotalQuality += (Mod->Quality >= ITEM_DYNAMITE_VALUE) ? Mod->Quality * ITEM_DYNAMITE_MOD_FACTOR : 0;
 
 	return TotalQuality;
 }

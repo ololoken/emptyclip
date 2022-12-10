@@ -1505,11 +1505,7 @@ int _PlayState::PickupObject(_Item *Item, bool Manual) {
 			}
 
 			// Add particle
-			glm::vec2 ParticlePosition(Player->Position.x, Player->Position.y - 0.5);
-			_Particle *Particle = new _Particle(_ParticleSpawn(GameAssets.GetParticleTemplate("text0"), COLOR_WHITE, glm::vec2(0), ParticlePosition, OBJECT_Z, 0));
-			Particle->Text = Buffer.str();
-			Particle->Color = ParticleColor;
-			Particles->Add(Particle);
+			GenerateTextParticle(Player->Position - glm::vec2(0.0f, 0.5f), Buffer.str(), ParticleColor);
 		}
 
 		// Remove item from map
@@ -2067,25 +2063,31 @@ void _PlayState::GenerateHitEffects(_Entity *Attacker, const int Type, const _Hi
 }
 
 // Create damage number particles
-void _PlayState::GenerateDamageText(glm::vec2 Position, int Value, bool Crit, bool HitPlayer) {
-	Position += _Map::GenerateRandomPointInCircle(0.2f);
+void _PlayState::GenerateDamageText(const glm::vec2 &Position, int Value, bool Crit, bool HitPlayer) {
 
 	// Get text
 	std::ostringstream Buffer;
 	Buffer.imbue(std::locale(Config.Locale));
 	Buffer << Value;
 
-	// Create particle
-	_Particle *DamageParticle = new _Particle(_ParticleSpawn(GameAssets.GetParticleTemplate("text0"), COLOR_WHITE, glm::vec2(0), Position, OBJECT_Z, 0));
-	DamageParticle->Text = Buffer.str();
+	_Particle *DamageParticle = GenerateTextParticle(Position + _Map::GenerateRandomPointInCircle(0.2f), Buffer.str());
 
 	// Set color
 	if(HitPlayer)
 		DamageParticle->Color = COLOR_RED;
-	if(Crit)
+	else if(Crit)
 		DamageParticle->Color = COLOR_YELLOW;
+}
 
-	Particles->Add(DamageParticle);
+// Generate text particle
+_Particle *_PlayState::GenerateTextParticle(const glm::vec2 &Position, const std::string &Value, const glm::vec4 &Color) {
+
+	// Create particle
+	_Particle *Particle = new _Particle(_ParticleSpawn(GameAssets.GetParticleTemplate("text0"), Color, glm::vec2(0), Position, OBJECT_Z, 0));
+	Particle->Text = Value;
+	Particles->Add(Particle);
+
+	return Particle;
 }
 
 // Generate explosion particles

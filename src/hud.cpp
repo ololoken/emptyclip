@@ -1596,6 +1596,9 @@ bool _HUD::ApplyUsableItem(_Item *ExistingItem) {
 			HoverItem = nullptr;
 			PlayState.Map->RemoveObjectFromGrid(CursorItem, GRID_ITEM);
 
+			// Get text
+			std::ostringstream Buffer;
+			Buffer.imbue(std::locale(Config.Locale));
 			if(UsableType == USABLE_HAMMER) {
 
 				// Drop mods
@@ -1609,6 +1612,8 @@ bool _HUD::ApplyUsableItem(_Item *ExistingItem) {
 				}
 				ExistingItem->Mods.clear();
 
+				Buffer << (QualityChange > 0 ? "+" : "") << QualityChange << "%";
+				PlayState.GenerateTextParticle(Player->Position - glm::vec2(0.0f, 0.5f), Buffer.str());
 				ae::Audio.PlaySound(ae::Assets.Sounds["game_hammer.ogg"]);
 			}
 			else if(UsableType == USABLE_DYNAMITE) {
@@ -1625,6 +1630,8 @@ bool _HUD::ApplyUsableItem(_Item *ExistingItem) {
 					PlayState.SpawnObject(&ObjectSpawn, true);
 				}
 
+				Buffer << "+" << Rolls;
+				PlayState.GenerateTextParticle(Player->Position - glm::vec2(0.0f, 0.5f), Buffer.str());
 				ae::Audio.PlaySound(ae::Assets.Sounds["game_dynamite.ogg"]);
 			}
 
