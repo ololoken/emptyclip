@@ -108,9 +108,17 @@ bool _Particles::Create(const _ParticleSpawn &Spawn) {
 			}
 		}
 		else {
+
+			// Make sure coordinate falls inside the hit tile
+			glm::vec2 Position = Spawn.Position - Spawn.Normal * 0.1f;
+
+			// Don't create particles on map boundaries
+			if(Position.x < 0 || Position.y < 0 || Position.x > Map->Size.x || Position.y > Map->Size.y)
+				return false;
+
+			glm::ivec2 Coord = Map->GetValidCoord(Position);
 			for(int i = 0; i < Spawn.Template->Count; i++) {
 				_Particle *Particle = new _Particle(Spawn);
-				glm::ivec2 Coord = Map->GetValidCoord(Particle->Position);
 				Map->AddParticle(Particle, Coord);
 			}
 		}

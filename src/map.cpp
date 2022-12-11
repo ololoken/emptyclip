@@ -2053,6 +2053,12 @@ void _Map::ChangeMapState(const _Event *Event) {
 
 		// Switch textures
 		SwapBlockTextures(Tiles[i].Layer, Tiles[i].BlockID);
+
+		// Delete particles
+		for(auto &Particle : Tile->Particles)
+			Particle->Deleted = true;
+
+		Tile->Particles.clear();
 	}
 }
 
