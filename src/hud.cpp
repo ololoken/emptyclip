@@ -1015,8 +1015,20 @@ void _HUD::DrawCharacterScreen() {
 		Buffer << Player->CritChance[WEAPONATTACK_MAIN] << "%";
 		DrawAttribute("Critical Hit Chance", Buffer, DrawPosition);
 
-		Player->GetDamageText(Buffer, WEAPONATTACK_MAIN, PlayState.ShowMoreInfo(), Player->CritDamage[WEAPONATTACK_MAIN] * 0.01);
+		double CritMultipler = Player->CritDamage[WEAPONATTACK_MAIN] * 0.01;
+		Player->GetDamageText(Buffer, WEAPONATTACK_MAIN, PlayState.ShowMoreInfo(), CritMultipler);
 		DrawAttribute("Critical Hit Damage", Buffer, DrawPosition);
+
+		// Show self damage stats
+		if(Player->StartingBounces[WEAPONATTACK_MAIN] || Player->ExplosionSize[WEAPONATTACK_MAIN] > 0.0f) {
+			double SelfDamageMultiplier = ((100 - Player->SelfDamageResist) * 0.01) * ((100 - Player->DamageResist) * 0.01);
+
+			Player->GetDamageText(Buffer, WEAPONATTACK_MAIN, PlayState.ShowMoreInfo(), SelfDamageMultiplier);
+			DrawAttribute("Self Damage", Buffer, DrawPosition);
+
+			Player->GetDamageText(Buffer, WEAPONATTACK_MAIN, PlayState.ShowMoreInfo(), SelfDamageMultiplier * CritMultipler);
+			DrawAttribute("Self Crit Damage", Buffer, DrawPosition);
+		}
 	}
 
 	DrawPosition.y += 10 * ae::_Element::GetUIScale();

@@ -2073,10 +2073,10 @@ void _PlayState::GenerateDamageText(const glm::vec2 &Position, int Value, bool C
 	_Particle *DamageParticle = GenerateTextParticle(Position + _Map::GenerateRandomPointInCircle(0.2f), Buffer.str());
 
 	// Set color
-	if(HitPlayer)
-		DamageParticle->Color = COLOR_RED;
-	else if(Crit)
+	if(Crit)
 		DamageParticle->Color = COLOR_YELLOW;
+	else if(HitPlayer)
+		DamageParticle->Color = COLOR_RED;
 }
 
 // Generate text particle

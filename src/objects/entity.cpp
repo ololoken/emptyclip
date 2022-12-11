@@ -130,23 +130,23 @@ int _Entity::GenerateDamage(int AttackType, float DamageModifier, bool Steady, b
 }
 
 // Reduce damage by block/resist
-int _Entity::ReduceDamage(int Value, bool SelfDamage) {
+int64_t _Entity::ReduceDamage(double Damage, bool SelfDamage) {
 
 	// Reduce damage by a flat amount
-	Value -= DamageBlock;
+	Damage -= DamageBlock;
 
 	// Reduce damage by a percentage
-	Value -= (int)(Value * DamageResist * 0.01f);
+	Damage -= Damage * DamageResist * 0.01;
 
 	// Reduce self damage
 	if(SelfDamage)
-		Value -= (int)(Value * SelfDamageResist * 0.01f);
+		Damage -= Damage * SelfDamageResist * 0.01;
 
 	// Cap damage
-	if(Value < ENTITY_MINDAMAGEPOINTS)
-		Value = ENTITY_MINDAMAGEPOINTS;
+	if(Damage < ENTITY_MINDAMAGEPOINTS)
+		Damage = ENTITY_MINDAMAGEPOINTS;
 
-	return Value;
+	return Damage;
 }
 
 // Check for invulnerable

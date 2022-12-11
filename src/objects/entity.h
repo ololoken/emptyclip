@@ -70,7 +70,7 @@ class _Entity : public _Object {
 		virtual void OnHit(_Entity *Attacker, const _Hit &Hit, bool PlaySound=true);
 		virtual void UpdateSpeed(float Factor);
 		int GenerateDamage(int AttackType, float DamageModifier, bool Steady, bool &Crit);
-		int ReduceDamage(int Damage, bool SelfDamage);
+		int64_t ReduceDamage(double Damage, bool SelfDamage);
 		virtual bool IsSteady() const { return false; }
 		bool IsInvulnerable() const override;
 		virtual const char *GetWeaponID(int AttackType) { return nullptr; }
