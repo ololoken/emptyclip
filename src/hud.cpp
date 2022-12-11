@@ -246,13 +246,11 @@ void _HUD::HandleMouseButton(const ae::_MouseEvent &MouseEvent) {
 							else {
 								DragSlot = HitSlot;
 								CursorItem = DragSlot.GetItem();
-								ClickOffset = glm::vec2(MouseEvent.Position) - HitElement->Bounds.GetCenter();
 							}
 						}
 						// Drag from world
 						else if(CanGrabItem(HoverItem)) {
 							if(HoverItem->CanMove()) {
-								ClickOffset = glm::vec2(0.0f);
 								CursorItem = HoverItem;
 								CursorItem->Visible = false;
 							}
@@ -1135,7 +1133,7 @@ void _HUD::DrawInventory() {
 
 	// Draw cursor item
 	if(CursorItem) {
-		glm::vec2 Position(ae::Input.GetMouse() - ClickOffset);
+		glm::vec2 Position(ae::Input.GetMouse());
 		ae::Graphics.SetProgram(ae::Assets.Programs["ortho_pos_uv"]);
 		DrawInventoryItem(Position, CursorItem, CursorItem->Unique);
 	}
@@ -1181,7 +1179,7 @@ void _HUD::DrawBagHighlights(const _Bag &Bag, ae::_Element *Element) {
 
 		// Set overlay color
 		if(Item->ItemCompatible(CursorItem))
-			ae::Graphics.SetColor(glm::vec4(0.0f, 1.0f, 0.0f, 0.2f));
+			ae::Graphics.SetColor(glm::vec4(0.0f, 1.0f, 0.0f, HoverItem == Item ? 0.4f : 0.2f));
 		else
 			ae::Graphics.SetColor(glm::vec4(1.0f, 0.0f, 0.0f, 0.2f));
 

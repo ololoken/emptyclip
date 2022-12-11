@@ -174,7 +174,6 @@ class _HUD {
 		ae::_Element *Elements[ELEMENT_COUNT]{nullptr};
 		_Slot DragSlot;
 		_Slot CursorSlot;
-		glm::ivec2 ClickOffset{0};
 		int CursorSkill{-1};
 
 		// Displays
