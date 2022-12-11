@@ -1814,7 +1814,7 @@ glm::vec2 _Map::GetStartingPositionByCheckpoint(int CheckpointLevel) {
 			return glm::vec2(Event->Start.x + 0.5f, Event->Start.y + 0.5f);
 		}
 		else {
-			size_t TileID = ae::GetRandomInt((size_t)0, Event->Tiles.size()-1);
+			size_t TileID = ae::GetRandomInt<size_t>(0, Event->Tiles.size()-1);
 			return glm::vec2(Event->Tiles[TileID].Coord.x + 0.5f, Event->Tiles[TileID].Coord.y + 0.5f);
 		}
 	}

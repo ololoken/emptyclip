@@ -1582,7 +1582,7 @@ const _ParticleTemplate *_Player::GetParticle(int ParticleType) const {
 		if(Template.empty())
 			return nullptr;
 
-		return Template[ae::GetRandomInt((size_t)0, Template.size()-1)];
+		return Template[ae::GetRandomInt<size_t>(0, Template.size()-1)];
 	}
 
 	if(GetMainHand()) {
@@ -1590,7 +1590,7 @@ const _ParticleTemplate *_Player::GetParticle(int ParticleType) const {
 		if(Template.empty())
 			return nullptr;
 
-		return Template[ae::GetRandomInt((size_t)0, Template.size()-1)];
+		return Template[ae::GetRandomInt<size_t>(0, Template.size()-1)];
 	}
 
 	return nullptr;

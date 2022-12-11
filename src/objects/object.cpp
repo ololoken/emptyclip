@@ -116,7 +116,7 @@ const ae::_Sound *_Object::GetSound(int SoundType) const {
 	if(SoundIDs.empty())
 		return nullptr;
 
-	return SoundIDs[ae::GetRandomInt((size_t)0, SoundIDs.size()-1)];
+	return SoundIDs[ae::GetRandomInt<size_t>(0, SoundIDs.size()-1)];
 }
 
 // Update object's bounds
@@ -442,10 +442,10 @@ void _Object::ApplyDamage(const _Hit &Hit) {
 	_Entity *OwnerEntity = (_Entity *)Owner;
 
 	// Get damage
-	int Damage = ae::GetRandomInt(ProjectileMinDamage, ProjectileMaxDamage);
+	int64_t Damage = ae::GetRandomInt<int64_t>(ProjectileMinDamage, ProjectileMaxDamage);
 	bool Crit = false;
-	if(ae::GetRandomInt(1, 100) <= ProjectileCritChance) {
-		Damage *= ProjectileCritDamage * 0.01f;
+	if(ae::GetRandomInt<int>(1, 100) <= ProjectileCritChance) {
+		Damage *= ProjectileCritDamage * 0.01;
 		Crit = true;
 	}
 

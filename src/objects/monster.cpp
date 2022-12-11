@@ -240,7 +240,7 @@ const _ParticleTemplate *_Monster::GetParticle(int ParticleType) const {
 	if(ParticleTemplate.empty())
 		return nullptr;
 
-	return ParticleTemplate[ae::GetRandomInt((size_t)0, ParticleTemplate.size()-1)];
+	return ParticleTemplate[ae::GetRandomInt<size_t>(0, ParticleTemplate.size()-1)];
 }
 
 // Set a target position

@@ -110,10 +110,10 @@ bool _Entity::IsRanged() const {
 }
 
 // Generates damage after defenses
-int _Entity::GenerateDamage(int AttackType, float DamageModifier, bool Steady, bool &Crit) {
+int64_t _Entity::GenerateDamage(int AttackType, float DamageModifier, bool Steady, bool &Crit) {
 
 	// Generate base damage
-	int Damage = ae::GetRandomInt((int)(MinDamage[AttackType] * DamageModifier), (int)(MaxDamage[AttackType] * DamageModifier));
+	int64_t Damage = ae::GetRandomInt<int64_t>(MinDamage[AttackType] * DamageModifier, MaxDamage[AttackType] * DamageModifier);
 
 	// Increase chance when aiming is at min accuracy
 	int Chance = CritChance[AttackType];
@@ -121,7 +121,7 @@ int _Entity::GenerateDamage(int AttackType, float DamageModifier, bool Steady, b
 		Chance *= PLAYER_STEADY_CRIT_FACTOR;
 
 	// Check for crit
-	if(ae::GetRandomInt(1, 100) <= Chance) {
+	if(ae::GetRandomInt<int>(1, 100) <= Chance) {
 		Damage *= CritDamage[AttackType] * 0.01f;
 		Crit = true;
 	}
@@ -159,7 +159,7 @@ const ae::_Sound *_Entity::GetSound(int SoundType, int AttackType) const {
 	if(Sounds[SoundType].empty())
 		return nullptr;
 
-	return Sounds[SoundType][ae::GetRandomInt((size_t)0, Sounds[SoundType].size()-1)];
+	return Sounds[SoundType][ae::GetRandomInt<size_t>(0, Sounds[SoundType].size()-1)];
 }
 
 // Starts the attack animation, return true to stop next burst fire

@@ -1322,7 +1322,7 @@ void _PlayState::ResolveAttack(_Entity *Attacker, int GridType) {
 
 						// Generate damage
 						bool Crit = false;
-						int Damage = Attacker->GenerateDamage(Attacker->AttackRequestType, PenetrationDamage, Attacker->AttackWasSteady, Crit);
+						int64_t Damage = Attacker->GenerateDamage(Attacker->AttackRequestType, PenetrationDamage, Attacker->AttackWasSteady, Crit);
 						Damage = HitEntity->ReduceDamage(Damage, false);
 						if(GodMode && HitPlayer)
 							Damage = 0;
@@ -1874,7 +1874,7 @@ void _PlayState::CheckEvents(const _Entity *Entity) {
 			} break;
 			case EVENT_LAVA: {
 				ae::Audio.PlaySound(ae::Assets.Sounds["game_lava0.ogg"]);
-				int Damage = Stats.Progressions[(size_t)Player->Progression].LavaDamage;
+				int64_t Damage = Stats.Progressions[(size_t)Player->Progression].LavaDamage;
 				Player->UpdateHealth(-Damage);
 				GenerateDamageText(Player->Position, Damage, false, true);
 				Particles->Create(_ParticleSpawn(GameAssets.GetParticleTemplate(Event->ParticleID), COLOR_WHITE, glm::vec2(0), Player->Position, OBJECT_Z, 0));
@@ -1920,8 +1920,8 @@ void _PlayState::UpdateEvents(double FrameTime) {
 
 						// Chance for special monster
 						size_t SpecialType = 0;
-						if(!Event->IsBossSpawn && Player->Progression > 1 && ae::GetRandomInt(1, 100) <= Stats.Progressions[(size_t)Player->Progression].SpecialChance)
-							SpecialType = (size_t)ae::GetRandomInt(1, (int)(Stats.Specials.size() - 1));
+						if(!Event->IsBossSpawn && Player->Progression > 1 && ae::GetRandomInt<int>(1, 100) <= Stats.Progressions[(size_t)Player->Progression].SpecialChance)
+							SpecialType = ae::GetRandomInt<size_t>(1, Stats.Specials.size() - 1);
 
 						// Spawn monsters
 						for(int j = 0; j < Event->SpawnMultiplier; j++) {
@@ -2063,7 +2063,7 @@ void _PlayState::GenerateHitEffects(_Entity *Attacker, const int Type, const _Hi
 }
 
 // Create damage number particles
-void _PlayState::GenerateDamageText(const glm::vec2 &Position, int Value, bool Crit, bool HitPlayer) {
+void _PlayState::GenerateDamageText(const glm::vec2 &Position, int64_t Value, bool Crit, bool HitPlayer) {
 
 	// Get text
 	std::ostringstream Buffer;

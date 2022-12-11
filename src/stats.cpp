@@ -925,7 +925,7 @@ _Monster *_Stats::CreateMonster(const std::string &ID, const glm::vec2 &Position
 	}
 
 	// Set up projectiles
-	if(!Template.ProjectileID.empty() && ae::GetRandomInt(1, 100) <= Template.Attributes.at("projectile_chance").Int) {
+	if(!Template.ProjectileID.empty() && ae::GetRandomInt<int>(1, 100) <= Template.Attributes.at("projectile_chance").Int) {
 		Monster->Projectiles[WEAPONATTACK_MAIN] = &Stats.Objects.at(Template.ProjectileID);
 		Monster->ProjectileSpeed[WEAPONATTACK_MAIN] = Template.Attributes.at("projectile_speed").Float * QualityFactor;
 		Monster->ExplosionSize[WEAPONATTACK_MAIN] = 0.0f;
@@ -1051,7 +1051,7 @@ void _Stats::GetRandomDrop(const _ItemDrop *ItemDrop, _ObjectSpawn *ObjectSpawn)
 		return;
 
 	// Generate roll
-	int RandomNumber = ae::GetRandomInt(1, ItemDrop->OddsSum);
+	int RandomNumber = ae::GetRandomInt<int>(1, ItemDrop->OddsSum);
 
 	// Get item
 	for(size_t i = 0; i < ItemDropSize; i++) {
@@ -1069,7 +1069,7 @@ int _Stats::GetRandomQuality(size_t Progression, int RarityChance) {
 		return PlayState.DefaultQuality;
 
 	// Get roll and shift range by rarity chance
-	int Roll = ae::GetRandomInt(0, GAME_QUALITY_RANGE * 200 + 99) + RarityChance;
+	int Roll = ae::GetRandomInt<int>(0, GAME_QUALITY_RANGE * 200 + 99) + RarityChance;
 
 	// Convert to quality
 	int Quality = Roll / 100 - GAME_QUALITY_RANGE;
@@ -1078,7 +1078,7 @@ int _Stats::GetRandomQuality(size_t Progression, int RarityChance) {
 
 	// Roll for higher quality
 	for(const auto &Unique : Stats.Uniques) {
-		if(Progression >= Unique->Progression && ae::GetRandomInt(1, Unique->Chance) == 1)
+		if(Progression >= Unique->Progression && ae::GetRandomInt<int>(1, Unique->Chance) == 1)
 			return Unique->Quality;
 	}
 

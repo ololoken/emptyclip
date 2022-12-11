@@ -69,7 +69,7 @@ class _Entity : public _Object {
 		virtual void OnAttack(_Entity *Victim, const _Hit &Hit);
 		virtual void OnHit(_Entity *Attacker, const _Hit &Hit, bool PlaySound=true);
 		virtual void UpdateSpeed(float Factor);
-		int GenerateDamage(int AttackType, float DamageModifier, bool Steady, bool &Crit);
+		int64_t GenerateDamage(int AttackType, float DamageModifier, bool Steady, bool &Crit);
 		int64_t ReduceDamage(double Damage, bool SelfDamage);
 		virtual bool IsSteady() const { return false; }
 		bool IsInvulnerable() const override;
