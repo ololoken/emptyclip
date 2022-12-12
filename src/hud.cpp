@@ -1139,8 +1139,8 @@ void _HUD::DrawInventory() {
 		Elements[ELEMENT_INVENTORY_OVERLAY]->SetActive(false);
 	}
 	else {
-		DrawBagModCounts(Player->GetActiveOutfitBag(), Elements[ELEMENT_INVENTORY_OUTFIT]);
-		DrawBagModCounts(Player->GetActiveBackpackBag(), Elements[ELEMENT_INVENTORY_BACKPACK]);
+		DrawGlanceValueText(Player->GetActiveOutfitBag(), Elements[ELEMENT_INVENTORY_OUTFIT]);
+		DrawGlanceValueText(Player->GetActiveBackpackBag(), Elements[ELEMENT_INVENTORY_BACKPACK]);
 	}
 
 	// Draw cursor item
@@ -1200,15 +1200,21 @@ void _HUD::DrawBagHighlights(const _Bag &Bag, ae::_Element *Element) {
 	}
 }
 
-// Draw mod counts
-void _HUD::DrawBagModCounts(const _Bag &Bag, ae::_Element *Element) {
+// Draw quick glance value text
+void _HUD::DrawGlanceValueText(const _Bag &Bag, ae::_Element *Element) {
 	for(size_t i = 0; i < Bag.Slots.size(); i++) {
 		const _Item *Item = Bag.Slots[i];
 		if(!Item || Item == CursorItem)
 			continue;
 
 		ae::_Element *Button = Element->Children[i];
-		DrawItemModCounts(Item, Button->Bounds.Start);
+		std::ostringstream Buffer;
+		if(Item->CanMod())
+			Buffer << Item->Mods.size() << "/" << Item->GetMaxMods(true);
+		else if(Item->Type == _Object::USABLE || Item->Type == _Object::MOD)
+			DrawItemValue(Item, Button->Bounds.Start);
+
+		Fonts[FONT_TINY]->DrawText(Buffer.str(), glm::ivec2(Button->Bounds.Start + glm::vec2(74, 74) * ae::_Element::GetUIScale()), ae::RIGHT_BASELINE, COLOR_WHITE);
 	}
 }
 
@@ -1273,7 +1279,7 @@ void _HUD::DrawItemValue(const _Item *Item, const glm::vec2 &Position) {
 			}
 		break;
 		case _Object::WEAPON:
-			Buffer << ae::Round1(Item->GetAverageDamage());
+			Buffer << std::setprecision(3) << ae::Round1(Item->GetAverageDamage());
 		break;
 		case _Object::ARMOR:
 			Buffer << Item->Attributes.at("damage_resist").Float << "%";
@@ -1294,7 +1300,7 @@ void _HUD::DrawItemValue(const _Item *Item, const glm::vec2 &Position) {
 
 // Draw item quality
 void _HUD::DrawItemQuality(const _Item *Item, const glm::vec2 &Position) {
-	if(!Item || Item->Type == _Object::USABLE)
+	if(!Item)
 		return;
 
 	std::ostringstream Buffer;
@@ -1314,16 +1320,6 @@ void _HUD::DrawItemLevel(const _Item *Item, const glm::vec2 &Position) {
 	std::ostringstream Buffer;
 	Buffer << Item->Level;
 	Fonts[FONT_TINY]->DrawText(Buffer.str(), glm::ivec2(Position + glm::vec2(74, 18) * ae::_Element::GetUIScale()), ae::RIGHT_BASELINE, COLOR_GOLD);
-}
-
-// Draw item mod counts
-void _HUD::DrawItemModCounts(const _Item *Item, const glm::vec2 &Position) {
-	if(!Item || !Item->CanMod())
-		return;
-
-	std::ostringstream Buffer;
-	Buffer << Item->Mods.size() << "/" << Item->GetMaxMods(true);
-	Fonts[FONT_TINY]->DrawText(Buffer.str(), glm::ivec2(Position + glm::vec2(74, 74) * ae::_Element::GetUIScale()), ae::RIGHT_BASELINE, COLOR_WHITE);
 }
 
 // Update skill tooltip information

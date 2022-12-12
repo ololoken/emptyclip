@@ -227,7 +227,7 @@ void _Item::DrawTooltip(const _Player *Player, glm::vec2 DrawPosition, const _It
 	glm::vec4 TextColor = COLOR_WHITE;
 	if(CanQuality()) {
 		DrawPosition.y += SmallSpacing.y;
-		if(PlayState.ShowMoreInfo())
+		if(CanDynamite() && PlayState.ShowMoreInfo())
 			Buffer << "Dynamite Quality " << GetTotalQuality() << "%";
 		else
 			Buffer << "Quality " << Quality << "%";
