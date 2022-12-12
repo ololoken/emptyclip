@@ -40,11 +40,16 @@
 static const float ATTRIBUTE_SPACING = 26;
 
 // Function for sorting mods
-inline bool CompareMod(_Item *First, _Item *Second) {
+inline bool CompareModType(_Item *First, _Item *Second) {
 	if(First->Template.Attributes.at("mod_type").Int == Second->Template.Attributes.at("mod_type").Int)
 		return First->Quality > Second->Quality;
 
 	return First->Template.Attributes.at("mod_type").Int < Second->Template.Attributes.at("mod_type").Int;
+}
+
+// Function for sorting mods by quality
+inline bool CompareModQuality(_Item *First, _Item *Second) {
+	return First->Quality > Second->Quality;
 }
 
 // Constructor
@@ -134,6 +139,8 @@ void _Item::DrawTooltip(const _Player *Player, glm::vec2 DrawPosition, const _It
 		Size.y = 240 * ae::_Element::GetUIScale();
 		if(Template.Attributes.at("usable_type").Int == USABLE_DYNAMITE)
 			Size.y += Spacing.y;
+		else if(Template.Attributes.at("usable_type").Int == USABLE_PLIERS)
+			Size.x += 50 * ae::_Element::GetUIScale();
 	}
 	else if(Type == _Object::MOD) {
 		Size.x = 480 * ae::_Element::GetUIScale();
@@ -572,6 +579,19 @@ void _Item::DrawTooltip(const _Player *Player, glm::vec2 DrawPosition, const _It
 					SmallFont->DrawText(Buffer.str(), glm::ivec2(DrawPosition), ae::CENTER_BASELINE, COLOR_GRAY);
 					Buffer.str("");
 				} break;
+				case USABLE_PLIERS: {
+					int PliersLevel = GetPliersLevel();
+					if(PliersLevel > 1)
+						Buffer << "Removes the [c green]" << PliersLevel << "[c white] lowest quality mods from an item";
+					else
+						Buffer << "Removes the lowest quality mod from an item";
+
+					AttributeFont->DrawTextFormatted(Buffer.str(), glm::ivec2(DrawPosition), ae::CENTER_BASELINE);
+					Buffer.str("");
+
+					if(ShowHelp && !Slot.Bag && PlayState.HUD->InventoryOpen)
+						HelpTextList.push_back("Right-click to pick up");
+				} break;
 			}
 		} break;
 	}
@@ -731,7 +751,7 @@ void _Item::RecalculateStats() {
 	SetMaxMods();
 
 	// Sort mods
-	std::sort(Mods.begin(), Mods.end(), CompareMod);
+	std::sort(Mods.begin(), Mods.end(), CompareModType);
 
 	for(int i = 0; i < MOD_COUNT; i++)
 		Bonus[i] = 0.0f;
@@ -873,6 +893,27 @@ bool _Item::ApplyUsable(_Item *Usable) {
 			Level = std::clamp(Level + Usable->GetWrenchLevel(), 1, Stats.Progressions[(size_t)PlayState.Player->Progression].MaxLevel);
 			ae::Audio.PlaySound(ae::Assets.Sounds["game_wrench.ogg"]);
 		} break;
+		case USABLE_PLIERS: {
+
+			// Sort mods by quality descending
+			std::sort(Mods.begin(), Mods.end(), CompareModQuality);
+
+			// Drop mods
+			int QuantityApplied = 0;
+			int PliersLevel = Usable->GetPliersLevel();
+			while(Mods.size() && PliersLevel) {
+				PlayState.DropItem(Mods.back());
+				Mods.pop_back();
+
+				PliersLevel--;
+				QuantityApplied++;
+			}
+
+			std::ostringstream Buffer;
+			Buffer << "-" << QuantityApplied;
+			PlayState.GenerateTextParticle(PlayState.Player->Position - glm::vec2(0.0f, 0.5f), Buffer.str());
+			ae::Audio.PlaySound(ae::Assets.Sounds["game_pliers.ogg"]);
+		} break;
 	}
 	RecalculateStats();
 
@@ -901,6 +942,10 @@ bool _Item::ItemCompatible(_Item *Item, bool CheckCount) const {
 				break;
 				case USABLE_DYNAMITE:
 					if(CanDynamite() && Quality >= ITEM_DYNAMITE_VALUE)
+						return true;
+				break;
+				case USABLE_PLIERS:
+					if(Mods.size())
 						return true;
 				break;
 			}
@@ -1155,6 +1200,14 @@ int _Item::GetDynamiteQuality() const {
 		return Unique->DynamiteValue;
 
 	return ITEM_DYNAMITE_VALUE;
+}
+
+// Get pliers value
+int _Item::GetPliersLevel() const {
+	if(Unique)
+		return Unique->PliersValue;
+
+	return 1;
 }
 
 // Get total quality of item for dynamite use

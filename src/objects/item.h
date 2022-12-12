@@ -76,6 +76,7 @@ enum UsableType {
 	USABLE_WHETSTONE,
 	USABLE_WRENCH,
 	USABLE_DYNAMITE,
+	USABLE_PLIERS,
 	USABLE_COUNT,
 };
 
@@ -141,6 +142,7 @@ class _Item : public _Object {
 		int GetWhetstoneQuality() const;
 		int GetWrenchLevel() const;
 		int GetDynamiteQuality() const;
+		int GetPliersLevel() const;
 		int GetTotalQuality() const;
 
 		float GetConsumableValue(const _Player *Player) const;

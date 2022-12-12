@@ -80,6 +80,7 @@ class _PlayState : public ae::_State {
 		void GenerateExplosion(const _ParticleTemplate *ParticleTemplate, const glm::vec2 &Position, const glm::vec2 &Scale);
 		void GenerateProjectileEffects(const _ParticleTemplate *ParticleTemplate, const glm::vec2 &Position, const glm::vec4 &Color);
 		void CreateItemDrop(const _Entity *Entity, float DropRate);
+		void DropItem(_Item *Item);
 		void SpawnObject(const _ObjectSpawn *ObjectSpawn, bool GenerateStats=false, int AddedLevel=0);
 		int PickupObject(_Item *Item, bool Manual);
 		bool ShowMoreInfo();

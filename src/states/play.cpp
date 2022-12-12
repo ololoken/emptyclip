@@ -1070,6 +1070,9 @@ void _PlayState::Render(double BlendFactor) {
 						case USABLE_WRENCH:
 							Buffer << "+" << Item->GetWrenchLevel();
 						break;
+						case USABLE_PLIERS:
+							Buffer << Item->GetPliersLevel();
+						break;
 					}
 
 					ae::Assets.Fonts["hud_tiny"]->DrawText(Buffer.str(), glm::ivec2(TextPosition + glm::vec2(0, -14) * ae::_Element::GetUIScale()), ae::CENTER_BASELINE, COLOR_FAINT_WHITE);
@@ -1718,6 +1721,13 @@ void _PlayState::CreateItemDrop(const _Entity *Entity, float DropRate) {
 			SpawnObject(&ObjectSpawn, true);
 		}
 	}
+}
+
+// Drop an item on the floor
+void _PlayState::DropItem(_Item *Item) {
+	Item->Visible = true;
+	Item->SetPosition(Map->FindSuitableItemPosition(Player->Position, Item->Type, ITEM_RADIUS, ITEM_PLACEMENT_ATTEMPTS));
+	Map->AddObject(Item, GRID_ITEM);
 }
 
 // Updates the monsters

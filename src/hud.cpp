@@ -347,7 +347,8 @@ void _HUD::HandleMouseButton(const ae::_MouseEvent &MouseEvent) {
 								CursorItem->Visible = false;
 								HitSlot.SetItem(CursorItem);
 								PlayState.Map->RemoveObject(CursorItem, GRID_ITEM);
-								Player->PlayEquipSound(HitSlot.Index);
+								if(HitSlot.IsGearSlot())
+									Player->PlayEquipSound(HitSlot.Index);
 							}
 
 							Player->RecalculateStats();
@@ -1179,13 +1180,16 @@ void _HUD::DrawBagHighlights(const _Bag &Bag, ae::_Element *Element) {
 			continue;
 
 		if(CursorItem->Type == _Object::USABLE) {
-			if(CursorItem->Template.Attributes.at("usable_type").Int == USABLE_HAMMER && !Item->CanMod())
+			int UsableType = CursorItem->Template.Attributes.at("usable_type").Int;
+			if(UsableType == USABLE_HAMMER && !Item->CanMod())
 				continue;
-			else if(CursorItem->Template.Attributes.at("usable_type").Int == USABLE_WHETSTONE && !Item->CanIncreaseQuality(false))
+			else if(UsableType == USABLE_WHETSTONE && !Item->CanIncreaseQuality(false))
 				continue;
-			else if(CursorItem->Template.Attributes.at("usable_type").Int == USABLE_WRENCH && !Item->CanIncreaseLevel(false))
+			else if(UsableType == USABLE_WRENCH && !Item->CanIncreaseLevel(false))
 				continue;
-			else if(CursorItem->Template.Attributes.at("usable_type").Int == USABLE_DYNAMITE && !Item->CanDynamite())
+			else if(UsableType == USABLE_DYNAMITE && !Item->CanDynamite())
+				continue;
+			else if(UsableType == USABLE_PLIERS && !Item->CanMod())
 				continue;
 		}
 
@@ -1289,6 +1293,8 @@ void _HUD::DrawItemValue(const _Item *Item, const glm::vec2 &Position) {
 				Buffer << Item->GetWhetstoneQuality() << "%";
 			else if(Item->Template.Attributes.at("usable_type").Int == USABLE_WRENCH)
 				Buffer << "+" << Item->GetWrenchLevel();
+			else if(Item->Template.Attributes.at("usable_type").Int == USABLE_PLIERS)
+				Buffer << Item->GetPliersLevel();
 		break;
 		default:
 			return;
@@ -1610,11 +1616,9 @@ bool _HUD::ApplyUsableItem(_Item *ExistingItem) {
 				// Drop mods
 				int QualityChange = CursorItem->GetHammerQualityChange();
 				for(auto &Mod : ExistingItem->Mods) {
-					Mod->Visible = true;
 					Mod->Quality = std::clamp(Mod->Quality + QualityChange, ITEM_QUALITY_MIN, Stats.Progressions[(size_t)Player->Progression].MaxQuality);
 					Mod->RecalculateStats();
-					Mod->SetPosition(PlayState.Map->FindSuitableItemPosition(Player->Position, Mod->Type, ITEM_RADIUS, ITEM_PLACEMENT_ATTEMPTS));
-					PlayState.Map->AddObject(Mod, GRID_ITEM);
+					PlayState.DropItem(Mod);
 				}
 				ExistingItem->Mods.clear();
 
@@ -1646,6 +1650,7 @@ bool _HUD::ApplyUsableItem(_Item *ExistingItem) {
 		} break;
 		case USABLE_WHETSTONE:
 		case USABLE_WRENCH:
+		case USABLE_PLIERS:
 			if(ExistingItem->ApplyUsable(CursorItem)) {
 				CursorItem->Active = false;
 				PlayState.Map->RemoveObjectFromGrid(CursorItem, GRID_ITEM);
