@@ -901,7 +901,7 @@ _Monster *_Stats::CreateMonster(const std::string &ID, const glm::vec2 &Position
 	Monster->DamageBlock = 0;
 	Monster->DamageResist = 0;
 	Monster->MoveSpeed = Monster->GetAttributeLevel("move_speed", 1.0f, ENTITY_MAX_MOVESPEED_LEVEL) * QualityFactor;
-	Monster->Radius = Template.Attributes.at("radius").Float;
+	Monster->Radius = std::min(ENTITY_MAX_SPAWN_RADIUS, Template.Attributes.at("radius").Float * QualityFactor);
 	Monster->Scale = Template.Attributes.at("scale").Float;
 	if(!Monster->IsCrate())
 		Monster->Scale *= QualityFactor;

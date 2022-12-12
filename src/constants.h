@@ -87,6 +87,7 @@ const  double       ENTITY_MAX_FIRESOUND_PERIOD          =  0.03;
 const  float        ENTITY_FRICTION_FACTOR               =  0.003f;
 const  float        ENTITY_VELOCITY_THRESHOLD            =  0.00001f;
 const  double       ENTITY_CRATE_COMBATTIME              =  1.0;
+const  double       ENTITY_MAX_SPAWN_RADIUS              =  0.5;
 //     Player
 const  float        PLAYER_RADIUS                        =  0.35f;
 const  float        PLAYER_MASS                          =  1.0f;
