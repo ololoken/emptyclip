@@ -14,6 +14,7 @@ crate_mod1	textures/animations/crate_mod1.png	0.05	64	64	0	0	0	0
 crate_mod2	textures/animations/crate_mod2.png	0.05	64	64	0	0	0	0
 crate_mod3	textures/animations/crate_mod3.png	0.05	64	64	0	0	0	0
 crate_usable0	textures/animations/crate_usable0.png	0.05	64	64	0	0	0	0
+crate_usable1	textures/animations/crate_usable1.png	0.05	64	64	0	0	0	0
 player_legs	textures/animations/human_legs.png	0.07	64	64	0	4	2	2
 player_move_1h	textures/animations/player_move_1h.png	0.07	64	64	0	4	2	2
 player_move_2h	textures/animations/player_move_2h.png	0.07	64	64	0	4	2	2
