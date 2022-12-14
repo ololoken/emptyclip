@@ -178,6 +178,14 @@ _HUD::_HUD(const ae::_Camera *Camera, _Player *Player) : Camera(Camera), Player(
 	Elements[ELEMENT_MESSAGE]->SetActive(true);
 }
 
+// Get texture of icon to highlight on minimap
+const ae::_Texture *_HUD::GetHighlightItemTexture() const {
+	if(HoverItem && HoverItem->Texture)
+		return HoverItem->Texture;
+
+	return nullptr;
+}
+
 // Handle mouse buttons
 void _HUD::HandleMouseButton(const ae::_MouseEvent &MouseEvent) {
 	if(!InventoryOpen)
@@ -769,7 +777,7 @@ void _HUD::Render(bool FullMap) {
 	// Draw mini map
 	if(PlayState.Map && !FullMap && !InventoryOpen) {
 		ae::_Bounds MinimapBounds;
-		PlayState.Map->DrawMinimap(MinimapBounds, HoverItem, FullMap, PlayState.ShowMoreInfo());
+		PlayState.Map->DrawMinimap(MinimapBounds, GetHighlightItemTexture(), FullMap, PlayState.ShowMoreInfo());
 	}
 
 	// Draw inventory and character screen
@@ -853,7 +861,7 @@ void _HUD::Render(bool FullMap) {
 	// Draw full map
 	if(PlayState.Map && FullMap) {
 		ae::_Bounds MinimapBounds;
-		PlayState.Map->DrawMinimap(MinimapBounds, HoverItem, FullMap, PlayState.ShowMoreInfo());
+		PlayState.Map->DrawMinimap(MinimapBounds, GetHighlightItemTexture(), FullMap, PlayState.ShowMoreInfo());
 
 		// Draw icon hint
 		if(ae::Actions.HasInputForAction(Action::GAME_MOREINFO)) {

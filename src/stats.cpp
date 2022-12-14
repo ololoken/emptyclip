@@ -423,6 +423,7 @@ void _Stats::LoadUsables() {
 		Template.Name = Database->GetString("name");
 		Template.IconID = Database->GetString("icon_id");
 		Template.RenderListType = Database->GetInt<int>("renderlist");
+		Template.ClampMinimap = Database->GetInt<int>("clamp");
 		Template.Attributes["light"].Int = Database->GetInt<int>("light");
 		Template.Attributes["usable_type"].Int = Database->GetInt<int>("type");
 		Template.Attributes["range"].Float = Database->GetReal("range");

@@ -239,7 +239,7 @@ class _Map {
 		int RenderProps();
 		void RenderEvents(std::vector<const ae::_Texture *> &Textures, int Type);
 		void RenderGrid(int Mode);
-		void DrawMinimap(ae::_Bounds &MinimapBounds, const _Item *HighlightItem, bool FullMap, bool DrawIcons);
+		void DrawMinimap(ae::_Bounds &MinimapBounds, const ae::_Texture *HighlightTexture, bool FullMap, bool DrawIcons);
 		void HighlightBlocks(int Layer);
 
 		void AddBlock(int Layer, _Block Block) { Blocks[Layer].push_back(Block); }

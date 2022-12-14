@@ -149,6 +149,7 @@ struct _ObjectTemplate {
 	int Type{0};
 	int RenderListType{-1};
 	int AmmoTypeID{-1};
+	bool ClampMinimap{false};
 	bool GiveHealth{false};
 	bool GiveStamina{false};
 	bool IsBoss{false};
