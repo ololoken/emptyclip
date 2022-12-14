@@ -105,8 +105,6 @@ class _HUD {
 		_HUD(const ae::_Camera *Camera, _Player *Player);
 		~_HUD() { }
 
-		const ae::_Texture *GetHighlightItemTexture() const;
-
 		void SetStats(int MaxKills, int MaxCrates, int MaxSecrets);
 		void SetLastHit(_Entity *Entity);
 		void SetInventoryOpen(bool Value);

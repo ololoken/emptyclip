@@ -25,7 +25,6 @@
 #include <ae/program.h>
 #include <ae/graphics.h>
 #include <ae/texture.h>
-#include <hud.h>
 #include <map.h>
 #include <stats.h>
 #include <constants.h>
@@ -96,7 +95,6 @@ void _ObjectManager::Update(double FrameTime, _Map *Map) {
 	bool Delete = false;
 	bool ReduceMinimap = PlayState.ShowMoreInfo();
 	size_t ObjectCount = Objects.size();
-	const ae::_Texture *HighlightTexture = PlayState.HUD->GetHighlightItemTexture();
 	for(size_t i = 0; i < ObjectCount; i++) {
 		_Object *Object = Objects[i];
 
@@ -127,19 +125,8 @@ void _ObjectManager::Update(double FrameTime, _Map *Map) {
 			break;
 		}
 
-		// Check conditions
-		bool Add;
-		if(Object->Template.ClampMinimap)
-			Add = true;
-		else if(ReduceMinimap && HighlightTexture == Object->Texture)
-			Add = true;
-		else if(Map->CheckMinimapBounds(Object->Bounds))
-			Add = true;
-		else
-			Add = false;
-
 		// Add to minimap
-		if(!Object->Filtered && Add) {
+		if(!Object->Filtered && (ReduceMinimap || Map->CheckMinimapBounds(Object->Bounds))) {
 			_MinimapIcon MinimapIcon;
 
 			// Get bounds

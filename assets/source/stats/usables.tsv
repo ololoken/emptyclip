@@ -1,6 +1,6 @@
-id	name	icon_id	color_id	clamp	light	renderlist	type	range	moveable
-usable_hammer	Hammer	textures/items/usable_hammer.png	white	0	1	-1	1	5	0
-usable_whetstone	Whetstone	textures/items/usable_whetstone.png	white	1	1	-1	2	10	1
-usable_wrench	Wrench	textures/items/usable_wrench.png	white	1	1	-1	3	0	1
-usable_dynamite	Dynamite	textures/items/usable_dynamite.png	white	1	1	-1	4	0	0
-usable_pliers	Pliers	textures/items/usable_pliers.png	white	1	1	-1	5	0	1
+id	name	icon_id	color_id	light	renderlist	type	range	moveable
+usable_hammer	Hammer	textures/items/usable_hammer.png	white	1	-1	1	5	0
+usable_whetstone	Whetstone	textures/items/usable_whetstone.png	white	1	-1	2	10	1
+usable_wrench	Wrench	textures/items/usable_wrench.png	white	1	-1	3	0	1
+usable_dynamite	Dynamite	textures/items/usable_dynamite.png	white	1	-1	4	0	0
+usable_pliers	Pliers	textures/items/usable_pliers.png	white	1	-1	5	0	1

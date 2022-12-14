@@ -1870,7 +1870,7 @@ void _Map::RenderGrid(int Mode) {
 }
 
 // Draw the mini map
-void _Map::DrawMinimap(ae::_Bounds &MinimapBounds, const ae::_Texture *HighlightTexture, bool FullMap, bool DrawIcons) {
+void _Map::DrawMinimap(ae::_Bounds &MinimapBounds, const _Item *HighlightItem, bool FullMap, bool DrawIcons) {
 
 	// Get bounds of minimap window
 	glm::vec2 DrawSize = FullMap ? glm::vec2(ae::Graphics.CurrentSize.y, ae::Graphics.CurrentSize.y) * 0.75f : MINIMAP_SIZE * ae::_Element::GetUIScale();
@@ -1968,13 +1968,12 @@ void _Map::DrawMinimap(ae::_Bounds &MinimapBounds, const ae::_Texture *Highlight
 				if(!MinimapIcon.Object)
 					continue;
 
-				if(HighlightTexture && HighlightTexture != MinimapIcon.Object->Texture)
+				// Check for highlighting one item type
+				if(HighlightItem && HighlightItem->Texture != MinimapIcon.Object->Texture)
 					continue;
 
-				// Check for clamping icon to bounds
-				glm::vec2 Position = MinimapIcon.Position;
-				if(HighlightTexture || MinimapIcon.Object->Template.ClampMinimap)
-					Position = glm::clamp(Position, ClampBounds.Start, ClampBounds.End);
+				// Clamp to bounds
+				glm::vec2 Position =  glm::clamp(MinimapIcon.Position, ClampBounds.Start, ClampBounds.End);
 
 				// Get bounds
 				ae::_Bounds Bounds(Position - ImageSize, Position + ImageSize);
