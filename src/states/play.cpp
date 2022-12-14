@@ -124,7 +124,7 @@ void _PlayState::Init() {
 	// Spawn objects
 	Monsters.reserve((size_t)Map->Monsters);
 	for(const auto &ObjectSpawn : Map->ObjectSpawns)
-		SpawnObject(ObjectSpawn, false, Map->GetAddedLevel());
+		SpawnObject(ObjectSpawn, false, Map->GetAddedLevel(), 0);
 
 	// Initialize camera
 	ae::_CameraSettings CameraSettings;
@@ -1683,20 +1683,27 @@ void _PlayState::CreateItemDrop(const _Entity *Entity, float DropRate) {
 		return;
 
 	// Roll for items
+	int Rolls;
 	for(int i = 0; i < Monster->Template.Attributes.at("drop_count").Int; i++) {
-		int Rolls = (int)DropRate;
-
-		// Check for extra roll
-		double MultiOdds = DropRate - (int)DropRate;
-		double MultiRoll = ae::GetRandomReal(0, 1);
-		if(MultiRoll <= MultiOdds)
-			Rolls++;
 
 		// Bosses only drop one item
-		if(Monster->Template.IsBoss)
+		int AddedRarityChance = Monster->Quality;
+		if(Monster->Template.IsBoss) {
 			Rolls = 1;
-		else if(Monster->Unique)
-			Rolls = Monster->Unique->Rolls;
+		}
+		else {
+			Rolls = (int)DropRate;
+
+			// Check for extra roll
+			double MultiOdds = DropRate - (int)DropRate;
+			double MultiRoll = ae::GetRandomReal(0, 1);
+			if(MultiRoll <= MultiOdds)
+				Rolls++;
+
+			// Add unique rolls
+			if(Monster->Unique)
+				Rolls += Monster->Unique->Rolls;
+		}
 
 		// Roll for each item
 		for(int j = 0; j < Rolls; j++) {
@@ -1718,7 +1725,7 @@ void _PlayState::CreateItemDrop(const _Entity *Entity, float DropRate) {
 				ObjectSpawn.Position = Map->FindSuitableItemPosition(ObjectSpawn.Position, ObjectSpawn.Type, ITEM_RADIUS, ITEM_PLACEMENT_ATTEMPTS);
 
 			ObjectSpawn.Level = Monster->Level;
-			SpawnObject(&ObjectSpawn, true);
+			SpawnObject(&ObjectSpawn, true, 0, AddedRarityChance);
 		}
 	}
 }
@@ -2014,9 +2021,9 @@ void _PlayState::DeleteMonsters() {
 }
 
 // Spawn an object in the map
-void _PlayState::SpawnObject(const _ObjectSpawn *ObjectSpawn, bool GenerateStats, int AddedLevel) {
+void _PlayState::SpawnObject(const _ObjectSpawn *ObjectSpawn, bool GenerateStats, int AddedLevel, int AddedRarityChance) {
 	if(ObjectSpawn->Type == _Object::MONSTER) {
-		_Monster *Monster = Stats.CreateMonster(ObjectSpawn->ID, ObjectSpawn->Position, ObjectSpawn->Level + Map->GetAddedLevel(), Map->Progression, 0, GenerateStats, Player->RarityChance);
+		_Monster *Monster = Stats.CreateMonster(ObjectSpawn->ID, ObjectSpawn->Position, ObjectSpawn->Level + Map->GetAddedLevel(), Map->Progression, 0, GenerateStats, Player->RarityChance + AddedRarityChance);
 		Monster->Player = Player;
 		AddMonster(Monster);
 		Map->TotalExperience += Monster->ExperienceGiven;
@@ -2028,7 +2035,7 @@ void _PlayState::SpawnObject(const _ObjectSpawn *ObjectSpawn, bool GenerateStats
 	else if(ObjectSpawn->Type == _Object::PROP)
 		Map->AddObject(Stats.CreateProp(ObjectSpawn->ID, ObjectSpawn->Position, ObjectSpawn->Rotation, ObjectSpawn->Scale), GRID_MONSTER);
 	else
-		Map->AddObject(Stats.CreateItem(ObjectSpawn->ID, ObjectSpawn->Position, ObjectSpawn->Level + AddedLevel, 0, GenerateStats, Player->RarityChance, Player->Progression), GRID_ITEM);
+		Map->AddObject(Stats.CreateItem(ObjectSpawn->ID, ObjectSpawn->Position, ObjectSpawn->Level + AddedLevel, 0, GenerateStats, Player->RarityChance + AddedRarityChance, Player->Progression), GRID_ITEM);
 }
 
 // Adds a monster to the monster list and collision grid

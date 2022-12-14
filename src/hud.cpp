@@ -1637,7 +1637,7 @@ bool _HUD::ApplyUsableItem(_Item *ExistingItem) {
 						continue;
 
 					ObjectSpawn.Position = PlayState.Map->FindSuitableItemPosition(Player->Position, ObjectSpawn.Type, ITEM_RADIUS, ITEM_PLACEMENT_ATTEMPTS);
-					PlayState.SpawnObject(&ObjectSpawn, true);
+					PlayState.SpawnObject(&ObjectSpawn, true, 0, CursorItem->Quality);
 				}
 
 				Buffer << "+" << Rolls;
