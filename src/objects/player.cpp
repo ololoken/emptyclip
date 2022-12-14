@@ -202,9 +202,13 @@ void _Player::BuildFilterValues() {
 	FilterValues[FILTER_MODS].push_back(5);
 	FilterValues[FILTER_MODS].push_back(10);
 
-	for(int i = 0; i < Progression; i++) {
-		FilterValues[FILTER_GEAR].push_back(i * ITEM_QUALITY_FILTER_PROGRESSION + ITEM_QUALITY_FILTER_PROGRESSION);
-		FilterValues[FILTER_MODS].push_back(i * ITEM_QUALITY_FILTER_PROGRESSION + ITEM_QUALITY_FILTER_PROGRESSION);
+	// Add quality levels from uniques
+	for(const auto &Unique : Stats.Uniques) {
+		if((int)Unique->Progression > Progression)
+			break;
+
+		FilterValues[FILTER_GEAR].push_back(Unique->Quality);
+		FilterValues[FILTER_MODS].push_back(Unique->Quality);
 	}
 }
 
