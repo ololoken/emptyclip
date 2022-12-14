@@ -1038,10 +1038,10 @@ void _HUD::DrawCharacterScreen() {
 	DrawAttribute("Melee Damage", Buffer, DrawPosition);
 
 	Buffer << ae::Round1(Player->AttackRange[WEAPONATTACK_MELEE]);
-	DrawAttribute("Range", Buffer, DrawPosition);
+	DrawAttribute("Melee Range", Buffer, DrawPosition);
 
 	Buffer << ae::Round1(1.0 / Player->AttackPeriod[WEAPONATTACK_MELEE]) << "/s";
-	DrawAttribute("Attack Speed", Buffer, DrawPosition);
+	DrawAttribute("Melee Attack Speed", Buffer, DrawPosition);
 
 	Buffer << Player->CritChance[WEAPONATTACK_MELEE] << "%";
 	DrawAttribute("Melee Crit Chance", Buffer, DrawPosition);
