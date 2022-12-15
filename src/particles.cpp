@@ -99,7 +99,7 @@ bool _Particles::Create(const _ParticleSpawn &Spawn) {
 
 			// Check floor first
 			glm::ivec2 Coord = Map->GetValidCoord(Spawn.Position);
-			if(!Map->CheckCollisionFlag(Coord, _Tile::ENTITY))
+			if(!Map->CanPass(Coord, _Tile::ENTITY))
 				return false;
 
 			for(int i = 0; i < Spawn.Template->Count; i++) {

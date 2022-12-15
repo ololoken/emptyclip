@@ -1715,7 +1715,7 @@ void _PlayState::CreateItemDrop(const _Entity *Entity, float DropRate) {
 				continue;
 
 			// Spawn object on player if item can't be reached
-			if(!Map->CheckCollisionFlag(Map->GetValidCoord(Monster->Position), _Tile::ENTITY) || Monster->Template.IsBoss)
+			if(!Map->CanPass(Map->GetValidCoord(Monster->Position), _Tile::ENTITY) || Monster->Template.IsBoss)
 				ObjectSpawn.Position = Player->Position;
 			else
 				ObjectSpawn.Position = Monster->Position;

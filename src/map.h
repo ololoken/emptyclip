@@ -265,7 +265,7 @@ class _Map {
 		int GetWallState(const glm::vec2 &Position, float Radius) const;
 		void GetAdjacentTile(const glm::vec2 &Position, float Direction, glm::ivec2 &Coord) const;
 		glm::ivec2 GetValidCoord(const glm::ivec2 &Coord) const;
-		bool CheckCollisionFlag(const glm::ivec2 &Position, int Flag) const;
+		bool CanPass(const glm::ivec2 &Position, int Flag) const;
 		void UpdateCollisionFlag(const glm::ivec2 &Position, int Flag) const;
 		void GetTileBounds(const glm::vec2 &Position, float Radius, _TileBounds &TileBounds) const;
 		_Block *GetBlock(int Layer, const size_t Index);
@@ -338,8 +338,8 @@ inline glm::ivec2 _Map::GetValidCoord(const glm::ivec2 &Coord) const {
 	);
 }
 
-// Check collision flag on a tile
-inline bool _Map::CheckCollisionFlag(const glm::ivec2 &Position, int Flag) const {
+// Check if a hit type can pass through a tile
+inline bool _Map::CanPass(const glm::ivec2 &Position, int Flag) const {
 	return !(Data[Position.x][Position.y].Collision & Flag);
 }
 

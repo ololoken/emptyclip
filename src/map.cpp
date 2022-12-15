@@ -1180,8 +1180,14 @@ void _Map::CheckMeleeCollisions(_Entity *Attacker, int GridType, int Penetration
 						continue;
 				*/
 
-					// Check for walls only if the object is not inside one
-					if(CheckCollisionFlag(GetValidCoord(Object->Position), _Tile::ENTITY) && !IsVisible(Attacker->Position, Object->Position, _Tile::BULLET))
+					// Handle crates separately since they create entity walls when spawned
+					bool Visible = IsVisible(Attacker->Position, Object->Position, _Tile::BULLET);
+					if(Object->IsCrate() && !Visible)
+						continue;
+
+					// Allow hits on monsters that are inside walls
+					bool InsideWall = !CanPass(GetValidCoord(Object->Position), _Tile::ENTITY);
+					if(!(InsideWall || Visible))
 						continue;
 				}
 
@@ -1305,7 +1311,7 @@ void _Map::CheckBulletCollisions(_Object *Attacker, const glm::vec2 &Direction, 
 
 	// Traverse tiles
 	bool EndedOnX = false;
-	while(TileTracer.x >= 0 && TileTracer.y >= 0 && TileTracer.x < Size.x && TileTracer.y < Size.y && CheckCollisionFlag(TileTracer, CollisionFlag)) {
+	while(TileTracer.x >= 0 && TileTracer.y >= 0 && TileTracer.x < Size.x && TileTracer.y < Size.y && CanPass(TileTracer, CollisionFlag)) {
 
 		// Check for object intersections
 		if(TestObjects) {
@@ -1444,7 +1450,7 @@ bool _Map::IsVisible(const glm::vec2 &Start, const glm::vec2 &End, int CheckFlag
 	glm::ivec2 EndTile = GetValidCoord(End);
 
 	// Check degenerate cases
-	if(!CheckCollisionFlag(StartTile, CheckFlag) || !CheckCollisionFlag(EndTile, CheckFlag))
+	if(!CanPass(StartTile, CheckFlag) || !CanPass(EndTile, CheckFlag))
 		return false;
 
 	// Get direction
@@ -1460,13 +1466,13 @@ bool _Map::IsVisible(const glm::vec2 &Start, const glm::vec2 &End, int CheckFlag
 		// Check direction
 		if(Direction.y < 0) {
 			for(int i = EndTile.y; i <= StartTile.y; i++) {
-				if(!CheckCollisionFlag(glm::ivec2(StartTile.x, i), CheckFlag))
+				if(!CanPass(glm::ivec2(StartTile.x, i), CheckFlag))
 					return false;
 			}
 		}
 		else {
 			for(int i = StartTile.y; i <= EndTile.y; i++) {
-				if(!CheckCollisionFlag(glm::ivec2(StartTile.x, i), CheckFlag))
+				if(!CanPass(glm::ivec2(StartTile.x, i), CheckFlag))
 					return false;
 			}
 		}
@@ -1478,13 +1484,13 @@ bool _Map::IsVisible(const glm::vec2 &Start, const glm::vec2 &End, int CheckFlag
 		// Check direction
 		if(Direction.x < 0) {
 			for(int i = EndTile.x; i <= StartTile.x; i++) {
-				if(!CheckCollisionFlag(glm::ivec2(i, StartTile.y), CheckFlag))
+				if(!CanPass(glm::ivec2(i, StartTile.y), CheckFlag))
 					return false;
 			}
 		}
 		else {
 			for(int i = StartTile.x; i <= EndTile.x; i++) {
-				if(!CheckCollisionFlag(glm::ivec2(i, StartTile.y), CheckFlag))
+				if(!CanPass(glm::ivec2(i, StartTile.y), CheckFlag))
 					return false;
 			}
 		}
@@ -1534,7 +1540,7 @@ bool _Map::IsVisible(const glm::vec2 &Start, const glm::vec2 &End, int CheckFlag
 	while(true) {
 
 		// Check for walls
-		if(TileTracer.x < 0 || TileTracer.y < 0 || TileTracer.x >= Size.x || TileTracer.y >= Size.y || !CheckCollisionFlag(TileTracer, CheckFlag))
+		if(TileTracer.x < 0 || TileTracer.y < 0 || TileTracer.x >= Size.x || TileTracer.y >= Size.y || !CanPass(TileTracer, CheckFlag))
 			return false;
 
 		// Determine which direction needs an update

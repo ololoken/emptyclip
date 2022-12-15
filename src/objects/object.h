@@ -121,6 +121,7 @@ class _Object {
 
 		bool IsDying() const { return Action == ACTION_DYING || Action == ACTION_STARTDEATH; }
 		virtual bool IsInvulnerable() const { return false; }
+		bool IsCrate() const { return AIType == AI_NONE; }
 		bool CanFreePath() const { return FreePathing || FreePathingTimer > 0.0; }
 		bool CanStack() const { return false; }
 		bool CanMove() const { return Type == _Object::WEAPON || Type == _Object::ARMOR || Type == _Object::MOD || Type == _Object::USABLE; }

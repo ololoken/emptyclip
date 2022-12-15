@@ -463,7 +463,7 @@ void _Player::Update(double FrameTime) {
 
 		// Warp out of walls
 		glm::ivec2 Coord = Map->GetValidCoord(Position);
-		if(!Map->CheckCollisionFlag(Coord, _Tile::ENTITY))
+		if(!Map->CanPass(Coord, _Tile::ENTITY))
 			WarpPosition(glm::vec2(LastGoodCoord) + glm::vec2(0.5f));
 		else
 			LastGoodCoord = Coord;

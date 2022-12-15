@@ -52,7 +52,6 @@ class _Entity : public _Object {
 		void ApplyRecoil();
 		bool IsRanged() const;
 		bool IsMeleeAttacking() const { return Action == ACTION_MELEE || Action == ACTION_STARTMELEE; }
-		bool IsCrate() const { return AIType == AI_NONE; }
 
 		bool CheckBurstTimer(int AttackType) const { return AttackTimer[AttackType] >= BurstPeriod[AttackType]; }
 		bool CheckAttackTimer(int AttackType) const { return AttackTimer[AttackType] >= AttackPeriod[AttackType]; }
