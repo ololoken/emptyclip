@@ -1539,6 +1539,11 @@ bool _PlayState::ShowMoreInfo() {
 	return ae::Input.ModKeyDown(KMOD_ALT) || ae::Actions.State[Action::GAME_MOREINFO].Value > 0.0f;
 }
 
+// Determine if minimap icons should be shown
+bool _PlayState::DrawMinimapIcons() {
+	return Config.ShowIcons ^ ShowMoreInfo();
+}
+
 // Determine if HoverItem should be set to CursorItem
 bool _PlayState::SetHoverItem() {
 

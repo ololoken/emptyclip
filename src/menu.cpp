@@ -392,6 +392,7 @@ void _Menu::UpdateOptions() {
 	ae::Assets.Elements["label_menu_options_gunflashes_check"]->Text = Config.WeaponFlashes ? "X" : "";
 	ae::Assets.Elements["label_menu_options_walldecals_check"]->Text = Config.WallDecals ? "X" : "";
 	ae::Assets.Elements["label_menu_options_floordecals_check"]->Text = Config.FloorDecals ? "X" : "";
+	ae::Assets.Elements["label_menu_options_showicons_check"]->Text = Config.ShowIcons ? "X" : "";
 	ae::Assets.Elements["label_menu_options_tutorial_check"]->Text = Config.Tutorial ? "X" : "";
 	ae::Assets.Elements["label_menu_options_autoequip_check"]->Text = Config.AutoEquip ? "X" : "";
 	ae::Assets.Elements["label_menu_options_autoorganize_check"]->Text = Config.AutoOrganize ? "X" : "";
@@ -770,6 +771,10 @@ void _Menu::HandleMouseButton(const ae::_MouseEvent &MouseEvent) {
 					}
 					else if(Clicked->ID == "button_menu_options_floordecals") {
 						Config.FloorDecals = !Config.FloorDecals;
+						UpdateOptions();
+					}
+					else if(Clicked->ID == "button_menu_options_showicons") {
+						Config.ShowIcons = !Config.ShowIcons;
 						UpdateOptions();
 					}
 					else if(Clicked->ID == "button_menu_options_tutorial") {

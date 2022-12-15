@@ -96,6 +96,7 @@ void _Config::SetDefaults(bool FromOptionsScreen) {
 	WeaponFlashes = true;
 	WallDecals = true;
 	FloorDecals = true;
+	ShowIcons = false;
 	Tutorial = true;
 	AutoEquip = true;
 	AutoOrganize = true;
@@ -198,6 +199,7 @@ void _Config::Load() {
 	GetValue("weapon_flashes", WeaponFlashes);
 	GetValue("wall_decals", WallDecals);
 	GetValue("floor_decals", FloorDecals);
+	GetValue("show_icons", ShowIcons);
 	GetValue("tutorial", Tutorial);
 	GetValue("autoequip", AutoEquip);
 	GetValue("autoorganize", AutoOrganize);
@@ -254,6 +256,7 @@ void _Config::Save() {
 	File << "weapon_flashes=" << WeaponFlashes << std::endl;
 	File << "wall_decals=" << WallDecals << std::endl;
 	File << "floor_decals=" << FloorDecals << std::endl;
+	File << "show_icons=" << ShowIcons << std::endl;
 	File << "tutorial=" << Tutorial << std::endl;
 	File << "autoequip=" << AutoEquip << std::endl;
 	File << "autoorganize=" << AutoOrganize << std::endl;

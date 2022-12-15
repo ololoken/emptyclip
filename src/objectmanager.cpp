@@ -93,7 +93,7 @@ void _ObjectManager::Update(double FrameTime, _Map *Map) {
 
 	// Update objects
 	bool Delete = false;
-	bool ReduceMinimap = PlayState.ShowMoreInfo();
+	bool ReduceMinimap = PlayState.DrawMinimapIcons();
 	size_t ObjectCount = Objects.size();
 	for(size_t i = 0; i < ObjectCount; i++) {
 		_Object *Object = Objects[i];

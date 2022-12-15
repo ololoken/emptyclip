@@ -143,6 +143,11 @@
 				<element id="label_menu_options_floordecals_check" font="hud_medium" text="X"/>
 			</element>
 		</element>
+		<element id="label_menu_options_showicons" font="menu_buttons" text="Show Map Icons" offset_x="-500" offset_y="725" alignment_x="2" alignment_y="3">
+			<element id="button_menu_options_showicons" style="style_menu_textbox" hover_style="style_menu_button_hover" offset_x="25" offset_y="-10" size_x="44" size_y="44" alignment_x="0" clickable="true">
+				<element id="label_menu_options_showicons_check" font="hud_medium" text="X"/>
+			</element>
+		</element>
 		<element id="label_menu_options_tutorial" font="menu_buttons" text="Show Tutorials" offset_x="-80" offset_y="515" alignment_x="2" alignment_y="3">
 			<element id="button_menu_options_tutorial" style="style_menu_textbox" hover_style="style_menu_button_hover" offset_x="25" offset_y="-10" size_x="44" size_y="44" alignment_x="0" clickable="true">
 				<element id="label_menu_options_tutorial_check" font="hud_medium" text="X"/>

@@ -53,6 +53,7 @@ class _Config {
 		bool WeaponFlashes;
 		bool WallDecals;
 		bool FloorDecals;
+		bool ShowIcons;
 		bool Tutorial;
 		bool AutoEquip;
 		bool AutoOrganize;

@@ -84,6 +84,7 @@ class _PlayState : public ae::_State {
 		void SpawnObject(const _ObjectSpawn *ObjectSpawn, bool GenerateStats, int AddedLevel, int AddedRarityChance);
 		int PickupObject(_Item *Item, bool Manual);
 		bool ShowMoreInfo();
+		bool DrawMinimapIcons();
 
 		// Parameters
 		std::string Level;
