@@ -1213,10 +1213,27 @@ void _HUD::DrawGlanceValueText(const _Bag &Bag, ae::_Element *Element) {
 
 		ae::_Element *Button = Element->Children[i];
 		std::ostringstream Buffer;
-		if(Item->CanMod())
-			Buffer << Item->Mods.size() << "/" << Item->GetMaxMods(true);
-		else if(Item->Type == _Object::USABLE || Item->Type == _Object::MOD)
-			DrawItemValue(Item, Button->Bounds.Start);
+
+		// Handle dragging usables
+		if(CursorItem && CursorItem->Type == _Object::USABLE) {
+			switch(CursorItem->Template.Attributes.at("usable_type").Int) {
+				case USABLE_WHETSTONE:
+					if(Item->CanIncreaseQuality(false))
+						Buffer << Item->Quality << "%";
+				break;
+				case USABLE_WRENCH:
+					if(Item->CanIncreaseLevel(false))
+						Buffer << Item->Level;
+				break;
+			}
+		}
+
+		if(Buffer.str().empty()) {
+			if(Item->CanMod())
+				Buffer << Item->Mods.size() << "/" << Item->GetMaxMods(true);
+			else if(Item->Type == _Object::USABLE || Item->Type == _Object::MOD)
+				DrawItemValue(Item, Button->Bounds.Start);
+		}
 
 		Fonts[FONT_TINY]->DrawText(Buffer.str(), glm::ivec2(Button->Bounds.Start + glm::vec2(74, 74) * ae::_Element::GetUIScale()), ae::RIGHT_BASELINE, COLOR_WHITE);
 	}
