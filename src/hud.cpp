@@ -858,7 +858,7 @@ void _HUD::Render(bool FullMap) {
 		// Draw icon hint
 		if(ae::Actions.HasInputForAction(Action::GAME_MOREINFO)) {
 			ae::Assets.Fonts["hud_tiny"]->DrawTextFormatted(
-				"[c gray]Hold [c white]" + ae::Actions.GetInputNameForAction(Action::GAME_MOREINFO) + "[c gray] to show icons",
+				"[c gray]Hold [c white]" + ae::Actions.GetInputNameForAction(Action::GAME_MOREINFO) + "[c gray] to show " + (Config.ShowIcons ? "all" : "icons"),
 				glm::vec2(MinimapBounds.Start.x, MinimapBounds.End.y + 18 * ae::_Element::GetUIScale()),
 				ae::LEFT_BASELINE
 			);
