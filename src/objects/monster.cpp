@@ -124,12 +124,6 @@ void _Monster::Update(double FrameTime) {
 				GenerateReactionTime();
 		}
 	}
-	// Stop AI if player gets too far away
-	else if(PlayerDistanceSquared >= ENTITY_MAX_ACTIVE_RANGE * ENTITY_MAX_ACTIVE_RANGE) {
-		PlayerVisible = false;
-		MoveState = MOVE_NONE;
-		GenerateReactionTime();
-	}
 
 	// Set return position if monster can't see player anymore
 	if(AIType != AI_SIMPLE) {

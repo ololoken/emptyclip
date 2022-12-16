@@ -79,7 +79,6 @@ const  float        ENTITY_MOVESOUNDDELAYFACTOR          =  0.02625f;
 const  int          ENTITY_MINDAMAGEPOINTS               =  1;
 const  float        ENTITY_STOP_THRESHOLD                =  0.005f;
 const  double       ENTITY_STATIC_TIME                   =  2.0;
-const  float        ENTITY_MAX_ACTIVE_RANGE              =  30.0f;
 const  float        ENTITY_MAX_DAMAGE_RESIST             =  90.0f;
 const  int          ENTITY_MAX_MOVESPEED_LEVEL           =  100;
 const  double       ENTITY_FREEPATHING_TIMER_INCREMENT   =  0.1;
