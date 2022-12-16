@@ -1,7 +1,14 @@
 #!/bin/bash
 
-name="Empty Clip"
-file=$(ls *.xml)
+# parameters
+name=$1
+if [ -z "$name" ]; then
+	echo "Usage: ./$(basename $0) [name]"
+	exit 1
+fi
+
+# variables
+file=$(ls ./*.xml)
 
 # get releases tag
 releases=$(awk -v name="$name" '
