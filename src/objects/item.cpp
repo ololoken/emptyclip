@@ -898,6 +898,19 @@ bool _Item::ApplyUsable(_Item *Usable) {
 			// Sort mods by quality descending
 			std::sort(Mods.begin(), Mods.end(), CompareModQuality);
 
+			// Shuffle lowest quality mods
+			if(Mods.size() > 1) {
+				size_t LowestIndex = 0;
+				for(size_t i = Mods.size() - 2; i < Mods.size(); i--) {
+					if(Mods[i]->Quality > Mods.back()->Quality) {
+						LowestIndex = i + 1;
+						break;
+					}
+				}
+
+				std::shuffle(Mods.begin() + (int)LowestIndex, Mods.end(), ae::RandomGenerator);
+			}
+
 			// Drop mods
 			int QuantityApplied = 0;
 			int PliersLevel = Usable->GetPliersLevel();
