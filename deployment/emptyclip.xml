@@ -68,9 +68,55 @@
 	</screenshots>
 	<metadata_license>CC0-1.0</metadata_license>
 	<releases>
-		<release version="1.0.3" date="2008-04-06"/>
-		<release version="1.0.2" date="2006-06-08"/>
-		<release version="1.0.1" date="2006-05-28"/>
-		<release version="1.0.0" date="2006-05-19"/>
+		<release version="1.0.3" date="2008-04-06">
+			<description>
+				<ul>
+					<li>Added the ability to reset the level</li>
+					<li>Press R to cancel a reload</li>
+					<li>Can now pick up items while reloading</li>
+					<li>Reduced medkit delay to 0.5 from 2 seconds</li>
+					<li>Reduced pickup delay to 0.2 from 0.5 seconds</li>
+					<li>Changed license to GPL v3</li>
+					<li>Refactored a lot of code</li>
+					<li>Now using NSIS for the windows installer</li>
+					<li>Updated all libraries to the latest versions</li>
+				</ul>
+			</description>
+		</release>
+		<release version="1.0.2" date="2006-06-08">
+			<description>
+				<ul>
+					<li>Updated Windows version to SDL 1.2.10</li>
+					<li>Reduced compile time and game size by removing networking code</li>
+					<li>Fixed a rounding error in entity/wall collisions on large maps. Noticeable in skyscraper0.map on certain walls</li>
+					<li>Fixed a bug on the maze0.map where you could get stuck</li>
+					<li>Fixed a compile error on some machines</li>
+					<li>Removed "-level" argument in favor of "-mod"</li>
+					<li>The linux binary package now comes with the binary compiled from scons, which has slightly different dependencies</li>
+				</ul>
+			</description>
+		</release>
+		<release version="1.0.1" date="2006-05-28">
+			<description>
+				<ul>
+					<li>Converted from make/autotools to SCons</li>
+					<li>Added a portal level where you choose which mode to start in</li>
+					<li>Made the first survival level accessible</li>
+					<li>Added the first map editing tutorial to the website</li>
+					<li>Added "-mod" command-line argument, used to set the path to the database directory</li>
+					<li>Bilinear filtering by default. Pass "-trilinear" to enable trilinear filtering</li>
+					<li>Disabled the incomplete deathmatch mode for now</li>
+					<li>Adventure mode fixes</li>
+					<li>Added more debugging messages</li>
+				</ul>
+			</description>
+		</release>
+		<release version="1.0.0" date="2006-05-15">
+			<description>
+				<ul>
+					<li>First release</li>
+				</ul>
+			</description>
+		</release>
 	</releases>
 </component>

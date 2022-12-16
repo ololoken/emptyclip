@@ -58,7 +58,7 @@ Empty Clip 1.0.3 - 2008-04-06
 - Can now pick up items while reloading
 - Reduced medkit delay to 0.5 from 2 seconds
 - Reduced pickup delay to 0.2 from 0.5 seconds
-- GPL v3
+- Changed license to GPL v3
 - Refactored a lot of code
 - Now using NSIS for the windows installer
 - Updated all libraries to the latest versions
@@ -78,7 +78,7 @@ Empty Clip 1.0.1 - 2006-05-28
 - Made the first survival level accessible
 - Added the first map editing tutorial to the website
 - Added "-mod" command-line argument, used to set the path to the database directory
-- Bilinear filtering by default.  Pass "-trilinear" to enable trilinear filtering
+- Bilinear filtering by default. Pass "-trilinear" to enable trilinear filtering
 - Disabled the incomplete deathmatch mode for now
 - Adventure mode fixes
 - Added more debugging messages
