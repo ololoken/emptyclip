@@ -46,7 +46,7 @@ enum SaveChunkTypes {
 	CHUNK_FILTERS,
 	CHUNK_ACTIVE_OUTFIT,
 	CHUNK_ACTIVE_BACKPACK,
-	CHUNK_UNUSED3,
+	CHUNK_ACTIVE_MINIMAP,
 	CHUNK_UNUSED4,
 	CHUNK_UNUSED5,
 	CHUNK_UNUSED6,
@@ -334,6 +334,9 @@ void _Save::LoadPlayer(_Player *Player) {
 			case CHUNK_ACTIVE_BACKPACK:
 				File.read((char *)&Player->ActiveBackpack, sizeof(Player->ActiveBackpack));
 			break;
+			case CHUNK_ACTIVE_MINIMAP:
+				File.read((char *)&Player->MinimapSizeIndex, sizeof(Player->MinimapSizeIndex));
+			break;
 			default:
 				File.ignore(Size);
 			break;
@@ -394,6 +397,7 @@ void _Save::SavePlayer(_Player *Player) {
 	WriteChunk(File, CHUNK_HEALTH, (char *)&Health, sizeof(Health));
 	WriteChunk(File, CHUNK_ACTIVE_OUTFIT, (char *)&Player->ActiveOutfit, sizeof(Player->ActiveOutfit));
 	WriteChunk(File, CHUNK_ACTIVE_BACKPACK, (char *)&Player->ActiveBackpack, sizeof(Player->ActiveBackpack));
+	WriteChunk(File, CHUNK_ACTIVE_MINIMAP, (char *)&Player->MinimapSizeIndex, sizeof(Player->MinimapSizeIndex));
 	WriteChunk(File, CHUNK_STAT_PLAYTIME, (char *)&Player->PlayTime, sizeof(Player->PlayTime));
 	WriteChunk(File, CHUNK_STAT_KILLS, (char *)&Player->TotalKills, sizeof(Player->TotalKills));
 	WriteChunk(File, CHUNK_STAT_DEATHS, (char *)&Player->TotalDeaths, sizeof(Player->TotalDeaths));

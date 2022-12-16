@@ -172,6 +172,12 @@ struct _MinimapIcon {
 	const _Object *Object{nullptr};
 };
 
+// Holds minimap size info
+struct _MinimapSize {
+	glm::vec2 Capture;
+	glm::vec2 Screen;
+};
+
 // Classes
 class _Map {
 
@@ -239,7 +245,7 @@ class _Map {
 		int RenderProps();
 		void RenderEvents(std::vector<const ae::_Texture *> &Textures, int Type);
 		void RenderGrid(int Mode);
-		void DrawMinimap(ae::_Bounds &MinimapBounds, const _Item *HighlightItem, bool FullMap, bool DrawIcons);
+		void DrawMinimap(ae::_Bounds &MinimapBounds, const _Item *HighlightItem, int SizeIndex, bool DrawIcons);
 		void HighlightBlocks(int Layer);
 
 		void AddBlock(int Layer, _Block Block) { Blocks[Layer].push_back(Block); }
@@ -306,6 +312,7 @@ class _Map {
 
 		// Minimap
 		std::vector<_MinimapIcon> MinimapIcons[MINIMAP_COUNT];
+		std::vector<_MinimapSize> MinimapSizes;
 		glm::vec2 MinimapCaptureSize{0.0f};
 		uint32_t MinimapVBO{0};
 		float *MinimapVertices{nullptr};

@@ -225,11 +225,10 @@ const  std::string  HUD_INVENTORYFULLMESSAGE             =  "INVENTORY FULL";
 const  std::string  HUD_BACKPACKFULLMESSAGE              =  "BACKPACK FULL";
 const  double       HUD_INVENTORYFULLTIME                =  2.0;
 //     Minimap
-const  glm::vec2    MINIMAP_CAPTURE_SIZE                 =  glm::vec2(20.0f,20.0f);
 const  glm::vec2    MINIMAP_FULL_CAPTURE_SIZE            =  glm::vec2(50.0f,50.0f);
-const  glm::vec2    MINIMAP_SIZE                         =  glm::vec2(200,200);
 const  glm::vec2    MINIMAP_PADDING                      =  glm::vec2(10,10);
-const  glm::vec4    MINIMAP_BACKGROUND_COLOR             =  glm::vec4(0.0f,0.0f,0.0f,0.8f);
+const  glm::vec4    MINIMAP_BACKGROUND_COLOR             =  glm::vec4(0.0f,0.0f,0.0f,0.5f);
+const  glm::vec4    MINIMAP_BACKGROUND_COLOR_FULL        =  glm::vec4(0.0f,0.0f,0.0f,0.8f);
 const  glm::vec4    MINIMAP_BACKGROUND_COLOR_ICONS       =  glm::vec4(0.0f,0.0f,0.0f,1.0f);
 const  glm::vec4    MINIMAP_ENEMY_COLOR                  =  glm::vec4(1.0f,0.0f,0.0f,1.0f);
 const  glm::vec4    MINIMAP_PLAYER_COLOR                 =  glm::vec4(0.3f,0.3f,0.3f,1.0f);

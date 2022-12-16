@@ -150,6 +150,7 @@ class _Player : public _Entity {
 		glm::ivec2 LastGoodCoord{0};
 		int CheckpointIndex{0};
 		int Progression{1};
+		int MinimapSizeIndex{0};
 		double Clock{GAME_DEFAULT_CLOCK};
 
 		// Saves

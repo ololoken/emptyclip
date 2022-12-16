@@ -257,6 +257,10 @@
 				<element id="label_menu_controls_filtermods" font="hud_small" text="Filter Mods" offset_x="-160" offset_y="32" alignment_y="3"/>
 				<element id="label_menu_controls_config_filtermods" font="hud_small" offset_y="32" alignment_y="3"/>
 			</element>
+			<element id="button_menu_controls_input_minimap" style="style_menu_box" hover_style="style_menu_hover" offset_x="225" offset_y="540" size_x="140" size_y="50" alignment_y="0" clickable="true">
+				<element id="label_menu_controls_minimap" font="hud_small" text="Minimap Size" offset_x="-160" offset_y="32" alignment_y="3"/>
+				<element id="label_menu_controls_config_minimap" font="hud_small" offset_y="32" alignment_y="3"/>
+			</element>
 		</element>
 		<element id="element_menu_controls_buttons" offset_y="400">
 			<element id="button_menu_controls_defaults" sound="game_click0.ogg" style="style_menu_button" hover_style="style_menu_button_hover" offset_x="-240" size_x="220" size_y="66" alignment_y="0" clickable="true">

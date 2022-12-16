@@ -300,6 +300,13 @@ bool _PlayState::HandleAction(int InputType, size_t Action, int Value) {
 			case Action::GAME_FILTERMODS:
 				ChangeFilterLevel(FILTER_MODS);
 			break;
+			case Action::GAME_MINIMAP:
+				Player->MinimapSizeIndex += ae::Input.ModKeyDown(KMOD_SHIFT) ? -1 : 1;
+				if(Player->MinimapSizeIndex >= (int)Map->MinimapSizes.size())
+					Player->MinimapSizeIndex = 0;
+				else if(Player->MinimapSizeIndex < 0)
+					Player->MinimapSizeIndex = (int)Map->MinimapSizes.size() - 1;
+			break;
 			case Action::MISC_MENU:
 				HUD->SetInventoryOpen(false);
 				Save.SavePlayer(Player);
@@ -854,7 +861,7 @@ void _PlayState::Render(double BlendFactor) {
 		Map->MinimapCaptureSize.x *= ae::Graphics.AspectRatio;
 	}
 	else
-		Map->MinimapCaptureSize = MINIMAP_CAPTURE_SIZE;
+		Map->MinimapCaptureSize = Map->MinimapSizes[(size_t)Player->MinimapSizeIndex].Capture;
 
 	// Add lights
 	Framebuffer->Clear();

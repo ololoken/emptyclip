@@ -103,12 +103,15 @@ static const glm::vec4 MinimapColors[_Map::MINIMAP_COUNT] = {
 _Map::_Map() :
 	Size{MAP_WIDTH, MAP_HEIGHT},
 	ObjectManager(new _ObjectManager()),
-	MinimapCaptureSize(MINIMAP_CAPTURE_SIZE),
 	AmbientLight(BaseAmbientLight),
 	TargetAmbientLight(BaseAmbientLight) {
 
 	ObjectMap.reserve(10);
 	CollisionHits.reserve(10);
+
+	MinimapSizes.push_back({{20.0f, 20.0f}, {200.0f, 200.0f}});
+	MinimapSizes.push_back({{30.0f, 30.0f}, {400.0f, 400.0f}});
+	MinimapSizes.push_back({{40.0f, 40.0f}, {600.0f, 600.0f}});
 }
 
 // Initialize
@@ -1876,29 +1879,37 @@ void _Map::RenderGrid(int Mode) {
 }
 
 // Draw the mini map
-void _Map::DrawMinimap(ae::_Bounds &MinimapBounds, const _Item *HighlightItem, bool FullMap, bool DrawIcons) {
+void _Map::DrawMinimap(ae::_Bounds &MinimapBounds, const _Item *HighlightItem, int SizeIndex, bool DrawIcons) {
 
-	// Get bounds of minimap window
-	glm::vec2 DrawSize = FullMap ? glm::vec2(ae::Graphics.CurrentSize.y, ae::Graphics.CurrentSize.y) * 0.75f : MINIMAP_SIZE * ae::_Element::GetUIScale();
-	if(FullMap) {
+	// Set up
+	ae::Graphics.SetProgram(ae::Assets.Programs["ortho_pos"]);
+	ae::Graphics.EnableScissorTest();
+
+	// Full size
+	glm::vec2 DrawSize;
+	if(SizeIndex == -1) {
+		DrawSize = glm::vec2(ae::Graphics.CurrentSize.y, ae::Graphics.CurrentSize.y) * 0.75f;
 		DrawSize.x *= ae::Graphics.AspectRatio;
 		MinimapBounds = ae::_Bounds(
 			glm::ivec2((ae::Graphics.CurrentSize - glm::ivec2(DrawSize))/2),
 			glm::ivec2((ae::Graphics.CurrentSize + glm::ivec2(DrawSize))/2)
 		);
+
+		ae::Graphics.SetColor(DrawIcons ? MINIMAP_BACKGROUND_COLOR_ICONS : MINIMAP_BACKGROUND_COLOR_FULL);
 	}
+	// Small size
 	else {
+		DrawSize = MinimapSizes[(size_t)SizeIndex].Screen * ae::_Element::GetUIScale();
 		glm::vec2 Padding = MINIMAP_PADDING * ae::_Element::GetUIScale();
 		MinimapBounds = ae::_Bounds(
 			glm::ivec2(ae::Graphics.CurrentSize.x - DrawSize.x - Padding.x, Padding.y),
 			glm::ivec2(ae::Graphics.CurrentSize.x - Padding.x, Padding.y + DrawSize.y)
 		);
+
+		ae::Graphics.SetColor(MINIMAP_BACKGROUND_COLOR);
 	}
 
 	// Draw minimap background
-	ae::Graphics.SetProgram(ae::Assets.Programs["ortho_pos"]);
-	ae::Graphics.SetColor(DrawIcons ? MINIMAP_BACKGROUND_COLOR_ICONS : MINIMAP_BACKGROUND_COLOR);
-	ae::Graphics.EnableScissorTest();
 	ae::Graphics.SetScissor(MinimapBounds);
 	ae::Graphics.DrawRectangle(MinimapBounds, true);
 

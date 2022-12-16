@@ -503,7 +503,10 @@ void _HUD::Update(double FrameTime, float Radius, double Clock) {
 	else
 		GetClockAsString(Buffer, Clock, false);
 
+	Elements[LABEL_CLOCK]->Parent->BaseSize.x = PlayState.Map->MinimapSizes[Player->MinimapSizeIndex].Screen.x + 10;
+	Elements[LABEL_CLOCK]->BaseOffset.y = Elements[LABEL_CLOCK]->Parent->BaseSize.x + 20;
 	Elements[LABEL_CLOCK]->Text = Buffer.str();
+	Elements[LABEL_CLOCK]->Parent->CalculateBounds();
 	Buffer.str("");
 
 	// Update crosshair
@@ -769,7 +772,7 @@ void _HUD::Render(bool FullMap) {
 	// Draw mini map
 	if(PlayState.Map && !FullMap && !InventoryOpen) {
 		ae::_Bounds MinimapBounds;
-		PlayState.Map->DrawMinimap(MinimapBounds, HoverItem, FullMap, PlayState.DrawMinimapIcons());
+		PlayState.Map->DrawMinimap(MinimapBounds, HoverItem, FullMap ? -1 : Player->MinimapSizeIndex, PlayState.DrawMinimapIcons());
 	}
 
 	// Draw inventory and character screen
@@ -853,7 +856,7 @@ void _HUD::Render(bool FullMap) {
 	// Draw full map
 	if(PlayState.Map && FullMap) {
 		ae::_Bounds MinimapBounds;
-		PlayState.Map->DrawMinimap(MinimapBounds, HoverItem, FullMap, PlayState.DrawMinimapIcons());
+		PlayState.Map->DrawMinimap(MinimapBounds, HoverItem, FullMap ? -1 : Player->MinimapSizeIndex, PlayState.DrawMinimapIcons());
 
 		// Draw icon hint
 		if(ae::Actions.HasInputForAction(Action::GAME_MOREINFO)) {
