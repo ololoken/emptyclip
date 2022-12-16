@@ -22,11 +22,18 @@ BEGIN {
 	print "\t<releases>"
 	ready = 0
 }
-$0 ~ "^"name && $5 != "" {
-	ready = 1
-	print "\t\t<release version=\""$3"\" date=\""$5"\">"
-	print "\t\t\t<description>"
-	print "\t\t\t\t<ul>"
+$0 ~ "^"name {
+	sub("^"name " ", "", $0)
+	split($0, tokens, " ")
+	version = tokens[1]
+	date = tokens[3]
+
+	if(date != "") {
+		ready = 1
+		print "\t\t<release version=\""version"\" date=\""date"\">"
+		print "\t\t\t<description>"
+		print "\t\t\t\t<ul>"
+	}
 }
 ready && $0 ~ "^-" {
 	sub(/^- /, "", $0)
