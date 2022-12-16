@@ -1934,6 +1934,10 @@ void _Map::DrawMinimap(ae::_Bounds &MinimapBounds, const _Item *HighlightItem, i
 		if(DrawIcons && (i == MINIMAP_GEAR || i == MINIMAP_MOD || i == MINIMAP_UNIQUE || i == MINIMAP_USABLE || i == MINIMAP_KEY))
 			continue;
 
+		// Don't fade player
+		if(i == MINIMAP_PLAYER)
+			Fade = 1.0f;
+
 		// Set color for icons
 		ae::Graphics.SetColor(glm::vec4(MinimapColors[i].r * Fade, MinimapColors[i].g * Fade, MinimapColors[i].b * Fade, MinimapColors[i].a));
 
