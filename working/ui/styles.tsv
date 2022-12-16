@@ -30,3 +30,4 @@ style_hud_plus_hover			ortho_pos_uv	textures/hud/plus_hover.png		1
 style_hud_plus_disabled			ortho_pos_uv	textures/hud/plus_disabled.png		1
 style_hud_indicator		editor_hover	ortho_pos			1
 style_hud_sort_hover	inventory_sort_hover		ortho_pos			1
+style_hud_text_bg	text_bg		ortho_pos			1

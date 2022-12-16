@@ -134,6 +134,7 @@ class _HUD {
 		const ae::_Font *LastHitFont{nullptr};
 		int64_t LastHitHealth{0};
 		int64_t LastHitMaxHealth{0};
+		glm::vec4 LastHitColor{1.0f};
 
 		// Inventory
 		_Item *CursorItem{nullptr};

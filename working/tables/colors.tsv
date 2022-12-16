@@ -49,6 +49,7 @@ inventory_slot	0.75	0.65	0.65	1
 inventory_gear	0.75	0.65	0.65	0.8
 inventory_sort_hover	1	1	1	0.05
 inventory_overlay	0	0	0	0.6
+text_bg	0	0	0	0.25
 tooltip_bg	0	0	0	0.8
 ambient_half	0.5	0.5	0.5	1
 ambient_dark	0.25	0.25	0.25	1

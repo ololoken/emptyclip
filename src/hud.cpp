@@ -651,6 +651,7 @@ void _HUD::Render(bool FullMap) {
 		Elements[LABEL_ENEMYHEALTH]->Font = LastHitFont;
 		Elements[LABEL_ENEMYHEALTH]->Text = Buffer.str();
 		Elements[LABEL_ENEMYNAME]->Text = LastHitName;
+		Elements[LABEL_ENEMYNAME]->Color = LastHitColor;
 		Elements[IMAGE_ENEMYHEALTH]->SetWidth(Elements[ELEMENT_ENEMYINFO]->Size.x * ((float)LastHitHealth / LastHitMaxHealth));
 		Elements[ELEMENT_ENEMYINFO]->Render();
 		Buffer.str("");
@@ -1556,6 +1557,7 @@ void _HUD::SetLastHit(_Entity *Entity) {
 	LastHitHealth = Entity->Health;
 	LastHitMaxHealth = Entity->MaxHealth;
 	LastHitFont = (LastHitMaxHealth > 1e12) ? ae::Assets.Fonts["hud_char"] : ae::Assets.Fonts["hud_small"];
+	LastHitColor = Entity->Unique ? Entity->Unique->Color : COLOR_WHITE;
 }
 
 // Set inventory state
