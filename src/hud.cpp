@@ -960,7 +960,7 @@ void _HUD::DrawHUDWeapon(const _Item *Item, ae::_Element *Element, ae::_Element 
 	// Highlight unique items
 	if(Item->Unique) {
 		ae::Graphics.SetProgram(ae::Assets.Programs["ortho_pos_uv"]);
-		DrawUniqueHighlight(Element->Bounds.GetCenter(), Item);
+		DrawUniqueHighlight(Item, Element->Bounds.GetCenter());
 	}
 
 	// Draw more info
@@ -1146,15 +1146,24 @@ void _HUD::DrawInventory() {
 		Elements[ELEMENT_INVENTORY_OVERLAY]->SetActive(false);
 	}
 	else {
-		DrawGlanceValueText(Player->GetActiveOutfitBag(), Elements[ELEMENT_INVENTORY_OUTFIT]);
-		DrawGlanceValueText(Player->GetActiveBackpackBag(), Elements[ELEMENT_INVENTORY_BACKPACK]);
+		DrawBagGlanceValueText(Player->GetActiveOutfitBag(), Elements[ELEMENT_INVENTORY_OUTFIT]);
+		DrawBagGlanceValueText(Player->GetActiveBackpackBag(), Elements[ELEMENT_INVENTORY_BACKPACK]);
 	}
 
 	// Draw cursor item
 	if(CursorItem) {
 		glm::vec2 Position(ae::Input.GetMouse());
 		ae::Graphics.SetProgram(ae::Assets.Programs["ortho_pos_uv"]);
-		DrawInventoryItem(Position, CursorItem, CursorItem->Unique);
+		DrawInventoryItem(CursorItem, Position, CursorItem->Unique);
+		glm::vec2 TopLeft = Position - ae::Assets.Elements["button_inventory_bag0"]->BaseSize * 0.5f * ae::_Element::GetUIScale();
+		if(PlayState.ShowMoreInfo()) {
+			DrawItemLevel(CursorItem, TopLeft);
+			DrawItemQuality(CursorItem, TopLeft);
+			DrawItemValue(CursorItem, TopLeft);
+		}
+		else {
+			DrawGlanceValueText(CursorItem, TopLeft);
+		}
 	}
 }
 
@@ -1171,7 +1180,7 @@ void _HUD::DrawBag(const _Bag &Bag, ae::_Element *Element) {
 		ae::_Element *Button = Element->Children[i];
 
 		// Draw icon
-		DrawInventoryItem(Button->Bounds.GetCenter(), Item, Item->Unique);
+		DrawInventoryItem(Item, Button->Bounds.GetCenter(), Item->Unique);
 	}
 }
 
@@ -1211,37 +1220,13 @@ void _HUD::DrawBagHighlights(const _Bag &Bag, ae::_Element *Element) {
 }
 
 // Draw quick glance value text
-void _HUD::DrawGlanceValueText(const _Bag &Bag, ae::_Element *Element) {
+void _HUD::DrawBagGlanceValueText(const _Bag &Bag, ae::_Element *Element) {
 	for(size_t i = 0; i < Bag.Slots.size(); i++) {
 		const _Item *Item = Bag.Slots[i];
 		if(!Item || Item == CursorItem)
 			continue;
 
-		ae::_Element *Button = Element->Children[i];
-		std::ostringstream Buffer;
-
-		// Handle dragging usables
-		if(CursorItem && CursorItem->Type == _Object::USABLE) {
-			switch(CursorItem->Template.Attributes.at("usable_type").Int) {
-				case USABLE_WHETSTONE:
-					if(Item->CanIncreaseQuality(false))
-						Buffer << Item->Quality << "%";
-				break;
-				case USABLE_WRENCH:
-					if(Item->CanIncreaseLevel(false))
-						Buffer << Item->Level;
-				break;
-			}
-		}
-
-		if(Buffer.str().empty()) {
-			if(Item->CanMod())
-				Buffer << Item->Mods.size() << "/" << Item->GetMaxMods(true);
-			else if(Item->Type == _Object::USABLE || Item->Type == _Object::MOD)
-				DrawItemValue(Item, Button->Bounds.Start);
-		}
-
-		Fonts[FONT_TINY]->DrawText(Buffer.str(), glm::ivec2(Button->Bounds.Start + glm::vec2(74, 74) * ae::_Element::GetUIScale()), ae::RIGHT_BASELINE, COLOR_WHITE);
+		DrawGlanceValueText(Item, Element->Children[i]->Bounds.Start);
 	}
 }
 
@@ -1271,19 +1256,47 @@ void _HUD::DrawAttribute(const std::string &Label, std::ostringstream &Buffer, g
 }
 
 // Draw item icon
-void _HUD::DrawInventoryItem(const glm::vec2 &Position, const _Item *Item, bool Unique) {
+void _HUD::DrawInventoryItem(const _Item *Item, const glm::vec2 &Position, bool Unique) {
 	ae::Graphics.DrawScaledImage(Position, Item->Texture, UI_INVENTORY_ITEM_SIZE, Item->Color);
 
 	// Highlight unique items
 	if(Unique)
-		DrawUniqueHighlight(Position, Item);
+		DrawUniqueHighlight(Item, Position);
 }
 
 // Draw unique item's highlight
-void _HUD::DrawUniqueHighlight(const glm::vec2 &Position, const _Item *Item) {
+void _HUD::DrawUniqueHighlight(const _Item *Item, const glm::vec2 &Position) {
 	glm::vec4 HighlightColor = Item->LightColor;
 	HighlightColor.a = ITEM_HIGHLIGHT_ALPHA;
 	ae::Graphics.DrawScaledImage(Position, ae::Assets.Textures["textures/lights/circle.png"], UI_INVENTORY_ITEM_SIZE * ITEM_HIGHLIGHT_SCALE, HighlightColor);
+}
+
+// Draw glance value text for a single item
+void _HUD::DrawGlanceValueText(const _Item *Item, const glm::vec2 &Position) {
+	std::ostringstream Buffer;
+
+	// Handle dragging usables
+	if(CursorItem && CursorItem->Type == _Object::USABLE) {
+		switch(CursorItem->Template.Attributes.at("usable_type").Int) {
+			case USABLE_WHETSTONE:
+				if(Item->CanIncreaseQuality(false))
+					Buffer << Item->Quality << "%";
+			break;
+			case USABLE_WRENCH:
+				if(Item->CanIncreaseLevel(false))
+					Buffer << Item->Level;
+			break;
+		}
+	}
+
+	if(Buffer.str().empty()) {
+		if(Item->CanMod())
+			Buffer << Item->Mods.size() << "/" << Item->GetMaxMods(true);
+		else if(Item->Type == _Object::USABLE || Item->Type == _Object::MOD)
+			DrawItemValue(Item, Position);
+	}
+
+	Fonts[FONT_TINY]->DrawText(Buffer.str(), glm::ivec2(Position + glm::vec2(74, 74) * ae::_Element::GetUIScale()), ae::RIGHT_BASELINE, COLOR_WHITE);
 }
 
 // Draw quick glance value attribute for item

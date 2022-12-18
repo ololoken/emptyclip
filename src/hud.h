@@ -157,10 +157,11 @@ class _HUD {
 		void DrawAttribute(const std::string &Label, std::ostringstream &Buffer, glm::vec2 &DrawPosition) const;
 		void DrawBag(const _Bag &Bag, ae::_Element *Element);
 		void DrawBagHighlights(const _Bag &Bag, ae::_Element *Element);
-		void DrawGlanceValueText(const _Bag &Bag, ae::_Element *Element);
+		void DrawBagGlanceValueText(const _Bag &Bag, ae::_Element *Element);
 		void DrawBagInfo(const _Bag &Bag, ae::_Element *Element);
-		void DrawInventoryItem(const glm::vec2 &Position, const _Item *Item, bool Unique);
-		void DrawUniqueHighlight(const glm::vec2 &Position, const _Item *Item);
+		void DrawInventoryItem(const _Item *Item, const glm::vec2 &Position, bool Unique);
+		void DrawUniqueHighlight(const _Item *Item, const glm::vec2 &Position);
+		void DrawGlanceValueText(const _Item *Item, const glm::vec2 &Position);
 		void UpdateSkillTooltip(int Skill, const glm::vec2 &DrawPosition);
 		void GetClockAsString(std::ostringstream &Buffer, double Clock, bool Clock24Hour) const;
 		bool ApplyUsableItem(_Item *ExistingItem);
