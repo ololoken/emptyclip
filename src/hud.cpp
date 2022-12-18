@@ -987,9 +987,9 @@ void _HUD::DrawCharacterScreen() {
 
 	// Set skill labels
 	std::ostringstream Buffer;
+	Buffer.imbue(std::locale(Config.Locale));
+	Buffer << std::setprecision(5);
 	if(Player->SkillPointsRemaining) {
-		Buffer.imbue(std::locale(Config.Locale));
-		Buffer << std::setprecision(5);
 		Buffer << Player->SkillPointsRemaining;
 		Elements[LABEL_SKILL_REMAINING]->Text = Buffer.str();
 		Buffer.str("");
