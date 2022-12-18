@@ -640,7 +640,7 @@ void _HUD::Render(bool FullMap) {
 	}
 
 	// Clock
-	if(!FullMap)
+	if(!FullMap && !InventoryOpen)
 		Elements[ELEMENT_CLOCK]->Render();
 
 	// Draw enemy health
