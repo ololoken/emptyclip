@@ -1008,7 +1008,7 @@ int _Player::AddItemToBackpack(_Item *Item, size_t StartingBagIndex, bool OneBag
 	if(!Item)
 		return ADD_FULL;
 
-	if(!Item->Moveable)
+	if(!Item->Carry)
 		return ADD_QUIETFULL;
 
 	_Container &Container = Inventory->Containers[(size_t)BagType::BACKPACK];

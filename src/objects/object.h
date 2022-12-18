@@ -210,7 +210,7 @@ class _Object {
 		float Mass{0.0f};
 		bool Circle{true};
 		bool FreePathing{false};
-		bool Moveable{true};
+		bool Carry{true};
 
 		// Graphics
 		const ae::_Texture *Texture{nullptr};

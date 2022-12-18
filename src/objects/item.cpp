@@ -691,8 +691,8 @@ void _Item::DrawTooltip(const _Player *Player, glm::vec2 DrawPosition, const _It
 		DrawPosition.y += HelpSpacing.y;
 	}
 
-	if(!Moveable)
-		SmallFont->DrawText("Cannot be moved or picked up", glm::ivec2(DrawPosition), ae::CENTER_BASELINE, COLOR_RED);
+	if(!Carry)
+		SmallFont->DrawText("Cannot be placed in inventory", glm::ivec2(DrawPosition), ae::CENTER_BASELINE, COLOR_RED);
 }
 
 // Draws the object
@@ -851,7 +851,7 @@ void _Item::RecalculateStats() {
 				LightColor = Template.LightColor;
 				LightTexture = ae::Assets.Textures["textures/lights/circle.png"];
 			}
-			Moveable = Template.Attributes.at("moveable").Int;
+			Carry = Template.Attributes.at("carry").Int;
 		break;
 	}
 }

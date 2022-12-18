@@ -339,7 +339,7 @@ void _HUD::HandleMouseButton(const ae::_MouseEvent &MouseEvent) {
 								}
 							}
 							// Drag onto empty slot
-							else if(CursorItem->Moveable && (CanEquip || !HitSlot.IsGearSlot())) {
+							else if(CursorItem->Carry && (CanEquip || !HitSlot.IsGearSlot())) {
 								SetAndRemove = true;
 							}
 
@@ -1603,24 +1603,20 @@ void _HUD::MoveWorldItem(const glm::vec2 &DropPosition) {
 	if(DragSlot.Bag || !CursorItem)
 		return;
 
-	// Update position
-	if(CursorItem->Moveable) {
+	// Remove item from old position
+	PlayState.Map->RemoveObjectFromGrid(CursorItem, GRID_ITEM);
 
-		// Remove item from old position
-		PlayState.Map->RemoveObjectFromGrid(CursorItem, GRID_ITEM);
+	// Get new position
+	if(DropPosition.x < 0.0f)
+		Camera->ConvertScreenToWorld(ae::Input.GetMouse(), CursorItem->Position);
+	else
+		CursorItem->Position = DropPosition;
 
-		// Get new position
-		if(DropPosition.x < 0.0f)
-			Camera->ConvertScreenToWorld(ae::Input.GetMouse(), CursorItem->Position);
-		else
-			CursorItem->Position = DropPosition;
+	// Check drop position
+	PlayState.Map->GetDropPosition(Player, PLAYER_REACH_DISTANCE, CursorItem->Position);
 
-		// Check drop position
-		PlayState.Map->GetDropPosition(Player, PLAYER_REACH_DISTANCE, CursorItem->Position);
-
-		// Place item in new position
-		PlayState.Map->AddObjectToGrid(CursorItem, GRID_ITEM);
-	}
+	// Place item in new position
+	PlayState.Map->AddObjectToGrid(CursorItem, GRID_ITEM);
 
 	// Reset state
 	CursorItem->SetPosition(CursorItem->Position);

@@ -426,7 +426,7 @@ void _Stats::LoadUsables() {
 		Template.Attributes["light"].Int = Database->GetInt<int>("light");
 		Template.Attributes["usable_type"].Int = Database->GetInt<int>("type");
 		Template.Attributes["range"].Float = Database->GetReal("range");
-		Template.Attributes["moveable"].Int = Database->GetInt<int>("moveable");
+		Template.Attributes["carry"].Int = Database->GetInt<int>("carry");
 		SetColor(Template.LightColor, Database->GetString("color_id"));
 
 		// Check for loaded textures
