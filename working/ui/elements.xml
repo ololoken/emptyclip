@@ -578,7 +578,7 @@
 				<element id="label_hud_skill9_value" font="hud_small" text="0" offset_x="-22" offset_y="16" alignment_x="2" alignment_y="3"/>
 			</element>
 		</element>
-		<element id="button_skills_remaining" offset_x="-200" offset_y="350" size_x="16" size_y="16" alignment_x="2" alignment_y="0" clickable="true">
+		<element id="element_skills_remaining" offset_x="-200" offset_y="350" size_x="16" size_y="16" alignment_x="2" alignment_y="0">
 			<element id="label_hud_skill_remaining_text" font="hud_small" text="Points Remaining" offset_y="16" alignment_x="0" alignment_y="3"/>
 			<element id="label_hud_skill_remaining_value" font="hud_small" text="0" offset_x="-22" offset_y="16" alignment_x="2" alignment_y="3"/>
 		</element>

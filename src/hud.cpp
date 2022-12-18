@@ -154,6 +154,7 @@ _HUD::_HUD(const ae::_Camera *Camera, _Player *Player) : Camera(Camera), Player(
 	Elements[ELEMENT_INVENTORY_BACKPACK] = ae::Assets.Elements["element_inventory_backpack"];
 	Elements[ELEMENT_INVENTORY_OVERLAY] = ae::Assets.Elements["element_inventory_overlay"];
 	Elements[ELEMENT_SKILLS] = ae::Assets.Elements["element_skills"];
+	Elements[ELEMENT_SKILLS_REMAINING] = ae::Assets.Elements["element_skills_remaining"];
 	Elements[LABEL_SKILL_REMAINING] = ae::Assets.Elements["label_hud_skill_remaining_value"];
 	Elements[LABEL_SKILL0] = ae::Assets.Elements["label_hud_skill0_value"];
 	Elements[LABEL_SKILL1] = ae::Assets.Elements["label_hud_skill1_value"];
@@ -504,7 +505,7 @@ void _HUD::Update(double FrameTime, float Radius, double Clock) {
 	else
 		GetClockAsString(Buffer, Clock, false);
 
-	Elements[LABEL_CLOCK]->Parent->BaseSize.x = PlayState.Map->MinimapSizes[Player->MinimapSizeIndex].Screen.x + 10;
+	Elements[LABEL_CLOCK]->Parent->BaseSize.x = PlayState.Map->MinimapSizes[(size_t)Player->MinimapSizeIndex].Screen.x + 10;
 	Elements[LABEL_CLOCK]->BaseOffset.y = Elements[LABEL_CLOCK]->Parent->BaseSize.x + 20;
 	Elements[LABEL_CLOCK]->Text = Buffer.str();
 	Elements[LABEL_CLOCK]->Parent->CalculateBounds();
@@ -986,11 +987,17 @@ void _HUD::DrawCharacterScreen() {
 
 	// Set skill labels
 	std::ostringstream Buffer;
-	Buffer.imbue(std::locale(Config.Locale));
-	Buffer << std::setprecision(5);
-	Buffer << Player->SkillPointsRemaining;
-	Elements[LABEL_SKILL_REMAINING]->Text = Buffer.str();
-	Buffer.str("");
+	if(Player->SkillPointsRemaining) {
+		Buffer.imbue(std::locale(Config.Locale));
+		Buffer << std::setprecision(5);
+		Buffer << Player->SkillPointsRemaining;
+		Elements[LABEL_SKILL_REMAINING]->Text = Buffer.str();
+		Buffer.str("");
+
+		Elements[ELEMENT_SKILLS_REMAINING]->Active = true;
+	}
+	else
+		Elements[ELEMENT_SKILLS_REMAINING]->Active = false;
 
 	for(int i = 0; i < SKILL_COUNT; i++) {
 		Buffer << Player->Skills[i];
