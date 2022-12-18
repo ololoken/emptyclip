@@ -1077,6 +1077,9 @@ void _PlayState::Render(double BlendFactor) {
 						case USABLE_WRENCH:
 							Buffer << "+" << Item->GetWrenchLevel();
 						break;
+						case USABLE_DYNAMITE:
+							Buffer << Item->GetDynamiteQuality() << "%";
+						break;
 						case USABLE_PLIERS:
 							Buffer << Item->GetPliersLevel();
 						break;
