@@ -649,10 +649,7 @@ void _HUD::Render(bool FullMap) {
 	Buffer.imbue(std::locale(Config.Locale));
 	if(LastHitMaxHealth) {
 		Buffer << LastHitHealth << "/" << LastHitMaxHealth;
-		Elements[LABEL_ENEMYHEALTH]->Font = LastHitFont;
 		Elements[LABEL_ENEMYHEALTH]->Text = Buffer.str();
-		Elements[LABEL_ENEMYNAME]->Text = LastHitName;
-		Elements[LABEL_ENEMYNAME]->Color = LastHitColor;
 		Elements[IMAGE_ENEMYHEALTH]->SetWidth(Elements[ELEMENT_ENEMYINFO]->Size.x * ((float)LastHitHealth / LastHitMaxHealth));
 		Elements[ELEMENT_ENEMYINFO]->Render();
 		Buffer.str("");
@@ -1573,11 +1570,24 @@ void _HUD::SetLastHit(_Entity *Entity) {
 	if(!Entity)
 		return;
 
-	LastHitName = Entity->Name;
+	Elements[LABEL_ENEMYNAME]->Text = Entity->Name;
 	LastHitHealth = Entity->Health;
 	LastHitMaxHealth = Entity->MaxHealth;
-	LastHitFont = (LastHitMaxHealth > 1e12) ? ae::Assets.Fonts["hud_char"] : ae::Assets.Fonts["hud_small"];
-	LastHitColor = Entity->Unique ? Entity->Unique->Color : COLOR_WHITE;
+	if(LastHitMaxHealth > 1e15) {
+		Elements[LABEL_ENEMYHEALTH]->Font = ae::Assets.Fonts["hud_tiny"];
+		Elements[LABEL_ENEMYHEALTH]->BaseOffset.y = 72;
+	}
+	else if(LastHitMaxHealth > 1e12) {
+		Elements[LABEL_ENEMYHEALTH]->Font = ae::Assets.Fonts["hud_char"];
+		Elements[LABEL_ENEMYHEALTH]->BaseOffset.y = 73;
+	}
+	else {
+		Elements[LABEL_ENEMYHEALTH]->Font = ae::Assets.Fonts["hud_small"];
+		Elements[LABEL_ENEMYHEALTH]->BaseOffset.y = 74;
+	}
+
+	Elements[LABEL_ENEMYHEALTH]->CalculateBounds();
+	Elements[LABEL_ENEMYNAME]->Color = Entity->Unique ? Entity->Unique->Color : COLOR_WHITE;
 }
 
 // Set inventory state
