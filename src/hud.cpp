@@ -771,9 +771,10 @@ void _HUD::Render(bool FullMap) {
 	ae::Assets.Elements["element_hud_filters"]->Render();
 
 	// Draw mini map
+	const _Item *HighlightItem = HoverItem && HoverItem != CursorItem ? HoverItem : nullptr;
 	if(PlayState.Map && !FullMap && !InventoryOpen) {
 		ae::_Bounds MinimapBounds;
-		PlayState.Map->DrawMinimap(MinimapBounds, HoverItem, FullMap ? -1 : Player->MinimapSizeIndex, PlayState.DrawMinimapIcons());
+		PlayState.Map->DrawMinimap(MinimapBounds, HighlightItem, FullMap ? -1 : Player->MinimapSizeIndex, PlayState.DrawMinimapIcons());
 	}
 
 	// Draw inventory and character screen
@@ -857,7 +858,7 @@ void _HUD::Render(bool FullMap) {
 	// Draw full map
 	if(PlayState.Map && FullMap) {
 		ae::_Bounds MinimapBounds;
-		PlayState.Map->DrawMinimap(MinimapBounds, HoverItem, FullMap ? -1 : Player->MinimapSizeIndex, PlayState.DrawMinimapIcons());
+		PlayState.Map->DrawMinimap(MinimapBounds, HighlightItem, FullMap ? -1 : Player->MinimapSizeIndex, PlayState.DrawMinimapIcons());
 
 		// Draw icon hint
 		if(ae::Actions.HasInputForAction(Action::GAME_MOREINFO)) {

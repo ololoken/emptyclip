@@ -19,12 +19,13 @@
 #include <objects/object.h>
 #include <objects/item.h>
 #include <objects/player.h>
-#include <states/play.h>
 #include <ae/camera.h>
 #include <ae/assets.h>
 #include <ae/program.h>
 #include <ae/graphics.h>
 #include <ae/texture.h>
+#include <states/play.h>
+#include <hud.h>
 #include <map.h>
 #include <stats.h>
 #include <constants.h>
@@ -126,7 +127,7 @@ void _ObjectManager::Update(double FrameTime, _Map *Map) {
 		}
 
 		// Add to minimap
-		if(!Object->Filtered && (ReduceMinimap || Map->CheckMinimapBounds(Object->Bounds))) {
+		if(!Object->Filtered && Object != PlayState.HUD->CursorItem && (ReduceMinimap || Map->CheckMinimapBounds(Object->Bounds))) {
 			_MinimapIcon MinimapIcon;
 
 			// Get bounds
