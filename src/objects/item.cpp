@@ -1225,11 +1225,13 @@ int _Item::GetPliersLevel() const {
 // Get total quality of item for dynamite use
 int _Item::GetTotalQuality() const {
 
-	int TotalQuality = Quality;
-	for(const auto &Mod : Mods)
-		TotalQuality += (Mod->Quality >= ITEM_DYNAMITE_VALUE) ? Mod->Quality * ITEM_DYNAMITE_MOD_FACTOR : 0;
+	int TotalModQuality = 0;
+	for(const auto &Mod : Mods) {
+		if(Mod->Quality >= ITEM_DYNAMITE_VALUE)
+			TotalModQuality += Mod->Quality;
+	}
 
-	return TotalQuality;
+	return TotalModQuality * ITEM_DYNAMITE_MOD_FACTOR + Quality;
 }
 
 // Get consumable value based on attributes
