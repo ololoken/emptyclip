@@ -65,6 +65,7 @@ struct _Progression {
 	double Experience;
 	double ExperienceLost;
 	double UniqueDifficulty;
+	double DamageResist;
 	double Health;
 	double Damage;
 	double AttackSpeed;

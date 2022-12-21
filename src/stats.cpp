@@ -720,6 +720,7 @@ void _Stats::LoadProgression() {
 		Progression.Spawn = Database->GetInt<int>("spawn");
 		Progression.SpecialChance = Database->GetInt<int>("special_chance");
 		Progression.UniqueDifficulty = Database->GetReal("unique_difficulty");
+		Progression.DamageResist = Database->GetReal("damage_resist");
 		Progression.Health = Database->GetReal("health");
 		Progression.Damage = Database->GetReal("damage");
 		Progression.AttackSpeed = Database->GetReal("attack_speed");
@@ -900,7 +901,7 @@ _Monster *_Stats::CreateMonster(const std::string &ID, const glm::vec2 &Position
 	Monster->Recoil = 0;
 	Monster->AccuracyRegen = 0;
 	Monster->DamageBlock = 0;
-	Monster->DamageResist = 0;
+	Monster->DamageResist = Stats.Progressions[Progression].DamageResist;
 	Monster->MoveSpeed = Monster->GetAttributeLevel("move_speed", 1.0f, ENTITY_MAX_MOVESPEED_LEVEL) * QualityFactor;
 	Monster->Radius = std::min(ENTITY_MAX_SPAWN_RADIUS, Template.Attributes.at("radius").Float * QualityFactor);
 	Monster->Scale = Template.Attributes.at("scale").Float;
