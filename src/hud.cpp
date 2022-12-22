@@ -505,8 +505,7 @@ void _HUD::Update(double FrameTime, float Radius, double Clock) {
 	else
 		GetClockAsString(Buffer, Clock, false);
 
-	Elements[LABEL_CLOCK]->Parent->BaseSize.x = PlayState.Map->MinimapSizes[(size_t)Player->MinimapSizeIndex].Screen.x + 10;
-	Elements[LABEL_CLOCK]->BaseOffset.y = Elements[LABEL_CLOCK]->Parent->BaseSize.x + 20;
+	Elements[LABEL_CLOCK]->BaseOffset.y = PlayState.Map->MinimapSizes[(size_t)Player->MinimapSizeIndex].Screen.y + 30;
 	Elements[LABEL_CLOCK]->Text = Buffer.str();
 	Elements[LABEL_CLOCK]->Parent->CalculateBounds();
 	Buffer.str("");
@@ -1015,7 +1014,7 @@ void _HUD::DrawCharacterScreen() {
 		if(PlayState.ShowMoreInfo())
 			Buffer << ae::Round2((Player->MinAccuracyNormal + Player->MaxAccuracyNormal) * 0.5f) << " avg";
 		else
-			Buffer << ae::Round2(Player->MinAccuracyNormal) << " - " << ae::Round2(Player->MaxAccuracyNormal);
+			Buffer << ae::Round2(Player->MinAccuracyNormal) << " - " << ae::Round2(Player->MaxAccuracyNormal) << " deg";
 		DrawAttribute("Accuracy", Buffer, DrawPosition);
 
 		Buffer << ae::Round2(1.0 / Player->AttackPeriod[WEAPONATTACK_MAIN]) << "/s";
