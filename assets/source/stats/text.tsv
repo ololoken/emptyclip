@@ -7,7 +7,7 @@ tutorial_heal	Medkits are automatically used when touched.\n\nA portion of your 
 tutorial_melee	Press [c red]{game_melee}[c white] to attack with your melee weapon.
 tutorial_switch	Press [c red]{game_use}[c white] to activate the switch.
 tutorial_fire	Press [c red]{game_fire}[c white] to shoot your gun.\nHold [c red]{game_aim}[c white] to aim and reduce recoil at the cost of movement speed.\n\nWhen the reticle turns [c yellow]yellow[c white], critical hit chance is doubled.
-tutorial_keys	Keys are kept until the end of the level.\n\nHold [c red]{game_sprint}[c white] to sprint back.
+tutorial_keys	Keys are kept until the end of the level.\n\nHold [c red]{game_sprint}[c white] while moving to sprint.
 tutorial_crate	Attack the crate to open it.
 tutorial_swap	Press [c red]{game_weaponswitch}[c white] to switch weapons.
 tutorial_map	Hold [c red]{game_map}[c white] to view the map.\n\nYellow icons are keys.
