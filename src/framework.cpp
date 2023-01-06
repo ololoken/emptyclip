@@ -62,18 +62,7 @@ void _Framework::Init(int ArgumentCount, char **Arguments) {
 		Token = std::string(Arguments[i]);
 		TokensRemaining = ArgumentCount - i - 1;
 
-		if(Token == "-editor") {
-			#if defined ENABLE_EDITOR && ENABLE_EDITOR == 1
-				State = &EditorState;
-				if(TokensRemaining && Arguments[i+1][0] != '-')
-					EditorState.SetMapFilename(Arguments[++i]);
-			#endif
-		}
-		else if(Token == "-convert" && TokensRemaining > 0) {
-			State = &ConvertState;
-			ConvertState.SetParam1(Arguments[++i]);
-		}
-		else if(Token == "-bench" && TokensRemaining > 0) {
+		if(Token == "-bench" && TokensRemaining > 0) {
 			State = &PlayState;
 			BenchMode = true;
 			PlayState.Level = Arguments[++i];
@@ -82,15 +71,26 @@ void _Framework::Init(int ArgumentCount, char **Arguments) {
 			Config.Vsync = 0;
 			Config.MaxFPS = 0.0;
 		}
-		else if(Token == "-level" && TokensRemaining > 0) {
-			State = &PlayState;
-			PlayState.Level = Arguments[++i];
-			PlayState.TestMode = true;
+		else if(Token == "-convert" && TokensRemaining > 0) {
+			State = &ConvertState;
+			ConvertState.SetParam1(Arguments[++i]);
 		}
 		else if(Token == "-dev") {
 			#ifndef NDEBUG
 				PlayState.DevMode = true;
 			#endif
+		}
+		else if(Token == "-editor") {
+			#if defined ENABLE_EDITOR && ENABLE_EDITOR == 1
+				State = &EditorState;
+				if(TokensRemaining && Arguments[i+1][0] != '-')
+					EditorState.SetMapFilename(Arguments[++i]);
+			#endif
+		}
+		else if(Token == "-level" && TokensRemaining > 0) {
+			State = &PlayState;
+			PlayState.Level = Arguments[++i];
+			PlayState.TestMode = true;
 		}
 	}
 
