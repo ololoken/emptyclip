@@ -75,6 +75,9 @@ void _Framework::Init(int ArgumentCount, char **Arguments) {
 			State = &ConvertState;
 			ConvertState.SetParam1(Arguments[++i]);
 		}
+		else if(Token == "-crash") {
+			abort();
+		}
 		else if(Token == "-dev") {
 			#ifndef NDEBUG
 				PlayState.DevMode = true;
