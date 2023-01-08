@@ -1004,7 +1004,7 @@ void _HUD::DrawCharacterScreen() {
 	Elements[ELEMENT_SKILLS]->Render();
 
 	// Draw stats
-	glm::vec2 DrawPosition(ae::Graphics.CurrentSize.x - 190 * ae::_Element::GetUIScale(), 420 * ae::_Element::GetUIScale());
+	glm::vec2 DrawPosition(ae::Graphics.CurrentSize.x - 200 * ae::_Element::GetUIScale(), 420 * ae::_Element::GetUIScale());
 
 	// Offense
 	if(Player->GetMainHand()) {
@@ -1116,6 +1116,12 @@ void _HUD::DrawCharacterScreen() {
 
 	FormatTimeHMS(Buffer, Player->ProgressionTime);
 	DrawAttribute("Progression Time", Buffer, DrawPosition);
+
+	double MonsterDamageResist = Stats.Progressions[Player->Progression].DamageResist;
+	if(MonsterDamageResist > 0.0) {
+		Buffer << MonsterDamageResist << "%";
+		DrawAttribute("Monster Damage Resist", Buffer, DrawPosition);
+	}
 
 	// Draw cursor skill
 	if(CursorSkill != -1)
