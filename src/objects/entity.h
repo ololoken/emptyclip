@@ -66,7 +66,7 @@ class _Entity : public _Object {
 
 		void UpdateHealth(int64_t Adjust);
 		virtual void OnAttack(_Entity *Victim, const _Hit &Hit);
-		virtual void OnHit(_Entity *Attacker, const _Hit &Hit, bool PlaySound=true);
+		virtual void OnHit(_Entity *Attacker, const _Hit &Hit);
 		virtual void UpdateSpeed(float Factor);
 		int64_t GenerateDamage(int AttackType, float DamageModifier, bool Steady, bool &Crit);
 		int64_t ReduceDamage(double Damage, bool SelfDamage);
@@ -120,6 +120,8 @@ class _Entity : public _Object {
 		double InvulnerableTimer{0.0};
 		double CombatTimer{GAME_COMBAT_TIMER};
 		double PoisonTimer{0.0};
+		double TakeDamageSoundTimer{0.0};
+		double TakeDamageSoundCooldownRange[2]{ENTITY_TAKEDAMAGE_SOUND_MINTIME, ENTITY_TAKEDAMAGE_SOUND_MAXTIME};
 
 		// Combat attributes
 		float CurrentAccuracy{0.0f};

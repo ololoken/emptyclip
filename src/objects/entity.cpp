@@ -74,6 +74,8 @@ void _Entity::Update(double FrameTime) {
 		if(FireSoundTimer < 0.0)
 			FireSoundTimer = 0.0;
 	}
+
+	TakeDamageSoundTimer -= FrameTime;
 }
 
 // Generates a direction (in degrees) and updates the entity's accuracy
@@ -598,7 +600,7 @@ void _Entity::OnAttack(_Entity *Victim, const _Hit &Hit) {
 }
 
 // Called when an entity is hit
-void _Entity::OnHit(_Entity *Attacker, const _Hit &Hit, bool PlaySound) {
+void _Entity::OnHit(_Entity *Attacker, const _Hit &Hit) {
 	if(IsInvulnerable())
 		return;
 
@@ -607,8 +609,10 @@ void _Entity::OnHit(_Entity *Attacker, const _Hit &Hit, bool PlaySound) {
 	if(Attacker)
 		PoisonTimer = std::max(PoisonTimer, (double)Attacker->PoisonPower);
 
-	if(PlaySound)
+	if(TakeDamageSoundTimer <= 0.0) {
+		TakeDamageSoundTimer = ae::GetRandomReal(TakeDamageSoundCooldownRange[0], TakeDamageSoundCooldownRange[1]);
 		ae::Audio.PlaySound(GetSound(SOUND_TAKEDAMAGE, -1), ae::_SoundSettings(glm::vec3(Hit.Position.x, 0.0f, Hit.Position.y), 1.0f, AUDIO_REFERENCE_DISTANCE, AUDIO_MAX_DISTANCE, AUDIO_ROLL_OFF));
+	}
 }
 
 // Update move modifier

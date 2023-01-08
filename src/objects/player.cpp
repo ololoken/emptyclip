@@ -104,6 +104,8 @@ _Player::_Player(const _ObjectTemplate &PlayerTemplate) :
 	// Set object properties
 	Radius = PLAYER_RADIUS;
 	Mass = PLAYER_MASS;
+	TakeDamageSoundCooldownRange[0] = PLAYER_TAKEDAMAGE_SOUND_MINTIME;
+	TakeDamageSoundCooldownRange[1] = PLAYER_TAKEDAMAGE_SOUND_MAXTIME;
 
 	// Set animation
 	Animation->Reels = ae::Assets.Animations["player"];
@@ -392,7 +394,6 @@ void _Player::Update(double FrameTime) {
 	LevelTime += FrameTime;
 	UseTimer += FrameTime;
 	CombatTimer += FrameTime;
-	TakeDamageSoundTimer -= FrameTime;
 	if(SwitchingOutfits)
 		OutfitSwitchTimer += FrameTime;
 	if(Reloading)
@@ -1638,20 +1639,14 @@ void _Player::UpdateColor() {
 }
 
 // Called when the player gets hit
-void _Player::OnHit(_Entity *Attacker, const _Hit &Hit, bool PlaySound) {
+void _Player::OnHit(_Entity *Attacker, const _Hit &Hit) {
 	if(IsInvulnerable())
 		return;
 
 	if(!PlayState.HUD->LastHitMaxHealth)
 		PlayState.HUD->SetLastHit(Attacker);
 
-	PlaySound = false;
-	if(TakeDamageSoundTimer <= 0.0) {
-		PlaySound = true;
-		TakeDamageSoundTimer = PLAYER_TAKEDAMAGE_SOUND_COOLDOWN * ae::GetRandomReal(1.0, 1.5);
-	}
-
-	_Entity::OnHit(Attacker, Hit, PlaySound);
+	_Entity::OnHit(Attacker, Hit);
 	SelfHealTimer = 0.0;
 }
 
