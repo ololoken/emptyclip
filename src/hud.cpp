@@ -1117,7 +1117,7 @@ void _HUD::DrawCharacterScreen() {
 	FormatTimeHMS(Buffer, Player->ProgressionTime);
 	DrawAttribute("Progression Time", Buffer, DrawPosition);
 
-	double MonsterDamageResist = Stats.Progressions[Player->Progression].DamageResist;
+	double MonsterDamageResist = Stats.Progressions[(size_t)Player->Progression].DamageResist;
 	if(MonsterDamageResist > 0.0) {
 		Buffer << MonsterDamageResist << "%";
 		DrawAttribute("Monster Damage Resist", Buffer, DrawPosition);
