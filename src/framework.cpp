@@ -32,6 +32,7 @@
 #include <ae/util.h>
 #include <ae/audio.h>
 #include <ae/texture.h>
+#include <ae/font.h>
 #include <version.h>
 #include <gameassets.h>
 #include <achievements.h>
@@ -138,6 +139,7 @@ void _Framework::Init(int ArgumentCount, char **Arguments) {
 	Log << "SDL_GetCurrentVideoDriver=" << SDL_GetCurrentVideoDriver() << std::endl;
 	Log << "SDL_GetDesktopDisplayMode=" << ae::Graphics.FullscreenSize.x << "x" << ae::Graphics.FullscreenSize.y << std::endl;
 
+	ae::_Font::Init(1000);
 	LoadAssets();
 	Stats.Init();
 	Menu.Init();
@@ -187,6 +189,7 @@ void _Framework::Close() {
 	Stats.Close();
 	ae::Assets.Close();
 	GameAssets.Close();
+	ae::_Font::Close();
 	delete Console;
 	delete FrameLimit;
 
