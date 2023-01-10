@@ -197,7 +197,7 @@ void _Menu::InitSinglePlayer() {
 	for(int i = 0; i < SAVE_SLOTS; i++)
 		SaveSlots[i]->Checked = false;
 
-	ae::Assets.Elements["button_menu_singleplayer_play"]->SetEnabled(true);
+	ae::Assets.Elements["button_menu_singleplayer_play"]->SetEnabled(false);
 	ae::Assets.Elements["button_menu_singleplayer_delete"]->SetEnabled(false);
 
 	SelectedColor = 0;
@@ -365,6 +365,7 @@ void _Menu::InitNewPlayer() {
 
 	SelectedColor = 0;
 	ColorButtons[SelectedColor]->Checked = true;
+	ValidateCreatePlayer();
 
 	SinglePlayerState = SINGLEPLAYER_NEW_PLAYER;
 }
@@ -566,9 +567,13 @@ bool _Menu::HandleKey(const ae::_KeyEvent &KeyEvent) {
 				}
 			}
 			else {
+				if(SinglePlayerState == SINGLEPLAYER_NEW_PLAYER) {
+					ValidateCreatePlayer();
+				}
+
 				if(KeyEvent.Pressed) {
 					if(KeyEvent.Scancode == SDL_SCANCODE_ESCAPE)
-						SinglePlayerCancel();
+						SinglePlayerCancel(SinglePlayerState == SINGLEPLAYER_NEW_PLAYER);
 					else if(KeyEvent.Scancode == SDL_SCANCODE_RETURN)
 						CreatePlayer();
 				}
@@ -741,7 +746,7 @@ void _Menu::HandleMouseButton(const ae::_MouseEvent &MouseEvent) {
 							CreatePlayer();
 						}
 						else if(Clicked->ID == "button_menu_new_cancel") {
-							SinglePlayerCancel();
+							SinglePlayerCancel(true);
 						}
 					break;
 					case SINGLEPLAYER_DELETE:
@@ -1214,6 +1219,15 @@ void _Menu::RefreshSaveSlots() {
 	}
 }
 
+// Set create button state for new player screen
+void _Menu::ValidateCreatePlayer() {
+	bool Enabled = true;
+	if(ae::Assets.Elements["textbox_menu_new_name_input"]->Text.length() == 0)
+		Enabled = false;
+
+	ae::Assets.Elements["button_menu_new_create"]->SetEnabled(Enabled);
+}
+
 // Refreshes the input map labels
 void _Menu::RefreshInputLabels() {
 	for(size_t i = 0; i < LABEL_COUNT; i++) {
@@ -1224,14 +1238,18 @@ void _Menu::RefreshInputLabels() {
 }
 
 // Cancel on single player screen
-void _Menu::SinglePlayerCancel() {
+void _Menu::SinglePlayerCancel(bool Deselect) {
 	CurrentLayout = ae::Assets.Elements["element_menu_singleplayer"];
 	CurrentLayout->SetClickable(true);
 	SinglePlayerState = SINGLEPLAYER_NONE;
 	ae::FocusedElement = nullptr;
 
-	SaveSlots[SelectedSlot]->Checked = false;
-	SelectedSlot = -1;
+	if(Deselect) {
+		ae::Assets.Elements["button_menu_singleplayer_play"]->SetEnabled(false);
+		ae::Assets.Elements["button_menu_singleplayer_delete"]->SetEnabled(false);
+		SaveSlots[SelectedSlot]->Checked = false;
+		SelectedSlot = -1;
+	}
 }
 
 // Handle player creation

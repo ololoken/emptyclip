@@ -81,7 +81,7 @@
 		<element id="image_menu_new_player_torso2" texture="textures/menu/walking_onehand4.png" offset_x="200" offset_y="200" size_x="64" size_y="64" alignment_x="0" alignment_y="0"/>
 		<element id="image_menu_new_player_legs3" texture="textures/menu/legs4.png" color="blue" offset_x="270" offset_y="200" size_x="64" size_y="64" alignment_x="0" alignment_y="0"/>
 		<element id="image_menu_new_player_torso3" texture="textures/menu/walking_onehand4.png" offset_x="270" offset_y="200" size_x="64" size_y="64" alignment_x="0" alignment_y="0"/>
-		<element id="button_menu_new_create" sound="game_click0.ogg" style="style_menu_button" hover_style="style_menu_button_hover" offset_x="-80" offset_y="-25" size_x="140" size_y="44" alignment_y="2" clickable="true">
+		<element id="button_menu_new_create" sound="game_click0.ogg" style="style_menu_button" hover_style="style_menu_button_hover" disabled_style="style_menu_button_disabled" offset_x="-80" offset_y="-25" size_x="140" size_y="44" alignment_y="2" clickable="true">
 			<element id="label_menu_new_create" font="hud_medium" text="Create" offset_y="32" alignment_y="3"/>
 		</element>
 		<element id="button_menu_new_cancel" sound="game_click0.ogg" style="style_menu_button" hover_style="style_menu_button_hover" offset_x="80" offset_y="-25" size_x="140" size_y="44" alignment_y="2" clickable="true">

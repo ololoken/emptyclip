@@ -140,7 +140,8 @@ class _Menu {
 		void UpdateTextures();
 		void RefreshInputLabels();
 		void RefreshSaveSlots();
-		void SinglePlayerCancel();
+		void ValidateCreatePlayer();
+		void SinglePlayerCancel(bool Deselect=false);
 		void CreatePlayer();
 		void ClearAction(size_t Action, int Type);
 		void RemapInput(int InputType, int Input);
