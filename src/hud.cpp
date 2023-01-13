@@ -1030,9 +1030,6 @@ void _HUD::DrawCharacterScreen() {
 		Player->GetDamageText(Buffer, WEAPONATTACK_MAIN, PlayState.ShowMoreInfo(), CritMultiplier);
 		DrawAttribute("Critical Hit Damage", Buffer, DrawPosition);
 
-		Buffer << ae::Round2(Player->GetTrueAverageDamage(WEAPONATTACK_MAIN) / Player->AttackPeriod[WEAPONATTACK_MAIN]);
-		DrawAttribute("DPS", Buffer, DrawPosition);
-
 		// Show self damage stats
 		if(Player->StartingBounces[WEAPONATTACK_MAIN] || Player->ExplosionSize[WEAPONATTACK_MAIN] > 0.0f) {
 			double SelfDamageMultiplier = ((100 - Player->SelfDamageResist) * 0.01) * ((100 - Player->DamageResist) * 0.01);
@@ -1043,6 +1040,9 @@ void _HUD::DrawCharacterScreen() {
 			Player->GetDamageText(Buffer, WEAPONATTACK_MAIN, PlayState.ShowMoreInfo(), SelfDamageMultiplier * CritMultiplier);
 			DrawAttribute("Self Crit Damage", Buffer, DrawPosition);
 		}
+
+		Buffer << ae::Round2(Player->GetTrueAverageDamage(WEAPONATTACK_MAIN) / Player->AttackPeriod[WEAPONATTACK_MAIN]);
+		DrawAttribute("DPS", Buffer, DrawPosition);
 	}
 
 	DrawPosition.y += 10 * ae::_Element::GetUIScale();

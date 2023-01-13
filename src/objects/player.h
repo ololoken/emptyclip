@@ -138,6 +138,7 @@ class _Player : public _Entity {
 		const ae::_Sound *GetSound(int SoundType, int AttackType) const override;
 		const char *GetWeaponID(int AttackType) override;
 		void GetDamageText(std::ostringstream &Buffer, int AttackType, bool Average, double Multiplier);
+		double GetTrueAverageDamage(int AttackType) const;
 		int GetFilterValue(int FilterMode);
 
 		void AdjustLegDirection(float Destination);

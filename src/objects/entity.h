@@ -77,7 +77,6 @@ class _Entity : public _Object {
 		float GetHealthPercentage() const { return (float)Health / MaxHealth; }
 		float GetStaminaPercentage() const { return Stamina / MaxStamina; }
 		float GetPoisonIntensity() const { return std::min(PoisonTimer, 1.0) / 2.0f; }
-		double GetTrueAverageDamage(int AttackType) const { return AttackCount[AttackType] * (MinDamage[AttackType] + MaxDamage[AttackType]) * 0.5 * (1.0 + (CritDamage[AttackType] * 0.01 - 1.0) * CritChance[AttackType] * 0.01); }
 
 		virtual const ae::_Sound *GetSound(int SoundType, int AttackType) const;
 

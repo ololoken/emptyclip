@@ -1706,6 +1706,13 @@ void _Player::GetDamageText(std::ostringstream &Buffer, int AttackType, bool Ave
 		Buffer << (int64_t)(MinDamage[AttackType] * Multiplier) << " - " << (int64_t)(MaxDamage[AttackType] * Multiplier);
 }
 
+// Get average damage per attack
+double _Player::GetTrueAverageDamage(int AttackType) const {
+	int Count = FireAllRounds[AttackType] && GetMainHand() ? std::round(GetMainHand()->Attributes["rounds"].Float) : AttackCount[AttackType];
+	double AverageDamage = (MinDamage[AttackType] + MaxDamage[AttackType]) * 0.5;
+
+	return Count * AverageDamage * (1.0 + (CritDamage[AttackType] * 0.01 - 1.0) * (CritChance[AttackType] * 0.01));
+}
 // Return the current filter value for a type
 int _Player::GetFilterValue(int FilterMode) {
 	if(Filters[FilterMode] >= (int)FilterValues[FilterMode].size())
