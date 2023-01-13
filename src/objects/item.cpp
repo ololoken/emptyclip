@@ -837,7 +837,7 @@ void _Item::RecalculateStats() {
 			Attributes.at("move_speed").Float = std::clamp(Attributes.at("move_speed").Float, ITEM_MIN_MOVESPEED, ITEM_MAX_MOVESPEED);
 			Attributes.at("max_health").Float += Bonus[MOD_MAXHEALTH];
 			Attributes.at("max_stamina").Float += Bonus[MOD_MAXSTAMINA];
-			Attributes["melee_damage"].Float += Bonus[MOD_MELEEDAMAGE];
+			Attributes["melee_damage"].Float = Bonus[MOD_MELEEDAMAGE];
 			Attributes["pistol_damage"].Float = Bonus[MOD_PISTOLDAMAGE];
 			Attributes["shotgun_damage"].Float = Bonus[MOD_SHOTGUNDAMAGE];
 			Attributes["rifle_damage"].Float = Bonus[MOD_RIFLEDAMAGE];
