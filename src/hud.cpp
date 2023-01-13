@@ -1011,14 +1011,14 @@ void _HUD::DrawCharacterScreen() {
 		Player->GetDamageText(Buffer, WEAPONATTACK_MAIN, PlayState.ShowMoreInfo(), 1.0);
 		DrawAttribute("Damage", Buffer, DrawPosition);
 
+		Buffer << ae::Round2(1.0 / Player->AttackPeriod[WEAPONATTACK_MAIN]) << "/s";
+		DrawAttribute("Fire Rate", Buffer, DrawPosition);
+
 		if(PlayState.ShowMoreInfo())
 			Buffer << ae::Round2((Player->MinAccuracyNormal + Player->MaxAccuracyNormal) * 0.5f) << " avg";
 		else
 			Buffer << ae::Round2(Player->MinAccuracyNormal) << " - " << ae::Round2(Player->MaxAccuracyNormal) << " deg";
 		DrawAttribute("Accuracy", Buffer, DrawPosition);
-
-		Buffer << ae::Round2(1.0 / Player->AttackPeriod[WEAPONATTACK_MAIN]) << "/s";
-		DrawAttribute("Fire Rate", Buffer, DrawPosition);
 
 		Buffer << ae::Round2(Player->Recoil) << " deg";
 		DrawAttribute("Recoil", Buffer, DrawPosition);
@@ -1026,9 +1026,12 @@ void _HUD::DrawCharacterScreen() {
 		Buffer << Player->CritChance[WEAPONATTACK_MAIN] << "%";
 		DrawAttribute("Critical Hit Chance", Buffer, DrawPosition);
 
-		double CritMultipler = Player->CritDamage[WEAPONATTACK_MAIN] * 0.01;
-		Player->GetDamageText(Buffer, WEAPONATTACK_MAIN, PlayState.ShowMoreInfo(), CritMultipler);
+		double CritMultiplier = Player->CritDamage[WEAPONATTACK_MAIN] * 0.01;
+		Player->GetDamageText(Buffer, WEAPONATTACK_MAIN, PlayState.ShowMoreInfo(), CritMultiplier);
 		DrawAttribute("Critical Hit Damage", Buffer, DrawPosition);
+
+		Buffer << ae::Round2(Player->GetTrueAverageDamage(WEAPONATTACK_MAIN) / Player->AttackPeriod[WEAPONATTACK_MAIN]);
+		DrawAttribute("DPS", Buffer, DrawPosition);
 
 		// Show self damage stats
 		if(Player->StartingBounces[WEAPONATTACK_MAIN] || Player->ExplosionSize[WEAPONATTACK_MAIN] > 0.0f) {
@@ -1037,7 +1040,7 @@ void _HUD::DrawCharacterScreen() {
 			Player->GetDamageText(Buffer, WEAPONATTACK_MAIN, PlayState.ShowMoreInfo(), SelfDamageMultiplier);
 			DrawAttribute("Self Damage", Buffer, DrawPosition);
 
-			Player->GetDamageText(Buffer, WEAPONATTACK_MAIN, PlayState.ShowMoreInfo(), SelfDamageMultiplier * CritMultipler);
+			Player->GetDamageText(Buffer, WEAPONATTACK_MAIN, PlayState.ShowMoreInfo(), SelfDamageMultiplier * CritMultiplier);
 			DrawAttribute("Self Crit Damage", Buffer, DrawPosition);
 		}
 	}
@@ -1047,17 +1050,20 @@ void _HUD::DrawCharacterScreen() {
 	Player->GetDamageText(Buffer, WEAPONATTACK_MELEE, PlayState.ShowMoreInfo(), 1.0);
 	DrawAttribute("Melee Damage", Buffer, DrawPosition);
 
-	Buffer << ae::Round1(Player->AttackRange[WEAPONATTACK_MELEE]);
-	DrawAttribute("Melee Range", Buffer, DrawPosition);
-
 	Buffer << ae::Round1(1.0 / Player->AttackPeriod[WEAPONATTACK_MELEE]) << "/s";
 	DrawAttribute("Melee Attack Speed", Buffer, DrawPosition);
+
+	Buffer << ae::Round1(Player->AttackRange[WEAPONATTACK_MELEE]);
+	DrawAttribute("Melee Range", Buffer, DrawPosition);
 
 	Buffer << Player->CritChance[WEAPONATTACK_MELEE] << "%";
 	DrawAttribute("Melee Crit Chance", Buffer, DrawPosition);
 
 	Player->GetDamageText(Buffer, WEAPONATTACK_MELEE, PlayState.ShowMoreInfo(), Player->CritDamage[WEAPONATTACK_MELEE] * 0.01);
 	DrawAttribute("Melee Crit Damage", Buffer, DrawPosition);
+
+	Buffer << ae::Round2(Player->GetTrueAverageDamage(WEAPONATTACK_MELEE) / Player->AttackPeriod[WEAPONATTACK_MELEE]);
+	DrawAttribute("Melee DPS", Buffer, DrawPosition);
 
 	DrawPosition.y += 10 * ae::_Element::GetUIScale();
 
