@@ -10,7 +10,7 @@ function build() {
 	fi
 
 	flatpak-builder --default-branch="$branch" --force-clean --repo="$repo_path" --state-dir=flatpak-state flatpak-build flatpak.yml
-	flatpak build-bundle "$repo_path" "out/$pkg" "io.gitlab.jazztickets.emptyclip" "$branch"
+	flatpak build-bundle "$repo_path" "out/$pkg" "io.gitlab.jazztickets.$project" "$branch"
 	rm -rf flatpak-build flatpak-state out/src.tar.gz
 }
 
