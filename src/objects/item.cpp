@@ -113,7 +113,7 @@ void _Item::DrawTooltip(const _Player *Player, glm::vec2 DrawPosition, const _It
 	std::ostringstream Buffer;
 	Buffer.imbue(std::locale(Config.Locale));
 
-	glm::vec2 Size = glm::vec2(460, 150) * ae::_Element::GetUIScale();
+	glm::vec2 Size = glm::vec2(470, 150) * ae::_Element::GetUIScale();
 	glm::vec2 Spacing = glm::vec2(0, ATTRIBUTE_SPACING) * ae::_Element::GetUIScale();
 	glm::vec2 SmallSpacing = glm::vec2(0, 20) * ae::_Element::GetUIScale();
 	glm::vec2 HelpSpacing = glm::vec2(0, 24) * ae::_Element::GetUIScale();
@@ -611,9 +611,23 @@ void _Item::DrawTooltip(const _Player *Player, glm::vec2 DrawPosition, const _It
 		}
 
 		DrawPosition.y += Spacing.y;
-		Buffer << Mods.size() << "/" << ae::Round2(GetMaxMods(!PlayState.ShowMoreInfo()));
+
+		const ae::_Font *Font;
+		if(PlayState.ShowMoreInfo()) {
+			float TotalMods = GetMaxMods(false);
+			Buffer
+				<< ae::Round2(TotalMods)
+				<< " = " << ae::Round2(TotalMods - ExtraMods - Player->ExtraMods)
+				<< "+" << ae::Round2(ExtraMods)
+				<< "+" << ae::Round2(Player->ExtraMods);
+			Font = SmallFont;
+		}
+		else {
+			Buffer << Mods.size() << "/" << GetMaxMods(true);
+			Font = AttributeFont;
+		}
 		AttributeFont->DrawText("Mods", glm::ivec2(DrawPosition - DrawOffset), ae::RIGHT_BASELINE);
-		AttributeFont->DrawText(Buffer.str(), glm::ivec2(DrawPosition + DrawOffset), ae::LEFT_BASELINE, TextColor);
+		Font->DrawText(Buffer.str(), glm::ivec2(DrawPosition + DrawOffset), ae::LEFT_BASELINE, TextColor);
 		Buffer.str("");
 	}
 
