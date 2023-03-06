@@ -69,7 +69,7 @@ struct _Slot {
 	void Reset() { Bag = nullptr; Index = (size_t)-1; }
 
 	bool IsValidIndex() const { return Bag && Index < Bag->Slots.size(); }
-	bool IsHandIndex() const { return Index == GearType::MAINHAND || Index == GearType::OFFHAND; }
+	bool IsHandIndex() const { return Bag->Gear && (Index == GearType::MAINHAND || Index == GearType::OFFHAND); }
 	bool IsGearSlot() const { return Bag->Gear; }
 
 	_Item *GetItem() const { return Bag->Slots[Index]; }

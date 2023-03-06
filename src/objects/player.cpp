@@ -954,7 +954,7 @@ void _Player::SwapInventory(const _Slot &SlotFrom, const _Slot &SlotTo) {
 	if(!CanSwap)
 		return;
 
-	if((SlotTo.IsGearSlot() && SlotTo.Index == GearType::MAINHAND) || (SlotFrom.IsGearSlot() && SlotFrom.Index == GearType::MAINHAND) || (SlotFrom.IsGearSlot() && SlotTo.IsGearSlot() && SlotFrom.IsHandIndex() && SlotTo.IsHandIndex()) ) {
+	if((SlotTo.IsGearSlot() && SlotTo.Index == GearType::MAINHAND) || (SlotFrom.IsGearSlot() && SlotFrom.Index == GearType::MAINHAND) || (SlotFrom.IsHandIndex() && SlotTo.IsHandIndex())) {
 		StartWeaponSwitch(SlotFrom, SlotTo);
 	}
 	else {
