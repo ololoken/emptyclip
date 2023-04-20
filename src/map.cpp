@@ -2408,12 +2408,14 @@ void _Map::Update(double FrameTime, double Clock) {
 
 // Adds an item to the item list and collision grid
 void _Map::AddObject(_Object *Object, int GridType) {
+	Object->Visible = true;
 	ObjectManager->AddObject(Object);
 	AddObjectToGrid(Object, GridType);
 }
 
 // Removes an item from object list and collision grid
 void _Map::RemoveObject(_Object *Object, int GridType) {
+	Object->Visible = false;
 	ObjectManager->RemoveObject(Object);
 	RemoveObjectFromGrid(Object, GridType);
 }

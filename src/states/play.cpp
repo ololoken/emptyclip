@@ -1747,7 +1747,6 @@ void _PlayState::CreateItemDrop(const _Entity *Entity, float DropRate) {
 
 // Drop an item on the floor
 void _PlayState::DropItem(_Item *Item) {
-	Item->Visible = true;
 	Item->SetPosition(Map->FindSuitableItemPosition(Player->Position, Item->Type, ITEM_RADIUS, ITEM_PLACEMENT_ATTEMPTS));
 	Map->AddObject(Item, GRID_ITEM);
 }

@@ -328,7 +328,6 @@ void _HUD::HandleMouseButton(const ae::_MouseEvent &MouseEvent) {
 								}
 								else if(ExistingItem->AddMod(CursorItem)) {
 									ae::Audio.PlaySound(ae::Assets.Sounds["game_mod.ogg"]);
-									CursorItem->Visible = false;
 									PlayState.Map->RemoveObject(CursorItem, GRID_ITEM);
 								}
 								else if(CursorItem->Type == _Object::MOD && ExistingItem->CanEquip() && !ExistingItem->ItemCompatible(CursorItem)) {
@@ -346,7 +345,6 @@ void _HUD::HandleMouseButton(const ae::_MouseEvent &MouseEvent) {
 
 							// Add item to inventory and remove from world
 							if(SetAndRemove) {
-								CursorItem->Visible = false;
 								HitSlot.SetItem(CursorItem);
 								PlayState.Map->RemoveObject(CursorItem, GRID_ITEM);
 								if(HitSlot.IsGearSlot())
