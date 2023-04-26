@@ -24,6 +24,7 @@ style_hud_inventory_armor			ortho_pos_uv	textures/hud/inventory_armor.png	invent
 style_hud_inventory_gun			ortho_pos_uv	textures/hud/inventory_gun.png	inventory_gear	1
 style_hud_inventory_melee			ortho_pos_uv	textures/hud/inventory_melee.png	inventory_gear	1
 style_hud_inventory_overlay	inventory_overlay		ortho_pos			1
+style_hud_experience	experience_bg	experience_border	ortho_pos			1
 style_hud_skills	tooltip_bg		ortho_pos			1
 style_hud_plus			ortho_pos_uv	textures/hud/plus.png		1
 style_hud_plus_hover			ortho_pos_uv	textures/hud/plus_hover.png		1

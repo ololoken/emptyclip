@@ -138,7 +138,7 @@ _HUD::_HUD(const ae::_Camera *Camera, _Player *Player) : Camera(Camera), Player(
 	Elements[ELEMENT_INDICATOR]->SetActive(true);
 
 	Elements[ELEMENT_EXPERIENCE] = ae::Assets.Elements["element_hud_experience"];
-	Elements[IMAGE_EXPERIENCE_EMPTY] = ae::Assets.Elements["image_hud_experience_bar_empty"];
+	Elements[ELEMENT_EXPERIENCE_EMPTY] = ae::Assets.Elements["element_hud_experience_bar_empty"];
 	Elements[IMAGE_EXPERIENCE_FULL] = ae::Assets.Elements["image_hud_experience_bar_full"];
 	Elements[LABEL_EXPERIENCE] = ae::Assets.Elements["label_hud_experience"];
 	Elements[ELEMENT_EXPERIENCE]->SetActive(true);
@@ -680,7 +680,7 @@ void _HUD::Render(bool FullMap) {
 	Elements[LABEL_EXPERIENCE]->Text = Buffer.str();
 	Buffer.str("");
 	Elements[IMAGE_EXPERIENCE_FULL]->SetWidth(Elements[ELEMENT_EXPERIENCE]->Size.x * LevelPercentage);
-	Elements[IMAGE_EXPERIENCE_EMPTY]->SetWidth(Elements[ELEMENT_EXPERIENCE]->Size.x);
+	Elements[ELEMENT_EXPERIENCE_EMPTY]->SetWidth(Elements[ELEMENT_EXPERIENCE]->Size.x);
 	Elements[ELEMENT_EXPERIENCE]->Render();
 
 	// Draw player name and level
