@@ -322,21 +322,30 @@ void _HUD::HandleMouseButton(const ae::_MouseEvent &MouseEvent) {
 							// Drag onto existing item
 							_Item *ExistingItem = HitSlot.GetItem();
 							if(ExistingItem) {
+
+								bool Move = false;
 								if(CursorItem->Type == _Object::USABLE) {
 									if(ApplyUsableItem(ExistingItem))
 										HitSlot.DeleteItem();
+									else
+										Move = true;
 								}
 								else if(ExistingItem->AddMod(CursorItem)) {
 									ae::Audio.PlaySound(ae::Assets.Sounds["game_mod.ogg"]);
 									PlayState.Map->RemoveObject(CursorItem, GRID_ITEM);
 								}
 								else if(CursorItem->Type == _Object::MOD && ExistingItem->CanEquip() && !ExistingItem->ItemCompatible(CursorItem)) {
-									MoveWorldItem(Player->Position);
+									Move = true;
 								}
 								else if(CanEquip || !HitSlot.IsGearSlot()) {
 									Player->DropItem(HitSlot);
 									SetAndRemove = true;
 								}
+								else if(!CanEquip)
+									Move = true;
+
+								if(Move)
+									MoveWorldItem(Player->Position);
 							}
 							// Drag onto empty slot
 							else if(CursorItem->Carry && (CanEquip || !HitSlot.IsGearSlot())) {
