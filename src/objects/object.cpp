@@ -179,7 +179,7 @@ void _Object::CreateAmmoPickup(float SpawnPositionZ) {
 // Calculates the angle from a slope
 void _Object::FacePosition(const glm::vec2 &Target) {
 	Direction = Target - Position;
-	if(Direction.x == 0 && Direction.y == 0.0f)
+	if(Direction.x == 0.0f && Direction.y == 0.0f)
 		Direction.y = 1.0f;
 
 	Direction = glm::normalize(Direction);
@@ -350,7 +350,7 @@ void _Object::CheckProjectileCollisions() {
 				// Set ammo pickup to closest point on circle
 				if(Hit.Object->Circle && !ProjectileWeaponTemplate->PickupID.empty()) {
 					glm::vec2 HitVector = Position - Hit.Object->Position;
-					if(HitVector.x != 0.0f && HitVector.y != 0.0f)
+					if(HitVector.x != 0.0f || HitVector.y != 0.0f)
 						Position = Hit.Object->Position + glm::normalize(HitVector) * Hit.Object->Radius;
 				}
 
@@ -429,9 +429,11 @@ void _Object::CheckProjectileCollisions() {
 			// Apply force proportional to center distance
 			glm::vec2 CenterVector = Position - Hit.Position;
 			float CenterDistance = glm::length(CenterVector);
-			float ForceApplied = ProjectileForce * ((ExplosionRadius - CenterDistance) / ExplosionRadius);
-			if(ForceApplied > 0.0f)
-				Hit.Object->ApplyForce(glm::normalize(-CenterVector), ForceApplied);
+			if(CenterDistance > 0.0f) {
+				float ForceApplied = ProjectileForce * ((ExplosionRadius - CenterDistance) / ExplosionRadius);
+				if(ForceApplied > 0.0f)
+					Hit.Object->ApplyForce(glm::normalize(-CenterVector), ForceApplied);
+			}
 		}
 	}
 }

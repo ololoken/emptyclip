@@ -732,7 +732,7 @@ void _PlayState::Update(double FrameTime) {
 	// Get zoom state
 	if(Player->Aiming) {
 		glm::vec2 CursorVector = WorldCursor - Player->Position;
-		if(CursorVector.x != 0 && CursorVector.y != 0) {
+		if(CursorVector.x != 0.0f && CursorVector.y != 0.0f) {
 			Map->CollisionHits.clear();
 			Map->CheckBulletCollisions(Player, glm::normalize(CursorVector), Map->CollisionHits, GRID_MONSTER, true, 1, _Tile::VISION);
 			if(Map->CollisionHits.size()) {

@@ -198,9 +198,15 @@ void _Monster::OnAttack(_Entity *Victim, const _Hit &Hit) {
 		ReturnPosition = Position;
 		ReturnTimer = AI_RETREAT_TIME;
 
+		// Get direction away from player
+		glm::vec2 TargetDirection = Position - Player->Position;
+		if(TargetDirection.x == 0.0f && TargetDirection.y == 0.0f)
+			TargetDirection.x = 1.0f;
+		TargetDirection = glm::normalize(TargetDirection);
+
 		// Ray cast away from player
 		std::vector<_Hit> Hits;
-		Map->CheckBulletCollisions(this, glm::normalize(Position - Player->Position), Hits, GRID_MONSTER, true, 1, _Tile::ENTITY);
+		Map->CheckBulletCollisions(this, TargetDirection, Hits, GRID_MONSTER, true, 1, _Tile::ENTITY);
 		if(Hits.size())
 			SetTarget(Hits.front().Position, Radius);
 	}

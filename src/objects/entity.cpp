@@ -387,7 +387,7 @@ void _Entity::Move(double FrameTime) {
 			}
 
 			// Set move direction
-			if(Action != ACTION_SHOOT && (TargetVector.x != 0 || TargetVector.y != 0)) {
+			if(Action != ACTION_SHOOT && (TargetVector.x != 0.0f || TargetVector.y != 0.0f)) {
 				Direction = MoveDirection = glm::normalize(TargetVector);
 				Rotation = glm::degrees(atan2(MoveDirection.y, MoveDirection.x)) + 90.0f;
 				if(Rotation < 0.0f)

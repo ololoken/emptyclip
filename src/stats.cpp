@@ -903,10 +903,12 @@ _Monster *_Stats::CreateMonster(const std::string &ID, const glm::vec2 &Position
 	Monster->DamageBlock = 0;
 	Monster->DamageResist = Stats.Progressions[Progression].DamageResist;
 	Monster->MoveSpeed = Monster->GetAttributeLevel("move_speed", 1.0f, ENTITY_MAX_MOVESPEED_LEVEL) * QualityFactor;
-	Monster->Radius = std::min(ENTITY_MAX_SPAWN_RADIUS, Template.Attributes.at("radius").Float * QualityFactor);
 	Monster->Scale = Template.Attributes.at("scale").Float;
-	if(!Monster->IsCrate())
+	Monster->Radius = Template.Attributes.at("radius").Float;
+	if(!Monster->IsCrate()) {
 		Monster->Scale *= QualityFactor;
+		Monster->Radius = std::min(ENTITY_MAX_SPAWN_RADIUS, Monster->Radius * QualityFactor);
+	}
 	Monster->Health = Monster->MaxHealth = Monster->GetAttributeLevel("health", Stats.Progressions[Progression].Health) * QualityFactor * Difficulty;
 	Monster->ExperienceGiven = Monster->GetAttributeLevel("xp", Stats.Progressions[Progression].Experience) * QualityFactor * Difficulty;
 	Monster->MinAccuracy = Template.Attributes.at("accuracy").Int / QualityFactor;
