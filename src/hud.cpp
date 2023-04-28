@@ -325,10 +325,15 @@ void _HUD::HandleMouseButton(const ae::_MouseEvent &MouseEvent) {
 
 								bool Move = false;
 								if(CursorItem->Type == _Object::USABLE) {
-									if(ApplyUsableItem(ExistingItem))
-										HitSlot.DeleteItem();
-									else
-										Move = true;
+									int Status = ApplyUsableItem(ExistingItem);
+									switch(Status) {
+										case 1:
+											HitSlot.DeleteItem();
+										break;
+										case 2:
+											Move = true;
+										break;
+									}
 								}
 								else if(ExistingItem->AddMod(CursorItem)) {
 									ae::Audio.PlaySound(ae::Assets.Sounds["game_mod.ogg"]);
@@ -1660,10 +1665,10 @@ void _HUD::MoveWorldItem(const glm::vec2 &DropPosition) {
 	CursorItem = nullptr;
 }
 
-// Apply usable item to another item, return true to delete existing item
-bool _HUD::ApplyUsableItem(_Item *ExistingItem) {
+// Apply usable item to another item, return 1 to delete existing item, return 2 to move usable item to player location
+int _HUD::ApplyUsableItem(_Item *ExistingItem) {
 	if(!ExistingItem->ItemCompatible(CursorItem, false))
-		return false;
+		return 2;
 
 	int UsableType = CursorItem->Template.Attributes.at("usable_type").Int;
 
@@ -1715,7 +1720,7 @@ bool _HUD::ApplyUsableItem(_Item *ExistingItem) {
 			}
 
 			// Destroy item
-			return true;
+			return 1;
 		} break;
 		case USABLE_WHETSTONE:
 		case USABLE_WRENCH:
@@ -1727,7 +1732,7 @@ bool _HUD::ApplyUsableItem(_Item *ExistingItem) {
 		break;
 	}
 
-	return false;
+	return 0;
 }
 
 // Populate hit slot from hit element

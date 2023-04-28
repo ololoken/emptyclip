@@ -942,6 +942,8 @@ bool _Item::ApplyUsable(_Item *Usable) {
 			ae::Audio.PlaySound(ae::Assets.Sounds["game_pliers.ogg"]);
 		} break;
 	}
+
+	// Update item stats
 	RecalculateStats();
 
 	return true;

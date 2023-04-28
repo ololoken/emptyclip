@@ -162,7 +162,7 @@ class _HUD {
 		void DrawGlanceValueText(const _Item *Item, const glm::vec2 &Position);
 		void UpdateSkillTooltip(int Skill, const glm::vec2 &DrawPosition);
 		void GetClockAsString(std::ostringstream &Buffer, double Clock, bool Clock24Hour) const;
-		bool ApplyUsableItem(_Item *ExistingItem);
+		int ApplyUsableItem(_Item *ExistingItem);
 		void GetHitSlot(ae::_Element *Element, _Slot &Slot);
 		bool CanGrabItem(const _Item *Item);
 		size_t GetBackpackTabIndex(const ae::_Element *Element);
