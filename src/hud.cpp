@@ -54,14 +54,14 @@ struct _SkillText {
 };
 
 static std::vector<_MinimapLegend> MinimapLegends = {
-	{ "Keys", MINIMAP_KEY_COLOR},
+	{ "Key", MINIMAP_KEY_COLOR},
 	{ "Gear",  MINIMAP_GEAR_COLOR },
 	{ "Mod",  MINIMAP_MOD_COLOR },
-	{ "Ammo", MINIMAP_AMMO_COLOR},
-	{ "Consumables", MINIMAP_CONSUMABLE_COLOR },
-	{ "Crates", MINIMAP_CRATE_COLOR },
-	{ "Enemies", MINIMAP_ENEMY_COLOR },
-	{ "Doors/Switches", MINIMAP_DOOR_COLOR },
+	{ "Ammunition", MINIMAP_AMMO_COLOR},
+	{ "Consumable", MINIMAP_CONSUMABLE_COLOR },
+	{ "Crate", MINIMAP_CRATE_COLOR },
+	{ "Enemy", MINIMAP_ENEMY_COLOR },
+	{ "Door/Switch", MINIMAP_DOOR_COLOR },
 };
 
 static _SkillText SkillText[SKILL_COUNT] = {
