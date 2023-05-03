@@ -318,12 +318,12 @@ void _HUD::HandleMouseButton(const ae::_MouseEvent &MouseEvent) {
 							// Drag onto inventory
 							bool CanEquip = HitSlot.IsGearSlot() && Player->CanEquipItem(CursorItem, HitSlot.Index);
 							bool SetAndRemove = false;
+							bool Move = false;
 
 							// Drag onto existing item
 							_Item *ExistingItem = HitSlot.GetItem();
 							if(ExistingItem) {
 
-								bool Move = false;
 								if(CursorItem->Type == _Object::USABLE) {
 									int Status = ApplyUsableItem(ExistingItem);
 									switch(Status) {
@@ -348,14 +348,17 @@ void _HUD::HandleMouseButton(const ae::_MouseEvent &MouseEvent) {
 								}
 								else if(!CanEquip)
 									Move = true;
-
-								if(Move)
-									MoveWorldItem(Player->Position);
 							}
 							// Drag onto empty slot
 							else if(CursorItem->Carry && (CanEquip || !HitSlot.IsGearSlot())) {
 								SetAndRemove = true;
 							}
+							// Can't place in inventory
+							else if(!CursorItem->Carry)
+								Move = true;
+
+							if(Move)
+								MoveWorldItem(Player->Position);
 
 							// Add item to inventory and remove from world
 							if(SetAndRemove) {
@@ -383,6 +386,10 @@ void _HUD::HandleMouseButton(const ae::_MouseEvent &MouseEvent) {
 									break;
 									case ADD_FULL:
 										ShowTextMessage(HUD_BACKPACKFULLMESSAGE, HUD_INVENTORYFULLTIME);
+										MoveWorldItem(Player->Position);
+									break;
+									case ADD_QUIETFULL:
+										MoveWorldItem(Player->Position);
 									break;
 								}
 							}
