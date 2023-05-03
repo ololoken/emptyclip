@@ -1329,8 +1329,8 @@ void _PlayState::ResolveAttack(_Entity *Attacker, int GridType) {
 						_Entity *HitEntity = (_Entity *)Hit.Object;
 						bool HitPlayer = Hit.Object->Type == _Object::PLAYER;
 
-						// Keep track of first hit entity
-						if(!HitPlayer && !FirstHit)
+						// Keep track of first alive entity
+						if(!HitPlayer && (!FirstHit || (FirstHit->Health <= 0 && HitEntity->Health > 0)))
 							FirstHit = HitEntity;
 
 						// Generate damage
