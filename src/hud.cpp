@@ -1491,7 +1491,14 @@ void _HUD::DrawDeathScreen() {
 	// Show stats
 	if(Player->Hardcore) {
 		glm::vec2 Spacing = glm::vec2(16, 0) * ae::_Element::GetUIScale();
-		DrawPosition.y = 500 * ae::_Element::GetUIScale();
+		DrawPosition.y = 470 * ae::_Element::GetUIScale();
+
+		Buffer << Player->Progression;
+		ae::Assets.Fonts["hud_medium"]->DrawText("Progression", DrawPosition + -Spacing, ae::RIGHT_BASELINE);
+		ae::Assets.Fonts["hud_medium"]->DrawText(Buffer.str(), DrawPosition + Spacing, ae::LEFT_BASELINE);
+		Buffer.str("");
+
+		DrawPosition.y += 80 * ae::_Element::GetUIScale();
 
 		Buffer << Player->TotalKills;
 		ae::Assets.Fonts["hud_medium"]->DrawText("Total Kills", DrawPosition + -Spacing, ae::RIGHT_BASELINE);
