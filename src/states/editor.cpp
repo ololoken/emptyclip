@@ -67,6 +67,7 @@ static const char *InputBoxStrings[EDITINPUT_COUNT] = {
 	"Set particle",
 	"Set sound",
 	"Color",
+	"Ambient Color",
 };
 
 // Initialize
@@ -314,6 +315,10 @@ bool _EditorState::HandleKey(const ae::_KeyEvent &KeyEvent) {
 								BrushColor = ae::Assets.Colors[InputText];
 						}
 					break;
+					case EDITINPUT_AMBIENTCOLOR:
+						if(ae::Assets.Colors.find(InputText) != ae::Assets.Colors.end())
+							Map->BaseAmbientLight = ae::Assets.Colors[InputText];
+					break;
 				}
 				ae::FocusedElement = nullptr;
 				EditorInput = -1;
@@ -419,10 +424,16 @@ bool _EditorState::HandleKey(const ae::_KeyEvent &KeyEvent) {
 				ExecuteHighlightBlocks();
 			break;
 			case SDL_SCANCODE_A:
-				if(EditMode == EDITMODE_BLOCKS)
-					ExecuteWalkable();
-				else if(EditMode == EDITMODE_EVENTS)
-					ExecuteChangeActive();
+				if(IsShiftDown) {
+					ExecuteShowInput(EDITINPUT_AMBIENTCOLOR);
+					Framework.IgnoreNextInputEvent = true;
+				}
+				else {
+					if(EditMode == EDITMODE_BLOCKS)
+						ExecuteWalkable();
+					else if(EditMode == EDITMODE_EVENTS)
+						ExecuteChangeActive();
+				}
 			break;
 			case SDL_SCANCODE_R:
 				ExecuteRotate();
