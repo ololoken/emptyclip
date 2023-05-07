@@ -414,10 +414,7 @@ bool _EditorState::HandleKey(const ae::_KeyEvent &KeyEvent) {
 				ExecutePaste(PasteMode);
 			} break;
 			case SDL_SCANCODE_G:
-				if(IsShiftDown)
-					ExecuteUpdateGridMode(-1);
-				else
-					ExecuteUpdateGridMode(1);
+				ExecuteUpdateGridMode();
 			break;
 			case SDL_SCANCODE_B:
 				ExecuteHighlightBlocks();
@@ -1698,10 +1695,7 @@ void _EditorState::ProcessIcons(int Index, int Type) {
 			ExecuteClear();
 		break;
 		case ICON_GRID:
-			if(IsShiftDown)
-				ExecuteUpdateGridMode(-1);
-			else
-				ExecuteUpdateGridMode(1);
+			ExecuteUpdateGridMode();
 		break;
 		case ICON_LOAD:
 			ExecuteShowInput(EDITINPUT_LOAD);
@@ -2472,12 +2466,22 @@ void _EditorState::ExecuteSelectPalette(ae::_Element *Button, int ClickType) {
 }
 
 // Executes the update grid command
-void _EditorState::ExecuteUpdateGridMode(int Change) {
-	GridMode += Change;
-	if(GridMode > 10)
-		GridMode = 0;
-	else if(GridMode < 0)
-		GridMode = 10;
+void _EditorState::ExecuteUpdateGridMode() {
+	if(IsCtrlDown) {
+		if(GridMode) {
+			OldGridMode = GridMode;
+			GridMode = 0;
+		}
+		else
+			GridMode = OldGridMode;
+	}
+	else {
+		GridMode += IsShiftDown ? -1 : 1;
+		if(GridMode > 10)
+			GridMode = 1;
+		else if(GridMode < 1)
+			GridMode = 10;
+	}
 }
 
 // Executes the highlight command

@@ -213,7 +213,7 @@ class _EditorState : public ae::_State {
 		void ExecuteUpdateCheckpointIndex(int Value);
 		void ExecuteSelectPalette(ae::_Element *Button, int ClickType);
 		void ExecuteUpdateSelectedPalette(int Change);
-		void ExecuteUpdateGridMode(int Change);
+		void ExecuteUpdateGridMode();
 		void ExecuteHighlightBlocks();
 		void ExecuteSwitchMode(int State);
 		void ExecuteUpdateLayer(int Layer, bool Move);
@@ -243,6 +243,7 @@ class _EditorState : public ae::_State {
 		glm::vec2 WorldCursor;
 		glm::ivec2 WorldCursorIndex;
 		int GridMode;
+		int OldGridMode;
 		bool IsDrawing;
 		bool IsMoving;
 		bool IsShiftDown;
