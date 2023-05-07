@@ -27,11 +27,11 @@ class _ConvertState : public ae::_State {
 		// Setup
 		void Init() override;
 
-		void SetParam1(const std::string &String) { Param1 = String; }
+		std::string Param1;
+		int Mode{0};
 
 	protected:
 
-		std::string Param1;
 };
 
 extern _ConvertState ConvertState;

@@ -59,6 +59,7 @@ void _Framework::Init(int ArgumentCount, char **Arguments) {
 	// Process arguments
 	std::string Token;
 	int TokensRemaining;
+	bool Headless = false;
 	for(int i = 1; i < ArgumentCount; i++) {
 		Token = std::string(Arguments[i]);
 		TokensRemaining = ArgumentCount - i - 1;
@@ -72,9 +73,16 @@ void _Framework::Init(int ArgumentCount, char **Arguments) {
 			Config.Vsync = 0;
 			Config.MaxFPS = 0.0;
 		}
-		else if(Token == "-convert" && TokensRemaining > 0) {
+		else if(Token == "-convertmap" && TokensRemaining > 0) {
 			State = &ConvertState;
-			ConvertState.SetParam1(Arguments[++i]);
+			ConvertState.Mode = 1;
+			ConvertState.Param1 = Arguments[++i];
+		}
+		else if(Token == "-convertobj" && TokensRemaining > 0) {
+			State = &ConvertState;
+			ConvertState.Mode = 2;
+			ConvertState.Param1 = Arguments[++i];
+			Headless = true;
 		}
 		else if(Token == "-crash") {
 			abort();
@@ -113,67 +121,71 @@ void _Framework::Init(int ArgumentCount, char **Arguments) {
 	if(SDL_Init(SDL_INIT_VIDEO) < 0)
 		throw std::runtime_error(std::string(__func__) + " failed to initialize SDL");
 
-	// Initialize audio
-	ae::Audio.Init(Config.AudioEnabled, false);
-	ae::Audio.SetMaxDistance(AUDIO_MAX_DISTANCE);
-	ae::Audio.SetDirection(glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-	ae::Audio.SetSoundVolume(Config.SoundVolume);
-	ae::Audio.SetMusicVolume(Config.MusicVolume);
+	// Initialize game window and assets
+	if(!Headless) {
 
-	// Get window settings
-	ae::_WindowSettings WindowSettings;
-	WindowSettings.WindowTitle = GAME_WINDOWTITLE;
-	WindowSettings.IconPath = "ui/icon.png";
-	WindowSettings.Fullscreen = Config.Fullscreen;
-	WindowSettings.Vsync = Config.Vsync;
-	WindowSettings.Size = Config.WindowSize;
-	WindowSettings.MSAA = Config.MSAA;
-	WindowSettings.Position = glm::ivec2(SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED);
+		// Initialize audio
+		ae::Audio.Init(Config.AudioEnabled, false);
+		ae::Audio.SetMaxDistance(AUDIO_MAX_DISTANCE);
+		ae::Audio.SetDirection(glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+		ae::Audio.SetSoundVolume(Config.SoundVolume);
+		ae::Audio.SetMusicVolume(Config.MusicVolume);
 
-	// Set up subsystems
-	ae::Graphics.CircleVertices = 64;
-	ae::Graphics.Init(WindowSettings);
-	ae::Graphics.SetCullFace(false);
+		// Get window settings
+		ae::_WindowSettings WindowSettings;
+		WindowSettings.WindowTitle = GAME_WINDOWTITLE;
+		WindowSettings.IconPath = "ui/icon.png";
+		WindowSettings.Fullscreen = Config.Fullscreen;
+		WindowSettings.Vsync = Config.Vsync;
+		WindowSettings.Size = Config.WindowSize;
+		WindowSettings.MSAA = Config.MSAA;
+		WindowSettings.Position = glm::ivec2(SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED);
 
-	// Log
-	Log << "SDL_GetCurrentVideoDriver=" << SDL_GetCurrentVideoDriver() << std::endl;
-	Log << "SDL_GetDesktopDisplayMode=" << ae::Graphics.FullscreenSize.x << "x" << ae::Graphics.FullscreenSize.y << std::endl;
+		// Set up subsystems
+		ae::Graphics.CircleVertices = 64;
+		ae::Graphics.Init(WindowSettings);
+		ae::Graphics.SetCullFace(false);
 
-	ae::_Font::Init(1000);
-	LoadAssets();
-	Stats.Init();
-	Menu.Init();
-	try {
-		Achievements.Load();
+		// Log
+		Log << "SDL_GetCurrentVideoDriver=" << SDL_GetCurrentVideoDriver() << std::endl;
+		Log << "SDL_GetDesktopDisplayMode=" << ae::Graphics.FullscreenSize.x << "x" << ae::Graphics.FullscreenSize.y << std::endl;
+
+		ae::_Font::Init(1000);
+		LoadAssets();
+		Stats.Init();
+		Menu.Init();
+		try {
+			Achievements.Load();
+		}
+		catch(std::exception &Error) {
+			Achievements.Save();
+		}
+
+		// Setup console
+		Console = new ae::_Console(ae::Assets.Programs["ortho_pos"], ae::Assets.Fonts["console"]);
+		Console->LoadHistory(Config.ConfigPath + "history.txt");
+		Console->CommandList.push_back("maxfps");
+		Console->CommandList.push_back("suicide");
+		Console->CommandList.push_back("quit");
+		Console->CommandList.push_back("volume");
+		Console->CommandList.push_back("vsync");
+
+		// Add dev mode commands
+		if(PlayState.DevMode) {
+			Console->CommandList.push_back("ammo");
+			Console->CommandList.push_back("clock");
+			Console->CommandList.push_back("experience");
+			Console->CommandList.push_back("god");
+			Console->CommandList.push_back("health");
+			Console->CommandList.push_back("keys");
+			Console->CommandList.push_back("progression");
+			Console->CommandList.push_back("quality");
+			Console->CommandList.push_back("reset");
+		}
+
+		// Sort commands
+		std::sort(Console->CommandList.begin(), Console->CommandList.end());
 	}
-	catch(std::exception &Error) {
-		Achievements.Save();
-	}
-
-	// Setup console
-	Console = new ae::_Console(ae::Assets.Programs["ortho_pos"], ae::Assets.Fonts["console"]);
-	Console->LoadHistory(Config.ConfigPath + "history.txt");
-	Console->CommandList.push_back("maxfps");
-	Console->CommandList.push_back("suicide");
-	Console->CommandList.push_back("quit");
-	Console->CommandList.push_back("volume");
-	Console->CommandList.push_back("vsync");
-
-	// Add dev mode commands
-	if(PlayState.DevMode) {
-		Console->CommandList.push_back("ammo");
-		Console->CommandList.push_back("clock");
-		Console->CommandList.push_back("experience");
-		Console->CommandList.push_back("god");
-		Console->CommandList.push_back("health");
-		Console->CommandList.push_back("keys");
-		Console->CommandList.push_back("progression");
-		Console->CommandList.push_back("quality");
-		Console->CommandList.push_back("reset");
-	}
-
-	// Sort commands
-	std::sort(Console->CommandList.begin(), Console->CommandList.end());
 
 	Timer = SDL_GetPerformanceCounter();
 }

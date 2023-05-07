@@ -16,13 +16,24 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 *******************************************************************************/
 #include <states/convert.h>
+#include <ae/mesh.h>
 #include <framework.h>
 #include <map.h>
 
 _ConvertState ConvertState;
 
 void _ConvertState::Init() {
-	_Map *Map = new _Map(Param1);
-	Map->Save(Param1);
+	Framework.Log << "Converting " << Param1 << std::endl;
+
+	switch(Mode) {
+		case 1: {
+			_Map *Map = new _Map(Param1);
+			Map->Save(Param1);
+		} break;
+		case 2: {
+			ae::_Mesh::ConvertOBJ(Param1, true, true);
+		} break;
+	}
+
 	Framework.Done = true;
 }

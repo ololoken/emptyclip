@@ -74,7 +74,6 @@ void _EditorState::Init() {
 	ae::Graphics.Element->SetActive(false);
 	ae::Graphics.Element->Active = true;
 	ae::FocusedElement = nullptr;
-	//ae::_Mesh::ConvertOBJ("meshes/test.obj", true, true);
 
 	// Load command buttons
 	MainFont = ae::Assets.Fonts["editor"];
