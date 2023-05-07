@@ -1995,13 +1995,18 @@ void _EditorState::ExecuteMirror() {
 		ScaleX = -ScaleX;
 }
 
-// Executes the mirror texture command
+// Executes the toggle tile command
 void _EditorState::ExecuteToggleTile() {
 	if(!EventSelected())
 		return;
 
 	auto Iterator = SelectedEvent->FindTile(WorldCursorIndex);
 	if(Iterator == SelectedEvent->Tiles.end()) {
+
+		// Holding ctrl only removes tiles
+		if(IsCtrlDown)
+			return;
+
 		switch(SelectedEvent->Type) {
 			case EVENT_DOOR:
 			case EVENT_WALLSWITCH:
@@ -2020,8 +2025,12 @@ void _EditorState::ExecuteToggleTile() {
 			break;
 		}
 	}
-	else if(!IsShiftDown)
-		SelectedEvent->RemoveTile(Iterator);
+	else {
+
+		// Holding shift only adds tiles
+		if(!IsShiftDown)
+			SelectedEvent->RemoveTile(Iterator);
+	}
 }
 
 // Executes the change Z command
