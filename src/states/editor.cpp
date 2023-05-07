@@ -68,6 +68,7 @@ static const char *InputBoxStrings[EDITINPUT_COUNT] = {
 	"Set sound",
 	"Color",
 	"Ambient Color",
+	"Map Name",
 };
 
 // Initialize
@@ -198,6 +199,8 @@ bool _EditorState::LoadMap(const std::string &File, bool UseSavedCameraPosition)
 	else
 		Camera->ForcePosition(glm::vec3(Map->GetStartingPositionByCheckpoint(0), CAMERA_DISTANCE));
 
+	SavedText[EDITINPUT_NAME] = Map->Name;
+
 	return Success;
 }
 
@@ -319,7 +322,12 @@ bool _EditorState::HandleKey(const ae::_KeyEvent &KeyEvent) {
 						if(ae::Assets.Colors.find(InputText) != ae::Assets.Colors.end())
 							Map->BaseAmbientLight = ae::Assets.Colors[InputText];
 					break;
+					case EDITINPUT_NAME: {
+						Map->Name = InputText;
+						SavedText[EditorInput] = InputText;
+					} break;
 				}
+
 				ae::FocusedElement = nullptr;
 				EditorInput = -1;
 				InputBox->SetActive(false);
@@ -465,8 +473,13 @@ bool _EditorState::HandleKey(const ae::_KeyEvent &KeyEvent) {
 				}
 			break;
 			case SDL_SCANCODE_N:
-				if(IsCtrlDown)
+				if(IsCtrlDown) {
 					ExecuteClear();
+				}
+				else {
+					ExecuteShowInput(EDITINPUT_NAME);
+					Framework.IgnoreNextInputEvent = true;
+				}
 			break;
 			case SDL_SCANCODE_I:
 				if(IsShiftDown) {
@@ -1077,8 +1090,24 @@ void _EditorState::Render(double BlendFactor) {
 	glm::vec2 DrawSpacing = glm::vec2(0, 20);
 	std::ostringstream Buffer;
 
+	// Draw name
+	if(Map->Name.size()) {
+		Buffer << Map->Name;
+		MainFont->DrawText(Buffer.str(), DrawPosition);
+		Buffer.str("");
+		DrawPosition += DrawSpacing;
+	}
+
 	// Draw filename
-	Buffer << Map->Filename;
+	if(Map->Filename.size()) {
+		Buffer << Map->Filename;
+		MainFont->DrawText(Buffer.str(), DrawPosition);
+		Buffer.str("");
+		DrawPosition += DrawSpacing;
+	}
+
+	// Draw dimensions
+	Buffer << Map->Size.x << "x" << Map->Size.y;
 	MainFont->DrawText(Buffer.str(), DrawPosition);
 	Buffer.str("");
 	DrawPosition += DrawSpacing;
@@ -1701,11 +1730,14 @@ void _EditorState::ProcessIcons(int Index, int Type) {
 		case ICON_SHOW:
 			ExecuteHighlightBlocks();
 		break;
+		case ICON_GRID:
+			ExecuteUpdateGridMode();
+		break;
 		case ICON_NEW:
 			ExecuteClear();
 		break;
-		case ICON_GRID:
-			ExecuteUpdateGridMode();
+		case ICON_NAME:
+			ExecuteShowInput(EDITINPUT_NAME);
 		break;
 		case ICON_LOAD:
 			ExecuteShowInput(EDITINPUT_LOAD);
