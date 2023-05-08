@@ -1757,8 +1757,7 @@ void _EditorState::ProcessIcons(int Index, int Type) {
 void _EditorState::ProcessBlockIcons(int Index, int Type) {
 	switch(Index) {
 		case ICON_COLOR:
-			if(SelectedBlocks.size())
-				ExecuteShowInput(EDITINPUT_COLOR);
+			ExecuteShowInput(EDITINPUT_COLOR);
 		break;
 		case ICON_WALK:
 			ExecuteWalkable();

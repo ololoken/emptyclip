@@ -653,7 +653,7 @@
 		</element>
 		<element id="button_editor_none" style="style_editor_button_green" hover_style="style_editor_button_selected" offset_y="34" size_x="32" size_y="32" alignment_x="0" alignment_y="0" clickable="true" scaled="false" index="14">
 			<element id="label_button_editor_none" font="editor_tiny" text="None" offset_y="12" alignment_y="3" scaled="false"/>
-			<element id="label_button_editor_none_key" font="editor_tiny" text="~" offset_y="26" alignment_y="3" scaled="false"/>
+			<element id="label_button_editor_none_key" font="editor_tiny" text="`" offset_y="26" alignment_y="3" scaled="false"/>
 		</element>
 		<element id="button_editor_del" style="style_editor_button_green" hover_style="style_editor_button_selected" offset_x="34" offset_y="34" size_x="32" size_y="32" alignment_x="0" alignment_y="0" clickable="true" scaled="false" index="15">
 			<element id="label_button_editor_del" font="editor_tiny" text="Del" offset_y="12" alignment_y="3" scaled="false"/>
