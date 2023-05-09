@@ -2320,20 +2320,15 @@ int _Map::RenderForeground(const glm::vec2 &PlayerPosition, bool AlwaysFade) {
 		_Block *Block = &Blocks[MAPLAYER_FORE][i];
 
 		// Check bounds
-		bool Draw = true;
-		glm::vec4 Color = Block->Color;
-		if(Block->MinZ >= 0) {
-			glm::vec4 Bounds;
-			Block->GetBounds(Bounds, false);
-			Draw = Camera->IsAABBInView(Bounds);
-
-			// Change alpha when player is directly under block
-			if(Draw && (AlwaysFade || (PlayerPosition.x >= Bounds[0] && PlayerPosition.y >= Bounds[1] && PlayerPosition.x <= Bounds[2] && PlayerPosition.y <= Bounds[3])))
-				Color.a = MAP_FOREGROUND_FADE;
-		}
-
-		if(!Draw)
+		glm::vec4 Bounds;
+		Block->GetBounds(Bounds, false);
+		if(!Camera->IsAABBInView(Bounds))
 			continue;
+
+		// Change alpha when player is directly under block
+		glm::vec4 Color = Block->Color;
+		if(AlwaysFade || (PlayerPosition.x >= Bounds[0] && PlayerPosition.y >= Bounds[1] && PlayerPosition.x <= Bounds[2] && PlayerPosition.y <= Bounds[3]))
+			Color.a = MAP_FOREGROUND_FADE;
 
 		// Draw
 		ae::Graphics.SetColor(Color);

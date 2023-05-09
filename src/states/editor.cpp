@@ -827,7 +827,7 @@ void _EditorState::Update(double FrameTime) {
 					_Block Block;
 					Block.Start = DrawStart;
 					Block.End = DrawEnd-1;
-					Block.MinZ = MinZ;
+					Block.MinZ = (EditLayer == MAPLAYER_FORE) ? 0 : MinZ;
 					Block.MaxZ = MaxZ;
 					Block.Texture = Brush[EDITMODE_BLOCKS]->Style->Texture;
 					Block.AltTexture = AltTexture;
@@ -2073,6 +2073,9 @@ void _EditorState::ExecuteToggleTile() {
 // Executes the change Z command
 void _EditorState::ExecuteChangeZ(float Change, int Type) {
 	if(Type == 0) {
+		if(EditLayer == MAPLAYER_FORE)
+			return;
+
 		if(SelectedBlocks.size()) {
 			for(const auto &Index : SelectedBlocks) {
 				_Block *Block = Map->GetBlock(EditLayer, (size_t)Index);
