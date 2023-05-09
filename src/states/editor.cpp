@@ -2649,6 +2649,8 @@ void _EditorState::ExecuteUpdateBlockSize(int Direction, bool Expand) {
 // Update map level
 void _EditorState::ExecuteUpdateMapLevel(int Change) {
 	Map->Level = std::max(1, Map->Level + Change);
+	EventSpawnLevel = Map->Level;
+	ObjectLevel = Map->Level;
 }
 
 // Selects an object
