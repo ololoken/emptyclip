@@ -544,7 +544,7 @@ void _Map::InitializeTiles() {
 		Data[i] = new _Tile[(size_t)Size.y];
 
 	// Floor layers
-	for(int l = 0; l < MAPLAYER_FLAT; l++) {
+	for(int l = MAPLAYER_BASE; l <= MAPLAYER_FLOOR2; l++) {
 		for(size_t k = 0; k < Blocks[l].size(); k++) {
 			for(int i = Blocks[l][k].Start.x; i <= Blocks[l][k].End.x; i++) {
 				for(int j = Blocks[l][k].Start.y; j <= Blocks[l][k].End.y; j++) {
@@ -2435,7 +2435,7 @@ bool _Map::CheckMinimapBounds(const glm::vec4 &Bounds) {
 void _Map::AddMinimapIcons() {
 
 	// Add walls
-	for(int Layer = MAPLAYER_FLAT; Layer <= MAPLAYER_WALL; Layer++) {
+	for(int Layer = MAPLAYER_WALL; Layer <= MAPLAYER_FLAT; Layer++) {
 		for(size_t i = 0; i < Blocks[Layer].size(); i++) {
 			_Block *Block = &Blocks[Layer][i];
 			if(Block->MinZ > 0)

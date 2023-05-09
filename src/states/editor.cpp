@@ -100,9 +100,9 @@ void _EditorState::Init() {
 	LayerButtons[MAPLAYER_FLOOR0] = ae::Assets.Elements["button_editor_layer_floor0"];
 	LayerButtons[MAPLAYER_FLOOR1] = ae::Assets.Elements["button_editor_layer_floor1"];
 	LayerButtons[MAPLAYER_FLOOR2] = ae::Assets.Elements["button_editor_layer_floor2"];
-	LayerButtons[MAPLAYER_FLAT] = ae::Assets.Elements["button_editor_layer_flat"];
-	LayerButtons[MAPLAYER_WALL] = ae::Assets.Elements["button_editor_layer_wall"];
 	LayerButtons[MAPLAYER_FORE] = ae::Assets.Elements["button_editor_layer_fore"];
+	LayerButtons[MAPLAYER_WALL] = ae::Assets.Elements["button_editor_layer_wall"];
+	LayerButtons[MAPLAYER_FLAT] = ae::Assets.Elements["button_editor_layer_flat"];
 
 	// Assign palette buttons
 	ModeButtons[EDITMODE_BLOCKS] = ae::Assets.Elements["button_editor_mode_block"];
@@ -352,25 +352,25 @@ bool _EditorState::HandleKey(const ae::_KeyEvent &KeyEvent) {
 				Framework.Done = true;
 			break;
 			case SDL_SCANCODE_F1:
-				ExecuteUpdateLayer(0, false);
+				ExecuteUpdateLayer(MAPLAYER_BASE, false);
 			break;
 			case SDL_SCANCODE_F2:
-				ExecuteUpdateLayer(1, false);
+				ExecuteUpdateLayer(MAPLAYER_FLOOR0, false);
 			break;
 			case SDL_SCANCODE_F3:
-				ExecuteUpdateLayer(2, false);
+				ExecuteUpdateLayer(MAPLAYER_FLOOR1, false);
 			break;
 			case SDL_SCANCODE_F4:
-				ExecuteUpdateLayer(3, false);
+				ExecuteUpdateLayer(MAPLAYER_FLOOR2, false);
 			break;
 			case SDL_SCANCODE_F5:
-				ExecuteUpdateLayer(4, false);
+				ExecuteUpdateLayer(MAPLAYER_FORE, false);
 			break;
 			case SDL_SCANCODE_W:
-				ExecuteUpdateLayer(5, false);
+				ExecuteUpdateLayer(MAPLAYER_WALL, false);
 			break;
 			case SDL_SCANCODE_F:
-				ExecuteUpdateLayer(6, false);
+				ExecuteUpdateLayer(MAPLAYER_FLAT, false);
 			break;
 			case SDL_SCANCODE_PAGEUP:
 				ExecuteUpdateMapLevel(1);
@@ -1157,7 +1157,7 @@ void _EditorState::Render(double BlendFactor) {
 
 	// Bottom right
 	DrawPosition.x = ae::Graphics.ViewportSize.x - 30;
-	DrawPosition.y = ae::Graphics.ViewportSize.y - 45;
+	DrawPosition.y = ae::Graphics.ViewportSize.y - 58;
 	glm::vec2 DrawOffset(5, 0);
 
 	// Draw grid size
@@ -1680,25 +1680,25 @@ void _EditorState::DrawObject(float OffsetX, float OffsetY, const _ObjectSpawn *
 void _EditorState::ProcessIcons(int Index, int Type) {
 	switch(Index) {
 		case ICON_LAYER1:
-			ExecuteUpdateLayer(0, false);
+			ExecuteUpdateLayer(MAPLAYER_BASE, false);
 		break;
 		case ICON_LAYER2:
-			ExecuteUpdateLayer(1, false);
+			ExecuteUpdateLayer(MAPLAYER_FLOOR0, false);
 		break;
 		case ICON_LAYER3:
-			ExecuteUpdateLayer(2, false);
+			ExecuteUpdateLayer(MAPLAYER_FLOOR1, false);
 		break;
 		case ICON_LAYER4:
-			ExecuteUpdateLayer(3, false);
-		break;
-		case ICON_LAYER5:
-			ExecuteUpdateLayer(4, false);
-		break;
-		case ICON_WALL:
-			ExecuteUpdateLayer(5, false);
+			ExecuteUpdateLayer(MAPLAYER_FLOOR2, false);
 		break;
 		case ICON_FORE:
-			ExecuteUpdateLayer(6, false);
+			ExecuteUpdateLayer(MAPLAYER_FORE, false);
+		break;
+		case ICON_WALL:
+			ExecuteUpdateLayer(MAPLAYER_WALL, false);
+		break;
+		case ICON_FLAT:
+			ExecuteUpdateLayer(MAPLAYER_FLAT, false);
 		break;
 		case ICON_DOWN:
 			ExecuteShiftLayer(-1);
@@ -1741,6 +1741,9 @@ void _EditorState::ProcessIcons(int Index, int Type) {
 		break;
 		case ICON_NAME:
 			ExecuteShowInput(EDITINPUT_NAME);
+		break;
+		case ICON_AMBIENT:
+			ExecuteShowInput(EDITINPUT_AMBIENTCOLOR);
 		break;
 		case ICON_LOAD:
 			ExecuteShowInput(EDITINPUT_LOAD);

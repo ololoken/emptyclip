@@ -611,17 +611,17 @@
 			<element id="label_button_editor_floor2" font="editor_tiny" text="Floor" offset_y="12" alignment_y="3" scaled="false"/>
 			<element id="label_button_editor_floor2_key" font="editor_tiny" text="F4" offset_y="26" alignment_y="3" scaled="false"/>
 		</element>
-		<element id="button_editor_layer_flat" style="style_editor_button_brown" hover_style="style_editor_button_selected" offset_x="136" size_x="32" size_y="32" alignment_x="0" alignment_y="0" clickable="true" scaled="false" index="4">
-			<element id="label_button_editor_flat" font="editor_tiny" text="Flat" offset_y="12" alignment_y="3" scaled="false"/>
-			<element id="label_button_editor_flat_key" font="editor_tiny" text="F5" offset_y="26" alignment_y="3" scaled="false"/>
+		<element id="button_editor_layer_fore" style="style_editor_button_brown" hover_style="style_editor_button_selected" offset_x="136" size_x="32" size_y="32" alignment_x="0" alignment_y="0" clickable="true" scaled="false" index="4">
+			<element id="label_button_editor_fore" font="editor_tiny" text="Fore" offset_y="12" alignment_y="3" scaled="false"/>
+			<element id="label_button_editor_fore_key" font="editor_tiny" text="F5" offset_y="26" alignment_y="3" scaled="false"/>
 		</element>
 		<element id="button_editor_layer_wall" style="style_editor_button_brown" hover_style="style_editor_button_selected" offset_x="170" size_x="32" size_y="32" alignment_x="0" alignment_y="0" clickable="true" scaled="false" index="5">
 			<element id="label_button_editor_wall" font="editor_tiny" text="Wall" offset_y="12" alignment_y="3" scaled="false"/>
 			<element id="label_button_editor_wall_key" font="editor_tiny" text="W" offset_y="26" alignment_y="3" scaled="false"/>
 		</element>
-		<element id="button_editor_layer_fore" style="style_editor_button_brown" hover_style="style_editor_button_selected" offset_x="204" size_x="32" size_y="32" alignment_x="0" alignment_y="0" clickable="true" scaled="false" index="6">
-			<element id="label_button_editor_fore" font="editor_tiny" text="Fore" offset_y="12" alignment_y="3" scaled="false"/>
-			<element id="label_button_editor_fore_key" font="editor_tiny" text="F" offset_y="26" alignment_y="3" scaled="false"/>
+		<element id="button_editor_layer_flat" style="style_editor_button_brown" hover_style="style_editor_button_selected" offset_x="204" size_x="32" size_y="32" alignment_x="0" alignment_y="0" clickable="true" scaled="false" index="6">
+			<element id="label_button_editor_flat" font="editor_tiny" text="Flat" offset_y="12" alignment_y="3" scaled="false"/>
+			<element id="label_button_editor_flat_key" font="editor_tiny" text="F" offset_y="26" alignment_y="3" scaled="false"/>
 		</element>
 		<element id="button_editor_move_layer_up" style="style_editor_button_brown" hover_style="style_editor_button_selected" offset_x="268" size_x="32" size_y="32" alignment_x="0" alignment_y="0" clickable="true" scaled="false" index="7">
 			<element id="label_button_editor_move_layer_up1" font="editor_tiny" text="Layer" offset_y="12" alignment_y="3" scaled="false"/>
@@ -687,15 +687,19 @@
 			<element id="label_button_editor_name" font="editor_tiny" text="Name" offset_y="12" alignment_y="3" scaled="false"/>
 			<element id="label_button_editor_name_key" font="editor_tiny" text="N" offset_y="26" alignment_y="3" scaled="false"/>
 		</element>
-		<element id="button_editor_load" style="style_editor_button_red" hover_style="style_editor_button_selected" offset_x="68" offset_y="68" size_x="32" size_y="32" alignment_x="0" alignment_y="0" clickable="true" scaled="false" index="23">
+		<element id="button_editor_ambient" style="style_editor_button_red" hover_style="style_editor_button_selected" offset_x="68" offset_y="68" size_x="32" size_y="32" alignment_x="0" alignment_y="0" clickable="true" scaled="false" index="23">
+			<element id="label_button_editor_ambient" font="editor_tiny" text="Amb" offset_y="12" alignment_y="3" scaled="false"/>
+			<element id="label_button_editor_ambient_key" font="editor_tiny" text="S A" offset_y="26" alignment_y="3" scaled="false"/>
+		</element>
+		<element id="button_editor_load" style="style_editor_button_red" hover_style="style_editor_button_selected" offset_x="102" offset_y="68" size_x="32" size_y="32" alignment_x="0" alignment_y="0" clickable="true" scaled="false" index="24">
 			<element id="label_button_editor_load" font="editor_tiny" text="Load" offset_y="12" alignment_y="3" scaled="false"/>
 			<element id="label_button_editor_load_key" font="editor_tiny" text="L" offset_y="26" alignment_y="3" scaled="false"/>
 		</element>
-		<element id="button_editor_save" style="style_editor_button_red" hover_style="style_editor_button_selected" offset_x="102" offset_y="68" size_x="32" size_y="32" alignment_x="0" alignment_y="0" clickable="true" scaled="false" index="24">
+		<element id="button_editor_save" style="style_editor_button_red" hover_style="style_editor_button_selected" offset_x="136" offset_y="68" size_x="32" size_y="32" alignment_x="0" alignment_y="0" clickable="true" scaled="false" index="25">
 			<element id="label_button_editor_save" font="editor_tiny" text="Save" offset_y="12" alignment_y="3" scaled="false"/>
 			<element id="label_button_editor_save_key" font="editor_tiny" text="S" offset_y="26" alignment_y="3" scaled="false"/>
 		</element>
-		<element id="button_editor_test" style="style_editor_button_red" hover_style="style_editor_button_selected" offset_x="136" offset_y="68" size_x="32" size_y="32" alignment_x="0" alignment_y="0" clickable="true" scaled="false" index="25">
+		<element id="button_editor_test" style="style_editor_button_red" hover_style="style_editor_button_selected" offset_x="170" offset_y="68" size_x="32" size_y="32" alignment_x="0" alignment_y="0" clickable="true" scaled="false" index="26">
 			<element id="label_button_editor_test" font="editor_tiny" text="Test" offset_y="12" alignment_y="3" scaled="false"/>
 			<element id="label_button_editor_test_key" font="editor_tiny" text="T" offset_y="26" alignment_y="3" scaled="false"/>
 		</element>
