@@ -564,6 +564,9 @@ void _EditorState::HandleMouseButton(const ae::_MouseEvent &MouseEvent) {
 						switch(EditMode) {
 							case EDITMODE_BLOCKS:
 							case EDITMODE_EVENTS:
+								if(!Brush[EditMode])
+									break;
+
 								DeselectBlocks();
 								DeselectEvent();
 
