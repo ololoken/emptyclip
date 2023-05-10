@@ -2341,15 +2341,16 @@ void _EditorState::ExecuteSplit() {
 
 	// Get single selected block
 	_Block *Block = Map->GetBlock(EditLayer, SelectedBlocks[0]);
+	bool HorizontalCut = Block->GetLargestAxis();
 
 	// Check for square blocks
 	glm::vec2 Size = Block->End - Block->Start;
 	if(Size.x == Size.y)
-		return;
+		HorizontalCut = !IsShiftDown;
 
 	// Cut horizontally
 	_Block NewBlock = *Block;
-	if(Block->GetLargestAxis()) {
+	if(HorizontalCut) {
 
 		// Check cut point
 		int CutPoint = (int)WorldCursor.y - 1;
