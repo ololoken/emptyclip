@@ -1859,7 +1859,7 @@ void _PlayState::CheckEvents(const _Entity *Entity) {
 					Event->Active = false;
 			} break;
 			case EVENT_SOUND:
-				if(ae::Assets.Sounds[Event->ItemID]) {
+				if(ae::Assets.Sounds[Event->SoundID]) {
 					Event->StartTimer();
 					ActiveEvents.push_back(Event);
 				}
@@ -1978,10 +1978,10 @@ void _PlayState::UpdateEvents(double FrameTime) {
 				const std::vector<_EventTile> &Tiles = Event->Tiles;
 				if(Tiles.size()) {
 					for(size_t i = 0; i < Tiles.size(); i++)
-						ae::Audio.PlaySound(ae::Assets.Sounds[Event->ItemID], ae::_SoundSettings(glm::vec3(Tiles[i].Coord.x, 0, Tiles[i].Coord.y), 1.0f, AUDIO_REFERENCE_DISTANCE, AUDIO_MAX_DISTANCE, AUDIO_ROLL_OFF));
+						ae::Audio.PlaySound(ae::Assets.Sounds[Event->SoundID], ae::_SoundSettings(glm::vec3(Tiles[i].Coord.x, 0, Tiles[i].Coord.y), 1.0f, AUDIO_REFERENCE_DISTANCE, AUDIO_MAX_DISTANCE, AUDIO_ROLL_OFF));
 				}
 				else
-					ae::Audio.PlaySound(ae::Assets.Sounds[Event->ItemID]);
+					ae::Audio.PlaySound(ae::Assets.Sounds[Event->SoundID]);
 
 				Decrement = true;
 			} break;
@@ -2007,8 +2007,8 @@ void _PlayState::UpdateEvents(double FrameTime) {
 		// Decrease the event level
 		if(Decrement) {
 
-			// Play sound
-			if(!Event->SoundID.empty())
+			// Play sound for other events
+			if(Event->Type != EVENT_SOUND && !Event->SoundID.empty())
 				ae::Audio.PlaySound(ae::Assets.Sounds[Event->SoundID]);
 
 			Event->StartTimer();

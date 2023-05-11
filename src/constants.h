@@ -177,7 +177,7 @@ const  double       AI_RETREAT_TIME                      =  4.0;
 const  float        AI_RETREAT_DISTANCE                  =  20.0f;
 const  double       AI_SHOOT_PERIOD                      =  0.5;
 //     Map
-const  int          MAP_FILEVERSION                      =  3;
+const  int          MAP_FILEVERSION                      =  4;
 const  std::string  MAP_TEXTURE_PATH                     =  "textures/map/";
 const  float        MAP_MINZ                             =  0.0f;
 const  float        MAP_FLATZ                            =  1.0f;
