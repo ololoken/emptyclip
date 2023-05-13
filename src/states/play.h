@@ -87,6 +87,7 @@ class _PlayState : public ae::_State {
 		bool DrawMinimapIcons();
 
 		// Parameters
+		glm::vec2 SpawnLocation{-1.0f, -1.0f};
 		std::string Level;
 		bool TestMode{false};
 		bool FromEditor{false};

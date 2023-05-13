@@ -1810,7 +1810,7 @@ std::vector<_Event *> &_Map::GetEventList(const glm::ivec2 &Position) {
 	return Data[Position.x][Position.y].Events;
 }
 
-// Returns a starting position by level and player id
+// Returns a starting position by checkpoint level
 glm::vec2 _Map::GetStartingPositionByCheckpoint(int CheckpointLevel) {
 
 	// Look through checkpoint events

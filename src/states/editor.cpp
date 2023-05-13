@@ -2178,6 +2178,8 @@ void _EditorState::ExecuteTest() {
 	PlayState.FromEditor = true;
 	PlayState.Level = EDITOR_TESTLEVEL;
 	PlayState.CheckpointIndex = CheckpointIndex;
+	PlayState.SpawnLocation = IsShiftDown ? glm::clamp(WorldCursor, glm::vec2(PLAYER_RADIUS), glm::vec2(Map->Size) - glm::vec2(PLAYER_RADIUS)) : glm::vec2(-1.0f);
+
 	Framework.ChangeState(&PlayState);
 }
 

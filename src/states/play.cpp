@@ -119,7 +119,10 @@ void _PlayState::Init() {
 	Player->MapID = Map->Filename;
 
 	// Set starting position
-	Player->WarpPosition(Map->GetStartingPositionByCheckpoint(Player->CheckpointIndex));
+	if(TestMode && SpawnLocation.x >= 0.0f)
+		Player->WarpPosition(SpawnLocation);
+	else
+		Player->WarpPosition(Map->GetStartingPositionByCheckpoint(Player->CheckpointIndex));
 
 	// Spawn objects
 	Monsters.reserve((size_t)Map->Monsters);
