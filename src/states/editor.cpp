@@ -379,6 +379,10 @@ bool _EditorState::HandleKey(const ae::_KeyEvent &KeyEvent) {
 						Map->Name = InputText;
 						SavedText[EditorInput] = InputText;
 					} break;
+					default:
+						if(NewMapElement->Active)
+							ExecuteNewMap();
+					break;
 				}
 
 				ae::FocusedElement = nullptr;
