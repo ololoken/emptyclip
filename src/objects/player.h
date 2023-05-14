@@ -147,7 +147,7 @@ class _Player : public _Entity {
 		bool PlayEquipSound(size_t Slot) const;
 
 		// Map
-		std::string MapID{GAME_FIRSTLEVEL};
+		std::string MapID;
 		glm::ivec2 LastGoodCoord{0};
 		int CheckpointIndex{0};
 		int Progression{1};

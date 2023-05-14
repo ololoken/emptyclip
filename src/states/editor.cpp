@@ -44,6 +44,7 @@
 #include <iostream>
 #include <sstream>
 #include <algorithm>
+#include <filesystem>
 
 _EditorState EditorState;
 
@@ -1985,6 +1986,10 @@ void _EditorState::UpdateEventID(int Type, const std::string &ID) {
 				break;
 				case EVENT_LIGHT:
 					if(ID.empty() || ae::Assets.Colors.find(ID) != ae::Assets.Colors.end())
+						SelectedEvent->ItemID = ID;
+				break;
+				case EVENT_END:
+					if(ID.empty() || std::filesystem::exists("maps/" + _Map::FixFilename(ID)))
 						SelectedEvent->ItemID = ID;
 				break;
 				default:

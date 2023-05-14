@@ -40,7 +40,6 @@ const  double       GAME_FPS                             =  100.0;
 const  double       GAME_TIMESTEP                        =  1.0/GAME_FPS;
 const  double       GAME_MAX_FRAMETIME                   =  1.0/30.0;
 const  float        GAME_PAUSE_FADEAMOUNT                =  0.7f;
-const  std::string  GAME_FIRSTLEVEL                      =  "c01.map";
 const  int          GAME_PLAYERLEVEL_SOFTCAP             =  201;
 const  int          GAME_SKILL_SOFTCAP                   =  100;
 const  int          GAME_MAX_SKILL_PERLEVEL              =  3;

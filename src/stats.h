@@ -184,6 +184,7 @@ class _Stats {
 		void LoadSpecials();
 		void LoadUniques();
 		void LoadAchievements();
+		void LoadCampaign();
 
 		void CreateTransformedText();
 
@@ -224,6 +225,8 @@ class _Stats {
 		std::vector<std::string> AmmoNames;
 		std::vector<std::string> ModNames;
 		std::vector<_Skill> Skills;
+
+		std::string FirstLevel;
 
 		_Item *WeaponFists{nullptr};
 

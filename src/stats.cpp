@@ -58,6 +58,7 @@ void _Stats::Init() {
 	LoadSpecials();
 	LoadUniques();
 	LoadAchievements();
+	LoadCampaign();
 
 	CreateTransformedText();
 
@@ -807,6 +808,19 @@ void _Stats::LoadAchievements() {
 
 		Achievements.push_back(Achievement);
 	}
+
+	Database->CloseQuery();
+}
+
+// Load campaign settings
+void _Stats::LoadCampaign() {
+
+	// Run query
+	Database->PrepareQuery("SELECT * FROM campaign");
+
+	// Get data
+	if(Database->FetchRow())
+		FirstLevel = Database->GetString("first_level");
 
 	Database->CloseQuery();
 }

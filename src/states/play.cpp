@@ -107,7 +107,7 @@ void _PlayState::Init() {
 
 	// Check for level override
 	if(Level.empty())
-		Level = Player->MapID;
+		Level = Stats.FirstLevel;
 
 	// Create framebuffer for mixing lights
 	Framebuffer = new ae::_Framebuffer(ae::Graphics.CurrentSize);
@@ -1437,7 +1437,7 @@ void _PlayState::EndLevel() {
 	// End of the game
 	if(Level.empty()) {
 		Menu.SetScoreStats(HUD, Player, true, Player->Progression + 1, GotOneHundredPercent);
-		Level = GAME_FIRSTLEVEL;
+		Level = Stats.FirstLevel;
 
 		// Check achievements
 		if(Player->Progression == 1) {
@@ -1845,7 +1845,7 @@ void _PlayState::CheckEvents(const _Entity *Entity) {
 					break;
 				}
 			break;
-			case EVENT_ENDLEVEL: {
+			case EVENT_END: {
 				TouchingEndEvent = Event;
 			} break;
 			case EVENT_TEXT: {
