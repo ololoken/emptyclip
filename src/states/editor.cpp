@@ -1860,9 +1860,6 @@ void _EditorState::AddEvent(int Type) {
 	glm::ivec2 End = DrawEnd - 1;
 	switch(Type) {
 		case EVENT_DOOR:
-			TileLayer = MAPLAYER_FLAT;
-			AddTile = true;
-		break;
 		case EVENT_WALLSWITCH:
 			TileLayer = EditLayer;
 			AddTile = true;
