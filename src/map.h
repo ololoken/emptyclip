@@ -207,7 +207,7 @@ class _Map {
 			MINIMAP_COUNT
 		};
 
-		_Map();
+		_Map(const glm::ivec2 &NewSize);
 		_Map(const std::string &Filename, double Clock=0.0, size_t Progression=0);
 		~_Map();
 

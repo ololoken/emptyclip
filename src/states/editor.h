@@ -160,8 +160,14 @@ class _EditorState : public ae::_State {
 
 	protected:
 
+		void NewMap(const glm::ivec2 &Size);
 		bool LoadMap(const std::string &File, bool UseSavedCameraPosition=false);
 		void ResetEditorState();
+
+		void InitNewMap();
+		void ToggleNewMap();
+		bool CloseWindows();
+		bool DialogOpen();
 
 		void DrawObject(float OffsetX, float OffsetY, const _ObjectSpawn *ObjectSpawn, float Alpha);
 		void DrawBrush();
@@ -203,7 +209,7 @@ class _EditorState : public ae::_State {
 		void ExecuteMirror();
 		void ExecuteToggleTile();
 		void ExecuteShowInput(int Type);
-		void ExecuteClear();
+		void ExecuteNewMap();
 		void ExecuteTest();
 		void ExecuteDelete();
 		void ExecuteCopy();
@@ -267,6 +273,9 @@ class _EditorState : public ae::_State {
 		ae::_Element *LayerButtons[MAPLAYER_COUNT];
 		ae::_Element *ModeButtons[EDITMODE_COUNT];
 		ae::_Element *Brush[EDITMODE_COUNT];
+		ae::_Element *NewMapElement{nullptr};
+		ae::_Element *NewMapWidthTextBox{nullptr};
+		ae::_Element *NewMapHeightTextBox{nullptr};
 		ae::_Element *CommandElement;
 		ae::_Element *BlockElement;
 		ae::_Element *EventElement;

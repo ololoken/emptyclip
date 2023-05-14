@@ -594,6 +594,23 @@
 		<element id="label_hud_skill_more" color="red" font="hud_medium" offset_x="25" offset_y="294" alignment_x="0" alignment_y="3"/>
 		<element id="label_hud_skill_help" font="hud_tiny" text="Shift+click[c gray] to increase by 5" offset_x="25" offset_y="290" alignment_x="0" alignment_y="3" format="true"/>
 	</element>
+	<element id="element_editor_newmap" style="style_menu_window" size_x="400" size_y="310" offset_x="-128" offset_y="-84">
+		<element id="button_editor_newmap_create" style="style_menu_button" hover_style="style_menu_button_hover" offset_x="-74" offset_y="-34" size_x="140" size_y="44" alignment_y="2" clickable="true">
+			<element id="label_editor_newmap_create" font="hud_medium" text="Create" offset_y="32" alignment_y="3"/>
+		</element>
+		<element id="button_editor_newmap_cancel" style="style_menu_button" hover_style="style_menu_button_hover" offset_x="74" offset_y="-34" size_x="140" size_y="44" alignment_y="2" clickable="true">
+			<element id="label_editor_newmap_cancel" font="hud_medium" text="Cancel" offset_y="32" alignment_y="3"/>
+		</element>
+		<element id="element_editor_newmap_width" style="style_menu_textbox" offset_x="210" offset_y="84" size_x="104" size_y="42" alignment_x="0" alignment_y="0" clickable="true">
+			<element id="textbox_editor_newmap_width" font="hud_medium" offset_x="6" offset_y="30" size_x="104" size_y="42" alignment_x="0" alignment_y="3" maxlength="4"/>
+			<element id="label_editor_newmap_width" font="hud_medium" text="Width" offset_y="30" size_x="126" alignment_x="2" alignment_y="3"/>
+		</element>
+		<element id="element_editor_newmap_height" style="style_menu_textbox" offset_x="210" offset_y="154" size_x="104" size_y="42" alignment_x="0" alignment_y="0" clickable="true">
+			<element id="textbox_editor_newmap_height" font="hud_medium" offset_x="6" offset_y="30" size_x="104" size_y="42" alignment_x="0" alignment_y="3" maxlength="4"/>
+			<element id="label_editor_newmap_height" font="hud_medium" text="Height" offset_y="30" size_x="126" alignment_x="2" alignment_y="3"/>
+		</element>
+		<element id="label_editor_newmap_title" font="menu_buttons" text="New Map" offset_y="48" alignment_y="3"/>
+	</element>
 	<element id="element_editor_command" offset_x="16" size_x="700" size_y="147" alignment_x="0" alignment_y="2" scaled="false">
 		<element id="button_editor_layer_base" style="style_editor_button_brown" hover_style="style_editor_button_selected" size_x="32" size_y="32" alignment_x="0" alignment_y="0" clickable="true" scaled="false" index="0">
 			<element id="label_button_editor_base" font="editor_tiny" text="Base" offset_y="12" alignment_y="3" scaled="false"/>

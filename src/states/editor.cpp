@@ -79,10 +79,14 @@ void _EditorState::Init() {
 
 	// Load command buttons
 	MainFont = ae::Assets.Fonts["editor"];
+	NewMapElement = ae::Assets.Elements["element_editor_newmap"];
+	NewMapWidthTextBox = ae::Assets.Elements["textbox_editor_newmap_width"];
+	NewMapHeightTextBox = ae::Assets.Elements["textbox_editor_newmap_height"];
 	CommandElement = ae::Assets.Elements["element_editor_command"];
 	BlockElement = ae::Assets.Elements["element_editor_blocks"];
 	EventElement = ae::Assets.Elements["element_editor_events"];
 	InputBox = ae::Assets.Elements["element_editor_input"];
+	NewMapElement->SetActive(false);
 	CommandElement->SetActive(true);
 	BlockElement->SetActive(true);
 	EventElement->SetActive(false);
@@ -174,20 +178,28 @@ void _EditorState::Close() {
 	Framebuffer = nullptr;
 }
 
+// Create a new map
+void _EditorState::NewMap(const glm::ivec2 &Size) {
+	delete Map;
+	Map = new _Map(Size);
+	Map->Camera = Camera;
+	ResetEditorState();
+	Camera->ForcePosition(glm::vec3(Map->GetStartingPositionByCheckpoint(0), CAMERA_DISTANCE));
+	SavedText[EDITINPUT_NAME] = "";
+}
+
 // Load a level
 bool _EditorState::LoadMap(const std::string &File, bool UseSavedCameraPosition) {
 	bool Success = false;
 
-	if(Map)
-		delete Map;
-
+	delete Map;
 	try {
 		Map = new _Map(File);
 		Success = true;
 	}
 	catch(std::exception &Error) {
 		std::cout << Error.what() << std::endl;
-		Map = new _Map();
+		Map = new _Map(MAP_SIZE_DEFAULT);
 	}
 
 	Map->Camera = Camera;
@@ -204,6 +216,7 @@ bool _EditorState::LoadMap(const std::string &File, bool UseSavedCameraPosition)
 	return Success;
 }
 
+// Reset editor state variables
 void _EditorState::ResetEditorState() {
 	WorldCursor = glm::vec2(0, 0);
 	SelectedEventIndex = -1;
@@ -273,13 +286,52 @@ void _EditorState::ResetEditorState() {
 	ae::Assets.Elements["button_editor_show"]->Checked = HighlightBlocks;
 }
 
+// Initialize new map dialog
+void _EditorState::InitNewMap() {
+	NewMapElement->SetActive(true);
+
+	ae::FocusedElement = ae::Assets.Elements["textbox_editor_newmap_width"];
+
+	NewMapWidthTextBox->SetText(std::to_string(MAP_SIZE_DEFAULT.x));
+	NewMapHeightTextBox->SetText(std::to_string(MAP_SIZE_DEFAULT.y));
+}
+
+// Toggle new map dialog
+void _EditorState::ToggleNewMap() {
+	if(!NewMapElement->Active) {
+		CloseWindows();
+		InitNewMap();
+	}
+	else {
+		CloseWindows();
+	}
+}
+
+// Close dialog windows
+bool _EditorState::CloseWindows() {
+	bool WasOpen = DialogOpen();
+
+	InputBox->SetActive(false);
+	NewMapElement->SetActive(false);
+
+	ae::FocusedElement = nullptr;
+	EditorInput = -1;
+
+	return WasOpen;
+}
+
+// Return true if dialog window is open
+bool _EditorState::DialogOpen() {
+	return NewMapElement->Active || InputBox->Active;
+}
+
 // Key handler
 bool _EditorState::HandleKey(const ae::_KeyEvent &KeyEvent) {
 	if(IsMoving || IsDrawing || !KeyEvent.Pressed)
 		return false;
 
 	// See if the user is entering in text
-	if(EditorInput != -1) {
+	if(ae::FocusedElement) {
 		switch(KeyEvent.Scancode) {
 			case SDL_SCANCODE_RETURN: {
 				const std::string InputText = InputBox->Children.front()->Text;
@@ -333,12 +385,19 @@ bool _EditorState::HandleKey(const ae::_KeyEvent &KeyEvent) {
 				InputBox->SetActive(false);
 			} break;
 			case SDL_SCANCODE_ESCAPE:
-				ae::FocusedElement = nullptr;
-				EditorInput = -1;
-				InputBox->SetActive(false);
+				CloseWindows();
+			break;
+			case SDL_SCANCODE_TAB:
+				if(ae::FocusedElement == NewMapWidthTextBox)
+					ae::FocusedElement = NewMapHeightTextBox;
+				else if(ae::FocusedElement == NewMapHeightTextBox)
+					ae::FocusedElement = NewMapWidthTextBox;
+
+				if(ae::FocusedElement)
+					ae::FocusedElement->ResetCursor();
 			break;
 			default:
-				InputBox->HandleKey(KeyEvent);
+				ae::Graphics.Element->HandleKey(KeyEvent);
 			break;
 		}
 	}
@@ -349,7 +408,8 @@ bool _EditorState::HandleKey(const ae::_KeyEvent &KeyEvent) {
 
 			// Exit
 			case SDL_SCANCODE_ESCAPE:
-				Framework.Done = true;
+				if(!CloseWindows())
+					Framework.Done = true;
 			break;
 			case SDL_SCANCODE_F1:
 				ExecuteUpdateLayer(MAPLAYER_BASE, false);
@@ -474,7 +534,8 @@ bool _EditorState::HandleKey(const ae::_KeyEvent &KeyEvent) {
 			break;
 			case SDL_SCANCODE_N:
 				if(IsCtrlDown) {
-					ExecuteClear();
+					ToggleNewMap();
+					Framework.IgnoreNextInputEvent = true;
 				}
 				else {
 					ExecuteShowInput(EDITINPUT_NAME);
@@ -556,92 +617,108 @@ void _EditorState::HandleMouseButton(const ae::_MouseEvent &MouseEvent) {
 	// Distinguish between interface and viewport clicks
 	if(ae::Input.GetMouse().x < ae::Graphics.ViewportSize.x && ae::Input.GetMouse().y < ae::Graphics.ViewportSize.y) {
 		if(MouseEvent.Pressed) {
+			if(!DialogOpen()) {
 
-			// Mouse press
-			switch(MouseEvent.Button) {
-				case SDL_BUTTON_LEFT:
-					if(!IsMoving && !Clicked) {
-						switch(EditMode) {
-							case EDITMODE_BLOCKS:
-							case EDITMODE_EVENTS:
-								if(!Brush[EditMode])
-									break;
+				// Mouse press
+				switch(MouseEvent.Button) {
+					case SDL_BUTTON_LEFT:
 
-								DeselectBlocks();
-								DeselectEvent();
+						// Click in world
+						if(!IsMoving && !Clicked) {
+							switch(EditMode) {
+								case EDITMODE_BLOCKS:
+								case EDITMODE_EVENTS:
+									if(!Brush[EditMode])
+										break;
 
-								// Save start position
-								DrawStart = SavedWorldCursorIndex = WorldCursorIndex;
-								DrawEnd = DrawStart + 1;
+									DeselectBlocks();
+									DeselectEvent();
 
-								IsDrawing = true;
-								FinishDrawing = false;
-							break;
-							default: {
-								ae::_Element *Button = Brush[EditMode];
-								if(Button)
-									SpawnObject(Map->GetValidPosition(WorldCursor), Rotation, 1.0f, (int)(intptr_t)Button->UserData, Button->ID, ObjectLevel, IsShiftDown);
-							} break;
+									// Save start position
+									DrawStart = SavedWorldCursorIndex = WorldCursorIndex;
+									DrawEnd = DrawStart + 1;
+
+									IsDrawing = true;
+									FinishDrawing = false;
+								break;
+								default: {
+									ae::_Element *Button = Brush[EditMode];
+									if(Button)
+										SpawnObject(Map->GetValidPosition(WorldCursor), Rotation, 1.0f, (int)(intptr_t)Button->UserData, Button->ID, ObjectLevel, IsShiftDown);
+								} break;
+							}
 						}
-					}
-				break;
-				case SDL_BUTTON_RIGHT:
-					Camera->Set2DPosition(WorldCursor);
-				break;
-				case SDL_BUTTON_MIDDLE:
-					if(!IsDrawing) {
-						switch(EditMode) {
-							case EDITMODE_BLOCKS: {
-								ClickedPosition = WorldCursor;
+					break;
+					case SDL_BUTTON_RIGHT:
+						Camera->Set2DPosition(WorldCursor);
+					break;
+					case SDL_BUTTON_MIDDLE:
+						if(!IsDrawing) {
+							switch(EditMode) {
+								case EDITMODE_BLOCKS: {
+									ClickedPosition = WorldCursor;
 
-								// See if click hit a block
-								_Block *SelectedBlock = nullptr;
-								size_t SelectedBlockIndex = Map->GetSelectedBlock(EditLayer, WorldCursorIndex, &SelectedBlock);
-								if(SelectedBlock) {
-									SavedWorldCursorIndex = WorldCursorIndex;
-									IsMoving = true;
-									DraggingBox = false;
-									SelectedBlock->MoveStart = SelectedBlock->Start;
-									SelectedBlock->MoveEnd = SelectedBlock->End;
+									// See if click hit a block
+									_Block *SelectedBlock = nullptr;
+									size_t SelectedBlockIndex = Map->GetSelectedBlock(EditLayer, WorldCursorIndex, &SelectedBlock);
+									if(SelectedBlock) {
+										SavedWorldCursorIndex = WorldCursorIndex;
+										IsMoving = true;
+										DraggingBox = false;
+										SelectedBlock->MoveStart = SelectedBlock->Start;
+										SelectedBlock->MoveEnd = SelectedBlock->End;
 
-									// See if block was part of an existing selection
-									for(const auto &Index : SelectedBlocks) {
-										if(Index == SelectedBlockIndex)
-											return;
+										// See if block was part of an existing selection
+										for(const auto &Index : SelectedBlocks) {
+											if(Index == SelectedBlockIndex)
+												return;
+										}
+
+										// Shift adds to selection
+										if(IsShiftDown)
+											IsMoving = false;
+										else
+											SelectedBlocks.clear();
+										SelectedBlocks.push_back(SelectedBlockIndex);
+										UpdateSelectionBounds();
 									}
-
-									// Shift adds to selection
-									if(IsShiftDown)
-										IsMoving = false;
 									else
-										SelectedBlocks.clear();
-									SelectedBlocks.push_back(SelectedBlockIndex);
-									UpdateSelectionBounds();
-								}
-								else
-									DraggingBox = true;
-							} break;
-							case EDITMODE_EVENTS:
+										DraggingBox = true;
+								} break;
+								case EDITMODE_EVENTS:
 
-								// Get the event
-								SelectedEventIndex = Map->GetSelectedEvent(WorldCursorIndex, ShowEventType, &SelectedEvent);
-								if(EventSelected()) {
+									// Get the event
+									SelectedEventIndex = Map->GetSelectedEvent(WorldCursorIndex, ShowEventType, &SelectedEvent);
+									if(EventSelected()) {
 
-									// Save old states
-									OldStart = SelectedEvent->Start;
-									OldEnd = SelectedEvent->End;
-									SavedWorldCursorIndex = WorldCursorIndex;
-									IsMoving = true;
-									if(ShowEventType == -1)
-										ShowEventType = IsCtrlDown ? SelectedEvent->Type : -1;
-								}
-							break;
-							default:
-								SelectObject();
-							break;
+										// Save old states
+										OldStart = SelectedEvent->Start;
+										OldEnd = SelectedEvent->End;
+										SavedWorldCursorIndex = WorldCursorIndex;
+										IsMoving = true;
+										if(ShowEventType == -1)
+											ShowEventType = IsCtrlDown ? SelectedEvent->Type : -1;
+									}
+								break;
+								default:
+									SelectObject();
+								break;
+							}
 						}
-					}
-				break;
+					break;
+				}
+			}
+		}
+		// Mouse released
+		else {
+			// Clicked new map dialog
+			if(NewMapElement->GetClickedElement()) {
+				if(NewMapElement->GetClickedElement()->ID == "button_editor_newmap_create") {
+					ExecuteNewMap();
+				}
+				else if(NewMapElement->GetClickedElement()->ID == "button_editor_newmap_cancel") {
+					CloseWindows();
+				}
 			}
 		}
 	}
@@ -771,7 +848,7 @@ void _EditorState::HandleQuit() {
 void _EditorState::Update(double FrameTime) {
 	ae::Graphics.Element->Update(FrameTime, ae::Input.GetMouse());
 	//if(ae::Graphics.Element->HitElement)
-	//	std::cout << ae::Graphics.Element->HitElement->Name << std::endl;
+	//	std::cout << ae::Graphics.Element->HitElement->ID << std::endl;
 
 	// Get modifier key status
 	IsShiftDown = ae::Input.ModKeyDown(KMOD_SHIFT) ? true : false;
@@ -1194,8 +1271,9 @@ void _EditorState::Render(double BlendFactor) {
 	// Draw current brush
 	DrawBrush();
 
-	// Draw Palette
+	// Draw elements
 	PaletteElement[EditMode]->Render();
+	NewMapElement->Render();
 
 	ae::Graphics.SetDepthMask(true);
 }
@@ -1737,7 +1815,7 @@ void _EditorState::ProcessIcons(int Index, int Type) {
 			ExecuteUpdateGridMode();
 		break;
 		case ICON_NEW:
-			ExecuteClear();
+			ToggleNewMap();
 		break;
 		case ICON_NAME:
 			ExecuteShowInput(EDITINPUT_NAME);
@@ -2151,10 +2229,16 @@ void _EditorState::ExecuteShowInput(int Type) {
 	ae::FocusedElement = TextBox;
 }
 
-// Executes the clear map command
-void _EditorState::ExecuteClear() {
-	LoadMap("", false);
-	SavedText[EDITINPUT_SAVE] = "";
+// Executes the new map command
+void _EditorState::ExecuteNewMap() {
+
+	// Get parameters
+	glm::ivec2 Size(0, 0);
+	std::stringstream Buffer(NewMapWidthTextBox->Text + " " + NewMapHeightTextBox->Text);
+	Buffer >> Size.x >> Size.y;
+
+	NewMap(Size);
+	CloseWindows();
 }
 
 // Executes the test command

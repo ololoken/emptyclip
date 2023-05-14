@@ -185,8 +185,9 @@ const  float        MAP_WALLZ                            =  2.0f;
 const  float        MAP_FOREGROUNDZ                      =  3.0f;
 const  float        MAP_FOREGROUND_FADE                  =  0.2f;
 const  float        MAP_LAYEROFFSET                      =  0.001f;
-const  int          MAP_WIDTH                            =  100;
-const  int          MAP_HEIGHT                           =  100;
+const  glm::ivec2   MAP_SIZE_DEFAULT                     =  glm::ivec2(100,100);
+const  glm::ivec2   MAP_SIZE_MIN                         =  glm::ivec2(10,10);
+const  glm::ivec2   MAP_SIZE_MAX                         =  glm::ivec2(1000,1000);
 const  float        MAP_EPSILON                          =  0.0001f;
 const  double       MAP_DAY_LENGTH                       =  24.0*60.0;
 //     Editor

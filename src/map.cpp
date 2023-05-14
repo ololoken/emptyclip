@@ -100,11 +100,13 @@ static const glm::vec4 MinimapColors[_Map::MINIMAP_COUNT] = {
 };
 
 // Initialize
-_Map::_Map() :
-	Size{MAP_WIDTH, MAP_HEIGHT},
+_Map::_Map(const glm::ivec2 &NewSize) :
+	Size(NewSize),
 	ObjectManager(new _ObjectManager()),
 	AmbientLight(BaseAmbientLight),
 	TargetAmbientLight(BaseAmbientLight) {
+
+	Size = glm::clamp(Size, MAP_SIZE_MIN, MAP_SIZE_MAX);
 
 	ObjectMap.reserve(10);
 	CollisionHits.reserve(10);
@@ -115,7 +117,7 @@ _Map::_Map() :
 }
 
 // Initialize
-_Map::_Map(const std::string &Filename, double Clock, size_t Progression) : _Map() {
+_Map::_Map(const std::string &Filename, double Clock, size_t Progression) : _Map(MAP_SIZE_DEFAULT) {
 	if(Filename.empty())
 		throw std::runtime_error(std::string(__func__) + " empty file name");
 
