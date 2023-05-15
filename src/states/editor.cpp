@@ -1873,16 +1873,10 @@ void _EditorState::ProcessEventIcons(int Index, int Type) {
 		case ICON_TILE:
 		break;
 		case ICON_LEVELUP:
-			if(Type)
-				ExecuteChangeLevel(5);
-			else
-				ExecuteChangeLevel(1);
+			ExecuteChangeLevel(1);
 		break;
 		case ICON_LEVELDOWN:
-			if(Type)
-				ExecuteChangeLevel(-5);
-			else
-				ExecuteChangeLevel(-1);
+			ExecuteChangeLevel(-1);
 		break;
 		case ICON_PERIODUP:
 			if(Type)
@@ -2183,6 +2177,9 @@ void _EditorState::ExecuteChangeZ(float Change, int Type) {
 
 // Executes the change level command
 void _EditorState::ExecuteChangeLevel(int Change) {
+	if(IsShiftDown)
+		Change *= 5;
+
 	if(EventSelected()) {
 		int MinLevel = SelectedEvent->Type == EVENT_SPAWN ? 1 : 0;
 
