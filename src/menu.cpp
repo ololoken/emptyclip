@@ -377,7 +377,7 @@ void _Menu::LaunchGame() {
 		return;
 
 	PlayState.Player = Player;
-	PlayState.Level = "";
+	PlayState.Level = Player->MapID;
 	PlayState.TestMode = false;
 	PlayState.FromEditor = false;
 	Framework.ChangeState(&PlayState);
