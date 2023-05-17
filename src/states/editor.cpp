@@ -674,10 +674,22 @@ void _EditorState::HandleMouseButton(const ae::_MouseEvent &MouseEvent) {
 										SelectedBlock->MoveEnd = SelectedBlock->End;
 
 										// See if block was part of an existing selection
-										for(const auto &Index : SelectedBlocks) {
-											if(Index == SelectedBlockIndex)
-												return;
+										for(size_t i = 0; i < SelectedBlocks.size(); i++) {
+											if(SelectedBlocks[i] != SelectedBlockIndex)
+												continue;
+
+											// Remove block when ctrl is held
+											if(IsCtrlDown) {
+												SelectedBlocks.erase(SelectedBlocks.begin() + (int)i);
+												UpdateSelectionBounds();
+											}
+
+											return;
 										}
+
+										// Couldn't find block to remove
+										if(IsCtrlDown)
+											return;
 
 										// Shift adds to selection
 										if(IsShiftDown)
