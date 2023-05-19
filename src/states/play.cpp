@@ -1454,8 +1454,8 @@ void _PlayState::EndLevel() {
 		if(Player->Stat100Percent)
 			Menu.UnlockAchievement("all");
 
-		if(Player->Progression >= 10 && Player->Hardcore)
-			Menu.UnlockAchievement("p10");
+		if(Player->Progression >= 5 && Player->Hardcore)
+			Menu.UnlockAchievement("p5");
 
 		if(Player->LavaTouches == 0)
 			Menu.UnlockAchievement("smoked");
