@@ -540,7 +540,6 @@ bool _EditorState::HandleKey(const ae::_KeyEvent &KeyEvent) {
 			case SDL_SCANCODE_N:
 				if(IsCtrlDown) {
 					ToggleNewMap();
-					Framework.IgnoreNextInputEvent = true;
 				}
 				else {
 					ExecuteShowInput(EDITINPUT_NAME);
