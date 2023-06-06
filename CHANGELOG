@@ -1,4 +1,4 @@
-Empty Clip 2.0.0 -
+Empty Clip 2.0.0 - 2023-06-05
 - Updated engine to use ae, which adds SDL2, OpenGL 3.3, and OpenAL support
 - Optimized rendering code and added support for high refresh monitors
 - Added per-pixel lighting and day/night cycle
@@ -17,7 +17,7 @@ Empty Clip 2.0.0 -
 - Added a flashlight (V by default)
 - Items in the world can be picked up or moved with the mouse while the inventory is open
 - Gear can now be equipped by right-clicking the item in the inventory or world
-- Weapons, armor, and mods now have levels and a random quality rating
+- Gear now has levels and a random quality rating
 - Items now have multiple tiers of rarity, with most only available in later progressions
 - Items can now be dropped with ctrl+click or middle mouse button
 - Redesigned item tooltips and added a comparison window for equipped items
@@ -46,11 +46,11 @@ Empty Clip 2.0.0 -
 - The game now pauses while menu is open
 - Fullscreen can be toggled with alt-enter
 - Mouse buttons can now be remapped
-- Added console window (open with tilde key)
+- Added technical stats (press F2)
+- Added console window (press Grave)
 - Removed player profiles
 - Removed adventure and survival mode
 - Switched build system to CMake
-- Save files are now in ~/.local/share/emptyclip for linux
 
 Empty Clip 1.0.3 - 2008-04-06
 - Added the ability to reset the level

@@ -8,7 +8,7 @@ rename-icon: emptyclip
 rename-appdata-file: emptyclip.xml
 
 finish-args:
-  - --device=all
+  - --device=dri
   - --share=ipc
   - --socket=wayland
   - --socket=fallback-x11

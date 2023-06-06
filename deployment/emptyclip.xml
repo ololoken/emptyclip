@@ -68,6 +68,64 @@
 	</screenshots>
 	<metadata_license>CC0-1.0</metadata_license>
 	<releases>
+		<release version="2.0.0" date="2023-06-05">
+			<description>
+				<ul>
+					<li>Updated engine to use ae, which adds SDL2, OpenGL 3.3, and OpenAL support</li>
+					<li>Optimized rendering code and added support for high refresh monitors</li>
+					<li>Added per-pixel lighting and day/night cycle</li>
+					<li>Completely redesigned interface and added support for different screen resolutions</li>
+					<li>Reworked all game content and added new weapons, armor, monsters, mods, skills and gameplay mechanics</li>
+					<li>Reworked campaign mode to have eight new levels for a total of ten</li>
+					<li>The game now gets harder with every campaign completion</li>
+					<li>Inventory is bigger and can now hold gear</li>
+					<li>Added gear slot for melee weapons and separate hotkey for melee attacks (Mouse button 4 by default)</li>
+					<li>Added melee animations</li>
+					<li>Reworked skill system to have 10 attributes that affect various player stats</li>
+					<li>Rewrote and optimized AI code</li>
+					<li>Aiming (Hold right-click) now lowers recoil and increases accuracy regen</li>
+					<li>Added minimap and hotkey for full map view (Tab by default)</li>
+					<li>Added sprinting and a stamina bar (Hold A by default)</li>
+					<li>Added a flashlight (V by default)</li>
+					<li>Items in the world can be picked up or moved with the mouse while the inventory is open</li>
+					<li>Gear can now be equipped by right-clicking the item in the inventory or world</li>
+					<li>Gear now has levels and a random quality rating</li>
+					<li>Items now have multiple tiers of rarity, with most only available in later progressions</li>
+					<li>Items can now be dropped with ctrl+click or middle mouse button</li>
+					<li>Redesigned item tooltips and added a comparison window for equipped items</li>
+					<li>Added inventory sort button and hotkey (Z by default)</li>
+					<li>Ammo is now stored as a number of rounds for each ammo type</li>
+					<li>Ammo and keys are now picked up automatically</li>
+					<li>Medkits are now used when touched</li>
+					<li>A portion of health is now slowly recovered when out of combat</li>
+					<li>Keys are now stored in a keychain and are kept until the end of the level</li>
+					<li>Removed strength requirement from armor</li>
+					<li>Armor now affects movement speed, damage resist, and player weight</li>
+					<li>Armor can now be modded</li>
+					<li>Added knockback/pull to weapons and monsters</li>
+					<li>Shotguns now reload one shell at a time</li>
+					<li>Added bullet penetration for certain weapons</li>
+					<li>Added projectile weapons and explosions</li>
+					<li>Players now respawn at their last checkpoint with invulnerability for three seconds</li>
+					<li>Added outfit switching (Q by default)</li>
+					<li>Added loot filter hotkeys for gear and mods (1 and 2 by default)</li>
+					<li>Added an end of level screen</li>
+					<li>Added hardcore mode</li>
+					<li>Added eight achievements</li>
+					<li>Added damage number particles</li>
+					<li>Added various usable/upgrade items</li>
+					<li>Improved and optimized bullet hole decals</li>
+					<li>The game now pauses while menu is open</li>
+					<li>Fullscreen can be toggled with alt-enter</li>
+					<li>Mouse buttons can now be remapped</li>
+					<li>Added technical stats (press F2)</li>
+					<li>Added console window (press Grave)</li>
+					<li>Removed player profiles</li>
+					<li>Removed adventure and survival mode</li>
+					<li>Switched build system to CMake</li>
+				</ul>
+			</description>
+		</release>
 		<release version="1.0.3" date="2008-04-06">
 			<description>
 				<ul>
