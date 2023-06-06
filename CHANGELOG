@@ -1,3 +1,6 @@
+Empty Clip 2.0.1 -
+- AppData xml fixes
+
 Empty Clip 2.0.0 - 2023-06-05
 - Updated engine to use ae, which adds SDL2, OpenGL 3.3, and OpenAL support
 - Optimized rendering code and added support for high refresh monitors
