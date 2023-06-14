@@ -73,7 +73,7 @@ void _Object::Render(double BlendFactor) const {
 
 // Render lights
 void _Object::RenderLights(double BlendFactor, float Alpha) {
-	if(!LightTexture)
+	if(!LightTexture || !Visible)
 		return;
 
 	if(this == PlayState.HUD->CursorItem)

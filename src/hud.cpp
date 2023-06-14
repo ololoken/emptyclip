@@ -1693,6 +1693,7 @@ int _HUD::ApplyUsableItem(_Item *ExistingItem) {
 
 			// Destroy usable item
 			CursorItem->Active = false;
+			CursorItem->Visible = false;
 			HoverItem = nullptr;
 			PlayState.Map->RemoveObjectFromGrid(CursorItem, GRID_ITEM);
 
@@ -1741,6 +1742,7 @@ int _HUD::ApplyUsableItem(_Item *ExistingItem) {
 		case USABLE_PLIERS:
 			if(ExistingItem->ApplyUsable(CursorItem)) {
 				CursorItem->Active = false;
+				CursorItem->Visible = false;
 				PlayState.Map->RemoveObjectFromGrid(CursorItem, GRID_ITEM);
 			}
 		break;
