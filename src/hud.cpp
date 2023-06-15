@@ -524,7 +524,8 @@ void _HUD::Update(double FrameTime, float Radius, double Clock) {
 	else
 		GetClockAsString(Buffer, Clock, false);
 
-	Elements[LABEL_CLOCK]->BaseOffset.y = PlayState.Map->MinimapSizes[(size_t)Player->MinimapSizeIndex].Screen.y + 30;
+	float MinimapScreenY = PlayState.Map->MinimapSizes[(size_t)Player->MinimapSizeIndex].Screen.y;
+	Elements[LABEL_CLOCK]->BaseOffset.y = MinimapScreenY > 0.0f ? MinimapScreenY + 30 : 25;
 	Elements[LABEL_CLOCK]->Text = Buffer.str();
 	Elements[LABEL_CLOCK]->Parent->CalculateBounds();
 	Buffer.str("");

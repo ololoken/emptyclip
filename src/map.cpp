@@ -114,6 +114,7 @@ _Map::_Map(const glm::ivec2 &NewSize) :
 	MinimapSizes.push_back({{20.0f, 20.0f}, {200.0f, 200.0f}});
 	MinimapSizes.push_back({{30.0f, 30.0f}, {400.0f, 400.0f}});
 	MinimapSizes.push_back({{40.0f, 40.0f}, {600.0f, 600.0f}});
+	MinimapSizes.push_back({{0.0f, 0.0f}, {0.0f, 0.0f}});
 }
 
 // Initialize
@@ -1885,7 +1886,6 @@ void _Map::DrawMinimap(ae::_Bounds &MinimapBounds, const _Item *HighlightItem, i
 
 	// Set up
 	ae::Graphics.SetProgram(ae::Assets.Programs["ortho_pos"]);
-	ae::Graphics.EnableScissorTest();
 
 	// Full size
 	glm::vec2 DrawSize;
@@ -1902,6 +1902,9 @@ void _Map::DrawMinimap(ae::_Bounds &MinimapBounds, const _Item *HighlightItem, i
 	// Small size
 	else {
 		DrawSize = MinimapSizes[(size_t)SizeIndex].Screen * ae::_Element::GetUIScale();
+		if(DrawSize.x == 0.0f)
+			return;
+
 		glm::vec2 Padding = MINIMAP_PADDING * ae::_Element::GetUIScale();
 		MinimapBounds = ae::_Bounds(
 			glm::ivec2(ae::Graphics.CurrentSize.x - DrawSize.x - Padding.x, Padding.y),
@@ -1912,6 +1915,7 @@ void _Map::DrawMinimap(ae::_Bounds &MinimapBounds, const _Item *HighlightItem, i
 	}
 
 	// Draw minimap background
+	ae::Graphics.EnableScissorTest();
 	ae::Graphics.SetScissor(MinimapBounds);
 	ae::Graphics.DrawRectangle(MinimapBounds, true);
 
@@ -2430,6 +2434,8 @@ bool _Map::CheckMinimapBounds(const glm::vec4 &Bounds) {
 
 // Add objects to the minimap
 void _Map::AddMinimapIcons() {
+	if(MinimapCaptureSize.x == 0.0f)
+		return;
 
 	// Add walls
 	for(int Layer = MAPLAYER_WALL; Layer <= MAPLAYER_FLAT; Layer++) {
