@@ -68,6 +68,17 @@
 	</screenshots>
 	<metadata_license>CC0-1.0</metadata_license>
 	<releases>
+		<release version="2.0.1" date="2023-06-14">
+			<description>
+				<ul>
+					<li>Minimap can now be cycled off</li>
+					<li>Updated fist melee animation</li>
+					<li>Minor map fixes</li>
+					<li>Minor graphical fixes</li>
+					<li>AppData xml fixes</li>
+				</ul>
+			</description>
+		</release>
 		<release version="2.0.0" date="2023-06-05">
 			<description>
 				<ul>
