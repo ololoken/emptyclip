@@ -653,6 +653,9 @@ void _PlayState::Update(double FrameTime) {
 	else
 		HUD->SetInventoryOpen(false);
 
+	// Update minimap
+	SetMinimapCaptureSize();
+
 	// Walk right during bench mode
 	if(Framework.BenchMode) {
 		Player->FacePosition(glm::vec2(1000.0f, 0.0f));
@@ -859,12 +862,7 @@ void _PlayState::Render(double BlendFactor) {
 	ae::Assets.Programs["minimap"]->SetUniformMat4("view_projection_transform", ae::Graphics.Ortho);
 
 	// Update minimap
-	if(ae::Actions.State[Action::GAME_MAP].Value > 0.0f) {
-		Map->MinimapCaptureSize = MINIMAP_FULL_CAPTURE_SIZE;
-		Map->MinimapCaptureSize.x *= ae::Graphics.AspectRatio;
-	}
-	else
-		Map->MinimapCaptureSize = Map->MinimapSizes[(size_t)Player->MinimapSizeIndex].Capture;
+	SetMinimapCaptureSize();
 
 	// Add lights
 	Framebuffer->Clear();
@@ -2143,4 +2141,16 @@ void _PlayState::GenerateProjectileEffects(const _ParticleTemplate *ParticleTemp
 // Determine if game is paused
 bool _PlayState::IsPaused() {
 	return Menu.GetState() != _Menu::STATE_NONE;
+}
+
+// Set minimap capture area
+void _PlayState::SetMinimapCaptureSize() {
+
+	// Full size map
+	if(ae::Actions.State[Action::GAME_MAP].Value > 0.0f) {
+		Map->MinimapCaptureSize = MINIMAP_FULL_CAPTURE_SIZE;
+		Map->MinimapCaptureSize.x *= ae::Graphics.AspectRatio;
+	}
+	else
+		Map->MinimapCaptureSize = Map->MinimapSizes[(size_t)Player->MinimapSizeIndex].Capture;
 }

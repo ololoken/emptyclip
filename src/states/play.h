@@ -106,6 +106,7 @@ class _PlayState : public ae::_State {
 	protected:
 
 		bool IsPaused();
+		void SetMinimapCaptureSize();
 
 		void AddMonster(_Monster *Monster);
 		void RemoveMonster(_Monster *Monster);
