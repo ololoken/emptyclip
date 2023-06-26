@@ -115,7 +115,7 @@ class _HUD {
 		void HandleMouseButton(const ae::_MouseEvent &MouseEvent);
 		void Update(double FrameTime, float Radius, double Clock);
 
-		void Render(bool FullMap);
+		void Render(bool FullMap, double BlendFactor);
 		void DrawCharacterScreen();
 		void DrawInventory();
 		void DrawCrosshair(const glm::vec2 &Position);

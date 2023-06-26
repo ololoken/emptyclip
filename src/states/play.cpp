@@ -1046,7 +1046,7 @@ void _PlayState::Render(double BlendFactor) {
 			if(Item->Filtered)
 				continue;
 
-			Camera->ConvertWorldToScreen(Iterator->Position, TextPosition);
+			Camera->ConvertWorldToScreen(Iterator->Position, TextPosition, BlendFactor);
 
 			// Show bonus value
 			switch(Item->Type) {
@@ -1120,7 +1120,7 @@ void _PlayState::Render(double BlendFactor) {
 	Particles->Render(_Particles::TEXT, BlendFactor);
 
 	// Render HUD
-	HUD->Render(ae::FocusedElement == nullptr && ae::Actions.State[Action::GAME_MAP].Value > 0.0f);
+	HUD->Render(ae::FocusedElement == nullptr && ae::Actions.State[Action::GAME_MAP].Value > 0.0f, BlendFactor);
 
 	// Debug mode
 	if(DebugMode || Framework.BenchMode) {

@@ -620,7 +620,7 @@ void _HUD::Update(double FrameTime, float Radius, double Clock) {
 }
 
 // Draw phase
-void _HUD::Render(bool FullMap) {
+void _HUD::Render(bool FullMap, double BlendFactor) {
 
 	// Set labels
 	if(PlayState.ShowMoreInfo()) {
@@ -866,7 +866,7 @@ void _HUD::Render(bool FullMap) {
 		// Get position of tooltip
 		glm::vec2 HoverPosition;
 		if(CursorUseWorldPosition)
-			Camera->ConvertWorldToScreen(RightItem->Position, HoverPosition);
+			Camera->ConvertWorldToScreen(RightItem->Position, HoverPosition, BlendFactor);
 		else
 			HoverPosition = ae::Input.GetMouse();
 

@@ -1167,7 +1167,7 @@ void _EditorState::Render(double BlendFactor) {
 				continue;
 
 			glm::vec2 TextPosition;
-			Camera->ConvertWorldToScreen(Object->Position + glm::vec2(0.25, 0.25), TextPosition);
+			Camera->ConvertWorldToScreen(Object->Position + glm::vec2(0.25, 0.25), TextPosition, BlendFactor);
 			ae::Assets.Fonts["hud_small"]->DrawText(std::to_string(Object->Level), TextPosition, ae::CENTER_BASELINE);
 		}
 	}

@@ -129,7 +129,7 @@ void _Particle::Render(const ae::_Camera *Camera, double BlendFactor) {
 
 	if(Font && Text != "") {
 		glm::vec2 ScreenPosition;
-		Camera->ConvertWorldToScreen(Position, ScreenPosition);
+		Camera->ConvertWorldToScreen(Position, ScreenPosition, BlendFactor);
 		Font->DrawText(Text.c_str(), ScreenPosition, ae::CENTER_BASELINE, Color);
 	}
 }
