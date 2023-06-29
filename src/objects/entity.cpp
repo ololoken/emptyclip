@@ -442,20 +442,33 @@ void _Entity::Move(double FrameTime) {
 	if(MoveState && Type == _Object::PLAYER)
 		CurrentAccuracy = std::min(CurrentAccuracy + Speed * MoveRecoil, MaxAccuracy[WEAPONATTACK_MAIN]);
 
-	// Get a list of entities that the object is colliding with
+	// Get potential new position
 	glm::vec2 NewPosition = Position + MoveDirection + Velocity;
-	bool AxisAlignedPush = false;
 	if(!CanFreePath() && !IsDying()) {
+
+		// Get a list of entities that the object is colliding with
+		bool AxisAlignedPush = false;
 		std::vector<_Hit> &Hits = Map->ResolveCollisionsInGrid(NewPosition, Radius, this, IsInvulnerable(), Type == PLAYER ? PLAYER_PUSH_FACTOR : ENTITY_PUSH_FACTOR, AxisAlignedPush);
 
-		// Resolve pushes
-		for(auto Hit : Hits) {
+		// Check for collisions
+		if(Hits.size()) {
+			glm::vec2 OldPosition = NewPosition;
 
-			// If at least one push is axis aligned, don't push with diagonals
-			if(AxisAlignedPush && Hit.Push.x != 0 && Hit.Push.y != 0)
-				continue;
+			// Resolve pushes
+			for(auto Hit : Hits) {
 
-			NewPosition += Hit.Push;
+				// If at least one push is axis aligned, don't push with diagonals
+				if(AxisAlignedPush && Hit.Push.x != 0 && Hit.Push.y != 0)
+					continue;
+
+				NewPosition += Hit.Push;
+			}
+
+			// Limit the amount pushed to the object's radius
+			glm::vec2 PositionOffset = NewPosition - OldPosition;
+			float LengthPushed = glm::length(PositionOffset);
+			if(LengthPushed > Radius)
+				NewPosition = OldPosition + (PositionOffset / LengthPushed) * Radius;
 		}
 	}
 
