@@ -178,6 +178,7 @@ class _Object {
 		// Projectiles
 		std::unordered_map<_Object *, int> HitObjects;
 		const _ObjectTemplate *ProjectileWeaponTemplate{nullptr};
+		const _ParticleTemplate *ProjectileParticleTemplate{nullptr};
 		float ProjectilePenetrationDamage{0.0f};
 		float ProjectileExplosionSize{0.0f};
 		float ProjectileForce{0.0f};

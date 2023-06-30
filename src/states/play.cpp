@@ -1258,6 +1258,7 @@ void _PlayState::ResolveAttack(_Entity *Attacker, int GridType) {
 			// Create projectile
 			_Object *Projectile = Stats.CreateProjectile(*Attacker->Projectiles[Attacker->AttackRequestType], Attacker->Position);
 			Projectile->ProjectileWeaponTemplate = Attacker->Weapons[Attacker->AttackRequestType];
+			Projectile->ProjectileParticleTemplate = Attacker->GetParticle(PARTICLE_EXPLOSION);
 			Projectile->GridTypes.reserve(2);
 			if(Attacker->Type == _Object::PLAYER)
 				Projectile->GridTypes.push_back(GRID_MONSTER);

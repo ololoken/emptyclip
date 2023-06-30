@@ -406,7 +406,8 @@ void _Object::CheckProjectileCollisions() {
 			return;
 
 		// Generate particle
-		PlayState.GenerateExplosion(OwnerEntity->GetParticle(PARTICLE_EXPLOSION), HitPosition, glm::vec2(ProjectileExplosionSize));
+		if(ProjectileParticleTemplate)
+			PlayState.GenerateExplosion(ProjectileParticleTemplate, HitPosition, glm::vec2(ProjectileExplosionSize));
 
 		// Check hits
 		float ExplosionRadius = ProjectileExplosionSize * 0.5f;
