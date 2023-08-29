@@ -19,7 +19,7 @@
 
 #include <ae/state.h>
 
-// Null state
+// State for converting files
 class _ConvertState : public ae::_State {
 
 	public:
