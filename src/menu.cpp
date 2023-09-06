@@ -456,7 +456,7 @@ void _Menu::UpdateVolume() {
 
 		// Convert slider percent to number
 		std::ostringstream Buffer;
-		Buffer << std::fixed << std::setprecision(2) << SoundButton->GetOffsetPercent().x;
+		Buffer << std::fixed << std::setprecision(2) << SoundButton->GetOffsetPercentX();
 		SoundVolume->Text = Buffer.str();
 		Buffer.str("");
 
@@ -480,7 +480,7 @@ void _Menu::UpdateMSAA() {
 
 	// Update value
 	if(MSAAButton->PressedElement) {
-		size_t Index = std::clamp((size_t)(MSAAValues.size() * MSAAButton->GetOffsetPercent().x), (size_t)0, MSAAValues.size() - 1);
+		size_t Index = std::clamp((size_t)(MSAAValues.size() * MSAAButton->GetOffsetPercentX()), (size_t)0, MSAAValues.size() - 1);
 
 		Config.MSAA = MSAAValues[Index];
 
@@ -505,7 +505,7 @@ void _Menu::UpdateAnisotropy() {
 
 	// Update value
 	if(AnisotropyButton->PressedElement) {
-		size_t Index = std::clamp((size_t)(AnisotropyValues.size() * AnisotropyButton->GetOffsetPercent().x), (size_t)0, AnisotropyValues.size() - 1);
+		size_t Index = std::clamp((size_t)(AnisotropyValues.size() * AnisotropyButton->GetOffsetPercentX()), (size_t)0, AnisotropyValues.size() - 1);
 
 		Config.Anisotropy = AnisotropyValues[Index];
 		if(LastAnisotropy != Config.Anisotropy) {
