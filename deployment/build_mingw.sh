@@ -49,7 +49,7 @@ build() {
 	rm -f "${archive_base}/maps/test.map.gz"
 
 	# remove linux only files
-	rm -f "${archive_base}"/"${project}"{,_debug,_reldeb}
+	rm -f "${archive_base}"/"${project}"{,_debug*,_reldeb}
 
 	# copy dlls
 	cp /usr/$arch/bin/{OpenAL32.dll,libbz2-1.dll,libfreetype-6.dll,libssp-0.dll,libgcc_*.dll,libstdc++-6.dll,libwinpthread-1.dll,libsqlite3-0.dll,libvorbisfile-3.dll,libogg.dll,libvorbis-0.dll,SDL2.dll,SDL2_image.dll,libpng16-16.dll,zlib1.dll,libbrotlicommon.dll,libbrotlidec.dll} "${archive_base}"/

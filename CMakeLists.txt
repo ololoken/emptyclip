@@ -30,6 +30,12 @@ if(DEFINED ENV{ENABLE_ACHIEVEMENTS})
 	add_definitions("-DENABLE_ACHIEVEMENTS=$ENV{ENABLE_ACHIEVEMENTS}")
 endif()
 
+# handle sanitize
+if(DEFINED ENV{ENABLE_SANITIZE})
+	set(EXECUTABLE_SUFFIX "san")
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address -fsanitize=undefined -fno-sanitize-recover=all -fsanitize=float-divide-by-zero -fsanitize=float-cast-overflow -fno-sanitize=null -fno-sanitize=alignment")
+endif()
+
 # compiler flags
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Wno-unused-result -Wno-switch -Wno-unused-parameter -pedantic -std=c++17")
 if("${CMAKE_HOST_SYSTEM_PROCESSOR}" STREQUAL "x86_64")
@@ -82,7 +88,7 @@ add_executable(${CMAKE_PROJECT_NAME} ${SRC_ALL})
 # set output path
 set(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/working/)
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
-	set_target_properties(${CMAKE_PROJECT_NAME} PROPERTIES OUTPUT_NAME ${CMAKE_PROJECT_NAME}_debug)
+	set_target_properties(${CMAKE_PROJECT_NAME} PROPERTIES OUTPUT_NAME ${CMAKE_PROJECT_NAME}_debug${EXECUTABLE_SUFFIX})
 elseif(CMAKE_BUILD_TYPE STREQUAL "RelWithDebInfo")
 	set_target_properties(${CMAKE_PROJECT_NAME} PROPERTIES OUTPUT_NAME ${CMAKE_PROJECT_NAME}_reldeb)
 endif()
