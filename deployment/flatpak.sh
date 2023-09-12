@@ -9,9 +9,9 @@ function build() {
 		pkg=${base}_${branch}.flatpak
 	fi
 
-	flatpak-builder --default-branch="$branch" --force-clean --repo="$repo_path" --state-dir=flatpak-state flatpak-build flatpak.yml
+	CCACHE_DIR=~/.cache/ccache/ flatpak-builder --default-branch="$branch" --force-clean --ccache --disable-cache --repo="$repo_path" --state-dir="$state_path" flatpak-build flatpak.yml
 	flatpak build-bundle "$repo_path" "out/$pkg" "io.gitlab.jazztickets.$project" "$branch"
-	rm -rf flatpak-build flatpak-state out/src.tar.gz
+	rm -rf flatpak-build out/src.tar.gz
 }
 
 # includes
@@ -19,8 +19,9 @@ source common.inc
 
 # parameters
 repo_path="$1"
-if [ -z "$repo_path" ]; then
-	echo "Usage: ./$(basename "$0") repo_path"
+state_path="$2"
+if [ -z "$repo_path" ] || [ -z "$state_path" ]; then
+	echo "Usage: $0 repo_path state_path"
 	exit 1
 fi
 
