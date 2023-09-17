@@ -17,6 +17,11 @@ fi
 # get build dir
 build_dir=$(echo "$build_type" | tr '[:upper:]' '[:lower:]')
 
+# add suffix
+if [ "$ENABLE_SANITIZE" == "1" ]; then
+	build_dir="${build_dir}san"
+fi
+
 # make
 mkdir -p "build/$build_dir"
 pushd "build/$build_dir" || exit
