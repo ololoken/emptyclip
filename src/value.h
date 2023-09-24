@@ -30,7 +30,7 @@ struct _Value {
 
 	union {
 		int Int;
-		int64_t	Int64;
+		int64_t Int64;
 		float Float;
 		double Double;
 		void *Pointer;

@@ -36,7 +36,7 @@ _Object::_Object(const _ObjectTemplate &ObjectTemplate) :
 	Template(ObjectTemplate),
 	Name(ObjectTemplate.Name),
 	Type(ObjectTemplate.Type),
-	Color(ObjectTemplate.Color)	{
+	Color(ObjectTemplate.Color) {
 
 }
 

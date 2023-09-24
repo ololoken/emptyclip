@@ -2695,7 +2695,7 @@ void _EditorState::ExecuteUpdateLayer(int Layer, bool Move) {
 			NewSelection.push_back(NewIndex);
 
 			// Change block properties
-			_Block *Block =	Map->GetBlock(Layer, NewIndex);
+			_Block *Block = Map->GetBlock(Layer, NewIndex);
 			Block->Walkable = (Layer == MAPLAYER_FLAT || Layer == MAPLAYER_WALL) ? false : true;
 		}
 
