@@ -3,7 +3,7 @@
 # parameters
 name=$1
 if [ -z "$name" ]; then
-	echo "Usage: ./$(basename $0) [name]"
+	echo "Usage: $0 [name]"
 	exit 1
 fi
 
@@ -11,7 +11,7 @@ fi
 file=$(ls ./*.xml)
 
 # get releases tag
-releases=$(awk -v name="$name" '
+releases=$(awk -v name="$name" -v today="$(date +"%Y-%m-%d")" '
 function close_tags() {
 	print "\t\t\t\t</ul>"
 	print "\t\t\t</description>"
@@ -27,8 +27,10 @@ $0 ~ "^"name {
 	split($0, tokens, " ")
 	version = tokens[1]
 	date = tokens[3]
-
-	if(date != "") {
+	if(date == "") {
+		print "\t\t<release version=\""version"pre\" date=\""today"\"/>"
+	}
+	else {
 		ready = 1
 		print "\t\t<release version=\""version"\" date=\""date"\">"
 		print "\t\t\t<description>"
