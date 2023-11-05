@@ -44,6 +44,10 @@
 #include <SDL.h>
 #include <algorithm>
 
+#ifdef _WIN32
+	#include <winuser.h>
+#endif
+
 // Global instance
 _Framework Framework;
 
@@ -123,6 +127,11 @@ void _Framework::Init(int ArgumentCount, char **Arguments) {
 
 	// Initialize game window and assets
 	if(!Headless) {
+
+		// Disable scaling
+		#ifdef _WIN32
+			SetProcessDPIAware();
+		#endif
 
 		// Initialize audio
 		ae::Audio.Init(Config.AudioEnabled, false);
