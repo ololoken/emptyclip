@@ -202,7 +202,7 @@ const  float        EDITOR_LEVEL_Z                       =  20.0f;
 //     Menu
 const  float        MENU_ACCEPTINPUT_FADE                =  0.7f;
 const  double       MENU_DOUBLECLICK_TIME                =  0.250;
-const  double       MENU_WARN_TIME                       =  3.0;
+const  double       MENU_WARN_TIME                       =  2.0;
 //     UI
 const  glm::vec2    UI_INVENTORY_ITEM_SIZE               =  glm::vec2(64,64);
 const  glm::vec2    UI_HUD_AMMO_SIZE                     =  glm::vec2(32,32);
