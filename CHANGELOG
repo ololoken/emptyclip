@@ -1,4 +1,5 @@
 Empty Clip 2.0.3 -
+- Back up achievements file if there's an error reading it
 - Updated Flatpak runtime version
 
 Empty Clip 2.0.2 - 2023-07-06

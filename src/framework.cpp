@@ -163,10 +163,12 @@ void _Framework::Init(int ArgumentCount, char **Arguments) {
 		LoadAssets();
 		Stats.Init();
 		Menu.Init();
+		Achievements.Init();
 		try {
 			Achievements.Load();
 		}
 		catch(std::exception &Error) {
+			Achievements.Backup();
 			Achievements.Save();
 		}
 

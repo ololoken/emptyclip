@@ -40,14 +40,16 @@ static void WriteChunk(std::ofstream &File, int Type, const char *Data, int Size
 
 _Achievements Achievements;
 
-// Load achievement stats
+// Set up system
+void _Achievements::Init() {
+	Path = Config.ConfigPath + FILENAME;
+}
+
 void _Achievements::Load() {
-	if(!Enabled)
+	if(!Enabled || Path.empty())
 		return;
 
 	Stats.clear();
-
-	std::string Path = Config.ConfigPath + FILENAME;
 
 	// Open file
 	std::ifstream File(Path.c_str(), std::ios::in | std::ios::binary);
@@ -115,7 +117,7 @@ void _Achievements::Load() {
 
 // Save achievement stats
 void _Achievements::Save() {
-	if(!Enabled)
+	if(!Enabled || Path.empty())
 		return;
 
 	// Open file
@@ -154,8 +156,14 @@ void _Achievements::Save() {
 	File.close();
 
 	// Rename temp file
-	std::string Path = Config.ConfigPath + FILENAME;
 	std::remove(Path.c_str());
 	std::rename(TempPath.c_str(), Path.c_str());
+}
+
+// Backup stats file
+void _Achievements::Backup() {
+	std::string NewPath = Path + "." + std::to_string(time(nullptr));
+	std::remove(NewPath.c_str());
+	std::rename(Path.c_str(), NewPath.c_str());
 }
 

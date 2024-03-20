@@ -33,8 +33,10 @@ class _Achievements {
 			std::time_t Time{0};
 		};
 
+		void Init();
 		void Load();
 		void Save();
+		void Backup();
 
 		bool Enabled{true};
 		std::string Path;
