@@ -1,8 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <component type="desktop-application">
 	<id>io.gitlab.jazztickets.emptyclip</id>
+	<launchable type="desktop-id">io.gitlab.jazztickets.emptyclip.desktop</launchable>
+	<developer id="com.gitlab">
+		<name>jazztickets</name>
+	</developer>
 	<name>Empty Clip</name>
-	<summary>Empty Clip is a top-down shooter action RPG.</summary>
+	<summary>Empty Clip is a top-down shooter action RPG</summary>
 	<description>
 		<p>Blast your way through ten levels and boss fights in this top-down shooter action RPG.</p>
 		<ul>

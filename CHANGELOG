@@ -1,6 +1,9 @@
 Empty Clip 2.0.3 -
-- Back up achievements file if there's an error reading it
+- Disabled scaling on Windows
+- Reduced exit warning time
+- Improved achievements file handling
 - Updated Flatpak runtime version
+- Updated appstream xml
 
 Empty Clip 2.0.2 - 2023-07-06
 - Explosion particle fix
