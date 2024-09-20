@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.5)
 
 # define constants
-add_definitions("-DGAME_VERSION=\"pre2.0.3\"")
+add_definitions("-DGAME_VERSION=\"2.0.3\"")
 add_definitions("-DGLM_FORCE_RADIANS")
 add_definitions("-DGLM_ENABLE_EXPERIMENTAL")
 add_definitions("-DAE_NO_NETWORK")

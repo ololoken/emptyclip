@@ -72,7 +72,17 @@
 	</screenshots>
 	<metadata_license>CC0-1.0</metadata_license>
 	<releases>
-		<release version="2.0.3pre" date="2023-11-04"/>
+		<release version="2.0.3" date="2024-09-20">
+			<description>
+				<ul>
+					<li>Disabled scaling on Windows</li>
+					<li>Reduced exit warning time</li>
+					<li>Improved achievements file handling</li>
+					<li>Updated Flatpak runtime version</li>
+					<li>Updated appstream xml</li>
+				</ul>
+			</description>
+		</release>
 		<release version="2.0.2" date="2023-07-06">
 			<description>
 				<ul>
