@@ -542,9 +542,9 @@ bool _Map::Save(const std::string &String) {
 void _Map::InitializeTiles() {
 
 	// Allocate memory
-	Data = new _Tile*[(size_t)Size.x];
+	Data = new _Tile*[(uint32_t)Size.x];
 	for(int i = 0; i < Size.x; i++)
-		Data[i] = new _Tile[(size_t)Size.y];
+		Data[i] = new _Tile[(uint32_t)Size.y];
 
 	// Floor layers
 	for(int l = MAPLAYER_BASE; l <= MAPLAYER_FLOOR2; l++) {
