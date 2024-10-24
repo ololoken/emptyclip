@@ -75,7 +75,7 @@ void _PlayState::Init() {
 			Player->Health = Player->MaxHealth;
 		}
 		else {
-			Player->SavePath = Config.ConfigPath + "test.save";
+			Player->SavePath = Config.SavePath + "test.save";
 			try {
 				Save.LoadPlayer(Player);
 			}

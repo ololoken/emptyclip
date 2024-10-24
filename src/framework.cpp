@@ -43,6 +43,8 @@
 #include <stats.h>
 #include <SDL.h>
 #include <algorithm>
+#include <filesystem>
+#include <unistd.h>
 
 #ifdef _WIN32
 	#include <winuser.h>
@@ -107,6 +109,24 @@ void _Framework::Init(int ArgumentCount, char **Arguments) {
 			State = &PlayState;
 			PlayState.Level = Arguments[++i];
 			PlayState.TestMode = true;
+		}
+		else if(Token == "-mod" && TokensRemaining > 0) {
+			std::string ModDirectory = Arguments[++i];
+			ModDirectory += "/";
+			if(!std::filesystem::is_directory(ModDirectory))
+				throw std::runtime_error("mod path not found: " + ModDirectory);
+
+			// Get basename
+			std::string Basename = std::filesystem::path(ModDirectory).parent_path().filename().u8string();
+			if(Basename.empty())
+				throw std::runtime_error("mod name is empty!");
+
+			Config.SavePath = Config.ConfigPath + "/mods/" + Basename + "/";
+
+			// Create data directory for mod
+			ae::MakeDirectory(Config.ConfigPath + "/mods");
+			ae::MakeDirectory(Config.SavePath);
+			chdir(ModDirectory.c_str());
 		}
 	}
 

@@ -42,7 +42,7 @@ _Achievements Achievements;
 
 // Set up system
 void _Achievements::Init() {
-	Path = Config.ConfigPath + FILENAME;
+	Path = Config.SavePath + FILENAME;
 }
 
 void _Achievements::Load() {
@@ -121,7 +121,7 @@ void _Achievements::Save() {
 		return;
 
 	// Open file
-	std::string TempPath = Config.ConfigPath + "_stats.db";
+	std::string TempPath = Config.SavePath + "_stats.db";
 	std::ofstream File(TempPath.c_str(), std::ios::out | std::ios::binary);
 	if(!File.is_open())
 		throw std::runtime_error("Cannot create file: " + TempPath);

@@ -46,7 +46,7 @@ class _Save {
 
 	private:
 
-		std::string GetConfigPath(size_t Slot);
+		std::string GetSavePath(size_t Slot);
 
 		void LoadInventory(_Player *Player, ae::_Buffer &Buffer);
 		void LoadAmmo(_Player *Player, ae::_Buffer &Buffer);

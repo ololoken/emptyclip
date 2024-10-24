@@ -103,12 +103,12 @@ _Save::~_Save() {
 }
 
 // Get a save path for a slot
-std::string _Save::GetConfigPath(size_t Slot) {
+std::string _Save::GetSavePath(size_t Slot) {
 	if(Slot >= SAVE_SLOTS)
 		return "";
 
 	std::ostringstream Buffer;
-	Buffer << Config.ConfigPath << (Slot + 1) << ".save";
+	Buffer << Config.SavePath << (Slot + 1) << ".save";
 	return Buffer.str();
 }
 
@@ -118,7 +118,7 @@ void _Save::CreateNewPlayer(size_t Slot, const std::string &Name, const std::str
 		return;
 
 	Players[Slot] = new _Player(Stats.Objects.at("player"));
-	Players[Slot]->SavePath = GetConfigPath(Slot);
+	Players[Slot]->SavePath = GetSavePath(Slot);
 	Players[Slot]->Name = Name;
 	Players[Slot]->Health = Players[Slot]->MaxHealth * PLAYER_STARTING_HEALTH_FACTOR;
 	Players[Slot]->ResetAchievementTracking();
@@ -134,7 +134,7 @@ void _Save::DeletePlayer(size_t Slot) {
 		return;
 
 	// Build save name
-	remove(GetConfigPath(Slot).c_str());
+	remove(GetSavePath(Slot).c_str());
 
 	delete Players[Slot];
 	Players[Slot] = nullptr;
@@ -150,7 +150,7 @@ void _Save::LoadSaves() {
 	}
 
 	// Get directory contents
-	ae::_Files Files(Config.ConfigPath);
+	ae::_Files Files(Config.SavePath);
 
 	// Load slots with player names
 	for(size_t i = 0; i < Files.Nodes.size(); i++) {
@@ -165,7 +165,7 @@ void _Save::LoadSaves() {
 
 		try {
 			Players[SlotIndex] = new _Player(Stats.Objects.at("player"));
-			Players[SlotIndex]->SavePath = Config.ConfigPath + Files.Nodes[i];
+			Players[SlotIndex]->SavePath = Config.SavePath + Files.Nodes[i];
 			LoadPlayer(Players[SlotIndex]);
 		}
 		catch(std::exception &Error) {
@@ -372,7 +372,7 @@ void _Save::SavePlayer(_Player *Player) {
 		return;
 
 	// Open file
-	std::string SavePath = Config.ConfigPath + "_temp.save";
+	std::string SavePath = Config.SavePath + "_temp.save";
 	std::ofstream File(SavePath.c_str(), std::ios::out | std::ios::binary);
 	if(!File.is_open())
 		throw std::runtime_error("Cannot create save file: " + Player->SavePath);

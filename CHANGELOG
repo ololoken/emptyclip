@@ -1,4 +1,5 @@
 Empty Clip 2.0.4 -
+- Added -mod argument for setting the game's working directory
 - Fixed compiler warning
 - Fixed cursor on Steam Deck
 

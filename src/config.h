@@ -40,6 +40,7 @@ class _Config {
 		// State
 		int Version;
 		std::string ConfigPath;
+		std::string SavePath;
 
 		// Graphics
 		glm::ivec2 WindowSize;

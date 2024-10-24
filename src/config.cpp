@@ -60,7 +60,7 @@ void _Config::Init(const std::string &ConfigFile) {
 	// Create config path
 	char *PrefPath = SDL_GetPrefPath("", "emptyclip");
 	if(PrefPath) {
-		ConfigPath = PrefPath;
+		ConfigPath = SavePath = PrefPath;
 		SDL_free(PrefPath);
 	}
 	else {
