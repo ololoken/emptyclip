@@ -69,6 +69,7 @@ static const char *InputBoxStrings[EDITINPUT_COUNT] = {
 	"Sound ID",
 	"Color",
 	"Ambient Color",
+	"Fog Color",
 	"Map Name",
 };
 
@@ -375,6 +376,10 @@ bool _EditorState::HandleKey(const ae::_KeyEvent &KeyEvent) {
 						if(ae::Assets.Colors.find(InputText) != ae::Assets.Colors.end())
 							Map->BaseAmbientLight = ae::Assets.Colors[InputText];
 					break;
+					case EDITINPUT_FOGCOLOR:
+						if(ae::Assets.Colors.find(InputText) != ae::Assets.Colors.end())
+							Map->FogColor = ae::Assets.Colors[InputText];
+					break;
 					case EDITINPUT_NAME: {
 						Map->Name = InputText;
 						SavedText[EditorInput] = InputText;
@@ -435,7 +440,12 @@ bool _EditorState::HandleKey(const ae::_KeyEvent &KeyEvent) {
 				ExecuteUpdateLayer(MAPLAYER_WALL, false);
 			break;
 			case SDL_SCANCODE_F:
-				ExecuteUpdateLayer(MAPLAYER_FLAT, false);
+				if(IsShiftDown) {
+					ExecuteShowInput(EDITINPUT_FOGCOLOR);
+					Framework.IgnoreNextInputEvent = true;
+				}
+				else
+					ExecuteUpdateLayer(MAPLAYER_FLAT, false);
 			break;
 			case SDL_SCANCODE_PAGEUP:
 				ExecuteUpdateMapLevel(1);
