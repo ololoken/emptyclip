@@ -54,6 +54,6 @@ void main() {
 	if(fog_color.a > 0 && world_position.z < 0) {
 		const float LOG2 = 1.442695;
 		float fog_factor = clamp(exp2(-fog_color.a * fog_color.a * world_position.z * world_position.z * LOG2), 0.0, 1.0);
-		out_color = mix(vec4(fog_color.rgb, 1), out_color, fog_factor);
+		out_color.rgb = mix(fog_color.rgb, out_color.rgb, fog_factor);
 	}
 }
