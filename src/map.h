@@ -291,6 +291,7 @@ class _Map {
 		std::string Filename;
 		std::string Name;
 		glm::vec4 BaseAmbientLight{0.5f, 0.5f, 0.5f, 1.0f};
+		glm::vec4 FogColor{0.0f, 0.0f, 0.0f, 0.0f};
 		glm::ivec2 Size{0, 0};
 		int MapType{MAPTYPE_CAMPAIGN};
 		size_t Progression{0};

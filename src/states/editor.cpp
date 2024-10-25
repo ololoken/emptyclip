@@ -1004,8 +1004,10 @@ void _EditorState::Render(double BlendFactor) {
 	Camera->Set3DProjection(BlendFactor);
 	ae::Assets.Programs["map"]->LightCount = 0;
 	ae::Assets.Programs["map"]->AmbientLight = glm::vec4(1);
+	ae::Assets.Programs["map"]->FogColor = Map->FogColor;
 	ae::Assets.Programs["map_norm"]->LightCount = 0;
 	ae::Assets.Programs["map_norm"]->AmbientLight = glm::vec4(1);
+	ae::Assets.Programs["map_norm"]->FogColor = Map->FogColor;
 
 	// Setup the viewing matrix
 	ae::Graphics.SetProgram(ae::Assets.Programs["map"]);

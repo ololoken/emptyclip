@@ -186,6 +186,10 @@ _Map::_Map(const std::string &Filename, double Clock, size_t Progression) : _Map
 						File >> BaseAmbientClock;
 						AmbientClock = BaseAmbientClock;
 					} break;
+					// Fog color
+					case 'f': {
+						File >> FogColor.r >> FogColor.g >> FogColor.b >> FogColor.a;
+					} break;
 					// Benchmark flag
 					case 'b': {
 						File >> SimpleAI;
@@ -476,6 +480,7 @@ bool _Map::Save(const std::string &String) {
 	File << "Hn " << Name << '\n';
 	File << "Ha " << BaseAmbientLight.r << ' ' << BaseAmbientLight.g << ' ' << BaseAmbientLight.b << '\n';
 	File << "Hc " << BaseAmbientClock << '\n';
+	File << "Hf " << FogColor.r << ' ' << FogColor.g << ' ' << FogColor.b << ' ' << FogColor.a << '\n';
 	File << "Hb " << SimpleAI << '\n';
 
 	// Objects

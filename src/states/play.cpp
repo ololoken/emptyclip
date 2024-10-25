@@ -830,16 +830,19 @@ void _PlayState::Render(double BlendFactor) {
 	MapProgram->Lights[0].Position = LightPosition;
 	MapProgram->Lights[0].Attenuation = LightAttenuantion;
 	MapProgram->AmbientLight = Map->AmbientLight;
+	MapProgram->FogColor = Map->FogColor;
 	MapNormProgram->LightCount = 1;
 	MapNormProgram->Lights[0].Color = PlayerLightColor;
 	MapNormProgram->Lights[0].Position = LightPosition;
 	MapNormProgram->Lights[0].Attenuation = LightAttenuantion;
 	MapNormProgram->AmbientLight = Map->AmbientLight;
+	MapNormProgram->FogColor = Map->FogColor;
 	ItemProgram->LightCount = 1;
 	ItemProgram->Lights[0].Color = PlayerLightColor;
 	ItemProgram->Lights[0].Position = LightPosition;
 	ItemProgram->Lights[0].Attenuation = LightAttenuantion;
 	ItemProgram->AmbientLight = Map->AmbientLight;
+	ItemProgram->FogColor = Map->FogColor;
 
 	// Setup the viewing matrix
 	ae::Graphics.Setup3D();
