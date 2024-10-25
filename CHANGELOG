@@ -1,5 +1,5 @@
 Empty Clip 2.0.4 -
-- Added fog to Hell level
+- Added fog to Caves and Hell level
 - Added -mod argument for setting the game's working directory
 - Fixed compiler warning
 - Fixed cursor on Steam Deck
