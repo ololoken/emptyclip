@@ -143,10 +143,11 @@ endif()
 # add custom target to generate version.h
 add_custom_target(
 	version
-	${CMAKE_COMMAND}
-	-D SRC=${PROJECT_SOURCE_DIR}/cmake/version.h.in
-	-D DST=${PROJECT_SOURCE_DIR}/src/version.h
-	-P ${PROJECT_SOURCE_DIR}/cmake/version.cmake
+	COMMAND ${CMAKE_COMMAND}
+		-D SRC=${PROJECT_SOURCE_DIR}/cmake/version.h.in
+		-D DST=${PROJECT_SOURCE_DIR}/src/version.h
+		-P ${PROJECT_SOURCE_DIR}/cmake/version.cmake
+	BYPRODUCTS ${PROJECT_SOURCE_DIR}/src/version.h
 )
 add_dependencies(${CMAKE_PROJECT_NAME} version)
 
