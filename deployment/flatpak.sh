@@ -9,7 +9,7 @@ function build() {
 		pkg=${base}_${branch}.flatpak
 	fi
 
-	CCACHE_DIR=~/.cache/ccache/ flatpak-builder --default-branch="$branch" --force-clean --ccache --disable-cache --repo="$repo_path" --state-dir="$state_path" flatpak-build flatpak.yml
+	CCACHE_DIR=~/.cache/ccache/ flatpak-builder --default-branch="$branch" --force-clean --ccache --disable-cache --repo="$repo_path" --state-dir="$state_path" flatpak-build flatpak.json
 	flatpak build-bundle "$repo_path" "out/$pkg" "io.gitlab.jazztickets.$project" "$branch"
 	rm -rf flatpak-build out/src.tar.gz
 }
