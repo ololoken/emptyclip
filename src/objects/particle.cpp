@@ -16,12 +16,12 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 *******************************************************************************/
 #include <objects/particle.h>
-#include <objects/templates.h>
-#include <ae/graphics.h>
-#include <ae/font.h>
-#include <ae/camera.h>
-#include <ae/random.h>
 #include <ae/animation.h>
+#include <ae/camera.h>
+#include <ae/font.h>
+#include <ae/graphics.h>
+#include <ae/random.h>
+#include <objects/templates.h>
 #include <particles.h>
 #include <glm/gtx/rotate_vector.hpp>
 

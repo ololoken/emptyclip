@@ -16,34 +16,12 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 *******************************************************************************/
 #include <gameassets.h>
-#include <objects/monster.h>
-#include <objects/particle.h>
-#include <objects/player.h>
 #include <ae/assets.h>
-#include <ae/files.h>
-#include <ae/random.h>
-#include <ae/graphics.h>
-#include <ae/font.h>
-#include <ae/texture.h>
-#include <ae/program.h>
-#include <ae/ui.h>
 #include <ae/audio.h>
 #include <ae/util.h>
-#include <constants.h>
-#include <tinyxml2/tinyxml2.h>
-#include <stdexcept>
-#include <sstream>
 #include <fstream>
 
 _GameAssets GameAssets;
-
-// Initialize
-void _GameAssets::Init() {
-}
-
-// Shutdown
-void _GameAssets::Close() {
-}
 
 // Load sounds
 void _GameAssets::LoadSounds(const std::string &Path) {

@@ -20,9 +20,9 @@
 #include <ae/util.h>
 #include <actiontype.h>
 #include <constants.h>
-#include <sstream>
-#include <fstream>
 #include <SDL_filesystem.h>
+#include <fstream>
+#include <sstream>
 
 // Globals
 _Config Config;

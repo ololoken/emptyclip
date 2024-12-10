@@ -16,24 +16,19 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 *******************************************************************************/
 #include <objects/item.h>
-#include <objects/player.h>
-#include <ae/buffer.h>
-#include <ae/texture.h>
-#include <ae/graphics.h>
-#include <ae/audio.h>
-#include <ae/font.h>
 #include <ae/assets.h>
-#include <ae/input.h>
-#include <ae/util.h>
-#include <ae/actions.h>
+#include <ae/audio.h>
+#include <ae/buffer.h>
+#include <ae/font.h>
+#include <ae/graphics.h>
 #include <ae/random.h>
+#include <ae/util.h>
+#include <objects/player.h>
 #include <states/play.h>
-#include <hud.h>
 #include <config.h>
-#include <actiontype.h>
 #include <constants.h>
+#include <hud.h>
 #include <stats.h>
-#include <sstream>
 #include <algorithm>
 #include <iomanip>
 

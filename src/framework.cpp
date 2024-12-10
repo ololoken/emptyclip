@@ -16,31 +16,27 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 *******************************************************************************/
 #include <framework.h>
-#include <states/null.h>
-#include <states/convert.h>
-#include <states/play.h>
-#include <states/editor.h>
-#include <ae/framelimit.h>
-#include <ae/random.h>
-#include <ae/state.h>
-#include <ae/input.h>
 #include <ae/actions.h>
-#include <ae/graphics.h>
 #include <ae/assets.h>
-#include <ae/console.h>
-#include <ae/ui.h>
-#include <ae/util.h>
 #include <ae/audio.h>
-#include <ae/texture.h>
+#include <ae/console.h>
 #include <ae/font.h>
-#include <version.h>
-#include <gameassets.h>
+#include <ae/framelimit.h>
+#include <ae/graphics.h>
+#include <ae/random.h>
+#include <ae/texture.h>
+#include <ae/util.h>
+#include <states/convert.h>
+#include <states/editor.h>
+#include <states/null.h>
+#include <states/play.h>
 #include <achievements.h>
-#include <menu.h>
 #include <config.h>
-#include <stdexcept>
 #include <constants.h>
+#include <gameassets.h>
+#include <menu.h>
 #include <stats.h>
+#include <version.h>
 #include <SDL.h>
 #include <algorithm>
 #include <filesystem>
@@ -231,7 +227,6 @@ void _Framework::Close() {
 	Achievements.Save();
 	Stats.Close();
 	ae::Assets.Close();
-	GameAssets.Close();
 	ae::_Font::Close();
 	delete Console;
 	delete FrameLimit;

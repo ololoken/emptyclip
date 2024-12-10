@@ -16,10 +16,10 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 *******************************************************************************/
 #include <objects/inventory.h>
-#include <objects/item.h>
 #include <ae/buffer.h>
-#include <stats.h>
+#include <objects/item.h>
 #include <constants.h>
+#include <stats.h>
 
 // Number of slots for each bag
 const size_t BagSizes[(size_t)BagType::COUNT] = {

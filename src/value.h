@@ -18,7 +18,6 @@
 #pragma once
 
 // Libraries
-#include <cmath>
 #include <cstdint>
 
 // Holds a value

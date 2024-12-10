@@ -17,10 +17,9 @@
 *******************************************************************************/
 #include <particles.h>
 #include <ae/camera.h>
-#include <config.h>
-#include <map.h>
-#include <objects/templates.h>
 #include <objects/particle.h>
+#include <objects/templates.h>
+#include <map.h>
 
 // Constructor
 _Particles::_Particles() {

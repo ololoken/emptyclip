@@ -16,11 +16,11 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 *******************************************************************************/
 #include <objects/monster.h>
-#include <objects/player.h>
 #include <ae/random.h>
+#include <objects/player.h>
 #include <gameassets.h>
-#include <stats.h>
 #include <map.h>
+#include <stats.h>
 #include <glm/gtx/norm.hpp>
 
 // Constants

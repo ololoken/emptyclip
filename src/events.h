@@ -20,8 +20,8 @@
 // Libraries
 #include <glm/vec2.hpp>
 #include <glm/vec4.hpp>
-#include <vector>
 #include <string>
+#include <vector>
 
 // Enumerations
 enum EventType {

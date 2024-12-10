@@ -21,15 +21,14 @@
 #include <constants.h>
 #include <vector>
 #include <string>
-#include <list>
 
 // Forward Declarations
 class _HUD;
 class _Player;
 namespace ae {
 	class _Element;
-	struct _MouseEvent;
 	struct _KeyEvent;
+	struct _MouseEvent;
 }
 
 struct _Message {

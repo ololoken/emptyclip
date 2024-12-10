@@ -18,18 +18,18 @@
 #pragma once
 
 // Libraries
-#include <vector>
-#include <string>
 #include <glm/vec2.hpp>
 #include <glm/vec4.hpp>
+#include <string>
+#include <vector>
 
 // Forward Declarations
-namespace ae {
-	class _Camera;
-}
 class _Map;
 class _Particle;
 struct _ParticleTemplate;
+namespace ae {
+	class _Camera;
+}
 
 struct _ParticleSpawn {
 	_ParticleSpawn(const _ParticleTemplate *Template, const glm::vec4 &Color, const glm::vec2 &Normal, const glm::vec2 &Position, float PositionZ, float RotationAdjust) :

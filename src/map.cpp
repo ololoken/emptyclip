@@ -16,31 +16,25 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 *******************************************************************************/
 #include <map.h>
+#include <ae/assets.h>
+#include <ae/camera.h>
+#include <ae/graphics.h>
+#include <ae/program.h>
+#include <ae/random.h>
+#include <ae/texture.h>
+#include <ae/ui.h>
 #include <objects/entity.h>
-#include <objects/item.h>
 #include <objects/particle.h>
 #include <states/play.h>
-#include <ae/random.h>
-#include <ae/camera.h>
-#include <ae/texture.h>
-#include <ae/graphics.h>
-#include <ae/assets.h>
-#include <ae/program.h>
-#include <ae/bounds.h>
-#include <ae/ui.h>
-#include <gameassets.h>
 #include <events.h>
-#include <stats.h>
+#include <gameassets.h>
 #include <objectmanager.h>
-#include <constants.h>
-#include <fstream>
-#include <stdexcept>
-#include <iomanip>
-#include <iostream>
-#include <algorithm>
 #include <glm/gtx/norm.hpp>
 #include <glm/gtx/rotate_vector.hpp>
 #include <zlib/zfstream.h>
+#include <stats.h>
+#include <algorithm>
+#include <iomanip>
 
 inline bool CompareHitDistance(_Hit &First, _Hit &Second) {
 	return First.DistanceSquared < Second.DistanceSquared;

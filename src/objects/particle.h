@@ -18,18 +18,18 @@
 #pragma once
 
 // Libraries
-#include <color.h>
-#include <string>
 #include <glm/vec2.hpp>
+#include <glm/vec4.hpp>
+#include <string>
 
 // Forward Declarations
-namespace ae {
-	class _Camera;
-	class _Texture;
-	class _Font;
-	class _Animation;
-}
 struct _ParticleSpawn;
+namespace ae {
+	class _Animation;
+	class _Camera;
+	class _Font;
+	class _Texture;
+}
 
 // Classes
 class _Particle {

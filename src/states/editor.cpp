@@ -16,35 +16,29 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 *******************************************************************************/
 #include <states/editor.h>
-#include <states/play.h>
-#include <ae/camera.h>
-#include <ae/texture.h>
-#include <ae/mesh.h>
-#include <ae/graphics.h>
-#include <ae/font.h>
-#include <ae/ui.h>
 #include <ae/assets.h>
-#include <ae/program.h>
-#include <ae/animation.h>
+#include <ae/camera.h>
+#include <ae/font.h>
 #include <ae/framebuffer.h>
+#include <ae/graphics.h>
+#include <ae/program.h>
+#include <ae/texture.h>
+#include <ae/ui.h>
 #include <ae/util.h>
-#include <objects/monster.h>
-#include <objects/player.h>
-#include <gameassets.h>
-#include <framework.h>
-#include <map.h>
-#include <events.h>
-#include <menu.h>
-#include <config.h>
+#include <objects/object.h>
+#include <states/play.h>
 #include <constants.h>
+#include <events.h>
+#include <framework.h>
+#include <gameassets.h>
+#include <menu.h>
 #include <stats.h>
 #include <SDL_keycode.h>
 #include <SDL_mouse.h>
-#include <glm/gtc/type_ptr.hpp>
-#include <iostream>
-#include <sstream>
 #include <algorithm>
 #include <filesystem>
+#include <iostream>
+#include <sstream>
 
 _EditorState EditorState;
 

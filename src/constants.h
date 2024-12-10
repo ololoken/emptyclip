@@ -18,11 +18,10 @@
 #pragma once
 
 // Includes
-#include <string>
-#include <SDL_keycode.h>
 #include <glm/vec2.hpp>
 #include <glm/vec3.hpp>
 #include <glm/vec4.hpp>
+#include <string>
 
 //     Defaults
 const  glm::ivec2   DEFAULT_WINDOW_SIZE                  =  glm::ivec2(1440,900);

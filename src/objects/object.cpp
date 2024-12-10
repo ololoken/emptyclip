@@ -16,20 +16,18 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 *******************************************************************************/
 #include <objects/object.h>
-#include <objects/entity.h>
+#include <ae/audio.h>
+#include <ae/graphics.h>
+#include <ae/random.h>
 #include <objects/player.h>
 #include <states/play.h>
-#include <ae/random.h>
-#include <ae/graphics.h>
-#include <ae/audio.h>
 #include <constants.h>
 #include <hud.h>
-#include <stats.h>
-#include <menu.h>
 #include <map.h>
-#include <glm/geometric.hpp>
-#include <glm/gtx/rotate_vector.hpp>
+#include <menu.h>
+#include <stats.h>
 #include <glm/gtx/norm.hpp>
+#include <glm/gtx/rotate_vector.hpp>
 
 // Constructor
 _Object::_Object(const _ObjectTemplate &ObjectTemplate) :

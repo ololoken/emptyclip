@@ -19,14 +19,10 @@
 
 // Libraries
 #include <ae/bounds.h>
-#include <glm/vec2.hpp>
-#include <color.h>
-#include <string>
-#include <list>
-#include <vector>
-#include <unordered_map>
 #include <memory>
-#include <stdexcept>
+#include <string>
+#include <unordered_map>
+#include <vector>
 
 // Types of map layers
 enum MapLayerTypes {

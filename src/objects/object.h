@@ -18,24 +18,24 @@
 #pragma once
 
 // Libraries
-#include <color.h>
 #include <value.h>
+#include <glm/vec2.hpp>
+#include <glm/vec4.hpp>
+#include <string>
 #include <unordered_map>
 #include <vector>
-#include <string>
-#include <glm/vec2.hpp>
 
 // Forward Declarations
 class _Map;
+struct _Hit;
 struct _ObjectTemplate;
 struct _ParticleTemplate;
-struct _Hit;
 struct _Unique;
 namespace ae {
 	class _Buffer;
-	class _Texture;
 	class _Mesh;
 	class _Sound;
+	class _Texture;
 }
 
 // Used for animation

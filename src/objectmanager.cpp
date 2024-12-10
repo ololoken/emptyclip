@@ -16,20 +16,18 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 *******************************************************************************/
 #include <objectmanager.h>
-#include <objects/object.h>
-#include <objects/item.h>
-#include <objects/player.h>
-#include <ae/camera.h>
 #include <ae/assets.h>
-#include <ae/program.h>
+#include <ae/camera.h>
 #include <ae/graphics.h>
+#include <ae/program.h>
 #include <ae/texture.h>
+#include <objects/player.h>
 #include <states/play.h>
 #include <hud.h>
 #include <map.h>
 #include <stats.h>
-#include <constants.h>
 
+// Constants
 const int RENDER_VBO_VERTICES_PER_DRAW = 24;
 const int RENDER_VBO_SIZE = 100000 * RENDER_VBO_VERTICES_PER_DRAW;
 

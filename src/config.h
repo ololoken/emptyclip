@@ -19,9 +19,8 @@
 
 // Libraries
 #include <glm/vec2.hpp>
-#include <unordered_map>
-#include <sstream>
 #include <string>
+#include <unordered_map>
 #include <vector>
 
 // Stores configuration data

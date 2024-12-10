@@ -20,9 +20,7 @@
 // Libraries
 #include <objects/entity.h>
 
-struct _MonsterTemplate;
-struct _ParticleGroup;
-class _Player;
+// Forward Declarations
 struct _ItemDrop;
 
 // Classes

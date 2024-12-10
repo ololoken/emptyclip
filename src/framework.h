@@ -23,7 +23,6 @@
 
 // Forward Declarations
 union SDL_Event;
-
 namespace ae {
 	class _FrameLimit;
 	class _State;

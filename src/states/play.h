@@ -17,33 +17,31 @@
 *******************************************************************************/
 #pragma once
 
+// Libraries
 #include <ae/state.h>
 #include <color.h>
 #include <unordered_map>
-#include <map>
-#include <list>
 #include <vector>
 
 // Forward Declarations
-class _HUD;
-class _Map;
-class _Event;
 class _Entity;
-class _Monster;
-class _Player;
+class _Event;
+class _HUD;
 class _Item;
+class _Map;
+class _Monster;
 class _Object;
 class _Particle;
 class _Particles;
+class _Player;
+struct _Hit;
 struct _ObjectSpawn;
 struct _ParticleTemplate;
-struct _EventTile;
-struct _Hit;
 namespace ae {
 	class _AudioSource;
-	class _Framebuffer;
 	class _Camera;
 	class _Element;
+	class _Framebuffer;
 }
 
 // Play state

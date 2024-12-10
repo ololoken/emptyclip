@@ -16,16 +16,15 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 *******************************************************************************/
 #include <save.h>
-#include <objects/player.h>
-#include <objects/inventory.h>
-#include <states/play.h>
-#include <ae/files.h>
 #include <ae/buffer.h>
+#include <ae/files.h>
+#include <objects/player.h>
+#include <states/play.h>
 #include <config.h>
 #include <stats.h>
-#include <sstream>
-#include <iostream>
 #include <fstream>
+#include <iostream>
+#include <sstream>
 
 enum SaveChunkTypes {
 	CHUNK_SAVEVERSION,

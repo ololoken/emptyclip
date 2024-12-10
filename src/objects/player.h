@@ -22,13 +22,6 @@
 #include <objects/inventory.h>
 #include <map>
 
-// Forward Declarations
-class _Item;
-class _Weapon;
-class _Inventory;
-struct _Bag;
-struct _Slot;
-
 // Enumerations
 enum PlayerAnimationTypes {
 	PLAYER_ANIMATIONWALKINGONEHAND,

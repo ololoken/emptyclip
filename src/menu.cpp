@@ -16,34 +16,31 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 *******************************************************************************/
 #include <menu.h>
-#include <states/play.h>
-#include <states/null.h>
-#include <objects/player.h>
-#include <ae/input.h>
 #include <ae/actions.h>
-#include <ae/texture.h>
-#include <ae/assets.h>
-#include <ae/graphics.h>
 #include <ae/animation.h>
-#include <ae/util.h>
-#include <ae/ui.h>
+#include <ae/assets.h>
 #include <ae/audio.h>
-#include <ae/font.h>
 #include <ae/console.h>
-#include <actiontype.h>
+#include <ae/font.h>
+#include <ae/graphics.h>
+#include <ae/texture.h>
+#include <ae/ui.h>
+#include <ae/util.h>
+#include <objects/player.h>
+#include <states/null.h>
+#include <states/play.h>
 #include <achievements.h>
-#include <save.h>
-#include <hud.h>
-#include <stats.h>
-#include <constants.h>
-#include <gameassets.h>
+#include <actiontype.h>
 #include <config.h>
 #include <framework.h>
+#include <hud.h>
+#include <save.h>
+#include <stats.h>
 #include <version.h>
-#include <sstream>
-#include <iomanip>
-#include <algorithm>
 #include <SDL_mouse.h>
+#include <algorithm>
+#include <iomanip>
+#include <sstream>
 
 _Menu Menu;
 

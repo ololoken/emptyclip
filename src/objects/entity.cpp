@@ -16,23 +16,20 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 *******************************************************************************/
 #include <objects/entity.h>
-#include <objects/monster.h>
-#include <objects/player.h>
-#include <states/play.h>
+#include <ae/animation.h>
+#include <ae/assets.h>
+#include <ae/audio.h>
 #include <ae/graphics.h>
 #include <ae/random.h>
-#include <ae/assets.h>
-#include <ae/program.h>
-#include <ae/animation.h>
-#include <ae/audio.h>
-#include <stats.h>
+#include <objects/player.h>
+#include <states/play.h>
 #include <hud.h>
-#include <objectmanager.h>
-#include <menu.h>
 #include <map.h>
-#include <constants.h>
-#include <algorithm>
+#include <menu.h>
+#include <objectmanager.h>
+#include <stats.h>
 #include <glm/gtx/norm.hpp>
+#include <algorithm>
 
 const double SQRT1_2 = 0.70710678118654752440;
 

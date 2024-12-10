@@ -17,17 +17,15 @@
 *******************************************************************************/
 #pragma once
 
-#include <value.h>
+// Libraries
 #include <glm/vec2.hpp>
 #include <glm/vec4.hpp>
-#include <unordered_map>
-#include <string>
 #include <vector>
-#include <cstdint>
 
+// Forward Declarations
 namespace ae {
-	class _Texture;
 	class _Font;
+	class _Texture;
 	struct _Reel;
 }
 

@@ -19,15 +19,10 @@
 
 // Libraries
 #include <objects/templates.h>
-#include <glm/vec2.hpp>
-#include <unordered_map>
 #include <string>
-#include <vector>
+#include <unordered_map>
 
 // Forward Declarations
-class _Particle;
-class _Entity;
-class _Player;
 struct _ParticleTemplate;
 namespace ae {
 	class _Sound;
@@ -42,9 +37,6 @@ struct _SoundGroup {
 class _GameAssets {
 
 	public:
-
-		void Init();
-		void Close();
 
 		void LoadSounds(const std::string &Path);
 		void LoadSoundGroups(const std::string &Path);

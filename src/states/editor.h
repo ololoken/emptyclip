@@ -20,25 +20,14 @@
 // Libraries
 #include <ae/state.h>
 #include <map.h>
-#include <string>
-#include <vector>
-#include <glm/vec2.hpp>
 #include <glm/vec3.hpp>
 
 // Forward Declarations
-class _Event;
-class _Map;
-struct _EventTile;
-struct _Brush;
-struct _ObjectSpawn;
-struct _Block;
-
 namespace ae {
-	class _Camera;
 	class _Element;
 	class _Font;
 	class _Framebuffer;
-	struct _Reel;
+	class _Texture;
 }
 
 // Enumerations
@@ -127,7 +116,7 @@ struct _Brush {
 		Texture(Texture),
 		Color(Color),
 		ObjectType(ObjectType),
-		ModObjectType(ModObjectType) {}
+		ModObjectType(ModObjectType) { }
 
 	std::string ID;
 	std::string Text;

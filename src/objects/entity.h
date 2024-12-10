@@ -21,15 +21,11 @@
 #include <objects/item.h>
 #include <objects/templates.h>
 #include <constants.h>
-#include <list>
 
 // Forward Declarations
-class _Map;
-struct _Hit;
 namespace ae {
 	class _Animation;
 	class _AudioSource;
-	class _Sound;
 }
 
 // Classes

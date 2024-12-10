@@ -19,18 +19,17 @@
 
 // Libraries
 #include <objects/inventory.h>
-#include <ae/ui.h>
-#include <string>
 #include <glm/vec2.hpp>
+#include <string>
 
 // Forward Declarations
 class _Entity;
 class _Player;
-class _Item;
-class _Weapon;
-struct _Bag;
 namespace ae {
 	class _Camera;
+	class _Element;
+	class _Font;
+	class _Texture;
 	struct _MouseEvent;
 }
 

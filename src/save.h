@@ -18,12 +18,11 @@
 #pragma once
 
 // Libraries
-#include <vector>
 #include <string>
+#include <vector>
 
 // Forward Declarations
 class _Player;
-class _Item;
 namespace ae {
 	class _Buffer;
 }

@@ -16,18 +16,16 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 *******************************************************************************/
 #include <stats.h>
-#include <objects/object.h>
+#include <ae/actions.h>
+#include <ae/animation.h>
+#include <ae/assets.h>
+#include <ae/database.h>
+#include <ae/random.h>
 #include <objects/monster.h>
 #include <objects/player.h>
-#include <ae/random.h>
-#include <ae/assets.h>
-#include <ae/animation.h>
-#include <ae/database.h>
-#include <ae/actions.h>
 #include <states/play.h>
 #include <actiontype.h>
 #include <gameassets.h>
-#include <constants.h>
 #include <map.h>
 #include <stdexcept>
 

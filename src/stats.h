@@ -19,19 +19,18 @@
 
 // Libraries
 #include <objects/templates.h>
-#include <unordered_map>
-#include <vector>
+#include <value.h>
 #include <string>
+#include <unordered_map>
 
 // Forward Declarations
-class _Object;
 class _Item;
-class _Weapon;
 class _Monster;
+class _Object;
 struct _ObjectSpawn;
 namespace ae {
-	class _Sound;
 	class _Database;
+	class _Sound;
 }
 
 // Used for level information

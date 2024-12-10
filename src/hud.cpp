@@ -16,33 +16,27 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 *******************************************************************************/
 #include <hud.h>
-#include <objects/entity.h>
-#include <objects/player.h>
-#include <objects/inventory.h>
-#include <objects/item.h>
-#include <ae/input.h>
 #include <ae/actions.h>
-#include <ae/graphics.h>
-#include <ae/font.h>
-#include <ae/program.h>
 #include <ae/assets.h>
-#include <ae/actions.h>
 #include <ae/audio.h>
-#include <ae/util.h>
 #include <ae/camera.h>
+#include <ae/font.h>
+#include <ae/graphics.h>
+#include <ae/input.h>
+#include <ae/ui.h>
+#include <ae/util.h>
+#include <objects/player.h>
 #include <states/play.h>
-#include <map.h>
-#include <menu.h>
 #include <actiontype.h>
 #include <config.h>
+#include <map.h>
+#include <menu.h>
 #include <stats.h>
-#include <gameassets.h>
-#include <sstream>
-#include <iomanip>
-#include <algorithm>
-#include <SDL_mouse.h>
-#include <glm/gtc/type_ptr.hpp>
 #include <glm/gtx/norm.hpp>
+#include <SDL_keycode.h>
+#include <SDL_mouse.h>
+#include <algorithm>
+#include <iomanip>
 
 struct _MinimapLegend {
 	std::string Label;
