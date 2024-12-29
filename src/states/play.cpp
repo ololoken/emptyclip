@@ -199,7 +199,7 @@ void _PlayState::Close() {
 }
 
 // Action handler
-bool _PlayState::HandleAction(int InputType, size_t Action, int Value) {
+bool _PlayState::HandleAction(int InputType, size_t Action, int Value, bool Repeat) {
 	if(Value == 0)
 		return false;
 

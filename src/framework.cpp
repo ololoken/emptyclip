@@ -276,7 +276,7 @@ void _Framework::Update() {
 
 					// Pass keys to action handler
 					if(!Event.key.repeat && SendAction)
-						ae::Actions.InputEvent(State, ae::_Input::KEYBOARD, Event.key.keysym.scancode, Event.type == SDL_KEYDOWN);
+						ae::Actions.InputEvent(State, ae::_Input::KEYBOARD, Event.key.keysym.scancode, Event.type == SDL_KEYDOWN, false);
 				}
 			break;
 			case SDL_TEXTINPUT:
@@ -295,7 +295,7 @@ void _Framework::Update() {
 				if(!Console->IsOpen()) {
 					ae::_MouseEvent MouseEvent(glm::ivec2(Event.motion.x, Event.motion.y), Event.button.button, Event.type == SDL_MOUSEBUTTONDOWN);
 					State->HandleMouseButton(MouseEvent);
-					ae::Actions.InputEvent(State, ae::_Input::MOUSE_BUTTON, Event.button.button, Event.type == SDL_MOUSEBUTTONDOWN);
+					ae::Actions.InputEvent(State, ae::_Input::MOUSE_BUTTON, Event.button.button, Event.type == SDL_MOUSEBUTTONDOWN, false);
 				}
 			break;
 			case SDL_MOUSEWHEEL:
