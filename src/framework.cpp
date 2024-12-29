@@ -472,7 +472,8 @@ void _Framework::LoadAssets() {
 
 	// Load assets
 	ae::Assets.LoadPrograms("tables/programs.tsv");
-	ae::Assets.LoadFonts("ui/fonts.tsv", false);
+	ae::Assets.LoadFonts("ui/fonts.tsv", true);
+	ae::Assets.LoadFonts("ui/fonts.tsv");
 	ae::Assets.LoadMeshDirectory("meshes/");
 	ae::Assets.LoadColors("tables/colors.tsv");
 	ae::Assets.LoadSoundPack("data/sounds");
@@ -485,6 +486,4 @@ void _Framework::LoadAssets() {
 	ae::Assets.LoadStyles("ui/styles.tsv");
 	ae::Assets.LoadUI("ui/elements.xml");
 	//ae::Assets.SaveUI("ui/elements_new.xml");
-
-	ae::Assets.LoadFonts("ui/fonts.tsv");
 }

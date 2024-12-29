@@ -910,12 +910,14 @@ void _Menu::SetFullscreen(bool Fullscreen) {
 	if(!Framework.BenchMode)
 		Config.Save();
 
-	if(Framework.Console)
-		Framework.Console->UpdateSize();
-
 	// Reload fonts
 	ae::Assets.LoadFonts("ui/fonts.tsv");
+	ae::Graphics.Element->CalculateBounds(false);
 	ae::Graphics.ResetState();
+
+	// Update console size
+	if(Framework.Console)
+		Framework.Console->UpdateSize();
 }
 
 // Show menu cursor or game cursor
