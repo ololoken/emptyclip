@@ -99,6 +99,14 @@ void _Stats::LoadText() {
 	while(Database->FetchRow()) {
 		std::string ID = Database->GetString("id");
 		std::string Value = Database->GetString("text");
+
+		// Convert "\n" to LF
+		size_t Position = 0;
+		while((Position = Value.find("\\n", Position)) != std::string::npos) {
+			Value.replace(Position, 2, "\n");
+			Position++;
+		}
+
 		Text[ID] = Value;
 	}
 
