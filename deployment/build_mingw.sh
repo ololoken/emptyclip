@@ -67,7 +67,7 @@ build() {
 		libogg.dll
 		libpng16-16.dll
 		libsharpyuv.dll
-		libsqlite3-0.dll
+		libsqlite3.dll
 		libssp-0.dll
 		libstdc++-6.dll
 		libvorbis-0.dll
