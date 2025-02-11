@@ -12,4 +12,3 @@ rm -f "$db"
 for f in stats/*.tsv; do
 	./tsv2sqlite.sh "$f" "$db"
 done
-
