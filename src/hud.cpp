@@ -1430,10 +1430,10 @@ void _HUD::UpdateSkillTooltip(int Skill, const glm::vec2 &Position) {
 	if(Skill == SKILL_INTELLIGENCE)
 		Percent[1] = " ";
 	Buffer[0]
-		<< Plus[0] << Stats.GetSkill(Level, Skill, 0) << Percent[0] << SkillText[Skill].Text[0] << "\\n"
+		<< Plus[0] << Stats.GetSkill(Level, Skill, 0) << Percent[0] << SkillText[Skill].Text[0] << "\n"
 		<< Plus[1] << Stats.GetSkill(Level, Skill, 1) << Percent[1] << SkillText[Skill].Text[1];
 	Buffer[1]
-		<< Plus[0] << Stats.GetSkill(Stats.GetValidSkillLevel(Level+1), Skill, 0) << Percent[0] << SkillText[Skill].Text[0] << "\\n"
+		<< Plus[0] << Stats.GetSkill(Stats.GetValidSkillLevel(Level+1), Skill, 0) << Percent[0] << SkillText[Skill].Text[0] << "\n"
 		<< Plus[1] << Stats.GetSkill(Stats.GetValidSkillLevel(Level+1), Skill, 1) << Percent[1] << SkillText[Skill].Text[1];
 
 	// Format text
