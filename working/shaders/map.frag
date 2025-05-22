@@ -1,4 +1,6 @@
-#version 330 core
+#version 300 es
+
+precision highp float;
 
 #define MAX_LIGHTS 10
 
@@ -24,7 +26,7 @@ void main() {
 
 	// Get light color from ambient and mixed light framebuffer
 	vec4 light_color = ambient_light + texelFetch(sampler1, ivec2(gl_FragCoord.xy), 0);
-	light_color.a = 1;
+	light_color.a = 1.0;
 
 	// Calculate Lambertian lighting
 	for(int i = 0; i < light_count; i++) {
@@ -51,7 +53,7 @@ void main() {
 	out_color = color * texture_color * light_color;
 
 	// Apply fog
-	if(fog_color.a > 0 && world_position.z < 0) {
+	if(fog_color.a > 0.0 && world_position.z < 0.0) {
 		const float LOG2 = 1.442695;
 		float fog_factor = clamp(exp2(-fog_color.a * fog_color.a * world_position.z * world_position.z * LOG2), 0.0, 1.0);
 		out_color.rgb = mix(fog_color.rgb, out_color.rgb, fog_factor);

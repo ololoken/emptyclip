@@ -48,6 +48,31 @@ if(NOT DEFINED OpenGL_GL_PREFERENCE)
 endif()
 
 # find libraries
+if (${CMAKE_SYSTEM_NAME} MATCHES "Emscripten")
+	set(USE_FLAGS " \
+  --use-port=sdl2 \
+  --use-port=sdl2_image:formats=png,jpg --use-port=libpng --use-port=libjpeg \
+  --use-port=sdl2_mixer -sSDL2_MIXER_FORMATS=ogg \
+  --use-port=sdl2_ttf \
+  --use-port=freetype \
+  --use-port=sqlite3 \
+  --use-port=zlib \
+  -sNO_DISABLE_EXCEPTION_CATCHING -O1 -gsource-map")
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${USE_FLAGS} --profiling-funcs -sASSERTIONS=2")
+	set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${USE_FLAGS}")
+	set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${USE_FLAGS} \
+  -sASYNCIFY -sASYNCIFY_STACK_SIZE=32768 \
+  -sALLOW_MEMORY_GROWTH -sINITIAL_MEMORY=128mb -sMEMORY_GROWTH_LINEAR_STEP=32mb \
+  -sENVIRONMENT=web \
+  -sMODULARIZE \
+  -lidbfs.js \
+  -lopenal \
+  -sFULL_ES3 \
+  -sMIN_WEBGL_VERSION=2 \
+  -sEXPORTED_RUNTIME_METHODS=callMain,addRunDependency,removeRunDependency \
+  -sEXPORT_ALL \
+  -sEXIT_RUNTIME")
+else ()
 find_package(OpenGL REQUIRED)
 find_package(SDL2 REQUIRED)
 find_package(SDL2_image REQUIRED)
@@ -58,6 +83,7 @@ find_package(Freetype REQUIRED)
 find_package(ZLIB REQUIRED)
 find_package(SQLite REQUIRED)
 find_package(Threads REQUIRED)
+endif ()
 
 # set include directories
 include_directories("src")
@@ -141,6 +167,7 @@ if(NOT WIN32)
 endif()
 
 # add custom target to generate version.h
+if (NOT ${CMAKE_SYSTEM_NAME} MATCHES "Emscripten")
 add_custom_target(
 	version
 	COMMAND ${CMAKE_COMMAND}
@@ -150,7 +177,7 @@ add_custom_target(
 	BYPRODUCTS ${PROJECT_SOURCE_DIR}/src/version.h
 )
 add_dependencies(${CMAKE_PROJECT_NAME} version)
-
+endif ()
 # link libraries
 target_link_libraries(${CMAKE_PROJECT_NAME}
 	${OPENGL_LIBRARIES}

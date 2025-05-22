@@ -20,6 +20,7 @@
 // Libraries
 #include <glm/vec2.hpp>
 #include <string>
+#include <sstream>
 #include <unordered_map>
 #include <vector>
 

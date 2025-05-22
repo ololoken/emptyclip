@@ -11,9 +11,11 @@
 		<element id="button_menu_title_achievements" sound="game_click0.ogg" style="style_menu_button" hover_style="style_menu_button_hover" disabled_style="style_menu_button_disabled" offset_y="82" size_x="280" size_y="66" alignment_y="0" clickable="true">
 			<element id="label_menu_title_achievements" font="menu_buttons" text="Achievements" offset_y="44" alignment_y="3"/>
 		</element>
+		<!--
 		<element id="button_menu_title_exit" style="style_menu_button" hover_style="style_menu_button_hover" offset_y="300" size_x="280" size_y="66" alignment_y="0" clickable="true">
 			<element id="label_menu_title_exit" font="menu_buttons" text="Exit" offset_y="44" alignment_y="3"/>
 		</element>
+		-->
 	</element>
 	<element id="element_menu_singleplayer" size_x="800" size_y="984">
 		<element id="label_menu_singleplayer_title" font="hud_large" text="Characters" offset_y="-350"/>

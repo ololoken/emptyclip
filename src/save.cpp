@@ -25,6 +25,18 @@
 #include <fstream>
 #include <iostream>
 #include <sstream>
+#include <algorithm>
+
+#ifdef __EMSCRIPTEN__
+#include <emscripten.h>
+// clang-format off
+EM_ASYNC_JS(void, emscripten_do_sync_idbfs, (), {
+	 await new Promise((resolve, reject) => FS.syncfs(err => err ? reject(err) : resolve()))
+});
+// clang-format on
+#else
+inline void emscripten_do_sync_idbfs() {}
+#endif
 
 enum SaveChunkTypes {
 	CHUNK_SAVEVERSION,
@@ -137,6 +149,8 @@ void _Save::DeletePlayer(size_t Slot) {
 
 	delete Players[Slot];
 	Players[Slot] = nullptr;
+
+	emscripten_do_sync_idbfs();
 }
 
 // Load save files
@@ -346,7 +360,7 @@ void _Save::LoadPlayer(_Player *Player) {
 
 	// Initialize
 	Player->AddMissingBackpacks();
-	Player->ActiveBackpack = std::min(Player->ActiveBackpack, Player->Inventory->Containers[(size_t)BagType::BACKPACK].size() - 1);
+	Player->ActiveBackpack = std::min(Player->ActiveBackpack, (uint64_t)Player->Inventory->Containers[(size_t)BagType::BACKPACK].size() - 1);
 	Player->CheckpointIndex = 0;
 	Player->CalculateExperienceStats();
 	Player->CalculateSkillsRemaining();
@@ -421,6 +435,8 @@ void _Save::SavePlayer(_Player *Player) {
 	// Rename temp file
 	std::remove(Player->SavePath.c_str());
 	std::rename(SavePath.c_str(), Player->SavePath.c_str());
+
+	emscripten_do_sync_idbfs();
 }
 
 // Load inventory

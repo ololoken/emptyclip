@@ -24,6 +24,17 @@
 #include <fstream>
 #include <sstream>
 
+#ifdef __EMSCRIPTEN__
+#include <emscripten.h>
+// clang-format off
+EM_ASYNC_JS(void, emscripten_do_sync_config_idbfs, (), {
+	 await new Promise((resolve, reject) => FS.syncfs(err => err ? reject(err) : resolve()))
+});
+// clang-format on
+#else
+inline void emscripten_do_sync_config_idbfs() {}
+#endif
+
 // Globals
 _Config Config;
 
@@ -58,6 +69,7 @@ void _Config::Init(const std::string &ConfigFile) {
 	ae::Actions.State[Action::MISC_DEBUG].Name = "misc_debug";
 
 	// Create config path
+#ifndef __EMSCRIPTEN__
 	char *PrefPath = SDL_GetPrefPath("", "emptyclip");
 	if(PrefPath) {
 		ConfigPath = SavePath = PrefPath;
@@ -66,6 +78,9 @@ void _Config::Init(const std::string &ConfigFile) {
 	else {
 		throw std::runtime_error(std::string(__func__) + " unable to create config path!");
 	}
+#else
+	ConfigPath = SavePath = "emptyclip/";
+#endif
 
 	ConfigFilePath = ConfigPath + ConfigFile;
 	ae::MakeDirectory(ConfigPath);
@@ -272,4 +287,6 @@ void _Config::Save() {
 	ae::Actions.Serialize(File, ae::_Input::MOUSE_BUTTON);
 
 	File.close();
+
+	emscripten_do_sync_config_idbfs();
 }
