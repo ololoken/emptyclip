@@ -462,8 +462,11 @@ void _Framework::LoadAssets() {
 	ae::Assets.LoadTexturePack("textures/items", TextureSettings);
 	ae::Assets.LoadTexturePack("textures/icons", TextureSettings);
 	ae::Assets.LoadReels("tables/reels.tsv");
-
+#ifndef __EMSCRIPTEN__
 	TextureSettings.WrapMode = ae::_Texture::CLAMP_TO_BORDER;
+#else
+	TextureSettings.WrapMode = ae::_Texture::CLAMP_TO_EDGE;
+#endif
 	TextureSettings.Mipmaps = true;
 	TextureSettings.Anisotropy = Config.Anisotropy;
 	ae::Assets.LoadTexturePack("textures/lights", TextureSettings);
